@@ -1,0 +1,70 @@
+package com.gemwallet.android.ui.components.titles
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.stringResource
+import com.gemwallet.android.R
+import com.gemwallet.android.ext.getAddressEllipsisText
+import com.wallet.core.primitives.TransactionDirection
+import com.wallet.core.primitives.TransactionType
+
+fun TransactionType.getTitle(): Int {
+    return when (this) {
+        TransactionType.StakeDelegate -> R.string.transfer_stake_title
+        TransactionType.StakeUndelegate -> R.string.transfer_unstake_title
+        TransactionType.StakeRedelegate -> R.string.transfer_redelegate_title
+        TransactionType.StakeRewards -> R.string.transfer_rewards_title
+        TransactionType.Transfer -> R.string.transfer_title
+        TransactionType.Swap -> R.string.wallet_swap
+        TransactionType.TokenApproval -> R.string.transfer_approve_title
+        TransactionType.StakeWithdraw -> R.string.transfer_withdraw_title
+    }
+}
+
+@Composable
+fun TransactionType.getTransactionTitle(assetSymbol: String): String {
+    return when (this) {
+        TransactionType.StakeDelegate,
+        TransactionType.StakeUndelegate,
+        TransactionType.StakeRewards,
+        TransactionType.StakeRedelegate,
+        TransactionType.StakeWithdraw,
+        TransactionType.Transfer,
+        TransactionType.Swap -> stringResource(getTitle())
+        TransactionType.TokenApproval -> "${stringResource(id = R.string.transfer_approve_title)} ${assetSymbol}"
+    }
+}
+
+fun TransactionType.getValue(direction: TransactionDirection, value: String): String {
+    return when (this) {
+        TransactionType.StakeUndelegate,
+        TransactionType.StakeRewards,
+        TransactionType.StakeRedelegate,
+        TransactionType.StakeWithdraw -> value
+        TransactionType.StakeDelegate -> value
+        TransactionType.Transfer,
+        TransactionType.Swap -> when (direction) {
+            TransactionDirection.SelfTransfer,
+            TransactionDirection.Outgoing -> "-${value}"
+            TransactionDirection.Incoming -> "+${value}"
+        }
+        TransactionType.TokenApproval -> ""
+    }
+}
+
+@Composable
+fun TransactionType.getAddress(direction: TransactionDirection, from: String, to: String): String {
+    return when (this) {
+        TransactionType.Transfer -> when (direction) {
+            TransactionDirection.SelfTransfer,
+            TransactionDirection.Outgoing -> "${stringResource(id = R.string.transfer_to)} ${to.getAddressEllipsisText()}"
+            TransactionDirection.Incoming -> "${stringResource(id = R.string.transfer_from)} ${from.getAddressEllipsisText()}"
+        }
+        TransactionType.Swap,
+        TransactionType.TokenApproval,
+        TransactionType.StakeDelegate,
+        TransactionType.StakeUndelegate,
+        TransactionType.StakeRedelegate,
+        TransactionType.StakeWithdraw,
+        TransactionType.StakeRewards -> ""
+    }
+}

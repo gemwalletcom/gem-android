@@ -1,0 +1,219 @@
+package com.gemwallet.android.ui.components
+
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
+import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.theme.padding8
+
+data class CellEntity<T>(
+    val label: T,
+    val data: String,
+    val dataColor: Color? = null,
+    val support: String? = null,
+    val actionIcon: Painter? = null,
+    val trailingIcon: String? = null,
+    val icon: String? = null,
+    val trailing: (@Composable () -> Unit)? = null,
+    val dropDownActions: (@Composable (() -> Unit) -> Unit)? = null,
+    val showActionChevron: Boolean = true,
+    val action: (() -> Unit)? = null,
+)
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun Table(
+    items: List<CellEntity<out Any>?>,
+) {
+    var isDropDownShow by remember { mutableStateOf<CellEntity<out Any>?>(null) }
+    val items = items.mapNotNull { it }
+    if (items.isEmpty()) {
+        return
+    }
+    Container(
+        shadowElevation = 0.5.dp,
+    ) {
+        Column {
+            for (i in items.indices) {
+                val item = items[i]
+                Box {
+                    Cell(
+                        label = if (item.label is Int) {
+                            stringResource(id = item.label)
+                        } else {
+                            item.label as String
+                        },
+                        icon = item.icon,
+                        data = item.data,
+                        dataColor = item.dataColor,
+                        support = item.support,
+                        action = item.action,
+                        longAction = if (item.dropDownActions == null) null else {{ isDropDownShow = item }},
+                        actionIcon = item.actionIcon,
+                        showActionChevron = item.showActionChevron,
+                        trailingIcon = item.trailingIcon,
+                        trailing = item.trailing,
+                    )
+                    DropdownMenu(
+                        modifier = Modifier.align(Alignment.BottomEnd),
+                        expanded = isDropDownShow == item && item.dropDownActions != null,
+                        offset = DpOffset(padding16, padding8),
+                        onDismissRequest = { isDropDownShow = null },
+                    ) {
+                        item.dropDownActions?.invoke {
+                            isDropDownShow = null
+                        }
+                    }
+                }
+                if (i < items.size - 1) {
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.4.dp)
+                }
+            }
+        }
+    }
+}
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun Cell(
+    label: @Composable () -> Unit,
+    data: @Composable () -> Unit,
+    support: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
+    trailingIcon: String? = null,
+    action: (() -> Unit)? = null,
+    showActionChevron: Boolean = true,
+    longAction: (() -> Unit)? = null,
+    actionIcon: Painter? = null,
+) {
+    Row(
+        modifier = Modifier
+            .combinedClickable(
+                enabled = action != null || longAction != null,
+                onClick = { action?.invoke() },
+                onLongClick = { longAction?.invoke() }
+            )
+            .fillMaxWidth()
+            .padding(padding16),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        label()
+        Spacer(modifier = Modifier.width(20.dp))
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.End,
+        ) {
+            data()
+            support?.invoke()
+        }
+        if (trailing != null) {
+            Spacer(modifier = Modifier.size(8.dp))
+            trailing()
+        }
+        if (!trailingIcon.isNullOrEmpty()) {
+            Spacer(modifier = Modifier.size(8.dp))
+            AsyncImage(modifier = Modifier.size(20.dp), model = trailingIcon, contentDescription = "")
+        }
+        if (action != null) {
+            Spacer(modifier = Modifier.size(8.dp))
+            if (showActionChevron) {
+                Icon(
+                    painter = actionIcon ?: rememberVectorPainter(image = Icons.Default.ChevronRight),
+                    contentDescription = "open_provider_select",
+                    tint = MaterialTheme.colorScheme.secondary,
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun Cell(
+    label: String,
+    data: String,
+    icon: String? = null,
+    dataColor: Color? = null,
+    support: String? = null,
+    actionIcon: Painter? = null,
+    showActionChevron: Boolean = true,
+    trailing: (@Composable () -> Unit)? = null,
+    trailingIcon: String? = null,
+    longAction: (() -> Unit)? = null,
+    action: (() -> Unit)? = null,
+) {
+    Cell(
+        label = {
+            if (!icon.isNullOrEmpty()) {
+                AsyncImage(
+                    modifier = Modifier.size(24.dp),
+                    model = icon,
+                    contentDescription = ""
+                )
+            }
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(
+                text = label,
+                maxLines = 1,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        },
+        data = {
+            MiddleEllipsisText(
+                modifier = Modifier,
+                text = data,
+                textAlign = TextAlign.End,
+                color = dataColor ?: MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        },
+        support = if (support != null) {
+            {
+                MiddleEllipsisText(
+                    text = support,
+                    textAlign = TextAlign.End,
+                    color = MaterialTheme.colorScheme.secondary,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
+            }
+        } else {
+            null
+        },
+        trailing = trailing,
+        trailingIcon = trailingIcon,
+        action = action,
+        showActionChevron = showActionChevron,
+        longAction = longAction,
+        actionIcon = actionIcon,
+    )
+}

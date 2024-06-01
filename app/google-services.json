@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "432718650124",
+    "project_id": "gem-wallet-android",
+    "storage_bucket": "gem-wallet-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:432718650124:android:eef95df06197fe57368729",
+        "android_client_info": {
+          "package_name": "com.gemwallet.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "432718650124-d6fqjvnef5mudrvg4spbn61iddjg8ha7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPHwKGxHtMJ-BCtnC8MqG7aA_TXDNsqkk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "432718650124-d6fqjvnef5mudrvg4spbn61iddjg8ha7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

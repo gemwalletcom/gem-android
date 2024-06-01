@@ -1,0 +1,189 @@
+package com.gemwallet.android.features.bridge.connections.views
+
+import android.Manifest
+import androidx.activity.compose.BackHandler
+import androidx.camera.core.ExperimentalGetImage
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentPaste
+import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.R
+import com.gemwallet.android.features.bridge.connections.viewmodels.ConnectionsViewModel
+import com.gemwallet.android.features.bridge.model.ConnectionUI
+import com.gemwallet.android.ui.components.ListItem
+import com.gemwallet.android.ui.components.ListItemTitle
+import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.components.qrcodescanner.QRScanner
+import com.gemwallet.android.ui.theme.padding16
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import kotlinx.coroutines.launch
+
+@androidx.annotation.OptIn(ExperimentalGetImage::class)
+@Composable
+fun ConnectionsScene(
+    onConnection: (String) -> Unit,
+    onCancel: () -> Unit,
+    viewModel: ConnectionsViewModel = hiltViewModel()
+) {
+    val clipboardManager = LocalClipboardManager.current
+    var scannerShowed by remember {
+        mutableStateOf(false)
+    }
+
+    val state by viewModel.sceneState.collectAsStateWithLifecycle()
+
+    val connectionToastText = stringResource(id = R.string.wallet_connect_connection_title)
+    val scope = rememberCoroutineScope()
+    val snackbar = remember {
+        SnackbarHostState()
+    }
+
+    Scene(
+        title = stringResource(id = R.string.wallet_connect_title),
+        backHandle = true,
+        snackbar = snackbar,
+        actions = {
+            IconButton(
+                onClick = {
+                    viewModel.addPairing(
+                        clipboardManager.getText()?.text ?: return@IconButton
+                    ) {
+                        scope.launch {
+                            snackbar.showSnackbar(
+                                message = connectionToastText
+                            )
+                        }
+                    }
+                }
+            ) {
+                Icon(imageVector = Icons.Default.ContentPaste, contentDescription = "paste_uri")
+            }
+            IconButton(onClick = { scannerShowed  = true }) {
+                Icon(imageVector = Icons.Default.QrCodeScanner, contentDescription = "scan_qr")
+            }
+        },
+        onClose = onCancel,
+    ) {
+        if (state.connections.isEmpty()) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                Text(modifier = Modifier.align(Alignment.Center), text = stringResource(id = R.string.wallet_connect_no_active_connections))
+            }
+        } else {
+            LazyColumn {
+                items(state.connections) { connection ->
+                    ConnectionItem(connection, onConnection)
+                }
+            }
+        }
+    }
+
+    if (scannerShowed) {
+        qrCodeRequest(onDiscard = { scannerShowed = false }) {
+            viewModel.addPairing(it, onSuccess = {})
+            scannerShowed = false
+        }
+    }
+
+    if (!state.pairError.isNullOrEmpty()) {
+        AlertDialog(
+            onDismissRequest = viewModel::resetErrors,
+            confirmButton = {
+                Button(onClick = viewModel::resetErrors) {
+                    Text(text = stringResource(id = R.string.common_done))
+                }
+            },
+            text = { Text(text = state.pairError!!) }
+        )
+    }
+}
+
+@Composable
+fun ConnectionItem(
+    connection: ConnectionUI,
+    onClick: ((String) -> Unit)? = null,
+) {
+    ListItem(
+        modifier = (if (onClick == null) Modifier else Modifier.clickable { onClick(connection.id) })
+            .heightIn(72.dp),
+        iconUrl = connection.icon,
+        placeholder = if (connection.name.isEmpty()) "WC" else connection.name[0].toString(),
+        dividerShowed = onClick != null
+    ) {
+        ListItemTitle(
+            title = connection.name,
+            subtitle = connection.uri,
+        )
+    }
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@ExperimentalGetImage
+@Composable
+fun qrCodeRequest(
+    onDiscard: () -> Unit,
+    onSuccess: (String) -> Unit,
+): Boolean {
+    val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
+    BackHandler(true) {
+        onDiscard()
+    }
+    return if (cameraPermissionState.status.isGranted) {
+        Scene(
+            title = stringResource(id = R.string.wallet_scan_qr_code),
+            padding = PaddingValues(padding16),
+            onClose = onDiscard,
+        ) {
+            QRScanner(
+                listener = {
+                    onSuccess(it)
+                }
+            )
+        }
+        true
+    } else {
+        AlertDialog(
+            onDismissRequest = onDiscard,
+            text = {
+                Text(text = stringResource(id = R.string.camera_permission_request_camera))
+            },
+            confirmButton = {
+                Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
+                    Text(text = stringResource(id = R.string.common_grant_permission))
+                }
+            },
+            dismissButton = {
+                Button(onClick = onDiscard) {
+                    Text(text = stringResource(id = R.string.common_cancel))
+                }
+            }
+        )
+        false
+    }
+}
