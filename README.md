@@ -4,6 +4,10 @@
 
 The app is developed using Kotlin/Compose. The codebase also includes a [Core](https://github.com/gemwalletcom/core) library implemented in Rust, providing efficient and secure cryptographic operations for enhanced data protection.
 
+🤖 [Android available on the Google Play Store](https://play.google.com/store/apps/details?id=com.gemwallet.android&utm_campaign=github&utm_source=referral&utm_medium=github)
+
+📲️ [iOS available on the App Store](https://apps.apple.com/app/apple-store/id6448712670?ct=github&mt=8)
+
 <div align="left">
     <a href="https://github.com/gemwalletcom/gem-android/blob/main/LICENSE">
         <img src="https://badgen.net/github/license/gemwalletcom/gem-android" alt="License">
