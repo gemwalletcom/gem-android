@@ -80,7 +80,7 @@ class TestChainAssets {
                 Chain.Manta -> assertEquals(chain.asset().symbol, "ETH")
                 Chain.Noble -> assertEquals(chain.asset().symbol, "USDC")
                 Chain.Blast -> assertEquals(chain.asset().symbol, "ETH")
-                Chain.ZkSync -> assertEquals(chain.asset().symbol, "zkSync")
+                Chain.ZkSync -> assertEquals(chain.asset().symbol, "ETH")
                 Chain.Linea -> assertEquals(chain.asset().symbol, "ETH")
                 Chain.Mantle -> assertEquals(chain.asset().symbol, "MNT")
                 Chain.Celo -> assertEquals(chain.asset().symbol, "CELO")

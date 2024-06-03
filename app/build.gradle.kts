@@ -21,8 +21,7 @@ cargo {
     libname = "gemstone"
     pythonCommand = "python3"
     // profile = "release"
-    targets = listOf("x86_64")
-    // targets = listOf("arm64", "arm")
+    targets = listOf("arm64", "arm", "x86_64")
     extraCargoBuildArguments = listOf("--lib")
     verbose = false
 }
@@ -44,9 +43,9 @@ android {
             useSupportLibrary = true
         }
         ndk {
+            abiFilters.add("armeabi-v7a")
+            abiFilters.add("arm64-v8a")
             abiFilters.add("x86_64")
-            // abiFilters.add("armeabi-v7a")
-            // abiFilters.add("arm64-v8a")
         }
     }
     signingConfigs {
@@ -61,7 +60,7 @@ android {
         abi {
             reset()
             isEnable = false
-            include("armeabi-v7a", "arm64-v8a", "x86_64")
+            include("arm64-v8a", "armeabi-v7a", "x86_64")
             isUniversalApk = false
         }
     }
