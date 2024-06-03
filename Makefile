@@ -23,6 +23,12 @@ bootstrap: install install-toolchains install-ndk generate
 install-ndk:
 	${SDK_MANAGER} "ndk;26.1.10909125"
 
+build-test:
+	./gradlew assembleAndroidTest
+
+test:
+	./gradlew connectedAndroidTest
+
 release:
 	./gradlew clean cargoBuild assembleRelease :app:bundleRelease
 
