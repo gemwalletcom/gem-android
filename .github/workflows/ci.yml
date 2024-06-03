@@ -34,10 +34,10 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Gradle cache
-        uses: gradle/actions/setup-gradle@v3
+      - name: Setup NDK
+        run: make install-ndk
 
-      - name: Cache Rust
+      - name: Rust cache
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: |
@@ -49,14 +49,15 @@ jobs:
       - name: Install dependencies
         run: |
           make install-typeshare && make install-toolchains
-          make install-ndk
+
+      - name: Gradle cache
+        uses: gradle/actions/setup-gradle@v3
 
       - name: Build Core
         run: make generate
 
-      - name: Build test
-        run: |
-          make build-test
+      - name: Build tests
+        run: make build-test
         env:
           GRP_USERNAME: ${{ github.actor }}
           GRP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -65,7 +66,7 @@ jobs:
         uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 31
-          arch: armeabi-v7a
+          arch: arm64-v8a
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: ./gradlew connectedAndroidTest
