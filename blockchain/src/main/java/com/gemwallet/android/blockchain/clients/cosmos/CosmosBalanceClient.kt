@@ -84,12 +84,12 @@ class CosmosBalanceClient(
 }
 
 fun CosmosDenom.Companion.from(chain: Chain): String = when (chain) {
-    Chain.Cosmos -> CosmosDenom.uatom.string
-    Chain.Osmosis -> CosmosDenom.uosmo.string
-    Chain.Thorchain -> CosmosDenom.rune.string
-    Chain.Celestia -> CosmosDenom.utia.string
-    Chain.Injective -> CosmosDenom.inj.string
-    Chain.Sei -> CosmosDenom.usei.string
-    Chain.Noble -> CosmosDenom.uusdc.string
+    Chain.Cosmos -> CosmosDenom.Uatom.string
+    Chain.Osmosis -> CosmosDenom.Uosmo.string
+    Chain.Thorchain -> CosmosDenom.Rune.string
+    Chain.Celestia -> CosmosDenom.Utia.string
+    Chain.Injective -> CosmosDenom.Inj.string
+    Chain.Sei -> CosmosDenom.Usei.string
+    Chain.Noble -> CosmosDenom.Uusdc.string
     else -> throw IllegalArgumentException("Coin is not supported")
 }

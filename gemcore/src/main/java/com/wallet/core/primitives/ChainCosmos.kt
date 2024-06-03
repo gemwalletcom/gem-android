@@ -30,18 +30,18 @@ enum class CosmosChain(val string: String) {
 @Serializable
 enum class CosmosDenom(val string: String) {
 	@SerialName("rune")
-	rune("rune"),
+	Rune("rune"),
 	@SerialName("uatom")
-	uatom("uatom"),
+	Uatom("uatom"),
 	@SerialName("uosmo")
-	uosmo("uosmo"),
+	Uosmo("uosmo"),
 	@SerialName("utia")
-	utia("utia"),
+	Utia("utia"),
 	@SerialName("inj")
-	inj("inj"),
+	Inj("inj"),
 	@SerialName("usei")
-	usei("usei"),
+	Usei("usei"),
 	@SerialName("uusdc")
-	uusdc("uusdc"),
+	Uusdc("uusdc"),
 }
 

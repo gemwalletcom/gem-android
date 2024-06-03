@@ -79,7 +79,9 @@ class WalletsViewModel @Inject constructor(
                 val wallets = walletsRepository.getAll().getOrNull() ?: emptyList()
                 if (wallets.isEmpty()) {
                     sessionRepository.reset()
-                    onBoard()
+                    withContext(Dispatchers.Main) {
+                        onBoard()
+                    }
                 } else {
                     sessionRepository.setWallet(wallets.first())
                 }
