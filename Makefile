@@ -41,6 +41,6 @@ generate: install-typeshare generate-stone
 
 generate-stone:
 	@echo "Generate Gemstone lib"
-	@cd core/gemstone && make bindgen-kotlin BUILD_MODE=release
+	@cd core/gemstone && make bindgen-kotlin
 	@cp -Rf core/gemstone/generated/kotlin/uniffi gemcore/src/main/java
 	./gradlew cargoBuild --info

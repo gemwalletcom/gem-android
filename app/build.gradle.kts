@@ -20,10 +20,14 @@ cargo {
     module = "$rootDir/core/gemstone" // Cargo.toml folder
     libname = "gemstone"
     pythonCommand = "python3"
-    profile = "release"
-    targets = listOf("arm64", "arm")
+    if (BuildConfig.DEBUG) {
+        targets = listOf("x86_64")
+    } else {
+        profile = "release"
+        targets = listOf("arm64", "arm")
+    }
     extraCargoBuildArguments = listOf("--lib")
-    verbose = true
+    verbose = false
 }
 
 android {
@@ -43,8 +47,12 @@ android {
             useSupportLibrary = true
         }
         ndk {
-            abiFilters.add("armeabi-v7a")
-            abiFilters.add("arm64-v8a")
+            if (BuildConfig.DEBUG) {
+                abiFilters.add("x86_64")
+            } else {
+                abiFilters.add("armeabi-v7a")
+                abiFilters.add("arm64-v8a")
+            }
         }
     }
     signingConfigs {
