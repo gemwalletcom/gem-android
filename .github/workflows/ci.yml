@@ -17,7 +17,7 @@ env:
 jobs:
   unit_test:
     name: Build and Test
-    runs-on: macos-latest
+    runs-on: macos-13
 
     steps:
       - name: Checkout
