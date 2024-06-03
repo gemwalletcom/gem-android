@@ -17,7 +17,7 @@ env:
 jobs:
   unit_test:
     name: Build and Test
-    runs-on: macos-13
+    runs-on: macos-13-xlarge
 
     steps:
       - name: Checkout
@@ -36,6 +36,13 @@ jobs:
 
       - name: Setup NDK
         run: make install-ndk
+
+      - name: Launch emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 31
+          arch: arm64-v8a
+          script: echo "noop"
 
       - name: Rust cache
         uses: Swatinem/rust-cache@v2
