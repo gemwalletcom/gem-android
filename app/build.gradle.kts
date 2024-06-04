@@ -31,12 +31,6 @@ android {
     compileSdk = 34
     ndkVersion = "26.1.10909125"
 
-    if (System.getenv("CI") == "true") {
-        testBuildType = "ci"
-    } else {
-        testBuildType = "debug"
-    }
-
     defaultConfig {
         applicationId = "com.gemwallet.android"
         minSdk = 28
@@ -75,21 +69,19 @@ android {
             isMinifyEnabled = false
             isShrinkResources = false
             isDebuggable = true
-        }
 
-        create("ci") {
-            initWith(getByName("debug"))
-            ndk {
-                abiFilters.add("x86_64")
-                abiFilters.remove("arm64-v8a")
-                abiFilters.remove("armeabi-v7a")
-            }
-            splits {
-                abi {
-                    reset()
-                    isEnable = false
-                    include("x86_64")
-                    isUniversalApk = false
+            if (System.getenv("CI") == "true") {
+                ndk {
+                    abiFilters.add("x86_64")
+                }
+
+                splits {
+                    abi {
+                        reset()
+                        isEnable = false
+                        include("arm64-v8a", "armeabi-v7a", "x86_64")
+                        isUniversalApk = false
+                    }
                 }
             }
         }
