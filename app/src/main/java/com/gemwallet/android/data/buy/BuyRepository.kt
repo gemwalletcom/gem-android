@@ -7,6 +7,9 @@ import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.FiatQuote
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,6 +17,7 @@ import javax.inject.Singleton
 class BuyRepository @Inject constructor(
     private val configRepository: ConfigRepository,
     private val remoteSource: GemApiClient,
+    private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
 
     fun getAvailable(): List<AssetId> {
@@ -27,12 +31,13 @@ class BuyRepository @Inject constructor(
         fiatAmount: Double,
         owner: String,
     ): Result<List<FiatQuote>> {
-        val result = remoteSource.getQuote(asset.id.toIdentifier(), fiatAmount, fiatCurrency, owner)
-        return result.mapCatching {
-            if (it.quotes.isEmpty()) {
-                throw Exception("Quotes not found")
+        return withContext(defaultDispatcher) {
+            remoteSource.getQuote(asset.id.toIdentifier(), fiatAmount, fiatCurrency, owner).mapCatching {
+                if (it.quotes.isEmpty()) {
+                    throw Exception("Quotes not found")
+                }
+                it.quotes
             }
-            it.quotes
         }
     }
 }

@@ -13,13 +13,9 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun Container(
     modifier: Modifier = Modifier,
-    shadowElevation: Dp = 1.dp,
-    color: Color = MaterialTheme.colorScheme.background,
     content: @Composable () -> Unit,
 ) {
-    Column(
-        modifier = modifier.fillMaxWidth(),
-    ) {
+    Column(modifier = modifier.fillMaxWidth()) {
         content()
         HorizontalDivider(thickness = 0.4.dp)
     }
