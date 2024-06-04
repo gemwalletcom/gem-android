@@ -40,7 +40,7 @@ generate: install-typeshare generate-stone
 	@cd core && cargo run --package generate --bin generate android ../gemcore/src/main/java/com/wallet/core
 
 generate-stone:
-	@echo "Generate Gemstone lib"
+	@echo "Generate Gemstone lib, default build mode is debug"
 	@cd core/gemstone && make bindgen-kotlin BUILD_MODE=$(BUILD_MODE)
 	@cp -Rf core/gemstone/generated/kotlin/uniffi gemcore/src/main/java
 	./gradlew cargoBuild --info

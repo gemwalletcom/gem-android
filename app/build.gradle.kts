@@ -20,7 +20,7 @@ cargo {
     module = "$rootDir/core/gemstone" // Cargo.toml folder
     libname = "gemstone"
     pythonCommand = "python3"
-    // profile = "release"
+    profile = System.getenv("PROFILE_MODE") ?: "debug" // default profile mode is debug
     targets = listOf("arm64", "arm", "x86_64")
     extraCargoBuildArguments = listOf("--lib")
     verbose = false
