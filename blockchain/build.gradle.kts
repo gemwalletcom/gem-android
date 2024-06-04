@@ -7,6 +7,12 @@ android {
     namespace = "com.gemwallet.android.blockchain"
     compileSdk = 34
 
+    if (System.getenv("CI") == "true") {
+        testBuildType = "ci"
+    } else {
+        testBuildType = "debug"
+    }
+
     defaultConfig {
         minSdk = 28
 
@@ -15,6 +21,9 @@ android {
     }
 
     buildTypes {
+        create("ci") {
+            initWith(getByName("debug"))
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
