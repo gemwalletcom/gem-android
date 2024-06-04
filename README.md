@@ -1,5 +1,7 @@
 # 💎 Gem Wallet - Android
 
+[![Android Tests](https://github.com/gemwalletcom/gem-android/actions/workflows/ci.yml/badge.svg)](https://github.com/gemwalletcom/gem-android/actions/workflows/ci.yml)
+
 <b>Gem Wallet</b> is a powerful and secure mobile application designed for Android and [Android](https://github.com/gemwalletcom/gem-ios). It provides users with a seamless and intuitive experience to manage their digital assets and cryptocurrencies.
 
 The app is developed using Kotlin/Compose. The codebase also includes a [Core](https://github.com/gemwalletcom/core) library implemented in Rust, providing efficient and secure cryptographic operations for enhanced data protection.
@@ -63,6 +65,7 @@ If you want to contribute, you can use our [developers telegram](https://t.me/ge
 ## 🚀 Getting Started
 
 ### Android Development
+
 1. Setup [Android Studio](https://developer.android.com/studio)
 2. Run `make boostrap` to install all nessesary tools (Rust / NDK).
 
@@ -72,7 +75,7 @@ We love contributors! Feel free to contribute to this project but please read th
 
 ## 🌍 Localization
 
-Join us in making our app accessible worldwide! Contribute to localization efforts by visiting our [Lokalise project](https://app.lokalise.com/public/94865410644ee707546334.60736699) 
+Join us in making our app accessible worldwide! Contribute to localization efforts by visiting our [Lokalise project](https://app.lokalise.com/public/94865410644ee707546334.60736699)
 
 ## ⚖️ License
 

@@ -27,7 +27,7 @@ build-test:
 	./gradlew assembleAndroidTest
 
 test:
-	./gradlew connectedDebugAndroidTest
+	./gradlew connectedAndroidTest
 
 release:
 	./gradlew clean cargoBuild assembleRelease :app:bundleRelease
@@ -41,6 +41,6 @@ generate: install-typeshare generate-stone
 
 generate-stone:
 	@echo "Generate Gemstone lib"
-	@cd core/gemstone && make bindgen-kotlin
+	@cd core/gemstone && make bindgen-kotlin BUILD_MODE=$(BUILD_MODE)
 	@cp -Rf core/gemstone/generated/kotlin/uniffi gemcore/src/main/java
 	./gradlew cargoBuild --info
