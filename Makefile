@@ -23,6 +23,12 @@ bootstrap: install install-toolchains install-ndk generate
 install-ndk:
 	${SDK_MANAGER} "ndk;26.1.10909125"
 
+build-test:
+	./gradlew assembleAndroidTest
+
+test:
+	./gradlew connectedAndroidTest
+
 release:
 	./gradlew clean cargoBuild assembleRelease :app:bundleRelease
 
@@ -34,7 +40,7 @@ generate: install-typeshare generate-stone
 	@cd core && cargo run --package generate --bin generate android ../gemcore/src/main/java/com/wallet/core
 
 generate-stone:
-	@echo "Generate Gemstone lib"
-	@cd core/gemstone && make bindgen-kotlin BUILD_MODE=release
+	@echo "Generate Gemstone lib, default build mode is debug"
+	@cd core/gemstone && make bindgen-kotlin BUILD_MODE=$(BUILD_MODE)
 	@cp -Rf core/gemstone/generated/kotlin/uniffi gemcore/src/main/java
 	./gradlew cargoBuild --info

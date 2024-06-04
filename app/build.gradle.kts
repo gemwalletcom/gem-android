@@ -20,10 +20,10 @@ cargo {
     module = "$rootDir/core/gemstone" // Cargo.toml folder
     libname = "gemstone"
     pythonCommand = "python3"
-    profile = "release"
-    targets = listOf("arm64", "arm")
+    profile = System.getenv("PROFILE_MODE") ?: "debug" // default profile mode is debug
+    targets = listOf("arm64", "arm", "x86_64")
     extraCargoBuildArguments = listOf("--lib")
-    verbose = true
+    verbose = false
 }
 
 android {
@@ -46,6 +46,14 @@ android {
             abiFilters.add("armeabi-v7a")
             abiFilters.add("arm64-v8a")
         }
+
+        splits {
+            abi {
+                isEnable = false
+                include("arm64-v8a", "armeabi-v7a")
+                isUniversalApk = false
+            }
+        }
     }
     signingConfigs {
         create("release") {
@@ -55,20 +63,27 @@ android {
             storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
         }
     }
-    splits {
-        abi {
-            reset()
-            isEnable = false
-            include("armeabi-v7a", "arm64-v8a")
-            isUniversalApk = false
-        }
-    }
-    buildTypes {
 
+    buildTypes {
         getByName("debug") {
             isMinifyEnabled = false
             isShrinkResources = false
             isDebuggable = true
+
+            if (System.getenv("CI") == "true") {
+                ndk {
+                    abiFilters.add("x86_64")
+                }
+
+                splits {
+                    abi {
+                        reset()
+                        isEnable = false
+                        include("arm64-v8a", "armeabi-v7a", "x86_64")
+                        isUniversalApk = false
+                    }
+                }
+            }
         }
 
         getByName("release") {

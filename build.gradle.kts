@@ -25,9 +25,12 @@ plugins {
 allprojects {
     repositories {
         val propFile = File(rootDir.absolutePath, "local.properties")
-        val properties = java.util.Properties().apply {
-            propFile.inputStream().use { fis ->
-                load(fis)
+        var properties = java.util.Properties()
+        if (propFile.exists()) {
+            properties = properties.apply {
+                propFile.inputStream().use { fis ->
+                    load(fis)
+                }
             }
         }
         google()
