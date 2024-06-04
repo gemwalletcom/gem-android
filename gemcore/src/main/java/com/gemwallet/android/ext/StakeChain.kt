@@ -6,7 +6,7 @@ import com.wallet.core.primitives.StakeChain
 fun StakeChain.Companion.isStaked(chain: Chain): Boolean = byChain(chain) != null
 
 fun StakeChain.Companion.byChain(chain: Chain): StakeChain?
-    = StakeChain.entries.filter { it != StakeChain.SmartChain }.firstOrNull { it.string == chain.string }
+    = StakeChain.entries.firstOrNull { it.string == chain.string }
 
 fun StakeChain.lockTime(): Long = when (this) {
     StakeChain.Cosmos,
