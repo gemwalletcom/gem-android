@@ -9,14 +9,15 @@ import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.buy.BuyRepository
 import com.gemwallet.android.data.session.SessionRepository
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.features.buy.models.BuyError
+import com.gemwallet.android.features.buy.models.BuyUIState
 import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.CountingUnit
-import com.gemwallet.android.model.Crypto
-import com.gemwallet.android.model.Fiat
+import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.AssetType
+import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.FiatProvider
 import com.wallet.core.primitives.FiatQuote
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +30,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,9 +38,9 @@ class BuyViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val buyRepository: BuyRepository,
 ) : ViewModel() {
-    val state = MutableStateFlow(BuyViewModelState())
+    private val state = MutableStateFlow(BuyViewModelState())
     val uiState: StateFlow<BuyUIState> = state.map { it.toUIState() }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, BuyUIState.Success())
+        .stateIn(viewModelScope, SharingStarted.Eagerly, BuyUIState.Idle())
 
     private var queryJob: Job? = null
     var amount by mutableStateOf("")
@@ -55,13 +55,9 @@ class BuyViewModel @Inject constructor(
         val assetInfo = assetsRepository.getById(session.wallet, assetId).getOrNull()?.firstOrNull()
         if (assetInfo == null) {
             state.update { it.copy(fatalError = "Asset not found") }
+            return
         }
-        state.update {
-            BuyViewModelState(
-                isLoading = false,
-                assetInfo = assetInfo
-            )
-        }
+        state.update { BuyViewModelState(assetInfo = assetInfo) }
         amount = state.value.fiatAmount.toInt().toString()
         fiatAmount(state.value.fiatAmount)
     }
@@ -76,7 +72,7 @@ class BuyViewModel @Inject constructor(
 
             buyRepository.getQuote(
                 asset = assetSummary.asset,
-                fiatCurrency = currency,
+                fiatCurrency = currency.string,
                 fiatAmount = fiatAmount,
                 owner = assetSummary.owner.address,
             ).onFailure {
@@ -104,148 +100,82 @@ class BuyViewModel @Inject constructor(
         if (queryJob?.isActive == true) {
             queryJob?.cancel()
         }
-        if (input.isEmpty()) {
-            state.update { it.copy(error = BuyError.MinimumAmount) }
-            return
-        }
+        state.update { it.copy(isQuoteLoading = false, error = null) }
         val newValue = try {
-            input.numberParse().toDouble()
+            input.ifEmpty { "0.0" }.numberParse().toDouble()
         } catch (err: Throwable) {
             state.update { it.copy(error = BuyError.ValueIncorrect) }
             return
         }
-        if (newValue < 20) {
+        if (newValue < MIN_FIAT_AMOUNT) {
             state.update { it.copy(error = BuyError.MinimumAmount) }
             return
         }
         if (state.value.fiatAmount == newValue) {
             return
         }
-        state.update { it.copy(isQuoteLoading = input.isNotEmpty()) }
-        if (queryJob?.isActive == true) {
-            queryJob?.cancel()
-        }
+        state.update { it.copy(isQuoteLoading = true) }
         queryJob = viewModelScope.launch {
             delay(500)
-            fiatAmount(newValue.toDouble())
+            fiatAmount(newValue)
         }
     }
-}
 
-data class BuyViewModelState(
-    val isLoading: Boolean = true,
-    val isQuoteLoading: Boolean = false,
-    val assetInfo: AssetInfo? = null,
-    val currency: String = "USD",
-    val fiatAmount: Double = 50.0,
-    val quotes: List<FiatQuote> = emptyList(),
-    val selectProvider: FiatProvider? = null,
-    val redirectUrl: String? = null,
-    val error: BuyError? = null,
-    val fatalError: String? = null,
-) {
-    fun toUIState(): BuyUIState = if (fatalError == null) {
-        val symbol = assetInfo?.asset?.symbol ?: ""
-        val decimals = assetInfo?.asset?.decimals ?: 0
-        val chain = assetInfo?.asset?.id?.chain
-        val quote = getQuote(selectProvider)
-        BuyUIState.Success(
-            isLoading = isLoading,
-            isQuoteLoading = isQuoteLoading,
-            asset = assetInfo?.asset,
-            title = assetInfo?.asset?.name ?: "",
-            assetType = chain?.asset()?.type ?: AssetType.NATIVE,
-            cryptoAmount = if (quote == null) {
-                " "
-            } else {
-                "~${
-                    Crypto(quote.cryptoAmount.toBigDecimal(), decimals).format(
-                        decimals,
-                        symbol,
-                        6,
-                        CountingUnit.SignMode.NoSign,
-                        true
-                    )
-                }"
-            },
-            fiatAmount = "${fiatAmount.toInt()}",
-            selectProvider = if (quote != null) mapToProvider(quote, symbol, decimals) else null,
-            providers = quotes.map {
-                mapToProvider(it, symbol, decimals)
-            },
-            redirectUrl = quote?.redirectUrl,
-            error = error,
-        )
-    } else {
-        BuyUIState.Fatal(message = fatalError)
-    }
-
-    private fun mapToProvider(quote: FiatQuote, symbol: String, decimals: Int): BuyUIState.Provider {
-        return BuyUIState.Provider(
-            provider = quote.provider,
-            cryptoAmount = Crypto(quote.cryptoAmount.toBigDecimal(), decimals).format(
-                decimals,
-                symbol,
-                6,
-                CountingUnit.SignMode.NoSign,
-                true
-            ),
-            rate = "1 $symbol ~ ${
-                Fiat(BigDecimal(quote.fiatAmount / quote.cryptoAmount)).format(
-                    0,
-                    "USD",
-                    2
-                )
-            }"
-        )
-    }
-
-    private fun getQuote(provider: FiatProvider?): FiatQuote? {
-        if (quotes.isEmpty()) {
-            return null
-        }
-        if (provider == null) {
-            return quotes.firstOrNull()
-        }
-        return quotes.firstOrNull{ it.provider == provider } ?: quotes.firstOrNull()
-    }
-}
-
-sealed interface BuyUIState {
-    data class Success(
-        val isLoading: Boolean = false,
+    private data class BuyViewModelState(
         val isQuoteLoading: Boolean = false,
-        val asset: Asset? = null,
-        val title: String = "",
-        val assetType: AssetType = AssetType.NATIVE,
-        val cryptoAmount: String = "",
-        val fiatAmount: String = "",
-        val selectProvider: Provider? = null,
-        val redirectUrl: String? = null,
-        val providers: List<Provider> = emptyList(),
+        val assetInfo: AssetInfo? = null,
+        val currency: Currency = Currency.USD,
+        val fiatAmount: Double = 50.0,
+        val quotes: List<FiatQuote> = emptyList(),
+        val selectProvider: FiatProvider? = null,
         val error: BuyError? = null,
-    ) : BuyUIState
+        val fatalError: String? = null,
+    ) {
+        fun toUIState(): BuyUIState = if (fatalError == null && assetInfo != null) {
+            val chain = assetInfo.asset.id.chain
+            val quote = getQuote(selectProvider)
+            BuyUIState.Idle(
+                isQuoteLoading = isQuoteLoading,
+                asset = assetInfo.asset,
+                title = assetInfo.asset.name,
+                assetType = chain.asset().type,
+                cryptoAmount = if (quote == null) {
+                    " "
+                } else {
+                    "~${assetInfo.asset.format(quote.cryptoAmount, showSign = CountingUnit.SignMode.NoSign, dynamicPlace = true)}"
+                },
+                fiatAmount = "${fiatAmount.toInt()}",
+                currentProvider = if (quote != null) mapToProvider(quote, assetInfo.asset) else null,
+                providers = quotes.map {
+                    mapToProvider(it, assetInfo.asset)
+                },
+                redirectUrl = quote?.redirectUrl,
+                error = error,
+            )
+        } else {
+            BuyUIState.Fatal(message = fatalError ?: "")
+        }
 
-    data class Fatal(
-        val message: String = "",
-    ) : BuyUIState
+        private fun mapToProvider(quote: FiatQuote, asset: Asset): BuyUIState.Provider {
+            return BuyUIState.Provider(
+                provider = quote.provider,
+                cryptoAmount = asset.format(quote.cryptoAmount, 6, CountingUnit.SignMode.NoSign, true),
+                rate = "1 ${asset.symbol} ~ ${currency.format(quote.fiatAmount / quote.cryptoAmount).format("USD", 2)}"
+            )
+        }
 
-    data class BuyLot(
-        val title: String,
-        val value: Double,
-    )
+        private fun getQuote(provider: FiatProvider?): FiatQuote? {
+            if (quotes.isEmpty()) {
+                return null
+            }
+            if (provider == null) {
+                return quotes.firstOrNull()
+            }
+            return quotes.firstOrNull{ it.provider == provider } ?: quotes.firstOrNull()
+        }
+    }
 
-    data class Provider(
-        val provider: FiatProvider,
-        val cryptoAmount: String,
-        val rate: String,
-    )
-}
-
-sealed interface BuyError {
-    data object MinimumAmount : BuyError
-
-    data object QuoteNotAvailable : BuyError
-
-    data object ValueIncorrect : BuyError
+    companion object {
+        const val MIN_FIAT_AMOUNT = 20.0
+    }
 }

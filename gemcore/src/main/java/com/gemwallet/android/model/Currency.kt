@@ -1,5 +1,6 @@
 package com.gemwallet.android.model
 
+import com.wallet.core.primitives.Asset
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
@@ -144,4 +145,80 @@ class Fiat(value: BigDecimal) : CountingUnit<BigDecimal, Crypto>(
         format.currency = Currency.getInstance(symbol)
         return format.format(value)
     }
+}
+
+fun Asset.format(
+    humanAmount: String,
+    decimalPlace: Int = 6,
+    showSign: CountingUnit.SignMode = CountingUnit.SignMode.NoPLus,
+    dynamicPlace: Boolean = false,
+    zeroFraction: Int = 0,
+): String {
+    return format(
+        Crypto(humanAmount.toBigDecimal(), decimals),
+        decimalPlace,
+        showSign,
+        dynamicPlace,
+        zeroFraction,
+    )
+}
+
+fun Asset.format(
+    humanAmount: Double,
+    decimalPlace: Int = 6,
+    showSign: CountingUnit.SignMode = CountingUnit.SignMode.NoPLus,
+    dynamicPlace: Boolean = false,
+    zeroFraction: Int = 0,
+): String {
+    return format(
+        Crypto(humanAmount.toBigDecimal(), decimals),
+        decimalPlace,
+        showSign,
+        dynamicPlace,
+        zeroFraction,
+    )
+}
+
+fun Asset.format(
+    crypto: Crypto,
+    decimalPlace: Int = 6,
+    showSign: CountingUnit.SignMode = CountingUnit.SignMode.NoPLus,
+    dynamicPlace: Boolean = false,
+    zeroFraction: Int = 0,
+): String {
+    return crypto.format(
+        decimals,
+        symbol,
+        decimalPlace,
+        showSign,
+        dynamicPlace,
+        zeroFraction,
+    )
+}
+
+fun com.wallet.core.primitives.Currency.format(
+    value: Double,
+    decimalPlace: Int = 2,
+    showSign: CountingUnit.SignMode = CountingUnit.SignMode.NoPLus,
+    dynamicPlace: Boolean = false,
+    zeroFraction: Int = 0,
+): String {
+    return format(Fiat(value), decimalPlace, showSign, dynamicPlace, zeroFraction)
+}
+
+fun com.wallet.core.primitives.Currency.format(
+    value: Fiat,
+    decimalPlace: Int = 2,
+    showSign: CountingUnit.SignMode = CountingUnit.SignMode.NoPLus,
+    dynamicPlace: Boolean = false,
+    zeroFraction: Int = 0,
+): String {
+    return value.format(
+        decimals = 0,
+        symbol = this.string,
+        decimalPlace = decimalPlace,
+        showSign = showSign,
+        dynamicPlace = dynamicPlace,
+        zeroFraction = zeroFraction,
+    )
 }

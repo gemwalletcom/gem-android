@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -50,7 +49,6 @@ data class CellEntity<T>(
     val action: (() -> Unit)? = null,
 )
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Table(
     items: List<CellEntity<out Any>?>,
@@ -60,9 +58,7 @@ fun Table(
     if (items.isEmpty()) {
         return
     }
-    Container(
-        shadowElevation = 0.5.dp,
-    ) {
+    Container {
         Column {
             for (i in items.indices) {
                 val item = items[i]
