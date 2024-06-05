@@ -1,14 +1,12 @@
 package com.gemwallet.android.features.settings.networks.views
 
 import android.net.Uri
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Icon
@@ -38,7 +36,6 @@ import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.TransferTextFieldActions
 import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.padding16
 import com.wallet.core.primitives.Node
 
 @Composable

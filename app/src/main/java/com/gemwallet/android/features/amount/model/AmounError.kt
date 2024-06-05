@@ -1,7 +1,5 @@
 package com.gemwallet.android.features.amount.model
 
-import java.math.BigInteger
-
 sealed interface AmountError {
     data object None : AmountError
 

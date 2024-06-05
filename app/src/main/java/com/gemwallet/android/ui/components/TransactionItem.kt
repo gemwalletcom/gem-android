@@ -23,9 +23,7 @@ import com.gemwallet.android.ui.components.titles.getValue
 import com.gemwallet.android.ui.components.titles.getValueColor
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
-import com.gemwallet.android.ui.theme.padding16
 import com.gemwallet.android.ui.theme.padding4
-import com.gemwallet.android.ui.theme.padding8
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.TransactionDirection

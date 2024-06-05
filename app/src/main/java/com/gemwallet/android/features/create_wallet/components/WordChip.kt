@@ -1,7 +1,6 @@
 package com.gemwallet.android.features.create_wallet.components
 
 import android.content.Context
-import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import androidx.compose.animation.animateColorAsState
@@ -18,7 +17,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.core.content.ContextCompat.getSystemService
 import com.gemwallet.android.ui.theme.padding8
 
 private enum class WordState {

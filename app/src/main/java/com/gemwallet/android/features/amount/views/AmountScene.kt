@@ -17,7 +17,6 @@ import com.gemwallet.android.R
 import com.gemwallet.android.features.amount.model.AmountError
 import com.gemwallet.android.features.amount.model.AmountScreenState
 import com.gemwallet.android.features.stake.components.ValidatorItem
-import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.MainActionButton

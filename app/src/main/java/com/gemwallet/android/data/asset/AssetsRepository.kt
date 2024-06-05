@@ -2,7 +2,6 @@ package com.gemwallet.android.data.asset
 
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.data.chains.ChainInfoLocalSource
-import com.gemwallet.android.data.chains.ChainInfoRepository
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.tokens.TokensRepository
 import com.gemwallet.android.data.transaction.TransactionsRepository

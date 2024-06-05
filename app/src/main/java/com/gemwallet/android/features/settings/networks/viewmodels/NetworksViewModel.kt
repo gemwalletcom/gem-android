@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.chains.ChainInfoRepository
 import com.gemwallet.android.data.config.ConfigRepository
-import com.gemwallet.android.data.config.OfflineFirstConfigRepository
 import com.gemwallet.android.features.settings.networks.models.AddSourceType
 import com.gemwallet.android.features.settings.networks.models.NetworksUIState
 import com.wallet.core.primitives.Chain

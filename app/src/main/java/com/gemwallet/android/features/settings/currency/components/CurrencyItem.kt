@@ -6,12 +6,9 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.intl.Locale
-import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.ListItemTitle
 import com.wallet.core.primitives.Currency
-import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
 @Composable
 fun CurrencyItem(
