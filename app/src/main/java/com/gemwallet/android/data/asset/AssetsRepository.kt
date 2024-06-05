@@ -2,6 +2,7 @@ package com.gemwallet.android.data.asset
 
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.data.chains.ChainInfoLocalSource
+import com.gemwallet.android.data.chains.ChainInfoRepository
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.tokens.TokensRepository
 import com.gemwallet.android.data.transaction.TransactionsRepository
@@ -110,7 +111,7 @@ class AssetsRepository @Inject constructor(
                     asset = asset,
                     owner = wallet.getAccount(asset.id.chain) ?: return@mapNotNull null,
                 )
-            }
+            }.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
             result.distinctBy {
                 it.asset.id.toIdentifier()
             }
