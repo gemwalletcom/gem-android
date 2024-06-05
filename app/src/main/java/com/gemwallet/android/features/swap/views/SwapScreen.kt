@@ -66,6 +66,7 @@ import com.gemwallet.android.ui.components.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.mainActionHeight
 import com.gemwallet.android.ui.theme.padding16
@@ -158,9 +159,12 @@ fun Form(
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodySmall,
                     )
+                    Spacer16()
                 }
                 Button(
-                    modifier = Modifier.fillMaxWidth().heightIn(mainActionHeight),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(mainActionHeight),
                     onClick = onSwap,
                     enabled = details.error == SwapError.None && !details.swaping
                 ) {

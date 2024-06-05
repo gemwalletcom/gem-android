@@ -214,14 +214,17 @@ class SwapViewModel @Inject constructor(
         val receiveAsset = state.value.receiveAsset ?: return@launch
         val allowance = state.value.allowance
         val quote = getQuote(allowance)
-        if (quote == null) {
+        if (quote == null && allowance) {
             state.update {
                 it.copy(loading = false, swapping = false, error = SwapError.NoQuote)
             }
             return@launch
         }
         state.update { it.copy(swapping = false) }
-        if (state.value.allowance) {
+        if (allowance) {
+            if (quote == null) {
+                return@launch
+            }
             onConfirm(
                 ConfirmParams.SwapParams(
                     fromAssetId = payAsset.asset.id,
@@ -240,7 +243,7 @@ class SwapViewModel @Inject constructor(
                 ConfirmParams.TokenApprovalParams(
                     assetId = payAsset.asset.id,
                     approvalData = meta.toHexString(),
-                    provider = quote.provider.name,
+                    provider = quote?.provider?.name ?: "",
                 )
             )
         }
