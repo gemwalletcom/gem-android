@@ -74,9 +74,7 @@ fun Scene(
         onClose?.invoke()
     }
     Scaffold(
-        modifier = Modifier
-            .imePadding()
-            .navigationBarsPadding(),
+        modifier = Modifier.imePadding(),
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
