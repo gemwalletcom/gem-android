@@ -117,6 +117,7 @@ private fun Idle(
             equivalent = if (state.isAvailable()) state.cryptoAmount else " ",
             error = "",
             onValueChange = onAmount,
+            textStyle = MaterialTheme.typography.displayMedium,
             onNext = { }
         )
         if (state.asset != null) {

@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
@@ -35,6 +36,7 @@ fun ColumnScope.AmountField(
     onValueChange: (String) -> Unit,
     onNext: () -> Unit,
     modifier: Modifier = Modifier,
+    textStyle: TextStyle = MaterialTheme.typography.displaySmall,
     transformation: AmountTransformation = CryptoAmountTransformation(assetSymbol, MaterialTheme.colorScheme.secondary),
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -48,7 +50,7 @@ fun ColumnScope.AmountField(
         onValueChange = { onValueChange(it.text) },
         visualTransformation = transformation,
         maxLines = 1,
-        textStyle = MaterialTheme.typography.displaySmall.copy(
+        textStyle = textStyle.copy(
             textAlign = TextAlign.Center,
             color = MaterialTheme.colorScheme.onSurface
         ),
