@@ -110,6 +110,7 @@ private fun Idle(
             )
         }
     ) {
+        Spacer16()
         AmountField(
             amount = fiatAmount,
             assetSymbol = "$",
@@ -118,7 +119,6 @@ private fun Idle(
             onValueChange = onAmount,
             onNext = { }
         )
-        Spacer16()
         if (state.asset != null) {
             Container {
                 AssetListItem(

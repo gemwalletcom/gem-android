@@ -1,6 +1,7 @@
 package com.gemwallet.android.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -119,7 +120,8 @@ private fun Cell(
                 onLongClick = { longAction?.invoke() }
             )
             .fillMaxWidth()
-            .padding(padding16),
+            .padding(start = padding16, top = padding16, bottom = padding16, end = if (action == null) padding16 else padding8)
+            ,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         label()
@@ -141,7 +143,6 @@ private fun Cell(
             AsyncImage(modifier = Modifier.size(20.dp), model = trailingIcon, contentDescription = "")
         }
         if (action != null) {
-            Spacer(modifier = Modifier.size(8.dp))
             if (showActionChevron) {
                 Icon(
                     painter = actionIcon ?: rememberVectorPainter(image = Icons.Default.ChevronRight),
@@ -175,8 +176,8 @@ private fun Cell(
                     model = icon,
                     contentDescription = ""
                 )
+                Spacer(modifier = Modifier.size(8.dp))
             }
-            Spacer(modifier = Modifier.size(8.dp))
             Text(
                 text = label,
                 maxLines = 1,
