@@ -6,7 +6,7 @@ plugins {
     id("kotlinx-serialization")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
-    id("org.mozilla.rust-android-gradle.rust-android") version "0.9.3"
+    id("com.github.willir.rust.cargo-ndk-android")
 }
 
 repositories {
@@ -14,16 +14,16 @@ repositories {
     mavenCentral()
 }
 
-cargo {
-    prebuiltToolchains = true
-    targetDirectory = "$rootDir/core/target" // workspace target folder
-    module = "$rootDir/core/gemstone" // Cargo.toml folder
-    libname = "gemstone"
-    pythonCommand = "python3"
-    profile = System.getenv("PROFILE_MODE") ?: "debug" // default profile mode is debug
-    targets = listOf("arm64", "arm", "x86_64")
-    extraCargoBuildArguments = listOf("--lib")
-    verbose = false
+cargoNdk {
+    if (System.getenv("CI") == "true") {
+        targets = arrayListOf("arm64", "arm", "x86_64")
+    } else {
+        targets = arrayListOf("arm64", "arm")
+    }
+    module = "core/gemstone"
+    targetDirectory = "/../target"
+    librariesNames = arrayListOf("libgemstone.so")
+    extraCargoBuildArguments = arrayListOf("--lib")
 }
 
 android {
@@ -184,22 +184,4 @@ dependencies {
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.7")
-}
-
-afterEvaluate {
-    android.applicationVariants.all { variant ->
-        var productFlavor = ""
-        variant.productFlavors.forEach {
-            productFlavor += it.name.replaceFirstChar(Char::titlecase)
-        }
-        val buildType = variant.buildType.name.replaceFirstChar(Char::titlecase)
-        val taskName = "generate" + productFlavor + buildType + "Assets"
-        logger.warn("make $taskName depend on cargoBuild")
-        val generateTasks = getTasksByName(taskName, false)
-        val cargoTasks = getTasksByName("cargoBuild", false)
-        generateTasks.forEach {
-            it.dependsOn(cargoTasks)
-        }
-        return@afterEvaluate
-    }
 }
