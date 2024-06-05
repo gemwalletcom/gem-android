@@ -1,5 +1,9 @@
 package com.gemwallet.android.features.create_wallet.components
 
+import android.content.Context
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -13,6 +17,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat.getSystemService
 import com.gemwallet.android.ui.theme.padding8
 
 private enum class WordState {
@@ -27,6 +33,7 @@ internal fun WordChip(
     isEnable: Boolean,
     onClick: (String) -> Boolean,
 ) {
+    val context = LocalContext.current
     val shakeController = rememberShakeController()
     var wordState by remember { mutableStateOf(WordState.Idle) }
     val color: Color by animateColorAsState(
@@ -44,12 +51,13 @@ internal fun WordChip(
                 return@SuggestionChip
             }
             if (!onClick(word)) {
+                vibrateDevice(context)
                 shakeController.shake(
                     ShakeConfig(
-                        iterations = 4,
-                        intensity = 2_000f,
-                        rotateY = 15f,
-                        translateX = 20f,
+                        iterations = 2,
+                        intensity = 1_000f,
+                        rotateY = 10f,
+                        translateX = 10f,
                     )
                 )
                 wordState = WordState.Error
@@ -67,4 +75,9 @@ internal fun WordChip(
         },
         border = null,
     )
+}
+
+fun vibrateDevice(context: Context) {
+    val vibrator = context.getSystemService(Vibrator::class.java)
+    vibrator?.vibrate(VibrationEffect.createOneShot(100, VibrationEffect.DEFAULT_AMPLITUDE))
 }

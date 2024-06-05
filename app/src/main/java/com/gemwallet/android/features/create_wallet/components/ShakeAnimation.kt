@@ -45,8 +45,7 @@ fun Modifier.shake(shakeController: ShakeController, onComplete: () -> Unit) = c
             onComplete()
         }
 
-        this
-            .rotate(shake.value * shakeConfig.rotate)
+        this.rotate(shake.value * shakeConfig.rotate)
             .graphicsLayer {
                 rotationX = shake.value * shakeConfig.rotateX
                 rotationY = shake.value * shakeConfig.rotateY
