@@ -91,8 +91,7 @@ private fun LazyListScope.assets(
     items(items.size, key = { items[it].id.toIdentifier() }) { index ->
         val asset = items[index]
         AssetListItem(
-            modifier = Modifier
-                .animateItemPlacement(
+            modifier = Modifier.animateItemPlacement(
                     animationSpec = tween(
                         durationMillis = 150,
                         easing = LinearOutSlowInEasing,

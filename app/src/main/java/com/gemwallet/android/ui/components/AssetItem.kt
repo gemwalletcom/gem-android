@@ -84,26 +84,11 @@ fun AssetListItem(
         }
         ListItemTitle(
             modifier = Modifier.fillMaxHeight(),
-            title = title.getAddressEllipsisText(4),
+            title = title.getAddressEllipsisText(18),
             titleBadge = { Badge(text = badge) },
             subtitle = priceInfo,
         )
     }
-}
-
-@Composable
-fun Badge(text: String?) {
-    if (text.isNullOrEmpty()) {
-        return
-    }
-    Spacer(modifier = Modifier.size(4.dp))
-    Text(
-        modifier = Modifier,
-        text = text,
-        color = MaterialTheme.colorScheme.secondary,
-        style = MaterialTheme.typography.titleMedium,
-        fontWeight = FontWeight.W400,
-    )
 }
 
 @Composable
@@ -128,11 +113,26 @@ fun AssetListItem(
     ) {
         ListItemTitle(
             modifier = Modifier.fillMaxHeight(),
-            title = title,
+            title = title.getAddressEllipsisText(18),
             titleBudge = { Badge(text = badge) },
             subtitle = support,
         )
     }
+}
+
+@Composable
+fun Badge(text: String?) {
+    if (text.isNullOrEmpty()) {
+        return
+    }
+    Spacer(modifier = Modifier.size(4.dp))
+    Text(
+        modifier = Modifier,
+        text = text,
+        color = MaterialTheme.colorScheme.secondary,
+        style = MaterialTheme.typography.titleMedium,
+        fontWeight = FontWeight.W400,
+    )
 }
 
 @Composable
