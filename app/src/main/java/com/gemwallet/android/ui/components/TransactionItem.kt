@@ -23,7 +23,9 @@ import com.gemwallet.android.ui.components.titles.getValue
 import com.gemwallet.android.ui.components.titles.getValueColor
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
+import com.gemwallet.android.ui.theme.padding16
 import com.gemwallet.android.ui.theme.padding4
+import com.gemwallet.android.ui.theme.padding8
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.TransactionDirection
@@ -117,7 +119,7 @@ fun TransactionItem(
                     ) {
                         if (badge.isNotEmpty()) {
                             Text(
-                                modifier = Modifier.padding(horizontal = padding4, vertical = 2.dp),
+                                modifier = Modifier.padding(start = 5.dp, top = 2.dp, end = padding4, bottom = 2.dp),
                                 text = badge,
                                 color = color,
                                 style = MaterialTheme.typography.labelMedium
