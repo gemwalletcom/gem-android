@@ -38,15 +38,14 @@ class WalletsViewModel @Inject constructor(
         viewModelScope.launch {
             walletsRepository.getAll().onSuccess { wallets ->
                 val currentWallet = sessionRepository.session?.wallet ?: return@launch
-                val other = wallets.filter { it.id != currentWallet.id }
-                val watch = other.filter { it.type == WalletType.view }
-                val single = other.filter { it.type == WalletType.single }
-                val multi = other.filter { it.type == WalletType.multicoin }
+                val watch = wallets.filter { it.type == WalletType.view }
+                val single = wallets.filter { it.type == WalletType.single }
+                val multi = wallets.filter { it.type == WalletType.multicoin }
 
                 state.update {
                     it.copy(
                         currentWallet = currentWallet,
-                        wallets = listOf(currentWallet) + multi + single + watch,
+                        wallets = multi + single + watch,
                     )
                 }
             }
