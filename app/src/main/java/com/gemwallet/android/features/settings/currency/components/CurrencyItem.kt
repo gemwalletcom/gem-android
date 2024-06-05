@@ -6,9 +6,12 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.intl.Locale
+import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.ListItemTitle
 import com.wallet.core.primitives.Currency
+import kotlin.reflect.jvm.internal.impl.descriptors.Visibilities.Local
 
 @Composable
 fun CurrencyItem(
@@ -31,6 +34,56 @@ fun CurrencyItem(
             null
         },
     ) {
-        ListItemTitle(title = "${currency.string} - $title", subtitle = "")
+        ListItemTitle(title = "${emojiFlags[currency.string] ?: ""} ${currency.string} - $title", subtitle = "")
     }
 }
+
+private val emojiFlags = mapOf(
+    "MXN" to "🇲🇽",
+    "CHF" to "🇨🇭",
+    "CNY" to "🇨🇳",
+    "THB" to "🇹🇭",
+    "HUF" to "🇭🇺",
+    "AUD" to "🇦🇺",
+    "IDR" to "🇮🇩",
+    "RUB" to "🇷🇺",
+    "ZAR" to "🇿🇦",
+    "EUR" to "🇪🇺",
+    "NZD" to "🇳🇿",
+    "SAR" to "🇸🇦",
+    "SGD" to "🇸🇬",
+    "BMD" to "🇧🇲",
+    "KWD" to "🇰🇼",
+    "HKD" to "🇭🇰",
+    "JPY" to "🇯🇵",
+    "GBP" to "🇬🇧",
+    "DKK" to "🇩🇰",
+    "KRW" to "🇰🇷",
+    "PHP" to "🇵🇭",
+    "CLP" to "🇨🇱",
+    "TWD" to "🇹🇼",
+    "PKR" to "🇵🇰",
+    "BRL" to "🇧🇷",
+    "CAD" to "🇨🇦",
+    "BHD" to "🇧🇭",
+    "MMK" to "🇲🇲",
+    "VEF" to "🇻🇪",
+    "VND" to "🇻🇳",
+    "CZK" to "🇨🇿",
+    "TRY" to "🇹🇷",
+    "INR" to "🇮🇳",
+    "ARS" to "🇦🇷",
+    "BDT" to "🇧🇩",
+    "NOK" to "🇳🇴",
+    "USD" to "🇺🇸",
+    "LKR" to "🇱🇰",
+    "ILS" to "🇮🇱",
+    "PLN" to "🇵🇱",
+    "NGN" to "🇳🇬",
+    "UAH" to "🇺🇦",
+    "XDR" to "🏳️",
+    "MYR" to "🇲🇾",
+    "AED" to "🇦🇪",
+    "SEK" to "🇸🇪",
+    "BTC" to "₿"
+)
