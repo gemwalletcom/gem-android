@@ -136,9 +136,9 @@ private fun Idle(
                     dividerShowed = false,
                     trailing = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            LotButton("$250", 250.0, onLotSelect)
+                            LotButton("$100", 100.0, onLotSelect)
                             Spacer16()
-                            LotButton("$500", 500.0, onLotSelect)
+                            LotButton("$150", 150.0, onLotSelect)
                         }
                     },
                 )
