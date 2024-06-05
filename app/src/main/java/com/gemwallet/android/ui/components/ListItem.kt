@@ -177,7 +177,7 @@ fun AssetIcon(
         if (!supportIcon.isNullOrEmpty()) {
             AsyncImage(
                 modifier = Modifier
-                    .size(15.dp)
+                    .size(18.dp)
                     .align(Alignment.BottomEnd)
                     .border(0.5.dp, MaterialTheme.colorScheme.surface, CircleShape),
                 model = supportIcon,
