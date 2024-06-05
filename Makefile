@@ -43,4 +43,4 @@ generate-stone:
 	@echo "Generate Gemstone lib, default build mode is debug"
 	@cd core/gemstone && make bindgen-kotlin BUILD_MODE=$(BUILD_MODE)
 	@cp -Rf core/gemstone/generated/kotlin/uniffi gemcore/src/main/java
-	./gradlew buildCargoNdkDebug --info
+	@touch local.properties && ./gradlew buildCargoNdkDebug --info

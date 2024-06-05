@@ -16,7 +16,7 @@ repositories {
 
 cargoNdk {
     if (System.getenv("CI") == "true") {
-        targets = arrayListOf("arm64", "arm", "x86_64")
+        targets = arrayListOf("x86_64")
     } else {
         targets = arrayListOf("arm64", "arm")
     }
@@ -73,13 +73,15 @@ android {
             if (System.getenv("CI") == "true") {
                 ndk {
                     abiFilters.add("x86_64")
+                    abiFilters.remove("arm64-v8a")
+                    abiFilters.remove("armeabi-v7a")
                 }
 
                 splits {
                     abi {
                         reset()
                         isEnable = false
-                        include("arm64-v8a", "armeabi-v7a", "x86_64")
+                        include("x86_64")
                         isUniversalApk = false
                     }
                 }
