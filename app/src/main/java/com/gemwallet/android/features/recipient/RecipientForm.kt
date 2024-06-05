@@ -14,6 +14,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
+import com.gemwallet.android.blockchain.clients.ethereum.StakeHub.Companion.address
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.ui.components.AddressChainField
@@ -55,8 +57,8 @@ fun RecipientForm(
     memo: String,
     onCancel: () -> Unit,
     onNext: OnAmount,
+    viewModel: RecipientFormViewModel = hiltViewModel(),
 ) {
-    val viewModel: RecipientFormViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     DisposableEffect(key1 = assetId.toIdentifier()) {
@@ -74,7 +76,10 @@ fun RecipientForm(
             message = (uiState as RecipientFormUIState.Fatal).error,
             onCancel = onCancel,
         )
-        is RecipientFormUIState.Form -> (uiState as RecipientFormUIState.Form).Scene(
+        is RecipientFormUIState.Idle -> Idle(
+            state = (uiState as RecipientFormUIState.Idle),
+            addressState = viewModel.addressState,
+            memoState = viewModel.memoState,
             onScanAddress = viewModel::scanAddress,
             onScanMemo = viewModel::scanMemo,
             onNext = { input, nameRecord, memoInput -> viewModel.onNext(input, nameRecord, memoInput, onNext)  },
@@ -84,29 +89,28 @@ fun RecipientForm(
             title = stringResource(R.string.transaction_recipient),
             onCancel = onCancel
         )
-        RecipientFormUIState.ScanQr -> qrCodeRequest(onResult = viewModel::setQrData, onCancel = viewModel::scanCancel)
+        RecipientFormUIState.ScanQr -> qrCodeRequest(
+            onResult = viewModel::setQrData,
+            onCancel = viewModel::scanCancel
+        )
     }
 }
 
 @Composable
-fun RecipientFormUIState.Form.Scene(
+private fun Idle(
+    state: RecipientFormUIState.Idle,
+    addressState: MutableState<String>,
+    memoState: MutableState<String>,
     onScanAddress: () -> Unit,
     onScanMemo: () -> Unit,
     onNext: (input: String, nameRecord: NameRecord?, memoInput: String) -> Unit,
     onCancel: () -> Unit,
 ) {
-    
-    var inputState by remember(address, addressDomain) {
-        mutableStateOf(address.ifEmpty { addressDomain })
+    var inputStateError by remember(address, state.addressError) {
+        mutableStateOf(state.addressError)
     }
-    var inputStateError by remember(address, addressError) {
-        mutableStateOf(addressError)
-    }
-    var nameRecordState by remember(addressDomain) {
+    var nameRecordState by remember(state.addressDomain) {
         mutableStateOf<NameRecord?>(null)
-    }
-    var memoState by remember(memo) {
-        mutableStateOf(memo)
     }
     Scene(
         title = stringResource(id = R.string.transaction_recipient),
@@ -117,20 +121,20 @@ fun RecipientFormUIState.Form.Scene(
                 title = stringResource(id = R.string.common_continue),
                 enabled = inputStateError == RecipientFormError.None,
                 onClick = {
-                    onNext(inputState, nameRecordState, memoState)
+                    onNext(addressState.value, nameRecordState, memoState.value)
                 },
             )
         }
     ) {
-        val assetInfo = assetInfo
+        val assetInfo = state.assetInfo
         if (assetInfo != null) {
             AddressChainField(
                 chain = assetInfo.asset.id.chain,
-                value = inputState,
+                value = addressState.value,
                 label = stringResource(id = R.string.transfer_recipient_address_field),
                 error = recipientErrorString(error = inputStateError),
                 onValueChange = { input, nameRecord ->
-                    inputState = input
+                    addressState.value = input
                     nameRecordState = nameRecord
                     inputStateError = RecipientFormError.None
                 },
@@ -138,13 +142,13 @@ fun RecipientFormUIState.Form.Scene(
             )
         }
 
-        if (hasMemo) {
+        if (state.hasMemo) {
             Spacer(modifier = Modifier.size(space4))
             MemoTextField(
-                value = memoState,
+                value = memoState.value,
                 label = stringResource(id = R.string.transfer_memo),
-                onValueChange = { memoState = it },
-                error = memoError,
+                onValueChange = { memoState.value = it },
+                error = state.memoError,
                 onQrScanner = onScanMemo,
             )
         }

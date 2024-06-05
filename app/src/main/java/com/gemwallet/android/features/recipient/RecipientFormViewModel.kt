@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.recipient
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.PayloadType
@@ -34,6 +35,9 @@ class RecipientFormViewModel @Inject constructor(
     private val state = MutableStateFlow(RecipientFormState())
     val uiState = state.map { it.toUIState() }.stateIn(viewModelScope, SharingStarted.Eagerly, RecipientFormUIState.Loading)
 
+    val addressState = mutableStateOf("")
+    val memoState = mutableStateOf("")
+
     fun init(
         assetId: AssetId,
         destinationAddress: String,
@@ -51,7 +55,9 @@ class RecipientFormViewModel @Inject constructor(
             val newState = withContext(Dispatchers.IO) { assetsRepository.getById(wallet, assetId) }
                 .fold(
                     onSuccess = {
-                        currentState.copy(assetInfo = it.first(), address = destinationAddress, addressDomain = addressDomain, memo = memo)
+                        addressState.value = destinationAddress
+                        memoState.value = memo
+                        currentState.copy(assetInfo = it.first(), addressDomain = addressDomain)
                     }
                 ) {
                     currentState.copy(fatalError = it.message ?: "Asset doesn't found")
@@ -65,7 +71,7 @@ class RecipientFormViewModel @Inject constructor(
     }
 
     fun scanMemo() {
-        state.update { it.copy(scan = ScanType.Meta) }
+        state.update { it.copy(scan = ScanType.Memo) }
     }
 
     fun scanCancel() {
@@ -74,10 +80,11 @@ class RecipientFormViewModel @Inject constructor(
 
     fun setQrData(data: String) {
         when (state.value.scan) {
-            ScanType.Address -> state.update { it.copy(address = data, scan = null) }
-            ScanType.Meta -> state.update { it.copy(memo = data, scan = null) }
+            ScanType.Address -> addressState.value = data
+            ScanType.Memo -> memoState.value = data
             null -> {}
         }
+        state.update { it.copy(scan = null) }
     }
 
     private fun validateRecipient(chain: Chain, recipient: String): RecipientFormError {
@@ -104,9 +111,7 @@ class RecipientFormViewModel @Inject constructor(
         val recipientError = validateRecipient(asset.id.chain, address)
         state.update {
             currentState.copy(
-                address = address,
                 addressDomain = addressDomain,
-                memo = memo,
                 addressError = recipientError,
             )
         }
@@ -126,9 +131,9 @@ class RecipientFormViewModel @Inject constructor(
 
 data class RecipientFormState(
     val assetInfo: AssetInfo? = null,
-    val address: String = "",
+//    val address: String = "",
     val addressDomain: String = "",
-    val memo: String = "",
+//    val memo: String = "",
     val scan: ScanType? = null,
     val addressError: RecipientFormError = RecipientFormError.None,
     val metaError: RecipientFormError = RecipientFormError.None,
@@ -144,12 +149,10 @@ data class RecipientFormState(
             return RecipientFormUIState.ScanQr
         }
 
-        return RecipientFormUIState.Form(
+        return RecipientFormUIState.Idle(
             assetInfo = assetInfo,
-            address = address,
             addressDomain = addressDomain,
             hasMemo = (assetInfo?.asset?.id?.chain?.memo() ?: PayloadType.None) != PayloadType.None,
-            memo = memo,
             addressError = addressError,
             memoError = metaError,
         )
@@ -161,12 +164,10 @@ sealed interface RecipientFormUIState {
     data object Loading : RecipientFormUIState
     class Fatal(val error: String) : RecipientFormUIState
 
-    data class Form(
+    data class Idle(
         val assetInfo: AssetInfo? = null,
-        val address: String = "",
         val addressDomain: String = "",
         val hasMemo: Boolean = false,
-        val memo: String = "",
         val addressError: RecipientFormError = RecipientFormError.None,
         val memoError: RecipientFormError = RecipientFormError.None,
     ) : RecipientFormUIState
@@ -176,7 +177,7 @@ sealed interface RecipientFormUIState {
 
 enum class ScanType {
     Address,
-    Meta,
+    Memo,
 }
 
 sealed interface RecipientFormError {
