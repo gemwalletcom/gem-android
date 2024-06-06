@@ -30,7 +30,7 @@ test:
 	./gradlew connectedAndroidTest
 
 release:
-	./gradlew clean cargoBuild assembleRelease :app:bundleRelease
+	./gradlew clean buildCargoNdkRelease assembleRelease :app:bundleRelease
 
 localize:
 	@sh scripts/localize.sh android
@@ -43,4 +43,4 @@ generate-stone:
 	@echo "Generate Gemstone lib, default build mode is debug"
 	@cd core/gemstone && make bindgen-kotlin BUILD_MODE=$(BUILD_MODE)
 	@cp -Rf core/gemstone/generated/kotlin/uniffi gemcore/src/main/java
-	./gradlew cargoBuild --info
+	@touch local.properties && ./gradlew buildCargoNdkDebug --info

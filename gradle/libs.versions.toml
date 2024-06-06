@@ -1,0 +1,142 @@
+[versions]
+accompanistPermissions = "0.34.0"
+activityCompose = "1.9.0"
+walletconnect = "1.31.4"
+barcodeScanning = "17.2.0"
+biometric = "1.2.0-alpha05"
+cameraCamera2 = "1.4.0-beta01"
+coilCompose = "2.6.0"
+vico = "2.0.0-alpha.21"
+core = "3.5.3"
+coreKtx = "1.13.1"
+espressoCore = "3.5.1"
+firebaseMessaging = "24.0.0"
+foundation = "1.6.7"
+gradle = "8.5.0-rc01"
+gson = "2.11.0"
+hiltAndroid = "2.51.1"
+hiltAndroidGradlePlugin = "2.46"
+hiltNavigationCompose = "1.2.0"
+jna = "5.14.0"
+junit = "4.13.2"
+junitVersion = "1.1.5"
+kotlinGradlePlugin = "1.9.24"
+kotlinSerialization = "1.9.24"
+kotlinxCollectionsImmutable = "0.3.7"
+kotlinxCoroutinesAndroid = "1.8.1"
+kotlinxSerializationJson = "1.6.3"
+lifecycleRuntimeCompose = "2.7.0" #2.8.2 buggy
+lifecycleRuntimeKtx = "2.7.0"
+loggingInterceptor = "4.12.0"
+material = "1.6.7"
+material3 = "1.2.1"
+navigationCompose = "2.7.7"
+plugin = "0.3.4"
+retrofit = "2.11.0"
+review = "2.0.1"
+roomKtx = "2.6.1"
+roomCompiler = "2.6.1"
+runtimeAndroid = "1.6.7"
+securityCrypto = "1.0.0"
+ui = "1.6.7"
+uiTestJunit4 = "1.6.7"
+uiTooling = "1.6.7"
+uiToolingPreview = "1.6.7"
+walletCore = "4.0.42"
+ksp = "1.9.24-1.0.20"
+android-lib = "8.5.0-rc01"
+kotlin = "1.9.22"
+google-services = "4.4.2"
+
+[libraries]
+gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
+ktx-core = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinxCoroutinesAndroid" }
+kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinGradlePlugin" }
+kotlinx-collections-immutable = { module = "org.jetbrains.kotlinx:kotlinx-collections-immutable", version.ref = "kotlinxCollectionsImmutable" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlin-serialization = { module = "org.jetbrains.kotlin:kotlin-serialization", version.ref = "kotlinSerialization" }
+
+# Auth and security
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
+androidx-security-crypto = { module = "androidx.security:security-crypto", version.ref = "securityCrypto" }
+
+# Compose
+compose-activity = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
+compose-runtime-android = { module = "androidx.compose.runtime:runtime-android", version.ref = "runtimeAndroid" }
+compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "foundation" }
+compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
+compose-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
+compose-material = { module = "androidx.compose.material:material", version.ref = "material" }
+compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "material" }
+compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "material" }
+compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
+compose-material3-window-size = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3" }
+
+# Sqlite room
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomKtx" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
+
+#Google play review and notifications
+play-review = { module = "com.google.android.play:review", version.ref = "review" }
+play-review-ktx = { module = "com.google.android.play:review-ktx", version.ref = "review" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging" }
+
+# network
+okhttp-logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
+retrofit-converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+
+# Json
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+
+#tests
+junit = { module = "junit:junit", version.ref = "junit" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
+androidx-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junitVersion" }
+androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
+androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
+androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
+
+# chart
+vico-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico" }
+
+wallet-core = { module = "com.trustwallet:wallet-core", version.ref = "walletCore" }
+
+# wallet connect
+walletconnect-bom = { module = "com.walletconnect:android-bom", version.ref = "walletconnect" }
+walletconnect-core = { module = "com.walletconnect:android-core" }
+walletconnect-web3wallet = { module = "com.walletconnect:web3wallet" }
+
+# qr code scanning
+zxing-core = { module = "com.google.zxing:core", version.ref = "core" }
+barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
+camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraCamera2" }
+camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCamera2" }
+camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraCamera2" }
+
+# Images
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+
+# di
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
+hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "hiltAndroidGradlePlugin" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
+hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+# lifecycle hold on 2.7.0 - 2.8 buggy
+lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
+lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+
+# gemcore
+rust-plugin = { module = "gradle.plugin.com.github.willir.rust:plugin", version.ref = "plugin" }
+jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
+
+[plugins]
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
+android-library = { id = "com.android.library", version.ref = "android-lib" }
+kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }

@@ -6,7 +6,7 @@ plugins {
     id("kotlinx-serialization")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
-    id("org.mozilla.rust-android-gradle.rust-android") version "0.9.3"
+    id("com.github.willir.rust.cargo-ndk-android")
 }
 
 repositories {
@@ -14,16 +14,16 @@ repositories {
     mavenCentral()
 }
 
-cargo {
-    prebuiltToolchains = true
-    targetDirectory = "$rootDir/core/target" // workspace target folder
-    module = "$rootDir/core/gemstone" // Cargo.toml folder
-    libname = "gemstone"
-    pythonCommand = "python3"
-    profile = System.getenv("PROFILE_MODE") ?: "debug" // default profile mode is debug
-    targets = listOf("arm64", "arm", "x86_64")
-    extraCargoBuildArguments = listOf("--lib")
-    verbose = false
+cargoNdk {
+    targets = if (System.getenv("CI") == "true") {
+        arrayListOf("x86_64")
+    } else {
+        arrayListOf("arm64", "arm")
+    }
+    module = "core/gemstone"
+    targetDirectory = "/../target"
+    librariesNames = arrayListOf("libgemstone.so")
+    extraCargoBuildArguments = arrayListOf("--lib")
 }
 
 android {
@@ -73,13 +73,15 @@ android {
             if (System.getenv("CI") == "true") {
                 ndk {
                     abiFilters.add("x86_64")
+                    abiFilters.remove("arm64-v8a")
+                    abiFilters.remove("armeabi-v7a")
                 }
 
                 splits {
                     abi {
                         reset()
                         isEnable = false
-                        include("arm64-v8a", "armeabi-v7a", "x86_64")
+                        include("x86_64")
                         isUniversalApk = false
                     }
                 }
@@ -106,7 +108,7 @@ android {
         buildConfig = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.9"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging {
         jniLibs {
@@ -120,86 +122,68 @@ android {
 
 dependencies {
     api(project(":blockchain"))
-    implementation("androidx.core:core-ktx:1.13.1")
+    implementation(libs.ktx.core)
 
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-compiler:2.51.1")
+    implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.android)
+    kapt(libs.hilt.compiler)
 
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.lifecycle.runtime.compose)
 
-    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation(libs.compose.activity)
 
-    implementation("androidx.compose.ui:ui:${Config.Versions.compose}")
-    implementation("androidx.compose.foundation:foundation:${Config.Versions.compose}")
-    implementation("androidx.compose.material:material:${Config.Versions.compose}")
-    implementation("androidx.compose.material:material-icons-core:${Config.Versions.compose}")
-    implementation("androidx.compose.material:material-icons-extended:${Config.Versions.compose}")
-    implementation("androidx.compose.material3:material3:${Config.Versions.material3}")
-    implementation("androidx.compose.material3:material3-window-size-class:${Config.Versions.material3}")
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
+    implementation(libs.compose.ui)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material)
+    implementation(libs.compose.material.icons.core)
+    implementation(libs.compose.material.icons.extended)
+    implementation(libs.compose.material3)
+    implementation(libs.compose.material3.window.size)
+    implementation(libs.kotlinx.collections.immutable)
 
-    implementation("io.coil-kt:coil-compose:2.5.0")
+    implementation(libs.coil.compose)
 
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.2")
+    implementation(libs.compose.navigation)
+    implementation(libs.kotlinx.serialization.json)
 
     // Permissions request
-    implementation("com.google.accompanist:accompanist-permissions:0.34.0")
+    implementation(libs.compose.permissions)
 
     // QRCode scanner: only for none private data: recipient, memo, amount, etc
-    implementation("androidx.camera:camera-camera2:${Config.Versions.camerax}")
-    implementation("androidx.camera:camera-lifecycle:${Config.Versions.camerax}")
-    implementation("androidx.camera:camera-view:${Config.Versions.camerax}")
-    implementation("com.google.mlkit:barcode-scanning:17.2.0")
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+    implementation(libs.barcode.scanning)
 
     // Room - ORM
-    implementation("androidx.room:room-ktx:2.6.1")
-    ksp("androidx.room:room-compiler:2.6.1")
-    implementation("androidx.room:room-runtime:2.6.1")
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+    implementation(libs.room.runtime)
 
     // QR Code
-    implementation("com.google.zxing:core:3.5.3")
+    implementation(libs.zxing.core)
     // EncryptedPreferences
-    implementation("androidx.security:security-crypto:1.0.0")
+    implementation(libs.androidx.security.crypto)
     // Notifications - FCM
-    implementation("com.google.firebase:firebase-messaging:24.0.0")
+    implementation(libs.firebase.messaging)
     // Auth
-    implementation("androidx.biometric:biometric:1.2.0-alpha05")
+    implementation(libs.androidx.biometric)
     // Wallet Connect
-    implementation(platform("com.walletconnect:android-bom:1.31.3"))
-    implementation("com.walletconnect:android-core")
-    implementation("com.walletconnect:web3wallet")
+    implementation(platform(libs.walletconnect.bom))
+    implementation(libs.walletconnect.core)
+    implementation(libs.walletconnect.web3wallet)
     // Chart
-    implementation("com.patrykandpatrick.vico:compose-m3:2.0.0-alpha.19")
+    implementation(libs.vico.m3)
     // In App review
-    implementation("com.google.android.play:review:2.0.1")
-    implementation("com.google.android.play:review-ktx:2.0.1")
+    implementation(libs.play.review)
+    implementation(libs.play.review.ktx)
 
-    debugImplementation("androidx.compose.ui:ui-tooling:${Config.Versions.compose}")
-    implementation("androidx.compose.ui:ui-tooling-preview:${Config.Versions.compose}")
+    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.ui.tooling.preview)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4:1.6.7")
-}
-
-afterEvaluate {
-    android.applicationVariants.all { variant ->
-        var productFlavor = ""
-        variant.productFlavors.forEach {
-            productFlavor += it.name.replaceFirstChar(Char::titlecase)
-        }
-        val buildType = variant.buildType.name.replaceFirstChar(Char::titlecase)
-        val taskName = "generate" + productFlavor + buildType + "Assets"
-        logger.warn("make $taskName depend on cargoBuild")
-        val generateTasks = getTasksByName(taskName, false)
-        val cargoTasks = getTasksByName("cargoBuild", false)
-        generateTasks.forEach {
-            it.dependsOn(cargoTasks)
-        }
-        return@afterEvaluate
-    }
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(libs.androidx.ui.test.junit4)
 }

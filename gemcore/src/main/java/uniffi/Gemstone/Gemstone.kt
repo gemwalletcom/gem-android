@@ -928,6 +928,11 @@ internal interface UniffiLib : Library {
 
     fun uniffi_gemstone_fn_func_lib_version(uniffi_out_err: UniffiRustCallStatus): RustBuffer.ByValue
 
+    fun uniffi_gemstone_fn_func_payment_decode_url(
+        `string`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
     fun uniffi_gemstone_fn_func_solana_decode_metadata(
         `base64Str`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
@@ -1230,6 +1235,8 @@ internal interface UniffiLib : Library {
 
     fun uniffi_gemstone_checksum_func_lib_version(): Short
 
+    fun uniffi_gemstone_checksum_func_payment_decode_url(): Short
+
     fun uniffi_gemstone_checksum_func_solana_decode_metadata(): Short
 
     fun uniffi_gemstone_checksum_func_solana_derive_metadata_pda(): Short
@@ -1340,6 +1347,9 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_func_lib_version() != 54725.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_func_payment_decode_url() != 3196.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_func_solana_decode_metadata() != 52739.toShort()) {
@@ -2775,6 +2785,44 @@ public object FfiConverterTypeMplMetadata : FfiConverterRustBuffer<MplMetadata> 
     }
 }
 
+data class PaymentWrapper(
+    var `address`: kotlin.String,
+    var `amount`: kotlin.String?,
+    var `memo`: kotlin.String?,
+    var `chain`: kotlin.String?,
+) {
+    companion object
+}
+
+public object FfiConverterTypePaymentWrapper : FfiConverterRustBuffer<PaymentWrapper> {
+    override fun read(buf: ByteBuffer): PaymentWrapper {
+        return PaymentWrapper(
+            FfiConverterString.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterOptionalString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: PaymentWrapper) =
+        (
+            FfiConverterString.allocationSize(value.`address`) +
+                FfiConverterOptionalString.allocationSize(value.`amount`) +
+                FfiConverterOptionalString.allocationSize(value.`memo`) +
+                FfiConverterOptionalString.allocationSize(value.`chain`)
+        )
+
+    override fun write(
+        value: PaymentWrapper,
+        buf: ByteBuffer,
+    ) {
+        FfiConverterString.write(value.`address`, buf)
+        FfiConverterOptionalString.write(value.`amount`, buf)
+        FfiConverterOptionalString.write(value.`memo`, buf)
+        FfiConverterOptionalString.write(value.`chain`, buf)
+    }
+}
+
 data class SuiCoin(
     var `coinType`: kotlin.String,
     var `balance`: kotlin.ULong,
@@ -3659,6 +3707,18 @@ fun `libVersion`(): kotlin.String {
     return FfiConverterString.lift(
         uniffiRustCall { _status ->
             UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lib_version(
+                _status,
+            )
+        },
+    )
+}
+
+@Throws(GemstoneException::class)
+fun `paymentDecodeUrl`(`string`: kotlin.String): PaymentWrapper {
+    return FfiConverterTypePaymentWrapper.lift(
+        uniffiRustCallWithError(GemstoneException) { _status ->
+            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_payment_decode_url(
+                FfiConverterString.lower(`string`),
                 _status,
             )
         },
