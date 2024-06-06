@@ -31,11 +31,11 @@ fun CurrencyItem(
             null
         },
     ) {
-        ListItemTitle(title = "${emojiFlags[currency.string] ?: ""} ${currency.string} - $title", subtitle = "")
+        ListItemTitle(title = "${emojiFlags[currency.string] ?: ""}  ${currency.string} - $title", subtitle = "")
     }
 }
 
-private val emojiFlags = mapOf(
+internal val emojiFlags = mapOf(
     "MXN" to "🇲🇽",
     "CHF" to "🇨🇭",
     "CNY" to "🇨🇳",

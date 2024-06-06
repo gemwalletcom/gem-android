@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
+import com.gemwallet.android.features.settings.currency.components.emojiFlags
 import com.gemwallet.android.features.settings.settings.components.LinkItem
 import com.gemwallet.android.features.settings.settings.viewmodels.SettingsViewModel
 import com.gemwallet.android.getActivity
@@ -105,7 +106,9 @@ fun SettingsScene(
             LinkItem(
                 title = stringResource(R.string.settings_currency),
                 icon = R.drawable.settings_currency,
-                supportingContent = { Text(text = uiState.currency.string) },
+                supportingContent = {
+                    Text(text = "${emojiFlags[uiState.currency.string]}  ${uiState.currency.string}")
+                },
                 onClick = onCurrencies,
             )
             LinkItem(title = stringResource(id = R.string.settings_networks_title), icon = R.drawable.settings_networks) {
