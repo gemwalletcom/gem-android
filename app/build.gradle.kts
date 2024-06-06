@@ -15,10 +15,10 @@ repositories {
 }
 
 cargoNdk {
-    targets = if (System.getenv("CI") == "true") {
-        arrayListOf("x86_64", "armeabi-v7a", "arm64-v8a")
+    targets = if (System.getenv("UNIT_TESTS") == "true") {
+        arrayListOf("x86_64")
     } else {
-        arrayListOf("arm64", "arm", "armeabi-v7a", "arm64-v8a")
+        arrayListOf("armeabi-v7a", "arm64-v8a")
     }
     module = "core/gemstone"
     targetDirectory = "/../target"
@@ -70,7 +70,7 @@ android {
             isShrinkResources = false
             isDebuggable = true
 
-            if (System.getenv("CI") == "true") {
+            if (System.getenv("UNIT_TESTS") == "true") {
                 ndk {
                     abiFilters.add("x86_64")
                     abiFilters.remove("arm64-v8a")
