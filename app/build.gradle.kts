@@ -16,9 +16,9 @@ repositories {
 
 cargoNdk {
     targets = if (System.getenv("CI") == "true") {
-        arrayListOf("x86_64")
+        arrayListOf("x86_64", "armeabi-v7a", "arm64-v8a")
     } else {
-        arrayListOf("arm64", "arm")
+        arrayListOf("arm64", "arm", "armeabi-v7a", "arm64-v8a")
     }
     module = "core/gemstone"
     targetDirectory = "/../target"
