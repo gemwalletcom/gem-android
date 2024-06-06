@@ -25,7 +25,7 @@ kotlinSerialization = "1.9.24"
 kotlinxCollectionsImmutable = "0.3.7"
 kotlinxCoroutinesAndroid = "1.8.1"
 kotlinxSerializationJson = "1.6.3"
-lifecycleRuntimeCompose = "2.7.0"
+lifecycleRuntimeCompose = "2.7.0" #2.8.2 buggy
 lifecycleRuntimeKtx = "2.7.0"
 loggingInterceptor = "4.12.0"
 material = "1.6.7"
@@ -127,7 +127,7 @@ hilt-android-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-p
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "hiltAndroid" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 
-# lifecycle hold on 2.7.0 - 2.8 baged
+# lifecycle hold on 2.7.0 - 2.8 buggy
 lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 

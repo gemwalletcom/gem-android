@@ -35,8 +35,7 @@ android {
 dependencies {
     // JSON
     api(libs.gson)
-
-    api(libs.jna)
+    api(libs.jna){ artifact { type = "aar" } }
 
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.compose.runtime.android)
