@@ -67,7 +67,7 @@ fun AmountListHead(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             HeaderIcon(iconUrl = iconUrl, supportIconUrl = supportIconUrl, placeholder = placeholder)
-
+            Spacer16()
             DisplayText(text = amount, modifier = Modifier.fillMaxWidth())
             if (!equivalent.isNullOrEmpty()) {
                 Spacer(modifier = Modifier.size(space4))
@@ -128,7 +128,6 @@ internal fun HeaderIcon(
             )
         }
     }
-    Spacer16()
 }
 
 @Composable
