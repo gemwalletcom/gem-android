@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.ethereum
 import com.gemwallet.android.blockchain.clients.GetTokenClient
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.math.decodeHex
+import com.gemwallet.android.math.has0xPrefix
 import com.gemwallet.android.math.toHexString
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
@@ -38,9 +39,7 @@ class EvmGetTokenClient(
         )
     }
 
-    override suspend fun isTokenQuery(query: String): Boolean {
-        return query.startsWith("T") && query.length in 30..50
-    }
+    override suspend fun isTokenQuery(query: String): Boolean = isTokenAddress(query)
 
     override fun maintainChain(): Chain = chain
 
@@ -100,5 +99,11 @@ class EvmGetTokenClient(
             return null
         }
         return EthereumAbiValue.decodeValue(data.drop(32).toByteArray(), "string")
+    }
+
+    companion object {
+        fun isTokenAddress(tokenId: String): Boolean {
+            return tokenId.has0xPrefix() && tokenId.isNotEmpty() && tokenId.length == 42
+        }
     }
 }

@@ -23,9 +23,13 @@ class TonGetTokenClient(
         )
     }
 
-    override suspend fun isTokenQuery(query: String): Boolean {
-        return query.startsWith("EQ") && query.length in 40..60
-    }
+    override suspend fun isTokenQuery(query: String): Boolean = isTokenAddress(query)
 
     override fun maintainChain(): Chain = chain
+
+    companion object {
+        fun isTokenAddress(tokenId: String): Boolean {
+            return tokenId.startsWith("EQ") && tokenId.length in 40..60
+        }
+    }
 }

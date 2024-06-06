@@ -40,9 +40,7 @@ class TronGetTokenClient(
         )
     }
 
-    override suspend fun isTokenQuery(query: String): Boolean {
-        return query.startsWith("T") && query.length in 30..50
-    }
+    override suspend fun isTokenQuery(query: String): Boolean = isTokenAddress(query)
 
     override fun maintainChain(): Chain = chain
 
@@ -84,5 +82,11 @@ class TronGetTokenClient(
             return null
         }
         return EthereumAbiValue.decodeValue(data.drop(32).toByteArray(), "string")
+    }
+
+    companion object {
+        fun isTokenAddress(tokenId: String): Boolean {
+            return tokenId.startsWith("T") && tokenId.length in 30..50
+        }
     }
 }

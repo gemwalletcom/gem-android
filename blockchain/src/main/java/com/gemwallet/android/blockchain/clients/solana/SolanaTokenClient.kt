@@ -51,9 +51,13 @@ class SolanaTokenClient(
         )
     }
 
-    override suspend fun isTokenQuery(query: String): Boolean {
-        return query.length in 40..60 && Base58.decodeNoCheck(query).isNotEmpty()
-    }
+    override suspend fun isTokenQuery(query: String): Boolean = isTokenAddress(query)
 
     override fun maintainChain(): Chain = chain
+
+    companion object {
+        fun isTokenAddress(tokenId: String): Boolean {
+            return tokenId.length in 40..60 && Base58.decodeNoCheck(tokenId).isNotEmpty()
+        }
+    }
 }

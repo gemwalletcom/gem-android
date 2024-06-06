@@ -28,9 +28,13 @@ class SuiGetTokenClient(
         )
     }
 
-    override suspend fun isTokenQuery(query: String): Boolean {
-        return query.startsWith("0x") && query.length in 66..100
-    }
+    override suspend fun isTokenQuery(query: String): Boolean = isTokenAddress(query)
 
     override fun maintainChain(): Chain = Chain.Sui
+
+    companion object {
+        fun isTokenAddress(tokenId: String): Boolean {
+            return tokenId.startsWith("0x") && tokenId.length in 66..100
+        }
+    }
 }
