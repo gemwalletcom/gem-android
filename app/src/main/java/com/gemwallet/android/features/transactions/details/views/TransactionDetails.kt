@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.transactions.details.views
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
 import androidx.compose.material.icons.Icons
@@ -155,7 +156,13 @@ fun TransactionDetails(
                                 label = stringResource(id = R.string.transaction_recipient),
                                 data = state.to,
                                 action = { clipboardManager.setText(AnnotatedString(state.to)) },
-                                actionIcon = rememberVectorPainter(image = Icons.Default.ContentCopy)
+                                actionIcon = {
+                                    Icon(
+                                        modifier = Modifier.padding(horizontal = 8.dp),
+                                        imageVector = Icons.Default.ContentCopy,
+                                        contentDescription = ""
+                                    )
+                                }
                             )
                         )
 
@@ -164,7 +171,13 @@ fun TransactionDetails(
                                 label = stringResource(id = R.string.transaction_sender),
                                 data = state.from,
                                 action = { clipboardManager.setText(AnnotatedString(state.from)) },
-                                actionIcon = rememberVectorPainter(image = Icons.Default.ContentCopy)
+                                actionIcon = {
+                                    Icon(
+                                        modifier = Modifier.padding(horizontal = 8.dp),
+                                        imageVector = Icons.Default.ContentCopy,
+                                        contentDescription = ""
+                                    )
+                                }
                             )
                         )
                     }

@@ -26,12 +26,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.padding16
 import com.gemwallet.android.ui.theme.padding8
 
@@ -40,7 +40,7 @@ data class CellEntity<T>(
     val data: String,
     val dataColor: Color? = null,
     val support: String? = null,
-    val actionIcon: Painter? = null,
+    val actionIcon: (@Composable () -> Unit)? = null,
     val trailingIcon: String? = null,
     val icon: String? = null,
     val trailing: (@Composable () -> Unit)? = null,
@@ -109,7 +109,7 @@ private fun Cell(
     action: (() -> Unit)? = null,
     showActionChevron: Boolean = true,
     longAction: (() -> Unit)? = null,
-    actionIcon: Painter? = null,
+    actionIcon: (@Composable () -> Unit)? = null,
 ) {
     Row(
         modifier = Modifier
@@ -119,7 +119,12 @@ private fun Cell(
                 onLongClick = { longAction?.invoke() }
             )
             .fillMaxWidth()
-            .padding(start = padding16, top = padding16, bottom = padding16, end = if (action == null) padding16 else padding8)
+            .padding(
+                start = padding16,
+                top = padding16,
+                bottom = padding16,
+                end = if (action == null) padding16 else padding8
+            )
             ,
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -143,8 +148,9 @@ private fun Cell(
         }
         if (action != null) {
             if (showActionChevron) {
+                actionIcon?.invoke() ?:
                 Icon(
-                    painter = actionIcon ?: rememberVectorPainter(image = Icons.Default.ChevronRight),
+                    painter = rememberVectorPainter(image = Icons.Default.ChevronRight),
                     contentDescription = "open_provider_select",
                     tint = MaterialTheme.colorScheme.secondary,
                 )
@@ -160,7 +166,7 @@ private fun Cell(
     icon: String? = null,
     dataColor: Color? = null,
     support: String? = null,
-    actionIcon: Painter? = null,
+    actionIcon: (@Composable () -> Unit)? = null,
     showActionChevron: Boolean = true,
     trailing: (@Composable () -> Unit)? = null,
     trailingIcon: String? = null,
