@@ -23,7 +23,7 @@ fun SelectReceiveScreen(
     val clipboardManager = LocalClipboardManager.current
     AssetSelectScreen(
         title = stringResource(id = R.string.wallet_receive),
-        titleBadge = { it.symbol },
+        titleBadge = ::getAssetBadge,
         predicate = { it.asset.type == AssetType.NATIVE },
         itemTrailing = {
             IconButton(onClick = {

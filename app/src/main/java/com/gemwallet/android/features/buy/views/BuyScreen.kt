@@ -133,7 +133,7 @@ private fun Idle(
                     },
                     assetType = state.asset.type,
                     iconUrl = state.asset.getIconUrl(),
-                    badge = state.asset.symbol,
+                    badge = if (state.asset.symbol == state.asset.name) null else state.asset.symbol,
                     dividerShowed = false,
                     trailing = {
                         Row(verticalAlignment = Alignment.CenterVertically) {

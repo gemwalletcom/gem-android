@@ -16,7 +16,9 @@ import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
+import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.ui.components.FatalStateScene
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetSubtype
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -35,7 +37,7 @@ fun AssetsManageScreen(
     if (uiState.error.isEmpty()) {
         AssetSelectScene(
             title = stringResource(id = R.string.wallet_manage_token_list),
-            titleBadge = { it.symbol },
+            titleBadge = ::getAssetBadge,
             support = { if (it.id.type() == AssetSubtype.NATIVE) null else it.id.chain.asset().name },
             query = viewModel.query,
             assets = uiState.assets,
@@ -62,4 +64,8 @@ fun AssetsManageScreen(
             onCancel = onCancel,
         )
     }
+}
+
+internal fun getAssetBadge(asset: AssetUIState): String {
+    return if (asset.symbol == asset.name) "" else asset.symbol
 }
