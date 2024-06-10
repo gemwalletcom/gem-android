@@ -320,7 +320,7 @@ class SwapViewModel @Inject constructor(
                 assetId = assetInfo.asset.id,
                 assetType = asset.type,
                 assetIcon = asset.getIconUrl(),
-                assetSymbol = asset.symbol.padEnd(symbolLength),
+                assetSymbol = asset.symbol.padStart(symbolLength),
                 equivalentValue = equivalentValue,
                 assetBalanceValue = assetInfo.balances.calcTotal().value(asset.decimals).stripTrailingZeros().toPlainString(),
                 assetBalanceLabel = assetInfo.balances.calcTotal().format(asset.decimals, asset.symbol, 4),

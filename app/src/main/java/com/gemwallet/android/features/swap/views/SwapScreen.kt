@@ -1,8 +1,10 @@
 package com.gemwallet.android.features.swap.views
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -38,6 +40,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -70,6 +73,7 @@ import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.mainActionHeight
 import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.theme.padding4
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
@@ -253,14 +257,10 @@ fun SwapItem(
         )
         Spacer8()
         Row(
-            modifier = Modifier
-                .height(40.dp)
-                .fillMaxWidth(),
+            modifier = Modifier.height(40.dp).fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()) {
+            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
                 if (item.calculating) {
                     CircularProgressIndicator16()
                 } else {
@@ -269,7 +269,7 @@ fun SwapItem(
                             .fillMaxWidth()
                             .focusRequester(focusRequester),
                         state = state,
-                        textStyle = MaterialTheme.typography.headlineMedium.copy(
+                        textStyle = MaterialTheme.typography.headlineLarge.copy(
                             color = MaterialTheme.colorScheme.onSurface
                         ),
                         lineLimits = TextFieldLineLimits.SingleLine,
@@ -282,7 +282,7 @@ fun SwapItem(
                             if (state.text.isEmpty()) {
                                 Text(
                                     text = "0",
-                                    style = MaterialTheme.typography.headlineMedium,
+                                    style = MaterialTheme.typography.headlineLarge,
                                     color = Color.Gray.copy(alpha = 0.5f),
                                 )
                             }
@@ -292,29 +292,36 @@ fun SwapItem(
                     )
                 }
             }
-            AssetIcon(
+            Row(
                 modifier = Modifier
-                    .size(36.dp)
-                    .clickable { onAssetSelect(item.type) },
-                iconUrl = item.assetIcon,
-                placeholder = item.assetType.string,
-                supportIcon = if (item.assetId.type() == AssetSubtype.NATIVE) {
-                    null
-                } else {
-                    item.assetId.chain.getIconUrl()
-                },
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Text(
-                text = item.assetSymbol,
-                style = MaterialTheme.typography.bodyLarge,
-            )
+                    .clip(MaterialTheme.shapes.medium)
+                    .clickable { onAssetSelect(item.type) }
+                    .padding(padding4)
+                ,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End,
+            ) {
+                AssetIcon(
+                    modifier = Modifier.size(36.dp),
+                    iconUrl = item.assetIcon,
+                    placeholder = item.assetType.string,
+                    supportIcon = if (item.assetId.type() == AssetSubtype.NATIVE) {
+                        null
+                    } else {
+                        item.assetId.chain.getIconUrl()
+                    },
+                )
+                Spacer(modifier = Modifier.size(8.dp))
+                Text(
+                    text = item.assetSymbol,
+                    style = MaterialTheme.typography.bodyLarge,
+                )
+            }
         }
         Spacer8()
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                ,
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(0.5f),
@@ -322,21 +329,24 @@ fun SwapItem(
                 style = MaterialTheme.typography.bodySmall,
             )
             Spacer(modifier = Modifier.size(8.dp))
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth(1f)
-                    .clickable(
-                        enabled = isPay,
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) {
-                        state.clearText()
-                        state.edit { append(item.assetBalanceValue) }
-                    },
-                text = stringResource(id = R.string.transfer_balance, item.assetBalanceLabel),
-                textAlign = TextAlign.End,
-                style = MaterialTheme.typography.bodySmall,
-            )
+            Box(modifier = Modifier.fillMaxWidth(1f)) {
+                Text(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .clip(MaterialTheme.shapes.small)
+                        .clickable(
+                            enabled = isPay,
+                        ) {
+                            state.clearText()
+                            state.edit { append(item.assetBalanceValue) }
+                        }
+                        .padding(padding4)
+                    ,
+                    text = stringResource(id = R.string.transfer_balance, item.assetBalanceLabel),
+                    textAlign = TextAlign.End,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+            }
         }
     }
 }
