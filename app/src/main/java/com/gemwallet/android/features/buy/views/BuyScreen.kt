@@ -1,8 +1,12 @@
 package com.gemwallet.android.features.buy.views
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -146,26 +150,8 @@ private fun Idle(
             }
         }
         Spacer16()
-        if (state.isQuoteLoading) {
-            Box(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(30.dp).align(Alignment.Center),
-                    strokeWidth = 1.dp,
-                )
-            }
-        } else if (state.error != null) {
-            Text(
-                modifier = Modifier.fillMaxWidth().padding(20.dp),
-                textAlign = TextAlign.Center,
-                text = state.error.mapError(),
-                style = MaterialTheme.typography.bodyLarge
-            )
-        }
-        AnimatedVisibility(
-            visible = state.isAvailable(),
-            enter = fadeIn(),
-            exit = fadeOut(),
-        ) {
+
+        if (state.isAvailable()) {
             Table(
                 items = listOf(
                     CellEntity(
@@ -186,6 +172,28 @@ private fun Idle(
                     )
                 )
             )
+        } else {
+            if (state.isQuoteLoading) {
+                Box(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)) {
+                    CircularProgressIndicator(
+                        modifier = Modifier
+                            .size(30.dp)
+                            .align(Alignment.Center),
+                        strokeWidth = 1.dp,
+                    )
+                }
+            } else if (state.error != null) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(20.dp),
+                    textAlign = TextAlign.Center,
+                    text = state.error.mapError(),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+            }
         }
     }
 
