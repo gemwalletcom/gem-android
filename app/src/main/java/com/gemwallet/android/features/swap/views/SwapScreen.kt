@@ -251,6 +251,7 @@ fun SwapItem(
             ),
             style = MaterialTheme.typography.labelMedium,
         )
+        Spacer8()
         Row(
             modifier = Modifier
                 .height(40.dp)
