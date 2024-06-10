@@ -1,16 +1,19 @@
 package com.gemwallet.android.features.settings.networks.views
 
 import android.net.Uri
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,11 +34,13 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.settings.networks.models.AddSourceType
 import com.gemwallet.android.features.settings.networks.models.NetworksUIState
 import com.gemwallet.android.ui.components.CellEntity
+import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.TransferTextFieldActions
 import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.padding8
 import com.wallet.core.primitives.Node
 
 @Composable
@@ -59,32 +64,33 @@ fun NetworkScene(
                     Spacer16()
                 }
             }
-            item {
-                Table(
-                    items = state.nodes.map { node ->
-                        CellEntity(
-                            label = if (node.url == ConfigRepository.getGemNodeUrl(state.chain)) {
-                                "Gem Wallet Node"
-                            } else {
-                                node.url
-                            },
-                            data = "",
-                            trailing = {
-                                if (node.url == state.currentNode?.url) {
-                                    Icon(
-                                        modifier = Modifier.size(20.dp),
-                                        imageVector = Icons.Default.Done,
-                                        contentDescription = ""
-                                    )
-                                }
-                            },
-                            action = {
-                                onSelectNode(node)
-                            },
-                            showActionChevron = false,
-                        )
+            items(state.nodes) { node: Node ->
+                ListItem(
+                    modifier = Modifier.clickable { onSelectNode(node) },
+                    dividerShowed = true,
+                    trailing = {
+                        if (node.url == state.currentNode?.url) {
+                            Icon(
+                                modifier = Modifier
+                                    .padding(end = padding8)
+                                    .size(20.dp),
+                                imageVector = Icons.Default.Done,
+                                contentDescription = ""
+                            )
+                        }
                     }
-                )
+                ) {
+                    Text(
+                        text = if (node.url == ConfigRepository.getGemNodeUrl(state.chain)) {
+                            "Gem Wallet Node"
+                        } else {
+                            node.url
+                        },
+                        maxLines = 1,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                }
             }
             item {
                 Spacer16()
