@@ -14,8 +14,16 @@ class SignPreloaderProxy(
         owner: Account,
         params: ConfirmParams,
     ): Result<SignerParams> = withContext(Dispatchers.IO) {
-        preloaders.firstOrNull { it.isMaintain(owner.chain) }
-            ?.invoke(owner = owner, params = params) ?: Result.failure(IllegalArgumentException("Chain isn't support"))
+        try {
+            preloaders.firstOrNull { it.isMaintain(owner.chain) }
+                ?.invoke(owner = owner, params = params) ?: Result.failure(
+                IllegalArgumentException(
+                    "Chain isn't support"
+                )
+            )
+        } catch (err: Throwable) {
+            Result.failure(err)
+        }
     }
 
     override fun maintainChain(): Chain {

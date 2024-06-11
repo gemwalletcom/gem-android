@@ -239,7 +239,10 @@ fun ChartHead(
                             marker: CartesianMarker,
                             targets: List<CartesianMarker.Target>
                         ) {
-                            price = chartPoints[targets.first().x.toInt()]
+                            val index = targets.first().x.toInt()
+                            if (index > 0 && index < chartPoints.size) {
+                                price = chartPoints[index]
+                            }
                         }
 
                         override fun onMoved(

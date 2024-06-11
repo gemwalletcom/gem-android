@@ -60,11 +60,11 @@ class AssetChartViewModel @Inject constructor(
                     period.string
                 )
             }
-            val prices = chartJob.await().getOrNull()!!.prices.sortedBy { it.timestamp }
+            val prices = chartJob.await().getOrNull()?.prices?.sortedBy { it.timestamp }
             state.update {
                 it.copy(
                     loading = false,
-                    prices = prices,
+                    prices = prices ?: emptyList(),
                 )
             }
         }
