@@ -79,7 +79,7 @@ fun WalletItem(
                 onLongClick = { onMenu?.invoke(id) }
             )
             .heightIn(72.dp),
-        iconUrl = icon.ifEmpty { "android.resource://com.gemwallet.android/drawable/ic_splash" },
+        iconUrl = icon.ifEmpty { "android.resource://com.gemwallet.android/drawable/multicoin_wallet" },
         supportIcon = if (type == WalletType.view) {
             "android.resource://com.gemwallet.android/drawable/watch_badge"
         } else null,
