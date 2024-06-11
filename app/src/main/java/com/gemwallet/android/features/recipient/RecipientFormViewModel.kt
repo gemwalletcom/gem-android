@@ -55,8 +55,8 @@ class RecipientFormViewModel @Inject constructor(
             val newState = withContext(Dispatchers.IO) { assetsRepository.getById(wallet, assetId) }
                 .fold(
                     onSuccess = {
-                        addressState.value = destinationAddress
-                        memoState.value = memo
+                        addressState.value = destinationAddress.ifEmpty { addressState.value }
+                        memoState.value = memo.ifEmpty { memoState.value }
                         currentState.copy(assetInfo = it.first(), addressDomain = addressDomain)
                     }
                 ) {
