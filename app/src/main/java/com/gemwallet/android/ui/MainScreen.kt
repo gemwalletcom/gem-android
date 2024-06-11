@@ -4,6 +4,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ElectricBolt
 import androidx.compose.material.icons.filled.Settings
@@ -59,6 +61,10 @@ fun MainScreen(
         currentTab.value = assetsRoute
     }
     val context = LocalContext.current
+    val assetsListState = rememberLazyListState()
+    val activitiesListState = rememberLazyListState()
+    val settingsScrollState = rememberScrollState()
+
     val navItems = remember {
         listOf(
             BottomNavItem(
@@ -132,11 +138,14 @@ fun MainScreen(
                     onSwapClick = navController::navigateToSwap,
                     onTransactionClick = navController::navigateToTransactionScreen,
                     onAssetClick = navController::navigateToAssetScreen,
+                    listState = assetsListState,
                 )
                 activitiesRoute -> TransactionsScreen(
+                    listState = activitiesListState,
                     onTransaction = navController::navigateToTransactionScreen,
                 )
                 else -> SettingsScene(
+                    scrollState = settingsScrollState,
                     onSecurity = navController::navigateToSecurityScreen,
                     onBridges = navController::navigateToBridgesScreen,
                     onDevelop = navController::navigateToDevelopScreen,

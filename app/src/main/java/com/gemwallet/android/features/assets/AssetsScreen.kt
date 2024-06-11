@@ -11,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
@@ -85,8 +87,9 @@ fun AssetsScreen(
     onSwapClick: () -> Unit,
     onTransactionClick: (String) -> Unit,
     onAssetClick: (AssetId) -> Unit,
+    listState: LazyListState = rememberLazyListState(),
+    viewModel: AssetsViewModel = hiltViewModel(),
 ) {
-    val viewModel: AssetsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     UI(
         isLoading = uiState.isLoading,
@@ -103,6 +106,7 @@ fun AssetsScreen(
         onTransactionClick = onTransactionClick,
         onAssetClick = onAssetClick,
         onAssetHide = viewModel::hideAsset,
+        listState = listState
     )
 }
 
@@ -123,6 +127,7 @@ fun UI(
     onTransactionClick: (String) -> Unit,
     onAssetClick: (AssetId) -> Unit,
     onAssetHide: (AssetId) -> Unit,
+    listState: LazyListState = rememberLazyListState()
 ) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -173,7 +178,7 @@ fun UI(
         }
     ) {
         AssetListPushToRefresh(
-            modifier = Modifier.padding(top = it.calculateTopPadding()/*, bottom = it.calculateBottomPadding()*/),
+            modifier = Modifier.padding(top = it.calculateTopPadding()),
             isLoading = isLoading,
             walletInfo = walletInfo,
             assets = assets,
@@ -187,6 +192,7 @@ fun UI(
             onTransactionClick = onTransactionClick,
             onAssetClick = onAssetClick,
             onAssetHide = onAssetHide,
+            listState = listState,
         )
     }
 }
@@ -208,6 +214,7 @@ fun AssetListPushToRefresh(
     onAssetClick: (AssetId) -> Unit,
     onAssetHide: (AssetId) -> Unit,
     modifier: Modifier = Modifier,
+    listState: LazyListState = rememberLazyListState()
 ) {
     val pullRefreshState = rememberPullRefreshState(isLoading, { onRefresh() })
 
@@ -226,6 +233,7 @@ fun AssetListPushToRefresh(
             onTransactionClick = onTransactionClick,
             onAssetClick = onAssetClick,
             onAssetHide = onAssetHide,
+            listState = listState,
         )
         PullRefreshIndicator(isLoading, pullRefreshState, Modifier.align(Alignment.TopCenter))
     }
@@ -245,12 +253,15 @@ private fun AssetList(
     onTransactionClick: (String) -> Unit,
     onAssetClick: (AssetId) -> Unit,
     onAssetHide: (AssetId) -> Unit,
+    listState: LazyListState,
 ) {
     val clipboardManager = LocalClipboardManager.current
     var longPressedAsset by remember {
         mutableStateOf<AssetId?>(null)
     }
-    LazyColumn {
+    LazyColumn(
+        state = listState,
+    ) {
         item {
             AmountListHead(
                 amount = walletInfo.totalValue,
@@ -392,6 +403,7 @@ fun PreviewAssetsList() {
             onTransactionClick = {},
             onAssetClick = {},
             onAssetHide = {},
+            listState = rememberLazyListState(),
         )
     }
 }

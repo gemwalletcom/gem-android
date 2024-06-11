@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ExperimentalMaterialApi
@@ -34,12 +36,14 @@ import com.gemwallet.android.ui.components.Scene
 @Composable
 fun TransactionsScreen(
     onTransaction: (String) -> Unit,
+    listState: LazyListState = rememberLazyListState()
 ) {
     val viewModel: TransactionsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     List(
-        uiState,
+        uiState = uiState,
+        listState = listState,
         onRefresh = viewModel::refresh,
         onTransactionClick = onTransaction,
     )
@@ -49,8 +53,9 @@ fun TransactionsScreen(
 @Composable
 private fun List(
     uiState: TxListScreenState,
+    listState: LazyListState = rememberLazyListState(),
     onRefresh: () -> Unit,
-    onTransactionClick: (String) -> Unit,
+    onTransactionClick: (String) -> Unit
 ) {
     val pullRefreshState = rememberPullRefreshState(uiState.loading, onRefresh)
     Scene(
@@ -60,7 +65,9 @@ private fun List(
         Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
             when {
                 uiState.transactions.isEmpty() -> {
-                    Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+                    Column(modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(rememberScrollState())) {
                         Text(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -72,7 +79,10 @@ private fun List(
                     }
                 }
                 else -> {
-                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        state = listState,
+                    ) {
                         transactionsList(
                             items = uiState.transactions,
                             onTransactionClick = onTransactionClick
