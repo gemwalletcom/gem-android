@@ -38,6 +38,7 @@ fun ConfirmScreen(
             title = stringResource(params.getTxType().getTitle()),
             message = (uiState as ConfirmSceneState.Fatal).error.stringResource(),
             onCancel = onCancel,
+            onTryAgain = { viewModel.init(params) }
         )
         ConfirmSceneState.Loading -> LoadingScene(
             title = stringResource(params.getTxType().getTitle()),
