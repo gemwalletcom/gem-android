@@ -1,9 +1,13 @@
 package com.gemwallet.android.features.settings.networks.viewmodels
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.text2.input.TextFieldState
+import androidx.compose.foundation.text2.input.forEachTextValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.chains.ChainInfoRepository
 import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.ext.filter
 import com.gemwallet.android.features.settings.networks.models.AddSourceType
 import com.gemwallet.android.features.settings.networks.models.NetworksUIState
 import com.wallet.core.primitives.Chain
@@ -17,6 +21,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalFoundationApi::class)
 @HiltViewModel
 class NetworksViewModel @Inject constructor(
     private val chainInfoRepository: ChainInfoRepository,
@@ -26,9 +31,13 @@ class NetworksViewModel @Inject constructor(
     private val state = MutableStateFlow(State())
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, NetworksUIState())
+    val chainFilter = TextFieldState()
 
     init {
         viewModelScope.launch {
+            chainFilter.forEachTextValue { query ->
+                state.update { it.copy(availableChains = chainInfoRepository.getAll().filter(query.toString().lowercase())) }
+            }
             state.update { it.copy(availableChains = chainInfoRepository.getAll()) }
         }
     }

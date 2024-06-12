@@ -1,8 +1,30 @@
 package com.gemwallet.android.ext
 
-import android.text.format.DateUtils
 import com.wallet.core.primitives.Chain
 import java.math.BigInteger
+
+val tokenAvailableChains = listOf(
+    Chain.AvalancheC,
+    Chain.Base,
+    Chain.SmartChain,
+    Chain.Arbitrum,
+    Chain.Polygon,
+    Chain.OpBNB,
+    Chain.Fantom,
+    Chain.Gnosis,
+    Chain.Optimism,
+    Chain.Manta,
+    Chain.Blast,
+    Chain.ZkSync,
+    Chain.Linea,
+    Chain.Mantle,
+    Chain.Celo,
+    Chain.Ethereum,
+    Chain.Tron,
+    Chain.Solana,
+    Chain.Sui,
+    Chain.Ton,
+)
 
 fun Chain.getReserveBalance(): BigInteger = when (this) {
     Chain.Xrp -> BigInteger.valueOf(10_000_000)
@@ -55,6 +77,5 @@ fun List<Chain>.filter(query: String): List<Chain> {
         asset.symbol.lowercase().startsWith(query) ||
         asset.name.lowercase().startsWith(query) ||
         it.string.lowercase().startsWith(query)
-
     }
 }

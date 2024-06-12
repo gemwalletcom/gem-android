@@ -11,6 +11,7 @@ import com.gemwallet.android.data.session.SessionRepository
 import com.gemwallet.android.data.tokens.TokensRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.ext.tokenAvailableChains
 import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.interactors.getIconUrl
@@ -66,8 +67,16 @@ class AssetSelectViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             list.collect { assets ->
+                val session = sessionRepository.session
+                val availableAccounts = session?.wallet?.accounts?.map { it.chain } ?: emptyList()
+                val isAddAssetAvailable =
+                    tokenAvailableChains.any { availableAccounts.contains(it) }
                 state.update {
-                    it.copy(assets = assets, currency = sessionRepository.session?.currency ?: Currency.USD)
+                    it.copy(
+                        assets = assets,
+                        currency = session?.currency ?: Currency.USD,
+                        isAddAssetAvailable = isAddAssetAvailable,
+                    )
                 }
             }
         }
@@ -122,6 +131,7 @@ class AssetSelectViewModel @Inject constructor(
 
 data class AssetSelectViewModelState(
     val isLoading: Boolean = false,
+    val isAddAssetAvailable: Boolean = false,
     val error: String = "",
     val assets: List<AssetInfo> = emptyList(),
     val currency: Currency = Currency.USD,
@@ -129,6 +139,7 @@ data class AssetSelectViewModelState(
 ) {
     fun toUIState(): AssetSelectUIState = AssetSelectUIState(
         isLoading = isLoading,
+        isAddAssetAvailable = isAddAssetAvailable,
         error = error,
         assets = assets
             .filter(predicate)
@@ -157,6 +168,7 @@ data class AssetSelectViewModelState(
 
 data class AssetSelectUIState(
     val isLoading: Boolean = false,
+    val isAddAssetAvailable: Boolean = false,
     val error: String = "",
     val assets: ImmutableList<AssetUIState> = listOf<AssetUIState>().toImmutableList(),
 )

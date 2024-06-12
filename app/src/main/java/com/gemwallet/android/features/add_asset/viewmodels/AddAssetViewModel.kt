@@ -1,5 +1,8 @@
 package com.gemwallet.android.features.add_asset.viewmodels
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.text2.input.TextFieldState
+import androidx.compose.foundation.text2.input.forEachTextValue
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,7 +11,9 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.session.SessionRepository
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.filter
 import com.gemwallet.android.ext.getAccount
+import com.gemwallet.android.ext.tokenAvailableChains
 import com.gemwallet.android.features.add_asset.models.AddAssetError
 import com.gemwallet.android.features.add_asset.models.AddAssetUIState
 import com.gemwallet.android.interactors.getIconUrl
@@ -25,15 +30,29 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@OptIn(ExperimentalFoundationApi::class)
 @HiltViewModel
 class AddAssetViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
 ) : ViewModel() {
+
     private val state = MutableStateFlow(State())
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, AddAssetUIState())
     var input by mutableStateOf("")
+    val chainFilter = TextFieldState()
+
+    init {
+        viewModelScope.launch {
+            state.update { it.copy(chains =  getAvailableChains()) }
+        }
+        viewModelScope.launch {
+            chainFilter.forEachTextValue { query ->
+                state.update { it.copy(chains = getAvailableChains().filter(query.toString().lowercase())) }
+            }
+        }
+    }
 
     fun onQrScan() {
         state.update { it.copy(isQrScan = true) }
@@ -108,7 +127,16 @@ class AddAssetViewModel @Inject constructor(
         }
     }
 
+    private fun getAvailableChains(): List<Chain> {
+        val wallet = sessionRepository.session?.wallet ?: return emptyList()
+        val availableAccounts = wallet.accounts.map { it.chain }
+        return tokenAvailableChains.filter {
+            availableAccounts.contains(it)
+        }
+    }
+
     private data class State(
+        val chains: List<Chain> = emptyList(),
         val chain: Chain = Chain.Ethereum,
         val isQrScan: Boolean = false,
         val address: String = "",
@@ -126,6 +154,7 @@ class AddAssetViewModel @Inject constructor(
                 },
                 networkIcon = chain.getIconUrl(),
                 networkTitle = chain.asset().name,
+                chains = chains,
                 chain = chain,
                 address = address,
                 asset = asset,

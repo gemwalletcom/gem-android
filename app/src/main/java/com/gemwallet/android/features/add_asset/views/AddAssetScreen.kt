@@ -1,3 +1,5 @@
+@file:kotlin.OptIn(ExperimentalFoundationApi::class)
+
 package com.gemwallet.android.features.add_asset.views
 
 import androidx.activity.compose.BackHandler
@@ -7,6 +9,7 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -70,6 +73,7 @@ fun AddAssetScree(
             }
             AddAssetUIState.Scene.SelectChain -> SelectChain(
                 chains = uiState.chains,
+                chainFilter = viewModel.chainFilter,
                 onSelect = viewModel::setChain,
                 onCancel = viewModel::cancelSelectChain,
             )

@@ -18,7 +18,6 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
 import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.ui.components.FatalStateScene
-import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetSubtype
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -43,11 +42,13 @@ fun AssetsManageScreen(
             assets = uiState.assets,
             loading = uiState.isLoading,
             onCancel = onCancel,
-            onAddAsset = onAddAsset,
+            onAddAsset = if (uiState.isAddAssetAvailable) onAddAsset else null,
             onSelect = {},
             actions = {
-                IconButton(onClick = onAddAsset) {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "")
+                if (uiState.isAddAssetAvailable) {
+                    IconButton(onClick = onAddAsset) {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "")
+                    }
                 }
             },
             itemTrailing = {asset ->
