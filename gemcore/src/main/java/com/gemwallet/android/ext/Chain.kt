@@ -48,3 +48,13 @@ fun Chain.eip1559Support() = when (this) {
 fun Chain.Companion.findByString(value: String): Chain? {
     return Chain.entries.firstOrNull{ it.string == value}
 }
+
+fun List<Chain>.filter(query: String): List<Chain> {
+    return filter {
+        val asset =  it.asset()
+        asset.symbol.lowercase().startsWith(query) ||
+        asset.name.lowercase().startsWith(query) ||
+        it.string.lowercase().startsWith(query)
+
+    }
+}

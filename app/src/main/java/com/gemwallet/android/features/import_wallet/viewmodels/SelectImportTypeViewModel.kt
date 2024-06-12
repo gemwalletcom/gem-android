@@ -1,11 +1,16 @@
 package com.gemwallet.android.features.import_wallet.viewmodels
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.text2.input.TextFieldState
+import androidx.compose.foundation.text2.input.forEachTextValue
 import androidx.compose.ui.text.intl.Locale
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.chains.ChainInfoRepository
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.filter
 import com.gemwallet.android.features.assets.model.IconUrl
 import com.gemwallet.android.interactors.getIconUrl
 import com.wallet.core.primitives.Chain
@@ -19,6 +24,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalFoundationApi::class)
 @HiltViewModel
 class SelectImportTypeViewModel @Inject constructor(
     private val chainInfoRepository: ChainInfoRepository,
@@ -26,8 +32,17 @@ class SelectImportTypeViewModel @Inject constructor(
     private val state = MutableStateFlow(SelectChainViewModelState())
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, SelectImportTypeUIState())
+    @OptIn(ExperimentalFoundationApi::class)
+    val chainFilter = TextFieldState()
 
     init {
+        viewModelScope.launch {
+            chainFilter.forEachTextValue { query ->
+                state.update { old -> old.copy(
+                    chains = chainInfoRepository.getAll().filter(query.toString().lowercase())
+                ) }
+            }
+        }
         viewModelScope.launch {
             state.update { it.copy(chains = chainInfoRepository.getAll()) }
         }

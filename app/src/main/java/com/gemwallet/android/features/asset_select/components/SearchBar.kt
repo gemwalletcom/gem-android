@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-internal fun SearchBar(
+fun SearchBar(
     query: TextFieldState,
     modifier: Modifier = Modifier,
 ) {

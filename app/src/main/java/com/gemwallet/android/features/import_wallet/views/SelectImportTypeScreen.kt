@@ -1,7 +1,11 @@
 package com.gemwallet.android.features.import_wallet.views
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text2.input.TextFieldState
+import androidx.compose.foundation.text2.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -11,6 +15,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
+import com.gemwallet.android.features.asset_select.components.SearchBar
 import com.gemwallet.android.features.import_wallet.viewmodels.ChainUIState
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.features.import_wallet.viewmodels.SelectImportTypeViewModel
@@ -18,9 +23,11 @@ import com.gemwallet.android.ui.components.ChainItem
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.padding16
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SelectImportTypeScreen(
     onClose: () -> Unit,
@@ -31,22 +38,29 @@ fun SelectImportTypeScreen(
 
     SelectImportTypeScene(
         chains = uiState.chains,
+        chainFilter = viewModel.chainFilter,
         onSelect = onSelect,
         onClose = onClose,
     )
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SelectImportTypeScene(
     chains: List<ChainUIState>,
+    chainFilter: TextFieldState,
     onSelect: (ImportType) -> Unit,
     onClose: () -> Unit,
 ) {
+
     Scene(
         title = stringResource(id = R.string.wallet_import_title),
         onClose = onClose,
     ) {
         LazyColumn(modifier = Modifier) {
+            item {
+                SearchBar(query = chainFilter, modifier = Modifier.padding(padding16))
+            }
             item {
                 Container {
                     ChainItem(
@@ -72,6 +86,7 @@ private fun SelectImportTypeScene(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun PreviewChainSelectScreen() {
@@ -86,7 +101,8 @@ fun PreviewChainSelectScreen() {
                     ChainUIState(title = "foo Chain #5", icon = "", chain = Chain.Bitcoin),
                     ChainUIState(title = "foo Chain #6", icon = "", chain = Chain.Bitcoin),
                 ),
-                onClose = { },
+                chainFilter = rememberTextFieldState(),
+                onClose = {},
                 onSelect = {}
             )
         }
