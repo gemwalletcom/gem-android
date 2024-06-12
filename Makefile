@@ -29,7 +29,7 @@ build-test:
 test:
 	./gradlew connectedAndroidTest
 
-unsigned-apk:
+debug-apk:
 	./gradlew assembleDebug
 
 release:
