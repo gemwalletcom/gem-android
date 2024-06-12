@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.recipient
+package com.gemwallet.android.features.recipient.models
 
 import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.model.Crypto

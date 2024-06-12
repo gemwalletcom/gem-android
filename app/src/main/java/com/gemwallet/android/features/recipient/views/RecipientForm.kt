@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.recipient
+package com.gemwallet.android.features.recipient.views
 
 import android.Manifest
 import androidx.activity.compose.BackHandler
@@ -31,6 +31,9 @@ import com.gemwallet.android.R
 import com.gemwallet.android.blockchain.clients.ethereum.StakeHub.Companion.address
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.amount.navigation.OnAmount
+import com.gemwallet.android.features.recipient.viewmodels.RecipientFormError
+import com.gemwallet.android.features.recipient.viewmodels.RecipientFormUIState
+import com.gemwallet.android.features.recipient.viewmodels.RecipientFormViewModel
 import com.gemwallet.android.ui.components.AddressChainField
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene

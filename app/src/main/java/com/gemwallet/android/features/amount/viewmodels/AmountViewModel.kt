@@ -10,7 +10,7 @@ import com.gemwallet.android.data.session.SessionRepository
 import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.features.amount.model.AmountError
 import com.gemwallet.android.features.amount.model.AmountScreenState
-import com.gemwallet.android.features.recipient.InputCurrency
+import com.gemwallet.android.features.recipient.models.InputCurrency
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.model.AssetInfo

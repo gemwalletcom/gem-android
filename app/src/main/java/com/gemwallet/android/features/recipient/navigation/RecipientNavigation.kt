@@ -15,7 +15,7 @@ import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.features.asset_select.views.SelectSendScreen
-import com.gemwallet.android.features.recipient.RecipientForm
+import com.gemwallet.android.features.recipient.views.RecipientForm
 import com.wallet.core.primitives.AssetId
 
 internal const val assetIdArg = "assetId"

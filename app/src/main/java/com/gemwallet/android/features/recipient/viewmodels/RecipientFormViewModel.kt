@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.recipient
+package com.gemwallet.android.features.recipient.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -33,7 +33,9 @@ class RecipientFormViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val state = MutableStateFlow(RecipientFormState())
-    val uiState = state.map { it.toUIState() }.stateIn(viewModelScope, SharingStarted.Eagerly, RecipientFormUIState.Loading)
+    val uiState = state.map { it.toUIState() }.stateIn(viewModelScope, SharingStarted.Eagerly,
+        RecipientFormUIState.Loading
+    )
 
     val addressState = mutableStateOf("")
     val memoState = mutableStateOf("")
@@ -79,9 +81,10 @@ class RecipientFormViewModel @Inject constructor(
     }
 
     fun setQrData(data: String) {
+        val paymentWrapper = uniffi.Gemstone.paymentDecodeUrl(data)
         when (state.value.scan) {
-            ScanType.Address -> addressState.value = data
-            ScanType.Memo -> memoState.value = data
+            ScanType.Address -> addressState.value = paymentWrapper.address.ifEmpty { data }
+            ScanType.Memo -> memoState.value = paymentWrapper.memo ?: data
             null -> {}
         }
         state.update { it.copy(scan = null) }
