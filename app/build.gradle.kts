@@ -43,6 +43,7 @@ android {
             useSupportLibrary = true
         }
         ndk {
+            abiFilters.add("x86_64")
             abiFilters.add("armeabi-v7a")
             abiFilters.add("arm64-v8a")
         }
@@ -72,7 +73,6 @@ android {
 
             if (System.getenv("UNIT_TESTS") == "true") {
                 ndk {
-                    abiFilters.add("x86_64")
                     abiFilters.remove("arm64-v8a")
                     abiFilters.remove("armeabi-v7a")
                 }
