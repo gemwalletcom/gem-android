@@ -29,6 +29,9 @@ build-test:
 test:
 	./gradlew connectedAndroidTest
 
+debug-apk:
+	./gradlew assembleDebug
+
 release:
 	./gradlew clean buildCargoNdkRelease assembleRelease :app:bundleRelease
 

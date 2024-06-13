@@ -66,8 +66,19 @@ If you want to contribute, you can use our [developers telegram](https://t.me/ge
 
 ### Android Development
 
-1. Setup [Android Studio](https://developer.android.com/studio)
-2. Run `make boostrap` to install all nessesary tools (Rust / NDK).
+> [!NOTE]  
+> We recommend using Apple silicon Macs for development (arm64), if you're using Intel Mac, you need to add `x86_64` to `targets` under `cargoNdk` in `build.gradle.kts`.
+
+1. Download and install latest [Android Studio](https://developer.android.com/studio)
+2. Install JDK 17, preferably using [SDKMAN](https://sdkman.io/)
+3. Generate a GitHub personal [token](https://github.com/settings/tokens) with `read:packages` permission and add it to your `local.properties` file:
+
+```properties
+gpr.user=<your-github-username>
+gpr.key=<your-github-personal-token>
+```
+
+4. Run `make boostrap` to install all nessesary tools (Rust / NDK).
 
 ## 👨‍👧‍👦 Contributors
 
