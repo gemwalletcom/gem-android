@@ -24,13 +24,13 @@ install-ndk:
 	${SDK_MANAGER} "ndk;26.1.10909125"
 
 build-test:
-	./gradlew assembleAndroidTest
+	./gradlew assembleAndroidTest --build-cache
 
 test:
 	./gradlew connectedAndroidTest
 
 debug-apk:
-	./gradlew assembleDebug
+	./gradlew assembleDebug --build-cache
 
 release:
 	./gradlew clean buildCargoNdkRelease assembleRelease :app:bundleRelease
