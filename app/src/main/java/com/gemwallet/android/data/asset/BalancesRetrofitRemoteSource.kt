@@ -17,15 +17,23 @@ class BalancesRetrofitRemoteSource @Inject constructor(
     override suspend fun getBalances(account: Account, tokens: List<AssetId>): Result<List<Balances>> {
         val client = balanceClients.firstOrNull { it.isMaintain(account.chain) }
             ?: return Result.failure(Exception("Chain doesn't support"))
-        val nativeBalances = client.getNativeBalance(account.address)
+        val nativeBalances = try {
+            client.getNativeBalance(account.address)
+        } catch (err: Throwable) {
+            null
+        }
 
         val tokensBalances = if (tokens.isEmpty()) {
             emptyList()
         } else {
-            client.getTokenBalances(
-                account.address,
-                tokens.filter { it.type() == AssetSubtype.TOKEN && account.chain == it.chain},
-            )
+            try {
+                client.getTokenBalances(
+                    account.address,
+                    tokens.filter { it.type() == AssetSubtype.TOKEN && account.chain == it.chain },
+                )
+            } catch (err: Throwable) {
+                emptyList()
+            }
         }
         val result = if (nativeBalances == null) {
             tokensBalances

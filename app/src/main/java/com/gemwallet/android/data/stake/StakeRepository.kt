@@ -32,9 +32,13 @@ class StakeRepository(
     }
 
     private suspend fun syncDelegations(chain: Chain, address: String, apr: Double) {
-        val delegations = stakeClients
-            .firstOrNull { it.isMaintain(chain) }
-            ?.getStakeDelegations(address, apr) ?: return
+        val delegations = try {
+            stakeClients
+                .firstOrNull { it.isMaintain(chain) }
+                ?.getStakeDelegations(address, apr) ?: return
+        } catch (err: Throwable) {
+            return
+        }
         localSource.update(address, delegations)
     }
 
