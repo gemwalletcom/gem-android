@@ -286,7 +286,7 @@ class AmountViewModel @Inject constructor(
     private fun getMinAmount(txType: TransactionType, chain: Chain): BigInteger {
         return when (txType) {
             TransactionType.StakeRedelegate,
-            TransactionType.StakeDelegate -> BigInteger.valueOf(uniffi.Gemstone.Config().getMinStakeAmount(chain.string).toLong())
+            TransactionType.StakeDelegate -> BigInteger.valueOf(uniffi.Gemstone.Config().getStakeConfig(chain.string).minAmount.toLong())
             else -> BigInteger.ZERO
         }
     }

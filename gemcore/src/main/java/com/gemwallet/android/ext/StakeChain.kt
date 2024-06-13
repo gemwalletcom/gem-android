@@ -17,6 +17,7 @@ fun StakeChain.lockTime(): Long = when (this) {
     StakeChain.Solana -> 259200
     StakeChain.Sui -> 86400
     StakeChain.SmartChain -> 0L
+    StakeChain.Ethereum -> 0L
 }
 
 fun StakeChain.redelegated(): Boolean = when (this) {
@@ -26,8 +27,9 @@ fun StakeChain.redelegated(): Boolean = when (this) {
     StakeChain.Celestia,
     StakeChain.Osmosis -> true
     StakeChain.Solana,
-    StakeChain.Sui -> false
-    StakeChain.SmartChain -> false
+    StakeChain.Sui,
+    StakeChain.SmartChain,
+    StakeChain.Ethereum -> false
 }
 
 fun StakeChain.withdraw(): Boolean = when (this) {
@@ -36,9 +38,10 @@ fun StakeChain.withdraw(): Boolean = when (this) {
     StakeChain.Sei,
     StakeChain.Celestia,
     StakeChain.Osmosis,
+    StakeChain.SmartChain,
+    StakeChain.Ethereum,
     StakeChain.Sui-> false
     StakeChain.Solana -> true
-    StakeChain.SmartChain -> false
 }
 
 fun StakeChain.claimed(): Boolean = when (this) {
@@ -48,6 +51,7 @@ fun StakeChain.claimed(): Boolean = when (this) {
     StakeChain.Celestia,
     StakeChain.Osmosis -> true
     StakeChain.Solana,
-    StakeChain.Sui -> false
-    StakeChain.SmartChain -> false
+    StakeChain.Sui,
+    StakeChain.SmartChain,
+    StakeChain.Ethereum -> false
 }

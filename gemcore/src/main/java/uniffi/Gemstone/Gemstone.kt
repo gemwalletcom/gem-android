@@ -746,17 +746,28 @@ internal interface UniffiLib : Library {
 
     fun uniffi_gemstone_fn_constructor_config_new(uniffi_out_err: UniffiRustCallStatus): Pointer
 
+    fun uniffi_gemstone_fn_method_config_get_chain_config(
+        `ptr`: Pointer,
+        `chain`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
     fun uniffi_gemstone_fn_method_config_get_docs_url(
         `ptr`: Pointer,
         `item`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
-    fun uniffi_gemstone_fn_method_config_get_min_stake_amount(
+    fun uniffi_gemstone_fn_method_config_get_nodes(
+        `ptr`: Pointer,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_method_config_get_nodes_for_chain(
         `ptr`: Pointer,
         `chain`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
-    ): Long
+    ): RustBuffer.ByValue
 
     fun uniffi_gemstone_fn_method_config_get_public_url(
         `ptr`: Pointer,
@@ -770,14 +781,33 @@ internal interface UniffiLib : Library {
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
-    fun uniffi_gemstone_fn_method_config_get_stake_locktime(
+    fun uniffi_gemstone_fn_method_config_get_stake_config(
         `ptr`: Pointer,
         `chain`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
-    ): Long
+    ): RustBuffer.ByValue
 
     fun uniffi_gemstone_fn_method_config_get_validators(
         `ptr`: Pointer,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_method_config_get_wallet_connect_config(
+        `ptr`: Pointer,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_method_config_image_formatter_asset_url(
+        `ptr`: Pointer,
+        `chain`: RustBuffer.ByValue,
+        `tokenId`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_method_config_image_formatter_validator_url(
+        `ptr`: Pointer,
+        `chain`: RustBuffer.ByValue,
+        `id`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
@@ -915,11 +945,6 @@ internal interface UniffiLib : Library {
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
-    fun uniffi_gemstone_fn_func_chain_transaction_timeout_seconds(
-        `chain`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): Double
-
     fun uniffi_gemstone_fn_func_cosmos_convert_hrp(
         `address`: RustBuffer.ByValue,
         `hrp`: RustBuffer.ByValue,
@@ -927,6 +952,48 @@ internal interface UniffiLib : Library {
     ): RustBuffer.ByValue
 
     fun uniffi_gemstone_fn_func_lib_version(uniffi_out_err: UniffiRustCallStatus): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_func_lido_decode_get_withdrawal_statuses(
+        `result`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_func_lido_decode_request_withdrawals_return(
+        `result`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_func_lido_decode_withdrawal_request_ids(
+        `result`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_func_lido_encode_claim_withdrawal(
+        `requestId`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_func_lido_encode_request_withdrawals(
+        `amounts`: RustBuffer.ByValue,
+        `owner`: RustBuffer.ByValue,
+        `permit`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_func_lido_encode_submit(
+        `referral`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_func_lido_encode_withdrawal_request_ids(
+        `owner`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_func_lido_encode_withdrawal_statuses(
+        `requestIds`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
 
     fun uniffi_gemstone_fn_func_payment_decode_url(
         `string`: RustBuffer.ByValue,
@@ -1229,11 +1296,25 @@ internal interface UniffiLib : Library {
 
     fun uniffi_gemstone_checksum_func_bsc_encode_validators_call(): Short
 
-    fun uniffi_gemstone_checksum_func_chain_transaction_timeout_seconds(): Short
-
     fun uniffi_gemstone_checksum_func_cosmos_convert_hrp(): Short
 
     fun uniffi_gemstone_checksum_func_lib_version(): Short
+
+    fun uniffi_gemstone_checksum_func_lido_decode_get_withdrawal_statuses(): Short
+
+    fun uniffi_gemstone_checksum_func_lido_decode_request_withdrawals_return(): Short
+
+    fun uniffi_gemstone_checksum_func_lido_decode_withdrawal_request_ids(): Short
+
+    fun uniffi_gemstone_checksum_func_lido_encode_claim_withdrawal(): Short
+
+    fun uniffi_gemstone_checksum_func_lido_encode_request_withdrawals(): Short
+
+    fun uniffi_gemstone_checksum_func_lido_encode_submit(): Short
+
+    fun uniffi_gemstone_checksum_func_lido_encode_withdrawal_request_ids(): Short
+
+    fun uniffi_gemstone_checksum_func_lido_encode_withdrawal_statuses(): Short
 
     fun uniffi_gemstone_checksum_func_payment_decode_url(): Short
 
@@ -1259,17 +1340,27 @@ internal interface UniffiLib : Library {
 
     fun uniffi_gemstone_checksum_func_ton_hex_to_base64_address(): Short
 
+    fun uniffi_gemstone_checksum_method_config_get_chain_config(): Short
+
     fun uniffi_gemstone_checksum_method_config_get_docs_url(): Short
 
-    fun uniffi_gemstone_checksum_method_config_get_min_stake_amount(): Short
+    fun uniffi_gemstone_checksum_method_config_get_nodes(): Short
+
+    fun uniffi_gemstone_checksum_method_config_get_nodes_for_chain(): Short
 
     fun uniffi_gemstone_checksum_method_config_get_public_url(): Short
 
     fun uniffi_gemstone_checksum_method_config_get_social_url(): Short
 
-    fun uniffi_gemstone_checksum_method_config_get_stake_locktime(): Short
+    fun uniffi_gemstone_checksum_method_config_get_stake_config(): Short
 
     fun uniffi_gemstone_checksum_method_config_get_validators(): Short
+
+    fun uniffi_gemstone_checksum_method_config_get_wallet_connect_config(): Short
+
+    fun uniffi_gemstone_checksum_method_config_image_formatter_asset_url(): Short
+
+    fun uniffi_gemstone_checksum_method_config_image_formatter_validator_url(): Short
 
     fun uniffi_gemstone_checksum_method_explorer_get_address_url(): Short
 
@@ -1340,13 +1431,34 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_gemstone_checksum_func_bsc_encode_validators_call() != 15414.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_gemstone_checksum_func_chain_transaction_timeout_seconds() != 23964.toShort()) {
-        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
-    }
     if (lib.uniffi_gemstone_checksum_func_cosmos_convert_hrp() != 59064.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_func_lib_version() != 54725.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_func_lido_decode_get_withdrawal_statuses() != 9208.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_func_lido_decode_request_withdrawals_return() != 34885.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_func_lido_decode_withdrawal_request_ids() != 6923.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_func_lido_encode_claim_withdrawal() != 2934.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_func_lido_encode_request_withdrawals() != 44714.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_func_lido_encode_submit() != 14847.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_func_lido_encode_withdrawal_request_ids() != 1987.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_func_lido_encode_withdrawal_statuses() != 3367.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_func_payment_decode_url() != 3196.toShort()) {
@@ -1385,10 +1497,16 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_gemstone_checksum_func_ton_hex_to_base64_address() != 2835.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_gemstone_checksum_method_config_get_chain_config() != 35682.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_gemstone_checksum_method_config_get_docs_url() != 48896.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_gemstone_checksum_method_config_get_min_stake_amount() != 19633.toShort()) {
+    if (lib.uniffi_gemstone_checksum_method_config_get_nodes() != 3747.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_method_config_get_nodes_for_chain() != 50401.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_method_config_get_public_url() != 56730.toShort()) {
@@ -1397,10 +1515,19 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_gemstone_checksum_method_config_get_social_url() != 13712.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_gemstone_checksum_method_config_get_stake_locktime() != 37324.toShort()) {
+    if (lib.uniffi_gemstone_checksum_method_config_get_stake_config() != 18495.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_method_config_get_validators() != 27239.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_method_config_get_wallet_connect_config() != 40625.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_method_config_image_formatter_asset_url() != 61051.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_method_config_image_formatter_validator_url() != 18028.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_method_explorer_get_address_url() != 4563.toShort()) {
@@ -1831,17 +1958,33 @@ private class JavaLangRefCleanable(
  * Config
  */
 public interface ConfigInterface {
+    fun `getChainConfig`(`chain`: kotlin.String): ChainConfig
+
     fun `getDocsUrl`(`item`: DocsUrl): kotlin.String
 
-    fun `getMinStakeAmount`(`chain`: kotlin.String): kotlin.ULong
+    fun `getNodes`(): Map<kotlin.String, List<Node>>
+
+    fun `getNodesForChain`(`chain`: kotlin.String): List<Node>
 
     fun `getPublicUrl`(`item`: PublicUrl): kotlin.String
 
     fun `getSocialUrl`(`item`: SocialUrl): kotlin.String
 
-    fun `getStakeLocktime`(`chain`: kotlin.String): kotlin.ULong
+    fun `getStakeConfig`(`chain`: kotlin.String): StakeChainConfig
 
     fun `getValidators`(): Map<kotlin.String, List<kotlin.String>>
+
+    fun `getWalletConnectConfig`(): WalletConnectConfig
+
+    fun `imageFormatterAssetUrl`(
+        `chain`: kotlin.String,
+        `tokenId`: kotlin.String?,
+    ): kotlin.String
+
+    fun `imageFormatterValidatorUrl`(
+        `chain`: kotlin.String,
+        `id`: kotlin.String,
+    ): kotlin.String
 
     companion object
 }
@@ -1937,6 +2080,20 @@ open class Config : Disposable, AutoCloseable, ConfigInterface {
         }
     }
 
+    override fun `getChainConfig`(`chain`: kotlin.String): ChainConfig {
+        return FfiConverterTypeChainConfig.lift(
+            callWithPointer {
+                uniffiRustCall { _status ->
+                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_chain_config(
+                        it,
+                        FfiConverterString.lower(`chain`),
+                        _status,
+                    )
+                }
+            },
+        )
+    }
+
     override fun `getDocsUrl`(`item`: DocsUrl): kotlin.String {
         return FfiConverterString.lift(
             callWithPointer {
@@ -1951,11 +2108,24 @@ open class Config : Disposable, AutoCloseable, ConfigInterface {
         )
     }
 
-    override fun `getMinStakeAmount`(`chain`: kotlin.String): kotlin.ULong {
-        return FfiConverterULong.lift(
+    override fun `getNodes`(): Map<kotlin.String, List<Node>> {
+        return FfiConverterMapStringSequenceTypeNode.lift(
             callWithPointer {
                 uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_min_stake_amount(
+                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_nodes(
+                        it,
+                        _status,
+                    )
+                }
+            },
+        )
+    }
+
+    override fun `getNodesForChain`(`chain`: kotlin.String): List<Node> {
+        return FfiConverterSequenceTypeNode.lift(
+            callWithPointer {
+                uniffiRustCall { _status ->
+                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_nodes_for_chain(
                         it,
                         FfiConverterString.lower(`chain`),
                         _status,
@@ -1993,11 +2163,11 @@ open class Config : Disposable, AutoCloseable, ConfigInterface {
         )
     }
 
-    override fun `getStakeLocktime`(`chain`: kotlin.String): kotlin.ULong {
-        return FfiConverterULong.lift(
+    override fun `getStakeConfig`(`chain`: kotlin.String): StakeChainConfig {
+        return FfiConverterTypeStakeChainConfig.lift(
             callWithPointer {
                 uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_stake_locktime(
+                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_stake_config(
                         it,
                         FfiConverterString.lower(`chain`),
                         _status,
@@ -2013,6 +2183,55 @@ open class Config : Disposable, AutoCloseable, ConfigInterface {
                 uniffiRustCall { _status ->
                     UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_validators(
                         it,
+                        _status,
+                    )
+                }
+            },
+        )
+    }
+
+    override fun `getWalletConnectConfig`(): WalletConnectConfig {
+        return FfiConverterTypeWalletConnectConfig.lift(
+            callWithPointer {
+                uniffiRustCall { _status ->
+                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_wallet_connect_config(
+                        it,
+                        _status,
+                    )
+                }
+            },
+        )
+    }
+
+    override fun `imageFormatterAssetUrl`(
+        `chain`: kotlin.String,
+        `tokenId`: kotlin.String?,
+    ): kotlin.String {
+        return FfiConverterString.lift(
+            callWithPointer {
+                uniffiRustCall { _status ->
+                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_image_formatter_asset_url(
+                        it,
+                        FfiConverterString.lower(`chain`),
+                        FfiConverterOptionalString.lower(`tokenId`),
+                        _status,
+                    )
+                }
+            },
+        )
+    }
+
+    override fun `imageFormatterValidatorUrl`(
+        `chain`: kotlin.String,
+        `id`: kotlin.String,
+    ): kotlin.String {
+        return FfiConverterString.lift(
+            callWithPointer {
+                uniffiRustCall { _status ->
+                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_image_formatter_validator_url(
+                        it,
+                        FfiConverterString.lower(`chain`),
+                        FfiConverterString.lower(`id`),
                         _status,
                     )
                 }
@@ -2747,6 +2966,132 @@ public object FfiConverterTypeBscValidator : FfiConverterRustBuffer<BscValidator
     }
 }
 
+data class ChainConfig(
+    var `networkId`: kotlin.String?,
+    var `transactionTimeout`: kotlin.Double,
+    var `slip44`: kotlin.Int,
+    var `rank`: kotlin.Int,
+    var `denom`: kotlin.String?,
+    var `defaultAssetType`: kotlin.String?,
+) {
+    companion object
+}
+
+public object FfiConverterTypeChainConfig : FfiConverterRustBuffer<ChainConfig> {
+    override fun read(buf: ByteBuffer): ChainConfig {
+        return ChainConfig(
+            FfiConverterOptionalString.read(buf),
+            FfiConverterDouble.read(buf),
+            FfiConverterInt.read(buf),
+            FfiConverterInt.read(buf),
+            FfiConverterOptionalString.read(buf),
+            FfiConverterOptionalString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: ChainConfig) =
+        (
+            FfiConverterOptionalString.allocationSize(value.`networkId`) +
+                FfiConverterDouble.allocationSize(value.`transactionTimeout`) +
+                FfiConverterInt.allocationSize(value.`slip44`) +
+                FfiConverterInt.allocationSize(value.`rank`) +
+                FfiConverterOptionalString.allocationSize(value.`denom`) +
+                FfiConverterOptionalString.allocationSize(value.`defaultAssetType`)
+        )
+
+    override fun write(
+        value: ChainConfig,
+        buf: ByteBuffer,
+    ) {
+        FfiConverterOptionalString.write(value.`networkId`, buf)
+        FfiConverterDouble.write(value.`transactionTimeout`, buf)
+        FfiConverterInt.write(value.`slip44`, buf)
+        FfiConverterInt.write(value.`rank`, buf)
+        FfiConverterOptionalString.write(value.`denom`, buf)
+        FfiConverterOptionalString.write(value.`defaultAssetType`, buf)
+    }
+}
+
+data class Erc2612Permit(
+    var `value`: kotlin.String,
+    var `deadline`: kotlin.ULong,
+    var `signature`: kotlin.ByteArray,
+) {
+    companion object
+}
+
+public object FfiConverterTypeERC2612Permit : FfiConverterRustBuffer<Erc2612Permit> {
+    override fun read(buf: ByteBuffer): Erc2612Permit {
+        return Erc2612Permit(
+            FfiConverterString.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterByteArray.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: Erc2612Permit) =
+        (
+            FfiConverterString.allocationSize(value.`value`) +
+                FfiConverterULong.allocationSize(value.`deadline`) +
+                FfiConverterByteArray.allocationSize(value.`signature`)
+        )
+
+    override fun write(
+        value: Erc2612Permit,
+        buf: ByteBuffer,
+    ) {
+        FfiConverterString.write(value.`value`, buf)
+        FfiConverterULong.write(value.`deadline`, buf)
+        FfiConverterByteArray.write(value.`signature`, buf)
+    }
+}
+
+data class LidoWithdrawalRequest(
+    var `amount`: kotlin.String,
+    var `shares`: kotlin.String,
+    var `owner`: kotlin.String,
+    var `timestamp`: kotlin.ULong,
+    var `isFinalized`: kotlin.Boolean,
+    var `isClaimed`: kotlin.Boolean,
+) {
+    companion object
+}
+
+public object FfiConverterTypeLidoWithdrawalRequest : FfiConverterRustBuffer<LidoWithdrawalRequest> {
+    override fun read(buf: ByteBuffer): LidoWithdrawalRequest {
+        return LidoWithdrawalRequest(
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterString.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterBoolean.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: LidoWithdrawalRequest) =
+        (
+            FfiConverterString.allocationSize(value.`amount`) +
+                FfiConverterString.allocationSize(value.`shares`) +
+                FfiConverterString.allocationSize(value.`owner`) +
+                FfiConverterULong.allocationSize(value.`timestamp`) +
+                FfiConverterBoolean.allocationSize(value.`isFinalized`) +
+                FfiConverterBoolean.allocationSize(value.`isClaimed`)
+        )
+
+    override fun write(
+        value: LidoWithdrawalRequest,
+        buf: ByteBuffer,
+    ) {
+        FfiConverterString.write(value.`amount`, buf)
+        FfiConverterString.write(value.`shares`, buf)
+        FfiConverterString.write(value.`owner`, buf)
+        FfiConverterULong.write(value.`timestamp`, buf)
+        FfiConverterBoolean.write(value.`isFinalized`, buf)
+        FfiConverterBoolean.write(value.`isClaimed`, buf)
+    }
+}
+
 data class MplMetadata(
     var `mint`: kotlin.String,
     var `name`: kotlin.String,
@@ -2785,6 +3130,36 @@ public object FfiConverterTypeMplMetadata : FfiConverterRustBuffer<MplMetadata> 
     }
 }
 
+data class Node(
+    var `url`: kotlin.String,
+    var `priority`: NodePriority,
+) {
+    companion object
+}
+
+public object FfiConverterTypeNode : FfiConverterRustBuffer<Node> {
+    override fun read(buf: ByteBuffer): Node {
+        return Node(
+            FfiConverterString.read(buf),
+            FfiConverterTypeNodePriority.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: Node) =
+        (
+            FfiConverterString.allocationSize(value.`url`) +
+                FfiConverterTypeNodePriority.allocationSize(value.`priority`)
+        )
+
+    override fun write(
+        value: Node,
+        buf: ByteBuffer,
+    ) {
+        FfiConverterString.write(value.`url`, buf)
+        FfiConverterTypeNodePriority.write(value.`priority`, buf)
+    }
+}
+
 data class PaymentWrapper(
     var `address`: kotlin.String,
     var `amount`: kotlin.String?,
@@ -2820,6 +3195,44 @@ public object FfiConverterTypePaymentWrapper : FfiConverterRustBuffer<PaymentWra
         FfiConverterOptionalString.write(value.`amount`, buf)
         FfiConverterOptionalString.write(value.`memo`, buf)
         FfiConverterOptionalString.write(value.`chain`, buf)
+    }
+}
+
+data class StakeChainConfig(
+    var `timeLock`: kotlin.ULong,
+    var `minAmount`: kotlin.ULong,
+    var `changeAmountOnUnstake`: kotlin.Boolean,
+    var `redelegate`: kotlin.Boolean,
+) {
+    companion object
+}
+
+public object FfiConverterTypeStakeChainConfig : FfiConverterRustBuffer<StakeChainConfig> {
+    override fun read(buf: ByteBuffer): StakeChainConfig {
+        return StakeChainConfig(
+            FfiConverterULong.read(buf),
+            FfiConverterULong.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterBoolean.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: StakeChainConfig) =
+        (
+            FfiConverterULong.allocationSize(value.`timeLock`) +
+                FfiConverterULong.allocationSize(value.`minAmount`) +
+                FfiConverterBoolean.allocationSize(value.`changeAmountOnUnstake`) +
+                FfiConverterBoolean.allocationSize(value.`redelegate`)
+        )
+
+    override fun write(
+        value: StakeChainConfig,
+        buf: ByteBuffer,
+    ) {
+        FfiConverterULong.write(value.`timeLock`, buf)
+        FfiConverterULong.write(value.`minAmount`, buf)
+        FfiConverterBoolean.write(value.`changeAmountOnUnstake`, buf)
+        FfiConverterBoolean.write(value.`redelegate`, buf)
     }
 }
 
@@ -3123,6 +3536,32 @@ public object FfiConverterTypeSuiUnstakeInput : FfiConverterRustBuffer<SuiUnstak
     }
 }
 
+data class WalletConnectConfig(
+    var `chains`: List<kotlin.String>,
+) {
+    companion object
+}
+
+public object FfiConverterTypeWalletConnectConfig : FfiConverterRustBuffer<WalletConnectConfig> {
+    override fun read(buf: ByteBuffer): WalletConnectConfig {
+        return WalletConnectConfig(
+            FfiConverterSequenceString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: WalletConnectConfig) =
+        (
+            FfiConverterSequenceString.allocationSize(value.`chains`)
+        )
+
+    override fun write(
+        value: WalletConnectConfig,
+        buf: ByteBuffer,
+    ) {
+        FfiConverterSequenceString.write(value.`chains`, buf)
+    }
+}
+
 enum class BscDelegationStatus {
     ACTIVE,
     UNDELEGATING,
@@ -3226,6 +3665,34 @@ public object FfiConverterTypeGemstoneError : FfiConverterRustBuffer<GemstoneExc
                 Unit
             }
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
+    }
+}
+
+enum class NodePriority {
+    HIGH,
+    MEDIUM,
+    LOW,
+    INACTIVE,
+    ;
+
+    companion object
+}
+
+public object FfiConverterTypeNodePriority : FfiConverterRustBuffer<NodePriority> {
+    override fun read(buf: ByteBuffer) =
+        try {
+            NodePriority.values()[buf.getInt() - 1]
+        } catch (e: IndexOutOfBoundsException) {
+            throw RuntimeException("invalid enum value, something is very wrong!!", e)
+        }
+
+    override fun allocationSize(value: NodePriority) = 4UL
+
+    override fun write(
+        value: NodePriority,
+        buf: ByteBuffer,
+    ) {
+        buf.putInt(value.ordinal + 1)
     }
 }
 
@@ -3425,6 +3892,56 @@ public object FfiConverterSequenceTypeBscValidator : FfiConverterRustBuffer<List
     }
 }
 
+public object FfiConverterSequenceTypeLidoWithdrawalRequest : FfiConverterRustBuffer<List<LidoWithdrawalRequest>> {
+    override fun read(buf: ByteBuffer): List<LidoWithdrawalRequest> {
+        val len = buf.getInt()
+        return List<LidoWithdrawalRequest>(len) {
+            FfiConverterTypeLidoWithdrawalRequest.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<LidoWithdrawalRequest>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeLidoWithdrawalRequest.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(
+        value: List<LidoWithdrawalRequest>,
+        buf: ByteBuffer,
+    ) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeLidoWithdrawalRequest.write(it, buf)
+        }
+    }
+}
+
+public object FfiConverterSequenceTypeNode : FfiConverterRustBuffer<List<Node>> {
+    override fun read(buf: ByteBuffer): List<Node> {
+        val len = buf.getInt()
+        return List<Node>(len) {
+            FfiConverterTypeNode.read(buf)
+        }
+    }
+
+    override fun allocationSize(value: List<Node>): ULong {
+        val sizeForLength = 4UL
+        val sizeForItems = value.map { FfiConverterTypeNode.allocationSize(it) }.sum()
+        return sizeForLength + sizeForItems
+    }
+
+    override fun write(
+        value: List<Node>,
+        buf: ByteBuffer,
+    ) {
+        buf.putInt(value.size)
+        value.iterator().forEach {
+            FfiConverterTypeNode.write(it, buf)
+        }
+    }
+}
+
 public object FfiConverterSequenceTypeSuiCoin : FfiConverterRustBuffer<List<SuiCoin>> {
     override fun read(buf: ByteBuffer): List<SuiCoin> {
         val len = buf.getInt()
@@ -3483,6 +4000,43 @@ public object FfiConverterMapStringSequenceString : FfiConverterRustBuffer<Map<k
         value.forEach { (k, v) ->
             FfiConverterString.write(k, buf)
             FfiConverterSequenceString.write(v, buf)
+        }
+    }
+}
+
+public object FfiConverterMapStringSequenceTypeNode : FfiConverterRustBuffer<Map<kotlin.String, List<Node>>> {
+    override fun read(buf: ByteBuffer): Map<kotlin.String, List<Node>> {
+        val len = buf.getInt()
+        return buildMap<kotlin.String, List<Node>>(len) {
+            repeat(len) {
+                val k = FfiConverterString.read(buf)
+                val v = FfiConverterSequenceTypeNode.read(buf)
+                this[k] = v
+            }
+        }
+    }
+
+    override fun allocationSize(value: Map<kotlin.String, List<Node>>): ULong {
+        val spaceForMapSize = 4UL
+        val spaceForChildren =
+            value.map { (k, v) ->
+                FfiConverterString.allocationSize(k) +
+                    FfiConverterSequenceTypeNode.allocationSize(v)
+            }.sum()
+        return spaceForMapSize + spaceForChildren
+    }
+
+    override fun write(
+        value: Map<kotlin.String, List<Node>>,
+        buf: ByteBuffer,
+    ) {
+        buf.putInt(value.size)
+        // The parens on `(k, v)` here ensure we're calling the right method,
+        // which is important for compatibility with older android devices.
+        // Ref https://blog.danlew.net/2017/03/16/kotlin-puzzler-whose-line-is-it-anyways/
+        value.forEach { (k, v) ->
+            FfiConverterString.write(k, buf)
+            FfiConverterSequenceTypeNode.write(v, buf)
         }
     }
 }
@@ -3671,20 +4225,6 @@ fun `bscEncodeValidatorsCall`(
 }
 
 /**
- * Chain
- */
-fun `chainTransactionTimeoutSeconds`(`chain`: kotlin.String): kotlin.Double {
-    return FfiConverterDouble.lift(
-        uniffiRustCall { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_chain_transaction_timeout_seconds(
-                FfiConverterString.lower(`chain`),
-                _status,
-            )
-        },
-    )
-}
-
-/**
  * Cosmos
  */
 @Throws(GemstoneException::class)
@@ -3707,6 +4247,108 @@ fun `libVersion`(): kotlin.String {
     return FfiConverterString.lift(
         uniffiRustCall { _status ->
             UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lib_version(
+                _status,
+            )
+        },
+    )
+}
+
+@Throws(GemstoneException::class)
+fun `lidoDecodeGetWithdrawalStatuses`(`result`: kotlin.ByteArray): List<LidoWithdrawalRequest> {
+    return FfiConverterSequenceTypeLidoWithdrawalRequest.lift(
+        uniffiRustCallWithError(GemstoneException) { _status ->
+            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_decode_get_withdrawal_statuses(
+                FfiConverterByteArray.lower(`result`),
+                _status,
+            )
+        },
+    )
+}
+
+@Throws(GemstoneException::class)
+fun `lidoDecodeRequestWithdrawalsReturn`(`result`: kotlin.ByteArray): List<kotlin.String> {
+    return FfiConverterSequenceString.lift(
+        uniffiRustCallWithError(GemstoneException) { _status ->
+            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_decode_request_withdrawals_return(
+                FfiConverterByteArray.lower(`result`),
+                _status,
+            )
+        },
+    )
+}
+
+@Throws(GemstoneException::class)
+fun `lidoDecodeWithdrawalRequestIds`(`result`: kotlin.ByteArray): List<kotlin.String> {
+    return FfiConverterSequenceString.lift(
+        uniffiRustCallWithError(GemstoneException) { _status ->
+            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_decode_withdrawal_request_ids(
+                FfiConverterByteArray.lower(`result`),
+                _status,
+            )
+        },
+    )
+}
+
+@Throws(GemstoneException::class)
+fun `lidoEncodeClaimWithdrawal`(`requestId`: kotlin.String): kotlin.ByteArray {
+    return FfiConverterByteArray.lift(
+        uniffiRustCallWithError(GemstoneException) { _status ->
+            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_claim_withdrawal(
+                FfiConverterString.lower(`requestId`),
+                _status,
+            )
+        },
+    )
+}
+
+@Throws(GemstoneException::class)
+fun `lidoEncodeRequestWithdrawals`(
+    `amounts`: List<kotlin.String>,
+    `owner`: kotlin.String,
+    `permit`: Erc2612Permit,
+): kotlin.ByteArray {
+    return FfiConverterByteArray.lift(
+        uniffiRustCallWithError(GemstoneException) { _status ->
+            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_request_withdrawals(
+                FfiConverterSequenceString.lower(`amounts`),
+                FfiConverterString.lower(`owner`),
+                FfiConverterTypeERC2612Permit.lower(`permit`),
+                _status,
+            )
+        },
+    )
+}
+
+@Throws(GemstoneException::class)
+fun `lidoEncodeSubmit`(`referral`: kotlin.String): kotlin.ByteArray {
+    return FfiConverterByteArray.lift(
+        uniffiRustCallWithError(GemstoneException) { _status ->
+            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_submit(
+                FfiConverterString.lower(`referral`),
+                _status,
+            )
+        },
+    )
+}
+
+@Throws(GemstoneException::class)
+fun `lidoEncodeWithdrawalRequestIds`(`owner`: kotlin.String): kotlin.ByteArray {
+    return FfiConverterByteArray.lift(
+        uniffiRustCallWithError(GemstoneException) { _status ->
+            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_withdrawal_request_ids(
+                FfiConverterString.lower(`owner`),
+                _status,
+            )
+        },
+    )
+}
+
+@Throws(GemstoneException::class)
+fun `lidoEncodeWithdrawalStatuses`(`requestIds`: List<kotlin.String>): kotlin.ByteArray {
+    return FfiConverterByteArray.lift(
+        uniffiRustCallWithError(GemstoneException) { _status ->
+            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_withdrawal_statuses(
+                FfiConverterSequenceString.lower(`requestIds`),
                 _status,
             )
         },

@@ -151,7 +151,7 @@ class TransactionsRepository(
             onRefreshTxs.forEach { it() }
         }
         localSource.getPending().forEach {
-            if (it.createdAt < System.currentTimeMillis() - uniffi.Gemstone.chainTransactionTimeoutSeconds(it.assetId.chain.string) * 1000) {
+            if (it.createdAt < System.currentTimeMillis() - uniffi.Gemstone.Config().getChainConfig(it.assetId.chain.string).transactionTimeout * 1000) {
                 localSource.updateTransaction(listOf(it.copy(state = TransactionState.Failed)))
             }
         }

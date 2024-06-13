@@ -24,3 +24,13 @@ data class CosmosBlockResponse (
 	val block: CosmosBlock
 )
 
+@Serializable
+data class CosmosNodeInfo (
+	val network: String
+)
+
+@Serializable
+data class CosmosNodeInfoResponse (
+	val default_node_info: CosmosNodeInfo
+)
+

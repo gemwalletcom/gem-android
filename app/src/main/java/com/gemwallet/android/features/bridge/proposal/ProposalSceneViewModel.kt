@@ -7,9 +7,6 @@ import com.gemwallet.android.data.bridge.BridgesRepository
 import com.gemwallet.android.data.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.features.bridge.model.PeerUI
-import com.gemwallet.android.features.bridge.model.getNameSpace
-import com.gemwallet.android.features.bridge.model.getReference
-import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.WalletType
 import com.walletconnect.web3.wallet.client.Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -100,23 +97,6 @@ class ProposalSceneViewModel @Inject constructor(
 
     fun reset() {
         state.update { ProposalViewModelState() }
-    }
-}
-
-class WalletConnectAccount(
-    val address: String,
-    val namespace: String,
-    val reference: String,
-    val methods: List<String>,
-) {
-
-    companion object {
-        fun create(account: Account): WalletConnectAccount? {
-            val namespace = account.chain.getNameSpace() ?: return null
-            val reference = account.chain.getReference() ?: return null
-            val methods = namespace.methods.map { it.string }
-            return WalletConnectAccount(account.address, namespace.string, reference, methods)
-        }
     }
 }
 

@@ -2,7 +2,7 @@ package com.gemwallet.android.data.bridge
 
 import android.net.Uri
 import com.gemwallet.android.data.wallet.WalletsRepository
-import com.gemwallet.android.features.bridge.proposal.WalletConnectAccount
+import com.gemwallet.android.model.WalletConnectAccount
 import com.gemwallet.android.services.WalletConnectDelegate
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletConnection
