@@ -18,7 +18,7 @@ cargoNdk {
     targets = if (System.getenv("UNIT_TESTS") == "true") {
         arrayListOf("x86_64")
     } else {
-        arrayListOf("armeabi-v7a", "arm64-v8a")
+        arrayListOf("x86_64", "armeabi-v7a", "arm64-v8a")
     }
     module = "core/gemstone"
     targetDirectory = "/../target"
