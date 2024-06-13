@@ -11,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  CI: "true"
+  UNIT_TESTS: "true"
   CARGO_INCREMENTAL: 0
   SCCACHE_GHA_ENABLED: "true"
   RUSTC_WRAPPER: "sccache"
