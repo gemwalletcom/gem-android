@@ -6,6 +6,7 @@ import com.gemwallet.android.blockchain.operators.LoadPhraseOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.data.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
+import com.gemwallet.android.interactors.DeleteWalletOperator
 import com.gemwallet.android.interactors.getIconUrl
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
@@ -24,6 +25,7 @@ class WalletViewModel @Inject constructor(
     private val passwordStore: PasswordStore,
     private val loadPhraseOperator: LoadPhraseOperator,
     private val sessionRepository: SessionRepository,
+    private val deleteWalletOperator: DeleteWalletOperator,
 ) : ViewModel() {
     private val state = MutableStateFlow(WalletViewModelState())
     val uiState = state
@@ -53,6 +55,12 @@ class WalletViewModel @Inject constructor(
                 val newWallet = walletsRepository.getWallet(wallet.id).getOrNull() ?: return@launch
                 sessionRepository.setWallet(newWallet)
             }
+        }
+    }
+
+    fun delete(onBoard: () -> Unit, onComplete: () -> Unit) {
+        viewModelScope.launch {
+            deleteWalletOperator(state.value.wallet?.id ?: return@launch, onBoard, onComplete)
         }
     }
 

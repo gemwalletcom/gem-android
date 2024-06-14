@@ -6,6 +6,7 @@ import com.gemwallet.android.blockchain.operators.DeleteKeyStoreOperator
 import com.gemwallet.android.data.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.features.assets.model.IconUrl
+import com.gemwallet.android.interactors.DeleteWalletOperator
 import com.gemwallet.android.interactors.getIconUrl
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
@@ -24,7 +25,7 @@ import javax.inject.Inject
 class WalletsViewModel @Inject constructor(
     private val walletsRepository: WalletsRepository,
     private val sessionRepository: SessionRepository,
-    private val deleteKeyStoreOperator: DeleteKeyStoreOperator,
+    private val deleteWalletOperator: DeleteWalletOperator,
 ) : ViewModel() {
     private val state = MutableStateFlow(WalletsViewModelState())
     val uiState = state.map { it.toUIState() }
@@ -63,30 +64,7 @@ class WalletsViewModel @Inject constructor(
     }
 
     fun handleDeleteWallet(walletId: String, onBoard: () -> Unit) = viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            val session = sessionRepository.session ?: return@withContext
-            val wallet = walletsRepository.getWallet(walletId).getOrNull() ?: return@withContext
-            if (!walletsRepository.removeWallet(walletId = walletId).getOrElse { false }) {
-                return@withContext
-            }
-            if (wallet.type == WalletType.multicoin) {
-                if (!deleteKeyStoreOperator(walletId)) {
-                    return@withContext
-                }
-            }
-            if (session.wallet.id == walletId) {
-                val wallets = walletsRepository.getAll().getOrNull() ?: emptyList()
-                if (wallets.isEmpty()) {
-                    sessionRepository.reset()
-                    withContext(Dispatchers.Main) {
-                        onBoard()
-                    }
-                } else {
-                    sessionRepository.setWallet(wallets.first())
-                }
-            }
-            refresh()
-        }
+        deleteWalletOperator(walletId, onBoard, ::refresh)
     }
 }
 

@@ -25,6 +25,7 @@ fun NavController.navigateToPhraseScreen(walletId: String, navOptions: NavOption
 }
 
 fun NavGraphBuilder.walletScreen(
+    onBoard: () -> Unit,
     onCancel: () -> Unit,
     onPhraseShow: (String) -> Unit
 ) {
@@ -45,6 +46,7 @@ fun NavGraphBuilder.walletScreen(
             walletId = walletId,
             isPhrase = false,
             onPhraseShow = onPhraseShow,
+            onBoard = onBoard,
             onCancel = onCancel,
         )
     }

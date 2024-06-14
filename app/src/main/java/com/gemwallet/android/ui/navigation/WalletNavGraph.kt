@@ -188,6 +188,13 @@ fun WalletNavGraph(
 
             walletScreen(
                 onCancel = onCancel,
+                onBoard = {
+                    navController.navigate(OnboardingDest.route) {
+                        popUpTo(0) {
+                            inclusive = true
+                        }
+                    }
+                },
                 onPhraseShow = navController::navigateToPhraseScreen
             )
 

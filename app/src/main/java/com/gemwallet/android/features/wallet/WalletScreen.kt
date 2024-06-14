@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -34,6 +36,7 @@ import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.padding16
 import com.wallet.core.primitives.WalletType
 
@@ -42,6 +45,7 @@ fun WalletScreen(
     walletId: String,
     isPhrase: Boolean,
     onPhraseShow: (String) -> Unit,
+    onBoard: () -> Unit,
     onCancel: () -> Unit,
 ) {
     val viewModel: WalletViewModel = hiltViewModel()
@@ -56,6 +60,9 @@ fun WalletScreen(
                 state = state as WalletUIState.Success,
                 onWalletName = viewModel::setWalletName,
                 onPhraseShow = { onPhraseShow(walletId) },
+                onDelete = {
+                    viewModel.delete(onBoard, onCancel)
+                },
                 onCancel = onCancel,
             )
         }
@@ -75,6 +82,7 @@ private fun Wallet(
     state: WalletUIState.Success,
     onPhraseShow: () -> Unit,
     onWalletName: (String) -> Unit,
+    onDelete: () -> Unit,
     onCancel: () -> Unit,
 ) {
     val clipboardManager = LocalClipboardManager.current
@@ -152,6 +160,15 @@ private fun Wallet(
             }
 
             Table(items = actions)
+
+            Spacer16()
+            Button(
+                modifier = Modifier.fillMaxWidth().padding(padding16),
+                colors = ButtonDefaults.buttonColors().copy(containerColor = MaterialTheme.colorScheme.error),
+                onClick = onDelete,
+            ) {
+                Text(text = stringResource(id = R.string.common_delete))
+            }
         }
     }
 }
@@ -167,6 +184,7 @@ private fun PreviewWalletSuccess() {
             ),
             onPhraseShow = {},
             onWalletName = {},
+            onDelete = {},
             onCancel = {},
         )
     }
