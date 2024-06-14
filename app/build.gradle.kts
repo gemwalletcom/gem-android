@@ -93,8 +93,13 @@ android {
             isMinifyEnabled = true
             isShrinkResources = true
             isDebuggable = false
-            signingConfig = signingConfigs.getByName("release")
+            if (System.getenv("SKIP_SIGN") == "true") {
+                signingConfig = null
+            } else {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17

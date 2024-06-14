@@ -32,6 +32,9 @@ test:
 debug-apk:
 	./gradlew assembleDebug --build-cache
 
+unsigned-release-apk:
+	export SKIP_SIGN=true && ./gradlew assembleRelease
+
 release:
 	./gradlew clean buildCargoNdkRelease assembleRelease :app:bundleRelease
 
