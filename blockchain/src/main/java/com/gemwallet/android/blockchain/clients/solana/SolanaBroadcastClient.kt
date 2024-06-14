@@ -28,7 +28,7 @@ class SolanaBroadcastClient(
         }
         val request = JSONRpcRequest.create(SolanaMethod.SendTransaction, params)
         return rpcClient.broadcast(request).mapCatching {
-            if (it.error == null) it.result else it.error.message
+            if (it.error == null) it.result else throw Exception(it.error.message)
         }
     }
 

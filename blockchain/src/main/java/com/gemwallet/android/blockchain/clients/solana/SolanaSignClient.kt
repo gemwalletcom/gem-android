@@ -35,6 +35,7 @@ class SolanaSignClient(
         val signed = byteArrayOf(0x1) + signature + message
         return Base64.encode(signed).toByteArray()
     }
+
     override suspend fun signTransfer(
         params: SignerParams,
         privateKey: ByteArray
