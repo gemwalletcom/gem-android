@@ -254,7 +254,7 @@ internal open class UniffiRustCallStatus : Structure() {
     }
 }
 
-class InternalException(message: String) : Exception(message)
+class InternalException(message: String) : kotlin.Exception(message)
 
 // Each top-level error class has a companion object that can lift the error from the call status's rust buffer
 interface UniffiRustCallStatusErrorHandler<E> {
@@ -266,7 +266,7 @@ interface UniffiRustCallStatusErrorHandler<E> {
 // synchronize itself
 
 // Call a rust function that returns a Result<>.  Pass in the Error class companion that corresponds to the Err
-private inline fun <U, E : Exception> uniffiRustCallWithError(
+private inline fun <U, E : kotlin.Exception> uniffiRustCallWithError(
     errorHandler: UniffiRustCallStatusErrorHandler<E>,
     callback: (UniffiRustCallStatus) -> U,
 ): U {
@@ -277,7 +277,7 @@ private inline fun <U, E : Exception> uniffiRustCallWithError(
 }
 
 // Check UniffiRustCallStatus and throw an error if the call wasn't successful
-private fun <E : Exception> uniffiCheckCallStatus(
+private fun <E : kotlin.Exception> uniffiCheckCallStatus(
     errorHandler: UniffiRustCallStatusErrorHandler<E>,
     status: UniffiRustCallStatus,
 ) {
@@ -319,7 +319,7 @@ internal inline fun <T> uniffiTraitInterfaceCall(
 ) {
     try {
         writeReturn(makeCall())
-    } catch (e: Exception) {
+    } catch (e: kotlin.Exception) {
         callStatus.code = UNIFFI_CALL_UNEXPECTED_ERROR
         callStatus.error_buf = FfiConverterString.lower(e.toString())
     }
@@ -333,7 +333,7 @@ internal inline fun <T, reified E : Throwable> uniffiTraitInterfaceCallWithError
 ) {
     try {
         writeReturn(makeCall())
-    } catch (e: Exception) {
+    } catch (e: kotlin.Exception) {
         if (e is E) {
             callStatus.code = UNIFFI_CALL_ERROR
             callStatus.error_buf = lowerError(e)
@@ -746,6 +746,12 @@ internal interface UniffiLib : Library {
 
     fun uniffi_gemstone_fn_constructor_config_new(uniffi_out_err: UniffiRustCallStatus): Pointer
 
+    fun uniffi_gemstone_fn_method_config_get_block_explorers(
+        `ptr`: Pointer,
+        `chain`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
     fun uniffi_gemstone_fn_method_config_get_chain_config(
         `ptr`: Pointer,
         `chain`: RustBuffer.ByValue,
@@ -821,31 +827,28 @@ internal interface UniffiLib : Library {
         uniffi_out_err: UniffiRustCallStatus,
     ): Unit
 
-    fun uniffi_gemstone_fn_constructor_explorer_new(uniffi_out_err: UniffiRustCallStatus): Pointer
+    fun uniffi_gemstone_fn_constructor_explorer_new(
+        `chain`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): Pointer
 
     fun uniffi_gemstone_fn_method_explorer_get_address_url(
         `ptr`: Pointer,
-        `chain`: RustBuffer.ByValue,
+        `explorerName`: RustBuffer.ByValue,
         `address`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_explorer_get_name_by_host(
-        `ptr`: Pointer,
-        `host`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
     fun uniffi_gemstone_fn_method_explorer_get_token_url(
         `ptr`: Pointer,
-        `chain`: RustBuffer.ByValue,
+        `explorerName`: RustBuffer.ByValue,
         `address`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
     fun uniffi_gemstone_fn_method_explorer_get_transaction_url(
         `ptr`: Pointer,
-        `chain`: RustBuffer.ByValue,
+        `explorerName`: RustBuffer.ByValue,
         `transactionId`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
@@ -1340,6 +1343,8 @@ internal interface UniffiLib : Library {
 
     fun uniffi_gemstone_checksum_func_ton_hex_to_base64_address(): Short
 
+    fun uniffi_gemstone_checksum_method_config_get_block_explorers(): Short
+
     fun uniffi_gemstone_checksum_method_config_get_chain_config(): Short
 
     fun uniffi_gemstone_checksum_method_config_get_docs_url(): Short
@@ -1363,8 +1368,6 @@ internal interface UniffiLib : Library {
     fun uniffi_gemstone_checksum_method_config_image_formatter_validator_url(): Short
 
     fun uniffi_gemstone_checksum_method_explorer_get_address_url(): Short
-
-    fun uniffi_gemstone_checksum_method_explorer_get_name_by_host(): Short
 
     fun uniffi_gemstone_checksum_method_explorer_get_token_url(): Short
 
@@ -1497,6 +1500,9 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_gemstone_checksum_func_ton_hex_to_base64_address() != 2835.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_gemstone_checksum_method_config_get_block_explorers() != 48094.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_gemstone_checksum_method_config_get_chain_config() != 35682.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -1512,7 +1518,7 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_gemstone_checksum_method_config_get_public_url() != 56730.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_gemstone_checksum_method_config_get_social_url() != 13712.toShort()) {
+    if (lib.uniffi_gemstone_checksum_method_config_get_social_url() != 13335.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_method_config_get_stake_config() != 18495.toShort()) {
@@ -1530,16 +1536,13 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_gemstone_checksum_method_config_image_formatter_validator_url() != 18028.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_gemstone_checksum_method_explorer_get_address_url() != 4563.toShort()) {
+    if (lib.uniffi_gemstone_checksum_method_explorer_get_address_url() != 23888.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_gemstone_checksum_method_explorer_get_name_by_host() != 64782.toShort()) {
+    if (lib.uniffi_gemstone_checksum_method_explorer_get_token_url() != 542.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_gemstone_checksum_method_explorer_get_token_url() != 6588.toShort()) {
-        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
-    }
-    if (lib.uniffi_gemstone_checksum_method_explorer_get_transaction_url() != 50601.toShort()) {
+    if (lib.uniffi_gemstone_checksum_method_explorer_get_transaction_url() != 59021.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_method_walletconnectnamespace_get_namespace() != 9477.toShort()) {
@@ -1551,7 +1554,7 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_gemstone_checksum_constructor_config_new() != 65388.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
-    if (lib.uniffi_gemstone_checksum_constructor_explorer_new() != 34780.toShort()) {
+    if (lib.uniffi_gemstone_checksum_constructor_explorer_new() != 63060.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_constructor_walletconnectnamespace_new() != 27585.toShort()) {
@@ -1958,6 +1961,8 @@ private class JavaLangRefCleanable(
  * Config
  */
 public interface ConfigInterface {
+    fun `getBlockExplorers`(`chain`: kotlin.String): List<kotlin.String>
+
     fun `getChainConfig`(`chain`: kotlin.String): ChainConfig
 
     fun `getDocsUrl`(`item`: DocsUrl): kotlin.String
@@ -1968,7 +1973,7 @@ public interface ConfigInterface {
 
     fun `getPublicUrl`(`item`: PublicUrl): kotlin.String
 
-    fun `getSocialUrl`(`item`: SocialUrl): kotlin.String
+    fun `getSocialUrl`(`item`: SocialUrl): kotlin.String?
 
     fun `getStakeConfig`(`chain`: kotlin.String): StakeChainConfig
 
@@ -2080,6 +2085,20 @@ open class Config : Disposable, AutoCloseable, ConfigInterface {
         }
     }
 
+    override fun `getBlockExplorers`(`chain`: kotlin.String): List<kotlin.String> {
+        return FfiConverterSequenceString.lift(
+            callWithPointer {
+                uniffiRustCall { _status ->
+                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_block_explorers(
+                        it,
+                        FfiConverterString.lower(`chain`),
+                        _status,
+                    )
+                }
+            },
+        )
+    }
+
     override fun `getChainConfig`(`chain`: kotlin.String): ChainConfig {
         return FfiConverterTypeChainConfig.lift(
             callWithPointer {
@@ -2149,8 +2168,8 @@ open class Config : Disposable, AutoCloseable, ConfigInterface {
         )
     }
 
-    override fun `getSocialUrl`(`item`: SocialUrl): kotlin.String {
-        return FfiConverterString.lift(
+    override fun `getSocialUrl`(`item`: SocialUrl): kotlin.String? {
+        return FfiConverterOptionalString.lift(
             callWithPointer {
                 uniffiRustCall { _status ->
                     UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_social_url(
@@ -2366,33 +2385,25 @@ public object FfiConverterTypeConfig : FfiConverter<Config, Pointer> {
 // [1] https://stackoverflow.com/questions/24376768/can-java-finalize-an-object-when-it-is-still-in-scope/24380219
 //
 
-/**
- * Explorer
- */
 public interface ExplorerInterface {
     fun `getAddressUrl`(
-        `chain`: kotlin.String,
+        `explorerName`: kotlin.String,
         `address`: kotlin.String,
     ): kotlin.String
 
-    fun `getNameByHost`(`host`: kotlin.String): kotlin.String?
-
     fun `getTokenUrl`(
-        `chain`: kotlin.String,
+        `explorerName`: kotlin.String,
         `address`: kotlin.String,
     ): kotlin.String?
 
     fun `getTransactionUrl`(
-        `chain`: kotlin.String,
+        `explorerName`: kotlin.String,
         `transactionId`: kotlin.String,
     ): kotlin.String
 
     companion object
 }
 
-/**
- * Explorer
- */
 open class Explorer : Disposable, AutoCloseable, ExplorerInterface {
     constructor(pointer: Pointer) {
         this.pointer = pointer
@@ -2409,10 +2420,11 @@ open class Explorer : Disposable, AutoCloseable, ExplorerInterface {
         this.pointer = null
         this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(pointer))
     }
-    constructor() :
+    constructor(`chain`: kotlin.String) :
         this(
             uniffiRustCall { _status ->
                 UniffiLib.INSTANCE.uniffi_gemstone_fn_constructor_explorer_new(
+                    FfiConverterString.lower(`chain`),
                     _status,
                 )
             },
@@ -2482,7 +2494,7 @@ open class Explorer : Disposable, AutoCloseable, ExplorerInterface {
     }
 
     override fun `getAddressUrl`(
-        `chain`: kotlin.String,
+        `explorerName`: kotlin.String,
         `address`: kotlin.String,
     ): kotlin.String {
         return FfiConverterString.lift(
@@ -2490,7 +2502,7 @@ open class Explorer : Disposable, AutoCloseable, ExplorerInterface {
                 uniffiRustCall { _status ->
                     UniffiLib.INSTANCE.uniffi_gemstone_fn_method_explorer_get_address_url(
                         it,
-                        FfiConverterString.lower(`chain`),
+                        FfiConverterString.lower(`explorerName`),
                         FfiConverterString.lower(`address`),
                         _status,
                     )
@@ -2499,22 +2511,8 @@ open class Explorer : Disposable, AutoCloseable, ExplorerInterface {
         )
     }
 
-    override fun `getNameByHost`(`host`: kotlin.String): kotlin.String? {
-        return FfiConverterOptionalString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_explorer_get_name_by_host(
-                        it,
-                        FfiConverterString.lower(`host`),
-                        _status,
-                    )
-                }
-            },
-        )
-    }
-
     override fun `getTokenUrl`(
-        `chain`: kotlin.String,
+        `explorerName`: kotlin.String,
         `address`: kotlin.String,
     ): kotlin.String? {
         return FfiConverterOptionalString.lift(
@@ -2522,7 +2520,7 @@ open class Explorer : Disposable, AutoCloseable, ExplorerInterface {
                 uniffiRustCall { _status ->
                     UniffiLib.INSTANCE.uniffi_gemstone_fn_method_explorer_get_token_url(
                         it,
-                        FfiConverterString.lower(`chain`),
+                        FfiConverterString.lower(`explorerName`),
                         FfiConverterString.lower(`address`),
                         _status,
                     )
@@ -2532,7 +2530,7 @@ open class Explorer : Disposable, AutoCloseable, ExplorerInterface {
     }
 
     override fun `getTransactionUrl`(
-        `chain`: kotlin.String,
+        `explorerName`: kotlin.String,
         `transactionId`: kotlin.String,
     ): kotlin.String {
         return FfiConverterString.lift(
@@ -2540,7 +2538,7 @@ open class Explorer : Disposable, AutoCloseable, ExplorerInterface {
                 uniffiRustCall { _status ->
                     UniffiLib.INSTANCE.uniffi_gemstone_fn_method_explorer_get_transaction_url(
                         it,
-                        FfiConverterString.lower(`chain`),
+                        FfiConverterString.lower(`explorerName`),
                         FfiConverterString.lower(`transactionId`),
                         _status,
                     )
@@ -3620,7 +3618,7 @@ public object FfiConverterTypeDocsUrl : FfiConverterRustBuffer<DocsUrl> {
 /**
  * GemstoneError
  */
-sealed class GemstoneException : Exception() {
+sealed class GemstoneException : kotlin.Exception() {
     class AnyException(
         val `msg`: kotlin.String,
     ) : GemstoneException() {
@@ -3736,6 +3734,8 @@ enum class SocialUrl {
     TELEGRAM,
     GIT_HUB,
     YOU_TUBE,
+    FACEBOOK,
+    HOMEPAGE,
     ;
 
     companion object

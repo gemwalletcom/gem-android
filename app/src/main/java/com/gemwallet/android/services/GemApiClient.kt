@@ -55,9 +55,6 @@ interface GemApiClient {
     @GET("/v1/config")
     suspend fun getConfig(): Result<ConfigResponse>
 
-    @GET("/v1/nodes")
-    suspend fun getNodes(): Result<NodesResponse>
-
     @POST("/v1/prices")
     suspend fun getTickers(@Body request: AssetPricesRequest): Response<PricesResponse>
 

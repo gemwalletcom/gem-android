@@ -105,11 +105,11 @@ fun NetworkScene(
                 }
             }
             item {
-                val uri = uniffi.Gemstone.Explorer().getTransactionUrl(state.chain.string, "")
+                val explorerName = uniffi.Gemstone.Config().getBlockExplorers(state.chain.string).firstOrNull() ?: return@item
                 Table(
                     items = listOf(
                         CellEntity(
-                            label = uniffi.Gemstone.Explorer().getNameByHost(Uri.parse(uri).host ?: "") ?: uri,
+                            label = explorerName,
                             data = "",
                         )
                     )

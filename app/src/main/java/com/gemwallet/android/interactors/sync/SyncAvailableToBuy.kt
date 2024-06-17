@@ -9,14 +9,11 @@ class SyncAvailableToBuy(
     private val configRepository: ConfigRepository,
 ) : SyncOperator {
 
-    override suspend fun invoke(): Result<Boolean> {
+    override suspend fun invoke() {
         val assets = configRepository.getFiatAssets()
         if (assets.version.toInt() > 0 && configRepository.getFiatAssetsVersion() <= assets.version.toInt()) {
-            return Result.success(true)
+            return
         }
-        return gemApiClient.getFiatAssets().mapCatching {
-            configRepository.setFiatAssets(it)
-            true
-        }
+        gemApiClient.getFiatAssets().mapCatching { configRepository.setFiatAssets(it) }
     }
 }

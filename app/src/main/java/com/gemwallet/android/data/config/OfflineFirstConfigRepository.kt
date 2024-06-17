@@ -59,14 +59,6 @@ class OfflineFirstConfigRepository(
         return getString(Keys.AppVersionSkip)
     }
 
-    override fun getNodesVersion(): Int = getInt(Keys.NodesVersion)
-    override fun setNodesVersion(version: Int) {
-        putInt(Keys.NodesVersion, version)
-    }
-
-    override fun nodesActual(): Boolean =
-        getInt(Keys.NodesOfflineVersion) != 0 && getInt(Keys.NodesVersion) <= getInt(Keys.NodesOfflineVersion)
-
     override fun getNode(chain: Chain): List<Node> {
         val data = store.getString(Keys.Nodes.buildKey(""), null) ?: return emptyList()
         val itemType = object : TypeToken<List<ChainNodes>>() {}.type
@@ -94,8 +86,7 @@ class OfflineFirstConfigRepository(
         putString(Keys.CurrentNode, gson.toJson(node), chain.string)
     }
 
-    override fun setNodes(version: Int, nodes: List<ChainNodes>) {
-        putInt(Keys.NodesOfflineVersion, version)
+    override fun setNodes(nodes: List<ChainNodes>) {
         putString(Keys.Nodes, gson.toJson(nodes))
     }
 
@@ -228,8 +219,6 @@ class OfflineFirstConfigRepository(
         AppVersionBeta("app-version-beta"),
         AppVersionAlpha("app-version-alpha"),
         AppVersionSkip("app-version-skip"),
-        NodesVersion("nodes-version"),
-        NodesOfflineVersion("nodes-offline-version"),
         FiatAssetsVersion("fiat-assets-version"),
         FiatAssetsOfflineVersion("fiat-offline-version"),
         TokenListVersion("token-list-version"),

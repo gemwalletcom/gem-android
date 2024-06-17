@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import uniffi.Gemstone.Config
 import uniffi.Gemstone.Explorer
 import javax.inject.Inject
 
@@ -99,7 +100,8 @@ class TransactionDetailsViewModel @Inject constructor(
                     val feeFiat = transaction.feePrice?.price?.let {
                         fee.convert(feeAsset.decimals, it).format(feeAsset.decimals, currency.string, 2, dynamicPlace = true)
                     } ?: ""
-                    val explorerUrl = Explorer().getTransactionUrl(asset.id.chain.string, tx.hash)
+                    val explorerName = Config().getBlockExplorers(asset.id.chain.string).firstOrNull()
+                    val explorerUrl = Explorer(asset.id.chain.string).getTransactionUrl(explorerName!!, tx.hash)
                     val explorerHost: String = Uri.parse(explorerUrl).host ?: explorerUrl
                     TxDetailsSceneState.Loaded(
                         assetId = asset.id,
@@ -119,7 +121,7 @@ class TransactionDetailsViewModel @Inject constructor(
                         feeFiat = feeFiat,
                         type = tx.type,
                         explorerUrl = explorerUrl,
-                        explorerName = Explorer().getNameByHost(explorerHost) ?: explorerHost,
+                        explorerName = explorerName,
                         fromAsset = fromAsset,
                         toAsset = toAsset,
                         fromValue = fromValue,

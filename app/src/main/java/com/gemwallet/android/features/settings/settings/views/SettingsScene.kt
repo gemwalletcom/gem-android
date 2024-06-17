@@ -123,22 +123,19 @@ fun SettingsScene(
             
             SubheaderItem(title = stringResource(id = R.string.settings_community))
             LinkItem(title = "X", icon = R.drawable.twitter) {
-                uriHandler.openUri(Config().getSocialUrl(SocialUrl.X))
+                uriHandler.openUri(Config().getSocialUrl(SocialUrl.X) ?: "")
             }
             LinkItem(title = "Discord", icon = R.drawable.discord) {
-                uriHandler.openUri(Config().getSocialUrl(SocialUrl.DISCORD))
-            }
-            LinkItem(title = "Reddit", icon = R.drawable.reddit) {
-                uriHandler.openUri(Config().getSocialUrl(SocialUrl.REDDIT))
+                uriHandler.openUri(Config().getSocialUrl(SocialUrl.DISCORD) ?: "")
             }
             LinkItem(title = "Telegram", icon = R.drawable.telegram) {
-                uriHandler.openUri(Config().getSocialUrl(SocialUrl.TELEGRAM))
+                uriHandler.openUri(Config().getSocialUrl(SocialUrl.TELEGRAM) ?: "")
             }
             LinkItem(title = "Github", icon = R.drawable.github) {
-                uriHandler.openUri(Config().getSocialUrl(SocialUrl.GIT_HUB))
+                uriHandler.openUri(Config().getSocialUrl(SocialUrl.GIT_HUB) ?: "")
             }
             LinkItem(title = "YouTube", icon = R.drawable.youtube) {
-                uriHandler.openUri(Config().getSocialUrl(SocialUrl.YOU_TUBE))
+                uriHandler.openUri(Config().getSocialUrl(SocialUrl.YOU_TUBE) ?: "")
             }
             HorizontalDivider(modifier = Modifier, thickness = 0.4.dp)
 

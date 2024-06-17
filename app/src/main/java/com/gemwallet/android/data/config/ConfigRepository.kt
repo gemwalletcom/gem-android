@@ -21,19 +21,13 @@ interface ConfigRepository {
 
     fun setAppVersionSkip(version: String)
 
-    fun getNodesVersion(): Int
-
-    fun setNodesVersion(version: Int)
-
-    fun nodesActual(): Boolean
-
     fun getNode(chain: Chain): List<Node>
 
     fun getCurrentNode(chain: Chain): Node?
 
     fun setCurrentNode(chain: Chain, node: Node)
 
-    fun setNodes(version: Int, nodes: List<ChainNodes>)
+    fun setNodes(nodes: List<ChainNodes>)
 
     fun getFiatAssetsVersion(): Int
 
