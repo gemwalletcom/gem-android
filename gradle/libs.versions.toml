@@ -4,15 +4,15 @@ activityCompose = "1.9.0"
 walletconnect = "1.31.4"
 barcodeScanning = "17.2.0"
 biometric = "1.2.0-alpha05"
-cameraCamera2 = "1.4.0-beta01"
+cameraCamera2 = "1.4.0-beta02"
 coilCompose = "2.6.0"
 vico = "2.0.0-alpha.21"
 core = "3.5.3"
 coreKtx = "1.13.1"
 espressoCore = "3.5.1"
 firebaseMessaging = "24.0.0"
-foundation = "1.6.7"
-gradle = "8.5.0-rc02"
+foundation = "1.6.8"
+gradle = "8.5.0"
 gson = "2.11.0"
 hiltAndroid = "2.51.1"
 hiltAndroidGradlePlugin = "2.46"
@@ -26,9 +26,8 @@ kotlinxCollectionsImmutable = "0.3.7"
 kotlinxCoroutinesAndroid = "1.8.1"
 kotlinxSerializationJson = "1.6.3"
 lifecycleRuntimeCompose = "2.7.0" #2.8.2 buggy
-lifecycleRuntimeKtx = "2.7.0"
 loggingInterceptor = "4.12.0"
-material = "1.6.7"
+material = "1.6.8"
 material3 = "1.2.1"
 navigationCompose = "2.7.7"
 plugin = "0.3.4"
@@ -36,16 +35,14 @@ retrofit = "2.11.0"
 review = "2.0.1"
 roomKtx = "2.6.1"
 roomCompiler = "2.6.1"
-runtimeAndroid = "1.6.7"
+runtimeAndroid = "1.6.8"
 securityCrypto = "1.0.0"
-ui = "1.6.7"
-uiTestJunit4 = "1.6.7"
-uiTooling = "1.6.7"
-uiToolingPreview = "1.6.7"
+ui = "1.6.8"
+uiTestJunit4 = "1.6.8"
 walletCore = "4.0.42"
 ksp = "1.9.24-1.0.20"
-android-lib = "8.5.0-rc02"
-kotlin = "1.9.22"
+android-lib = "8.5.0"
+kotlin = "1.9.24"
 google-services = "4.4.2"
 
 [libraries]
@@ -98,8 +95,8 @@ androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", vers
 androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
 androidx-junit-ktx = { module = "androidx.test.ext:junit-ktx", version.ref = "junitVersion" }
 androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
-androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
-androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTooling" }
+androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiTestJunit4" }
+androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTestJunit4" }
 
 # chart
 vico-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico" }
@@ -129,7 +126,7 @@ hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", ve
 
 # lifecycle hold on 2.7.0 - 2.8 buggy
 lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeCompose" }
 
 # gemcore
 rust-plugin = { module = "gradle.plugin.com.github.willir.rust:plugin", version.ref = "plugin" }
