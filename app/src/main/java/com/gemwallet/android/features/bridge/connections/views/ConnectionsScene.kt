@@ -5,7 +5,6 @@ import androidx.activity.compose.BackHandler
 import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -39,7 +38,6 @@ import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.ListItemTitle
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.qrcodescanner.QRScanner
-import com.gemwallet.android.ui.theme.padding16
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -157,7 +155,6 @@ fun qrCodeRequest(
     return if (cameraPermissionState.status.isGranted) {
         Scene(
             title = stringResource(id = R.string.wallet_scan_qr_code),
-            padding = PaddingValues(padding16),
             onClose = onDiscard,
         ) {
             QRScanner(

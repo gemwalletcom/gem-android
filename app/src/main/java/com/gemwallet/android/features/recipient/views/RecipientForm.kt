@@ -218,7 +218,6 @@ fun qrCodeRequest(
     return if (cameraPermissionState.status.isGranted) {
         Scene(
             title = stringResource(id = R.string.wallet_scan_qr_code),
-            padding = PaddingValues(padding16),
             onClose = onCancel
         ) {
             QRScanner(

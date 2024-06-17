@@ -10,10 +10,19 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.ClipOp
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.StrokeJoin
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.viewinterop.AndroidView
@@ -25,6 +34,8 @@ import com.google.zxing.MultiFormatReader
 import com.google.zxing.PlanarYUVLuminanceSource
 import com.google.zxing.common.HybridBinarizer
 import java.nio.ByteBuffer
+import kotlin.math.min
+
 
 @ExperimentalGetImage
 @Composable
@@ -34,38 +45,86 @@ fun QRScanner(listener: (String) -> Unit) {
     val cameraProviderFeature = remember {
         ProcessCameraProvider.getInstance(localContext)
     }
-    AndroidView ({ context ->
-        val previewView = PreviewView(context).also {
-            it.scaleType = PreviewView.ScaleType.FILL_CENTER
-        }
-        val preview = Preview.Builder()
-            .build()
-            .also {
-                it.setSurfaceProvider(previewView.surfaceProvider)
+    Box(modifier = Modifier.fillMaxSize()) {
+        AndroidView({ context ->
+            val previewView = PreviewView(context).also {
+                it.scaleType = PreviewView.ScaleType.FILL_CENTER
             }
-        val imageAnalyzer = ImageAnalysis.Builder()
-            .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
-            .build()
-            .also {
-                it.setAnalyzer(ContextCompat.getMainExecutor(context), QRCodeAnalyzer(callback = listener))
-            }
-        val selector = CameraSelector.Builder()
-            .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-            .build()
-        try {
-            val provider = cameraProviderFeature.get()
-            provider.unbindAll()
-            provider.bindToLifecycle(
+            val preview = Preview.Builder()
+                .build()
+                .also {
+                    it.setSurfaceProvider(previewView.surfaceProvider)
+                }
+            val imageAnalyzer = ImageAnalysis.Builder()
+                .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .also {
+                    it.setAnalyzer(
+                        ContextCompat.getMainExecutor(context),
+                        QRCodeAnalyzer(callback = listener)
+                    )
+                }
+            val selector = CameraSelector.Builder()
+                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .build()
+            try {
+                val provider = cameraProviderFeature.get()
+                provider.unbindAll()
+                provider.bindToLifecycle(
                     lifecycleOwner,
                     selector,
                     preview,
                     imageAnalyzer,
                 )
-        } catch (err: Throwable) {
-            Log.d("QR_CODE_SCANNER", "Error", err)
+            } catch (err: Throwable) {
+                Log.d("QR_CODE_SCANNER", "Error", err)
+            }
+            previewView
+        }, modifier = Modifier.fillMaxSize())
+        Box(modifier = Modifier
+            .fillMaxSize()
+        ) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val halfFullWidth = size.width / 2f
+                val halfFullHeight = size.height / 2f
+                val rectSize = min(size.width, size.height) * 0.5f
+                val rectHalfSize = rectSize / 2f
+                val viewFrameSize = (rectHalfSize / 2f)
+
+                clipRect(
+                    left = halfFullWidth - rectHalfSize + 10,
+                    top = halfFullHeight - rectHalfSize + 10,
+                    right = halfFullWidth + rectHalfSize - 10,
+                    bottom = halfFullHeight + rectHalfSize - 10,
+                    clipOp = ClipOp.Difference
+                ) {
+                    drawRect(Color.Black.copy(alpha = 0.7f), topLeft = Offset.Zero, size)
+                }
+                val path = Path()
+                path.moveTo(halfFullWidth - rectHalfSize, halfFullHeight - viewFrameSize)
+                path.lineTo(halfFullWidth - rectHalfSize, halfFullHeight - rectHalfSize)
+                path.lineTo(halfFullWidth - viewFrameSize, halfFullHeight - rectHalfSize)
+
+                path.moveTo(halfFullWidth + viewFrameSize, halfFullHeight - rectHalfSize)
+                path.lineTo(halfFullWidth + rectHalfSize, halfFullHeight - rectHalfSize)
+                path.lineTo(halfFullWidth + rectHalfSize, halfFullHeight - viewFrameSize)
+
+                path.moveTo(halfFullWidth + rectHalfSize, halfFullHeight + viewFrameSize)
+                path.lineTo(halfFullWidth + rectHalfSize, halfFullHeight + rectHalfSize)
+                path.lineTo(halfFullWidth + viewFrameSize, halfFullHeight + rectHalfSize)
+
+                path.moveTo(halfFullWidth - rectHalfSize, halfFullHeight + viewFrameSize)
+                path.lineTo(halfFullWidth - rectHalfSize, halfFullHeight + rectHalfSize)
+                path.lineTo(halfFullWidth - viewFrameSize, halfFullHeight + rectHalfSize)
+
+                drawPath(
+                    path = path,
+                    color = Color.White,
+                    style = Stroke(width = 20.0f, join = StrokeJoin.Round)
+                )
+            }
         }
-        previewView
-    }, modifier = Modifier.fillMaxSize())
+    }
 }
 
 @ExperimentalGetImage
