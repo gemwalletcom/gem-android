@@ -1,14 +1,10 @@
 package com.gemwallet.android.features.recipient.views
 
-import android.Manifest
-import androidx.activity.compose.BackHandler
 import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -40,13 +36,10 @@ import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.MainActionButton
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.TransferTextFieldActions
-import com.gemwallet.android.ui.components.qrcodescanner.QRScanner
+import com.gemwallet.android.ui.components.qrcodescanner.qrCodeRequest
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.padding16
 import com.gemwallet.android.ui.theme.space4
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NameRecord
@@ -201,48 +194,6 @@ private fun recipientErrorString(error: RecipientFormError): String {
     return when (error) {
         RecipientFormError.IncorrectAddress -> stringResource(id = R.string.errors_invalid_address_name)
         RecipientFormError.None -> ""
-    }
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@ExperimentalGetImage
-@Composable
-fun qrCodeRequest(
-    onResult: (String) -> Unit,
-    onCancel: () -> Unit,
-): Boolean {
-    val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
-    BackHandler(true) {
-        onCancel()
-    }
-    return if (cameraPermissionState.status.isGranted) {
-        Scene(
-            title = stringResource(id = R.string.wallet_scan_qr_code),
-            onClose = onCancel
-        ) {
-            QRScanner(
-                listener = onResult
-            )
-        }
-        true
-    } else {
-        AlertDialog(
-            onDismissRequest = onCancel,
-            text = {
-                Text(text = stringResource(id = R.string.camera_permission_request_camera))
-            },
-            confirmButton = {
-                Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
-                    Text(text = stringResource(id = R.string.common_grant_permission))
-                }
-            },
-            dismissButton = {
-                Button(onClick = onCancel) {
-                    Text(text = stringResource(id = R.string.common_cancel))
-                }
-            }
-        )
-        false
     }
 }
 

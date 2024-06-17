@@ -1,15 +1,10 @@
 package com.gemwallet.android.features.add_asset.views
 
-import android.Manifest
-import androidx.activity.compose.BackHandler
-import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,11 +28,7 @@ import com.gemwallet.android.ui.components.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.MainActionButton
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.Table
-import com.gemwallet.android.ui.components.qrcodescanner.QRScanner
 import com.gemwallet.android.ui.theme.padding16
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 
 @Composable
 fun AddAssetScene(
@@ -107,7 +98,9 @@ fun AddAssetScene(
         if (uiState.error != AddAssetError.None) {
             Box {
                 Text(
-                    modifier = Modifier.fillMaxWidth().padding(padding16),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(padding16),
                     text = stringResource(id = R.string.errors_token_unable_fetch_token_information, uiState.address),
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center,
@@ -140,47 +133,5 @@ fun AddAssetScene(
                 )
             )
         }
-    }
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@ExperimentalGetImage
-@Composable
-fun qrCodeRequest(
-    onResult: (String) -> Unit,
-    onCancel: () -> Unit,
-): Boolean {
-    val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
-    BackHandler(true) {
-        onCancel()
-    }
-    return if (cameraPermissionState.status.isGranted) {
-        Scene(
-            title = stringResource(id = R.string.wallet_scan_qr_code),
-            onClose = onCancel
-        ) {
-            QRScanner(
-                listener = onResult
-            )
-        }
-        true
-    } else {
-        AlertDialog(
-            onDismissRequest = onCancel,
-            text = {
-                Text(text = stringResource(id = R.string.camera_permission_request_camera))
-            },
-            confirmButton = {
-                Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
-                    Text(text = stringResource(id = R.string.common_grant_permission))
-                }
-            },
-            dismissButton = {
-                Button(onClick = onCancel) {
-                    Text(text = stringResource(id = R.string.common_cancel))
-                }
-            }
-        )
-        false
     }
 }
