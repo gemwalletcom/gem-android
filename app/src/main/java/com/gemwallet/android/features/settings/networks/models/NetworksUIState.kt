@@ -8,6 +8,8 @@ class NetworksUIState(
     val chain: Chain? = null,
     val chains: List<Chain> = emptyList(),
     val nodes: List<Node> = emptyList(),
+    val blockExplorers: List<String> = emptyList(),
     val currentNode: Node? = null,
+    val currentExplorer: String? = null,
     val addSourceType: AddSourceType = AddSourceType.None,
 )

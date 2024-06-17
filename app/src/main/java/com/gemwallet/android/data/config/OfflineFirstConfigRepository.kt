@@ -12,6 +12,7 @@ import com.wallet.core.primitives.ChainNodes
 import com.wallet.core.primitives.FiatAssets
 import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeStatus
+import uniffi.Gemstone.Config
 import java.util.UUID
 
 class OfflineFirstConfigRepository(
@@ -59,15 +60,7 @@ class OfflineFirstConfigRepository(
         return getString(Keys.AppVersionSkip)
     }
 
-    override fun getNodesVersion(): Int = getInt(Keys.NodesVersion)
-    override fun setNodesVersion(version: Int) {
-        putInt(Keys.NodesVersion, version)
-    }
-
-    override fun nodesActual(): Boolean =
-        getInt(Keys.NodesOfflineVersion) != 0 && getInt(Keys.NodesVersion) <= getInt(Keys.NodesOfflineVersion)
-
-    override fun getNode(chain: Chain): List<Node> {
+    override fun getNodes(chain: Chain): List<Node> {
         val data = store.getString(Keys.Nodes.buildKey(""), null) ?: return emptyList()
         val itemType = object : TypeToken<List<ChainNodes>>() {}.type
         val chainNodes = gson.fromJson<List<ChainNodes>>(data, itemType)
@@ -94,9 +87,22 @@ class OfflineFirstConfigRepository(
         putString(Keys.CurrentNode, gson.toJson(node), chain.string)
     }
 
-    override fun setNodes(version: Int, nodes: List<ChainNodes>) {
-        putInt(Keys.NodesOfflineVersion, version)
+    override fun setNodes(nodes: List<ChainNodes>) {
         putString(Keys.Nodes, gson.toJson(nodes))
+    }
+
+    override fun getBlockExplorers(chain: Chain): List<String> {
+        return Config().getBlockExplorers(chain.string)
+    }
+
+    override fun getCurrentBlockExplorer(chain: Chain): String {
+        return getString(Keys.CurrentExplorer, chain.string).ifEmpty {
+            getBlockExplorers(chain).firstOrNull() ?: ""
+        }
+    }
+
+    override fun setCurrentBlockExplorer(chain: Chain, name: String) {
+        putString(Keys.CurrentExplorer, name, chain.string)
     }
 
     override fun getFiatAssetsVersion(): Int = getInt(Keys.FiatAssetsVersion)
@@ -228,8 +234,6 @@ class OfflineFirstConfigRepository(
         AppVersionBeta("app-version-beta"),
         AppVersionAlpha("app-version-alpha"),
         AppVersionSkip("app-version-skip"),
-        NodesVersion("nodes-version"),
-        NodesOfflineVersion("nodes-offline-version"),
         FiatAssetsVersion("fiat-assets-version"),
         FiatAssetsOfflineVersion("fiat-offline-version"),
         TokenListVersion("token-list-version"),
@@ -242,7 +246,8 @@ class OfflineFirstConfigRepository(
         DevelopEnabled("develop_enabled"),
         TxSyncTime("tx_sync_time"),
         SubscriptionVersion("subscription_version"),
-        CurrentNode("current_node")
+        CurrentNode("current_node"),
+        CurrentExplorer("current_explorer"),
         ;
 
         fun buildKey(postfix: String = "") = "$string-$postfix"

@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.settings.networks.views
 
-import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -33,20 +32,20 @@ import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.settings.networks.models.AddSourceType
 import com.gemwallet.android.features.settings.networks.models.NetworksUIState
-import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
-import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.TransferTextFieldActions
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.padding8
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Node
 
 @Composable
 fun NetworkScene(
     state: NetworksUIState,
     onSelectNode: (Node) -> Unit,
+    onSelectBlockExplorer: (String) -> Unit,
     onAddSource: (AddSourceType) -> Unit,
     onCancel: () -> Unit,
 ) {
@@ -65,32 +64,7 @@ fun NetworkScene(
                 }
             }
             items(state.nodes) { node: Node ->
-                ListItem(
-                    modifier = Modifier.clickable { onSelectNode(node) },
-                    dividerShowed = true,
-                    trailing = {
-                        if (node.url == state.currentNode?.url) {
-                            Icon(
-                                modifier = Modifier
-                                    .padding(end = padding8)
-                                    .size(20.dp),
-                                imageVector = Icons.Default.Done,
-                                contentDescription = ""
-                            )
-                        }
-                    }
-                ) {
-                    Text(
-                        text = if (node.url == ConfigRepository.getGemNodeUrl(state.chain)) {
-                            "Gem Wallet Node"
-                        } else {
-                            node.url
-                        },
-                        maxLines = 1,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
+                NodeItem(state.chain, state.currentNode, node, onSelectNode)
             }
             item {
                 Spacer16()
@@ -104,16 +78,8 @@ fun NetworkScene(
                     Spacer16()
                 }
             }
-            item {
-                val uri = uniffi.Gemstone.Explorer().getTransactionUrl(state.chain.string, "")
-                Table(
-                    items = listOf(
-                        CellEntity(
-                            label = uniffi.Gemstone.Explorer().getNameByHost(Uri.parse(uri).host ?: "") ?: uri,
-                            data = "",
-                        )
-                    )
-                )
+            items(state.blockExplorers) {
+                BlockExplorerItem(state.currentExplorer, it, onSelectBlockExplorer)
             }
         }
     }
@@ -179,4 +145,69 @@ private fun UrlField(
             }
         }
     )
+}
+
+@Composable
+private fun NodeItem(
+    chain: Chain,
+    current: Node?,
+    node: Node,
+    onSelect: (Node) -> Unit,
+) {
+    ListItem(
+        modifier = Modifier.clickable { onSelect(node) },
+        dividerShowed = true,
+        trailing = {
+            if (node.url == current?.url) {
+                Icon(
+                    modifier = Modifier
+                        .padding(end = padding8)
+                        .size(20.dp),
+                    imageVector = Icons.Default.Done,
+                    contentDescription = ""
+                )
+            }
+        }
+    ) {
+        Text(
+            text = if (node.url == ConfigRepository.getGemNodeUrl(chain)) {
+                "Gem Wallet Node"
+            } else {
+                node.url
+            },
+            maxLines = 1,
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+    }
+}
+
+@Composable
+private fun BlockExplorerItem(
+    current: String?,
+    explorerName: String,
+    onSelect: (String) -> Unit,
+) {
+    ListItem(
+        modifier = Modifier.clickable { onSelect(explorerName) },
+        dividerShowed = true,
+        trailing = {
+            if (explorerName == current) {
+                Icon(
+                    modifier = Modifier
+                        .padding(end = padding8)
+                        .size(20.dp),
+                    imageVector = Icons.Default.Done,
+                    contentDescription = ""
+                )
+            }
+        }
+    ) {
+        Text(
+            text = explorerName,
+            maxLines = 1,
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.bodyLarge,
+        )
+    }
 }

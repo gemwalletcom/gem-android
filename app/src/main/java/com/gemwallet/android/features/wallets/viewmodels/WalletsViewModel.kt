@@ -2,7 +2,6 @@ package com.gemwallet.android.features.wallets.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.blockchain.operators.DeleteKeyStoreOperator
 import com.gemwallet.android.data.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.features.assets.model.IconUrl
@@ -11,14 +10,12 @@ import com.gemwallet.android.interactors.getIconUrl
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel

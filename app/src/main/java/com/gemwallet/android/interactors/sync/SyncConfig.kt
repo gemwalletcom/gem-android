@@ -9,16 +9,12 @@ class SyncConfig(
     private val gemApiClient: GemApiClient,
     private val configRepository: ConfigRepository,
 ) : SyncOperator {
-    override suspend fun invoke(): Result<Boolean> {
-        return gemApiClient.getConfig().mapCatching {
-            saveConfig(it)
-            true
-        }
+    override suspend fun invoke() {
+        gemApiClient.getConfig().mapCatching { saveConfig(it) }
     }
 
     private fun saveConfig(config: ConfigResponse) {
         with(configRepository) {
-            setNodesVersion(config.versions.nodes)
             setFiatAssetsVersion(config.versions.fiatAssets)
             setAppVersion(config.app.android.version.alpha, ConfigRepository.AppVersionType.Alpha)
             setAppVersion(config.app.android.version.beta, ConfigRepository.AppVersionType.Beta)

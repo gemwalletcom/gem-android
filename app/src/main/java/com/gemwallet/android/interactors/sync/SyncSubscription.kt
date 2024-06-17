@@ -12,9 +12,9 @@ class SyncSubscription(
     private val configRepository: ConfigRepository,
 ) : SyncOperator {
 
-    override suspend fun invoke(): Result<Boolean> {
+    override suspend fun invoke() {
         val deviceId = configRepository.getDeviceId()
-        val wallets = walletsRepository.getAll().getOrNull() ?: return Result.success(false)
+        val wallets = walletsRepository.getAll().getOrNull() ?: return
         val subscriptionsIndex = mutableMapOf<String, Subscription>()
 
         wallets.forEach { wallet ->
@@ -36,6 +36,5 @@ class SyncSubscription(
             gemApiClient.addSubscriptions(deviceId, subscriptionsIndex.values.toList())
             configRepository.increaseSubscriptionVersion()
         }
-        return Result.success(true)
     }
 }

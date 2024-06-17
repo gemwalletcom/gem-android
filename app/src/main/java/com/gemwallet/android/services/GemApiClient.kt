@@ -27,7 +27,6 @@ import com.wallet.core.primitives.NameProvider
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeStatus
-import com.wallet.core.primitives.NodesResponse
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.Subscription
 import com.wallet.core.primitives.SwapProvider
@@ -54,9 +53,6 @@ class Transactions : ArrayList<Transaction>()
 interface GemApiClient {
     @GET("/v1/config")
     suspend fun getConfig(): Result<ConfigResponse>
-
-    @GET("/v1/nodes")
-    suspend fun getNodes(): Result<NodesResponse>
 
     @POST("/v1/prices")
     suspend fun getTickers(@Body request: AssetPricesRequest): Response<PricesResponse>

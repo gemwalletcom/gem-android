@@ -35,10 +35,10 @@ class NetworksViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
+            state.update { it.copy(availableChains = chainInfoRepository.getAll()) }
             chainFilter.forEachTextValue { query ->
                 state.update { it.copy(availableChains = chainInfoRepository.getAll().filter(query.toString().lowercase())) }
             }
-            state.update { it.copy(availableChains = chainInfoRepository.getAll()) }
         }
     }
 
@@ -47,8 +47,10 @@ class NetworksViewModel @Inject constructor(
             it.copy(
                 chain = chain,
                 selectChain = false,
-                nodes = configRepository.getNode(chain),
+                nodes = configRepository.getNodes(chain),
+                explorers = configRepository.getBlockExplorers(chain),
                 currentNode = configRepository.getCurrentNode(chain),
+                currentExplorer = configRepository.getCurrentBlockExplorer(chain),
             )
         }
     }
@@ -56,6 +58,12 @@ class NetworksViewModel @Inject constructor(
     fun onSelectNode(node: Node) {
         val chain = state.value.chain ?: return
         configRepository.setCurrentNode(chain, node)
+        onSelectedChain(chain)
+    }
+
+    fun onSelectBlockExplorer(name: String) {
+        val chain = state.value.chain ?: return
+        configRepository.setCurrentBlockExplorer(chain, name)
         onSelectedChain(chain)
     }
 
@@ -69,7 +77,9 @@ class NetworksViewModel @Inject constructor(
     private data class State(
         val chain: Chain? = null,
         val nodes: List<Node> = emptyList(),
+        val explorers: List<String> = emptyList(),
         val currentNode: Node? = null,
+        val currentExplorer: String? = null,
         val availableChains: List<Chain> = emptyList(),
         val selectChain: Boolean = true,
         val addSourceType: AddSourceType = AddSourceType.None,
@@ -80,7 +90,9 @@ class NetworksViewModel @Inject constructor(
                 chains = availableChains,
                 selectChain = selectChain,
                 nodes = nodes,
+                blockExplorers = explorers,
                 currentNode = currentNode,
+                currentExplorer = currentExplorer,
                 addSourceType = addSourceType,
             )
         }

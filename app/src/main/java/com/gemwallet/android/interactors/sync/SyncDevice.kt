@@ -21,7 +21,7 @@ class SyncDevice(
     private val sessionRepository: SessionRepository,
 ) : SyncOperator {
 
-    override suspend fun invoke(): Result<Boolean> {
+    override suspend fun invoke() {
         val pushEnabled = configRepository.pushEnabled()
         val pushToken = if (pushEnabled) configRepository.getPushToken() else ""
         val deviceId = configRepository.getDeviceId()
@@ -45,7 +45,6 @@ class SyncDevice(
         } else {
             register()
         }
-        return Result.success(true)
     }
 
     private fun requestPushToken(onToken: () -> Unit) {
