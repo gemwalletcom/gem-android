@@ -29,8 +29,11 @@ build-test:
 test:
 	./gradlew connectedAndroidTest
 
-debug-apk:
-	./gradlew assembleDebug --build-cache
+unsigned-release:
+	export SKIP_SIGN=true && ./gradlew assembleRelease :app:bundleRelease
+
+extract-universal-apk:
+	./scripts/extract_aab_apk.sh
 
 release:
 	./gradlew clean buildCargoNdkRelease assembleRelease :app:bundleRelease
