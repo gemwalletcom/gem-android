@@ -18,7 +18,6 @@ import com.wallet.core.primitives.ChartValue
 import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.map
@@ -53,14 +52,11 @@ class AssetChartViewModel @Inject constructor(
                 )
             }
 
-            val chartJob = async {
-                gemApiClient.getChart(
-                    assetId.toIdentifier(),
-                    session.currency.string,
-                    period.string
-                )
-            }
-            val prices = chartJob.await().getOrNull()?.prices?.sortedBy { it.timestamp }
+            val prices = gemApiClient.getChart(
+                assetId.toIdentifier(),
+                session.currency.string,
+                period.string
+            ).getOrNull()?.prices?.sortedBy { it.timestamp }
             state.update {
                 it.copy(
                     loading = false,
@@ -104,6 +100,7 @@ data class AssetChartViewModelState(
                     assetTitle = asset.name,
                     assetLinkTitle = "CoinGecko",
                     assetLink = assetLinks?.coingecko ?: "",
+                    assetLinks = assetLinks,
                     currency = currency,
                     marketCap = Fiat(assetInfo.market?.marketCap ?: 0.0).format(0, currency.string, 0),
                     circulatingSupply = Crypto(
@@ -144,6 +141,7 @@ sealed interface AssetChartSceneState {
         val assetTitle: String,
         val assetLinkTitle: String,
         val assetLink: String,
+        val assetLinks: AssetLinks?,
         val currency: Currency,
         val marketCap: String,
         val circulatingSupply: String,

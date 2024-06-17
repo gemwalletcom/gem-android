@@ -34,11 +34,13 @@ import com.gemwallet.android.features.asset.chart.viewmodels.AssetChartSceneStat
 import com.gemwallet.android.features.asset.chart.viewmodels.AssetChartViewModel
 import com.gemwallet.android.features.asset.chart.viewmodels.PricePoint
 import com.gemwallet.android.features.assets.model.PriceState
+import com.gemwallet.android.interactors.getDrawableUri
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.PriceInfo
 import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.getRelativeDate
 import com.gemwallet.android.ui.theme.Spacer16
@@ -64,6 +66,7 @@ import com.patrykandpatrick.vico.core.common.component.LineComponent
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetLinks
 import com.wallet.core.primitives.ChartPeriod
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -90,6 +93,7 @@ fun AssetChartScene(
                 assetTitle = state.assetTitle,
                 assetLinkTitle = state.assetLinkTitle,
                 assetLink = state.assetLink,
+                assetLinks = state.assetLinks,
                 marketCap = state.marketCap,
                 circulatingSupply = state.circulatingSupply,
                 totalSupply = state.totalSupply,
@@ -110,6 +114,7 @@ private fun Success(
     assetTitle: String,
     assetLinkTitle: String,
     assetLink: String,
+    assetLinks: AssetLinks?,
     marketCap: String,
     circulatingSupply: String,
     totalSupply: String,
@@ -152,16 +157,51 @@ private fun Success(
                         ),
                         if (assetLink.isNotEmpty()) {
                             CellEntity(
-                                label = stringResource(
-                                    id = R.string.transaction_view_on,
-                                    assetLinkTitle
-                                ),
+                                label = stringResource(id = R.string.transaction_view_on, assetLinkTitle),
                                 data = "",
                                 action = { uriHandler.openUri(assetLink) }
                             )
                         } else {
                             null
-                        }
+                        },
+                    ),
+                )
+            }
+            
+            item {
+                SubheaderItem(title = "LINKS")
+                Table(
+                    items = listOf(
+                        if (assetLinks?.twitter.isNullOrEmpty()) {
+                            null
+                        } else {
+                            CellEntity(
+                                label = "X",
+                                icon = "twitter".getDrawableUri(),
+                                data = "",
+                                action = { uriHandler.openUri(assetLinks?.twitter ?: return@CellEntity) }
+                            )
+                        },
+                        if (assetLinks?.telegram.isNullOrEmpty()) {
+                            null
+                        } else {
+                            CellEntity(
+                                label = "Telegram",
+                                icon = "telegram".getDrawableUri(),
+                                data = "",
+                                action = { uriHandler.openUri(assetLinks?.telegram ?: return@CellEntity) }
+                            )
+                        },
+                        if (assetLinks?.github.isNullOrEmpty()) {
+                            null
+                        } else {
+                            CellEntity(
+                                label = "Github",
+                                icon = "github".getDrawableUri(),
+                                data = "",
+                                action = { uriHandler.openUri(assetLinks?.github ?: return@CellEntity) }
+                            )
+                        },
                     ),
                 )
             }
@@ -228,7 +268,10 @@ fun ChartHead(
                     }
                 }
                 CartesianChartHost(
-                    modifier = Modifier.fillMaxWidth().height(200.dp).padding(end = padding4),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(200.dp)
+                        .padding(end = padding4),
                     diffAnimationSpec = null,
                     markerVisibilityListener = object : CartesianMarkerVisibilityListener {
                         override fun onHidden(marker: CartesianMarker) {
@@ -245,7 +288,7 @@ fun ChartHead(
                             }
                         }
 
-                        override fun onMoved(
+                        override fun onUpdated(
                             marker: CartesianMarker,
                             targets: List<CartesianMarker.Target>
                         ) {

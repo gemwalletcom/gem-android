@@ -1,5 +1,6 @@
 package com.gemwallet.android.interactors
 
+import androidx.annotation.DrawableRes
 import com.gemwallet.android.ext.type
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
@@ -23,3 +24,5 @@ fun AssetId.getIconUrl(): String {
 fun Chain.getIconUrl(): String = "file:///android_asset/chains/icons/${string}.png"
 
 fun FiatProvider.getIcon(): String = "file:///android_asset/fiat/${name.lowercase()}.png"
+
+fun String.getDrawableUri(): String = "android.resource://com.gemwallet.android/drawable/$this"
