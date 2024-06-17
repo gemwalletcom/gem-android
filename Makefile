@@ -35,6 +35,9 @@ debug-apk:
 unsigned-release-apk:
 	export SKIP_SIGN=true && ./gradlew assembleRelease
 
+unsigned-release:
+	export SKIP_SIGN=true && ./gradlew assembleRelease :app:bundleRelease
+
 release:
 	./gradlew clean buildCargoNdkRelease assembleRelease :app:bundleRelease
 
