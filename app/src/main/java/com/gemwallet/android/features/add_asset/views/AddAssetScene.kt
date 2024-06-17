@@ -5,7 +5,6 @@ import androidx.activity.compose.BackHandler
 import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -158,7 +157,6 @@ fun qrCodeRequest(
     return if (cameraPermissionState.status.isGranted) {
         Scene(
             title = stringResource(id = R.string.wallet_scan_qr_code),
-            padding = PaddingValues(padding16),
             onClose = onCancel
         ) {
             QRScanner(
