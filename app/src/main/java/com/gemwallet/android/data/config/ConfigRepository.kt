@@ -21,13 +21,19 @@ interface ConfigRepository {
 
     fun setAppVersionSkip(version: String)
 
-    fun getNode(chain: Chain): List<Node>
+    fun getNodes(chain: Chain): List<Node>
 
     fun getCurrentNode(chain: Chain): Node?
 
     fun setCurrentNode(chain: Chain, node: Node)
 
     fun setNodes(nodes: List<ChainNodes>)
+
+    fun getBlockExplorers(chain: Chain): List<String>
+
+    fun getCurrentBlockExplorer(chain: Chain): String
+
+    fun setCurrentBlockExplorer(chain: Chain, name: String)
 
     fun getFiatAssetsVersion(): Int
 

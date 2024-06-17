@@ -59,6 +59,7 @@ fun NetworksScreen(
                 state = state,
                 onAddSource = viewModel::onAddSource,
                 onSelectNode = viewModel::onSelectNode,
+                onSelectBlockExplorer = viewModel::onSelectBlockExplorer,
                 onCancel = viewModel::onSelectChain
             )
         }

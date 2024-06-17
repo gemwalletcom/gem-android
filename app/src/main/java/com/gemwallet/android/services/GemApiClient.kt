@@ -27,7 +27,6 @@ import com.wallet.core.primitives.NameProvider
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeStatus
-import com.wallet.core.primitives.NodesResponse
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.Subscription
 import com.wallet.core.primitives.SwapProvider

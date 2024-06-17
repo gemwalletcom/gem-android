@@ -1,14 +1,15 @@
 package com.gemwallet.android.features.transactions.details.viewmodels
 
-import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
+import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.session.SessionRepository
 import com.gemwallet.android.data.transaction.TransactionsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.features.transactions.details.model.TxDetailsSceneState
+import com.gemwallet.android.interactors.chain
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
@@ -26,7 +27,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import uniffi.Gemstone.Config
 import uniffi.Gemstone.Explorer
 import javax.inject.Inject
 
@@ -34,6 +34,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TransactionDetailsViewModel @Inject constructor(
     sessionRepository: SessionRepository,
+    private val configRepository: ConfigRepository,
     private val transactionsRepository: TransactionsRepository,
     private val assetsRepository: AssetsRepository,
 ) : ViewModel() {
@@ -56,11 +57,17 @@ class TransactionDetailsViewModel @Inject constructor(
             Pair(null, null)
         }
 
+        val blockExplorerName = if (tx != null) {
+            configRepository.getCurrentBlockExplorer(tx.asset.chain())
+        } else {
+            ""
+        }
 
         State(
             loading = false,
             transaction = tx,
             currency = session?.currency ?: Currency.USD,
+            blockExplorerName = blockExplorerName,
             fromAsset = fromAsset,
             toAsset = toAsset,
             fromValue = swapMetadata?.fromValue,
@@ -78,6 +85,7 @@ class TransactionDetailsViewModel @Inject constructor(
     private data class State(
         val loading: Boolean = false,
         val transaction: TransactionExtended? = null,
+        val blockExplorerName: String = "",
         val currency: Currency = Currency.USD,
         val fromAsset: AssetInfo? = null,
         val toAsset: AssetInfo? = null,
@@ -100,9 +108,7 @@ class TransactionDetailsViewModel @Inject constructor(
                     val feeFiat = transaction.feePrice?.price?.let {
                         fee.convert(feeAsset.decimals, it).format(feeAsset.decimals, currency.string, 2, dynamicPlace = true)
                     } ?: ""
-                    val explorerName = Config().getBlockExplorers(asset.id.chain.string).firstOrNull()
-                    val explorerUrl = Explorer(asset.id.chain.string).getTransactionUrl(explorerName!!, tx.hash)
-                    val explorerHost: String = Uri.parse(explorerUrl).host ?: explorerUrl
+
                     TxDetailsSceneState.Loaded(
                         assetId = asset.id,
                         assetSymbol = asset.symbol,
@@ -120,8 +126,9 @@ class TransactionDetailsViewModel @Inject constructor(
                         feeCrypto = feeCrypto,
                         feeFiat = feeFiat,
                         type = tx.type,
-                        explorerUrl = explorerUrl,
-                        explorerName = explorerName,
+                        explorerUrl = Explorer(asset.chain().string).getTransactionUrl(
+                            blockExplorerName, tx.hash),
+                        explorerName = blockExplorerName,
                         fromAsset = fromAsset,
                         toAsset = toAsset,
                         fromValue = fromValue,

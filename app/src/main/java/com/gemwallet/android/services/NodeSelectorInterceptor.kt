@@ -19,7 +19,7 @@ class NodeSelectorInterceptor(
             ?: return chain.proceed(originalRequest)
         val currentNode = configRepository.getCurrentNode(blockchain)
         val url = if (currentNode == null) {
-            val node = configRepository.getNode(blockchain).firstOrNull()
+            val node = configRepository.getNodes(blockchain).firstOrNull()
             if (node != null) {
                 configRepository.setCurrentNode(blockchain, node)
             }

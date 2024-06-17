@@ -7,6 +7,8 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FiatProvider
 
+fun Asset.chain(): Chain = id.chain
+
 fun Asset.getIconUrl(): String = id.getIconUrl()
 
 fun Asset.getSupportIconUrl(): String = if (id.type() == AssetSubtype.NATIVE) "" else id.chain.getIconUrl()
