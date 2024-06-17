@@ -1,11 +1,8 @@
 package com.gemwallet.android.features.bridge.connections.views
 
-import android.Manifest
-import androidx.activity.compose.BackHandler
 import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -38,11 +35,7 @@ import com.gemwallet.android.features.bridge.model.ConnectionUI
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.ListItemTitle
 import com.gemwallet.android.ui.components.Scene
-import com.gemwallet.android.ui.components.qrcodescanner.QRScanner
-import com.gemwallet.android.ui.theme.padding16
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
+import com.gemwallet.android.ui.components.qrcodescanner.qrCodeRequest
 import kotlinx.coroutines.launch
 
 @androidx.annotation.OptIn(ExperimentalGetImage::class)
@@ -105,7 +98,7 @@ fun ConnectionsScene(
     }
 
     if (scannerShowed) {
-        qrCodeRequest(onDiscard = { scannerShowed = false }) {
+        qrCodeRequest(onCancel = { scannerShowed = false }) {
             viewModel.addPairing(it, onSuccess = {})
             scannerShowed = false
         }
@@ -140,50 +133,5 @@ fun ConnectionItem(
             title = connection.name,
             subtitle = connection.uri,
         )
-    }
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@ExperimentalGetImage
-@Composable
-fun qrCodeRequest(
-    onDiscard: () -> Unit,
-    onSuccess: (String) -> Unit,
-): Boolean {
-    val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
-    BackHandler(true) {
-        onDiscard()
-    }
-    return if (cameraPermissionState.status.isGranted) {
-        Scene(
-            title = stringResource(id = R.string.wallet_scan_qr_code),
-            padding = PaddingValues(padding16),
-            onClose = onDiscard,
-        ) {
-            QRScanner(
-                listener = {
-                    onSuccess(it)
-                }
-            )
-        }
-        true
-    } else {
-        AlertDialog(
-            onDismissRequest = onDiscard,
-            text = {
-                Text(text = stringResource(id = R.string.camera_permission_request_camera))
-            },
-            confirmButton = {
-                Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
-                    Text(text = stringResource(id = R.string.common_grant_permission))
-                }
-            },
-            dismissButton = {
-                Button(onClick = onDiscard) {
-                    Text(text = stringResource(id = R.string.common_cancel))
-                }
-            }
-        )
-        false
     }
 }

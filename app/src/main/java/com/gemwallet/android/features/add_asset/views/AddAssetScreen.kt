@@ -16,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.add_asset.models.AddAssetUIState
 import com.gemwallet.android.features.add_asset.viewmodels.AddAssetViewModel
+import com.gemwallet.android.ui.components.qrcodescanner.qrCodeRequest
 
 @OptIn(ExperimentalGetImage::class)
 @Composable

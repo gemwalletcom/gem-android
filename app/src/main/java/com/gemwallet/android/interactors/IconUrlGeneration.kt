@@ -1,6 +1,5 @@
 package com.gemwallet.android.interactors
 
-import androidx.annotation.DrawableRes
 import com.gemwallet.android.ext.type
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
