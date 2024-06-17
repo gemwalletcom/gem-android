@@ -78,7 +78,6 @@ import kotlinx.coroutines.launch
 import java.nio.ByteBuffer
 import kotlin.math.min
 
-
 @kotlin.OptIn(ExperimentalPermissionsApi::class)
 @ExperimentalGetImage
 @Composable
