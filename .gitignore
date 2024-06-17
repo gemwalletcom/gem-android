@@ -16,6 +16,8 @@ captures/
 .externalNativeBuild/
 .cxx/
 *.apk
+.apks
+toc.pb
 output.json
 jniLibs/
 # IntelliJ
