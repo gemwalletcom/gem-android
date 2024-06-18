@@ -14,16 +14,16 @@ class SwapScreenState(
 ) {
     class Select(
         val changeType: SwapItemType,
-        val changeAssetId: AssetId,
-        val oppositeAssetId: AssetId,
+        val changeAssetId: AssetId?,
+        val oppositeAssetId: AssetId?,
         val prevAssetId: AssetId?,
     ) : SwapDetails {
         fun predicate(other: AssetInfo): Boolean {
             val chain = other.asset.id.chain
             val isEVMChain = EVMChain.entries.map { it.string }.contains(chain.string)
             return (isEVMChain || chain == Chain.Solana)
-                    && (other.asset.id.toIdentifier() != oppositeAssetId.toIdentifier()
-                    && other.asset.id.toIdentifier() != changeAssetId.toIdentifier()
+                    && (other.asset.id.toIdentifier() != oppositeAssetId?.toIdentifier()
+                    && other.asset.id.toIdentifier() != changeAssetId?.toIdentifier()
                     && other.asset.id.toIdentifier() != prevAssetId?.toIdentifier())
                     && (prevAssetId == null || prevAssetId.chain == other.asset.id.chain)
         }

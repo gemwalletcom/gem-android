@@ -96,6 +96,7 @@ fun AssetsScreen(
         walletInfo = uiState.walletInfo,
         assets = uiState.assets,
         transactions = uiState.pendingTransactions,
+        swapEnabled = uiState.swapEnabled,
         onRefresh = viewModel::onRefresh,
         onShowWallets = onShowWallets,
         onShowAssetManage = onShowAssetManage,
@@ -117,6 +118,7 @@ fun UI(
     walletInfo: WalletInfoUIState,
     assets: ImmutableList<AssetUIState>,
     transactions: ImmutableList<TransactionExtended>,
+    swapEnabled: Boolean,
     onRefresh: () -> Unit,
     onShowWallets: () -> Unit,
     onShowAssetManage: () -> Unit,
@@ -183,6 +185,7 @@ fun UI(
             walletInfo = walletInfo,
             assets = assets,
             transactions = transactions,
+            swapEnabled = swapEnabled,
             onRefresh = onRefresh,
             onShowAssetManage = onShowAssetManage,
             onSendClick = onSendClick,
@@ -204,6 +207,7 @@ fun AssetListPushToRefresh(
     walletInfo: WalletInfoUIState,
     assets: ImmutableList<AssetUIState>,
     transactions: ImmutableList<TransactionExtended>,
+    swapEnabled: Boolean,
     onRefresh: () -> Unit,
     onShowAssetManage: () -> Unit,
     onSendClick: () -> Unit,
@@ -225,6 +229,7 @@ fun AssetListPushToRefresh(
             walletInfo = walletInfo,
             assets = assets,
             transactions = transactions,
+            swapEnabled = swapEnabled,
             onShowAssetManage = onShowAssetManage,
             onSendClick = onSendClick,
             onReceiveClick = onReceiveClick,
@@ -245,6 +250,7 @@ private fun AssetList(
     walletInfo: WalletInfoUIState,
     assets: ImmutableList<AssetUIState>,
     transactions: ImmutableList<TransactionExtended>,
+    swapEnabled: Boolean,
     onShowAssetManage: () -> Unit,
     onSendClick: () -> Unit,
     onReceiveClick: () -> Unit,
@@ -272,7 +278,7 @@ private fun AssetList(
                         transferEnabled = true,
                         onReceive = onReceiveClick,
                         onBuy = onBuyClick,
-                        onSwap = onSwapClick,
+                        onSwap = if (swapEnabled) onSwapClick else null,
                     )
                 }
             )
@@ -403,6 +409,7 @@ fun PreviewAssetsList() {
             onTransactionClick = {},
             onAssetClick = {},
             onAssetHide = {},
+            swapEnabled = false,
             listState = rememberLazyListState(),
         )
     }

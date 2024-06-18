@@ -1,6 +1,7 @@
 package com.gemwallet.android.features.asset_select.views
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.text2.input.clearText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -32,6 +33,7 @@ fun AssetSelectScreen(
 
     DisposableEffect(key1 = predicate) {
         viewModel.setPredicate(predicate)
+        viewModel.query.clearText()
 
         onDispose {  }
     }

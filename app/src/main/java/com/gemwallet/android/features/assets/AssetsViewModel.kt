@@ -16,7 +16,9 @@ import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.WalletSummary
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.Wallet
@@ -58,11 +60,15 @@ class AssetsViewModel @Inject constructor(
             transactionsRepository.getTransactions(null, *session.wallet.accounts.toTypedArray())
                 .map { txs -> txs.filter { it.transaction.state == TransactionState.Pending } }
         ) { assets, txs ->
+            val swapEnabled = session.wallet.accounts.any { acc ->
+                EVMChain.entries.map { it.string }.contains(acc.chain.string) || acc.chain == Chain.Solana
+            }
             AssetsViewModelState(
-                    walletInfo = calcWalletInfo(session.wallet, assets),
-                    assets = handleAssets(session.currency, assets),
-                    pendingTransactions = txs,
-                    currency = session.currency
+                walletInfo = calcWalletInfo(session.wallet, assets),
+                assets = handleAssets(session.currency, assets),
+                pendingTransactions = txs,
+                currency = session.currency,
+                swapEnabled = swapEnabled,
             )
         }
     }.flowOn(Dispatchers.IO)
@@ -172,6 +178,7 @@ private data class AssetsViewModelState(
     val currency: Currency = Currency.USD,
     val assets: ImmutableList<AssetUIState> = emptyList<AssetUIState>().toImmutableList(),
     val pendingTransactions: List<TransactionExtended> = emptyList(),
+    val swapEnabled: Boolean = true,
     val error: String = "",
 ) {
     fun toUIState(): AssetsUIState {
@@ -187,6 +194,7 @@ private data class AssetsViewModelState(
                 type = walletInfo?.type ?: WalletType.view,
             ),
             assets = assets,
+            swapEnabled = swapEnabled,
             pendingTransactions = pendingTransactions.toImmutableList()
         )
     }
@@ -199,5 +207,6 @@ data class AssetsUIState(
     val walletInfo: WalletInfoUIState = WalletInfoUIState(),
     val assets: ImmutableList<AssetUIState> = emptyList<AssetUIState>().toImmutableList(),
     val pendingTransactions: ImmutableList<TransactionExtended> = emptyList<TransactionExtended>().toImmutableList(),
+    val swapEnabled: Boolean = true,
     val error: String = "",
 )
