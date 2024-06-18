@@ -131,6 +131,7 @@ dependencies {
 
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
+    implementation(libs.androidx.material3.adaptive.android)
     kapt(libs.hilt.compiler)
 
     implementation(libs.lifecycle.runtime.ktx)

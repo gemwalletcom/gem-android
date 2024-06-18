@@ -26,6 +26,9 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,12 +37,15 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.headerIconSize
 import com.gemwallet.android.ui.theme.padding16
 import com.gemwallet.android.ui.theme.space4
@@ -130,6 +136,7 @@ internal fun HeaderIcon(
     }
 }
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun AssetHeadActions(
     walletType: WalletType,
@@ -143,13 +150,14 @@ fun AssetHeadActions(
         AssetWatchOnly()
         return
     }
+    val windowSizeClass: WindowWidthSizeClass = currentWindowAdaptiveInfo().windowSizeClass.widthSizeClass
     Row(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (onTransfer != null) {
             AssetAction(
-                modifier = Modifier,
+                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) Modifier.weight(1f) else Modifier,
                 title = stringResource(id = R.string.wallet_send),
                 imageVector = Icons.Default.ArrowUpward,
                 contentDescription = "send",
@@ -159,7 +167,7 @@ fun AssetHeadActions(
         }
         if (onReceive != null) {
             AssetAction(
-                modifier = Modifier,
+                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) Modifier.weight(1f) else Modifier,
                 title = stringResource(id = R.string.wallet_receive),
                 imageVector = Icons.Default.ArrowDownward,
                 contentDescription = "receive",
@@ -168,7 +176,7 @@ fun AssetHeadActions(
         }
         if (onBuy != null) {
             AssetAction(
-                modifier = Modifier,
+                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) Modifier.weight(1f) else Modifier,
                 title = stringResource(id = R.string.wallet_buy),
                 imageVector = Icons.Default.Add,
                 contentDescription = "buy",
@@ -177,7 +185,7 @@ fun AssetHeadActions(
         }
         if (onSwap != null) {
             AssetAction(
-                modifier = Modifier,
+                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) Modifier.weight(1f) else Modifier,
                 title = stringResource(id = R.string.wallet_swap),
                 imageVector = Icons.Default.SwapVert,
                 contentDescription = "swap",
@@ -264,6 +272,22 @@ private fun AssetAction(
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.W400),
                 maxLines = 1,
             )
+        }
+    }
+}
+
+@Preview(locale = "ru", device = Devices.PIXEL_3A)
+@Composable
+fun PreviewAssetHeadActions() {
+    WalletTheme {
+        AssetHeadActions(
+            walletType = WalletType.multicoin,
+            onTransfer = { },
+            transferEnabled = true,
+            onReceive = { },
+            onBuy = {}
+        ) {
+
         }
     }
 }

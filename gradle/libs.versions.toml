@@ -44,6 +44,7 @@ ksp = "1.9.24-1.0.20"
 android-lib = "8.5.0"
 kotlin = "1.9.24"
 google-services = "4.4.2"
+material3AdaptiveAndroid = "1.0.0-alpha06"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -131,6 +132,7 @@ lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", v
 # gemcore
 rust-plugin = { module = "gradle.plugin.com.github.willir.rust:plugin", version.ref = "plugin" }
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
+androidx-material3-adaptive-android = { group = "androidx.compose.material3", name = "material3-adaptive-android", version.ref = "material3AdaptiveAndroid" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
