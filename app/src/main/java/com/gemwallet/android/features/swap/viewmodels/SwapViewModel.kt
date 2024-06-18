@@ -67,9 +67,7 @@ class SwapViewModel @Inject constructor(
             val session = sessionRepository.session
             val account = session?.wallet?.getAccount(fromId.chain)
             if (account == null) {
-                withContext(Dispatchers.Main) {
-                    onFail()
-                }
+                state.update { it.copy(loading = false, select = SwapItemType.Pay) }
                 return@withContext
             }
             assetsRepository.updatePrices(session.currency, fromId, toId)
@@ -177,15 +175,15 @@ class SwapViewModel @Inject constructor(
         val prevSelected = state.value.selectedAssetId
         val fromId = when (state.value.select) {
             SwapItemType.Pay -> assetId
-            SwapItemType.Receive -> prevSelected ?: state.value.payAsset?.asset?.id ?: return
+            SwapItemType.Receive -> prevSelected ?: state.value.payAsset?.asset?.id
             null -> return
         }
         val toId = when (state.value.select) {
-            SwapItemType.Pay -> prevSelected ?: state.value.receiveAsset?.asset?.id ?: return
+            SwapItemType.Pay -> prevSelected ?: state.value.receiveAsset?.asset?.id
             SwapItemType.Receive -> assetId
             null -> return
         }
-        if (fromId.chain != toId.chain) {
+        if (fromId?.chain != toId?.chain) {
             state.update {
                 it.copy(
                     selectedAssetId = assetId,
@@ -194,7 +192,7 @@ class SwapViewModel @Inject constructor(
             }
         } else {
             state.update { State() }
-            init(fromId, toId)
+            init(fromId!!, toId!!)
         }
     }
 
@@ -276,7 +274,7 @@ class SwapViewModel @Inject constructor(
             val receiveItem = getSwapItem(SwapItemType.Receive, receiveAsset, symbolLength)
             return SwapScreenState(
                 isLoading = loading,
-                isFatal = !loading && (payItem == null || receiveItem == null),
+                isFatal = !loading && (payItem == null || receiveItem == null) && select == null,
                 details = when {
                     payItem == null || receiveItem == null -> SwapDetails.None
                     else -> SwapDetails.Quote(
@@ -288,16 +286,16 @@ class SwapViewModel @Inject constructor(
                     )
                 },
                 select = when {
-                    payItem == null || receiveItem == null || select == null -> null
+                    /*payItem == null || receiveItem == null || */select == null -> null
                     else -> SwapScreenState.Select(
                         changeType = select,
                         changeAssetId = when (select) {
-                            SwapItemType.Pay -> payItem.assetId
-                            SwapItemType.Receive -> receiveItem.assetId
+                            SwapItemType.Pay -> payItem?.assetId
+                            SwapItemType.Receive -> receiveItem?.assetId
                         },
                         oppositeAssetId = when (select) {
-                            SwapItemType.Pay -> receiveItem.assetId
-                            SwapItemType.Receive -> payItem.assetId
+                            SwapItemType.Pay -> receiveItem?.assetId
+                            SwapItemType.Receive -> payItem?.assetId
                         },
                         prevAssetId = selectedAssetId,
                     )
