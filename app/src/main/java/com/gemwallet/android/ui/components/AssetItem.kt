@@ -84,7 +84,7 @@ fun AssetListItem(
         }
         ListItemTitle(
             modifier = Modifier.fillMaxHeight(),
-            title = title.getAddressEllipsisText(18),
+            title = title,
             titleBadge = { Badge(text = badge) },
             subtitle = priceInfo,
         )
@@ -113,7 +113,7 @@ fun AssetListItem(
     ) {
         ListItemTitle(
             modifier = Modifier.fillMaxHeight(),
-            title = title.getAddressEllipsisText(18),
+            title = title,
             titleBudge = { Badge(text = badge) },
             subtitle = support,
         )

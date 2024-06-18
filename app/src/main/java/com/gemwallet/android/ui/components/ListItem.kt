@@ -111,6 +111,7 @@ fun ListItemTitle(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
+                    modifier = Modifier.weight(1f, false),
                     text = title,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
