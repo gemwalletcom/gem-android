@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
@@ -120,7 +121,9 @@ fun TransactionItem(
                                 modifier = Modifier.padding(start = 5.dp, top = 2.dp, end = padding4, bottom = 2.dp),
                                 text = badge,
                                 color = color,
-                                style = MaterialTheme.typography.labelMedium
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                                style = MaterialTheme.typography.labelMedium,
                             )
                             if (state == TransactionState.Pending) {
                                 CircularProgressIndicator10(color = color)
