@@ -62,37 +62,48 @@ class SwapViewModel @Inject constructor(
         assetsRepository.subscribe(this::onRefreshAssets)
     }
 
-    fun init(fromId: AssetId, toId: AssetId, onFail: () -> Unit = {}) = viewModelScope.launch {
+    fun init(fromId: AssetId?, toId: AssetId?) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            val session = sessionRepository.session
-            val account = session?.wallet?.getAccount(fromId.chain)
-            if (account == null) {
-                state.update { it.copy(loading = false, select = SwapItemType.Pay) }
+            if (fromId == null || toId == null) {
+                state.update { it.copy(loading = false, error = SwapError.SelectAsset) }
                 return@withContext
             }
-            assetsRepository.updatePrices(session.currency, fromId, toId)
-            assetsRepository.updateBalances(account, fromId, toId)
             loadData(fromId, toId)
+            updateBalances(fromId, toId)
         }
     }
 
-    private fun loadData(fromId: AssetId, toId: AssetId) = viewModelScope.launch {
-        val session = sessionRepository.session ?: return@launch
+    private suspend fun updateBalances(fromId: AssetId, toId: AssetId) {
+        val session = sessionRepository.session
+        val account = session?.wallet?.getAccount(fromId.chain)
+        if (account == null) {
+            state.update { it.copy(loading = false, select = SwapItemType.Pay) }
+            return
+        }
+        assetsRepository.updatePrices(session.currency, fromId, toId)
+        assetsRepository.updateBalances(account, fromId, toId)
+        loadData(fromId, toId)
+    }
+
+    private suspend fun loadData(fromId: AssetId, toId: AssetId) = withContext(Dispatchers.IO) {
+        val session = sessionRepository.session ?: return@withContext
         val from = assetsRepository.getById(session.wallet, fromId).getOrNull()?.firstOrNull()
         val to = assetsRepository.getById(session.wallet, toId).getOrNull()?.firstOrNull()
 
         clearPayAmount()
         receiveValue.clearText()
         state.update {
-            State(loading = false, payAsset = from, receiveAsset = to, quote = null)
+            State(loading = false, payAsset = from, receiveAsset = to, quote = null, select = it.select)
         }
-        updateAllowance(from?.owner?.address ?: return@launch, fromId)
+        updateAllowance(from?.owner?.address ?: return@withContext, fromId)
     }
 
     private fun onRefreshAssets() {
         val fromAssetId = state.value.payAsset?.asset?.id ?: return
         val toAssetId = state.value.receiveAsset?.asset?.id ?: return
-        loadData(fromAssetId, toAssetId)
+        viewModelScope.launch {
+            loadData(fromAssetId, toAssetId)
+        }
     }
 
     suspend fun updateQuote() {
@@ -171,23 +182,21 @@ class SwapViewModel @Inject constructor(
         state.update { it.copy(select = type) }
     }
 
-    fun changeAsset(assetId: AssetId) {
+    fun changeAsset(assetId: AssetId, select: SwapItemType) {
         val prevSelected = state.value.selectedAssetId
-        val fromId = when (state.value.select) {
+        val fromId = when (select) {
             SwapItemType.Pay -> assetId
             SwapItemType.Receive -> prevSelected ?: state.value.payAsset?.asset?.id
-            null -> return
         }
-        val toId = when (state.value.select) {
+        val toId = when (select) {
             SwapItemType.Pay -> prevSelected ?: state.value.receiveAsset?.asset?.id
             SwapItemType.Receive -> assetId
-            null -> return
         }
         if (fromId?.chain != toId?.chain) {
             state.update {
                 it.copy(
                     selectedAssetId = assetId,
-                    select = if (it.select == SwapItemType.Pay) SwapItemType.Receive else SwapItemType.Pay
+                    select = if (select == SwapItemType.Pay) SwapItemType.Receive else SwapItemType.Pay
                 )
             }
         } else {
@@ -274,7 +283,6 @@ class SwapViewModel @Inject constructor(
             val receiveItem = getSwapItem(SwapItemType.Receive, receiveAsset, symbolLength)
             return SwapScreenState(
                 isLoading = loading,
-                isFatal = !loading && (payItem == null || receiveItem == null) && select == null,
                 details = when {
                     payItem == null || receiveItem == null -> SwapDetails.None
                     else -> SwapDetails.Quote(
@@ -286,7 +294,7 @@ class SwapViewModel @Inject constructor(
                     )
                 },
                 select = when {
-                    /*payItem == null || receiveItem == null || */select == null -> null
+                    select == null -> null
                     else -> SwapScreenState.Select(
                         changeType = select,
                         changeAssetId = when (select) {

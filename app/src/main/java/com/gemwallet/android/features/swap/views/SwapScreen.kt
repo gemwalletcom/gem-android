@@ -1,5 +1,11 @@
 package com.gemwallet.android.features.swap.views
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideIn
+import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -47,6 +53,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,6 +66,7 @@ import com.gemwallet.android.features.swap.model.SwapDetails
 import com.gemwallet.android.features.swap.model.SwapError
 import com.gemwallet.android.features.swap.model.SwapItemState
 import com.gemwallet.android.features.swap.model.SwapItemType
+import com.gemwallet.android.features.swap.model.SwapScreenState
 import com.gemwallet.android.features.swap.viewmodels.SwapViewModel
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.ConfirmParams
@@ -67,6 +75,8 @@ import com.gemwallet.android.ui.components.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.navigation.animEnterDuration
+import com.gemwallet.android.ui.navigation.enterTransition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.mainActionHeight
@@ -87,17 +97,20 @@ fun SwapScreen(
     onCancel: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     DisposableEffect(fromAssetId.toIdentifier(), toAssetId.toIdentifier()) {
 
-        viewModel.init(fromAssetId, toAssetId, onCancel)
+        viewModel.init(fromAssetId, toAssetId)
 
         onDispose {  }
     }
 
     LaunchedEffect(Unit) {
         viewModel.updateQuote()
+    }
+
+    BackHandler(uiState.select != null) {
+        viewModel.assetSelect(null)
     }
 
     val details = uiState.details
@@ -119,21 +132,28 @@ fun SwapScreen(
             onAssetSelect = viewModel::assetSelect
         )
     }
-    val select = uiState.select
-    if (select != null) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                viewModel.assetSelect(null)
+
+    AnimatedVisibility(
+        visible = details is SwapDetails.None || uiState.select != null,
+        enter = slideIn { IntOffset(it.width, 0) },
+        exit = slideOut { IntOffset(it.width, 0) }
+    ) {
+        SelectSwapScreen(
+            select = SwapScreenState.Select(
+                changeType = uiState.select?.changeType ?: SwapItemType.Pay,
+                changeAssetId = uiState.select?.changeAssetId,
+                oppositeAssetId = uiState.select?.oppositeAssetId,
+                prevAssetId = uiState.select?.prevAssetId,
+            ),
+            onCancel = {
+                if (uiState.select == null) {
+                    onCancel()
+                } else {
+                    viewModel.assetSelect(null)
+                }
             },
-            sheetState = sheetState,
-            dragHandle = { Box {} },
-        ) {
-            SelectSwapScreen(
-                select = select,
-                onCancel = { viewModel.assetSelect(null) },
-                onSelect = { viewModel.changeAsset(it) },
-            )
-        }
+            onSelect = {asset, type -> viewModel.changeAsset(asset, type) },
+        )
     }
 }
 
@@ -212,7 +232,7 @@ fun Form(
         },
         onClose = onCancel,
     ) {
-        SwapItem(details.pay, state = payState, isPay = true, onAssetSelect = onAssetSelect)
+        SwapItem(item = details.pay, state = payState, isPay = true, onAssetSelect = onAssetSelect)
         IconButton(onClick = onSwitch) {
             Icon(
                 imageVector = Icons.Default.SwapVert,
@@ -255,10 +275,14 @@ fun SwapItem(
         )
         Spacer8()
         Row(
-            modifier = Modifier.height(40.dp).fillMaxWidth(),
+            modifier = Modifier
+                .height(40.dp)
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+            Box(modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()) {
                 if (item.calculating) {
                     CircularProgressIndicator16()
                 } else {

@@ -15,7 +15,7 @@ import com.wallet.core.primitives.AssetId
 fun SelectSwapScreen(
     select: SwapScreenState.Select,
     onCancel: () -> Unit,
-    onSelect: ((AssetId) -> Unit)?,
+    onSelect: ((AssetId, SwapItemType) -> Unit)?,
 ) {
     val predicate: (AssetInfo) -> Boolean = remember(select.prevAssetId?.toIdentifier(), select.oppositeAssetId) {
         { select.predicate(it) }
@@ -28,7 +28,7 @@ fun SelectSwapScreen(
         titleBadge = { null },
         itemTrailing = { itemBalanceTrailing(it) },
         predicate = predicate,
-        onSelect = onSelect,
+        onSelect = { onSelect?.invoke(it, select.changeType) },
         onCancel = onCancel,
     )
 }

@@ -90,12 +90,13 @@ private fun LazyListScope.assets(
     items(items.size, key = { items[it].id.toIdentifier() }) { index ->
         val asset = items[index]
         AssetListItem(
-            modifier = Modifier.animateItemPlacement(
-                    animationSpec = tween(
-                        durationMillis = 150,
-                        easing = LinearOutSlowInEasing,
-                    )
-                )
+            modifier = Modifier
+//                .animateItemPlacement(
+//                    animationSpec = tween(
+//                        durationMillis = 150,
+//                        easing = LinearOutSlowInEasing,
+//                    )
+//                )
                 .heightIn(74.dp)
                 .clickable { onSelect?.invoke(asset.id) },
             chain = asset.id.chain,

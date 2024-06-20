@@ -32,7 +32,6 @@ class SwapScreenState(
 
 sealed interface SwapDetails {
     data object None : SwapDetails
-
     class Quote(
         val pay: SwapItemState,
         val receive: SwapItemState,
