@@ -49,14 +49,14 @@ class AppViewModel @Inject constructor(
     private fun hasSession(): Boolean = sessionRepository.hasSession()
 
     private suspend fun handleAppVersion() = withContext(Dispatchers.IO) {
-        if (BuildConfig.DEBUG) {
-            return@withContext
-        }
+//        if (BuildConfig.DEBUG) {
+//            return@withContext
+//        }
         val current = gemApiClient.getConfig().mapCatching {
             it.app.android.version.production
         }.getOrNull() ?: BuildConfig.VERSION_NAME
         val skipVersion = configRepository.getAppVersionSkip()
-        if (current.compareTo(BuildConfig.VERSION_NAME) >= 0 && skipVersion != current) {
+        if (current.compareTo(BuildConfig.VERSION_NAME) > 0 && skipVersion != current) {
             state.update {
                 it.copy(intent = AppIntent.ShowUpdate, version = configRepository.getAppVersion())
             }
