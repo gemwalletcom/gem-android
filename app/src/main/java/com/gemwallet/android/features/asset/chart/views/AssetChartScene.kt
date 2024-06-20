@@ -176,7 +176,7 @@ private fun Success(
                             null
                         } else {
                             CellEntity(
-                                label = "X",
+                                label = stringResource(id = R.string.social_x),
                                 icon = "twitter".getDrawableUri(),
                                 data = "",
                                 action = { uriHandler.openUri(assetLinks?.twitter ?: return@CellEntity) }
@@ -186,7 +186,7 @@ private fun Success(
                             null
                         } else {
                             CellEntity(
-                                label = "Telegram",
+                                label = stringResource(id = R.string.social_telegram),
                                 icon = "telegram".getDrawableUri(),
                                 data = "",
                                 action = { uriHandler.openUri(assetLinks?.telegram ?: return@CellEntity) }
@@ -196,7 +196,7 @@ private fun Success(
                             null
                         } else {
                             CellEntity(
-                                label = "Github",
+                                label = stringResource(id = R.string.social_github),
                                 icon = "github".getDrawableUri(),
                                 data = "",
                                 action = { uriHandler.openUri(assetLinks?.github ?: return@CellEntity) }

@@ -196,7 +196,24 @@
   <string name="secret_phrase.save_phrase_safely">Enregistrez votre phrase secrète dans un endroit sécurisé\n que vous seul contrôlez.</string>
   <string name="secret_phrase.confirm.quick_test.title">Effectuez ce test rapide pour confirmer que vous avez tout enregistré correctement.</string>
   <string name="wallets.watch">Watch</string>
-  <string name="transfer.minimum_amount">Minimum Amount is %s</string>
+  <string name="transfer.minimum_amount">Le montant minimum est de %s</string>
   <string name="wallet_connect.no_active_connections">No active connections</string>
   <string name="stake.minimum_amount">Montant minimal</string>
+  <string name="common.no_results_found">Aucun résultat trouvé</string>
+  <string name="social.x">X (formerly Twitter)</string>
+  <string name="social.discord">Discord</string>
+  <string name="social.reddit">Reddit</string>
+  <string name="social.telegram">Telegram</string>
+  <string name="social.github">GitHub</string>
+  <string name="social.youtube">YouTube</string>
+  <string name="social.links">Links</string>
+  <string name="social.homepage">Homepage</string>
+  <string name="social.facebook">Facebook</string>
+  <string name="nodes.import_node.title">Add node</string>
+  <string name="nodes.import_node.chain_id">Chain ID</string>
+  <string name="nodes.import_node.in_sync">In Sync</string>
+  <string name="nodes.import_node.latest_block">Latest Block</string>
+  <string name="errors.invalid_url">Invalid URL</string>
+  <string name="common.yes">Yes</string>
+  <string name="common.no">No</string>
 </resources>
