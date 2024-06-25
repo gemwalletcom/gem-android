@@ -1,9 +1,7 @@
 package com.wallet
 
 import com.gemwallet.android.ext.toAssetId
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

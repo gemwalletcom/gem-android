@@ -6,7 +6,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import java.math.BigInteger
 
 class TonFee {

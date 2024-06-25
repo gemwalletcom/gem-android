@@ -1,10 +1,7 @@
 package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.GetTokenClient
-import com.gemwallet.android.blockchain.clients.TokenClient
-import com.gemwallet.android.blockchain.clients.ethereum.EvmRpcClient
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
-import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType

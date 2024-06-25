@@ -19,7 +19,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.interactors.getIconUrl

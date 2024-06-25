@@ -1,7 +1,6 @@
 package com.gemwallet.android.blockchain.clients.ton
 
 import com.gemwallet.android.blockchain.clients.GetTokenClient
-import com.gemwallet.android.blockchain.clients.sui.SuiRpcClient
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType

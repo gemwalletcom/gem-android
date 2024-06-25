@@ -5,7 +5,6 @@ import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.model.TransactionChages
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
-import java.lang.IllegalStateException
 
 class NearTransactionStatusClient(
     private val chain: Chain,

@@ -7,7 +7,8 @@
 package com.wallet.core.primitives
 
 import androidx.compose.runtime.NoLiveLiterals
-import kotlinx.serialization.*
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class Currency(val string: String) {

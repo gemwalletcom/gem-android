@@ -4,7 +4,6 @@ import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.model.Fee
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
-import java.math.BigInteger
 
 class SuiFee {
     suspend operator fun invoke(

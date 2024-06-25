@@ -11,7 +11,6 @@ import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 
 class TronSignerPreloader(
     private val rpcClient: TronRpcClient,

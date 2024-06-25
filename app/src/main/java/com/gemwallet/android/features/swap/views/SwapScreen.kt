@@ -1,9 +1,7 @@
 package com.gemwallet.android.features.swap.views
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -34,9 +32,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -75,8 +71,6 @@ import com.gemwallet.android.ui.components.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Scene
-import com.gemwallet.android.ui.navigation.animEnterDuration
-import com.gemwallet.android.ui.navigation.enterTransition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.mainActionHeight

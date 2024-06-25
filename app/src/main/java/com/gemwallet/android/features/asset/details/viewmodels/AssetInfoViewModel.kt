@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.asset.details.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -12,8 +11,6 @@ import com.gemwallet.android.data.transaction.TransactionsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isStaked
-import com.gemwallet.android.ext.toAssetId
-import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset.navigation.assetIdArg
 import com.gemwallet.android.features.assets.model.PriceState

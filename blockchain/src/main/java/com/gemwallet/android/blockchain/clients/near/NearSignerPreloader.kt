@@ -5,7 +5,6 @@ import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerInputInfo
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.Account

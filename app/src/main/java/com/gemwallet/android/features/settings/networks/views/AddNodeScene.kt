@@ -32,8 +32,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.type
-import com.gemwallet.android.features.buy.views.LotButton
 import com.gemwallet.android.features.settings.networks.viewmodels.AddNodeViewModel
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AssetListItem
@@ -44,7 +42,6 @@ import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.TransferTextFieldActions
 import com.gemwallet.android.ui.components.qrcodescanner.qrCodeRequest
 import com.gemwallet.android.ui.theme.Spacer16
-import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import java.text.NumberFormat
 

@@ -7,7 +7,7 @@
 package com.wallet.core.blockchain.cosmos.models
 
 import androidx.compose.runtime.NoLiveLiterals
-import kotlinx.serialization.*
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class CosmosDelegationData (

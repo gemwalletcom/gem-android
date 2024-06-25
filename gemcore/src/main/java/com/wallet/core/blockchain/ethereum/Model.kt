@@ -7,5 +7,4 @@
 package com.wallet.core.blockchain.ethereum
 
 import androidx.compose.runtime.NoLiveLiterals
-import kotlinx.serialization.*
 
