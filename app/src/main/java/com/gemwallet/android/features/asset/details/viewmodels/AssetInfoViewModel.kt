@@ -11,6 +11,7 @@ import com.gemwallet.android.data.transaction.TransactionsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isStaked
+import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset.navigation.assetIdArg
 import com.gemwallet.android.features.assets.model.PriceState
@@ -30,12 +31,18 @@ import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -51,15 +58,41 @@ class AssetInfoViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel(), OnSessionChange {
 
-    val assetId: StateFlow<String> = savedStateHandle.getStateFlow(assetIdArg, "")
+    val assetId = savedStateHandle.get<String>(assetIdArg)?.toAssetId()
 
-    private val state = MutableStateFlow(AssetInfoViewModelState())
-    val uiState = state.map { it.toUIState() }
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val assetIdFlow: Flow<AssetInfoViewModelState> = savedStateHandle.getStateFlow<String>(assetIdArg, "")
+        .flatMapConcat { assetId ->
+            val session = sessionRepository.session ?: return@flatMapConcat emptyFlow()
+            val assetId = assetId.toAssetId() ?: return@flatMapConcat emptyFlow()
+            val account = sessionRepository.session?.wallet?.accounts?.firstOrNull { it.chain == assetId.chain } ?: return@flatMapConcat emptyFlow()
+            val stakeApr = if (StakeChain.isStaked(assetId.chain)) {
+                assetsRepository.getStakeApr(assetId)
+            } else {
+                null
+            }
+            assetsRepository.getAssetInfo(account, assetId).combine(
+                transactionsRepository.getTransactions(assetId, account)
+            ) { assetInfo, transactions ->
+                AssetInfoViewModelState(
+                    loading = false,
+                    currency = session.currency,
+                    walletType = session.wallet.type,
+                    assetInfo = assetInfo,
+                    stakeApr = stakeApr,
+                    transactions = transactions,
+                )
+            }
+        }
+
+//    private val state = MutableStateFlow(AssetInfoViewModelState())
+    val uiState = assetIdFlow.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, AssetInfoSceneState.Loading)
 
+
     init {
-        sessionRepository.subscribe(this)
-        transactionsRepository.subscribe(this::onTransactions)
+//        sessionRepository.subscribe(this)
+//        transactionsRepository.subscribe(this::onTransactions)
     }
 
     fun init(assetId: AssetId) {
@@ -68,7 +101,7 @@ class AssetInfoViewModel @Inject constructor(
     }
 
     fun refresh() {
-        syncAssetInfo(state.value.assetInfo?.asset?.id ?: return)
+        syncAssetInfo(assetId = assetId ?: return)
     }
 
     private fun prepareAsset(assetId: AssetId) {
@@ -76,7 +109,7 @@ class AssetInfoViewModel @Inject constructor(
         viewModelScope.launch {
             val assetInfo = assetsRepository.getById(session.wallet, assetId).getOrNull()?.firstOrNull()
             if (assetInfo == null) {
-                handleFatalError(AssetStateError.AssetNotFound)
+//                handleFatalError(AssetStateError.AssetNotFound)
                 return@launch
             }
             val transactions = transactionsRepository.getTransactions(assetId, assetInfo.owner)
@@ -87,21 +120,21 @@ class AssetInfoViewModel @Inject constructor(
             } else {
                 null
             }
-            state.update { state ->
-                state.copy(
-                    loading = false,
-                    currency = session.currency,
-                    walletType = session.wallet.type,
-                    assetInfo = assetInfo,
-                    stakeApr = stakeApr,
-                    transactions = transactions,
-                )
-            }
+//            state.update { state ->
+//                state.copy(
+//                    loading = false,
+//                    currency = session.currency,
+//                    walletType = session.wallet.type,
+//                    assetInfo = assetInfo,
+//                    stakeApr = stakeApr,
+//                    transactions = transactions,
+//                )
+//            }
         }
     }
 
     private fun syncAssetInfo(assetId: AssetId) {
-        state.update { it.copy(loading = true) }
+//        state.update { it.copy(loading = true) }
         viewModelScope.launch {
             val session = sessionRepository.session ?: return@launch
             val account = session.wallet.getAccount(assetId.chain) ?: return@launch
@@ -114,22 +147,22 @@ class AssetInfoViewModel @Inject constructor(
     }
 
     override fun onSessionChange(session: Session?) {
-        init(state.value.assetInfo?.asset?.id ?: return)
+//        init(state.value.assetInfo?.asset?.id ?: return)
     }
 
-    private fun onTransactions() {
-        init(state.value.assetInfo?.asset?.id ?: return)
-    }
+//    private fun onTransactions() {
+//        init(state.value.assetInfo?.asset?.id ?: return)
+//    }
 
-    private fun handleFatalError(error: AssetStateError) {
-        state.update {
-            AssetInfoViewModelState(fatalError = error)
-        }
-    }
+//    private fun handleFatalError(error: AssetStateError) {
+//        state.update {
+//            AssetInfoViewModelState(fatalError = error)
+//        }
+//    }
 
-    fun reset() {
-        state.update { AssetInfoViewModelState() }
-    }
+//    fun reset() {
+//        state.update { AssetInfoViewModelState() }
+//    }
 }
 
 data class AssetInfoViewModelState(

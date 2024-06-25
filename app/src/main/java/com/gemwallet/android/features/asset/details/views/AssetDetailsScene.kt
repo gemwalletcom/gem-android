@@ -66,7 +66,7 @@ fun AssetDetailsScene(
         viewModel.init(assetId)
 
         onDispose {
-            viewModel.reset()
+//            viewModel.reset()
         }
     }
 

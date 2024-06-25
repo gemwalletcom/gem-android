@@ -29,7 +29,9 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
@@ -133,6 +135,13 @@ class AssetsRepository @Inject constructor(
         return Result.success(result)
     }
 
+    suspend fun getAssetInfo(account: Account, assetId: AssetId): Flow<AssetInfo> {
+        return assetsLocalSource.getAssetInfo(account, assetId).mapNotNull {
+            it ?: tokensRepository.getByIds(listOf(assetId)).map { token ->
+                AssetInfo(owner = account, asset = token)
+            }.firstOrNull { it.asset.id.chain == account.chain }
+        }
+    }
 
     suspend fun invalidateDefault(walletType: WalletType, wallet: Wallet, currency: Currency) = scope.launch {
         val assets = assetsLocalSource.getAllByAccounts(wallet.accounts)

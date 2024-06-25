@@ -24,6 +24,8 @@ interface AssetsLocalSource {
 
     suspend fun getById(accounts: List<Account>, assetId: AssetId): Result<List<AssetInfo>>
 
+    suspend fun getAssetInfo(account: Account, assetId: AssetId): Flow<AssetInfo?>
+
     suspend fun getById(accounts: List<Account>, ids: List<AssetId>): Result<List<AssetInfo>>
 
     suspend fun getAssets(account: Account): Result<List<Asset>>

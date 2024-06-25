@@ -128,6 +128,7 @@ hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", ve
 # lifecycle hold on 2.7.0 - 2.8 buggy
 lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeCompose" }
+lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmodel-savedstate", version.ref = "lifecycleRuntimeCompose" }
 
 # gemcore
 rust-plugin = { module = "gradle.plugin.com.github.willir.rust:plugin", version.ref = "plugin" }
