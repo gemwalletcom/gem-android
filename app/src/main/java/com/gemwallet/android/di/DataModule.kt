@@ -3,6 +3,7 @@ package com.gemwallet.android.di
 import android.content.Context
 import com.gemwallet.android.blockchain.RpcClientAdapter
 import com.gemwallet.android.blockchain.clients.BroadcastProxy
+import com.gemwallet.android.blockchain.clients.NodeStatusClientsProxy
 import com.gemwallet.android.blockchain.clients.SignPreloaderProxy
 import com.gemwallet.android.blockchain.clients.SignTransferProxy
 import com.gemwallet.android.blockchain.clients.SignerPreload
@@ -25,6 +26,7 @@ import com.gemwallet.android.blockchain.clients.cosmos.CosmosTransactionStatusCl
 import com.gemwallet.android.blockchain.clients.ethereum.EvmBalanceClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmBroadcastClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmGetTokenClient
+import com.gemwallet.android.blockchain.clients.ethereum.EvmNodeStatusClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmSignClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmSignerPreloader
 import com.gemwallet.android.blockchain.clients.ethereum.EvmSwapClient
@@ -85,6 +87,9 @@ import com.gemwallet.android.data.buy.BuyRepository
 import com.gemwallet.android.data.chains.ChainInfoLocalSource
 import com.gemwallet.android.data.chains.ChainInfoStaticSource
 import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.data.config.NodeDao
+import com.gemwallet.android.data.config.NodeLocalSource
+import com.gemwallet.android.data.config.NodesRepository
 import com.gemwallet.android.data.config.OfflineFirstConfigRepository
 import com.gemwallet.android.data.session.SessionLocalSource
 import com.gemwallet.android.data.session.SessionRepository
@@ -515,6 +520,58 @@ object DataModule {
 
     @Singleton
     @Provides
+    fun provideNodeStatusClient(
+        rpcClients: RpcClientAdapter,
+    ): NodeStatusClientsProxy {
+        return NodeStatusClientsProxy(
+            availableChains().mapNotNull {
+                when (it) {
+                    Chain.AvalancheC,
+                    Chain.Base,
+                    Chain.SmartChain,
+                    Chain.Arbitrum,
+                    Chain.Polygon,
+                    Chain.OpBNB,
+                    Chain.Fantom,
+                    Chain.Gnosis,
+                    Chain.Optimism,
+                    Chain.Manta,
+                    Chain.Blast,
+                    Chain.ZkSync,
+                    Chain.Linea,
+                    Chain.Mantle,
+                    Chain.Celo,
+                    Chain.Ethereum -> EvmNodeStatusClient(it, rpcClients.getClient(it))
+                    Chain.Solana,
+                    Chain.Thorchain,
+                    Chain.Osmosis,
+                    Chain.Celestia,
+                    Chain.Injective,
+                    Chain.Sei,
+                    Chain.Noble,
+                    Chain.Cosmos,
+                    Chain.Ton,
+                    Chain.Tron,
+                    Chain.Aptos,
+                    Chain.Sui,
+                    Chain.Xrp,
+                    Chain.Doge,
+                    Chain.Litecoin,
+                    Chain.Bitcoin,
+                    Chain.Near -> null
+                }
+            }
+        )
+    }
+
+    @Singleton
+    @Provides
+    fun provideNodesRepository(
+        nodeLocalSource: NodeLocalSource,
+    ): NodesRepository = NodesRepository(nodeLocalSource)
+
+    @Singleton
+    @Provides
     fun provideBridgeRepository(
         walletsRepository: WalletsRepository,
         localSource: ConnectionsLocalSource,
@@ -608,12 +665,14 @@ object DataModule {
     fun provideSyncService(
         gemApiClient: GemApiClient,
         configRepository: ConfigRepository,
+        nodesRepository: NodesRepository,
         sessionRepository: SessionRepository,
         walletsRepository: WalletsRepository,
     ): SyncService {
         return SyncService(
             gemApiClient = gemApiClient,
             configRepository = configRepository,
+            nodesRepository = nodesRepository,
             sessionRepository = sessionRepository,
             walletsRepository = walletsRepository,
         )
@@ -625,5 +684,13 @@ object DataModule {
         stakeDao: StakeDao,
     ): StakeLocalSource {
         return StakeRoomSource(stakeDao)
+    }
+
+    @Singleton
+    @Provides
+    fun provideNodesLocalSource(
+        nodeDao: NodeDao,
+    ): NodeLocalSource {
+        return NodeLocalSource(nodeDao)
     }
 }

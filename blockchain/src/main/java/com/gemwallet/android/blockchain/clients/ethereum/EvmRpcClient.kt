@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
+import com.gemwallet.android.blockchain.clients.ethereum.EvmRpcClient.EvmNumber
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.gemwallet.android.math.decodeHex
@@ -12,6 +13,7 @@ import com.wallet.core.blockchain.ethereum.models.EthereumTransactionReciept
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.Url
 import wallet.core.jni.EthereumAbiValue
 import java.lang.reflect.Type
 import java.math.BigInteger
@@ -52,6 +54,15 @@ interface EvmRpcClient {
 
     @POST("/")
     suspend fun transaction(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept>>
+
+    @POST
+    suspend fun chainId(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmNumber?>>
+
+    @POST
+    suspend fun sync(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<Boolean?>>
+
+    @POST
+    suspend fun latestBlock(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmNumber?>>
 
     class EvmNumber(
         val value: BigInteger?,
@@ -144,4 +155,16 @@ internal suspend fun EvmRpcClient.callString(contract: String, hexData: String):
         )
     )
     return callString(request).getOrNull()?.result
+}
+
+internal suspend fun EvmRpcClient.getChainId(url: String): Result<JSONRpcResponse<EvmNumber?>> {
+    return chainId(url, JSONRpcRequest.create(EvmMethod.GetChainId, emptyList()))
+}
+
+internal suspend fun EvmRpcClient.latestBlock(url: String): Result<JSONRpcResponse<EvmNumber?>> {
+    return latestBlock(url, JSONRpcRequest.create(EvmMethod.GetBlockNumber, emptyList()))
+}
+
+internal suspend fun EvmRpcClient.sync(url: String): Result<JSONRpcResponse<Boolean?>> {
+    return sync(url, JSONRpcRequest.create(EvmMethod.Sync, emptyList()))
 }

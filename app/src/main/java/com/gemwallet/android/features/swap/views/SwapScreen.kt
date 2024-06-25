@@ -136,7 +136,7 @@ fun SwapScreen(
     AnimatedVisibility(
         visible = details is SwapDetails.None || uiState.select != null,
         enter = slideIn { IntOffset(it.width, 0) },
-        exit = slideOut { IntOffset(it.width, 0) }
+        exit = slideOut { IntOffset(it.width, 0) },
     ) {
         SelectSwapScreen(
             select = SwapScreenState.Select(

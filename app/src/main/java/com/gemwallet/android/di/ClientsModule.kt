@@ -13,6 +13,7 @@ import com.gemwallet.android.blockchain.clients.ton.TonRpcClient
 import com.gemwallet.android.blockchain.clients.tron.TronRpcClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpRpcClient
 import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.data.config.NodesRepository
 import com.gemwallet.android.serializer.AssetIdSerializer
 import com.gemwallet.android.services.GemApiClient
 import com.gemwallet.android.services.GemApiStaticClient
@@ -77,6 +78,7 @@ object ClientsModule {
     fun provideHttpClient(
         @ApplicationContext context: Context,
         configRepository: ConfigRepository,
+        nodesRepository: NodesRepository,
     ): OkHttpClient = OkHttpClient
         .Builder()
         .connectionPool(ConnectionPool(32, 5, TimeUnit.MINUTES))
@@ -84,7 +86,7 @@ object ClientsModule {
         .connectTimeout(60, TimeUnit.SECONDS)
         .readTimeout(120, TimeUnit.SECONDS)
         .writeTimeout(120, TimeUnit.SECONDS)
-        .addInterceptor(NodeSelectorInterceptor(configRepository))
+        .addInterceptor(NodeSelectorInterceptor(configRepository, nodesRepository))
         .addInterceptor(HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)
         })

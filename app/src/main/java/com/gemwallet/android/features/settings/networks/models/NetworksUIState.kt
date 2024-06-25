@@ -11,5 +11,6 @@ class NetworksUIState(
     val blockExplorers: List<String> = emptyList(),
     val currentNode: Node? = null,
     val currentExplorer: String? = null,
-    val addSourceType: AddSourceType = AddSourceType.None,
-)
+    val availableAddNode: Boolean = false,
+) {
+}

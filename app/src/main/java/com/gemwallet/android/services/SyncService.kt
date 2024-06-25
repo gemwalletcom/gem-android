@@ -1,6 +1,7 @@
 package com.gemwallet.android.services
 
 import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.data.config.NodesRepository
 import com.gemwallet.android.data.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.interactors.sync.SyncAvailableToBuy
@@ -17,12 +18,13 @@ import javax.inject.Inject
 class SyncService @Inject constructor(
     private val gemApiClient: GemApiClient,
     private val configRepository: ConfigRepository,
+    private val nodesRepository: NodesRepository,
     private val sessionRepository: SessionRepository,
     private val walletsRepository: WalletsRepository,
 ) {
 
     private val operators = listOf(
-        SyncNodes(gemApiClient, configRepository),
+        SyncNodes(nodesRepository),
         SyncAvailableToBuy(gemApiClient, configRepository),
         SyncSubscription(gemApiClient, walletsRepository, configRepository),
     )

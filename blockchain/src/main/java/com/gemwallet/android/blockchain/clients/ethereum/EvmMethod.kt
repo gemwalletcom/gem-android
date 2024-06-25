@@ -7,13 +7,16 @@ enum class EvmMethod(val value: String) : JSONRpcMethod {
     GetGasLimit("eth_estimateGas"),
     GetGasPrice("eth_gasPrice"),
     GetFeeHistory("eth_feeHistory"),
-    GetNetVersion("net_version"),
+    GetChainId("eth_chainId"),
+    GetNetVersion("eth_chainId"),
     GetNonce("eth_getTransactionCount"),
     Broadcast("eth_sendRawTransaction"),
     Call("eth_call"),
     GetTransaction("eth_getTransactionReceipt"),
     GetTransactionByHash("eth_getTransactionByHash"),
-    GetMaxPriorityFeePerGas("eth_maxPriorityFeePerGas")
+    GetMaxPriorityFeePerGas("eth_maxPriorityFeePerGas"),
+    Sync("eth_syncing"),
+    GetBlockNumber("eth_blockNumber"),
     ;
 
     override fun value(): String = value

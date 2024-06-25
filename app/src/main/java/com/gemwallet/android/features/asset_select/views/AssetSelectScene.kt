@@ -87,16 +87,13 @@ private fun LazyListScope.assets(
     titleBadge: (AssetUIState) -> String?,
     itemTrailing: (@Composable (AssetUIState) -> Unit)?,
 ) {
+    if (items.isEmpty()) {
+        return
+    }
     items(items.size, key = { items[it].id.toIdentifier() }) { index ->
         val asset = items[index]
         AssetListItem(
             modifier = Modifier
-//                .animateItemPlacement(
-//                    animationSpec = tween(
-//                        durationMillis = 150,
-//                        easing = LinearOutSlowInEasing,
-//                    )
-//                )
                 .heightIn(74.dp)
                 .clickable { onSelect?.invoke(asset.id) },
             chain = asset.id.chain,

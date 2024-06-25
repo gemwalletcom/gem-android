@@ -1,5 +1,7 @@
 package com.gemwallet.android.features.asset.details.viewmodels
 
+import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
@@ -10,7 +12,10 @@ import com.gemwallet.android.data.transaction.TransactionsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isStaked
+import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
+import com.gemwallet.android.features.asset.navigation.assetIdArg
 import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.interactors.getIconUrl
@@ -30,6 +35,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -45,7 +51,10 @@ class AssetInfoViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val transactionsRepository: TransactionsRepository,
     private val stakeRepository: StakeRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel(), OnSessionChange {
+
+    val assetId: StateFlow<String> = savedStateHandle.getStateFlow(assetIdArg, "")
 
     private val state = MutableStateFlow(AssetInfoViewModelState())
     val uiState = state.map { it.toUIState() }

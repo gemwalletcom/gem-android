@@ -3,15 +3,11 @@ package com.gemwallet.android.data.config
 import android.content.Context
 import android.content.SharedPreferences
 import com.gemwallet.android.BuildConfig
-import com.gemwallet.android.data.config.ConfigRepository.Companion.getGemNodeUrl
 import com.gemwallet.android.services.GemApiClient
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.ChainNodes
 import com.wallet.core.primitives.FiatAssets
 import com.wallet.core.primitives.Node
-import com.wallet.core.primitives.NodeStatus
 import uniffi.Gemstone.Config
 import java.util.UUID
 
@@ -60,19 +56,6 @@ class OfflineFirstConfigRepository(
         return getString(Keys.AppVersionSkip)
     }
 
-    override fun getNodes(chain: Chain): List<Node> {
-        val data = store.getString(Keys.Nodes.buildKey(""), null) ?: return emptyList()
-        val itemType = object : TypeToken<List<ChainNodes>>() {}.type
-        val chainNodes = gson.fromJson<List<ChainNodes>>(data, itemType)
-        val nodes = chainNodes.firstOrNull { it.chain == chain.string }?.nodes
-            ?.filter {it.status == NodeStatus.Active }
-            ?.sortedBy { it.priority }
-            ?: emptyList()
-        return listOf(
-            Node(url = getGemNodeUrl(chain), NodeStatus.Active, priority = 10)
-        ) + nodes
-    }
-
     override fun getCurrentNode(chain: Chain): Node? {
         val data = getString(Keys.CurrentNode, postfix = chain.string)
         val node = try {
@@ -85,10 +68,6 @@ class OfflineFirstConfigRepository(
 
     override fun setCurrentNode(chain: Chain, node: Node) {
         putString(Keys.CurrentNode, gson.toJson(node), chain.string)
-    }
-
-    override fun setNodes(nodes: List<ChainNodes>) {
-        putString(Keys.Nodes, gson.toJson(nodes))
     }
 
     override fun getBlockExplorers(chain: Chain): List<String> {

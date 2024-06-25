@@ -8,6 +8,7 @@ import com.gemwallet.android.data.asset.AssetsDao
 import com.gemwallet.android.data.asset.BalancesDao
 import com.gemwallet.android.data.asset.PricesDao
 import com.gemwallet.android.data.bridge.ConnectionsDao
+import com.gemwallet.android.data.config.NodeDao
 import com.gemwallet.android.data.config.OfflineFirstConfigRepository
 import com.gemwallet.android.data.stake.StakeDao
 import com.gemwallet.android.data.tokens.TokensDao
@@ -55,6 +56,7 @@ object RoomModule {
         .addMigrations(MIGRATION_21_23)
         .addMigrations(MIGRATION_23_24)
         .addMigrations(MIGRATION_24_25)
+        .addMigrations(MIGRATION_25_26)
         .build()
 
     @Singleton
@@ -92,6 +94,10 @@ object RoomModule {
     @Singleton
     @Provides
     fun provideStakeDao(db: RoomService): StakeDao = db.stakeDao()
+
+    @Singleton
+    @Provides
+    fun provideNodeDao(db: RoomService): NodeDao = db.nodeDao()
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -430,5 +436,17 @@ val MIGRATION_23_24 = object : Migration(23, 24) {
 val MIGRATION_24_25 = object : Migration(24, 25) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("ALTER TABLE stake_delegation_base ADD COLUMN shares TEXT DEFAULT NULL")
+    }
+}
+
+val MIGRATION_25_26 = object : Migration(25, 26) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("CREATE TABLE nodes (" +
+                "`url` TEXT NOT NULL," +
+                "`status` TEXT NOT NULL," +
+                "`priority` INTEGER NOT NULL," +
+                "`chain` TEXT NOT NULL," +
+                "PRIMARY KEY (`url`)" +
+            ")")
     }
 }

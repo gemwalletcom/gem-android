@@ -1,9 +1,9 @@
 package com.gemwallet.android.data.config
 
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.ChainNodes
 import com.wallet.core.primitives.FiatAssets
 import com.wallet.core.primitives.Node
+import com.wallet.core.primitives.NodeStatus
 
 interface ConfigRepository {
 
@@ -21,13 +21,9 @@ interface ConfigRepository {
 
     fun setAppVersionSkip(version: String)
 
-    fun getNodes(chain: Chain): List<Node>
-
     fun getCurrentNode(chain: Chain): Node?
 
     fun setCurrentNode(chain: Chain, node: Node)
-
-    fun setNodes(nodes: List<ChainNodes>)
 
     fun getBlockExplorers(chain: Chain): List<String>
 
@@ -89,5 +85,11 @@ interface ConfigRepository {
 
     companion object {
         fun getGemNodeUrl(chain: Chain) = "https://${chain.string}.gemnodes.com"
+
+        fun getGemNode(chain: Chain) = Node(
+            url = getGemNodeUrl(chain),
+            NodeStatus.Active,
+            priority = 10
+        )
     }
 }

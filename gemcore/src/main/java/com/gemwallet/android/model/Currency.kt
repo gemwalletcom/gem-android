@@ -30,12 +30,12 @@ abstract class CountingUnit<T : Number, C>(
         if (value.compareTo(BigDecimal.ZERO) == 0) {
             return Pair(value, decimalPlace)
         }
+        val whole = value.toBigInteger().abs().toBigDecimal()
+        val fraction = value.abs().minus(whole).stripTrailingZeros().toPlainString()
 
         val result = if (decimalPlace == -1) {
             value
         } else {
-            val whole = value.toBigInteger().abs().toBigDecimal()
-            val fraction = value.abs().minus(whole).stripTrailingZeros().toPlainString()
             val minDecimalPlaces = min(decimalPlace, fraction.length - 2)
             val result = if (minDecimalPlaces > 0) {
                 BigDecimal("${whole}.${fraction.substring(2 until minDecimalPlaces + 2)}")
@@ -48,7 +48,7 @@ abstract class CountingUnit<T : Number, C>(
                 result.multiply(BigDecimal(-1.0))
             }
         }
-        return if (result <= BigDecimal.ZERO && dynamicDecimal) {
+        return if (result <= BigDecimal.ZERO && dynamicDecimal && decimalPlace < fraction.length) {
                 cutFraction(value, decimalPlace + 2, true)
             } else {
                 Pair(result, decimalPlace)

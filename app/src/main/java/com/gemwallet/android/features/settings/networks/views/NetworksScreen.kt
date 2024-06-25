@@ -20,6 +20,7 @@ fun NetworksScreen(
     viewModel: NetworksViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val nodes by viewModel.nodes.collectAsStateWithLifecycle()
 
     BackHandler(!state.selectChain) {
         viewModel.onSelectChain()
@@ -57,7 +58,8 @@ fun NetworksScreen(
             )
             false -> NetworkScene(
                 state = state,
-                onAddSource = viewModel::onAddSource,
+                nodes = nodes,
+                onRefresh = { viewModel.onSelectedChain(state.chain ?: return@NetworkScene) },
                 onSelectNode = viewModel::onSelectNode,
                 onSelectBlockExplorer = viewModel::onSelectBlockExplorer,
                 onCancel = viewModel::onSelectChain

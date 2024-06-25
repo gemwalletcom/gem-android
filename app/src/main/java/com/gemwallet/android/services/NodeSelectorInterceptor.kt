@@ -2,7 +2,10 @@ package com.gemwallet.android.services
 
 import android.util.Log
 import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.data.config.NodesRepository
 import com.wallet.core.primitives.Chain
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.runBlocking
 import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
@@ -11,6 +14,7 @@ import okhttp3.Response
 
 class NodeSelectorInterceptor(
     private val configRepository: ConfigRepository,
+    private val nodesRepository: NodesRepository,
 ) : Interceptor {
     
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -19,7 +23,7 @@ class NodeSelectorInterceptor(
             ?: return chain.proceed(originalRequest)
         val currentNode = configRepository.getCurrentNode(blockchain)
         val url = if (currentNode == null) {
-            val node = configRepository.getNodes(blockchain).firstOrNull()
+            val node = runBlocking { nodesRepository.getNodes(blockchain).firstOrNull()?.firstOrNull() }
             if (node != null) {
                 configRepository.setCurrentNode(blockchain, node)
             }

@@ -12,13 +12,12 @@ class TonGetTokenClient(
     val rpcClient: TonRpcClient,
 ) : GetTokenClient {
     override suspend fun getTokenData(tokenId: String): Asset? {
-        val token = rpcClient.tokenData(tokenId).getOrNull()?.result ?: return null
-        val data = token.jetton_content.data
+        val data = rpcClient.tokenData(tokenId).getOrNull()?.result?.jetton_content?.data ?: return null
         return Asset(
             id = AssetId(chain, tokenId),
             name = data.name,
             symbol = data.symbol,
-            decimals = data.decimals.toInt(),
+            decimals = data.decimals.toIntOrNull() ?: return null,
             type = AssetType.JETTON,
         )
     }
