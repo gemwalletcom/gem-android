@@ -4,8 +4,6 @@ import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
-import com.google.gson.JsonSerializationContext
-import com.google.gson.JsonSerializer
 import com.wallet.core.blockchain.ton.models.TonBroadcastTransaction
 import com.wallet.core.blockchain.ton.models.TonJettonBalance
 import com.wallet.core.blockchain.ton.models.TonJettonToken

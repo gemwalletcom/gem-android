@@ -1,7 +1,6 @@
 package com.wallet
 
 import com.gemwallet.android.math.numberParse
-import org.junit.Assert
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.math.BigDecimal

@@ -10,8 +10,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import wallet.core.jni.Base58
-import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
 import java.math.BigDecimal
 import java.math.BigInteger
 

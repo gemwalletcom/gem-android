@@ -1,7 +1,6 @@
 package com.gemwallet.android.blockchain.clients.ton
 
 import com.gemwallet.android.blockchain.clients.BalanceClient
-import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.model.Balances
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
