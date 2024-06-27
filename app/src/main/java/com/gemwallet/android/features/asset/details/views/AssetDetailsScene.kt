@@ -14,7 +14,6 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,11 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
-import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
-import com.gemwallet.android.features.asset.details.viewmodels.AssetInfoSceneState
+import com.gemwallet.android.features.asset.details.models.AssetInfoUIModel
+import com.gemwallet.android.features.asset.details.models.AssetInfoUIState
+import com.gemwallet.android.features.asset.details.models.AssetStateError
 import com.gemwallet.android.features.asset.details.viewmodels.AssetInfoViewModel
-import com.gemwallet.android.features.asset.details.viewmodels.AssetStateError
 import com.gemwallet.android.features.transactions.components.transactionsList
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountListHead
@@ -61,26 +60,19 @@ fun AssetDetailsScene(
 ) {
     val viewModel: AssetInfoViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
 
-    DisposableEffect(key1 = assetId.toIdentifier()) {
-        viewModel.init(assetId)
-
-        onDispose {
-            viewModel.reset()
-        }
-    }
-
-    when (uiState) {
-        is AssetInfoSceneState.Error -> FatalStateScene(
+    when {
+        uiState is AssetInfoUIState.Fatal -> FatalStateScene(
             title = "Asset",
-            message = when ((uiState as AssetInfoSceneState.Error).error) {
+            message = when ((uiState as AssetInfoUIState.Fatal).error) {
                 AssetStateError.AssetNotFound -> "Asset not found"
             },
             onCancel = onCancel
         )
-        AssetInfoSceneState.Loading -> LoadingScene(assetId.chain.string, onCancel)
-        is AssetInfoSceneState.Success -> Success(
-            uiState = uiState as AssetInfoSceneState.Success,
+        uiState is AssetInfoUIState.Idle && uiModel != null -> Success(
+            uiState = uiModel ?: return,
+            syncing = (uiState as AssetInfoUIState.Idle).syncing,
             onRefresh = viewModel::refresh,
             onTransfer = onTransfer,
             onBuy = onBuy,
@@ -91,14 +83,15 @@ fun AssetDetailsScene(
             onStake = onStake,
             onCancel = onCancel,
         )
+        uiState is AssetInfoUIState.Loading || uiModel == null -> LoadingScene(assetId.chain.string, onCancel)
     }
-
 }
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun Success(
-    uiState: AssetInfoSceneState.Success,
+    uiState: AssetInfoUIModel,
+    syncing: Boolean,
     onRefresh: () -> Unit,
     onCancel: () -> Unit,
     onTransfer: (AssetId) -> Unit,
@@ -118,7 +111,7 @@ private fun Success(
         onClose = onCancel,
         contentPadding = PaddingValues(0.dp)
     ) {
-        val pullRefreshState = rememberPullRefreshState(uiState.loading, { onRefresh() })
+        val pullRefreshState = rememberPullRefreshState(syncing, { onRefresh() })
 
         Box(
             modifier = Modifier.pullRefresh(pullRefreshState),
@@ -154,13 +147,13 @@ private fun Success(
                 balanceDetails(uiState, onStake)
                 transactionsList(uiState.transactions, onTransaction)
             }
-            PullRefreshIndicator(uiState.loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
+            PullRefreshIndicator(syncing, pullRefreshState, Modifier.align(Alignment.TopCenter))
         }
     }
 }
 
 private fun LazyListScope.networkInfo(
-    uiState: AssetInfoSceneState.Success,
+    uiState: AssetInfoUIModel,
     onChart: (AssetId) -> Unit,
 ) {
     val cells = mutableListOf<CellEntity<Any>>()
@@ -204,7 +197,7 @@ private fun LazyListScope.networkInfo(
 }
 
 private fun LazyListScope.balanceDetails(
-    uiState: AssetInfoSceneState.Success,
+    uiState: AssetInfoUIModel,
     onStake: (AssetId) -> Unit,
 ) {
     if (!uiState.account.hasBalanceDetails) {

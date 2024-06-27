@@ -27,6 +27,7 @@ import com.wallet.core.primitives.BalanceType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -91,8 +92,11 @@ interface AssetsDao {
     @Query("SELECT DISTINCT * FROM assets WHERE owner_address IN (:addresses) AND id IN (:assetId)")
     fun getById(addresses: List<String>, assetId: List<String>): List<AssetRoom>
 
+    @Query("SELECT DISTINCT * FROM assets WHERE owner_address = :address AND id = :assetId")
+    fun getById(address: String, assetId: String): Flow<AssetRoom?>
+
     @Query("SELECT DISTINCT * FROM assets WHERE id = :assetId")
-    fun getById(assetId: String): List<AssetRoom>
+    suspend fun getById(assetId: String): List<AssetRoom>
 
     @Query("SELECT * FROM assets WHERE owner_address IN (:addresses) AND type = :type")
     fun getAssetsByType(addresses: List<String>, type: AssetType = AssetType.NATIVE): List<AssetRoom>
@@ -114,6 +118,9 @@ interface BalancesDao {
 
     @Query("SELECT * FROM balances WHERE address IN (:addresses) AND asset_id IN (:assetId)")
     fun getByAssetId(addresses: List<String>, assetId: List<String>): List<BalanceRoom>
+
+    @Query("SELECT * FROM balances WHERE address = :address AND asset_id = :assetId")
+    fun getByAssetId(address: String, assetId: String): Flow<List<BalanceRoom>>
 }
 
 @Dao
@@ -130,6 +137,9 @@ interface PricesDao {
 
     @Query("SELECT * FROM prices WHERE assetId IN (:assetsId)")
     fun getByAssets(assetsId: List<String>): List<PriceRoom>
+
+    @Query("SELECT * FROM prices WHERE assetId = :assetsId")
+    fun getByAssets(assetsId: String): Flow<PriceRoom>
 
     @Query("DELETE FROM prices")
     fun deleteAll()
@@ -221,6 +231,21 @@ class AssetsRoomSource @Inject constructor(
                 roomToModel(gson, assetId, account, asset, balances, prices)
             }
         )
+    }
+
+    override suspend fun getAssetInfo(account: Account, assetId: AssetId): Flow<AssetInfo?> {
+        val roomAssetId = assetId.toIdentifier()
+        val address = account.address
+        return assetsDao.getById(address, roomAssetId).combine(
+            flow = balancesDao.getByAssetId(address, roomAssetId)
+        ) { asset, balances ->
+            if (asset == null) {
+                return@combine null
+            }
+            roomToModel(gson, assetId, account, asset, balances, emptyList())
+        }.combine(pricesDao.getByAssets(roomAssetId)) { assetInfo, prices ->
+            assetInfo?.copy(price = AssetPrice(prices.assetId, prices.value, prices.dayChanged)) ?: assetInfo
+        }.filterNotNull()
     }
 
     override suspend fun getById(assetId: AssetId): Asset? {
