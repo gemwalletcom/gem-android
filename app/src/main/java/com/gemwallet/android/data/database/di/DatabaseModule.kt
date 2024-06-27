@@ -18,6 +18,7 @@ import com.gemwallet.android.data.transaction.TransactionsDao
 import com.gemwallet.android.data.wallet.AccountsDao
 import com.gemwallet.android.data.wallet.WalletsDao
 import com.gemwallet.android.data.database.GemDatabase
+import com.gemwallet.android.data.database.SessionDao
 import com.gemwallet.android.data.repositories.session.SessionSharedPreferenceSource
 import com.wallet.core.primitives.Chain
 import dagger.Module
@@ -103,6 +104,10 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideNodeDao(db: GemDatabase): NodeDao = db.nodeDao()
+
+    @Singleton
+    @Provides
+    fun provideSessionDao(db: GemDatabase): SessionDao = db.sessionDao()
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {

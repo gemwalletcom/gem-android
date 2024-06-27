@@ -64,4 +64,6 @@ abstract class GemDatabase : RoomDatabase() {
     abstract fun stakeDao(): StakeDao
 
     abstract fun nodeDao(): NodeDao
+
+    abstract fun sessionDao(): SessionDao
 }
