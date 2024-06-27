@@ -1,7 +1,7 @@
 package com.gemwallet.android.interactors
 
 import com.gemwallet.android.blockchain.operators.DeleteKeyStoreOperator
-import com.gemwallet.android.data.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.Dispatchers

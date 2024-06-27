@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.session
+package com.gemwallet.android.data.repositories.session
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE

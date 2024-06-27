@@ -1,11 +1,10 @@
-package com.gemwallet.android.data.session
+package com.gemwallet.android.data.repositories.session
 
 import android.util.Log
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.model.Session
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
-import dagger.Provides
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

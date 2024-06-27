@@ -3,8 +3,8 @@ package com.gemwallet.android.features.settings.settings.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.config.ConfigRepository
-import com.gemwallet.android.data.session.OnSessionChange
-import com.gemwallet.android.data.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.OnSessionChange
+import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.interactors.sync.SyncDevice
 import com.gemwallet.android.interactors.sync.SyncSubscription

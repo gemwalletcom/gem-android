@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.session
+package com.gemwallet.android.data.repositories.session
 
 import com.gemwallet.android.model.Session
 import com.wallet.core.primitives.Currency
