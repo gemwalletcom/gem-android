@@ -12,6 +12,7 @@ import com.gemwallet.android.data.bridge.ConnectionsDao
 import com.gemwallet.android.data.bridge.RoomConnection
 import com.gemwallet.android.data.config.NodeDao
 import com.gemwallet.android.data.config.RoomNode
+import com.gemwallet.android.data.database.entities.DbSession
 import com.gemwallet.android.data.stake.RoomDelegationBase
 import com.gemwallet.android.data.stake.RoomDelegationValidator
 import com.gemwallet.android.data.stake.StakeDao
@@ -26,7 +27,7 @@ import com.gemwallet.android.data.wallet.WalletRoom
 import com.gemwallet.android.data.wallet.WalletsDao
 
 @Database(
-    version = 26,
+    version = 27,
     entities = [
         WalletRoom::class,
         AccountRoom::class,
@@ -40,6 +41,7 @@ import com.gemwallet.android.data.wallet.WalletsDao
         RoomDelegationValidator::class,
         RoomDelegationBase::class,
         RoomNode::class,
+        DbSession::class,
     ],
 )
 abstract class GemDatabase : RoomDatabase() {

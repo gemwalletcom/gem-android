@@ -1,6 +1,8 @@
-package com.gemwallet.android.di
+package com.gemwallet.android.data.database.di
 
+import android.content.ContentValues
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
@@ -16,17 +18,20 @@ import com.gemwallet.android.data.transaction.TransactionsDao
 import com.gemwallet.android.data.wallet.AccountsDao
 import com.gemwallet.android.data.wallet.WalletsDao
 import com.gemwallet.android.data.database.GemDatabase
+import com.gemwallet.android.data.session.SessionSharedPreferenceSource
+import com.gemwallet.android.data.session.SharedPrefSessionRepository
 import com.wallet.core.primitives.Chain
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import net.sqlcipher.database.SQLiteDatabase
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-object RoomModule {
+object DatabaseModule {
     @Singleton
     @Provides
     fun provideRoom(@ApplicationContext context: Context): GemDatabase = Room.databaseBuilder(
@@ -57,6 +62,7 @@ object RoomModule {
         .addMigrations(MIGRATION_23_24)
         .addMigrations(MIGRATION_24_25)
         .addMigrations(MIGRATION_25_26)
+        .addMigrations(MIGRATION_26_27(context))
         .build()
 
     @Singleton
@@ -448,5 +454,28 @@ val MIGRATION_25_26 = object : Migration(25, 26) {
                 "`chain` TEXT NOT NULL," +
                 "PRIMARY KEY (`url`)" +
             ")")
+    }
+}
+
+class MIGRATION_26_27(private val context: Context) : Migration(26, 27) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL(
+            "CREATE TABLE session (" +
+                    "`id` INTEGER NOT NULL," +
+                    "`wallet_id` TEXT NOT NULL," +
+                    "`currency` TEXT NOT NULL," +
+                    "PRIMARY KEY (`id`)" +
+                    ")"
+        )
+        val source = SessionSharedPreferenceSource(context)
+        val walletId = source.getWalletId()
+        val currency = source.getCurrency()
+        val values = ContentValues().apply {
+            this.put("id", 1)
+            this.put("wallet_id", walletId)
+            this.put("currency", currency.string)
+        }
+        val result = db.insert("session", SQLiteDatabase.CONFLICT_REPLACE, values)
+        Log.d("MIGRATION", "Result: $result")
     }
 }

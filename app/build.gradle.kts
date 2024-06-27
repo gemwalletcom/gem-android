@@ -178,7 +178,9 @@ dependencies {
     implementation(libs.androidx.biometric)
     // Wallet Connect
     implementation(platform(libs.walletconnect.bom))
-    implementation(libs.walletconnect.core)
+    implementation(libs.walletconnect.core) {
+        exclude(group = "com.jakewharton.timber", module = "timber")
+    }
     implementation(libs.walletconnect.web3wallet)
     // Chart
     implementation(libs.vico.m3)
