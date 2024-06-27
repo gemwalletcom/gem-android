@@ -16,7 +16,7 @@ interface SessionDao {
     fun getSession(): DbSession?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun update(session: DbSession): Boolean
+    suspend fun update(session: DbSession)
 
     @Query("DELETE FROM session")
     suspend fun clear()
