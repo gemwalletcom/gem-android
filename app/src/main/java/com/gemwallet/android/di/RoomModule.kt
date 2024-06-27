@@ -15,7 +15,7 @@ import com.gemwallet.android.data.tokens.TokensDao
 import com.gemwallet.android.data.transaction.TransactionsDao
 import com.gemwallet.android.data.wallet.AccountsDao
 import com.gemwallet.android.data.wallet.WalletsDao
-import com.gemwallet.android.services.RoomService
+import com.gemwallet.android.data.database.GemDatabase
 import com.wallet.core.primitives.Chain
 import dagger.Module
 import dagger.Provides
@@ -29,9 +29,9 @@ import javax.inject.Singleton
 object RoomModule {
     @Singleton
     @Provides
-    fun provideRoom(@ApplicationContext context: Context): RoomService = Room.databaseBuilder(
+    fun provideRoom(@ApplicationContext context: Context): GemDatabase = Room.databaseBuilder(
             context = context,
-            klass = RoomService::class.java,
+            klass = GemDatabase::class.java,
             name = "gem.db",
         )
         .addMigrations(MIGRATION_1_2)
@@ -61,43 +61,43 @@ object RoomModule {
 
     @Singleton
     @Provides
-    fun provideWalletsDao(db: RoomService): WalletsDao = db.walletsDao()
+    fun provideWalletsDao(db: GemDatabase): WalletsDao = db.walletsDao()
 
     @Singleton
     @Provides
-    fun provideAccountsDao(db: RoomService): AccountsDao = db.accountsDao()
+    fun provideAccountsDao(db: GemDatabase): AccountsDao = db.accountsDao()
 
     @Singleton
     @Provides
-    fun provideAssetsDao(db: RoomService): AssetsDao = db.assetsDao()
+    fun provideAssetsDao(db: GemDatabase): AssetsDao = db.assetsDao()
 
     @Singleton
     @Provides
-    fun provideBalancesDao(db: RoomService): BalancesDao = db.balancesDao()
+    fun provideBalancesDao(db: GemDatabase): BalancesDao = db.balancesDao()
 
     @Singleton
     @Provides
-    fun providePricesDao(db: RoomService): PricesDao = db.pricesDao()
+    fun providePricesDao(db: GemDatabase): PricesDao = db.pricesDao()
 
     @Singleton
     @Provides
-    fun provideTokensDao(db: RoomService): TokensDao = db.tokensDao()
+    fun provideTokensDao(db: GemDatabase): TokensDao = db.tokensDao()
 
     @Singleton
     @Provides
-    fun provideTransactionsDao(db: RoomService): TransactionsDao = db.transactionsDao()
+    fun provideTransactionsDao(db: GemDatabase): TransactionsDao = db.transactionsDao()
 
     @Singleton
     @Provides
-    fun provideConnectionsDao(db: RoomService): ConnectionsDao = db.connectionsDao()
+    fun provideConnectionsDao(db: GemDatabase): ConnectionsDao = db.connectionsDao()
 
     @Singleton
     @Provides
-    fun provideStakeDao(db: RoomService): StakeDao = db.stakeDao()
+    fun provideStakeDao(db: GemDatabase): StakeDao = db.stakeDao()
 
     @Singleton
     @Provides
-    fun provideNodeDao(db: RoomService): NodeDao = db.nodeDao()
+    fun provideNodeDao(db: GemDatabase): NodeDao = db.nodeDao()
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {

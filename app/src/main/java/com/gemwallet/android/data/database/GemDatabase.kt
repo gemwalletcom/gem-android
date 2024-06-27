@@ -1,4 +1,4 @@
-package com.gemwallet.android.services
+package com.gemwallet.android.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
@@ -42,7 +42,7 @@ import com.gemwallet.android.data.wallet.WalletsDao
         RoomNode::class,
     ],
 )
-abstract class RoomService : RoomDatabase() {
+abstract class GemDatabase : RoomDatabase() {
     abstract fun walletsDao(): WalletsDao
 
     abstract fun accountsDao(): AccountsDao
