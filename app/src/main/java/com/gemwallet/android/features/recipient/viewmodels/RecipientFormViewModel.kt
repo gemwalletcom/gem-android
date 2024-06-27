@@ -7,7 +7,7 @@ import com.gemwallet.android.blockchain.PayloadType
 import com.gemwallet.android.blockchain.memo
 import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.data.asset.AssetsRepository
-import com.gemwallet.android.data.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.AssetId

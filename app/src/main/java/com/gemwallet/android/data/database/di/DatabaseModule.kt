@@ -18,8 +18,7 @@ import com.gemwallet.android.data.transaction.TransactionsDao
 import com.gemwallet.android.data.wallet.AccountsDao
 import com.gemwallet.android.data.wallet.WalletsDao
 import com.gemwallet.android.data.database.GemDatabase
-import com.gemwallet.android.data.session.SessionSharedPreferenceSource
-import com.gemwallet.android.data.session.SharedPrefSessionRepository
+import com.gemwallet.android.data.repositories.session.SessionSharedPreferenceSource
 import com.wallet.core.primitives.Chain
 import dagger.Module
 import dagger.Provides

@@ -2,7 +2,7 @@ package com.gemwallet.android.interactors.sync
 
 import com.gemwallet.android.BuildConfig
 import com.gemwallet.android.data.config.ConfigRepository
-import com.gemwallet.android.data.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.interactors.SyncOperator
 import com.gemwallet.android.services.GemApiClient
 import com.google.firebase.messaging.FirebaseMessaging

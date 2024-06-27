@@ -2,7 +2,7 @@ package com.gemwallet.android.features.transactions.list.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.data.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.transaction.TransactionsRepository
 import com.gemwallet.android.ext.mutableStateIn
 import com.gemwallet.android.features.transactions.list.model.TxListScreenState

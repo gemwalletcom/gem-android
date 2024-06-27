@@ -3,7 +3,7 @@ package com.gemwallet.android.features.settings.currency.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
-import com.gemwallet.android.data.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

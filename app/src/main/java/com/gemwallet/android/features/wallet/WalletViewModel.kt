@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.operators.LoadPhraseOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
-import com.gemwallet.android.data.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.interactors.DeleteWalletOperator
 import com.gemwallet.android.interactors.getIconUrl

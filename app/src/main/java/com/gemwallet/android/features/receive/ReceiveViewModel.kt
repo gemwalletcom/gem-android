@@ -3,7 +3,7 @@ package com.gemwallet.android.features.receive
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
-import com.gemwallet.android.data.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset

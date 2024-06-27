@@ -91,10 +91,10 @@ import com.gemwallet.android.data.config.NodeDao
 import com.gemwallet.android.data.config.NodeLocalSource
 import com.gemwallet.android.data.config.NodesRepository
 import com.gemwallet.android.data.config.OfflineFirstConfigRepository
-import com.gemwallet.android.data.session.SessionLocalSource
-import com.gemwallet.android.data.session.SessionRepository
-import com.gemwallet.android.data.session.SessionSharedPreferenceSource
-import com.gemwallet.android.data.session.SharedPrefSessionRepository
+import com.gemwallet.android.data.repositories.session.SessionLocalSource
+import com.gemwallet.android.data.repositories.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.SessionSharedPreferenceSource
+import com.gemwallet.android.data.repositories.session.SharedPrefSessionRepository
 import com.gemwallet.android.data.stake.StakeDao
 import com.gemwallet.android.data.stake.StakeLocalSource
 import com.gemwallet.android.data.stake.StakeRepository

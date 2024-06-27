@@ -2,7 +2,7 @@ package com.gemwallet.android.services
 
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.config.NodesRepository
-import com.gemwallet.android.data.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.interactors.sync.SyncAvailableToBuy
 import com.gemwallet.android.interactors.sync.SyncConfig

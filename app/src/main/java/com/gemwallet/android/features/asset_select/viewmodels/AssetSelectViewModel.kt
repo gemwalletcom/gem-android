@@ -7,7 +7,7 @@ import androidx.compose.foundation.text2.input.textAsFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
-import com.gemwallet.android.data.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.tokens.TokensRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier

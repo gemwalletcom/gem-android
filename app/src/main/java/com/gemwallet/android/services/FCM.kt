@@ -12,7 +12,7 @@ import androidx.core.app.NotificationManagerCompat
 import com.gemwallet.android.MainActivity
 import com.gemwallet.android.R
 import com.gemwallet.android.data.config.ConfigRepository
-import com.gemwallet.android.data.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.interactors.sync.SyncDevice
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage

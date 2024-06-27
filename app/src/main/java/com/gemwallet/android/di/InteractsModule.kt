@@ -21,7 +21,7 @@ import com.gemwallet.android.blockchain.operators.walletcore.WCValidatePhraseOpe
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.password.PreferencePasswordStore
-import com.gemwallet.android.data.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.interactors.ImportWalletOperator
 import com.gemwallet.android.interactors.PhraseAddressImportWalletOperator
