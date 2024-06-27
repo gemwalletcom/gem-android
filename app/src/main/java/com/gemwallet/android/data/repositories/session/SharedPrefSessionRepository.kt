@@ -41,27 +41,27 @@ class SharedPrefSessionRepository @Inject constructor(
     override fun hasSession(): Boolean = sessionLocalSource.getWalletId() != null
 
     override fun subscribe(onSessionChange: (Session) -> Unit) {
-        onSessionChange(getSession() ?: return)
+        onSessionChange(runBlocking { getSession() } ?: return)
     }
 
     override fun subscribe(onSessionChange: OnSessionChange) {
-        onSessionChange.onSessionChange(getSession() ?: return)
+        onSessionChange.onSessionChange(runBlocking { getSession() } ?: return)
         subscribers.add(WeakReference(onSessionChange))
     }
 
-    override fun setWallet(wallet: Wallet) {
+    override suspend fun setWallet(wallet: Wallet) {
         sessionLocalSource.setWallet(wallet.id)
         _session.update { Session(wallet, it?.currency ?: Currency.USD) }
         notifySubscribers()
     }
 
-    override fun setCurrency(currency: Currency) {
+    override suspend fun setCurrency(currency: Currency) {
         sessionLocalSource.setCurrency(currency.string)
         _session.update { Session(it!!.wallet, currency) }
         notifySubscribers()
     }
 
-    override fun reset() {
+    override suspend fun reset() {
         sessionLocalSource.reset()
         _session.update { null }
     }
@@ -69,7 +69,7 @@ class SharedPrefSessionRepository @Inject constructor(
     private fun notifySubscribers() {
         val live = subscribers.filter { it.get() != null }
         live.forEach {
-            it.get()?.onSessionChange(getSession() ?: return)
+            it.get()?.onSessionChange(runBlocking { getSession() } ?: return)
         }
         subscribers.clear()
         subscribers.addAll(live)
