@@ -24,7 +24,7 @@ class SessionRepositoryImpl(
     }
 
     override fun getSession(): Session? {
-        val entity = sessionDao.getSession() ?: return null
+        val entity = runBlocking(Dispatchers.IO) { sessionDao.getSession() } ?: return null
         val wallet = runBlocking(Dispatchers.IO) {
             walletsRepository.getWallet(entity.walletId).getOrNull()
         } ?: return null

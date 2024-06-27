@@ -91,8 +91,10 @@ import com.gemwallet.android.data.config.NodeDao
 import com.gemwallet.android.data.config.NodeLocalSource
 import com.gemwallet.android.data.config.NodesRepository
 import com.gemwallet.android.data.config.OfflineFirstConfigRepository
+import com.gemwallet.android.data.database.SessionDao
 import com.gemwallet.android.data.repositories.session.SessionLocalSource
 import com.gemwallet.android.data.repositories.session.SessionRepository
+import com.gemwallet.android.data.repositories.session.SessionRepositoryImpl
 import com.gemwallet.android.data.repositories.session.SessionSharedPreferenceSource
 import com.gemwallet.android.data.repositories.session.SharedPrefSessionRepository
 import com.gemwallet.android.data.stake.StakeDao
@@ -583,10 +585,10 @@ object DataModule {
     @Singleton
     @Provides
     fun provideSessionRepository(
-        sessionLocalSource: SessionLocalSource,
+        sessionDao: SessionDao,
         walletsRepository: WalletsRepository,
-    ): SessionRepository = SharedPrefSessionRepository(
-        sessionLocalSource = sessionLocalSource,
+    ): SessionRepository = SessionRepositoryImpl(
+        sessionDao = sessionDao,
         walletsRepository = walletsRepository
     )
 
