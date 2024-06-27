@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.session.SharedPrefSessionRepositoryImpl
+import com.gemwallet.android.data.session.SessionRepository
 import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.data.transaction.TransactionsRepository
 import com.gemwallet.android.ext.asset
@@ -46,7 +46,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AssetInfoViewModel @Inject constructor(
-    private val sharedPrefSessionRepositoryImpl: SharedPrefSessionRepositoryImpl,
+    private val sharedPrefSessionRepositoryImpl: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val transactionsRepository: TransactionsRepository,
     private val stakeRepository: StakeRepository,
