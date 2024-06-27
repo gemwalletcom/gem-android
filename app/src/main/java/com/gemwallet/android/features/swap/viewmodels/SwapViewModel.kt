@@ -74,7 +74,7 @@ class SwapViewModel @Inject constructor(
     }
 
     private suspend fun updateBalances(fromId: AssetId, toId: AssetId) {
-        val session = sessionRepository.session
+        val session = sessionRepository.getSession()
         val account = session?.wallet?.getAccount(fromId.chain)
         if (account == null) {
             state.update { it.copy(loading = false, select = SwapItemType.Pay) }
@@ -86,7 +86,7 @@ class SwapViewModel @Inject constructor(
     }
 
     private suspend fun loadData(fromId: AssetId, toId: AssetId) = withContext(Dispatchers.IO) {
-        val session = sessionRepository.session ?: return@withContext
+        val session = sessionRepository.getSession() ?: return@withContext
         val from = assetsRepository.getById(session.wallet, fromId).getOrNull()?.firstOrNull()
         val to = assetsRepository.getById(session.wallet, toId).getOrNull()?.firstOrNull()
 

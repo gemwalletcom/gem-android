@@ -34,7 +34,7 @@ class SyncTransactions @Inject constructor(
     }
 
     private suspend fun prefetchAssets(txs: List<Transaction>) {
-        val session = sessionRepository.session ?: return
+        val session = sessionRepository.getSession() ?: return
         txs.map {
             val notAvailableAssetsId = mutableListOf<AssetId>()
             if (assetsRepository.getAsset(it.assetId) == null) {

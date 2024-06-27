@@ -47,7 +47,7 @@ class BuyViewModel @Inject constructor(
         private set
 
     suspend fun init(assetId: AssetId) {
-        val session = sessionRepository.session
+        val session = sessionRepository.getSession()
         if (session == null) {
             state.update { it.copy(fatalError = "no session") }
             return

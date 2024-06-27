@@ -31,7 +31,7 @@ class TransactionsViewModel @Inject constructor(
 ) : ViewModel() {
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val txState = sessionRepository.state
+    private val txState = sessionRepository.session()
         .mapNotNull { it }
         .flatMapConcat {
             transactionsRepository.getTransactions(null, *it.wallet.accounts.toTypedArray())
@@ -40,7 +40,7 @@ class TransactionsViewModel @Inject constructor(
             State(
                 loading = false,
                 transactions = it,
-                currency = sessionRepository.session?.currency ?: Currency.USD
+                currency = sessionRepository.getSession()?.currency ?: Currency.USD
             )
         }
         .flowOn(Dispatchers.IO)
@@ -56,7 +56,7 @@ class TransactionsViewModel @Inject constructor(
 
     fun refresh() = viewModelScope.launch(Dispatchers.IO) {
         txState.update { it.copy(loading = true) }
-        syncTransactions.invoke(sessionRepository.session?.wallet?.index ?: return@launch)
+        syncTransactions.invoke(sessionRepository.getSession()?.wallet?.index ?: return@launch)
         txState.update { it.copy(loading = false) }
     }
 

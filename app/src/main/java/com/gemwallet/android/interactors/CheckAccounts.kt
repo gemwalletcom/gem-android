@@ -45,7 +45,7 @@ class CheckAccounts @Inject constructor(
                     assetsRepository.invalidateDefault(
                         newWallet.type,
                         newWallet,
-                        sessionRepository.session?.currency ?: Currency.USD
+                        sessionRepository.getSession()?.currency ?: Currency.USD
                     )
                 }
                 SyncSubscription(gemApiClient = gemApiClient, walletsRepository = walletsRepository, configRepository = configRepository).invoke()

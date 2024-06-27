@@ -32,7 +32,7 @@ class SyncDevice(
             locale = Locale.getDefault().language,
             isPushEnabled = pushEnabled,
             version = BuildConfig.VERSION_NAME,
-            currency = (sessionRepository.session?.currency ?: Currency.USD).string,
+            currency = (sessionRepository.getSession()?.currency ?: Currency.USD).string,
             subscriptionsVersion = configRepository.getSubscriptionVersion(),
         )
         val register: () -> Unit = {

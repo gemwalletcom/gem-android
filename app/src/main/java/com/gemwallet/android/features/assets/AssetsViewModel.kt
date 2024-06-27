@@ -53,7 +53,7 @@ class AssetsViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(AssetsViewModelState())
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val state: Flow<AssetsViewModelState> = sessionRepository.state.flatMapLatest { session ->
+    private val state: Flow<AssetsViewModelState> = sessionRepository.session().flatMapLatest { session ->
         session ?: return@flatMapLatest emptyFlow()
         combine(
             assetsRepository.getAllByWalletFlow(session.wallet),
@@ -86,7 +86,7 @@ class AssetsViewModel @Inject constructor(
     }
 
     fun onRefresh() {
-        val session = sessionRepository.session ?: return
+        val session = sessionRepository.getSession() ?: return
         updateAssetData(session)
     }
 
@@ -134,7 +134,7 @@ class AssetsViewModel @Inject constructor(
 
     fun hideAsset(assetId: AssetId) {
         viewModelScope.launch(Dispatchers.IO) {
-            val session = sessionRepository.session ?: return@launch
+            val session = sessionRepository.getSession() ?: return@launch
             val account = session.wallet.getAccount(assetId.chain) ?: return@launch
             assetsRepository.switchVisibility(account, assetId, false, session.currency)
         }

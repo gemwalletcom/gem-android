@@ -51,7 +51,7 @@ class WalletViewModel @Inject constructor(
         viewModelScope.launch {
             val wallet = state.value.wallet ?: return@launch
             walletsRepository.updateWallet(wallet.copy(name = name))
-            if (wallet.id == sessionRepository.session?.wallet?.id) {
+            if (wallet.id == sessionRepository.getSession()?.wallet?.id) {
                 val newWallet = walletsRepository.getWallet(wallet.id).getOrNull() ?: return@launch
                 sessionRepository.setWallet(newWallet)
             }

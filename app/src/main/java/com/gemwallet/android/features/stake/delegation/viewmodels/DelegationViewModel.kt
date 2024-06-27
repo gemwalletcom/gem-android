@@ -39,7 +39,7 @@ class DelegationViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, DelegationSceneState.Loading)
 
     fun init(validatorId: String, delegationId: String) {
-        val session = sessionRepository.session ?: return
+        val session = sessionRepository.getSession() ?: return
         viewModelScope.launch(Dispatchers.IO) {
             val delegation = stakeRepository.getDelegation(
                 delegationId = delegationId,

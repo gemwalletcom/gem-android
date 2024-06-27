@@ -77,7 +77,7 @@ open class HorizontalAxis<Position : AxisPosition.Horizontal>(
         val visibleXRange = firstVisibleX..lastVisibleX
         val labelValues = itemPlacer.getLabelValues(this, visibleXRange, fullXRange, maxLabelWidth)
 
-        labelValues.forEachIndexed { index, x ->
+        labelValues.forEachIndexed { _, x ->
             val canvasX =
                 baseCanvasX + (x - chartValues.minX) / chartValues.xStep * horizontalDimensions.xSpacing *
                         layoutDirectionMultiplier

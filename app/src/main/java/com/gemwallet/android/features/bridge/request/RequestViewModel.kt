@@ -40,7 +40,7 @@ class RequestViewModel @Inject constructor(
     val sceneState = state.map { it.toSceneState() }.stateIn(viewModelScope, SharingStarted.Eagerly, RequestSceneState.Loading)
 
     fun onRequest(request: Wallet.Model.SessionRequest) {
-        val wallet = sessionRepository.session?.wallet
+        val wallet = sessionRepository.getSession()?.wallet
         val chainId = request.chainId?.split(":") ?: return // TODO: Cancel
         val chain = Chain.findByNamespace(chainId[0], chainId[1]) ?: return
         val params = when (request.request.method) {
@@ -85,7 +85,7 @@ class RequestViewModel @Inject constructor(
     }
 
     fun onSign() {
-        val session = sessionRepository.session ?: return
+        val session = sessionRepository.getSession() ?: return
         val sessionRequest = state.value.sessionRequest ?: return // TODO: Handle error
         val chain = state.value.chain ?: return
 

@@ -31,7 +31,7 @@ class ProposalSceneViewModel @Inject constructor(
     val sceneState = state.map { it.toUIState() }.stateIn(viewModelScope, SharingStarted.Eagerly, ProposalSceneState.Init)
 
     fun onProposal(proposal: Wallet.Model.SessionProposal, wallet: com.wallet.core.primitives.Wallet? = null) {
-        state.update { it.copy(proposal = proposal, wallet = wallet ?: sessionRepository.session?.wallet) }
+        state.update { it.copy(proposal = proposal, wallet = wallet ?: sessionRepository.getSession()?.wallet) }
     }
 
     fun onApprove() {

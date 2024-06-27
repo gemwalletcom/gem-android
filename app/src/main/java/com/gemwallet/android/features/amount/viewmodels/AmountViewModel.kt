@@ -57,7 +57,7 @@ class AmountViewModel @Inject constructor(
         validatorId: String,
         txType: TransactionType,
     ) = viewModelScope.launch(Dispatchers.IO) {
-        val session = sessionRepository.session ?: return@launch
+        val session = sessionRepository.getSession() ?: return@launch
         val wallet = session.wallet
         val asset = withContext(Dispatchers.IO) { assetsRepository.getById(wallet, assetId) }
             .getOrNull()?.firstOrNull()
@@ -201,7 +201,7 @@ class AmountViewModel @Inject constructor(
     }
 
     private fun calcEquivalent(inputAmount: String, inputCurrency: InputCurrency): String {
-        val currency = sessionRepository.session?.currency ?: return ""
+        val currency = sessionRepository.getSession()?.currency ?: return ""
         val assetInfo = state.value.assetInfo ?: return ""
         val price = assetInfo.price?.price ?: return ""
         val decimals = assetInfo.asset.decimals

@@ -94,6 +94,7 @@ import com.gemwallet.android.data.config.OfflineFirstConfigRepository
 import com.gemwallet.android.data.session.SessionLocalSource
 import com.gemwallet.android.data.session.SessionRepository
 import com.gemwallet.android.data.session.SessionSharedPreferenceSource
+import com.gemwallet.android.data.session.SharedPrefSessionRepository
 import com.gemwallet.android.data.stake.StakeDao
 import com.gemwallet.android.data.stake.StakeLocalSource
 import com.gemwallet.android.data.stake.StakeRepository
@@ -578,6 +579,16 @@ object DataModule {
     ): BridgesRepository {
         return BridgesRepository(walletsRepository, localSource)
     }
+
+    @Singleton
+    @Provides
+    fun provideSessionRepository(
+        sessionLocalSource: SessionLocalSource,
+        walletsRepository: WalletsRepository,
+    ): SessionRepository = SharedPrefSessionRepository(
+        sessionLocalSource = sessionLocalSource,
+        walletsRepository = walletsRepository
+    )
 
     @Singleton
     @Provides

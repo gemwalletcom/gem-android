@@ -41,7 +41,7 @@ class AssetChartViewModel @Inject constructor(
     fun request(assetId: AssetId, period: ChartPeriod) {
         state.update { it.copy(loading = true) }
         viewModelScope.launch(Dispatchers.IO) {
-            val session = sessionRepository.session ?: return@launch
+            val session = sessionRepository.getSession() ?: return@launch
             val assetInfo = assetsRepository.getById(session.wallet, assetId).getOrNull()?.firstOrNull()
             state.update {
                 AssetChartViewModelState(

@@ -17,7 +17,7 @@ class DeleteWalletOperator @Inject constructor(
 ) {
 
     suspend operator fun invoke(walletId: String, onBoard: () -> Unit, onComplete: () -> Unit) = withContext(Dispatchers.IO) {
-        val session = sessionRepository.session ?: return@withContext
+        val session = sessionRepository.getSession() ?: return@withContext
         val wallet = walletsRepository.getWallet(walletId).getOrNull() ?: return@withContext
         if (!walletsRepository.removeWallet(walletId = walletId).getOrElse { false }) {
             return@withContext

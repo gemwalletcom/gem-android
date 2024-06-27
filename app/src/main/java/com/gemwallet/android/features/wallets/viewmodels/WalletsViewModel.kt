@@ -35,7 +35,7 @@ class WalletsViewModel @Inject constructor(
     fun refresh() {
         viewModelScope.launch {
             walletsRepository.getAll().onSuccess { wallets ->
-                val currentWallet = sessionRepository.session?.wallet ?: return@launch
+                val currentWallet = sessionRepository.getSession()?.wallet ?: return@launch
                 val watch = wallets.filter { it.type == WalletType.view }
                 val single = wallets.filter { it.type == WalletType.single }
                 val multi = wallets.filter { it.type == WalletType.multicoin }

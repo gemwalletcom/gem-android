@@ -61,8 +61,8 @@ class AssetInfoViewModel @Inject constructor(
         .flatMapConcat { assetId ->
             val assetId = assetId.toAssetId() ?: return@flatMapConcat emptyFlow()
 
-            val session = sharedPrefSessionRepositoryImpl.session ?: return@flatMapConcat emptyFlow()
-            val account = sharedPrefSessionRepositoryImpl.session?.wallet?.accounts?.firstOrNull { it.chain == assetId.chain } ?: return@flatMapConcat emptyFlow()
+            val session = sharedPrefSessionRepositoryImpl.getSession() ?: return@flatMapConcat emptyFlow()
+            val account = session.wallet.accounts.firstOrNull { it.chain == assetId.chain } ?: return@flatMapConcat emptyFlow()
 
             val stakeApr = if (StakeChain.isStaked(assetId.chain)) {
                 assetsRepository.getStakeApr(assetId)
@@ -95,7 +95,7 @@ class AssetInfoViewModel @Inject constructor(
 
     private fun syncAssetInfo(assetId: AssetId) {
         viewModelScope.launch {
-            val session = sharedPrefSessionRepositoryImpl.session ?: return@launch
+            val session = sharedPrefSessionRepositoryImpl.getSession() ?: return@launch
             val account = session.wallet.getAccount(assetId.chain) ?: return@launch
 
             val syncAssetInfo = async {

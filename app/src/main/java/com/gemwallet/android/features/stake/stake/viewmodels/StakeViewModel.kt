@@ -42,7 +42,7 @@ class StakeViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, StakeUIState.Loading)
 
     fun init(assetId: AssetId) {
-        val session = sessionRepository.session ?: return
+        val session = sessionRepository.getSession() ?: return
         val account = session.wallet.getAccount(assetId.chain) ?: return
         viewModelScope.launch {
             val asset = assetsRepository.getById(session.wallet, assetId).getOrNull()?.firstOrNull() ?: return@launch

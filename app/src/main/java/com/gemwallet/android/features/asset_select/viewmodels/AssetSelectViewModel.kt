@@ -54,7 +54,7 @@ class AssetSelectViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val list = query.textAsFlow().flatMapLatest { query ->
-        val session = sessionRepository.session ?: throw IllegalArgumentException("Session doesn't found")
+        val session = sessionRepository.getSession() ?: throw IllegalArgumentException("Session doesn't found")
         assetsRepository.search(session.wallet, query.toString())
             .map { assets ->
                 assets.sortedByDescending {
@@ -67,7 +67,7 @@ class AssetSelectViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             list.collect { assets ->
-                val session = sessionRepository.session
+                val session = sessionRepository.getSession()
                 val availableAccounts = session?.wallet?.accounts?.map { it.chain } ?: emptyList()
                 val isAddAssetAvailable =
                     tokenAvailableChains.any { availableAccounts.contains(it) }
@@ -107,7 +107,7 @@ class AssetSelectViewModel @Inject constructor(
         }
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val session = sessionRepository.session ?: return@withContext
+                val session = sessionRepository.getSession() ?: return@withContext
                 val account = session.wallet.getAccount(assetId.chain) ?: return@withContext
                 assetsRepository.switchVisibility(account, assetId, visible, session.currency)
             }

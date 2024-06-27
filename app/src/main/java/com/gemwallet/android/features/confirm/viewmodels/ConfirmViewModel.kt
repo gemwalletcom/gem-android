@@ -63,7 +63,7 @@ class ConfirmViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, ConfirmSceneState.Loading)
 
     internal fun init(params: ConfirmParams, feeMultiplicator: Float = 1f) = viewModelScope.launch(Dispatchers.IO) {
-        val session = sessionRepository.session ?: return@launch
+        val session = sessionRepository.getSession() ?: return@launch
         val wallet = session.wallet
         val assetInfo = assetsRepository.getById(wallet, params.assetId).getOrNull()?.firstOrNull()
         if (assetInfo == null) {
@@ -153,7 +153,7 @@ class ConfirmViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            val session = sessionRepository.session
+            val session = sessionRepository.getSession()
             if (session == null) {
                 state.update { it.copy(fatalError = ConfirmError.WalletNotAvailable) }
                 return@launch

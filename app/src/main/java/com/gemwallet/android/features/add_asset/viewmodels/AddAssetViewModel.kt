@@ -94,7 +94,7 @@ class AddAssetViewModel @Inject constructor(
 
     fun addAsset(onFinish: () -> Unit) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
-            val session = sessionRepository.session ?: return@withContext
+            val session = sessionRepository.getSession() ?: return@withContext
             assetsRepository.switchVisibility(
                 owner = session.wallet.getAccount(state.value.chain)
                     ?: return@withContext,
@@ -128,7 +128,7 @@ class AddAssetViewModel @Inject constructor(
     }
 
     private fun getAvailableChains(): List<Chain> {
-        val wallet = sessionRepository.session?.wallet ?: return emptyList()
+        val wallet = sessionRepository.getSession()?.wallet ?: return emptyList()
         val availableAccounts = wallet.accounts.map { it.chain }
         return tokenAvailableChains.filter {
             availableAccounts.contains(it)

@@ -40,7 +40,7 @@ class SettingsViewModel @Inject constructor(
     private fun refresh() {
         state.update {
             it.copy(
-                currency = sessionRepository.session?.currency ?: Currency.USD,
+                currency = sessionRepository.getSession()?.currency ?: Currency.USD,
                 pushEnabled = config.pushEnabled(),
                 developEnabled = config.developEnabled(),
                 deviceId = config.getDeviceId(),

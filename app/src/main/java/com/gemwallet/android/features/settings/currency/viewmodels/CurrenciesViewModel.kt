@@ -39,7 +39,7 @@ class CurrenciesViewModel @Inject constructor(
     }
 
     fun getCurrency(): Currency {
-        return sessionRepository.session?.currency ?: Currency.USD
+        return sessionRepository.getSession()?.currency ?: Currency.USD
     }
 
     fun setCurrency(currency: Currency) {

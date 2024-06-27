@@ -41,7 +41,7 @@ class TransactionDetailsViewModel @Inject constructor(
 
     private val txId = MutableStateFlow<String?>(null)
     private val _state = combine(
-        sessionRepository.state,
+        sessionRepository.session(),
         txId.flatMapLatest {
             transactionsRepository.getTransaction(it ?: return@flatMapLatest MutableStateFlow(null))
         }

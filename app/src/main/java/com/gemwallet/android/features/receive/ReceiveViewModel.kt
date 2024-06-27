@@ -31,7 +31,7 @@ class ReceiveViewModel @Inject constructor(
 
     fun onAccount(id: AssetId) {
         viewModelScope.launch(Dispatchers.IO) {
-            val session = sessionRepository.session
+            val session = sessionRepository.getSession()
             if (session == null) {
                 sendFatalError("Can't find active wallet", ReceiveErrorIntent.Cancel)
                 return@launch
@@ -56,7 +56,7 @@ class ReceiveViewModel @Inject constructor(
         val assetId = state.value.asset?.id ?: return
 
         viewModelScope.launch(Dispatchers.IO) {
-            val session = sessionRepository.session ?: return@launch
+            val session = sessionRepository.getSession() ?: return@launch
             val account = session.wallet.getAccount(assetId.chain) ?: return@launch
             assetsRepository.switchVisibility(account, assetId, true, session.currency)
         }

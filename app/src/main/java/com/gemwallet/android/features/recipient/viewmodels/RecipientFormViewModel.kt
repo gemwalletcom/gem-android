@@ -46,7 +46,7 @@ class RecipientFormViewModel @Inject constructor(
         addressDomain: String,
         memo: String
     ) {
-        val wallet = sessionRepository.session?.wallet
+        val wallet = sessionRepository.getSession()?.wallet
         if (wallet == null) {
             state.update { it.copy(fatalError = "Select asset") }
             return
