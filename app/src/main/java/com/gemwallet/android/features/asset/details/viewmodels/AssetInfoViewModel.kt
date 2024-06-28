@@ -68,14 +68,13 @@ class AssetInfoViewModel @Inject constructor(
         }
     }
 
-    private val syncFlow: Flow<Unit> = combine(
+    private val sync: Flow<Unit> = combine(
         uiState,
         model,
     ) { uiState, model ->
         if (uiState is AssetInfoUIState.Idle && uiState.sync == AssetInfoUIState.SyncState.Wait) {
-            syncAssetInfo(model.assetInfo.asset.id, model.assetInfo.owner)
+            syncAssetInfo(model.assetInfo.asset.id, model.assetInfo.owner, model.assetInfo.stakeApr ?: 0.0)
         }
-        Unit
     }.stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
 
     val uiModel = model.map { it.toUIState() }
@@ -85,12 +84,12 @@ class AssetInfoViewModel @Inject constructor(
         uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Wait) }
     }
 
-    private fun syncAssetInfo(assetId: AssetId, owner: Account) {
+    private fun syncAssetInfo(assetId: AssetId, owner: Account, apr: Double) {
         uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Loading) }
         viewModelScope.launch {
             val syncAssetInfo = async { assetsRepository.syncAssetInfo(assetId) }
             val syncStake = async {
-                stakeRepository.sync(assetId.chain, owner.address, assetsRepository.getStakeApr(assetId) ?: 0.0)
+                stakeRepository.sync(assetId.chain, owner.address, apr)
             }
             syncStake.await()
             syncAssetInfo.await()
@@ -117,8 +116,8 @@ class AssetInfoViewModel @Inject constructor(
             val stakeBalance = balances.items.filter {
                 it.balance.type != BalanceType.available && it.balance.type != BalanceType.reserved
             }
-                .map { BigInteger(it.balance.value) }
-                .fold(BigInteger.ZERO) {acc, value -> acc + value }
+            .map { BigInteger(it.balance.value) }
+            .fold(BigInteger.ZERO) {acc, value -> acc + value }
             val reservedBalance = balances.items.filter { it.balance.type == BalanceType.reserved }
                 .map { BigInteger(it.balance.value) }
                 .fold(BigInteger.ZERO) {acc, value -> acc + value }

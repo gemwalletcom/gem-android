@@ -40,8 +40,6 @@ import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.priceColor
-import com.gemwallet.android.ui.theme.padding16
-import com.gemwallet.android.ui.theme.padding8
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
