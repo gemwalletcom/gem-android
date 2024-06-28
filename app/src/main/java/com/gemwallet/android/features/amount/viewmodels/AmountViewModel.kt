@@ -106,7 +106,7 @@ class AmountViewModel @Inject constructor(
         }
         val asset = assetInfo.asset
         val decimals = asset.decimals
-        val price = assetInfo.price?.price ?: 0.0
+        val price = assetInfo.price?.price?.price ?: 0.0
 
         val minimumValue = getMinAmount(currentState.txType, asset.id.chain)
         val inputError = validateAmount(asset, amount, inputCurrency, price, minimumValue)
@@ -203,7 +203,7 @@ class AmountViewModel @Inject constructor(
     private fun calcEquivalent(inputAmount: String, inputCurrency: InputCurrency): String {
         val currency = sessionRepository.getSession()?.currency ?: return ""
         val assetInfo = state.value.assetInfo ?: return ""
-        val price = assetInfo.price?.price ?: return ""
+        val price = assetInfo.price?.price?.price ?: return ""
         val decimals = assetInfo.asset.decimals
 
         val amount = if (validateAmount(assetInfo.asset, inputAmount, inputCurrency, price, BigInteger.ZERO) == AmountError.None) {

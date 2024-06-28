@@ -12,6 +12,7 @@ import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetBalance
 import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.model.AssetPriceInfo
 import com.gemwallet.android.model.Balance
 import com.gemwallet.android.model.Balances
 import com.google.gson.Gson
@@ -24,6 +25,9 @@ import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BalanceType
+import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -69,8 +73,44 @@ data class PriceRoom(
     val dayChanged: Double,
 )
 
+data class DbAssetWithAccount(
+    @ColumnInfo("owner_address", index = true) val address: String,
+    val id: String,
+    val name: String,
+    val symbol: String,
+    val decimals: Int,
+    val type: AssetType,
+    @ColumnInfo("is_visible") val isVisible: Boolean = true,
+    @ColumnInfo("is_buy_enabled") val isBuyEnabled: Boolean = false,
+    @ColumnInfo("is_swap_enabled") val isSwapEnabled: Boolean = false,
+    @ColumnInfo("is_stake_enabled") val isStakeEnabled: Boolean = false,
+    @ColumnInfo("staking_apr") val stakingApr: Double? = null,
+    @ColumnInfo("links") val links: String? = null,
+    @ColumnInfo("market") val market: String? = null,
+    @ColumnInfo("rank") val rank: Int = 0,
+    // account
+    @ColumnInfo(name = "wallet_id") val walletId: String,
+    @ColumnInfo(name = "derivation_path") val derivationPath: String,
+    val chain: Chain,
+    val extendedPublicKey: String?,
+    // wallet
+    val walletName: String,
+    val walletType: WalletType,
+)
+
+data class PriceWithCurrencyRoom(
+    val assetId: String,
+    val value: Double,
+    val dayChanged: Double,
+    val currency: String,
+)
+
+const val SESSION_REQUEST = """SELECT accounts.address FROM accounts, session
+    WHERE accounts.wallet_id = session.wallet_id AND accounts.chain = :chain AND session.id = 1"""
+
 @Dao
 interface AssetsDao {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(asset: AssetRoom)
 
@@ -92,14 +132,27 @@ interface AssetsDao {
     @Query("SELECT DISTINCT * FROM assets WHERE owner_address IN (:addresses) AND id IN (:assetId)")
     fun getById(addresses: List<String>, assetId: List<String>): List<AssetRoom>
 
-    @Query("SELECT DISTINCT * FROM assets WHERE owner_address = :address AND id = :assetId")
-    fun getById(address: String, assetId: String): Flow<AssetRoom?>
-
     @Query("SELECT DISTINCT * FROM assets WHERE id = :assetId")
     suspend fun getById(assetId: String): List<AssetRoom>
 
     @Query("SELECT * FROM assets WHERE owner_address IN (:addresses) AND type = :type")
     fun getAssetsByType(addresses: List<String>, type: AssetType = AssetType.NATIVE): List<AssetRoom>
+
+    @Query("""
+        SELECT
+         assets.*,
+         accounts.*,
+         wallets.type AS walletType,
+         wallets.name AS walletName
+        FROM assets
+        JOIN accounts ON accounts.address = assets.owner_address
+        JOIN wallets ON wallets.id = accounts.wallet_id
+        WHERE
+            accounts.wallet_id = (SELECT wallet_id FROM session WHERE session.id = 1)
+            AND accounts.chain = :chain
+            AND assets.id = :assetId
+        """)
+    fun getAssetById(assetId: String, chain: Chain): Flow<DbAssetWithAccount?>
 }
 
 @Dao
@@ -121,6 +174,9 @@ interface BalancesDao {
 
     @Query("SELECT * FROM balances WHERE address = :address AND asset_id = :assetId")
     fun getByAssetId(address: String, assetId: String): Flow<List<BalanceRoom>>
+
+    @Query("SELECT * FROM balances WHERE asset_id = :assetId AND address = (${SESSION_REQUEST})")
+    fun getByAssetId(chain: Chain, assetId: String): Flow<List<BalanceRoom>>
 }
 
 @Dao
@@ -138,8 +194,8 @@ interface PricesDao {
     @Query("SELECT * FROM prices WHERE assetId IN (:assetsId)")
     fun getByAssets(assetsId: List<String>): List<PriceRoom>
 
-    @Query("SELECT * FROM prices WHERE assetId = :assetsId")
-    fun getByAssets(assetsId: String): Flow<PriceRoom>
+    @Query("SELECT prices.*, session.currency FROM prices, session WHERE assetId = :assetsId")
+    fun getByAssets(assetsId: String): Flow<PriceWithCurrencyRoom>
 
     @Query("DELETE FROM prices")
     fun deleteAll()
@@ -194,7 +250,7 @@ class AssetsRoomSource @Inject constructor(
 
         return combine(assetsFlow, balancesFlow, pricesFlow) { assets, balances, allPrices ->
             val prices = allPrices.map {
-                AssetPrice(it.assetId, it.value, it.dayChanged)
+                AssetPriceInfo(price = AssetPrice(it.assetId, it.value, it.dayChanged), currency = Currency.USD)
             }
             assets.mapNotNull { asset ->
                 val assetId = asset.id.toAssetId() ?: return@mapNotNull null
@@ -221,7 +277,7 @@ class AssetsRoomSource @Inject constructor(
         }
         val balances = balancesDao.getByAssetId(addresses, roomAssetId)
         val prices = pricesDao.getByAssets(assets.map { it.id }).map {
-            AssetPrice(it.assetId, it.value, it.dayChanged)
+            AssetPriceInfo(price = AssetPrice(it.assetId, it.value, it.dayChanged), currency = Currency.USD)
         }
         Result.success(
             assets.mapNotNull { asset ->
@@ -233,18 +289,21 @@ class AssetsRoomSource @Inject constructor(
         )
     }
 
-    override suspend fun getAssetInfo(account: Account, assetId: AssetId): Flow<AssetInfo?> {
+    override suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
         val roomAssetId = assetId.toIdentifier()
-        val address = account.address
-        return assetsDao.getById(address, roomAssetId).combine(
-            flow = balancesDao.getByAssetId(address, roomAssetId)
+        return combine(
+            assetsDao.getAssetById(roomAssetId, assetId.chain),
+            balancesDao.getByAssetId(assetId.chain, roomAssetId)
         ) { asset, balances ->
-            if (asset == null) {
-                return@combine null
-            }
-            roomToModel(gson, assetId, account, asset, balances, emptyList())
-        }.combine(pricesDao.getByAssets(roomAssetId)) { assetInfo, prices ->
-            assetInfo?.copy(price = AssetPrice(prices.assetId, prices.value, prices.dayChanged)) ?: assetInfo
+            asset?.asDomain(gson, assetId, balances)
+        }
+        .combine(pricesDao.getByAssets(roomAssetId)) { assetInfo, prices ->
+            assetInfo?.copy(
+                price = AssetPriceInfo(
+                    price = AssetPrice(prices.assetId, prices.value, prices.dayChanged),
+                    currency = Currency.entries.firstOrNull { it.string == prices.currency } ?: Currency.USD
+                ),
+            ) ?: assetInfo
         }.filterNotNull()
     }
 
@@ -370,7 +429,7 @@ class AssetsRoomSource @Inject constructor(
         account: Account,
         room: AssetRoom,
         balances: List<BalanceRoom>,
-        prices: List<AssetPrice>
+        prices: List<AssetPriceInfo>
     ) = AssetInfo(
         owner = account,
         asset = Asset(
@@ -385,7 +444,7 @@ class AssetsRoomSource @Inject constructor(
                 .filter { it.assetId == room.id && it.address == room.address }
                 .map { AssetBalance(assetId, Balance(value = it.amount, type = it.type)) }
         ),
-        price = prices.firstOrNull { it.assetId ==  room.id},
+        price = prices.firstOrNull { it.price.assetId ==  room.id},
         metadata = AssetMetaData(
             isEnabled = room.isVisible,
             isBuyEnabled = room.isBuyEnabled,
@@ -397,3 +456,41 @@ class AssetsRoomSource @Inject constructor(
         rank = room.rank,
     )
 }
+
+fun DbAssetWithAccount.asDomain(
+    gson: Gson,
+    assetId: AssetId,
+    balances: List<BalanceRoom> = emptyList(),
+    prices: List<AssetPriceInfo> = emptyList()
+) = AssetInfo(
+    owner = Account(
+        chain = chain,
+        address = address,
+        derivationPath = derivationPath,
+        extendedPublicKey = extendedPublicKey,
+    ),
+    asset = Asset(
+        id = assetId,
+        name = name,
+        symbol = symbol,
+        decimals = decimals,
+        type = type,
+    ),
+    balances = Balances(
+        balances
+            .filter { it.assetId == id && it.address == address }
+            .map { AssetBalance(assetId, Balance(value = it.amount, type = it.type)) }
+    ),
+    price = prices.firstOrNull { it.price.assetId ==  id},
+    metadata = AssetMetaData(
+        isEnabled = isVisible,
+        isBuyEnabled = isBuyEnabled,
+        isSwapEnabled = isSwapEnabled,
+        isStakeEnabled = isStakeEnabled,
+    ),
+    links = if (links != null) gson.fromJson(links, AssetLinks::class.java) else null,
+    market = if (market != null) gson.fromJson(market, AssetMarket::class.java) else null,
+    rank = rank,
+    walletName = walletName,
+    walletType = walletType,
+)

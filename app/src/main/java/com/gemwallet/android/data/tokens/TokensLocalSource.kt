@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.tokens
 
+import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetFull
 import com.wallet.core.primitives.AssetId
@@ -14,4 +15,6 @@ interface TokensLocalSource {
     suspend fun getByChains(chains: List<Chain>): List<Asset>
 
     suspend fun search(chains: List<Chain>, query: String): Flow<List<Asset>>
+
+    suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo?
 }

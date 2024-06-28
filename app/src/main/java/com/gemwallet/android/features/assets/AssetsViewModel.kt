@@ -109,7 +109,7 @@ class AssetsViewModel @Inject constructor(
         return assets
             .filter { asset -> asset.metadata?.isEnabled == true }
             .sortedByDescending {
-                it.balances.calcTotal().convert(it.asset.decimals, it.price?.price ?: 0.0).atomicValue
+                it.balances.calcTotal().convert(it.asset.decimals, it.price?.price?.price ?: 0.0).atomicValue
             }.map {
                 val totalBalance = it.balances.calcTotal()
                 AssetUIState(
@@ -120,13 +120,13 @@ class AssetsViewModel @Inject constructor(
                     owner = it.owner.address,
                     value =  totalBalance.format(it.asset.decimals, it.asset.symbol, 4),
                     isZeroValue = totalBalance.atomicValue == BigInteger.ZERO,
-                    fiat = if (it.price == null || it.price.price == 0.0) {
+                    fiat = if (it.price == null || it.price.price.price == 0.0) {
                         ""
                     } else {
-                        totalBalance.convert(it.asset.decimals, it.price.price)
+                        totalBalance.convert(it.asset.decimals, it.price.price.price)
                             .format(0, currency.string, 2)
                     },
-                    price = PriceUIState.create(it.price, currency),
+                    price = PriceUIState.create(it.price?.price, currency),
                     symbol = it.asset.symbol,
                 )
             }.toImmutableList()
@@ -144,9 +144,9 @@ class AssetsViewModel @Inject constructor(
         val totals = assets.map {
             val current = it.balances
                 .calcTotal()
-                .convert(it.asset.decimals, it.price?.price ?: 0.0)
+                .convert(it.asset.decimals, it.price?.price?.price ?: 0.0)
                 .atomicValue.toDouble()
-            val changed = current * ((it.price?.priceChangePercentage24h ?: 0.0) / 100)
+            val changed = current * ((it.price?.price?.priceChangePercentage24h ?: 0.0) / 100)
             Pair(current, changed)
         }.fold(Pair(0.0, 0.0)) { acc, pair ->
             Pair(acc.first + pair.first, acc.second + pair.second)

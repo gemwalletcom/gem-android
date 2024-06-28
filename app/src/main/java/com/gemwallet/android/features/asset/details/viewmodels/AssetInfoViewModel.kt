@@ -46,22 +46,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AssetInfoViewModel @Inject constructor(
-    private val sharedPrefSessionRepositoryImpl: SessionRepository,
+    private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val transactionsRepository: TransactionsRepository,
     private val stakeRepository: StakeRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val assetId = savedStateHandle.getStateFlow(assetIdArg, "")
+    private val assetIdStr = savedStateHandle.getStateFlow(assetIdArg, "")
+
     val uiState = MutableStateFlow<AssetInfoUIState>(AssetInfoUIState.Loading)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val model: Flow<Model> = assetId
-        .flatMapConcat { assetId ->
-            val assetId = assetId.toAssetId() ?: return@flatMapConcat emptyFlow()
+    private val model: Flow<Model> = assetIdStr
+        .flatMapConcat {
+            val assetId = it.toAssetId() ?: return@flatMapConcat emptyFlow()
 
-            val session = sharedPrefSessionRepositoryImpl.getSession() ?: return@flatMapConcat emptyFlow()
+            val session = sessionRepository.getSession() ?: return@flatMapConcat emptyFlow()
             val account = session.wallet.accounts.firstOrNull { it.chain == assetId.chain } ?: return@flatMapConcat emptyFlow()
 
             val stakeApr = if (StakeChain.isStaked(assetId.chain)) {
@@ -72,16 +73,16 @@ class AssetInfoViewModel @Inject constructor(
             syncAssetInfo(assetId)
             uiState.update { AssetInfoUIState.Idle() }
 
-            assetsRepository.getAssetInfo(account, assetId)
-                .combine(transactionsRepository.getTransactions(assetId, account)) { assetInfo, transactions ->
-                    Model(
-                        currency = session.currency,
-                        walletType = session.wallet.type,
-                        assetInfo = assetInfo,
-                        stakeApr = stakeApr,
-                        transactions = transactions,
-                    )
-                }
+            combine(
+                assetsRepository.getAssetInfo(assetId),
+                transactionsRepository.getTransactions(assetId, account)
+            ) { assetInfo, transactions ->
+                Model(
+                    assetInfo = assetInfo,
+                    stakeApr = stakeApr,
+                    transactions = transactions,
+                )
+            }
         }
 
     val uiModel = model.map {
@@ -90,12 +91,12 @@ class AssetInfoViewModel @Inject constructor(
 
     fun refresh() {
         uiState.update { AssetInfoUIState.Idle(true) }
-        syncAssetInfo(assetId = assetId.value.toAssetId() ?: return)
+        syncAssetInfo(assetId = assetIdStr.value.toAssetId() ?: return)
     }
 
     private fun syncAssetInfo(assetId: AssetId) {
         viewModelScope.launch {
-            val session = sharedPrefSessionRepositoryImpl.getSession() ?: return@launch
+            val session = sessionRepository.getSession() ?: return@launch
             val account = session.wallet.getAccount(assetId.chain) ?: return@launch
 
             val syncAssetInfo = async {
@@ -111,22 +112,21 @@ class AssetInfoViewModel @Inject constructor(
     }
 
     private data class Model(
-        val currency: Currency = Currency.USD,
-        val walletType: WalletType = WalletType.view,
         val assetInfo: AssetInfo,
         val stakeApr: Double?,
         val transactions: List<TransactionExtended> = emptyList(),
     ) {
         fun toUIState(): AssetInfoUIModel {
             val assetInfo = assetInfo
-            val price = assetInfo.price?.price ?: 0.0
+            val price = assetInfo.price?.price?.price ?: 0.0
+            val currency = assetInfo.price?.currency ?: Currency.USD
             val asset = assetInfo.asset
             val balances = assetInfo.balances
             val total = balances.calcTotal()
             val fiatTotal = if (assetInfo.price == null) {
                 null
             } else {
-                total.convert(asset.decimals, assetInfo.price.price)
+                total.convert(asset.decimals, assetInfo.price.price.price)
             }
             val stakeBalance = balances.items.filter {
                 it.balance.type != BalanceType.available && it.balance.type != BalanceType.reserved
@@ -149,10 +149,10 @@ class AssetInfoViewModel @Inject constructor(
                     Fiat(price).format(0, currency.string, 2, dynamicPlace = true)
                 },
                 priceDayChanges = PriceUIState.formatPercentage(
-                    assetInfo.price?.priceChangePercentage24h ?: 0.0
+                    assetInfo.price?.price?.priceChangePercentage24h ?: 0.0
                 ),
                 priceChangedType = PriceUIState.getState(
-                    assetInfo.price?.priceChangePercentage24h ?: 0.0
+                    assetInfo.price?.price?.priceChangePercentage24h ?: 0.0
                 ),
                 tokenType = asset.type,
                 networkTitle = "${asset.id.chain.asset().name} (${asset.type.string})",
@@ -161,7 +161,7 @@ class AssetInfoViewModel @Inject constructor(
                 isSwapEnabled = assetInfo.metadata?.isSwapEnabled ?: false,
                 transactions = transactions,
                 account = AssetInfoUIModel.Account(
-                    walletType = walletType,
+                    walletType = assetInfo.walletType,
                     totalBalance = total.format(asset.decimals, asset.symbol, 6),
                     totalFiat = fiatTotal?.format(0, currency.string, 2) ?: "",
                     owner = assetInfo.owner.address,

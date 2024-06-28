@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.tokens
 
 import com.gemwallet.android.blockchain.clients.GetTokenClient
+import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetFull
@@ -13,7 +14,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-class OfflineFirstTokensRepository(
+class TokensRepositoryImpl(
     private val localSource: TokensLocalSource,
     private val gemApiClient: GemApiClient,
     private val getTokenClients: List<GetTokenClient>
@@ -73,5 +74,9 @@ class OfflineFirstTokensRepository(
 
     override suspend fun search(chains: List<Chain>, query: String): Flow<List<Asset>> {
         return localSource.search(chains = chains, query)
+    }
+
+    override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
+        return localSource.assembleAssetInfo(assetId)
     }
 }

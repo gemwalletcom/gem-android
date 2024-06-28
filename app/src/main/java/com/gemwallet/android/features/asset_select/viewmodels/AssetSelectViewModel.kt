@@ -58,7 +58,7 @@ class AssetSelectViewModel @Inject constructor(
         assetsRepository.search(session.wallet, query.toString())
             .map { assets ->
                 assets.sortedByDescending {
-                    it.balances.available().convert(it.asset.decimals, it.price?.price ?: 0.0).atomicValue
+                    it.balances.available().convert(it.asset.decimals, it.price?.price?.price ?: 0.0).atomicValue
                 }
             }
             .flowOn(Dispatchers.IO)
@@ -152,11 +152,11 @@ data class AssetSelectViewModelState(
                     symbol = it.asset.symbol,
                     isZeroValue = it.balances.calcTotal().atomicValue == BigInteger.ZERO,
                     value = it.balances.calcTotal().format(it.asset.decimals, it.asset.symbol, 4),
-                    price = PriceUIState.create(it.price, currency),
-                    fiat = if (it.price == null || it.price.price == 0.0) {
+                    price = PriceUIState.create(it.price?.price, currency),
+                    fiat = if (it.price?.price == null || it.price.price.price == 0.0) {
                         ""
                     } else {
-                        it.balances.calcTotal().convert(it.asset.decimals, it.price.price)
+                        it.balances.calcTotal().convert(it.asset.decimals, it.price.price.price)
                             .format(0, currency.string, 2)
                     },
                     owner = it.owner.address,

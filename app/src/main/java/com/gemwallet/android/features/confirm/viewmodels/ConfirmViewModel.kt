@@ -261,7 +261,7 @@ class ConfirmViewModel @Inject constructor(
                 else -> {
                     val decimals = assetInfo.asset.decimals
                     val symbol = assetInfo.asset.symbol
-                    val price = assetInfo.price?.price ?: 0.0
+                    val price = assetInfo.price?.price?.price ?: 0.0
                     val amount = Crypto(signerParams.finalAmount)
                     ConfirmSceneState.Loaded(
                         error = error,
@@ -338,7 +338,7 @@ class ConfirmViewModel @Inject constructor(
             val feeDecimals = asset.decimals
             val feeCrypto = feeAmount.format(feeDecimals, asset.symbol, 6)
             val feeFiat = feeAssetInfo.price?.let {
-                feeAmount.convert(feeDecimals, it.price)
+                feeAmount.convert(feeDecimals, it.price.price)
                     .format(0, currency.string, 2, dynamicPlace = true)
             } ?: ""
             return CellEntity(

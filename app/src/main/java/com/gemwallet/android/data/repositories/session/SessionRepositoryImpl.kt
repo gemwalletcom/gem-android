@@ -38,8 +38,11 @@ class SessionRepositoryImpl(
     override fun subscribe(onSessionChange: OnSessionChange) { }
 
     override suspend fun setWallet(wallet: Wallet)  = withContext(Dispatchers.IO) {
-        val session = getSession() ?: return@withContext
-        sessionDao.update(SessionMapper(wallet).asEntity(session.copy(wallet = wallet)))
+        val session = getSession()?.copy(wallet = wallet) ?: Session(
+            wallet = wallet,
+            currency = Currency.USD,
+        )
+        sessionDao.update(SessionMapper(wallet).asEntity(session))
     }
 
     override suspend fun setCurrency(currency: Currency) = withContext(Dispatchers.IO) {

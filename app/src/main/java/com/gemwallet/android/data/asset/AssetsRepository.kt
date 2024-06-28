@@ -119,6 +119,7 @@ class AssetsRepository @Inject constructor(
         }
     }
 
+    @Deprecated("Use the getAssetInfo() method")
     suspend fun getById(wallet: Wallet, assetId: AssetId): Result<List<AssetInfo>> {
         val assetInfos = assetsLocalSource.getById(wallet.accounts, assetId).getOrNull()
         val result = if (assetInfos.isNullOrEmpty()) {
@@ -135,11 +136,9 @@ class AssetsRepository @Inject constructor(
         return Result.success(result)
     }
 
-    suspend fun getAssetInfo(account: Account, assetId: AssetId): Flow<AssetInfo> {
-        return assetsLocalSource.getAssetInfo(account, assetId).mapNotNull {
-            it ?: tokensRepository.getByIds(listOf(assetId)).map { token ->
-                AssetInfo(owner = account, asset = token)
-            }.firstOrNull { it.asset.id.chain == account.chain }
+    suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo> {
+        return assetsLocalSource.getAssetInfo(assetId).mapNotNull {
+            it ?: tokensRepository.assembleAssetInfo(assetId)
         }
     }
 

@@ -78,7 +78,7 @@ private fun SwapItem(assetInfo: AssetInfo, value: String, currency: Currency?) {
             )
             if (currency != null) {
                 Text(
-                    text = Crypto(value).convert(decimals, assetInfo.price?.price ?: 0.0).format(0, currency.string, 2, dynamicPlace = true),
+                    text = Crypto(value).convert(decimals, assetInfo.price?.price?.price ?: 0.0).format(0, currency.string, 2, dynamicPlace = true),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Start

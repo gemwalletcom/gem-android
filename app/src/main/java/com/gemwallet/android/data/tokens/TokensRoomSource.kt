@@ -5,8 +5,12 @@ import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.gemwallet.android.data.asset.DbAssetWithAccount
+import com.gemwallet.android.data.asset.asDomain
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.model.AssetInfo
+import com.google.gson.Gson
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetFull
 import com.wallet.core.primitives.AssetId
@@ -49,6 +53,26 @@ interface TokensDao {
             " ORDER BY rank DESC"
     )
     fun search(types: List<AssetType>, query: String): Flow<List<TokenRoom>>
+
+    @Query("""
+        SELECT
+            tokens.*,
+            accounts.*,
+            accounts.address AS owner_address,
+            wallets.type AS walletType,
+            wallets.name AS walletName,
+            0 AS is_visible,
+            0 AS is_buy_enabled,
+            0 AS is_swap_enabled,
+            0 AS is_stake_enabled
+        FROM tokens, accounts
+        JOIN wallets ON wallets.id = accounts.wallet_id
+        WHERE
+            accounts.wallet_id = (SELECT wallet_id FROM session WHERE session.id = 1)
+            AND accounts.chain = :chain
+            AND tokens.id = :assetId
+        """)
+    fun assembleAssetInfo(chain: Chain, assetId: String): DbAssetWithAccount?
 }
 
 
@@ -108,6 +132,14 @@ class TokensRoomSource(
                 )
             }
         }
+    }
+
+    override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
+        return tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())?.asDomain(
+                gson = Gson(),
+                assetId = assetId,
+                balances = emptyList()
+            )
     }
 
     private fun getTokenType(chain: Chain) = when (chain) {

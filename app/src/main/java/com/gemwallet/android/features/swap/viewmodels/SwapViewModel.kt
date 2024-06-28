@@ -119,7 +119,7 @@ class SwapViewModel @Inject constructor(
                 return@forEachTextValue
             }
             val equivalent = try {
-                Fiat(newValue.toString().numberParse().toDouble() * (state.value.payAsset?.price?.price ?: throw Exception()))
+                Fiat(newValue.toString().numberParse().toDouble() * (state.value.payAsset?.price?.price?.price ?: throw Exception()))
             } catch (err: Throwable) {
                 null
             }
@@ -315,8 +315,8 @@ class SwapViewModel @Inject constructor(
             val asset = assetInfo?.asset ?: return null
             val equivalentValue = when (itemType) {
                 SwapItemType.Pay -> (payEquivalent ?: Fiat(0.0)).format(0, currency.string, 2)
-                SwapItemType.Receive -> if ((assetInfo.price?.price ?: 0.0) > 0 && quote != null) {
-                    Crypto(quote.toAmount).convert(asset.decimals, assetInfo.price!!.price).format(0, currency.string, 2)
+                SwapItemType.Receive -> if ((assetInfo.price?.price?.price ?: 0.0) > 0 && quote != null) {
+                    Crypto(quote.toAmount).convert(asset.decimals, assetInfo.price!!.price.price).format(0, currency.string, 2)
                 } else {
                     ""
                 }

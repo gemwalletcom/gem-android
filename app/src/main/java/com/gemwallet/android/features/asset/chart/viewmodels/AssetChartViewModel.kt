@@ -87,11 +87,11 @@ data class AssetChartViewModelState(
                 val periodStartPrice = prices.firstOrNull()?.value ?: 0.0f
                 val currentPoint = if (assetInfo.price == null) null else {
                     PricePoint(
-                        y = assetInfo.price.price.toFloat(),
-                        yLabel = Fiat(assetInfo.price.price).format(0, currency.string, 2, dynamicPlace = true),
+                        y = assetInfo.price.price.price.toFloat(),
+                        yLabel = Fiat(assetInfo.price.price.price).format(0, currency.string, 2, dynamicPlace = true),
                         timestamp = System.currentTimeMillis(),
-                        percentage = PriceUIState.formatPercentage(assetInfo.price.priceChangePercentage24h),
-                        priceState = PriceUIState.getState(assetInfo.price.priceChangePercentage24h),
+                        percentage = PriceUIState.formatPercentage(assetInfo.price.price.priceChangePercentage24h),
+                        priceState = PriceUIState.getState(assetInfo.price.price.priceChangePercentage24h),
                     )
                 }
                 AssetChartSceneState.Chart(
