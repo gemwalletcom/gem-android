@@ -5,7 +5,7 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.gemwallet.android.data.database.entities.DbAsset
-import com.gemwallet.android.data.asset.AssetsDao
+import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.GemDatabase
 import com.gemwallet.android.data.database.entities.DbSession
 import com.gemwallet.android.data.tokens.TokenRoom

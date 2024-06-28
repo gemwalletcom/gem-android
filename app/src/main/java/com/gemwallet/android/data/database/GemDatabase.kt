@@ -3,11 +3,8 @@ package com.gemwallet.android.data.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.gemwallet.android.data.database.entities.DbAsset
-import com.gemwallet.android.data.asset.AssetsDao
 import com.gemwallet.android.data.database.entities.DbBalance
-import com.gemwallet.android.data.asset.BalancesDao
 import com.gemwallet.android.data.database.entities.DbPrice
-import com.gemwallet.android.data.asset.PricesDao
 import com.gemwallet.android.data.bridge.ConnectionsDao
 import com.gemwallet.android.data.bridge.RoomConnection
 import com.gemwallet.android.data.config.NodeDao

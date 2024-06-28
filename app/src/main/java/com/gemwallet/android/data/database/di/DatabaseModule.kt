@@ -6,9 +6,9 @@ import android.util.Log
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.gemwallet.android.data.asset.AssetsDao
-import com.gemwallet.android.data.asset.BalancesDao
-import com.gemwallet.android.data.asset.PricesDao
+import com.gemwallet.android.data.database.AssetsDao
+import com.gemwallet.android.data.database.BalancesDao
+import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.bridge.ConnectionsDao
 import com.gemwallet.android.data.config.NodeDao
 import com.gemwallet.android.data.config.OfflineFirstConfigRepository

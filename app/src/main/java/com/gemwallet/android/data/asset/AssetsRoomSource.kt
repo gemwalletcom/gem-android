@@ -1,14 +1,12 @@
 package com.gemwallet.android.data.asset
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import androidx.room.Update
+import com.gemwallet.android.data.database.AssetsDao
+import com.gemwallet.android.data.database.BalancesDao
+import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.database.entities.DbAsset
-import com.gemwallet.android.data.database.entities.DbAssetInfo
 import com.gemwallet.android.data.database.entities.DbBalance
 import com.gemwallet.android.data.database.entities.DbPrice
+import com.gemwallet.android.data.database.mappers.AssetInfoMapper
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetBalance
@@ -24,8 +22,6 @@ import com.wallet.core.primitives.AssetLinks
 import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
-import com.wallet.core.primitives.AssetType
-import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -35,95 +31,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
-
-@Dao
-interface AssetsDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(asset: DbAsset)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(asset: List<DbAsset>)
-
-    @Update
-    fun update(asset: DbAsset)
-
-    @Query("SELECT * FROM assets")
-    fun getAll(): List<DbAsset>
-
-    @Query("SELECT * FROM assets " +
-            "WHERE owner_address IN (:addresses) " +
-            "AND (id LIKE '%' || :query || '%' OR symbol LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%') " +
-            "COLLATE NOCASE")
-    fun getAllByOwner(addresses: List<String>, query: String): Flow<List<DbAsset>>
-
-    @Query("SELECT DISTINCT * FROM assets WHERE owner_address IN (:addresses) AND id IN (:assetId)")
-    fun getById(addresses: List<String>, assetId: List<String>): List<DbAsset>
-
-    @Query("SELECT DISTINCT * FROM assets WHERE id = :assetId")
-    suspend fun getById(assetId: String): List<DbAsset>
-
-    @Query("SELECT * FROM assets WHERE owner_address IN (:addresses) AND type = :type")
-    fun getAssetsByType(addresses: List<String>, type: AssetType = AssetType.NATIVE): List<DbAsset>
-
-    @Query("""
-        SELECT
-            assets.*,
-            accounts.*,
-            session.currency AS priceCurrency,
-            wallets.type AS walletType,
-            wallets.name AS walletName,
-            prices.value AS priceValue,
-            prices.dayChanged AS priceDayChanges,
-            balances.amount AS amount,
-            balances.type as balanceType
-        FROM assets
-        JOIN accounts ON accounts.address = assets.owner_address
-        JOIN wallets ON wallets.id = accounts.wallet_id
-        JOIN session ON accounts.wallet_id = session.wallet_id
-        LEFT JOIN balances ON assets.owner_address = balances.address AND assets.id = balances.asset_id
-        LEFT JOIN prices ON assets.id = prices.assetId
-        WHERE accounts.chain = :chain AND assets.id = :assetId
-        """)
-    fun getAssetById(assetId: String, chain: Chain): Flow<List<DbAssetInfo>>
-}
-
-@Dao
-interface BalancesDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(balance: DbBalance)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(balance: List<DbBalance>)
-
-    @Update
-    fun update(balance: DbBalance)
-
-    @Query("SELECT * FROM balances WHERE address IN (:addresses)")
-    fun getAllByOwner(addresses: List<String>): Flow<List<DbBalance>>
-
-    @Query("SELECT * FROM balances WHERE address IN (:addresses) AND asset_id IN (:assetId)")
-    fun getByAssetId(addresses: List<String>, assetId: List<String>): List<DbBalance>
-}
-
-@Dao
-interface PricesDao {
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(priceRoom: DbPrice)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(priceRoom: List<DbPrice>)
-
-    @Query("SELECT * FROM prices")
-    fun getAll(): Flow<List<DbPrice>>
-
-    @Query("SELECT * FROM prices WHERE assetId IN (:assetsId)")
-    fun getByAssets(assetsId: List<String>): List<DbPrice>
-
-    @Query("DELETE FROM prices")
-    fun deleteAll()
-}
 
 
 @Singleton
@@ -215,7 +122,8 @@ class AssetsRoomSource @Inject constructor(
 
     override suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
         val id = assetId.toIdentifier()
-        return assetsDao.getAssetById(id, assetId.chain).map { it.asDomain(gson).firstOrNull() }
+        return assetsDao.getAssetById(id, assetId.chain)
+            .map { AssetInfoMapper().asDomain(it).firstOrNull() }
     }
 
     override suspend fun getById(assetId: AssetId): Asset? {
@@ -366,70 +274,4 @@ class AssetsRoomSource @Inject constructor(
         market = if (room.market != null) gson.fromJson(room.market, AssetMarket::class.java) else null,
         rank = room.rank,
     )
-}
-
-fun List<DbAssetInfo>.asDomain(
-    gson: Gson,
-): List<AssetInfo> {
-    return groupBy { it.id }.mapNotNull { records ->
-        val first = records.value.firstOrNull() ?: return@mapNotNull null
-        val assetId = first.id.toAssetId() ?: return@mapNotNull null
-
-        val balances = Balances(
-            records.value.mapNotNull {
-                if (it.amount != null && it.balanceType != null) {
-                    AssetBalance(assetId, Balance(it.balanceType, it.amount))
-                } else {
-                    null
-                }
-            }
-        )
-
-        val currency = Currency.entries.firstOrNull { it.string == first.priceCurrency }
-
-        AssetInfo(
-            owner = Account(
-                chain = first.chain,
-                address = first.address,
-                derivationPath = first.derivationPath,
-                extendedPublicKey = first.extendedPublicKey,
-            ),
-            asset = Asset(
-                id = assetId,
-                name = first.name,
-                symbol = first.symbol,
-                decimals = first.decimals,
-                type = first.type,
-            ),
-            balances = balances,
-            price = if (first.priceValue != null && currency != null) {
-                AssetPriceInfo(
-                    currency = currency,
-                    price = AssetPrice(
-                        assetId = assetId.toIdentifier(),
-                        price = first.priceValue,
-                        priceChangePercentage24h = first.priceDayChanges ?: 0.0,
-                    )
-                )
-            } else null,
-            metadata = AssetMetaData(
-                isEnabled = first.isVisible,
-                isBuyEnabled = first.isBuyEnabled,
-                isSwapEnabled = first.isSwapEnabled,
-                isStakeEnabled = first.isStakeEnabled,
-            ),
-            links = if (first.links != null) gson.fromJson(
-                first.links,
-                AssetLinks::class.java
-            ) else null,
-            market = if (first.market != null) gson.fromJson(
-                first.market,
-                AssetMarket::class.java
-            ) else null,
-            rank = first.rank,
-            walletName = first.walletName,
-            walletType = first.walletType,
-            stakeApr = first.stakingApr,
-        )
-    }
 }
