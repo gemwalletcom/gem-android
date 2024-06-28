@@ -6,11 +6,10 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.gemwallet.android.data.database.entities.DbAssetInfo
-import com.gemwallet.android.data.asset.asDomain
+import com.gemwallet.android.data.database.mappers.AssetInfoMapper
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
-import com.google.gson.Gson
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetFull
 import com.wallet.core.primitives.AssetId
@@ -135,9 +134,8 @@ class TokensRoomSource(
     }
 
     override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
-        return tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
-            .asDomain(gson = Gson())
-            .firstOrNull()
+        val dbAssetInfo = tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
+        return AssetInfoMapper().asDomain(dbAssetInfo).firstOrNull()
     }
 
     private fun getTokenType(chain: Chain) = when (chain) {

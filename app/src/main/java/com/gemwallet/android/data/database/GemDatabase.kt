@@ -2,13 +2,13 @@ package com.gemwallet.android.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.gemwallet.android.data.database.entities.DbAsset
-import com.gemwallet.android.data.database.entities.DbBalance
-import com.gemwallet.android.data.database.entities.DbPrice
 import com.gemwallet.android.data.bridge.ConnectionsDao
 import com.gemwallet.android.data.bridge.RoomConnection
 import com.gemwallet.android.data.config.NodeDao
 import com.gemwallet.android.data.config.RoomNode
+import com.gemwallet.android.data.database.entities.DbAsset
+import com.gemwallet.android.data.database.entities.DbBalance
+import com.gemwallet.android.data.database.entities.DbPrice
 import com.gemwallet.android.data.database.entities.DbSession
 import com.gemwallet.android.data.stake.RoomDelegationBase
 import com.gemwallet.android.data.stake.RoomDelegationValidator

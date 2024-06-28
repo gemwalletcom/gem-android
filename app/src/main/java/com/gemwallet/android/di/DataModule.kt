@@ -69,14 +69,11 @@ import com.gemwallet.android.blockchain.clients.xrp.XrpSignClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignerPreloader
 import com.gemwallet.android.blockchain.clients.xrp.XrpTransactionStatusClient
 import com.gemwallet.android.blockchain.operators.SignTransfer
-import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.asset.AssetsLocalSource
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.asset.AssetsRoomSource
-import com.gemwallet.android.data.database.BalancesDao
 import com.gemwallet.android.data.asset.BalancesRemoteSource
 import com.gemwallet.android.data.asset.BalancesRetrofitRemoteSource
-import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.asset.PricesRemoteSource
 import com.gemwallet.android.data.asset.PricesRetrofitSource
 import com.gemwallet.android.data.bridge.BridgesRepository
@@ -91,6 +88,9 @@ import com.gemwallet.android.data.config.NodeDao
 import com.gemwallet.android.data.config.NodeLocalSource
 import com.gemwallet.android.data.config.NodesRepository
 import com.gemwallet.android.data.config.OfflineFirstConfigRepository
+import com.gemwallet.android.data.database.AssetsDao
+import com.gemwallet.android.data.database.BalancesDao
+import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.database.SessionDao
 import com.gemwallet.android.data.repositories.session.SessionLocalSource
 import com.gemwallet.android.data.repositories.session.SessionRepository
