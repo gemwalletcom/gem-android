@@ -18,4 +18,5 @@ data class AssetInfo(
     val links: AssetLinks? = null,
     val market: AssetMarket? = null,
     val rank: Int = 0,
+    val stakeApr: Double? = null,
 )

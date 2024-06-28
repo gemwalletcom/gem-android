@@ -101,10 +101,10 @@ import com.gemwallet.android.data.stake.StakeLocalSource
 import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.data.stake.StakeRoomSource
 import com.gemwallet.android.data.swap.SwapRepository
-import com.gemwallet.android.data.tokens.TokensRepositoryImpl
 import com.gemwallet.android.data.tokens.TokensDao
 import com.gemwallet.android.data.tokens.TokensLocalSource
 import com.gemwallet.android.data.tokens.TokensRepository
+import com.gemwallet.android.data.tokens.TokensRepositoryImpl
 import com.gemwallet.android.data.tokens.TokensRoomSource
 import com.gemwallet.android.data.transaction.TransactionsDao
 import com.gemwallet.android.data.transaction.TransactionsLocalSource

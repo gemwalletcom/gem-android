@@ -1,9 +1,6 @@
 package com.gemwallet.android.features.asset.navigation
 
-import androidx.core.os.bundleOf
 import androidx.navigation.NavController
-import androidx.navigation.NavDeepLinkRequest
-import androidx.navigation.NavDestination
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable

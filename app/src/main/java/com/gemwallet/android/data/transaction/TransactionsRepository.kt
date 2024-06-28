@@ -82,6 +82,27 @@ class TransactionsRepository(
             }
     }
 
+    suspend fun getTransactions(assetId: AssetId? = null): Flow<List<TransactionExtended>> = withContext(Dispatchers.IO) {
+        localSource.getExtendedTransactions(emptyList())
+            .map { list ->
+                list.filter {
+                    (assetId == null || it.asset.id.toIdentifier() == assetId.toIdentifier())
+                }.map {
+                    val metadata = it.transaction.getSwapMetadata()
+                    if (metadata != null) {
+                        it.copy(
+                            assets = listOf(
+                                assetsLocalSource.getById(metadata.fromAsset),
+                                assetsLocalSource.getById(metadata.toAsset),
+                            ).mapNotNull { asset -> asset }
+                        )
+                    } else {
+                        it
+                    }
+                }
+            }
+    }
+
     suspend fun getTransaction(txId: String): Flow<TransactionExtended?> {
         return localSource.getExtendedTransactions(listOf(txId)).map { it.firstOrNull() }
             .flowOn(Dispatchers.IO)

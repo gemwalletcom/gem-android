@@ -4,7 +4,6 @@ import com.gemwallet.android.model.Session
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 
 interface SessionRepository {
 

@@ -27,7 +27,6 @@ import com.wallet.core.primitives.BalanceType
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionExtended
-import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -58,32 +57,22 @@ class AssetInfoViewModel @Inject constructor(
     val uiState = MutableStateFlow<AssetInfoUIState>(AssetInfoUIState.Loading)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val model: Flow<Model> = assetIdStr
-        .flatMapConcat {
-            val assetId = it.toAssetId() ?: return@flatMapConcat emptyFlow()
+    private val model: Flow<Model> = assetIdStr.flatMapConcat {
+        val assetId = it.toAssetId() ?: return@flatMapConcat emptyFlow()
 
-            val session = sessionRepository.getSession() ?: return@flatMapConcat emptyFlow()
-            val account = session.wallet.accounts.firstOrNull { it.chain == assetId.chain } ?: return@flatMapConcat emptyFlow()
+        syncAssetInfo(assetId)
+        uiState.update { AssetInfoUIState.Idle() }
 
-            val stakeApr = if (StakeChain.isStaked(assetId.chain)) {
-                assetsRepository.getStakeApr(assetId)
-            } else {
-                null
-            }
-            syncAssetInfo(assetId)
-            uiState.update { AssetInfoUIState.Idle() }
-
-            combine(
-                assetsRepository.getAssetInfo(assetId),
-                transactionsRepository.getTransactions(assetId, account)
-            ) { assetInfo, transactions ->
-                Model(
-                    assetInfo = assetInfo,
-                    stakeApr = stakeApr,
-                    transactions = transactions,
-                )
-            }
+        combine(
+            assetsRepository.getAssetInfo(assetId),
+            transactionsRepository.getTransactions(assetId)
+        ) { assetInfo, transactions ->
+            Model(
+                assetInfo = assetInfo,
+                transactions = transactions,
+            )
         }
+    }
 
     val uiModel = model.map {
         it.toUIState()
@@ -113,7 +102,6 @@ class AssetInfoViewModel @Inject constructor(
 
     private data class Model(
         val assetInfo: AssetInfo,
-        val stakeApr: Double?,
         val transactions: List<TransactionExtended> = emptyList(),
     ) {
         fun toUIState(): AssetInfoUIModel {
@@ -173,7 +161,7 @@ class AssetInfoViewModel @Inject constructor(
                     },
                     stake = if (asset.id.type() == AssetSubtype.NATIVE && StakeChain.isStaked(asset.id.chain)) {
                         if (stakeBalance == BigInteger.ZERO) {
-                            "APR ${PriceUIState.formatPercentage(stakeApr ?: 0.0, false)}"
+                            "APR ${PriceUIState.formatPercentage(assetInfo.stakeApr ?: 0.0, false)}"
                         } else {
                             Crypto(stakeBalance).format(asset.decimals, asset.symbol, 6)
                         }

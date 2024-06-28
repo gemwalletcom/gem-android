@@ -90,6 +90,9 @@ data class TransactionExtendedRoom(
     val feePriceChanged: Double?,
 )
 
+const val SESSION_REQUEST = """SELECT accounts.address FROM accounts, session
+    WHERE accounts.wallet_id = session.wallet_id AND session.id = 1"""
+
 @Dao
 interface TransactionsDao {
 
@@ -108,45 +111,45 @@ interface TransactionsDao {
     @Query("DELETE FROM transactions WHERE id=:id")
     fun delete(id: String)
 
-    @Query(
-        "SELECT DISTINCT tx.id, tx.hash," +
-                "tx.assetId," +
-                "tx.feeAssetId," +
-                "tx.owner," +
-                "tx.recipient," +
-                "tx.contract," +
-                "tx.state," +
-                "tx.type," +
-                "tx.blockNumber," +
-                "tx.sequence," +
-                "tx.fee," +
-                "tx.value," +
-                "tx.payload," +
-                "tx.metadata," +
-                "tx.direction," +
-                "tx.createdAt," +
-                "tx.updatedAt," +
-                "assets.decimals as assetDecimals," +
-                "assets.name as assetName," +
-                "assets.type as assetType," +
-                "assets.symbol as assetSymbol," +
-                "feeAsset.decimals as feeDecimals," +
-                "feeAsset.name as feeName," +
-                "feeAsset.type as feeType," +
-                "feeAsset.symbol as feeSymbol," +
-                "prices.value as assetPrice," +
-                "prices.dayChanged as assetPriceChanged," +
-                "feePrices.value as feePrice," +
-                "feePrices.dayChanged as feePriceChanged" +
-                " FROM transactions as tx " +
-                "INNER JOIN assets ON tx.assetId = assets.id " +
-                "INNER JOIN assets as feeAsset ON tx.feeAssetId = feeAsset.id " +
-                "LEFT JOIN prices ON tx.assetId = prices.assetId " +
-                "LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.assetId " +
-                "WHERE tx.id IN (:ids) OR (tx.owner IN (:owners) OR tx.recipient in (:owners))" +
-                "GROUP BY tx.id ORDER BY tx.createdAt DESC"
-    )
-    fun getExtendedTransactions(ids: List<String>, owners: List<String>): Flow<List<TransactionExtendedRoom>>
+    @Query("""
+        SELECT DISTINCT tx.id, tx.hash,
+            tx.assetId,
+            tx.feeAssetId,
+            tx.owner,
+            tx.recipient,
+            tx.contract,
+            tx.state,
+            tx.type,
+            tx.blockNumber,
+            tx.sequence,
+            tx.fee,
+            tx.value,
+            tx.payload,
+            tx.metadata,
+            tx.direction,
+            tx.createdAt,
+            tx.updatedAt,
+            assets.decimals as assetDecimals,
+            assets.name as assetName,
+            assets.type as assetType,
+            assets.symbol as assetSymbol,
+            feeAsset.decimals as feeDecimals,
+            feeAsset.name as feeName,
+            feeAsset.type as feeType,
+            feeAsset.symbol as feeSymbol,
+            prices.value as assetPrice,
+            prices.dayChanged as assetPriceChanged,
+            feePrices.value as feePrice,
+            feePrices.dayChanged as feePriceChanged
+        FROM transactions as tx 
+            INNER JOIN assets ON tx.assetId = assets.id 
+            INNER JOIN assets as feeAsset ON tx.feeAssetId = feeAsset.id 
+            LEFT JOIN prices ON tx.assetId = prices.assetId 
+            LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.assetId 
+            WHERE tx.id IN (:ids) OR (tx.owner IN ($SESSION_REQUEST) OR tx.recipient in ($SESSION_REQUEST))
+            GROUP BY tx.id ORDER BY tx.createdAt DESC
+    """)
+    fun getExtendedTransactions(ids: List<String>): Flow<List<TransactionExtendedRoom>>
 
     @Insert(entity = TxSwapMetadataRoom::class, onConflict = OnConflictStrategy.REPLACE)
     fun addSwapMetadata(metadata: List<TxSwapMetadataRoom>)
@@ -186,8 +189,14 @@ class TransactionsRoomSource(
         return true
     }
 
+    @Deprecated("Use the getExtendedTransactions()")
     override suspend fun getExtendedTransactions(txIds: List<String>, vararg accounts: Account): Flow<List<TransactionExtended>> {
-        val transactions = transactionsDao.getExtendedTransactions(txIds, accounts.map { it.address })
+        val transactions = transactionsDao.getExtendedTransactions(txIds)
+        return transactions.mapNotNull { it.mapNotNull { tx -> toExtendedTransaction(tx) } }
+    }
+
+    override suspend fun getExtendedTransactions(txIds: List<String>): Flow<List<TransactionExtended>> {
+        val transactions = transactionsDao.getExtendedTransactions(txIds)
         return transactions.mapNotNull { it.mapNotNull { tx -> toExtendedTransaction(tx) } }
     }
 

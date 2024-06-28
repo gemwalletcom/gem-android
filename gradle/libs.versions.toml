@@ -33,8 +33,7 @@ navigationCompose = "2.7.7"
 plugin = "0.3.4"
 retrofit = "2.11.0"
 review = "2.0.1"
-roomKtx = "2.6.1"
-roomCompiler = "2.6.1"
+room = "2.6.1"
 runtimeAndroid = "1.6.8"
 securityCrypto = "1.0.0"
 ui = "1.6.8"
@@ -46,6 +45,7 @@ android-lib = "8.5.0"
 kotlin = "1.9.24"
 google-services = "4.4.2"
 material3AdaptiveAndroid = "1.0.0-alpha06"
+turbine = "1.1.0"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -74,9 +74,9 @@ compose-material3 = { module = "androidx.compose.material3:material3", version.r
 compose-material3-window-size = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3" }
 
 # Sqlite room
-room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomKtx" }
-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomCompiler" }
-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomKtx" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 
 #Google play review and notifications
 play-review = { module = "com.google.android.play:review", version.ref = "review" }
@@ -100,6 +100,7 @@ androidx-junit-runner = { module = "androidx.test:runner", version.ref = "testRu
 androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", version.ref = "uiTestJunit4" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiTestJunit4" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTestJunit4" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 
 # chart
 vico-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico" }
@@ -142,3 +143,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
 android-library = { id = "com.android.library", version.ref = "android-lib" }
 kotlin = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+room = { id = "androidx.room", version.ref = "room" }

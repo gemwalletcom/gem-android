@@ -7,6 +7,7 @@ plugins {
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
     id("com.github.willir.rust.cargo-ndk-android")
+    id("androidx.room")
 }
 
 repositories {
@@ -195,7 +196,12 @@ dependencies {
     testImplementation(libs.androidx.junit)
     testImplementation(libs.androidx.junit.runner)
     testImplementation(libs.androidx.junit.ktx)
+    androidTestImplementation(libs.turbine)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
+}
+
+room {
+    schemaDirectory("$projectDir/schemas")
 }

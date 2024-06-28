@@ -493,4 +493,5 @@ fun DbAssetWithAccount.asDomain(
     rank = rank,
     walletName = walletName,
     walletType = walletType,
+    stakeApr = stakingApr,
 )

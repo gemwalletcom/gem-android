@@ -15,6 +15,8 @@ interface TransactionsLocalSource {
 
     suspend fun getExtendedTransactions(txIds: List<String> = emptyList(), vararg accounts: Account): Flow<List<TransactionExtended>>
 
+    suspend fun getExtendedTransactions(txIds: List<String> = emptyList()): Flow<List<TransactionExtended>>
+
     suspend fun getPending(): List<Transaction>
 
     suspend fun remove(tx: Transaction)

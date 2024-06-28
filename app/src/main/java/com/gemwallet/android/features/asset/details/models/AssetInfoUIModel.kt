@@ -5,7 +5,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.WalletType
-import org.web3j.abi.datatypes.Bool
 
 class AssetInfoUIModel(
     val assetId: AssetId,
