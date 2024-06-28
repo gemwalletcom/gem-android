@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.gemwallet.android.data.asset.DbAssetWithAccount
+import com.gemwallet.android.data.database.entities.DbAssetInfo
 import com.gemwallet.android.data.asset.asDomain
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
@@ -72,7 +72,7 @@ interface TokensDao {
             AND accounts.chain = :chain
             AND tokens.id = :assetId
         """)
-    fun assembleAssetInfo(chain: Chain, assetId: String): DbAssetWithAccount?
+    fun assembleAssetInfo(chain: Chain, assetId: String): List<DbAssetInfo>
 }
 
 
@@ -135,11 +135,9 @@ class TokensRoomSource(
     }
 
     override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
-        return tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())?.asDomain(
-                gson = Gson(),
-                assetId = assetId,
-                balances = emptyList()
-            )
+        return tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
+            .asDomain(gson = Gson())
+            .firstOrNull()
     }
 
     private fun getTokenType(chain: Chain) = when (chain) {

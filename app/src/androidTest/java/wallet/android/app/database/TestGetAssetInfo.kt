@@ -5,11 +5,11 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import app.cash.turbine.test
-import com.gemwallet.android.data.asset.AssetRoom
 import com.gemwallet.android.data.asset.AssetsRoomSource
-import com.gemwallet.android.data.asset.BalanceRoom
-import com.gemwallet.android.data.asset.PriceRoom
 import com.gemwallet.android.data.database.GemDatabase
+import com.gemwallet.android.data.database.entities.DbAsset
+import com.gemwallet.android.data.database.entities.DbBalance
+import com.gemwallet.android.data.database.entities.DbPrice
 import com.gemwallet.android.data.database.entities.DbSession
 import com.gemwallet.android.data.wallet.AccountRoom
 import com.gemwallet.android.data.wallet.WalletRoom
@@ -20,7 +20,6 @@ import com.wallet.core.primitives.BalanceType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.WalletType
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
@@ -69,8 +68,8 @@ class TestGetAssetInfo {
         assertEquals(1.0, assetInfo?.price?.price?.price)
         assertEquals(10.0, assetInfo?.price?.price?.priceChangePercentage24h)
         assertEquals(Currency.AUD, assetInfo?.price?.currency)
-        assertEquals(BalanceType.available, assetInfo?.balances?.items?.firstOrNull()?.balance?.type)
-        assertEquals("10000", assetInfo?.balances?.items?.firstOrNull()?.balance?.value)
+        assertEquals("10000", assetInfo?.balances?.available()?.atomicValue?.toString())
+        assertEquals("7000", assetInfo?.balances?.rewards()?.atomicValue?.toString())
 
         runBlocking {
             db.sessionDao().update(
@@ -90,11 +89,10 @@ class TestGetAssetInfo {
         assertEquals(1.0, assetInfo1?.price?.price?.price)
         assertEquals(10.0, assetInfo1?.price?.price?.priceChangePercentage24h)
         assertEquals(Currency.AED, assetInfo1?.price?.currency)
-        assertEquals(BalanceType.available, assetInfo1?.balances?.items?.firstOrNull()?.balance?.type)
-        assertEquals("12000", assetInfo1?.balances?.items?.firstOrNull()?.balance?.value)
+        assertEquals("12000", assetInfo1?.balances?.available()?.atomicValue?.toString())
+        assertEquals("11000", assetInfo1?.balances?.rewards()?.atomicValue?.toString())
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun testGetAssetInfoFlow() = runTest {
         source.getAssetInfo(AssetId(Chain.Ethereum)).test {
@@ -104,8 +102,21 @@ class TestGetAssetInfo {
                     currency = Currency.AED.string
                 )
             )
-            assertEquals(Currency.AED, awaitItem()?.price?.currency)
-            assertEquals("some-address-2", awaitItem()?.owner?.address)
+            awaitItem()
+            val item = awaitItem()
+            assertEquals(Currency.AED, item?.price?.currency)
+            assertEquals("some-address-2", item?.owner?.address)
+            assertEquals("12000", item?.balances?.available()?.atomicValue?.toString())
+            db.balancesDao().insert(
+                DbBalance(
+                    assetId = AssetId(Chain.Ethereum).toIdentifier(),
+                    address =  "some-address-2",
+                    type = BalanceType.available,
+                    amount = "100000",
+                    updatedAt = 0L,
+                )
+            )
+            assertEquals("100000", awaitItem()?.balances?.available()?.atomicValue?.toString())
             cancelAndIgnoreRemainingEvents()
         }
     }
@@ -152,9 +163,9 @@ class TestGetAssetInfo {
             )
         )
         db.assetsDao().insert(
-            AssetRoom(
+            DbAsset(
                 address = "some-address-1",
-                id = "ethereum",
+                id = AssetId(Chain.Ethereum).toIdentifier(),
                 name = "Ethereum-1",
                 symbol = "Eth",
                 decimals = 18,
@@ -163,9 +174,9 @@ class TestGetAssetInfo {
             )
         )
         db.assetsDao().insert(
-            AssetRoom(
+            DbAsset(
                 address = "some-address-2",
-                id = "ethereum",
+                id = AssetId(Chain.Ethereum).toIdentifier(),
                 name = "Ethereum-2",
                 symbol = "Eth",
                 decimals = 18,
@@ -173,14 +184,14 @@ class TestGetAssetInfo {
             )
         )
         db.pricesDao().insert(
-            PriceRoom(
+            DbPrice(
                 assetId = AssetId(Chain.Ethereum).toIdentifier(),
                 value = 1.0,
                 dayChanged = 10.0
             )
         )
         db.balancesDao().insert(
-            BalanceRoom(
+            DbBalance(
                 assetId = AssetId(Chain.Ethereum).toIdentifier(),
                 address =  "some-address-1",
                 type = BalanceType.available,
@@ -189,11 +200,29 @@ class TestGetAssetInfo {
             )
         )
         db.balancesDao().insert(
-            BalanceRoom(
+            DbBalance(
+                assetId = AssetId(Chain.Ethereum).toIdentifier(),
+                address =  "some-address-1",
+                type = BalanceType.rewards,
+                amount = "7000",
+                updatedAt = 0L,
+            )
+        )
+        db.balancesDao().insert(
+            DbBalance(
                 assetId = AssetId(Chain.Ethereum).toIdentifier(),
                 address =  "some-address-2",
                 type = BalanceType.available,
                 amount = "12000",
+                updatedAt = 0L,
+            )
+        )
+        db.balancesDao().insert(
+            DbBalance(
+                assetId = AssetId(Chain.Ethereum).toIdentifier(),
+                address =  "some-address-2",
+                type = BalanceType.rewards,
+                amount = "11000",
                 updatedAt = 0L,
             )
         )

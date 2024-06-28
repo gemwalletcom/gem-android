@@ -2,11 +2,11 @@ package com.gemwallet.android.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.gemwallet.android.data.asset.AssetRoom
+import com.gemwallet.android.data.database.entities.DbAsset
 import com.gemwallet.android.data.asset.AssetsDao
-import com.gemwallet.android.data.asset.BalanceRoom
+import com.gemwallet.android.data.database.entities.DbBalance
 import com.gemwallet.android.data.asset.BalancesDao
-import com.gemwallet.android.data.asset.PriceRoom
+import com.gemwallet.android.data.database.entities.DbPrice
 import com.gemwallet.android.data.asset.PricesDao
 import com.gemwallet.android.data.bridge.ConnectionsDao
 import com.gemwallet.android.data.bridge.RoomConnection
@@ -31,9 +31,9 @@ import com.gemwallet.android.data.wallet.WalletsDao
     entities = [
         WalletRoom::class,
         AccountRoom::class,
-        AssetRoom::class,
-        BalanceRoom::class,
-        PriceRoom::class,
+        DbAsset::class,
+        DbBalance::class,
+        DbPrice::class,
         TokenRoom::class,
         TransactionRoom::class,
         TxSwapMetadataRoom::class,

@@ -18,6 +18,11 @@ data class Balances(
             ?.balance?.value?.toBigInteger() ?: BigInteger.ZERO
     )
 
+    fun rewards() = Crypto(
+        items.firstOrNull { it.balance.type == BalanceType.rewards }
+            ?.balance?.value?.toBigInteger() ?: BigInteger.ZERO
+    )
+
     companion object {
         fun create(
             assetId: AssetId,

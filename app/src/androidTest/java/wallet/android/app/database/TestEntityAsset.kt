@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.gemwallet.android.data.asset.AssetRoom
+import com.gemwallet.android.data.database.entities.DbAsset
 import com.gemwallet.android.data.asset.AssetsDao
 import com.gemwallet.android.data.database.GemDatabase
 import com.gemwallet.android.data.database.entities.DbSession
@@ -82,7 +82,7 @@ class TestEntityAsset {
             )
         )
         assetsDao.insert(
-            AssetRoom(
+            DbAsset(
                 address = "some-address-1",
                 id = "ethereum",
                 name = "Ethereum-1",
@@ -92,7 +92,7 @@ class TestEntityAsset {
             )
         )
         assetsDao.insert(
-            AssetRoom(
+            DbAsset(
                 address = "some-address-2",
                 id = "ethereum",
                 name = "Ethereum-2",
@@ -113,7 +113,7 @@ class TestEntityAsset {
         val asset = runBlocking {
             assetsDao.getAssetById(assetId.toIdentifier(), Chain.Ethereum)
                 .firstOrNull()
-        }
+        }?.firstOrNull()
         assertEquals(assetId.toIdentifier(), asset?.id)
         assertEquals("Ethereum-1", asset?.name)
         assertEquals(18, asset?.decimals)
@@ -200,7 +200,7 @@ class TestEntityAsset {
         val assetId = AssetId(Chain.Ethereum)
         val asset = runBlocking {
             tokenDao.assembleAssetInfo(Chain.Ethereum, assetId.toIdentifier())
-        }
+        }.firstOrNull()
         assertEquals(assetId.toIdentifier(), asset?.id)
         assertEquals("Ethereum-1", asset?.name)
         assertEquals(18, asset?.decimals)
