@@ -40,6 +40,8 @@ import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.priceColor
+import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.theme.padding8
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
@@ -72,7 +74,7 @@ fun AssetDetailsScene(
         )
         uiState is AssetInfoUIState.Idle && uiModel != null -> Success(
             uiState = uiModel ?: return,
-            syncing = (uiState as AssetInfoUIState.Idle).syncing,
+            syncState = (uiState as AssetInfoUIState.Idle).sync,
             onRefresh = viewModel::refresh,
             onTransfer = onTransfer,
             onBuy = onBuy,
@@ -91,7 +93,7 @@ fun AssetDetailsScene(
 @Composable
 private fun Success(
     uiState: AssetInfoUIModel,
-    syncing: Boolean,
+    syncState: AssetInfoUIState.SyncState,
     onRefresh: () -> Unit,
     onCancel: () -> Unit,
     onTransfer: (AssetId) -> Unit,
@@ -111,7 +113,9 @@ private fun Success(
         onClose = onCancel,
         contentPadding = PaddingValues(0.dp)
     ) {
-        val pullRefreshState = rememberPullRefreshState(syncing, { onRefresh() })
+        val pullRefreshState = rememberPullRefreshState(
+            syncState != AssetInfoUIState.SyncState.None, { onRefresh() },
+        )
 
         Box(
             modifier = Modifier.pullRefresh(pullRefreshState),
@@ -147,7 +151,11 @@ private fun Success(
                 balanceDetails(uiState, onStake)
                 transactionsList(uiState.transactions, onTransaction)
             }
-            PullRefreshIndicator(syncing, pullRefreshState, Modifier.align(Alignment.TopCenter))
+            PullRefreshIndicator(
+                modifier = Modifier.align(Alignment.TopCenter),
+                refreshing = syncState != AssetInfoUIState.SyncState.None,
+                state = pullRefreshState,
+            )
         }
     }
 }

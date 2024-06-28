@@ -29,6 +29,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
@@ -66,24 +67,30 @@ class AssetsRepository @Inject constructor(
         pricesJob.await()
     }
 
-    suspend fun syncAssetInfo(account: Account, assetId: AssetId, currency: Currency) = withContext(Dispatchers.IO) {
-        launch { updatePrices(currency, assetId) }
-        launch { updateBalances(account, assetId) }
-        val assetFull = gemApiClient.getAsset(
-            assetId = assetId.toIdentifier(),
-            currency = currency.string
-        ).getOrNull() ?: return@withContext
+    suspend fun syncAssetInfo(assetId: AssetId) = withContext(Dispatchers.IO) {
+        val assetInfo = assetsLocalSource.getAssetInfo(assetId).firstOrNull() ?: return@withContext
+        val currency = assetInfo.price?.currency ?: return@withContext
 
-        assetsLocalSource.setAssetDetails(
-            assetId = assetId,
-            buyable = assetFull.details?.isBuyable ?: false,
-            swapable = assetFull.details?.isSwapable ?: false,
-            stakeable = assetFull.details?.isStakeable ?: false,
-            links = assetFull.details?.links,
-            market = assetFull.market,
-            rank = assetFull.score.rank,
-            stakingApr = assetFull.details?.stakingApr,
-        )
+        val updatePriceJob = async { updatePrices(currency, assetId) }
+        val updateBalancesJob = async { updateBalances(assetInfo.owner, assetId) }
+        val getAssetFull = async {
+            val assetFull = gemApiClient.getAsset(assetId.toIdentifier(), currency.string)
+                .getOrNull() ?: return@async
+
+            assetsLocalSource.setAssetDetails(
+                assetId = assetId,
+                buyable = assetFull.details?.isBuyable ?: false,
+                swapable = assetFull.details?.isSwapable ?: false,
+                stakeable = assetFull.details?.isStakeable ?: false,
+                links = assetFull.details?.links,
+                market = assetFull.market,
+                rank = assetFull.score.rank,
+                stakingApr = assetFull.details?.stakingApr,
+            )
+        }
+        updatePriceJob.await()
+        updateBalancesJob.await()
+        getAssetFull.await()
     }
 
     suspend fun getNativeAssets(wallet: Wallet): Result<List<Asset>> = withContext(Dispatchers.IO) {

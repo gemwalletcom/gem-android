@@ -4,11 +4,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.data.transaction.TransactionsRepository
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isStaked
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.type
@@ -20,6 +18,7 @@ import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fiat
+import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
@@ -45,7 +44,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AssetInfoViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val transactionsRepository: TransactionsRepository,
     private val stakeRepository: StakeRepository,
@@ -60,39 +58,39 @@ class AssetInfoViewModel @Inject constructor(
     private val model: Flow<Model> = assetIdStr.flatMapConcat {
         val assetId = it.toAssetId() ?: return@flatMapConcat emptyFlow()
 
-        syncAssetInfo(assetId)
-        uiState.update { AssetInfoUIState.Idle() }
+        uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Wait) }
 
         combine(
             assetsRepository.getAssetInfo(assetId),
             transactionsRepository.getTransactions(assetId)
         ) { assetInfo, transactions ->
-            Model(
-                assetInfo = assetInfo,
-                transactions = transactions,
-            )
+            Model(assetInfo, transactions)
         }
     }
 
-    val uiModel = model.map {
-        it.toUIState()
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    private val syncFlow: Flow<Unit> = combine(
+        uiState,
+        model,
+    ) { uiState, model ->
+        if (uiState is AssetInfoUIState.Idle && uiState.sync == AssetInfoUIState.SyncState.Wait) {
+            syncAssetInfo(model.assetInfo.asset.id, model.assetInfo.owner)
+        }
+        Unit
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
+
+    val uiModel = model.map { it.toUIState() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun refresh() {
-        uiState.update { AssetInfoUIState.Idle(true) }
-        syncAssetInfo(assetId = assetIdStr.value.toAssetId() ?: return)
+        uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Wait) }
     }
 
-    private fun syncAssetInfo(assetId: AssetId) {
+    private fun syncAssetInfo(assetId: AssetId, owner: Account) {
+        uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Loading) }
         viewModelScope.launch {
-            val session = sessionRepository.getSession() ?: return@launch
-            val account = session.wallet.getAccount(assetId.chain) ?: return@launch
-
-            val syncAssetInfo = async {
-                assetsRepository.syncAssetInfo(account, assetId, session.currency)
-            }
+            val syncAssetInfo = async { assetsRepository.syncAssetInfo(assetId) }
             val syncStake = async {
-                stakeRepository.sync(assetId.chain, account.address, assetsRepository.getStakeApr(assetId) ?: 0.0)
+                stakeRepository.sync(assetId.chain, owner.address, assetsRepository.getStakeApr(assetId) ?: 0.0)
             }
             syncStake.await()
             syncAssetInfo.await()
