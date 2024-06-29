@@ -1,10 +1,17 @@
 package com.gemwallet.android.features.create_wallet.views
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -56,42 +64,68 @@ internal fun CheckPhrase(
             result.joinToString() == words.joinToString()
         }
     }
+    val configuration = LocalConfiguration.current
+    val isSmallScreen = configuration.screenHeightDp.dp < 680.dp
+
+    val onWordClick: (String) -> Boolean = { word ->
+        val index = result.size
+        if (words[index] == word) {
+            result.add(word)
+            render[result.size - 1] = word
+            true
+        } else {
+            false
+        }
+    }
+
     Scene(
         title = stringResource(id = R.string.transfer_confirm),
         onClose = onCancel,
-        padding = PaddingValues(padding16),
+        padding = PaddingValues(horizontal = padding16),
         mainAction = {
-            MainActionButton(
-                title = stringResource(id = R.string.common_continue),
-                enabled = isDone,
+            AnimatedVisibility(
+                visible = isDone || !isSmallScreen,
+                enter = fadeIn(),
+                exit = fadeOut(),
             ) {
-                onDone(result.joinToString(" "))
+                MainActionButton(
+                    title = stringResource(id = R.string.common_continue),
+                    enabled = isDone,
+                ) {
+                    onDone(result.joinToString(" "))
+                }
             }
         }
     ) {
-        Text(
-            text = stringResource(id = R.string.secret_phrase_confirm_quick_test_title),
-            textAlign = TextAlign.Center,
-            color = MaterialTheme.colorScheme.secondary,
-        )
-        Spacer16()
-        PhraseLayout(
-            words = render,
-        )
-        FlowRow(
-            modifier = Modifier.padding(16.dp),
-            maxItemsInEachRow = 4,
-            horizontalArrangement = Arrangement.Center,
+        Column(
+            modifier = Modifier.verticalScroll(rememberScrollState())
         ) {
-            (random).forEach { word ->
-                WordChip(word = word, isEnable = !result.contains(word)) {
-                    val index = result.size
-                    if (words[index] == word) {
-                        result.add(word)
-                        render[result.size - 1] = word
-                        true
+            Text(
+                text = stringResource(id = R.string.secret_phrase_confirm_quick_test_title),
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.secondary,
+            )
+            Spacer16()
+            PhraseLayout(
+                words = render,
+            )
+            AnimatedVisibility(visible = !isDone || !isSmallScreen) {
+                FlowRow(
+                    modifier = Modifier.padding(vertical = 16.dp).fillMaxWidth(),
+                    maxItemsInEachRow = 4,
+                    horizontalArrangement = Arrangement.Center,
+                ) {
+                    if (isSmallScreen) {
+                        val slice = result.size / 4
+                        if (slice < 3) {
+                            (random.slice(slice * 4..<slice * 4 + 4)).forEach { word ->
+                                WordChip(word, !result.contains(word), onWordClick)
+                            }
+                        }
                     } else {
-                        false
+                        (random).forEach { word ->
+                            WordChip(word, !result.contains(word), onWordClick)
+                        }
                     }
                 }
             }

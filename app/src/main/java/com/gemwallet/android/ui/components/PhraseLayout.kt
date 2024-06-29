@@ -27,8 +27,7 @@ fun PhraseLayout(
     words: List<String>,
 ) {
     Column(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         val halfSize = words.size / 2
