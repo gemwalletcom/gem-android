@@ -5,7 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.assets.model.PriceState
+import com.gemwallet.android.features.asset.chart.models.AssetChartSceneState
+import com.gemwallet.android.features.asset.chart.models.PricePoint
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
@@ -132,30 +133,3 @@ class AssetChartViewModel @Inject constructor(
     }
 }
 
-sealed interface AssetChartSceneState {
-    data object Loading : AssetChartSceneState
-
-    class Chart(
-        val loading: Boolean,
-        val assetId: AssetId,
-        val assetTitle: String,
-        val assetLinkTitle: String,
-        val assetLink: String,
-        val assetLinks: AssetLinks?,
-        val currency: Currency,
-        val marketCap: String,
-        val circulatingSupply: String,
-        val totalSupply: String,
-        val period: ChartPeriod,
-        val currentPoint: PricePoint?,
-        val chartPoints: List<PricePoint>,
-    ) : AssetChartSceneState
-}
-
-class PricePoint(
-    val y: Float,
-    val yLabel: String?,
-    val timestamp: Long,
-    val percentage: String,
-    val priceState: PriceState,
-)

@@ -30,9 +30,9 @@ import com.gemwallet.android.R
 import com.gemwallet.android.features.asset.chart.components.PeriodButton
 import com.gemwallet.android.features.asset.chart.components.rememberBottomAxis
 import com.gemwallet.android.features.asset.chart.components.rememberTopAxis
-import com.gemwallet.android.features.asset.chart.viewmodels.AssetChartSceneState
+import com.gemwallet.android.features.asset.chart.models.AssetChartSceneState
 import com.gemwallet.android.features.asset.chart.viewmodels.AssetChartViewModel
-import com.gemwallet.android.features.asset.chart.viewmodels.PricePoint
+import com.gemwallet.android.features.asset.chart.models.PricePoint
 import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.interactors.getDrawableUri
 import com.gemwallet.android.ui.components.CellEntity
