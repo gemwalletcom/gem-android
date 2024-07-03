@@ -1,7 +1,6 @@
 package com.gemwallet.android.features.asset_select.views
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.text2.input.clearText
+import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -17,7 +16,6 @@ import com.gemwallet.android.ui.components.FatalStateScene
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AssetSelectScreen(
     title: String = "",

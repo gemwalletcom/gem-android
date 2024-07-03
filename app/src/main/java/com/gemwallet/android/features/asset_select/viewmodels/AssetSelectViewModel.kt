@@ -1,9 +1,7 @@
 package com.gemwallet.android.features.asset_select.viewmodels
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.text2.input.TextFieldState
-import androidx.compose.foundation.text2.input.forEachTextValue
-import androidx.compose.foundation.text2.input.textAsFlow
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
@@ -28,6 +26,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -38,7 +37,6 @@ import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import javax.inject.Inject
 
-@OptIn(ExperimentalFoundationApi::class)
 @HiltViewModel
 class AssetSelectViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
@@ -53,7 +51,7 @@ class AssetSelectViewModel @Inject constructor(
     private var queryJob: Job? = null
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val list = query.textAsFlow().flatMapLatest { query ->
+    private val list = snapshotFlow { query.text }.flatMapLatest { query ->
         val session = sessionRepository.getSession() ?: throw IllegalArgumentException("Session doesn't found")
         assetsRepository.search(session.wallet, query.toString())
             .map { assets ->
@@ -115,7 +113,7 @@ class AssetSelectViewModel @Inject constructor(
     }
 
     fun onQuery() = viewModelScope.launch(Dispatchers.IO) {
-        query.forEachTextValue {
+        snapshotFlow { query.text }.collectLatest {
             if (queryJob?.isActive == true) {
                 queryJob?.cancel()
             }

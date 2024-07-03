@@ -1,18 +1,19 @@
 package com.gemwallet.android.features.asset.details.views
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -87,7 +88,7 @@ fun AssetDetailsScene(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 private fun Success(
     uiState: AssetInfoUIModel,
@@ -102,6 +103,7 @@ private fun Success(
     onChart: (AssetId) -> Unit,
     onStake: (AssetId) -> Unit,
 ) {
+    val pullToRefreshState = rememberPullToRefreshState()
     Scene(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -111,12 +113,19 @@ private fun Success(
         onClose = onCancel,
         contentPadding = PaddingValues(0.dp)
     ) {
-        val pullRefreshState = rememberPullRefreshState(
-            syncState != AssetInfoUIState.SyncState.None, { onRefresh() },
-        )
-
-        Box(
-            modifier = Modifier.pullRefresh(pullRefreshState),
+        PullToRefreshBox(
+            modifier = Modifier.fillMaxSize(),
+            isRefreshing = syncState != AssetInfoUIState.SyncState.None,
+            onRefresh = onRefresh,
+            state = pullToRefreshState,
+            indicator = {
+                Indicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    isRefreshing = syncState != AssetInfoUIState.SyncState.None,
+                    state = pullToRefreshState,
+                    containerColor = MaterialTheme.colorScheme.background
+                )
+            }
         ) {
             LazyColumn {
                 item {
@@ -149,11 +158,6 @@ private fun Success(
                 balanceDetails(uiState, onStake)
                 transactionsList(uiState.transactions, onTransaction)
             }
-            PullRefreshIndicator(
-                modifier = Modifier.align(Alignment.TopCenter),
-                refreshing = syncState != AssetInfoUIState.SyncState.None,
-                state = pullRefreshState,
-            )
         }
     }
 }

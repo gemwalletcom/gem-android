@@ -1,11 +1,11 @@
 package com.gemwallet.android.features.add_asset.viewmodels
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.text2.input.TextFieldState
-import androidx.compose.foundation.text2.input.forEachTextValue
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
@@ -23,6 +23,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -30,7 +31,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-@OptIn(ExperimentalFoundationApi::class)
 @HiltViewModel
 class AddAssetViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
@@ -48,7 +48,7 @@ class AddAssetViewModel @Inject constructor(
             state.update { it.copy(chains =  getAvailableChains()) }
         }
         viewModelScope.launch {
-            chainFilter.forEachTextValue { query ->
+            snapshotFlow { chainFilter.text }.collectLatest { query ->
                 state.update { it.copy(chains = getAvailableChains().filter(query.toString().lowercase())) }
             }
         }

@@ -1,9 +1,9 @@
 package com.gemwallet.android.features.swap.viewmodels
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.text2.input.TextFieldState
-import androidx.compose.foundation.text2.input.clearText
-import androidx.compose.foundation.text2.input.forEachTextValue
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
@@ -31,6 +31,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -41,7 +42,6 @@ import java.math.BigInteger
 import javax.inject.Inject
 import kotlin.math.max
 
-@OptIn(ExperimentalFoundationApi::class)
 @HiltViewModel
 class SwapViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
@@ -107,7 +107,7 @@ class SwapViewModel @Inject constructor(
     }
 
     suspend fun updateQuote() {
-        payValue.forEachTextValue { newValue ->
+        snapshotFlow { payValue.text }.collectLatest { newValue ->
             if (quoteJob?.isActive == true) {
                 quoteJob?.cancel()
             }
@@ -116,7 +116,7 @@ class SwapViewModel @Inject constructor(
                     replace(0, length, "0")
                 }
                 state.update { it.copy(quote = null, calculatingQuote = false) }
-                return@forEachTextValue
+                return@collectLatest
             }
             val equivalent = try {
                 Fiat(newValue.toString().numberParse().toDouble() * (state.value.payAsset?.price?.price?.price ?: throw Exception()))

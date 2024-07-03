@@ -1,8 +1,8 @@
 package com.gemwallet.android.features.settings.networks.viewmodels
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.text2.input.TextFieldState
-import androidx.compose.foundation.text2.input.forEachTextValue
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.clients.NodeStatusClientsProxy
@@ -18,6 +18,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -25,7 +26,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-@OptIn(ExperimentalFoundationApi::class)
 @HiltViewModel
 class NetworksViewModel @Inject constructor(
     private val chainInfoRepository: ChainInfoRepository,
@@ -43,7 +43,7 @@ class NetworksViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             state.update { it.copy(availableChains = chainInfoRepository.getAll()) }
-            chainFilter.forEachTextValue { query ->
+            snapshotFlow { chainFilter.text }.collectLatest { query ->
                 state.update { it.copy(availableChains = chainInfoRepository.getAll().filter(query.toString().lowercase())) }
             }
         }

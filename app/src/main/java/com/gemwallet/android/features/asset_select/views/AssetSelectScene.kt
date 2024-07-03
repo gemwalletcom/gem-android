@@ -1,8 +1,5 @@
 package com.gemwallet.android.features.asset_select.views
 
-import androidx.compose.animation.core.LinearOutSlowInEasing
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,8 +9,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.text2.input.TextFieldState
-import androidx.compose.foundation.text2.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -43,7 +40,6 @@ import com.wallet.core.primitives.Chain
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun AssetSelectScene(
     title: String,
@@ -79,7 +75,6 @@ internal fun AssetSelectScene(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.assets(
     items: List<AssetUIState>,
     onSelect: ((AssetId) -> Unit)?,
@@ -107,7 +102,6 @@ private fun LazyListScope.assets(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.notFound(
     loading: Boolean,
     items: List<AssetUIState>,
@@ -119,16 +113,11 @@ private fun LazyListScope.notFound(
     item {
         Box(
             modifier = Modifier
-                .animateItemPlacement(
-                    animationSpec = tween(
-                        durationMillis = 150,
-                        easing = LinearOutSlowInEasing,
-                    )
-                )
+                .animateItem()
                 .fillMaxWidth()
                 .padding(padding16)
         ) {
-            Column(modifier = Modifier.align(Alignment.Center),) {
+            Column(modifier = Modifier.align(Alignment.Center)) {
                 Text(text = stringResource(id = R.string.assets_no_assets_found))
                 TextButton(onClick = { onAddAsset?.invoke() }) {
                     Text(text = stringResource(id = R.string.assets_add_custom_token))
@@ -138,29 +127,17 @@ private fun LazyListScope.notFound(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.loading(loading: Boolean) {
     if (!loading) {
         return
     }
     item {
-        Box(
-            modifier = Modifier
-                .animateItemPlacement(
-                    animationSpec = tween(
-                        durationMillis = 150,
-                        easing = LinearOutSlowInEasing,
-                    )
-                )
-                .fillMaxWidth()
-                .padding(padding16)
-        ) {
+        Box(modifier = Modifier.animateItem().fillMaxWidth().padding(padding16)) {
             CircularProgressIndicator16(Modifier.align(Alignment.Center))
         }
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 @Preview
 fun PreviewAssetScreenUI() {
@@ -176,7 +153,11 @@ fun PreviewAssetScreenUI() {
                     value = "0",
                     isZeroValue = true,
                     fiat = "0",
-                    price = PriceUIState(value = "0,0", state = PriceState.Up, dayChanges = "0,1%")
+                    price = PriceUIState(
+                        value = "0,0",
+                        state = PriceState.Up,
+                        dayChanges = "0,1%"
+                    )
                 )
             ).toImmutableList(),
             loading = false,

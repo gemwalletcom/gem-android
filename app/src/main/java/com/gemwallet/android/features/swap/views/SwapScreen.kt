@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -18,17 +17,16 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text2.BasicTextField2
-import androidx.compose.foundation.text2.input.TextFieldLineLimits
-import androidx.compose.foundation.text2.input.TextFieldState
-import androidx.compose.foundation.text2.input.clearText
-import androidx.compose.foundation.text2.input.rememberTextFieldState
+import androidx.compose.foundation.text.input.TextFieldLineLimits
+import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -81,7 +79,6 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun SwapScreen(
     fromAssetId: AssetId,
@@ -152,7 +149,6 @@ fun SwapScreen(
 }
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun Form(
     details: SwapDetails.Quote,
@@ -237,7 +233,6 @@ fun Form(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SwapItem(
     item: SwapItemState,
@@ -280,7 +275,7 @@ fun SwapItem(
                 if (item.calculating) {
                     CircularProgressIndicator16()
                 } else {
-                    BasicTextField2(
+                    BasicTextField(
                         modifier = Modifier
                             .fillMaxWidth()
                             .focusRequester(focusRequester),
@@ -291,7 +286,7 @@ fun SwapItem(
                         lineLimits = TextFieldLineLimits.SingleLine,
                         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                         keyboardOptions = KeyboardOptions.Default.copy(
-                            autoCorrect = false,
+                            autoCorrectEnabled = false,
                             keyboardType = KeyboardType.Decimal
                         ),
                         decorator = { innerTextField ->
@@ -367,7 +362,6 @@ fun SwapItem(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun PreviewSwapItem() {
@@ -389,7 +383,6 @@ fun PreviewSwapItem() {
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun PreviewSwapScene() {
