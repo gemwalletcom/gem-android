@@ -207,6 +207,16 @@ fun com.wallet.core.primitives.Currency.format(
 }
 
 fun com.wallet.core.primitives.Currency.format(
+    value: Float,
+    decimalPlace: Int = 2,
+    showSign: CountingUnit.SignMode = CountingUnit.SignMode.NoPLus,
+    dynamicPlace: Boolean = false,
+    zeroFraction: Int = 0,
+): String {
+    return format(Fiat(value), decimalPlace, showSign, dynamicPlace, zeroFraction)
+}
+
+fun com.wallet.core.primitives.Currency.format(
     value: Fiat,
     decimalPlace: Int = 2,
     showSign: CountingUnit.SignMode = CountingUnit.SignMode.NoPLus,

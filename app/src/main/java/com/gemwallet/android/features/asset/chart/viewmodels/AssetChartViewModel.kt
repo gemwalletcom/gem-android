@@ -1,135 +1,75 @@
 package com.gemwallet.android.features.asset.chart.viewmodels
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.R
 import com.gemwallet.android.data.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.asset.chart.models.AssetChartSceneState
-import com.gemwallet.android.features.asset.chart.models.PricePoint
-import com.gemwallet.android.features.assets.model.PriceUIState
-import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.features.asset.chart.models.AssetMarketUIModel
+import com.gemwallet.android.features.asset.navigation.assetIdArg
 import com.gemwallet.android.model.Crypto
-import com.gemwallet.android.model.Fiat
-import com.gemwallet.android.services.GemApiClient
-import com.wallet.core.primitives.AssetId
+import com.gemwallet.android.model.format
+import com.gemwallet.android.ui.components.CellEntity
 import com.wallet.core.primitives.AssetLinks
-import com.wallet.core.primitives.ChartPeriod
-import com.wallet.core.primitives.ChartValue
 import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.math.BigInteger
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class AssetChartViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
-    private val gemApiClient: GemApiClient,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private val state = MutableStateFlow(State())
-    val uiState = state.map { it.toUIState() }.stateIn(viewModelScope, SharingStarted.Eagerly,
-        AssetChartSceneState.Loading
+
+    private val assetIdStr = savedStateHandle.getStateFlow<String?>(assetIdArg, null)
+    private val assetInfo = assetIdStr.flatMapLatest {
+        assetsRepository.getAssetInfo(assetId = it?.toAssetId() ?: return@flatMapLatest emptyFlow())
+    }
+
+    val marketUIModel = assetInfo.map { assetInfo ->
+        val asset = assetInfo.asset
+        val currency = assetInfo.price?.currency ?: Currency.USD
+        AssetMarketUIModel(
+            assetId = asset.id,
+            assetTitle = asset.name,
+            coinGecko = assetInfo.links?.coingecko,
+            assetLinks = assetInfo.links?.toModel() ?: emptyList(),
+            currency = assetInfo.price?.currency ?: Currency.USD,
+            marketCells = listOfNotNull(
+                CellEntity(
+                    label = R.string.asset_market_cap,
+                    data = currency.format(assetInfo.market?.marketCap ?: 0.0,0),
+                ),
+                CellEntity(
+                    label = R.string.asset_circulating_supply,
+                    data = Crypto(BigInteger.valueOf(assetInfo.market?.circulatingSupply?.toLong() ?: 0L))
+                        .format(0, asset.symbol, 0),
+                ),
+                CellEntity(
+                    label = R.string.asset_total_supply,
+                    data = Crypto(BigInteger.valueOf(assetInfo.market?.totalSupply?.toLong() ?: 0L))
+                        .format(0, asset.symbol, 0),
+                ),
+            )
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private fun AssetLinks.toModel() = listOfNotNull(
+        if (twitter.isNullOrEmpty()) null else AssetMarketUIModel.Link(
+            "twitter", twitter!!, R.string.social_x),
+        if (telegram.isNullOrEmpty()) null else AssetMarketUIModel.Link(
+            "telegram", telegram!!, R.string.social_telegram),
+        if (github.isNullOrEmpty()) null else AssetMarketUIModel.Link(
+            "github", github!!, R.string.social_github),
     )
-
-    fun request(assetId: AssetId, period: ChartPeriod) {
-        state.update { it.copy(loading = true) }
-        viewModelScope.launch(Dispatchers.IO) {
-            val session = sessionRepository.getSession() ?: return@launch
-            val assetInfo = assetsRepository.getById(session.wallet, assetId).getOrNull()?.firstOrNull()
-            state.update {
-                State(
-                    assetInfo = assetInfo,
-                    assetLinks = assetInfo?.links,
-                    currency = session.currency,
-                    period = period,
-                )
-            }
-
-            val prices = gemApiClient.getChart(
-                assetId.toIdentifier(),
-                session.currency.string,
-                period.string
-            ).getOrNull()?.prices?.sortedBy { it.timestamp }
-            state.update {
-                it.copy(
-                    loading = false,
-                    prices = prices ?: emptyList(),
-                )
-            }
-        }
-    }
-
-    fun reset() {
-        state.update { State() }
-    }
-
-    private data class State(
-        val loading: Boolean = true,
-        val assetInfo: AssetInfo? = null,
-        val currency: Currency? = null,
-        val period: ChartPeriod = ChartPeriod.Day,
-        val prices: List<ChartValue> = emptyList(),
-        val assetLinks: AssetLinks? = null,
-    ) {
-        fun toUIState(): AssetChartSceneState {
-            return when {
-                assetInfo == null || currency == null -> AssetChartSceneState.Loading
-                else -> {
-                    val asset = assetInfo.asset
-                    val periodStartPrice = prices.firstOrNull()?.value ?: 0.0f
-                    val currentPoint = if (assetInfo.price == null) null else {
-                        PricePoint(
-                            y = assetInfo.price.price.price.toFloat(),
-                            yLabel = Fiat(assetInfo.price.price.price).format(0, currency.string, 2, dynamicPlace = true),
-                            timestamp = System.currentTimeMillis(),
-                            percentage = PriceUIState.formatPercentage(assetInfo.price.price.priceChangePercentage24h),
-                            priceState = PriceUIState.getState(assetInfo.price.price.priceChangePercentage24h),
-                        )
-                    }
-                    AssetChartSceneState.Chart(
-                        loading = loading,
-                        assetId = asset.id,
-                        assetTitle = asset.name,
-                        assetLinkTitle = "CoinGecko",
-                        assetLink = assetLinks?.coingecko ?: "",
-                        assetLinks = assetLinks,
-                        currency = currency,
-                        marketCap = Fiat(assetInfo.market?.marketCap ?: 0.0).format(0, currency.string, 0),
-                        circulatingSupply = Crypto(
-                            BigInteger.valueOf(
-                                assetInfo.market?.circulatingSupply?.toLong() ?: 0L
-                            )
-                        ).format(0, asset.symbol, 0),
-                        totalSupply = Crypto(BigInteger.valueOf(assetInfo.market?.totalSupply?.toLong() ?: 0L)).format(
-                            0,
-                            asset.symbol,
-                            0
-                        ),
-                        period = period,
-                        currentPoint = currentPoint,
-                        chartPoints = prices.map {
-                            val percent = (it.value - periodStartPrice) / periodStartPrice * 100.0
-                            PricePoint(
-                                y = it.value,
-                                yLabel = Fiat(it.value).format(0, currency.string, 2, dynamicPlace = true),
-                                timestamp = it.timestamp * 1000L,
-                                percentage = PriceUIState.formatPercentage(percent, showZero = true),
-                                priceState = PriceUIState.getState(percent),
-                            )
-                        } + if (currentPoint != null) listOf(currentPoint) else emptyList()
-                    )
-                }
-            }
-
-        }
-    }
 }
 

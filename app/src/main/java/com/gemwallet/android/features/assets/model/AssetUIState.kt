@@ -49,14 +49,23 @@ data class PriceUIState(
             } else {
                 val df = DecimalFormat("#.##")
                 df.roundingMode = RoundingMode.DOWN
-                "${if (showSign) if (value > 0) "+" else "-" else ""}${df.format(value.absoluteValue)}%"
+                val formattedValue = df.format(value.absoluteValue)
+                val afterFormat = df.parse(formattedValue)?.toDouble() ?: 0.0
+                "${if (showSign) if (afterFormat > 0) "+" else if (afterFormat < 0) "-" else "" else ""}" +
+                        "${if (afterFormat == 0.0) if (showZero) "0.00" else "" else formattedValue}%"
             }
         }
 
-        fun getState(percentage: Double) = when {
-            percentage > 0 -> PriceState.Up
-            percentage < 0 -> PriceState.Down
-            else -> PriceState.None
+        fun getState(percentage: Double): PriceState {
+            val df = DecimalFormat("#.##")
+            df.roundingMode = RoundingMode.DOWN
+            val formattedValue = df.format(percentage.absoluteValue)
+            val afterFormat = df.parse(formattedValue)?.toDouble() ?: 0.0
+            return when {
+                afterFormat > 0 -> PriceState.Up
+                afterFormat < 0 -> PriceState.Down
+                else -> PriceState.None
+            }
         }
     }
 }
