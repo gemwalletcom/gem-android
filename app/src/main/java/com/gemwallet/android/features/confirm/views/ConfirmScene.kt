@@ -2,8 +2,8 @@ package com.gemwallet.android.features.confirm.views
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.gemwallet.android.features.confirm.model.ConfirmError
-import com.gemwallet.android.features.confirm.model.ConfirmSceneState
+import com.gemwallet.android.features.confirm.models.ConfirmError
+import com.gemwallet.android.features.confirm.models.ConfirmSceneState
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.MainActionButton
 import com.gemwallet.android.ui.components.Scene

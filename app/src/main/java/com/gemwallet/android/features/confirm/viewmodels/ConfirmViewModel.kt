@@ -15,8 +15,8 @@ import com.gemwallet.android.data.transaction.TransactionsRepository
 import com.gemwallet.android.di.GemJson
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAddressEllipsisText
-import com.gemwallet.android.features.confirm.model.ConfirmError
-import com.gemwallet.android.features.confirm.model.ConfirmSceneState
+import com.gemwallet.android.features.confirm.models.ConfirmError
+import com.gemwallet.android.features.confirm.models.ConfirmSceneState
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams

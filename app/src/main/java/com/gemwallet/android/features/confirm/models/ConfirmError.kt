@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.confirm.model
+package com.gemwallet.android.features.confirm.models
 
 import androidx.compose.runtime.Composable
 import com.gemwallet.android.R
