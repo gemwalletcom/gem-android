@@ -90,8 +90,10 @@ class SwapViewModel @Inject constructor(
         val from = assetsRepository.getById(session.wallet, fromId).getOrNull()?.firstOrNull()
         val to = assetsRepository.getById(session.wallet, toId).getOrNull()?.firstOrNull()
 
-        clearPayAmount()
-        receiveValue.clearText()
+        withContext(Dispatchers.Main) {
+            clearPayAmount()
+            receiveValue.clearText()
+        }
         state.update {
             State(loading = false, payAsset = from, receiveAsset = to, quote = null, select = it.select)
         }
