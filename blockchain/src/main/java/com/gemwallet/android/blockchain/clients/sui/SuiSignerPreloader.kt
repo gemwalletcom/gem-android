@@ -51,7 +51,8 @@ class SuiSignerPreloader(
                     sender = owner.address,
                     recipient = params.destination(),
                     value = params.amount,
-                    coinType = coinId,
+                    coinType = params.assetId.tokenId!!,
+                    gasCoinType = coinId
                 )
             }
             is ConfirmParams.DelegateParams -> encodeStake(
@@ -103,10 +104,10 @@ class SuiSignerPreloader(
         val gasPrice = getGasPrice.await()
         val input = SuiTransferInput(
             sender = sender,
+            recipient = recipient,
             amount = value.toLong().toULong(),
             coins = coins.map { it.toGemstone() },
             sendMax = sendMax,
-            recipient = recipient,
             gas = SuiGas(
                 budget = gasBudget(coinType).toLong().toULong(),
                 price = gasPrice.toULong(),
@@ -120,13 +121,14 @@ class SuiSignerPreloader(
         sender: String,
         recipient: String,
         coinType: String,
+        gasCoinType: String,
         value: BigInteger,
     ) = withContext(Dispatchers.IO) {
         val getCoins = async {
             rpcClient.coins(sender, coinType).getOrThrow().result.data
         }
         val getGasCoins = async {
-            rpcClient.coins(sender, coinId).getOrThrow().result.data
+            rpcClient.coins(sender, gasCoinType).getOrThrow().result.data
         }
         val getGasPrice = async { rpcClient.gasPrice(JSONRpcRequest.create(SuiMethod.GasPrice, emptyList())).getOrNull()?.result ?: "750" }
         val coins = getCoins.await()
@@ -135,11 +137,11 @@ class SuiSignerPreloader(
         val gas = gasCoins.firstOrNull() ?: throw IllegalStateException("no gas coin")
         val input = SuiTokenTransferInput(
             sender = sender,
+            recipient = recipient,
             amount = value.toLong().toULong(),
             tokens = coins.map { it.toGemstone() },
-            recipient = recipient,
             gas = SuiGas(
-                budget = gasBudget(coinType).toLong().toULong(),
+                budget = gasBudget(gasCoinType).toLong().toULong(),
                 price = gasPrice.toULong(),
             ),
             gasCoin = gas.toGemstone(),
