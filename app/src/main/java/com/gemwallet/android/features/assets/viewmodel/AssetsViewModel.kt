@@ -15,28 +15,29 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.WalletSummary
+import com.gemwallet.android.model.format
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.EVMChain
-import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -47,11 +48,8 @@ class AssetsViewModel @Inject constructor(
     private val syncTransactions: SyncTransactions,
     transactionsRepository: TransactionsRepository,
 ) : ViewModel() {
-
-    private val _state = MutableStateFlow(AssetsViewModelState())
-
-    val uiState = _state.map { it.toUIState() }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, AssetsUIState())
+    private val state = MutableStateFlow(true)
+    val screenState = state.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAllByWalletFlow()
 
@@ -88,6 +86,9 @@ class AssetsViewModel @Inject constructor(
 
     init {
         onRefresh()
+        viewModelScope.launch {
+            sessionRepository.session().collectLatest { updateAssetData(it ?: return@collectLatest) }
+        }
     }
 
     fun onRefresh() {
@@ -95,18 +96,18 @@ class AssetsViewModel @Inject constructor(
         updateAssetData(session)
     }
 
-    private fun updateAssetData(session: Session) {
-        _state.update {
-            it.copy(isLoading = true)
-        }
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                assetsRepository.syncTokens(session.wallet, session.currency)
-                _state.update { it.copy(isLoading = false) }
+    private fun updateAssetData(session: Session) { // TODO: Out to case
+        state.update { true }
+        viewModelScope.launch(Dispatchers.IO) {
+            val syncAssets = async {
+                assetsRepository.sync(session.wallet, session.currency)
             }
-            withContext(Dispatchers.IO) {
+            val syncTxs = async {
                 syncTransactions(session.wallet.index)
             }
+            syncAssets.await()
+            syncTxs.await()
+            state.update { false }
         }
     }
 
@@ -116,7 +117,7 @@ class AssetsViewModel @Inject constructor(
             .sortedByDescending {
                 it.balances.calcTotal().convert(it.asset.decimals, it.price?.price?.price ?: 0.0).atomicValue
             }.map {
-                val totalBalance = it.balances.calcTotal()
+                val balances = it.balances.calcTotal()
                 val currency = it.price?.currency ?: Currency.USD
                 AssetUIState(
                     id = it.asset.id,
@@ -124,13 +125,12 @@ class AssetsViewModel @Inject constructor(
                     icon = it.asset.getIconUrl(),
                     type = it.asset.type,
                     owner = it.owner.address,
-                    value =  totalBalance.format(it.asset.decimals, it.asset.symbol, 4),
-                    isZeroValue = totalBalance.atomicValue == BigInteger.ZERO,
+                    value =  it.asset.format(balances, 4),
+                    isZeroValue = balances.atomicValue == BigInteger.ZERO,
                     fiat = if (it.price == null || it.price.price.price == 0.0) {
                         ""
                     } else {
-                        totalBalance.convert(it.asset.decimals, it.price.price.price)
-                            .format(0, currency.string, 2)
+                        currency.format(balances.convert(it.asset.decimals, it.price.price.price), 2)
                     },
                     price = PriceUIState.create(it.price?.price, currency),
                     symbol = it.asset.symbol,
@@ -177,42 +177,3 @@ class AssetsViewModel @Inject constructor(
         )
     }
 }
-
-private data class AssetsViewModelState(
-    val isLoading: Boolean = false,
-    val walletInfo: WalletSummary? = null,
-    val currency: Currency = Currency.USD,
-    val assets: ImmutableList<AssetUIState> = emptyList<AssetUIState>().toImmutableList(),
-    val pendingTransactions: List<TransactionExtended> = emptyList(),
-    val swapEnabled: Boolean = true,
-    val error: String = "",
-) {
-    fun toUIState(): AssetsUIState {
-        return AssetsUIState(
-            isLoading = isLoading,
-            walletInfo = WalletInfoUIState(
-                name = walletInfo?.name ?: "",
-                icon = walletInfo?.icon ?: "",
-                totalValue = (walletInfo?.totalValue ?: Fiat(0.0)).format(0, currency.string, 2),
-                changedValue = (walletInfo?.changedValue ?: Fiat(0.0)).format(0, currency.string, 2),
-                changedPercentages = PriceUIState.formatPercentage(walletInfo?.changedPercentages ?: 0.0),
-                priceState = PriceUIState.getState(walletInfo?.changedPercentages ?: 0.0),
-                type = walletInfo?.type ?: WalletType.view,
-            ),
-            assets = assets,
-            swapEnabled = swapEnabled,
-            pendingTransactions = pendingTransactions.toImmutableList()
-        )
-    }
-
-
-}
-
-data class AssetsUIState(
-    val isLoading: Boolean = false,
-    val walletInfo: WalletInfoUIState = WalletInfoUIState(),
-    val assets: ImmutableList<AssetUIState> = emptyList<AssetUIState>().toImmutableList(),
-    val pendingTransactions: ImmutableList<TransactionExtended> = emptyList<TransactionExtended>().toImmutableList(),
-    val swapEnabled: Boolean = true,
-    val error: String = "",
-)

@@ -61,7 +61,7 @@ class AssetsRepository @Inject constructor(
         }
     }
 
-    suspend fun syncTokens(wallet: Wallet, currency: Currency) = withContext(Dispatchers.IO) {
+    suspend fun sync(wallet: Wallet, currency: Currency) = withContext(Dispatchers.IO) {
         val balancesJob = async(Dispatchers.IO) {
             updateBalances(wallet)
         }
@@ -187,7 +187,7 @@ class AssetsRepository @Inject constructor(
         }.awaitAll()
     }
 
-    suspend fun switchVisibility(
+    suspend fun switchVisibility( // TODO: Split - out sync calls
         owner: Account,
         assetId: AssetId,
         visibility: Boolean,
