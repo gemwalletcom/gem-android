@@ -4,7 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.gemwallet.android.features.assets.AssetsScreen
+import com.gemwallet.android.features.assets.views.AssetsScreen
 import com.gemwallet.android.ui.navigation.enterTabScreenTransition
 import com.gemwallet.android.ui.navigation.exitTabScreenTransition
 import com.wallet.core.primitives.AssetId

@@ -1,11 +1,33 @@
 package com.gemwallet.android.data.database.entities
 
 import androidx.room.ColumnInfo
+import androidx.room.DatabaseView
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BalanceType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
 
+@DatabaseView(
+    viewName = "assets_info",
+    value = """
+        SELECT
+            assets.*,
+            accounts.*,
+            session.currency AS priceCurrency,
+            wallets.type AS walletType,
+            wallets.name AS walletName,
+            prices.value AS priceValue,
+            prices.dayChanged AS priceDayChanges,
+            balances.amount AS amount,
+            balances.type as balanceType
+        FROM assets
+        JOIN accounts ON accounts.address = assets.owner_address AND assets.id LIKE accounts.chain || '%'
+        JOIN wallets ON wallets.id = accounts.wallet_id
+        JOIN session ON accounts.wallet_id = session.wallet_id AND session.id == 1
+        LEFT JOIN balances ON assets.owner_address = balances.address AND assets.id = balances.asset_id
+        LEFT JOIN prices ON assets.id = prices.assetId
+    """
+)
 data class DbAssetInfo(
     @ColumnInfo("owner_address", index = true) val address: String,
     val id: String,

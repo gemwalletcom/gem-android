@@ -97,12 +97,8 @@ class AssetsRepository @Inject constructor(
         assetsLocalSource.getNativeAssets(wallet.accounts)
     }
 
-    suspend fun getAllByWallet(wallet: Wallet): Result<List<AssetInfo>> = withContext(Dispatchers.IO) {
-        assetsLocalSource.getAllByAccounts(wallet.accounts)
-    }
-
-    suspend fun getAllByWalletFlow(wallet: Wallet): Flow<List<AssetInfo>> {
-        return assetsLocalSource.getAllByAccountsFlow(wallet.accounts)
+    fun getAllByWalletFlow(): Flow<List<AssetInfo>> {
+        return assetsLocalSource.getAllByAccountsFlow()
             .map { it.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) } }
     }
 

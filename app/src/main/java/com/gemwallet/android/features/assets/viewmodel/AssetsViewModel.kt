@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.assets
+package com.gemwallet.android.features.assets.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,8 +31,10 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -56,7 +58,7 @@ class AssetsViewModel @Inject constructor(
     private val state: Flow<AssetsViewModelState> = sessionRepository.session().flatMapLatest { session ->
         session ?: return@flatMapLatest emptyFlow()
         combine(
-            assetsRepository.getAllByWalletFlow(session.wallet),
+            assetsRepository.getAllByWalletFlow(),
             transactionsRepository.getTransactions(null, *session.wallet.accounts.toTypedArray())
                 .map { txs -> txs.filter { it.transaction.state == TransactionState.Pending } }
         ) { assets, txs ->
@@ -65,7 +67,7 @@ class AssetsViewModel @Inject constructor(
             }
             AssetsViewModelState(
                 walletInfo = calcWalletInfo(session.wallet, assets),
-                assets = handleAssets(session.currency, assets),
+                assets = handleAssets(assets),
                 pendingTransactions = txs,
                 currency = session.currency,
                 swapEnabled = swapEnabled,
@@ -76,14 +78,44 @@ class AssetsViewModel @Inject constructor(
     val uiState = _state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, AssetsUIState())
 
-    init {
-        viewModelScope.launch {
-            state.collect { viewModelState ->
-                _state.update { viewModelState }
-            }
+    private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAllByWalletFlow()
+
+    val assets: StateFlow<List<AssetUIState>> = assetsState.map { handleAssets(it) }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val swapEnabled = assetsState.map {assets ->
+        assets.any { asset ->
+            EVMChain.entries.map { it.string }
+                .contains(asset.owner.chain.string) || asset.owner.chain == Chain.Solana
         }
-        onRefresh()
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val walletInfo: StateFlow<WalletInfoUIState> = sessionRepository.session().combine(assetsState) {session, assets ->
+        if (session == null) {
+            return@combine null
+        }
+        val walletInfo = calcWalletInfo(session.wallet, assets)
+        WalletInfoUIState(
+            name = walletInfo.name,
+            icon = walletInfo.icon,
+            totalValue = walletInfo.totalValue.format(0, session.currency.string, 2),
+            changedValue = walletInfo.changedValue.format(0, session.currency.string, 2),
+            changedPercentages = PriceUIState.formatPercentage(walletInfo.changedPercentages),
+            priceState = PriceUIState.getState(walletInfo.changedPercentages),
+            type = walletInfo.type,
+        )
     }
+    .filterNotNull()
+    .stateIn(viewModelScope, SharingStarted.Eagerly, WalletInfoUIState())
+
+//    init {
+//        viewModelScope.launch {
+//            state.collect { viewModelState ->
+//                _state.update { viewModelState }
+//            }
+//        }
+//        onRefresh()
+//    }
 
     fun onRefresh() {
         val session = sessionRepository.getSession() ?: return
@@ -105,13 +137,14 @@ class AssetsViewModel @Inject constructor(
         }
     }
 
-    private fun handleAssets(currency: Currency, assets: List<AssetInfo>): ImmutableList<AssetUIState> {
+    private fun handleAssets(assets: List<AssetInfo>): ImmutableList<AssetUIState> {
         return assets
             .filter { asset -> asset.metadata?.isEnabled == true }
             .sortedByDescending {
                 it.balances.calcTotal().convert(it.asset.decimals, it.price?.price?.price ?: 0.0).atomicValue
             }.map {
                 val totalBalance = it.balances.calcTotal()
+                val currency = it.price?.currency ?: Currency.USD
                 AssetUIState(
                     id = it.asset.id,
                     name = it.asset.name,

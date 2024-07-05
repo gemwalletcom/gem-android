@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.assets
+package com.gemwallet.android.features.assets.views
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -61,6 +61,7 @@ import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.features.assets.model.WalletInfoUIState
+import com.gemwallet.android.features.assets.viewmodel.AssetsViewModel
 import com.gemwallet.android.features.transactions.components.transactionsList
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountListHead
@@ -91,12 +92,16 @@ fun AssetsScreen(
     viewModel: AssetsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val assets by viewModel.assets.collectAsStateWithLifecycle()
+    val walletInfo by viewModel.walletInfo.collectAsStateWithLifecycle()
+    val swapEnabled by viewModel.swapEnabled.collectAsStateWithLifecycle()
+
     UI(
         isLoading = uiState.isLoading,
-        walletInfo = uiState.walletInfo,
-        assets = uiState.assets,
+        walletInfo = walletInfo,
+        assets = assets,
         transactions = uiState.pendingTransactions,
-        swapEnabled = uiState.swapEnabled,
+        swapEnabled = swapEnabled,
         onRefresh = viewModel::onRefresh,
         onShowWallets = onShowWallets,
         onShowAssetManage = onShowAssetManage,
@@ -116,7 +121,7 @@ fun AssetsScreen(
 fun UI(
     isLoading: Boolean,
     walletInfo: WalletInfoUIState,
-    assets: ImmutableList<AssetUIState>,
+    assets: List<AssetUIState>,
     transactions: ImmutableList<TransactionExtended>,
     swapEnabled: Boolean,
     onRefresh: () -> Unit,
@@ -205,7 +210,7 @@ fun UI(
 fun AssetListPushToRefresh(
     isLoading: Boolean,
     walletInfo: WalletInfoUIState,
-    assets: ImmutableList<AssetUIState>,
+    assets: List<AssetUIState>,
     transactions: ImmutableList<TransactionExtended>,
     swapEnabled: Boolean,
     onRefresh: () -> Unit,
@@ -248,7 +253,7 @@ fun AssetListPushToRefresh(
 @Composable
 private fun AssetList(
     walletInfo: WalletInfoUIState,
-    assets: ImmutableList<AssetUIState>,
+    assets: List<AssetUIState>,
     transactions: ImmutableList<TransactionExtended>,
     swapEnabled: Boolean,
     onShowAssetManage: () -> Unit,

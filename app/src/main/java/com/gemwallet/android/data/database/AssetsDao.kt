@@ -41,24 +41,9 @@ interface AssetsDao {
     @Query("SELECT * FROM assets WHERE owner_address IN (:addresses) AND type = :type")
     fun getAssetsByType(addresses: List<String>, type: AssetType = AssetType.NATIVE): List<DbAsset>
 
-    @Query("""
-        SELECT
-            assets.*,
-            accounts.*,
-            session.currency AS priceCurrency,
-            wallets.type AS walletType,
-            wallets.name AS walletName,
-            prices.value AS priceValue,
-            prices.dayChanged AS priceDayChanges,
-            balances.amount AS amount,
-            balances.type as balanceType
-        FROM assets
-        JOIN accounts ON accounts.address = assets.owner_address
-        JOIN wallets ON wallets.id = accounts.wallet_id
-        JOIN session ON accounts.wallet_id = session.wallet_id
-        LEFT JOIN balances ON assets.owner_address = balances.address AND assets.id = balances.asset_id
-        LEFT JOIN prices ON assets.id = prices.assetId
-        WHERE accounts.chain = :chain AND assets.id = :assetId
-        """)
+    @Query("SELECT * FROM assets_info WHERE chain = :chain AND id = :assetId")
     fun getAssetById(assetId: String, chain: Chain): Flow<List<DbAssetInfo>>
+
+    @Query("SELECT * FROM assets_info")
+    fun getAssets(): Flow<List<DbAssetInfo>>
 }

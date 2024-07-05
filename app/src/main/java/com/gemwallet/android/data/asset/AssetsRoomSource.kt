@@ -68,9 +68,8 @@ class AssetsRoomSource @Inject constructor(
         Result.success(getAllByAccounts(accounts, "").firstOrNull() ?: emptyList())
     }
 
-    override suspend fun getAllByAccountsFlow(accounts: List<Account>): Flow<List<AssetInfo>> = withContext(Dispatchers.IO) {
-        getAllByAccounts(accounts, "")
-    }
+    override fun getAllByAccountsFlow(): Flow<List<AssetInfo>> =
+        assetsDao.getAssets().map { AssetInfoMapper().asDomain(it) }
 
     private fun getAllByAccounts(accounts: List<Account>, query: String): Flow<List<AssetInfo>> {
         val addresses = accounts.map { it.address }.toSet().toList()
