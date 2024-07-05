@@ -1,12 +1,14 @@
 package com.gemwallet.android.data.swap
 
 import com.gemwallet.android.blockchain.clients.SwapClient
+import com.gemwallet.android.ext.toEVM
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.SwapQuoteResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import uniffi.Gemstone.Config
 import wallet.core.jni.AnyAddress
 import wallet.core.jni.CoinType
 import wallet.core.jni.EthereumAbi
@@ -17,10 +19,8 @@ class SwapRepository(
     private val gemApiClient: GemApiClient,
     private val swapClients: List<SwapClient>,
 ) {
-    private val oneinch = "0x1111111254EEB25477B68fb85Ed929f73A960582"
-
     suspend fun getQuote(ownerAddress: String, from: AssetId, to: AssetId, amount: String, includeData: Boolean = false): SwapQuoteResult? {
-        return gemApiClient.getSwapQuote(
+        val quote = gemApiClient.getSwapQuote(
             GemApiClient.SwapRequest(
                 fromAsset = from.toIdentifier(),
                 toAsset = to.toIdentifier(),
@@ -28,17 +28,20 @@ class SwapRepository(
                 amount = amount,
                 includeData = includeData,
             )
-        ).getOrNull()
+        ).getOrNull() ?: return null
+        val spender = quote.quote.approval?.spender ?: throw Exception("Approval data is null")
+        swapClients.firstOrNull { it.isMaintain(from.chain) }?.checkSpender(spender)
+        return quote
     }
 
-    suspend fun getAllowance(assetId: AssetId, owner: String): Boolean = withContext(Dispatchers.IO) {
+    suspend fun getAllowance(assetId: AssetId, owner: String, spender: String): Boolean = withContext(Dispatchers.IO) {
         val client = swapClients.firstOrNull { assetId.chain == it.maintainChain() } ?: return@withContext true
-        client.getAllowance(assetId, owner, oneinch) != BigInteger.ZERO
+        client.getAllowance(assetId, owner, spender) != BigInteger.ZERO
     }
 
-    suspend fun encodeApprove(): ByteArray {
+    fun encodeApprove(spender: String): ByteArray {
         val function = EthereumAbiFunction("approve")
-        function.addParamAddress(AnyAddress(oneinch, CoinType.ETHEREUM).data(), false)
+        function.addParamAddress(AnyAddress(spender, CoinType.ETHEREUM).data(), false)
         function.addParamUInt256(BigInteger.valueOf(Long.MAX_VALUE).toByteArray(), false)
         return EthereumAbi.encode(function)
     }

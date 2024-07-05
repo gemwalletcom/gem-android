@@ -7,4 +7,6 @@ interface SwapClient : BlockchainClient {
 
     suspend fun getAllowance(assetId: AssetId, owner: String, spender: String): BigInteger
 
+    fun checkSpender(spender: String): Boolean
+
 }

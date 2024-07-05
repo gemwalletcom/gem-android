@@ -29,6 +29,7 @@ import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeStatus
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.Subscription
+import com.wallet.core.primitives.SwapApprovalData
 import com.wallet.core.primitives.SwapProvider
 import com.wallet.core.primitives.SwapQuote
 import com.wallet.core.primitives.SwapQuoteData
@@ -190,6 +191,14 @@ interface GemApiClient {
             } else {
                 null
             }
+            val approval = if (jObj["approval"].isJsonNull
+                || !jObj["approval"].isJsonObject
+                || jObj["approval"].asJsonObject["spender"].isJsonNull
+                || !jObj["approval"].asJsonObject["spender"].isJsonPrimitive) {
+                null
+            } else {
+                SwapApprovalData(spender = jObj["approval"].asJsonObject["spender"].asString)
+            }
             return SwapQuote(
                 chainType = ChainType.entries.firstOrNull { it.string == jObj.get("chainType").asString } ?: throw JsonSyntaxException("Unsupported chain"),
                 fromAmount = jObj["fromAmount"].asString,
@@ -199,6 +208,7 @@ interface GemApiClient {
                     name = jObj["provider"].asJsonObject.get("name").asString,
                 ),
                 data = data,
+                approval = approval,
             )
         }
     }
