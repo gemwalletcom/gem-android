@@ -51,7 +51,8 @@ class SuiSignerPreloader(
                     sender = owner.address,
                     recipient = params.destination(),
                     value = params.amount,
-                    coinType = coinId,
+                    coinType = params.assetId.tokenId!!,
+                    gasCoinType = coinId
                 )
             }
             is ConfirmParams.DelegateParams -> encodeStake(
@@ -120,13 +121,14 @@ class SuiSignerPreloader(
         sender: String,
         recipient: String,
         coinType: String,
+        gasCoinType: String,
         value: BigInteger,
     ) = withContext(Dispatchers.IO) {
         val getCoins = async {
             rpcClient.coins(sender, coinType).getOrThrow().result.data
         }
         val getGasCoins = async {
-            rpcClient.coins(sender, coinId).getOrThrow().result.data
+            rpcClient.coins(sender, gasCoinType).getOrThrow().result.data
         }
         val getGasPrice = async { rpcClient.gasPrice(JSONRpcRequest.create(SuiMethod.GasPrice, emptyList())).getOrNull()?.result ?: "750" }
         val coins = getCoins.await()
@@ -139,7 +141,7 @@ class SuiSignerPreloader(
             tokens = coins.map { it.toGemstone() },
             recipient = recipient,
             gas = SuiGas(
-                budget = gasBudget(coinType).toLong().toULong(),
+                budget = gasBudget(gasCoinType).toLong().toULong(),
                 price = gasPrice.toULong(),
             ),
             gasCoin = gas.toGemstone(),
