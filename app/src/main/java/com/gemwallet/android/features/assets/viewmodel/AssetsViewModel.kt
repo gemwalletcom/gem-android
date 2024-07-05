@@ -20,23 +20,18 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.TransactionExtended
-import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -49,31 +44,11 @@ import javax.inject.Inject
 class AssetsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
-    private val transactionsRepository: TransactionsRepository,
     private val syncTransactions: SyncTransactions,
+    transactionsRepository: TransactionsRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AssetsViewModelState())
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val state: Flow<AssetsViewModelState> = sessionRepository.session().flatMapLatest { session ->
-        session ?: return@flatMapLatest emptyFlow()
-        combine(
-            assetsRepository.getAllByWalletFlow(),
-            transactionsRepository.getTransactions(null, *session.wallet.accounts.toTypedArray())
-                .map { txs -> txs.filter { it.transaction.state == TransactionState.Pending } }
-        ) { assets, txs ->
-            val swapEnabled = session.wallet.accounts.any { acc ->
-                EVMChain.entries.map { it.string }.contains(acc.chain.string) || acc.chain == Chain.Solana
-            }
-            AssetsViewModelState(
-                walletInfo = calcWalletInfo(session.wallet, assets),
-                assets = handleAssets(assets),
-                pendingTransactions = txs,
-                currency = session.currency,
-                swapEnabled = swapEnabled,
-            )
-        }
-    }.flowOn(Dispatchers.IO)
 
     val uiState = _state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, AssetsUIState())
@@ -81,7 +56,7 @@ class AssetsViewModel @Inject constructor(
     private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAllByWalletFlow()
 
     val assets: StateFlow<List<AssetUIState>> = assetsState.map { handleAssets(it) }
-    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val swapEnabled = assetsState.map {assets ->
         assets.any { asset ->
@@ -89,6 +64,9 @@ class AssetsViewModel @Inject constructor(
                 .contains(asset.owner.chain.string) || asset.owner.chain == Chain.Solana
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val txsState = transactionsRepository.getPendingTransactions()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val walletInfo: StateFlow<WalletInfoUIState> = sessionRepository.session().combine(assetsState) {session, assets ->
         if (session == null) {
@@ -108,14 +86,9 @@ class AssetsViewModel @Inject constructor(
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, WalletInfoUIState())
 
-//    init {
-//        viewModelScope.launch {
-//            state.collect { viewModelState ->
-//                _state.update { viewModelState }
-//            }
-//        }
-//        onRefresh()
-//    }
+    init {
+        onRefresh()
+    }
 
     fun onRefresh() {
         val session = sessionRepository.getSession() ?: return

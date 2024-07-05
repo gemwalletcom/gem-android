@@ -7,13 +7,10 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
-import androidx.room.Update
 import com.gemwallet.android.data.database.entities.DbTransactionExtended
-import com.gemwallet.android.data.database.entities.SESSION_REQUEST
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.google.gson.Gson
-import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Price
 import com.wallet.core.primitives.Transaction
@@ -64,57 +61,23 @@ interface TransactionsDao {
     @Query("SELECT * FROM transactions WHERE state = :state")
     fun getByState(state: TransactionState): List<TransactionRoom>
 
-    @Query("SELECT * FROM transactions WHERE (owner IN (:owners) OR recipient in (:owners)) AND state = :state ORDER BY createdAt DESC")
-    fun getByState(owners: List<String>, state: TransactionState): Flow<List<TransactionRoom>>
-
     @Insert(entity = TransactionRoom::class, onConflict = OnConflictStrategy.REPLACE)
     fun insert(transactions: List<TransactionRoom>)
-
-    @Update(entity = TransactionRoom::class, onConflict = OnConflictStrategy.REPLACE)
-    fun update(transaction: List<TransactionRoom>)
 
     @Query("DELETE FROM transactions WHERE id=:id")
     fun delete(id: String)
 
-    @Query("""
-        SELECT DISTINCT tx.id, tx.hash,
-            tx.assetId,
-            tx.feeAssetId,
-            tx.owner,
-            tx.recipient,
-            tx.contract,
-            tx.state,
-            tx.type,
-            tx.blockNumber,
-            tx.sequence,
-            tx.fee,
-            tx.value,
-            tx.payload,
-            tx.metadata,
-            tx.direction,
-            tx.createdAt,
-            tx.updatedAt,
-            assets.decimals as assetDecimals,
-            assets.name as assetName,
-            assets.type as assetType,
-            assets.symbol as assetSymbol,
-            feeAsset.decimals as feeDecimals,
-            feeAsset.name as feeName,
-            feeAsset.type as feeType,
-            feeAsset.symbol as feeSymbol,
-            prices.value as assetPrice,
-            prices.dayChanged as assetPriceChanged,
-            feePrices.value as feePrice,
-            feePrices.dayChanged as feePriceChanged
-        FROM transactions as tx 
-            INNER JOIN assets ON tx.assetId = assets.id 
-            INNER JOIN assets as feeAsset ON tx.feeAssetId = feeAsset.id 
-            LEFT JOIN prices ON tx.assetId = prices.assetId
-            LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.assetId 
-            WHERE tx.id IN (:ids) OR (tx.owner IN ($SESSION_REQUEST) OR tx.recipient in ($SESSION_REQUEST))
-            GROUP BY tx.id ORDER BY tx.createdAt DESC
-    """)
+    @Query("SELECT * FROM extended_txs ORDER BY createdAt DESC")
+    fun getExtendedTransactions(): Flow<List<DbTransactionExtended>>
+
+    @Query("SELECT * FROM extended_txs WHERE id IN (:ids) ORDER BY createdAt DESC")
     fun getExtendedTransactions(ids: List<String>): Flow<List<DbTransactionExtended>>
+
+    @Query("SELECT * FROM extended_txs WHERE id = :id")
+    fun getExtendedTransaction(id: String): Flow<DbTransactionExtended?>
+
+    @Query("SELECT * FROM extended_txs WHERE state = :state ORDER BY createdAt DESC")
+    fun getTransactionsByState(state: TransactionState): Flow<List<DbTransactionExtended>>
 
     @Insert(entity = TxSwapMetadataRoom::class, onConflict = OnConflictStrategy.REPLACE)
     fun addSwapMetadata(metadata: List<TxSwapMetadataRoom>)
@@ -154,15 +117,19 @@ class TransactionsRoomSource(
         return true
     }
 
-    @Deprecated("Use the getExtendedTransactions()")
-    override suspend fun getExtendedTransactions(txIds: List<String>, vararg accounts: Account): Flow<List<TransactionExtended>> {
-        val transactions = transactionsDao.getExtendedTransactions(txIds)
-        return transactions.mapNotNull { it.mapNotNull { tx -> toExtendedTransaction(tx) } }
+    override fun getExtendedTransactions(): Flow<List<TransactionExtended>> {
+        return transactionsDao.getExtendedTransactions()
+            .mapNotNull { it.mapNotNull { tx -> toExtendedTransaction(tx) } }
     }
 
-    override suspend fun getExtendedTransactions(txIds: List<String>): Flow<List<TransactionExtended>> {
-        val transactions = transactionsDao.getExtendedTransactions(txIds)
-        return transactions.mapNotNull { it.mapNotNull { tx -> toExtendedTransaction(tx) } }
+    override fun getExtendedTransaction(txId: String): Flow<TransactionExtended?> {
+        return transactionsDao.getExtendedTransaction(txId)
+            .mapNotNull { toExtendedTransaction(it ?: return@mapNotNull null) }
+    }
+
+    override fun getTransactionsByState(state: TransactionState): Flow<List<TransactionExtended>> {
+        return transactionsDao.getTransactionsByState(state)
+            .mapNotNull { it.mapNotNull { tx -> toExtendedTransaction(tx) } }
     }
 
     override suspend fun getPending(): List<Transaction> {

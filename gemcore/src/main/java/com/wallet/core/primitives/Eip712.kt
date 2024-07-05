@@ -10,14 +10,16 @@ import androidx.compose.runtime.NoLiveLiterals
 import kotlinx.serialization.*
 
 @Serializable
-data class Device (
-	val id: String,
-	val platform: Platform,
-	val token: String,
-	val locale: String,
+data class EIP712Domain (
+	val name: String,
 	val version: String,
-	val currency: String,
-	val isPushEnabled: Boolean,
-	val subscriptionsVersion: Int
+	val chainId: UInt,
+	val verifyingContract: String
+)
+
+@Serializable
+data class EIP712Type (
+	val name: String,
+	val type: String
 )
 

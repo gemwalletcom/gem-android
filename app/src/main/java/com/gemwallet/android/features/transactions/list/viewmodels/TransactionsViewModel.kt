@@ -11,13 +11,10 @@ import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.TransactionExtended
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -26,17 +23,11 @@ import javax.inject.Inject
 @HiltViewModel
 class TransactionsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
-    private val transactionsRepository: TransactionsRepository,
+    transactionsRepository: TransactionsRepository,
     private val syncTransactions: SyncTransactions,
 ) : ViewModel() {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val txState = sessionRepository.session()
-        .mapNotNull { it }
-        .flatMapConcat {
-            transactionsRepository.getTransactions(null, *it.wallet.accounts.toTypedArray())
-        }
-        .map {
+    private val txState = transactionsRepository.getTransactions().map {
             State(
                 loading = false,
                 transactions = it,

@@ -7,4 +7,5 @@
 package com.wallet.core.primitives.explorers
 
 import androidx.compose.runtime.NoLiveLiterals
+import kotlinx.serialization.*
 

@@ -75,7 +75,6 @@ import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.WalletType
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
@@ -95,12 +94,13 @@ fun AssetsScreen(
     val assets by viewModel.assets.collectAsStateWithLifecycle()
     val walletInfo by viewModel.walletInfo.collectAsStateWithLifecycle()
     val swapEnabled by viewModel.swapEnabled.collectAsStateWithLifecycle()
+    val txsState by viewModel.txsState.collectAsStateWithLifecycle()
 
     UI(
         isLoading = uiState.isLoading,
         walletInfo = walletInfo,
         assets = assets,
-        transactions = uiState.pendingTransactions,
+        transactions = txsState,
         swapEnabled = swapEnabled,
         onRefresh = viewModel::onRefresh,
         onShowWallets = onShowWallets,
@@ -122,7 +122,7 @@ fun UI(
     isLoading: Boolean,
     walletInfo: WalletInfoUIState,
     assets: List<AssetUIState>,
-    transactions: ImmutableList<TransactionExtended>,
+    transactions: List<TransactionExtended>,
     swapEnabled: Boolean,
     onRefresh: () -> Unit,
     onShowWallets: () -> Unit,
@@ -211,7 +211,7 @@ fun AssetListPushToRefresh(
     isLoading: Boolean,
     walletInfo: WalletInfoUIState,
     assets: List<AssetUIState>,
-    transactions: ImmutableList<TransactionExtended>,
+    transactions: List<TransactionExtended>,
     swapEnabled: Boolean,
     onRefresh: () -> Unit,
     onShowAssetManage: () -> Unit,
@@ -254,7 +254,7 @@ fun AssetListPushToRefresh(
 private fun AssetList(
     walletInfo: WalletInfoUIState,
     assets: List<AssetUIState>,
-    transactions: ImmutableList<TransactionExtended>,
+    transactions: List<TransactionExtended>,
     swapEnabled: Boolean,
     onShowAssetManage: () -> Unit,
     onSendClick: () -> Unit,

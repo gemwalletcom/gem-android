@@ -7,8 +7,7 @@
 package com.wallet.core.primitives
 
 import androidx.compose.runtime.NoLiveLiterals
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 
 @Serializable
 enum class NodeStatus(val string: String) {

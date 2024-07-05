@@ -28,6 +28,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -53,7 +54,11 @@ class AssetsRepository @Inject constructor(
     private val onRefreshAssets = mutableListOf<() -> Unit>() // TODO: Thread safe; Replace to flow
 
     init {
-        transactionsRepository.subscribe(this::onTransactions)
+        scope.launch(Dispatchers.IO) {
+            transactionsRepository.getPendingTransactions().collectLatest {
+                onTransactions(it)
+            }
+        }
     }
 
     suspend fun syncTokens(wallet: Wallet, currency: Currency) = withContext(Dispatchers.IO) {
@@ -99,7 +104,9 @@ class AssetsRepository @Inject constructor(
 
     fun getAllByWalletFlow(): Flow<List<AssetInfo>> {
         return assetsLocalSource.getAllByAccountsFlow()
-            .map { it.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) } }
+            .map { assets ->
+                assets.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
+            }
     }
 
     suspend fun search(wallet: Wallet, query: String): Flow<List<AssetInfo>> {

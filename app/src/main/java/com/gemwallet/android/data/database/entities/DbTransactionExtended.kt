@@ -12,7 +12,9 @@ const val SESSION_REQUEST = """SELECT accounts.address FROM accounts, session
 @DatabaseView(
     viewName = "extended_txs",
     value = """
-        SELECT DISTINCT tx.id, tx.hash,
+        SELECT
+            DISTINCT tx.id,
+            tx.hash,
             tx.assetId,
             tx.feeAssetId,
             tx.owner,
@@ -47,7 +49,7 @@ const val SESSION_REQUEST = """SELECT accounts.address FROM accounts, session
             LEFT JOIN prices ON tx.assetId = prices.assetId
             LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.assetId 
             WHERE tx.owner IN ($SESSION_REQUEST) OR tx.recipient in ($SESSION_REQUEST)
-            GROUP BY tx.id ORDER BY tx.createdAt DESC
+            GROUP BY tx.id
     """
 )
 data class DbTransactionExtended(

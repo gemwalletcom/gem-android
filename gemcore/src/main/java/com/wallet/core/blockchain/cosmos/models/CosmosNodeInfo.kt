@@ -7,11 +7,12 @@
 package com.wallet.core.blockchain.cosmos.models
 
 import androidx.compose.runtime.NoLiveLiterals
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 
 @Serializable
 data class CosmosHeader (
-	val chain_id: String
+	val chain_id: String,
+	val height: String
 )
 
 @Serializable

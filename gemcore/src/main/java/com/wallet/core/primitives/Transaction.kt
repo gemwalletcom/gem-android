@@ -7,7 +7,7 @@
 package com.wallet.core.primitives
 
 import androidx.compose.runtime.NoLiveLiterals
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 
 @Serializable
 data class TransactionsFetchOption (
@@ -35,7 +35,7 @@ data class Transaction (
 	val direction: TransactionDirection,
 	val utxoInputs: List<TransactionInput>,
 	val utxoOutputs: List<TransactionInput>,
-	val metadata: String? = null,
+	val metadata: String?? = null,
 	val createdAt: Long
 )
 

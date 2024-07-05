@@ -7,7 +7,7 @@
 package com.wallet.core.blockchain.aptos.models
 
 import androidx.compose.runtime.NoLiveLiterals
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 
 @Serializable
 data class AptosResource<T> (

@@ -4,13 +4,16 @@
 
 @file:NoLiveLiterals
 
-package com.wallet.core.blockchain.bitcoin.models
+package com.wallet.core.primitives
 
 import androidx.compose.runtime.NoLiveLiterals
 import kotlinx.serialization.*
 
 @Serializable
-data class BitcoinAccount (
-	val balance: String
-)
+enum class EncodingType(val string: String) {
+	@SerialName("Hex")
+	Hex("Hex"),
+	@SerialName("Base58")
+	Base58("Base58"),
+}
 

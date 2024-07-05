@@ -487,7 +487,7 @@ class MIGRATION_26_27(private val context: Context) : Migration(26, 27) {
     }
 }
 
-object MIGRATION_27_28 : Migration(27, 28) {
+val MIGRATION_27_28 = object : Migration(27, 28) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("""
            CREATE VIEW `assets_info` AS SELECT
@@ -510,10 +510,10 @@ object MIGRATION_27_28 : Migration(27, 28) {
     }
 }
 
-object MIGRATION_28_29 : Migration(28, 29) {
+val MIGRATION_28_29 = object : Migration(28, 29) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("""
-           CREATE VIEW `extended_txs` AS SELECT
+        CREATE VIEW `extended_txs` AS SELECT
             DISTINCT tx.id,
             tx.hash,
             tx.assetId,
@@ -550,7 +550,7 @@ object MIGRATION_28_29 : Migration(28, 29) {
             LEFT JOIN prices ON tx.assetId = prices.assetId
             LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.assetId 
             WHERE tx.owner IN ($SESSION_REQUEST) OR tx.recipient in ($SESSION_REQUEST)
-            GROUP BY tx.id ORDER BY tx.createdAt DESC
+            GROUP BY tx.id
         """)
     }
 }
