@@ -43,7 +43,6 @@ class CheckAccounts @Inject constructor(
                 walletsRepository.updateWallet(newWallet)
                 if (newAccounts.isNotEmpty()) {
                     assetsRepository.invalidateDefault(
-                        newWallet.type,
                         newWallet,
                         sessionRepository.getSession()?.currency ?: Currency.USD
                     )

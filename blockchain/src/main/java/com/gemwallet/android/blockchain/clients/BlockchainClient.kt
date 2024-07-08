@@ -7,3 +7,5 @@ interface BlockchainClient {
 
     fun maintainChain(): Chain
 }
+
+fun <T: BlockchainClient> List<T>.getClient(chain: Chain) = firstOrNull { it.isMaintain(chain) }

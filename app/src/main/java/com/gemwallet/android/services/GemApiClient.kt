@@ -39,7 +39,6 @@ import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionInput
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HTTP
@@ -56,10 +55,7 @@ interface GemApiClient {
     suspend fun getConfig(): Result<ConfigResponse>
 
     @POST("/v1/prices")
-    suspend fun getTickers(@Body request: AssetPricesRequest): Response<PricesResponse>
-
-    @GET("/v1/ip_address")
-    suspend fun getIpAddress(): Response<GemIpAddressResponse>
+    suspend fun prices(@Body request: AssetPricesRequest): Result<PricesResponse>
 
     @GET("/v1/fiat/on_ramp/quotes/{asset_id}")
     suspend fun getQuote(

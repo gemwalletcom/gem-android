@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.gemwallet.android.data.database.entities.DbAsset
 import com.gemwallet.android.data.database.entities.DbAssetInfo
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
@@ -46,4 +47,7 @@ interface AssetsDao {
 
     @Query("SELECT * FROM assets_info")
     fun getAssets(): Flow<List<DbAssetInfo>>
+
+    @Query("SELECT * FROM assets_info WHERE id IN (:ids)")
+    fun getAssets(ids: List<String>): Flow<List<DbAssetInfo>>
 }

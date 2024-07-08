@@ -61,6 +61,7 @@ import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.WalletInfoUIState
 import com.gemwallet.android.features.assets.viewmodel.AssetsViewModel
 import com.gemwallet.android.features.transactions.components.transactionsList
+import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
 import com.gemwallet.android.ui.components.AssetListItem
@@ -91,18 +92,18 @@ fun AssetsScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { TopBar(walletInfo, onShowWallets, onShowAssetManage) }
+        topBar = { AssetsTopBar(walletInfo, onShowWallets, onShowAssetManage) }
     ) {
         val pullToRefreshState = rememberPullToRefreshState()
         PullToRefreshBox(
             modifier = Modifier.padding(top = it.calculateTopPadding()),
-            isRefreshing = screenState,
+            isRefreshing = screenState == SyncState.InSync,
             onRefresh = viewModel::onRefresh,
             state = pullToRefreshState,
             indicator = {
                 Indicator(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    isRefreshing = screenState,
+                    isRefreshing = screenState == SyncState.InSync,
                     state = pullToRefreshState,
                     containerColor = MaterialTheme.colorScheme.background
                 )
@@ -253,7 +254,7 @@ private fun AssetItemMenu(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun TopBar(
+private fun AssetsTopBar(
     walletInfo: WalletInfoUIState,
     onShowWallets: () -> Unit,
     onShowAssetManage: () -> Unit,

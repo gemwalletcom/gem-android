@@ -58,10 +58,6 @@ class SwapViewModel @Inject constructor(
     private var quoteJob: Job? = null
     private var allowanceJob: Job? = null
 
-    init {
-        assetsRepository.subscribe(this::onRefreshAssets)
-    }
-
     fun init(fromId: AssetId?, toId: AssetId?) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
             if (fromId == null || toId == null) {
@@ -81,7 +77,7 @@ class SwapViewModel @Inject constructor(
             return
         }
         assetsRepository.updatePrices(session.currency, fromId, toId)
-        assetsRepository.updateBalances(account, fromId, toId)
+        assetsRepository.updateBalances(fromId, toId)
         loadData(fromId, toId)
     }
 

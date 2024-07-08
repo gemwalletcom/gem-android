@@ -14,6 +14,7 @@ import com.gemwallet.android.interactors.sync.SyncTransactions
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.Session
+import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.model.WalletSummary
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.AssetId
@@ -28,15 +29,13 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigInteger
 import javax.inject.Inject
@@ -48,12 +47,14 @@ class AssetsViewModel @Inject constructor(
     private val syncTransactions: SyncTransactions,
     transactionsRepository: TransactionsRepository,
 ) : ViewModel() {
-    private val state = MutableStateFlow(true)
-    val screenState = state.stateIn(viewModelScope, SharingStarted.Eagerly, true)
+    val screenState = assetsRepository.syncState
+        .stateIn(viewModelScope, SharingStarted.Eagerly, SyncState.InSync)
 
-    private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAllByWalletFlow()
+    private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAssetsInfo()
 
-    val assets: StateFlow<List<AssetUIState>> = assetsState.map { handleAssets(it) }
+    val assets: StateFlow<List<AssetUIState>> = assetsState
+        .map { handleAssets(it) }
+        .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val swapEnabled = assetsState.map {assets ->
@@ -84,30 +85,21 @@ class AssetsViewModel @Inject constructor(
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, WalletInfoUIState())
 
-    init {
-        onRefresh()
-        viewModelScope.launch {
-            sessionRepository.session().collectLatest { updateAssetData(it ?: return@collectLatest) }
-        }
-    }
-
     fun onRefresh() {
         val session = sessionRepository.getSession() ?: return
         updateAssetData(session)
     }
 
     private fun updateAssetData(session: Session) { // TODO: Out to case
-        state.update { true }
         viewModelScope.launch(Dispatchers.IO) {
             val syncAssets = async {
-                assetsRepository.sync(session.wallet, session.currency)
+                assetsRepository.sync(session.currency)
             }
             val syncTxs = async {
                 syncTransactions(session.wallet.index)
             }
             syncAssets.await()
             syncTxs.await()
-            state.update { false }
         }
     }
 

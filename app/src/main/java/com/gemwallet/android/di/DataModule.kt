@@ -74,8 +74,6 @@ import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.asset.AssetsRoomSource
 import com.gemwallet.android.data.asset.BalancesRemoteSource
 import com.gemwallet.android.data.asset.BalancesRetrofitRemoteSource
-import com.gemwallet.android.data.asset.PricesRemoteSource
-import com.gemwallet.android.data.asset.PricesRetrofitSource
 import com.gemwallet.android.data.bridge.BridgesRepository
 import com.gemwallet.android.data.bridge.ConnectionsDao
 import com.gemwallet.android.data.bridge.ConnectionsLocalSource
@@ -117,9 +115,7 @@ import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.data.wallet.WalletsRoomSource
 import com.gemwallet.android.services.GemApiClient
 import com.gemwallet.android.services.GemApiStaticClient
-import com.gemwallet.android.services.GemIpAddressService
 import com.gemwallet.android.services.GemNameResolveService
-import com.gemwallet.android.services.IpAddressService
 import com.gemwallet.android.services.NameResolveService
 import com.gemwallet.android.services.SyncService
 import com.google.gson.Gson
@@ -247,19 +243,19 @@ object DataModule {
     @Singleton
     fun provideAssetsRepository(
         gemApiClient: GemApiClient,
+        sessionRepository: SessionRepository,
         tokensRepository: TokensRepository,
         transactionsRepository: TransactionsRepository,
         assetsLocalSource: AssetsLocalSource,
         balancesRemoteSource: BalancesRemoteSource,
-        pricesRemoteSource: PricesRemoteSource,
         configRepository: ConfigRepository,
     ): AssetsRepository = AssetsRepository(
-        gemApiClient = gemApiClient,
+        gemApi = gemApiClient,
+        sessionRepository = sessionRepository,
         tokensRepository = tokensRepository,
         transactionsRepository = transactionsRepository,
         assetsLocalSource = assetsLocalSource,
         balancesRemoteSource = balancesRemoteSource,
-        pricesRemoteSource = pricesRemoteSource,
         configRepository = configRepository,
     )
 
@@ -627,20 +623,6 @@ object DataModule {
     fun provideSessionLocalSource(
         @ApplicationContext context: Context,
     ): SessionLocalSource = SessionSharedPreferenceSource(context = context)
-
-    @Singleton
-    @Provides
-    fun providePricesRemoteSource(
-        rpcClient: GemApiClient,
-    ): PricesRemoteSource = PricesRetrofitSource(
-        rpcClient = rpcClient,
-    )
-
-    @Singleton
-    @Provides
-    fun provideIpAddressService(
-        client: GemApiClient,
-    ): IpAddressService = GemIpAddressService(client)
 
     @Singleton
     @Provides
