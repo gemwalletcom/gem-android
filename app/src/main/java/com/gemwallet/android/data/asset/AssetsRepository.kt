@@ -225,7 +225,7 @@ class AssetsRepository @Inject constructor(
         }.awaitAll()
     }
 
-    suspend fun switchVisibility( // TODO: Split - out sync calls
+    suspend fun switchVisibility(
         owner: Account,
         assetId: AssetId,
         visibility: Boolean,
