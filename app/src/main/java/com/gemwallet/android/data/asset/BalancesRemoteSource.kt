@@ -5,5 +5,5 @@ import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 
 interface BalancesRemoteSource {
-    suspend fun getBalances(account: Account, tokens: List<AssetId>): Result<List<Balances>>
+    suspend fun getBalances(account: Account, tokens: List<AssetId>): List<Balances>
 }

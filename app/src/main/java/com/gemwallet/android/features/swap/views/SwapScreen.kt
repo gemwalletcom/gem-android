@@ -91,7 +91,7 @@ fun SwapScreen(
 
     DisposableEffect(fromAssetId.toIdentifier(), toAssetId.toIdentifier()) {
 
-        viewModel.init(fromAssetId, toAssetId)
+        viewModel.init(null, null)
 
         onDispose {  }
     }

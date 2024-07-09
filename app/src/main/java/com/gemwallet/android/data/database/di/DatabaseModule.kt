@@ -14,6 +14,7 @@ import com.gemwallet.android.data.database.BalancesDao
 import com.gemwallet.android.data.database.GemDatabase
 import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.database.SessionDao
+import com.gemwallet.android.data.database.entities.SESSION_REQUEST
 import com.gemwallet.android.data.repositories.session.SessionSharedPreferenceSource
 import com.gemwallet.android.data.stake.StakeDao
 import com.gemwallet.android.data.tokens.TokensDao
@@ -63,6 +64,8 @@ object DatabaseModule {
         .addMigrations(MIGRATION_24_25)
         .addMigrations(MIGRATION_25_26)
         .addMigrations(MIGRATION_26_27(context))
+        .addMigrations(MIGRATION_27_28)
+        .addMigrations(MIGRATION_28_29)
         .build()
 
     @Singleton
@@ -481,5 +484,73 @@ class MIGRATION_26_27(private val context: Context) : Migration(26, 27) {
         }
         val result = db.insert("session", SQLiteDatabase.CONFLICT_REPLACE, values)
         Log.d("MIGRATION", "Result: $result")
+    }
+}
+
+val MIGRATION_27_28 = object : Migration(27, 28) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""
+           CREATE VIEW `assets_info` AS SELECT
+            assets.*,
+            accounts.*,
+            session.currency AS priceCurrency,
+            wallets.type AS walletType,
+            wallets.name AS walletName,
+            prices.value AS priceValue,
+            prices.dayChanged AS priceDayChanges,
+            balances.amount AS amount,
+            balances.type as balanceType
+        FROM assets
+        JOIN accounts ON accounts.address = assets.owner_address AND assets.id LIKE accounts.chain || '%'
+        JOIN wallets ON wallets.id = accounts.wallet_id
+        JOIN session ON accounts.wallet_id = session.wallet_id AND session.id == 1
+        LEFT JOIN balances ON assets.owner_address = balances.address AND assets.id = balances.asset_id
+        LEFT JOIN prices ON assets.id = prices.assetId 
+        """)
+    }
+}
+
+val MIGRATION_28_29 = object : Migration(28, 29) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""
+        CREATE VIEW `extended_txs` AS SELECT
+            DISTINCT tx.id,
+            tx.hash,
+            tx.assetId,
+            tx.feeAssetId,
+            tx.owner,
+            tx.recipient,
+            tx.contract,
+            tx.state,
+            tx.type,
+            tx.blockNumber,
+            tx.sequence,
+            tx.fee,
+            tx.value,
+            tx.payload,
+            tx.metadata,
+            tx.direction,
+            tx.createdAt,
+            tx.updatedAt,
+            assets.decimals as assetDecimals,
+            assets.name as assetName,
+            assets.type as assetType,
+            assets.symbol as assetSymbol,
+            feeAsset.decimals as feeDecimals,
+            feeAsset.name as feeName,
+            feeAsset.type as feeType,
+            feeAsset.symbol as feeSymbol,
+            prices.value as assetPrice,
+            prices.dayChanged as assetPriceChanged,
+            feePrices.value as feePrice,
+            feePrices.dayChanged as feePriceChanged
+        FROM transactions as tx 
+            INNER JOIN assets ON tx.assetId = assets.id 
+            INNER JOIN assets as feeAsset ON tx.feeAssetId = feeAsset.id 
+            LEFT JOIN prices ON tx.assetId = prices.assetId
+            LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.assetId 
+            WHERE tx.owner IN ($SESSION_REQUEST) OR tx.recipient in ($SESSION_REQUEST)
+            GROUP BY tx.id
+        """)
     }
 }

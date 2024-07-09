@@ -3,6 +3,7 @@ package com.gemwallet.android.data.asset
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.data.chains.ChainInfoLocalSource
 import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.tokens.TokensRepository
 import com.gemwallet.android.data.transaction.TransactionsRepository
 import com.gemwallet.android.ext.asset
@@ -12,10 +13,12 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Balances
+import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetPricesRequest
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
@@ -23,11 +26,14 @@ import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -40,31 +46,57 @@ import javax.inject.Singleton
 
 @Singleton
 class AssetsRepository @Inject constructor(
-    private val gemApiClient: GemApiClient,
+    private val gemApi: GemApiClient,
+    private val sessionRepository: SessionRepository,
     private val tokensRepository: TokensRepository,
     private val assetsLocalSource: AssetsLocalSource,
     private val balancesRemoteSource: BalancesRemoteSource,
-    private val pricesRemoteSource: PricesRemoteSource,
     transactionsRepository: TransactionsRepository,
     private val configRepository: ConfigRepository,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetAsset {
     private val visibleByDefault = listOf(Chain.Ethereum, Chain.Bitcoin, Chain.SmartChain, Chain.Solana)
-    private val onRefreshAssets = mutableListOf<() -> Unit>() // TODO: Thread safe; Replace to flow
+
+    private var syncJob: Deferred<Unit>? = null
+
+    private val _syncState = MutableStateFlow(SyncState.Idle)
+    val syncState: Flow<SyncState> = _syncState
 
     init {
-        transactionsRepository.subscribe(this::onTransactions)
+        scope.launch(Dispatchers.IO) {
+            transactionsRepository.getPendingTransactions().collectLatest {
+                onTransactions(it)
+            }
+        }
+        scope.launch(Dispatchers.IO) {
+            sessionRepository.session().collectLatest {
+                sync(it?.currency ?: return@collectLatest)
+            }
+        }
     }
 
-    suspend fun syncTokens(wallet: Wallet, currency: Currency) = withContext(Dispatchers.IO) {
-        val balancesJob = async(Dispatchers.IO) {
-            updateBalances(wallet)
+    suspend fun sync(currency: Currency) = withContext(Dispatchers.IO) {
+        val syncJob = syncJob
+        if (syncJob?.isActive == true) {
+            try {
+                syncJob.cancel()
+            } catch (err: Throwable) {}
+            finally {
+                _syncState.tryEmit(SyncState.Idle)
+            }
         }
-        val pricesJob = async(Dispatchers.IO) {
-            updatePrices(currency)
+        this@AssetsRepository.syncJob = async {
+            _syncState.tryEmit(SyncState.InSync)
+            val balancesJob = async(Dispatchers.IO) {
+                assetsLocalSource.getAssetsInfo().firstOrNull()?.updateBalances()?.awaitAll()
+            }
+            val pricesJob = async(Dispatchers.IO) {
+                updatePrices(currency)
+            }
+            balancesJob.await()
+            pricesJob.await()
+            _syncState.tryEmit(SyncState.Idle)
         }
-        balancesJob.await()
-        pricesJob.await()
     }
 
     suspend fun syncAssetInfo(assetId: AssetId) = withContext(Dispatchers.IO) {
@@ -72,9 +104,9 @@ class AssetsRepository @Inject constructor(
         val currency = assetInfo.price?.currency ?: return@withContext
 
         val updatePriceJob = async { updatePrices(currency, assetId) }
-        val updateBalancesJob = async { updateBalances(assetInfo.owner, assetId) }
+        val updateBalancesJob = async { updateBalances(assetId) }
         val getAssetFull = async {
-            val assetFull = gemApiClient.getAsset(assetId.toIdentifier(), currency.string)
+            val assetFull = gemApi.getAsset(assetId.toIdentifier(), currency.string)
                 .getOrNull() ?: return@async
 
             assetsLocalSource.setAssetDetails(
@@ -97,32 +129,17 @@ class AssetsRepository @Inject constructor(
         assetsLocalSource.getNativeAssets(wallet.accounts)
     }
 
-    suspend fun getAllByWallet(wallet: Wallet): Result<List<AssetInfo>> = withContext(Dispatchers.IO) {
-        assetsLocalSource.getAllByAccounts(wallet.accounts)
-    }
-
-    suspend fun getAllByWalletFlow(wallet: Wallet): Flow<List<AssetInfo>> {
-        return assetsLocalSource.getAllByAccountsFlow(wallet.accounts)
-            .map { it.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) } }
-    }
-
-    suspend fun search(wallet: Wallet, query: String): Flow<List<AssetInfo>> {
-        val assetsFlow = assetsLocalSource.search(wallet.accounts, query)
-        val tokensFlow = tokensRepository.search(wallet.accounts.map { it.chain }, query)
-        return combine(
-            assetsFlow,
-            tokensFlow,
-        ) { assets, tokens ->
-            val result = assets + tokens.mapNotNull { asset ->
-                AssetInfo(
-                    asset = asset,
-                    owner = wallet.getAccount(asset.id.chain) ?: return@mapNotNull null,
-                )
-            }.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
-            result.distinctBy {
-                it.asset.id.toIdentifier()
-            }
+    fun getAssetsInfo(): Flow<List<AssetInfo>> = assetsLocalSource.getAssetsInfo()
+        .map { assets ->
+            assets.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
         }
+
+    override suspend fun getAsset(assetId: AssetId): Asset? {
+        return assetsLocalSource.getById(assetId = assetId)
+    }
+
+    suspend fun getStakeApr(assetId: AssetId): Double? = withContext(Dispatchers.IO) {
+        assetsLocalSource.getStakingApr(assetId)
     }
 
     @Deprecated("Use the getAssetInfo() method")
@@ -148,7 +165,32 @@ class AssetsRepository @Inject constructor(
         }
     }
 
-    suspend fun invalidateDefault(walletType: WalletType, wallet: Wallet, currency: Currency) = scope.launch {
+    suspend fun search(wallet: Wallet, query: String): Flow<List<AssetInfo>> {
+        val assetsFlow = assetsLocalSource.search(wallet.accounts, query)
+        val tokensFlow = tokensRepository.search(wallet.accounts.map { it.chain }, query)
+        return combine(
+            assetsFlow,
+            tokensFlow,
+        ) { assets, tokens ->
+            val result = assets + tokens.mapNotNull { asset ->
+                AssetInfo(
+                    asset = asset,
+                    owner = wallet.getAccount(asset.id.chain) ?: return@mapNotNull null,
+                )
+            }.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
+            result.distinctBy {
+                it.asset.id.toIdentifier()
+            }
+        }
+    }
+
+    suspend fun getAssetByTokenId(chain: Chain, address: String): Asset? = withContext(Dispatchers.IO) {
+        val assetId = AssetId(chain, address)
+        tokensRepository.search(assetId)
+        tokensRepository.getByIds(listOf(assetId)).firstOrNull()
+    }
+
+    suspend fun invalidateDefault(wallet: Wallet, currency: Currency) = scope.launch {
         val assets = assetsLocalSource.getAllByAccounts(wallet.accounts)
             .getOrNull()?.associateBy( { it.asset.id.toIdentifier() }, { it } ) ?: emptyMap()
         wallet.accounts.filter { !ChainInfoLocalSource.exclude.contains(it.chain) }
@@ -157,7 +199,7 @@ class AssetsRepository @Inject constructor(
             }.map {
                 val isNew = assets[it.first.chain.string] == null
                 val isVisible = assets[it.second.id.toIdentifier()]?.metadata?.isEnabled
-                    ?: visibleByDefault.contains(it.first.chain) || walletType != WalletType.multicoin
+                    ?: visibleByDefault.contains(it.first.chain) || wallet.type != WalletType.multicoin
                 assetsLocalSource.add(it.first.address, it.second, isVisible)
                 async {
                     if (isNew) {
@@ -169,7 +211,7 @@ class AssetsRepository @Inject constructor(
                 }
             }.awaitAll()
         delay(2000) // Wait subscription
-        val availableAssets = gemApiClient.getAssets(configRepository.getDeviceId(), wallet.index).getOrNull() ?: return@launch
+        val availableAssets = gemApi.getAssets(configRepository.getDeviceId(), wallet.index).getOrNull() ?: return@launch
         availableAssets.mapNotNull {
             it.toAssetId()
         }.filter {
@@ -184,7 +226,7 @@ class AssetsRepository @Inject constructor(
         }.awaitAll()
     }
 
-    suspend fun switchVisibility(
+    suspend fun switchVisibility( // TODO: Split - out sync calls
         owner: Account,
         assetId: AssetId,
         visibility: Boolean,
@@ -196,9 +238,8 @@ class AssetsRepository @Inject constructor(
             assetsLocalSource.add(owner.address, asset)
         }
         assetsLocalSource.setVisibility(owner, assetId, visibility)
-        updateBalances(owner, assetId)
+        updateBalances(assetId)
         updatePrices(currency)
-        onRefreshAssets.forEach { it() }
     }
 
     suspend fun clearPrices() = withContext(Dispatchers.IO) {
@@ -206,27 +247,11 @@ class AssetsRepository @Inject constructor(
     }
 
     suspend fun updatePrices(currency: Currency, vararg assetIds: AssetId) = withContext(Dispatchers.IO) {
-        val ids = if (assetIds.isEmpty()) {
-            assetsLocalSource.getAllAssetsIds()
-        } else {
-            assetIds.toList()
-        }
-        val remoteResult = pricesRemoteSource.loadPrices(currency.string, ids)
-        val prices = remoteResult.getOrNull() ?: return@withContext
+        val ids = assetIds.toList().ifEmpty { assetsLocalSource.getAllAssetsIds() }
+            .map { it.toIdentifier() }
+        val prices = gemApi.prices(AssetPricesRequest(currency.string, ids))
+            .getOrNull()?.prices ?: emptyList()
         assetsLocalSource.setPrices(prices)
-        onRefreshAssets.forEach { it() }
-    }
-
-    fun subscribe(onRefreshAssets: () -> Unit) {
-        this.onRefreshAssets.add(onRefreshAssets)
-    }
-
-    override suspend fun getAsset(assetId: AssetId): Asset? {
-        return assetsLocalSource.getById(assetId = assetId)
-    }
-
-    suspend fun getStakeApr(assetId: AssetId): Double? = withContext(Dispatchers.IO) {
-        assetsLocalSource.getStakingApr(assetId)
     }
 
     private fun onTransactions(txs: List<TransactionExtended>) = scope.launch {
@@ -243,41 +268,32 @@ class AssetsRepository @Inject constructor(
                 updateBalances(Account(tx.transaction.assetId.chain, tx.transaction.from, ""), tokens)
             }
         }.awaitAll()
-        onRefreshAssets.forEach { it() }
     }
 
-    private suspend fun updateBalances(wallet: Wallet) {
-        scope.launch {
-            wallet.accounts.map {  account ->
-                async {
-                    val assets = assetsLocalSource
-                        .getAllByAccount(account)
-                        .getOrNull()
-                        ?.filter { it.metadata?.isEnabled == true }
-                        ?.map { it.asset.id } ?: return@async
-                    if (assets.isEmpty()) {
-                        return@async
-                    }
-                    updateBalances(account, assets)
-                    onRefreshAssets.forEach { it() }
-                }
-            }.awaitAll()
-        }
-    }
-
-    suspend fun updateBalances(account: Account, vararg tokens: AssetId) {
-        updateBalances(account, tokens.toList())
-    }
-
-    suspend fun getAssetByTokenId(chain: Chain, address: String): Asset? = withContext(Dispatchers.IO) {
-        val assetId = AssetId(chain, address)
-        tokensRepository.search(assetId)
-        tokensRepository.getByIds(listOf(assetId)).firstOrNull()
+    suspend fun updateBalances(vararg tokens: AssetId) {
+        assetsLocalSource.getAssetsInfo(tokens.toList()).firstOrNull()
+            ?.updateBalances()
+            ?.awaitAll()
     }
 
     private suspend fun updateBalances(account: Account, tokens: List<AssetId>): List<Balances> {
-        val balances = balancesRemoteSource.getBalances(account, tokens).getOrNull() ?: return emptyList()
+        val balances = balancesRemoteSource.getBalances(account, tokens)
         assetsLocalSource.setBalances(account, balances)
         return balances
+    }
+
+    private suspend fun List<AssetInfo>.updateBalances(): List<Deferred<List<Balances>>> = withContext(Dispatchers.IO) {
+        groupBy { it.owner.chain }
+            .mapKeys { it.value.firstOrNull()?.owner }
+            .mapValues { entry -> entry.value.filter { it.metadata?.isEnabled == true }.map { it.asset.id } }
+            .mapNotNull { entry ->
+                val account = entry.key ?: return@mapNotNull null
+                if (entry.value.isEmpty()) {
+                    return@mapNotNull null
+                }
+                async {
+                    updateBalances(account, entry.value)
+                }
+            }
     }
 }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 27,
-    "identityHash": "bb9ee1f2972f2d962464f0ecaba06bcc",
+    "identityHash": "8a9973db42f44f59dc033c8b1031a4fd",
     "entities": [
       {
         "tableName": "wallets",
@@ -843,10 +843,15 @@
         "foreignKeys": []
       }
     ],
-    "views": [],
+    "views": [
+      {
+        "viewName": "DbAssetInfo",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT\n            assets.*,\n            accounts.*,\n            session.currency AS priceCurrency,\n            wallets.type AS walletType,\n            wallets.name AS walletName,\n            prices.value AS priceValue,\n            prices.dayChanged AS priceDayChanges,\n            balances.amount AS amount,\n            balances.type as balanceType\n        FROM assets\n        JOIN accounts ON accounts.address = assets.owner_address AND assets.id LIKE accounts.chain || '%'\n        JOIN wallets ON wallets.id = accounts.wallet_id\n        JOIN session ON accounts.wallet_id = session.wallet_id AND session.id == 1\n        LEFT JOIN balances ON assets.owner_address = balances.address AND assets.id = balances.asset_id\n        LEFT JOIN prices ON assets.id = prices.assetId"
+      }
+    ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'bb9ee1f2972f2d962464f0ecaba06bcc')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8a9973db42f44f59dc033c8b1031a4fd')"
     ]
   }
 }

@@ -7,8 +7,7 @@
 package com.wallet.core.primitives
 
 import androidx.compose.runtime.NoLiveLiterals
-import kotlinx.serialization.SerialName
-import kotlinx.serialization.Serializable
+import kotlinx.serialization.*
 
 @Serializable
 data class SwapQuoteRequest (
@@ -33,13 +32,19 @@ data class SwapQuoteData (
 )
 
 @Serializable
+data class SwapApprovalData (
+	val spender: String
+)
+
+@Serializable
 data class SwapQuote (
 	val chainType: ChainType,
 	val fromAmount: String,
 	val toAmount: String,
 	val feePercent: Float,
 	val provider: SwapProvider,
-	val data: SwapQuoteData? = null
+	val data: SwapQuoteData? = null,
+	val approval: SwapApprovalData? = null
 )
 
 @Serializable

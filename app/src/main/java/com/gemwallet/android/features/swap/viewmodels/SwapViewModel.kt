@@ -58,10 +58,6 @@ class SwapViewModel @Inject constructor(
     private var quoteJob: Job? = null
     private var allowanceJob: Job? = null
 
-    init {
-        assetsRepository.subscribe(this::onRefreshAssets)
-    }
-
     fun init(fromId: AssetId?, toId: AssetId?) = viewModelScope.launch {
         withContext(Dispatchers.IO) {
             if (fromId == null || toId == null) {
@@ -81,7 +77,7 @@ class SwapViewModel @Inject constructor(
             return
         }
         assetsRepository.updatePrices(session.currency, fromId, toId)
-        assetsRepository.updateBalances(account, fromId, toId)
+        assetsRepository.updateBalances(fromId, toId)
         loadData(fromId, toId)
     }
 
@@ -91,13 +87,11 @@ class SwapViewModel @Inject constructor(
         val to = assetsRepository.getById(session.wallet, toId).getOrNull()?.firstOrNull()
 
         withContext(Dispatchers.Main) {
-            clearPayAmount()
             receiveValue.clearText()
         }
         state.update {
             State(loading = false, payAsset = from, receiveAsset = to, quote = null, select = it.select)
         }
-        updateAllowance(from?.owner?.address ?: return@withContext, fromId)
     }
 
     private fun onRefreshAssets() {
@@ -114,9 +108,7 @@ class SwapViewModel @Inject constructor(
                 quoteJob?.cancel()
             }
             if (newValue.isEmpty() || newValue.toString() == "0") {
-                receiveValue.edit {
-                    replace(0, length, "0")
-                }
+                receiveValue.edit { replace(0, length, "0") }
                 state.update { it.copy(quote = null, calculatingQuote = false) }
                 return@collectLatest
             }
@@ -130,11 +122,23 @@ class SwapViewModel @Inject constructor(
             quoteJob = viewModelScope.launch(Dispatchers.IO) {
                 delay(500L)
                 val receiveAsset = state.value.receiveAsset ?: return@launch
-                val quote = getQuote()
-                receiveValue.edit {
-                    replace(0, length, Crypto(quote?.toAmount ?: "0").format(receiveAsset.asset.decimals, "", 8))
+                val quote = try {
+                    Result.success(getQuote())
+                } catch (err: Throwable) {
+                    Result.failure(err)
                 }
-                state.update { it.copy(quote = quote, calculatingQuote = false, error = SwapError.None) }
+                withContext(Dispatchers.Main) {
+                    receiveValue.edit {
+                        replace(
+                            0,
+                            length,
+                            Crypto(
+                                quote.getOrNull()?.toAmount ?: "0"
+                            ).format(receiveAsset.asset.decimals, "", 8)
+                        )
+                    }
+                }
+                state.update { it.copy(quote = quote.getOrNull(), calculatingQuote = false, error = SwapError.None) }
             }
         }
     }
@@ -158,6 +162,7 @@ class SwapViewModel @Inject constructor(
             amount = Crypto(amount, payAsset.asset.decimals).atomicValue.toString(),
             includeData = includeData,
         )
+        allowanceJob = updateAllowance(payAsset.owner.address, payAsset.asset.id, quote?.quote?.approval?.spender ?: "")
         return quote?.quote
     }
 
@@ -174,9 +179,6 @@ class SwapViewModel @Inject constructor(
         val payAsset = state.value.receiveAsset
         state.update {
             it.copy(payAsset = payAsset, receiveAsset = receiveAsset, quote = null, error = SwapError.None)
-        }
-        if (payAsset != null) {
-            allowanceJob = updateAllowance(payAsset.owner.address, payAsset.asset.id)
         }
     }
 
@@ -207,8 +209,8 @@ class SwapViewModel @Inject constructor(
         }
     }
 
-    private fun updateAllowance(ownerAddress: String, payAssetId: AssetId) = viewModelScope.launch {
-        val allowance = swapRepository.getAllowance(assetId = payAssetId, owner = ownerAddress)
+    private fun updateAllowance(ownerAddress: String, payAssetId: AssetId, spender: String) = viewModelScope.launch {
+        val allowance = swapRepository.getAllowance(assetId = payAssetId, owner = ownerAddress, spender = spender)
         state.update { it.copy(allowance = allowance) }
     }
 
@@ -247,7 +249,7 @@ class SwapViewModel @Inject constructor(
                 )
             )
         } else {
-            val meta = swapRepository.encodeApprove() // TODO: Move to special operator
+            val meta = swapRepository.encodeApprove(quote?.approval?.spender ?: "") // TODO: Move to special operator
             onConfirm(
                 ConfirmParams.TokenApprovalParams(
                     assetId = payAsset.asset.id,

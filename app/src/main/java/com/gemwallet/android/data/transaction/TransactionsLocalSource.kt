@@ -1,8 +1,8 @@
 package com.gemwallet.android.data.transaction
 
-import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Transaction
 import com.wallet.core.primitives.TransactionExtended
+import com.wallet.core.primitives.TransactionState
 import kotlinx.coroutines.flow.Flow
 
 interface TransactionsLocalSource {
@@ -13,9 +13,11 @@ interface TransactionsLocalSource {
 
     suspend fun updateTransaction(txs: List<Transaction>): Boolean
 
-    suspend fun getExtendedTransactions(txIds: List<String> = emptyList(), vararg accounts: Account): Flow<List<TransactionExtended>>
+    fun getExtendedTransactions(): Flow<List<TransactionExtended>>
 
-    suspend fun getExtendedTransactions(txIds: List<String> = emptyList()): Flow<List<TransactionExtended>>
+    fun getExtendedTransaction(txId: String): Flow<TransactionExtended?>
+
+    fun getTransactionsByState(state: TransactionState): Flow<List<TransactionExtended>>
 
     suspend fun getPending(): List<Transaction>
 

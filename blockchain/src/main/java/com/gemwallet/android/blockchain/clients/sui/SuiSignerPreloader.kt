@@ -104,10 +104,10 @@ class SuiSignerPreloader(
         val gasPrice = getGasPrice.await()
         val input = SuiTransferInput(
             sender = sender,
+            recipient = recipient,
             amount = value.toLong().toULong(),
             coins = coins.map { it.toGemstone() },
             sendMax = sendMax,
-            recipient = recipient,
             gas = SuiGas(
                 budget = gasBudget(coinType).toLong().toULong(),
                 price = gasPrice.toULong(),
@@ -137,9 +137,9 @@ class SuiSignerPreloader(
         val gas = gasCoins.firstOrNull() ?: throw IllegalStateException("no gas coin")
         val input = SuiTokenTransferInput(
             sender = sender,
+            recipient = recipient,
             amount = value.toLong().toULong(),
             tokens = coins.map { it.toGemstone() },
-            recipient = recipient,
             gas = SuiGas(
                 budget = gasBudget(gasCoinType).toLong().toULong(),
                 price = gasPrice.toULong(),

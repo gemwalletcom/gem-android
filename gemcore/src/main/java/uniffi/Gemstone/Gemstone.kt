@@ -17,6 +17,7 @@ package uniffi.Gemstone
 // compile the Rust component. The easiest way to ensure this is to bundle the Kotlin
 // helpers directly inline like we're doing here.
 
+import com.sun.jna.Callback
 import com.sun.jna.Library
 import com.sun.jna.Native
 import com.sun.jna.Pointer
@@ -763,6 +764,12 @@ internal interface UniffiLib : Library {
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
+    fun uniffi_gemstone_fn_method_config_get_evm_chain_config(
+        `ptr`: Pointer,
+        `chain`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
     fun uniffi_gemstone_fn_method_config_get_nodes(
         `ptr`: Pointer,
         uniffi_out_err: UniffiRustCallStatus,
@@ -1348,6 +1355,8 @@ internal interface UniffiLib : Library {
 
     fun uniffi_gemstone_checksum_method_config_get_docs_url(): Short
 
+    fun uniffi_gemstone_checksum_method_config_get_evm_chain_config(): Short
+
     fun uniffi_gemstone_checksum_method_config_get_nodes(): Short
 
     fun uniffi_gemstone_checksum_method_config_get_nodes_for_chain(): Short
@@ -1506,6 +1515,9 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_method_config_get_docs_url() != 48896.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_method_config_get_evm_chain_config() != 62983.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_method_config_get_nodes() != 3747.toShort()) {
@@ -1966,6 +1978,8 @@ public interface ConfigInterface {
 
     fun `getDocsUrl`(`item`: DocsUrl): kotlin.String
 
+    fun `getEvmChainConfig`(`chain`: kotlin.String): EvmChainConfig
+
     fun `getNodes`(): Map<kotlin.String, List<Node>>
 
     fun `getNodesForChain`(`chain`: kotlin.String): List<Node>
@@ -2119,6 +2133,20 @@ open class Config : Disposable, AutoCloseable, ConfigInterface {
                     UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_docs_url(
                         it,
                         FfiConverterTypeDocsUrl.lower(`item`),
+                        _status,
+                    )
+                }
+            },
+        )
+    }
+
+    override fun `getEvmChainConfig`(`chain`: kotlin.String): EvmChainConfig {
+        return FfiConverterTypeEVMChainConfig.lift(
+            callWithPointer {
+                uniffiRustCall { _status ->
+                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_evm_chain_config(
+                        it,
+                        FfiConverterString.lower(`chain`),
                         _status,
                     )
                 }
@@ -3040,6 +3068,40 @@ public object FfiConverterTypeERC2612Permit : FfiConverterRustBuffer<Erc2612Perm
         FfiConverterString.write(value.`value`, buf)
         FfiConverterULong.write(value.`deadline`, buf)
         FfiConverterByteArray.write(value.`signature`, buf)
+    }
+}
+
+data class EvmChainConfig(
+    var `minPriorityFee`: kotlin.ULong,
+    var `isOpstack`: kotlin.Boolean,
+    var `oneinch`: List<kotlin.String>,
+) {
+    companion object
+}
+
+public object FfiConverterTypeEVMChainConfig : FfiConverterRustBuffer<EvmChainConfig> {
+    override fun read(buf: ByteBuffer): EvmChainConfig {
+        return EvmChainConfig(
+            FfiConverterULong.read(buf),
+            FfiConverterBoolean.read(buf),
+            FfiConverterSequenceString.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: EvmChainConfig) =
+        (
+            FfiConverterULong.allocationSize(value.`minPriorityFee`) +
+                FfiConverterBoolean.allocationSize(value.`isOpstack`) +
+                FfiConverterSequenceString.allocationSize(value.`oneinch`)
+        )
+
+    override fun write(
+        value: EvmChainConfig,
+        buf: ByteBuffer,
+    ) {
+        FfiConverterULong.write(value.`minPriorityFee`, buf)
+        FfiConverterBoolean.write(value.`isOpstack`, buf)
+        FfiConverterSequenceString.write(value.`oneinch`, buf)
     }
 }
 

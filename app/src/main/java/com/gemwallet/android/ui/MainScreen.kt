@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gemwallet.android.R
 import com.gemwallet.android.features.asset.navigation.navigateToAssetScreen
-import com.gemwallet.android.features.assets.AssetsScreen
+import com.gemwallet.android.features.assets.views.AssetsScreen
 import com.gemwallet.android.features.assets.navigation.assetsRoute
 import com.gemwallet.android.features.assets.navigation.navigateToAssetsScreen
 import com.gemwallet.android.features.bridge.navigation.navigateToBridgesScreen

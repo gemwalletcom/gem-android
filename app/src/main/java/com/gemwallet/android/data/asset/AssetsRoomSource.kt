@@ -60,17 +60,16 @@ class AssetsRoomSource @Inject constructor(
         return assetsDao.getAll().map { it.id }.toSet().mapNotNull { it.toAssetId() }.toList()
     }
 
-    override suspend fun getAllByAccount(account: Account): Result<List<AssetInfo>> {
-        return getAllByAccounts(listOf(account))
-    }
-
     override suspend fun getAllByAccounts(accounts: List<Account>): Result<List<AssetInfo>> = withContext(Dispatchers.IO) {
         Result.success(getAllByAccounts(accounts, "").firstOrNull() ?: emptyList())
     }
 
-    override suspend fun getAllByAccountsFlow(accounts: List<Account>): Flow<List<AssetInfo>> = withContext(Dispatchers.IO) {
-        getAllByAccounts(accounts, "")
-    }
+    override fun getAssetsInfo(): Flow<List<AssetInfo>> = assetsDao.getAssets()
+        .map { AssetInfoMapper().asDomain(it) }
+
+    override fun getAssetsInfo(ids: List<AssetId>): Flow<List<AssetInfo>> = assetsDao
+        .getAssets(ids.map { it.toIdentifier() })
+        .map { AssetInfoMapper().asDomain(it) }
 
     private fun getAllByAccounts(accounts: List<Account>, query: String): Flow<List<AssetInfo>> {
         val addresses = accounts.map { it.address }.toSet().toList()

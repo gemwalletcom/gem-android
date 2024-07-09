@@ -29,6 +29,7 @@ import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeStatus
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.Subscription
+import com.wallet.core.primitives.SwapApprovalData
 import com.wallet.core.primitives.SwapProvider
 import com.wallet.core.primitives.SwapQuote
 import com.wallet.core.primitives.SwapQuoteData
@@ -38,7 +39,6 @@ import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionInput
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HTTP
@@ -55,10 +55,7 @@ interface GemApiClient {
     suspend fun getConfig(): Result<ConfigResponse>
 
     @POST("/v1/prices")
-    suspend fun getTickers(@Body request: AssetPricesRequest): Response<PricesResponse>
-
-    @GET("/v1/ip_address")
-    suspend fun getIpAddress(): Response<GemIpAddressResponse>
+    suspend fun prices(@Body request: AssetPricesRequest): Result<PricesResponse>
 
     @GET("/v1/fiat/on_ramp/quotes/{asset_id}")
     suspend fun getQuote(
@@ -190,6 +187,14 @@ interface GemApiClient {
             } else {
                 null
             }
+            val approval = if (jObj["approval"].isJsonNull
+                || !jObj["approval"].isJsonObject
+                || jObj["approval"].asJsonObject["spender"].isJsonNull
+                || !jObj["approval"].asJsonObject["spender"].isJsonPrimitive) {
+                null
+            } else {
+                SwapApprovalData(spender = jObj["approval"].asJsonObject["spender"].asString)
+            }
             return SwapQuote(
                 chainType = ChainType.entries.firstOrNull { it.string == jObj.get("chainType").asString } ?: throw JsonSyntaxException("Unsupported chain"),
                 fromAmount = jObj["fromAmount"].asString,
@@ -199,6 +204,7 @@ interface GemApiClient {
                     name = jObj["provider"].asJsonObject.get("name").asString,
                 ),
                 data = data,
+                approval = approval,
             )
         }
     }

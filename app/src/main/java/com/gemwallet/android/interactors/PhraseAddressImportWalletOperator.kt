@@ -42,7 +42,7 @@ class PhraseAddressImportWalletOperator(
         }
         val wallet = result.getOrNull() ?: return Result.failure(Exception("Unknown error"))
         syncSubscription.invoke()
-        assetsRepository.invalidateDefault(wallet.type, wallet, sessionRepository.getSession()?.currency ?: Currency.USD)
+        assetsRepository.invalidateDefault(wallet, sessionRepository.getSession()?.currency ?: Currency.USD)
         sessionRepository.setWallet(wallet)
         return Result.success(wallet)
     }
