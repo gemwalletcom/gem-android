@@ -16,7 +16,9 @@ interface AssetsLocalSource {
 
     suspend fun getAllAssetsIds(): List<AssetId>
 
-    suspend fun getAllByAccounts(accounts: List<Account>): Result<List<AssetInfo>>
+    suspend fun getAssetsInfo(accounts: List<Account>): List<AssetInfo>
+
+    suspend fun search(query: String): Flow<List<AssetInfo>>
 
     fun getAssetsInfo(): Flow<List<AssetInfo>>
 
@@ -27,10 +29,6 @@ interface AssetsLocalSource {
     suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?>
 
     suspend fun getById(accounts: List<Account>, ids: List<AssetId>): Result<List<AssetInfo>>
-
-    suspend fun getAssets(account: Account): Result<List<Asset>>
-
-    suspend fun add(address: String, asset: Asset)
 
     suspend fun add(address: String, asset: Asset, visible: Boolean)
 
@@ -58,6 +56,4 @@ interface AssetsLocalSource {
     suspend fun getById(assetId: AssetId): Asset?
 
     suspend fun getStakingApr(assetId: AssetId): Double?
-
-    suspend fun search(accounts: List<Account>, query: String): Flow<List<AssetInfo>>
 }

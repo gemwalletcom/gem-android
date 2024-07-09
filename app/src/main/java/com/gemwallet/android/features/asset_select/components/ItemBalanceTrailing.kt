@@ -5,7 +5,7 @@ import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.ui.components.getBalanceInfo
 
 @Composable
-internal fun itemBalanceTrailing(
+internal fun ItemBalanceTrailing(
     asset: AssetUIState
 ) {
     getBalanceInfo(asset.isZeroValue, asset.value, asset.fiat)()

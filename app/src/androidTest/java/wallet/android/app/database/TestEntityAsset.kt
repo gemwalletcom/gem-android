@@ -111,7 +111,7 @@ class TestEntityAsset {
         assertEquals("test-wallet-1", db.sessionDao().getSession()?.walletId)
         val assetId = AssetId(Chain.Ethereum)
         val asset = runBlocking {
-            assetsDao.getAssetById(assetId.toIdentifier(), Chain.Ethereum)
+            assetsDao.getAssetInfo(assetId.toIdentifier(), Chain.Ethereum)
                 .firstOrNull()
         }?.firstOrNull()
         assertEquals(assetId.toIdentifier(), asset?.id)

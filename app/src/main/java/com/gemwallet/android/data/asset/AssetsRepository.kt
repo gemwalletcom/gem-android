@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.asset
 
+import android.util.Log
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.data.chains.ChainInfoLocalSource
 import com.gemwallet.android.data.config.ConfigRepository
@@ -80,7 +81,9 @@ class AssetsRepository @Inject constructor(
         if (syncJob?.isActive == true) {
             try {
                 syncJob.cancel()
-            } catch (err: Throwable) {}
+            } catch (err: Throwable) {
+                Log.d("ASSETS_REPOSITORY", "Error on cancel job", err)
+            }
             finally {
                 _syncState.tryEmit(SyncState.Idle)
             }
@@ -166,7 +169,7 @@ class AssetsRepository @Inject constructor(
     }
 
     suspend fun search(wallet: Wallet, query: String): Flow<List<AssetInfo>> {
-        val assetsFlow = assetsLocalSource.search(wallet.accounts, query)
+        val assetsFlow = assetsLocalSource.search(query)
         val tokensFlow = tokensRepository.search(wallet.accounts.map { it.chain }, query)
         return combine(
             assetsFlow,
@@ -178,9 +181,7 @@ class AssetsRepository @Inject constructor(
                     owner = wallet.getAccount(asset.id.chain) ?: return@mapNotNull null,
                 )
             }.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
-            result.distinctBy {
-                it.asset.id.toIdentifier()
-            }
+            result.distinctBy { it.asset.id.toIdentifier() }
         }
     }
 
@@ -191,8 +192,8 @@ class AssetsRepository @Inject constructor(
     }
 
     suspend fun invalidateDefault(wallet: Wallet, currency: Currency) = scope.launch {
-        val assets = assetsLocalSource.getAllByAccounts(wallet.accounts)
-            .getOrNull()?.associateBy( { it.asset.id.toIdentifier() }, { it } ) ?: emptyMap()
+        val assets = assetsLocalSource.getAssetsInfo(wallet.accounts)
+            .associateBy( { it.asset.id.toIdentifier() }, { it } )
         wallet.accounts.filter { !ChainInfoLocalSource.exclude.contains(it.chain) }
             .map { account ->
                 Pair(account, account.chain.asset())

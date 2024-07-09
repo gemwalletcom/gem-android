@@ -10,9 +10,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gemwallet.android.R
+import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.AssetType
+import com.wallet.core.primitives.AssetSubtype
 
 @Composable
 fun SelectReceiveScreen(
@@ -24,7 +25,7 @@ fun SelectReceiveScreen(
     AssetSelectScreen(
         title = stringResource(id = R.string.wallet_receive),
         titleBadge = ::getAssetBadge,
-        predicate = { it.asset.type == AssetType.NATIVE },
+        predicate = { it.type() == AssetSubtype.NATIVE },
         itemTrailing = {
             IconButton(onClick = {
                 viewModel.onChangeVisibility(it.id, true)

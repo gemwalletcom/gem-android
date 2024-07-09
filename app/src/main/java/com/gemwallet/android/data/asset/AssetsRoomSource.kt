@@ -25,7 +25,6 @@ import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.Currency
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
@@ -42,56 +41,38 @@ class AssetsRoomSource @Inject constructor(
 
     private val gson = Gson()
 
-    override suspend fun getNativeAssets(accounts: List<Account>): Result<List<Asset>> {
-        val assets = assetsDao.getAssetsByType(accounts.map { it.address })
-            .mapNotNull {
-                Asset(
-                    id = it.id.toAssetId() ?: return@mapNotNull null,
-                    name = it.name,
-                    symbol = it.symbol,
-                    decimals = it.decimals,
-                    type = it.type,
-                )
-            }
+    override suspend fun getNativeAssets(accounts: List<Account>): Result<List<Asset>> { // For check accounts
+        val assets = assetsDao.getAssetsByType(accounts.map { it.address }).mapNotNull {
+            Asset(
+                id = it.id.toAssetId() ?: return@mapNotNull null,
+                name = it.name,
+                symbol = it.symbol,
+                decimals = it.decimals,
+                type = it.type,
+            )
+        }
         return Result.success(assets)
     }
 
-    override suspend fun getAllAssetsIds(): List<AssetId> {
+    override suspend fun getAllAssetsIds(): List<AssetId> { // For update price
         return assetsDao.getAll().map { it.id }.toSet().mapNotNull { it.toAssetId() }.toList()
     }
 
-    override suspend fun getAllByAccounts(accounts: List<Account>): Result<List<AssetInfo>> = withContext(Dispatchers.IO) {
-        Result.success(getAllByAccounts(accounts, "").firstOrNull() ?: emptyList())
-    }
-
-    override fun getAssetsInfo(): Flow<List<AssetInfo>> = assetsDao.getAssets()
+    override fun getAssetsInfo(): Flow<List<AssetInfo>> = assetsDao.getAssetsInfo()
         .map { AssetInfoMapper().asDomain(it) }
 
     override fun getAssetsInfo(ids: List<AssetId>): Flow<List<AssetInfo>> = assetsDao
-        .getAssets(ids.map { it.toIdentifier() })
+        .getAssetsInfo(ids.map { it.toIdentifier() })
         .map { AssetInfoMapper().asDomain(it) }
 
-    private fun getAllByAccounts(accounts: List<Account>, query: String): Flow<List<AssetInfo>> {
-        val addresses = accounts.map { it.address }.toSet().toList()
-        val chains = accounts.map { it.chain }
-        val assetsFlow = assetsDao.getAllByOwner(addresses, query)
-        val balancesFlow = balancesDao.getAllByOwner(addresses)
-        val pricesFlow = pricesDao.getAll()
+    override suspend fun getAssetsInfo(accounts: List<Account>): List<AssetInfo> = withContext(Dispatchers.IO) {
+        assetsDao.getAssetsInfoByAccounts(accounts.map { it.address })
+            .map { AssetInfoMapper().asDomain(it) }
+            .firstOrNull() ?: emptyList()
+    }
 
-        return combine(assetsFlow, balancesFlow, pricesFlow) { assets, balances, allPrices ->
-            val prices = allPrices.map {
-                AssetPriceInfo(price = AssetPrice(it.assetId, it.value, it.dayChanged), currency = Currency.USD)
-            }
-            assets.mapNotNull { asset ->
-                val assetId = asset.id.toAssetId() ?: return@mapNotNull null
-                if (!chains.contains(assetId.chain)) {
-                    return@mapNotNull null
-                }
-                val account = accounts.firstOrNull { it.address == asset.address && it.chain == assetId.chain }
-                    ?: return@mapNotNull null
-                roomToModel(gson, assetId, account, asset, balances, prices)
-            }
-        }
+    override suspend fun search(query: String): Flow<List<AssetInfo>> {
+        return assetsDao.searchAssetInfo(query).map { AssetInfoMapper().asDomain(it) }
     }
 
     override suspend fun getById(accounts: List<Account>, assetId: AssetId): Result<List<AssetInfo>> {
@@ -121,7 +102,7 @@ class AssetsRoomSource @Inject constructor(
 
     override suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
         val id = assetId.toIdentifier()
-        return assetsDao.getAssetById(id, assetId.chain)
+        return assetsDao.getAssetInfo(id, assetId.chain)
             .map { AssetInfoMapper().asDomain(it).firstOrNull() }
     }
 
@@ -134,27 +115,6 @@ class AssetsRoomSource @Inject constructor(
             decimals = room.decimals,
             type = room.type,
         )
-    }
-
-    override suspend fun getAssets(account: Account): Result<List<Asset>> {
-        val result = assetsDao.getAllByOwner(listOf(account.address), "")
-            .firstOrNull()
-            ?.mapNotNull {
-                val assetId = it.id.toAssetId() ?: return@mapNotNull null
-                Asset(
-                    id = assetId,
-                    name = it.name,
-                    symbol = it.symbol,
-                    decimals = it.decimals,
-                    type = it.type,
-                )
-            }
-            ?.filter { it.id.chain == account.chain} ?: emptyList()
-        return Result.success(result)
-    }
-
-    override suspend fun add(address: String, asset: Asset) = withContext(Dispatchers.IO) {
-        assetsDao.insert(modelToRoom(address, asset))
     }
 
     override suspend fun add(address: String, asset: Asset, visible: Boolean) = withContext(Dispatchers.IO) {
@@ -225,10 +185,6 @@ class AssetsRoomSource @Inject constructor(
 
     override suspend fun getStakingApr(assetId: AssetId): Double? {
         return assetsDao.getById(assetId.toIdentifier()).firstOrNull()?.stakingApr
-    }
-
-    override suspend fun search(accounts: List<Account>, query: String): Flow<List<AssetInfo>> {
-        return getAllByAccounts(accounts, query)
     }
 
     private fun modelToRoom(address: String, asset: Asset) = DbAsset(

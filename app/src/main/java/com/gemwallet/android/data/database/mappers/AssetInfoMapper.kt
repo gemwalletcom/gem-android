@@ -20,7 +20,7 @@ import com.wallet.core.primitives.Currency
 class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo>, List<AssetInfo>> {
 
     override fun asDomain(entity: List<DbAssetInfo>): List<AssetInfo> {
-        return entity.groupBy { it.id }.mapNotNull { records ->
+        return entity.groupBy { it.id + it.address }.mapNotNull { records ->
             val first = records.value.firstOrNull() ?: return@mapNotNull null
             val assetId = first.id.toAssetId() ?: return@mapNotNull null
 
