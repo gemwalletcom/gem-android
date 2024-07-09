@@ -26,14 +26,8 @@ fun AssetSelectScreen(
     onAddAsset: (() -> Unit)? = null,
     viewModel: AssetSelectViewModel = hiltViewModel()
 ) {
-    val uiStates by viewModel.uiStates.collectAsStateWithLifecycle()
+    val uiStates by viewModel.isLoading.collectAsStateWithLifecycle()
     val assets by viewModel.assets.collectAsStateWithLifecycle()
-
-    DisposableEffect(key1 = predicate) {
-        viewModel.queryState.clearText()
-
-        onDispose {  }
-    }
 
     LaunchedEffect(Unit) {
         viewModel.onQuery()
@@ -42,9 +36,9 @@ fun AssetSelectScreen(
     AssetSelectScene(
         title = title,
         titleBadge = titleBadge,
-        support = { if (it.id.type() == AssetSubtype.NATIVE) null else it.id.chain.asset().name },
+        support = { if (it.asset.id.type() == AssetSubtype.NATIVE) null else it.asset.id.chain.asset().name },
         query = viewModel.queryState,
-        assets = assets.filter { predicate(it.id) }.toImmutableList(), // TODO: Empty balance???
+        assets = assets.filter { predicate(it.asset.id) }.toImmutableList(), // TODO: Empty balance???
         loading = uiStates,
         onSelect = onSelect,
         onCancel = onCancel,

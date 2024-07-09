@@ -171,17 +171,15 @@ class AssetsRepository @Inject constructor(
     suspend fun search(wallet: Wallet, query: String): Flow<List<AssetInfo>> {
         val assetsFlow = assetsLocalSource.search(query)
         val tokensFlow = tokensRepository.search(wallet.accounts.map { it.chain }, query)
-        return combine(
-            assetsFlow,
-            tokensFlow,
-        ) { assets, tokens ->
-            val result = assets + tokens.mapNotNull { asset ->
+        return combine(assetsFlow, tokensFlow) { assets, tokens ->
+            assets + tokens.mapNotNull { asset ->
                 AssetInfo(
                     asset = asset,
                     owner = wallet.getAccount(asset.id.chain) ?: return@mapNotNull null,
                 )
-            }.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
-            result.distinctBy { it.asset.id.toIdentifier() }
+            }
+            .filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
+            .distinctBy { it.asset.id.toIdentifier() }
         }
     }
 
@@ -255,6 +253,18 @@ class AssetsRepository @Inject constructor(
         assetsLocalSource.setPrices(prices)
     }
 
+    suspend fun updateBalances(vararg tokens: AssetId) {
+        assetsLocalSource.getAssetsInfo(tokens.toList()).firstOrNull()
+            ?.updateBalances()
+            ?.awaitAll()
+    }
+
+    private suspend fun updateBalances(account: Account, tokens: List<AssetId>): List<Balances> {
+        val balances = balancesRemoteSource.getBalances(account, tokens)
+        assetsLocalSource.setBalances(account, balances)
+        return balances
+    }
+
     private fun onTransactions(txs: List<TransactionExtended>) = scope.launch {
         txs.map { tx ->
             async {
@@ -269,18 +279,6 @@ class AssetsRepository @Inject constructor(
                 updateBalances(Account(tx.transaction.assetId.chain, tx.transaction.from, ""), tokens)
             }
         }.awaitAll()
-    }
-
-    suspend fun updateBalances(vararg tokens: AssetId) {
-        assetsLocalSource.getAssetsInfo(tokens.toList()).firstOrNull()
-            ?.updateBalances()
-            ?.awaitAll()
-    }
-
-    private suspend fun updateBalances(account: Account, tokens: List<AssetId>): List<Balances> {
-        val balances = balancesRemoteSource.getBalances(account, tokens)
-        assetsLocalSource.setBalances(account, balances)
-        return balances
     }
 
     private suspend fun List<AssetInfo>.updateBalances(): List<Deferred<List<Balances>>> = withContext(Dispatchers.IO) {

@@ -11,11 +11,9 @@ import com.gemwallet.android.data.tokens.TokensRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.tokenAvailableChains
 import com.gemwallet.android.features.assets.model.AssetUIState
-import com.gemwallet.android.features.assets.model.PriceUIState
-import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.features.assets.model.toUIModel
 import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
@@ -33,8 +31,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import java.math.BigInteger
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -44,61 +40,35 @@ class AssetSelectViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val tokensRepository: TokensRepository,
 ) : ViewModel() {
-    val isAddAssetAvailable = sessionRepository.session()
-        .map { session ->
-            val availableAccounts = session?.wallet?.accounts?.map { it.chain } ?: emptyList()
-            tokenAvailableChains.any { availableAccounts.contains(it) }
-        }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    val uiStates = MutableStateFlow(false)
-
     val queryState = TextFieldState()
+    private var queryJob: Job? = null
     private val queryFlow = snapshotFlow { queryState.text }
 
-    val assets = sessionRepository.session().combine(queryFlow) { session, query -> Pair(session, query) }
-        .flatMapLatest { assetsRepository.search(it.first?.wallet ?: return@flatMapLatest emptyFlow(), it.second.toString()) }
-        .map { assets: List<AssetInfo> ->
-            assets.sortedByDescending {
-                it.balances.available().convert(it.asset.decimals, it.price?.price?.price ?: 0.0).atomicValue
-            }
-        }
-    .map { assets ->
-        assets.map { // TODO: Remove duplicated code
-            val currency = it.price?.currency ?: Currency.USD
-            AssetUIState(
-                id = it.asset.id,
-                name = it.asset.name,
-                icon = it.asset.getIconUrl(),
-                type = it.asset.type,
-                symbol = it.asset.symbol,
-                isZeroValue = it.balances.calcTotal().atomicValue == BigInteger.ZERO,
-                value = it.balances.calcTotal().format(it.asset.decimals, it.asset.symbol, 4),
-                price = PriceUIState.create(it.price?.price, it.price?.currency ?: Currency.USD),
-                fiat = if (it.price?.price == null || it.price.price.price == 0.0) {
-                    ""
-                } else {
-                    it.balances.calcTotal().convert(it.asset.decimals, it.price.price.price)
-                        .format(0, currency.string, 2)
-                },
-                owner = it.owner.address,
-                metadata = it.metadata,
-            )
-        }.toImmutableList()
+    val isLoading = MutableStateFlow(false)
+
+    val isAddAssetAvailable = sessionRepository.session().map { session ->
+        val availableAccounts = session?.wallet?.accounts?.map { it.chain } ?: emptyList()
+        tokenAvailableChains.any { availableAccounts.contains(it) }
     }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val assets = sessionRepository.session().combine(queryFlow) { session, query ->
+        Pair(session, query)
+    }
+    .flatMapLatest { assetsRepository.search(it.first?.wallet ?: return@flatMapLatest emptyFlow(), it.second.toString()) }
+    .map { assets: List<AssetInfo> ->
+        assets.sortedByDescending {
+            it.balances.available().convert(it.asset.decimals, it.price?.price?.price ?: 0.0).atomicValue
+        }
+    }
+    .map { assets -> assets.map { it.toUIModel() }.toImmutableList() }
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetUIState>().toImmutableList())
 
-    private var queryJob: Job? = null
-
-    fun onChangeVisibility(assetId: AssetId, visible: Boolean) {
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val session = sessionRepository.getSession() ?: return@withContext
-                val account = session.wallet.getAccount(assetId.chain) ?: return@withContext
-                assetsRepository.switchVisibility(account, assetId, visible, session.currency)
-            }
-        }
+    fun onChangeVisibility(assetId: AssetId, visible: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        val session = sessionRepository.getSession() ?: return@launch
+        val account = session.wallet.getAccount(assetId.chain) ?: return@launch
+        assetsRepository.switchVisibility(account, assetId, visible, session.currency)
     }
 
     fun onQuery() = viewModelScope.launch(Dispatchers.IO) {
@@ -112,9 +82,9 @@ class AssetSelectViewModel @Inject constructor(
             }
             queryJob = viewModelScope.launch {
                 delay(250)
-                uiStates.update { true }
+                isLoading.update { true }
                 tokensRepository.search(it.toString())
-                uiStates.update { false }
+                isLoading.update { false }
             }
         }
     }

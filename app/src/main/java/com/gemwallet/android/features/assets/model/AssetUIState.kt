@@ -1,11 +1,15 @@
 package com.gemwallet.android.features.assets.model
 
+import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Fiat
+import com.gemwallet.android.model.format
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Currency
+import java.math.BigInteger
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import kotlin.math.absoluteValue
@@ -13,11 +17,7 @@ import kotlin.math.absoluteValue
 typealias IconUrl = String
 
 data class AssetUIState(
-    val id: AssetId,
-    val name: String,
-    val icon: IconUrl,
-    val symbol: String,
-    val type: AssetType,
+    val asset: Asset,
     val value: String,
     val isZeroValue: Boolean,
     val price: PriceUIState? = null,
@@ -25,6 +25,25 @@ data class AssetUIState(
     val owner: String = "",
     val metadata: AssetMetaData? = null,
 )
+
+fun AssetInfo.toUIModel(): AssetUIState {
+    val balances = balances.calcTotal()
+    val currency = price?.currency ?: Currency.USD
+
+    return AssetUIState(
+        asset = asset,
+        isZeroValue = balances.atomicValue == BigInteger.ZERO,
+        value = asset.format(balances, 4),
+        price = PriceUIState.create(price?.price, currency),
+        fiat = if (price?.price == null || price.price.price == 0.0) {
+            ""
+        } else {
+            currency.format(balances.convert(asset.decimals, price.price.price), 2)
+        },
+        owner = owner.address,
+        metadata = metadata,
+    )
+}
 
 data class PriceUIState(
     val value: String,

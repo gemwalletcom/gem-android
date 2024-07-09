@@ -28,7 +28,7 @@ fun SelectReceiveScreen(
         predicate = { it.type() == AssetSubtype.NATIVE },
         itemTrailing = {
             IconButton(onClick = {
-                viewModel.onChangeVisibility(it.id, true)
+                viewModel.onChangeVisibility(it.asset.id, true)
                 clipboardManager.setText(AnnotatedString(it.owner))
             }) {
                 Icon(imageVector = Icons.Default.ContentCopy, contentDescription = "")

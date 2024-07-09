@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.asset_select.views
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
@@ -17,7 +16,6 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
 import com.gemwallet.android.features.assets.model.AssetUIState
-import com.gemwallet.android.ui.components.FatalStateScene
 import com.wallet.core.primitives.AssetSubtype
 
 @Composable
@@ -27,7 +25,7 @@ fun AssetsManageScreen(
     viewModel: AssetSelectViewModel = hiltViewModel()
 ) {
     val isAddAssetAvailable by viewModel.isAddAssetAvailable.collectAsStateWithLifecycle()
-    val uiStates by viewModel.uiStates.collectAsStateWithLifecycle()
+    val uiStates by viewModel.isLoading.collectAsStateWithLifecycle()
     val assets by viewModel.assets.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -37,7 +35,7 @@ fun AssetsManageScreen(
     AssetSelectScene(
         title = stringResource(id = R.string.wallet_manage_token_list),
         titleBadge = ::getAssetBadge,
-        support = { if (it.id.type() == AssetSubtype.NATIVE) null else it.id.chain.asset().name },
+        support = { if (it.asset.id.type() == AssetSubtype.NATIVE) null else it.asset.id.chain.asset().name },
         query = viewModel.queryState,
         assets = assets,
         loading = uiStates,
@@ -54,12 +52,12 @@ fun AssetsManageScreen(
         itemTrailing = {asset ->
             Switch(
                 checked = asset.metadata?.isEnabled == true,
-                onCheckedChange = { viewModel.onChangeVisibility(asset.id, it) }
+                onCheckedChange = { viewModel.onChangeVisibility(asset.asset.id, it) }
             )
         },
     )
 }
 
-internal fun getAssetBadge(asset: AssetUIState): String {
-    return if (asset.symbol == asset.name) "" else asset.symbol
+internal fun getAssetBadge(item: AssetUIState): String {
+    return if (item.asset.symbol == item.asset.name) "" else item.asset.symbol
 }

@@ -29,11 +29,13 @@ import com.gemwallet.android.features.asset_select.components.SearchBar
 import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.features.assets.model.PriceUIState
+import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.padding16
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
@@ -85,19 +87,19 @@ private fun LazyListScope.assets(
     if (items.isEmpty()) {
         return
     }
-    items(items.size, key = { items[it].id.toIdentifier() }) { index ->
-        val asset = items[index]
+    items(items.size, key = { items[it].asset.id.toIdentifier() }) { index ->
+        val item = items[index]
         AssetListItem(
             modifier = Modifier
                 .heightIn(74.dp)
-                .clickable { onSelect?.invoke(asset.id) },
-            chain = asset.id.chain,
-            title = asset.name,
-            support = support?.invoke(asset),
-            assetType = asset.type,
-            iconUrl = asset.icon,
-            badge = titleBadge.invoke(asset),
-            trailing = { itemTrailing?.invoke(asset) },
+                .clickable { onSelect?.invoke(item.asset.id) },
+            chain = item.asset.id.chain,
+            title = item.asset.name,
+            support = support?.invoke(item),
+            assetType = item.asset.type,
+            iconUrl = item.asset.getIconUrl(),
+            badge = titleBadge.invoke(item),
+            trailing = { itemTrailing?.invoke(item) },
         )
     }
 }
@@ -145,11 +147,13 @@ fun PreviewAssetScreenUI() {
         AssetSelectScene(
             assets = listOf(
                 AssetUIState(
-                    id = AssetId(Chain.Bitcoin),
-                    name = "Foo Name",
-                    icon = "",
-                    symbol = "BTC",
-                    type = AssetType.NATIVE,
+                    Asset(
+                        id = AssetId(Chain.Bitcoin),
+                        name = "Foo Name",
+                        decimals = 6,
+                        symbol = "BTC",
+                        type = AssetType.NATIVE,
+                    ),
                     value = "0",
                     isZeroValue = true,
                     fiat = "0",
@@ -162,7 +166,7 @@ fun PreviewAssetScreenUI() {
             ).toImmutableList(),
             loading = false,
             title = "Send",
-            titleBadge = { it.symbol },
+            titleBadge = { it.asset.symbol },
             support = null,
             query = rememberTextFieldState(),
             onSelect = {},
