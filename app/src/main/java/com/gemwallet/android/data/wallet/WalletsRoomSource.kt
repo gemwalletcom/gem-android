@@ -60,6 +60,9 @@ interface AccountsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(account: AccountRoom)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(account: List<AccountRoom>)
+
     @Delete
     fun delete(account: AccountRoom)
 

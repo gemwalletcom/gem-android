@@ -11,10 +11,9 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
 import com.gemwallet.android.features.assets.model.AssetUIState
-import com.gemwallet.android.model.AssetInfo
-import com.gemwallet.android.ui.components.FatalStateScene
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun AssetSelectScreen(
@@ -22,43 +21,28 @@ fun AssetSelectScreen(
     titleBadge: (AssetUIState) -> String?,
     onCancel: () -> Unit,
     onSelect: ((AssetId) -> Unit)? = null,
-    predicate: (AssetInfo) -> Boolean = { true },
+    predicate: (AssetId) -> Boolean = { true },
     itemTrailing: (@Composable (AssetUIState) -> Unit)? = null,
     onAddAsset: (() -> Unit)? = null,
     viewModel: AssetSelectViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    DisposableEffect(key1 = predicate) {
-        viewModel.setPredicate(predicate)
-        viewModel.query.clearText()
-
-        onDispose {  }
-    }
+    val uiStates by viewModel.isLoading.collectAsStateWithLifecycle()
+    val assets by viewModel.assets.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
         viewModel.onQuery()
     }
 
-
-    if (uiState.error.isEmpty()) {
-        AssetSelectScene(
-            title = title,
-            titleBadge = titleBadge,
-            support = { if (it.id.type() == AssetSubtype.NATIVE) null else it.id.chain.asset().name },
-            query = viewModel.query,
-            assets = uiState.assets,
-            loading = uiState.isLoading,
-            onSelect = onSelect,
-            onCancel = onCancel,
-            onAddAsset = onAddAsset,
-            itemTrailing = itemTrailing,
-        )
-    } else {
-        FatalStateScene(
-            title = title,
-            message = uiState.error,
-            onCancel = onCancel,
-        )
-    }
+    AssetSelectScene(
+        title = title,
+        titleBadge = titleBadge,
+        support = { if (it.asset.id.type() == AssetSubtype.NATIVE) null else it.asset.id.chain.asset().name },
+        query = viewModel.queryState,
+        assets = assets.filter { predicate(it.asset.id) }.toImmutableList(), // TODO: Empty balance???
+        loading = uiStates,
+        onSelect = onSelect,
+        onCancel = onCancel,
+        onAddAsset = onAddAsset,
+        itemTrailing = itemTrailing,
+    )
 }

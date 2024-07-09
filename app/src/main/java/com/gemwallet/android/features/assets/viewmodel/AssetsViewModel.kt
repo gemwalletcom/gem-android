@@ -9,6 +9,7 @@ import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.features.assets.model.WalletInfoUIState
+import com.gemwallet.android.features.assets.model.toUIModel
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.interactors.sync.SyncTransactions
 import com.gemwallet.android.model.AssetInfo
@@ -16,10 +17,8 @@ import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.model.WalletSummary
-import com.gemwallet.android.model.format
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
@@ -37,7 +36,6 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import java.math.BigInteger
 import javax.inject.Inject
 
 @HiltViewModel
@@ -108,26 +106,8 @@ class AssetsViewModel @Inject constructor(
             .filter { asset -> asset.metadata?.isEnabled == true }
             .sortedByDescending {
                 it.balances.calcTotal().convert(it.asset.decimals, it.price?.price?.price ?: 0.0).atomicValue
-            }.map {
-                val balances = it.balances.calcTotal()
-                val currency = it.price?.currency ?: Currency.USD
-                AssetUIState(
-                    id = it.asset.id,
-                    name = it.asset.name,
-                    icon = it.asset.getIconUrl(),
-                    type = it.asset.type,
-                    owner = it.owner.address,
-                    value =  it.asset.format(balances, 4),
-                    isZeroValue = balances.atomicValue == BigInteger.ZERO,
-                    fiat = if (it.price == null || it.price.price.price == 0.0) {
-                        ""
-                    } else {
-                        currency.format(balances.convert(it.asset.decimals, it.price.price.price), 2)
-                    },
-                    price = PriceUIState.create(it.price?.price, currency),
-                    symbol = it.asset.symbol,
-                )
-            }.toImmutableList()
+            }
+            .map { it.toUIModel() }.toImmutableList()
     }
 
     fun hideAsset(assetId: AssetId) {

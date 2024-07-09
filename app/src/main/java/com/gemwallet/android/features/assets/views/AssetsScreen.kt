@@ -61,6 +61,7 @@ import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.WalletInfoUIState
 import com.gemwallet.android.features.assets.viewmodel.AssetsViewModel
 import com.gemwallet.android.features.transactions.components.transactionsList
+import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
@@ -193,26 +194,26 @@ private fun LazyListScope.assets(
     onAssetHide: (AssetId) -> Unit,
 ) {
 
-    items(items = assets, key = { it.id.toIdentifier() }) { asset->
+    items(items = assets, key = { it.asset.id.toIdentifier() }) { item->
         var itemWidth by remember { mutableIntStateOf(0) }
         Box(
             modifier = Modifier.onSizeChanged { itemWidth = it.width }
         ) {
             AssetListItem(
-                chain = asset.id.chain,
-                title = asset.name,
-                iconUrl = asset.icon,
-                value = asset.value,
-                assetType = asset.type,
-                isZeroValue = asset.isZeroValue,
-                fiatAmount = asset.fiat,
-                price = asset.price,
+                chain = item.asset.id.chain,
+                title = item.asset.name,
+                iconUrl = item.asset.getIconUrl(),
+                value = item.value,
+                assetType = item.asset.type,
+                isZeroValue = item.isZeroValue,
+                fiatAmount = item.fiat,
+                price = item.price,
                 modifier = Modifier.combinedClickable(
-                    onClick = { onAssetClick(asset.id) },
-                    onLongClick = { longPressState.value = asset.id },
+                    onClick = { onAssetClick(item.asset.id) },
+                    onLongClick = { longPressState.value = item.asset.id },
                 )
             )
-            AssetItemMenu(asset, longPressState.value == asset.id, itemWidth, onAssetHide) {
+            AssetItemMenu(item, longPressState.value == item.asset.id, itemWidth, onAssetHide) {
                 longPressState.value = null
             }
         }
@@ -221,7 +222,7 @@ private fun LazyListScope.assets(
 
 @Composable
 private fun AssetItemMenu(
-    asset: AssetUIState,
+    item: AssetUIState,
     showed: Boolean,
     containerWidth: Int,
     onAssetHide: (AssetId) -> Unit,
@@ -237,7 +238,7 @@ private fun AssetItemMenu(
             text = { Text( text = stringResource(id = R.string.wallet_copy_address)) },
             trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
             onClick = {
-                clipboardManager.setText(AnnotatedString(asset.owner))
+                clipboardManager.setText(AnnotatedString(item.owner))
                 onCancel()
             },
         )
@@ -245,7 +246,7 @@ private fun AssetItemMenu(
             text = { Text(stringResource(id = R.string.common_hide)) },
             trailingIcon = { Icon(Icons.Default.VisibilityOff, "wallet_config") },
             onClick = {
-                onAssetHide(asset.id)
+                onAssetHide(item.asset.id)
                 onCancel()
             }
         )

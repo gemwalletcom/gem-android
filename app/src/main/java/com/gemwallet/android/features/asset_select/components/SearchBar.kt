@@ -42,9 +42,7 @@ fun SearchBar(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-    Row(
-        modifier = modifier.fillMaxWidth().height(40.dp)
-    ) {
+    Row(modifier = modifier.fillMaxWidth().height(40.dp)) {
         Box(modifier = Modifier.fillMaxWidth()) {
             BasicTextField(
                 modifier = Modifier

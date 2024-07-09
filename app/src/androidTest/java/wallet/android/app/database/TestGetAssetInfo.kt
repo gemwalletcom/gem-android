@@ -14,6 +14,7 @@ import com.gemwallet.android.data.database.entities.DbSession
 import com.gemwallet.android.data.wallet.AccountRoom
 import com.gemwallet.android.data.wallet.WalletRoom
 import com.gemwallet.android.ext.toIdentifier
+import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BalanceType
@@ -121,109 +122,237 @@ class TestGetAssetInfo {
         }
     }
 
+    @Test
+    fun testGetAssetsInfo() = runTest {
+        val roomSource = AssetsRoomSource(db.assetsDao(), db.balancesDao(), db.pricesDao())
+        val assets = roomSource.getAssetsInfo().firstOrNull()?.sortedBy { it.owner.address }
+        assertEquals(4, assets?.size)
+        assertEquals("Ethereum-1", assets?.firstOrNull()?.asset?.name)
+        assertEquals("17000", assets?.firstOrNull()?.balances?.calcTotal()?.atomicValue?.toString())
+    }
+
+    @Test
+    fun testSearch() = runTest {
+        val roomSource = AssetsRoomSource(db.assetsDao(), db.balancesDao(), db.pricesDao())
+        val assets = roomSource.search("bnb").firstOrNull()?.sortedBy { it.asset.name }
+        assertEquals(2, assets?.size)
+        assertEquals("BNB-4", assets?.firstOrNull()?.asset?.name)
+        assertEquals("14000", assets?.firstOrNull()?.balances?.calcTotal()?.atomicValue?.toString())
+    }
+
+    @Test
+    fun testGetByAccount() = runTest {
+        val roomSource = AssetsRoomSource(db.assetsDao(), db.balancesDao(), db.pricesDao())
+        val assets = roomSource.getAssetsInfo(
+            listOf(
+                Account(
+                    chain = Chain.Ethereum,
+                    address = "some-address-1",
+                    derivationPath = "",
+                ),
+                Account(
+                    chain = Chain.Ethereum,
+                    address = "some-address-2",
+                    derivationPath = "",
+                ),
+                Account(
+                    chain = Chain.Bitcoin,
+                    address = "some-address-3",
+                    derivationPath = "",
+                ),
+                Account(
+                    chain = Chain.SmartChain,
+                    address = "some-address-4",
+                    derivationPath = "",
+                ),
+            )
+        ).sortedBy { it.owner.address }
+        assertEquals(5, assets.size)
+        assertEquals("Ethereum-1", assets.firstOrNull()?.asset?.name)
+        assertEquals("17000", assets.firstOrNull()?.balances?.calcTotal()?.atomicValue?.toString())
+        assertEquals(1.0, assets.first().price?.price?.price)
+        assertEquals(Currency.AUD, assets.first().price?.currency)
+        assertEquals("Ethereum-2", assets[1].asset.name)
+        assertEquals("23000", assets[1].balances.calcTotal().atomicValue.toString())
+        assertEquals("BNB-TOKEN-1", assets.last().asset.name)
+        assertEquals("15000", assets.last().balances.calcTotal().atomicValue.toString())
+    }
+
     private fun createData() {
-        db.walletsDao().insert(
-            WalletRoom(
-                id = "test-wallet-1",
-                name = "test-wallet-1",
-                domainName = null,
-                type = WalletType.multicoin,
-                position = 0,
-                pinned = false,
-                index = 0,
-            ),
-        )
-        db.walletsDao().insert(
-            WalletRoom(
-                id = "test-wallet-2",
-                name = "test-wallet-2",
-                domainName = null,
-                type = WalletType.single,
-                position = 0,
-                pinned = false,
-                index = 0,
-            ),
-        )
-        db.accountsDao().insert(
-            AccountRoom(
-                walletId = "test-wallet-1",
-                derivationPath = "",
-                address = "some-address-1",
-                chain = Chain.Ethereum,
-                extendedPublicKey = "",
+        db.walletsDao().apply {
+            insert(
+                WalletRoom(
+                    id = "test-wallet-1",
+                    name = "test-wallet-1",
+                    domainName = null,
+                    type = WalletType.multicoin,
+                    position = 0,
+                    pinned = false,
+                    index = 0,
+                ),
             )
-        )
+            insert(
+                WalletRoom(
+                    id = "test-wallet-2",
+                    name = "test-wallet-2",
+                    domainName = null,
+                    type = WalletType.single,
+                    position = 0,
+                    pinned = false,
+                    index = 0,
+                ),
+            )
+        }
         db.accountsDao().insert(
-            AccountRoom(
-                walletId = "test-wallet-2",
-                derivationPath = "",
-                address = "some-address-2",
-                chain = Chain.Ethereum,
-                extendedPublicKey = "",
+            listOf(
+                AccountRoom(
+                    walletId = "test-wallet-1",
+                    derivationPath = "",
+                    address = "some-address-1",
+                    chain = Chain.Ethereum,
+                    extendedPublicKey = "",
+                ),
+                AccountRoom(
+                    walletId = "test-wallet-2",
+                    derivationPath = "",
+                    address = "some-address-2",
+                    chain = Chain.Ethereum,
+                    extendedPublicKey = "",
+                ),
+                AccountRoom(
+                    walletId = "test-wallet-1",
+                    derivationPath = "",
+                    address = "some-address-3",
+                    chain = Chain.Bitcoin,
+                    extendedPublicKey = "",
+                ),
+                AccountRoom(
+                    walletId = "test-wallet-1",
+                    derivationPath = "",
+                    address = "some-address-4",
+                    chain = Chain.SmartChain,
+                    extendedPublicKey = "",
+                ),
             )
         )
         db.assetsDao().insert(
-            DbAsset(
-                address = "some-address-1",
-                id = AssetId(Chain.Ethereum).toIdentifier(),
-                name = "Ethereum-1",
-                symbol = "Eth",
-                decimals = 18,
-                type = AssetType.NATIVE,
-                stakingApr = 12.2,
-            )
-        )
-        db.assetsDao().insert(
-            DbAsset(
-                address = "some-address-2",
-                id = AssetId(Chain.Ethereum).toIdentifier(),
-                name = "Ethereum-2",
-                symbol = "Eth",
-                decimals = 18,
-                type = AssetType.NATIVE,
+            listOf(
+                DbAsset(
+                    address = "some-address-1",
+                    id = AssetId(Chain.Ethereum).toIdentifier(),
+                    name = "Ethereum-1",
+                    symbol = "Eth",
+                    decimals = 18,
+                    type = AssetType.NATIVE,
+                    stakingApr = 12.2,
+                ),
+                DbAsset(
+                    address = "some-address-3",
+                    id = AssetId(Chain.Bitcoin).toIdentifier(),
+                    name = "Bitcoin-3",
+                    symbol = "Btc",
+                    decimals = 18,
+                    type = AssetType.NATIVE,
+                    stakingApr = 0.0,
+                ),
+                DbAsset(
+                    address = "some-address-4",
+                    id = AssetId(Chain.SmartChain).toIdentifier(),
+                    name = "BNB-4",
+                    symbol = "BNB",
+                    decimals = 18,
+                    type = AssetType.NATIVE,
+                    stakingApr = 0.0,
+                ),
+                DbAsset(
+                    address = "some-address-4",
+                    id = AssetId(Chain.SmartChain, "some-token-id-1").toIdentifier(),
+                    name = "BNB-TOKEN-1",
+                    symbol = "BNBT-`1",
+                    decimals = 18,
+                    type = AssetType.TOKEN,
+                    stakingApr = 0.0,
+                ),
+                DbAsset(
+                    address = "some-address-2",
+                    id = AssetId(Chain.Ethereum).toIdentifier(),
+                    name = "Ethereum-2",
+                    symbol = "Eth",
+                    decimals = 18,
+                    type = AssetType.NATIVE,
+                )
             )
         )
         db.pricesDao().insert(
-            DbPrice(
-                assetId = AssetId(Chain.Ethereum).toIdentifier(),
-                value = 1.0,
-                dayChanged = 10.0
+            listOf(
+                DbPrice(
+                    assetId = AssetId(Chain.Ethereum).toIdentifier(),
+                    value = 1.0,
+                    dayChanged = 10.0
+                ),
+                DbPrice(
+                    assetId = AssetId(Chain.Bitcoin).toIdentifier(),
+                    value = 2.0,
+                    dayChanged = 10.0
+                ),
+                DbPrice(
+                    assetId = AssetId(Chain.SmartChain).toIdentifier(),
+                    value = 3.0,
+                    dayChanged = 10.0
+                ),
             )
         )
         db.balancesDao().insert(
-            DbBalance(
-                assetId = AssetId(Chain.Ethereum).toIdentifier(),
-                address =  "some-address-1",
-                type = BalanceType.available,
-                amount = "10000",
-                updatedAt = 0L,
-            )
-        )
-        db.balancesDao().insert(
-            DbBalance(
-                assetId = AssetId(Chain.Ethereum).toIdentifier(),
-                address =  "some-address-1",
-                type = BalanceType.rewards,
-                amount = "7000",
-                updatedAt = 0L,
-            )
-        )
-        db.balancesDao().insert(
-            DbBalance(
-                assetId = AssetId(Chain.Ethereum).toIdentifier(),
-                address =  "some-address-2",
-                type = BalanceType.available,
-                amount = "12000",
-                updatedAt = 0L,
-            )
-        )
-        db.balancesDao().insert(
-            DbBalance(
-                assetId = AssetId(Chain.Ethereum).toIdentifier(),
-                address =  "some-address-2",
-                type = BalanceType.rewards,
-                amount = "11000",
-                updatedAt = 0L,
+            listOf(
+                DbBalance(
+                    assetId = AssetId(Chain.Ethereum).toIdentifier(),
+                    address =  "some-address-1",
+                    type = BalanceType.available,
+                    amount = "10000",
+                    updatedAt = 0L,
+                ),
+                DbBalance(
+                    assetId = AssetId(Chain.Ethereum).toIdentifier(),
+                    address =  "some-address-1",
+                    type = BalanceType.rewards,
+                    amount = "7000",
+                    updatedAt = 0L,
+                ),
+                DbBalance(
+                    assetId = AssetId(Chain.Ethereum).toIdentifier(),
+                    address =  "some-address-2",
+                    type = BalanceType.available,
+                    amount = "12000",
+                    updatedAt = 0L,
+                ),
+                DbBalance(
+                    assetId = AssetId(Chain.Ethereum).toIdentifier(),
+                    address =  "some-address-2",
+                    type = BalanceType.rewards,
+                    amount = "11000",
+                    updatedAt = 0L,
+                ),
+                DbBalance(
+                    assetId = AssetId(Chain.Bitcoin).toIdentifier(),
+                    address =  "some-address-3",
+                    type = BalanceType.available,
+                    amount = "13000",
+                    updatedAt = 0L,
+                ),
+                DbBalance(
+                    assetId = AssetId(Chain.SmartChain).toIdentifier(),
+                    address =  "some-address-4",
+                    type = BalanceType.available,
+                    amount = "14000",
+                    updatedAt = 0L,
+                ),
+                DbBalance(
+                    assetId = AssetId(Chain.SmartChain, "some-token-id-1").toIdentifier(),
+                    address =  "some-address-4",
+                    type = BalanceType.available,
+                    amount = "15000",
+                    updatedAt = 0L,
+                )
             )
         )
         runBlocking {

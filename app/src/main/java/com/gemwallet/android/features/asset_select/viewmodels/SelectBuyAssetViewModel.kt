@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SelectBuyAssetViewModel @Inject constructor(
-    private val buyRepository: BuyRepository,
+    buyRepository: BuyRepository,
 ) : ViewModel() {
 
     private val available = buyRepository.getAvailable()
