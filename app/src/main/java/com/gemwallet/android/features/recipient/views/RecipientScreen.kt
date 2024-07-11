@@ -27,6 +27,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.features.recipient.models.RecipientFormError
 import com.gemwallet.android.features.recipient.models.RecipientScreenModel
+import com.gemwallet.android.features.recipient.models.RecipientScreenState
 import com.gemwallet.android.features.recipient.viewmodels.RecipientFormViewModel
 import com.gemwallet.android.ui.components.AddressChainField
 import com.gemwallet.android.ui.components.LoadingScene
@@ -42,12 +43,13 @@ import com.wallet.core.primitives.NameRecord
 
 @ExperimentalGetImage
 @Composable
-fun RecipientForm(
+fun RecipientScreen(
     onCancel: () -> Unit,
     onNext: OnAmount,
     viewModel: RecipientFormViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val screenState by viewModel.screenState.collectAsStateWithLifecycle()
+    val screenModel by viewModel.screenModel.collectAsStateWithLifecycle()
     val assetId by viewModel.assetId.collectAsStateWithLifecycle()
 
     LaunchedEffect(assetId?.toIdentifier()) {
@@ -55,9 +57,9 @@ fun RecipientForm(
     }
 
     when {
-        uiState is RecipientScreenModel.Idle && assetId != null -> Idle(
+        screenState is RecipientScreenState.Idle && assetId != null -> Idle(
             assetId = assetId!!,
-            state = (uiState as RecipientScreenModel.Idle),
+            model = screenModel,
             addressState = viewModel.addressState,
             memoState = viewModel.memoState,
             nameRecordState = viewModel.nameRecordState,
@@ -66,7 +68,8 @@ fun RecipientForm(
             onNext = { viewModel.onNext(onNext) },
             onCancel = onCancel,
         )
-        uiState is RecipientScreenModel.ScanQr -> qrCodeRequest(viewModel::scanCancel, viewModel::setQrData)
+        screenState == RecipientScreenState.ScanAddress ||
+        screenState == RecipientScreenState.ScanMemo -> qrCodeRequest(viewModel::scanCancel, viewModel::setQrData)
         else -> LoadingScene(
             title = stringResource(R.string.transaction_recipient),
             onCancel = onCancel
@@ -77,7 +80,7 @@ fun RecipientForm(
 @Composable
 private fun Idle(
     assetId: AssetId,
-    state: RecipientScreenModel.Idle,
+    model: RecipientScreenModel,
     addressState: MutableState<String>,
     memoState: MutableState<String>,
     nameRecordState: MutableState<NameRecord?>,
@@ -93,7 +96,7 @@ private fun Idle(
         mainAction = {
             MainActionButton(
                 title = stringResource(id = R.string.common_continue),
-                enabled = state.addressError == RecipientFormError.None,
+                enabled = model.addressError == RecipientFormError.None,
                 onClick = onNext,
             )
         }
@@ -102,7 +105,7 @@ private fun Idle(
             chain = assetId.chain,
             value = addressState.value,
             label = stringResource(id = R.string.transfer_recipient_address_field),
-            error = recipientErrorString(error = state.addressError),
+            error = recipientErrorString(error = model.addressError),
             onValueChange = { input, nameRecord ->
                 addressState.value = input
                 nameRecordState.value = nameRecord
@@ -115,7 +118,7 @@ private fun Idle(
                 value = memoState.value,
                 label = stringResource(id = R.string.transfer_memo),
                 onValueChange = { memoState.value = it },
-                error = state.memoError,
+                error = model.memoError,
                 onQrScanner = onScanMemo,
             )
         }
@@ -173,7 +176,7 @@ private fun recipientErrorString(error: RecipientFormError): String {
 @ExperimentalGetImage
 fun PreviewRecipientForm() {
     WalletTheme {
-        RecipientForm(
+        RecipientScreen(
             onCancel = {},
             onNext = { _, _, _, _, _, _, _ -> }
         )

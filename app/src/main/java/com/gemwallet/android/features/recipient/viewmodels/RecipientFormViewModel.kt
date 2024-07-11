@@ -10,7 +10,7 @@ import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.features.recipient.models.RecipientFormError
 import com.gemwallet.android.features.recipient.models.RecipientScreenModel
-import com.gemwallet.android.features.recipient.models.ScanType
+import com.gemwallet.android.features.recipient.models.RecipientScreenState
 import com.gemwallet.android.features.recipient.navigation.assetIdArg
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NameRecord
@@ -35,9 +35,11 @@ class RecipientFormViewModel @Inject constructor(
     val assetId = assetIdStr.map { it.toAssetId() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val state = MutableStateFlow(State())
-    val uiState = state.map { it.toUIState() }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, RecipientScreenModel.Idle())
+    private val state = MutableStateFlow<RecipientScreenState>(RecipientScreenState.Idle)
+    val screenState = state.stateIn(viewModelScope, SharingStarted.Eagerly, RecipientScreenState.Idle)
+
+    private val model = MutableStateFlow(Model())
+    val screenModel = model.map { it.toUIModel() }.stateIn(viewModelScope, SharingStarted.Eagerly, RecipientScreenModel())
 
     val addressState = mutableStateOf("")
     val memoState = mutableStateOf("")
@@ -45,34 +47,34 @@ class RecipientFormViewModel @Inject constructor(
 
     fun input() = viewModelScope.launch {
         snapshotFlow { addressState.value }.collectLatest {
-            state.update { it.copy(addressError = RecipientFormError.None) }
+            model.update { it.copy(addressError = RecipientFormError.None) }
             nameRecordState.value = null
         }
         snapshotFlow { addressState.value }.collectLatest {
-            state.update { it.copy(metaError = RecipientFormError.None) }
+            model.update { it.copy(metaError = RecipientFormError.None) }
         }
     }
 
     fun scanAddress() {
-        state.update { it.copy(scan = ScanType.Address) }
+        state.update { RecipientScreenState.ScanAddress }
     }
 
     fun scanMemo() {
-        state.update { it.copy(scan = ScanType.Memo) }
+        state.update { RecipientScreenState.ScanMemo }
     }
 
     fun scanCancel() {
-        state.update { it.copy(scan = null) }
+        state.update { RecipientScreenState.Idle }
     }
 
     fun setQrData(data: String) {
         val paymentWrapper = uniffi.Gemstone.paymentDecodeUrl(data)
-        when (state.value.scan) {
-            ScanType.Address -> addressState.value = paymentWrapper.address.ifEmpty { data }
-            ScanType.Memo -> memoState.value = paymentWrapper.memo ?: data
-            null -> {}
+        when (state.value) {
+            RecipientScreenState.ScanAddress -> addressState.value = paymentWrapper.address.ifEmpty { data }
+            RecipientScreenState.ScanMemo -> memoState.value = paymentWrapper.memo ?: data
+            RecipientScreenState.Idle -> {}
         }
-        state.update { it.copy(scan = null) }
+        state.update { RecipientScreenState.Idle }
     }
 
     private fun validateRecipient(chain: Chain, recipient: String): RecipientFormError {
@@ -87,14 +89,13 @@ class RecipientFormViewModel @Inject constructor(
         viewModelScope.launch {
             val nameRecord = nameRecordState.value
             val assetId = assetId.value ?: return@launch
-            val currentState = state.value
             val (address, addressDomain) = if (nameRecord?.name == addressState.value) {
                 Pair(nameRecord.address, nameRecord.name)
             } else {
                 Pair(addressState.value, "")
             }
             val recipientError = validateRecipient(assetId.chain, address)
-            state.update { currentState.copy(addressError = recipientError,) }
+            model.update { Model(addressError = recipientError) }
             if (recipientError == RecipientFormError.None) {
                 onRecipientComplete(
                     assetId = assetId,
@@ -109,18 +110,13 @@ class RecipientFormViewModel @Inject constructor(
         }
     }
 
-    data class State(
-        val scan: ScanType? = null,
+    data class Model(
         val addressError: RecipientFormError = RecipientFormError.None,
         val metaError: RecipientFormError = RecipientFormError.None,
     ) {
 
-        fun toUIState(): RecipientScreenModel {
-            if (scan != null) {
-                return RecipientScreenModel.ScanQr
-            }
-
-            return RecipientScreenModel.Idle(
+        fun toUIModel(): RecipientScreenModel {
+            return RecipientScreenModel(
                 addressError = addressError,
                 memoError = metaError,
             )
