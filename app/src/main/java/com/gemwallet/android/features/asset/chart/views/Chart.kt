@@ -67,9 +67,7 @@ fun Chart(
     val minIndex = points.indexOf(min)
     val maxIndex = points.indexOf(max)
     val modelProducer = remember { CartesianChartModelProducer.build() }
-    var price by remember {
-        mutableStateOf<PricePoint?>(null)
-    }
+    var price by remember { mutableStateOf<PricePoint?>(null) }
     Container {
         Column {
             Column(

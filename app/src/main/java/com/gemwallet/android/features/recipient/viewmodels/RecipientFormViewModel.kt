@@ -1,93 +1,80 @@
 package com.gemwallet.android.features.recipient.viewmodels
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.snapshotFlow
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.blockchain.PayloadType
-import com.gemwallet.android.blockchain.memo
 import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
-import com.gemwallet.android.data.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
+import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.amount.navigation.OnAmount
-import com.gemwallet.android.model.AssetInfo
-import com.wallet.core.primitives.AssetId
+import com.gemwallet.android.features.recipient.models.RecipientFormError
+import com.gemwallet.android.features.recipient.models.RecipientScreenModel
+import com.gemwallet.android.features.recipient.models.RecipientScreenState
+import com.gemwallet.android.features.recipient.navigation.assetIdArg
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class RecipientFormViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
-    private val assetsRepository: AssetsRepository,
     private val validateAddressOperator: ValidateAddressOperator,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val state = MutableStateFlow(RecipientFormState())
-    val uiState = state.map { it.toUIState() }.stateIn(viewModelScope, SharingStarted.Eagerly,
-        RecipientFormUIState.Loading
-    )
+    private val assetIdStr = savedStateHandle.getStateFlow(assetIdArg, "")
+    val assetId = assetIdStr.map { it.toAssetId() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val state = MutableStateFlow<RecipientScreenState>(RecipientScreenState.Idle)
+    val screenState = state.stateIn(viewModelScope, SharingStarted.Eagerly, RecipientScreenState.Idle)
+
+    private val model = MutableStateFlow(Model())
+    val screenModel = model.map { it.toUIModel() }.stateIn(viewModelScope, SharingStarted.Eagerly, RecipientScreenModel())
 
     val addressState = mutableStateOf("")
     val memoState = mutableStateOf("")
+    val nameRecordState = mutableStateOf<NameRecord?>(null)
 
-    fun init(
-        assetId: AssetId,
-        destinationAddress: String,
-        addressDomain: String,
-        memo: String
-    ) {
-        val wallet = sessionRepository.getSession()?.wallet
-        if (wallet == null) {
-            state.update { it.copy(fatalError = "Select asset") }
-            return
+    fun input() = viewModelScope.launch {
+        snapshotFlow { addressState.value }.collectLatest {
+            model.update { it.copy(addressError = RecipientFormError.None) }
+            nameRecordState.value = null
         }
-
-        viewModelScope.launch {
-            val currentState = state.value.copy()
-            val newState = withContext(Dispatchers.IO) { assetsRepository.getById(wallet, assetId) }
-                .fold(
-                    onSuccess = {
-                        addressState.value = destinationAddress.ifEmpty { addressState.value }
-                        memoState.value = memo.ifEmpty { memoState.value }
-                        currentState.copy(assetInfo = it.first(), addressDomain = addressDomain)
-                    }
-                ) {
-                    currentState.copy(fatalError = it.message ?: "Asset doesn't found")
-                }
-            state.update { newState }
+        snapshotFlow { addressState.value }.collectLatest {
+            model.update { it.copy(metaError = RecipientFormError.None) }
         }
     }
 
     fun scanAddress() {
-        state.update { it.copy(scan = ScanType.Address) }
+        state.update { RecipientScreenState.ScanAddress }
     }
 
     fun scanMemo() {
-        state.update { it.copy(scan = ScanType.Memo) }
+        state.update { RecipientScreenState.ScanMemo }
     }
 
     fun scanCancel() {
-        state.update { it.copy(scan = null) }
+        state.update { RecipientScreenState.Idle }
     }
 
     fun setQrData(data: String) {
         val paymentWrapper = uniffi.Gemstone.paymentDecodeUrl(data)
-        when (state.value.scan) {
-            ScanType.Address -> addressState.value = paymentWrapper.address.ifEmpty { data }
-            ScanType.Memo -> memoState.value = paymentWrapper.memo ?: data
-            null -> {}
+        when (state.value) {
+            RecipientScreenState.ScanAddress -> addressState.value = paymentWrapper.address.ifEmpty { data }
+            RecipientScreenState.ScanMemo -> memoState.value = paymentWrapper.memo ?: data
+            RecipientScreenState.Idle -> {}
         }
-        state.update { it.copy(scan = null) }
+        state.update { RecipientScreenState.Idle }
     }
 
     private fun validateRecipient(chain: Chain, recipient: String): RecipientFormError {
@@ -98,93 +85,41 @@ class RecipientFormViewModel @Inject constructor(
         }
     }
 
-    fun reset() {
-        state.update { RecipientFormState() }
-    }
-
-    fun onNext(
-        input: String,
-        nameRecord: NameRecord?,
-        memo: String,
-        onRecipientComplete: OnAmount
-    ) {
-        val currentState = state.value
-        val asset = currentState.assetInfo?.asset ?: return
-        val (address, addressDomain) = if (nameRecord?.name == input) Pair(nameRecord.address, nameRecord.name) else Pair(input, "")
-        val recipientError = validateRecipient(asset.id.chain, address)
-        state.update {
-            currentState.copy(
-                addressDomain = addressDomain,
-                addressError = recipientError,
-            )
-        }
-        if (recipientError == RecipientFormError.None) {
-            onRecipientComplete(
-                assetId = asset.id,
-                destinationAddress = address,
-                addressDomain = addressDomain,
-                memo = memo,
-                delegationId = "",
-                validatorId = "",
-                txType = TransactionType.Transfer,
-            )
+    fun onNext(onRecipientComplete: OnAmount) {
+        viewModelScope.launch {
+            val nameRecord = nameRecordState.value
+            val assetId = assetId.value ?: return@launch
+            val (address, addressDomain) = if (nameRecord?.name == addressState.value) {
+                Pair(nameRecord.address, nameRecord.name)
+            } else {
+                Pair(addressState.value, "")
+            }
+            val recipientError = validateRecipient(assetId.chain, address)
+            model.update { Model(addressError = recipientError) }
+            if (recipientError == RecipientFormError.None) {
+                onRecipientComplete(
+                    assetId = assetId,
+                    destinationAddress = address,
+                    addressDomain = addressDomain,
+                    memo = memoState.value,
+                    delegationId = "",
+                    validatorId = "",
+                    txType = TransactionType.Transfer,
+                )
+            }
         }
     }
-}
 
-data class RecipientFormState(
-    val assetInfo: AssetInfo? = null,
-//    val address: String = "",
-    val addressDomain: String = "",
-//    val memo: String = "",
-    val scan: ScanType? = null,
-    val addressError: RecipientFormError = RecipientFormError.None,
-    val metaError: RecipientFormError = RecipientFormError.None,
-    val fatalError: String = "",
-) {
-
-    fun toUIState(): RecipientFormUIState {
-        if (fatalError.isNotEmpty()) {
-            return RecipientFormUIState.Fatal(fatalError)
-        }
-
-        if (scan != null) {
-            return RecipientFormUIState.ScanQr
-        }
-
-        return RecipientFormUIState.Idle(
-            assetInfo = assetInfo,
-            addressDomain = addressDomain,
-            hasMemo = (assetInfo?.asset?.id?.chain?.memo() ?: PayloadType.None) != PayloadType.None,
-            addressError = addressError,
-            memoError = metaError,
-        )
-    }
-}
-
-sealed interface RecipientFormUIState {
-
-    data object Loading : RecipientFormUIState
-    class Fatal(val error: String) : RecipientFormUIState
-
-    data class Idle(
-        val assetInfo: AssetInfo? = null,
-        val addressDomain: String = "",
-        val hasMemo: Boolean = false,
+    data class Model(
         val addressError: RecipientFormError = RecipientFormError.None,
-        val memoError: RecipientFormError = RecipientFormError.None,
-    ) : RecipientFormUIState
+        val metaError: RecipientFormError = RecipientFormError.None,
+    ) {
 
-    data object ScanQr : RecipientFormUIState
-}
-
-enum class ScanType {
-    Address,
-    Memo,
-}
-
-sealed interface RecipientFormError {
-    data object None : RecipientFormError
-
-    data object IncorrectAddress : RecipientFormError
+        fun toUIModel(): RecipientScreenModel {
+            return RecipientScreenModel(
+                addressError = addressError,
+                memoError = metaError,
+            )
+        }
+    }
 }

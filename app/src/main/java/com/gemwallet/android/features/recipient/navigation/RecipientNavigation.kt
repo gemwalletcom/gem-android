@@ -15,13 +15,10 @@ import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.features.asset_select.views.SelectSendScreen
-import com.gemwallet.android.features.recipient.views.RecipientForm
+import com.gemwallet.android.features.recipient.views.RecipientScreen
 import com.wallet.core.primitives.AssetId
 
 internal const val assetIdArg = "assetId"
-internal const val destinationAddressArg = "destination_address"
-internal const val memoArg = "memo"
-internal const val addressDomainArg = "address_domain"
 
 const val sendRoute = "send"
 const val sendRecipientRoute = "send_recipient"
@@ -42,9 +39,7 @@ fun NavGraphBuilder.recipientScreen(
     onAmount: OnAmount,
 ) {
     navigation("$sendRecipientRoute/{$assetIdArg}", sendRoute) {
-        composable(
-            route = sendAssetSelectRoute,
-        ) {
+        composable(route = sendAssetSelectRoute) {
             SelectSendScreen(
                 onCancel = onCancel,
                 onSelect = {
@@ -62,18 +57,11 @@ fun NavGraphBuilder.recipientScreen(
                 }
             ),
         ) {
-            val assetId = it.arguments?.getString(assetIdArg)?.urlDecode()?.toAssetId()
-            val destinationAddress = it.arguments?.getString(destinationAddressArg)?.urlDecode() ?: ""
-            val addressDomain = it.arguments?.getString(addressDomainArg)?.urlDecode() ?: ""
-            val memo = it.arguments?.getString(memoArg)?.urlDecode() ?: ""
-            if (assetId == null) {
+
+            if (it.arguments?.getString(assetIdArg)?.urlDecode()?.toAssetId() == null) {
                 onCancel()
             } else {
-                RecipientForm(
-                    assetId = assetId,
-                    destinationAddress = destinationAddress,
-                    addressDomain = addressDomain,
-                    memo = memo,
+                RecipientScreen(
                     onNext = onAmount,
                     onCancel = onCancel,
                 )
