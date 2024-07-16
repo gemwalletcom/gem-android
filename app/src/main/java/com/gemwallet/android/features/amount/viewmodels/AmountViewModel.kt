@@ -13,6 +13,7 @@ import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.features.amount.model.AmountError
 import com.gemwallet.android.features.amount.model.AmountParams
 import com.gemwallet.android.features.amount.navigation.paramsArg
+import com.gemwallet.android.features.amount.views.amountErrorString
 import com.gemwallet.android.features.confirm.models.AmountScreenModel
 import com.gemwallet.android.features.recipient.models.InputCurrency
 import com.gemwallet.android.math.numberParse
@@ -34,7 +35,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
@@ -80,20 +80,15 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeRedelegate -> stakeRepository.getRecommended(params.assetId.chain)
             else -> null
         }
-    }
-    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
     private val selectedValidator = MutableStateFlow<DelegationValidator?>(null)
     val validatorState = selectedValidator.combine(srcValidator) { selected, src ->
         selected ?: src
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val state: StateFlow<State?> = params.combine(asset) { params, asset ->
-        State(
-            assetInfo = asset,
-            params = params,
-        )
-    }
-    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        State(assetInfo = asset, params = params)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val uiModel: StateFlow<AmountScreenModel?> = state.map { state ->
         state ?: return@map null
@@ -102,7 +97,6 @@ class AmountViewModel @Inject constructor(
             asset = state.assetInfo.asset,
         )
     }
-    .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val availableBalance = state.combine(delegation) { state, delegation ->
@@ -161,10 +155,11 @@ class AmountViewModel @Inject constructor(
             amount = amount
         )
         if (balanceError != AmountError.None) {
-            inputErrorState.update { balanceError }
+            nextErrorState.update { balanceError }
             return@launch
         }
         inputErrorState.update { AmountError.None }
+        nextErrorState.update { AmountError.None }
         val nextParams = when (params.txType) {
             TransactionType.Transfer -> ConfirmParams.TransferParams(
                 assetId = asset.id,
@@ -223,6 +218,7 @@ class AmountViewModel @Inject constructor(
     fun updateAmount(input: String, isMax: Boolean = false) {
         amount = input
         inputErrorState.update { AmountError.None }
+        nextErrorState.update { AmountError.None }
         maxAmount.update { isMax }
     }
 

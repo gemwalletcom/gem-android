@@ -49,7 +49,11 @@ fun AmountScene(
         onClose = onCancel,
         mainAction = {
             MainActionButton(
-                title = stringResource(id = R.string.common_continue),
+                title = if (amountError == AmountError.None) {
+                    stringResource(id = R.string.common_continue)
+                } else {
+                    amountErrorString(amountError)
+                },
                 enabled = amountError == AmountError.None,
                 onClick = onNext,
             )
@@ -102,10 +106,9 @@ fun AmountScene(
 fun amountErrorString(error: AmountError): String = when (error) {
     AmountError.None -> ""
     AmountError.IncorrectAmount -> stringResource(id = R.string.amount_error_invalid_amount)
-    AmountError.Init -> "Init error"
     AmountError.Required -> stringResource(id = R.string.common_required_field, stringResource(id = R.string.transfer_amount))
-    AmountError.Unavailable -> ""
+    AmountError.Unavailable -> "Unavailable"
     is AmountError.InsufficientBalance -> stringResource(id = R.string.transfer_insufficient_balance, error.assetName)
-    AmountError.ZeroAmount -> ""
+    AmountError.ZeroAmount -> "Zero amount"
     is AmountError.MinimumValue -> stringResource(id = R.string.transfer_minimum_amount, error.minimumValue)
 }
