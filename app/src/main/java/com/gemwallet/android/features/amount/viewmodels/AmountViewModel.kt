@@ -13,7 +13,6 @@ import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.features.amount.model.AmountError
 import com.gemwallet.android.features.amount.model.AmountParams
 import com.gemwallet.android.features.amount.navigation.paramsArg
-import com.gemwallet.android.features.amount.views.amountErrorString
 import com.gemwallet.android.features.confirm.models.AmountScreenModel
 import com.gemwallet.android.features.recipient.models.InputCurrency
 import com.gemwallet.android.math.numberParse
@@ -128,84 +127,6 @@ class AmountViewModel @Inject constructor(
 
     private val maxAmount = MutableStateFlow(false)
 
-    fun onNext(onConfirm: (ConfirmParams) -> Unit) = viewModelScope.launch {
-        val state = state.value ?: return@launch
-        val params = state.params
-        val assetInfo = state.assetInfo
-        val inputCurrency = InputCurrency.InCrypto
-        val maxAmount = maxAmount.value
-        val validator = validatorState.value
-        val delegation = delegation.value
-
-        val asset = assetInfo.asset
-        val decimals = asset.decimals
-        val price = assetInfo.price?.price?.price ?: 0.0
-
-        val minimumValue = getMinAmount(params.txType, asset.id.chain)
-        val inputError = validateAmount(asset, amount, inputCurrency, price, minimumValue)
-        if (inputError != AmountError.None) {
-            inputErrorState.update { inputError }
-            return@launch
-        }
-        val amount = inputCurrency.getAmount(amount, decimals, price)
-        val balanceError = validateBalance(
-            assetInfo = assetInfo,
-            txType = params.txType,
-            delegation = delegation,
-            amount = amount
-        )
-        if (balanceError != AmountError.None) {
-            nextErrorState.update { balanceError }
-            return@launch
-        }
-        inputErrorState.update { AmountError.None }
-        nextErrorState.update { AmountError.None }
-        val nextParams = when (params.txType) {
-            TransactionType.Transfer -> ConfirmParams.TransferParams(
-                assetId = asset.id,
-                amount = amount.atomicValue,
-                domainName = params.addressDomain,
-                to = params.destinationAddress ?: return@launch,
-                isMaxAmount = maxAmount,
-                memo = params.memo,
-            )
-            TransactionType.Swap,
-            TransactionType.TokenApproval -> throw IllegalArgumentException()
-            TransactionType.StakeDelegate -> ConfirmParams.DelegateParams(
-                assetId = asset.id,
-                amount = amount.atomicValue,
-                validatorId = validator?.id!!
-            )
-            TransactionType.StakeUndelegate -> ConfirmParams.UndelegateParams(
-                assetId = asset.id,
-                amount = amount.atomicValue,
-                validatorId = validator?.id!!,
-                delegationId = delegation?.base?.delegationId!!,
-                share = delegation.base.shares,
-                balance = delegation.base.balance,
-            )
-            TransactionType.StakeRewards -> ConfirmParams.RewardsParams(
-                assetId = asset.id,
-                validatorsId = stakeRepository.getRewards(asset.id, assetInfo.owner.address).map { it.validator.id },
-            )
-            TransactionType.StakeRedelegate -> ConfirmParams.RedeleateParams(
-                assetId = asset.id,
-                amount = amount.atomicValue,
-                srcValidatorId = params.validatorId!!,
-                dstValidatorId = validator?.id!!,
-                share = delegation?.base?.shares!!,
-                balance = delegation.base.balance,
-            )
-            TransactionType.StakeWithdraw -> ConfirmParams.WithdrawParams(
-                assetId = asset.id,
-                amount = amount.atomicValue,
-                validatorId = validator?.id!!,
-                delegationId = delegation?.base?.delegationId!!,
-            )
-        }
-        onConfirm(nextParams)
-    }
-
     fun setDelegatorValidator(validatorId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val assetId = state.value?.assetInfo?.asset?.id ?: return@launch
@@ -230,6 +151,56 @@ class AmountViewModel @Inject constructor(
         }
 
         updateAmount(balance.value(asset.asset.decimals).stripTrailingZeros().toPlainString(), true)
+    }
+
+    fun onNext(onConfirm: (ConfirmParams) -> Unit) = viewModelScope.launch {
+        val state = state.value ?: return@launch
+        val params = state.params
+        val inputCurrency = InputCurrency.InCrypto
+        val validator = validatorState.value
+        val delegation = delegation.value
+
+        val asset = state.assetInfo.asset
+        val decimals = asset.decimals
+        val price = state.assetInfo.price?.price?.price ?: 0.0
+
+        val minimumValue = getMinAmount(params.txType, asset.id.chain)
+        val inputError = validateAmount(asset, amount, inputCurrency, price, minimumValue)
+        if (inputError != AmountError.None) {
+            inputErrorState.update { inputError }
+            return@launch
+        }
+        val amount = inputCurrency.getAmount(amount, decimals, price)
+        val balanceError = validateBalance(
+            assetInfo = state.assetInfo,
+            txType = params.txType,
+            delegation = delegation,
+            amount = amount
+        )
+        if (balanceError != AmountError.None) {
+            nextErrorState.update { balanceError }
+            return@launch
+        }
+        inputErrorState.update { AmountError.None }
+        nextErrorState.update { AmountError.None }
+        val builder = ConfirmParams.Builder(asset.id, amount.atomicValue, params.memo)
+        val nextParams = when (params.txType) {
+            TransactionType.Transfer -> builder.transfer(
+                params.destinationAddress ?: return@launch,
+                params.addressDomain,
+                maxAmount.value,
+            )
+            TransactionType.StakeDelegate -> builder.delegate(validator?.id!!)
+            TransactionType.StakeUndelegate -> builder.undelegate(delegation!!) // TODO: ???
+            TransactionType.StakeRewards -> builder.rewards(
+                stakeRepository.getRewards(asset.id, state.assetInfo.owner.address).map { it.validator.id }
+            )
+            TransactionType.StakeRedelegate -> builder.redelegate(validator?.id!!, delegation!!)
+            TransactionType.StakeWithdraw -> builder.withdraw(delegation!!)
+            TransactionType.Swap,
+            TransactionType.TokenApproval -> throw IllegalArgumentException()
+        }
+        onConfirm(nextParams)
     }
 
     private fun calcEquivalent(inputAmount: String, inputCurrency: InputCurrency, assetInfo: AssetInfo): String {

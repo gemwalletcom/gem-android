@@ -7,6 +7,7 @@ import com.gemwallet.android.serializer.AssetIdSerializer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.TransactionType
 import java.math.BigInteger
 import java.util.Base64
@@ -16,6 +17,61 @@ sealed class ConfirmParams(
     val amount: BigInteger = BigInteger.ZERO,
     val domainName: String? = null,
 ) {
+
+    class Builder(
+        val assetId: AssetId,
+        val amount: BigInteger = BigInteger.ZERO,
+        val domainName: String? = null,
+    ) {
+        fun transfer(to: String, memo: String? = null, isMax: Boolean = false): TransferParams {
+            return TransferParams(
+                assetId = assetId,
+                amount = amount,
+                to = to,
+                domainName = domainName,
+                memo = memo,
+                isMaxAmount = isMax
+            )
+        }
+
+        fun approval(approvalData: String, provider: String): TokenApprovalParams {
+            return TokenApprovalParams(assetId, approvalData, provider)
+        }
+
+        fun delegate(validatorId: String,) = DelegateParams(assetId, amount, validatorId)
+
+        fun rewards(validatorsId: List<String>) = RewardsParams(assetId, validatorsId)
+
+        fun withdraw(delegation: Delegation) = WithdrawParams(
+            assetId = assetId,
+            amount = amount,
+            validatorId = delegation.validator.id,
+            delegationId = delegation.base.delegationId,
+        )
+
+        fun undelegate(delegation: Delegation): UndelegateParams {
+            return UndelegateParams(
+                assetId,
+                amount,
+                delegation.validator.id,
+                delegation.base.delegationId,
+                delegation.base.shares,
+                delegation.base.balance
+            )
+        }
+
+        fun redelegate(dstValidatorId: String, delegation: Delegation): RedeleateParams {
+            return RedeleateParams(
+                assetId,
+                amount,
+                delegation.validator.id,
+                dstValidatorId,
+                delegation.base.shares,
+                delegation.base.balance,
+            )
+        }
+    }
+
     class TransferParams(
         assetId: AssetId,
         amount: BigInteger,
