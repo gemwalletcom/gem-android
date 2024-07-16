@@ -10,7 +10,6 @@ sealed interface AmountScreenState {
     data object Loading : AmountScreenState
 
     class Loaded(
-        val loading: Boolean,
         val error: AmountError,
         val txType: TransactionType,
         val assetId: AssetId,
@@ -21,7 +20,6 @@ sealed interface AmountScreenState {
         val availableAmount: String,
         val validator: DelegationValidator?,
         val equivalent: String,
-        val inputCurrency: InputCurrency,
     ) : AmountScreenState
 
     data object Fatal : AmountScreenState
