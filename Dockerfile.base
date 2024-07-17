@@ -1,0 +1,53 @@
+FROM ubuntu:22.04
+
+# Set environment variables for non-interactive installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install necessary tools
+RUN apt-get update && apt-get install -y \
+    curl \
+    unzip \
+    git \
+    make \
+    zip \
+    build-essential \
+    libssl-dev \
+    pkg-config \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install JDK 17
+RUN curl -s "https://get.sdkman.io" | bash && \
+    bash -c "source $HOME/.sdkman/bin/sdkman-init.sh && sdk install java 17.0.11-tem"
+
+# Set environment variables for Java
+ENV JAVA_HOME $HOME/.sdkman/candidates/java/current
+ENV PATH $JAVA_HOME/bin:$PATH
+
+# Set environment variables for Android SDK
+ENV ANDROID_HOME /opt/android-sdk
+ENV ANDROID_SDK_ROOT /opt/android-sdk
+ENV PATH ${ANDROID_HOME}/cmdline-tools/bin:${ANDROID_HOME}/platform-tools:${PATH}
+
+# Download and install Android SDK
+RUN mkdir -p ${ANDROID_HOME} && \
+    curl -o sdk-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip && \
+    unzip sdk-tools.zip -d ${ANDROID_HOME} && \
+    mv ${ANDROID_HOME}/cmdline-tools/* ${ANDROID_HOME}/ && \
+    rm -rf ${ANDROID_HOME}/cmdline-tools && \
+    rm sdk-tools.zip
+
+# Install SDK components
+RUN yes | ${ANDROID_HOME}/bin/sdkmanager --sdk_root=${ANDROID_HOME} --licenses && \
+    ${ANDROID_HOME}/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;26.1.10909125"
+
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && \
+    echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
+ENV PATH "$HOME/.cargo/bin:${PATH}"
+
+# Install toolchain and targets
+RUN rustup toolchain install stable
+RUN rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android
+
+# Cargo install
+RUN cargo install typeshare-cli --version 1.6.0 cargo-ndk

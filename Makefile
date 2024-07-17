@@ -3,7 +3,8 @@ SDK_MANAGER = ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager
 
 install:
 	@echo Install Rust
-	@curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+	@curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+	@. ~/.cargo/env
 
 install-typeshare:
 	@echo Install typeshare-cli
