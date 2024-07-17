@@ -2,6 +2,7 @@ package com.gemwallet.android.features.amount.model
 
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
+import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.serializer.AssetIdSerializer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -12,8 +13,7 @@ import java.util.Base64
 class AmountParams(
     val assetId: AssetId,
     val txType: TransactionType,
-    val destinationAddress: String? = null,
-    val addressDomain: String? = null,
+    val destination: DestinationAddress? = null,
     val memo: String? = null,
     val validatorId: String? = null,
     val delegationId: String? = null,
@@ -38,14 +38,12 @@ class AmountParams(
 
         fun buildTransfer(
             assetId: AssetId,
-            destinationAddress: String? = null,
-            addressDomain: String,
+            destination: DestinationAddress?,
             memo: String,
         ): AmountParams = AmountParams(
             assetId = assetId,
             txType = TransactionType.Transfer,
-            destinationAddress = destinationAddress,
-            addressDomain = addressDomain,
+            destination = destination,
             memo = memo,
         )
 

@@ -183,12 +183,12 @@ class AmountViewModel @Inject constructor(
         }
         inputErrorState.update { AmountError.None }
         nextErrorState.update { AmountError.None }
-        val builder = ConfirmParams.Builder(asset.id, amount.atomicValue, params.memo)
+        val builder = ConfirmParams.Builder(asset.id, amount.atomicValue)
         val nextParams = when (params.txType) {
             TransactionType.Transfer -> builder.transfer(
-                params.destinationAddress ?: return@launch,
-                params.addressDomain,
-                maxAmount.value,
+                destination = params.destination ?: return@launch,
+                memo = params.memo,
+                isMax = maxAmount.value,
             )
             TransactionType.StakeDelegate -> builder.delegate(validator?.id!!)
             TransactionType.StakeUndelegate -> builder.undelegate(delegation!!) // TODO: ???

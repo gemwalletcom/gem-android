@@ -93,7 +93,7 @@ class SolanaSignClient(
         val blockhash = (input.info as SolanaSignerPreloader.Info).blockhash
         return Solana.SigningInput.newBuilder().apply {
             this.transferTransaction = Solana.Transfer.newBuilder().apply {
-                this.recipient = input.input.destination()
+                this.recipient = input.input.destination()?.address
                 this.value = input.finalAmount.toLong()
                 if (!input.input.memo().isNullOrEmpty()) {
                     this.memo = input.input.memo()
@@ -107,7 +107,7 @@ class SolanaSignClient(
         val decimals = getAsset.getAsset(input.input.assetId)?.decimals ?: throw IllegalArgumentException("Asset not found")
         val tokenId = input.input.assetId.tokenId
         val amount = input.finalAmount.toLong()
-        val recipient = input.input.destination()
+        val recipient = input.input.destination()?.address
         val metadata = input.info as SolanaSignerPreloader.Info
         return Solana.SigningInput.newBuilder().apply {
             this.recentBlockhash = metadata.blockhash

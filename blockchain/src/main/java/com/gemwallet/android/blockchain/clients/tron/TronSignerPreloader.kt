@@ -21,7 +21,7 @@ class TronSignerPreloader(
                 TronFee().invoke(
                     rpcClient = rpcClient,
                     account = owner,
-                    recipientAddress = params.destination(),
+                    recipientAddress = params.destination()?.address!!,
                     value = params.amount,
                     contractAddress = params.assetId.tokenId,
                     type = params.assetId.type(),

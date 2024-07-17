@@ -38,7 +38,7 @@ class SolanaSignerPreloader(
                     Info(blockhash, "", null, fee)
                 }
                 AssetSubtype.TOKEN -> {
-                    val (senderTokenAddress, recipientTokenAddress) = getTokenAccounts(params.assetId.tokenId!!, owner.address, params.to)
+                    val (senderTokenAddress, recipientTokenAddress) = getTokenAccounts(params.assetId.tokenId!!, owner.address, params.destination.address)
 
                     if (senderTokenAddress.isNullOrEmpty()) {
                         return@withContext Result.failure(Exception("Sender token address is empty"))

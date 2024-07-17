@@ -19,7 +19,7 @@ class BitcoinSignerPreloader(
         params: ConfirmParams,
     ): Result<SignerParams> {
         return rpcClient.getUTXO(owner.extendedPublicKey!!).mapCatching {
-            val fee = BitcoinFee().invoke(rpcClient, it, owner, params.destination(), params.amount)
+            val fee = BitcoinFee().invoke(rpcClient, it, owner, params.destination()?.address!!, params.amount)
             SignerParams(
                 input = params,
                 owner = owner.address,

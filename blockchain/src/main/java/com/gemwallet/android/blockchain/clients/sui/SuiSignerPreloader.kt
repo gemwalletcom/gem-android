@@ -42,14 +42,14 @@ class SuiSignerPreloader(
             is ConfirmParams.TransferParams -> when (params.assetId.type()) {
                 AssetSubtype.NATIVE -> encodeTransfer(
                     sender = owner.address,
-                    recipient = params.destination(),
+                    recipient = params.destination.address,
                     value = params.amount,
                     coinType = coinId,
                     sendMax = params.isMax(),
                 )
                 AssetSubtype.TOKEN -> encodeTokenTransfer(
                     sender = owner.address,
-                    recipient = params.destination(),
+                    recipient = params.destination.address,
                     value = params.amount,
                     coinType = params.assetId.tokenId!!,
                     gasCoinType = coinId

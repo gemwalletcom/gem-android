@@ -9,6 +9,7 @@ import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.tokens.TokensRepository
 import com.gemwallet.android.ext.getAccount
+import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.tokenAvailableChains
 import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.toUIModel
@@ -57,7 +58,7 @@ class AssetSelectViewModel @Inject constructor(
     }
     .flatMapLatest { assetsRepository.search(it.first?.wallet ?: return@flatMapLatest emptyFlow(), it.second.toString()) }
     .map { assets: List<AssetInfo> ->
-        assets.sortedByDescending {
+        assets.distinctBy { it.asset.id.toIdentifier() }.sortedByDescending {
             it.balances.available().convert(it.asset.decimals, it.price?.price?.price ?: 0.0).atomicValue
         }
     }
