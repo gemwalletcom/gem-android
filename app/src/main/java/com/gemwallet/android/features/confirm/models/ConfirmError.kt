@@ -3,7 +3,7 @@ package com.gemwallet.android.features.confirm.models
 import androidx.compose.runtime.Composable
 import com.gemwallet.android.R
 
-sealed class ConfirmError(val message: String) {
+sealed class ConfirmError(message: String) : Exception(message){
 
     data object None : ConfirmError("")
 
@@ -41,7 +41,7 @@ sealed class ConfirmError(val message: String) {
             TransactionIncorrect,
             WalletNotAvailable -> androidx.compose.ui.res.stringResource(
                 id = R.string.errors_transfer,
-                message
+                message ?: ""
             )
             CalculateFee -> androidx.compose.ui.res.stringResource(R.string.confirm_fee_error)
         }
