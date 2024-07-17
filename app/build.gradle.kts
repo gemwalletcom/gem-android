@@ -200,6 +200,12 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    // Local wallet core
+    api(files("../libs/wallet-core-4.0.42-sources.jar"))
+    api(files("../libs/wallet-core-proto-4.0.42.jar"))
+    api(files("../libs/wallet-core-4.0.42.aar"))
+    api(libs.protobuf.javalite)
 }
 
 room {

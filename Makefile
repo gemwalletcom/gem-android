@@ -14,10 +14,7 @@ install-toolchains:
 	@echo Install toolchains for uniffi
 	@cd core/gemstone && make prepare-android
 
-core-upgrade:
-	git submodule update --recursive --remote
-
-bootstrap: install install-toolchains install-ndk generate
+bootstrap: install install-toolchains install-ndk install-wallet-core generate
 
 # Android
 
@@ -69,3 +66,4 @@ build-app:
 	--build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) \
 	--progress=plain \
 	-t gem-android -f Dockerfile.app . &> build.app.log
+	

@@ -19,7 +19,7 @@ class AptosSignClient(
         val signInput = Aptos.SigningInput.newBuilder().apply {
             this.chainId = 1
             this.transfer = Aptos.TransferMessage.newBuilder().apply {
-                this.to = params.input.destination()
+                this.to = params.input.destination()?.address
                 this.amount = params.finalAmount.toLong()
             }.build()
             this.expirationTimestampSecs = 3664390082
