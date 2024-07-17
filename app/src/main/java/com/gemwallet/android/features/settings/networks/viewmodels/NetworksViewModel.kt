@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.settings.networks.viewmodels
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel

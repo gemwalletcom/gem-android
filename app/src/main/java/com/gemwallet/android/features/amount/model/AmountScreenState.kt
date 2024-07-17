@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.amount.model
 
-import com.gemwallet.android.features.recipient.models.InputCurrency
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.DelegationValidator

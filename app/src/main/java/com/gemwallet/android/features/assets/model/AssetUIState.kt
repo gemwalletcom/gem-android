@@ -4,10 +4,8 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Asset
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
-import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Currency
 import java.math.BigInteger
 import java.math.RoundingMode
