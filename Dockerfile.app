@@ -9,14 +9,13 @@ ARG GITHUB_TOKEN
 ENTRYPOINT ["/bin/bash", "-c", "source $HOME/.bashrc && exec $0 \"$@\"", "--"]
 
 # Clone the repository
-RUN git clone --recursive --depth 1 --branch $TAG https://github.com/gemwalletcom/gem-android.git $HOME/gem-android
+RUN git clone --depth 1 --recursive --branch $TAG https://github.com/gemwalletcom/gem-android.git $HOME/gem-android
 
 # Set the working directory
 WORKDIR $HOME/gem-android
 
-RUN make generate-models && make generate-stone BUILD_MODE=$BUILD_MODE
+RUN make generate-models
 
 RUN unsigned-release
 
-# Commandline access
 CMD ["bash"]

@@ -60,11 +60,12 @@ else
 endif
 
 build-base-image:
-	docker build -t gem-android-base -f Dockerfile.base .
+	docker build -t gem-android-base -f Dockerfile.base . &> build.base.log
 
 build-app:
 	docker build --build-arg TAG=$(TAG) \
 	--build-arg BUILD_MODE=$(BUILD_MODE) \
 	--build-arg GITHUB_USER=$(GITHUB_USER) \
 	--build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) \
-	-t gem-android -f Dockerfile.app . 
+	--progress=plain \
+	-t gem-android -f Dockerfile.app . &> build.app.log
