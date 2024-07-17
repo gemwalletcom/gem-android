@@ -42,7 +42,9 @@ release:
 localize:
 	@sh scripts/localize.sh android
 
-generate: install-typeshare generate-stone
+generate: generate-models generate-stone
+
+generate-models: install-typeshare
 	@echo "Generate typeshare for Android"
 	@cd core && cargo run --package generate --bin generate android ../gemcore/src/main/java/com/wallet/core
 

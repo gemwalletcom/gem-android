@@ -14,7 +14,7 @@ RUN git clone --recursive --depth 1 --branch $TAG https://github.com/gemwalletco
 # Set the working directory
 WORKDIR $HOME/gem-android
 
-RUN make generate BUILD_MODE=$BUILD_MODE
+RUN make generate-models && make generate-stone BUILD_MODE=$BUILD_MODE
 
 RUN unsigned-release
 
