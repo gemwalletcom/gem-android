@@ -211,7 +211,7 @@ class SuiSignerPreloader(
         override fun fee(): Fee = fee
     }
     
-    fun com.wallet.core.blockchain.sui.SuiCoin.toGemstone() = SuiCoin(
+    private fun com.wallet.core.blockchain.sui.SuiCoin.toGemstone() = SuiCoin(
         coinType = coinType,
         balance = balance.toULong(),
         objectRef = SuiObjectRef(

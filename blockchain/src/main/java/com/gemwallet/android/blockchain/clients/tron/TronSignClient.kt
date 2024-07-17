@@ -29,12 +29,12 @@ class TronSignClient : SignClient {
                 this.txTrieRoot = ByteString.copyFrom(blockInfo.txTrieRoot.decodeHex())
             }.build()
             when (params.input.assetId.type()) {
-                AssetSubtype.NATIVE -> this.transfer = getTransferContract(params.finalAmount, params.owner, params.input.destination())
+                AssetSubtype.NATIVE -> this.transfer = getTransferContract(params.finalAmount, params.owner, params.input.destination()?.address ?: "")
                 AssetSubtype.TOKEN -> this.transferTrc20Contract = getTransferTRC20Contract(
                     params.input.assetId.tokenId!!,
                     params.finalAmount,
                     params.owner,
-                    params.input.destination()
+                    params.input.destination()?.address ?: ""
                 )
                 else -> throw IllegalArgumentException("Unsupported type")
             }

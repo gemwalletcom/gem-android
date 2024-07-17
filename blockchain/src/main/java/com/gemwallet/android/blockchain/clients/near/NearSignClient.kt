@@ -21,7 +21,7 @@ class NearSignClient(
         val input = NEAR.SigningInput.newBuilder().apply {
             this.signerId = params.owner
             this.nonce = metadata.sequence
-            this.receiverId = params.input.destination()
+            this.receiverId = params.input.destination()?.address
             this.addAllActions(
                 listOf(
                     NEAR.Action.newBuilder().apply {

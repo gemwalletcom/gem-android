@@ -22,7 +22,7 @@ class TonSignClient : SignClient {
         val signingInput = TheOpenNetwork.SigningInput.newBuilder().apply {
             this.transfer = TheOpenNetwork.Transfer.newBuilder().apply {
                 this.walletVersion = TheOpenNetwork.WalletVersion.WALLET_V4_R2
-                this.dest = params.input.destination()
+                this.dest = params.input.destination()?.address
                 this.amount = params.finalAmount.toLong()
                 this.comment = params.input.memo() ?: ""
                 this.sequenceNumber = (params.info as TonSignerPreloader.Info).sequence
@@ -54,7 +54,7 @@ class TonSignClient : SignClient {
         val jettonTransfer = TheOpenNetwork.JettonTransfer.newBuilder().apply {
             this.transfer = transfer
             this.jettonAmount = params.finalAmount.toLong()
-            this.toOwner = params.input.destination()
+            this.toOwner = params.input.destination()?.address
             this.responseAddress = params.owner
             this.forwardAmount = 1
         }.build()

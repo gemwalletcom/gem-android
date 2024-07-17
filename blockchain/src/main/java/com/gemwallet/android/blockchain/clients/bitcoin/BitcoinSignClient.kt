@@ -32,7 +32,7 @@ class BitcoinSignClient(
             this.hashType = BitcoinSigHashType.ALL.value()//BitcoinScript.hashTypeForCoin(coinType)
             this.amount = params.finalAmount.toLong()
             this.byteFee = gasFee.maxGasPrice.toLong()
-            this.toAddress = params.input.destination()
+            this.toAddress = params.input.destination()?.address
             this.changeAddress = params.owner
             this.useMaxAmount = params.input.isMax()
             this.addPrivateKey(ByteString.copyFrom(privateKey))

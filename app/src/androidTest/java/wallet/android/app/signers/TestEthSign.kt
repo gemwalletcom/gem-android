@@ -7,6 +7,7 @@ import com.gemwallet.android.blockchain.clients.ethereum.EvmSignerPreloader
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.AssetId
@@ -46,7 +47,7 @@ class TestEthSign {
                     input = ConfirmParams.TransferParams(
                         assetId = com.wallet.core.primitives.Chain.Ethereum.asset().id,
                         amount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Ethereum.asset().decimals),
-                        to = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
+                        destination = DestinationAddress("0x9b1DB81180c31B1b428572Be105E209b5A6222b7"),
                     ),
                     owner = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                     finalAmount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Ethereum.asset().decimals),
@@ -83,7 +84,7 @@ class TestEthSign {
                     input = ConfirmParams.TransferParams(
                         assetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
                         amount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Ethereum.asset().decimals),
-                        to = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
+                        destination = DestinationAddress("0x9b1DB81180c31B1b428572Be105E209b5A6222b7"),
                     ),
                     owner = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                     finalAmount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Ethereum.asset().decimals),
