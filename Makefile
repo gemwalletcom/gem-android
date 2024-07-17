@@ -47,7 +47,22 @@ generate: install-typeshare generate-stone
 	@cd core && cargo run --package generate --bin generate android ../gemcore/src/main/java/com/wallet/core
 
 generate-stone:
-	@echo "Generate Gemstone lib, default build mode is debug"
+	@echo "Generate Gemstone lib, default build mode is $(BUILD_MODE)"
 	@cd core/gemstone && make bindgen-kotlin BUILD_MODE=$(BUILD_MODE)
 	@cp -Rf core/gemstone/generated/kotlin/uniffi gemcore/src/main/java
-	@touch local.properties && ./gradlew buildCargoNdkDebug --info
+	@touch local.properties
+ifeq ($(BUILD_MODE),release)
+	./gradlew buildCargoNdkRelease --info
+else
+	./gradlew buildCargoNdkDebug --info
+endif
+
+build-base-image:
+	docker build -t gem-android-base -f Dockerfile.base .
+
+build-app:
+	docker build --build-arg TAG=$(TAG) \
+	--build-arg BUILD_MODE=$(BUILD_MODE) \
+	--build-arg GITHUB_USER=$(GITHUB_USER) \
+	--build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) \
+	-t gem-android -f Dockerfile.app . 

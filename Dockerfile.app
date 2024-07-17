@@ -1,21 +1,20 @@
 FROM gem-android-base:latest
 
 ARG TAG
+ARG BUILD_MODE
+ARG GITHUB_USER
+ARG GITHUB_TOKEN
 
 # Set up entrypoint to ensure environment variables are loaded
 ENTRYPOINT ["/bin/bash", "-c", "source $HOME/.bashrc && exec $0 \"$@\"", "--"]
 
 # Clone the repository
-RUN git clone --recursive --depth 1 --branch $TAG git@github.com:gemwalletcom/gem-android.git $HOME
-
-# Create the local.properties file
-RUN echo "gpr.user=$GITHUB_USER" >> $HOME/gem-android/local.properties && \
-    echo "gpr.key=$GITHUB_TOKEN" >> $HOME/gem-android/local.properties
+RUN git clone --recursive --depth 1 --branch $TAG https://github.com/gemwalletcom/gem-android.git $HOME/gem-android
 
 # Set the working directory
 WORKDIR $HOME/gem-android
 
-RUN make generate
+RUN make generate BUILD_MODE=$BUILD_MODE
 
 RUN unsigned-release
 

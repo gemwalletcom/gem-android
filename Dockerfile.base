@@ -15,6 +15,8 @@ RUN apt-get update && apt-get install -y \
     pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
+ENV HOME /root
+
 # Install JDK 17
 RUN curl -s "https://get.sdkman.io" | bash && \
     bash -c "source $HOME/.sdkman/bin/sdkman-init.sh && sdk install java 17.0.11-tem"
@@ -50,4 +52,4 @@ RUN rustup toolchain install stable
 RUN rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android
 
 # Cargo install
-RUN cargo install typeshare-cli --version 1.6.0 cargo-ndk
+RUN cargo install typeshare-cli --version 1.6.0 && cargo install cargo-ndk
