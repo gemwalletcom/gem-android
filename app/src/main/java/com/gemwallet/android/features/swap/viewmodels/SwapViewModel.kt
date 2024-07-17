@@ -106,6 +106,9 @@ class SwapViewModel @Inject constructor(
             if (quoteJob?.isActive == true) {
                 quoteJob?.cancel()
             }
+            if (allowanceJob?.isActive == true) {
+                allowanceJob?.cancel()
+            }
             if (newValue.isEmpty() || newValue.toString() == "0") {
                 receiveValue.edit { replace(0, length, "0") }
                 state.update { it.copy(quote = null, calculatingQuote = false) }

@@ -69,20 +69,11 @@ interface GemApiClient {
     suspend fun getFiatAssets(): Result<FiatAssets>
 
     @GET("/v1/transactions/by_device_id/{device_id}")
-    suspend fun getTransactions(@Path("device_id") deviceId: String): Result<Transactions>
-
-    @GET("/v1/transactions/by_device_id/{device_id}")
     suspend fun getTransactions(
         @Path("device_id") deviceId: String,
         @Query("wallet_index") walletIndex: Int,
         @Query("from_timestamp") from: Long
     ): Result<Transactions>
-
-    @GET("/v1/transactions/by_device_id/{device_id}")
-    suspend fun getTransactionsByAssetId(@Path("device_id") deviceId: String, @Query("asset_id") assetId: String): Result<Transactions>
-
-    @GET("/v1/transactions/by_device_id/{device_id}")
-    suspend fun getTransactionsByAssetId(@Path("device_id") deviceId: String, @Query("asset_id") assetId: String, @Query("from_timestamp") from: Long): Result<Transactions>
 
     @GET("/v1/name/resolve/{domain}")
     suspend fun resolve(@Path("domain") domain: String, @Query("chain") chain: String): Result<NameRecord>
@@ -121,10 +112,6 @@ interface GemApiClient {
 
     @GET("/v1/assets/by_device_id/{device_id}")
     suspend fun getAssets(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int, @Query("from_timestamp") fromTimestamp: Int = 0): Result<List<String>>
-
-    data class GemIpAddressResponse(
-        val ipv4: String
-    )
 
     data class PricesResponse(
         val currency: String,
@@ -187,7 +174,7 @@ interface GemApiClient {
             } else {
                 null
             }
-            val approval = if (jObj["approval"].isJsonNull
+            val approval = if (jObj["approval"] == null || jObj["approval"].isJsonNull
                 || !jObj["approval"].isJsonObject
                 || jObj["approval"].asJsonObject["spender"].isJsonNull
                 || !jObj["approval"].asJsonObject["spender"].isJsonPrimitive) {

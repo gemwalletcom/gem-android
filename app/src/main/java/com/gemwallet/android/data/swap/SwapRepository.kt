@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.swap
 
+import android.util.Log
 import com.gemwallet.android.blockchain.clients.SwapClient
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.services.GemApiClient
@@ -18,7 +19,7 @@ class SwapRepository(
     private val swapClients: List<SwapClient>,
 ) {
     suspend fun getQuote(ownerAddress: String, from: AssetId, to: AssetId, amount: String, includeData: Boolean = false): SwapQuoteResult? {
-        val quote = gemApiClient.getSwapQuote(
+        val result = gemApiClient.getSwapQuote(
             GemApiClient.SwapRequest(
                 fromAsset = from.toIdentifier(),
                 toAsset = to.toIdentifier(),
@@ -26,9 +27,14 @@ class SwapRepository(
                 amount = amount,
                 includeData = includeData,
             )
-        ).getOrNull() ?: return null
-        val spender = quote.quote.approval?.spender ?: throw Exception("Approval data is null")
-        swapClients.firstOrNull { it.isMaintain(from.chain) }?.checkSpender(spender)
+        )
+        val quote = result.getOrNull() ?: return null
+        val spender = quote.quote.approval?.spender
+        if (!includeData) {
+            spender ?: throw Exception("Approval data is null")
+            swapClients.firstOrNull { it.isMaintain(from.chain) }?.checkSpender(spender)
+        }
+
         return quote
     }
 

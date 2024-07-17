@@ -19,6 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.features.confirm.views.ConfirmScreen
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene
@@ -59,8 +60,7 @@ fun RequestScene(
                 params = ConfirmParams.TransferParams(
                     assetId = AssetId((sceneState as RequestSceneState.SendTransaction).chain),
                     amount = (sceneState as RequestSceneState.SendTransaction).value,
-                    to = (sceneState as RequestSceneState.SendTransaction).to,
-                    domainName = null,
+                    destination = DestinationAddress(address = (sceneState as RequestSceneState.SendTransaction).to),
                     memo = (sceneState as RequestSceneState.SendTransaction).data,
                 ),
                 onFinish = { viewModel.onSent(it) },

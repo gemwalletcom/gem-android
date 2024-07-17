@@ -13,6 +13,7 @@ import com.gemwallet.android.features.recipient.models.RecipientFormError
 import com.gemwallet.android.features.recipient.models.RecipientScreenModel
 import com.gemwallet.android.features.recipient.models.RecipientScreenState
 import com.gemwallet.android.features.recipient.navigation.assetIdArg
+import com.gemwallet.android.model.DestinationAddress
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NameRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -97,7 +98,7 @@ class RecipientFormViewModel @Inject constructor(
             val recipientError = validateRecipient(assetId.chain, address)
             model.update { Model(addressError = recipientError) }
             if (recipientError == RecipientFormError.None) {
-                onRecipientComplete(AmountParams.buildTransfer(assetId, address, addressDomain, memoState.value))
+                onRecipientComplete(AmountParams.buildTransfer(assetId, DestinationAddress(address, addressDomain), memoState.value))
             }
         }
     }

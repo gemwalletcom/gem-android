@@ -30,7 +30,7 @@ class TonSignerPreloader(
     override fun maintainChain(): Chain = Chain.Ton
 
     private suspend fun coinSign(owner: Account, params: ConfirmParams): Result<SignerParams> {
-        val fee = TonFee().invoke(rpcClient, params.assetId, params.destination(), params.memo())
+        val fee = TonFee().invoke(rpcClient, params.assetId, params.destination()?.address!!, params.memo())
         return rpcClient.walletInfo(owner.address).mapCatching {
             SignerParams(
                 input = params,
@@ -43,7 +43,7 @@ class TonSignerPreloader(
     private suspend fun tokenSign(owner: Account, params: ConfirmParams): Result<SignerParams> = withContext(Dispatchers.IO) {
         val getWalletInfo = async { rpcClient.walletInfo(owner.address).getOrNull() }
         val getJettonAddress = async { jettonAddress(rpcClient, params.assetId.tokenId!!, owner.address) }
-        val feeJob = async { TonFee().invoke(rpcClient, params.assetId, params.destination(), params.memo()) }
+        val feeJob = async { TonFee().invoke(rpcClient, params.assetId, params.destination()?.address!!, params.memo()) }
         val walletInfo = getWalletInfo.await()
             ?: return@withContext Result.failure(Exception("can't get wallet info. check internet."))
         val jettonAddress = getJettonAddress.await() ?: return@withContext Result.failure(Exception("can't get jetton address. check internet."))

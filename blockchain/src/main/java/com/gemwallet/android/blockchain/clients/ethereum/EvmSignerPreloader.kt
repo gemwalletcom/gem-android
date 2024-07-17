@@ -50,7 +50,7 @@ class EvmSignerPreloader(
                 recipient = when (params) {
                     is ConfirmParams.SwapParams -> params.to
                     is ConfirmParams.TokenApprovalParams -> params.assetId.tokenId!!
-                    is ConfirmParams.TransferParams -> params.to
+                    is ConfirmParams.TransferParams -> params.destination().address
                     is ConfirmParams.RedeleateParams,
                     is ConfirmParams.WithdrawParams,
                     is ConfirmParams.UndelegateParams,

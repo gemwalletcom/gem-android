@@ -37,7 +37,7 @@ class CosmosSignClient(
         val message = when (input) {
             is ConfirmParams.TransferParams -> getTransferMessage(
                 from = from,
-                recipient = input.destination(),
+                recipient = input.destination().address,
                 coin = coin,
                 amount = getAmount(params.finalAmount, denom = denom)
             )

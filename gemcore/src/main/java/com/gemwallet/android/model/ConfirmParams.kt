@@ -15,20 +15,17 @@ import java.util.Base64
 sealed class ConfirmParams(
     val assetId: AssetId,
     val amount: BigInteger = BigInteger.ZERO,
-    val domainName: String? = null,
 ) {
 
     class Builder(
         val assetId: AssetId,
         val amount: BigInteger = BigInteger.ZERO,
-        val domainName: String? = null,
     ) {
-        fun transfer(to: String, memo: String? = null, isMax: Boolean = false): TransferParams {
+        fun transfer(destination: DestinationAddress, memo: String? = null, isMax: Boolean = false): TransferParams {
             return TransferParams(
                 assetId = assetId,
                 amount = amount,
-                to = to,
-                domainName = domainName,
+                destination = destination,
                 memo = memo,
                 isMaxAmount = isMax
             )
@@ -38,7 +35,7 @@ sealed class ConfirmParams(
             return TokenApprovalParams(assetId, approvalData, provider)
         }
 
-        fun delegate(validatorId: String,) = DelegateParams(assetId, amount, validatorId)
+        fun delegate(validatorId: String) = DelegateParams(assetId, amount, validatorId)
 
         fun rewards(validatorsId: List<String>) = RewardsParams(assetId, validatorsId)
 
@@ -75,18 +72,17 @@ sealed class ConfirmParams(
     class TransferParams(
         assetId: AssetId,
         amount: BigInteger,
-        val to: String,
-        domainName: String? = null,
+        val destination: DestinationAddress,
         val memo: String? = null,
         val isMaxAmount: Boolean = false,
-    ) : ConfirmParams(assetId, amount, domainName) {
+    ) : ConfirmParams(assetId, amount) {
 
         override fun isMax(): Boolean {
             return isMaxAmount
         }
 
-        override fun destination(): String {
-            return to
+        override fun destination(): DestinationAddress {
+            return destination
         }
 
         override fun memo(): String? {
@@ -111,7 +107,7 @@ sealed class ConfirmParams(
         val value: String,
     ) : ConfirmParams(fromAssetId, fromAmount) {
 
-        override fun destination(): String = to
+        override fun destination(): DestinationAddress = DestinationAddress(to)
 
     }
 
@@ -169,7 +165,7 @@ sealed class ConfirmParams(
         }
     }
 
-    open fun destination(): String = ""
+    open fun destination(): DestinationAddress? = null
 
     open fun memo(): String? = null
 

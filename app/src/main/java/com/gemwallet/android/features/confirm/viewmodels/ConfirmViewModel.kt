@@ -134,7 +134,7 @@ class ConfirmViewModel @Inject constructor(
         }
         val asset = currentState.assetInfo.asset
         val owner = currentState.assetInfo.owner
-        val destinationAddress = currentState.signerParams.input.destination()
+        val destination = currentState.signerParams.input.destination()
         val fee = currentState.signerParams.info.fee()
         val memo = currentState.signerParams.input.memo() ?: ""
         val type = currentState.signerParams.input.getTxType()
@@ -171,6 +171,7 @@ class ConfirmViewModel @Inject constructor(
             }
 
             broadcastResult.onSuccess { txHash ->
+                val destinationAddress = destination?.address ?: ""
                 transactionsRepository.addTransaction(
                     hash = txHash,
                     assetId = asset.id,
@@ -305,8 +306,8 @@ class ConfirmViewModel @Inject constructor(
                 is ConfirmParams.TokenApprovalParams -> CellEntity(label = R.string.swap_provider, data = input.provider)
                 is ConfirmParams.TransferParams -> {
                     return when {
-                        input.domainName.isNullOrEmpty() -> CellEntity(label = R.string.transaction_recipient, data = input.to)
-                        else -> CellEntity(label = R.string.transaction_recipient, support = input.to, data = input.domainName!!)
+                        input.destination.domainName.isNullOrEmpty() -> CellEntity(label = R.string.transaction_recipient, data = input.destination.address)
+                        else -> CellEntity(label = R.string.transaction_recipient, support = input.destination.address, data = input.destination.domainName!!)
                     }
                 }
             }
