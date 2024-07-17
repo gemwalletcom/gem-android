@@ -1,14 +1,12 @@
 package com.gemwallet.android.data.swap
 
 import com.gemwallet.android.blockchain.clients.SwapClient
-import com.gemwallet.android.ext.toEVM
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.SwapQuoteResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import uniffi.Gemstone.Config
 import wallet.core.jni.AnyAddress
 import wallet.core.jni.CoinType
 import wallet.core.jni.EthereumAbi

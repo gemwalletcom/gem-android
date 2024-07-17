@@ -36,6 +36,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -218,9 +219,9 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams,
             is ConfirmParams.DelegateParams -> assetInfo.balances.available().atomicValue
-            is ConfirmParams.RedeleateParams -> BigInteger(stakeRepository.getDelegation(params.srcValidatorId)?.base?.balance ?: "0")
-            is ConfirmParams.UndelegateParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId)?.base?.balance ?: "0")
-            is ConfirmParams.WithdrawParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId)?.base?.balance ?: "0")
+            is ConfirmParams.RedeleateParams -> BigInteger(stakeRepository.getDelegation(params.srcValidatorId).firstOrNull()?.base?.balance ?: "0")
+            is ConfirmParams.UndelegateParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
+            is ConfirmParams.WithdrawParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.RewardsParams -> stakeRepository.getRewards(assetInfo.asset.id, assetInfo.owner.address)
                 .fold(BigInteger.ZERO) { acc, delegation -> acc + BigInteger(delegation.base.balance) }
         }

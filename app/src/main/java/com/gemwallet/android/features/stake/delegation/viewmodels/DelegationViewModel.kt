@@ -7,6 +7,7 @@ import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.ext.byChain
+import com.gemwallet.android.features.amount.model.AmountParams
 import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.features.stake.delegation.model.DelegationSceneState
 import com.gemwallet.android.features.stake.model.availableIn
@@ -21,6 +22,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -44,7 +46,7 @@ class DelegationViewModel @Inject constructor(
             val delegation = stakeRepository.getDelegation(
                 delegationId = delegationId,
                 validatorId = validatorId
-            )
+            ).firstOrNull()
             val assetInfo = assetsRepository.getById(session.wallet, delegation?.base?.assetId ?: return@launch)
                 .getOrNull()
                 ?.firstOrNull()
@@ -54,49 +56,45 @@ class DelegationViewModel @Inject constructor(
 
     fun onStake(call: OnAmount) {
         call(
-            assetId = state.value.assetInfo?.asset?.id!!,
-            txType = TransactionType.StakeDelegate,
-            validatorId = state.value.delegation?.validator?.id,
-            delegationId = state.value.delegation?.base?.delegationId!!,
-            destinationAddress = "",
-            addressDomain = "",
-            memo = "",
+            AmountParams.buildStake(
+                assetId = state.value.assetInfo?.asset?.id!!,
+                txType = TransactionType.StakeDelegate,
+                validatorId = state.value.delegation?.validator?.id,
+                delegationId = state.value.delegation?.base?.delegationId!!
+            )
         )
     }
 
     fun onUnstake(call: OnAmount) {
         call(
-            assetId = state.value.assetInfo?.asset?.id!!,
-            txType = TransactionType.StakeUndelegate,
-            validatorId = state.value.delegation?.validator?.id,
-            delegationId = state.value.delegation?.base?.delegationId!!,
-            destinationAddress = "",
-            addressDomain = "",
-            memo = "",
+            AmountParams.buildStake(
+                assetId = state.value.assetInfo?.asset?.id!!,
+                txType = TransactionType.StakeUndelegate,
+                validatorId = state.value.delegation?.validator?.id,
+                delegationId = state.value.delegation?.base?.delegationId!!
+            )
         )
     }
 
     fun onRedelegate(call: OnAmount) {
         call(
-            assetId = state.value.assetInfo?.asset?.id!!,
-            txType = TransactionType.StakeRedelegate,
-            validatorId = state.value.delegation?.validator?.id,
-            delegationId = state.value.delegation?.base?.delegationId,
-            destinationAddress = "",
-            addressDomain = "",
-            memo = "",
+            AmountParams.buildStake(
+                assetId = state.value.assetInfo?.asset?.id!!,
+                txType = TransactionType.StakeRedelegate,
+                validatorId = state.value.delegation?.validator?.id,
+                delegationId = state.value.delegation?.base?.delegationId!!
+            )
         )
     }
 
     fun onWithdraw(call: OnAmount) {
         call(
-            assetId = state.value.assetInfo?.asset?.id!!,
-            txType = TransactionType.StakeWithdraw,
-            validatorId = state.value.delegation?.validator?.id,
-            delegationId = state.value.delegation?.base?.delegationId,
-            destinationAddress = "",
-            addressDomain = "",
-            memo = "",
+            AmountParams.buildStake(
+                assetId = state.value.assetInfo?.asset?.id!!,
+                txType = TransactionType.StakeWithdraw,
+                validatorId = state.value.delegation?.validator?.id,
+                delegationId = state.value.delegation?.base?.delegationId!!
+            )
         )
     }
 

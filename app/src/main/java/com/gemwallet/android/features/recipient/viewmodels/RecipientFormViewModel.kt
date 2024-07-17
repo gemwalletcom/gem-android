@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.features.amount.model.AmountParams
 import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.features.recipient.models.RecipientFormError
 import com.gemwallet.android.features.recipient.models.RecipientScreenModel
@@ -14,7 +15,6 @@ import com.gemwallet.android.features.recipient.models.RecipientScreenState
 import com.gemwallet.android.features.recipient.navigation.assetIdArg
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NameRecord
-import com.wallet.core.primitives.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -97,15 +97,7 @@ class RecipientFormViewModel @Inject constructor(
             val recipientError = validateRecipient(assetId.chain, address)
             model.update { Model(addressError = recipientError) }
             if (recipientError == RecipientFormError.None) {
-                onRecipientComplete(
-                    assetId = assetId,
-                    destinationAddress = address,
-                    addressDomain = addressDomain,
-                    memo = memoState.value,
-                    delegationId = "",
-                    validatorId = "",
-                    txType = TransactionType.Transfer,
-                )
+                onRecipientComplete(AmountParams.buildTransfer(assetId, address, addressDomain, memoState.value))
             }
         }
     }

@@ -3,8 +3,6 @@ package com.gemwallet.android.features.amount.model
 sealed interface AmountError {
     data object None : AmountError
 
-    data object Init : AmountError
-
     data object Required : AmountError
 
     data object Unavailable : AmountError

@@ -1,7 +1,6 @@
 package com.gemwallet.android.features.swap.model
 
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain

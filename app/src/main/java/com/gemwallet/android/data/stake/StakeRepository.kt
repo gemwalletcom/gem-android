@@ -90,7 +90,7 @@ class StakeRepository(
         return localSource.getDelegations(assetId, owner)
     }
 
-    suspend fun getDelegation(validatorId: String, delegationId: String = ""): Delegation? {
+    suspend fun getDelegation(validatorId: String, delegationId: String = ""): Flow<Delegation?> {
         return localSource.getDelegation(validatorId = validatorId, delegationId = delegationId)
     }
 

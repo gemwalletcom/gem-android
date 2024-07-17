@@ -86,22 +86,6 @@ class CryptoAmountTransformation(symbol: String, color: Color) : AmountTransform
         if (offset > text.text.length) text.text.length else offset
 }
 
-class FiatAmountTransformation(symbol: String, color: Color) : AmountTransformation(symbol, color) {
-
-    override fun transformText(text: AnnotatedString): AnnotatedString {
-        return AnnotatedString(
-            "$symbol${if (text.isEmpty()) "0" else ""}", SpanStyle(color = color)
-        ) + text
-    }
-
-    override fun convertToOriginal(text: AnnotatedString, offset: Int): Int =
-        if (text.isEmpty()) {
-            2
-        } else {
-            1
-        }
-}
-
 abstract class AmountTransformation(
     val symbol: String,
     val color: Color,

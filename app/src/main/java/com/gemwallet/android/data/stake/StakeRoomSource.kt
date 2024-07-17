@@ -176,7 +176,7 @@ abstract class StakeDao {
                 "LEFT JOIN stake_delegation_validator as validator ON base.validator_id=validator.id " +
                 "WHERE base.delegation_id=:delegationId AND validator.id=:validatorId"
     )
-    abstract fun getDelegation(validatorId: String, delegationId: String): RoomDelegation?
+    abstract fun getDelegation(validatorId: String, delegationId: String): Flow<RoomDelegation?>
 
     @Transaction
     open fun update(
@@ -260,9 +260,9 @@ class StakeRoomSource(
             .map { items -> items.mapNotNull { it.toModel() } }
     }
 
-    override suspend fun getDelegation(validatorId: String, delegationId: String): Delegation? {
-        val room = stakeDao.getDelegation(validatorId = validatorId, delegationId = delegationId)
-        return room?.toModel()
+    override suspend fun getDelegation(validatorId: String, delegationId: String): Flow<Delegation?> {
+        return stakeDao.getDelegation(validatorId = validatorId, delegationId = delegationId)
+            .map { it?.toModel() }
     }
 
     override suspend fun getStakeValidator(assetId: AssetId): DelegationValidator? {

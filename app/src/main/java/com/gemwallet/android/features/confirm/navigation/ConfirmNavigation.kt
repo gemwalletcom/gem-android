@@ -40,8 +40,7 @@ fun NavGraphBuilder.confirm(
     ) { entry ->
         val paramsPack = entry.arguments?.getString(paramsArg)
         val txTypeString = entry.arguments?.getString(txTypeArg)?.urlDecode()
-        val txType = TransactionType.entries
-            .firstOrNull { it.string == txTypeString }
+        val txType = TransactionType.entries.firstOrNull { it.string == txTypeString }
 
         if (txType == null || paramsPack == null) {
             onCancel()

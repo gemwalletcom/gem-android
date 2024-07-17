@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.add_asset.viewmodels
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

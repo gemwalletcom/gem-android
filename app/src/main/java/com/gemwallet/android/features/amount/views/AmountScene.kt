@@ -15,18 +15,25 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.features.amount.model.AmountError
-import com.gemwallet.android.features.amount.model.AmountScreenState
+import com.gemwallet.android.features.confirm.models.AmountScreenModel
 import com.gemwallet.android.features.stake.components.ValidatorItem
+import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.MainActionButton
 import com.gemwallet.android.ui.components.Scene
+import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.TransactionType
 
 @Composable
 fun AmountScene(
     amount: String,
-    uiState: AmountScreenState.Loaded,
+    uiModel: AmountScreenModel,
+    validatorState: DelegationValidator?,
+    inputError: AmountError,
+    amountError: AmountError,
+    equivalent: String,
+    availableBalance: String,
     onNext: () -> Unit,
     onAmount: (String) -> Unit,
     onMaxAmount: () -> Unit,
@@ -42,9 +49,12 @@ fun AmountScene(
         onClose = onCancel,
         mainAction = {
             MainActionButton(
-                title = stringResource(id = R.string.common_continue),
-                enabled = uiState.error == AmountError.None,
-                loading = uiState.loading,
+                title = if (amountError == AmountError.None) {
+                    stringResource(id = R.string.common_continue)
+                } else {
+                    amountErrorString(amountError)
+                },
+                enabled = amountError == AmountError.None,
                 onClick = onNext,
             )
         }
@@ -59,18 +69,18 @@ fun AmountScene(
                         .fillMaxWidth()
                         .focusRequester(focusRequester),
                     amount = amount,
-                    assetSymbol = uiState.assetSymbol,
-                    equivalent = uiState.equivalent,
-                    error = amountErrorString(error = uiState.error),
+                    assetSymbol = uiModel.asset.symbol,
+                    equivalent = equivalent,
+                    error = amountErrorString(error = inputError),
                     onValueChange = onAmount,
                     onNext = onNext
                 )
-                if (uiState.validator != null) {
+                if (validatorState != null) {
                     Container {
                         ValidatorItem(
-                            data = uiState.validator,
+                            data = validatorState,
                             inContainer = true,
-                            onClick = when (uiState.txType) {
+                            onClick = when (uiModel.txType) {
                                 TransactionType.StakeUndelegate -> null
                                 else -> {
                                     { onValidator() }
@@ -80,11 +90,11 @@ fun AmountScene(
                     }
                 }
                 AssetInfoCard(
-                    assetId = uiState.assetId,
-                    assetIcon = uiState.assetIcon,
-                    assetTitle = uiState.assetTitle,
-                    assetType = uiState.assetType,
-                    availableAmount = uiState.availableAmount,
+                    assetId = uiModel.asset.id,
+                    assetIcon = uiModel.asset.getIconUrl(),
+                    assetTitle = uiModel.asset.name,
+                    assetType = uiModel.asset.type,
+                    availableAmount = availableBalance,
                     onMaxAmount = onMaxAmount
                 )
             }
@@ -96,10 +106,9 @@ fun AmountScene(
 fun amountErrorString(error: AmountError): String = when (error) {
     AmountError.None -> ""
     AmountError.IncorrectAmount -> stringResource(id = R.string.amount_error_invalid_amount)
-    AmountError.Init -> "Init error"
     AmountError.Required -> stringResource(id = R.string.common_required_field, stringResource(id = R.string.transfer_amount))
-    AmountError.Unavailable -> ""
+    AmountError.Unavailable -> "Unavailable"
     is AmountError.InsufficientBalance -> stringResource(id = R.string.transfer_insufficient_balance, error.assetName)
-    AmountError.ZeroAmount -> ""
+    AmountError.ZeroAmount -> "Zero amount"
     is AmountError.MinimumValue -> stringResource(id = R.string.transfer_minimum_amount, error.minimumValue)
 }

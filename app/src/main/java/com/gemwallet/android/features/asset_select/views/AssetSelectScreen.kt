@@ -1,8 +1,6 @@
 package com.gemwallet.android.features.asset_select.views
 
-import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel

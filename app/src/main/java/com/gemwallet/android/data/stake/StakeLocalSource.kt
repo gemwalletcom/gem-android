@@ -16,7 +16,7 @@ interface StakeLocalSource {
 
     suspend fun getDelegations(assetId: AssetId, address: String): Flow<List<Delegation>>
 
-    suspend fun getDelegation(validatorId: String, delegationId: String): Delegation?
+    suspend fun getDelegation(validatorId: String, delegationId: String): Flow<Delegation?>
 
     suspend fun getStakeValidator(assetId: AssetId): DelegationValidator?
 

@@ -178,7 +178,7 @@ fun PreviewRecipientForm() {
     WalletTheme {
         RecipientScreen(
             onCancel = {},
-            onNext = { _, _, _, _, _, _, _ -> }
+            onNext = { }
         )
     }
 }

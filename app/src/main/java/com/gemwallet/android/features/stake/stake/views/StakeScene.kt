@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.claimed
+import com.gemwallet.android.features.amount.model.AmountParams
 import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.features.stake.components.DelegationItem
@@ -114,13 +115,10 @@ private fun LazyListScope.actions(
         val cells = mutableListOf<CellEntity<Any>>(
             CellEntity(label = stringResource(id = R.string.wallet_stake), data = "") {
                 onAmount(
-                    assetId = assetId,
-                    txType = TransactionType.StakeDelegate,
-                    destinationAddress = "",
-                    addressDomain = "",
-                    memo = "",
-                    delegationId = "",
-                    validatorId = null,
+                    AmountParams.buildStake(
+                        assetId = assetId,
+                        txType = TransactionType.StakeDelegate,
+                    )
                 )
             },
         )
@@ -158,7 +156,7 @@ fun PreviewStakeScene() {
                 hasRewards = true,
             ),
             onRefresh = { },
-            onAmount = {_, _, _, _, _, _, _ -> },
+            onAmount = { },
             onConfirm = { },
             onDelegation = {_, _ -> },
         ) {
