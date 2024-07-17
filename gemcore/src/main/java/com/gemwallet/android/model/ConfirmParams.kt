@@ -23,7 +23,7 @@ sealed class ConfirmParams(
         val amount: BigInteger = BigInteger.ZERO,
         val domainName: String? = null,
     ) {
-        fun transfer(to: String, memo: String? = null, isMax: Boolean = false): TransferParams {
+        fun transfer(to: String, memo: String? = null, domainName: String?, isMax: Boolean = false): TransferParams {
             return TransferParams(
                 assetId = assetId,
                 amount = amount,
