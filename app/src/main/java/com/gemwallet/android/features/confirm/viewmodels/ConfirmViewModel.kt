@@ -81,31 +81,22 @@ class ConfirmViewModel @Inject constructor(
         val fee = signerParams.info.fee()
         val feeAssetInfo = assetsRepository.getAssetInfo(fee.feeAssetId).firstOrNull()
             ?: throw ConfirmError.Init("Init error - fee asset doesn't find")
-        val finalParams = when {
-            params is ConfirmParams.RewardsParams -> signerParams
-                .copy(finalAmount = stakeRepository.getRewards(params.assetId, assetInfo.owner.address)
+        val finalAmount = when {
+            params is ConfirmParams.RewardsParams -> stakeRepository.getRewards(params.assetId, assetInfo.owner.address)
                 .map { BigInteger(it.base.rewards) }
                 .fold(BigInteger.ZERO) { acc, value -> acc + value }
-            )
-            params.isMax() && params.assetId == feeAssetInfo.asset.id -> signerParams.copy(finalAmount = params.amount - fee.amount)
-            else -> signerParams.copy(finalAmount = params.amount)
+            params.isMax() && params.assetId == feeAssetInfo.asset.id -> params.amount - fee.amount
+            else -> params.amount
         }
+        val finalParams = signerParams.copy(finalAmount = finalAmount)
         val balance = getBalance(assetInfo = assetInfo, params = params)
-        val error = validateBalance(
-            asset = assetInfo.asset,
-            feeAsset = feeAssetInfo,
-            fee = fee,
-            balance = balance,
-            amount = finalParams.finalAmount
-        )
-        val (toAssetInfo, toAmount) = if (params is ConfirmParams.SwapParams) {
-            Pair(
-                assetsRepository.getAssetInfo(params.toAssetId).firstOrNull(),
-                params.toAmount
-            )
+        val error = validateBalance(assetInfo.asset, feeAssetInfo, fee, balance, finalParams.finalAmount)
+        val toAssetInfo = if (params is ConfirmParams.SwapParams) {
+            assetsRepository.getAssetInfo(params.toAssetId).firstOrNull()
         } else {
-            Pair(null, null)
+            null
         }
+        val toAmount = (params as? ConfirmParams.SwapParams)?.toAmount
         state.update {
             State(
                 walletName = assetInfo.walletName,

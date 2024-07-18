@@ -100,7 +100,7 @@ class AssetsRoomSource @Inject constructor(
         )
     }
 
-    override suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
+    override fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
         val id = assetId.toIdentifier()
         return assetsDao.getAssetInfo(id, assetId.chain)
             .map { AssetInfoMapper().asDomain(it).firstOrNull() }
