@@ -6,6 +6,7 @@ import com.gemwallet.android.blockchain.clients.cosmos.CosmosSignerPreloader
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.Chain
@@ -33,7 +34,7 @@ class TestCosmosSign {
                     input = ConfirmParams.TransferParams(
                         assetId = com.wallet.core.primitives.Chain.Cosmos.asset().id,
                         amount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Cosmos.asset().decimals),
-                        to = "cosmos1kglemumu8mn658j6g4z9jzn3zef2qdyyydv7tr",
+                        destination = DestinationAddress("cosmos1kglemumu8mn658j6g4z9jzn3zef2qdyyydv7tr"),
                     ),
                     owner = "cosmos1kglemumu8mn658j6g4z9jzn3zef2qdyyydv7tr",
                     finalAmount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Cosmos.asset().decimals),

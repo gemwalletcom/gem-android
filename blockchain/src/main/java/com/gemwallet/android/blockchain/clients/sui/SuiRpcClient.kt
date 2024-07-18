@@ -8,7 +8,6 @@ import com.wallet.core.blockchain.sui.SuiCoin
 import com.wallet.core.blockchain.sui.SuiCoinBalance
 import com.wallet.core.blockchain.sui.SuiData
 import com.wallet.core.blockchain.sui.SuiPay
-import com.wallet.core.blockchain.sui.SuiPayRequest
 import com.wallet.core.blockchain.sui.SuiStakeDelegation
 import com.wallet.core.blockchain.sui.SuiTransaction
 import com.wallet.core.blockchain.sui.SuiValidators
@@ -30,15 +29,6 @@ interface SuiRpcClient {
 
     @POST("/")
     suspend fun gasPrice(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
-
-    @POST("/")
-    suspend fun pay(@Body request: JSONRpcRequest<List<Any?>>): Result<JSONRpcResponse<SuiPay>>
-
-    @POST("/")
-    suspend fun paySui(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SuiPay>>
-
-    @POST("/")
-    suspend fun payAllSui(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SuiPay>>
 
     @POST("/")
     suspend fun dryRun(@Body request: JSONRpcRequest<List<String>>):Result<JSONRpcResponse<SuiTransaction>>
@@ -88,48 +78,6 @@ internal suspend fun SuiRpcClient.broadcast(data: String, sign: String): Result<
         )
     )
     return broadcast(request)
-}
-
-internal suspend fun SuiRpcClient.pay(data: SuiPayRequest): Result<JSONRpcResponse<SuiPay>> {
-    val request = JSONRpcRequest.create(
-        SuiMethod.Pay,
-        listOf(
-            data.senderAddress,
-            data.coins,
-            listOf(data.recipientAddress),
-            listOf(data.amount),
-            null,
-            data.gasBudget,
-        )
-    )
-    return pay(request)
-}
-
-internal suspend fun SuiRpcClient.paySui(data: SuiPayRequest): Result<JSONRpcResponse<SuiPay>> {
-    val request = JSONRpcRequest.create(
-        SuiMethod.PaySui,
-        listOf(
-            data.senderAddress,
-            data.coins,
-            listOf(data.recipientAddress),
-            listOf(data.amount),
-            data.gasBudget,
-        )
-    )
-    return payAllSui(request)
-}
-
-internal suspend fun SuiRpcClient.payAllSui(data: SuiPayRequest): Result<JSONRpcResponse<SuiPay>> {
-    val request = JSONRpcRequest.create(
-        SuiMethod.PayAllSui,
-        listOf(
-            data.senderAddress,
-            data.coins,
-            data.recipientAddress,
-            data.gasBudget,
-        )
-    )
-    return payAllSui(request)
 }
 
 internal suspend fun SuiRpcClient.transaction(txId: String): Result<JSONRpcResponse<SuiTransaction>> {
