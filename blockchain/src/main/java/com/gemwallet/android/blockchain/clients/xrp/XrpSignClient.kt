@@ -19,7 +19,7 @@ class XrpSignClient(
             this.account = params.owner
             this.privateKey = ByteString.copyFrom(privateKey)
             this.opPayment = Ripple.OperationPayment.newBuilder().apply {
-                this.destination = params.input.destination()?.address
+                this.destination = params.input.destination()?.address ?: ""
                 this.amount = params.finalAmount.toLong()
                 this.destinationTag = try { params.input.memo()?.toLong() ?: 0L } catch (err: Throwable) { 0L }
             }.build()

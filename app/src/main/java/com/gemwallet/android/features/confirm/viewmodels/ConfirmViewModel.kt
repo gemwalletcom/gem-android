@@ -63,57 +63,44 @@ class ConfirmViewModel @Inject constructor(
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, ConfirmSceneState.Loading)
 
-    internal fun init(params: ConfirmParams, feeMultiplicator: Float = 1f) = viewModelScope.launch(Dispatchers.IO) {
-        val session = sessionRepository.getSession() ?: return@launch
-        val wallet = session.wallet
-        val assetInfo = assetsRepository.getById(wallet, params.assetId).getOrNull()?.firstOrNull()
-        if (assetInfo == null) {
-            state.update { State(fatalError = ConfirmError.Init("Init error - asset doesn't find")) }
-            return@launch
+    fun init(params: ConfirmParams, feeMultiplicator: Float = 1f) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                load(params, feeMultiplicator)
+            } catch (err: ConfirmError) {
+                state.update { State(fatalError = err) }
+            }
         }
-        val signerParams = withContext(Dispatchers.IO) {
-            signerPreload(
-                owner = assetInfo.owner,
-                params = params,
-            ).getOrNull()
-        }
-        if (signerParams?.info == null) {
-            state.update { State(fatalError = ConfirmError.Init("Init error - not transaction info")) }
-            return@launch
-        }
+    }
+
+    private suspend fun load(params: ConfirmParams, feeMultiplicator: Float = 1f) {
+        val assetInfo = assetsRepository.getAssetInfo(params.assetId).firstOrNull()
+            ?: throw ConfirmError.Init("Init error - asset doesn't find")
+        val signerParams = signerPreload(owner = assetInfo.owner, params = params).getOrNull() // TODO: Remove result???
+            ?: throw ConfirmError.Init("Init error - not transaction info")
         val fee = signerParams.info.fee()
-        val feeAssetInfo = assetsRepository.getById(wallet, fee.feeAssetId).getOrNull()?.firstOrNull()
-        if (feeAssetInfo == null) {
-            state.update { State(fatalError = ConfirmError.Init("Init error - fee asset doesn't find")) }
-            return@launch
+        val feeAssetInfo = assetsRepository.getAssetInfo(fee.feeAssetId).firstOrNull()
+            ?: throw ConfirmError.Init("Init error - fee asset doesn't find")
+        val finalAmount = when {
+            params is ConfirmParams.RewardsParams -> stakeRepository.getRewards(params.assetId, assetInfo.owner.address)
+                .map { BigInteger(it.base.rewards) }
+                .fold(BigInteger.ZERO) { acc, value -> acc + value }
+            params.isMax() && params.assetId == feeAssetInfo.asset.id -> params.amount - fee.amount
+            else -> params.amount
         }
-        val finalParams = when {
-            params is ConfirmParams.RewardsParams -> signerParams.copy( finalAmount = stakeRepository.getRewards(params.assetId, assetInfo.owner.address)
-                .map { BigInteger(it.base.rewards) }.fold(BigInteger.ZERO) { acc, value -> acc + value }
-            )
-            params.isMax() && params.assetId == feeAssetInfo.asset.id -> signerParams.copy(finalAmount = params.amount - fee.amount)
-            else -> signerParams.copy(finalAmount = params.amount)
-        }
+        val finalParams = signerParams.copy(finalAmount = finalAmount)
         val balance = getBalance(assetInfo = assetInfo, params = params)
-        val error = validateBalance(
-            asset = assetInfo.asset,
-            feeAsset = feeAssetInfo,
-            fee = fee,
-            balance = balance,
-            amount = finalParams.finalAmount
-        )
-        val (toAssetInfo, toAmount) = if (params is ConfirmParams.SwapParams) {
-            Pair(
-                assetsRepository.getById(wallet, params.toAssetId).getOrNull()?.firstOrNull(),
-                params.toAmount
-            )
+        val error = validateBalance(assetInfo.asset, feeAssetInfo, fee, balance, finalParams.finalAmount)
+        val toAssetInfo = if (params is ConfirmParams.SwapParams) {
+            assetsRepository.getAssetInfo(params.toAssetId).firstOrNull()
         } else {
-            Pair(null, null)
+            null
         }
+        val toAmount = (params as? ConfirmParams.SwapParams)?.toAmount
         state.update {
             State(
-                walletName = session.wallet.name,
-                currency = session.currency,
+                walletName = assetInfo.walletName,
+                currency = assetInfo.price?.currency ?: Currency.USD,
                 assetInfo = assetInfo,
                 feeAssetInfo = feeAssetInfo,
                 toAssetInfo = toAssetInfo,

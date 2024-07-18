@@ -132,11 +132,6 @@ class AssetsRepository @Inject constructor(
         assetsLocalSource.getNativeAssets(wallet.accounts)
     }
 
-    fun getAssetsInfo(): Flow<List<AssetInfo>> = assetsLocalSource.getAssetsInfo()
-        .map { assets ->
-            assets.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
-        }
-
     override suspend fun getAsset(assetId: AssetId): Asset? {
         return assetsLocalSource.getById(assetId = assetId)
     }
@@ -162,7 +157,15 @@ class AssetsRepository @Inject constructor(
         return Result.success(result)
     }
 
-    suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo> {
+    fun getAssetsInfo(): Flow<List<AssetInfo>> = assetsLocalSource.getAssetsInfo().map { assets ->
+        assets.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
+    }
+
+    fun getAssetsInfo(assetsId: List<AssetId>): Flow<List<AssetInfo>> = assetsLocalSource.getAssetsInfo(assetsId).map { assets ->
+        assets.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
+    }
+
+    fun getAssetInfo(assetId: AssetId): Flow<AssetInfo> {
         return assetsLocalSource.getAssetInfo(assetId).mapNotNull {
             it ?: tokensRepository.assembleAssetInfo(assetId)
         }
