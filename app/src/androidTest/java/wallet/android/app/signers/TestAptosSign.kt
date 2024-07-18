@@ -6,6 +6,7 @@ import com.gemwallet.android.blockchain.clients.aptos.AptosSignerPreloader
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.Chain
@@ -33,7 +34,7 @@ class TestAptosSign {
                     input = ConfirmParams.TransferParams(
                         assetId = com.wallet.core.primitives.Chain.Aptos.asset().id,
                         amount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Aptos.asset().decimals),
-                        to = "0x82111f2975a0f6080d178236369b7479f6aed1203ef4a23f8205e4b91716b783",
+                        destination = DestinationAddress("0x82111f2975a0f6080d178236369b7479f6aed1203ef4a23f8205e4b91716b783"),
                     ),
                     owner = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                     finalAmount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Aptos.asset().decimals),

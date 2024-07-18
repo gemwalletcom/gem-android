@@ -23,9 +23,6 @@ interface EvmRpcClient {
     suspend fun getBalance(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmNumber?>>
 
     @POST("/")
-    suspend fun getGasPrice(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmNumber?>>
-
-    @POST("/")
     suspend fun getFeeHistory(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<EthereumFeeHistory>>
 
     @POST("/")
@@ -39,9 +36,6 @@ interface EvmRpcClient {
 
     @POST("/")
     suspend fun broadcast(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
-
-    @POST("/")
-    suspend fun callButchBalances(@Body request: RequestBody): Result<List<JSONRpcResponse<TokenBalance>>>
 
     @POST("/")
     suspend fun callNumber(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<EvmNumber?>>

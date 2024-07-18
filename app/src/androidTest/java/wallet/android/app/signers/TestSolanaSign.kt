@@ -7,6 +7,7 @@ import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.Asset
@@ -43,7 +44,7 @@ class TestSolanaSign {
                     input = ConfirmParams.TransferParams(
                         assetId = com.wallet.core.primitives.Chain.Solana.asset().id,
                         amount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Solana.asset().decimals),
-                        to = "4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S",
+                        destination = DestinationAddress("4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S"),
                     ),
                     owner = "4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S",
                     finalAmount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Solana.asset().decimals),
