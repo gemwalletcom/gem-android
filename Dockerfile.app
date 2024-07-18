@@ -1,9 +1,7 @@
 FROM gem-android-base:latest
 
 ARG TAG
-ARG BUILD_MODE
-ARG GITHUB_USER
-ARG GITHUB_TOKEN
+ARG BUILD_MODE=release
 
 # Set up entrypoint to ensure environment variables are loaded
 ENTRYPOINT ["/bin/bash", "-c", "source $HOME/.bashrc && exec $0 \"$@\"", "--"]
@@ -14,8 +12,9 @@ RUN git clone --depth 1 --recursive --branch $TAG https://github.com/gemwalletco
 # Set the working directory
 WORKDIR $HOME/gem-android
 
-RUN make generate-models
+# Generated models and kotlin bindgen are commited to the repository, so no need to generate here
+# gemstone is built by cargo-ndk along with gradle
 
-RUN unsigned-release
+RUN make unsigned-release
 
 CMD ["bash"]

@@ -1,5 +1,7 @@
 ANDROID_HOME ?= ~/Library/Android/sdk
 SDK_MANAGER = ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager
+WALLET_CORE_VERSION ?= 4.0.42
+NDK_VERSION ?= 26.1.10909125
 
 install:
 	@echo Install Rust
@@ -19,7 +21,10 @@ bootstrap: install install-toolchains install-ndk install-wallet-core generate
 # Android
 
 install-ndk:
-	${SDK_MANAGER} "ndk;26.1.10909125"
+	${SDK_MANAGER} "ndk;${NDK_VERSION}"
+
+install-wallet-core:
+	@./scripts/download-wallet-core.sh ${WALLET_CORE_VERSION}
 
 build-test:
 	./gradlew assembleAndroidTest --build-cache
@@ -46,11 +51,11 @@ generate-models: install-typeshare
 	@cd core && cargo run --package generate --bin generate android ../gemcore/src/main/java/com/wallet/core
 
 generate-stone:
-	@echo "Generate Gemstone lib, default build mode is $(BUILD_MODE)"
-	@cd core/gemstone && make bindgen-kotlin BUILD_MODE=$(BUILD_MODE)
+	@echo "Generate Gemstone lib, default build mode is ${BUILD_MODE}"
+	@cd core/gemstone && make bindgen-kotlin BUILD_MODE=${BUILD_MODE}
 	@cp -Rf core/gemstone/generated/kotlin/uniffi gemcore/src/main/java
 	@touch local.properties
-ifeq ($(BUILD_MODE),release)
+ifeq (${BUILD_MODE},release)
 	./gradlew buildCargoNdkRelease --info
 else
 	./gradlew buildCargoNdkDebug --info
@@ -60,10 +65,7 @@ build-base-image:
 	docker build -t gem-android-base -f Dockerfile.base . &> build.base.log
 
 build-app:
-	docker build --build-arg TAG=$(TAG) \
-	--build-arg BUILD_MODE=$(BUILD_MODE) \
-	--build-arg GITHUB_USER=$(GITHUB_USER) \
-	--build-arg GITHUB_TOKEN=$(GITHUB_TOKEN) \
+	docker build --build-arg TAG=${TAG} \
+	--build-arg BUILD_MODE=${BUILD_MODE} \
 	--progress=plain \
 	-t gem-android -f Dockerfile.app . &> build.app.log
-	
