@@ -9,6 +9,7 @@ import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.swap.SwapRepository
 import com.gemwallet.android.ext.getAccount
+import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.swap.model.SwapDetails
 import com.gemwallet.android.features.swap.model.SwapError
 import com.gemwallet.android.features.swap.model.SwapItemState
@@ -22,6 +23,7 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fiat
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.SwapQuote
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -154,7 +156,7 @@ class SwapViewModel @Inject constructor(
         val amount = try {
             getPayAmount()
         } catch (err: Throwable) {
-            return null
+            BigDecimal.TEN
         }
 
         val quote = swapRepository.getQuote(
@@ -254,7 +256,7 @@ class SwapViewModel @Inject constructor(
             val meta = swapRepository.encodeApprove(quote?.approval?.spender ?: "") // TODO: Move to special operator
             onConfirm(
                 ConfirmParams.TokenApprovalParams(
-                    assetId = payAsset.asset.id,
+                    assetId = if (payAsset.asset.id.type() == AssetSubtype.TOKEN) payAsset.asset.id else receiveAsset.asset.id,
                     approvalData = meta.toHexString(),
                     provider = quote?.provider?.name ?: "",
                 )
