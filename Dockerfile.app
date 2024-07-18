@@ -1,4 +1,4 @@
-FROM gem-android-base:latest
+FROM --platform=linux/amd64 gem-android-base:latest
 
 ARG TAG
 ARG BUILD_MODE=release
@@ -16,6 +16,7 @@ WORKDIR $HOME/gem-android
 # gemstone is built by cargo-ndk along with gradle
 
 RUN make install-wallet-core
-RUN make unsigned-release
+
+RUN touch local.properties && make unsigned-release
 
 CMD ["bash"]
