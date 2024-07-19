@@ -26,8 +26,12 @@ for file in "${files[@]}"; do
         echo "Downloading ${file}"
         output_file=${libs_path}/${file}
         output_file_sha1=${libs_path}/${file}.sha1
+
+        // download files
         curl -sSL -o ${output_file} ${repo_base}/${version}/${file}
         curl -sSL -o ${output_file_sha1} ${repo_base}/${version}/${file}.sha1
+
+        // check checksum
         if [[ $(shasum ${output_file} | awk '{print $1}') != $(cat ${output_file_sha1}) ]]; then
             echo "Checksum mismatch for ${file}"
             exit 1
