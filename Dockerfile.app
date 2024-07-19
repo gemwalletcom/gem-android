@@ -7,7 +7,7 @@ ARG BUILD_MODE=release
 ENTRYPOINT ["/bin/bash", "-c", "source $HOME/.bashrc && exec $0 \"$@\"", "--"]
 
 # Clone the repository
-RUN git clone --recursive --depth 1 --branch $TAG https://github.com/gemwalletcom/gem-android.git $HOME/gem-android
+RUN git clone --depth 1 --recursive --branch $TAG https://github.com/gemwalletcom/gem-android.git $HOME/gem-android
 
 # Set the working directory
 WORKDIR $HOME/gem-android
