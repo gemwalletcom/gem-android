@@ -16,7 +16,7 @@ install-toolchains:
 	@echo Install toolchains for uniffi
 	@cd core/gemstone && make prepare-android
 
-bootstrap: install install-toolchains install-ndk install-wallet-core generate
+bootstrap: install install-toolchains install-ndk install-wallet-core
 
 # Android
 

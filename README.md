@@ -71,14 +71,9 @@ If you want to contribute, you can use our [developers telegram](https://t.me/ge
 
 1. Download and install latest [Android Studio](https://developer.android.com/studio)
 2. Install JDK 17, preferably using [SDKMAN](https://sdkman.io/)
-3. Generate a GitHub personal [token](https://github.com/settings/tokens) with `read:packages` permission and add it to your `local.properties` file:
+3. Run `make boostrap` to install all nessesary tools (Rust / NDK).
 
-```properties
-gpr.user=<your-github-username>
-gpr.key=<your-github-personal-token>
-```
-
-4. Run `make boostrap` to install all nessesary tools (Rust / NDK).
+Optionally, you can generate models and kotlin bindgen by running `make generate`, Gem Android consumes wallet core library as a local module, if you need to update it, ping us or create an issue on [here](https://github.com/gemwalletcom/wallet-core-release).
 
 ## 👨‍👧‍👦 Contributors
 
