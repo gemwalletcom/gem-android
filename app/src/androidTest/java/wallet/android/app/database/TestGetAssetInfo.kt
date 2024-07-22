@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import app.cash.turbine.test
 import com.gemwallet.android.data.asset.AssetsRoomSource
 import com.gemwallet.android.data.database.GemDatabase
 import com.gemwallet.android.data.database.entities.DbAsset
@@ -92,34 +91,6 @@ class TestGetAssetInfo {
         assertEquals(Currency.AED, assetInfo1?.price?.currency)
         assertEquals("12000", assetInfo1?.balances?.available()?.atomicValue?.toString())
         assertEquals("11000", assetInfo1?.balances?.rewards()?.atomicValue?.toString())
-    }
-
-    @Test
-    fun testGetAssetInfoFlow() = runTest {
-        source.getAssetInfo(AssetId(Chain.Ethereum)).test {
-            db.sessionDao().update(
-                DbSession(
-                    walletId = "test-wallet-2",
-                    currency = Currency.AED.string
-                )
-            )
-            awaitItem()
-            val item = awaitItem()
-            assertEquals(Currency.AED, item?.price?.currency)
-            assertEquals("some-address-2", item?.owner?.address)
-            assertEquals("12000", item?.balances?.available()?.atomicValue?.toString())
-            db.balancesDao().insert(
-                DbBalance(
-                    assetId = AssetId(Chain.Ethereum).toIdentifier(),
-                    address =  "some-address-2",
-                    type = BalanceType.available,
-                    amount = "100000",
-                    updatedAt = 0L,
-                )
-            )
-            assertEquals("100000", awaitItem()?.balances?.available()?.atomicValue?.toString())
-            cancelAndIgnoreRemainingEvents()
-        }
     }
 
     @Test

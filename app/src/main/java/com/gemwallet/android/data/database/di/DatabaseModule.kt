@@ -478,7 +478,6 @@ class MIGRATION_26_27(private val context: Context) : Migration(26, 27) {
         val walletId = source.getWalletId()
         val currency = source.getCurrency()
         val values = ContentValues().apply {
-            this.put("id", 1)
             this.put("wallet_id", walletId)
             this.put("currency", currency.string)
         }
