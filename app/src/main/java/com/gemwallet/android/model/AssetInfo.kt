@@ -19,4 +19,6 @@ data class AssetInfo(
     val market: AssetMarket? = null,
     val rank: Int = 0,
     val stakeApr: Double? = null,
-)
+) {
+    fun id() = asset.id
+}

@@ -32,7 +32,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -53,27 +52,25 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
-import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.views.SelectSwapScreen
-import com.gemwallet.android.features.swap.model.SwapDetails
 import com.gemwallet.android.features.swap.model.SwapError
-import com.gemwallet.android.features.swap.model.SwapItemState
+import com.gemwallet.android.features.swap.model.SwapItemModel
 import com.gemwallet.android.features.swap.model.SwapItemType
-import com.gemwallet.android.features.swap.model.SwapScreenState
+import com.gemwallet.android.features.swap.model.SwapPairSelect
+import com.gemwallet.android.features.swap.model.SwapPairUIModel
 import com.gemwallet.android.features.swap.viewmodels.SwapViewModel
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.components.AssetIcon
 import com.gemwallet.android.ui.components.CircularProgressIndicator16
-import com.gemwallet.android.ui.components.FatalStateScene
-import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.mainActionHeight
 import com.gemwallet.android.ui.theme.padding16
 import com.gemwallet.android.ui.theme.padding4
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
@@ -81,69 +78,64 @@ import com.wallet.core.primitives.Chain
 
 @Composable
 fun SwapScreen(
-    fromAssetId: AssetId,
-    toAssetId: AssetId,
     viewModel: SwapViewModel = hiltViewModel(),
     onConfirm: (ConfirmParams) -> Unit,
     onCancel: () -> Unit,
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val selectState by viewModel.selectPairUiState.collectAsStateWithLifecycle()
+    val allowance by viewModel.allowance.collectAsStateWithLifecycle()
+    val pair by viewModel.swapPairUIModel.collectAsStateWithLifecycle()
+    val fromEquivalent by viewModel.fromEquivalent.collectAsStateWithLifecycle()
+    val toEquivalent by viewModel.toEquivalent.collectAsStateWithLifecycle()
+    val calculating by viewModel.calculatingQuote.collectAsStateWithLifecycle()
+    val swapping by viewModel.swapping.collectAsStateWithLifecycle()
+    val error by viewModel.error.collectAsStateWithLifecycle()
 
-    DisposableEffect(fromAssetId.toIdentifier(), toAssetId.toIdentifier()) {
-
-        viewModel.init(null, null)
-
-        onDispose {  }
+    BackHandler(selectState != null) {
+        val fromId = pair?.from?.asset?.id // TODO:
+        val toId = pair?.to?.asset?.id
+        if (fromId == null || toId == null) {
+            onCancel()
+        } else {
+            viewModel.onSelect(SwapPairSelect.request(fromId, toId))
+        }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.updateQuote()
-    }
-
-    BackHandler(uiState.select != null) {
-        viewModel.assetSelect(null)
-    }
-
-    val details = uiState.details
-
-    when {
-        uiState.isFatal -> FatalStateScene(
-            title = stringResource(id = R.string.wallet_swap),
-            message = "Swap unavailable",
-            onCancel = onCancel,
-        )
-        uiState.isLoading -> LoadingScene(stringResource(id = R.string.wallet_swap), onCancel)
-        details is SwapDetails.Quote -> Form(
-            details = details,
-            payState = viewModel.payValue,
-            receiveState = viewModel.receiveValue,
+    if (pair != null) {
+        Form(
+            pair = pair!!,
+            allowance = allowance,
+            fromEquivalent = fromEquivalent,
+            toEquivalent = toEquivalent,
+            calculating = calculating,
+            swapping = swapping,
+            error = error,
+            fromState = viewModel.fromValue,
+            toState = viewModel.toValue,
             onSwap = { viewModel.swap(onConfirm) },
             onSwitch = viewModel::switchSwap,
             onCancel = onCancel,
-            onAssetSelect = viewModel::assetSelect
+            onAssetSelect = {}
         )
     }
 
     AnimatedVisibility(
-        visible = details is SwapDetails.None || uiState.select != null,
+        visible = selectState != null,
         enter = slideIn { IntOffset(it.width, 0) },
         exit = slideOut { IntOffset(it.width, 0) },
     ) {
         SelectSwapScreen(
-            select = SwapScreenState.Select(
-                changeType = uiState.select?.changeType ?: SwapItemType.Pay,
-                changeAssetId = uiState.select?.changeAssetId,
-                oppositeAssetId = uiState.select?.oppositeAssetId,
-                prevAssetId = uiState.select?.prevAssetId,
-            ),
+            select = selectState ?: return@AnimatedVisibility,
             onCancel = {
-                if (uiState.select == null) {
+                val fromId = pair?.from?.asset?.id // TODO:
+                val toId = pair?.to?.asset?.id
+                if (fromId == null || toId == null) {
                     onCancel()
                 } else {
-                    viewModel.assetSelect(null)
+                    viewModel.onSelect(SwapPairSelect.request(fromId, toId))
                 }
             },
-            onSelect = {asset, type -> viewModel.changeAsset(asset, type) },
+            onSelect = {select -> viewModel.onSelect(select) },
         )
     }
 }
@@ -151,9 +143,15 @@ fun SwapScreen(
 
 @Composable
 fun Form(
-    details: SwapDetails.Quote,
-    payState: TextFieldState,
-    receiveState: TextFieldState,
+    pair: SwapPairUIModel,
+    allowance: Boolean,
+    fromEquivalent: String,
+    toEquivalent: String,
+    calculating: Boolean,
+    error: SwapError,
+    swapping: Boolean,
+    fromState: TextFieldState,
+    toState: TextFieldState,
     onSwap: () -> Unit,
     onSwitch: () -> Unit,
     onAssetSelect: (SwapItemType) -> Unit,
@@ -164,31 +162,29 @@ fun Form(
         padding = PaddingValues(padding16),
         mainAction = {
             Column {
-                if (!details.allowance) {
+                if (!allowance) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = stringResource(id = R.string.swap_approve_token_permission, details.pay.assetSymbol),
+                        text = stringResource(id = R.string.swap_approve_token_permission, pair.from.asset.symbol),
                         textAlign = TextAlign.Center,
                         style = MaterialTheme.typography.bodySmall,
                     )
                     Spacer16()
                 }
                 Button(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(mainActionHeight),
+                    modifier = Modifier.fillMaxWidth().heightIn(mainActionHeight),
                     onClick = onSwap,
-                    enabled = details.error == SwapError.None && !details.swaping
+                    enabled = error == SwapError.None && !swapping
                 ) {
-                    if (details.swaping) {
+                    if (swapping) {
                         Box(modifier = Modifier.fillMaxWidth()) {
                             CircularProgressIndicator16(modifier = Modifier.align(Alignment.Center))
                         }
                         return@Button
                     }
 
-                    if (details.error == SwapError.None) {
-                        when (details.allowance) {
+                    if (error == SwapError.None) {
+                        when (allowance) {
                             true -> Text(
                                 text = stringResource(R.string.wallet_swap),
                                 style = MaterialTheme.typography.bodyLarge,
@@ -204,7 +200,7 @@ fun Form(
                                     modifier = Modifier.padding(4.dp),
                                     text = stringResource(
                                         id = R.string.swap_approve_token,
-                                        details.pay.assetSymbol
+                                        pair.from.asset.symbol
                                     ),
                                     fontSize = 18.sp,
                                 )
@@ -222,28 +218,30 @@ fun Form(
         },
         onClose = onCancel,
     ) {
-        SwapItem(item = details.pay, state = payState, isPay = true, onAssetSelect = onAssetSelect)
+        SwapItem(type = SwapItemType.Pay, item = pair.from, equivalent = fromEquivalent, state = fromState, onAssetSelect = onAssetSelect)
         IconButton(onClick = onSwitch) {
             Icon(
                 imageVector = Icons.Default.SwapVert,
                 contentDescription = "swap_switch"
             )
         }
-        SwapItem(item = details.receive, state = receiveState, onAssetSelect = onAssetSelect)
+        SwapItem(type = SwapItemType.Receive, item = pair.to, equivalent = toEquivalent, state = toState, calculating = calculating, onAssetSelect = onAssetSelect)
     }
 }
 
 @Composable
 fun SwapItem(
-    item: SwapItemState,
+    type: SwapItemType,
+    item: SwapItemModel,
+    equivalent: String,
+    calculating: Boolean = false,
     state: TextFieldState = rememberTextFieldState(),
-    isPay: Boolean = false,
     onAssetSelect: (SwapItemType) -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
-        if (isPay) {
+        if (type == SwapItemType.Pay) {
             focusRequester.requestFocus()
         }
     }
@@ -255,7 +253,7 @@ fun SwapItem(
     ) {
         Text(
             text = stringResource(
-                id = when (item.type){
+                id = when (type){
                     SwapItemType.Pay -> R.string.swap_you_pay
                     SwapItemType.Receive -> R.string.swap_you_receive
                 }
@@ -269,10 +267,8 @@ fun SwapItem(
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Box(modifier = Modifier
-                .weight(1f)
-                .fillMaxWidth()) {
-                if (item.calculating) {
+            Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                if (calculating) {
                     CircularProgressIndicator16()
                 } else {
                     BasicTextField(
@@ -299,14 +295,14 @@ fun SwapItem(
                             }
                             innerTextField()
                         },
-                        readOnly = item.type == SwapItemType.Receive
+                        readOnly = type == SwapItemType.Receive
                     )
                 }
             }
             Row(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.medium)
-                    .clickable { onAssetSelect(item.type) }
+                    .clickable { onAssetSelect(type) }
                     .padding(padding4)
                 ,
                 verticalAlignment = Alignment.CenterVertically,
@@ -314,17 +310,17 @@ fun SwapItem(
             ) {
                 AssetIcon(
                     modifier = Modifier.size(36.dp),
-                    iconUrl = item.assetIcon,
-                    placeholder = item.assetType.string,
-                    supportIcon = if (item.assetId.type() == AssetSubtype.NATIVE) {
+                    iconUrl = item.asset.getIconUrl(),
+                    placeholder = item.asset.type.string,
+                    supportIcon = if (item.asset.id.type() == AssetSubtype.NATIVE) {
                         null
                     } else {
-                        item.assetId.chain.getIconUrl()
+                        item.asset.id.chain.getIconUrl()
                     },
                 )
                 Spacer(modifier = Modifier.size(8.dp))
                 Text(
-                    text = item.assetSymbol,
+                    text = item.asset.symbol,
                     style = MaterialTheme.typography.bodyLarge,
                 )
             }
@@ -336,7 +332,7 @@ fun SwapItem(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(0.5f),
-                text = item.equivalentValue,
+                text = equivalent,
                 style = MaterialTheme.typography.bodySmall,
             )
             Spacer(modifier = Modifier.size(8.dp))
@@ -345,9 +341,7 @@ fun SwapItem(
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .clip(MaterialTheme.shapes.small)
-                        .clickable(
-                            enabled = isPay,
-                        ) {
+                        .clickable(enabled = type == SwapItemType.Pay) {
                             state.clearText()
                             state.edit { append(item.assetBalanceValue) }
                         }
@@ -367,17 +361,20 @@ fun SwapItem(
 fun PreviewSwapItem() {
     MaterialTheme {
         SwapItem(
-            item = SwapItemState(
-                type = SwapItemType.Pay,
-                assetId = AssetId(Chain.Ethereum),
-                assetIcon = "",
-                assetSymbol = "ETH",
-                assetType = AssetType.NATIVE,
-                equivalentValue = "0.0$",
+            type = SwapItemType.Pay,
+            item = SwapItemModel(
+                Asset(
+                    id = AssetId(Chain.Ethereum),
+                    symbol = "ETH",
+                    name = "Ethereum",
+                    type = AssetType.NATIVE,
+                    decimals = 18,
+                ),
                 assetBalanceValue = "10.0",
                 assetBalanceLabel = "10.0 ETH",
-                calculating = true,
             ),
+            equivalent = "0.0$",
+            calculating = true,
             onAssetSelect = {},
         )
     }
@@ -388,34 +385,38 @@ fun PreviewSwapItem() {
 fun PreviewSwapScene() {
     MaterialTheme {
         Form(
-            details = SwapDetails.Quote(
-                allowance = false,
-                error = SwapError.None,
-                swaping = false,
-                pay = SwapItemState(
-                    type = SwapItemType.Pay,
-                    assetId = AssetId(Chain.Ethereum),
-                    assetIcon = "",
-                    assetSymbol = "ETH",
-                    assetType = AssetType.NATIVE,
-                    equivalentValue = "0.0$",
-                    assetBalanceValue = "10.0",
+            pair = SwapPairUIModel(
+                from = SwapItemModel(
+                    asset = Asset(
+                        id = AssetId(Chain.Ethereum),
+                        symbol = "ETH",
+                        name = "Ethereum",
+                        type = AssetType.NATIVE,
+                        decimals = 18,
+                    ),
                     assetBalanceLabel = "10.0 ETH",
+                    assetBalanceValue = "10.0",
                 ),
-                receive = SwapItemState(
-                    type = SwapItemType.Pay,
-                    assetId = AssetId(Chain.Ethereum),
-                    assetIcon = "",
-                    assetSymbol = "ETH",
-                    assetType = AssetType.NATIVE,
-                    equivalentValue = "0.0$",
+                to = SwapItemModel(
+                    Asset(
+                        id = AssetId(Chain.Ethereum),
+                        symbol = "ETH",
+                        name = "Ethereum",
+                        type = AssetType.NATIVE,
+                        decimals = 18,
+                    ),
                     assetBalanceValue = "10.0",
                     assetBalanceLabel = "10.0 ETH",
-                    calculating = true,
                 ),
             ),
-            payState = rememberTextFieldState(),
-            receiveState = rememberTextFieldState(),
+            fromEquivalent = "0.0$",
+            toEquivalent = "0.0$",
+            allowance = false,
+            calculating = false,
+            swapping = false,
+            error = SwapError.None,
+            fromState = rememberTextFieldState(),
+            toState = rememberTextFieldState(),
             onSwap = {},
             onSwitch = {},
             onCancel = {},
