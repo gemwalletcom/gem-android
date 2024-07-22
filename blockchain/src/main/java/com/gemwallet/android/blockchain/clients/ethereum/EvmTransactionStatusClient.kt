@@ -21,7 +21,7 @@ class EvmTransactionStatusClient(
         return rpcClient.transaction(JSONRpcRequest.create(EvmMethod.GetTransaction, listOf(txId)))
             .fold(
                 {
-                    if (it.result?.status != "0x0" || it.result?.status != "0x1") {
+                    if (it.result?.status != "0x0" && it.result?.status != "0x1") {
                         return@fold TransactionChages(TransactionState.Pending)
                     }
                     val state = when (it.result.status) {
