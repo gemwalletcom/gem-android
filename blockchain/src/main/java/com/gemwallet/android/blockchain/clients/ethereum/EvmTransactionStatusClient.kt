@@ -14,27 +14,20 @@ class EvmTransactionStatusClient(
     private val rpcClient: EvmRpcClient,
 ) : TransactionStatusClient {
     override suspend fun getStatus(owner: String, txId: String): Result<TransactionChages> {
-        return rpcClient.getTransactionByHash(JSONRpcRequest.create(EvmMethod.GetTransactionByHash, listOf(txId)))
-            .mapCatching {
-                if (it.result == null) {
-                    return@mapCatching TransactionChages(TransactionState.Failed)
-                }
-                if ((it.result.blockNumber.hexToBigInteger() ?: BigInteger.ZERO) <= BigInteger.ZERO) {
-                    TransactionChages(TransactionState.Pending)
-                } else {
-                    getStatus(txId)
-                }
-            }
+        return Result.success(getStatus(txId))
     }
 
     private suspend fun getStatus(txId: String): TransactionChages {
         return rpcClient.transaction(JSONRpcRequest.create(EvmMethod.GetTransaction, listOf(txId)))
             .fold(
                 {
+                    if (it.result?.status != "0x0" || it.result?.status != "0x1") {
+                        return@fold TransactionChages(TransactionState.Pending)
+                    }
                     val state = when (it.result.status) {
                         "0x0" -> TransactionState.Reverted
                         "0x1" -> TransactionState.Confirmed
-                        else -> TransactionState.Pending
+                        else -> TransactionState.Confirmed
                     }
                     val fee = if (chain.eip1559Support()) {
                         val gasUsed = it.result.gasUsed.hexToBigInteger() ?: return@fold TransactionChages(TransactionState.Pending)
