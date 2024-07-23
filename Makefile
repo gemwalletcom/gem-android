@@ -69,5 +69,5 @@ build-app:
 	--build-arg BUILD_MODE=${BUILD_MODE} \
 	--progress=plain \
 	-m 16g \
-	-t gem-android \
+	-t gem-android-app \
 	-f Dockerfile.app . &> build.app.log

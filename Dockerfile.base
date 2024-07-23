@@ -1,29 +1,26 @@
-FROM --platform=linux/amd64 ubuntu:22.04
+FROM debian:bookworm
 
 # Set environment variables for non-interactive installation
 ENV DEBIAN_FRONTEND=noninteractive
+
+# Enable multi-arch
+RUN dpkg --add-architecture amd64
 
 # Install necessary tools
 RUN apt-get update && apt-get install -y \
     curl \
     unzip \
+    zip \
     git \
     make \
-    zip \
     build-essential \
-    libssl-dev \
     pkg-config \
+    openjdk-17-jdk-headless \
+    libc6:amd64 \
+    zlib1g:amd64 \
     && rm -rf /var/lib/apt/lists/*
 
 ENV HOME /root
-
-# Install JDK 17
-RUN curl -s "https://get.sdkman.io" | bash && \
-    bash -c "source $HOME/.sdkman/bin/sdkman-init.sh && sdk install java 17.0.11-tem"
-
-# Set environment variables for Java
-ENV JAVA_HOME $HOME/.sdkman/candidates/java/current
-ENV PATH $JAVA_HOME/bin:$PATH
 
 # Set environment variables for Android SDK
 ENV ANDROID_HOME /opt/android-sdk

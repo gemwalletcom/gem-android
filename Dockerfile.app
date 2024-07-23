@@ -1,7 +1,8 @@
-FROM --platform=linux/amd64 gem-android-base:latest
+FROM gem-android-base:latest
 
 ARG TAG
 ARG BUILD_MODE=release
+ARG SKIP_SIGN=true
 
 # Set up entrypoint to ensure environment variables are loaded
 ENTRYPOINT ["/bin/bash", "-c", "source $HOME/.bashrc && exec $0 \"$@\"", "--"]
@@ -17,6 +18,6 @@ WORKDIR $HOME/gem-android
 
 RUN make install-wallet-core
 
-RUN touch local.properties && make unsigned-release
+RUN touch local.properties && SKIP_SIGN=${SKIP_SIGN} make release
 
 CMD ["bash"]
