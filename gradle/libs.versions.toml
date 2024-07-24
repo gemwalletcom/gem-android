@@ -39,13 +39,13 @@ securityCrypto = "1.0.0"
 ui = "1.6.8"
 uiTestJunit4 = "1.6.8"
 testRunner = "1.6.1"
-walletCore = "4.0.42"
 ksp = "1.9.24-1.0.20"
 android-lib = "8.5.1"
 kotlin = "1.9.24"
 google-services = "4.4.2"
 material3AdaptiveAndroid = "1.0.0-alpha06"
 turbine = "1.1.0"
+protobuf = "3.22.3"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -105,7 +105,7 @@ turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 # chart
 vico-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico" }
 
-wallet-core = { module = "com.trustwallet:wallet-core", version.ref = "walletCore" }
+protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobuf"}
 
 # wallet connect
 walletconnect-bom = { module = "com.walletconnect:android-bom", version.ref = "walletconnect" }

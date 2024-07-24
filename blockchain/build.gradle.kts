@@ -33,8 +33,12 @@ android {
 
 dependencies {
     api(project(":gemcore"))
-    // Sign library
-    api(libs.wallet.core)
+    // Local wallet core
+    api(files("../libs/wallet-core-4.0.42-sources.jar"))
+    implementation(project(":wallet-core"))
+    implementation(project(":wallet-core-proto"))
+    // Protobuf
+    api(libs.protobuf.javalite)
     // Network
     api(libs.retrofit)
     api(libs.retrofit.converter.gson)

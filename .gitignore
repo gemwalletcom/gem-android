@@ -30,3 +30,6 @@ render.experimental.xml
 *.hprof
 app/release/
 *.keystore
+*.jar
+*.aar
+*.sha1

@@ -45,7 +45,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: "17"
-          distribution: "zulu"
+          distribution: "temurin"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -64,7 +64,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          make install-typeshare && make install-toolchains
+          make install-typeshare && make install-toolchains && make install-wallet-core
 
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v3

@@ -128,6 +128,13 @@ android {
 
 dependencies {
     api(project(":blockchain"))
+    // Local wallet core
+    api(files("../libs/wallet-core-4.0.42-sources.jar"))
+    implementation(project(":wallet-core"))
+    implementation(project(":wallet-core-proto"))
+    // Protobuf
+    api(libs.protobuf.javalite)
+
     implementation(libs.ktx.core)
 
     implementation(libs.hilt.navigation.compose)

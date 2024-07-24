@@ -1,0 +1,51 @@
+FROM debian:bookworm
+
+# Set environment variables for non-interactive installation
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Enable multi-arch
+RUN dpkg --add-architecture amd64
+
+# Install necessary tools
+RUN apt-get update && apt-get install -y \
+    curl \
+    unzip \
+    zip \
+    git \
+    make \
+    build-essential \
+    pkg-config \
+    openjdk-17-jdk-headless \
+    libc6:amd64 \
+    zlib1g:amd64 \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV HOME /root
+
+# Set environment variables for Android SDK
+ENV ANDROID_HOME /opt/android-sdk
+ENV ANDROID_SDK_ROOT /opt/android-sdk
+ENV PATH ${ANDROID_HOME}/cmdline-tools/bin:${ANDROID_HOME}/platform-tools:${PATH}
+
+# Download and install Android SDK
+RUN mkdir -p ${ANDROID_HOME} && \
+    curl -o sdk-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip && \
+    unzip sdk-tools.zip -d ${ANDROID_HOME} && \
+    mv ${ANDROID_HOME}/cmdline-tools/* ${ANDROID_HOME}/ && \
+    rm -rf ${ANDROID_HOME}/cmdline-tools && \
+    rm sdk-tools.zip
+
+# Install SDK components
+RUN yes | ${ANDROID_HOME}/bin/sdkmanager --sdk_root=${ANDROID_HOME} --licenses && \
+    ${ANDROID_HOME}/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;26.1.10909125"
+
+# Install Rust
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
+ENV PATH "$HOME/.cargo/bin:${PATH}"
+
+# Install toolchain and targets
+RUN rustup toolchain install stable
+RUN rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android
+
+# Cargo install
+RUN cargo install typeshare-cli --version 1.6.0 && cargo install cargo-ndk
