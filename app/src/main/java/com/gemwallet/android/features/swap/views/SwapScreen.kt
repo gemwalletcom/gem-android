@@ -82,13 +82,12 @@ fun SwapScreen(
     onConfirm: (ConfirmParams) -> Unit,
     onCancel: () -> Unit,
 ) {
-    val selectState by viewModel.selectPairUiState.collectAsStateWithLifecycle()
+    val selectState by viewModel.selectPair.collectAsStateWithLifecycle()
     val allowance by viewModel.allowance.collectAsStateWithLifecycle()
     val pair by viewModel.swapPairUIModel.collectAsStateWithLifecycle()
     val fromEquivalent by viewModel.fromEquivalent.collectAsStateWithLifecycle()
     val toEquivalent by viewModel.toEquivalent.collectAsStateWithLifecycle()
-    val calculating by viewModel.calculatingQuote.collectAsStateWithLifecycle()
-    val swapping by viewModel.swapping.collectAsStateWithLifecycle()
+    val swapScreenState by viewModel.swapScreenState.collectAsStateWithLifecycle()
     val error by viewModel.error.collectAsStateWithLifecycle()
 
     BackHandler(selectState != null) {
@@ -107,15 +106,14 @@ fun SwapScreen(
             allowance = allowance,
             fromEquivalent = fromEquivalent,
             toEquivalent = toEquivalent,
-            calculating = calculating,
-            swapping = swapping,
+            swapState = swapScreenState,
             error = error,
             fromState = viewModel.fromValue,
             toState = viewModel.toValue,
             onSwap = { viewModel.swap(onConfirm) },
             onSwitch = viewModel::switchSwap,
             onCancel = onCancel,
-            onAssetSelect = {}
+            onAssetSelect = viewModel::changePair
         )
     }
 
@@ -147,9 +145,8 @@ fun Form(
     allowance: Boolean,
     fromEquivalent: String,
     toEquivalent: String,
-    calculating: Boolean,
+    swapState: SwapViewModel.SwapState,
     error: SwapError,
-    swapping: Boolean,
     fromState: TextFieldState,
     toState: TextFieldState,
     onSwap: () -> Unit,
@@ -174,9 +171,13 @@ fun Form(
                 Button(
                     modifier = Modifier.fillMaxWidth().heightIn(mainActionHeight),
                     onClick = onSwap,
-                    enabled = error == SwapError.None && !swapping
+                    enabled = error == SwapError.None && (swapState == SwapViewModel.SwapState.Ready || swapState == SwapViewModel.SwapState.RequestApprove)
                 ) {
-                    if (swapping) {
+                    if (swapState == SwapViewModel.SwapState.Swapping
+                        || swapState == SwapViewModel.SwapState.GetQuote
+                        || swapState == SwapViewModel.SwapState.CheckAllowance
+                        || swapState == SwapViewModel.SwapState.Approving
+                    ) {
                         Box(modifier = Modifier.fillMaxWidth()) {
                             CircularProgressIndicator16(modifier = Modifier.align(Alignment.Center))
                         }
@@ -225,7 +226,14 @@ fun Form(
                 contentDescription = "swap_switch"
             )
         }
-        SwapItem(type = SwapItemType.Receive, item = pair.to, equivalent = toEquivalent, state = toState, calculating = calculating, onAssetSelect = onAssetSelect)
+        SwapItem(
+            type = SwapItemType.Receive,
+            item = pair.to,
+            equivalent = toEquivalent,
+            state = toState,
+            calculating = swapState == SwapViewModel.SwapState.GetQuote,
+            onAssetSelect = onAssetSelect
+        )
     }
 }
 
@@ -332,7 +340,7 @@ fun SwapItem(
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(0.5f),
-                text = equivalent,
+                text = if (calculating) "" else equivalent,
                 style = MaterialTheme.typography.bodySmall,
             )
             Spacer(modifier = Modifier.size(8.dp))
@@ -412,8 +420,7 @@ fun PreviewSwapScene() {
             fromEquivalent = "0.0$",
             toEquivalent = "0.0$",
             allowance = false,
-            calculating = false,
-            swapping = false,
+            swapState = SwapViewModel.SwapState.Ready,
             error = SwapError.None,
             fromState = rememberTextFieldState(),
             toState = rememberTextFieldState(),

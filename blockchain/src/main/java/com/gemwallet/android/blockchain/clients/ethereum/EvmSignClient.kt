@@ -70,7 +70,7 @@ class EvmSignClient(
             fee = fee,
             chainId = meta.chainId,
             nonce = meta.nonce,
-            destinationAddress = params.input.destination()?.address!!,
+            destinationAddress = params.input.destination()?.address ?: "",
             memo = when (input) {
                 is ConfirmParams.SwapParams -> input.swapData
                 is ConfirmParams.TokenApprovalParams -> input.approvalData

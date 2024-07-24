@@ -61,5 +61,7 @@ class EvmSwapClient(
         return true
     }
 
+    override fun isRequestApprove(): Boolean = true
+
     override fun maintainChain(): Chain = chain
 }

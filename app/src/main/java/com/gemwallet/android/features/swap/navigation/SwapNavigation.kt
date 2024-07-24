@@ -11,12 +11,11 @@ import com.gemwallet.android.features.swap.views.SwapScreen
 import com.gemwallet.android.model.ConfirmParams
 import com.wallet.core.primitives.AssetId
 
-internal const val fromArg = "from"
-internal const val toArg = "to"
+internal const val pairArg = "pair"
 const val swapRoute = "swap"
 
 fun NavController.navigateToSwap(from: AssetId? = null, to: AssetId? = null) {
-    navigate("$swapRoute/${from?.toIdentifier()?.urlEncode()}/${to?.toIdentifier()?.urlEncode()}")
+    navigate("$swapRoute/${from?.toIdentifier()?.urlEncode()}|${to?.toIdentifier()?.urlEncode()}")
 }
 
 fun NavGraphBuilder.swap(
@@ -24,13 +23,9 @@ fun NavGraphBuilder.swap(
     onCancel: () -> Unit,
 ) {
     composable(
-        route = "$swapRoute/{$fromArg}/{$toArg}",
+        route = "$swapRoute/{$pairArg}",
         arguments = listOf(
-            navArgument(fromArg) {
-                type = NavType.StringType
-                nullable = true
-            },
-            navArgument(toArg) {
+            navArgument(pairArg) {
                 type = NavType.StringType
                 nullable = true
             },

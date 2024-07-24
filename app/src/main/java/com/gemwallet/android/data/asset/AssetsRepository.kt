@@ -162,7 +162,10 @@ class AssetsRepository @Inject constructor(
     }
 
     fun getAssetsInfo(assetsId: List<AssetId>): Flow<List<AssetInfo>> = assetsLocalSource.getAssetsInfo(assetsId).map { assets ->
-        assets.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
+        assetsId.map { id ->
+            assets.firstOrNull { it.asset.id.toIdentifier() == id.toIdentifier() }
+                ?: tokensRepository.assembleAssetInfo(id)
+        }.filterNotNull()
     }
 
     suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo> = withContext(Dispatchers.IO) {
