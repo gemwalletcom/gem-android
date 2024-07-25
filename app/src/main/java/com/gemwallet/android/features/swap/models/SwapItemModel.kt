@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.swap.model
+package com.gemwallet.android.features.swap.models
 
 import androidx.compose.runtime.Stable
 import com.wallet.core.primitives.Asset

@@ -6,9 +6,7 @@ import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset_select.components.ItemBalanceTrailing
-import com.gemwallet.android.features.swap.model.SwapItemType
-import com.gemwallet.android.features.swap.model.SwapPairSelect
-import com.gemwallet.android.features.swap.model.SwapScreenState
+import com.gemwallet.android.features.swap.models.SwapPairSelect
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain

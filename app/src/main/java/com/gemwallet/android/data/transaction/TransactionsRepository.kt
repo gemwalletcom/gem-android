@@ -21,6 +21,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -34,6 +37,7 @@ class TransactionsRepository(
     private val assetsLocalSource: AssetsLocalSource,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) {
+    private val changedTransactions = MutableStateFlow<List<TransactionExtended>>(emptyList())
     init {
         scope.launch {
             while (true) {
@@ -41,6 +45,10 @@ class TransactionsRepository(
                 delay(10 * DateUtils.SECOND_IN_MILLIS)
             }
         }
+    }
+
+    fun getChangedTransactions(): Flow<List<TransactionExtended>> {
+        return changedTransactions
     }
 
     fun getPendingTransactions(): Flow<List<TransactionExtended>> {
@@ -114,27 +122,32 @@ class TransactionsRepository(
     }
 
     private suspend fun observePending() = scope.launch {
-        val transactions: List<Transaction> = localSource.getPending()
-        val updatedTxs = transactions.map { tx ->
+        val pendings = getPendingTransactions().firstOrNull() ?: emptyList()
+        val updatedTxs = pendings.map { tx ->
             async {
-                val newTx = checkTx(tx)
-                if (newTx != null && newTx.id != tx.id) {
-                    localSource.remove(tx)
+                val newTx = checkTx(tx.transaction)
+                if (newTx != null && newTx.id != tx.transaction.id) {
+                    localSource.remove(tx.transaction)
                 }
-                newTx
+                tx.copy(transaction = newTx ?: return@async null)
             }
         }
         .awaitAll()
         .filterNotNull()
         if (updatedTxs.isNotEmpty()) {
-            localSource.updateTransaction(updatedTxs)
+            changedTransactions.tryEmit(updatedTxs)
+            localSource.updateTransaction(updatedTxs.map { it.transaction })
         }
-        localSource.getPending().forEach {
-            val timeOut = Config().getChainConfig(it.assetId.chain.string).transactionTimeout * 1000
-            if (it.createdAt < System.currentTimeMillis() - timeOut) {
-                localSource.updateTransaction(listOf(it.copy(state = TransactionState.Failed)))
+        val failedByTimeOut = (getPendingTransactions().firstOrNull() ?: emptyList()).mapNotNull {
+            val timeOut = Config().getChainConfig(it.transaction.assetId.chain.string).transactionTimeout * 1000
+            if (it.transaction.createdAt < System.currentTimeMillis() - timeOut) {
+                it.copy(transaction = it.transaction.copy(state = TransactionState.Failed))
+            } else {
+                null
             }
         }
+        localSource.updateTransaction(failedByTimeOut.map { it.transaction })
+        changedTransactions.tryEmit(failedByTimeOut)
     }
 
     private suspend fun checkTx(tx: Transaction): Transaction? {

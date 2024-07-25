@@ -65,7 +65,7 @@ class AssetsRepository @Inject constructor(
 
     init {
         scope.launch(Dispatchers.IO) {
-            transactionsRepository.getPendingTransactions().collectLatest {
+            transactionsRepository.getChangedTransactions().collect {
                 onTransactions(it)
             }
         }

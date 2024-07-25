@@ -37,15 +37,15 @@ class SwapRepository(
         return quote
     }
 
-    suspend fun getAllowance(assetId: AssetId, owner: String, spender: String): Boolean = withContext(Dispatchers.IO) {
-        val client = swapClients.firstOrNull { assetId.chain == it.maintainChain() } ?: return@withContext true
-        client.getAllowance(assetId, owner, spender) != BigInteger.ZERO
+    suspend fun getAllowance(assetId: AssetId, owner: String, spender: String): BigInteger = withContext(Dispatchers.IO) {
+        val client = swapClients.firstOrNull { assetId.chain == it.maintainChain() } ?: return@withContext BigInteger.ZERO
+        client.getAllowance(assetId, owner, spender)
     }
 
     fun encodeApprove(spender: String): ByteArray {
         val function = EthereumAbiFunction("approve")
         function.addParamAddress(AnyAddress(spender, CoinType.ETHEREUM).data(), false)
-        function.addParamUInt256(BigInteger.valueOf(Long.MAX_VALUE).toByteArray(), false)
+        function.addParamUInt256(BigInteger("2").pow(255).dec().toByteArray(), false)
         return EthereumAbi.encode(function)
     }
 

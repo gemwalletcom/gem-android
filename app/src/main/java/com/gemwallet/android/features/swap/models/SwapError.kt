@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.swap.model
+package com.gemwallet.android.features.swap.models
 
 enum class SwapError {
     None,

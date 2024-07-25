@@ -16,7 +16,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
+import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.interactors.getSupportIconUrl
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.ui.components.titles.getAddress
 import com.gemwallet.android.ui.components.titles.getTransactionTitle
@@ -28,9 +31,33 @@ import com.gemwallet.android.ui.theme.padding4
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.TransactionDirection
+import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
 import com.wallet.core.primitives.TransactionType
+
+@Composable
+fun TransactionItem(item: TransactionExtended, isLast: Boolean, onTransactionClick: (String) -> Unit) {
+    TransactionItem(
+        assetIcon = item.asset.getIconUrl(),
+        supportIcon = item.asset.getSupportIconUrl(),
+        assetSymbol = item.asset.symbol,
+        to = item.transaction.to,
+        from = item.transaction.from,
+        direction = item.transaction.direction,
+        type = item.transaction.type,
+        state = item.transaction.state,
+        value = Crypto(item.transaction.value.toBigInteger()).format(
+            item.asset.decimals,
+            item.asset.symbol,
+            2,
+            dynamicPlace = true,
+        ),
+        metadata = item.transaction.getSwapMetadata(),
+        assets = item.assets,
+        isLast = isLast
+    ) { onTransactionClick(item.transaction.id) }
+}
 
 @Composable
 fun TransactionItem(

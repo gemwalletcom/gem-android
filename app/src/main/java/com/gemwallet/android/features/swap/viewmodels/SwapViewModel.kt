@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.swap.viewmodels
 
+import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.snapshotFlow
@@ -9,15 +10,17 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.swap.SwapRepository
+import com.gemwallet.android.data.transaction.TransactionsRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
-import com.gemwallet.android.features.swap.model.SwapError
-import com.gemwallet.android.features.swap.model.SwapItemModel
-import com.gemwallet.android.features.swap.model.SwapItemType
-import com.gemwallet.android.features.swap.model.SwapPairSelect
-import com.gemwallet.android.features.swap.model.SwapPairUIModel
+import com.gemwallet.android.features.swap.models.SwapError
+import com.gemwallet.android.features.swap.models.SwapItemModel
+import com.gemwallet.android.features.swap.models.SwapItemType
+import com.gemwallet.android.features.swap.models.SwapPairSelect
+import com.gemwallet.android.features.swap.models.SwapPairUIModel
+import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.features.swap.navigation.pairArg
 import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.math.toHexString
@@ -29,6 +32,7 @@ import com.gemwallet.android.model.format
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.SwapQuote
+import com.wallet.core.primitives.TransactionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -43,6 +47,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -60,23 +65,16 @@ class SwapViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val swapRepository: SwapRepository,
     private val savedStateHandle: SavedStateHandle,
+    private val transactionRepository: TransactionsRepository,
 ) : ViewModel() {
 
-    val error = MutableStateFlow(SwapError.None)
-    val swapScreenState = MutableStateFlow(SwapState.None)
-
-    enum class SwapState {
-        None,
-        GetQuote,
-        Ready,
-        Swapping,
-        CheckAllowance,
-        RequestApprove,
-        Approving,
-        Error,
-    }
+    val swapScreenState = MutableStateFlow<SwapState>(SwapState.None)
 
     val selectPair = MutableStateFlow<SwapPairSelect?>(null)
+
+    private val approveTxHash = MutableStateFlow<String?>(null)
+    val approveTx = approveTxHash.flatMapLatest { transactionRepository.getTransaction(it ?: return@flatMapLatest emptyFlow()) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val swapPairState: StateFlow<SwapPairState?> = savedStateHandle.getStateFlow<String?>(pairArg, null)
         .mapNotNull {
@@ -132,13 +130,12 @@ class SwapViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val fromValue: TextFieldState = TextFieldState()
-    private val fromValueFlow = snapshotFlow { fromValue.text }
+    private val fromValueFlow = snapshotFlow { fromValue.text }.map { it.toString() }
     val fromEquivalent = fromValueFlow.combine(assetsState) { value, assets ->
-        error.update { SwapError.None }
         swapScreenState.update { SwapState.None }
         val price = assets?.from?.price ?: return@combine null
         val valueNum = try {
-            value.toString().numberParse()
+            value.numberParse()
         } catch (err: Throwable) {
             BigDecimal.ZERO
         }
@@ -148,34 +145,37 @@ class SwapViewModel @Inject constructor(
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    private val quote = fromValueFlow.combine(assetsState) { input, assets ->
+    private val quote = fromValueFlow.mapLatest {
+        Log.d("SWAP_GET_QUOTE", "MapLatest: $it")
+        it
+    }.mapLatest { input ->
         val value = try {
-            input.toString().numberParse()
+            input.numberParse()
         } catch (err: Throwable) {
             BigDecimal.ZERO
         }
-        Pair(value, assets)
+        Log.d("SWAP_GET_QUOTE", "value: $value")
+        Pair(value, assetsState.value)
     }
-    .flatMapLatest {
-        flow {
-            val fromAsset = it.second?.from
-            val toAsset = it.second?.to
-            if (fromAsset == null || toAsset == null || it.first == BigDecimal.ZERO) {
-                withContext(Dispatchers.Main) { toValue.edit { replace(0, length, "0") } }
-                emit(null)
-                return@flow
-            }
-            swapScreenState.update { SwapState.GetQuote }
-            delay(500L)
-            val quote = getQuote(fromAsset, toAsset, it.first)
-            val amount = toAsset.asset.format(Crypto(quote?.toAmount ?: "0"), 8)
-            withContext(Dispatchers.Main) { toValue.edit { replace(0, length, amount) } }
-            emit(getQuote(fromAsset, toAsset, it.first))
+    .mapLatest {
+        val fromAsset = it.second?.from
+        val toAsset = it.second?.to
+        if (fromAsset == null || toAsset == null || it.first == BigDecimal.ZERO) {
+            withContext(Dispatchers.Main) { toValue.edit { replace(0, length, "0") } }
+            return@mapLatest null
         }
+        swapScreenState.update { SwapState.GetQuote }
+        delay(500L)
+        Log.d("SWAP_GET_QUOTE", "Request quote")
+        val quote = getQuote(fromAsset, toAsset, it.first)
+        val amount = toAsset.asset.format(Crypto(quote?.toAmount ?: "0"), 8, showSymbol = false)
+        withContext(Dispatchers.Main) { toValue.edit { replace(0, length, amount) } }
+        quote
     }.flowOn(Dispatchers.IO)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val toValue: TextFieldState = TextFieldState()
-    val toEquivalent = combine(quote, assetsState) { quote, assets ->
+    val toEquivalent = quote.combine(assetsState) { quote, assets ->
         if (quote == null || assets?.to == null) {
             return@combine ""
         }
@@ -187,31 +187,37 @@ class SwapViewModel @Inject constructor(
         }
     }
     .filterNotNull()
-    .flowOn(Dispatchers.IO)
-    .stateIn(viewModelScope, SharingStarted.Lazily, "")
+    .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    val allowance = quote.combine(assetsState) { quote, assets ->
+    private val requestApprove = combine(quote, assetsState, approveTx) { quote, assets, tx ->
         if (assets?.from == null) {
             swapScreenState.update { SwapState.None }
-            return@combine true
+            return@combine false
         }
         if (!swapRepository.isRequestApprove(assets.from.id().chain) || assets.from.asset.id.type() != AssetSubtype.TOKEN) {
             swapScreenState.update { SwapState.Ready }
-            return@combine true
+            return@combine false
         }
+
+        if (tx?.transaction?.state == TransactionState.Pending) {
+            swapScreenState.update { SwapState.Approving }
+            return@combine false
+        }
+
         val spender = quote?.approval?.spender
         if (spender.isNullOrEmpty()) {
             swapScreenState.update { SwapState.None }
-            return@combine true
+            return@combine false
         }
 
         swapScreenState.update { SwapState.CheckAllowance }
         val allowance = swapRepository.getAllowance(assets.from.id(), assets.from.owner.address, spender)
-        swapScreenState.update { if (allowance) SwapState.Ready else SwapState.RequestApprove }
-        allowance
+        val requestApprove = allowance < BigInteger(quote.fromAmount)
+        swapScreenState.update { if (requestApprove) SwapState.RequestApprove else SwapState.Ready }
+        requestApprove
     }
     .flowOn(Dispatchers.IO)
-    .stateIn(viewModelScope, SharingStarted.Lazily, true)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     private val sync = swapPairState.flatMapLatest {
         flow {
@@ -221,11 +227,25 @@ class SwapViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun onSelect(select: SwapPairSelect) {
-        val update = if (select.sameChain()) {
-            savedStateHandle[pairArg] = "${select.fromId?.toIdentifier()}|${select.toId?.toIdentifier()}"
+        val current = if (select.fromId == null || select.toId == null) {
+            when (select) {
+                is SwapPairSelect.From -> SwapPairSelect.From(
+                    select.fromId,
+                    swapPairState.value?.toId ?: select.toId
+                )
+
+                is SwapPairSelect.To -> SwapPairSelect.To(
+                    swapPairState.value?.fromId ?: select.fromId, select.toId
+                )
+            }
+        } else {
+            select
+        }
+        val update = if (current.sameChain()) {
+            savedStateHandle[pairArg] = "${current.fromId?.toIdentifier()}|${current.toId?.toIdentifier()}"
             null
         } else {
-            select.opposite()
+            current.opposite()
         }
         selectPair.update { update }
     }
@@ -264,17 +284,24 @@ class SwapViewModel @Inject constructor(
         val fromAmount = fromValue.text.toString().numberParse()  // TODO: Number parse could throw exception!
         val from = assetsState.value?.from ?: return@launch
         val to = assetsState.value?.to ?: return@launch
-        val allowance = allowance.value
-        val quote = getQuote(from, to, fromAmount, allowance)
-        swapScreenState.update { SwapState.Ready } // TODO: Add swapping state and combine with error and other factors
-        if (quote == null && allowance) {
-            error.update { SwapError.NoQuote }
+        val requestApprove = requestApprove.value
+        val quote = getQuote(from, to, fromAmount, !requestApprove)
+        if (quote == null) {
+            swapScreenState.update { SwapState.Error(SwapError.NoQuote) }
             return@launch
         }
-        if (allowance) {
-            if (quote == null) {
-                return@launch
-            }
+        if (requestApprove) {
+            swapScreenState.update { SwapState.RequestApprove }
+            val meta = swapRepository.encodeApprove(quote.approval?.spender ?: "")
+            onConfirm(
+                ConfirmParams.TokenApprovalParams(
+                    assetId = if (from.asset.id.type() == AssetSubtype.TOKEN) from.asset.id else to.asset.id,
+                    approvalData = meta.toHexString(),
+                    provider = quote.provider.name,
+                )
+            )
+        } else {
+            swapScreenState.update { SwapState.Ready }
             onConfirm(
                 ConfirmParams.SwapParams(
                     fromAssetId = from.asset.id,
@@ -287,26 +314,20 @@ class SwapViewModel @Inject constructor(
                     value = quote.data?.value ?: return@launch,
                 )
             )
-        } else {
-            val meta = swapRepository.encodeApprove(quote?.approval?.spender ?: "") // TODO: Move to special operator
-            onConfirm(
-                ConfirmParams.TokenApprovalParams(
-                    assetId = if (from.asset.id.type() == AssetSubtype.TOKEN) from.asset.id else to.asset.id,
-                    approvalData = meta.toHexString(),
-                    provider = quote?.provider?.name ?: "",
-                )
-            )
         }
     }
 
     fun changePair(swapItemType: SwapItemType) {
+        val fromId = if (swapItemType == SwapItemType.Pay) swapPairState.value?.fromId else null
+        val toId = if (swapItemType == SwapItemType.Pay) null else swapPairState.value?.fromId
         selectPair.update {
-            val select = SwapPairSelect.From(
-                swapPairState.value?.fromId,
-                swapPairState.value?.toId,
-            )
+            val select = SwapPairSelect.From(fromId, toId)
             if (swapItemType == SwapItemType.Pay) select else select.opposite()
         }
+    }
+
+    fun onTxHash(hash: String) {
+        approveTxHash.update { "${assetsState.value?.from?.id()?.chain?.string}_$hash" }
     }
 
     private class SwapPairState(
