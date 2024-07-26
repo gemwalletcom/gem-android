@@ -5,7 +5,7 @@ import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.interactors.SyncOperator
 import com.gemwallet.android.services.GemApiClient
-import com.google.firebase.messaging.FirebaseMessaging
+import com.gemwallet.android.services.requestPushToken
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.Platform
@@ -41,25 +41,12 @@ class SyncDevice(
             }
         }
         if (pushEnabled && pushToken.isEmpty()) {
-            requestPushToken(register)
+            requestPushToken {
+                configRepository.setPushToken(it)
+                register()
+            }
         } else {
             register()
-        }
-    }
-
-    private fun requestPushToken(onToken: () -> Unit) {
-        try {
-            FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-                val token = if (task.isSuccessful) {
-                    task.result
-                } else {
-                    ""
-                }
-                configRepository.setPushToken(token)
-                onToken()
-            }
-        } catch (err: Throwable) {
-            onToken()
         }
     }
 

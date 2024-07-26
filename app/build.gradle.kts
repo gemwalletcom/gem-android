@@ -31,6 +31,17 @@ android {
     namespace = "com.gemwallet.android"
     compileSdk = 34
     ndkVersion = "26.1.10909125"
+    setFlavorDimensions(listOf("default"))
+
+    productFlavors {
+        create("google-notification") {
+
+        }
+
+        create("default") {
+
+        }
+    }
 
     defaultConfig {
         applicationId = "com.gemwallet.android"
@@ -181,7 +192,7 @@ dependencies {
     // EncryptedPreferences
     implementation(libs.androidx.security.crypto)
     // Notifications - FCM
-    implementation(libs.firebase.messaging)
+    "google-notificationImplementation"(libs.firebase.messaging)
     // Auth
     implementation(libs.androidx.biometric)
     // Wallet Connect
@@ -193,8 +204,8 @@ dependencies {
     // Chart
     implementation(libs.vico.m3)
     // In App review
-    implementation(libs.play.review)
-    implementation(libs.play.review.ktx)
+    "google-notificationImplementation"(libs.play.review)
+    "google-notificationImplementation"(libs.play.review.ktx)
 
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
