@@ -6,28 +6,37 @@ import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset_select.components.ItemBalanceTrailing
-import com.gemwallet.android.features.swap.model.SwapItemType
-import com.gemwallet.android.features.swap.model.SwapScreenState
+import com.gemwallet.android.features.swap.models.SwapPairSelect
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.EVMChain
 
 @Composable
 fun SelectSwapScreen(
-    select: SwapScreenState.Select,
+    select: SwapPairSelect,
     onCancel: () -> Unit,
-    onSelect: ((AssetId, SwapItemType) -> Unit)?,
+    onSelect: ((SwapPairSelect) -> Unit)?,
 ) {
-    val predicate: (AssetId) -> Boolean = remember(select.prevAssetId?.toIdentifier(), select.oppositeAssetId) {
-        { select.predicate(it) }
+    val predicate: (AssetId) -> Boolean = remember(select.fromId?.toIdentifier(), select.toId?.toIdentifier()) {
+        { other ->
+            val chain = other.chain
+            val isEVMChain = EVMChain.entries.map { it.string }.contains(chain.string)
+            (isEVMChain || chain == Chain.Solana) && (
+                other.toIdentifier() != select.oppositeId()?.toIdentifier()
+                && other.toIdentifier() != select.change()?.toIdentifier()
+                && (select.oppositeId() == null || select.oppositeId()?.chain == other.chain)
+            )
+        }
     }
     AssetSelectScreen(
-        title = when (select.changeType) {
-            SwapItemType.Pay -> stringResource(id = R.string.swap_you_pay)
-            SwapItemType.Receive -> stringResource(id = R.string.swap_you_receive)
+        title = when (select) {
+            is SwapPairSelect.From -> stringResource(id = R.string.swap_you_pay)
+            is SwapPairSelect.To -> stringResource(id = R.string.swap_you_receive)
         },
         titleBadge = { null },
         itemTrailing = { ItemBalanceTrailing(it) },
         predicate = predicate,
-        onSelect = { onSelect?.invoke(it, select.changeType) },
+        onSelect = { onSelect?.invoke(select.select(it)) },
         onCancel = onCancel,
     )
 }

@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.swap.model
+package com.gemwallet.android.features.swap.models
 
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.AssetId

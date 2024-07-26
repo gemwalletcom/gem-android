@@ -1,11 +1,11 @@
 package com.gemwallet.android.data.swap
 
-import android.util.Log
 import com.gemwallet.android.blockchain.clients.SwapClient
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.SwapQuoteResult
+import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.SwapQuote
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import wallet.core.jni.AnyAddress
@@ -18,7 +18,7 @@ class SwapRepository(
     private val gemApiClient: GemApiClient,
     private val swapClients: List<SwapClient>,
 ) {
-    suspend fun getQuote(ownerAddress: String, from: AssetId, to: AssetId, amount: String, includeData: Boolean = false): SwapQuoteResult? {
+    suspend fun getQuote(ownerAddress: String, from: AssetId, to: AssetId, amount: String, includeData: Boolean = false): SwapQuote? {
         val result = gemApiClient.getSwapQuote(
             GemApiClient.SwapRequest(
                 fromAsset = from.toIdentifier(),
@@ -28,25 +28,28 @@ class SwapRepository(
                 includeData = includeData,
             )
         )
-        val quote = result.getOrNull() ?: return null
-        val spender = quote.quote.approval?.spender
+        val quote = result.getOrNull()?.quote ?: return null
+        val spender = quote.approval?.spender
         if (!includeData) {
-            spender ?: throw Exception("Approval data is null")
-            swapClients.firstOrNull { it.isMaintain(from.chain) }?.checkSpender(spender)
+            swapClients.firstOrNull { it.isMaintain(from.chain) }?.checkSpender(spender ?: "")
         }
 
         return quote
     }
 
-    suspend fun getAllowance(assetId: AssetId, owner: String, spender: String): Boolean = withContext(Dispatchers.IO) {
-        val client = swapClients.firstOrNull { assetId.chain == it.maintainChain() } ?: return@withContext true
-        client.getAllowance(assetId, owner, spender) != BigInteger.ZERO
+    suspend fun getAllowance(assetId: AssetId, owner: String, spender: String): BigInteger = withContext(Dispatchers.IO) {
+        val client = swapClients.firstOrNull { assetId.chain == it.maintainChain() } ?: return@withContext BigInteger.ZERO
+        client.getAllowance(assetId, owner, spender)
     }
 
     fun encodeApprove(spender: String): ByteArray {
         val function = EthereumAbiFunction("approve")
         function.addParamAddress(AnyAddress(spender, CoinType.ETHEREUM).data(), false)
-        function.addParamUInt256(BigInteger.valueOf(Long.MAX_VALUE).toByteArray(), false)
+        function.addParamUInt256(BigInteger("2").pow(255).dec().toByteArray(), false)
         return EthereumAbi.encode(function)
     }
+
+    fun isRequestApprove(chain: Chain): Boolean = swapClients
+        .firstOrNull { chain == it.maintainChain() }
+        ?.isRequestApprove() ?: false
 }

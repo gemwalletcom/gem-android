@@ -19,8 +19,6 @@ interface TransactionsLocalSource {
 
     fun getTransactionsByState(state: TransactionState): Flow<List<TransactionExtended>>
 
-    suspend fun getPending(): List<Transaction>
-
     suspend fun remove(tx: Transaction)
 
     suspend fun getMetadata(txId: String): Any?

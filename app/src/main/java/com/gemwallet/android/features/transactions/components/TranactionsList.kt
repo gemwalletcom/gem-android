@@ -53,25 +53,7 @@ fun LazyListScope.transactionsList(
             }
         }
         item(key = item.transaction.id) {
-            TransactionItem(
-                assetIcon = item.asset.getIconUrl(),
-                supportIcon = item.asset.getSupportIconUrl(),
-                assetSymbol = item.asset.symbol,
-                to = item.transaction.to,
-                from = item.transaction.from,
-                direction = item.transaction.direction,
-                type = item.transaction.type,
-                state = item.transaction.state,
-                value = Crypto(item.transaction.value.toBigInteger()).format(
-                    item.asset.decimals,
-                    item.asset.symbol,
-                    2,
-                    dynamicPlace = true,
-                ),
-                metadata = item.transaction.getSwapMetadata(),
-                assets = item.assets,
-                isLast = index == items.size - 1
-            ) { onTransactionClick(item.transaction.id) }
+            TransactionItem(item, index == items.size - 1, onTransactionClick)
         }
         prev = createdAt
     }

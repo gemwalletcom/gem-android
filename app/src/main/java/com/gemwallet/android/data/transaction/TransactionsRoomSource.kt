@@ -132,11 +132,6 @@ class TransactionsRoomSource(
             .mapNotNull { it.mapNotNull { tx -> toExtendedTransaction(tx) } }
     }
 
-    override suspend fun getPending(): List<Transaction> {
-        return transactionsDao.getByState(TransactionState.Pending)
-            .mapNotNull(this::toTransaction)
-    }
-
     override suspend fun remove(tx: Transaction) {
         transactionsDao.delete(tx.id)
     }

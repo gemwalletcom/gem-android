@@ -185,10 +185,11 @@ fun Asset.format(
     showSign: CountingUnit.SignMode = CountingUnit.SignMode.NoPLus,
     dynamicPlace: Boolean = false,
     zeroFraction: Int = 0,
+    showSymbol: Boolean = true
 ): String {
     return crypto.format(
         decimals,
-        symbol,
+        if (showSymbol) symbol else "",
         decimalPlace,
         showSign,
         dynamicPlace,

@@ -4,7 +4,7 @@ import java.math.BigDecimal
 
 
 fun String.numberParse(): BigDecimal {
-    val parts = replace(",", ".")
+    val parts = trim().replace(",", ".")
         .replace(" ", "")
         .split(".")
     val number = List(parts.size) { i ->

@@ -9,4 +9,5 @@ interface SwapClient : BlockchainClient {
 
     fun checkSpender(spender: String): Boolean
 
+    fun isRequestApprove(): Boolean
 }
