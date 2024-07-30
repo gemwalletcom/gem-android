@@ -2,7 +2,7 @@ package com.gemwallet.android.features.transactions.details.views
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Icon
+import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.ContentCopy
@@ -10,7 +10,6 @@ import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -22,7 +21,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.type
-import com.gemwallet.android.features.transactions.details.model.TxDetailsSceneState
 import com.gemwallet.android.features.transactions.details.viewmodels.TransactionDetailsViewModel
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountListHead
@@ -42,193 +40,184 @@ import com.wallet.core.primitives.TransactionType
 
 @Composable
 fun TransactionDetails(
-    txId: String,
     onCancel: () -> Unit,
     viewModel: TransactionDetailsViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    DisposableEffect(txId) {
-        viewModel.setTxId(txId)
-
-        onDispose {  }
-    }
+    val uiState by viewModel.screenModel.collectAsStateWithLifecycle()
 
     val uriHandler = LocalUriHandler.current
     val clipboardManager = LocalClipboardManager.current
 
-    when (uiState) {
-        TxDetailsSceneState.Loading -> LoadingScene(title = "", onCancel)
-        is TxDetailsSceneState.Loaded -> {
-            val state: TxDetailsSceneState.Loaded = uiState as TxDetailsSceneState.Loaded
-            Scene(
-                title = state.type.getTransactionTitle(state.assetSymbol),
-                onClose = onCancel,
-            ) {
-                when (state.type) {
-                    TransactionType.Swap -> SwapListHead(
-                        fromAsset = state.fromAsset!!,
-                        fromValue = state.fromValue!!,
-                        toAsset = state.toAsset!!,
-                        toValue = state.toValue!!,
-                    )
-                    else -> AmountListHead(
-                        iconUrl = state.assetIcon,
-                        supportIconUrl = if (state.assetId.type() == AssetSubtype.NATIVE) null else state.assetId.chain.getIconUrl(),
-                        placeholder = state.assetType.string,
-                        amount = when (state.type) {
-                            TransactionType.StakeDelegate,
-                            TransactionType.StakeUndelegate,
-                            TransactionType.StakeRewards,
-                            TransactionType.StakeRedelegate,
-                            TransactionType.StakeWithdraw,
-                            TransactionType.Transfer -> state.cryptoAmount
-                            TransactionType.Swap -> state.cryptoAmount
-                            TransactionType.TokenApproval -> state.assetSymbol
-                        },
-                        equivalent = when (state.type) {
-                            TransactionType.StakeDelegate,
-                            TransactionType.StakeUndelegate,
-                            TransactionType.StakeRewards,
-                            TransactionType.StakeRedelegate,
-                            TransactionType.StakeWithdraw,
-                            TransactionType.Transfer -> state.fiatAmount
-                            TransactionType.Swap -> state.fiatAmount
-                            TransactionType.TokenApproval -> null
-                        },
-                    )
-                }
-                val cells = mutableListOf<CellEntity<Any>>()
-                cells.add(
-                    CellEntity(
-                        label = stringResource(id = R.string.transaction_date),
-                        data = state.createdAt
-                    )
-                )
-                val dataColor = when (state.state) {
-                    TransactionState.Pending -> pendingColor
-                    TransactionState.Confirmed -> MaterialTheme.colorScheme.tertiary
-                    TransactionState.Failed -> MaterialTheme.colorScheme.error
-                    TransactionState.Reverted -> MaterialTheme.colorScheme.secondary
-                }
-                cells.add(
-                    CellEntity(
-                        label = stringResource(id = R.string.transaction_status),
-                        trailing = {
-                            when (state.state) {
-                                TransactionState.Pending -> CircularProgressIndicator16(color = pendingColor)
-                                TransactionState.Confirmed -> Icon(
-                                    modifier = Modifier.size(16.dp),
-                                    imageVector = Icons.Default.Done,
-                                    contentDescription = "",
-                                    tint = dataColor,
-                                )
-                                TransactionState.Failed -> Icon(
-                                    modifier = Modifier.size(16.dp),
-                                    imageVector = Icons.Default.ErrorOutline,
-                                    contentDescription = "",
-                                    tint = dataColor,
-                                )
-                                TransactionState.Reverted -> Icon(
-                                    modifier = Modifier.size(16.dp),
-                                    imageVector = Icons.AutoMirrored.Default.Undo,
-                                    contentDescription = "",
-                                    tint = dataColor,
-                                )
-                                else -> {}
-                            }
-                        },
-                        data = when (state.state) {
-                            TransactionState.Pending -> stringResource(id = R.string.transaction_status_pending)
-                            TransactionState.Confirmed -> stringResource(id = R.string.transaction_status_confirmed)
-                            TransactionState.Failed -> stringResource(id = R.string.transaction_status_failed)
-                            TransactionState.Reverted -> stringResource(id = R.string.transaction_status_reverted)
-                        },
-                        dataColor = dataColor
-                    ),
-                )
-                when (state.type) {
-                    TransactionType.Transfer -> when (state.direction) {
-                        TransactionDirection.SelfTransfer,
-                        TransactionDirection.Outgoing -> cells.add(
-                            CellEntity(
-                                label = stringResource(id = R.string.transaction_recipient),
-                                data = state.to,
-                                action = { clipboardManager.setText(AnnotatedString(state.to)) },
-                                actionIcon = {
-                                    Icon(
-                                        modifier = Modifier.padding(horizontal = 8.dp),
-                                        imageVector = Icons.Default.ContentCopy,
-                                        contentDescription = ""
-                                    )
-                                }
-                            )
-                        )
+    val model = uiState
 
-                        TransactionDirection.Incoming -> cells.add(
-                            CellEntity(
-                                label = stringResource(id = R.string.transaction_sender),
-                                data = state.from,
-                                action = { clipboardManager.setText(AnnotatedString(state.from)) },
-                                actionIcon = {
-                                    Icon(
-                                        modifier = Modifier.padding(horizontal = 8.dp),
-                                        imageVector = Icons.Default.ContentCopy,
-                                        contentDescription = ""
-                                    )
-                                }
-                            )
-                        )
-                    }
-
-                    TransactionType.Swap,
-                    TransactionType.TokenApproval,
-                    TransactionType.StakeDelegate,
-                    TransactionType.StakeUndelegate,
-                    TransactionType.StakeRewards,
-                    TransactionType.StakeRedelegate,
-                    TransactionType.StakeWithdraw -> {
-                    }
-                }
-                if (!state.memo.isNullOrEmpty()) {
-                    CellEntity(
-                        label = stringResource(id = R.string.transfer_memo),
-                        data = state.memo
-                    )
-                }
-                cells.add(
-                    CellEntity(
-                        label = stringResource(id = R.string.transfer_network),
-                        data = state.networkTitle,
-                        trailing = {
-                            AsyncImage(
-                                model = "file:///android_asset/chains/icons/${state.assetId.chain.string}.png",
-                                contentDescription = "asset_icon",
-                                placeholderText = state.assetType.string,
-                                modifier = Modifier.size(20.dp),
-                            )
-                        }
-                    )
+    if (model == null) {
+        LoadingScene(title = "", onCancel)
+    } else {
+        Scene(
+            title = model.type.getTransactionTitle(model.assetSymbol),
+            onClose = onCancel,
+        ) {
+            when (model.type) {
+                TransactionType.Swap -> SwapListHead(
+                    fromAsset = model.fromAsset,
+                    fromValue = model.fromValue!!,
+                    toAsset = model.toAsset,
+                    toValue = model.toValue!!,
                 )
-                cells.add(
-                    CellEntity(
-                        label = stringResource(id = R.string.transfer_network_fee),
-                        data = state.feeCrypto,
-                        support = state.feeFiat,
-                    )
+                else -> AmountListHead(
+                    iconUrl = model.assetIcon,
+                    supportIconUrl = if (model.assetId.type() == AssetSubtype.NATIVE) null else model.assetId.chain.getIconUrl(),
+                    placeholder = model.assetType.string,
+                    amount = when (model.type) {
+                        TransactionType.StakeDelegate,
+                        TransactionType.StakeUndelegate,
+                        TransactionType.StakeRewards,
+                        TransactionType.StakeRedelegate,
+                        TransactionType.StakeWithdraw,
+                        TransactionType.Swap,
+                        TransactionType.Transfer -> model.cryptoAmount
+                        TransactionType.TokenApproval -> model.assetSymbol
+                    },
+                    equivalent = when (model.type) {
+                        TransactionType.StakeDelegate,
+                        TransactionType.StakeUndelegate,
+                        TransactionType.StakeRewards,
+                        TransactionType.StakeRedelegate,
+                        TransactionType.StakeWithdraw,
+                        TransactionType.Swap,
+                        TransactionType.Transfer -> model.fiatAmount
+                        TransactionType.TokenApproval -> null
+                    },
                 )
-                cells.add(
-                    CellEntity(
-                        label = stringResource(
-                            id = R.string.transaction_view_on,
-                            state.explorerName
-                        ),
-                        data = "",
-                        action = { uriHandler.openUri(state.explorerUrl) }
-                    )
-                )
-                Table(items = cells)
             }
+            val cells = mutableListOf<CellEntity<Any>>()
+            cells.add(
+                CellEntity(
+                    label = stringResource(id = R.string.transaction_date),
+                    data = model.createdAt
+                )
+            )
+            val dataColor = when (model.state) {
+                TransactionState.Pending -> pendingColor
+                TransactionState.Confirmed -> MaterialTheme.colorScheme.tertiary
+                TransactionState.Failed -> MaterialTheme.colorScheme.error
+                TransactionState.Reverted -> MaterialTheme.colorScheme.secondary
+            }
+            cells.add(
+                CellEntity(
+                    label = stringResource(id = R.string.transaction_status),
+                    trailing = {
+                        when (model.state) {
+                            TransactionState.Pending -> CircularProgressIndicator16(color = pendingColor)
+                            TransactionState.Confirmed -> Icon(
+                                modifier = Modifier.size(16.dp),
+                                imageVector = Icons.Default.Done,
+                                contentDescription = "",
+                                tint = dataColor,
+                            )
+                            TransactionState.Failed -> Icon(
+                                modifier = Modifier.size(16.dp),
+                                imageVector = Icons.Default.ErrorOutline,
+                                contentDescription = "",
+                                tint = dataColor,
+                            )
+                            TransactionState.Reverted -> Icon(
+                                modifier = Modifier.size(16.dp),
+                                imageVector = Icons.AutoMirrored.Default.Undo,
+                                contentDescription = "",
+                                tint = dataColor,
+                            )
+                            else -> {}
+                        }
+                    },
+                    data = when (model.state) {
+                        TransactionState.Pending -> stringResource(id = R.string.transaction_status_pending)
+                        TransactionState.Confirmed -> stringResource(id = R.string.transaction_status_confirmed)
+                        TransactionState.Failed -> stringResource(id = R.string.transaction_status_failed)
+                        TransactionState.Reverted -> stringResource(id = R.string.transaction_status_reverted)
+                    },
+                    dataColor = dataColor
+                ),
+            )
+            when (model.type) {
+                TransactionType.Transfer -> when (model.direction) {
+                    TransactionDirection.SelfTransfer,
+                    TransactionDirection.Outgoing -> cells.add(
+                        CellEntity(
+                            label = stringResource(id = R.string.transaction_recipient),
+                            data = model.to,
+                            action = { clipboardManager.setText(AnnotatedString(model.to)) },
+                            actionIcon = {
+                                Icon(
+                                    modifier = Modifier.padding(horizontal = 8.dp),
+                                    imageVector = Icons.Default.ContentCopy,
+                                    contentDescription = ""
+                                )
+                            }
+                        )
+                    )
+
+                    TransactionDirection.Incoming -> cells.add(
+                        CellEntity(
+                            label = stringResource(id = R.string.transaction_sender),
+                            data = model.from,
+                            action = { clipboardManager.setText(AnnotatedString(model.from)) },
+                            actionIcon = {
+                                Icon(
+                                    modifier = Modifier.padding(horizontal = 8.dp),
+                                    imageVector = Icons.Default.ContentCopy,
+                                    contentDescription = ""
+                                )
+                            }
+                        )
+                    )
+                }
+                TransactionType.Swap,
+                TransactionType.TokenApproval,
+                TransactionType.StakeDelegate,
+                TransactionType.StakeUndelegate,
+                TransactionType.StakeRewards,
+                TransactionType.StakeRedelegate,
+                TransactionType.StakeWithdraw -> {}
+            }
+            if (!model.memo.isNullOrEmpty()) {
+                CellEntity(
+                    label = stringResource(id = R.string.transfer_memo),
+                    data = model.memo
+                )
+            }
+            cells.add(
+                CellEntity(
+                    label = stringResource(id = R.string.transfer_network),
+                    data = model.networkTitle,
+                    trailing = {
+                        AsyncImage(
+                            model = "file:///android_asset/chains/icons/${model.assetId.chain.string}.png",
+                            contentDescription = "asset_icon",
+                            placeholderText = model.assetType.string,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    }
+                )
+            )
+            cells.add(
+                CellEntity(
+                    label = stringResource(id = R.string.transfer_network_fee),
+                    data = model.feeCrypto,
+                    support = model.feeFiat,
+                )
+            )
+            cells.add(
+                CellEntity(
+                    label = stringResource(
+                        id = R.string.transaction_view_on,
+                        model.explorerName
+                    ),
+                    data = "",
+                    action = { uriHandler.openUri(model.explorerUrl) }
+                )
+            )
+            Table(items = cells)
         }
     }
 }
