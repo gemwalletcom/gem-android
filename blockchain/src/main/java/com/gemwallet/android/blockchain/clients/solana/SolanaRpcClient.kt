@@ -59,6 +59,15 @@ interface SolanaRpcClient {
 
     @POST("/")
     suspend fun epoch(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SolanaEpoch>>
+
+    @POST("/")
+    suspend fun health(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
+
+    @POST("/")
+    suspend fun slot(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<Int>>
+
+    @POST("/")
+    suspend fun genesisHash(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
 }
 
 suspend fun SolanaRpcClient.getTokenAccountByOwner(
@@ -98,4 +107,16 @@ suspend fun SolanaRpcClient.delegations(
         )
     )
     return delegations(request)
+}
+
+suspend fun SolanaRpcClient.health(): Result<JSONRpcResponse<String>> {
+    return health(JSONRpcRequest.create(SolanaMethod.GetHealth, emptyList()))
+}
+
+suspend fun SolanaRpcClient.slot(): Result<JSONRpcResponse<Int>> {
+    return slot(JSONRpcRequest.create(SolanaMethod.GetSlot, emptyList()))
+}
+
+suspend fun SolanaRpcClient.genesisHash(): Result<JSONRpcResponse<String>> {
+    return genesisHash(JSONRpcRequest.create(SolanaMethod.GetGenesisHash, emptyList()))
 }
