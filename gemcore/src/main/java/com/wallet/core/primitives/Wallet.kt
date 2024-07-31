@@ -15,6 +15,8 @@ enum class WalletType(val string: String) {
 	multicoin("multicoin"),
 	@SerialName("single")
 	single("single"),
+	@SerialName("private_key")
+	private_key("private_key"),
 	@SerialName("view")
 	view("view"),
 }
@@ -26,5 +28,10 @@ data class Wallet (
 	val index: Int,
 	val type: WalletType,
 	val accounts: List<Account>
+)
+
+@Serializable
+data class WalletId (
+	val id: String
 )
 

@@ -3074,7 +3074,7 @@ public object FfiConverterTypeERC2612Permit : FfiConverterRustBuffer<Erc2612Perm
 data class EvmChainConfig(
     var `minPriorityFee`: kotlin.ULong,
     var `isOpstack`: kotlin.Boolean,
-    var `oneinch`: List<kotlin.String>,
+    var `swapWhitelistContracts`: List<kotlin.String>,
 ) {
     companion object
 }
@@ -3092,7 +3092,7 @@ public object FfiConverterTypeEVMChainConfig : FfiConverterRustBuffer<EvmChainCo
         (
             FfiConverterULong.allocationSize(value.`minPriorityFee`) +
                 FfiConverterBoolean.allocationSize(value.`isOpstack`) +
-                FfiConverterSequenceString.allocationSize(value.`oneinch`)
+                FfiConverterSequenceString.allocationSize(value.`swapWhitelistContracts`)
         )
 
     override fun write(
@@ -3101,7 +3101,7 @@ public object FfiConverterTypeEVMChainConfig : FfiConverterRustBuffer<EvmChainCo
     ) {
         FfiConverterULong.write(value.`minPriorityFee`, buf)
         FfiConverterBoolean.write(value.`isOpstack`, buf)
-        FfiConverterSequenceString.write(value.`oneinch`, buf)
+        FfiConverterSequenceString.write(value.`swapWhitelistContracts`, buf)
     }
 }
 

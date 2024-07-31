@@ -11,7 +11,7 @@ class NodeStatusClientsProxy(
         return clients.firstOrNull { it.isMaintain(chain) }?.getNodeStatus(url)
     }
 
-    suspend fun isMaintained(chain: Chain): Boolean {
+    fun isMaintained(chain: Chain): Boolean {
         return clients.firstOrNull { it.isMaintain(chain) } != null
     }
 }

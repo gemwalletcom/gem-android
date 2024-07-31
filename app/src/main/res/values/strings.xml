@@ -56,7 +56,7 @@
   <string name="common.paste">Paste</string>
   <string name="transfer.max">Max</string>
   <string name="common.delete">Delete</string>
-  <string name="wallet.delete_wallet_confirmation">Are sure you want to delete %s?</string>
+  <string name="common.delete_confirmation">Are sure you want to delete %s?</string>
   <string name="settings.community">Community</string>
   <string name="common.hide">Hide</string>
   <string name="wallet.scan">Scan</string>
@@ -216,4 +216,28 @@
   <string name="errors.invalid_url">Invalid URL</string>
   <string name="common.yes">Yes</string>
   <string name="common.no">No</string>
+  <string name="common.url">URL</string>
+  <string name="errors.error_occured">An error occurred!</string>
+  <string name="settings.language">Language</string>
+  <string name="wallet.import.private_key">%s encoded private key</string>
+  <string name="errors.invalid_network_id">Invalid Network ID</string>
+  <string name="common.private_key">Private Key</string>
+  <string name="nodes.import_node.latency">Latency</string>
+  <string name="common.latency_in_ms">%d ms</string>
+  <string name="stake.viagem">Stake via Gem Wallet</string>
+  <string name="stake.no_active_staking">No Active Staking</string>
+  <string name="errors.error">Error</string>
+  <string name="nodes.gem_wallet_node">Gem Wallet Node</string>
+  <string name="errors.connections.user_cancelled">User cancelled</string>
+  <string name="errors.swap.no_quote_data">No Quote data</string>
+  <string name="errors.not_supported">Not Supported</string>
+  <string name="errors.permissions_not_granted">Permissions Not Granted</string>
+  <string name="errors.decoding">Decoding Error</string>
+  <string name="errors.unexpected">Unexpected</string>
+  <string name="errors.not_supported_qr">This device does not support QR code scanning. You can only select QR code image from library.</string>
+  <string name="errors.camera_permissions_not_granted">Camera permission not granted. Please enable camera access in settings to scan QR code.</string>
+  <string name="errors.decoding_qr">Failed to decode the QR code. Please try again with a different QR code.</string>
+  <string name="errors.unexpected_try_again">An unexpected error occurred. Please try again.</string>
+  <string name="library.select_from_photos">Select from photos</string>
+  <string name="common.open_settings">Open settings</string>
 </resources>

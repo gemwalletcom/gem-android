@@ -10,14 +10,7 @@ import androidx.compose.runtime.NoLiveLiterals
 import kotlinx.serialization.*
 
 @Serializable
-data class BitcoinBlockbook (
-	val inSync: Boolean,
-	val lastBlockTime: String,
-	val bestHeight: Long
-)
-
-@Serializable
-data class BitcoinNodeInfo (
-	val blockbook: BitcoinBlockbook
+data class BitcoinBlock (
+	val previousBlockHash: String? = null
 )
 

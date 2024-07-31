@@ -1,7 +1,10 @@
 package com.gemwallet.android.blockchain.clients.bitcoin
 
 import com.wallet.core.blockchain.bitcoin.models.BitcoinAccount
+import com.wallet.core.blockchain.bitcoin.models.BitcoinBlock
+import com.wallet.core.blockchain.bitcoin.models.BitcoinBlockbook
 import com.wallet.core.blockchain.bitcoin.models.BitcoinFeeResult
+import com.wallet.core.blockchain.bitcoin.models.BitcoinNodeInfo
 import com.wallet.core.blockchain.bitcoin.models.BitcoinTransaction
 import com.wallet.core.blockchain.bitcoin.models.BitcoinTransactionBroacastResult
 import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
@@ -26,4 +29,10 @@ interface BitcoinRpcClient {
 
     @GET("/api/v2/tx/{txId}")
     suspend fun transaction(@Path("txId") txId: String): Result<BitcoinTransaction>
+
+    @GET("/api/v2/")
+    suspend fun nodeInfo(): Result<BitcoinNodeInfo>
+
+    @GET("/api/v2/block/{block}")
+    suspend fun block(@Path("block") block: Int): Result<BitcoinBlock>
 }
