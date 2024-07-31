@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.sui
 
+import com.gemwallet.android.blockchain.clients.ethereum.EvmRpcClient
 import com.gemwallet.android.blockchain.clients.sui.model.SuiObject
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
@@ -15,6 +16,7 @@ import com.wallet.core.blockchain.sui.models.SuiCoinMetadata
 import com.wallet.core.blockchain.sui.models.SuiSystemState
 import retrofit2.http.Body
 import retrofit2.http.POST
+import java.math.BigInteger
 
 interface SuiRpcClient {
 
@@ -53,6 +55,12 @@ interface SuiRpcClient {
 
     @POST("/")
     suspend fun systemState(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SuiSystemState>>
+
+    @POST("/")
+    suspend fun chainId(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
+
+    @POST("/")
+    suspend fun latestBlock(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmRpcClient.EvmNumber>>
 }
 
 internal suspend fun SuiRpcClient.coins(address: String, coinType: String): Result<JSONRpcResponse<SuiData<List<SuiCoin>>>> {
@@ -97,4 +105,12 @@ internal suspend fun SuiRpcClient.systemState(): Result<JSONRpcResponse<SuiSyste
         emptyList<String>(),
     )
     return systemState(request)
+}
+
+internal suspend fun SuiRpcClient.chainId(): Result<JSONRpcResponse<String>> {
+    return chainId(JSONRpcRequest.create(SuiMethod.ChainId, emptyList()))
+}
+
+internal suspend fun SuiRpcClient.latestBlock(): Result<JSONRpcResponse<EvmRpcClient.EvmNumber>> {
+    return latestBlock(JSONRpcRequest.create(SuiMethod.LatestCheckpoint, emptyList()))
 }
