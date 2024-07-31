@@ -8,6 +8,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("com.github.willir.rust.cargo-ndk-android")
     id("androidx.room")
+    alias(libs.plugins.compose.compiler)
 }
 
 repositories {
@@ -113,9 +114,9 @@ android {
         compose = true
         buildConfig = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
-    }
+//    composeOptions {
+//        kotlinCompilerExtensionVersion = "1.5.14"
+//    }
     packaging {
         jniLibs {
             useLegacyPackaging = true
