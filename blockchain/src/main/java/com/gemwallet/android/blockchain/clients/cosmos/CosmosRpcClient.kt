@@ -8,6 +8,7 @@ import com.wallet.core.blockchain.cosmos.models.CosmosBroadcastResponse
 import com.wallet.core.blockchain.cosmos.models.CosmosDelegations
 import com.wallet.core.blockchain.cosmos.models.CosmosInjectiveAccount
 import com.wallet.core.blockchain.cosmos.models.CosmosRewards
+import com.wallet.core.blockchain.cosmos.models.CosmosSyncing
 import com.wallet.core.blockchain.cosmos.models.CosmosTransactionResponse
 import com.wallet.core.blockchain.cosmos.models.CosmosUnboundingDelegations
 import com.wallet.core.blockchain.cosmos.models.CosmosValidators
@@ -47,5 +48,8 @@ interface CosmosRpcClient {
 
     @GET("/cosmos/distribution/v1beta1/delegators/{address}/rewards")
     suspend fun rewards(@Path("address") address: String): Result<CosmosRewards>
+
+    @GET("/cosmos/base/tendermint/v1beta1/syncing")
+    suspend fun syncing(): Result<CosmosSyncing>
 
 }
