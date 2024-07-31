@@ -6,7 +6,9 @@ enum class XrpMethod(val value: String) : JSONRpcMethod {
     Account("account_info"),
     Fee("fee"),
     Transaction("tx"),
-    Broadcast("submit");
+    Broadcast("submit"),
+    LatestBlock("ledger_current"),
+    ;
 
     override fun value(): String = value
 }

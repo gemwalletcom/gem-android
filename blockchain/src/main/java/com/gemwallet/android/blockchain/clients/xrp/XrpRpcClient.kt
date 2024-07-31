@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.xrp
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.wallet.core.blockchain.xrp.models.XRPAccountResult
 import com.wallet.core.blockchain.xrp.models.XRPFee
+import com.wallet.core.blockchain.xrp.models.XRPLatestBlock
 import com.wallet.core.blockchain.xrp.models.XRPResult
 import com.wallet.core.blockchain.xrp.models.XRPTransactionBroadcast
 import com.wallet.core.blockchain.xrp.models.XRPTransactionStatus
@@ -19,9 +20,11 @@ interface XrpRpcClient {
     @POST("/")
     suspend fun transaction(@Body request: JSONRpcRequest<List<Map<String, String>>>): Result<XRPResult<XRPTransactionStatus>>
 
-
     @POST("/")
     suspend fun broadcast(@Body request: JSONRpcRequest<List<Map<String, String>>>): Result<XRPResult<XRPTransactionBroadcast>>
+
+    @POST("/")
+    suspend fun latestBlock(@Body request: JSONRpcRequest<List<Map<String, String>>>): Result<XRPResult<XRPLatestBlock>>
 }
 
 internal suspend fun XrpRpcClient.account(address: String): Result<XRPResult<XRPAccountResult>> {
@@ -64,4 +67,8 @@ internal suspend fun XrpRpcClient.broadcast(data: String): Result<XRPResult<XRPT
         )
     )
     return broadcast(request)
+}
+
+internal suspend fun XrpRpcClient.latestBlock(): Result<XRPResult<XRPLatestBlock>> {
+    return latestBlock(JSONRpcRequest.create(XrpMethod.LatestBlock, emptyList()))
 }

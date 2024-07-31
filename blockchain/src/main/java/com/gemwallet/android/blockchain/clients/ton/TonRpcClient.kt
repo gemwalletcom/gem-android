@@ -7,6 +7,7 @@ import com.google.gson.JsonElement
 import com.wallet.core.blockchain.ton.models.TonBroadcastTransaction
 import com.wallet.core.blockchain.ton.models.TonJettonBalance
 import com.wallet.core.blockchain.ton.models.TonJettonToken
+import com.wallet.core.blockchain.ton.models.TonMasterchainInfo
 import com.wallet.core.blockchain.ton.models.TonResult
 import com.wallet.core.blockchain.ton.models.TonTransactionMessage
 import com.wallet.core.blockchain.ton.models.TonWalletInfo
@@ -41,6 +42,9 @@ interface TonRpcClient {
 
     @GET("/api/v2/getAddressState")
     suspend fun addressState(@Query("address") address: String): Result<TonResult<String>>
+
+    @GET("/api/v2/getMasterchainInfo")
+    suspend fun masterChainInfo(): Result<TonResult<TonMasterchainInfo>>
 
     data class Boc(
         val boc: String
