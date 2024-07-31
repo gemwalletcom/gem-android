@@ -10,7 +10,6 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.wallet.core.blockchain.ethereum.models.EthereumFeeHistory
 import com.wallet.core.blockchain.ethereum.models.EthereumTransactionReciept
-import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Url

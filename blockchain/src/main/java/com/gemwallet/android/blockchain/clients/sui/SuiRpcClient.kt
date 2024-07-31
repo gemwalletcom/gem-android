@@ -8,7 +8,6 @@ import com.wallet.core.blockchain.sui.SuiBroadcastTransaction
 import com.wallet.core.blockchain.sui.SuiCoin
 import com.wallet.core.blockchain.sui.SuiCoinBalance
 import com.wallet.core.blockchain.sui.SuiData
-import com.wallet.core.blockchain.sui.SuiPay
 import com.wallet.core.blockchain.sui.SuiStakeDelegation
 import com.wallet.core.blockchain.sui.SuiTransaction
 import com.wallet.core.blockchain.sui.SuiValidators
@@ -16,7 +15,6 @@ import com.wallet.core.blockchain.sui.models.SuiCoinMetadata
 import com.wallet.core.blockchain.sui.models.SuiSystemState
 import retrofit2.http.Body
 import retrofit2.http.POST
-import java.math.BigInteger
 
 interface SuiRpcClient {
 

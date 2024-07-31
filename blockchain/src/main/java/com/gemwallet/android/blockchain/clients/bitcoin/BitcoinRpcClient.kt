@@ -2,7 +2,6 @@ package com.gemwallet.android.blockchain.clients.bitcoin
 
 import com.wallet.core.blockchain.bitcoin.models.BitcoinAccount
 import com.wallet.core.blockchain.bitcoin.models.BitcoinBlock
-import com.wallet.core.blockchain.bitcoin.models.BitcoinBlockbook
 import com.wallet.core.blockchain.bitcoin.models.BitcoinFeeResult
 import com.wallet.core.blockchain.bitcoin.models.BitcoinNodeInfo
 import com.wallet.core.blockchain.bitcoin.models.BitcoinTransaction
