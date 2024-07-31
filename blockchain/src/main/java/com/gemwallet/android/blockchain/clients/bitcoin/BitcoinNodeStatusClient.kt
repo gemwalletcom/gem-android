@@ -25,7 +25,5 @@ class BitcoinNodeStatusClient(
         )
     }
 
-    override fun maintainChain(): Chain {
-        TODO("Not yet implemented")
-    }
+    override fun maintainChain(): Chain = chain
 }
