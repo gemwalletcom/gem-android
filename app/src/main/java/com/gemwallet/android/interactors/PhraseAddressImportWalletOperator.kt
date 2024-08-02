@@ -7,15 +7,18 @@ import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.blockchain.operators.StorePhraseOperator
 import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.blockchain.operators.ValidatePhraseOperator
+import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.interactors.sync.SyncSubscription
+import com.gemwallet.android.math.decodeHex
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
+import wallet.core.jni.PrivateKey
 
 class PhraseAddressImportWalletOperator(
     private val walletsRepository: WalletsRepository,
@@ -36,6 +39,7 @@ class PhraseAddressImportWalletOperator(
             WalletType.multicoin -> handlePhrase(importType, walletName, data)
             WalletType.single -> handlePhrase(importType, walletName, data)
             WalletType.view -> handleAddress(importType.chain!!, walletName, data)
+            WalletType.private_key -> handlePrivateKey(importType.chain!!, walletName, data)
         }
         if (result.isFailure) {
             return result
@@ -57,13 +61,13 @@ class PhraseAddressImportWalletOperator(
                 else -> Result.failure(ImportError.InvalidationSecretPhrase)
             }
         }
-        val result = walletsRepository.addPhrase(walletName, cleanedData, importType.walletType, importType.chain)
+        val result = walletsRepository.addControlled(walletName, cleanedData, importType.walletType, importType.chain)
         val wallet = result.getOrNull()
         return if (result.isFailure || wallet == null) {
             result
         } else {
             val password = passwordStore.createPassword(wallet.id)
-            val storeResult = storePhraseOperator(wallet.id, cleanedData, password)
+            val storeResult = storePhraseOperator(wallet, cleanedData, password)
             if (storeResult.isSuccess) {
                 result
             } else {
@@ -88,4 +92,25 @@ class PhraseAddressImportWalletOperator(
         }
     }
 
+    private suspend fun handlePrivateKey(chain: Chain, walletName: String, data: String): Result<Wallet> {
+        val cleanedData = data.trim()
+        val isValid = PrivateKey.isValid(data.decodeHex(), WCChainTypeProxy().invoke(chain).curve())
+        if (!isValid) {
+            return Result.failure(ImportError.InvalidationPrivateKey)
+        }
+        val result = walletsRepository.addControlled(walletName, cleanedData, WalletType.private_key, chain)
+        val wallet = result.getOrNull()
+        return if (result.isFailure || wallet == null) {
+            result
+        } else {
+            val password = passwordStore.createPassword(wallet.id)
+            val storeResult = storePhraseOperator(wallet, cleanedData, password)
+            if (storeResult.isSuccess) {
+                result
+            } else {
+                walletsRepository.removeWallet(wallet.id)
+                Result.failure(storeResult.exceptionOrNull() ?: ImportError.CreateError("Unknown error"))
+            }
+        }
+    }
 }

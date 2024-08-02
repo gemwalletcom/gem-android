@@ -122,11 +122,15 @@ private fun Wallet(
             val actions = mutableListOf<CellEntity<String>>()
             when (state.walletType) {
                 WalletType.multicoin,
+                WalletType.private_key,
                 WalletType.single -> actions.add(
                     CellEntity(
                         label = stringResource(
                             id = R.string.common_show,
-                            stringResource(id = R.string.common_secret_phrase)
+                            if (state.walletType == WalletType.private_key)
+                                stringResource(R.string.common_private_key)
+                            else
+                                stringResource(id = R.string.common_secret_phrase)
                         ),
                         data = "",
                         action = {
@@ -141,6 +145,7 @@ private fun Wallet(
             when (state.walletType) {
                 WalletType.multicoin -> Unit
                 WalletType.single,
+                WalletType.private_key,
                 WalletType.view -> actions.add(
                     CellEntity(
                         label = stringResource(id = R.string.common_address),

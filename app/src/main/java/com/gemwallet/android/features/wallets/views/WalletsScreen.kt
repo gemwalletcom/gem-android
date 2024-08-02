@@ -108,7 +108,7 @@ fun WalletsScreen(
             text = {
                 Text(
                     text = stringResource(
-                        id = R.string.wallet_delete_wallet_confirmation,
+                        id = R.string.common_delete_confirmation,
                         uiState.wallets.firstOrNull{ it.id == deleteWalletId}?.name ?: "" ),
                 )
             },

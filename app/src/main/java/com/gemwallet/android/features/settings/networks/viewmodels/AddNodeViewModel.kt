@@ -50,7 +50,7 @@ class AddNodeViewModel @Inject constructor(
         val chain = state.value.chain ?: return
         viewModelScope.launch {
             nodesRepository.addNode(chain = chain, url.value)
-            configRepository.setCurrentNode(chain = chain, Node(url.value, status = com.wallet.core.primitives.NodeStatus.Active, 0))
+            configRepository.setCurrentNode(chain = chain, Node(url.value, status = com.wallet.core.primitives.NodeState.Active, 0))
             url.value = ""
         }
     }

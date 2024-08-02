@@ -27,7 +27,6 @@ import com.gemwallet.android.ui.theme.Spacer8
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WalletItem(
     wallet: Wallet,
@@ -40,7 +39,8 @@ fun WalletItem(
         id = wallet.id,
         name = wallet.name,
         typeLabel = when (wallet.type) {
-            WalletType.view -> wallet.accounts.firstOrNull()?.address?.substring(0, 10) ?: ""
+            WalletType.private_key,
+            WalletType.view,
             WalletType.single -> wallet.accounts.firstOrNull()?.address?.substring(0, 10) ?: ""
             WalletType.multicoin -> "Multi-coin"
         },

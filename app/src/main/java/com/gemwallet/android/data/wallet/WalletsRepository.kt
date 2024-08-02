@@ -37,11 +37,11 @@ class WalletsRepository @Inject constructor(
             )
         )
 
-    suspend fun addPhrase(walletName: String, data: String, type: WalletType, chain: Chain?): Result<Wallet> {
+    suspend fun addControlled(walletName: String, data: String, type: WalletType, chain: Chain?): Result<Wallet> {
         val accounts = mutableListOf<Account>()
-        val chains = if (type == WalletType.single && chain != null) listOf(chain) else Chain.entries
+        val chains = if ((type == WalletType.single || type == WalletType.private_key) && chain != null) listOf(chain) else Chain.entries
         for (item in chains) {
-            accounts.add(createAccount(data, item))
+            accounts.add(createAccount(type, data, item))
         }
         val wallet = Wallet(
             id = newWalletId(),

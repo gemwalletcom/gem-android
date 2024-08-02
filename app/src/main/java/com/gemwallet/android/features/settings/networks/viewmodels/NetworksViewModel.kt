@@ -55,7 +55,7 @@ class NetworksViewModel @Inject constructor(
                 it.copy(
                     chain = chain,
                     selectChain = false,
-                    nodes = nodesRepository.getNodes(chain).firstOrNull() ?: emptyList(), // TODO: Separate
+//                    nodes = nodesRepository.getNodes(chain).firstOrNull() ?: emptyList(), // TODO: Separate
                     explorers = configRepository.getBlockExplorers(chain),
                     currentNode = configRepository.getCurrentNode(chain),
                     currentExplorer = configRepository.getCurrentBlockExplorer(chain),
@@ -83,7 +83,6 @@ class NetworksViewModel @Inject constructor(
 
     private data class State(
         val chain: Chain? = null,
-        val nodes: List<Node> = emptyList(),
         val explorers: List<String> = emptyList(),
         val currentNode: Node? = null,
         val currentExplorer: String? = null,
@@ -97,7 +96,6 @@ class NetworksViewModel @Inject constructor(
                 chain = chain,
                 chains = availableChains,
                 selectChain = selectChain,
-                nodes = nodes,
                 blockExplorers = explorers,
                 currentNode = currentNode,
                 currentExplorer = currentExplorer,

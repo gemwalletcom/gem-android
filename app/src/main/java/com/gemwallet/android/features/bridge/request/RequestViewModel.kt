@@ -106,7 +106,7 @@ class RequestViewModel @Inject constructor(
             }
 
             val password = passwordStore.getPassword(session.wallet.id)
-            val privateKey = loadPrivateKeyOperator(session.wallet.id, chain, password)
+            val privateKey = loadPrivateKeyOperator(session.wallet, chain, password)
             val signResult = signClient(chain, param, privateKey)
             signResult.onSuccess { signedData ->
                 Web3Wallet.respondSessionRequest(
