@@ -89,6 +89,7 @@ data class WalletViewModelState(
         phrase.isNotEmpty() -> {
             WalletUIState.Phrase(
                 walletName = wallet.name,
+                walletType = wallet.type,
                 words = if (phrase.isEmpty()) emptyList() else phrase.split(" "),
             )
         }
@@ -115,6 +116,7 @@ sealed interface WalletUIState {
 
     data class Phrase(
         val walletName: String,
+        val walletType: WalletType,
         val words: List<String> = emptyList(),
     ) : WalletUIState
 }

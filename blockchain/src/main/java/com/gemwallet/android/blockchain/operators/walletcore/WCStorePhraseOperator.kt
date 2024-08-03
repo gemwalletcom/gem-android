@@ -23,7 +23,7 @@ class WCStorePhraseOperator(
         } else {
             StoredKey.importHDWallet(data, wallet.id, password.decodeHex(), CoinType.BITCOIN)
         }
-        storedKey.store("$keyStoreDir/$wallet.id")
+        storedKey.store("$keyStoreDir/${wallet.id}")
         Result.success(true)
     } catch (err: Throwable) {
         Result.failure(err)

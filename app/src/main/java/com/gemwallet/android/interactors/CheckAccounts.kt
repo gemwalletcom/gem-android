@@ -53,7 +53,7 @@ class CheckAccounts @Inject constructor(
     }
 
     private fun getChainsToAdd(available: Set<Chain>): List<Chain> {
-        val allChains = Chain.values().toList() - ChainInfoLocalSource.exclude.toSet()
+        val allChains = Chain.entries.toList() - ChainInfoLocalSource.exclude.toSet()
         val toAdd = mutableListOf<Chain>()
         for (i in allChains) {
             if (!available.contains(i)) {
