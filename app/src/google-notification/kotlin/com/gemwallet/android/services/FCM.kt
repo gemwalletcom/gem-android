@@ -38,13 +38,7 @@ class FCM : FirebaseMessagingService() {
         if (!configRepository.pushEnabled()) {
             return
         }
-//        val data = message.data["data"]
         scope.launch {
-//            val gson = GsonBuilder()
-//                .registerTypeAdapter(Transaction::class.java, GemApiClient.TransactionDeserialize())
-//                .registerTypeAdapter(AssetId::class.java, GemApiClient.AssetIdDeserialize())
-//                .create()
-//            val tx = gson.fromJson(data, Transaction::class.java)
             val title = message.notification?.title
             val subtitle = message.notification?.body
             val channelId = message.data["type"] ?: "default"
