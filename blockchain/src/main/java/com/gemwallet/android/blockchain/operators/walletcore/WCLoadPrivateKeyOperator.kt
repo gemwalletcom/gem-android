@@ -15,15 +15,16 @@ class WCLoadPrivateKeyOperator(
     override suspend fun invoke(wallet: Wallet, chain: Chain, password: String): ByteArray {
         val coinType = WCChainTypeProxy().invoke(chain)
         val store = StoredKey.load("$keyStoreDir/${wallet.id}")
-        val privateKey = if (wallet.type == WalletType.private_key)
+        val privateKey = if (wallet.type == WalletType.private_key) {
+            PrivateKey(store.decryptPrivateKey(password.decodeHex()))
+        } else {
             store.wallet(password.decodeHex()).let {
                 when (chain) {
                     Chain.Solana -> it.getKeyDerivation(coinType, Derivation.SOLANASOLANA)
                     else -> it.getKey(coinType, coinType.derivationPath())
                 }
             }
-        else
-            PrivateKey(store.decryptPrivateKey(password.decodeHex()))
+        }
         return privateKey.data()
     }
 }
