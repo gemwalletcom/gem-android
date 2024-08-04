@@ -15,6 +15,8 @@ sealed class ImportError(message: String = "") : Exception(message) {
 
     data object InvalidationSecretPhrase : ImportError()
 
+    data object InvalidationPrivateKey : ImportError()
+
     class InvalidWords(val words: List<String>) : ImportError()
 
     data object InvalidAddress : ImportError()

@@ -148,7 +148,7 @@ class ConfirmViewModel @Inject constructor(
             }
             val broadcastResult = withContext(Dispatchers.IO) {
                 val password = passwordStore.getPassword(session.wallet.id)
-                val privateKey = loadPrivateKeyOperator(session.wallet.id, asset.id.chain, password)
+                val privateKey = loadPrivateKeyOperator(session.wallet, asset.id.chain, password)
 
                 val signResult = signTransfer(currentState.signerParams, privateKey)
                 val sign = signResult.getOrNull()

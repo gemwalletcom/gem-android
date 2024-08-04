@@ -54,7 +54,7 @@ class EvmSwapClient(
 
     override fun checkSpender(spender: String): Boolean {
         val evmChain = chain.toEVM() ?: throw Exception("Not EVM compatible chain!")
-        val oneinch = Config().getEvmChainConfig(evmChain.string).oneinch
+        val oneinch = Config().getEvmChainConfig(evmChain.string).swapWhitelistContracts
         if (!oneinch.contains(spender)) {
             throw Exception("Not whitelisted spender $spender)")
         }

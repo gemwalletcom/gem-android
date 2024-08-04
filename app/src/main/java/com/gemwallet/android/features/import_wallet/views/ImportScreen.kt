@@ -183,6 +183,10 @@ private fun ImportScene(
                     onTypeChange(it)
                     inputState = TextFieldValue()
                 }
+                WalletTypeTab(WalletType.private_key, importType.walletType) {
+                    onTypeChange(it)
+                    inputState = TextFieldValue()
+                }
             }
             Spacer16()
         }
@@ -245,12 +249,12 @@ private fun ImportScene(
             val text = when (error) {
                 is ImportError.CreateError -> stringResource(R.string.errors_create_wallet, error.message ?: "")
                 is ImportError.InvalidWords -> stringResource(
-                    id = R.string.errors_import_invalid_secret_phrase_word,
+                    R.string.errors_import_invalid_secret_phrase_word,
                     error.words.joinToString()
                 )
-                ImportError.InvalidationSecretPhrase ->
-                    stringResource(id = R.string.errors_import_invalid_secret_phrase)
-                ImportError.InvalidAddress -> stringResource(id = R.string.errors_invalid_address_name)
+                ImportError.InvalidationSecretPhrase -> stringResource(R.string.errors_import_invalid_secret_phrase)
+                ImportError.InvalidAddress -> stringResource(R.string.errors_invalid_address_name)
+                ImportError.InvalidationPrivateKey -> "Invalid private key"
             }
             Text(text = text, color = MaterialTheme.colorScheme.error)
         }

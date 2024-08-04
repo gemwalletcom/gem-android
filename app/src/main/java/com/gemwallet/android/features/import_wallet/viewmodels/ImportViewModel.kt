@@ -62,7 +62,7 @@ class ImportViewModel @Inject constructor(
         withContext(Dispatchers.IO) {
             importWalletOperator(
                 importType = state.value.importType,
-                walletName = if (name.isEmpty()) generatedName else name,
+                walletName = name.ifEmpty { generatedName },
                 data = if (nameRecord?.address.isNullOrEmpty()) data.trim() else nameRecord!!.address,
             )
         }.onFailure {  err ->

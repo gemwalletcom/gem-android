@@ -4,7 +4,7 @@ import com.gemwallet.android.data.config.NodesRepository
 import com.gemwallet.android.interactors.SyncOperator
 import com.wallet.core.primitives.ChainNodes
 import com.wallet.core.primitives.Node
-import com.wallet.core.primitives.NodeStatus
+import com.wallet.core.primitives.NodeState
 import uniffi.Gemstone.NodePriority
 
 class SyncNodes(
@@ -21,8 +21,8 @@ class SyncNodes(
                         status = when (it.priority) {
                             NodePriority.HIGH,
                             NodePriority.MEDIUM,
-                            NodePriority.LOW -> NodeStatus.Active
-                            NodePriority.INACTIVE -> NodeStatus.Inactive
+                            NodePriority.LOW -> NodeState.Active
+                            NodePriority.INACTIVE -> NodeState.Inactive
                         },
                         priority = when (it.priority) {
                             NodePriority.HIGH -> 3
