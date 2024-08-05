@@ -101,7 +101,7 @@ internal fun ImportInput(
                 modifier = Modifier.fillMaxWidth(),
                 onValueChange = {
                     onValueChange(it)
-                    if (importType.walletType == WalletType.view) {
+                    if (importType.walletType == WalletType.view || importType.walletType == WalletType.private_key) {
                         viewModel.onInput(it.text, importType.chain)
                     }
                 },
@@ -112,7 +112,7 @@ internal fun ImportInput(
                 minLines = 3,
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 visualTransformation = {
-                    if (importType.walletType == WalletType.view) {
+                    if (importType.walletType == WalletType.view  || importType.walletType == WalletType.private_key) {
                         return@BasicTextField TransformedText(it, OffsetMapping.Identity)
                     }
                     TransformedText(
@@ -129,6 +129,7 @@ internal fun ImportInput(
                             text = stringResource(
                                 id = when (importType.walletType) {
                                     WalletType.view -> R.string.wallet_import_address_field
+                                    WalletType.private_key -> R.string.wallet_import_private_key
                                     else -> R.string.wallet_import_secret_phrase
                                 }
                             ),

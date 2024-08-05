@@ -94,8 +94,11 @@ class PhraseAddressImportWalletOperator(
 
     private suspend fun handlePrivateKey(chain: Chain, walletName: String, data: String): Result<Wallet> {
         val cleanedData = data.trim()
-        val isValid = PrivateKey.isValid(data.decodeHex(), WCChainTypeProxy().invoke(chain).curve())
-        if (!isValid) {
+        try {
+            if (!PrivateKey.isValid(cleanedData.decodeHex(), WCChainTypeProxy().invoke(chain).curve())) {
+                throw Exception()
+            }
+        } catch (err: Throwable) {
             return Result.failure(ImportError.InvalidationPrivateKey)
         }
         val result = walletsRepository.addControlled(walletName, cleanedData, WalletType.private_key, chain)
