@@ -1,8 +1,6 @@
 package com.gemwallet.android.features.assets.views
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,7 +20,6 @@ import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -39,19 +36,14 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -67,6 +59,7 @@ import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.AsyncImage
+import com.gemwallet.android.ui.components.DropDownContextItem
 import com.gemwallet.android.ui.theme.Spacer16
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.TransactionExtended
@@ -186,7 +179,6 @@ private fun LazyListScope.pendingTransactions(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.assets(
     assets: List<AssetUIState>,
     longPressState: MutableState<AssetId?>,
@@ -194,62 +186,43 @@ private fun LazyListScope.assets(
     onAssetHide: (AssetId) -> Unit,
 ) {
 
-    items(items = assets, key = { it.asset.id.toIdentifier() }) { item->
-        var itemWidth by remember { mutableIntStateOf(0) }
-        Box(
-            modifier = Modifier.onSizeChanged { itemWidth = it.width }
-        ) {
-            AssetListItem(
-                chain = item.asset.id.chain,
-                title = item.asset.name,
-                iconUrl = item.asset.getIconUrl(),
-                value = item.value,
-                assetType = item.asset.type,
-                isZeroValue = item.isZeroValue,
-                fiatAmount = item.fiat,
-                price = item.price,
-                modifier = Modifier.combinedClickable(
-                    onClick = { onAssetClick(item.asset.id) },
-                    onLongClick = { longPressState.value = item.asset.id },
+    items(items = assets, key = { it.asset.id.toIdentifier() }) { item ->
+        val clipboardManager = LocalClipboardManager.current
+        DropDownContextItem(
+            isExpanded = longPressState.value == item.asset.id,
+            onDismiss = { longPressState.value = null },
+            content = {
+                AssetListItem(
+                    chain = item.asset.id.chain,
+                    title = item.asset.name,
+                    iconUrl = item.asset.getIconUrl(),
+                    value = item.value,
+                    assetType = item.asset.type,
+                    isZeroValue = item.isZeroValue,
+                    fiatAmount = item.fiat,
+                    price = item.price,
                 )
-            )
-            AssetItemMenu(item, longPressState.value == item.asset.id, itemWidth, onAssetHide) {
-                longPressState.value = null
-            }
-        }
-    }
-}
-
-@Composable
-private fun AssetItemMenu(
-    item: AssetUIState,
-    showed: Boolean,
-    containerWidth: Int,
-    onAssetHide: (AssetId) -> Unit,
-    onCancel: () -> Unit,
-) {
-    val clipboardManager = LocalClipboardManager.current
-    DropdownMenu(
-        expanded = showed,
-        offset = DpOffset((with(LocalDensity.current) { containerWidth.toDp() } / 2), 8.dp),
-        onDismissRequest = onCancel,
-    ) {
-        DropdownMenuItem(
-            text = { Text( text = stringResource(id = R.string.wallet_copy_address)) },
-            trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
-            onClick = {
-                clipboardManager.setText(AnnotatedString(item.owner))
-                onCancel()
             },
-        )
-        DropdownMenuItem(
-            text = { Text(stringResource(id = R.string.common_hide)) },
-            trailingIcon = { Icon(Icons.Default.VisibilityOff, "wallet_config") },
-            onClick = {
-                onAssetHide(item.asset.id)
-                onCancel()
-            }
-        )
+            menuItems = {
+                DropdownMenuItem(
+                    text = { Text( text = stringResource(id = R.string.wallet_copy_address)) },
+                    trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
+                    onClick = {
+                        clipboardManager.setText(AnnotatedString(item.owner))
+                        longPressState.value = null
+                    },
+                )
+                DropdownMenuItem(
+                    text = { Text(stringResource(id = R.string.common_hide)) },
+                    trailingIcon = { Icon(Icons.Default.VisibilityOff, "wallet_config") },
+                    onClick = {
+                        onAssetHide(item.asset.id)
+                        longPressState.value = null
+                    }
+                )
+            },
+            onLongClick = { longPressState.value = item.asset.id }
+        ) { onAssetClick(item.asset.id) }
     }
 }
 
