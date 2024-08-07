@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.near
 
 import com.gemwallet.android.blockchain.clients.NodeStatusClient
+import com.gemwallet.android.blockchain.rpc.getLatency
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain
@@ -14,18 +15,21 @@ class NearNodeStatusClient(
 ) : NodeStatusClient {
 
     override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
-        val block = async {
+        val getBlock = async {
             rpcClient.latestBlock(
+                url,
                 JSONRpcRequest(
                     NearMethod.LatestBlock.value,
                     mapOf("finality" to "final")
                 )
-            ).getOrNull()?.result?.header?.height?.toString()
+            )
         }
+        val block = getBlock.await()
         NodeStatus(
-            blockNumber = block.await() ?: return@withContext null,
+            blockNumber = block.body()?.result?.header?.height?.toString() ?: return@withContext null,
             chainId = "",
             inSync = true,
+            latency = block.getLatency(),
         )
     }
 

@@ -10,6 +10,7 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.wallet.core.blockchain.ethereum.models.EthereumFeeHistory
 import com.wallet.core.blockchain.ethereum.models.EthereumTransactionReciept
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Url
@@ -49,7 +50,7 @@ interface EvmRpcClient {
     suspend fun transaction(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept>>
 
     @POST
-    suspend fun chainId(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmNumber?>>
+    suspend fun chainId(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Response<JSONRpcResponse<EvmNumber?>>
 
     @POST
     suspend fun sync(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<Boolean?>>
@@ -150,7 +151,7 @@ internal suspend fun EvmRpcClient.callString(contract: String, hexData: String):
     return callString(request).getOrNull()?.result
 }
 
-internal suspend fun EvmRpcClient.getChainId(url: String): Result<JSONRpcResponse<EvmNumber?>> {
+internal suspend fun EvmRpcClient.getChainId(url: String): Response<JSONRpcResponse<EvmNumber?>> {
     return chainId(url, JSONRpcRequest.create(EvmMethod.GetChainId, emptyList()))
 }
 

@@ -7,8 +7,10 @@ import com.wallet.core.blockchain.near.models.NearAccountAccessKey
 import com.wallet.core.blockchain.near.models.NearBlock
 import com.wallet.core.blockchain.near.models.NearBroadcastResult
 import com.wallet.core.blockchain.near.models.NearGasPrice
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.Url
 
 interface NearRpcClient {
     @POST("/")
@@ -28,4 +30,7 @@ interface NearRpcClient {
 
     @POST("/")
     suspend fun broadcast(@Body params: JSONRpcRequest<Any>): Result<JSONRpcResponse<NearBroadcastResult>>
+
+    @POST
+    suspend fun latestBlock(@Url url: String, @Body params: JSONRpcRequest<Any>): Response<JSONRpcResponse<NearBlock>>
 }

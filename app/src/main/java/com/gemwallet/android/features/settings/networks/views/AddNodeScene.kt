@@ -128,6 +128,10 @@ fun AddNodeScene(chain: Chain, onCancel: () -> Unit) {
                         label = stringResource(id = R.string.nodes_import_node_latest_block),
                         data = nf.format(uiModel.status?.blockNumber?.toLong() ?: ""),
                     ),
+                    CellEntity(
+                        label = stringResource(id = R.string.nodes_import_node_latency),
+                        data = stringResource(R.string.common_latency_in_ms, uiModel.status?.latency ?: 0),
+                    ),
                 )
             )
 

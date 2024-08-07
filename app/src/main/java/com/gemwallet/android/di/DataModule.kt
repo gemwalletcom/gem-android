@@ -14,11 +14,13 @@ import com.gemwallet.android.blockchain.clients.aptos.AptosSignerPreloader
 import com.gemwallet.android.blockchain.clients.aptos.AptosTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinBalanceClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinBroadcastClient
+import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinNodeStatusClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinSignClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinSignerPreloader
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosBalanceClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosBroadcastClient
+import com.gemwallet.android.blockchain.clients.cosmos.CosmosNodeStatusClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosSignClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosSignerPreloader
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosStakeClient
@@ -34,11 +36,13 @@ import com.gemwallet.android.blockchain.clients.ethereum.EvmTransactionStatusCli
 import com.gemwallet.android.blockchain.clients.ethereum.SmartchainStakeClient
 import com.gemwallet.android.blockchain.clients.near.NearBalanceClient
 import com.gemwallet.android.blockchain.clients.near.NearBroadcastClient
+import com.gemwallet.android.blockchain.clients.near.NearNodeStatusClient
 import com.gemwallet.android.blockchain.clients.near.NearSignClient
 import com.gemwallet.android.blockchain.clients.near.NearSignerPreloader
 import com.gemwallet.android.blockchain.clients.near.NearTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaBalanceClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaBroadcastClient
+import com.gemwallet.android.blockchain.clients.solana.SolanaNodeStatusClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaSignClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaSignerPreloader
 import com.gemwallet.android.blockchain.clients.solana.SolanaStakeClient
@@ -54,17 +58,20 @@ import com.gemwallet.android.blockchain.clients.sui.SuiTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.ton.TonBalanceClient
 import com.gemwallet.android.blockchain.clients.ton.TonBroadcastClient
 import com.gemwallet.android.blockchain.clients.ton.TonGetTokenClient
+import com.gemwallet.android.blockchain.clients.ton.TonNodeStatusClient
 import com.gemwallet.android.blockchain.clients.ton.TonSignClient
 import com.gemwallet.android.blockchain.clients.ton.TonSignerPreloader
 import com.gemwallet.android.blockchain.clients.ton.TonTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.tron.TronBalanceClient
 import com.gemwallet.android.blockchain.clients.tron.TronBroadcastClient
 import com.gemwallet.android.blockchain.clients.tron.TronGetTokenClient
+import com.gemwallet.android.blockchain.clients.tron.TronNodeStatusClient
 import com.gemwallet.android.blockchain.clients.tron.TronSignClient
 import com.gemwallet.android.blockchain.clients.tron.TronSignerPreloader
 import com.gemwallet.android.blockchain.clients.tron.TronTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpBalanceClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpBroadcastClient
+import com.gemwallet.android.blockchain.clients.xrp.XrpNodeStatusClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignerPreloader
 import com.gemwallet.android.blockchain.clients.xrp.XrpTransactionStatusClient
@@ -540,23 +547,23 @@ object DataModule {
                     Chain.Mantle,
                     Chain.Celo,
                     Chain.Ethereum -> EvmNodeStatusClient(it, rpcClients.getClient(it))
-                    Chain.Solana,
+                    Chain.Solana -> SolanaNodeStatusClient(it, rpcClients.getClient(it))
                     Chain.Thorchain,
                     Chain.Osmosis,
                     Chain.Celestia,
                     Chain.Injective,
                     Chain.Sei,
                     Chain.Noble,
-                    Chain.Cosmos,
-                    Chain.Ton,
-                    Chain.Tron,
-                    Chain.Aptos,
-                    Chain.Sui,
-                    Chain.Xrp,
+                    Chain.Cosmos -> CosmosNodeStatusClient(it, rpcClients.getClient(it))
+                    Chain.Ton -> TonNodeStatusClient(it, rpcClients.getClient(it))
+                    Chain.Tron -> TronNodeStatusClient(it, rpcClients.getClient(it))
+                    Chain.Xrp -> XrpNodeStatusClient(it, rpcClients.getClient(it))
                     Chain.Doge,
                     Chain.Litecoin,
-                    Chain.Bitcoin,
-                    Chain.Near -> null
+                    Chain.Bitcoin -> BitcoinNodeStatusClient(it, rpcClients.getClient(it))
+                    Chain.Near -> NearNodeStatusClient(it, rpcClients.getClient(it))
+                    Chain.Aptos,
+                    Chain.Sui -> null
                 }
             }
         )

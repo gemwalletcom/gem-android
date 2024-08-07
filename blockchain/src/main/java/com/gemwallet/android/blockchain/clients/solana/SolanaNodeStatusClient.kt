@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.NodeStatusClient
+import com.gemwallet.android.blockchain.rpc.getLatency
 import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
@@ -13,14 +14,17 @@ class SolanaNodeStatusClient(
 ) : NodeStatusClient {
 
     override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
-        val inSyncJob = async { rpcClient.health().getOrNull()?.result }
-        val slotJob = async { rpcClient.slot().getOrNull()?.result }
-        val chainIdJob = async { rpcClient.genesisHash().getOrNull()?.result }
+        val inSyncJob = async { rpcClient.health(url) }
+        val slotJob = async { rpcClient.slot(url).getOrNull()?.result }
+        val chainIdJob = async { rpcClient.genesisHash(url).getOrNull()?.result }
+
+        val inSync = inSyncJob.await()
 
         NodeStatus(
-            inSync = inSyncJob.await() == "ok",
-            blockNumber = slotJob.toString(),
-            chainId = chainIdJob.await() ?: return@withContext null
+            inSync = inSync.body()?.result == "ok",
+            blockNumber = slotJob.await().toString(),
+            chainId = chainIdJob.await() ?: return@withContext null,
+            latency = inSync.getLatency(),
         )
     }
 

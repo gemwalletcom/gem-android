@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.bitcoin
 
 import com.gemwallet.android.blockchain.clients.NodeStatusClient
+import com.gemwallet.android.blockchain.rpc.getLatency
 import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
@@ -13,15 +14,16 @@ class BitcoinNodeStatusClient(
 ) : NodeStatusClient {
 
     override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
-        val nodeInfoJob = async { rpcClient.nodeInfo().getOrNull() }
-        val chainIdJob = async { rpcClient.block(1).getOrNull()?.previousBlockHash }
+        val nodeInfoJob = async { rpcClient.getNodeInfo(url).getOrNull() }
+        val chainIdJob = async { rpcClient.getBlock(url) }
         val nodeInfo = nodeInfoJob.await() ?: return@withContext null
-        val chainId = chainIdJob.await() ?: return@withContext null
+        val chainId = chainIdJob.await()
 
         NodeStatus(
-            chainId = chainId,
+            chainId = chainId.body()?.previousBlockHash ?: return@withContext null,
             blockNumber = nodeInfo.blockbook.bestHeight.toString(),
             inSync = nodeInfo.blockbook.inSync,
+            latency = chainId.getLatency()
         )
     }
 

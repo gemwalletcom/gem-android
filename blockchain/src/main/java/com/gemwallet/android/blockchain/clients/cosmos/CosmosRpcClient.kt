@@ -13,10 +13,12 @@ import com.wallet.core.blockchain.cosmos.models.CosmosTransactionResponse
 import com.wallet.core.blockchain.cosmos.models.CosmosUnboundingDelegations
 import com.wallet.core.blockchain.cosmos.models.CosmosValidators
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
+import retrofit2.http.Url
 
 interface CosmosRpcClient {
     @GET("/cosmos/bank/v1beta1/balances/{owner}")
@@ -49,7 +51,10 @@ interface CosmosRpcClient {
     @GET("/cosmos/distribution/v1beta1/delegators/{address}/rewards")
     suspend fun rewards(@Path("address") address: String): Result<CosmosRewards>
 
-    @GET("/cosmos/base/tendermint/v1beta1/syncing")
-    suspend fun syncing(): Result<CosmosSyncing>
+    @GET//("/cosmos/base/tendermint/v1beta1/syncing")
+    suspend fun syncing(@Url url: String): Response<CosmosSyncing>
+
+    @GET//("/cosmos/base/tendermint/v1beta1/blocks/latest")
+    suspend fun getNodeInfo(@Url url: String): Result<CosmosBlockResponse>
 
 }

@@ -17,8 +17,10 @@ import com.wallet.core.blockchain.solana.models.SolanaTokenAccountResult
 import com.wallet.core.blockchain.solana.models.SolanaTransaction
 import com.wallet.core.blockchain.solana.models.SolanaValidators
 import com.wallet.core.blockchain.solana.models.SolanaValue
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.Url
 
 interface SolanaRpcClient {
     @POST("/")
@@ -60,14 +62,14 @@ interface SolanaRpcClient {
     @POST("/")
     suspend fun epoch(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SolanaEpoch>>
 
-    @POST("/")
-    suspend fun health(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
+    @POST
+    suspend fun health(@Url url: String,@Body request: JSONRpcRequest<List<String>>): Response<JSONRpcResponse<String>>
 
-    @POST("/")
-    suspend fun slot(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<Int>>
+    @POST
+    suspend fun slot(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<Int>>
 
-    @POST("/")
-    suspend fun genesisHash(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
+    @POST
+    suspend fun genesisHash(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
 }
 
 suspend fun SolanaRpcClient.getTokenAccountByOwner(
@@ -109,14 +111,14 @@ suspend fun SolanaRpcClient.delegations(
     return delegations(request)
 }
 
-suspend fun SolanaRpcClient.health(): Result<JSONRpcResponse<String>> {
-    return health(JSONRpcRequest.create(SolanaMethod.GetHealth, emptyList()))
+suspend fun SolanaRpcClient.health(url: String): Response<JSONRpcResponse<String>> {
+    return health(url, JSONRpcRequest.create(SolanaMethod.GetHealth, emptyList()))
 }
 
-suspend fun SolanaRpcClient.slot(): Result<JSONRpcResponse<Int>> {
-    return slot(JSONRpcRequest.create(SolanaMethod.GetSlot, emptyList()))
+suspend fun SolanaRpcClient.slot(url: String): Result<JSONRpcResponse<Int>> {
+    return slot(url, JSONRpcRequest.create(SolanaMethod.GetSlot, emptyList()))
 }
 
-suspend fun SolanaRpcClient.genesisHash(): Result<JSONRpcResponse<String>> {
-    return genesisHash(JSONRpcRequest.create(SolanaMethod.GetGenesisHash, emptyList()))
+suspend fun SolanaRpcClient.genesisHash(url: String): Result<JSONRpcResponse<String>> {
+    return genesisHash(url, JSONRpcRequest.create(SolanaMethod.GetGenesisHash, emptyList()))
 }
