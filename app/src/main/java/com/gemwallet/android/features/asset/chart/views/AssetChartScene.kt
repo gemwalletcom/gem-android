@@ -5,10 +5,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.features.asset.chart.models.AssetMarketUIModel
 import com.gemwallet.android.features.asset.chart.viewmodels.AssetChartViewModel
 import com.gemwallet.android.interactors.getDrawableUri
@@ -40,24 +38,8 @@ fun AssetChartScene(
         onClose = onCancel,
     ) {
         LazyColumn {
-            item {
-                Chart()
-            }
-            item {
-                Table(
-                    items = marketModel.marketCells + listOfNotNull(
-                        if (!marketModel.coinGecko.isNullOrEmpty()) {
-                            CellEntity(
-                                label = stringResource(id = R.string.transaction_view_on, "CoinGecko"),
-                                data = "",
-                                action = { uriHandler.openUri(marketModel.coinGecko) }
-                            )
-                        } else {
-                            null
-                        },
-                    ),
-                )
-            }
+            item { Chart() }
+            item { Table(items = marketModel.marketCells,) }
 
             if (marketModel.assetLinks.isNotEmpty()) {
                 item {

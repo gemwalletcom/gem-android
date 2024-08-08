@@ -41,7 +41,6 @@ class AssetChartViewModel @Inject constructor(
         AssetMarketUIModel(
             assetId = asset.id,
             assetTitle = asset.name,
-            coinGecko = assetInfo.links?.coingecko,
             assetLinks = assetInfo.links?.toModel() ?: emptyList(),
             currency = assetInfo.price?.currency ?: Currency.USD,
             marketCells = listOfNotNull(
@@ -64,6 +63,9 @@ class AssetChartViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private fun AssetLinks.toModel() = listOfNotNull(
+        if (coingecko.isNullOrEmpty()) null else AssetMarketUIModel.Link(
+            "coingecko", coingecko!!, R.string.social_coingecko
+        ),
         if (twitter.isNullOrEmpty()) null else AssetMarketUIModel.Link(
             "twitter", twitter!!, R.string.social_x),
         if (telegram.isNullOrEmpty()) null else AssetMarketUIModel.Link(
