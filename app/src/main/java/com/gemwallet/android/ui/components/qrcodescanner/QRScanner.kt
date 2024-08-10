@@ -165,6 +165,12 @@ fun QRScannerScene(
     Scene(
         title = stringResource(id = R.string.wallet_scan_qr_code),
         actions = {
+            IconButton(
+                modifier = Modifier.padding(padding16),
+                onClick = { galleryLauncher.launch("image/*") }
+            ) {
+                Icon(imageVector = Icons.Default.Image, contentDescription = "from_image")
+            }
             if (imageUri != null) {
                 IconButton(onClick = cancel) {
                     Icon(imageVector = Icons.Default.Close, contentDescription = "close_image")
@@ -175,20 +181,6 @@ fun QRScannerScene(
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             QRScanner(listener = onResult)
-            IconButton(
-                modifier = Modifier
-                    .padding(padding16)
-                    .align(Alignment.TopEnd),
-                onClick = {
-                    galleryLauncher.launch("image/*")
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Image,
-                    tint = Color.White,
-                    contentDescription = "from_image",
-                )
-            }
             if (imageUri != null) {
                 Box(
                     modifier = Modifier
