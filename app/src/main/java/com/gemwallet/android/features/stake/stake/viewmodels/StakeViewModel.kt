@@ -9,7 +9,6 @@ import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.byChain
 import com.gemwallet.android.ext.getAccount
-import com.gemwallet.android.ext.lockTime
 import com.gemwallet.android.features.stake.stake.model.StakeError
 import com.gemwallet.android.features.stake.stake.model.StakeUIState
 import com.gemwallet.android.model.AssetInfo
@@ -27,6 +26,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import uniffi.Gemstone.Config
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -114,7 +114,7 @@ class StakeViewModel @Inject constructor(
                         ownerAddress = account.address,
                         title = "${asset.asset.id.chain.asset().name} (${asset.asset.symbol})",
                         apr = apr,
-                        lockTime = ((StakeChain.byChain(asset.asset.id.chain)?.lockTime() ?: 0L) / (DateUtils.DAY_IN_MILLIS / 1000)).toInt(),
+                        lockTime = (Config() .getStakeConfig(account.chain.string).timeLock / (DateUtils.DAY_IN_MILLIS / 1000).toULong()).toInt(),
                         hasRewards = rewardsAmount > BigInteger.ZERO,
                         rewardsAmount = Crypto(rewardsAmount).format(asset.asset.decimals, asset.asset.symbol, decimalPlace = 6),
                         delegations = delegations,
