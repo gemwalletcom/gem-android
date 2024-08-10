@@ -129,15 +129,16 @@ private fun Success(
         onClose = onCancel,
         contentPadding = PaddingValues(0.dp)
     ) {
+        val isRefreshing = syncState == AssetInfoUIState.SyncState.Loading
         PullToRefreshBox(
             modifier = Modifier.fillMaxSize(),
-            isRefreshing = syncState != AssetInfoUIState.SyncState.None,
+            isRefreshing = isRefreshing,
             onRefresh = onRefresh,
             state = pullToRefreshState,
             indicator = {
                 Indicator(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    isRefreshing = syncState != AssetInfoUIState.SyncState.None,
+                    isRefreshing = isRefreshing,
                     state = pullToRefreshState,
                     containerColor = MaterialTheme.colorScheme.background
                 )
