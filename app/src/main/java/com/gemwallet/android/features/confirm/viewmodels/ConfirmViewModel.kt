@@ -76,7 +76,7 @@ class ConfirmViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val request = savedStateHandle.getStateFlow<String?>(paramsArg, null)
+    private val request = savedStateHandle.getStateFlow<String?>(paramsArg, null)
         .filterNotNull()
         .mapNotNull { paramsPack ->
             val txTypeString = savedStateHandle.get<String?>(txTypeArg)?.urlDecode()
@@ -97,7 +97,7 @@ class ConfirmViewModel @Inject constructor(
             )
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-    val assetsInfo = request.filterNotNull().mapNotNull {
+    private val assetsInfo = request.filterNotNull().mapNotNull {
         if (it is ConfirmParams.SwapParams) {
             listOf(it.fromAssetId, it.toAssetId)
         } else {
@@ -107,7 +107,7 @@ class ConfirmViewModel @Inject constructor(
     .flatMapLatest { assetsRepository.getAssetsInfo(it) }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val signerParams = request.filterNotNull().map { request ->
+    private val signerParams = request.filterNotNull().map { request ->
         val owner = sessionRepository.getSession()?.wallet?.getAccount(request.assetId.chain) ?: return@map null
         val preload = signerPreload(owner = owner, params = request).getOrNull() ?: return@map null // TODO: Handle error
         val finalAmount = when {
@@ -121,7 +121,7 @@ class ConfirmViewModel @Inject constructor(
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val feeAssetInfo = signerParams.filterNotNull().flatMapLatest { signerParams ->
+    private val feeAssetInfo = signerParams.filterNotNull().flatMapLatest { signerParams ->
         assetsRepository.getAssetInfo(signerParams.info.fee().feeAssetId)
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -387,7 +387,7 @@ class ConfirmViewModel @Inject constructor(
                         toAmount = toAmount?.toString(),
                         cells = listOf(
                             from(),
-//                            recipient(),
+                            recipient(signerParams.input),
                             memo(),
                             network(),
                             fee(),
