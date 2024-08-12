@@ -1,9 +1,12 @@
 package com.gemwallet.android.features.asset.details.views
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -47,6 +50,7 @@ import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.priceColor
+import com.gemwallet.android.ui.theme.padding32
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
@@ -173,6 +177,18 @@ private fun Success(
                 }
                 networkInfo(uiState, onChart)
                 balanceDetails(uiState, onStake)
+                if (uiState.transactions.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = padding32)
+                        ) {
+                            Text(
+                                modifier = Modifier.align(Alignment.Center),
+                                text = stringResource(R.string.activity_empty_state_message)
+                            )
+                        }
+                    }
+                }
                 transactionsList(uiState.transactions, onTransaction)
             }
         }
