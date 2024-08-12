@@ -116,13 +116,13 @@ class SwapViewModel @Inject constructor(
         SwapPairUIModel(
             from = SwapItemModel(
                 asset = assets.from.asset.copy(symbol = assets.from.asset.symbol.padStart(symbolLength)),
-                assetBalanceValue = assets.from.balances.calcTotal().value(assets.from.asset.decimals).stripTrailingZeros().toPlainString(),
-                assetBalanceLabel = assets.from.asset.format(assets.from.balances.calcTotal(), 4),
+                assetBalanceValue = assets.from.balances.available().value(assets.from.asset.decimals).stripTrailingZeros().toPlainString(),
+                assetBalanceLabel = assets.from.asset.format(assets.from.balances.available(), 4),
             ),
             to = SwapItemModel(
                 asset = assets.to.asset.copy(symbol = assets.to.asset.symbol.padStart(symbolLength)),
-                assetBalanceValue = assets.to.balances.calcTotal().value(assets.to.asset.decimals).stripTrailingZeros().toPlainString(),
-                assetBalanceLabel = assets.to.asset.format(assets.to.balances.calcTotal(), 4),
+                assetBalanceValue = assets.to.balances.available().value(assets.to.asset.decimals).stripTrailingZeros().toPlainString(),
+                assetBalanceLabel = assets.to.asset.format(assets.to.balances.available(), 4),
             ),
         )
     }
