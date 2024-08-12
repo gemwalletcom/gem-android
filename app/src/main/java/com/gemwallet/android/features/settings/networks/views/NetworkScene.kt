@@ -123,7 +123,7 @@ private fun NodeItem(
             text = if (node.url == ConfigRepository.getGemNodeUrl(chain)) {
                 "Gem Wallet Node"
             } else {
-                node.url
+                node.url.replace("https://", "").replace("http://", "")
             },
             maxLines = 1,
             color = MaterialTheme.colorScheme.onSurface,
