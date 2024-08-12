@@ -33,10 +33,6 @@ class SessionRepositoryImpl(
 
     override fun hasSession(): Boolean = getSession() != null
 
-    override fun subscribe(onSessionChange: (Session) -> Unit) { }
-
-    override fun subscribe(onSessionChange: OnSessionChange) { }
-
     override suspend fun setWallet(wallet: Wallet)  = withContext(Dispatchers.IO) {
         val session = getSession()?.copy(wallet = wallet) ?: Session(
             wallet = wallet,

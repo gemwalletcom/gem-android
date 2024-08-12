@@ -13,10 +13,6 @@ interface SessionRepository {
 
     fun hasSession(): Boolean
 
-    fun subscribe(onSessionChange: (Session) -> Unit)
-
-    fun subscribe(onSessionChange: OnSessionChange)
-
     suspend fun setWallet(wallet: Wallet)
 
     suspend fun setCurrency(currency: Currency)
