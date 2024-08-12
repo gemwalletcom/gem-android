@@ -100,8 +100,8 @@ fun TransactionDetails(
             val dataColor = when (model.state) {
                 TransactionState.Pending -> pendingColor
                 TransactionState.Confirmed -> MaterialTheme.colorScheme.tertiary
-                TransactionState.Failed -> MaterialTheme.colorScheme.error
-                TransactionState.Reverted -> MaterialTheme.colorScheme.secondary
+                TransactionState.Failed,
+                TransactionState.Reverted -> MaterialTheme.colorScheme.error
             }
             cells.add(
                 CellEntity(
