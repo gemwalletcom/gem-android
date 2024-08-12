@@ -125,7 +125,7 @@ private fun LazyListScope.actions(
         if (hasRewards && stakeChain.claimed()) {
             cells.add(
                 CellEntity(
-                    label = stringResource(id = R.string.transfer_rewards_title),
+                    label = stringResource(id = R.string.transfer_claim_rewards_title),
                     data = rewardsAmount,
                     action = onConfirm
                 )
