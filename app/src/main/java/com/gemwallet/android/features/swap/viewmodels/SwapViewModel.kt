@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.swap.viewmodels
 
-import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.snapshotFlow
@@ -132,7 +131,7 @@ class SwapViewModel @Inject constructor(
     val fromValue: TextFieldState = TextFieldState()
     private val fromValueFlow = snapshotFlow { fromValue.text }.map { it.toString() }
     val fromEquivalent = fromValueFlow.combine(assetsState) { value, assets ->
-        swapScreenState.update { SwapState.None }
+        swapScreenState.update { SwapState.GetQuote }
         val price = assets?.from?.price ?: return@combine null
         val valueNum = try {
             value.numberParse()
@@ -145,16 +144,12 @@ class SwapViewModel @Inject constructor(
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    private val quote = fromValueFlow.mapLatest {
-        Log.d("SWAP_GET_QUOTE", "MapLatest: $it")
-        it
-    }.mapLatest { input ->
+    private val quote = fromValueFlow.mapLatest { input ->
         val value = try {
             input.numberParse()
         } catch (err: Throwable) {
             BigDecimal.ZERO
         }
-        Log.d("SWAP_GET_QUOTE", "value: $value")
         Pair(value, assetsState.value)
     }
     .mapLatest {
@@ -166,7 +161,6 @@ class SwapViewModel @Inject constructor(
         }
         swapScreenState.update { SwapState.GetQuote }
         delay(500L)
-        Log.d("SWAP_GET_QUOTE", "Request quote")
         val quote = getQuote(fromAsset, toAsset, it.first)
         val amount = toAsset.asset.format(Crypto(quote?.toAmount ?: "0"), 8, showSymbol = false)
         withContext(Dispatchers.Main) { toValue.edit { replace(0, length, amount) } }
