@@ -28,7 +28,8 @@ class ProposalSceneViewModel @Inject constructor(
 ) : ViewModel() {
     
     private val state = MutableStateFlow(ProposalViewModelState())
-    val sceneState = state.map { it.toUIState() }.stateIn(viewModelScope, SharingStarted.Eagerly, ProposalSceneState.Init)
+    val sceneState = state.map { it.toUIState() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, ProposalSceneState.Init)
 
     fun onProposal(proposal: Wallet.Model.SessionProposal, wallet: com.wallet.core.primitives.Wallet? = null) {
         state.update { it.copy(proposal = proposal, wallet = wallet ?: sessionRepository.getSession()?.wallet) }
@@ -74,7 +75,7 @@ class ProposalSceneViewModel @Inject constructor(
     fun onWalletSelect() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val wallets = walletsRepository.getAll().getOrNull() ?: emptyList()
+                val wallets = walletsRepository.getAll().getOrNull()?.filter { it.type != WalletType.view } ?: emptyList()
                 state.update { it.copy(wallets = wallets) }
             }
         }

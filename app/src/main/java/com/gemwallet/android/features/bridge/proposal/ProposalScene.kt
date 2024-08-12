@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -118,13 +119,14 @@ private fun Proposal(
             },
             sheetState = sheetState,
             dragHandle = { Box {} },
+            containerColor = MaterialTheme.colorScheme.background,
         ) {
             LazyColumn {
                 items(state.wallets) {
                     WalletItem(
                         wallet = it,
                         isCurrent = it.id == state.walletId,
-                        modifier = Modifier.clickable { onWalletSelected(state.walletId) }
+                        modifier = Modifier.clickable { onWalletSelected(it.id) }
                     )
                 }
             }
