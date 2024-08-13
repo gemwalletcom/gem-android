@@ -108,7 +108,7 @@ internal fun SwapItem(
                                 Text(
                                     text = "0",
                                     style = MaterialTheme.typography.headlineLarge,
-                                    color = Color.Gray.copy(alpha = 0.5f),
+                                    color = MaterialTheme.colorScheme.secondary,
                                 )
                             }
                             innerTextField()

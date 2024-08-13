@@ -134,7 +134,7 @@ internal fun ImportInput(
                                 }
                             ),
                             style = MaterialTheme.typography.bodyLarge,
-                            color = Color.Gray.copy(alpha = 0.5f),
+                            color = MaterialTheme.colorScheme.secondary,
                         )
                     }
                     innerTextField()

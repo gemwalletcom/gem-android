@@ -15,7 +15,7 @@ val pendingColor = Color(0xffff9314)
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFF2D5BE6),
-    secondary = Color(0xFF818181),
+    secondary = Color(0xFF808d99), //Color(0xFF818181),
     tertiary = Color(0xFF06BE92),
     background = Color(0xFF24262A),
     surface = Color(0xFF1A191A),
@@ -23,14 +23,13 @@ private val DarkColorScheme = darkColorScheme(
     onSecondary = Color.White,
     onTertiary = Color.White,
     onBackground = Color(0xFF818181),
-//    onSurface = Color(0xFFFFFFFF),
     error = Color(0xFFF84E4E),
     scrim = Color(0xff34373d), // Header button actions color
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF2D5BE6),
-    secondary = Color(0xFF818181),
+    secondary = Color(0xFF999999), //Color(0xFF818181),
     tertiary = Color(0xFF1B9A6D),
     background = Color(0xFFFFFFFF),
 //    surface = Color(0xFFFFFFFF),
