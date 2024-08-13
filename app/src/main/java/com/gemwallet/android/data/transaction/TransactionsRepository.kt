@@ -58,7 +58,11 @@ class TransactionsRepository(
         return localSource.getExtendedTransactions()
             .map { list ->
                 list.filter {
-                    (assetId == null || it.asset.id.toIdentifier() == assetId.toIdentifier())
+                    (assetId == null
+                            || it.asset.id.toIdentifier() == assetId.toIdentifier()
+                            || it.transaction.getSwapMetadata()?.toAsset?.toIdentifier() == assetId.toIdentifier()
+                            || it.transaction.getSwapMetadata()?.fromAsset?.toIdentifier() == assetId.toIdentifier()
+                    )
                 }.map {
                     val metadata = it.transaction.getSwapMetadata()
                     if (metadata != null) {

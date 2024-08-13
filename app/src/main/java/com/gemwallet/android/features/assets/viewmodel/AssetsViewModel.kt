@@ -26,18 +26,22 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class AssetsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
@@ -46,7 +50,16 @@ class AssetsViewModel @Inject constructor(
     transactionsRepository: TransactionsRepository,
 ) : ViewModel() {
     val screenState = assetsRepository.syncState
-        .stateIn(viewModelScope, SharingStarted.Eagerly, SyncState.InSync)
+        .flatMapLatest { state ->
+            flow {
+                emit(state)
+                kotlinx.coroutines.delay(1000)
+                emit(SyncState.Idle)
+            }
+        }
+        .map { it == SyncState.InSync }
+        .flowOn(Dispatchers.IO)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAssetsInfo()
 

@@ -6,6 +6,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -50,6 +52,7 @@ fun WalletScreen(
 ) {
     val viewModel: WalletViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+
     LaunchedEffect(key1 = walletId) {
         viewModel.init(walletId = walletId, isPhrase = isPhrase)
     }
@@ -85,6 +88,7 @@ private fun Wallet(
     onDelete: () -> Unit,
     onCancel: () -> Unit,
 ) {
+    var isShowDelete by remember { mutableStateOf(false) }
     val clipboardManager = LocalClipboardManager.current
     var walletName by remember(state.walletName) {
         mutableStateOf(state.walletName)
@@ -168,13 +172,41 @@ private fun Wallet(
 
             Spacer16()
             Button(
-                modifier = Modifier.fillMaxWidth().padding(padding16),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(padding16),
                 colors = ButtonDefaults.buttonColors().copy(containerColor = MaterialTheme.colorScheme.error),
-                onClick = onDelete,
+                onClick = { isShowDelete = true },
             ) {
                 Text(text = stringResource(id = R.string.common_delete))
             }
         }
+    }
+
+    if (isShowDelete) {
+        AlertDialog(
+            onDismissRequest = { isShowDelete = false },
+            containerColor = MaterialTheme.colorScheme.background,
+            title = {
+                Text(stringResource(R.string.common_delete_confirmation, walletName))
+            },
+            confirmButton = {
+                TextButton(
+                    colors = ButtonDefaults.textButtonColors().copy(contentColor = MaterialTheme.colorScheme.error),
+                    onClick = {
+                        isShowDelete = false
+                        onDelete()
+                    },
+                ) {
+                    Text(text = stringResource(id = R.string.common_delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { isShowDelete = false })  {
+                    Text(stringResource(R.string.common_cancel))
+                }
+            }
+        )
     }
 }
 

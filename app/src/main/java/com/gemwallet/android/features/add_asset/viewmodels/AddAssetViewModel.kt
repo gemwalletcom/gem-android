@@ -44,7 +44,8 @@ class AddAssetViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            state.update { it.copy(chains =  getAvailableChains()) }
+            val chains = getAvailableChains()
+            state.update { it.copy(chains = chains, chain = chains.firstOrNull { it == Chain.Ethereum } ?: chains.firstOrNull() ?: Chain.Ethereum) }
         }
         viewModelScope.launch {
             snapshotFlow { chainFilter.text }.collectLatest { query ->

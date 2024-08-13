@@ -80,7 +80,7 @@ data class WalletsViewModelState(
                 typeLabel = when (it.type) {
                     WalletType.view,
                     WalletType.private_key,
-                    WalletType.single -> it.accounts.firstOrNull()?.address?.substring(0, 10) ?: ""
+                    WalletType.single -> it.accounts.firstOrNull()?.address ?: ""
                     WalletType.multicoin -> "Multi-coin"
                 },
                 icon = if (it.accounts.size > 1) {

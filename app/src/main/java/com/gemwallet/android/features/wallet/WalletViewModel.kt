@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.wallet
 
+import androidx.compose.material.AlertDialog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.operators.LoadPrivateDataOperator
@@ -69,9 +70,7 @@ class WalletViewModel @Inject constructor(
             val wallet = state.value.wallet ?: return
             val password = passwordStore.getPassword(wallet.id)
             val phrase = loadPrivateDataOperator(wallet, password)
-            state.update {
-                it.copy(phrase = phrase)
-            }
+            state.update { it.copy(phrase = phrase) }
         } catch (err: Throwable) {
             state.update { it.copy(error = err.message) }
         }

@@ -49,12 +49,12 @@ class NetworksViewModel @Inject constructor(
 
     fun onSelectedChain(chain: Chain) {
         viewModelScope.launch {
-            nodes = nodesRepository.getNodes(chain).stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+            nodes = nodesRepository.getNodes(chain)
+                .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
             state.update {
                 it.copy(
                     chain = chain,
                     selectChain = false,
-//                    nodes = nodesRepository.getNodes(chain).firstOrNull() ?: emptyList(), // TODO: Separate
                     explorers = configRepository.getBlockExplorers(chain),
                     currentNode = configRepository.getCurrentNode(chain),
                     currentExplorer = configRepository.getCurrentBlockExplorer(chain),

@@ -91,13 +91,13 @@ fun AssetsScreen(
         val pullToRefreshState = rememberPullToRefreshState()
         PullToRefreshBox(
             modifier = Modifier.padding(top = it.calculateTopPadding()),
-            isRefreshing = screenState == SyncState.InSync,
+            isRefreshing = screenState,
             onRefresh = viewModel::onRefresh,
             state = pullToRefreshState,
             indicator = {
                 Indicator(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    isRefreshing = screenState == SyncState.InSync,
+                    isRefreshing = screenState,
                     state = pullToRefreshState,
                     containerColor = MaterialTheme.colorScheme.background
                 )
