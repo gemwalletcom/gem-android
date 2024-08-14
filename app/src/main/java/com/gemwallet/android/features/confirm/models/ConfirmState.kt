@@ -7,7 +7,9 @@ sealed interface ConfirmState {
 
     data object Sending : ConfirmState
 
-    class Result(txHash: String) : ConfirmState
+    class Result(val txHash: String, val error: ConfirmError? = null) : ConfirmState
 
-    class Error(message: ConfirmError) : ConfirmState
+    class Error(val message: ConfirmError) : ConfirmState
+
+    data object FatalError : ConfirmState
 }
