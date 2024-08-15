@@ -1,22 +1,26 @@
 package com.gemwallet.android.features.confirm.views
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
-import com.gemwallet.android.features.confirm.models.ConfirmError.BroadcastError
-import com.gemwallet.android.features.confirm.models.ConfirmError.CalculateFee
-import com.gemwallet.android.features.confirm.models.ConfirmError.Init
-import com.gemwallet.android.features.confirm.models.ConfirmError.InsufficientBalance
-import com.gemwallet.android.features.confirm.models.ConfirmError.InsufficientFee
-import com.gemwallet.android.features.confirm.models.ConfirmError.None
-import com.gemwallet.android.features.confirm.models.ConfirmError.SignFail
-import com.gemwallet.android.features.confirm.models.ConfirmError.TransactionIncorrect
-import com.gemwallet.android.features.confirm.models.ConfirmError.WalletNotAvailable
+import com.gemwallet.android.features.confirm.models.ConfirmError
 import com.gemwallet.android.features.confirm.models.ConfirmState
 import com.gemwallet.android.features.confirm.viewmodels.ConfirmViewModel
 import com.gemwallet.android.model.ConfirmParams
@@ -27,6 +31,8 @@ import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.titles.getTitle
 import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.theme.padding16
 import com.wallet.core.primitives.TransactionType
 
 @Composable
@@ -88,45 +94,52 @@ fun ConfirmScreen(
         Table(txInfoUIModel)
         Spacer16()
         Table(feeModel)
-//        if (!state.txHash.isNullOrEmpty()) {
-//            onFinish(state.txHash)
-//        }
+        Spacer16()
+        ErrorInfo(state)
     }
+}
 
-//    when (uiState) {
-//        is ConfirmSceneState.Fatal -> FatalStateScene(
-//            title = stringResource(params.getTxType().getTitle()),
-//            message = (uiState as ConfirmSceneState.Fatal).error.stringResource(),
-//            onCancel = onCancel,
-//            onTryAgain = { viewModel.init(params) }
-//        )
-//        ConfirmSceneState.Loading -> LoadingScene(
-//            title = stringResource(params.getTxType().getTitle()),
-//            onCancel = onCancel,
-//        )
-//        is ConfirmSceneState.Loaded -> ConfirmScene(
-//            state = uiState as ConfirmSceneState.Loaded,
-//            onSend = viewModel::send,
-//            onFinish = onFinish,
-//            onCancel = onCancel,
-//        )
-//    }
+@Composable
+fun ErrorInfo(state: ConfirmState) {
+    if (state !is ConfirmState.Error || state.message == ConfirmError.None) {
+        return
+    }
+    Column(
+        modifier = Modifier
+            .padding(padding16)
+            .background(MaterialTheme.colorScheme.surfaceContainer, shape = MaterialTheme.shapes.medium)
+            .fillMaxWidth()
+            .padding(padding16),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(imageVector = Icons.Outlined.Warning, tint = MaterialTheme.colorScheme.error, contentDescription = "")
+            Spacer8()
+            Text(
+                text = stringResource(R.string.errors_error_occured),
+                style = MaterialTheme.typography.titleMedium
+            )
+        }
+        Text(
+            text = when (state.message) {
+                is ConfirmError.Init,
+                is ConfirmError.SignFail,
+                is ConfirmError.BroadcastError,
+                is ConfirmError.TransactionIncorrect,
+                is ConfirmError.CalculateFee -> stringResource(R.string.confirm_fee_error)
+                is ConfirmError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_network_fee_balance, state.message.chainTitle)
+                is ConfirmError.InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, state.message.chainTitle)
+                is ConfirmError.None -> stringResource(id = R.string.transfer_confirm)
+            }
+        )
+    }
 }
 
 @Composable
 fun ConfirmState.buttonLabel(): String {
     return when (this) {
-        is ConfirmState.Error -> when (message) {
-            is Init,
-            is SignFail,
-            is BroadcastError,
-            TransactionIncorrect,
-            WalletNotAvailable -> stringResource(R.string.errors_transfer, message)
-            CalculateFee -> stringResource(R.string.confirm_fee_error)
-            is InsufficientBalance -> stringResource(R.string.transfer_insufficient_network_fee_balance, this.message.chainTitle)
-            is InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, this.message.chainTitle)
-            None -> stringResource(id = R.string.transfer_confirm)
-        }
+        is ConfirmState.Error -> stringResource(R.string.common_try_again)
         ConfirmState.FatalError -> ""
         ConfirmState.Prepare,
         ConfirmState.Ready,

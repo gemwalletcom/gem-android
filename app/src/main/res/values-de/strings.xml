@@ -170,7 +170,7 @@
   <string name="camera.permission.request.camera">Camera permission required for QR Code scan.\nPlease grant permission.</string>
   <string name="notifications.permission.request.notification">Post Notifications permission required for get notifications about new transactions.\nPlease grant permission.</string>
   <string name="errors.invalid_address_name">Ungültige Adresse oder ungültiger Name</string>
-  <string name="amount.error.invalid_amount">Invalid amount</string>
+  <string name="errors.invalid_amount">Invalid amount</string>
   <string name="common.required_field">%s ist erforderlich</string>
   <string name="confirm.fee.error">Fee calculation error</string>
   <string name="asset.view_token_on">View token on %s</string>
@@ -248,4 +248,9 @@
   <string name="fee_rate.satvB">%s sat/vB</string>
   <string name="fee_rate.satB">%s sat/B</string>
   <string name="social.coingecko">CoinGecko</string>
+  <string name="errors.unable_estimate_network_fee">We are currently unable to calculate the network fee.</string>
+  <string name="errors.invalid_asset_address">Invalid %s address</string>
+  <string name="buy.empty_amount">Please enter amount to buy</string>
+  <string name="transaction.title.received">Received</string>
+  <string name="transaction.title.sent">Sent</string>
 </resources>

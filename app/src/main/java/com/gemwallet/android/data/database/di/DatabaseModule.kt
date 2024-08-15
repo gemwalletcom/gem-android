@@ -475,7 +475,7 @@ class MIGRATION_26_27(private val context: Context) : Migration(26, 27) {
                     ")"
         )
         val source = SessionSharedPreferenceSource(context)
-        val walletId = source.getWalletId()
+        val walletId = source.getWalletId() ?: return
         val currency = source.getCurrency()
         val values = ContentValues().apply {
             this.put("id", 1)

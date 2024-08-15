@@ -170,7 +170,7 @@
   <string name="camera.permission.request.camera">需要相机权限以扫描二维码。\n请授予权限。</string>
   <string name="notifications.permission.request.notification">需要 Push 通知权限才能获取新交易的通知。\n请授予权限。</string>
   <string name="errors.invalid_address_name">地址或名称无效</string>
-  <string name="amount.error.invalid_amount">数额无效</string>
+  <string name="errors.invalid_amount">数额无效</string>
   <string name="common.required_field">%s为必填项</string>
   <string name="confirm.fee.error">费用计算错误</string>
   <string name="asset.view_token_on">在 %s 上查看代币</string>
@@ -248,4 +248,9 @@
   <string name="fee_rate.satvB">%s sat/vB</string>
   <string name="fee_rate.satB">%s sat/B</string>
   <string name="social.coingecko">CoinGecko</string>
+  <string name="errors.unable_estimate_network_fee">We are currently unable to calculate the network fee.</string>
+  <string name="errors.invalid_asset_address">Invalid %s address</string>
+  <string name="buy.empty_amount">Please enter amount to buy</string>
+  <string name="transaction.title.received">Received</string>
+  <string name="transaction.title.sent">Sent</string>
 </resources>

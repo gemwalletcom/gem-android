@@ -216,7 +216,7 @@ fun BuyError.mapError() = when (this) {
         "20$"
     )
     BuyError.QuoteNotAvailable -> stringResource(id = R.string.buy_no_results)
-    BuyError.ValueIncorrect -> stringResource(id = R.string.amount_error_invalid_amount)
+    BuyError.ValueIncorrect -> stringResource(id = R.string.errors_invalid_amount)
 }
 
 @Composable

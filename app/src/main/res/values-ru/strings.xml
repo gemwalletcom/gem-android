@@ -47,7 +47,7 @@
   <string name="wallet.manage_token_list">Управление списком токенов</string>
   <string name="wallet.scan_qr_code">Сканировать QR-код</string>
   <string name="buy.providers.title">Провайдеры</string>
-  <string name="buy.rate">Тариф</string>
+  <string name="buy.rate">Курс</string>
   <string name="common.try_again">Повторить</string>
   <string name="transfer.confirm">Подтвердить</string>
   <string name="transfer.from">От</string>
@@ -170,7 +170,7 @@
   <string name="camera.permission.request.camera">Требуется разрешение камеры для сканирования QR-кода.\nПожалуйста, предоставьте разрешение.</string>
   <string name="notifications.permission.request.notification">Разрешение Post Notifications требуется для получения уведомлений о новых транзакциях.\nПожалуйста, предоставьте это разрешение.</string>
   <string name="errors.invalid_address_name">Неправильный адрес или имя</string>
-  <string name="amount.error.invalid_amount">Недопустимая сумма</string>
+  <string name="errors.invalid_amount">Недопустимая сумма</string>
   <string name="common.required_field">%s является обязательным</string>
   <string name="confirm.fee.error">Ошибка при расчете комиссии</string>
   <string name="asset.view_token_on">Посмотреть токен на %s</string>
@@ -248,4 +248,9 @@
   <string name="fee_rate.satvB">%s sat/vB</string>
   <string name="fee_rate.satB">%s sat/B</string>
   <string name="social.coingecko">CoinGecko</string>
+  <string name="errors.unable_estimate_network_fee">В настоящее время мы не можем рассчитать комиссию сети.</string>
+  <string name="errors.invalid_asset_address">Неверный адрес %s</string>
+  <string name="buy.empty_amount">Пожалуйста, введите сумму для покупки</string>
+  <string name="transaction.title.received">Получено</string>
+  <string name="transaction.title.sent">Отправлено</string>
 </resources>

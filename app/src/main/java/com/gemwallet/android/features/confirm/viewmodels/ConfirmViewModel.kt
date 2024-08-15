@@ -206,6 +206,7 @@ class ConfirmViewModel @Inject constructor(
                 dropDownActions = null,
             )
         }
+
         listOf(result)
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -217,52 +218,15 @@ class ConfirmViewModel @Inject constructor(
         }
     }
 
-//    private suspend fun load(params: ConfirmParams) {
-//        val assetInfo = assetsRepository.getAssetInfo(params.assetId).firstOrNull()
-//            ?: throw ConfirmError.Init("Init error - asset doesn't find")
-//        val signerParams = signerPreload(owner = assetInfo.owner, params = params).getOrNull()
-//            ?: throw ConfirmError.Init("Init error - not transaction info")
-//        val fee = signerParams.info.fee()
-//        val feeAssetInfo = assetsRepository.getAssetInfo(fee.feeAssetId).firstOrNull()
-//            ?: throw ConfirmError.Init("Init error - fee asset doesn't find")
-//        val finalAmount = when {
-//            params is ConfirmParams.RewardsParams -> stakeRepository.getRewards(params.assetId, assetInfo.owner.address)
-//                .map { BigInteger(it.base.rewards) }
-//                .fold(BigInteger.ZERO) { acc, value -> acc + value }
-//            params.isMax() && params.assetId == feeAssetInfo.asset.id -> params.amount - fee.amount
-//            else -> params.amount
-//        }
-//        val finalParams = signerParams.copy(finalAmount = finalAmount)
-//        val balance = getBalance(assetInfo = assetInfo, params = params)
-//        val error = validateBalance(assetInfo.asset, feeAssetInfo, fee, balance, finalParams.finalAmount)
-//        val toAssetInfo = if (params is ConfirmParams.SwapParams) {
-//            assetsRepository.getAssetInfo(params.toAssetId).firstOrNull()
-//        } else {
-//            null
-//        }
-//        val toAmount = (params as? ConfirmParams.SwapParams)?.toAmount
-//        state.update {
-//            State(
-//                walletName = assetInfo.walletName,
-//                currency = assetInfo.price?.currency ?: Currency.USD,
-//                assetInfo = assetInfo,
-//                feeAssetInfo = feeAssetInfo,
-//                toAssetInfo = toAssetInfo,
-//                toAmount = toAmount,
-//                signerParams = finalParams,
-//                validator = getValidator(params),
-//                error = error,
-//            )
-//        }
-//    }
-
-    fun send() {
+    fun send()  = viewModelScope.launch(Dispatchers.IO) {
         state.update { ConfirmState.Sending }
         val signerParams = signerParams.value
-        val assetInfo = assetsInfo.value?.getByAssetId(signerParams?.input?.assetId ?: return)
-        if (assetInfo == null || signerParams == null) {
+        val assetInfo = assetsInfo.value?.getByAssetId(signerParams?.input?.assetId ?: return@launch)
+        val feeAssetInfo = feeAssetInfo.value ?: return@launch
+        val session = sessionRepository.getSession()
+        if (assetInfo == null || signerParams == null || session == null) {
             state.update { ConfirmState.Error(ConfirmError.TransactionIncorrect) }
-            return
+            return@launch
         }
         val asset = assetInfo.asset
         val owner = assetInfo.owner
@@ -270,6 +234,18 @@ class ConfirmViewModel @Inject constructor(
         val fee = signerParams.info.fee()
         val memo = signerParams.input.memo() ?: ""
         val type = signerParams.input.getTxType()
+
+        val validBalance = validateBalance(assetInfo.asset, signerParams.finalAmount, getBalance(assetInfo, signerParams.input))
+        if (validBalance != ConfirmError.None) {
+            state.update { ConfirmState.Error(validBalance) }
+            return@launch
+        }
+
+        val validFeeBalance = validateFeeBalance(feeAssetInfo, fee)
+        if (validFeeBalance != ConfirmError.None) {
+            state.update { ConfirmState.Error(validFeeBalance) }
+            return@launch
+        }
 
         val metadata = when (val input = signerParams.input) {
             is ConfirmParams.SwapParams -> {
@@ -284,60 +260,50 @@ class ConfirmViewModel @Inject constructor(
             }
             else -> null
         }
+        val broadcastResult = withContext(Dispatchers.IO) {
+            val password = passwordStore.getPassword(session.wallet.id)
+            val privateKey = loadPrivateKeyOperator(session.wallet, asset.id.chain, password)
 
-        viewModelScope.launch {
-            val session = sessionRepository.getSession()
-            if (session == null) {
-                state.update { ConfirmState.Error(ConfirmError.WalletNotAvailable) }
-                return@launch
-            }
-            val broadcastResult = withContext(Dispatchers.IO) {
-                val password = passwordStore.getPassword(session.wallet.id)
-                val privateKey = loadPrivateKeyOperator(session.wallet, asset.id.chain, password)
+            val signResult = signTransfer(signerParams, privateKey)
+            val sign = signResult.getOrNull()
+                ?: return@withContext Result.failure(signResult.exceptionOrNull() ?: Exception("Sign error"))
 
-                val signResult = signTransfer(signerParams, privateKey)
-                val sign = signResult.getOrNull()
-                    ?: return@withContext Result.failure(signResult.exceptionOrNull() ?: Exception("Sign error"))
+            broadcastProxy.broadcast(owner, sign, type)
+        }
 
-                broadcastProxy.broadcast(owner, sign, type)
-            }
-
-            broadcastResult.onSuccess { txHash ->
-                val destinationAddress = destination?.address ?: ""
-                transactionsRepository.addTransaction(
-                    hash = txHash,
-                    assetId = asset.id,
-                    owner = owner,
-                    to = destinationAddress,
-                    state = TransactionState.Pending,
-                    fee = fee,
-                    amount = signerParams.finalAmount,
-                    memo = memo,
-                    type = type,
-                    metadata = metadata,
-                    direction = if (destinationAddress == owner.address) TransactionDirection.SelfTransfer else TransactionDirection.Outgoing,
-                )
-                state.update { ConfirmState.Result(txHash = txHash) }
-            }.onFailure { err ->
-                state.update { ConfirmState.Result(txHash = "", ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
-            }
+        broadcastResult.onSuccess { txHash ->
+            val destinationAddress = destination?.address ?: ""
+            transactionsRepository.addTransaction(
+                hash = txHash,
+                assetId = asset.id,
+                owner = owner,
+                to = destinationAddress,
+                state = TransactionState.Pending,
+                fee = fee,
+                amount = signerParams.finalAmount,
+                memo = memo,
+                type = type,
+                metadata = metadata,
+                direction = if (destinationAddress == owner.address) TransactionDirection.SelfTransfer else TransactionDirection.Outgoing,
+            )
+            state.update { ConfirmState.Result(txHash = txHash) }
+        }.onFailure { err ->
+            state.update { ConfirmState.Result(txHash = "", ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
         }
     }
 
-    private fun validateBalance(
-        asset: Asset,
-        feeAsset: AssetInfo,
-        fee: Fee,
-        balance: BigInteger,
-        amount: BigInteger,
-    ): ConfirmError {
+    private fun validateBalance(asset: Asset, balance: BigInteger, amount: BigInteger): ConfirmError {
+        if (balance < amount) {
+            return ConfirmError.InsufficientBalance(asset.symbol)
+        }
+        return ConfirmError.None
+    }
+
+    private fun validateFeeBalance(feeAsset: AssetInfo, fee: Fee): ConfirmError {
         if (feeAsset.balances.available().atomicValue < fee.amount) {
             return ConfirmError.InsufficientFee(
                 "${feeAsset.asset.id.chain.asset().name}(${feeAsset.asset.symbol})"
             )
-        }
-        if (balance < amount) {
-            return ConfirmError.InsufficientBalance(asset.symbol)
         }
         return ConfirmError.None
     }
