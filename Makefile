@@ -33,13 +33,13 @@ test:
 	./gradlew connectedGoogleDebugAndroidTest
 
 unsigned-release:
-	export SKIP_SIGN=true && ./gradlew assembleRelease :app:bundleRelease
+	export SKIP_SIGN=true && ./gradlew :app:bundleGoogleRelease
 
 extract-universal-apk:
 	./scripts/extract_aab_apk.sh
 
 release:
-	./gradlew clean buildCargoNdkRelease assembleRelease :app:bundleRelease
+	./gradlew clean buildCargoNdkGoogleRelease assembleGoogleRelease :app:bundleGoogleRelease
 
 localize:
 	@sh scripts/localize.sh android
