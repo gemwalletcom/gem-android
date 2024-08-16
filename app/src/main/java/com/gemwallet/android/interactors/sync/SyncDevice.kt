@@ -29,7 +29,7 @@ class SyncDevice(
             id = deviceId,
             platform = Platform.Android,
             token = "",
-            locale = Locale.getDefault().language,
+            locale = getLocale(Locale.getDefault()),
             isPushEnabled = pushEnabled,
             version = BuildConfig.VERSION_NAME,
             currency = (sessionRepository.getSession()?.currency ?: Currency.USD).string,
@@ -81,5 +81,18 @@ class SyncDevice(
                 || isPushEnabled != other.isPushEnabled
                 || version != other.version
                 || subscriptionsVersion != other.subscriptionsVersion
+    }
+
+    companion object {
+        fun getLocale(locale: Locale): String {
+            val tag = locale.toLanguageTag()
+            if (tag == "pt-BR" || tag == "pt_BR") {
+                return "pt-BR"
+            }
+            if (locale.language == "zh") {
+                return "${locale.language}-${(locale.script.ifEmpty { "Hans" })}"
+            }
+            return  locale.language
+        }
     }
 }
