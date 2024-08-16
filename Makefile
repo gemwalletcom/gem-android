@@ -27,10 +27,10 @@ install-wallet-core:
 	@./scripts/download-wallet-core.sh ${WALLET_CORE_VERSION}
 
 build-test:
-	./gradlew assembleDefaulAndroidTest --build-cache
+	./gradlew assembleGoogleDebugAndroidTest --build-cache
 
 test:
-	./gradlew connectedDefaultDebugAndroidTest
+	./gradlew connectedGoogleDebugAndroidTest
 
 unsigned-release:
 	export SKIP_SIGN=true && ./gradlew assembleRelease :app:bundleRelease
