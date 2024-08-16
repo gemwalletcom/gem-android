@@ -1,12 +1,12 @@
 package com.gemwallet.android.features.wallets.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircleOutline
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -27,20 +27,20 @@ import com.gemwallet.android.ui.theme.Spacer8
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WalletItem(
     wallet: Wallet,
     isCurrent: Boolean,
-    onSelect: ((String) -> Unit)? = null,
-    onMenu: ((String) -> Unit)? = null,
+    modifier: Modifier = Modifier,
     onEdit: ((String) -> Unit)? = null,
 ) {
     WalletItem(
+        modifier = modifier,
         id = wallet.id,
         name = wallet.name,
         typeLabel = when (wallet.type) {
-            WalletType.view -> wallet.accounts.firstOrNull()?.address?.substring(0, 10) ?: ""
+            WalletType.private_key,
+            WalletType.view,
             WalletType.single -> wallet.accounts.firstOrNull()?.address?.substring(0, 10) ?: ""
             WalletType.multicoin -> "Multi-coin"
         },
@@ -51,14 +51,10 @@ fun WalletItem(
         },
         isCurrent = isCurrent,
         type = wallet.type,
-        onSelect = onSelect,
-        onMenu = onMenu,
         onEdit = onEdit
     )
 }
 
-
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun WalletItem(
     id: String,
@@ -67,18 +63,11 @@ fun WalletItem(
     icon: IconUrl,
     isCurrent: Boolean,
     type: WalletType,
-    onSelect: ((String) -> Unit)? = null,
-    onMenu: ((String) -> Unit)? = null,
+    modifier: Modifier = Modifier,
     onEdit: ((String) -> Unit)? = null,
 ) {
     ListItem(
-        modifier = Modifier
-            .combinedClickable(
-                enabled = onSelect != null || onMenu != null,
-                onClick = { onSelect?.invoke(id) },
-                onLongClick = { onMenu?.invoke(id) }
-            )
-            .heightIn(72.dp),
+        modifier = modifier.heightIn(72.dp),
         iconUrl = icon.ifEmpty { "android.resource://com.gemwallet.android/drawable/multicoin_wallet" },
         supportIcon = if (type == WalletType.view) {
             "android.resource://com.gemwallet.android/drawable/watch_badge"
@@ -99,7 +88,7 @@ fun WalletItem(
                     Spacer8()
                     IconButton(onClick = { onEdit(id) }) {
                         Icon(
-                            imageVector = Icons.Default.Info,
+                            imageVector = Icons.Outlined.Edit,
                             contentDescription = "edit",
                             tint = MaterialTheme.colorScheme.secondary,
                         )
@@ -131,9 +120,7 @@ fun PreviewWalletItem() {
             typeLabel = "Multi-coin",
             type = WalletType.multicoin,
             isCurrent = true,
-            onSelect = {},
             onEdit = {},
-            onMenu = {},
         )
     }
 }

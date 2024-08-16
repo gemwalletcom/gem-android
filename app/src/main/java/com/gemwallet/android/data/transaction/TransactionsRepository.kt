@@ -21,7 +21,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
@@ -59,7 +58,11 @@ class TransactionsRepository(
         return localSource.getExtendedTransactions()
             .map { list ->
                 list.filter {
-                    (assetId == null || it.asset.id.toIdentifier() == assetId.toIdentifier())
+                    (assetId == null
+                            || it.asset.id.toIdentifier() == assetId.toIdentifier()
+                            || it.transaction.getSwapMetadata()?.toAsset?.toIdentifier() == assetId.toIdentifier()
+                            || it.transaction.getSwapMetadata()?.fromAsset?.toIdentifier() == assetId.toIdentifier()
+                    )
                 }.map {
                     val metadata = it.transaction.getSwapMetadata()
                     if (metadata != null) {

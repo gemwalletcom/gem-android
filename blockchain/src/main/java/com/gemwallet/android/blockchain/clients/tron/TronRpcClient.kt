@@ -9,9 +9,11 @@ import com.wallet.core.blockchain.tron.models.TronSmartContractResult
 import com.wallet.core.blockchain.tron.models.TronTransactionBroadcast
 import com.wallet.core.blockchain.tron.models.TronTransactionReceipt
 import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Url
 
 interface TronRpcClient {
     @POST("/wallet/getnowblock")
@@ -34,6 +36,9 @@ interface TronRpcClient {
 
     @POST("/wallet/gettransactioninfobyid")
     suspend fun transaction(@Body value: TronValue): Result<TronTransactionReceipt>
+
+    @POST//("/wallet/getnowblock")
+    suspend fun nowBlock(@Url url: String): Response<TronBlock>
 
     class TronValue(val value: String)
 }

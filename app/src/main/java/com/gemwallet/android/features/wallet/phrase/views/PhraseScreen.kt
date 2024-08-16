@@ -28,6 +28,7 @@ import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.padding16
+import com.wallet.core.primitives.WalletType
 
 @Composable
 fun PhraseScreen(
@@ -43,6 +44,7 @@ fun PhraseScreen(
     }
     val clipboardManager = LocalClipboardManager.current
     val words = (state as? WalletUIState.Phrase)?.words
+    val walletType = (state as? WalletUIState.Phrase)?.walletType
 
     if (words == null) {
         LoadingScene(title = stringResource(id = R.string.common_secret_phrase), onCancel)
@@ -80,7 +82,17 @@ fun PhraseScreen(
         }
         Spacer16()
         Spacer16()
-        PhraseLayout(words = words)
+        when (walletType) {
+            WalletType.multicoin,
+            WalletType.single -> PhraseLayout(words = words)
+            WalletType.private_key -> Text(
+                words.firstOrNull() ?: "",
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Center,
+            )
+            else -> {}
+        }
+
         Spacer16()
         TextButton(
             onClick = { clipboardManager.setText(AnnotatedString(words.joinToString(" "))) }

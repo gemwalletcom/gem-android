@@ -3,11 +3,14 @@ package com.gemwallet.android.blockchain.clients.xrp
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.wallet.core.blockchain.xrp.models.XRPAccountResult
 import com.wallet.core.blockchain.xrp.models.XRPFee
+import com.wallet.core.blockchain.xrp.models.XRPLatestBlock
 import com.wallet.core.blockchain.xrp.models.XRPResult
 import com.wallet.core.blockchain.xrp.models.XRPTransactionBroadcast
 import com.wallet.core.blockchain.xrp.models.XRPTransactionStatus
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.Url
 
 interface XrpRpcClient {
     @POST("/")
@@ -19,9 +22,11 @@ interface XrpRpcClient {
     @POST("/")
     suspend fun transaction(@Body request: JSONRpcRequest<List<Map<String, String>>>): Result<XRPResult<XRPTransactionStatus>>
 
-
     @POST("/")
     suspend fun broadcast(@Body request: JSONRpcRequest<List<Map<String, String>>>): Result<XRPResult<XRPTransactionBroadcast>>
+
+    @POST//("/")
+    suspend fun latestBlock(@Url url: String, @Body request: JSONRpcRequest<List<Map<String, String>>>): Response<XRPResult<XRPLatestBlock>>
 }
 
 internal suspend fun XrpRpcClient.account(address: String): Result<XRPResult<XRPAccountResult>> {
@@ -64,4 +69,8 @@ internal suspend fun XrpRpcClient.broadcast(data: String): Result<XRPResult<XRPT
         )
     )
     return broadcast(request)
+}
+
+internal suspend fun XrpRpcClient.latestBlock(url: String): Response<XRPResult<XRPLatestBlock>> {
+    return latestBlock(url, JSONRpcRequest.create(XrpMethod.LatestBlock, emptyList()))
 }

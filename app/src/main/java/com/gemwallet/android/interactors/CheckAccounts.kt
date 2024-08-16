@@ -1,7 +1,7 @@
 package com.gemwallet.android.interactors
 
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
-import com.gemwallet.android.blockchain.operators.LoadPhraseOperator
+import com.gemwallet.android.blockchain.operators.LoadPrivateDataOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.chains.ChainInfoLocalSource
@@ -21,7 +21,7 @@ class CheckAccounts @Inject constructor(
     private val gemApiClient: GemApiClient,
     private val walletsRepository: WalletsRepository,
     private val assetsRepository: AssetsRepository,
-    private val loadPhraseOperator: LoadPhraseOperator,
+    private val loadPrivateDataOperator: LoadPrivateDataOperator,
     private val passwordStore: PasswordStore,
     private val createAccountOperator: CreateAccountOperator,
     private val configRepository: ConfigRepository,
@@ -37,8 +37,8 @@ class CheckAccounts @Inject constructor(
                 ?.map { it.id.chain }?.toSet() ?: emptySet()
             val newChains = getChainsToAdd(availableChains)
             if (newChains.isNotEmpty()) {
-                val data = loadPhraseOperator(wallet.id, passwordStore.getPassword(wallet.id))
-                val newAccounts = newChains.map { createAccountOperator(data, it) }
+                val data = loadPrivateDataOperator(wallet, passwordStore.getPassword(wallet.id))
+                val newAccounts = newChains.map { createAccountOperator(wallet.type, data, it) }
                 val newWallet = wallet.copy(accounts = wallet.accounts + newAccounts)
                 walletsRepository.updateWallet(newWallet)
                 if (newAccounts.isNotEmpty()) {
@@ -53,7 +53,7 @@ class CheckAccounts @Inject constructor(
     }
 
     private fun getChainsToAdd(available: Set<Chain>): List<Chain> {
-        val allChains = Chain.values().toList() - ChainInfoLocalSource.exclude.toSet()
+        val allChains = Chain.entries.toList() - ChainInfoLocalSource.exclude.toSet()
         val toAdd = mutableListOf<Chain>()
         for (i in allChains) {
             if (!available.contains(i)) {

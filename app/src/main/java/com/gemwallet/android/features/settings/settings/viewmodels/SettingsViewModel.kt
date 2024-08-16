@@ -14,6 +14,7 @@ import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -33,7 +34,11 @@ class SettingsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, SettingsUIState.General())
 
     init {
-        sessionRepository.subscribe(this)
+        viewModelScope.launch {
+            sessionRepository.session().collectLatest {
+                refresh()
+            }
+        }
         refresh()
     }
 

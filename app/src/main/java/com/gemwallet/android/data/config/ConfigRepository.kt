@@ -3,7 +3,7 @@ package com.gemwallet.android.data.config
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FiatAssets
 import com.wallet.core.primitives.Node
-import com.wallet.core.primitives.NodeStatus
+import com.wallet.core.primitives.NodeState
 
 interface ConfigRepository {
 
@@ -88,7 +88,7 @@ interface ConfigRepository {
 
         fun getGemNode(chain: Chain) = Node(
             url = getGemNodeUrl(chain),
-            NodeStatus.Active,
+            NodeState.Active,
             priority = 10
         )
     }

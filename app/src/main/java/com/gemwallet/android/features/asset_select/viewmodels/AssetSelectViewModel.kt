@@ -45,7 +45,7 @@ class AssetSelectViewModel @Inject constructor(
     private var queryJob: Job? = null
     private val queryFlow = snapshotFlow { queryState.text }
 
-    val isLoading = MutableStateFlow(false)
+    val isLoading = MutableStateFlow(true)
 
     val isAddAssetAvailable = sessionRepository.session().map { session ->
         val availableAccounts = session?.wallet?.accounts?.map { it.chain } ?: emptyList()

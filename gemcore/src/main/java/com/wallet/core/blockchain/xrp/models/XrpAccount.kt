@@ -52,3 +52,8 @@ data class XRPTransactionStatus (
 	val status: String
 )
 
+@Serializable
+data class XRPLatestBlock (
+	val ledger_current_index: Long
+)
+

@@ -1,14 +1,21 @@
 package com.gemwallet.android.features.asset.details.views
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -18,8 +25,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -41,6 +50,7 @@ import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.priceColor
+import com.gemwallet.android.ui.theme.padding32
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
@@ -104,24 +114,35 @@ private fun Success(
     onStake: (AssetId) -> Unit,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
+    val clipboardManager = LocalClipboardManager.current
     Scene(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = uiState.name, maxLines = 1)
             }
         },
+        actions = {
+            IconButton(
+                onClick = {
+                    clipboardManager.setText(AnnotatedString(uiState.account.owner))
+                }
+            ) {
+                Icon(Icons.Default.ContentCopy, "")
+            }
+        },
         onClose = onCancel,
         contentPadding = PaddingValues(0.dp)
     ) {
+        val isRefreshing = syncState == AssetInfoUIState.SyncState.Loading
         PullToRefreshBox(
             modifier = Modifier.fillMaxSize(),
-            isRefreshing = syncState != AssetInfoUIState.SyncState.None,
+            isRefreshing = isRefreshing,
             onRefresh = onRefresh,
             state = pullToRefreshState,
             indicator = {
                 Indicator(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    isRefreshing = syncState != AssetInfoUIState.SyncState.None,
+                    isRefreshing = isRefreshing,
                     state = pullToRefreshState,
                     containerColor = MaterialTheme.colorScheme.background
                 )
@@ -156,6 +177,18 @@ private fun Success(
                 }
                 networkInfo(uiState, onChart)
                 balanceDetails(uiState, onStake)
+                if (uiState.transactions.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = padding32)
+                        ) {
+                            Text(
+                                modifier = Modifier.align(Alignment.Center),
+                                text = stringResource(R.string.activity_empty_state_message)
+                            )
+                        }
+                    }
+                }
                 transactionsList(uiState.transactions, onTransaction)
             }
         }

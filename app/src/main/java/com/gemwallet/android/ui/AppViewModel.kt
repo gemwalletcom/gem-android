@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -31,9 +32,11 @@ class AppViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, AppUIState())
 
     init {
-        sessionRepository.subscribe(this::onSession)
         viewModelScope.launch {
             handleAppVersion()
+            sessionRepository.session().collectLatest {
+                onSession(it ?: return@collectLatest)
+            }
         }
     }
 

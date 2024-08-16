@@ -12,7 +12,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.asset_select.views.SelectReceiveScreen
-import com.gemwallet.android.features.receive.ReceiveScreen
+import com.gemwallet.android.features.receive.views.ReceiveScreen
 import com.wallet.core.primitives.AssetId
 
 internal const val assetIdArg = "assetId"
@@ -46,10 +46,7 @@ fun NavGraphBuilder.receiveScreen(
             if (assetId == null) {
                 onCancel()
             } else {
-                ReceiveScreen(
-                    assetId = assetId,
-                    onCancel = onCancel,
-                )
+                ReceiveScreen(onCancel = onCancel)
             }
         }
 

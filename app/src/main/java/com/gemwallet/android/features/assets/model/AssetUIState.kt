@@ -55,7 +55,7 @@ data class PriceUIState(
             } else {
                 Fiat(price.price).format(0, currency.string, 2, dynamicPlace = true)
             }
-            val dayChanges = formatPercentage(price?.priceChangePercentage24h ?: 0.0)
+            val dayChanges = formatPercentage(price?.priceChangePercentage24h ?: 0.0, showZero = true)
             val state = getState(price?.priceChangePercentage24h ?: 0.0)
             return PriceUIState(value = value, state = state, dayChanges = dayChanges)
         }

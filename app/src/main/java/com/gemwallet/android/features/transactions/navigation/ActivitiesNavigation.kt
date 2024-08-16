@@ -51,14 +51,10 @@ fun NavGraphBuilder.transactionScreen(
             },
         )
     ) {
-        val txId = it.arguments?.getString(txIdArg)?.urlDecode()
-        if (txId.isNullOrEmpty()) {
+        if (it.arguments?.getString(txIdArg)?.urlDecode().isNullOrEmpty()) {
             onCancel()
-            return@composable
+        } else {
+            TransactionDetails(onCancel = onCancel)
         }
-        TransactionDetails(
-            txId = txId,
-            onCancel = onCancel,
-        )
     }
 }

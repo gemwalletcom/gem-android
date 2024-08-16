@@ -28,7 +28,7 @@ import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionExtended
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -68,10 +68,7 @@ class AssetInfoViewModel @Inject constructor(
         }
     }
 
-    private val sync: Flow<Unit> = combine(
-        uiState,
-        model,
-    ) { uiState, model ->
+    private val sync: Flow<Unit> = combine(uiState, model) { uiState, model ->
         if (uiState is AssetInfoUIState.Idle && uiState.sync == AssetInfoUIState.SyncState.Wait) {
             syncAssetInfo(model.assetInfo.asset.id, model.assetInfo.owner, model.assetInfo.stakeApr ?: 0.0)
         }
@@ -86,13 +83,10 @@ class AssetInfoViewModel @Inject constructor(
 
     private fun syncAssetInfo(assetId: AssetId, owner: Account, apr: Double) {
         uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Loading) }
+        viewModelScope.launch { assetsRepository.syncAssetInfo(assetId) }
+        viewModelScope.launch { stakeRepository.sync(assetId.chain, owner.address, apr) }
         viewModelScope.launch {
-            val syncAssetInfo = async { assetsRepository.syncAssetInfo(assetId) }
-            val syncStake = async {
-                stakeRepository.sync(assetId.chain, owner.address, apr)
-            }
-            syncStake.await()
-            syncAssetInfo.await()
+            delay(500)
             uiState.update { AssetInfoUIState.Idle() }
         }
     }

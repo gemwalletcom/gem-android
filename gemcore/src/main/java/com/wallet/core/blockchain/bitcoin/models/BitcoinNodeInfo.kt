@@ -12,7 +12,8 @@ import kotlinx.serialization.*
 @Serializable
 data class BitcoinBlockbook (
 	val inSync: Boolean,
-	val lastBlockTime: Boolean
+	val lastBlockTime: String,
+	val bestHeight: Long
 )
 
 @Serializable

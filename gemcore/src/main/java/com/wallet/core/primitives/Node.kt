@@ -10,7 +10,7 @@ import androidx.compose.runtime.NoLiveLiterals
 import kotlinx.serialization.*
 
 @Serializable
-enum class NodeStatus(val string: String) {
+enum class NodeState(val string: String) {
 	@SerialName("active")
 	Active("active"),
 	@SerialName("inactive")
@@ -20,7 +20,7 @@ enum class NodeStatus(val string: String) {
 @Serializable
 data class Node (
 	val url: String,
-	val status: NodeStatus,
+	val status: NodeState,
 	val priority: Int
 )
 

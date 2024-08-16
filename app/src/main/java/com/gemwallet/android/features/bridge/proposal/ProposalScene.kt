@@ -1,12 +1,13 @@
 package com.gemwallet.android.features.bridge.proposal
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -59,13 +60,6 @@ fun ProposalScene(
             onWalletSelectCancel = viewModel::onWalletSelectCancel,
             onWalletSelected = viewModel::onWalletSelected
         )
-    }
-}
-
-@Composable
-private fun ProposalSceneState.Init.Render() {
-    Box {
-        CircularProgressIndicator()
     }
 }
 
@@ -125,13 +119,14 @@ private fun Proposal(
             },
             sheetState = sheetState,
             dragHandle = { Box {} },
+            containerColor = MaterialTheme.colorScheme.background,
         ) {
             LazyColumn {
                 items(state.wallets) {
                     WalletItem(
                         wallet = it,
                         isCurrent = it.id == state.walletId,
-                        onSelect = onWalletSelected,
+                        modifier = Modifier.clickable { onWalletSelected(it.id) }
                     )
                 }
             }

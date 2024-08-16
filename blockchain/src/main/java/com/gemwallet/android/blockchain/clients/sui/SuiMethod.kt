@@ -18,6 +18,8 @@ enum class SuiMethod(val value: String) : JSONRpcMethod {
     GetObject("sui_getObject"),
     CoinMetadata("suix_getCoinMetadata"),
     SystemState("suix_getLatestSuiSystemState"),
+    ChainId("sui_getChainIdentifier"),
+    LatestCheckpoint("sui_getLatestCheckpointSequenceNumber"),
     ;
 
     override fun value(): String = value

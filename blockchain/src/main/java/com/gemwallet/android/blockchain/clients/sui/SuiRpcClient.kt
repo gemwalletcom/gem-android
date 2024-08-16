@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.sui
 
+import com.gemwallet.android.blockchain.clients.ethereum.EvmRpcClient
 import com.gemwallet.android.blockchain.clients.sui.model.SuiObject
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
@@ -7,14 +8,15 @@ import com.wallet.core.blockchain.sui.SuiBroadcastTransaction
 import com.wallet.core.blockchain.sui.SuiCoin
 import com.wallet.core.blockchain.sui.SuiCoinBalance
 import com.wallet.core.blockchain.sui.SuiData
-import com.wallet.core.blockchain.sui.SuiPay
 import com.wallet.core.blockchain.sui.SuiStakeDelegation
 import com.wallet.core.blockchain.sui.SuiTransaction
 import com.wallet.core.blockchain.sui.SuiValidators
 import com.wallet.core.blockchain.sui.models.SuiCoinMetadata
 import com.wallet.core.blockchain.sui.models.SuiSystemState
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.Url
 
 interface SuiRpcClient {
 
@@ -53,6 +55,12 @@ interface SuiRpcClient {
 
     @POST("/")
     suspend fun systemState(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SuiSystemState>>
+
+    @POST
+    suspend fun chainId(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Response<JSONRpcResponse<String>>
+
+    @POST
+    suspend fun latestBlock(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmRpcClient.EvmNumber>>
 }
 
 internal suspend fun SuiRpcClient.coins(address: String, coinType: String): Result<JSONRpcResponse<SuiData<List<SuiCoin>>>> {
@@ -97,4 +105,12 @@ internal suspend fun SuiRpcClient.systemState(): Result<JSONRpcResponse<SuiSyste
         emptyList<String>(),
     )
     return systemState(request)
+}
+
+internal suspend fun SuiRpcClient.chainId(url: String): Response<JSONRpcResponse<String>> {
+    return chainId(url, JSONRpcRequest.create(SuiMethod.ChainId, emptyList()))
+}
+
+internal suspend fun SuiRpcClient.latestBlock(url: String): Result<JSONRpcResponse<EvmRpcClient.EvmNumber>> {
+    return latestBlock(url, JSONRpcRequest.create(SuiMethod.LatestCheckpoint, emptyList()))
 }

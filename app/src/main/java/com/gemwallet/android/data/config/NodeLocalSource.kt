@@ -11,14 +11,14 @@ import com.gemwallet.android.ext.findByString
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainNodes
 import com.wallet.core.primitives.Node
-import com.wallet.core.primitives.NodeStatus
+import com.wallet.core.primitives.NodeState
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 @Entity(tableName = "nodes")
 data class RoomNode(
     @PrimaryKey val url: String,
-    val status: NodeStatus,
+    val status: NodeState,
     val priority: Int,
     val chain: Chain,
 )

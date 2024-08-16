@@ -32,7 +32,8 @@ data class NearRPCError (
 
 @Serializable
 data class NearBlockHeader (
-	val hash: String
+	val hash: String,
+	val height: Long
 )
 
 @Serializable

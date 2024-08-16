@@ -26,7 +26,7 @@ import com.wallet.core.primitives.FiatQuotes
 import com.wallet.core.primitives.NameProvider
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.Node
-import com.wallet.core.primitives.NodeStatus
+import com.wallet.core.primitives.NodeState
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.Subscription
 import com.wallet.core.primitives.SwapApprovalData
@@ -137,7 +137,7 @@ interface GemApiClient {
             return Node(
                 url = jObj["url"].asString,
                 priority = jObj["priority"].asInt,
-                status = NodeStatus.entries.firstOrNull { it.string == status }
+                status = NodeState.entries.firstOrNull { it.string == status }
                     ?: throw IllegalArgumentException()
             )
         }

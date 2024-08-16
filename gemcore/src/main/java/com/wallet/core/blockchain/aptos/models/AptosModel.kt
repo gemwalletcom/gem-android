@@ -46,3 +46,9 @@ data class AptosGasFee (
 	val prioritized_gas_estimate: Int
 )
 
+@Serializable
+data class AptosLedger (
+	val chain_id: Int,
+	val ledger_version: String
+)
+

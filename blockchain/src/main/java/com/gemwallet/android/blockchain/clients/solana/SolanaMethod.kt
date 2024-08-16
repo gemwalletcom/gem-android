@@ -15,7 +15,10 @@ enum class SolanaMethod(val value: String) : JSONRpcMethod {
     GetValidators("getVoteAccounts"),
     GetDelegations("getProgramAccounts"),
     GetEpoch("getEpochInfo"),
-    GetAccountInfo("getAccountInfo")
+    GetAccountInfo("getAccountInfo"),
+    GetHealth("getHealth"),
+    GetSlot("getSlot"),
+    GetGenesisHash("getGenesisHash")
     ;
 
     override fun value(): String = value

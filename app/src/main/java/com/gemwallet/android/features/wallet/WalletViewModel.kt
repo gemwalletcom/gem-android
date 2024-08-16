@@ -1,8 +1,9 @@
 package com.gemwallet.android.features.wallet
 
+import androidx.compose.material.AlertDialog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.blockchain.operators.LoadPhraseOperator
+import com.gemwallet.android.blockchain.operators.LoadPrivateDataOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
@@ -23,7 +24,7 @@ import javax.inject.Inject
 class WalletViewModel @Inject constructor(
     private val walletsRepository: WalletsRepository,
     private val passwordStore: PasswordStore,
-    private val loadPhraseOperator: LoadPhraseOperator,
+    private val loadPrivateDataOperator: LoadPrivateDataOperator,
     private val sessionRepository: SessionRepository,
     private val deleteWalletOperator: DeleteWalletOperator,
 ) : ViewModel() {
@@ -66,12 +67,10 @@ class WalletViewModel @Inject constructor(
 
     private suspend fun handleShowPhrase() {
         try {
-            val walletId = state.value.wallet?.id ?: return
-            val password = passwordStore.getPassword(walletId)
-            val phrase = loadPhraseOperator(walletId, password)
-            state.update {
-                it.copy(phrase = phrase)
-            }
+            val wallet = state.value.wallet ?: return
+            val password = passwordStore.getPassword(wallet.id)
+            val phrase = loadPrivateDataOperator(wallet, password)
+            state.update { it.copy(phrase = phrase) }
         } catch (err: Throwable) {
             state.update { it.copy(error = err.message) }
         }
@@ -89,6 +88,7 @@ data class WalletViewModelState(
         phrase.isNotEmpty() -> {
             WalletUIState.Phrase(
                 walletName = wallet.name,
+                walletType = wallet.type,
                 words = if (phrase.isEmpty()) emptyList() else phrase.split(" "),
             )
         }
@@ -115,6 +115,7 @@ sealed interface WalletUIState {
 
     data class Phrase(
         val walletName: String,
+        val walletType: WalletType,
         val words: List<String> = emptyList(),
     ) : WalletUIState
 }

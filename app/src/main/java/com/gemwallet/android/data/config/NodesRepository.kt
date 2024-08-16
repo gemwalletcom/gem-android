@@ -3,7 +3,7 @@ package com.gemwallet.android.data.config
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainNodes
 import com.wallet.core.primitives.Node
-import com.wallet.core.primitives.NodeStatus
+import com.wallet.core.primitives.NodeState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -32,7 +32,7 @@ class NodesRepository(
                     nodes = listOf(
                         Node(
                             url = url,
-                            status = NodeStatus.Active,
+                            status = NodeState.Active,
                             priority = 0,
                         )
                     )

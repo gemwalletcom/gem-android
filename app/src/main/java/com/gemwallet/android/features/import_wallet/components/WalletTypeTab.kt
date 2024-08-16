@@ -42,6 +42,7 @@ internal fun WalletTypeTab(
                 text = when (type) {
                     WalletType.view -> stringResource(id = R.string.common_address)
                     WalletType.single, WalletType.multicoin -> stringResource(id = R.string.common_phrase)
+                    WalletType.private_key -> stringResource(id = R.string.common_private_key)
                 },
                 maxLines = 1,
                 color =  MaterialTheme.colorScheme.onSurface,

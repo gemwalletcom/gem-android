@@ -8,10 +8,14 @@ class NodeStatusClientsProxy(
 ) {
 
     suspend operator fun invoke(chain: Chain, url: String): NodeStatus? {
-        return clients.firstOrNull { it.isMaintain(chain) }?.getNodeStatus(url)
+        return try {
+            clients.firstOrNull { it.isMaintain(chain) }?.getNodeStatus(url)
+        } catch (err: Throwable) {
+            return null
+        }
     }
 
-    suspend fun isMaintained(chain: Chain): Boolean {
+    fun isMaintained(chain: Chain): Boolean {
         return clients.firstOrNull { it.isMaintain(chain) } != null
     }
 }

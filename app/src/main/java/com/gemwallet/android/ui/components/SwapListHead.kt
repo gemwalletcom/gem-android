@@ -29,12 +29,15 @@ import com.wallet.core.primitives.Currency
 
 @Composable
 fun SwapListHead(
-    fromAsset: AssetInfo,
+    fromAsset: AssetInfo?,
     fromValue: String,
-    toAsset: AssetInfo,
+    toAsset: AssetInfo?,
     toValue: String,
     currency: Currency? = null,
 ) {
+    if (fromAsset == null || toAsset == null) {
+        return
+    }
     Column {
         Column(
             modifier = Modifier

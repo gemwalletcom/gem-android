@@ -8,7 +8,6 @@ import com.wallet.core.primitives.Currency
 class AssetMarketUIModel(
     val assetId: AssetId,
     val assetTitle: String,
-    val coinGecko: String? = null,
     val assetLinks: List<Link> = emptyList(),
     val currency: Currency = Currency.USD,
     val marketCells: List<CellEntity<Int>> = emptyList(),

@@ -38,12 +38,13 @@ class WalletsViewModel @Inject constructor(
                 val currentWallet = sessionRepository.getSession()?.wallet ?: return@launch
                 val watch = wallets.filter { it.type == WalletType.view }
                 val single = wallets.filter { it.type == WalletType.single }
+                val privateKey = wallets.filter { it.type == WalletType.private_key }
                 val multi = wallets.filter { it.type == WalletType.multicoin }
 
                 state.update {
                     it.copy(
                         currentWallet = currentWallet,
-                        wallets = multi + single + watch,
+                        wallets = multi + single + privateKey + watch,
                     )
                 }
             }
@@ -77,8 +78,9 @@ data class WalletsViewModelState(
                 name = it.name,
                 type = it.type,
                 typeLabel = when (it.type) {
-                    WalletType.view -> it.accounts.firstOrNull()?.address?.substring(0, 10) ?: ""
-                    WalletType.single -> it.accounts.firstOrNull()?.address?.substring(0, 10) ?: ""
+                    WalletType.view,
+                    WalletType.private_key,
+                    WalletType.single -> it.accounts.firstOrNull()?.address ?: ""
                     WalletType.multicoin -> "Multi-coin"
                 },
                 icon = if (it.accounts.size > 1) {

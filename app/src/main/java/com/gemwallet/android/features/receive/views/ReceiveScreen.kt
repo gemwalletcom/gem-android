@@ -1,8 +1,7 @@
-package com.gemwallet.android.features.receive
+package com.gemwallet.android.features.receive.views
 
 import android.content.Intent
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,11 +20,11 @@ import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,77 +41,69 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
-import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.features.receive.model.ReceiveScreenModel
+import com.gemwallet.android.features.receive.viewmodels.ReceiveViewModel
 import com.gemwallet.android.ui.components.FieldBottomAction
+import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.rememberQRCodePainter
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
-import com.gemwallet.android.ui.theme.padding16
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 
 @Composable
-fun ReceiveScreen(
-    assetId: AssetId,
-    onCancel: () -> Unit,
-) {
+fun ReceiveScreen(onCancel: () -> Unit) {
     val viewModel: ReceiveViewModel = hiltViewModel()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    DisposableEffect(assetId.toIdentifier()) {
-        viewModel.onAccount(assetId)
-
-        onDispose {  }
-    }
-    when (uiState) {
-        is ReceiveUIState.Fatal -> Fatal(
-            uiState as ReceiveUIState.Fatal,
-            onCancel = onCancel,
-        )
-        is ReceiveUIState.Success -> UI(
-            uiState as ReceiveUIState.Success,
-            onCopy = viewModel::setVisible,
-            onCancel = onCancel,
-        )
-    }
-}
-
-@Composable
-private fun Fatal(
-    state: ReceiveUIState.Fatal,
-    onCancel: () -> Unit,
-) {
-    when (state.intent) {
-        ReceiveErrorIntent.Cancel -> {
-            Column(
-                modifier = Modifier.padding(padding16),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-            ) {
-                Text(text = state.message)
-                Spacer16()
-                TextButton(onClick = onCancel) {
-                    Text(text = stringResource(id = R.string.common_back))
-                }
-            }
-        }
-        else -> {}
-    }
+    val uiState by viewModel.screenModel.collectAsStateWithLifecycle()
+    UI(uiState, viewModel::setVisible, onCancel)
 }
 
 @Composable
 private fun UI(
-    state: ReceiveUIState.Success,
+    state: ReceiveScreenModel?,
     onCopy: () -> Unit,
     onCancel: () -> Unit,
 ) {
+    if (state == null) {
+        LoadingScene(title = stringResource(R.string.wallet_receive), onCancel)
+        return
+    }
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
     val shareTitle = stringResource(id = R.string.common_share)
 
+    val onShare = fun () {
+        val type = "text/plain"
+        val subject = "${state.chain}\n${state.assetSymbol}"
+
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = type
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject)
+        intent.putExtra(Intent.EXTRA_TEXT, state.address)
+
+        ContextCompat.startActivity(
+            context,
+            Intent.createChooser(intent, shareTitle),
+            null
+        )
+    }
+
+    val onCopyClick = fun () {
+        onCopy()
+        clipboardManager.setText(AnnotatedString(state.address))
+    }
+
     Scene(
         title = stringResource(id = R.string.receive_title, state.assetSymbol),
         onClose = onCancel,
+        actions = {
+            IconButton(onCopyClick) {
+                Icon(Icons.Default.ContentCopy, "")
+            }
+            IconButton(onShare) {
+                Icon(Icons.Default.Share, "")
+            }
+        }
     ) {
         if (state.address.isEmpty() || state.chain == null) {
             return@Scene
@@ -175,31 +166,16 @@ private fun UI(
                             imageVector = Icons.Default.ContentCopy,
                             contentDescription = "paste",
                             text = stringResource(id = R.string.common_copy),
-                        ) {
-                            onCopy()
-                            clipboardManager.setText(AnnotatedString(state.address))
-                        }
+                            onClick = onCopyClick,
+                        )
                         Spacer(modifier = Modifier.width(10.dp))
                         FieldBottomAction(
                             modifier = Modifier.weight(1f),
                             imageVector = Icons.Default.Share,
                             contentDescription = "share",
-                            text = stringResource(id = R.string.common_share)
-                        ) {
-                            val type = "text/plain"
-                            val subject = "${state.chain}\n${state.assetSymbol}"
-
-                            val intent = Intent(Intent.ACTION_SEND)
-                            intent.type = type
-                            intent.putExtra(Intent.EXTRA_SUBJECT, subject)
-                            intent.putExtra(Intent.EXTRA_TEXT, state.address)
-
-                            ContextCompat.startActivity(
-                                context,
-                                Intent.createChooser(intent, shareTitle),
-                                null
-                            )
-                        }
+                            text = stringResource(id = R.string.common_share),
+                            onClick = onShare
+                        )
                     }
                     Spacer16()
                 }
@@ -213,7 +189,7 @@ private fun UI(
 fun PreviewReceiveScreen() {
     WalletTheme {
         UI(
-            ReceiveUIState.Success(
+            ReceiveScreenModel(
                 address = "0xverylong foo foo address very long foo address",
                 walletName = "Foo wallet",
                 assetSymbol = "FOO",
