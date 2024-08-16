@@ -56,9 +56,9 @@ generate-stone:
 	@cp -Rf core/gemstone/generated/kotlin/uniffi gemcore/src/main/java
 	@touch local.properties
 ifeq (${BUILD_MODE},release)
-	./gradlew buildCargoNdkRelease --info
+	./gradlew buildCargoNdkGoogleRelease --info
 else
-	./gradlew buildCargoNdkDebug --info
+	./gradlew buildCargoNdkGoogleDebug --info
 endif
 
 build-base-image:
