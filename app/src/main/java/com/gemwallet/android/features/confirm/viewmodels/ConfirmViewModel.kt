@@ -75,9 +75,11 @@ class ConfirmViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
+    private val restart = MutableStateFlow(false)
     val state = MutableStateFlow<ConfirmState>(ConfirmState.Prepare)
 
     private val request = savedStateHandle.getStateFlow<String?>(paramsArg, null)
+        .combine(restart) { request, _ -> request }
         .filterNotNull()
         .mapNotNull { paramsPack ->
             val txTypeString = savedStateHandle.get<String?>(txTypeArg)?.urlDecode()
@@ -219,6 +221,10 @@ class ConfirmViewModel @Inject constructor(
     }
 
     fun send()  = viewModelScope.launch(Dispatchers.IO) {
+        if (state.value is ConfirmState.Error) {
+            restart.update { !it }
+            return@launch
+        }
         state.update { ConfirmState.Sending }
         val signerParams = signerParams.value
         val assetInfo = assetsInfo.value?.getByAssetId(signerParams?.input?.assetId ?: return@launch)

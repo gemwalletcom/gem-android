@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Icon
@@ -17,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
@@ -32,7 +34,9 @@ import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.titles.getTitle
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.theme.headerIconSize
 import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.theme.trailingIcon20
 import com.wallet.core.primitives.TransactionType
 
 @Composable
@@ -71,7 +75,7 @@ fun ConfirmScreen(
         mainAction = {
             MainActionButton(
                 title = state.buttonLabel(),
-                enabled = state is ConfirmState.Ready,
+                enabled = state !is ConfirmState.Prepare && state !is ConfirmState.Sending,
                 loading = state is ConfirmState.Sending || state is ConfirmState.Prepare,
                 onClick = viewModel::send,
             )
@@ -95,30 +99,35 @@ fun ConfirmScreen(
         Spacer16()
         Table(feeModel)
         Spacer16()
-        ErrorInfo(state)
+        ConfirmErrorInfo(state)
     }
 }
 
 @Composable
-fun ErrorInfo(state: ConfirmState) {
+private fun ConfirmErrorInfo(state: ConfirmState) {
     if (state !is ConfirmState.Error || state.message == ConfirmError.None) {
         return
     }
     Column(
         modifier = Modifier
             .padding(padding16)
-            .background(MaterialTheme.colorScheme.surfaceContainer, shape = MaterialTheme.shapes.medium)
+            .background(MaterialTheme.colorScheme.errorContainer.copy(0.2f), shape = MaterialTheme.shapes.medium)
             .fillMaxWidth()
             .padding(padding16),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(imageVector = Icons.Outlined.Warning, tint = MaterialTheme.colorScheme.error, contentDescription = "")
+            Icon(
+                modifier = Modifier.size(trailingIcon20),
+                imageVector = Icons.Outlined.Warning,
+                tint = MaterialTheme.colorScheme.error,
+                contentDescription = ""
+            )
             Spacer8()
             Text(
                 text = stringResource(R.string.errors_error_occured),
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.W400),
             )
         }
         Text(
@@ -131,7 +140,8 @@ fun ErrorInfo(state: ConfirmState) {
                 is ConfirmError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_network_fee_balance, state.message.chainTitle)
                 is ConfirmError.InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, state.message.chainTitle)
                 is ConfirmError.None -> stringResource(id = R.string.transfer_confirm)
-            }
+            },
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }
