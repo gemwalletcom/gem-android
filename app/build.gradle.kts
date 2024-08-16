@@ -31,15 +31,18 @@ android {
     namespace = "com.gemwallet.android"
     compileSdk = 34
     ndkVersion = "26.1.10909125"
-    setFlavorDimensions(listOf("default"))
+
+    val channelDimension by extra("channel")
+    flavorDimensions.add(channelDimension)
 
     productFlavors {
-        create("google-notification") {
-
+        create("google") {
+            dimension = channelDimension
+            isDefault = true
         }
 
-        create("default") {
-
+        create("fdroid") {
+            dimension = channelDimension
         }
     }
 
@@ -191,8 +194,6 @@ dependencies {
     implementation(libs.zxing.core)
     // EncryptedPreferences
     implementation(libs.androidx.security.crypto)
-    // Notifications - FCM
-    "google-notificationImplementation"(libs.firebase.messaging)
     // Auth
     implementation(libs.androidx.biometric)
     // Wallet Connect
@@ -203,9 +204,13 @@ dependencies {
     implementation(libs.walletconnect.web3wallet)
     // Chart
     implementation(libs.vico.m3)
+
+    // Google Play
+    // Notifications - FCM
+    "googleImplementation"(libs.firebase.messaging)
     // In App review
-    "google-notificationImplementation"(libs.play.review)
-    "google-notificationImplementation"(libs.play.review.ktx)
+    "googleImplementation"(libs.play.review)
+    "googleImplementation"(libs.play.review.ktx)
 
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
