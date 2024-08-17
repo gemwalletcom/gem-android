@@ -33,6 +33,20 @@ android {
     compileSdk = 34
     ndkVersion = "26.1.10909125"
 
+    val channelDimension by extra("channel")
+    flavorDimensions.add(channelDimension)
+
+    productFlavors {
+        create("google") {
+            dimension = channelDimension
+            isDefault = true
+        }
+
+        create("fdroid") {
+            dimension = channelDimension
+        }
+    }
+
     defaultConfig {
         applicationId = "com.gemwallet.android"
         minSdk = 28
@@ -181,8 +195,6 @@ dependencies {
     implementation(libs.zxing.core)
     // EncryptedPreferences
     implementation(libs.androidx.security.crypto)
-    // Notifications - FCM
-    implementation(libs.firebase.messaging)
     // Auth
     implementation(libs.androidx.biometric)
     // Wallet Connect
@@ -193,9 +205,13 @@ dependencies {
     implementation(libs.walletconnect.web3wallet)
     // Chart
     implementation(libs.vico.m3)
+
+    // Google Play
+    // Notifications - FCM
+    "googleImplementation"(libs.firebase.messaging)
     // In App review
-    implementation(libs.play.review)
-    implementation(libs.play.review.ktx)
+    "googleImplementation"(libs.play.review)
+    "googleImplementation"(libs.play.review.ktx)
 
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)

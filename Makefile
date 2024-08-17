@@ -27,19 +27,19 @@ install-wallet-core:
 	@./scripts/download-wallet-core.sh ${WALLET_CORE_VERSION}
 
 build-test:
-	./gradlew assembleAndroidTest --build-cache
+	./gradlew assembleGoogleDebugAndroidTest --build-cache
 
 test:
-	./gradlew connectedAndroidTest
+	./gradlew connectedGoogleDebugAndroidTest
 
 unsigned-release:
-	export SKIP_SIGN=true && ./gradlew assembleRelease :app:bundleRelease
+	export SKIP_SIGN=true && ./gradlew :app:bundleGoogleRelease
 
 extract-universal-apk:
 	./scripts/extract_aab_apk.sh
 
 release:
-	./gradlew clean buildCargoNdkRelease assembleRelease :app:bundleRelease
+	./gradlew clean buildCargoNdkGoogleRelease assembleGoogleRelease :app:bundleGoogleRelease
 
 localize:
 	@sh scripts/localize.sh android
@@ -56,9 +56,9 @@ generate-stone:
 	@cp -Rf core/gemstone/generated/kotlin/uniffi gemcore/src/main/java
 	@touch local.properties
 ifeq (${BUILD_MODE},release)
-	./gradlew buildCargoNdkRelease --info
+	./gradlew buildCargoNdkGoogleRelease --info
 else
-	./gradlew buildCargoNdkDebug --info
+	./gradlew buildCargoNdkGoogleDebug --info
 endif
 
 build-base-image:

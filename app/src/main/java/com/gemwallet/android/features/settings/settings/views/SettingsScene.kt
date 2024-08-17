@@ -34,14 +34,14 @@ import com.gemwallet.android.R
 import com.gemwallet.android.features.settings.currency.components.emojiFlags
 import com.gemwallet.android.features.settings.settings.components.LinkItem
 import com.gemwallet.android.features.settings.settings.viewmodels.SettingsViewModel
-import com.gemwallet.android.getActivity
+import com.gemwallet.android.services.isNotificationsAvailable
+import com.gemwallet.android.ui.components.ReviewManager
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.theme.Spacer16
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.play.core.review.ReviewManagerFactory
 import uniffi.Gemstone.Config
 import uniffi.Gemstone.SocialUrl
 
@@ -60,8 +60,7 @@ fun SettingsScene(
     val viewModel: SettingsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val reviewManager = ReviewManagerFactory.create(context)
-//    val reviewManager = FakeReviewManager(context)
+    val reviewManager = ReviewManager(context)
     val version = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
     } else {
@@ -92,19 +91,21 @@ fun SettingsScene(
                 onClick = onSecurity
             )
             HorizontalDivider(modifier = Modifier, thickness = 0.4.dp)
-            LinkItem(
-                title = stringResource(id = R.string.settings_notifications_title),
-                icon = R.drawable.settings_notifications,
-                trailingContent = @Composable {
-                    Switch(
-                        checked = uiState.pushEnabled,
-                        onCheckedChange = {
-                            if (it) requestPushGrant = true else viewModel.notificationEnable()
-                        }
-                    )
-                },
-                onClick = {}
-            )
+            if (isNotificationsAvailable()) {
+                LinkItem(
+                    title = stringResource(id = R.string.settings_notifications_title),
+                    icon = R.drawable.settings_notifications,
+                    trailingContent = @Composable {
+                        Switch(
+                            checked = uiState.pushEnabled,
+                            onCheckedChange = {
+                                if (it) requestPushGrant = true else viewModel.notificationEnable()
+                            }
+                        )
+                    },
+                    onClick = {}
+                )
+            }
             LinkItem(
                 title = stringResource(R.string.settings_currency),
                 icon = R.drawable.settings_currency,
@@ -148,11 +149,12 @@ fun SettingsScene(
                 title = stringResource(id = R.string.settings_rate_app),
                 icon = R.drawable.settings_rate,
                 onClick = {
-                    reviewManager.requestReviewFlow().addOnCompleteListener {
-                        if (it.isSuccessful) {
-                            reviewManager.launchReviewFlow(context.getActivity()!!, it.result)
-                        }
-                    }
+                    reviewManager.open()
+//                    reviewManager.requestReviewFlow().addOnCompleteListener {
+//                        if (it.isSuccessful) {
+//                            reviewManager.launchReviewFlow(context.getActivity()!!, it.result)
+//                        }
+//                    }
                 }
             )
             if (uiState.developEnabled) {
