@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.ton
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
@@ -14,6 +15,7 @@ import java.math.BigInteger
 class TonSignClient : SignClient {
     override suspend fun signTransfer(
         params: SignerParams,
+        txSpeed: TxSpeed,
         privateKey: ByteArray
     ): ByteArray {
         if (params.input.assetId.type() == AssetSubtype.TOKEN) {

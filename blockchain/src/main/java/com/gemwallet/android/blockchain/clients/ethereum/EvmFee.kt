@@ -6,6 +6,7 @@ import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
+import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.EVMChain
@@ -51,7 +52,7 @@ class EvmFee {
             TransactionType.TokenApproval -> priorityFee
             else -> throw IllegalAccessException("Operation doesn't available")
         }
-        GasFee(feeAssetId = feeAssetId, limit = gasLimit, maxGasPrice = maxGasPrice, minerFee = minerFee)
+        GasFee(feeAssetId = feeAssetId, speed = TxSpeed.Normal, limit = gasLimit, maxGasPrice = maxGasPrice, minerFee = minerFee)
     }
 
     companion object {

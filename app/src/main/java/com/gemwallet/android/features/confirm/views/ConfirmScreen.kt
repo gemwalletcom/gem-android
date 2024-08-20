@@ -15,6 +15,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,7 +37,6 @@ import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.titles.getTitle
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
-import com.gemwallet.android.ui.theme.headerIconSize
 import com.gemwallet.android.ui.theme.padding16
 import com.gemwallet.android.ui.theme.trailingIcon20
 import com.wallet.core.primitives.TransactionType
@@ -50,7 +52,12 @@ fun ConfirmScreen(
     val txInfoUIModel by viewModel.txInfoUIModel.collectAsStateWithLifecycle()
     val feeModel by viewModel.feeUIModel.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val txSpeed by viewModel.txSpeed.collectAsStateWithLifecycle()
+    val allFee by viewModel.allFee.collectAsStateWithLifecycle()
     val uiState = state
+
+    var showSelectTxSpeed by remember { mutableStateOf(false) }
+
     DisposableEffect(params.hashCode()) {
         if (params != null) {
             viewModel.init(params)
@@ -97,9 +104,15 @@ fun ConfirmScreen(
         }
         Table(txInfoUIModel)
         Spacer16()
-        Table(feeModel)
+        Table(
+            if (allFee.size > 1) listOf(feeModel.firstOrNull()?.copy(action = { showSelectTxSpeed = true })) else feeModel
+        )
         Spacer16()
         ConfirmErrorInfo(state)
+
+        if (showSelectTxSpeed) {
+            SelectTxSpeed(txSpeed, allFee, viewModel::changeTxSpeed) { showSelectTxSpeed = false }
+        }
     }
 }
 

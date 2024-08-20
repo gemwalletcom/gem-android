@@ -10,5 +10,13 @@ data class SignerParams(
 )
 
 interface  SignerInputInfo {
-    fun fee(): Fee
+    fun fee(speed: TxSpeed = TxSpeed.Normal): Fee
+
+    fun allFee(): List<Fee> = emptyList()
+}
+
+enum class TxSpeed {
+    Slow,
+    Normal,
+    Fast,
 }

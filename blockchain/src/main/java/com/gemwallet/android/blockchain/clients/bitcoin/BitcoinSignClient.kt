@@ -6,6 +6,7 @@ import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
 import com.wallet.core.primitives.Chain
@@ -22,11 +23,12 @@ class BitcoinSignClient(
 
     override suspend fun signTransfer(
         params: SignerParams,
+        txSpeed: TxSpeed,
         privateKey: ByteArray
     ): ByteArray {
         val metadata = params.info as BitcoinSignerPreloader.Info
         val coinType = WCChainTypeProxy().invoke(maintainChain())
-        val gasFee = metadata.fee as GasFee
+        val gasFee = metadata.fee(txSpeed) as GasFee
         val signingInput = Bitcoin.SigningInput.newBuilder().apply {
             this.coinType = coinType.value()
             this.hashType = BitcoinSigHashType.ALL.value()//BitcoinScript.hashTypeForCoin(coinType)

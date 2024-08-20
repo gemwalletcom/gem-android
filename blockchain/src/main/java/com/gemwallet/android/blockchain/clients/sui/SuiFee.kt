@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.sui
 
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.model.Fee
+import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 
@@ -18,6 +19,6 @@ class SuiFee {
         val storageCost = gasUsed.storageCost.toBigInteger()
         val storageRebate = gasUsed.storageRebate.toBigInteger()
         val fee = computationCost + storageCost - storageRebate
-        return Fee(feeAssetId = AssetId(chain), amount = fee.abs())
+        return Fee(feeAssetId = AssetId(chain), speed = TxSpeed.Normal, amount = fee.abs())
     }
 }

@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.xrp
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
 import wallet.core.java.AnySigner
@@ -11,7 +12,7 @@ import wallet.core.jni.proto.Ripple
 class XrpSignClient(
     private val chain: Chain,
 ) : SignClient {
-    override suspend fun signTransfer(params: SignerParams, privateKey: ByteArray): ByteArray {
+    override suspend fun signTransfer(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): ByteArray {
         val metadata = params.info as XrpSignerPreloader.Info
         val signInput = Ripple.SigningInput.newBuilder().apply {
             this.fee = metadata.fee().amount.toLong()

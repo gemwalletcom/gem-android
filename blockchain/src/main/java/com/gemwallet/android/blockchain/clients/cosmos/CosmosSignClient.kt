@@ -6,6 +6,7 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
@@ -28,6 +29,7 @@ class CosmosSignClient(
 
     override suspend fun signTransfer(
         params: SignerParams,
+        txSpeed: TxSpeed,
         privateKey: ByteArray,
     ): ByteArray {
         val from = params.owner

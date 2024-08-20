@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.near
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
 import wallet.core.java.AnySigner
@@ -15,7 +16,7 @@ import java.math.BigInteger
 class NearSignClient(
     private val chain: Chain,
 ) : SignClient {
-    override suspend fun signTransfer(params: SignerParams, privateKey: ByteArray): ByteArray {
+    override suspend fun signTransfer(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): ByteArray {
         val metadata = params.info as NearSignerPreloader.Info
 
         val input = NEAR.SigningInput.newBuilder().apply {

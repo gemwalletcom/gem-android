@@ -8,6 +8,7 @@ import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
@@ -32,6 +33,7 @@ class EvmSignClient(
 
     override suspend fun signTransfer(
         params: SignerParams,
+        txSpeed: TxSpeed,
         privateKey: ByteArray,
     ): ByteArray {
         when (params.input) {

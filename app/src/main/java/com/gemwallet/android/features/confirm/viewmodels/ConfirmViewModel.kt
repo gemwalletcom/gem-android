@@ -29,6 +29,7 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
+import com.gemwallet.android.model.TxSpeed
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.CircularProgressIndicator16
@@ -77,6 +78,7 @@ class ConfirmViewModel @Inject constructor(
 
     private val restart = MutableStateFlow(false)
     val state = MutableStateFlow<ConfirmState>(ConfirmState.Prepare)
+    val txSpeed = MutableStateFlow(TxSpeed.Normal)
 
     private val request = savedStateHandle.getStateFlow<String?>(paramsArg, null)
         .combine(restart) { request, _ -> request }
@@ -178,8 +180,8 @@ class ConfirmViewModel @Inject constructor(
         ).mapNotNull { it }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val feeUIModel = combine(signerParams, feeAssetInfo, state) { signerParams, feeAssetInfo, state ->
-        val amount = signerParams?.info?.fee()?.amount
+    val feeUIModel = combine(signerParams, feeAssetInfo, state, txSpeed) { signerParams, feeAssetInfo, state, speed ->
+        val amount = signerParams?.info?.fee(speed)?.amount
         val assetInfo = feeAssetInfo
         val result = if (amount == null || assetInfo == null) {
             CellEntity(
@@ -213,11 +215,18 @@ class ConfirmViewModel @Inject constructor(
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
+    val allFee = signerParams.filterNotNull().map { it.info.allFee() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
     fun init(params: ConfirmParams) {
         viewModelScope.launch(Dispatchers.IO) {
             savedStateHandle[txTypeArg] = params.getTxType().string
             savedStateHandle[paramsArg] = params.pack()
         }
+    }
+
+    fun changeTxSpeed(speed: TxSpeed) {
+        txSpeed.update { speed }
     }
 
     fun send()  = viewModelScope.launch(Dispatchers.IO) {
@@ -241,7 +250,11 @@ class ConfirmViewModel @Inject constructor(
         val memo = signerParams.input.memo() ?: ""
         val type = signerParams.input.getTxType()
 
-        val validBalance = validateBalance(assetInfo.asset, signerParams.finalAmount, getBalance(assetInfo, signerParams.input))
+        val validBalance = validateBalance(
+            asset = assetInfo.asset,
+            balance = getBalance(assetInfo, signerParams.input),
+            amount = signerParams.finalAmount
+        )
         if (validBalance != ConfirmError.None) {
             state.update { ConfirmState.Error(validBalance) }
             return@launch

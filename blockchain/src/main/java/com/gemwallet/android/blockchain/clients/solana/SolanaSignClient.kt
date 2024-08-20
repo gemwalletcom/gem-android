@@ -5,6 +5,7 @@ import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.google.protobuf.MessageLite
 import com.wallet.core.primitives.AssetSubtype
@@ -38,6 +39,7 @@ class SolanaSignClient(
 
     override suspend fun signTransfer(
         params: SignerParams,
+        txSpeed: TxSpeed,
         privateKey: ByteArray
     ): ByteArray {
         val recentBlockhash = (params.info as SolanaSignerPreloader.Info).blockhash

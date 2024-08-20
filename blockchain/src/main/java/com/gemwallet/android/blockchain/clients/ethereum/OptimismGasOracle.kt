@@ -5,6 +5,7 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
+import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.TransactionType
@@ -63,6 +64,7 @@ class OptimismGasOracle {
             nonce = nonce,
             gasFee = GasFee(
                 feeAssetId = feeAssetId,
+                speed = TxSpeed.Normal,
                 limit = gasLimit,
                 maxGasPrice = gasPrice,
                 minerFee = minerFee,
@@ -72,6 +74,7 @@ class OptimismGasOracle {
         val l1Fee = getL1Fee(encoded, rpcClient)!!
         GasFee(
             feeAssetId = feeAssetId,
+            speed = TxSpeed.Normal,
             maxGasPrice = gasPrice,
             minerFee = minerFee,
             limit = gasLimit,
