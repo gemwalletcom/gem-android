@@ -45,28 +45,6 @@ fun SelectTxSpeed(
                 TxSpeedView(item, item.speed == currentSpeed) { onSelect(item.speed) }
             }
         }
-//        val cells = fee.map { feeItem ->
-//            CellEntity(
-//                label = when (feeItem.speed) {
-//                    TxSpeed.Fast -> "\uD83D\uDE80  ${stringResource(R.string.fee_rates_fast)}"
-//                    TxSpeed.Normal -> "\uD83D\uDC8E  ${stringResource(R.string.fee_rates_normal)}"
-//                    TxSpeed.Slow -> "\uD83D\uDC22  ${stringResource(R.string.fee_rates_slow)}"
-//                },
-//                data = "${(feeItem as? GasFee)?.maxGasPrice.toString()} sat/vB",
-//                trailing = {
-//                    if (currentSpeed == feeItem.speed) {
-//                        Icon(
-//                            modifier = Modifier.size(trailingIcon16),
-//                            imageVector = Icons.Outlined.Done,
-//                            contentDescription = ""
-//                        )
-//                    }
-//                },
-//                action = { onSelect(feeItem.speed) },
-//                showActionChevron = false,
-//            )
-//        }
-//        Table(cells)
     }
 }
 

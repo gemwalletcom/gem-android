@@ -111,7 +111,14 @@ fun ConfirmScreen(
         ConfirmErrorInfo(state)
 
         if (showSelectTxSpeed) {
-            SelectTxSpeed(txSpeed, allFee, viewModel::changeTxSpeed) { showSelectTxSpeed = false }
+            SelectTxSpeed(
+                currentSpeed = txSpeed,
+                fee = allFee,
+                onSelect = {
+                    showSelectTxSpeed = false
+                    viewModel.changeTxSpeed(it)
+                }
+            ) { showSelectTxSpeed = false }
         }
     }
 }
@@ -124,7 +131,10 @@ private fun ConfirmErrorInfo(state: ConfirmState) {
     Column(
         modifier = Modifier
             .padding(padding16)
-            .background(MaterialTheme.colorScheme.errorContainer.copy(0.2f), shape = MaterialTheme.shapes.medium)
+            .background(
+                MaterialTheme.colorScheme.errorContainer.copy(0.2f),
+                shape = MaterialTheme.shapes.medium
+            )
             .fillMaxWidth()
             .padding(padding16),
     ) {
