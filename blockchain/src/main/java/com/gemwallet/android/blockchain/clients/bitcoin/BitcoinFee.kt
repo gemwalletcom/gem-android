@@ -5,7 +5,9 @@ import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.TxSpeed
-import com.gemwallet.android.model.TxSpeed.*
+import com.gemwallet.android.model.TxSpeed.Fast
+import com.gemwallet.android.model.TxSpeed.Normal
+import com.gemwallet.android.model.TxSpeed.Slow
 import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId

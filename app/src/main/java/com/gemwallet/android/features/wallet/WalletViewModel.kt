@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.wallet
 
-import androidx.compose.material.AlertDialog
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.operators.LoadPrivateDataOperator
