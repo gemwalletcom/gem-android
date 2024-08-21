@@ -150,7 +150,7 @@ class CosmosSignClient(
 
     private fun sign(input: SignerParams, privateKey: ByteArray, messages: List<Message>): ByteArray {
         val meta = input.info as CosmosSignerPreloader.Info
-        val fee = meta.fee as GasFee
+        val fee = meta.fee() as GasFee
         val feeAmount = fee.amount
         val gas = fee.limit.toLong() * messages.size
         val coin = WCChainTypeProxy().invoke(chain)

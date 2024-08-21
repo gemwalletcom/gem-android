@@ -44,7 +44,7 @@ class TonSignClient : SignClient {
         val transfer = TheOpenNetwork.Transfer.newBuilder().apply {
             this.walletVersion = TheOpenNetwork.WalletVersion.WALLET_V4_R2
             this.dest = meta.jettonAddress
-            this.amount = (meta.fee.options[tokenAccountCreationKey] ?: BigInteger.ZERO).toLong()
+            this.amount = (meta.fee().options[tokenAccountCreationKey] ?: BigInteger.ZERO).toLong()
             if (!params.input.memo().isNullOrEmpty()) {
                 this.comment = params.input.memo()
             }

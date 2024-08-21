@@ -42,7 +42,7 @@ class TronSignClient : SignClient {
             }
             this.expiration = blockInfo.timestamp + 10 * DateUtils.HOUR_IN_MILLIS
             this.timestamp = blockInfo.timestamp
-            this.feeLimit = blockInfo.fee.amount.toLong()
+            this.feeLimit = blockInfo.fee().amount.toLong()
         }
         val signInput = Tron.SigningInput.newBuilder().apply {
             this.transaction = transaction.build()
