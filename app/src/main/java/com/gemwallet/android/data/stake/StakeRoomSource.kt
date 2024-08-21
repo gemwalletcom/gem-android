@@ -250,8 +250,7 @@ class StakeRoomSource(
     ): Flow<List<DelegationValidator>> {
         return stakeDao.getValidators(chain)
             .map { items ->
-                items
-                    .map { item -> item.toModel() }
+                items.map { item -> item.toModel() }
                     .filter { it.isActive }
                     .sortedByDescending { it.apr }
             }

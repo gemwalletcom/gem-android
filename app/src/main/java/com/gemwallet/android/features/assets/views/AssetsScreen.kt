@@ -54,7 +54,6 @@ import com.gemwallet.android.features.assets.model.WalletInfoUIState
 import com.gemwallet.android.features.assets.viewmodel.AssetsViewModel
 import com.gemwallet.android.features.transactions.components.transactionsList
 import com.gemwallet.android.interactors.getIconUrl
-import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
 import com.gemwallet.android.ui.components.AssetListItem
