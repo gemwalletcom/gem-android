@@ -54,7 +54,6 @@ fun ConfirmScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val txSpeed by viewModel.txSpeed.collectAsStateWithLifecycle()
     val allFee by viewModel.allFee.collectAsStateWithLifecycle()
-    val uiState = state
 
     var showSelectTxSpeed by remember { mutableStateOf(false) }
 
@@ -70,12 +69,6 @@ fun ConfirmScreen(
         onCancel()
     }
 
-    if (uiState is ConfirmState.Result) {
-        if (uiState.txHash.isNotEmpty() && uiState.error == null) {
-            onFinish(uiState.txHash)
-        }
-    }
-
     Scene(
         title = stringResource(amountModel?.txType?.getTitle() ?: R.string.transfer_confirm),
         onClose = onCancel,
@@ -84,7 +77,7 @@ fun ConfirmScreen(
                 title = state.buttonLabel(),
                 enabled = state !is ConfirmState.Prepare && state !is ConfirmState.Sending,
                 loading = state is ConfirmState.Sending || state is ConfirmState.Prepare,
-                onClick = viewModel::send,
+                onClick = { viewModel.send(onFinish) },
             )
         }
     ) {
