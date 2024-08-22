@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.Fee
+import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.blockchain.tron.models.TronAccountRequest
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
@@ -70,10 +71,7 @@ class TronFee {
                 if (isNewAccount) tokenTransfer + BigInteger.valueOf(newAccountFeeInSmartContract) else tokenTransfer
             }
         }
-        Fee(
-            AssetId(account.chain),
-            fee
-        )
+        Fee(TxSpeed.Normal, AssetId(account.chain), fee)
     }
 
     // https://developers.tron.network/docs/set-feelimit#how-to-estimate-energy-consumption

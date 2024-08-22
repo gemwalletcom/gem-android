@@ -5,6 +5,7 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerInputInfo
 import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
@@ -17,9 +18,7 @@ class XrpSignerPreloader(
 ) : SignerPreload {
     override suspend fun invoke(owner: Account, params: ConfirmParams): Result<SignerParams> = withContext(Dispatchers.IO) {
         val (sequenceJob, feeJob) = Pair (
-            async {
-                rpcClient.account(owner.address)
-            },
+            async { rpcClient.account(owner.address) },
             async { XrpFee().invoke(chain, rpcClient) }
         )
         val (sequenceResult, fee) = Pair(sequenceJob.await(), feeJob.await())
@@ -43,6 +42,6 @@ class XrpSignerPreloader(
         val sequence: Int,
         val fee: Fee,
     ) : SignerInputInfo {
-        override fun fee(): Fee = fee
+        override fun fee(speed: TxSpeed): Fee = fee
     }
 }

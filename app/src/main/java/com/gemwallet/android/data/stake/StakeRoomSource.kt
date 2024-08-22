@@ -17,9 +17,11 @@ import com.wallet.core.primitives.DelegationBase
 import com.wallet.core.primitives.DelegationState
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.Price
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.withContext
 import java.util.UUID
 
 @Entity(tableName = "stake_delegation_validator")
@@ -248,8 +250,7 @@ class StakeRoomSource(
     ): Flow<List<DelegationValidator>> {
         return stakeDao.getValidators(chain)
             .map { items ->
-                items
-                    .map { item -> item.toModel() }
+                items.map { item -> item.toModel() }
                     .filter { it.isActive }
                     .sortedByDescending { it.apr }
             }
@@ -265,15 +266,15 @@ class StakeRoomSource(
             .map { it?.toModel() }
     }
 
-    override suspend fun getStakeValidator(assetId: AssetId): DelegationValidator? {
-        return stakeDao.getStakeValidators(assetId.chain).maxByOrNull { it.apr }?.toModel()
+    override suspend fun getStakeValidator(assetId: AssetId) = withContext(Dispatchers.IO) {
+        stakeDao.getStakeValidators(assetId.chain).maxByOrNull { it.apr }?.toModel()
     }
 
-    override suspend fun getStakeValidator(assetId: AssetId, validatorId: String): DelegationValidator? {
-        return stakeDao.getStakeValidator(assetId.chain, validatorId)?.toModel()
+    override suspend fun getStakeValidator(assetId: AssetId, validatorId: String) = withContext(Dispatchers.IO) {
+        stakeDao.getStakeValidator(assetId.chain, validatorId)?.toModel()
     }
 
-    override suspend fun getUnstakeValidator(assetId: AssetId, address: String): DelegationValidator? {
-        return getDelegations(assetId, address).toList().firstOrNull()?.firstOrNull()?.validator
+    override suspend fun getUnstakeValidator(assetId: AssetId, address: String) = withContext(Dispatchers.IO) {
+        getDelegations(assetId, address).toList().firstOrNull()?.firstOrNull()?.validator
     }
 }

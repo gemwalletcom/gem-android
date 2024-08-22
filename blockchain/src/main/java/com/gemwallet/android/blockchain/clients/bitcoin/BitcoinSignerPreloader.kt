@@ -5,6 +5,7 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerInputInfo
 import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
@@ -32,8 +33,10 @@ class BitcoinSignerPreloader(
 
     data class Info(
         val utxo: List<BitcoinUTXO>,
-        val fee: Fee,
+        val fee: List<Fee>,
     ) : SignerInputInfo {
-        override fun fee(): Fee = fee
+        override fun fee(speed: TxSpeed): Fee = fee.firstOrNull { it.speed == speed } ?: fee.first()
+
+        override fun allFee(): List<Fee> = fee
     }
 }

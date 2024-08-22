@@ -13,5 +13,7 @@ sealed interface AmountError {
 
     class InsufficientBalance(val assetName: String) : AmountError
 
+    class InsufficientFeeBalance(val assetName: String) : AmountError
+
     class MinimumValue(val minimumValue: String) : AmountError
 }

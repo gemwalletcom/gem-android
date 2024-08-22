@@ -13,8 +13,6 @@ sealed class ConfirmError(message: String) : Exception(message){
 
     data object TransactionIncorrect : ConfirmError("Transaction data incorrect")
 
-    data object WalletNotAvailable : ConfirmError("Wallet not available")
-
     class InsufficientBalance(val chainTitle: String) : ConfirmError("Insufficient Balance")
 
     class InsufficientFee(val chainTitle: String) : ConfirmError("Insufficient Fee")
@@ -39,10 +37,6 @@ sealed class ConfirmError(message: String) : Exception(message){
             is BroadcastError,
             is SignFail,
             TransactionIncorrect,
-            WalletNotAvailable -> androidx.compose.ui.res.stringResource(
-                id = R.string.errors_transfer,
-                message ?: ""
-            )
             CalculateFee -> androidx.compose.ui.res.stringResource(R.string.confirm_fee_error)
         }
     }

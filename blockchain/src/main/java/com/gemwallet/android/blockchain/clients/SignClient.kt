@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients
 
 import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
 
 interface SignClient : BlockchainClient {
 
@@ -11,6 +12,7 @@ interface SignClient : BlockchainClient {
 
     suspend fun signTransfer(
         params: SignerParams,
+        txSpeed: TxSpeed = TxSpeed.Normal,
         privateKey: ByteArray,
     ): ByteArray
 }

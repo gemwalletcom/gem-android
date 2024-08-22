@@ -7,6 +7,7 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerInputInfo
 import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
@@ -96,6 +97,6 @@ class SolanaSignerPreloader(
         val recipientTokenAddress: String?,
         val fee: Fee,
     ) : SignerInputInfo {
-        override fun fee(): Fee = fee
+        override fun fee(speed: TxSpeed): Fee = fee
     }
 }

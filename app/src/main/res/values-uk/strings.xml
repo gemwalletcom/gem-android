@@ -170,7 +170,7 @@
   <string name="camera.permission.request.camera">Для сканування QR-коду потрібен дозвіл на камеру.\nБудь ласка, надайте дозвіл.</string>
   <string name="notifications.permission.request.notification">Для отримання сповіщень про нові транзакції потрібен дозвіл на публікацію сповіщень.\n Будь ласка, дайте дозвіл.</string>
   <string name="errors.invalid_address_name">Недійсна адреса або ім\'я</string>
-  <string name="amount.error.invalid_amount">Неправильна сума</string>
+  <string name="errors.invalid_amount">Неправильна сума</string>
   <string name="common.required_field">%s є обов\'язковим</string>
   <string name="confirm.fee.error">Помилка розрахунку комісії</string>
   <string name="asset.view_token_on">View token on %s</string>
@@ -248,4 +248,9 @@
   <string name="fee_rate.satvB">%s sat/vB</string>
   <string name="fee_rate.satB">%s sat/B</string>
   <string name="social.coingecko">CoinGecko</string>
+  <string name="errors.unable_estimate_network_fee">Наразі ми не можемо розрахувати мережеву плату.</string>
+  <string name="errors.invalid_asset_address">Недійсна адреса %s</string>
+  <string name="buy.empty_amount">Будь ласка, введіть суму для купівлі</string>
+  <string name="transaction.title.received">Отримано</string>
+  <string name="transaction.title.sent">Надіслано</string>
 </resources>

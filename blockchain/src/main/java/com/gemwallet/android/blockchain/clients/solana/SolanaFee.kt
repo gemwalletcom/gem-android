@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.model.Fee
+import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import java.math.BigInteger
@@ -22,6 +23,7 @@ class SolanaFee {
         val fee = baseFee + BigInteger.valueOf(priorityFee * priorityMultiplayer)
         return Fee(
             feeAssetId = AssetId(Chain.Solana),
+            speed = TxSpeed.Normal,
             amount = fee,
             options = mapOf("tokenAccountCreation" to tokenAccountCreation)
         )

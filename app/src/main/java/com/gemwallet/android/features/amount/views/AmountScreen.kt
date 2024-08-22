@@ -10,11 +10,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.R
 import com.gemwallet.android.features.amount.viewmodels.AmountViewModel
 import com.gemwallet.android.features.stake.validators.views.ValidatorsScreen
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.ui.components.LoadingScene
 
 @Composable
 fun AmountScreen(
@@ -35,6 +38,10 @@ fun AmountScreen(
 
     BackHandler(isSelectValidator) {
         isSelectValidator = false
+    }
+
+    if (uiModel == null) {
+        LoadingScene(stringResource(id = R.string.transfer_amount_title), onCancel)
     }
 
     AnimatedContent(

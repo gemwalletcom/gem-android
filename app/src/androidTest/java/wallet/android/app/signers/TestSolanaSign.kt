@@ -10,6 +10,7 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import kotlinx.coroutines.runBlocking
@@ -57,10 +58,12 @@ class TestSolanaSign {
                             limit = BigInteger("21000"),
                             minerFee = BigInteger.TEN,
                             relay = BigInteger.TEN,
+                            speed = TxSpeed.Normal,
                             feeAssetId = com.wallet.core.primitives.Chain.Solana.asset().id,
                         )
                     )
                 ),
+                txSpeed = TxSpeed.Normal,
                 privateKey.data(),
             )
         }

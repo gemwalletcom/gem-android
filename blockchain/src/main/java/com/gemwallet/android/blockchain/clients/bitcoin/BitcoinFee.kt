@@ -4,6 +4,10 @@ import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
+import com.gemwallet.android.model.TxSpeed
+import com.gemwallet.android.model.TxSpeed.Fast
+import com.gemwallet.android.model.TxSpeed.Normal
+import com.gemwallet.android.model.TxSpeed.Slow
 import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
@@ -24,22 +28,26 @@ class BitcoinFee {
         account: Account,
         recipient: String,
         amount: BigInteger,
-    ): Fee {
+    ): List<Fee> {
         val ownerAddress = account.address
         val chain = account.chain
-        val price = estimateFeePrice(chain, rpcClient)
-        val limit = calcFee(chain, ownerAddress, recipient, amount.toLong(), price.toLong(), utxos)
-        return GasFee(
-            feeAssetId = AssetId(chain),
-            maxGasPrice = price,
-            limit = limit
-        )
+        val fee = TxSpeed.entries.map {
+            val price = estimateFeePrice(chain, it, rpcClient)
+            val limit = calcFee(chain, ownerAddress, recipient, amount.toLong(), price.toLong(), utxos)
+            GasFee(
+                feeAssetId = AssetId(chain),
+                speed = it,
+                maxGasPrice = price,
+                limit = limit
+            )
+        }
+        return fee
     }
 
-    private suspend fun estimateFeePrice(chain: Chain, rpcClient: BitcoinRpcClient): BigInteger {
+    private suspend fun estimateFeePrice(chain: Chain, speed: TxSpeed, rpcClient: BitcoinRpcClient): BigInteger {
         val decimals = CoinTypeConfiguration.getDecimals(WCChainTypeProxy().invoke(chain))
         val minimumByteFee = getMinimumByteFee(chain)
-        return rpcClient.estimateFee(getFeePriority(chain)).fold(
+        return rpcClient.estimateFee(getFeePriority(chain, speed)).fold(
             {
                 val networkFeePerKb = Crypto(it.result, decimals).atomicValue
                 val feePerByte = networkFeePerKb.toBigDecimal().divide(BigDecimal(1000), RoundingMode.CEILING).toBigInteger()
@@ -99,9 +107,21 @@ class BitcoinFee {
         else -> BigInteger.ONE
     }
 
-    private fun getFeePriority(chain: Chain) = when (chain) {
-        Chain.Litecoin,
-        Chain.Doge -> "1"
-        else -> "3"
-    }
+    private fun getFeePriority(chain: Chain, speed: TxSpeed) = when (chain) {
+        Chain.Litecoin -> when (speed) {
+            Fast -> 1
+            Normal -> 3
+            Slow -> 6
+        }
+        Chain.Doge -> when (speed) {
+            Fast -> 2
+            Normal -> 4
+            Slow -> 8
+        }
+        else -> when (speed) {
+            Fast -> 1
+            Normal -> 3
+            Slow -> 6
+        }
+    }.toString()
 }

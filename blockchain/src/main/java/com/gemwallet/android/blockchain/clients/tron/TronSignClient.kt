@@ -5,6 +5,7 @@ import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
@@ -16,6 +17,7 @@ import java.math.BigInteger
 class TronSignClient : SignClient {
     override suspend fun signTransfer(
         params: SignerParams,
+        txSpeed: TxSpeed,
         privateKey: ByteArray
     ): ByteArray {
         val blockInfo = params.info as TronSignerPreloader.Info
@@ -40,7 +42,7 @@ class TronSignClient : SignClient {
             }
             this.expiration = blockInfo.timestamp + 10 * DateUtils.HOUR_IN_MILLIS
             this.timestamp = blockInfo.timestamp
-            this.feeLimit = blockInfo.fee.amount.toLong()
+            this.feeLimit = blockInfo.fee().amount.toLong()
         }
         val signInput = Tron.SigningInput.newBuilder().apply {
             this.transaction = transaction.build()

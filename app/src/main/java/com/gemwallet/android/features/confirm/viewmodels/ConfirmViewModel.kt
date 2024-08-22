@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.confirm.viewmodels
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.R
@@ -14,30 +15,44 @@ import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.data.transaction.TransactionsRepository
 import com.gemwallet.android.di.GemJson
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAddressEllipsisText
+import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.ext.urlDecode
+import com.gemwallet.android.features.confirm.models.AmountUIModel
 import com.gemwallet.android.features.confirm.models.ConfirmError
-import com.gemwallet.android.features.confirm.models.ConfirmSceneState
+import com.gemwallet.android.features.confirm.models.ConfirmState
+import com.gemwallet.android.features.confirm.navigation.paramsArg
+import com.gemwallet.android.features.confirm.navigation.txTypeArg
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.TxSpeed
+import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.titles.getTitle
+import com.gemwallet.android.ui.components.CircularProgressIndicator16
 import com.google.gson.Gson
 import com.wallet.core.primitives.Asset
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
+import com.wallet.core.primitives.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -45,6 +60,7 @@ import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ConfirmViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
@@ -57,76 +73,200 @@ class ConfirmViewModel @Inject constructor(
     private val transactionsRepository: TransactionsRepository,
     private val stakeRepository: StakeRepository,
     @GemJson private val gson: Gson,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val state = MutableStateFlow(State())
-    val uiState = state.map { it.toUIState() }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, ConfirmSceneState.Loading)
+    private val restart = MutableStateFlow(false)
+    val state = MutableStateFlow<ConfirmState>(ConfirmState.Prepare)
+    val txSpeed = MutableStateFlow(TxSpeed.Normal)
 
-    fun init(params: ConfirmParams, feeMultiplicator: Float = 1f) {
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                load(params, feeMultiplicator)
-            } catch (err: ConfirmError) {
-                state.update { State(fatalError = err) }
-            }
+    private val request = savedStateHandle.getStateFlow<String?>(paramsArg, null)
+        .combine(restart) { request, _ -> request }
+        .filterNotNull()
+        .mapNotNull { paramsPack ->
+            val txTypeString = savedStateHandle.get<String?>(txTypeArg)?.urlDecode()
+            val txType = TransactionType.entries.firstOrNull { it.string == txTypeString } ?: return@mapNotNull null // TODO: Show fatal
+
+            ConfirmParams.unpack(
+                when (txType) {
+                    TransactionType.Transfer -> ConfirmParams.TransferParams::class.java
+                    TransactionType.Swap -> ConfirmParams.SwapParams::class.java
+                    TransactionType.TokenApproval -> ConfirmParams.TokenApprovalParams::class.java
+                    TransactionType.StakeDelegate -> ConfirmParams.DelegateParams::class.java
+                    TransactionType.StakeUndelegate -> ConfirmParams.UndelegateParams::class.java
+                    TransactionType.StakeRewards -> ConfirmParams.RewardsParams::class.java
+                    TransactionType.StakeRedelegate -> ConfirmParams.RedeleateParams::class.java
+                    TransactionType.StakeWithdraw -> ConfirmParams.WithdrawParams::class.java
+                },
+                paramsPack,
+            )
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val assetsInfo = request.filterNotNull().mapNotNull {
+        if (it is ConfirmParams.SwapParams) {
+            listOf(it.fromAssetId, it.toAssetId)
+        } else {
+            listOf(it.assetId)
         }
     }
+    .flatMapLatest { assetsRepository.getAssetsInfo(it) }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private suspend fun load(params: ConfirmParams, feeMultiplicator: Float = 1f) {
-        val assetInfo = assetsRepository.getAssetInfo(params.assetId).firstOrNull()
-            ?: throw ConfirmError.Init("Init error - asset doesn't find")
-        val signerParams = signerPreload(owner = assetInfo.owner, params = params).getOrNull() // TODO: Remove result???
-            ?: throw ConfirmError.Init("Init error - not transaction info")
-        val fee = signerParams.info.fee()
-        val feeAssetInfo = assetsRepository.getAssetInfo(fee.feeAssetId).firstOrNull()
-            ?: throw ConfirmError.Init("Init error - fee asset doesn't find")
+    private val signerParams = request.filterNotNull().map { request ->
+        val owner = sessionRepository.getSession()?.wallet?.getAccount(request.assetId.chain)
+        if (owner == null) {
+            state.update { ConfirmState.FatalError }
+            return@map null
+        }
+
+        val preload = signerPreload(owner = owner, params = request).getOrNull()
+        if (preload == null) {
+            state.update { ConfirmState.Error(ConfirmError.CalculateFee) }
+            return@map null
+        }
         val finalAmount = when {
-            params is ConfirmParams.RewardsParams -> stakeRepository.getRewards(params.assetId, assetInfo.owner.address)
+            request is ConfirmParams.RewardsParams -> stakeRepository.getRewards(request.assetId, owner.address)
                 .map { BigInteger(it.base.rewards) }
                 .fold(BigInteger.ZERO) { acc, value -> acc + value }
-            params.isMax() && params.assetId == feeAssetInfo.asset.id -> params.amount - fee.amount
-            else -> params.amount
+            request.isMax() && request.assetId == preload.info.fee().feeAssetId -> request.amount - preload.info.fee().amount
+            else -> request.amount
         }
-        val finalParams = signerParams.copy(finalAmount = finalAmount)
-        val balance = getBalance(assetInfo = assetInfo, params = params)
-        val error = validateBalance(assetInfo.asset, feeAssetInfo, fee, balance, finalParams.finalAmount)
-        val toAssetInfo = if (params is ConfirmParams.SwapParams) {
-            assetsRepository.getAssetInfo(params.toAssetId).firstOrNull()
+        state.update { ConfirmState.Ready }
+        preload.copy(finalAmount = finalAmount)
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val feeAssetInfo = signerParams.filterNotNull().flatMapLatest { signerParams ->
+        assetsRepository.getAssetInfo(signerParams.info.fee().feeAssetId)
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val amountUIModel = combine(request, assetsInfo, signerParams) { request, assetsInfo, signerParams ->
+        val fromAssetId = request?.assetId ?: return@combine null
+        val assetInfo = assetsInfo?.getByAssetId(fromAssetId) ?: return@combine null
+        val toAssetInfo = if (request is ConfirmParams.SwapParams) {
+            assetsInfo.getByAssetId(request.toAssetId) ?: return@combine null
         } else {
             null
         }
-        val toAmount = (params as? ConfirmParams.SwapParams)?.toAmount
-        state.update {
-            State(
-                walletName = assetInfo.walletName,
-                currency = assetInfo.price?.currency ?: Currency.USD,
-                assetInfo = assetInfo,
-                feeAssetInfo = feeAssetInfo,
-                toAssetInfo = toAssetInfo,
-                toAmount = toAmount,
-                signerParams = finalParams,
-                validator = getValidator(params),
-                error = error,
+
+        val amount = Crypto(signerParams?.finalAmount ?: request.amount)
+        val price = assetInfo.price?.price?.price ?: 0.0
+        val currency = assetInfo.price?.currency ?: Currency.USD
+        val decimals = assetInfo.asset.decimals
+        val symbol = assetInfo.asset.symbol
+
+        AmountUIModel(
+            txType = request.getTxType(),
+            amount = amount.format(decimals, symbol, -1),
+            amountEquivalent = currency.format(amount.convert(decimals, price), 2, dynamicPlace = true),
+            fromAsset = assetInfo,
+            fromAmount = amount.atomicValue.toString(),
+            toAsset = toAssetInfo,
+            toAmount = (request as? ConfirmParams.SwapParams)?.toAmount.toString(),
+            currency = currency,
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val txInfoUIModel = combine(request, assetsInfo) { request, assetsInfo ->
+        request ?: return@combine emptyList()
+        val assetInfo = assetsInfo?.getByAssetId(request.assetId) ?: return@combine emptyList()
+        listOf(
+            assetInfo.getFromCell(),
+            request.getRecipientCell(getValidator(request)),
+            request.getMemoCell(),
+            assetInfo.getNetworkCell(),
+        ).mapNotNull { it }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val feeUIModel = combine(signerParams, feeAssetInfo, state, txSpeed) { signerParams, feeAssetInfo, state, speed ->
+        val amount = signerParams?.info?.fee(speed)?.amount
+        val assetInfo = feeAssetInfo
+        val result = if (amount == null || assetInfo == null) {
+            CellEntity(
+                label = R.string.transfer_network_fee,
+                data = if ((state as? ConfirmState.Error)?.message == ConfirmError.CalculateFee) "-" else "",
+                support = null,
+                dropDownActions = null,
+                trailing = {
+                    if (state !is ConfirmState.Error) {
+                        CircularProgressIndicator16()
+                    }
+                }
             )
+        } else {
+            val feeAmount = Crypto(amount)
+            val currency = assetInfo.price?.currency ?: Currency.USD
+            val feeDecimals = assetInfo.asset.decimals
+            val feeCrypto = assetInfo.asset.format(feeAmount, 6)
+            val feeFiat = feeAssetInfo.price?.let {
+                currency.format(feeAmount.convert(feeDecimals, it.price.price), 2, dynamicPlace = true)
+            } ?: ""
+            CellEntity(
+                label = R.string.transfer_network_fee,
+                data = feeCrypto,
+                support = feeFiat,
+                dropDownActions = null,
+            )
+        }
+
+        listOf(result)
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val allFee = signerParams.filterNotNull().map { it.info.allFee() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    fun init(params: ConfirmParams) {
+        viewModelScope.launch(Dispatchers.IO) {
+            savedStateHandle[txTypeArg] = params.getTxType().string
+            savedStateHandle[paramsArg] = params.pack()
         }
     }
 
-    fun send() {
-        state.update { it.copy(sending = true) }
-        val currentState = state.value.copy()
-        if (currentState.assetInfo == null || currentState.signerParams == null) {
-            state.update { State(fatalError = ConfirmError.TransactionIncorrect) }
-            return
-        }
-        val asset = currentState.assetInfo.asset
-        val owner = currentState.assetInfo.owner
-        val destination = currentState.signerParams.input.destination()
-        val fee = currentState.signerParams.info.fee()
-        val memo = currentState.signerParams.input.memo() ?: ""
-        val type = currentState.signerParams.input.getTxType()
+    fun changeTxSpeed(speed: TxSpeed) {
+        txSpeed.update { speed }
+    }
 
-        val metadata = when (val input = currentState.signerParams.input) {
+    fun send()  = viewModelScope.launch(Dispatchers.IO) {
+        if (state.value is ConfirmState.Error) {
+            restart.update { !it }
+            return@launch
+        }
+        state.update { ConfirmState.Sending }
+        val signerParams = signerParams.value
+        val assetInfo = assetsInfo.value?.getByAssetId(signerParams?.input?.assetId ?: return@launch)
+        val feeAssetInfo = feeAssetInfo.value ?: return@launch
+        val session = sessionRepository.getSession()
+        if (assetInfo == null || signerParams == null || session == null) {
+            state.update { ConfirmState.Error(ConfirmError.TransactionIncorrect) }
+            return@launch
+        }
+        val asset = assetInfo.asset
+        val owner = assetInfo.owner
+        val destination = signerParams.input.destination()
+        val fee = signerParams.info.fee()
+        val memo = signerParams.input.memo() ?: ""
+        val type = signerParams.input.getTxType()
+
+        val validBalance = validateBalance(
+            asset = assetInfo.asset,
+            balance = getBalance(assetInfo, signerParams.input),
+            amount = signerParams.finalAmount
+        )
+        if (validBalance != ConfirmError.None) {
+            state.update { ConfirmState.Error(validBalance) }
+            return@launch
+        }
+
+        val validFeeBalance = validateFeeBalance(feeAssetInfo, fee)
+        if (validFeeBalance != ConfirmError.None) {
+            state.update { ConfirmState.Error(validFeeBalance) }
+            return@launch
+        }
+
+        val metadata = when (val input = signerParams.input) {
             is ConfirmParams.SwapParams -> {
                 gson.toJson(
                     TransactionSwapMetadata(
@@ -139,64 +279,50 @@ class ConfirmViewModel @Inject constructor(
             }
             else -> null
         }
+        val broadcastResult = withContext(Dispatchers.IO) {
+            val password = passwordStore.getPassword(session.wallet.id)
+            val privateKey = loadPrivateKeyOperator(session.wallet, asset.id.chain, password)
 
-        viewModelScope.launch {
-            val session = sessionRepository.getSession()
-            if (session == null) {
-                state.update { it.copy(fatalError = ConfirmError.WalletNotAvailable) }
-                return@launch
-            }
-            val broadcastResult = withContext(Dispatchers.IO) {
-                val password = passwordStore.getPassword(session.wallet.id)
-                val privateKey = loadPrivateKeyOperator(session.wallet, asset.id.chain, password)
+            val signResult = signTransfer(signerParams, privateKey)
+            val sign = signResult.getOrNull()
+                ?: return@withContext Result.failure(signResult.exceptionOrNull() ?: Exception("Sign error"))
 
-                val signResult = signTransfer(currentState.signerParams, privateKey)
-                val sign = signResult.getOrNull()
-                    ?: return@withContext Result.failure(signResult.exceptionOrNull() ?: Exception("Sign error"))
+            broadcastProxy.broadcast(owner, sign, type)
+        }
 
-                broadcastProxy.broadcast(owner, sign, type)
-            }
-
-            broadcastResult.onSuccess { txHash ->
-                val destinationAddress = destination?.address ?: ""
-                transactionsRepository.addTransaction(
-                    hash = txHash,
-                    assetId = asset.id,
-                    owner = owner,
-                    to = destinationAddress,
-                    state = TransactionState.Pending,
-                    fee = fee,
-                    amount = currentState.signerParams.finalAmount,
-                    memo = memo,
-                    type = type,
-                    metadata = metadata,
-                    direction = if (destinationAddress == owner.address) TransactionDirection.SelfTransfer else TransactionDirection.Outgoing,
-                )
-                state.update {
-                    it.copy(txHash = txHash)
-                }
-            }.onFailure { err ->
-                state.update {
-                    it.copy(sending = false, fatalError = ConfirmError.BroadcastError(err.message ?: "Can't send asset"))
-                }
-            }
+        broadcastResult.onSuccess { txHash ->
+            val destinationAddress = destination?.address ?: ""
+            transactionsRepository.addTransaction(
+                hash = txHash,
+                assetId = asset.id,
+                owner = owner,
+                to = destinationAddress,
+                state = TransactionState.Pending,
+                fee = fee,
+                amount = signerParams.finalAmount,
+                memo = memo,
+                type = type,
+                metadata = metadata,
+                direction = if (destinationAddress == owner.address) TransactionDirection.SelfTransfer else TransactionDirection.Outgoing,
+            )
+            state.update { ConfirmState.Result(txHash = txHash) }
+        }.onFailure { err ->
+            state.update { ConfirmState.Result(txHash = "", ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
         }
     }
 
-    private fun validateBalance(
-        asset: Asset,
-        feeAsset: AssetInfo,
-        fee: Fee,
-        balance: BigInteger,
-        amount: BigInteger,
-    ): ConfirmError {
+    private fun validateBalance(asset: Asset, balance: BigInteger, amount: BigInteger): ConfirmError {
+        if (balance < amount) {
+            return ConfirmError.InsufficientBalance(asset.symbol)
+        }
+        return ConfirmError.None
+    }
+
+    private fun validateFeeBalance(feeAsset: AssetInfo, fee: Fee): ConfirmError {
         if (feeAsset.balances.available().atomicValue < fee.amount) {
             return ConfirmError.InsufficientFee(
                 "${feeAsset.asset.id.chain.asset().name}(${feeAsset.asset.symbol})"
             )
-        }
-        if (balance < amount) {
-            return ConfirmError.InsufficientBalance(asset.symbol)
         }
         return ConfirmError.None
     }
@@ -229,122 +355,50 @@ class ConfirmViewModel @Inject constructor(
         return stakeRepository.getStakeValidator(params.assetId, validatorId ?: return null)
     }
 
-    private data class State(
-        val fatalError: ConfirmError = ConfirmError.None,
-        val currency: Currency = Currency.USD,
-        val walletName: String? = null,
-        val assetInfo: AssetInfo? = null,
-        val feeAssetInfo: AssetInfo? = null,
-        val toAssetInfo: AssetInfo? = null,
-        val toAmount: BigInteger? = null,
-        val signerParams: SignerParams? = null,
-        val validator: DelegationValidator? = null,
-        val error: ConfirmError = ConfirmError.None,
-        val sending: Boolean = false,
-        val txHash: String = "",
-    ) {
-        fun toUIState(): ConfirmSceneState {
-            return when {
-                fatalError != ConfirmError.None -> ConfirmSceneState.Fatal(fatalError)
-                assetInfo == null || signerParams == null -> ConfirmSceneState.Loading
-                else -> {
-                    val decimals = assetInfo.asset.decimals
-                    val symbol = assetInfo.asset.symbol
-                    val price = assetInfo.price?.price?.price ?: 0.0
-                    val amount = Crypto(signerParams.finalAmount)
-                    ConfirmSceneState.Loaded(
-                        error = error,
-                        type = signerParams.input.getTxType(),
-                        title = signerParams.input.getTxType().getTitle(),
-                        amount = amount.format(decimals, symbol, -1),
-                        amountEquivalent = amount.convert(decimals, price).format(0, currency.string, 2),
-                        fromAsset = assetInfo,
-                        fromAmount = signerParams.finalAmount.toString(),
-                        toAsset = toAssetInfo,
-                        toAmount = toAmount?.toString(),
-                        cells = listOf(
-                            from(),
-                            recipient(),
-                            memo(),
-                            network(),
-                            fee(),
-                        ).mapNotNull { it },
-                        txHash = txHash,
-                        sending = sending,
-                        currency = currency,
-                    )
+    private fun List<AssetInfo>.getByAssetId(assetId: AssetId): AssetInfo? {
+        val str = assetId.toIdentifier()
+        return firstOrNull { it.id().toIdentifier() ==  str}
+    }
+
+    private fun ConfirmParams.getRecipientCell(validator: DelegationValidator?): CellEntity<Int>? {
+        return when (this) {
+            is ConfirmParams.RewardsParams -> null
+            is ConfirmParams.DelegateParams,
+            is ConfirmParams.RedeleateParams,
+            is ConfirmParams.UndelegateParams,
+            is ConfirmParams.WithdrawParams -> CellEntity(label = R.string.stake_validator, data = validator?.name ?: "")
+            is ConfirmParams.SwapParams -> CellEntity(label = R.string.swap_provider, data = provider)
+            is ConfirmParams.TokenApprovalParams -> CellEntity(label = R.string.swap_provider, data = provider)
+            is ConfirmParams.TransferParams -> {
+                return when {
+                    destination.domainName.isNullOrEmpty() -> CellEntity(label = R.string.transaction_recipient, data = destination.address)
+                    else -> CellEntity(label = R.string.transaction_recipient, support = destination.address, data = destination.domainName!!)
                 }
             }
         }
+    }
 
-        private fun from(): CellEntity<Int> {
-            return CellEntity(label = R.string.transfer_from, data = "${walletName ?: ""} (${assetInfo?.owner?.address?.getAddressEllipsisText()})")
-        }
+    private fun AssetInfo.getFromCell(): CellEntity<Int> {
+        return CellEntity(label = R.string.transfer_from, data = "$walletName (${owner.address.getAddressEllipsisText()})")
+    }
 
-        private fun recipient(): CellEntity<Int>? {
-            val input = signerParams?.input ?: return null
-            return when (input) {
-                is ConfirmParams.RewardsParams -> null
-                is ConfirmParams.DelegateParams,
-                is ConfirmParams.RedeleateParams,
-                is ConfirmParams.UndelegateParams,
-                is ConfirmParams.WithdrawParams -> CellEntity(label = R.string.stake_validator, data = validator?.name ?: "")
-                is ConfirmParams.SwapParams -> CellEntity(label = R.string.swap_provider, data = input.provider)
-                is ConfirmParams.TokenApprovalParams -> CellEntity(label = R.string.swap_provider, data = input.provider)
-                is ConfirmParams.TransferParams -> {
-                    return when {
-                        input.destination.domainName.isNullOrEmpty() -> CellEntity(label = R.string.transaction_recipient, data = input.destination.address)
-                        else -> CellEntity(label = R.string.transaction_recipient, support = input.destination.address, data = input.destination.domainName!!)
-                    }
-                }
+    private fun ConfirmParams.getMemoCell(): CellEntity<Int>? {
+        return if (this is ConfirmParams.TransferParams) {
+            val memo = memo()
+            if (memo.isNullOrEmpty()) {
+                return null
             }
+            CellEntity(label = R.string.transfer_memo, data = memo)
+        } else {
+            null
         }
+    }
 
-        private fun memo(): CellEntity<Int>? {
-            return if (signerParams?.input is ConfirmParams.TransferParams) {
-                val memo = signerParams.input.memo()
-                if (memo.isNullOrEmpty()) {
-                    return null
-                }
-                CellEntity(label = R.string.transfer_memo, data = memo)
-            } else {
-                null
-            }
-        }
-
-        private fun network(): CellEntity<Int>? {
-            val owner = assetInfo?.owner ?: return null
-            return CellEntity(
-                label = R.string.transfer_network,
-                data = owner.chain.asset().name,
-                trailingIcon = owner.chain.getIconUrl(),
-            )
-        }
-
-        private fun fee(): CellEntity<Int>? {
-            val feeAmount = Crypto(signerParams?.info?.fee()?.amount ?: return null)
-            val asset = feeAssetInfo?.asset ?: return null
-            val feeDecimals = asset.decimals
-            val feeCrypto = feeAmount.format(feeDecimals, asset.symbol, 6)
-            val feeFiat = feeAssetInfo.price?.let {
-                feeAmount.convert(feeDecimals, it.price.price)
-                    .format(0, currency.string, 2, dynamicPlace = true)
-            } ?: ""
-            return CellEntity(
-                label = R.string.transfer_network_fee,
-                data = feeCrypto,
-                support = feeFiat,
-                dropDownActions = null, /*{
-                    DropdownMenuItem(
-                        text = { Text("Default") },
-                        onClick = { it() }
-                    )
-                    DropdownMenuItem(
-                        text = { Text("Fast") },
-                        onClick = { it() }
-                    )
-                }*/
-            )
-        }
+    private fun AssetInfo.getNetworkCell(): CellEntity<Int> {
+        return CellEntity(
+            label = R.string.transfer_network,
+            data = owner.chain.asset().name,
+            trailingIcon = owner.chain.getIconUrl(),
+        )
     }
 }
