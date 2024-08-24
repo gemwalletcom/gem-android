@@ -306,7 +306,8 @@ class ConfirmViewModel @Inject constructor(
                 direction = if (destinationAddress == owner.address) TransactionDirection.SelfTransfer else TransactionDirection.Outgoing,
             )
             state.update { ConfirmState.Result(txHash = txHash) }
-            onFinish(txHash)
+            viewModelScope.launch(Dispatchers.Main) { onFinish(txHash) }
+
         }.onFailure { err ->
             state.update { ConfirmState.Result(txHash = "", ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
         }
