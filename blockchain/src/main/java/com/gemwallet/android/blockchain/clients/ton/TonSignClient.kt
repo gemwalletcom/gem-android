@@ -22,15 +22,18 @@ class TonSignClient : SignClient {
             return signToken(params, privateKey)
         }
         val signingInput = TheOpenNetwork.SigningInput.newBuilder().apply {
-            this.transfer = TheOpenNetwork.Transfer.newBuilder().apply {
-                this.walletVersion = TheOpenNetwork.WalletVersion.WALLET_V4_R2
-                this.dest = params.input.destination()?.address
-                this.amount = params.finalAmount.toLong()
-                this.comment = params.input.memo() ?: ""
-                this.sequenceNumber = (params.info as TonSignerPreloader.Info).sequence
-                this.mode = TheOpenNetwork.SendMode.PAY_FEES_SEPARATELY_VALUE or TheOpenNetwork.SendMode.IGNORE_ACTION_PHASE_ERRORS_VALUE
-                this.bounceable = false
-            }.build()
+            sequenceNumber = (params.info as TonSignerPreloader.Info).sequence
+            expireAt = (System.currentTimeMillis() / 1000).toInt() + 600
+            this.addMessages(
+                TheOpenNetwork.Transfer.newBuilder().apply {
+                    this.walletVersion = TheOpenNetwork.WalletVersion.WALLET_V4_R2
+                    this.dest = params.input.destination()?.address
+                    this.amount = params.finalAmount.toLong()
+                    this.comment = params.input.memo() ?: ""
+                    this.mode = TheOpenNetwork.SendMode.PAY_FEES_SEPARATELY_VALUE or TheOpenNetwork.SendMode.IGNORE_ACTION_PHASE_ERRORS_VALUE
+                    this.bounceable = false
+                }.build()
+            )
             this.privateKey = ByteString.copyFrom(privateKey)
         }.build()
         val output = AnySigner.sign(signingInput, CoinType.TON, TheOpenNetwork.SigningOutput.parser())
@@ -41,6 +44,14 @@ class TonSignClient : SignClient {
 
     private fun signToken(params: SignerParams, privateKey: ByteArray): ByteArray {
         val meta = params.info as TonSignerPreloader.Info
+
+        val jettonTransfer = TheOpenNetwork.JettonTransfer.newBuilder().apply {
+            this.jettonAmount = params.finalAmount.toLong()
+            this.toOwner = params.input.destination()?.address
+            this.responseAddress = params.owner
+            this.forwardAmount = 1
+        }.build()
+
         val transfer = TheOpenNetwork.Transfer.newBuilder().apply {
             this.walletVersion = TheOpenNetwork.WalletVersion.WALLET_V4_R2
             this.dest = meta.jettonAddress
@@ -48,22 +59,16 @@ class TonSignClient : SignClient {
             if (!params.input.memo().isNullOrEmpty()) {
                 this.comment = params.input.memo()
             }
-            this.sequenceNumber = meta.sequence
+            this.jettonTransfer = jettonTransfer
             this.mode = TheOpenNetwork.SendMode.PAY_FEES_SEPARATELY_VALUE or TheOpenNetwork.SendMode.IGNORE_ACTION_PHASE_ERRORS_VALUE
             this.bounceable = true
         }.build()
 
-        val jettonTransfer = TheOpenNetwork.JettonTransfer.newBuilder().apply {
-            this.transfer = transfer
-            this.jettonAmount = params.finalAmount.toLong()
-            this.toOwner = params.input.destination()?.address
-            this.responseAddress = params.owner
-            this.forwardAmount = 1
-        }.build()
-
         val signingInput = TheOpenNetwork.SigningInput.newBuilder().apply {
-            this.jettonTransfer = jettonTransfer
+            this.sequenceNumber = meta.sequence
+            this.addMessages(transfer)
             this.privateKey = ByteString.copyFrom(privateKey)
+            this.expireAt = (System.currentTimeMillis() / 1000).toInt() + 600
         }.build()
         return AnySigner.sign(signingInput, CoinType.TON, TheOpenNetwork.SigningOutput.parser())
             .encoded.toByteArray()

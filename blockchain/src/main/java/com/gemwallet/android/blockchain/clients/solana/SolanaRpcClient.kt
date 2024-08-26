@@ -33,6 +33,9 @@ interface SolanaRpcClient {
     suspend fun getAccountInfoSpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaParsedData<SolanaInfo<SolanaParsedSplTokenInfo>>>>>
 
     @POST("/")
+    suspend fun getTokenInfo(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaTokenOwner>>>
+
+    @POST("/")
     suspend fun getAccountInfoMpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaArrayData<String>>>>
 
     @POST("/")
@@ -71,6 +74,8 @@ interface SolanaRpcClient {
     @POST
     suspend fun genesisHash(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
 }
+
+class SolanaTokenOwner(val owner: String)
 
 suspend fun SolanaRpcClient.getTokenAccountByOwner(
     owner: String,

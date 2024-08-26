@@ -11,9 +11,11 @@ import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.SolanaTokenProgramId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import uniffi.Gemstone.Config
 
 class SolanaSignerPreloader(
     private val rpcClient: SolanaRpcClient,
@@ -36,18 +38,19 @@ class SolanaSignerPreloader(
         val info = when (params) {
             is ConfirmParams.TransferParams -> when (params.assetId.type()) {
                 AssetSubtype.NATIVE -> {
-                    Info(blockhash, "", null, fee)
+                    Info(blockhash, "", null, SolanaTokenProgramId.Token, fee)
                 }
                 AssetSubtype.TOKEN -> {
-                    val (senderTokenAddress, recipientTokenAddress) = getTokenAccounts(params.assetId.tokenId!!, owner.address, params.destination.address)
+                    val (senderTokenAddress, recipientTokenAddress, tokenProgram) = getTokenAccounts(params.assetId.tokenId!!, owner.address, params.destination.address)
 
                     if (senderTokenAddress.isNullOrEmpty()) {
                         return@withContext Result.failure(Exception("Sender token address is empty"))
                     }
                     Info(
-                        blockhash,
-                        senderTokenAddress,
-                        recipientTokenAddress,
+                        blockhash = blockhash,
+                        senderTokenAddress = senderTokenAddress,
+                        recipientTokenAddress = recipientTokenAddress,
+                        tokenProgram = tokenProgram,
                         if (recipientTokenAddress.isNullOrEmpty()) {
                             fee.withOptions("tokenAccountCreation")
                         } else {
@@ -56,13 +59,13 @@ class SolanaSignerPreloader(
                     )
                 }
             }
-            is ConfirmParams.SwapParams -> Info(blockhash, "", null, fee)
+            is ConfirmParams.SwapParams -> Info(blockhash, "", null, SolanaTokenProgramId.Token, fee)
             is ConfirmParams.DelegateParams,
             is ConfirmParams.RedeleateParams,
             is ConfirmParams.RewardsParams,
             is ConfirmParams.TokenApprovalParams,
             is ConfirmParams.UndelegateParams,
-            is ConfirmParams.WithdrawParams -> Info(blockhash, "", null, fee)
+            is ConfirmParams.WithdrawParams -> Info(blockhash, "", null, SolanaTokenProgramId.Token, fee)
         }
         Result.success(
             SignerParams(
@@ -77,7 +80,7 @@ class SolanaSignerPreloader(
         tokenId: String,
         senderAddress: String,
         recipientAddress: String,
-    ): Pair<String?, String?> = withContext(Dispatchers.IO) {
+    ): Triple<String?, String?, SolanaTokenProgramId> = withContext(Dispatchers.IO) {
         val senderTokenAddressJob = async {
             rpcClient.getTokenAccountByOwner(senderAddress, tokenId)
                 .getOrNull()?.result?.value?.firstOrNull()?.pubkey
@@ -86,7 +89,26 @@ class SolanaSignerPreloader(
             rpcClient.getTokenAccountByOwner(recipientAddress, tokenId)
                 .getOrNull()?.result?.value?.firstOrNull()?.pubkey
         }
-        Pair(senderTokenAddressJob.await(), recipientTokenAddressJob.await())
+        val tokenProgramJob = async {
+            val owner = rpcClient.getTokenInfo(
+                JSONRpcRequest(
+                    SolanaMethod.GetAccountInfo.value,
+                    params = listOf(
+                        tokenId,
+                        mapOf(
+                            "encoding" to "jsonParsed"
+                        ),
+                    )
+                )
+            ).getOrNull()?.result?.value?.owner
+
+            if (owner != null) {
+                SolanaTokenProgramId.entries.firstOrNull { it.string == Config().getSolanaTokenProgramId(owner) } ?: SolanaTokenProgramId.Token
+            } else {
+                SolanaTokenProgramId.Token
+            }
+        }
+        Triple(senderTokenAddressJob.await(), recipientTokenAddressJob.await(), tokenProgramJob.await())
     }
 
     override fun maintainChain(): Chain = Chain.Solana
@@ -95,6 +117,7 @@ class SolanaSignerPreloader(
         val blockhash: String,
         val senderTokenAddress: String,
         val recipientTokenAddress: String?,
+        val tokenProgram: SolanaTokenProgramId,
         val fee: Fee,
     ) : SignerInputInfo {
         override fun fee(speed: TxSpeed): Fee = fee

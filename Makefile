@@ -1,6 +1,6 @@
 ANDROID_HOME ?= ~/Library/Android/sdk
 SDK_MANAGER = ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager
-WALLET_CORE_VERSION ?= 4.0.42
+WALLET_CORE_VERSION ?= 4.1.5
 NDK_VERSION ?= 26.1.10909125
 
 install:
@@ -71,3 +71,6 @@ build-app:
 	-m 16g \
 	-t gem-android-app \
 	-f Dockerfile.app . &> build.app.log
+
+core-upgrade:
+	git submodule update --recursive --remote

@@ -34,7 +34,7 @@ android {
 dependencies {
     api(project(":gemcore"))
     // Local wallet core
-    api(files("../libs/wallet-core-4.0.42-sources.jar"))
+    api(files("../libs/wallet-core-4.1.5-sources.jar"))
     implementation(project(":wallet-core"))
     implementation(project(":wallet-core-proto"))
     // Protobuf

@@ -10,6 +10,7 @@ import com.google.protobuf.ByteString
 import com.google.protobuf.MessageLite
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.SolanaTokenProgramId
 import com.wallet.core.primitives.TransactionType
 import wallet.core.java.AnySigner
 import wallet.core.jni.Base58
@@ -93,6 +94,7 @@ class SolanaSignClient(
 
     private fun signNative(input: SignerParams): Solana.SigningInput.Builder {
         val blockhash = (input.info as SolanaSignerPreloader.Info).blockhash
+
         return Solana.SigningInput.newBuilder().apply {
             this.transferTransaction = Solana.Transfer.newBuilder().apply {
                 this.recipient = input.input.destination()?.address
@@ -111,6 +113,10 @@ class SolanaSignClient(
         val amount = input.finalAmount.toLong()
         val recipient = input.input.destination()?.address
         val metadata = input.info as SolanaSignerPreloader.Info
+        val tokenProgramId = when (metadata.tokenProgram) {
+            SolanaTokenProgramId.Token -> Solana.TokenProgramId.TokenProgram
+            SolanaTokenProgramId.Token2022 -> Solana.TokenProgramId.Token2022Program
+        }
         return Solana.SigningInput.newBuilder().apply {
             this.recentBlockhash = metadata.blockhash
             this.privateKey = privateKey
@@ -123,6 +129,7 @@ class SolanaSignClient(
                     this.senderTokenAddress = metadata.senderTokenAddress
                     this.recipientTokenAddress = SolanaAddress(recipient).defaultTokenAddress(tokenId)
                     this.memo = input.input.memo() ?: ""
+                    this.tokenProgramId = tokenProgramId
                 }.build()
             } else {
                 this.tokenTransferTransaction = Solana.TokenTransfer.newBuilder().apply {
@@ -132,6 +139,7 @@ class SolanaSignClient(
                     this.senderTokenAddress = metadata.senderTokenAddress
                     this.recipientTokenAddress = metadata.recipientTokenAddress
                     this.memo = input.input.memo() ?: ""
+                    this.tokenProgramId = tokenProgramId
                 }.build()
             }
         }

@@ -56,7 +56,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -279,14 +278,18 @@ class ConfirmViewModel @Inject constructor(
             }
             else -> null
         }
-        val broadcastResult = withContext(Dispatchers.IO) {
-            val password = passwordStore.getPassword(session.wallet.id)
-            val privateKey = loadPrivateKeyOperator(session.wallet, asset.id.chain, password)
+        val password = passwordStore.getPassword(session.wallet.id)
+        val privateKey = loadPrivateKeyOperator(session.wallet, asset.id.chain, password)
 
-            val signResult = signTransfer(signerParams, privateKey)
-            val sign = signResult.getOrNull()
-                ?: return@withContext Result.failure(signResult.exceptionOrNull() ?: Exception("Sign error"))
+        val signResult = signTransfer(signerParams, privateKey)
+        val sign = signResult.getOrNull()
 
+        val broadcastResult = if (sign == null || signResult.isFailure) {
+            state.update {
+                ConfirmState.Error(ConfirmError.SignFail(signResult.exceptionOrNull()?.message ?: "Can't sign transfer"))
+            }
+            return@launch
+        } else {
             broadcastProxy.broadcast(owner, sign, type)
         }
 
@@ -307,9 +310,8 @@ class ConfirmViewModel @Inject constructor(
             )
             state.update { ConfirmState.Result(txHash = txHash) }
             viewModelScope.launch(Dispatchers.Main) { onFinish(txHash) }
-
         }.onFailure { err ->
-            state.update { ConfirmState.Result(txHash = "", ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
+            state.update { ConfirmState.Error(ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
         }
     }
 

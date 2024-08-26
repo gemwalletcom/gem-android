@@ -15,8 +15,8 @@ enum class WalletType(val string: String) {
 	multicoin("multicoin"),
 	@SerialName("single")
 	single("single"),
-	@SerialName("private_key")
-	private_key("private_key"),
+	@SerialName("privateKey")
+	private_key("privateKey"),
 	@SerialName("view")
 	view("view"),
 }

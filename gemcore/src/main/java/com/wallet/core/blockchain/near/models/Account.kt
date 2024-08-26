@@ -57,3 +57,8 @@ data class NearBroadcastResult (
 	val transaction: NearBroadcastTransaction
 )
 
+@Serializable
+data class NearGenesisConfig (
+	val chain_id: String
+)
+

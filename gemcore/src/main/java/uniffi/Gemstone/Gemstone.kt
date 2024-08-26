@@ -746,6 +746,12 @@ internal interface UniffiLib : Library {
 
     fun uniffi_gemstone_fn_constructor_config_new(uniffi_out_err: UniffiRustCallStatus): Pointer
 
+    fun uniffi_gemstone_fn_method_config_get_bitcoin_chain_config(
+        `ptr`: Pointer,
+        `chain`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
     fun uniffi_gemstone_fn_method_config_get_block_explorers(
         `ptr`: Pointer,
         `chain`: RustBuffer.ByValue,
@@ -790,6 +796,18 @@ internal interface UniffiLib : Library {
     fun uniffi_gemstone_fn_method_config_get_social_url(
         `ptr`: Pointer,
         `item`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_method_config_get_solana_token_program(
+        `ptr`: Pointer,
+        `id`: RustBuffer.ByValue,
+        uniffi_out_err: UniffiRustCallStatus,
+    ): RustBuffer.ByValue
+
+    fun uniffi_gemstone_fn_method_config_get_solana_token_program_id(
+        `ptr`: Pointer,
+        `address`: RustBuffer.ByValue,
         uniffi_out_err: UniffiRustCallStatus,
     ): RustBuffer.ByValue
 
@@ -1349,6 +1367,8 @@ internal interface UniffiLib : Library {
 
     fun uniffi_gemstone_checksum_func_ton_hex_to_base64_address(): Short
 
+    fun uniffi_gemstone_checksum_method_config_get_bitcoin_chain_config(): Short
+
     fun uniffi_gemstone_checksum_method_config_get_block_explorers(): Short
 
     fun uniffi_gemstone_checksum_method_config_get_chain_config(): Short
@@ -1364,6 +1384,10 @@ internal interface UniffiLib : Library {
     fun uniffi_gemstone_checksum_method_config_get_public_url(): Short
 
     fun uniffi_gemstone_checksum_method_config_get_social_url(): Short
+
+    fun uniffi_gemstone_checksum_method_config_get_solana_token_program(): Short
+
+    fun uniffi_gemstone_checksum_method_config_get_solana_token_program_id(): Short
 
     fun uniffi_gemstone_checksum_method_config_get_stake_config(): Short
 
@@ -1508,6 +1532,9 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
     if (lib.uniffi_gemstone_checksum_func_ton_hex_to_base64_address() != 2835.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
+    if (lib.uniffi_gemstone_checksum_method_config_get_bitcoin_chain_config() != 55255.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
     if (lib.uniffi_gemstone_checksum_method_config_get_block_explorers() != 48094.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
@@ -1530,6 +1557,12 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_method_config_get_social_url() != 13335.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_method_config_get_solana_token_program() != 15556.toShort()) {
+        throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
+    }
+    if (lib.uniffi_gemstone_checksum_method_config_get_solana_token_program_id() != 35025.toShort()) {
         throw RuntimeException("UniFFI API checksum mismatch: try cleaning and rebuilding your project")
     }
     if (lib.uniffi_gemstone_checksum_method_config_get_stake_config() != 18495.toShort()) {
@@ -1972,6 +2005,8 @@ private class JavaLangRefCleanable(
  * Config
  */
 public interface ConfigInterface {
+    fun `getBitcoinChainConfig`(`chain`: kotlin.String): BitcoinChainConfig
+
     fun `getBlockExplorers`(`chain`: kotlin.String): List<kotlin.String>
 
     fun `getChainConfig`(`chain`: kotlin.String): ChainConfig
@@ -1987,6 +2022,10 @@ public interface ConfigInterface {
     fun `getPublicUrl`(`item`: PublicUrl): kotlin.String
 
     fun `getSocialUrl`(`item`: SocialUrl): kotlin.String?
+
+    fun `getSolanaTokenProgram`(`id`: kotlin.String): kotlin.String
+
+    fun `getSolanaTokenProgramId`(`address`: kotlin.String): kotlin.String?
 
     fun `getStakeConfig`(`chain`: kotlin.String): StakeChainConfig
 
@@ -2098,6 +2137,20 @@ open class Config : Disposable, AutoCloseable, ConfigInterface {
         }
     }
 
+    override fun `getBitcoinChainConfig`(`chain`: kotlin.String): BitcoinChainConfig {
+        return FfiConverterTypeBitcoinChainConfig.lift(
+            callWithPointer {
+                uniffiRustCall { _status ->
+                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_bitcoin_chain_config(
+                        it,
+                        FfiConverterString.lower(`chain`),
+                        _status,
+                    )
+                }
+            },
+        )
+    }
+
     override fun `getBlockExplorers`(`chain`: kotlin.String): List<kotlin.String> {
         return FfiConverterSequenceString.lift(
             callWithPointer {
@@ -2202,6 +2255,34 @@ open class Config : Disposable, AutoCloseable, ConfigInterface {
                     UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_social_url(
                         it,
                         FfiConverterTypeSocialUrl.lower(`item`),
+                        _status,
+                    )
+                }
+            },
+        )
+    }
+
+    override fun `getSolanaTokenProgram`(`id`: kotlin.String): kotlin.String {
+        return FfiConverterString.lift(
+            callWithPointer {
+                uniffiRustCall { _status ->
+                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_solana_token_program(
+                        it,
+                        FfiConverterString.lower(`id`),
+                        _status,
+                    )
+                }
+            },
+        )
+    }
+
+    override fun `getSolanaTokenProgramId`(`address`: kotlin.String): kotlin.String? {
+        return FfiConverterOptionalString.lift(
+            callWithPointer {
+                uniffiRustCall { _status ->
+                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_solana_token_program_id(
+                        it,
+                        FfiConverterString.lower(`address`),
                         _status,
                     )
                 }
@@ -2903,6 +2984,66 @@ public object FfiConverterTypeAssetWrapper : FfiConverterRustBuffer<AssetWrapper
     }
 }
 
+data class BitcoinChainConfig(
+    var `blocksFeePriority`: BlocksFeePriority,
+) {
+    companion object
+}
+
+public object FfiConverterTypeBitcoinChainConfig : FfiConverterRustBuffer<BitcoinChainConfig> {
+    override fun read(buf: ByteBuffer): BitcoinChainConfig {
+        return BitcoinChainConfig(
+            FfiConverterTypeBlocksFeePriority.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: BitcoinChainConfig) =
+        (
+            FfiConverterTypeBlocksFeePriority.allocationSize(value.`blocksFeePriority`)
+        )
+
+    override fun write(
+        value: BitcoinChainConfig,
+        buf: ByteBuffer,
+    ) {
+        FfiConverterTypeBlocksFeePriority.write(value.`blocksFeePriority`, buf)
+    }
+}
+
+data class BlocksFeePriority(
+    var `normal`: kotlin.Int,
+    var `slow`: kotlin.Int,
+    var `fast`: kotlin.Int,
+) {
+    companion object
+}
+
+public object FfiConverterTypeBlocksFeePriority : FfiConverterRustBuffer<BlocksFeePriority> {
+    override fun read(buf: ByteBuffer): BlocksFeePriority {
+        return BlocksFeePriority(
+            FfiConverterInt.read(buf),
+            FfiConverterInt.read(buf),
+            FfiConverterInt.read(buf),
+        )
+    }
+
+    override fun allocationSize(value: BlocksFeePriority) =
+        (
+            FfiConverterInt.allocationSize(value.`normal`) +
+                FfiConverterInt.allocationSize(value.`slow`) +
+                FfiConverterInt.allocationSize(value.`fast`)
+        )
+
+    override fun write(
+        value: BlocksFeePriority,
+        buf: ByteBuffer,
+    ) {
+        FfiConverterInt.write(value.`normal`, buf)
+        FfiConverterInt.write(value.`slow`, buf)
+        FfiConverterInt.write(value.`fast`, buf)
+    }
+}
+
 data class BscDelegation(
     var `delegatorAddress`: kotlin.String,
     var `validatorAddress`: kotlin.String,
@@ -2992,12 +3133,13 @@ public object FfiConverterTypeBscValidator : FfiConverterRustBuffer<BscValidator
 }
 
 data class ChainConfig(
-    var `networkId`: kotlin.String?,
+    var `networkId`: kotlin.String,
     var `transactionTimeout`: kotlin.Double,
     var `slip44`: kotlin.Int,
     var `rank`: kotlin.Int,
     var `denom`: kotlin.String?,
     var `defaultAssetType`: kotlin.String?,
+    var `accountActivationFee`: kotlin.Int?,
 ) {
     companion object
 }
@@ -3005,35 +3147,38 @@ data class ChainConfig(
 public object FfiConverterTypeChainConfig : FfiConverterRustBuffer<ChainConfig> {
     override fun read(buf: ByteBuffer): ChainConfig {
         return ChainConfig(
-            FfiConverterOptionalString.read(buf),
+            FfiConverterString.read(buf),
             FfiConverterDouble.read(buf),
             FfiConverterInt.read(buf),
             FfiConverterInt.read(buf),
             FfiConverterOptionalString.read(buf),
             FfiConverterOptionalString.read(buf),
+            FfiConverterOptionalInt.read(buf),
         )
     }
 
     override fun allocationSize(value: ChainConfig) =
         (
-            FfiConverterOptionalString.allocationSize(value.`networkId`) +
+            FfiConverterString.allocationSize(value.`networkId`) +
                 FfiConverterDouble.allocationSize(value.`transactionTimeout`) +
                 FfiConverterInt.allocationSize(value.`slip44`) +
                 FfiConverterInt.allocationSize(value.`rank`) +
                 FfiConverterOptionalString.allocationSize(value.`denom`) +
-                FfiConverterOptionalString.allocationSize(value.`defaultAssetType`)
+                FfiConverterOptionalString.allocationSize(value.`defaultAssetType`) +
+                FfiConverterOptionalInt.allocationSize(value.`accountActivationFee`)
         )
 
     override fun write(
         value: ChainConfig,
         buf: ByteBuffer,
     ) {
-        FfiConverterOptionalString.write(value.`networkId`, buf)
+        FfiConverterString.write(value.`networkId`, buf)
         FfiConverterDouble.write(value.`transactionTimeout`, buf)
         FfiConverterInt.write(value.`slip44`, buf)
         FfiConverterInt.write(value.`rank`, buf)
         FfiConverterOptionalString.write(value.`denom`, buf)
         FfiConverterOptionalString.write(value.`defaultAssetType`, buf)
+        FfiConverterOptionalInt.write(value.`accountActivationFee`, buf)
     }
 }
 
@@ -3653,6 +3798,8 @@ enum class DocsUrl {
     WHAT_IS_PRIVATE_KEY,
     HOW_TO_SECURE_SECRET_PHRASE,
     TRANSACTION_STATUS,
+    NETWORK_FEES,
+    STAKING_LOCK_TIME,
     ;
 
     companion object
@@ -3797,6 +3944,7 @@ enum class SocialUrl {
     YOU_TUBE,
     FACEBOOK,
     HOMEPAGE,
+    COINGECKO,
     ;
 
     companion object
@@ -3817,6 +3965,35 @@ public object FfiConverterTypeSocialUrl : FfiConverterRustBuffer<SocialUrl> {
         buf: ByteBuffer,
     ) {
         buf.putInt(value.ordinal + 1)
+    }
+}
+
+public object FfiConverterOptionalInt : FfiConverterRustBuffer<kotlin.Int?> {
+    override fun read(buf: ByteBuffer): kotlin.Int? {
+        if (buf.get().toInt() == 0) {
+            return null
+        }
+        return FfiConverterInt.read(buf)
+    }
+
+    override fun allocationSize(value: kotlin.Int?): ULong {
+        if (value == null) {
+            return 1UL
+        } else {
+            return 1UL + FfiConverterInt.allocationSize(value)
+        }
+    }
+
+    override fun write(
+        value: kotlin.Int?,
+        buf: ByteBuffer,
+    ) {
+        if (value == null) {
+            buf.put(0)
+        } else {
+            buf.put(1)
+            FfiConverterInt.write(value, buf)
+        }
     }
 }
 

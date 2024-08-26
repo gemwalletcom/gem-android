@@ -149,12 +149,12 @@ private fun ConfirmErrorInfo(state: ConfirmState) {
         Text(
             text = when (state.message) {
                 is ConfirmError.Init,
-                is ConfirmError.SignFail,
-                is ConfirmError.BroadcastError,
                 is ConfirmError.TransactionIncorrect,
                 is ConfirmError.CalculateFee -> stringResource(R.string.confirm_fee_error)
                 is ConfirmError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_network_fee_balance, state.message.chainTitle)
                 is ConfirmError.InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, state.message.chainTitle)
+                is ConfirmError.BroadcastError ->  stringResource(R.string.errors_transfer_error)
+                is ConfirmError.SignFail -> stringResource(R.string.errors_transfer_error)
                 is ConfirmError.None -> stringResource(id = R.string.transfer_confirm)
             },
             style = MaterialTheme.typography.bodyMedium,
