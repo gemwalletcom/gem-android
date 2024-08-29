@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.Button
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,9 +24,11 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
@@ -98,7 +100,10 @@ fun AssetDetailsScene(
     }
 }
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalComposeUiApi::class
+)
 @Composable
 private fun Success(
     uiState: AssetInfoUIModel,
@@ -214,6 +219,7 @@ private fun LazyListScope.networkInfo(
                         )
                     },
                     action = { onChart(uiState.assetId) },
+                    testTag = "assetChart"
                 )
             )
         }
@@ -269,6 +275,7 @@ private fun LazyListScope.balanceDetails(
                     label = stringResource(R.string.wallet_stake),
                     data = uiState.account.stake,
                     action = { onStake(uiState.assetId) },
+                    testTag = "assetStake",
                 )
             )
         }

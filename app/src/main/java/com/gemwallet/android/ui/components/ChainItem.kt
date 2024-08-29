@@ -16,13 +16,14 @@ import com.wallet.core.primitives.Chain
 @Composable
 fun ChainItem(
     title: String,
+    modifier: Modifier = Modifier,
     chain: Chain? = null,
     icon: IconUrl = "",
     dividerShowed: Boolean = true,
     onClick: () -> Unit = {},
 ) {
     ListItem(
-        modifier = Modifier.clickable { onClick() }.heightIn(64.dp),
+        modifier = modifier.clickable { onClick() }.heightIn(64.dp),
         iconUrl = icon.ifEmpty { "file:///android_asset/chains/icons/${chain?.string}.png" },
         placeholder = chain?.string?.get(0).toString(),
         dividerShowed = dividerShowed,

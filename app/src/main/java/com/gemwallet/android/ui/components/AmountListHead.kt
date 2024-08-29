@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -176,7 +177,8 @@ fun AssetHeadActions(
         }
         if (onBuy != null) {
             AssetAction(
-                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) Modifier.weight(1f) else Modifier,
+                modifier = (if (windowSizeClass == WindowWidthSizeClass.Compact) Modifier.weight(1f) else Modifier)
+                    .testTag("assetBuy"),
                 title = stringResource(id = R.string.wallet_buy),
                 imageVector = Icons.Default.Add,
                 contentDescription = "buy",

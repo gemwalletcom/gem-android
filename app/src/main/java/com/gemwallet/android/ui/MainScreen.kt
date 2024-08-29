@@ -23,7 +23,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gemwallet.android.R
@@ -71,18 +73,21 @@ fun MainScreen(
                 label = context.getString(R.string.common_wallet),
                 icon = Icons.Default.Wallet,
                 route = assetsRoute,
+                testTag = "mainTab",
                 navigate = { navigateToAssetsScreen(it) }
             ),
             BottomNavItem(
                 label = context.getString(R.string.activity_title),
                 icon = Icons.Default.ElectricBolt,
                 route = activitiesRoute,
+                testTag = "activitiesTab",
                 navigate = { navigateToActivitiesScreen(navOptions = it) }
             ),
             BottomNavItem(
                 label = context.getString(R.string.settings_title),
                 icon = Icons.Default.Settings,
                 route = settingsRoute,
+                testTag = "settingsTab",
                 navigate = { navigateToSettingsScreen(it) }
             ),
         )
@@ -94,6 +99,7 @@ fun MainScreen(
             ) {
                 navItems.forEach { item ->
                     NavigationBarItem(
+                        modifier = Modifier.testTag(item.testTag),
                         selected = item.route == currentTab.value,
                         onClick = {
                             currentTab.value = item.route

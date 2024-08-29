@@ -187,7 +187,6 @@ class ConfirmViewModel @Inject constructor(
                 label = R.string.transfer_network_fee,
                 data = if ((state as? ConfirmState.Error)?.message == ConfirmError.CalculateFee) "-" else "",
                 support = null,
-                dropDownActions = null,
                 trailing = {
                     if (state !is ConfirmState.Error) {
                         CircularProgressIndicator16()
@@ -206,7 +205,6 @@ class ConfirmViewModel @Inject constructor(
                 label = R.string.transfer_network_fee,
                 data = feeCrypto,
                 support = feeFiat,
-                dropDownActions = null,
             )
         }
 

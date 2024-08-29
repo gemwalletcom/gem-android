@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun DropDownContextItem(
+    modifier: Modifier = Modifier,
     isExpanded: Boolean,
     onDismiss: () -> Unit,
     content: @Composable () -> Unit,
@@ -41,7 +42,7 @@ fun DropDownContextItem(
     val interactionSource = remember { MutableInteractionSource() }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .onGloballyPositioned { coords ->
                 spaceToBottom = with(density) {
                     ((coords.parentCoordinates?.boundsInParent()

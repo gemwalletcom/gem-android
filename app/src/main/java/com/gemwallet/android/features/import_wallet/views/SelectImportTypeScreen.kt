@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -61,6 +62,7 @@ private fun SelectImportTypeScene(
             item {
                 Container {
                     ChainItem(
+                        modifier = Modifier.testTag("multicoin_item"),
                         title = stringResource(id = R.string.wallet_multicoin),
                         icon = "android.resource://com.gemwallet.android/drawable/ic_splash",
                         dividerShowed = false,

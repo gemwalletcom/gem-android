@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -21,6 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.WalletTheme
 
 @Composable
 fun OnboardScreen(
@@ -56,8 +58,8 @@ fun OnboardScreen(
         Column(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            OnboardAction(text = R.string.wallet_create_new_wallet, onClick = onCreateWallet)
-            OnboardAction(text = R.string.wallet_import_existing_wallet, onClick = onImportWallet)
+            OnboardAction(text = R.string.wallet_create_new_wallet, testTag = "create", onClick = onCreateWallet)
+            OnboardAction(text = R.string.wallet_import_existing_wallet, testTag = "import", onClick = onImportWallet)
         }
     }
 }
@@ -65,9 +67,15 @@ fun OnboardScreen(
 @Composable
 private fun OnboardAction(
     @StringRes text: Int,
+    testTag: String,
     onClick: () -> Unit,
 ) {
-    Button(onClick = onClick, modifier = Modifier.fillMaxWidth()) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .testTag(testTag)
+    ) {
         Text(text = stringResource(id = text))
     }
     Spacer16()
@@ -76,7 +84,7 @@ private fun OnboardAction(
 @Preview
 @Composable
 fun PreviewWelcomeScreen() {
-    MaterialTheme {
+    WalletTheme {
         OnboardScreen(onCreateWallet = { }) {
 
         }

@@ -23,13 +23,14 @@ import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.theme.WalletTheme
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 
 
 @Composable
 fun AssetListItem(
-    chain: Chain,
+    assetId: AssetId,
     title: String,
     assetType: AssetType,
     iconUrl: String,
@@ -42,7 +43,7 @@ fun AssetListItem(
 ) {
     AssetListItem(
         modifier = modifier,
-        chain = chain,
+        assetId = assetId,
         title = title,
         assetType = assetType,
         iconUrl = iconUrl,
@@ -53,8 +54,8 @@ fun AssetListItem(
 }
 
 @Composable
-fun AssetListItem(
-    chain: Chain,
+private fun AssetListItem(
+    assetId: AssetId,
     title: String,
     assetType: AssetType,
     iconUrl: String,
@@ -66,7 +67,7 @@ fun AssetListItem(
     ListItem(
         modifier = modifier,
         iconUrl = iconUrl,
-        supportIcon = if (assetType == AssetType.NATIVE) null else chain.getIconUrl(),
+        supportIcon = if (assetType == AssetType.NATIVE) null else assetId.getIconUrl(),
         placeholder = title[0].toString(),
         trailing = trailing
     ) {
@@ -234,7 +235,7 @@ fun priceColor(state: PriceState) = when (state) {
 fun PreviewAssetListItem() {
     WalletTheme {
         AssetListItem(
-            chain = Chain.SmartChain,
+            assetId = AssetId(Chain.SmartChain),
             title = "Foo Asset",
             assetType = AssetType.BEP20,
             badge = "BNB",
@@ -253,7 +254,7 @@ fun PreviewAssetListItem() {
 fun PreviewAssetListItemWithBalance() {
     WalletTheme {
         AssetListItem(
-            chain = Chain.SmartChain,
+            assetId = AssetId(Chain.SmartChain),
             title = "Foo Asset",
             assetType = AssetType.BEP20,
             iconUrl = "https://icon.net",

@@ -120,6 +120,7 @@ import com.gemwallet.android.data.wallet.WalletsDao
 import com.gemwallet.android.data.wallet.WalletsLocalSource
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.data.wallet.WalletsRoomSource
+import com.gemwallet.android.interactors.sync.SyncTransactions
 import com.gemwallet.android.services.GemApiClient
 import com.gemwallet.android.services.GemApiStaticClient
 import com.gemwallet.android.services.GemNameResolveService
@@ -669,6 +670,7 @@ object DataModule {
         nodesRepository: NodesRepository,
         sessionRepository: SessionRepository,
         walletsRepository: WalletsRepository,
+        syncTransactions: SyncTransactions,
     ): SyncService {
         return SyncService(
             gemApiClient = gemApiClient,
@@ -676,6 +678,7 @@ object DataModule {
             nodesRepository = nodesRepository,
             sessionRepository = sessionRepository,
             walletsRepository = walletsRepository,
+            syncTransactions = syncTransactions,
         )
     }
 

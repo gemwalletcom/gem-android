@@ -12,6 +12,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,7 @@ internal fun PeriodsPanel(
     Row(
         modifier = Modifier.padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         ChartPeriod.entries.forEach {
             val label = it.getLabel() ?: return@forEach
@@ -58,6 +60,7 @@ private fun RowScope.PeriodButton(title: String, isSelected: Boolean, onClick: (
                 colors = ButtonDefaults.textButtonColors().copy(
                     contentColor = MaterialTheme.colorScheme.onSurface,
                 ),
+                contentPadding = PaddingValues(0.dp)
             ) {
                 Text(text = title)
             }

@@ -3,7 +3,10 @@ package com.gemwallet.android.ui.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -64,6 +67,7 @@ import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
 import com.gemwallet.android.features.wallets.navigation.walletsScreen
 import com.gemwallet.android.ui.MainScreen
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun WalletNavGraph(
     modifier: Modifier = Modifier,
@@ -76,7 +80,7 @@ fun WalletNavGraph(
         mutableStateOf(assetsRoute)
     }
     NavHost(
-        modifier = modifier,
+        modifier = modifier.semantics { testTagsAsResourceId = true },
         navController = navController,
         startDestination = startDestination,
         enterTransition = enterTransition,

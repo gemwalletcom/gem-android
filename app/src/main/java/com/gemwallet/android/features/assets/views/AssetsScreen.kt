@@ -41,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
@@ -103,7 +104,10 @@ fun AssetsScreen(
             }
         ) {
             val longPressedAsset = remember { mutableStateOf<AssetId?>(null) }
-            LazyColumn(state = listState) {
+            LazyColumn(
+                modifier = Modifier.testTag("assets_list"),
+                state = listState
+            ) {
                 assetsHead(walletInfo, swapEnabled, onSendClick, onReceiveClick, onBuyClick, onSwapClick)
                 pendingTransactions(transactionsState, onTransactionClick)
                 assets(assets, longPressedAsset, onAssetClick, viewModel::hideAsset)
@@ -188,11 +192,12 @@ private fun LazyListScope.assets(
     items(items = assets, key = { it.asset.id.toIdentifier() }) { item ->
         val clipboardManager = LocalClipboardManager.current
         DropDownContextItem(
+            modifier = Modifier.testTag(item.asset.id.toIdentifier()),
             isExpanded = longPressState.value == item.asset.id,
             onDismiss = { longPressState.value = null },
             content = {
                 AssetListItem(
-                    chain = item.asset.id.chain,
+                    assetId = item.asset.id,
                     title = item.asset.name,
                     iconUrl = item.asset.getIconUrl(),
                     value = item.value,
@@ -266,7 +271,7 @@ private fun AssetsTopBar(
             }
         },
         actions = {
-            IconButton(onClick = onShowAssetManage) {
+            IconButton(onClick = onShowAssetManage, Modifier.testTag("assetsManageAction")) {
                 Icon(
                     imageVector = Icons.Default.Tune,
                     tint = MaterialTheme.colorScheme.onSurface,

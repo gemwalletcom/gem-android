@@ -102,6 +102,8 @@ android {
                     }
                 }
             }
+
+            buildConfigField("String", "TEST_PHRASE", System.getenv("ANDROID_KEYSTORE_FILENAME") ?: "\"three sense design develop sun sweet chat make meadow exile achieve project\"")
         }
 
         getByName("release") {
@@ -224,6 +226,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
+    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
 }
 
 room {

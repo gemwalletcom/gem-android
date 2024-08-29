@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
@@ -45,6 +46,7 @@ data class CellEntity<T>(
     val trailing: (@Composable () -> Unit)? = null,
     val dropDownActions: (@Composable (() -> Unit) -> Unit)? = null,
     val showActionChevron: Boolean = true,
+    val testTag: String = "",
     val action: (() -> Unit)? = null,
 )
 
@@ -78,6 +80,7 @@ fun Table(
                         showActionChevron = item.showActionChevron,
                         trailingIcon = item.trailingIcon,
                         trailing = item.trailing,
+                        testTag = item.testTag,
                     )
                     DropdownMenu(
                         modifier = Modifier.align(Alignment.BottomEnd),
@@ -97,9 +100,11 @@ fun Table(
         }
     }
 }
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Cell(
+    testTag: String,
     label: @Composable () -> Unit,
     data: @Composable () -> Unit,
     support: (@Composable () -> Unit)? = null,
@@ -112,6 +117,7 @@ private fun Cell(
 ) {
     Row(
         modifier = Modifier
+            .testTag(testTag)
             .combinedClickable(
                 enabled = action != null || longAction != null,
                 onClick = { action?.invoke() },
@@ -162,6 +168,7 @@ private fun Cell(
 private fun Cell(
     label: String,
     data: String,
+    testTag: String,
     icon: String? = null,
     dataColor: Color? = null,
     support: String? = null,
@@ -216,5 +223,6 @@ private fun Cell(
         showActionChevron = showActionChevron,
         longAction = longAction,
         actionIcon = actionIcon,
+        testTag = testTag,
     )
 }

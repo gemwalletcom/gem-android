@@ -13,6 +13,7 @@ import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.SolanaTokenProgramId
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Test
@@ -27,10 +28,6 @@ class TestSolanaSign {
 
     @Test
     fun testNativeSign() {
-
-        // FIXME
-        return
-
         val signClient = SolanaSignClient(object : GetAsset {
             override suspend fun getAsset(assetId: AssetId): Asset? {
                 return null
@@ -53,6 +50,7 @@ class TestSolanaSign {
                         blockhash = "DzfXchZJoLMG3cNftcf2sw7qatkkuwQf4xH15N5wkKAb",
                         senderTokenAddress = "",
                         recipientTokenAddress = null,
+                        tokenProgram = SolanaTokenProgramId.Token,
                         fee = GasFee(
                             maxGasPrice = BigInteger.TEN,
                             limit = BigInteger("21000"),

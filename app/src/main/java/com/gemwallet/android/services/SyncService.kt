@@ -9,6 +9,7 @@ import com.gemwallet.android.interactors.sync.SyncConfig
 import com.gemwallet.android.interactors.sync.SyncDevice
 import com.gemwallet.android.interactors.sync.SyncNodes
 import com.gemwallet.android.interactors.sync.SyncSubscription
+import com.gemwallet.android.interactors.sync.SyncTransactions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -21,6 +22,7 @@ class SyncService @Inject constructor(
     private val nodesRepository: NodesRepository,
     private val sessionRepository: SessionRepository,
     private val walletsRepository: WalletsRepository,
+    private val syncTransactions: SyncTransactions,
 ) {
 
     private val operators = listOf(
@@ -33,7 +35,8 @@ class SyncService @Inject constructor(
         withContext(Dispatchers.IO) {
             listOf(
                 async { SyncConfig(gemApiClient, configRepository).invoke() },
-                async { SyncDevice(gemApiClient, configRepository, sessionRepository).invoke() }
+                async { SyncDevice(gemApiClient, configRepository, sessionRepository).invoke() },
+                async { syncTransactions(sessionRepository.getSession()?.wallet?.index ?: return@async) },
             ).awaitAll()
             operators.map {
                 async { it() }

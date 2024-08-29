@@ -8,5 +8,6 @@ class BottomNavItem(
     val label: String,
     val icon: ImageVector,
     val route: String,
+    val testTag: String,
     val navigate: NavController.(navOptions: NavOptions?) -> Unit,
 )

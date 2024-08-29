@@ -11,6 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gemwallet.android.ui.theme.mainActionHeight
@@ -46,7 +47,8 @@ fun MainActionButton(
     Button(
         modifier = Modifier
             .fillMaxWidth()
-            .heightIn(min = mainActionHeight),
+            .heightIn(min = mainActionHeight)
+            .testTag("main_action"),
         onClick = onClick,
         enabled = enabled,
         colors = colors,
