@@ -32,7 +32,7 @@ class OptimismGasOracle {
     ): GasFee = withContext(Dispatchers.IO) {
         val assetId = params.assetId
         val feeAssetId = AssetId(assetId.chain)
-        val basePriorityFee = async { EvmFee.getBasePriorityFee(rpcClient) }
+        val basePriorityFee = async { EvmFee.getBasePriorityFee(assetId.chain, rpcClient) }
         val (baseFee, priorityFee) = basePriorityFee.await()
         val gasPrice = baseFee + priorityFee
         val minerFee = when (params.getTxType()) {
