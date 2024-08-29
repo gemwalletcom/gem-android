@@ -20,24 +20,4 @@ sealed class ConfirmError(message: String) : Exception(message){
     class SignFail(message: String) : ConfirmError(message)
 
     class BroadcastError(message: String) : ConfirmError(message)
-
-    @Composable
-    fun stringResource(): String {
-        return when (this) {
-            None -> androidx.compose.ui.res.stringResource(id = R.string.transfer_confirm)
-            is InsufficientBalance -> androidx.compose.ui.res.stringResource(
-                id = R.string.transfer_insufficient_balance,
-                chainTitle,
-            )
-            is InsufficientFee -> androidx.compose.ui.res.stringResource(
-                id = R.string.transfer_insufficient_network_fee_balance,
-                chainTitle,
-            )
-            is Init,
-            is BroadcastError,
-            is SignFail,
-            TransactionIncorrect,
-            CalculateFee -> androidx.compose.ui.res.stringResource(R.string.confirm_fee_error)
-        }
-    }
 }
