@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -86,7 +87,7 @@ fun WalletItem(
                     Spacer8()
                     IconButton(onClick = { onEdit(id) }) {
                         Icon(
-                            imageVector = Icons.Outlined.Edit,
+                            imageVector = Icons.Outlined.Settings,
                             contentDescription = "edit",
                             tint = MaterialTheme.colorScheme.secondary,
                         )
