@@ -30,7 +30,7 @@ internal class AptosFee {
             feeAssetId = AssetId(chain),
             speed = TxSpeed.Normal,
             maxGasPrice = gasPrice,
-            limit = BigInteger.valueOf(if (sequence == null) 676 else 6)
+            limit = BigInteger.valueOf(if (sequence == null) 676 else 6).multiply(BigInteger("2"))
         )
     }
 }
