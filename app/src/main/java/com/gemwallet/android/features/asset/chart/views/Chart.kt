@@ -94,6 +94,8 @@ fun Chart(
                 Box(modifier = Modifier.fillMaxWidth().height(200.dp)) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), strokeWidth = 1.dp)
                 }
+            } else if (points.isEmpty()) {
+                Spacer16()
             } else {
                 LaunchedEffect(uiModel.period) {
                     withContext(Dispatchers.Default) {
