@@ -84,7 +84,9 @@ class ConfirmViewModel @Inject constructor(
         .filterNotNull()
         .mapNotNull { paramsPack ->
             val txTypeString = savedStateHandle.get<String?>(txTypeArg)?.urlDecode()
-            val txType = TransactionType.entries.firstOrNull { it.string == txTypeString } ?: return@mapNotNull null // TODO: Show fatal
+            val txType = TransactionType.entries.firstOrNull { it.string == txTypeString } ?: return@mapNotNull null
+
+            state.update { ConfirmState.Prepare }
 
             ConfirmParams.unpack(
                 when (txType) {

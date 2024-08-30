@@ -76,7 +76,7 @@ fun ConfirmScreen(
             MainActionButton(
                 title = state.buttonLabel(),
                 enabled = state !is ConfirmState.Prepare && state !is ConfirmState.Sending,
-                loading = state is ConfirmState.Sending || state is ConfirmState.Prepare,
+                loading = state is ConfirmState.Sending,
                 onClick = { viewModel.send(onFinish) },
             )
         }
