@@ -2,6 +2,8 @@ package com.gemwallet.android.features.add_asset.views
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,6 +21,7 @@ import com.wallet.core.primitives.Chain
 fun SelectChain(
     chains: List<Chain>,
     chainFilter: TextFieldState,
+    listState: LazyListState = rememberLazyListState(),
     onSelect: (Chain) -> Unit,
     onCancel: () -> Unit,
 ) {
@@ -26,7 +29,7 @@ fun SelectChain(
         title = stringResource(id = R.string.transfer_network),
         onClose = onCancel,
     ) {
-        LazyColumn(modifier = Modifier) {
+        LazyColumn(modifier = Modifier, state = listState) {
             item {
                 SearchBar(query = chainFilter, modifier = Modifier.padding(padding16))
             }

@@ -6,6 +6,7 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -21,6 +22,8 @@ fun NetworksScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val nodes by viewModel.nodes.collectAsStateWithLifecycle()
+
+    val selectListState = rememberLazyListState()
 
     BackHandler(!state.selectChain) {
         viewModel.onSelectChain()
@@ -52,6 +55,7 @@ fun NetworksScreen(
         when (it) {
             true -> SelectChain(
                 chains = state.chains,
+                listState = selectListState,
                 chainFilter = viewModel.chainFilter,
                 onSelect = viewModel::onSelectedChain,
                 onCancel = onCancel
