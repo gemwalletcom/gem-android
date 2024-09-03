@@ -67,7 +67,7 @@ private fun AssetListItem(
     ListItem(
         modifier = modifier,
         iconUrl = iconUrl,
-        supportIcon = if (assetType == AssetType.NATIVE) null else assetId.getIconUrl(),
+        supportIcon = if (assetType == AssetType.NATIVE) null else assetId.chain.getIconUrl(),
         placeholder = title[0].toString(),
         trailing = trailing
     ) {
