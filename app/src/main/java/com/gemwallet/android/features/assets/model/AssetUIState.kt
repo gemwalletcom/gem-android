@@ -69,7 +69,7 @@ data class PriceUIState(
                 df.minimumFractionDigits = 2
                 val formattedValue = df.format(value.absoluteValue)
                 val afterFormat = df.parse(df.format(value))?.toDouble() ?: 0.0
-                "${if (showSign) if (afterFormat > 0) "+" else if (afterFormat < 0) "-" else "" else ""}" +
+                (if (showSign) if (afterFormat > 0) "+" else if (afterFormat < 0) "-" else "" else "") +
                         "${if (afterFormat == 0.0) if (showZero) "0.00" else "" else formattedValue}%"
             }
         }
