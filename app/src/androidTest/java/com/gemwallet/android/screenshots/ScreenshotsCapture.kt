@@ -55,7 +55,6 @@ class ScreenshotsCapture {
 
         val context = ApplicationProvider.getApplicationContext<App>()
 
-//        setLanguage(context)
         prepareWallet(context)
         device.pressBack()
     }
