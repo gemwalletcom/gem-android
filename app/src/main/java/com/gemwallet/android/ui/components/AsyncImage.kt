@@ -18,6 +18,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.drawText
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.rememberTextMeasurer
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.request.CachePolicy
 import coil.request.ImageRequest
@@ -72,7 +73,7 @@ class TextPainter(
             text = AnnotatedString(text),
             style = TextStyle(
                 Color.White,
-                fontSize = if (text.length == 1) 18.sp else 12.sp,
+                fontSize = if (text.length == 1) 18.sp else 10.sp,
                 fontWeight = if (text.length == 1) FontWeight.W600 else null,
             ),
         )
