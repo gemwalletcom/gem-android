@@ -20,6 +20,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
@@ -93,17 +94,17 @@ class AddAssetViewModel @Inject constructor(
     }
 
     fun addAsset(onFinish: () -> Unit) = viewModelScope.launch {
-        withContext(Dispatchers.IO) {
-            val session = sessionRepository.getSession() ?: return@withContext
+        onFinish()
+        async {
+            val session = sessionRepository.getSession() ?: return@async
             assetsRepository.switchVisibility(
                 owner = session.wallet.getAccount(state.value.chain)
-                    ?: return@withContext,
-                assetId = state.value.asset?.id ?: return@withContext,
+                    ?: return@async,
+                assetId = state.value.asset?.id ?: return@async,
                 visibility = true,
                 currency = session.currency
             )
-        }
-        onFinish()
+        }.await()
     }
 
     private fun searchToken(rawAddress: String) {
