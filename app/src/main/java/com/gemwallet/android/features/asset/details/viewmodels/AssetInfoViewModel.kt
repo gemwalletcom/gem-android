@@ -8,6 +8,7 @@ import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.data.transaction.TransactionsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.isStaked
+import com.gemwallet.android.ext.isSwapable
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIModel
@@ -23,7 +24,9 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BalanceType
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionExtended
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -137,7 +140,7 @@ class AssetInfoViewModel @Inject constructor(
                 networkTitle = "${asset.id.chain.asset().name} (${asset.type.string})",
                 networkIcon = AssetId(asset.id.chain).getIconUrl(),
                 isBuyEnabled = assetInfo.metadata?.isBuyEnabled ?: false,
-                isSwapEnabled = assetInfo.metadata?.isSwapEnabled ?: false,
+                isSwapEnabled = (assetInfo.metadata?.isSwapEnabled ?: false) || asset.id.isSwapable(),
                 transactions = transactions,
                 account = AssetInfoUIModel.Account(
                     walletType = assetInfo.walletType,
