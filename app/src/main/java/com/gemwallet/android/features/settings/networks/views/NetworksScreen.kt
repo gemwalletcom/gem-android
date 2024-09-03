@@ -5,7 +5,6 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -14,7 +13,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.add_asset.views.SelectChain
 import com.gemwallet.android.features.settings.networks.viewmodels.NetworksViewModel
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NetworksScreen(
     onCancel: () -> Unit,
