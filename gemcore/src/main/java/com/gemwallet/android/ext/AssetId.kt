@@ -3,6 +3,7 @@ package com.gemwallet.android.ext
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.EVMChain
 
 fun AssetId.toIdentifier() = "${chain.string}${if (tokenId.isNullOrEmpty()) "" else "_${tokenId}"}"
 
@@ -16,3 +17,5 @@ fun String.toAssetId(): AssetId? {
     return AssetId(chain, token)
 }
 
+fun AssetId.isSwapable() = type() == AssetSubtype.NATIVE
+        && (EVMChain.entries.map { it.string }.contains(chain.string) || chain == Chain.Solana)
