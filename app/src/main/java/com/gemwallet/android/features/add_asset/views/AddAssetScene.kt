@@ -115,7 +115,7 @@ fun AddAssetScene(
                         data = uiState.asset.name,
                         trailing = {
                             AsyncImage(
-                                modifier = Modifier.size(20.dp),
+                                modifier = Modifier.size(32.dp),
                                 model = uiState.asset.getIconUrl(),
                                 placeholderText = uiState.asset.symbol,
                                 contentDescription = "asset_icon"
