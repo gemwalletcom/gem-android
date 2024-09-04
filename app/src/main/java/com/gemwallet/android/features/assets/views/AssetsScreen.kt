@@ -154,9 +154,7 @@ private fun LazyListScope.assetsListFooter(
 ) {
     item {
         Box(modifier = Modifier.clickable(onClick = onShowAssetManage).fillMaxWidth()) {
-            Row(modifier = Modifier
-                .align(Alignment.Center)
-                .padding(16.dp)) {
+            Row(modifier = Modifier.align(Alignment.Center).padding(16.dp)) {
                 Icon(
                     imageVector = Icons.Default.Tune,
                     tint = MaterialTheme.colorScheme.onSurface,
@@ -204,7 +202,7 @@ private fun LazyListScope.assets(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
-                    modifier = Modifier.size(20.dp),
+                    modifier = Modifier.size(16.dp),
                     imageVector = Icons.Default.PushPin,
                     tint = MaterialTheme.colorScheme.secondary,
                     contentDescription = "pinned_section",
