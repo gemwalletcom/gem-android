@@ -206,6 +206,7 @@ private fun LazyListScope.assets(
                 Icon(
                     modifier = Modifier.size(20.dp),
                     imageVector = Icons.Default.PushPin,
+                    tint = MaterialTheme.colorScheme.secondary,
                     contentDescription = "pinned_section",
                 )
                 Spacer4()
