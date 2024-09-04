@@ -58,24 +58,6 @@ interface AssetsDao {
         """)
     fun searchAssetInfo(query: String): Flow<List<DbAssetInfo>>
 
-    // TODO: Move to Database
-    @Query("""
-        SELECT
-            assets.*,
-            accounts.*,
-            (SELECT currency FROM session WHERE id = 1) AS priceCurrency,
-            wallets.type AS walletType,
-            wallets.name AS walletName,
-            prices.value AS priceValue,
-            prices.dayChanged AS priceDayChanges,
-            balances.amount AS amount,
-            balances.type as balanceType
-        FROM assets
-        JOIN accounts ON accounts.address = assets.owner_address AND assets.id LIKE accounts.chain || '%'
-        JOIN wallets ON wallets.id = accounts.wallet_id
-        LEFT JOIN balances ON assets.owner_address = balances.address AND assets.id = balances.asset_id
-        LEFT JOIN prices ON assets.id = prices.assetId
-        WHERE accounts.address in (:accounts)
-    """)
+    @Query("SELECT * FROM assets_info WHERE owner_address in (:accounts)")
     fun getAssetsInfoByAccounts(accounts: List<String>): Flow<List<DbAssetInfo>>
 }

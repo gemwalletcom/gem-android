@@ -138,13 +138,13 @@ class TestGetAssetInfo {
                 ),
             )
         ).sortedBy { it.owner.address }
-        assertEquals(5, assets.size)
+        assertEquals(4, assets.size)
         assertEquals("Ethereum-1", assets.firstOrNull()?.asset?.name)
         assertEquals("17000", assets.firstOrNull()?.balances?.calcTotal()?.atomicValue?.toString())
         assertEquals(1.0, assets.first().price?.price?.price)
         assertEquals(Currency.AUD, assets.first().price?.currency)
-        assertEquals("Ethereum-2", assets[1].asset.name)
-        assertEquals("23000", assets[1].balances.calcTotal().atomicValue.toString())
+        assertEquals("Bitcoin-3", assets[1].asset.name)
+        assertEquals("13000", assets[1].balances.calcTotal().atomicValue.toString())
         assertEquals("BNB-TOKEN-1", assets.last().asset.name)
         assertEquals("15000", assets.last().balances.calcTotal().atomicValue.toString())
     }
