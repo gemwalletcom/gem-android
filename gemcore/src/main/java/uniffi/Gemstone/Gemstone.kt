@@ -3368,7 +3368,7 @@ data class PaymentWrapper(
     var `address`: kotlin.String,
     var `amount`: kotlin.String?,
     var `memo`: kotlin.String?,
-    var `chain`: kotlin.String?,
+    var `assetId`: kotlin.String?,
 ) {
     companion object
 }
@@ -3388,7 +3388,7 @@ public object FfiConverterTypePaymentWrapper : FfiConverterRustBuffer<PaymentWra
             FfiConverterString.allocationSize(value.`address`) +
                 FfiConverterOptionalString.allocationSize(value.`amount`) +
                 FfiConverterOptionalString.allocationSize(value.`memo`) +
-                FfiConverterOptionalString.allocationSize(value.`chain`)
+                FfiConverterOptionalString.allocationSize(value.`assetId`)
         )
 
     override fun write(
@@ -3398,7 +3398,7 @@ public object FfiConverterTypePaymentWrapper : FfiConverterRustBuffer<PaymentWra
         FfiConverterString.write(value.`address`, buf)
         FfiConverterOptionalString.write(value.`amount`, buf)
         FfiConverterOptionalString.write(value.`memo`, buf)
-        FfiConverterOptionalString.write(value.`chain`, buf)
+        FfiConverterOptionalString.write(value.`assetId`, buf)
     }
 }
 

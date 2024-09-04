@@ -86,6 +86,8 @@ class WalletsRoomSource @Inject constructor(
                 type =  walletRoom.type,
                 accounts = accounts.toAccounts(),
                 index = walletRoom.index,
+                order = 0,
+                isPinned = false,
             )
         }
         Result.success(result)
@@ -141,6 +143,8 @@ class WalletsRoomSource @Inject constructor(
                 type = room.type,
                 accounts = accounts.toAccounts(),
                 index = room.index,
+                order = 0,
+                isPinned = false,
             )
         )
     }

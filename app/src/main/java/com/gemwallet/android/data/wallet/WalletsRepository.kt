@@ -34,6 +34,8 @@ class WalletsRepository @Inject constructor(
                     )
                 ),
                 index = getNextWalletNumber(),
+                order = 0,
+                isPinned = false,
             )
         )
 
@@ -49,6 +51,8 @@ class WalletsRepository @Inject constructor(
             type = type,
             accounts = accounts,
             index = getNextWalletNumber(),
+            order = 0,
+            isPinned = false,
         )
         return walletsLocalSource.addWallet(wallet)
     }

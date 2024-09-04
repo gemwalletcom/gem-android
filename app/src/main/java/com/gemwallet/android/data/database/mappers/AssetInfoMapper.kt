@@ -66,6 +66,7 @@ class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo
                     isBuyEnabled = first.isBuyEnabled,
                     isSwapEnabled = first.isSwapEnabled,
                     isStakeEnabled = first.isStakeEnabled,
+                    isPinned = false,
                 ),
                 links = if (first.links != null) gson.fromJson(
                     first.links,

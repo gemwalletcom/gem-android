@@ -14,6 +14,7 @@ data class AssetMetaData (
 	val isEnabled: Boolean,
 	val isBuyEnabled: Boolean,
 	val isSwapEnabled: Boolean,
-	val isStakeEnabled: Boolean
+	val isStakeEnabled: Boolean,
+	val isPinned: Boolean
 )
 

@@ -34,7 +34,6 @@ data class ConfigApp (
 
 @Serializable
 data class ConfigVersions (
-	val nodes: Int,
 	val fiatAssets: Int,
 	val swapAssets: Int
 )

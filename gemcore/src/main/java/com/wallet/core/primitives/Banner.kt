@@ -15,6 +15,8 @@ enum class BannerEvent(val string: String) {
 	stake("stake"),
 	@SerialName("accountActivation")
 	account_activation("accountActivation"),
+	@SerialName("enableNotifications")
+	enable_notifications("enableNotifications"),
 }
 
 @Serializable

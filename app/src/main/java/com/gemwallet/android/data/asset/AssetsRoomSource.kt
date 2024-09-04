@@ -224,6 +224,7 @@ class AssetsRoomSource @Inject constructor(
             isBuyEnabled = room.isBuyEnabled,
             isSwapEnabled = room.isSwapEnabled,
             isStakeEnabled = room.isStakeEnabled,
+            isPinned = false,
         ),
         links = if (room.links != null) gson.fromJson(room.links, AssetLinks::class.java) else null,
         market = if (room.market != null) gson.fromJson(room.market, AssetMarket::class.java) else null,
