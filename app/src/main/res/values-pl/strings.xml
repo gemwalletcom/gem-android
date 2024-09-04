@@ -229,7 +229,7 @@
   <string name="errors.error">Error</string>
   <string name="nodes.gem_wallet_node">Gem Wallet Node</string>
   <string name="errors.connections.user_cancelled">User cancelled</string>
-  <string name="errors.swap.no_quote_data">No Quote data</string>
+  <string name="errors.swap.no_quote_data">No quote data</string>
   <string name="errors.not_supported">Not Supported</string>
   <string name="errors.permissions_not_granted">Permissions Not Granted</string>
   <string name="errors.decoding">Decoding Error</string>
@@ -238,7 +238,7 @@
   <string name="errors.camera_permissions_not_granted">Camera permission not granted. Please enable camera access in settings to scan QR code.</string>
   <string name="errors.decoding_qr">Failed to decode the QR code. Please try again with a different QR code.</string>
   <string name="errors.unknown_try_again">An unknown error occurred. Please try again.</string>
-  <string name="library.select_from_photos">Select from photos</string>
+  <string name="library.select_from_photo_library">Select from Photo Library</string>
   <string name="common.open_settings">Open settings</string>
   <string name="fee_rates.info">Speed of transaction is determined by network fee paid to the network miners.</string>
   <string name="fee_rates.slow">Slow</string>
@@ -251,6 +251,18 @@
   <string name="errors.unable_estimate_network_fee">We are currently unable to calculate the network fee.</string>
   <string name="errors.invalid_asset_address">Invalid %s address</string>
   <string name="buy.empty_amount">Please enter amount to buy</string>
-  <string name="transaction.title.received">Received</string>
-  <string name="transaction.title.sent">Sent</string>
+  <string name="transaction.title.received">Otrzymane</string>
+  <string name="transaction.title.sent">Wysłano</string>
+  <string name="stake.stake">Stake</string>
+  <string name="banner.account_activation.title">%s Account Activation Fee</string>
+  <string name="banner.account_activation.description" formatted="false">The %s network requires a one time fee of %s.</string>
+  <string name="banner.stake.title">Start staking %s</string>
+  <string name="banner.stake.description">Earn %s rewards on your stake while you sleep.</string>
+  <string name="banner.enable_notifications.title">Włącz powiadomienia</string>
+  <string name="banner.enable_notifications.description">Kontroluj aktywność swojego portfela.</string>
+  <string name="common.pin">Pin</string>
+  <string name="common.pinned">Pinned</string>
+  <string name="common.unpin">Unpin</string>
+  <string name="filter.clear">Clear</string>
+  <string name="filter.title">Filters</string>
 </resources>
