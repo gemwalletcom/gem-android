@@ -12,6 +12,7 @@ data class DbAsset(
     val symbol: String,
     val decimals: Int,
     val type: AssetType,
+    @ColumnInfo("is_pinned") val isPinned: Boolean = false,
     @ColumnInfo("is_visible") val isVisible: Boolean = true,
     @ColumnInfo("is_buy_enabled") val isBuyEnabled: Boolean = false,
     @ColumnInfo("is_swap_enabled") val isSwapEnabled: Boolean = false,

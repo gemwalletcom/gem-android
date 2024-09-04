@@ -66,6 +66,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_26_27(context))
         .addMigrations(MIGRATION_27_28)
         .addMigrations(MIGRATION_28_29)
+        .addMigrations(MIGRATION_29_30)
         .build()
 
     @Singleton
@@ -552,5 +553,11 @@ val MIGRATION_28_29 = object : Migration(28, 29) {
             WHERE tx.owner IN ($SESSION_REQUEST) OR tx.recipient in ($SESSION_REQUEST)
             GROUP BY tx.id
         """)
+    }
+}
+
+val MIGRATION_29_30 = object : Migration(29, 30) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""ALTER TABLE assets ADD COLUMN is_pinned INTEGER NOT NULL DEFAULT FALSE""")
     }
 }

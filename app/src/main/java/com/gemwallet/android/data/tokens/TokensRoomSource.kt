@@ -60,6 +60,7 @@ interface TokensDao {
             accounts.address AS owner_address,
             wallets.type AS walletType,
             wallets.name AS walletName,
+            0 AS is_pinned,
             0 AS is_visible,
             0 AS is_buy_enabled,
             0 AS is_swap_enabled,
