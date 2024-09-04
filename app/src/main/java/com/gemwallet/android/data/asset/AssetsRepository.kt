@@ -247,6 +247,10 @@ class AssetsRepository @Inject constructor(
         updatePrices(currency)
     }
 
+    suspend fun togglePin(owner: Account, assetId: AssetId) {
+        assetsLocalSource.togglePinned(owner, assetId)
+    }
+
     suspend fun clearPrices() = withContext(Dispatchers.IO) {
         assetsLocalSource.clearPrices()
     }

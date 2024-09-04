@@ -32,6 +32,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -63,9 +64,15 @@ class AssetsViewModel @Inject constructor(
 
     private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAssetsInfo()
 
-    val assets: StateFlow<List<AssetUIState>> = assetsState
+    private val assets: StateFlow<List<AssetUIState>> = assetsState
         .map { handleAssets(it) }
         .flowOn(Dispatchers.IO)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val pinnedAssets = assets.map { it.filter { asset -> asset.metadata?.isPinned ?: false } }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val unpinnedAssets = assets.map { it.filter { asset -> !(asset.metadata?.isPinned ?: false) } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val swapEnabled = assetsState.map {assets ->
@@ -120,7 +127,8 @@ class AssetsViewModel @Inject constructor(
             .sortedByDescending {
                 it.balances.calcTotal().convert(it.asset.decimals, it.price?.price?.price ?: 0.0).atomicValue
             }
-            .map { it.toUIModel() }.toImmutableList()
+            .map { it.toUIModel() }
+            .toImmutableList()
     }
 
     fun hideAsset(assetId: AssetId) {
@@ -159,6 +167,13 @@ class AssetsViewModel @Inject constructor(
             } else {
                 changedPercentages
             },
+        )
+    }
+
+    fun togglePin(assetId: AssetId) = viewModelScope.launch(Dispatchers.IO) {
+        assetsRepository.togglePin(
+            sessionRepository.getSession()?.wallet?.getAccount(assetId.chain) ?: return@launch,
+            assetId
         )
     }
 }

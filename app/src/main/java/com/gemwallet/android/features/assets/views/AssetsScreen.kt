@@ -1,11 +1,13 @@
 package com.gemwallet.android.features.assets.views
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,6 +18,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ButtonDefaults
@@ -42,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
@@ -61,6 +65,7 @@ import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.AsyncImage
 import com.gemwallet.android.ui.components.DropDownContextItem
 import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer4
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.TransactionExtended
 
@@ -78,7 +83,8 @@ fun AssetsScreen(
     listState: LazyListState = rememberLazyListState(),
     viewModel: AssetsViewModel = hiltViewModel(),
 ) {
-    val assets by viewModel.assets.collectAsStateWithLifecycle()
+    val pinnedAssets by viewModel.pinnedAssets.collectAsStateWithLifecycle()
+    val unpinnedAssets by viewModel.unpinnedAssets.collectAsStateWithLifecycle()
     val walletInfo by viewModel.walletInfo.collectAsStateWithLifecycle()
     val swapEnabled by viewModel.swapEnabled.collectAsStateWithLifecycle()
     val transactionsState by viewModel.txsState.collectAsStateWithLifecycle()
@@ -110,7 +116,8 @@ fun AssetsScreen(
             ) {
                 assetsHead(walletInfo, swapEnabled, onSendClick, onReceiveClick, onBuyClick, onSwapClick)
                 pendingTransactions(transactionsState, onTransactionClick)
-                assets(assets, longPressedAsset, onAssetClick, viewModel::hideAsset)
+                assets(pinnedAssets, longPressedAsset, true, onAssetClick, viewModel::hideAsset, viewModel::togglePin)
+                assets(unpinnedAssets, longPressedAsset, false, onAssetClick, viewModel::hideAsset, viewModel::togglePin)
                 assetsListFooter(onShowAssetManage)
             }
         }
@@ -146,9 +153,7 @@ private fun LazyListScope.assetsListFooter(
     onShowAssetManage: () -> Unit,
 ) {
     item {
-        Box(modifier = Modifier
-            .clickable(onClick = onShowAssetManage)
-            .fillMaxWidth()) {
+        Box(modifier = Modifier.clickable(onClick = onShowAssetManage).fillMaxWidth()) {
             Row(modifier = Modifier
                 .align(Alignment.Center)
                 .padding(16.dp)) {
@@ -185,10 +190,36 @@ private fun LazyListScope.pendingTransactions(
 private fun LazyListScope.assets(
     assets: List<AssetUIState>,
     longPressState: MutableState<AssetId?>,
+    isPinned: Boolean = false,
     onAssetClick: (AssetId) -> Unit,
     onAssetHide: (AssetId) -> Unit,
+    onTogglePin: (AssetId) -> Unit,
 ) {
+    if (assets.isEmpty()) return
 
+    if (isPinned) {
+        item {
+            Row(
+                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    imageVector = Icons.Default.PushPin,
+                    contentDescription = "pinned_section",
+                )
+                Spacer4()
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = MaterialTheme.colorScheme.background),
+                    text = stringResource(R.string.common_pinned),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+            }
+        }
+    }
     items(items = assets, key = { it.asset.id.toIdentifier() }) { item ->
         val clipboardManager = LocalClipboardManager.current
         DropDownContextItem(
@@ -210,6 +241,18 @@ private fun LazyListScope.assets(
             },
             menuItems = {
                 DropdownMenuItem(
+                    text = { Text( text = stringResource(id = if (isPinned) R.string.common_unpin else R.string.common_pin)) },
+                    trailingIcon = {
+                        if (isPinned) Icon(painterResource(R.drawable.keep_off), "unpin")
+                        else Icon(Icons.Default.PushPin, "pin")
+
+                    },
+                    onClick = {
+                        onTogglePin(item.asset.id)
+                        longPressState.value = null
+                    },
+                )
+                DropdownMenuItem(
                     text = { Text( text = stringResource(id = R.string.wallet_copy_address)) },
                     trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
                     onClick = {
@@ -228,6 +271,9 @@ private fun LazyListScope.assets(
             },
             onLongClick = { longPressState.value = item.asset.id }
         ) { onAssetClick(item.asset.id) }
+    }
+    if (isPinned) {
+        item { Spacer(modifier = Modifier.height(32.dp)) }
     }
 }
 

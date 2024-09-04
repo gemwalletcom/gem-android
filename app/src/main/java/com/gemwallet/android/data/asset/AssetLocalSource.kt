@@ -38,6 +38,8 @@ interface AssetsLocalSource {
 
     suspend fun setVisibility(account: Account, assetId: AssetId, visibility: Boolean)
 
+    suspend fun togglePinned(account: Account, assetId: AssetId)
+
     suspend fun setPrices(prices: List<AssetPrice>)
 
     suspend fun clearPrices()

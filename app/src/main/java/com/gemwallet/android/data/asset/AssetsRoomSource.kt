@@ -142,7 +142,12 @@ class AssetsRoomSource @Inject constructor(
 
     override suspend fun setVisibility(account: Account, assetId: AssetId, visibility: Boolean) = withContext(Dispatchers.IO) {
         val asset = assetsDao.getById(listOf(account.address), listOf(assetId.toIdentifier())).firstOrNull() ?: return@withContext
-        assetsDao.update(asset.copy(isVisible = visibility))
+        assetsDao.update(asset.copy(isVisible = visibility, isPinned = false))
+    }
+
+    override suspend fun togglePinned(account: Account, assetId: AssetId)  = withContext(Dispatchers.IO) {
+        val asset = assetsDao.getById(listOf(account.address), listOf(assetId.toIdentifier())).firstOrNull() ?: return@withContext
+        assetsDao.update(asset.copy(isPinned = !asset.isPinned))
     }
 
     override suspend fun setPrices(prices: List<AssetPrice>) = withContext(Dispatchers.IO) {
