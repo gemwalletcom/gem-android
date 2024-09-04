@@ -21,8 +21,8 @@ class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo
 
     override fun asDomain(entity: List<DbAssetInfo>): List<AssetInfo> {
         return entity.groupBy { it.id + it.address }.mapNotNull { records ->
-            val first = records.value.firstOrNull() ?: return@mapNotNull null
-            val assetId = first.id.toAssetId() ?: return@mapNotNull null
+            val entity = records.value.firstOrNull() ?: return@mapNotNull null
+            val assetId = entity.id.toAssetId() ?: return@mapNotNull null
 
             val balances = Balances(
                 records.value.mapNotNull {
@@ -34,52 +34,52 @@ class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo
                 }
             )
 
-            val currency = Currency.entries.firstOrNull { it.string == first.priceCurrency }
+            val currency = Currency.entries.firstOrNull { it.string == entity.priceCurrency }
 
             AssetInfo(
                 owner = Account(
-                    chain = first.chain,
-                    address = first.address,
-                    derivationPath = first.derivationPath,
-                    extendedPublicKey = first.extendedPublicKey,
+                    chain = entity.chain,
+                    address = entity.address,
+                    derivationPath = entity.derivationPath,
+                    extendedPublicKey = entity.extendedPublicKey,
                 ),
                 asset = Asset(
                     id = assetId,
-                    name = first.name,
-                    symbol = first.symbol,
-                    decimals = first.decimals,
-                    type = first.type,
+                    name = entity.name,
+                    symbol = entity.symbol,
+                    decimals = entity.decimals,
+                    type = entity.type,
                 ),
                 balances = balances,
-                price = if (first.priceValue != null && currency != null) {
+                price = if (entity.priceValue != null && currency != null) {
                     AssetPriceInfo(
                         currency = currency,
                         price = AssetPrice(
                             assetId = assetId.toIdentifier(),
-                            price = first.priceValue,
-                            priceChangePercentage24h = first.priceDayChanges ?: 0.0,
+                            price = entity.priceValue,
+                            priceChangePercentage24h = entity.priceDayChanges ?: 0.0,
                         )
                     )
                 } else null,
                 metadata = AssetMetaData(
-                    isEnabled = first.isVisible,
-                    isBuyEnabled = first.isBuyEnabled,
-                    isSwapEnabled = first.isSwapEnabled,
-                    isStakeEnabled = first.isStakeEnabled,
-                    isPinned = false,
+                    isEnabled = entity.isVisible,
+                    isBuyEnabled = entity.isBuyEnabled,
+                    isSwapEnabled = entity.isSwapEnabled,
+                    isStakeEnabled = entity.isStakeEnabled,
+                    isPinned = entity.isPinned,
                 ),
-                links = if (first.links != null) gson.fromJson(
-                    first.links,
+                links = if (entity.links != null) gson.fromJson(
+                    entity.links,
                     AssetLinks::class.java
                 ) else null,
-                market = if (first.market != null) gson.fromJson(
-                    first.market,
+                market = if (entity.market != null) gson.fromJson(
+                    entity.market,
                     AssetMarket::class.java
                 ) else null,
-                rank = first.rank,
-                walletName = first.walletName,
-                walletType = first.walletType,
-                stakeApr = first.stakingApr,
+                rank = entity.rank,
+                walletName = entity.walletName,
+                walletType = entity.walletType,
+                stakeApr = entity.stakingApr,
             )
         }
     }
