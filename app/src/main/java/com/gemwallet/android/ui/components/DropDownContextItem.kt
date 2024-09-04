@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 fun DropDownContextItem(
     modifier: Modifier = Modifier,
     isExpanded: Boolean,
+    imeCompensate: Boolean, // TODO: Compose bug relative with bottom bar.
     onDismiss: () -> Unit,
     content: @Composable () -> Unit,
     menuItems: @Composable ColumnScope.() -> Unit,
@@ -77,7 +78,7 @@ fun DropDownContextItem(
                 .onSizeChanged {
                     val height = with(density) { it.height.toDp() }
                     menuOffset = if (spaceToBottom - gesturePoint.y < height) {
-                        gesturePoint.copy(y = gesturePoint.y - itemHeight - height)
+                        if (imeCompensate) gesturePoint else gesturePoint.copy(y = gesturePoint.y - itemHeight - height)
                     } else {
                         gesturePoint.copy(y = gesturePoint.y - itemHeight)
                     }

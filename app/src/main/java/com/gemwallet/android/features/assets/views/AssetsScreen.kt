@@ -194,6 +194,7 @@ private fun LazyListScope.assets(
         DropDownContextItem(
             modifier = Modifier.testTag(item.asset.id.toIdentifier()),
             isExpanded = longPressState.value == item.asset.id,
+            imeCompensate = false,
             onDismiss = { longPressState.value = null },
             content = {
                 AssetListItem(

@@ -158,6 +158,7 @@ private fun UI(
             items(items = wallets, key = { it.id }) { wallet ->
                 DropDownContextItem(
                     isExpanded = longPressedWallet == wallet.id,
+                    imeCompensate = true,
                     onDismiss = { longPressedWallet = "" },
                     content = {
                         WalletItem(
