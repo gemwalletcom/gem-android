@@ -205,12 +205,12 @@ class AssetsRepository @Inject constructor(
                 val isNew = assets[it.first.chain.string] == null
                 val isVisible = assets[it.second.id.toIdentifier()]?.metadata?.isEnabled
                     ?: visibleByDefault.contains(it.first.chain) || wallet.type != WalletType.multicoin
-                assetsLocalSource.add(it.first.address, it.second, isVisible)
+                assetsLocalSource.add(wallet.id, it.first.address, it.second, isVisible)
                 async {
                     if (isNew) {
                         val balances = updateBalances(it.first, emptyList()).firstOrNull()
                         if ((balances?.calcTotal()?.atomicValue?.compareTo(BigInteger.ZERO) ?: 0) > 0) {
-                            assetsLocalSource.setVisibility(it.first, it.second.id, true)
+                            assetsLocalSource.setVisibility(wallet.id, it.first, it.second.id, true)
                         }
                     }
                 }
@@ -226,12 +226,13 @@ class AssetsRepository @Inject constructor(
                 val account =
                     wallet.getAccount(assetId.chain) ?: return@async
                 tokensRepository.search(assetId.tokenId!!)
-                switchVisibility(account, assetId, true, currency)
+                switchVisibility(wallet.id, account, assetId, true, currency)
             }
         }.awaitAll()
     }
 
     suspend fun switchVisibility(
+        walletId: String,
         owner: Account,
         assetId: AssetId,
         visibility: Boolean,
@@ -242,13 +243,13 @@ class AssetsRepository @Inject constructor(
             val asset = tokensRepository.getByIds(listOf(assetId))
             assetsLocalSource.add(owner.address, asset)
         }
-        assetsLocalSource.setVisibility(owner, assetId, visibility)
+        assetsLocalSource.setVisibility(walletId, owner, assetId, visibility)
         updateBalances(assetId)
         updatePrices(currency)
     }
 
-    suspend fun togglePin(owner: Account, assetId: AssetId) {
-        assetsLocalSource.togglePinned(owner, assetId)
+    suspend fun togglePin(walletId: String, assetId: AssetId) {
+        assetsLocalSource.togglePinned(walletId, assetId)
     }
 
     suspend fun clearPrices() = withContext(Dispatchers.IO) {
@@ -304,5 +305,9 @@ class AssetsRepository @Inject constructor(
                     updateBalances(account, entry.value)
                 }
             }
+    }
+
+    suspend fun saveOrder(walletId: String, order: List<AssetId>) {
+        assetsLocalSource.saveOrder(walletId, order)
     }
 }

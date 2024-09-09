@@ -208,6 +208,8 @@ dependencies {
     // Chart
     implementation(libs.vico.m3)
 
+    implementation(libs.reorderable)
+
     // Google Play
     // Notifications - FCM
     "googleImplementation"(libs.firebase.messaging)
@@ -226,7 +228,7 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
-    androidTestImplementation("androidx.test.uiautomator:uiautomator:2.3.0")
+    androidTestImplementation(libs.androidx.uiautomator)
 }
 
 room {

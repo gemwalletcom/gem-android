@@ -4,6 +4,7 @@ import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.BalancesDao
 import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.database.entities.DbAsset
+import com.gemwallet.android.data.database.entities.DbAssetConfig
 import com.gemwallet.android.data.database.entities.DbBalance
 import com.gemwallet.android.data.database.entities.DbPrice
 import com.gemwallet.android.data.database.mappers.AssetInfoMapper
@@ -117,8 +118,16 @@ class AssetsRoomSource @Inject constructor(
         )
     }
 
-    override suspend fun add(address: String, asset: Asset, visible: Boolean) = withContext(Dispatchers.IO) {
-        assetsDao.insert(modelToRoom(address, asset).copy(isVisible = visible))
+    override suspend fun add(walletId: String, address: String, asset: Asset, visible: Boolean) = withContext(Dispatchers.IO) {
+        assetsDao.insert(modelToRoom(address, asset))
+
+        assetsDao.setConfig(
+            DbAssetConfig(
+                assetId = asset.id.toIdentifier(),
+                walletId = walletId,
+                isVisible = visible,
+            )
+        )
     }
 
     override suspend fun add(address: String, assets: List<Asset>) {
@@ -140,14 +149,21 @@ class AssetsRoomSource @Inject constructor(
         )
     }
 
-    override suspend fun setVisibility(account: Account, assetId: AssetId, visibility: Boolean) = withContext(Dispatchers.IO) {
-        val asset = assetsDao.getById(listOf(account.address), listOf(assetId.toIdentifier())).firstOrNull() ?: return@withContext
-        assetsDao.update(asset.copy(isVisible = visibility, isPinned = false))
+    override suspend fun setVisibility(walletId: String, account: Account, assetId: AssetId, visibility: Boolean) = withContext(Dispatchers.IO) {
+        val config = assetsDao.getConfig(walletId, assetId.toIdentifier()) ?: DbAssetConfig(
+            walletId = walletId,
+            assetId = assetId.toIdentifier(),
+        )
+        assetsDao.setConfig(config.copy(isVisible = visibility, isPinned = false))
     }
 
-    override suspend fun togglePinned(account: Account, assetId: AssetId)  = withContext(Dispatchers.IO) {
-        val asset = assetsDao.getById(listOf(account.address), listOf(assetId.toIdentifier())).firstOrNull() ?: return@withContext
-        assetsDao.update(asset.copy(isPinned = !asset.isPinned))
+    override suspend fun togglePinned(walletId: String, assetId: AssetId)  = withContext(Dispatchers.IO) {
+        val config = assetsDao.getConfig(walletId, assetId.toIdentifier()) ?: DbAssetConfig(
+            walletId = walletId,
+            assetId = assetId.toIdentifier(),
+        )
+        // TODO: Get last position
+        assetsDao.setConfig(config.copy(isVisible = true, isPinned = !config.isPinned))
     }
 
     override suspend fun setPrices(prices: List<AssetPrice>) = withContext(Dispatchers.IO) {
@@ -192,6 +208,17 @@ class AssetsRoomSource @Inject constructor(
         return assetsDao.getById(assetId.toIdentifier()).firstOrNull()?.stakingApr
     }
 
+    override suspend fun saveOrder(walletId: String, ids: List<AssetId>) = withContext(Dispatchers.IO) {
+        val records = ids.mapIndexed { index, assetId ->
+            val assetConfig = assetsDao.getConfig(walletId, assetId.toIdentifier()) ?: DbAssetConfig(
+                assetId = assetId.toIdentifier(),
+                walletId = walletId,
+            )
+            assetConfig.copy(listPosition = index)
+        }
+        assetsDao.setConfig(records)
+    }
+
     private fun modelToRoom(address: String, asset: Asset) = DbAsset(
         id = asset.id.toIdentifier(),
         address = address,
@@ -225,7 +252,7 @@ class AssetsRoomSource @Inject constructor(
         ),
         price = prices.firstOrNull { it.price.assetId ==  room.id},
         metadata = AssetMetaData(
-            isEnabled = room.isVisible,
+            isEnabled = true, // TODO: Deprecated
             isBuyEnabled = room.isBuyEnabled,
             isSwapEnabled = room.isSwapEnabled,
             isStakeEnabled = room.isStakeEnabled,

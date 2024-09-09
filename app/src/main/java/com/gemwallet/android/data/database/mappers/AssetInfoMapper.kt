@@ -62,11 +62,11 @@ class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo
                     )
                 } else null,
                 metadata = AssetMetaData(
-                    isEnabled = entity.isVisible,
+                    isEnabled = entity.visible ?: true,
                     isBuyEnabled = entity.isBuyEnabled,
                     isSwapEnabled = entity.isSwapEnabled,
                     isStakeEnabled = entity.isStakeEnabled,
-                    isPinned = entity.isPinned,
+                    isPinned = entity.pinned ?: false,
                 ),
                 links = if (entity.links != null) gson.fromJson(
                     entity.links,
@@ -76,10 +76,11 @@ class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo
                     entity.market,
                     AssetMarket::class.java
                 ) else null,
-                rank = entity.rank,
+                rank = 0, //entity.assetRank,
                 walletName = entity.walletName,
                 walletType = entity.walletType,
                 stakeApr = entity.stakingApr,
+                position = entity.listPosition ?: 0,
             )
         }
     }

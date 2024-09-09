@@ -7,6 +7,7 @@ import com.gemwallet.android.data.bridge.RoomConnection
 import com.gemwallet.android.data.config.NodeDao
 import com.gemwallet.android.data.config.RoomNode
 import com.gemwallet.android.data.database.entities.DbAsset
+import com.gemwallet.android.data.database.entities.DbAssetConfig
 import com.gemwallet.android.data.database.entities.DbAssetInfo
 import com.gemwallet.android.data.database.entities.DbBalance
 import com.gemwallet.android.data.database.entities.DbPrice
@@ -26,7 +27,7 @@ import com.gemwallet.android.data.wallet.WalletRoom
 import com.gemwallet.android.data.wallet.WalletsDao
 
 @Database(
-    version = 30,
+    version = 31,
     entities = [
         WalletRoom::class,
         AccountRoom::class,
@@ -41,6 +42,7 @@ import com.gemwallet.android.data.wallet.WalletsDao
         RoomDelegationBase::class,
         RoomNode::class,
         DbSession::class,
+        DbAssetConfig::class,
     ],
     views = [
         DbAssetInfo::class,
