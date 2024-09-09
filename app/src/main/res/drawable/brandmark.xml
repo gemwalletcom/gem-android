@@ -1,28 +1,31 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="120dp"
-    android:height="120dp"
-    android:viewportWidth="120"
-    android:viewportHeight="120">
+    android:width="512dp"
+    android:height="512dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
   <group>
     <clip-path
-        android:pathData="M44.34,0L75.37,0A44.34,44.34 0,0 1,119.71 44.34L119.71,75.37A44.34,44.34 0,0 1,75.37 119.71L44.34,119.71A44.34,44.34 0,0 1,0 75.37L0,44.34A44.34,44.34 0,0 1,44.34 0z"/>
+        android:pathData="M128,0L384,0A128,128 0,0 1,512 128L512,384A128,128 0,0 1,384 512L128,512A128,128 0,0 1,0 384L0,128A128,128 0,0 1,128 0z"/>
     <path
-        android:pathData="M44.34,0L75.37,0A44.34,44.34 0,0 1,119.71 44.34L119.71,75.37A44.34,44.34 0,0 1,75.37 119.71L44.34,119.71A44.34,44.34 0,0 1,0 75.37L0,44.34A44.34,44.34 0,0 1,44.34 0z"
+        android:pathData="M128,0L384,0A128,128 0,0 1,512 128L512,384A128,128 0,0 1,384 512L128,512A128,128 0,0 1,0 384L0,128A128,128 0,0 1,128 0z"
         android:fillColor="#2D5BE6"/>
     <path
-        android:pathData="M59.86,97.54L104.19,62.07H15.52L59.86,97.54Z"
+        android:pathData="M0,0h512v512h-512z"
+        android:fillColor="#2D5BE6"/>
+    <path
+        android:pathData="M256,395.59L436.15,256.81H75.85L256,395.59Z"
         android:fillColor="#ffffff"
         android:fillAlpha="0.7"/>
     <path
-        android:pathData="M59.86,97.54L82.03,31.04H37.69L59.86,97.54Z"
+        android:pathData="M256,395.59L346.07,135.37H165.93L256,395.59Z"
         android:fillColor="#ffffff"
         android:fillAlpha="0.5"/>
     <path
-        android:pathData="M37.69,31.04H82.03L104.19,62.07H15.52L37.69,31.04Z"
+        android:pathData="M165.93,135.37H346.07L436.15,256.81H75.85L165.93,135.37Z"
         android:fillColor="#ffffff"
         android:fillAlpha="0.8"/>
     <path
-        android:pathData="M48.03,62.07H71.68L82.03,31.05H37.69L48.03,62.07Z"
+        android:pathData="M207.95,256.81H304.05L346.07,135.44H165.93L207.95,256.81Z"
         android:fillColor="#ffffff"
         android:fillAlpha="0.9"
         android:fillType="evenOdd"/>

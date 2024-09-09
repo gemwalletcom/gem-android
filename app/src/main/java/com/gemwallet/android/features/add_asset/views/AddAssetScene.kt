@@ -80,7 +80,6 @@ fun AddAssetScene(
                 chain = uiState.chain,
                 label = "Contract Address",
                 value = inputState,
-                editable = false,
                 searchName = false,
                 onValueChange = { input, _ ->
                     inputState = input

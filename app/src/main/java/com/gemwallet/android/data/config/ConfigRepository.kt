@@ -77,6 +77,10 @@ interface ConfigRepository {
 
     fun increaseSubscriptionVersion()
 
+    fun getLaunchNumber(): Int
+
+    fun increaseLaunchNumber()
+
     enum class AppVersionType {
         Alpha,
         Beta,

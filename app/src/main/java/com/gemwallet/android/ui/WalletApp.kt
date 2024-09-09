@@ -20,6 +20,7 @@ import com.gemwallet.android.R
 import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateWalletScreen
 import com.gemwallet.android.features.import_wallet.navigation.navigateToImportWalletScreen
 import com.gemwallet.android.features.onboarding.OnboardScreen
+import com.gemwallet.android.ui.components.ReviewManager
 import com.gemwallet.android.ui.navigation.WalletNavGraph
 import com.gemwallet.android.ui.theme.Spacer16
 
@@ -52,6 +53,11 @@ fun WalletApp() {
             onSkip = viewModel::onSkip,
             onCancel = viewModel::onCancelUpdate
         )
+    }
+
+    if (state.intent == AppIntent.ShowRaview) {
+        viewModel.onReviewOpen()
+        ReviewManager(LocalContext.current).open()
     }
 }
 

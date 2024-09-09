@@ -177,6 +177,14 @@ class OfflineFirstConfigRepository(
         putInt(Keys.SubscriptionVersion, newVersion)
     }
 
+    override fun getLaunchNumber(): Int {
+        return getInt(Keys.LaunchNumber)
+    }
+
+    override fun increaseLaunchNumber() {
+        putInt(Keys.LaunchNumber, getInt(Keys.LaunchNumber) + 1)
+    }
+
     private fun getStore(): SharedPreferences {
         if (!::store.isInitialized) {
             store = context.getSharedPreferences("config", Context.MODE_PRIVATE)
@@ -227,6 +235,7 @@ class OfflineFirstConfigRepository(
         SubscriptionVersion("subscription_version"),
         CurrentNode("current_node"),
         CurrentExplorer("current_explorer"),
+        LaunchNumber("launch_number"),
         ;
 
         fun buildKey(postfix: String = "") = "$string-$postfix"

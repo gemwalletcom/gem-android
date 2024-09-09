@@ -34,6 +34,7 @@ class AppViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             handleAppVersion()
+            rateAs()
             sessionRepository.session().collectLatest {
                 onSession(it ?: return@collectLatest)
             }
@@ -66,6 +67,13 @@ class AppViewModel @Inject constructor(
         }
     }
 
+    private fun rateAs() {
+        if (configRepository.getLaunchNumber() == 10) {
+            state.update { it.copy(intent = AppIntent.ShowRaview) }
+        }
+        configRepository.increaseLaunchNumber()
+    }
+
     private fun onSession(session: Session) {
         state.update {
             it.copy(session = session)
@@ -76,6 +84,10 @@ class AppViewModel @Inject constructor(
         "/"
     } else {
         OnboardingDest.route
+    }
+
+    fun onReviewOpen() {
+        state.update { it.copy(intent = AppIntent.None) }
     }
 }
 
@@ -100,4 +112,5 @@ data class AppUIState(
 enum class AppIntent {
     None,
     ShowUpdate,
+    ShowRaview,
 }

@@ -293,7 +293,7 @@ private fun AssetsTopBar(
                     Row(verticalAlignment = Alignment.CenterVertically ) {
                         AsyncImage(
                             model = walletInfo.icon.ifEmpty {
-                                "android.resource://com.gemwallet.android/drawable/ic_splash"
+                                "android.resource://com.gemwallet.android/drawable/multicoin_wallet"
                             },
                             contentDescription = "icon",
                             placeholderText = null,
