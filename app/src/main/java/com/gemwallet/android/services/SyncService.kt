@@ -50,5 +50,5 @@ class SyncService @Inject constructor(
 
 fun isAvailableOperation(context: Context): Boolean = (context.getSystemService(TELEPHONY_SERVICE) as TelephonyManager)
     .networkCountryIso.let {
-        !(it == "uk" || it == "gb" || it == "us")
+        !(it == "uk" || it == "gb")
     }
