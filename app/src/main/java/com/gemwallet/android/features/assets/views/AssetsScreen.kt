@@ -241,11 +241,8 @@ private fun LazyListScope.assets(
                 item.asset.id.toIdentifier()
             ) { isDragging ->
                 AssetItem(
-                    modifier = Modifier
-                        .shadow(if (isDragging) 4.dp else 0.dp)
-                        .longPressDraggableHandle(
-                            onDragStopped = onReordered
-                        ),
+                    modifier = Modifier.shadow(if (isDragging) 4.dp else 0.dp),
+                    iconModifier = Modifier.draggableHandle(onDragStopped = onReordered),
                     item = item,
                     longPressState = longPressState,
                     isPinned = isPinned,
@@ -276,6 +273,7 @@ private fun AssetItem(
     item: AssetUIState,
     longPressState: MutableState<AssetId?>,
     modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
     isPinned: Boolean = false,
     onAssetClick: (AssetId) -> Unit,
     onAssetHide: (AssetId) -> Unit,
@@ -292,6 +290,7 @@ private fun AssetItem(
                 assetId = item.asset.id,
                 title = item.asset.name,
                 iconUrl = item.asset.getIconUrl(),
+                iconModifier = iconModifier,
                 value = item.value,
                 assetType = item.asset.type,
                 isZeroValue = item.isZeroValue,
