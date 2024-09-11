@@ -1,6 +1,7 @@
 [versions]
 accompanistPermissions = "0.34.0"
-activityCompose = "1.9.1"
+activityCompose = "1.9.2"
+uiautomator = "2.3.0"
 walletconnect = "1.35.1"
 barcodeScanning = "17.3.0"
 biometric = "1.2.0-alpha05"
@@ -11,7 +12,7 @@ core = "3.5.3"
 coreKtx = "1.13.1"
 espressoCore = "3.6.1"
 firebaseMessaging = "24.0.1"
-foundation = "1.6.8"
+foundation = "1.7.1"
 gradle = "8.5.2"
 gson = "2.11.0"
 hiltAndroid = "2.52"
@@ -25,19 +26,19 @@ kotlinSerialization = "2.0.0"
 kotlinxSerializationJson = "1.7.2"
 kotlinxCollectionsImmutable = "0.3.7"
 kotlinxCoroutinesAndroid = "1.8.1"
-lifecycleRuntimeCompose = "2.8.4" #2.8.2 buggy
+lifecycleRuntimeCompose = "2.8.5"
 loggingInterceptor = "4.12.0"
-material = "1.7.0-rc01"
-material3 = "1.3.0-rc01"
-navigationCompose = "2.7.7"
+material = "1.7.1"
+material3 = "1.3.0"
+navigationCompose = "2.8.0"
 plugin = "0.3.4"
 retrofit = "2.11.0"
 review = "2.0.1"
-room = "2.6.1"
-runtimeAndroid = "1.6.8"
+room = "2.7.0-alpha07"
+runtimeAndroid = "1.7.1"
 securityCrypto = "1.0.0"
-ui = "1.6.8"
-uiTestJunit4 = "1.6.8"
+ui = "1.7.1"
+uiTestJunit4 = "1.7.1"
 testRunner = "1.6.2"
 ksp = "2.0.0-1.0.24"
 android-lib = "8.5.2"
@@ -46,6 +47,7 @@ google-services = "4.4.2"
 material3AdaptiveAndroid = "1.0.0-alpha06"
 turbine = "1.1.0"
 protobuf = "4.27.2"
+reorderable = "2.3.2"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -101,6 +103,7 @@ androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4", versi
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiTestJunit4" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTestJunit4" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+androidx-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiautomator" }
 
 # chart
 vico-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico" }
@@ -136,6 +139,8 @@ lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmo
 rust-plugin = { module = "gradle.plugin.com.github.willir.rust:plugin", version.ref = "plugin" }
 jna = { module = "net.java.dev.jna:jna", version.ref = "jna" }
 androidx-material3-adaptive-android = { group = "androidx.compose.material3", name = "material3-adaptive-android", version.ref = "material3AdaptiveAndroid" }
+
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}

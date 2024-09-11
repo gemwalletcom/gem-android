@@ -75,6 +75,7 @@ fun ListItem(
 fun ListItem(
     iconUrl: String,
     modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
     supportIcon: String? = null,
     placeholder: String? = null,
     dividerShowed: Boolean = true,
@@ -85,7 +86,7 @@ fun ListItem(
         modifier = modifier,
         dividerShowed = dividerShowed,
         leading = {
-            AssetIcon(iconUrl = iconUrl, placeholder = placeholder, supportIcon = supportIcon)
+            AssetIcon(modifier = iconModifier.size(listItemIconSize), iconUrl = iconUrl, placeholder = placeholder, supportIcon = supportIcon)
         },
         trailing = trailing,
         body = body,
@@ -166,7 +167,7 @@ fun AssetIcon(
     iconUrl: String,
     placeholder: String?,
     supportIcon: String?,
-    modifier: Modifier = Modifier.size(listItemIconSize),
+    modifier: Modifier = Modifier,
 ) {
     Box {
         AsyncImage(

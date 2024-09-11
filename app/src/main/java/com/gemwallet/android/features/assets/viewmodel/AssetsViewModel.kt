@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
@@ -69,7 +68,7 @@ class AssetsViewModel @Inject constructor(
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val pinnedAssets = assets.map { it.filter { asset -> asset.metadata?.isPinned ?: false } }
+    val pinnedAssets = assets.map { it.filter { asset -> asset.metadata?.isPinned ?: false }.sortedBy { it.position } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val unpinnedAssets = assets.map { it.filter { asset -> !(asset.metadata?.isPinned ?: false) } }
@@ -135,7 +134,7 @@ class AssetsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val session = sessionRepository.getSession() ?: return@launch
             val account = session.wallet.getAccount(assetId.chain) ?: return@launch
-            assetsRepository.switchVisibility(account, assetId, false, session.currency)
+            assetsRepository.switchVisibility(session.wallet.id, account, assetId, false, session.currency)
         }
     }
 
@@ -171,9 +170,16 @@ class AssetsViewModel @Inject constructor(
     }
 
     fun togglePin(assetId: AssetId) = viewModelScope.launch(Dispatchers.IO) {
+        val session = sessionRepository.getSession() ?: return@launch
         assetsRepository.togglePin(
-            sessionRepository.getSession()?.wallet?.getAccount(assetId.chain) ?: return@launch,
-            assetId
+            session.wallet.id, assetId
+        )
+    }
+
+    fun saveOrder(pinnedAssets: List<AssetUIState>) = viewModelScope.launch {
+        assetsRepository.saveOrder(
+            walletId = sessionRepository.getSession()?.wallet?.id ?: return@launch,
+            order = pinnedAssets.map { it.asset.id }
         )
     }
 }

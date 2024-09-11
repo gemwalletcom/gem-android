@@ -55,16 +55,25 @@ interface TokensDao {
 
     @Query("""
         SELECT
-            tokens.*,
-            accounts.*,
-            accounts.address AS owner_address,
+            tokens.id as id,
+            tokens.name as name,
+            tokens.symbol as symbol,
+            tokens.decimals as decimals,
+            tokens.type as type,
+            accounts.derivation_path as derivationPath,
+            accounts.chain as chain,
+            accounts.wallet_id as walletId,
+            accounts.address AS address,
+            accounts.extendedPublicKey AS extendedPublicKey,
             wallets.type AS walletType,
             wallets.name AS walletName,
-            0 AS is_pinned,
-            0 AS is_visible,
-            0 AS is_buy_enabled,
-            0 AS is_swap_enabled,
-            0 AS is_stake_enabled
+            0 AS pinned,
+            0 AS visible,
+            0 AS position,
+            0 AS isBuyEnabled,
+            0 AS isSwapEnabled,
+            0 AS isStakeEnabled,
+            0 AS assetRank
         FROM tokens, accounts
         JOIN wallets ON wallets.id = accounts.wallet_id
         WHERE

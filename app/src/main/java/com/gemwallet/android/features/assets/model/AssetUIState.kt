@@ -22,6 +22,7 @@ data class AssetUIState(
     val fiat: String = "",
     val owner: String = "",
     val metadata: AssetMetaData? = null,
+    val position: Int = 0,
 )
 
 fun AssetInfo.toUIModel(): AssetUIState {
@@ -40,6 +41,7 @@ fun AssetInfo.toUIModel(): AssetUIState {
         },
         owner = owner.address,
         metadata = metadata,
+        position = position,
     )
 }
 

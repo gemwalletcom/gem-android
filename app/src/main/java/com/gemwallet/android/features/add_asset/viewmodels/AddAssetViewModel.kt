@@ -46,7 +46,7 @@ class AddAssetViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val chains = getAvailableChains()
-            state.update { it.copy(chains = chains, chain = chains.firstOrNull { it == Chain.Ethereum } ?: chains.firstOrNull() ?: Chain.Ethereum) }
+            state.update { it.copy(chains = chains, chain = chains.firstOrNull { chain -> chain == Chain.Ethereum } ?: chains.firstOrNull() ?: Chain.Ethereum) }
         }
         viewModelScope.launch {
             snapshotFlow { chainFilter.text }.collectLatest { query ->
@@ -98,8 +98,8 @@ class AddAssetViewModel @Inject constructor(
         async {
             val session = sessionRepository.getSession() ?: return@async
             assetsRepository.switchVisibility(
-                owner = session.wallet.getAccount(state.value.chain)
-                    ?: return@async,
+                walletId = session.wallet.id,
+                owner = session.wallet.getAccount(state.value.chain) ?: return@async,
                 assetId = state.value.asset?.id ?: return@async,
                 visibility = true,
                 currency = session.currency

@@ -69,7 +69,7 @@ class AssetSelectViewModel @Inject constructor(
     fun onChangeVisibility(assetId: AssetId, visible: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         val session = sessionRepository.getSession() ?: return@launch
         val account = session.wallet.getAccount(assetId.chain) ?: return@launch
-        assetsRepository.switchVisibility(account, assetId, visible, session.currency)
+        assetsRepository.switchVisibility(session.wallet.id, account, assetId, visible, session.currency)
     }
 
     fun onQuery() = viewModelScope.launch(Dispatchers.IO) {

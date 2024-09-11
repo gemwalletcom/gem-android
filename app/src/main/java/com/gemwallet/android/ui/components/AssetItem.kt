@@ -38,11 +38,13 @@ fun AssetListItem(
     isZeroValue: Boolean,
     fiatAmount: String,
     modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
     price: PriceUIState? = null,
     badge: String? = null,
 ) {
     AssetListItem(
         modifier = modifier,
+        iconModifier = iconModifier,
         assetId = assetId,
         title = title,
         assetType = assetType,
@@ -60,12 +62,14 @@ private fun AssetListItem(
     assetType: AssetType,
     iconUrl: String,
     modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
     price: PriceUIState? = null,
     badge: String? = null,
     trailing: (@Composable () -> Unit)? = null,
 ) {
     ListItem(
         modifier = modifier,
+        iconModifier = iconModifier,
         iconUrl = iconUrl,
         supportIcon = if (assetType == AssetType.NATIVE) null else assetId.chain.getIconUrl(),
         placeholder = title[0].toString(),
@@ -99,12 +103,14 @@ fun AssetListItem(
     assetType: AssetType,
     iconUrl: String,
     modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
     dividerShowed: Boolean = true,
     badge: String? = null,
     trailing: (@Composable () -> Unit)? = null,
 ) {
     ListItem(
         modifier = modifier,
+        iconModifier = iconModifier,
         iconUrl = iconUrl,
         supportIcon = if (assetType == AssetType.NATIVE) null else chain.getIconUrl(),
         placeholder = title[0].toString(),

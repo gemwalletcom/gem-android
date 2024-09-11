@@ -1,5 +1,7 @@
 package com.gemwallet.android.features.assets.views
 
+import android.util.Log
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -41,8 +43,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -68,6 +72,9 @@ import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer4
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.TransactionExtended
+import sh.calvin.reorderable.ReorderableItem
+import sh.calvin.reorderable.ReorderableLazyListState
+import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,12 +90,22 @@ fun AssetsScreen(
     listState: LazyListState = rememberLazyListState(),
     viewModel: AssetsViewModel = hiltViewModel(),
 ) {
-    val pinnedAssets by viewModel.pinnedAssets.collectAsStateWithLifecycle()
+    val pinnedAssetsState by viewModel.pinnedAssets.collectAsStateWithLifecycle()
     val unpinnedAssets by viewModel.unpinnedAssets.collectAsStateWithLifecycle()
     val walletInfo by viewModel.walletInfo.collectAsStateWithLifecycle()
     val swapEnabled by viewModel.swapEnabled.collectAsStateWithLifecycle()
     val transactionsState by viewModel.txsState.collectAsStateWithLifecycle()
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
+
+    var pinnedAssets by remember(pinnedAssetsState) { mutableStateOf(pinnedAssetsState) }
+
+    val reorderableLazyListState = rememberReorderableLazyListState(listState) { from, to ->
+        pinnedAssets = pinnedAssets.toMutableList().apply {
+            val toIndex = indexOfFirst { it.asset.id.toIdentifier() == to.key }
+            val fromIndex = indexOfFirst { it.asset.id.toIdentifier() == from.key }
+            add(toIndex, removeAt(fromIndex))
+        }
+    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -116,8 +133,19 @@ fun AssetsScreen(
             ) {
                 assetsHead(walletInfo, swapEnabled, onSendClick, onReceiveClick, onBuyClick, onSwapClick)
                 pendingTransactions(transactionsState, onTransactionClick)
-                assets(pinnedAssets, longPressedAsset, true, onAssetClick, viewModel::hideAsset, viewModel::togglePin)
-                assets(unpinnedAssets, longPressedAsset, false, onAssetClick, viewModel::hideAsset, viewModel::togglePin)
+                assets(
+                    assets = pinnedAssets,
+                    longPressState = longPressedAsset,
+                    isPinned = true,
+                    reorderableListState = reorderableLazyListState,
+                    onAssetClick = onAssetClick,
+                    onAssetHide = viewModel::hideAsset,
+                    onTogglePin = viewModel::togglePin,
+                    onReordered = {
+                        viewModel.saveOrder(pinnedAssets)
+                    }
+                )
+                assets(unpinnedAssets, longPressedAsset, false, null, onAssetClick, viewModel::hideAsset, viewModel::togglePin) {}
                 assetsListFooter(onShowAssetManage)
             }
         }
@@ -153,8 +181,12 @@ private fun LazyListScope.assetsListFooter(
     onShowAssetManage: () -> Unit,
 ) {
     item {
-        Box(modifier = Modifier.clickable(onClick = onShowAssetManage).fillMaxWidth()) {
-            Row(modifier = Modifier.align(Alignment.Center).padding(16.dp)) {
+        Box(modifier = Modifier
+            .clickable(onClick = onShowAssetManage)
+            .fillMaxWidth()) {
+            Row(modifier = Modifier
+                .align(Alignment.Center)
+                .padding(16.dp)) {
                 Icon(
                     imageVector = Icons.Default.Tune,
                     tint = MaterialTheme.colorScheme.onSurface,
@@ -185,94 +217,143 @@ private fun LazyListScope.pendingTransactions(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.assets(
     assets: List<AssetUIState>,
     longPressState: MutableState<AssetId?>,
+    isPinned: Boolean = false,
+    reorderableListState: ReorderableLazyListState? = null,
+    onAssetClick: (AssetId) -> Unit,
+    onAssetHide: (AssetId) -> Unit,
+    onTogglePin: (AssetId) -> Unit,
+    onReordered: () -> Unit,
+) {
+    if (assets.isEmpty()) return
+
+    if (isPinned) {
+        pinnedAssetsHeader()
+    }
+
+    items(items = assets, key = { it.asset.id.toIdentifier() }) { item ->
+        if (reorderableListState != null) {
+            ReorderableItem(
+                state = reorderableListState,
+                item.asset.id.toIdentifier()
+            ) { isDragging ->
+                AssetItem(
+                    modifier = Modifier.shadow(if (isDragging) 4.dp else 0.dp),
+                    iconModifier = Modifier.draggableHandle(onDragStopped = onReordered),
+                    item = item,
+                    longPressState = longPressState,
+                    isPinned = isPinned,
+                    onAssetClick = onAssetClick,
+                    onAssetHide = onAssetHide,
+                    onTogglePin = onTogglePin,
+                )
+            }
+        } else {
+            AssetItem(
+                modifier = Modifier.testTag(item.asset.id.toIdentifier()),
+                item = item,
+                longPressState = longPressState,
+                isPinned = isPinned,
+                onAssetClick = onAssetClick,
+                onAssetHide = onAssetHide,
+                onTogglePin = onTogglePin,
+            )
+        }
+    }
+    if (isPinned) {
+        item { Spacer(modifier = Modifier.height(32.dp)) }
+    }
+}
+
+@Composable
+private fun AssetItem(
+    item: AssetUIState,
+    longPressState: MutableState<AssetId?>,
+    modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
     isPinned: Boolean = false,
     onAssetClick: (AssetId) -> Unit,
     onAssetHide: (AssetId) -> Unit,
     onTogglePin: (AssetId) -> Unit,
 ) {
-    if (assets.isEmpty()) return
+    val clipboardManager = LocalClipboardManager.current
+    DropDownContextItem(
+        modifier = modifier.testTag(item.asset.id.toIdentifier()),
+        isExpanded = longPressState.value == item.asset.id,
+        imeCompensate = false,
+        onDismiss = { longPressState.value = null },
+        content = {
+            AssetListItem(
+                assetId = item.asset.id,
+                title = item.asset.name,
+                iconUrl = item.asset.getIconUrl(),
+                iconModifier = iconModifier,
+                value = item.value,
+                assetType = item.asset.type,
+                isZeroValue = item.isZeroValue,
+                fiatAmount = item.fiat,
+                price = item.price,
+            )
+        },
+        menuItems = {
+            DropdownMenuItem(
+                text = { Text( text = stringResource(id = if (isPinned) R.string.common_unpin else R.string.common_pin)) },
+                trailingIcon = {
+                    if (isPinned) Icon(painterResource(R.drawable.keep_off), "unpin")
+                    else Icon(Icons.Default.PushPin, "pin")
 
-    if (isPinned) {
-        item {
-            Row(
-                modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Icon(
-                    modifier = Modifier.size(16.dp),
-                    imageVector = Icons.Default.PushPin,
-                    tint = MaterialTheme.colorScheme.secondary,
-                    contentDescription = "pinned_section",
-                )
-                Spacer4()
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(color = MaterialTheme.colorScheme.background),
-                    text = stringResource(R.string.common_pinned),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.secondary,
-                )
-            }
+                },
+                onClick = {
+                    onTogglePin(item.asset.id)
+                    longPressState.value = null
+                },
+            )
+            DropdownMenuItem(
+                text = { Text( text = stringResource(id = R.string.wallet_copy_address)) },
+                trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
+                onClick = {
+                    clipboardManager.setText(AnnotatedString(item.owner))
+                    longPressState.value = null
+                },
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(id = R.string.common_hide)) },
+                trailingIcon = { Icon(Icons.Default.VisibilityOff, "wallet_config") },
+                onClick = {
+                    onAssetHide(item.asset.id)
+                    longPressState.value = null
+                }
+            )
+        },
+        onLongClick = { longPressState.value = item.asset.id }
+    ) { onAssetClick(item.asset.id) }
+}
+
+private fun LazyListScope.pinnedAssetsHeader() {
+    item {
+        Row(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                modifier = Modifier.size(16.dp),
+                imageVector = Icons.Default.PushPin,
+                tint = MaterialTheme.colorScheme.secondary,
+                contentDescription = "pinned_section",
+            )
+            Spacer4()
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.background),
+                text = stringResource(R.string.common_pinned),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.secondary,
+            )
         }
-    }
-    items(items = assets, key = { it.asset.id.toIdentifier() }) { item ->
-        val clipboardManager = LocalClipboardManager.current
-        DropDownContextItem(
-            modifier = Modifier.testTag(item.asset.id.toIdentifier()),
-            isExpanded = longPressState.value == item.asset.id,
-            imeCompensate = false,
-            onDismiss = { longPressState.value = null },
-            content = {
-                AssetListItem(
-                    assetId = item.asset.id,
-                    title = item.asset.name,
-                    iconUrl = item.asset.getIconUrl(),
-                    value = item.value,
-                    assetType = item.asset.type,
-                    isZeroValue = item.isZeroValue,
-                    fiatAmount = item.fiat,
-                    price = item.price,
-                )
-            },
-            menuItems = {
-                DropdownMenuItem(
-                    text = { Text( text = stringResource(id = if (isPinned) R.string.common_unpin else R.string.common_pin)) },
-                    trailingIcon = {
-                        if (isPinned) Icon(painterResource(R.drawable.keep_off), "unpin")
-                        else Icon(Icons.Default.PushPin, "pin")
-
-                    },
-                    onClick = {
-                        onTogglePin(item.asset.id)
-                        longPressState.value = null
-                    },
-                )
-                DropdownMenuItem(
-                    text = { Text( text = stringResource(id = R.string.wallet_copy_address)) },
-                    trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
-                    onClick = {
-                        clipboardManager.setText(AnnotatedString(item.owner))
-                        longPressState.value = null
-                    },
-                )
-                DropdownMenuItem(
-                    text = { Text(stringResource(id = R.string.common_hide)) },
-                    trailingIcon = { Icon(Icons.Default.VisibilityOff, "wallet_config") },
-                    onClick = {
-                        onAssetHide(item.asset.id)
-                        longPressState.value = null
-                    }
-                )
-            },
-            onLongClick = { longPressState.value = item.asset.id }
-        ) { onAssetClick(item.asset.id) }
-    }
-    if (isPinned) {
-        item { Spacer(modifier = Modifier.height(32.dp)) }
     }
 }
 

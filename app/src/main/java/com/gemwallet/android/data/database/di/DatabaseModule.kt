@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
+import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.gemwallet.android.data.bridge.ConnectionsDao
@@ -67,6 +68,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_27_28)
         .addMigrations(MIGRATION_28_29)
         .addMigrations(MIGRATION_29_30)
+        .addMigrations(MIGRATION_30_31)
         .build()
 
     @Singleton
@@ -559,5 +561,63 @@ val MIGRATION_28_29 = object : Migration(28, 29) {
 val MIGRATION_29_30 = object : Migration(29, 30) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("""ALTER TABLE assets ADD COLUMN is_pinned INTEGER NOT NULL DEFAULT FALSE""")
+    }
+}
+
+val MIGRATION_30_31 = object : Migration(30, 31) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("DROP VIEW assets_info")
+        db.execSQL(
+            """
+            CREATE TABLE IF NOT EXISTS asset_config (
+                asset_id TEXT NOT NULL,
+                wallet_id TEXT NOT NULL,
+                is_pinned INTEGER NOT NULL DEFAULT FALSE,
+                is_visible INTEGER NOT NULL DEFAULT TRUE,
+                list_position INTEGER NOT NULL DEFAULT 0,
+                PRIMARY KEY (asset_id, wallet_id)
+            )
+            """.trimIndent()
+        )
+        db.execSQL("""
+            |CREATE VIEW `asset_info` AS SELECT
+            |            assets.owner_address as address,
+            |            assets.id as id,
+            |            assets.name as name,
+            |            assets.symbol as symbol,
+            |            assets.decimals as decimals,
+            |            assets.type as type,
+            |            assets.is_buy_enabled as isBuyEnabled,
+            |            assets.is_swap_enabled as isSwapEnabled,
+            |            assets.is_stake_enabled as isStakeEnabled,
+            |            assets.staking_apr as stakingApr,
+            |            assets.links as links,
+            |            assets.market as market,
+            |            assets.rank as assetRank,
+            |            accounts.derivation_path as derivationPath,
+            |            accounts.chain as chain,
+            |            accounts.wallet_id as walletId,
+            |            accounts.extendedPublicKey as extendedPublicKey,
+            |            asset_config.is_pinned AS pinned,
+            |            asset_config.is_visible AS visible,
+            |            asset_config.list_position AS listPosition,
+            |            session.currency AS priceCurrency,
+            |            wallets.type AS walletType,
+            |            wallets.name AS walletName,
+            |            prices.value AS priceValue,
+            |            prices.dayChanged AS priceDayChanges,
+            |            balances.amount AS amount,
+            |            balances.type AS balanceType
+            |        FROM assets
+            |        JOIN accounts ON accounts.address = assets.owner_address AND assets.id LIKE accounts.chain || '%'
+            |        JOIN wallets ON wallets.id = accounts.wallet_id
+            |        JOIN session ON accounts.wallet_id = session.wallet_id AND session.id == 1
+            |        LEFT JOIN balances ON assets.owner_address = balances.address AND assets.id = balances.asset_id
+            |        LEFT JOIN prices ON assets.id = prices.assetId
+            |        LEFT JOIN asset_config ON assets.id = asset_config.asset_id AND wallets.id = asset_config.wallet_id
+            """.trimMargin()
+        )
+//        db.execSQL("ALTER TABLE `assets` DROP COLUMN `is_pinned`;")
+//        db.execSQL("ALTER TABLE `assets` DROP COLUMN `is_visible`;")
     }
 }

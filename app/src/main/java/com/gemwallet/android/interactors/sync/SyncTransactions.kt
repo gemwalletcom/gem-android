@@ -56,6 +56,7 @@ class SyncTransactions @Inject constructor(
         }.flatten().forEach {  assetId ->
             tokensRepository.search(assetId)
             assetsRepository.switchVisibility(
+                session.wallet.id,
                 session.wallet.getAccount(assetId.chain) ?: return@forEach,
                 assetId,
                 false,

@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 27,
-    "identityHash": "8a9973db42f44f59dc033c8b1031a4fd",
+    "version": 31,
+    "identityHash": "ba24ccdb664476aa7ddc5b05ee1eda61",
     "entities": [
       {
         "tableName": "wallets",
@@ -23,8 +23,7 @@
           {
             "fieldPath": "domainName",
             "columnName": "domain_name",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "type",
@@ -56,9 +55,7 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "accounts",
@@ -91,8 +88,7 @@
           {
             "fieldPath": "extendedPublicKey",
             "columnName": "extendedPublicKey",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -103,13 +99,11 @@
             "chain",
             "derivation_path"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "assets",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`owner_address` TEXT NOT NULL, `id` TEXT NOT NULL, `name` TEXT NOT NULL, `symbol` TEXT NOT NULL, `decimals` INTEGER NOT NULL, `type` TEXT NOT NULL, `is_visible` INTEGER NOT NULL, `is_buy_enabled` INTEGER NOT NULL, `is_swap_enabled` INTEGER NOT NULL, `is_stake_enabled` INTEGER NOT NULL, `staking_apr` REAL, `links` TEXT, `market` TEXT, `rank` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`owner_address`, `id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`owner_address` TEXT NOT NULL, `id` TEXT NOT NULL, `name` TEXT NOT NULL, `symbol` TEXT NOT NULL, `decimals` INTEGER NOT NULL, `type` TEXT NOT NULL, `is_pinned` INTEGER NOT NULL, `is_visible` INTEGER NOT NULL, `is_buy_enabled` INTEGER NOT NULL, `is_swap_enabled` INTEGER NOT NULL, `is_stake_enabled` INTEGER NOT NULL, `staking_apr` REAL, `links` TEXT, `market` TEXT, `rank` INTEGER NOT NULL, `created_at` INTEGER NOT NULL, `updated_at` INTEGER NOT NULL, PRIMARY KEY(`owner_address`, `id`))",
         "fields": [
           {
             "fieldPath": "address",
@@ -148,6 +142,12 @@
             "notNull": true
           },
           {
+            "fieldPath": "isPinned",
+            "columnName": "is_pinned",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
             "fieldPath": "isVisible",
             "columnName": "is_visible",
             "affinity": "INTEGER",
@@ -174,20 +174,17 @@
           {
             "fieldPath": "stakingApr",
             "columnName": "staking_apr",
-            "affinity": "REAL",
-            "notNull": false
+            "affinity": "REAL"
           },
           {
             "fieldPath": "links",
             "columnName": "links",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "market",
             "columnName": "market",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "rank",
@@ -234,8 +231,7 @@
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_assets_id` ON `${TABLE_NAME}` (`id`)"
           }
-        ],
-        "foreignKeys": []
+        ]
       },
       {
         "tableName": "balances",
@@ -299,8 +295,7 @@
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_balances_address` ON `${TABLE_NAME}` (`address`)"
           }
-        ],
-        "foreignKeys": []
+        ]
       },
       {
         "tableName": "prices",
@@ -330,9 +325,7 @@
           "columnNames": [
             "assetId"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "tokens",
@@ -380,9 +373,7 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "transactions",
@@ -427,14 +418,12 @@
           {
             "fieldPath": "contract",
             "columnName": "contract",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "metadata",
             "columnName": "metadata",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "state",
@@ -475,8 +464,7 @@
           {
             "fieldPath": "payload",
             "columnName": "payload",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "direction",
@@ -502,9 +490,7 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "tx_swap_metadata",
@@ -546,9 +532,7 @@
           "columnNames": [
             "tx_id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "room_connection",
@@ -617,14 +601,12 @@
           {
             "fieldPath": "redirectNative",
             "columnName": "redirect_native",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           },
           {
             "fieldPath": "redirectUniversal",
             "columnName": "redirect_universal",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -632,9 +614,7 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "stake_delegation_validator",
@@ -682,9 +662,7 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "stake_delegation_base",
@@ -741,26 +719,22 @@
           {
             "fieldPath": "completionDate",
             "columnName": "completion_date",
-            "affinity": "INTEGER",
-            "notNull": false
+            "affinity": "INTEGER"
           },
           {
             "fieldPath": "price",
             "columnName": "price",
-            "affinity": "REAL",
-            "notNull": false
+            "affinity": "REAL"
           },
           {
             "fieldPath": "priceChange",
             "columnName": "price_change",
-            "affinity": "REAL",
-            "notNull": false
+            "affinity": "REAL"
           },
           {
             "fieldPath": "shares",
             "columnName": "shares",
-            "affinity": "TEXT",
-            "notNull": false
+            "affinity": "TEXT"
           }
         ],
         "primaryKey": {
@@ -768,9 +742,7 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "nodes",
@@ -806,9 +778,7 @@
           "columnNames": [
             "url"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
       },
       {
         "tableName": "session",
@@ -838,20 +808,65 @@
           "columnNames": [
             "id"
           ]
-        },
-        "indices": [],
-        "foreignKeys": []
+        }
+      },
+      {
+        "tableName": "asset_config",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`asset_id` TEXT NOT NULL, `wallet_id` TEXT NOT NULL, `is_pinned` INTEGER NOT NULL, `is_visible` INTEGER NOT NULL, `list_position` INTEGER NOT NULL, PRIMARY KEY(`asset_id`, `wallet_id`))",
+        "fields": [
+          {
+            "fieldPath": "assetId",
+            "columnName": "asset_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "walletId",
+            "columnName": "wallet_id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isPinned",
+            "columnName": "is_pinned",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isVisible",
+            "columnName": "is_visible",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "listPosition",
+            "columnName": "list_position",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
+          "columnNames": [
+            "asset_id",
+            "wallet_id"
+          ]
+        }
       }
     ],
     "views": [
       {
-        "viewName": "DbAssetInfo",
-        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT\n            assets.*,\n            accounts.*,\n            session.currency AS priceCurrency,\n            wallets.type AS walletType,\n            wallets.name AS walletName,\n            prices.value AS priceValue,\n            prices.dayChanged AS priceDayChanges,\n            balances.amount AS amount,\n            balances.type as balanceType\n        FROM assets\n        JOIN accounts ON accounts.address = assets.owner_address AND assets.id LIKE accounts.chain || '%'\n        JOIN wallets ON wallets.id = accounts.wallet_id\n        JOIN session ON accounts.wallet_id = session.wallet_id AND session.id == 1\n        LEFT JOIN balances ON assets.owner_address = balances.address AND assets.id = balances.asset_id\n        LEFT JOIN prices ON assets.id = prices.assetId"
+        "viewName": "asset_info",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT\n            assets.owner_address as address,\n            assets.id as id,\n            assets.name as name,\n            assets.symbol as symbol,\n            assets.decimals as decimals,\n            assets.type as type,\n            assets.is_buy_enabled as isBuyEnabled,\n            assets.is_swap_enabled as isSwapEnabled,\n            assets.is_stake_enabled as isStakeEnabled,\n            assets.staking_apr as stakingApr,\n            assets.links as links,\n            assets.market as market,\n            assets.rank as assetRank,\n            accounts.derivation_path as derivationPath,\n            accounts.chain as chain,\n            accounts.wallet_id as walletId,\n            accounts.extendedPublicKey as extendedPublicKey,\n            asset_config.is_pinned AS pinned,\n            asset_config.is_visible AS visible,\n            asset_config.list_position AS listPosition,\n            session.currency AS priceCurrency,\n            wallets.type AS walletType,\n            wallets.name AS walletName,\n            prices.value AS priceValue,\n            prices.dayChanged AS priceDayChanges,\n            balances.amount AS amount,\n            balances.type AS balanceType\n        FROM assets\n        JOIN accounts ON accounts.address = assets.owner_address AND assets.id LIKE accounts.chain || '%'\n        JOIN wallets ON wallets.id = accounts.wallet_id\n        JOIN session ON accounts.wallet_id = session.wallet_id AND session.id == 1\n        LEFT JOIN balances ON assets.owner_address = balances.address AND assets.id = balances.asset_id\n        LEFT JOIN prices ON assets.id = prices.assetId\n        LEFT JOIN asset_config ON assets.id = asset_config.asset_id AND wallets.id = asset_config.wallet_id"
+      },
+      {
+        "viewName": "extended_txs",
+        "createSql": "CREATE VIEW `${VIEW_NAME}` AS SELECT\n            DISTINCT tx.id,\n            tx.hash,\n            tx.assetId,\n            tx.feeAssetId,\n            tx.owner,\n            tx.recipient,\n            tx.contract,\n            tx.state,\n            tx.type,\n            tx.blockNumber,\n            tx.sequence,\n            tx.fee,\n            tx.value,\n            tx.payload,\n            tx.metadata,\n            tx.direction,\n            tx.createdAt,\n            tx.updatedAt,\n            assets.decimals as assetDecimals,\n            assets.name as assetName,\n            assets.type as assetType,\n            assets.symbol as assetSymbol,\n            feeAsset.decimals as feeDecimals,\n            feeAsset.name as feeName,\n            feeAsset.type as feeType,\n            feeAsset.symbol as feeSymbol,\n            prices.value as assetPrice,\n            prices.dayChanged as assetPriceChanged,\n            feePrices.value as feePrice,\n            feePrices.dayChanged as feePriceChanged\n        FROM transactions as tx \n            INNER JOIN assets ON tx.assetId = assets.id \n            INNER JOIN assets as feeAsset ON tx.feeAssetId = feeAsset.id \n            LEFT JOIN prices ON tx.assetId = prices.assetId\n            LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.assetId \n            WHERE tx.owner IN (SELECT accounts.address FROM accounts, session\n    WHERE accounts.wallet_id = session.wallet_id AND session.id = 1) OR tx.recipient in (SELECT accounts.address FROM accounts, session\n    WHERE accounts.wallet_id = session.wallet_id AND session.id = 1)\n            GROUP BY tx.id"
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '8a9973db42f44f59dc033c8b1031a4fd')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ba24ccdb664476aa7ddc5b05ee1eda61')"
     ]
   }
 }

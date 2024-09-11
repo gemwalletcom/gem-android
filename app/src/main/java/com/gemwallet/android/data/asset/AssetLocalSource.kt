@@ -30,15 +30,15 @@ interface AssetsLocalSource {
 
     suspend fun getById(accounts: List<Account>, ids: List<AssetId>): Result<List<AssetInfo>>
 
-    suspend fun add(address: String, asset: Asset, visible: Boolean)
+    suspend fun add(walletId: String, address: String, asset: Asset, visible: Boolean)
 
     suspend fun add(address: String, assets: List<Asset>)
 
     suspend fun setBalances(account: Account, balances: List<Balances>)
 
-    suspend fun setVisibility(account: Account, assetId: AssetId, visibility: Boolean)
+    suspend fun setVisibility(walletId: String, account: Account, assetId: AssetId, visibility: Boolean)
 
-    suspend fun togglePinned(account: Account, assetId: AssetId)
+    suspend fun togglePinned(walletId: String, assetId: AssetId)
 
     suspend fun setPrices(prices: List<AssetPrice>)
 
@@ -58,4 +58,6 @@ interface AssetsLocalSource {
     suspend fun getById(assetId: AssetId): Asset?
 
     suspend fun getStakingApr(assetId: AssetId): Double?
+
+    suspend fun saveOrder(walletId: String, ids: List<AssetId>)
 }
