@@ -2,9 +2,11 @@ package com.gemwallet.android.services
 
 import android.content.Context
 import android.telephony.TelephonyManager
+import androidx.compose.ui.text.toLowerCase
 import androidx.fragment.app.FragmentActivity.TELEPHONY_SERVICE
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.config.NodesRepository
+import com.gemwallet.android.data.config.OfflineFirstConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.interactors.sync.SyncAvailableToBuy
@@ -17,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import java.util.Locale
 import javax.inject.Inject
 
 class SyncService @Inject constructor(
@@ -50,5 +53,5 @@ class SyncService @Inject constructor(
 
 fun isAvailableOperation(context: Context): Boolean = (context.getSystemService(TELEPHONY_SERVICE) as TelephonyManager)
     .networkCountryIso.let {
-        !(it == "uk" || it == "gb")
+        !(it.lowercase() == "uk" || it.lowercase() == "gb" || Locale.getDefault().country.lowercase() == "gb")
     }
