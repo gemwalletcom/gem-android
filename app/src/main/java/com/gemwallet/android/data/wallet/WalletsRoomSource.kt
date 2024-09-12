@@ -87,7 +87,7 @@ class WalletsRoomSource @Inject constructor(
                 accounts = accounts.toAccounts(),
                 index = walletRoom.index,
                 order = 0,
-                isPinned = false,
+                isPinned = walletRoom.pinned,
             )
         }
         Result.success(result)
@@ -101,7 +101,7 @@ class WalletsRoomSource @Inject constructor(
                 type = wallet.type,
                 domainName = null,
                 position = 0,
-                pinned = false,
+                pinned = wallet.isPinned,
                 index = wallet.index,
             )
         )
@@ -144,9 +144,14 @@ class WalletsRoomSource @Inject constructor(
                 accounts = accounts.toAccounts(),
                 index = room.index,
                 order = 0,
-                isPinned = false,
+                isPinned = room.pinned,
             )
         )
+    }
+
+    override suspend fun togglePin(walletId: String) = withContext(Dispatchers.IO) {
+        val room = walletsDao.getById(walletId) ?: return@withContext
+        walletsDao.insert(room.copy(pinned = !room.pinned))
     }
 
     private fun List<AccountRoom>.toAccounts() = map {

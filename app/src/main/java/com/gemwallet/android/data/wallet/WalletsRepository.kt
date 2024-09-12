@@ -65,5 +65,9 @@ class WalletsRepository @Inject constructor(
 
     suspend fun getWallet(walletId: String): Result<Wallet> = walletsLocalSource.getWallet(walletId)
 
+    suspend fun togglePin(walletId: String) {
+        walletsLocalSource.togglePin(walletId)
+    }
+
     private fun newWalletId() = UUID.randomUUID().toString()
 }

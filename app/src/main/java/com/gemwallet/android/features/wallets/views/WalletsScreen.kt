@@ -1,19 +1,25 @@
 package com.gemwallet.android.features.wallets.views
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
@@ -26,6 +32,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,6 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -50,6 +58,7 @@ import com.gemwallet.android.features.wallets.viewmodels.WalletsViewModel
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.DropDownContextItem
 import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.padding16
 import com.wallet.core.primitives.WalletType
@@ -86,6 +95,7 @@ fun WalletsScreen(
     }
     UI(
         currentWalletId = uiState.currentWalletId,
+        pinnedWallets = uiState.pinnedWallets,
         wallets = uiState.wallets,
         onCreate = onCreateWallet,
         onImport = onImportWallet,
@@ -97,6 +107,7 @@ fun WalletsScreen(
         onDeleteWallet = {
             deleteWalletId = it
         },
+        onTogglePin = viewModel::onTogglePin,
         onCancel = onCancel,
     )
 
@@ -136,15 +147,17 @@ fun WalletsScreen(
 @Composable
 private fun UI(
     currentWalletId: String,
+    pinnedWallets: List<WalletItemUIState>,
     wallets: List<WalletItemUIState>,
     onCreate: () -> Unit,
     onImport: () -> Unit,
     onEdit: (String) -> Unit,
     onSelectWallet: (String) -> Unit,
     onDeleteWallet: (String) -> Unit,
+    onTogglePin: (String) -> Unit,
     onCancel: () -> Unit,
 ) {
-    var longPressedWallet by remember {
+    val longPressedWallet = remember {
         mutableStateOf("")
     }
     Scene(
@@ -155,62 +168,112 @@ private fun UI(
             item {
                 WalletsActions(onCreate = onCreate, onImport = onImport)
             }
-            items(items = wallets, key = { it.id }) { wallet ->
-                DropDownContextItem(
-                    isExpanded = longPressedWallet == wallet.id,
-                    imeCompensate = true,
-                    onDismiss = { longPressedWallet = "" },
-                    content = {
-                        WalletItem(
-                            id = wallet.id,
-                            name = wallet.name,
-                            icon = wallet.icon,
-                            typeLabel = when (wallet.type) {
-                                WalletType.multicoin -> stringResource(id = R.string.wallet_multicoin)
-                                WalletType.single -> wallet.typeLabel.getAddressEllipsisText()
-                                else -> wallet.typeLabel.getAddressEllipsisText()
-                            },
-                            isCurrent = wallet.id == currentWalletId,
-                            type = wallet.type,
-                            onEdit = { walletId -> onEdit(walletId) },
-                        )
-                    },
-                    menuItems = {
-                        DropdownMenuItem(
-                            text = { Text(stringResource(id = R.string.common_wallet)) },
-                            trailingIcon = { Icon(
-                                imageVector = Icons.Default.Settings,
-                                contentDescription = "wallet_config"
-                            )},
-                            onClick = {
-                                onEdit(longPressedWallet)
-                                longPressedWallet = ""
-                            }
-                        )
-                        DropdownMenuItem(
-                            text = {
-                                Text(
-                                    text = stringResource(id = R.string.common_delete),
-                                    color = MaterialTheme.colorScheme.error
-                                )
-                            },
-                            trailingIcon = {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    tint = MaterialTheme.colorScheme.error,
-                                    contentDescription = "wallet_config"
-                                )
-                            },
-                            onClick = {
-                                onDeleteWallet(wallet.id)
-                                longPressedWallet = ""
-                            }
-                        )
-                    },
-                    onLongClick = { longPressedWallet = wallet.id }
-                ) { onSelectWallet(wallet.id) }
-            }
+            wallets(
+                wallets = pinnedWallets,
+                currentWalletId = currentWalletId,
+                longPressedWallet = longPressedWallet,
+                onEdit = onEdit,
+                onSelectWallet = onSelectWallet,
+                onDeleteWallet = onDeleteWallet,
+                onTogglePin = onTogglePin,
+                isPinned = true,
+            )
+            wallets(
+                wallets = wallets,
+                currentWalletId = currentWalletId,
+                longPressedWallet = longPressedWallet,
+                onEdit = onEdit,
+                onSelectWallet = onSelectWallet,
+                onDeleteWallet = onDeleteWallet,
+                onTogglePin = onTogglePin,
+            )
         }
+    }
+}
+
+private fun LazyListScope.wallets(
+    wallets: List<WalletItemUIState>,
+    currentWalletId: String,
+    longPressedWallet: MutableState<String>,
+    isPinned: Boolean = false,
+    onEdit: (String) -> Unit,
+    onSelectWallet: (String) -> Unit,
+    onDeleteWallet: (String) -> Unit,
+    onTogglePin: (String) -> Unit,
+) {
+    if (isPinned) {
+        pinnedHeader()
+    }
+    items(items = wallets, key = { it.id }) { wallet ->
+        DropDownContextItem(
+            isExpanded = longPressedWallet.value == wallet.id,
+            imeCompensate = true,
+            onDismiss = { longPressedWallet.value = "" },
+            content = {
+                WalletItem(
+                    id = wallet.id,
+                    name = wallet.name,
+                    icon = wallet.icon,
+                    typeLabel = when (wallet.type) {
+                        WalletType.multicoin -> stringResource(id = R.string.wallet_multicoin)
+                        WalletType.single -> wallet.typeLabel.getAddressEllipsisText()
+                        else -> wallet.typeLabel.getAddressEllipsisText()
+                    },
+                    isCurrent = wallet.id == currentWalletId,
+                    type = wallet.type,
+                    onEdit = { walletId -> onEdit(walletId) },
+                )
+            },
+            menuItems = {
+                DropdownMenuItem(
+                    text = { Text( text = stringResource(id = if (wallet.pinned) R.string.common_unpin else R.string.common_pin)) },
+                    trailingIcon = {
+                        if (wallet.pinned) Icon(painterResource(R.drawable.keep_off), "unpin")
+                        else Icon(Icons.Default.PushPin, "pin")
+                    },
+                    onClick = {
+                        onTogglePin(wallet.id)
+                        longPressedWallet.value = ""
+                    },
+                )
+                DropdownMenuItem(
+                    text = { Text(stringResource(id = R.string.common_wallet)) },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Settings,
+                            contentDescription = "wallet_config"
+                        )
+                    },
+                    onClick = {
+                        onEdit(longPressedWallet.value)
+                        longPressedWallet.value = ""
+                    }
+                )
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = stringResource(id = R.string.common_delete),
+                            color = MaterialTheme.colorScheme.error
+                        )
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            tint = MaterialTheme.colorScheme.error,
+                            contentDescription = "wallet_config"
+                        )
+                    },
+                    onClick = {
+                        onDeleteWallet(wallet.id)
+                        longPressedWallet.value = ""
+                    }
+                )
+            },
+            onLongClick = { longPressedWallet.value = wallet.id }
+        ) { onSelectWallet(wallet.id) }
+    }
+    if (isPinned) {
+        item { Spacer(modifier = Modifier.height(32.dp)) }
     }
 }
 
@@ -264,6 +327,31 @@ private fun WalletsAction(
     }
 }
 
+private fun LazyListScope.pinnedHeader() {
+    item {
+        Row(
+            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(
+                modifier = Modifier.size(16.dp),
+                imageVector = Icons.Default.PushPin,
+                tint = MaterialTheme.colorScheme.secondary,
+                contentDescription = "pinned_section",
+            )
+            Spacer4()
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(color = MaterialTheme.colorScheme.background),
+                text = stringResource(R.string.common_pinned),
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.secondary,
+            )
+        }
+    }
+}
+
 @Preview
 @Composable
 fun PreviewWalletScreen() {
@@ -272,15 +360,19 @@ fun PreviewWalletScreen() {
             UI(
                 wallets = listOf(
                     WalletItemUIState(
-                        "1", "Foo wallet #1", WalletType.view, typeLabel = "view"),
+                        "1", "Foo wallet #1", WalletType.view, typeLabel = "view", pinned = false),
                     WalletItemUIState(
-                        "2", "Foo wallet #2", WalletType.view, typeLabel = "view"),
+                        "2", "Foo wallet #2", WalletType.view, typeLabel = "view", pinned = false),
                     WalletItemUIState(
-                        "3", "Foo wallet #3", WalletType.multicoin, typeLabel = "view"),
+                        "3", "Foo wallet #3", WalletType.multicoin, typeLabel = "view", pinned = false),
                     WalletItemUIState(
-                        "4", "Foo wallet #4", WalletType.multicoin, typeLabel = "view"),
+                        "4", "Foo wallet #4", WalletType.multicoin, typeLabel = "view", pinned = false),
                     WalletItemUIState(
-                        "5", "Foo wallet #5", WalletType.view, typeLabel = "view"),
+                        "5", "Foo wallet #5", WalletType.view, typeLabel = "view", pinned = false),
+                ),
+                pinnedWallets = listOf(
+                    WalletItemUIState(
+                        "6", "Foo wallet #6", WalletType.view, typeLabel = "view", pinned = true),
                 ),
                 currentWalletId = "1",
                 onEdit = {},
@@ -288,6 +380,7 @@ fun PreviewWalletScreen() {
                 onImport = {},
                 onSelectWallet = {},
                 onDeleteWallet = {},
+                onTogglePin = {},
                 onCancel = {},
             )
         }

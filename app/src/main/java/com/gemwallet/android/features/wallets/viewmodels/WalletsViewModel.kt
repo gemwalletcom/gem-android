@@ -64,6 +64,11 @@ class WalletsViewModel @Inject constructor(
     fun handleDeleteWallet(walletId: String, onBoard: () -> Unit) = viewModelScope.launch {
         deleteWalletOperator(walletId, onBoard, ::refresh)
     }
+
+    fun onTogglePin(walletId: String) = viewModelScope.launch {
+        walletsRepository.togglePin(walletId)
+        refresh()
+    }
 }
 
 data class WalletsViewModelState(
@@ -72,36 +77,40 @@ data class WalletsViewModelState(
 ) {
     fun toUIState() = WalletsUIState(
         currentWalletId = currentWallet?.id ?: "",
-        wallets = wallets.map {
-            WalletItemUIState(
-                id = it.id,
-                name = it.name,
-                type = it.type,
-                typeLabel = when (it.type) {
-                    WalletType.view,
-                    WalletType.private_key,
-                    WalletType.single -> it.accounts.firstOrNull()?.address ?: ""
-                    WalletType.multicoin -> "Multi-coin"
-                },
-                icon = if (it.accounts.size > 1) {
-                    ""
-                } else {
-                    it.accounts.firstOrNull()?.chain?.getIconUrl() ?: ""
-                }
-            )
-        }
+        wallets = wallets.filter { !it.isPinned }.map { it.toUIState() },
+        pinnedWallets = wallets.filter { it.isPinned }.map { it.toUIState() }
     )
 }
 
+private fun Wallet.toUIState() = WalletItemUIState(
+    id = id,
+    name = name,
+    type = type,
+    pinned = isPinned,
+    typeLabel = when (type) {
+        WalletType.view,
+        WalletType.private_key,
+        WalletType.single -> accounts.firstOrNull()?.address ?: ""
+        WalletType.multicoin -> "Multi-coin"
+    },
+    icon = if (accounts.size > 1) {
+        ""
+    } else {
+        accounts.firstOrNull()?.chain?.getIconUrl() ?: ""
+    }
+)
+
 data class WalletsUIState(
     val currentWalletId: String = "",
-    val wallets: List<WalletItemUIState> = emptyList()
+    val wallets: List<WalletItemUIState> = emptyList(),
+    val pinnedWallets: List<WalletItemUIState> = emptyList()
 )
 
 data class WalletItemUIState(
     val id: String,
     val name: String,
     val type: WalletType,
+    val pinned: Boolean,
     val typeLabel: String,
     val icon: IconUrl = ""
 )
