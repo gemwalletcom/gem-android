@@ -1,40 +1,60 @@
 package com.gemwallet.android.features.amount.views
 
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
+import com.gemwallet.android.blockchain.PayloadType
+import com.gemwallet.android.blockchain.memo
 import com.gemwallet.android.features.amount.model.AmountError
 import com.gemwallet.android.features.confirm.models.AmountScreenModel
+import com.gemwallet.android.features.recipient.models.RecipientFormError
+import com.gemwallet.android.features.recipient.views.MemoTextField
+import com.gemwallet.android.features.recipient.views.recipientErrorString
 import com.gemwallet.android.features.stake.components.ValidatorItem
+import com.gemwallet.android.interactors.chain
 import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.ui.components.AddressChainField
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.MainActionButton
 import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.theme.space4
 import com.wallet.core.primitives.DelegationValidator
+import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.TransactionType
 
 @Composable
 fun AmountScene(
     amount: String,
+    addressState: MutableState<String>,
+    memoState: MutableState<String>,
+    nameRecordState: MutableState<NameRecord?>,
     uiModel: AmountScreenModel,
     validatorState: DelegationValidator?,
     inputError: AmountError,
     amountError: AmountError,
+    addressError: RecipientFormError,
+    memoError: RecipientFormError,
     equivalent: String,
     availableBalance: String,
     onNext: () -> Unit,
+    onScanAddress: () -> Unit,
+    onScanMemo: () -> Unit,
     onAmount: (String) -> Unit,
     onMaxAmount: () -> Unit,
     onCancel: () -> Unit,
@@ -59,15 +79,11 @@ fun AmountScene(
             )
         }
     ) {
-        LazyColumn(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+        LazyColumn(horizontalAlignment = Alignment.CenterHorizontally) {
             item {
-                Spacer(modifier = Modifier.size(40.dp))
+                Spacer16()
                 AmountField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
+                    modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                     amount = amount,
                     assetSymbol = uiModel.asset.symbol,
                     equivalent = equivalent,
@@ -87,6 +103,30 @@ fun AmountScene(
                                 }
                             }
                         )
+                    }
+                } else {
+                    Column(modifier = Modifier.padding(padding16)) {
+                        AddressChainField(
+                            chain = uiModel.asset.chain(),
+                            value = addressState.value,
+                            label = stringResource(id = R.string.transfer_recipient_address_field),
+                            error = recipientErrorString(error = addressError),
+                            onValueChange = { input, nameRecord ->
+                                addressState.value = input
+                                nameRecordState.value = nameRecord
+                            },
+                            onQrScanner = onScanAddress
+                        )
+                        if (uiModel.asset.chain().memo() != PayloadType.None) {
+                            Spacer(modifier = Modifier.size(space4))
+                            MemoTextField(
+                                value = memoState.value,
+                                label = stringResource(id = R.string.transfer_memo),
+                                onValueChange = { memoState.value = it },
+                                error = memoError,
+                                onQrScanner = onScanMemo,
+                            )
+                        }
                     }
                 }
                 AssetInfoCard(

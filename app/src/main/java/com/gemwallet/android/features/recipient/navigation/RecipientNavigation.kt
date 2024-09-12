@@ -24,13 +24,13 @@ const val sendRoute = "send"
 const val sendRecipientRoute = "send_recipient"
 const val sendAssetSelectRoute = "sendAssetSelect"
 
-fun NavController.navigateToSendScreen(assetId: AssetId? = null, navOptions: NavOptions? = null) {
-    if (assetId == null) {
-        navigate(sendAssetSelectRoute, navOptions)
-    } else {
-        navigate("$sendRecipientRoute/${assetId.toIdentifier().urlEncode()}", navOptions)
-    }
-}
+//fun NavController.navigateToSendScreen(assetId: AssetId? = null, navOptions: NavOptions? = null) {
+//    if (assetId == null) {
+//        navigate(sendAssetSelectRoute, navOptions)
+//    } else {
+//        navigate("$sendRecipientRoute/${assetId.toIdentifier().urlEncode()}", navOptions)
+//    }
+//}
 
 @OptIn(ExperimentalGetImage::class)
 fun NavGraphBuilder.recipientScreen(

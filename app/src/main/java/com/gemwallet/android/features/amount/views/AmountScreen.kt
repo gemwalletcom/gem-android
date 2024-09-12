@@ -1,6 +1,8 @@
 package com.gemwallet.android.features.amount.views
 
 import androidx.activity.compose.BackHandler
+import androidx.annotation.OptIn
+import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
@@ -15,10 +17,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.features.amount.viewmodels.AmountViewModel
+import com.gemwallet.android.features.recipient.models.RecipientScreenState
 import com.gemwallet.android.features.stake.validators.views.ValidatorsScreen
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.components.LoadingScene
+import com.gemwallet.android.ui.components.qrcodescanner.qrCodeRequest
 
+@OptIn(ExperimentalGetImage::class)
 @Composable
 fun AmountScreen(
     onCancel: () -> Unit,
@@ -28,9 +33,13 @@ fun AmountScreen(
     val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
     val validatorState by viewModel.validatorState.collectAsStateWithLifecycle()
     val inputError by viewModel.inputErrorState.collectAsStateWithLifecycle()
+    val addressError by viewModel.addressErrorState.collectAsStateWithLifecycle()
+    val memoError by viewModel.memoErrorState.collectAsStateWithLifecycle()
     val amountError by viewModel.nextErrorState.collectAsStateWithLifecycle()
     val equivalent by viewModel.equivalentState.collectAsStateWithLifecycle()
     val availableBalance by viewModel.availableBalance.collectAsStateWithLifecycle()
+
+    var scan by remember { mutableStateOf<RecipientScreenState>(RecipientScreenState.Idle) }
 
     var isSelectValidator by remember {
         mutableStateOf(false)
@@ -42,6 +51,17 @@ fun AmountScreen(
 
     if (uiModel == null) {
         LoadingScene(stringResource(id = R.string.transfer_amount_title), onCancel)
+    }
+
+    if (scan != RecipientScreenState.Idle) {
+        qrCodeRequest(
+            { scan = RecipientScreenState.Idle },
+            {
+                viewModel.setQrData(scan, it)
+                scan = RecipientScreenState.Idle
+            }
+        )
+        return
     }
 
     AnimatedContent(
@@ -79,12 +99,19 @@ fun AmountScreen(
             )
             false -> AmountScene(
                 amount = viewModel.amount,
+                addressState = viewModel.addressState,
+                memoState = viewModel.memoState,
+                nameRecordState = viewModel.nameRecordState,
                 uiModel = uiModel ?: return@AnimatedContent,
                 validatorState = validatorState,
+                addressError = addressError,
+                memoError = memoError,
                 inputError = inputError,
                 amountError = amountError,
                 equivalent = equivalent,
                 availableBalance = availableBalance,
+                onScanAddress = { scan = RecipientScreenState.ScanAddress },
+                onScanMemo = { scan = RecipientScreenState.ScanMemo },
                 onNext = { viewModel.onNext(onConfirm) },
                 onAmount = viewModel::updateAmount,
                 onMaxAmount = viewModel::onMaxAmount,

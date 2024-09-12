@@ -126,7 +126,7 @@ private fun Idle(
 }
 
 @Composable
-private fun MemoTextField(
+fun MemoTextField(
     value: String,
     label: String,
     onValueChange: (String) -> Unit,
@@ -164,7 +164,7 @@ private fun MemoTextField(
 }
 
 @Composable
-private fun recipientErrorString(error: RecipientFormError): String {
+fun recipientErrorString(error: RecipientFormError): String {
     return when (error) {
         RecipientFormError.IncorrectAddress -> stringResource(id = R.string.errors_invalid_address_name)
         RecipientFormError.None -> ""

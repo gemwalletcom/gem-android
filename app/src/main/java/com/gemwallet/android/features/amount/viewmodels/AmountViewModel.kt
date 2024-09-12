@@ -15,6 +15,8 @@ import com.gemwallet.android.features.amount.model.AmountParams
 import com.gemwallet.android.features.amount.navigation.paramsArg
 import com.gemwallet.android.features.confirm.models.AmountScreenModel
 import com.gemwallet.android.features.recipient.models.InputCurrency
+import com.gemwallet.android.features.recipient.models.RecipientFormError
+import com.gemwallet.android.features.recipient.models.RecipientScreenState
 import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
@@ -24,6 +26,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.DelegationValidator
+import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -52,6 +55,10 @@ class AmountViewModel @Inject constructor(
     private val stakeRepository: StakeRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    val addressState = mutableStateOf("")
+    val memoState = mutableStateOf("")
+    val nameRecordState = mutableStateOf<NameRecord?>(null)
 
     private val params = savedStateHandle
         .getStateFlow(paramsArg, "")
@@ -86,6 +93,8 @@ class AmountViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val state: StateFlow<State?> = params.combine(asset) { params, asset ->
+        addressState.value = params.destination?.address ?: ""
+        memoState.value = params.memo ?: ""
         State(assetInfo = asset, params = params)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -122,6 +131,8 @@ class AmountViewModel @Inject constructor(
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
+    val addressErrorState = MutableStateFlow<RecipientFormError>(RecipientFormError.None)
+    val memoErrorState = MutableStateFlow<RecipientFormError>(RecipientFormError.None)
     val inputErrorState = MutableStateFlow<AmountError>(AmountError.None)
     val nextErrorState = MutableStateFlow<AmountError>(AmountError.None)
 
@@ -272,6 +283,14 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeRedelegate,
             TransactionType.StakeDelegate -> BigInteger.valueOf(uniffi.Gemstone.Config().getStakeConfig(chain.string).minAmount.toLong())
             else -> BigInteger.ZERO
+        }
+    }
+
+    fun setQrData(type: RecipientScreenState, data: String) {
+        when (type) {
+            RecipientScreenState.Idle -> {}
+            RecipientScreenState.ScanAddress -> addressState.value = data
+            RecipientScreenState.ScanMemo -> memoState.value = data
         }
     }
 

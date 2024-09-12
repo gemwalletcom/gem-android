@@ -20,6 +20,7 @@ import com.gemwallet.android.features.add_asset.navigation.addAssetScreen
 import com.gemwallet.android.features.add_asset.navigation.navigateToAddAssetScreen
 import com.gemwallet.android.features.amount.navigation.amount
 import com.gemwallet.android.features.amount.navigation.navigateToAmountScreen
+import com.gemwallet.android.features.amount.navigation.navigateToSendScreen
 import com.gemwallet.android.features.asset.navigation.assetChartScreen
 import com.gemwallet.android.features.asset.navigation.assetScreen
 import com.gemwallet.android.features.asset.navigation.navigateToAssetChartScreen
@@ -42,8 +43,6 @@ import com.gemwallet.android.features.import_wallet.navigation.navigateToImportW
 import com.gemwallet.android.features.onboarding.OnboardingDest
 import com.gemwallet.android.features.receive.navigation.navigateToReceiveScreen
 import com.gemwallet.android.features.receive.navigation.receiveScreen
-import com.gemwallet.android.features.recipient.navigation.navigateToSendScreen
-import com.gemwallet.android.features.recipient.navigation.recipientScreen
 import com.gemwallet.android.features.settings.navigation.navigateToAboutUsScreen
 import com.gemwallet.android.features.settings.navigation.navigateToCurrenciesScreen
 import com.gemwallet.android.features.settings.navigation.navigateToDevelopScreen
@@ -144,15 +143,10 @@ fun WalletNavGraph(
                 onCancel = onCancel
             )
 
-            recipientScreen(
-                onCancel = onCancel,
-                onSend = navController::navigateToSendScreen,
-                onAmount = navController::navigateToAmountScreen,
-            )
-
             amount(
                 onCancel = onCancel,
-                navController::navigateToConfirmScreen,
+                onSend = navController::navigateToSendScreen,
+                onConfirm = navController::navigateToConfirmScreen,
             )
 
             confirm(
