@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.stake.StakeRepository
+import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.amount.model.AmountError
 import com.gemwallet.android.features.amount.model.AmountParams
 import com.gemwallet.android.features.amount.navigation.paramsArg
@@ -21,6 +22,7 @@ import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
@@ -165,8 +167,12 @@ class AmountViewModel @Inject constructor(
     }
 
     fun onNext(onConfirm: (ConfirmParams) -> Unit) = viewModelScope.launch {
+        val state = state.value?.params ?: return@launch
+        onNext(state, amount, onConfirm)
+    }
+    fun onNext(params: AmountParams, rawAmount: String, onConfirm: (ConfirmParams) -> Unit) = viewModelScope.launch {
         val state = state.value ?: return@launch
-        val params = state.params
+//        val params = state.params
         val inputCurrency = InputCurrency.InCrypto
         val validator = validatorState.value
         val delegation = delegation.value
@@ -176,12 +182,12 @@ class AmountViewModel @Inject constructor(
         val price = state.assetInfo.price?.price?.price ?: 0.0
 
         val minimumValue = getMinAmount(params.txType, asset.id.chain)
-        val inputError = validateAmount(asset, amount, inputCurrency, price, minimumValue)
+        val inputError = validateAmount(asset, rawAmount, inputCurrency, price, minimumValue)
         if (inputError != AmountError.None) {
             inputErrorState.update { inputError }
             return@launch
         }
-        val amount = inputCurrency.getAmount(amount, decimals, price)
+        val amount = inputCurrency.getAmount(rawAmount, decimals, price)
         val balanceError = validateBalance(
             assetInfo = state.assetInfo,
             txType = params.txType,
@@ -286,11 +292,29 @@ class AmountViewModel @Inject constructor(
         }
     }
 
-    fun setQrData(type: RecipientScreenState, data: String) {
+    fun setQrData(type: RecipientScreenState, data: String, onConfirm: (ConfirmParams) -> Unit) {
+        val paymentWrapper = uniffi.Gemstone.paymentDecodeUrl(data)
+        val amount = paymentWrapper.amount
+        val address = paymentWrapper.address
+        val memo = paymentWrapper.memo
+
+        if (paymentWrapper.assetId == state.value?.assetInfo?.asset?.id?.toIdentifier() && address.isNotEmpty() && !amount.isNullOrEmpty()) {
+            val assetId = state.value?.assetInfo?.asset?.id ?: return
+            val params = AmountParams.buildTransfer(assetId, DestinationAddress(address), memo ?: "")
+            onNext(params, amount, onConfirm)
+            return
+        }
+
         when (type) {
             RecipientScreenState.Idle -> {}
-            RecipientScreenState.ScanAddress -> addressState.value = data
-            RecipientScreenState.ScanMemo -> memoState.value = data
+            RecipientScreenState.ScanAddress -> {
+                addressState.value = address.ifEmpty { data }
+                memoState.value = memo?.ifEmpty { memoState.value } ?: memoState.value
+            }
+            RecipientScreenState.ScanMemo -> {
+                addressState.value = address.ifEmpty { addressState.value }
+                memoState.value = paymentWrapper.memo ?: data
+            }
         }
     }
 
