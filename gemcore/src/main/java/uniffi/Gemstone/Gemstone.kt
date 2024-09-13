@@ -3793,6 +3793,7 @@ public object FfiConverterTypeBscDelegationStatus : FfiConverterRustBuffer<BscDe
 }
 
 enum class DocsUrl {
+    START,
     WHAT_IS_WATCH_WALLET,
     WHAT_IS_SECRET_PHRASE,
     WHAT_IS_PRIVATE_KEY,
@@ -3907,6 +3908,7 @@ enum class PublicUrl {
     ASSETS,
     PRIVACY_POLICY,
     TERMS_OF_SERVICE,
+    SUPPORT,
     CODEBASE_IOS,
     CODEBASE_ANDROID,
     APP_STORE,

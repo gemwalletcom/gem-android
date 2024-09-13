@@ -17,3 +17,4 @@ data class AssetMetaData (
 	val isStakeEnabled: Boolean,
 	val isPinned: Boolean
 )
+
