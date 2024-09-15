@@ -7,14 +7,15 @@ install:
 	@echo Install Rust
 	@curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 	@. ~/.cargo/env
+	@cargo install just
 
 install-typeshare:
 	@echo Install typeshare-cli
-	@cargo install typeshare-cli --version 1.6.0
+	@cd core && just install-typeshare
 
 install-toolchains:
 	@echo Install toolchains for uniffi
-	@cd core/gemstone && make prepare-android
+	@cd core/gemstone && just install-android-targets
 
 bootstrap: install install-toolchains install-ndk install-wallet-core
 

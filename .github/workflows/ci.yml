@@ -61,6 +61,9 @@ jobs:
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.3
 
+      - name: Install just
+        run: cargo install just
+
       - name: Install dependencies
         run: |
           make install-typeshare && make install-toolchains && make install-wallet-core
