@@ -1,7 +1,4 @@
-ANDROID_HOME ?= ~/Library/Android/sdk
-SDK_MANAGER = ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager
 WALLET_CORE_VERSION ?= 4.1.5
-NDK_VERSION ?= 26.1.10909125
 
 install:
 	@echo Install Rust
@@ -22,7 +19,7 @@ bootstrap: install install-toolchains install-ndk install-wallet-core
 # Android
 
 install-ndk:
-	${SDK_MANAGER} "ndk;${NDK_VERSION}"
+	@cd core/gemstone && just install-ndk
 
 install-wallet-core:
 	@./scripts/download-wallet-core.sh ${WALLET_CORE_VERSION}
@@ -53,7 +50,7 @@ generate-models: install-typeshare
 
 generate-stone:
 	@echo "Generate Gemstone lib, default build mode is ${BUILD_MODE}"
-	@cd core/gemstone && make bindgen-kotlin BUILD_MODE=${BUILD_MODE}
+	@cd core/gemstone && just bindgen-kotlin BUILD_MODE=${BUILD_MODE}
 	@cp -Rf core/gemstone/generated/kotlin/uniffi gemcore/src/main/java
 	@touch local.properties
 ifeq (${BUILD_MODE},release)
