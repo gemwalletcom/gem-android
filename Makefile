@@ -50,7 +50,7 @@ generate-models: install-typeshare
 
 generate-stone:
 	@echo "Generate Gemstone lib, default build mode is ${BUILD_MODE}"
-	@cd core/gemstone && just bindgen-kotlin BUILD_MODE=${BUILD_MODE}
+	@cd core/gemstone && BUILD_MODE=${BUILD_MODE} just bindgen-kotlin
 	@cp -Rf core/gemstone/generated/kotlin/uniffi gemcore/src/main/java
 	@touch local.properties
 ifeq (${BUILD_MODE},release)
