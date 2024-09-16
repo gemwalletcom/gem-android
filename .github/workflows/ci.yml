@@ -49,9 +49,6 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Setup NDK
-        run: make install-ndk
-
       - name: Rust cache
         uses: Swatinem/rust-cache@v2
         with:
@@ -60,6 +57,12 @@ jobs:
 
       - name: Run sccache-cache
         uses: mozilla-actions/sccache-action@v0.0.3
+
+      - name: Install just
+        run: cargo install just
+
+      - name: Setup NDK
+        run: make install-ndk
 
       - name: Install dependencies
         run: |
