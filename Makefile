@@ -1,27 +1,25 @@
-ANDROID_HOME ?= ~/Library/Android/sdk
-SDK_MANAGER = ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager
 WALLET_CORE_VERSION ?= 4.1.5
-NDK_VERSION ?= 26.1.10909125
 
 install:
 	@echo Install Rust
 	@curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 	@. ~/.cargo/env
+	@cargo install just
 
 install-typeshare:
 	@echo Install typeshare-cli
-	@cargo install typeshare-cli --version 1.6.0
+	@cd core && just install-typeshare
 
 install-toolchains:
 	@echo Install toolchains for uniffi
-	@cd core/gemstone && make prepare-android
+	@cd core/gemstone && just install-android-targets
 
 bootstrap: install install-toolchains install-ndk install-wallet-core
 
 # Android
 
 install-ndk:
-	${SDK_MANAGER} "ndk;${NDK_VERSION}"
+	@cd core/gemstone && just install-ndk
 
 install-wallet-core:
 	@./scripts/download-wallet-core.sh ${WALLET_CORE_VERSION}
@@ -52,7 +50,7 @@ generate-models: install-typeshare
 
 generate-stone:
 	@echo "Generate Gemstone lib, default build mode is ${BUILD_MODE}"
-	@cd core/gemstone && make bindgen-kotlin BUILD_MODE=${BUILD_MODE}
+	@cd core/gemstone && BUILD_MODE=${BUILD_MODE} just bindgen-kotlin
 	@cp -Rf core/gemstone/generated/kotlin/uniffi gemcore/src/main/java
 	@touch local.properties
 ifeq (${BUILD_MODE},release)
