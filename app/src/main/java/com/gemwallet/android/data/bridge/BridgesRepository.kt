@@ -53,10 +53,10 @@ class BridgesRepository(
             return local
         }
         val unknownSessions = sessions.filter { session ->
-            local.firstOrNull { it.session.sessionId == session.pairingTopic } == null
+            local.firstOrNull { it.session.sessionId == session.topic } == null
         }
         return if (unknownSessions.isNotEmpty()) {
-            sessions.forEach { disconnect(it.pairingTopic) }
+            sessions.forEach { disconnect(it.topic) }
             localSource.deleteAllConnections()
             emptyList()
         } else {
@@ -68,7 +68,7 @@ class BridgesRepository(
         val connection = getConnections().firstOrNull { it.session.id == id } ?: return
         val session = try {
             Web3Wallet.getListOfActiveSessions()
-                .firstOrNull { wcSession -> connection.session.sessionId == wcSession.pairingTopic }
+                .firstOrNull { wcSession -> connection.session.sessionId == wcSession.topic }
         } catch (err: Throwable) {
             return
         } ?: return
@@ -86,7 +86,7 @@ class BridgesRepository(
         )
     }
 
-    suspend fun addPairing(uri: String, onSuccess: () -> Unit = {}, onError: (String) -> Unit = {}) {
+    fun addPairing(uri: String, onSuccess: () -> Unit = {}, onError: (String) -> Unit = {}) {
         Web3Wallet.pair(
             params = Wallet.Params.Pair(uri),
             onSuccess = {  onSuccess() },
@@ -147,7 +147,7 @@ class BridgesRepository(
         )
     }
 
-    suspend fun rejectConnection(
+    fun rejectConnection(
         proposal: Wallet.Model.SessionProposal,
         onSuccess: () -> Unit,
         onError: (String) -> Unit,
@@ -177,7 +177,7 @@ class BridgesRepository(
         localSource.updateConnection(
             WalletConnectionSession(
                 id = "",
-                sessionId = session.pairingTopic,
+                sessionId = session.topic,
                 state = WalletConnectionState.Active,
                 createdAt = System.currentTimeMillis(),
                 expireAt = System.currentTimeMillis() + session.expiry,

@@ -17,19 +17,20 @@ package uniffi.Gemstone
 // compile the Rust component. The easiest way to ensure this is to bundle the Kotlin
 // helpers directly inline like we're doing here.
 
-import com.sun.jna.Callback
 import com.sun.jna.Library
+import com.sun.jna.IntegerType
 import com.sun.jna.Native
 import com.sun.jna.Pointer
 import com.sun.jna.Structure
+import com.sun.jna.Callback
 import com.sun.jna.ptr.*
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.CharBuffer
 import java.nio.charset.CodingErrorAction
+import java.util.concurrent.atomic.AtomicLong
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.atomic.AtomicLong
 
 // This is a helper for safely working with byte buffers returned from the Rust code.
 // A rust-owned buffer is represented by its capacity, its current length, and a
@@ -40,41 +41,29 @@ open class RustBuffer : Structure() {
     // Note: `capacity` and `len` are actually `ULong` values, but JVM only supports signed values.
     // When dealing with these fields, make sure to call `toULong()`.
     @JvmField var capacity: Long = 0
-
     @JvmField var len: Long = 0
-
     @JvmField var data: Pointer? = null
 
-    class ByValue :
-        RustBuffer(),
-        Structure.ByValue
+    class ByValue: RustBuffer(), Structure.ByValue
+    class ByReference: RustBuffer(), Structure.ByReference
 
-    class ByReference :
-        RustBuffer(),
-        Structure.ByReference
-
-    internal fun setValue(other: RustBuffer) {
+   internal fun setValue(other: RustBuffer) {
         capacity = other.capacity
         len = other.len
         data = other.data
     }
 
     companion object {
-        internal fun alloc(size: ULong = 0UL) =
-            uniffiRustCall { status ->
-                // Note: need to convert the size to a `Long` value to make this work with JVM.
-                UniffiLib.INSTANCE.ffi_gemstone_rustbuffer_alloc(size.toLong(), status)
-            }.also {
-                if (it.data == null) {
-                    throw RuntimeException("RustBuffer.alloc() returned null data pointer (size=$size)")
-                }
-            }
+        internal fun alloc(size: ULong = 0UL) = uniffiRustCall() { status ->
+            // Note: need to convert the size to a `Long` value to make this work with JVM.
+            UniffiLib.INSTANCE.ffi_gemstone_rustbuffer_alloc(size.toLong(), status)
+        }.also {
+            if(it.data == null) {
+               throw RuntimeException("RustBuffer.alloc() returned null data pointer (size=${size})")
+           }
+        }
 
-        internal fun create(
-            capacity: ULong,
-            len: ULong,
-            data: Pointer?,
-        ): RustBuffer.ByValue {
+        internal fun create(capacity: ULong, len: ULong, data: Pointer?): RustBuffer.ByValue {
             var buf = RustBuffer.ByValue()
             buf.capacity = capacity.toLong()
             buf.len = len.toLong()
@@ -82,10 +71,9 @@ open class RustBuffer : Structure() {
             return buf
         }
 
-        internal fun free(buf: RustBuffer.ByValue) =
-            uniffiRustCall { status ->
-                UniffiLib.INSTANCE.ffi_gemstone_rustbuffer_free(buf, status)
-            }
+        internal fun free(buf: RustBuffer.ByValue) = uniffiRustCall() { status ->
+            UniffiLib.INSTANCE.ffi_gemstone_rustbuffer_free(buf, status)
+        }
     }
 
     @Suppress("TooGenericExceptionThrown")
@@ -136,14 +124,10 @@ class RustBufferByReference : ByReference(16) {
 @Structure.FieldOrder("len", "data")
 open class ForeignBytes : Structure() {
     @JvmField var len: Int = 0
-
     @JvmField var data: Pointer? = null
 
-    class ByValue :
-        ForeignBytes(),
-        Structure.ByValue
+    class ByValue : ForeignBytes(), Structure.ByValue
 }
-
 // The FfiConverter interface handles converter types to and from the FFI
 //
 // All implementing objects should be public to support external types.  When a
@@ -169,10 +153,7 @@ public interface FfiConverter<KotlinType, FfiType> {
     fun allocationSize(value: KotlinType): ULong
 
     // Write a Kotlin type to a `ByteBuffer`
-    fun write(
-        value: KotlinType,
-        buf: ByteBuffer,
-    )
+    fun write(value: KotlinType, buf: ByteBuffer)
 
     // Lower a value into a `RustBuffer`
     //
@@ -183,10 +164,9 @@ public interface FfiConverter<KotlinType, FfiType> {
     fun lowerIntoRustBuffer(value: KotlinType): RustBuffer.ByValue {
         val rbuf = RustBuffer.alloc(allocationSize(value))
         try {
-            val bbuf =
-                rbuf.data!!.getByteBuffer(0, rbuf.capacity).also {
-                    it.order(ByteOrder.BIG_ENDIAN)
-                }
+            val bbuf = rbuf.data!!.getByteBuffer(0, rbuf.capacity).also {
+                it.order(ByteOrder.BIG_ENDIAN)
+            }
             write(value, bbuf)
             rbuf.writeField("len", bbuf.position().toLong())
             return rbuf
@@ -203,11 +183,11 @@ public interface FfiConverter<KotlinType, FfiType> {
     fun liftFromRustBuffer(rbuf: RustBuffer.ByValue): KotlinType {
         val byteBuf = rbuf.asByteBuffer()!!
         try {
-            val item = read(byteBuf)
-            if (byteBuf.hasRemaining()) {
-                throw RuntimeException("junk remaining in buffer after lifting, something is very wrong!!")
-            }
-            return item
+           val item = read(byteBuf)
+           if (byteBuf.hasRemaining()) {
+               throw RuntimeException("junk remaining in buffer after lifting, something is very wrong!!")
+           }
+           return item
         } finally {
             RustBuffer.free(rbuf)
         }
@@ -215,9 +195,8 @@ public interface FfiConverter<KotlinType, FfiType> {
 }
 
 // FfiConverter that uses `RustBuffer` as the FfiType
-public interface FfiConverterRustBuffer<KotlinType> : FfiConverter<KotlinType, RustBuffer.ByValue> {
+public interface FfiConverterRustBuffer<KotlinType>: FfiConverter<KotlinType, RustBuffer.ByValue> {
     override fun lift(value: RustBuffer.ByValue) = liftFromRustBuffer(value)
-
     override fun lower(value: KotlinType) = lowerIntoRustBuffer(value)
 }
 // A handful of classes and functions to support the generated data structures.
@@ -230,24 +209,24 @@ internal const val UNIFFI_CALL_UNEXPECTED_ERROR = 2.toByte()
 @Structure.FieldOrder("code", "error_buf")
 internal open class UniffiRustCallStatus : Structure() {
     @JvmField var code: Byte = 0
-
     @JvmField var error_buf: RustBuffer.ByValue = RustBuffer.ByValue()
 
-    class ByValue :
-        UniffiRustCallStatus(),
-        Structure.ByValue
+    class ByValue: UniffiRustCallStatus(), Structure.ByValue
 
-    fun isSuccess(): Boolean = code == UNIFFI_CALL_SUCCESS
+    fun isSuccess(): Boolean {
+        return code == UNIFFI_CALL_SUCCESS
+    }
 
-    fun isError(): Boolean = code == UNIFFI_CALL_ERROR
+    fun isError(): Boolean {
+        return code == UNIFFI_CALL_ERROR
+    }
 
-    fun isPanic(): Boolean = code == UNIFFI_CALL_UNEXPECTED_ERROR
+    fun isPanic(): Boolean {
+        return code == UNIFFI_CALL_UNEXPECTED_ERROR
+    }
 
     companion object {
-        fun create(
-            code: Byte,
-            errorBuf: RustBuffer.ByValue,
-        ): UniffiRustCallStatus.ByValue {
+        fun create(code: Byte, errorBuf: RustBuffer.ByValue): UniffiRustCallStatus.ByValue {
             val callStatus = UniffiRustCallStatus.ByValue()
             callStatus.code = code
             callStatus.error_buf = errorBuf
@@ -256,13 +235,11 @@ internal open class UniffiRustCallStatus : Structure() {
     }
 }
 
-class InternalException(
-    message: String,
-) : kotlin.Exception(message)
+class InternalException(message: String) : kotlin.Exception(message)
 
 // Each top-level error class has a companion object that can lift the error from the call status's rust buffer
 interface UniffiRustCallStatusErrorHandler<E> {
-    fun lift(error_buf: RustBuffer.ByValue): E
+    fun lift(error_buf: RustBuffer.ByValue): E;
 }
 
 // Helpers for calling Rust
@@ -270,10 +247,7 @@ interface UniffiRustCallStatusErrorHandler<E> {
 // synchronize itself
 
 // Call a rust function that returns a Result<>.  Pass in the Error class companion that corresponds to the Err
-private inline fun <U, E : kotlin.Exception> uniffiRustCallWithError(
-    errorHandler: UniffiRustCallStatusErrorHandler<E>,
-    callback: (UniffiRustCallStatus) -> U,
-): U {
+private inline fun <U, E: kotlin.Exception> uniffiRustCallWithError(errorHandler: UniffiRustCallStatusErrorHandler<E>, callback: (UniffiRustCallStatus) -> U): U {
     var status = UniffiRustCallStatus()
     val return_value = callback(status)
     uniffiCheckCallStatus(errorHandler, status)
@@ -281,10 +255,7 @@ private inline fun <U, E : kotlin.Exception> uniffiRustCallWithError(
 }
 
 // Check UniffiRustCallStatus and throw an error if the call wasn't successful
-private fun <E : kotlin.Exception> uniffiCheckCallStatus(
-    errorHandler: UniffiRustCallStatusErrorHandler<E>,
-    status: UniffiRustCallStatus,
-) {
+private fun<E: kotlin.Exception> uniffiCheckCallStatus(errorHandler: UniffiRustCallStatusErrorHandler<E>, status: UniffiRustCallStatus) {
     if (status.isSuccess()) {
         return
     } else if (status.isError()) {
@@ -304,7 +275,7 @@ private fun <E : kotlin.Exception> uniffiCheckCallStatus(
 }
 
 // UniffiRustCallStatusErrorHandler implementation for times when we don't expect a CALL_ERROR
-object UniffiNullRustCallStatusErrorHandler : UniffiRustCallStatusErrorHandler<InternalException> {
+object UniffiNullRustCallStatusErrorHandler: UniffiRustCallStatusErrorHandler<InternalException> {
     override fun lift(error_buf: RustBuffer.ByValue): InternalException {
         RustBuffer.free(error_buf)
         return InternalException("Unexpected CALL_ERROR")
@@ -312,31 +283,32 @@ object UniffiNullRustCallStatusErrorHandler : UniffiRustCallStatusErrorHandler<I
 }
 
 // Call a rust function that returns a plain value
-private inline fun <U> uniffiRustCall(callback: (UniffiRustCallStatus) -> U): U =
-    uniffiRustCallWithError(UniffiNullRustCallStatusErrorHandler, callback)
+private inline fun <U> uniffiRustCall(callback: (UniffiRustCallStatus) -> U): U {
+    return uniffiRustCallWithError(UniffiNullRustCallStatusErrorHandler, callback)
+}
 
-internal inline fun <T> uniffiTraitInterfaceCall(
+internal inline fun<T> uniffiTraitInterfaceCall(
     callStatus: UniffiRustCallStatus,
     makeCall: () -> T,
     writeReturn: (T) -> Unit,
 ) {
     try {
         writeReturn(makeCall())
-    } catch (e: kotlin.Exception) {
+    } catch(e: kotlin.Exception) {
         callStatus.code = UNIFFI_CALL_UNEXPECTED_ERROR
         callStatus.error_buf = FfiConverterString.lower(e.toString())
     }
 }
 
-internal inline fun <T, reified E : Throwable> uniffiTraitInterfaceCallWithError(
+internal inline fun<T, reified E: Throwable> uniffiTraitInterfaceCallWithError(
     callStatus: UniffiRustCallStatus,
     makeCall: () -> T,
     writeReturn: (T) -> Unit,
-    lowerError: (E) -> RustBuffer.ByValue,
+    lowerError: (E) -> RustBuffer.ByValue
 ) {
     try {
         writeReturn(makeCall())
-    } catch (e: kotlin.Exception) {
+    } catch(e: kotlin.Exception) {
         if (e is E) {
             callStatus.code = UNIFFI_CALL_ERROR
             callStatus.error_buf = lowerError(e)
@@ -346,15 +318,12 @@ internal inline fun <T, reified E : Throwable> uniffiTraitInterfaceCallWithError
         }
     }
 }
-
 // Map handles to objects
 //
 // This is used pass an opaque 64-bit handle representing a foreign object to the Rust code.
-internal class UniffiHandleMap<T : Any> {
+internal class UniffiHandleMap<T: Any> {
     private val map = ConcurrentHashMap<Long, T>()
-    private val counter =
-        java.util.concurrent.atomic
-            .AtomicLong(0)
+    private val counter = java.util.concurrent.atomic.AtomicLong(0)
 
     val size: Int
         get() = map.size
@@ -367,10 +336,14 @@ internal class UniffiHandleMap<T : Any> {
     }
 
     // Get an object from the handle map
-    fun get(handle: Long): T = map.get(handle) ?: throw InternalException("UniffiHandleMap.get: Invalid handle")
+    fun get(handle: Long): T {
+        return map.get(handle) ?: throw InternalException("UniffiHandleMap.get: Invalid handle")
+    }
 
     // Remove an entry from the handlemap and get the Kotlin object back
-    fun remove(handle: Long): T = map.remove(handle) ?: throw InternalException("UniffiHandleMap: Invalid handle")
+    fun remove(handle: Long): T {
+        return map.remove(handle) ?: throw InternalException("UniffiHandleMap: Invalid handle")
+    }
 }
 
 // Contains loading, initialization code,
@@ -384,25 +357,22 @@ private fun findLibraryName(componentName: String): String {
     return "gemstone"
 }
 
-private inline fun <reified Lib : Library> loadIndirect(componentName: String): Lib =
-    Native.load<Lib>(findLibraryName(componentName), Lib::class.java)
+private inline fun <reified Lib : Library> loadIndirect(
+    componentName: String
+): Lib {
+    return Native.load<Lib>(findLibraryName(componentName), Lib::class.java)
+}
 
 // Define FFI callback types
 internal interface UniffiRustFutureContinuationCallback : com.sun.jna.Callback {
-    fun callback(
-        `data`: Long,
-        `pollResult`: Byte,
-    )
+    fun callback(`data`: Long,`pollResult`: Byte,)
 }
-
 internal interface UniffiForeignFutureFree : com.sun.jna.Callback {
-    fun callback(`handle`: Long)
+    fun callback(`handle`: Long,)
 }
-
 internal interface UniffiCallbackInterfaceFree : com.sun.jna.Callback {
-    fun callback(`handle`: Long)
+    fun callback(`handle`: Long,)
 }
-
 @Structure.FieldOrder("handle", "free")
 internal open class UniffiForeignFuture(
     @JvmField internal var `handle`: Long = 0.toLong(),
@@ -411,15 +381,14 @@ internal open class UniffiForeignFuture(
     class UniffiByValue(
         `handle`: Long = 0.toLong(),
         `free`: UniffiForeignFutureFree? = null,
-    ) : UniffiForeignFuture(`handle`, `free`),
-        Structure.ByValue
+    ): UniffiForeignFuture(`handle`,`free`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFuture) {
+   internal fun uniffiSetValue(other: UniffiForeignFuture) {
         `handle` = other.`handle`
         `free` = other.`free`
     }
-}
 
+}
 @Structure.FieldOrder("returnValue", "callStatus")
 internal open class UniffiForeignFutureStructU8(
     @JvmField internal var `returnValue`: Byte = 0.toByte(),
@@ -428,22 +397,17 @@ internal open class UniffiForeignFutureStructU8(
     class UniffiByValue(
         `returnValue`: Byte = 0.toByte(),
         `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
-    ) : UniffiForeignFutureStructU8(`returnValue`, `callStatus`),
-        Structure.ByValue
+    ): UniffiForeignFutureStructU8(`returnValue`,`callStatus`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFutureStructU8) {
+   internal fun uniffiSetValue(other: UniffiForeignFutureStructU8) {
         `returnValue` = other.`returnValue`
         `callStatus` = other.`callStatus`
     }
-}
 
+}
 internal interface UniffiForeignFutureCompleteU8 : com.sun.jna.Callback {
-    fun callback(
-        `callbackData`: Long,
-        `result`: UniffiForeignFutureStructU8.UniffiByValue,
-    )
+    fun callback(`callbackData`: Long,`result`: UniffiForeignFutureStructU8.UniffiByValue,)
 }
-
 @Structure.FieldOrder("returnValue", "callStatus")
 internal open class UniffiForeignFutureStructI8(
     @JvmField internal var `returnValue`: Byte = 0.toByte(),
@@ -452,22 +416,17 @@ internal open class UniffiForeignFutureStructI8(
     class UniffiByValue(
         `returnValue`: Byte = 0.toByte(),
         `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
-    ) : UniffiForeignFutureStructI8(`returnValue`, `callStatus`),
-        Structure.ByValue
+    ): UniffiForeignFutureStructI8(`returnValue`,`callStatus`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFutureStructI8) {
+   internal fun uniffiSetValue(other: UniffiForeignFutureStructI8) {
         `returnValue` = other.`returnValue`
         `callStatus` = other.`callStatus`
     }
-}
 
+}
 internal interface UniffiForeignFutureCompleteI8 : com.sun.jna.Callback {
-    fun callback(
-        `callbackData`: Long,
-        `result`: UniffiForeignFutureStructI8.UniffiByValue,
-    )
+    fun callback(`callbackData`: Long,`result`: UniffiForeignFutureStructI8.UniffiByValue,)
 }
-
 @Structure.FieldOrder("returnValue", "callStatus")
 internal open class UniffiForeignFutureStructU16(
     @JvmField internal var `returnValue`: Short = 0.toShort(),
@@ -476,22 +435,17 @@ internal open class UniffiForeignFutureStructU16(
     class UniffiByValue(
         `returnValue`: Short = 0.toShort(),
         `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
-    ) : UniffiForeignFutureStructU16(`returnValue`, `callStatus`),
-        Structure.ByValue
+    ): UniffiForeignFutureStructU16(`returnValue`,`callStatus`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFutureStructU16) {
+   internal fun uniffiSetValue(other: UniffiForeignFutureStructU16) {
         `returnValue` = other.`returnValue`
         `callStatus` = other.`callStatus`
     }
-}
 
+}
 internal interface UniffiForeignFutureCompleteU16 : com.sun.jna.Callback {
-    fun callback(
-        `callbackData`: Long,
-        `result`: UniffiForeignFutureStructU16.UniffiByValue,
-    )
+    fun callback(`callbackData`: Long,`result`: UniffiForeignFutureStructU16.UniffiByValue,)
 }
-
 @Structure.FieldOrder("returnValue", "callStatus")
 internal open class UniffiForeignFutureStructI16(
     @JvmField internal var `returnValue`: Short = 0.toShort(),
@@ -500,22 +454,17 @@ internal open class UniffiForeignFutureStructI16(
     class UniffiByValue(
         `returnValue`: Short = 0.toShort(),
         `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
-    ) : UniffiForeignFutureStructI16(`returnValue`, `callStatus`),
-        Structure.ByValue
+    ): UniffiForeignFutureStructI16(`returnValue`,`callStatus`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFutureStructI16) {
+   internal fun uniffiSetValue(other: UniffiForeignFutureStructI16) {
         `returnValue` = other.`returnValue`
         `callStatus` = other.`callStatus`
     }
-}
 
+}
 internal interface UniffiForeignFutureCompleteI16 : com.sun.jna.Callback {
-    fun callback(
-        `callbackData`: Long,
-        `result`: UniffiForeignFutureStructI16.UniffiByValue,
-    )
+    fun callback(`callbackData`: Long,`result`: UniffiForeignFutureStructI16.UniffiByValue,)
 }
-
 @Structure.FieldOrder("returnValue", "callStatus")
 internal open class UniffiForeignFutureStructU32(
     @JvmField internal var `returnValue`: Int = 0,
@@ -524,22 +473,17 @@ internal open class UniffiForeignFutureStructU32(
     class UniffiByValue(
         `returnValue`: Int = 0,
         `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
-    ) : UniffiForeignFutureStructU32(`returnValue`, `callStatus`),
-        Structure.ByValue
+    ): UniffiForeignFutureStructU32(`returnValue`,`callStatus`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFutureStructU32) {
+   internal fun uniffiSetValue(other: UniffiForeignFutureStructU32) {
         `returnValue` = other.`returnValue`
         `callStatus` = other.`callStatus`
     }
-}
 
+}
 internal interface UniffiForeignFutureCompleteU32 : com.sun.jna.Callback {
-    fun callback(
-        `callbackData`: Long,
-        `result`: UniffiForeignFutureStructU32.UniffiByValue,
-    )
+    fun callback(`callbackData`: Long,`result`: UniffiForeignFutureStructU32.UniffiByValue,)
 }
-
 @Structure.FieldOrder("returnValue", "callStatus")
 internal open class UniffiForeignFutureStructI32(
     @JvmField internal var `returnValue`: Int = 0,
@@ -548,22 +492,17 @@ internal open class UniffiForeignFutureStructI32(
     class UniffiByValue(
         `returnValue`: Int = 0,
         `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
-    ) : UniffiForeignFutureStructI32(`returnValue`, `callStatus`),
-        Structure.ByValue
+    ): UniffiForeignFutureStructI32(`returnValue`,`callStatus`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFutureStructI32) {
+   internal fun uniffiSetValue(other: UniffiForeignFutureStructI32) {
         `returnValue` = other.`returnValue`
         `callStatus` = other.`callStatus`
     }
-}
 
+}
 internal interface UniffiForeignFutureCompleteI32 : com.sun.jna.Callback {
-    fun callback(
-        `callbackData`: Long,
-        `result`: UniffiForeignFutureStructI32.UniffiByValue,
-    )
+    fun callback(`callbackData`: Long,`result`: UniffiForeignFutureStructI32.UniffiByValue,)
 }
-
 @Structure.FieldOrder("returnValue", "callStatus")
 internal open class UniffiForeignFutureStructU64(
     @JvmField internal var `returnValue`: Long = 0.toLong(),
@@ -572,22 +511,17 @@ internal open class UniffiForeignFutureStructU64(
     class UniffiByValue(
         `returnValue`: Long = 0.toLong(),
         `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
-    ) : UniffiForeignFutureStructU64(`returnValue`, `callStatus`),
-        Structure.ByValue
+    ): UniffiForeignFutureStructU64(`returnValue`,`callStatus`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFutureStructU64) {
+   internal fun uniffiSetValue(other: UniffiForeignFutureStructU64) {
         `returnValue` = other.`returnValue`
         `callStatus` = other.`callStatus`
     }
-}
 
+}
 internal interface UniffiForeignFutureCompleteU64 : com.sun.jna.Callback {
-    fun callback(
-        `callbackData`: Long,
-        `result`: UniffiForeignFutureStructU64.UniffiByValue,
-    )
+    fun callback(`callbackData`: Long,`result`: UniffiForeignFutureStructU64.UniffiByValue,)
 }
-
 @Structure.FieldOrder("returnValue", "callStatus")
 internal open class UniffiForeignFutureStructI64(
     @JvmField internal var `returnValue`: Long = 0.toLong(),
@@ -596,22 +530,17 @@ internal open class UniffiForeignFutureStructI64(
     class UniffiByValue(
         `returnValue`: Long = 0.toLong(),
         `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
-    ) : UniffiForeignFutureStructI64(`returnValue`, `callStatus`),
-        Structure.ByValue
+    ): UniffiForeignFutureStructI64(`returnValue`,`callStatus`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFutureStructI64) {
+   internal fun uniffiSetValue(other: UniffiForeignFutureStructI64) {
         `returnValue` = other.`returnValue`
         `callStatus` = other.`callStatus`
     }
-}
 
+}
 internal interface UniffiForeignFutureCompleteI64 : com.sun.jna.Callback {
-    fun callback(
-        `callbackData`: Long,
-        `result`: UniffiForeignFutureStructI64.UniffiByValue,
-    )
+    fun callback(`callbackData`: Long,`result`: UniffiForeignFutureStructI64.UniffiByValue,)
 }
-
 @Structure.FieldOrder("returnValue", "callStatus")
 internal open class UniffiForeignFutureStructF32(
     @JvmField internal var `returnValue`: Float = 0.0f,
@@ -620,22 +549,17 @@ internal open class UniffiForeignFutureStructF32(
     class UniffiByValue(
         `returnValue`: Float = 0.0f,
         `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
-    ) : UniffiForeignFutureStructF32(`returnValue`, `callStatus`),
-        Structure.ByValue
+    ): UniffiForeignFutureStructF32(`returnValue`,`callStatus`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFutureStructF32) {
+   internal fun uniffiSetValue(other: UniffiForeignFutureStructF32) {
         `returnValue` = other.`returnValue`
         `callStatus` = other.`callStatus`
     }
-}
 
+}
 internal interface UniffiForeignFutureCompleteF32 : com.sun.jna.Callback {
-    fun callback(
-        `callbackData`: Long,
-        `result`: UniffiForeignFutureStructF32.UniffiByValue,
-    )
+    fun callback(`callbackData`: Long,`result`: UniffiForeignFutureStructF32.UniffiByValue,)
 }
-
 @Structure.FieldOrder("returnValue", "callStatus")
 internal open class UniffiForeignFutureStructF64(
     @JvmField internal var `returnValue`: Double = 0.0,
@@ -644,22 +568,17 @@ internal open class UniffiForeignFutureStructF64(
     class UniffiByValue(
         `returnValue`: Double = 0.0,
         `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
-    ) : UniffiForeignFutureStructF64(`returnValue`, `callStatus`),
-        Structure.ByValue
+    ): UniffiForeignFutureStructF64(`returnValue`,`callStatus`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFutureStructF64) {
+   internal fun uniffiSetValue(other: UniffiForeignFutureStructF64) {
         `returnValue` = other.`returnValue`
         `callStatus` = other.`callStatus`
     }
-}
 
+}
 internal interface UniffiForeignFutureCompleteF64 : com.sun.jna.Callback {
-    fun callback(
-        `callbackData`: Long,
-        `result`: UniffiForeignFutureStructF64.UniffiByValue,
-    )
+    fun callback(`callbackData`: Long,`result`: UniffiForeignFutureStructF64.UniffiByValue,)
 }
-
 @Structure.FieldOrder("returnValue", "callStatus")
 internal open class UniffiForeignFutureStructPointer(
     @JvmField internal var `returnValue`: Pointer = Pointer.NULL,
@@ -668,22 +587,17 @@ internal open class UniffiForeignFutureStructPointer(
     class UniffiByValue(
         `returnValue`: Pointer = Pointer.NULL,
         `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
-    ) : UniffiForeignFutureStructPointer(`returnValue`, `callStatus`),
-        Structure.ByValue
+    ): UniffiForeignFutureStructPointer(`returnValue`,`callStatus`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFutureStructPointer) {
+   internal fun uniffiSetValue(other: UniffiForeignFutureStructPointer) {
         `returnValue` = other.`returnValue`
         `callStatus` = other.`callStatus`
     }
-}
 
+}
 internal interface UniffiForeignFutureCompletePointer : com.sun.jna.Callback {
-    fun callback(
-        `callbackData`: Long,
-        `result`: UniffiForeignFutureStructPointer.UniffiByValue,
-    )
+    fun callback(`callbackData`: Long,`result`: UniffiForeignFutureStructPointer.UniffiByValue,)
 }
-
 @Structure.FieldOrder("returnValue", "callStatus")
 internal open class UniffiForeignFutureStructRustBuffer(
     @JvmField internal var `returnValue`: RustBuffer.ByValue = RustBuffer.ByValue(),
@@ -692,42 +606,212 @@ internal open class UniffiForeignFutureStructRustBuffer(
     class UniffiByValue(
         `returnValue`: RustBuffer.ByValue = RustBuffer.ByValue(),
         `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
-    ) : UniffiForeignFutureStructRustBuffer(`returnValue`, `callStatus`),
-        Structure.ByValue
+    ): UniffiForeignFutureStructRustBuffer(`returnValue`,`callStatus`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFutureStructRustBuffer) {
+   internal fun uniffiSetValue(other: UniffiForeignFutureStructRustBuffer) {
         `returnValue` = other.`returnValue`
         `callStatus` = other.`callStatus`
     }
-}
 
+}
 internal interface UniffiForeignFutureCompleteRustBuffer : com.sun.jna.Callback {
-    fun callback(
-        `callbackData`: Long,
-        `result`: UniffiForeignFutureStructRustBuffer.UniffiByValue,
-    )
+    fun callback(`callbackData`: Long,`result`: UniffiForeignFutureStructRustBuffer.UniffiByValue,)
 }
-
 @Structure.FieldOrder("callStatus")
 internal open class UniffiForeignFutureStructVoid(
     @JvmField internal var `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
 ) : Structure() {
     class UniffiByValue(
         `callStatus`: UniffiRustCallStatus.ByValue = UniffiRustCallStatus.ByValue(),
-    ) : UniffiForeignFutureStructVoid(`callStatus`),
-        Structure.ByValue
+    ): UniffiForeignFutureStructVoid(`callStatus`,), Structure.ByValue
 
-    internal fun uniffiSetValue(other: UniffiForeignFutureStructVoid) {
+   internal fun uniffiSetValue(other: UniffiForeignFutureStructVoid) {
         `callStatus` = other.`callStatus`
     }
+
+}
+internal interface UniffiForeignFutureCompleteVoid : com.sun.jna.Callback {
+    fun callback(`callbackData`: Long,`result`: UniffiForeignFutureStructVoid.UniffiByValue,)
 }
 
-internal interface UniffiForeignFutureCompleteVoid : com.sun.jna.Callback {
-    fun callback(
-        `callbackData`: Long,
-        `result`: UniffiForeignFutureStructVoid.UniffiByValue,
-    )
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // A JNA Library to expose the extern-C FFI definitions.
 // This is an implementation detail which will be called internally by the public API.
@@ -736,700 +820,377 @@ internal interface UniffiLib : Library {
     companion object {
         internal val INSTANCE: UniffiLib by lazy {
             loadIndirect<UniffiLib>(componentName = "Gemstone")
-                .also { lib: UniffiLib ->
-                    uniffiCheckContractApiVersion(lib)
-                    uniffiCheckApiChecksums(lib)
+            .also { lib: UniffiLib ->
+                uniffiCheckContractApiVersion(lib)
+                uniffiCheckApiChecksums(lib)
                 }
         }
-
+        
         // The Cleaner for the whole library
         internal val CLEANER: UniffiCleaner by lazy {
             UniffiCleaner.create()
         }
     }
 
-    fun uniffi_gemstone_fn_clone_config(
-        `ptr`: Pointer,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_clone_config(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
-
-    fun uniffi_gemstone_fn_free_config(
-        `ptr`: Pointer,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_free_config(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
-
-    fun uniffi_gemstone_fn_constructor_config_new(uniffi_out_err: UniffiRustCallStatus): Pointer
-
-    fun uniffi_gemstone_fn_method_config_get_bitcoin_chain_config(
-        `ptr`: Pointer,
-        `chain`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_get_block_explorers(
-        `ptr`: Pointer,
-        `chain`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_get_chain_config(
-        `ptr`: Pointer,
-        `chain`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_get_docs_url(
-        `ptr`: Pointer,
-        `item`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_get_evm_chain_config(
-        `ptr`: Pointer,
-        `chain`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_get_nodes(
-        `ptr`: Pointer,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_get_nodes_for_chain(
-        `ptr`: Pointer,
-        `chain`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_get_public_url(
-        `ptr`: Pointer,
-        `item`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_get_social_url(
-        `ptr`: Pointer,
-        `item`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_get_solana_token_program(
-        `ptr`: Pointer,
-        `id`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_get_solana_token_program_id(
-        `ptr`: Pointer,
-        `address`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_get_stake_config(
-        `ptr`: Pointer,
-        `chain`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_get_validators(
-        `ptr`: Pointer,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_get_wallet_connect_config(
-        `ptr`: Pointer,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_image_formatter_asset_url(
-        `ptr`: Pointer,
-        `chain`: RustBuffer.ByValue,
-        `tokenId`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_config_image_formatter_validator_url(
-        `ptr`: Pointer,
-        `chain`: RustBuffer.ByValue,
-        `id`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
-    ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_clone_explorer(
-        `ptr`: Pointer,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_constructor_config_new(uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
-
-    fun uniffi_gemstone_fn_free_explorer(
-        `ptr`: Pointer,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_method_config_get_bitcoin_chain_config(`ptr`: Pointer,`chain`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_get_block_explorers(`ptr`: Pointer,`chain`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_get_chain_config(`ptr`: Pointer,`chain`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_get_docs_url(`ptr`: Pointer,`item`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_get_evm_chain_config(`ptr`: Pointer,`chain`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_get_nodes(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_get_nodes_for_chain(`ptr`: Pointer,`chain`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_get_public_url(`ptr`: Pointer,`item`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_get_social_url(`ptr`: Pointer,`item`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_get_solana_token_program(`ptr`: Pointer,`id`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_get_solana_token_program_id(`ptr`: Pointer,`address`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_get_stake_config(`ptr`: Pointer,`chain`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_get_validators(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_get_wallet_connect_config(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_image_formatter_asset_url(`ptr`: Pointer,`chain`: RustBuffer.ByValue,`tokenId`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_method_config_image_formatter_validator_url(`ptr`: Pointer,`chain`: RustBuffer.ByValue,`id`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun uniffi_gemstone_fn_clone_explorer(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
+    fun uniffi_gemstone_fn_free_explorer(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
-
-    fun uniffi_gemstone_fn_constructor_explorer_new(
-        `chain`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_constructor_explorer_new(`chain`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
-
-    fun uniffi_gemstone_fn_method_explorer_get_address_url(
-        `ptr`: Pointer,
-        `explorerName`: RustBuffer.ByValue,
-        `address`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_method_explorer_get_address_url(`ptr`: Pointer,`explorerName`: RustBuffer.ByValue,`address`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_explorer_get_token_url(
-        `ptr`: Pointer,
-        `explorerName`: RustBuffer.ByValue,
-        `address`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_method_explorer_get_token_url(`ptr`: Pointer,`explorerName`: RustBuffer.ByValue,`address`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_explorer_get_transaction_url(
-        `ptr`: Pointer,
-        `explorerName`: RustBuffer.ByValue,
-        `transactionId`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_method_explorer_get_transaction_url(`ptr`: Pointer,`explorerName`: RustBuffer.ByValue,`transactionId`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_clone_walletconnectnamespace(
-        `ptr`: Pointer,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_clone_walletconnectnamespace(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
-
-    fun uniffi_gemstone_fn_free_walletconnectnamespace(
-        `ptr`: Pointer,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_free_walletconnectnamespace(`ptr`: Pointer,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
-
-    fun uniffi_gemstone_fn_constructor_walletconnectnamespace_new(uniffi_out_err: UniffiRustCallStatus): Pointer
-
-    fun uniffi_gemstone_fn_method_walletconnectnamespace_get_namespace(
-        `ptr`: Pointer,
-        `chain`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_constructor_walletconnectnamespace_new(uniffi_out_err: UniffiRustCallStatus, 
+    ): Pointer
+    fun uniffi_gemstone_fn_method_walletconnectnamespace_get_namespace(`ptr`: Pointer,`chain`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_method_walletconnectnamespace_get_reference(
-        `ptr`: Pointer,
-        `chain`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_method_walletconnectnamespace_get_reference(`ptr`: Pointer,`chain`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_asset_default_rank(
-        `chain`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_asset_default_rank(`chain`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): Int
-
-    fun uniffi_gemstone_fn_func_asset_wrapper(
-        `chain`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_asset_wrapper(`chain`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_bsc_decode_delegations_return(
-        `result`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_bsc_decode_delegations_return(`result`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_bsc_decode_undelegations_return(
-        `result`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_bsc_decode_undelegations_return(`result`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_bsc_decode_validators_return(
-        `result`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_bsc_decode_validators_return(`result`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_bsc_encode_claim_call(
-        `operatorAddress`: RustBuffer.ByValue,
-        `requestNumber`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_bsc_encode_claim_call(`operatorAddress`: RustBuffer.ByValue,`requestNumber`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_bsc_encode_delegate_call(
-        `operatorAddress`: RustBuffer.ByValue,
-        `delegateVotePower`: Byte,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_bsc_encode_delegate_call(`operatorAddress`: RustBuffer.ByValue,`delegateVotePower`: Byte,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_bsc_encode_delegations_call(
-        `delegator`: RustBuffer.ByValue,
-        `offset`: Short,
-        `limit`: Short,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_bsc_encode_delegations_call(`delegator`: RustBuffer.ByValue,`offset`: Short,`limit`: Short,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_bsc_encode_redelegate_call(
-        `srcValidator`: RustBuffer.ByValue,
-        `dstValidator`: RustBuffer.ByValue,
-        `shares`: RustBuffer.ByValue,
-        `delegateVotePower`: Byte,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_bsc_encode_redelegate_call(`srcValidator`: RustBuffer.ByValue,`dstValidator`: RustBuffer.ByValue,`shares`: RustBuffer.ByValue,`delegateVotePower`: Byte,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_bsc_encode_undelegate_call(
-        `operatorAddress`: RustBuffer.ByValue,
-        `shares`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_bsc_encode_undelegate_call(`operatorAddress`: RustBuffer.ByValue,`shares`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_bsc_encode_undelegations_call(
-        `delegator`: RustBuffer.ByValue,
-        `offset`: Short,
-        `limit`: Short,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_bsc_encode_undelegations_call(`delegator`: RustBuffer.ByValue,`offset`: Short,`limit`: Short,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_bsc_encode_validators_call(
-        `offset`: Short,
-        `limit`: Short,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_bsc_encode_validators_call(`offset`: Short,`limit`: Short,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_cosmos_convert_hrp(
-        `address`: RustBuffer.ByValue,
-        `hrp`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_cosmos_convert_hrp(`address`: RustBuffer.ByValue,`hrp`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_lib_version(uniffi_out_err: UniffiRustCallStatus): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_lido_decode_get_withdrawal_statuses(
-        `result`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_lib_version(uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_lido_decode_request_withdrawals_return(
-        `result`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_lido_decode_get_withdrawal_statuses(`result`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_lido_decode_withdrawal_request_ids(
-        `result`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_lido_decode_request_withdrawals_return(`result`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_lido_encode_claim_withdrawal(
-        `requestId`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_lido_decode_withdrawal_request_ids(`result`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_lido_encode_request_withdrawals(
-        `amounts`: RustBuffer.ByValue,
-        `owner`: RustBuffer.ByValue,
-        `permit`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_lido_encode_claim_withdrawal(`requestId`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_lido_encode_submit(
-        `referral`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_lido_encode_request_withdrawals(`amounts`: RustBuffer.ByValue,`owner`: RustBuffer.ByValue,`permit`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_lido_encode_withdrawal_request_ids(
-        `owner`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_lido_encode_submit(`referral`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_lido_encode_withdrawal_statuses(
-        `requestIds`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_lido_encode_withdrawal_request_ids(`owner`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_payment_decode_url(
-        `string`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_lido_encode_withdrawal_statuses(`requestIds`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_solana_decode_metadata(
-        `base64Str`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_payment_decode_url(`string`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_solana_derive_metadata_pda(
-        `mint`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_solana_decode_metadata(`base64Str`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_sui_encode_split_stake(
-        `input`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_solana_derive_metadata_pda(`mint`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_sui_encode_token_transfer(
-        `input`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_sui_encode_split_stake(`input`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_sui_encode_transfer(
-        `input`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_sui_encode_token_transfer(`input`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_sui_encode_unstake(
-        `input`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_sui_encode_transfer(`input`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_sui_validate_and_hash(
-        `encoded`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_sui_encode_unstake(`input`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_ton_base64_to_hex_address(
-        `base64Str`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_sui_validate_and_hash(`encoded`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_ton_decode_jetton_address(
-        `base64Data`: RustBuffer.ByValue,
-        `len`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_ton_base64_to_hex_address(`base64Str`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_ton_encode_get_wallet_address(
-        `address`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_ton_decode_jetton_address(`base64Data`: RustBuffer.ByValue,`len`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun uniffi_gemstone_fn_func_ton_hex_to_base64_address(
-        `hexStr`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_ton_encode_get_wallet_address(`address`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun ffi_gemstone_rustbuffer_alloc(
-        `size`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun uniffi_gemstone_fn_func_ton_hex_to_base64_address(`hexStr`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun ffi_gemstone_rustbuffer_from_bytes(
-        `bytes`: ForeignBytes.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rustbuffer_alloc(`size`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun ffi_gemstone_rustbuffer_free(
-        `buf`: RustBuffer.ByValue,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rustbuffer_from_bytes(`bytes`: ForeignBytes.ByValue,uniffi_out_err: UniffiRustCallStatus, 
+    ): RustBuffer.ByValue
+    fun ffi_gemstone_rustbuffer_free(`buf`: RustBuffer.ByValue,uniffi_out_err: UniffiRustCallStatus, 
     ): Unit
-
-    fun ffi_gemstone_rustbuffer_reserve(
-        `buf`: RustBuffer.ByValue,
-        `additional`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rustbuffer_reserve(`buf`: RustBuffer.ByValue,`additional`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun ffi_gemstone_rust_future_poll_u8(
-        `handle`: Long,
-        `callback`: UniffiRustFutureContinuationCallback,
-        `callbackData`: Long,
+    fun ffi_gemstone_rust_future_poll_u8(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
     ): Unit
-
-    fun ffi_gemstone_rust_future_cancel_u8(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_free_u8(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_complete_u8(
-        `handle`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rust_future_cancel_u8(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_free_u8(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_complete_u8(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Byte
-
-    fun ffi_gemstone_rust_future_poll_i8(
-        `handle`: Long,
-        `callback`: UniffiRustFutureContinuationCallback,
-        `callbackData`: Long,
+    fun ffi_gemstone_rust_future_poll_i8(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
     ): Unit
-
-    fun ffi_gemstone_rust_future_cancel_i8(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_free_i8(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_complete_i8(
-        `handle`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rust_future_cancel_i8(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_free_i8(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_complete_i8(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Byte
-
-    fun ffi_gemstone_rust_future_poll_u16(
-        `handle`: Long,
-        `callback`: UniffiRustFutureContinuationCallback,
-        `callbackData`: Long,
+    fun ffi_gemstone_rust_future_poll_u16(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
     ): Unit
-
-    fun ffi_gemstone_rust_future_cancel_u16(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_free_u16(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_complete_u16(
-        `handle`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rust_future_cancel_u16(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_free_u16(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_complete_u16(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Short
-
-    fun ffi_gemstone_rust_future_poll_i16(
-        `handle`: Long,
-        `callback`: UniffiRustFutureContinuationCallback,
-        `callbackData`: Long,
+    fun ffi_gemstone_rust_future_poll_i16(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
     ): Unit
-
-    fun ffi_gemstone_rust_future_cancel_i16(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_free_i16(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_complete_i16(
-        `handle`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rust_future_cancel_i16(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_free_i16(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_complete_i16(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Short
-
-    fun ffi_gemstone_rust_future_poll_u32(
-        `handle`: Long,
-        `callback`: UniffiRustFutureContinuationCallback,
-        `callbackData`: Long,
+    fun ffi_gemstone_rust_future_poll_u32(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
     ): Unit
-
-    fun ffi_gemstone_rust_future_cancel_u32(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_free_u32(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_complete_u32(
-        `handle`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rust_future_cancel_u32(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_free_u32(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_complete_u32(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Int
-
-    fun ffi_gemstone_rust_future_poll_i32(
-        `handle`: Long,
-        `callback`: UniffiRustFutureContinuationCallback,
-        `callbackData`: Long,
+    fun ffi_gemstone_rust_future_poll_i32(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
     ): Unit
-
-    fun ffi_gemstone_rust_future_cancel_i32(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_free_i32(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_complete_i32(
-        `handle`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rust_future_cancel_i32(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_free_i32(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_complete_i32(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Int
-
-    fun ffi_gemstone_rust_future_poll_u64(
-        `handle`: Long,
-        `callback`: UniffiRustFutureContinuationCallback,
-        `callbackData`: Long,
+    fun ffi_gemstone_rust_future_poll_u64(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
     ): Unit
-
-    fun ffi_gemstone_rust_future_cancel_u64(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_free_u64(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_complete_u64(
-        `handle`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rust_future_cancel_u64(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_free_u64(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_complete_u64(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Long
-
-    fun ffi_gemstone_rust_future_poll_i64(
-        `handle`: Long,
-        `callback`: UniffiRustFutureContinuationCallback,
-        `callbackData`: Long,
+    fun ffi_gemstone_rust_future_poll_i64(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
     ): Unit
-
-    fun ffi_gemstone_rust_future_cancel_i64(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_free_i64(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_complete_i64(
-        `handle`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rust_future_cancel_i64(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_free_i64(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_complete_i64(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Long
-
-    fun ffi_gemstone_rust_future_poll_f32(
-        `handle`: Long,
-        `callback`: UniffiRustFutureContinuationCallback,
-        `callbackData`: Long,
+    fun ffi_gemstone_rust_future_poll_f32(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
     ): Unit
-
-    fun ffi_gemstone_rust_future_cancel_f32(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_free_f32(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_complete_f32(
-        `handle`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rust_future_cancel_f32(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_free_f32(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_complete_f32(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Float
-
-    fun ffi_gemstone_rust_future_poll_f64(
-        `handle`: Long,
-        `callback`: UniffiRustFutureContinuationCallback,
-        `callbackData`: Long,
+    fun ffi_gemstone_rust_future_poll_f64(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
     ): Unit
-
-    fun ffi_gemstone_rust_future_cancel_f64(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_free_f64(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_complete_f64(
-        `handle`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rust_future_cancel_f64(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_free_f64(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_complete_f64(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Double
-
-    fun ffi_gemstone_rust_future_poll_pointer(
-        `handle`: Long,
-        `callback`: UniffiRustFutureContinuationCallback,
-        `callbackData`: Long,
+    fun ffi_gemstone_rust_future_poll_pointer(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
     ): Unit
-
-    fun ffi_gemstone_rust_future_cancel_pointer(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_free_pointer(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_complete_pointer(
-        `handle`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rust_future_cancel_pointer(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_free_pointer(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_complete_pointer(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): Pointer
-
-    fun ffi_gemstone_rust_future_poll_rust_buffer(
-        `handle`: Long,
-        `callback`: UniffiRustFutureContinuationCallback,
-        `callbackData`: Long,
+    fun ffi_gemstone_rust_future_poll_rust_buffer(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
     ): Unit
-
-    fun ffi_gemstone_rust_future_cancel_rust_buffer(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_free_rust_buffer(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_complete_rust_buffer(
-        `handle`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rust_future_cancel_rust_buffer(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_free_rust_buffer(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_complete_rust_buffer(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
     ): RustBuffer.ByValue
-
-    fun ffi_gemstone_rust_future_poll_void(
-        `handle`: Long,
-        `callback`: UniffiRustFutureContinuationCallback,
-        `callbackData`: Long,
+    fun ffi_gemstone_rust_future_poll_void(`handle`: Long,`callback`: UniffiRustFutureContinuationCallback,`callbackData`: Long,
     ): Unit
-
-    fun ffi_gemstone_rust_future_cancel_void(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_free_void(`handle`: Long): Unit
-
-    fun ffi_gemstone_rust_future_complete_void(
-        `handle`: Long,
-        uniffi_out_err: UniffiRustCallStatus,
+    fun ffi_gemstone_rust_future_cancel_void(`handle`: Long,
     ): Unit
-
-    fun uniffi_gemstone_checksum_func_asset_default_rank(): Short
-
-    fun uniffi_gemstone_checksum_func_asset_wrapper(): Short
-
-    fun uniffi_gemstone_checksum_func_bsc_decode_delegations_return(): Short
-
-    fun uniffi_gemstone_checksum_func_bsc_decode_undelegations_return(): Short
-
-    fun uniffi_gemstone_checksum_func_bsc_decode_validators_return(): Short
-
-    fun uniffi_gemstone_checksum_func_bsc_encode_claim_call(): Short
-
-    fun uniffi_gemstone_checksum_func_bsc_encode_delegate_call(): Short
-
-    fun uniffi_gemstone_checksum_func_bsc_encode_delegations_call(): Short
-
-    fun uniffi_gemstone_checksum_func_bsc_encode_redelegate_call(): Short
-
-    fun uniffi_gemstone_checksum_func_bsc_encode_undelegate_call(): Short
-
-    fun uniffi_gemstone_checksum_func_bsc_encode_undelegations_call(): Short
-
-    fun uniffi_gemstone_checksum_func_bsc_encode_validators_call(): Short
-
-    fun uniffi_gemstone_checksum_func_cosmos_convert_hrp(): Short
-
-    fun uniffi_gemstone_checksum_func_lib_version(): Short
-
-    fun uniffi_gemstone_checksum_func_lido_decode_get_withdrawal_statuses(): Short
-
-    fun uniffi_gemstone_checksum_func_lido_decode_request_withdrawals_return(): Short
-
-    fun uniffi_gemstone_checksum_func_lido_decode_withdrawal_request_ids(): Short
-
-    fun uniffi_gemstone_checksum_func_lido_encode_claim_withdrawal(): Short
-
-    fun uniffi_gemstone_checksum_func_lido_encode_request_withdrawals(): Short
-
-    fun uniffi_gemstone_checksum_func_lido_encode_submit(): Short
-
-    fun uniffi_gemstone_checksum_func_lido_encode_withdrawal_request_ids(): Short
-
-    fun uniffi_gemstone_checksum_func_lido_encode_withdrawal_statuses(): Short
-
-    fun uniffi_gemstone_checksum_func_payment_decode_url(): Short
-
-    fun uniffi_gemstone_checksum_func_solana_decode_metadata(): Short
-
-    fun uniffi_gemstone_checksum_func_solana_derive_metadata_pda(): Short
-
-    fun uniffi_gemstone_checksum_func_sui_encode_split_stake(): Short
-
-    fun uniffi_gemstone_checksum_func_sui_encode_token_transfer(): Short
-
-    fun uniffi_gemstone_checksum_func_sui_encode_transfer(): Short
-
-    fun uniffi_gemstone_checksum_func_sui_encode_unstake(): Short
-
-    fun uniffi_gemstone_checksum_func_sui_validate_and_hash(): Short
-
-    fun uniffi_gemstone_checksum_func_ton_base64_to_hex_address(): Short
-
-    fun uniffi_gemstone_checksum_func_ton_decode_jetton_address(): Short
-
-    fun uniffi_gemstone_checksum_func_ton_encode_get_wallet_address(): Short
-
-    fun uniffi_gemstone_checksum_func_ton_hex_to_base64_address(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_bitcoin_chain_config(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_block_explorers(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_chain_config(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_docs_url(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_evm_chain_config(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_nodes(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_nodes_for_chain(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_public_url(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_social_url(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_solana_token_program(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_solana_token_program_id(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_stake_config(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_validators(): Short
-
-    fun uniffi_gemstone_checksum_method_config_get_wallet_connect_config(): Short
-
-    fun uniffi_gemstone_checksum_method_config_image_formatter_asset_url(): Short
-
-    fun uniffi_gemstone_checksum_method_config_image_formatter_validator_url(): Short
-
-    fun uniffi_gemstone_checksum_method_explorer_get_address_url(): Short
-
-    fun uniffi_gemstone_checksum_method_explorer_get_token_url(): Short
-
-    fun uniffi_gemstone_checksum_method_explorer_get_transaction_url(): Short
-
-    fun uniffi_gemstone_checksum_method_walletconnectnamespace_get_namespace(): Short
-
-    fun uniffi_gemstone_checksum_method_walletconnectnamespace_get_reference(): Short
-
-    fun uniffi_gemstone_checksum_constructor_config_new(): Short
-
-    fun uniffi_gemstone_checksum_constructor_explorer_new(): Short
-
-    fun uniffi_gemstone_checksum_constructor_walletconnectnamespace_new(): Short
-
-    fun ffi_gemstone_uniffi_contract_version(): Int
+    fun ffi_gemstone_rust_future_free_void(`handle`: Long,
+    ): Unit
+    fun ffi_gemstone_rust_future_complete_void(`handle`: Long,uniffi_out_err: UniffiRustCallStatus, 
+    ): Unit
+    fun uniffi_gemstone_checksum_func_asset_default_rank(
+    ): Short
+    fun uniffi_gemstone_checksum_func_asset_wrapper(
+    ): Short
+    fun uniffi_gemstone_checksum_func_bsc_decode_delegations_return(
+    ): Short
+    fun uniffi_gemstone_checksum_func_bsc_decode_undelegations_return(
+    ): Short
+    fun uniffi_gemstone_checksum_func_bsc_decode_validators_return(
+    ): Short
+    fun uniffi_gemstone_checksum_func_bsc_encode_claim_call(
+    ): Short
+    fun uniffi_gemstone_checksum_func_bsc_encode_delegate_call(
+    ): Short
+    fun uniffi_gemstone_checksum_func_bsc_encode_delegations_call(
+    ): Short
+    fun uniffi_gemstone_checksum_func_bsc_encode_redelegate_call(
+    ): Short
+    fun uniffi_gemstone_checksum_func_bsc_encode_undelegate_call(
+    ): Short
+    fun uniffi_gemstone_checksum_func_bsc_encode_undelegations_call(
+    ): Short
+    fun uniffi_gemstone_checksum_func_bsc_encode_validators_call(
+    ): Short
+    fun uniffi_gemstone_checksum_func_cosmos_convert_hrp(
+    ): Short
+    fun uniffi_gemstone_checksum_func_lib_version(
+    ): Short
+    fun uniffi_gemstone_checksum_func_lido_decode_get_withdrawal_statuses(
+    ): Short
+    fun uniffi_gemstone_checksum_func_lido_decode_request_withdrawals_return(
+    ): Short
+    fun uniffi_gemstone_checksum_func_lido_decode_withdrawal_request_ids(
+    ): Short
+    fun uniffi_gemstone_checksum_func_lido_encode_claim_withdrawal(
+    ): Short
+    fun uniffi_gemstone_checksum_func_lido_encode_request_withdrawals(
+    ): Short
+    fun uniffi_gemstone_checksum_func_lido_encode_submit(
+    ): Short
+    fun uniffi_gemstone_checksum_func_lido_encode_withdrawal_request_ids(
+    ): Short
+    fun uniffi_gemstone_checksum_func_lido_encode_withdrawal_statuses(
+    ): Short
+    fun uniffi_gemstone_checksum_func_payment_decode_url(
+    ): Short
+    fun uniffi_gemstone_checksum_func_solana_decode_metadata(
+    ): Short
+    fun uniffi_gemstone_checksum_func_solana_derive_metadata_pda(
+    ): Short
+    fun uniffi_gemstone_checksum_func_sui_encode_split_stake(
+    ): Short
+    fun uniffi_gemstone_checksum_func_sui_encode_token_transfer(
+    ): Short
+    fun uniffi_gemstone_checksum_func_sui_encode_transfer(
+    ): Short
+    fun uniffi_gemstone_checksum_func_sui_encode_unstake(
+    ): Short
+    fun uniffi_gemstone_checksum_func_sui_validate_and_hash(
+    ): Short
+    fun uniffi_gemstone_checksum_func_ton_base64_to_hex_address(
+    ): Short
+    fun uniffi_gemstone_checksum_func_ton_decode_jetton_address(
+    ): Short
+    fun uniffi_gemstone_checksum_func_ton_encode_get_wallet_address(
+    ): Short
+    fun uniffi_gemstone_checksum_func_ton_hex_to_base64_address(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_bitcoin_chain_config(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_block_explorers(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_chain_config(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_docs_url(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_evm_chain_config(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_nodes(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_nodes_for_chain(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_public_url(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_social_url(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_solana_token_program(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_solana_token_program_id(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_stake_config(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_validators(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_get_wallet_connect_config(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_image_formatter_asset_url(
+    ): Short
+    fun uniffi_gemstone_checksum_method_config_image_formatter_validator_url(
+    ): Short
+    fun uniffi_gemstone_checksum_method_explorer_get_address_url(
+    ): Short
+    fun uniffi_gemstone_checksum_method_explorer_get_token_url(
+    ): Short
+    fun uniffi_gemstone_checksum_method_explorer_get_transaction_url(
+    ): Short
+    fun uniffi_gemstone_checksum_method_walletconnectnamespace_get_namespace(
+    ): Short
+    fun uniffi_gemstone_checksum_method_walletconnectnamespace_get_reference(
+    ): Short
+    fun uniffi_gemstone_checksum_constructor_config_new(
+    ): Short
+    fun uniffi_gemstone_checksum_constructor_explorer_new(
+    ): Short
+    fun uniffi_gemstone_checksum_constructor_walletconnectnamespace_new(
+    ): Short
+    fun ffi_gemstone_uniffi_contract_version(
+    ): Int
+    
 }
 
 private fun uniffiCheckContractApiVersion(lib: UniffiLib) {
@@ -1624,6 +1385,7 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
 
 // Public interface members begin here.
 
+
 // Interface implemented by anything that can contain an object reference.
 //
 // Such types expose a `destroy()` method that must be called to cleanly
@@ -1634,11 +1396,9 @@ private fun uniffiCheckApiChecksums(lib: UniffiLib) {
 // helper method to execute a block and destroy the object at the end.
 interface Disposable {
     fun destroy()
-
     companion object {
         fun destroy(vararg args: Any?) {
-            args
-                .filterIsInstance<Disposable>()
+            args.filterIsInstance<Disposable>()
                 .forEach(Disposable::destroy)
         }
     }
@@ -1659,92 +1419,107 @@ inline fun <T : Disposable?, R> T.use(block: (T) -> R) =
 /** Used to instantiate an interface without an actual pointer, for fakes in tests, mostly. */
 object NoPointer
 
-public object FfiConverterUShort : FfiConverter<UShort, Short> {
-    override fun lift(value: Short): UShort = value.toUShort()
+public object FfiConverterUShort: FfiConverter<UShort, Short> {
+    override fun lift(value: Short): UShort {
+        return value.toUShort()
+    }
 
-    override fun read(buf: ByteBuffer): UShort = lift(buf.getShort())
+    override fun read(buf: ByteBuffer): UShort {
+        return lift(buf.getShort())
+    }
 
-    override fun lower(value: UShort): Short = value.toShort()
+    override fun lower(value: UShort): Short {
+        return value.toShort()
+    }
 
     override fun allocationSize(value: UShort) = 2UL
 
-    override fun write(
-        value: UShort,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: UShort, buf: ByteBuffer) {
         buf.putShort(value.toShort())
     }
 }
 
-public object FfiConverterInt : FfiConverter<Int, Int> {
-    override fun lift(value: Int): Int = value
+public object FfiConverterInt: FfiConverter<Int, Int> {
+    override fun lift(value: Int): Int {
+        return value
+    }
 
-    override fun read(buf: ByteBuffer): Int = buf.getInt()
+    override fun read(buf: ByteBuffer): Int {
+        return buf.getInt()
+    }
 
-    override fun lower(value: Int): Int = value
+    override fun lower(value: Int): Int {
+        return value
+    }
 
     override fun allocationSize(value: Int) = 4UL
 
-    override fun write(
-        value: Int,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: Int, buf: ByteBuffer) {
         buf.putInt(value)
     }
 }
 
-public object FfiConverterULong : FfiConverter<ULong, Long> {
-    override fun lift(value: Long): ULong = value.toULong()
+public object FfiConverterULong: FfiConverter<ULong, Long> {
+    override fun lift(value: Long): ULong {
+        return value.toULong()
+    }
 
-    override fun read(buf: ByteBuffer): ULong = lift(buf.getLong())
+    override fun read(buf: ByteBuffer): ULong {
+        return lift(buf.getLong())
+    }
 
-    override fun lower(value: ULong): Long = value.toLong()
+    override fun lower(value: ULong): Long {
+        return value.toLong()
+    }
 
     override fun allocationSize(value: ULong) = 8UL
 
-    override fun write(
-        value: ULong,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: ULong, buf: ByteBuffer) {
         buf.putLong(value.toLong())
     }
 }
 
-public object FfiConverterDouble : FfiConverter<Double, Double> {
-    override fun lift(value: Double): Double = value
+public object FfiConverterDouble: FfiConverter<Double, Double> {
+    override fun lift(value: Double): Double {
+        return value
+    }
 
-    override fun read(buf: ByteBuffer): Double = buf.getDouble()
+    override fun read(buf: ByteBuffer): Double {
+        return buf.getDouble()
+    }
 
-    override fun lower(value: Double): Double = value
+    override fun lower(value: Double): Double {
+        return value
+    }
 
     override fun allocationSize(value: Double) = 8UL
 
-    override fun write(
-        value: Double,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: Double, buf: ByteBuffer) {
         buf.putDouble(value)
     }
 }
 
-public object FfiConverterBoolean : FfiConverter<Boolean, Byte> {
-    override fun lift(value: Byte): Boolean = value.toInt() != 0
+public object FfiConverterBoolean: FfiConverter<Boolean, Byte> {
+    override fun lift(value: Byte): Boolean {
+        return value.toInt() != 0
+    }
 
-    override fun read(buf: ByteBuffer): Boolean = lift(buf.get())
+    override fun read(buf: ByteBuffer): Boolean {
+        return lift(buf.get())
+    }
 
-    override fun lower(value: Boolean): Byte = if (value) 1.toByte() else 0.toByte()
+    override fun lower(value: Boolean): Byte {
+        return if (value) 1.toByte() else 0.toByte()
+    }
 
     override fun allocationSize(value: Boolean) = 1UL
 
-    override fun write(
-        value: Boolean,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: Boolean, buf: ByteBuffer) {
         buf.put(lower(value))
     }
 }
 
-public object FfiConverterString : FfiConverter<String, RustBuffer.ByValue> {
+public object FfiConverterString: FfiConverter<String, RustBuffer.ByValue> {
     // Note: we don't inherit from FfiConverterRustBuffer, because we use a
     // special encoding when lowering/lifting.  We can use `RustBuffer.len` to
     // store our length and avoid writing it out to the buffer.
@@ -1791,34 +1566,29 @@ public object FfiConverterString : FfiConverter<String, RustBuffer.ByValue> {
         return sizeForLength + sizeForString
     }
 
-    override fun write(
-        value: String,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: String, buf: ByteBuffer) {
         val byteBuf = toUtf8(value)
         buf.putInt(byteBuf.limit())
         buf.put(byteBuf)
     }
 }
 
-public object FfiConverterByteArray : FfiConverterRustBuffer<ByteArray> {
+public object FfiConverterByteArray: FfiConverterRustBuffer<ByteArray> {
     override fun read(buf: ByteBuffer): ByteArray {
         val len = buf.getInt()
         val byteArr = ByteArray(len)
         buf.get(byteArr)
         return byteArr
     }
-
-    override fun allocationSize(value: ByteArray): ULong = 4UL + value.size.toULong()
-
-    override fun write(
-        value: ByteArray,
-        buf: ByteBuffer,
-    ) {
+    override fun allocationSize(value: ByteArray): ULong {
+        return 4UL + value.size.toULong()
+    }
+    override fun write(value: ByteArray, buf: ByteBuffer) {
         buf.putInt(value.size)
         buf.put(value)
     }
 }
+
 
 // This template implements a class for working with a Rust struct via a Pointer/Arc<T>
 // to the live Rust struct on the other side of the FFI.
@@ -1917,6 +1687,7 @@ public object FfiConverterByteArray : FfiConverterRustBuffer<ByteArray> {
 // [1] https://stackoverflow.com/questions/24376768/can-java-finalize-an-object-when-it-is-still-in-scope/24380219
 //
 
+
 // The cleaner interface for Object finalization code to run.
 // This is the entry point to any implementation that we're using.
 //
@@ -1928,24 +1699,17 @@ interface UniffiCleaner {
         fun clean()
     }
 
-    fun register(
-        value: Any,
-        cleanUpTask: Runnable,
-    ): UniffiCleaner.Cleanable
+    fun register(value: Any, cleanUpTask: Runnable): UniffiCleaner.Cleanable
 
     companion object
 }
 
 // The fallback Jna cleaner, which is available for both Android, and the JVM.
 private class UniffiJnaCleaner : UniffiCleaner {
-    private val cleaner =
-        com.sun.jna.internal.Cleaner
-            .getCleaner()
+    private val cleaner = com.sun.jna.internal.Cleaner.getCleaner()
 
-    override fun register(
-        value: Any,
-        cleanUpTask: Runnable,
-    ): UniffiCleaner.Cleanable = UniffiJnaCleanable(cleaner.register(value, cleanUpTask))
+    override fun register(value: Any, cleanUpTask: Runnable): UniffiCleaner.Cleanable =
+        UniffiJnaCleanable(cleaner.register(value, cleanUpTask))
 }
 
 private class UniffiJnaCleanable(
@@ -1972,74 +1736,62 @@ private fun UniffiCleaner.Companion.create(): UniffiCleaner =
     }
 
 private class JavaLangRefCleaner : UniffiCleaner {
-    val cleaner =
-        java.lang.ref.Cleaner
-            .create()
+    val cleaner = java.lang.ref.Cleaner.create()
 
-    override fun register(
-        value: Any,
-        cleanUpTask: Runnable,
-    ): UniffiCleaner.Cleanable = JavaLangRefCleanable(cleaner.register(value, cleanUpTask))
+    override fun register(value: Any, cleanUpTask: Runnable): UniffiCleaner.Cleanable =
+        JavaLangRefCleanable(cleaner.register(value, cleanUpTask))
 }
 
 private class JavaLangRefCleanable(
-    val cleanable: java.lang.ref.Cleaner.Cleanable,
+    val cleanable: java.lang.ref.Cleaner.Cleanable
 ) : UniffiCleaner.Cleanable {
     override fun clean() = cleanable.clean()
 }
-
 /**
  * Config
  */
 public interface ConfigInterface {
+    
     fun `getBitcoinChainConfig`(`chain`: kotlin.String): BitcoinChainConfig
-
+    
     fun `getBlockExplorers`(`chain`: kotlin.String): List<kotlin.String>
-
+    
     fun `getChainConfig`(`chain`: kotlin.String): ChainConfig
-
+    
     fun `getDocsUrl`(`item`: DocsUrl): kotlin.String
-
+    
     fun `getEvmChainConfig`(`chain`: kotlin.String): EvmChainConfig
-
+    
     fun `getNodes`(): Map<kotlin.String, List<Node>>
-
+    
     fun `getNodesForChain`(`chain`: kotlin.String): List<Node>
-
+    
     fun `getPublicUrl`(`item`: PublicUrl): kotlin.String
-
+    
     fun `getSocialUrl`(`item`: SocialUrl): kotlin.String?
-
+    
     fun `getSolanaTokenProgram`(`id`: kotlin.String): kotlin.String
-
+    
     fun `getSolanaTokenProgramId`(`address`: kotlin.String): kotlin.String?
-
+    
     fun `getStakeConfig`(`chain`: kotlin.String): StakeChainConfig
-
+    
     fun `getValidators`(): Map<kotlin.String, List<kotlin.String>>
-
+    
     fun `getWalletConnectConfig`(): WalletConnectConfig
-
-    fun `imageFormatterAssetUrl`(
-        `chain`: kotlin.String,
-        `tokenId`: kotlin.String?,
-    ): kotlin.String
-
-    fun `imageFormatterValidatorUrl`(
-        `chain`: kotlin.String,
-        `id`: kotlin.String,
-    ): kotlin.String
-
+    
+    fun `imageFormatterAssetUrl`(`chain`: kotlin.String, `tokenId`: kotlin.String?): kotlin.String
+    
+    fun `imageFormatterValidatorUrl`(`chain`: kotlin.String, `id`: kotlin.String): kotlin.String
+    
     companion object
 }
 
 /**
  * Config
  */
-open class Config :
-    Disposable,
-    AutoCloseable,
-    ConfigInterface {
+open class Config: Disposable, AutoCloseable, ConfigInterface {
+
     constructor(pointer: Pointer) {
         this.pointer = pointer
         this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(pointer))
@@ -2057,12 +1809,11 @@ open class Config :
     }
     constructor() :
         this(
-            uniffiRustCall { _status ->
-                UniffiLib.INSTANCE.uniffi_gemstone_fn_constructor_config_new(
-                    _status,
-                )
-            },
-        )
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_constructor_config_new(
+        _status)
+}
+    )
 
     protected val pointer: Pointer?
     protected val cleanable: UniffiCleaner.Cleanable
@@ -2097,7 +1848,7 @@ open class Config :
             if (c == Long.MAX_VALUE) {
                 throw IllegalStateException("${this.javaClass.simpleName} call counter would overflow")
             }
-        } while (!this.callCounter.compareAndSet(c, c + 1L))
+        } while (! this.callCounter.compareAndSet(c, c + 1L))
         // Now we can safely do the method call without the pointer being freed concurrently.
         try {
             return block(this.uniffiClonePointer())
@@ -2111,9 +1862,7 @@ open class Config :
 
     // Use a static inner class instead of a closure so as not to accidentally
     // capture `this` as part of the cleanable's action.
-    private class UniffiCleanAction(
-        private val pointer: Pointer?,
-    ) : Runnable {
+    private class UniffiCleanAction(private val pointer: Pointer?) : Runnable {
         override fun run() {
             pointer?.let { ptr ->
                 uniffiRustCall { status ->
@@ -2123,231 +1872,221 @@ open class Config :
         }
     }
 
-    fun uniffiClonePointer(): Pointer =
-        uniffiRustCall { status ->
+    fun uniffiClonePointer(): Pointer {
+        return uniffiRustCall() { status ->
             UniffiLib.INSTANCE.uniffi_gemstone_fn_clone_config(pointer!!, status)
         }
+    }
 
-    override fun `getBitcoinChainConfig`(`chain`: kotlin.String): BitcoinChainConfig =
-        FfiConverterTypeBitcoinChainConfig.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_bitcoin_chain_config(
-                        it,
-                        FfiConverterString.lower(`chain`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getBitcoinChainConfig`(`chain`: kotlin.String): BitcoinChainConfig {
+            return FfiConverterTypeBitcoinChainConfig.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_bitcoin_chain_config(
+        it, FfiConverterString.lower(`chain`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getBlockExplorers`(`chain`: kotlin.String): List<kotlin.String> =
-        FfiConverterSequenceString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_block_explorers(
-                        it,
-                        FfiConverterString.lower(`chain`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getBlockExplorers`(`chain`: kotlin.String): List<kotlin.String> {
+            return FfiConverterSequenceString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_block_explorers(
+        it, FfiConverterString.lower(`chain`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getChainConfig`(`chain`: kotlin.String): ChainConfig =
-        FfiConverterTypeChainConfig.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_chain_config(
-                        it,
-                        FfiConverterString.lower(`chain`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getChainConfig`(`chain`: kotlin.String): ChainConfig {
+            return FfiConverterTypeChainConfig.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_chain_config(
+        it, FfiConverterString.lower(`chain`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getDocsUrl`(`item`: DocsUrl): kotlin.String =
-        FfiConverterString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_docs_url(
-                        it,
-                        FfiConverterTypeDocsUrl.lower(`item`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getDocsUrl`(`item`: DocsUrl): kotlin.String {
+            return FfiConverterString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_docs_url(
+        it, FfiConverterTypeDocsUrl.lower(`item`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getEvmChainConfig`(`chain`: kotlin.String): EvmChainConfig =
-        FfiConverterTypeEVMChainConfig.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_evm_chain_config(
-                        it,
-                        FfiConverterString.lower(`chain`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getEvmChainConfig`(`chain`: kotlin.String): EvmChainConfig {
+            return FfiConverterTypeEVMChainConfig.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_evm_chain_config(
+        it, FfiConverterString.lower(`chain`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getNodes`(): Map<kotlin.String, List<Node>> =
-        FfiConverterMapStringSequenceTypeNode.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_nodes(
-                        it,
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getNodes`(): Map<kotlin.String, List<Node>> {
+            return FfiConverterMapStringSequenceTypeNode.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_nodes(
+        it, _status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getNodesForChain`(`chain`: kotlin.String): List<Node> =
-        FfiConverterSequenceTypeNode.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_nodes_for_chain(
-                        it,
-                        FfiConverterString.lower(`chain`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getNodesForChain`(`chain`: kotlin.String): List<Node> {
+            return FfiConverterSequenceTypeNode.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_nodes_for_chain(
+        it, FfiConverterString.lower(`chain`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getPublicUrl`(`item`: PublicUrl): kotlin.String =
-        FfiConverterString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_public_url(
-                        it,
-                        FfiConverterTypePublicUrl.lower(`item`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getPublicUrl`(`item`: PublicUrl): kotlin.String {
+            return FfiConverterString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_public_url(
+        it, FfiConverterTypePublicUrl.lower(`item`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getSocialUrl`(`item`: SocialUrl): kotlin.String? =
-        FfiConverterOptionalString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_social_url(
-                        it,
-                        FfiConverterTypeSocialUrl.lower(`item`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getSocialUrl`(`item`: SocialUrl): kotlin.String? {
+            return FfiConverterOptionalString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_social_url(
+        it, FfiConverterTypeSocialUrl.lower(`item`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getSolanaTokenProgram`(`id`: kotlin.String): kotlin.String =
-        FfiConverterString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_solana_token_program(
-                        it,
-                        FfiConverterString.lower(`id`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getSolanaTokenProgram`(`id`: kotlin.String): kotlin.String {
+            return FfiConverterString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_solana_token_program(
+        it, FfiConverterString.lower(`id`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getSolanaTokenProgramId`(`address`: kotlin.String): kotlin.String? =
-        FfiConverterOptionalString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_solana_token_program_id(
-                        it,
-                        FfiConverterString.lower(`address`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getSolanaTokenProgramId`(`address`: kotlin.String): kotlin.String? {
+            return FfiConverterOptionalString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_solana_token_program_id(
+        it, FfiConverterString.lower(`address`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getStakeConfig`(`chain`: kotlin.String): StakeChainConfig =
-        FfiConverterTypeStakeChainConfig.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_stake_config(
-                        it,
-                        FfiConverterString.lower(`chain`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getStakeConfig`(`chain`: kotlin.String): StakeChainConfig {
+            return FfiConverterTypeStakeChainConfig.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_stake_config(
+        it, FfiConverterString.lower(`chain`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getValidators`(): Map<kotlin.String, List<kotlin.String>> =
-        FfiConverterMapStringSequenceString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_validators(
-                        it,
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getValidators`(): Map<kotlin.String, List<kotlin.String>> {
+            return FfiConverterMapStringSequenceString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_validators(
+        it, _status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getWalletConnectConfig`(): WalletConnectConfig =
-        FfiConverterTypeWalletConnectConfig.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_wallet_connect_config(
-                        it,
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getWalletConnectConfig`(): WalletConnectConfig {
+            return FfiConverterTypeWalletConnectConfig.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_get_wallet_connect_config(
+        it, _status)
+}
+    }
+    )
+    }
+    
 
-    override fun `imageFormatterAssetUrl`(
-        `chain`: kotlin.String,
-        `tokenId`: kotlin.String?,
-    ): kotlin.String =
-        FfiConverterString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_image_formatter_asset_url(
-                        it,
-                        FfiConverterString.lower(`chain`),
-                        FfiConverterOptionalString.lower(`tokenId`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `imageFormatterAssetUrl`(`chain`: kotlin.String, `tokenId`: kotlin.String?): kotlin.String {
+            return FfiConverterString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_image_formatter_asset_url(
+        it, FfiConverterString.lower(`chain`),FfiConverterOptionalString.lower(`tokenId`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `imageFormatterValidatorUrl`(
-        `chain`: kotlin.String,
-        `id`: kotlin.String,
-    ): kotlin.String =
-        FfiConverterString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_image_formatter_validator_url(
-                        it,
-                        FfiConverterString.lower(`chain`),
-                        FfiConverterString.lower(`id`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `imageFormatterValidatorUrl`(`chain`: kotlin.String, `id`: kotlin.String): kotlin.String {
+            return FfiConverterString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_config_image_formatter_validator_url(
+        it, FfiConverterString.lower(`chain`),FfiConverterString.lower(`id`),_status)
+}
+    }
+    )
+    }
+    
 
+    
+
+    
+    
     companion object
+    
 }
 
-public object FfiConverterTypeConfig : FfiConverter<Config, Pointer> {
-    override fun lower(value: Config): Pointer = value.uniffiClonePointer()
+public object FfiConverterTypeConfig: FfiConverter<Config, Pointer> {
 
-    override fun lift(value: Pointer): Config = Config(value)
+    override fun lower(value: Config): Pointer {
+        return value.uniffiClonePointer()
+    }
+
+    override fun lift(value: Pointer): Config {
+        return Config(value)
+    }
 
     override fun read(buf: ByteBuffer): Config {
         // The Rust code always writes pointers as 8 bytes, and will
@@ -2357,15 +2096,13 @@ public object FfiConverterTypeConfig : FfiConverter<Config, Pointer> {
 
     override fun allocationSize(value: Config) = 8UL
 
-    override fun write(
-        value: Config,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: Config, buf: ByteBuffer) {
         // The Rust code always expects pointers written as 8 bytes,
         // and will fail to compile if they don't fit.
         buf.putLong(Pointer.nativeValue(lower(value)))
     }
 }
+
 
 // This template implements a class for working with a Rust struct via a Pointer/Arc<T>
 // to the live Rust struct on the other side of the FFI.
@@ -2464,29 +2201,20 @@ public object FfiConverterTypeConfig : FfiConverter<Config, Pointer> {
 // [1] https://stackoverflow.com/questions/24376768/can-java-finalize-an-object-when-it-is-still-in-scope/24380219
 //
 
+
 public interface ExplorerInterface {
-    fun `getAddressUrl`(
-        `explorerName`: kotlin.String,
-        `address`: kotlin.String,
-    ): kotlin.String
-
-    fun `getTokenUrl`(
-        `explorerName`: kotlin.String,
-        `address`: kotlin.String,
-    ): kotlin.String?
-
-    fun `getTransactionUrl`(
-        `explorerName`: kotlin.String,
-        `transactionId`: kotlin.String,
-    ): kotlin.String
-
+    
+    fun `getAddressUrl`(`explorerName`: kotlin.String, `address`: kotlin.String): kotlin.String
+    
+    fun `getTokenUrl`(`explorerName`: kotlin.String, `address`: kotlin.String): kotlin.String?
+    
+    fun `getTransactionUrl`(`explorerName`: kotlin.String, `transactionId`: kotlin.String): kotlin.String
+    
     companion object
 }
 
-open class Explorer :
-    Disposable,
-    AutoCloseable,
-    ExplorerInterface {
+open class Explorer: Disposable, AutoCloseable, ExplorerInterface {
+
     constructor(pointer: Pointer) {
         this.pointer = pointer
         this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(pointer))
@@ -2504,13 +2232,11 @@ open class Explorer :
     }
     constructor(`chain`: kotlin.String) :
         this(
-            uniffiRustCall { _status ->
-                UniffiLib.INSTANCE.uniffi_gemstone_fn_constructor_explorer_new(
-                    FfiConverterString.lower(`chain`),
-                    _status,
-                )
-            },
-        )
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_constructor_explorer_new(
+        FfiConverterString.lower(`chain`),_status)
+}
+    )
 
     protected val pointer: Pointer?
     protected val cleanable: UniffiCleaner.Cleanable
@@ -2545,7 +2271,7 @@ open class Explorer :
             if (c == Long.MAX_VALUE) {
                 throw IllegalStateException("${this.javaClass.simpleName} call counter would overflow")
             }
-        } while (!this.callCounter.compareAndSet(c, c + 1L))
+        } while (! this.callCounter.compareAndSet(c, c + 1L))
         // Now we can safely do the method call without the pointer being freed concurrently.
         try {
             return block(this.uniffiClonePointer())
@@ -2559,9 +2285,7 @@ open class Explorer :
 
     // Use a static inner class instead of a closure so as not to accidentally
     // capture `this` as part of the cleanable's action.
-    private class UniffiCleanAction(
-        private val pointer: Pointer?,
-    ) : Runnable {
+    private class UniffiCleanAction(private val pointer: Pointer?) : Runnable {
         override fun run() {
             pointer?.let { ptr ->
                 uniffiRustCall { status ->
@@ -2571,69 +2295,65 @@ open class Explorer :
         }
     }
 
-    fun uniffiClonePointer(): Pointer =
-        uniffiRustCall { status ->
+    fun uniffiClonePointer(): Pointer {
+        return uniffiRustCall() { status ->
             UniffiLib.INSTANCE.uniffi_gemstone_fn_clone_explorer(pointer!!, status)
         }
+    }
 
-    override fun `getAddressUrl`(
-        `explorerName`: kotlin.String,
-        `address`: kotlin.String,
-    ): kotlin.String =
-        FfiConverterString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_explorer_get_address_url(
-                        it,
-                        FfiConverterString.lower(`explorerName`),
-                        FfiConverterString.lower(`address`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getAddressUrl`(`explorerName`: kotlin.String, `address`: kotlin.String): kotlin.String {
+            return FfiConverterString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_explorer_get_address_url(
+        it, FfiConverterString.lower(`explorerName`),FfiConverterString.lower(`address`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getTokenUrl`(
-        `explorerName`: kotlin.String,
-        `address`: kotlin.String,
-    ): kotlin.String? =
-        FfiConverterOptionalString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_explorer_get_token_url(
-                        it,
-                        FfiConverterString.lower(`explorerName`),
-                        FfiConverterString.lower(`address`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getTokenUrl`(`explorerName`: kotlin.String, `address`: kotlin.String): kotlin.String? {
+            return FfiConverterOptionalString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_explorer_get_token_url(
+        it, FfiConverterString.lower(`explorerName`),FfiConverterString.lower(`address`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getTransactionUrl`(
-        `explorerName`: kotlin.String,
-        `transactionId`: kotlin.String,
-    ): kotlin.String =
-        FfiConverterString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_explorer_get_transaction_url(
-                        it,
-                        FfiConverterString.lower(`explorerName`),
-                        FfiConverterString.lower(`transactionId`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getTransactionUrl`(`explorerName`: kotlin.String, `transactionId`: kotlin.String): kotlin.String {
+            return FfiConverterString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_explorer_get_transaction_url(
+        it, FfiConverterString.lower(`explorerName`),FfiConverterString.lower(`transactionId`),_status)
+}
+    }
+    )
+    }
+    
 
+    
+
+    
+    
     companion object
+    
 }
 
-public object FfiConverterTypeExplorer : FfiConverter<Explorer, Pointer> {
-    override fun lower(value: Explorer): Pointer = value.uniffiClonePointer()
+public object FfiConverterTypeExplorer: FfiConverter<Explorer, Pointer> {
 
-    override fun lift(value: Pointer): Explorer = Explorer(value)
+    override fun lower(value: Explorer): Pointer {
+        return value.uniffiClonePointer()
+    }
+
+    override fun lift(value: Pointer): Explorer {
+        return Explorer(value)
+    }
 
     override fun read(buf: ByteBuffer): Explorer {
         // The Rust code always writes pointers as 8 bytes, and will
@@ -2643,15 +2363,13 @@ public object FfiConverterTypeExplorer : FfiConverter<Explorer, Pointer> {
 
     override fun allocationSize(value: Explorer) = 8UL
 
-    override fun write(
-        value: Explorer,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: Explorer, buf: ByteBuffer) {
         // The Rust code always expects pointers written as 8 bytes,
         // and will fail to compile if they don't fit.
         buf.putLong(Pointer.nativeValue(lower(value)))
     }
 }
+
 
 // This template implements a class for working with a Rust struct via a Pointer/Arc<T>
 // to the live Rust struct on the other side of the FFI.
@@ -2750,24 +2468,24 @@ public object FfiConverterTypeExplorer : FfiConverter<Explorer, Pointer> {
 // [1] https://stackoverflow.com/questions/24376768/can-java-finalize-an-object-when-it-is-still-in-scope/24380219
 //
 
+
 /**
  * WalletConnect
  */
 public interface WalletConnectNamespaceInterface {
+    
     fun `getNamespace`(`chain`: kotlin.String): kotlin.String?
-
+    
     fun `getReference`(`chain`: kotlin.String): kotlin.String?
-
+    
     companion object
 }
 
 /**
  * WalletConnect
  */
-open class WalletConnectNamespace :
-    Disposable,
-    AutoCloseable,
-    WalletConnectNamespaceInterface {
+open class WalletConnectNamespace: Disposable, AutoCloseable, WalletConnectNamespaceInterface {
+
     constructor(pointer: Pointer) {
         this.pointer = pointer
         this.cleanable = UniffiLib.CLEANER.register(this, UniffiCleanAction(pointer))
@@ -2785,12 +2503,11 @@ open class WalletConnectNamespace :
     }
     constructor() :
         this(
-            uniffiRustCall { _status ->
-                UniffiLib.INSTANCE.uniffi_gemstone_fn_constructor_walletconnectnamespace_new(
-                    _status,
-                )
-            },
-        )
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_constructor_walletconnectnamespace_new(
+        _status)
+}
+    )
 
     protected val pointer: Pointer?
     protected val cleanable: UniffiCleaner.Cleanable
@@ -2825,7 +2542,7 @@ open class WalletConnectNamespace :
             if (c == Long.MAX_VALUE) {
                 throw IllegalStateException("${this.javaClass.simpleName} call counter would overflow")
             }
-        } while (!this.callCounter.compareAndSet(c, c + 1L))
+        } while (! this.callCounter.compareAndSet(c, c + 1L))
         // Now we can safely do the method call without the pointer being freed concurrently.
         try {
             return block(this.uniffiClonePointer())
@@ -2839,9 +2556,7 @@ open class WalletConnectNamespace :
 
     // Use a static inner class instead of a closure so as not to accidentally
     // capture `this` as part of the cleanable's action.
-    private class UniffiCleanAction(
-        private val pointer: Pointer?,
-    ) : Runnable {
+    private class UniffiCleanAction(private val pointer: Pointer?) : Runnable {
         override fun run() {
             pointer?.let { ptr ->
                 uniffiRustCall { status ->
@@ -2851,44 +2566,53 @@ open class WalletConnectNamespace :
         }
     }
 
-    fun uniffiClonePointer(): Pointer =
-        uniffiRustCall { status ->
+    fun uniffiClonePointer(): Pointer {
+        return uniffiRustCall() { status ->
             UniffiLib.INSTANCE.uniffi_gemstone_fn_clone_walletconnectnamespace(pointer!!, status)
         }
+    }
 
-    override fun `getNamespace`(`chain`: kotlin.String): kotlin.String? =
-        FfiConverterOptionalString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_walletconnectnamespace_get_namespace(
-                        it,
-                        FfiConverterString.lower(`chain`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getNamespace`(`chain`: kotlin.String): kotlin.String? {
+            return FfiConverterOptionalString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_walletconnectnamespace_get_namespace(
+        it, FfiConverterString.lower(`chain`),_status)
+}
+    }
+    )
+    }
+    
 
-    override fun `getReference`(`chain`: kotlin.String): kotlin.String? =
-        FfiConverterOptionalString.lift(
-            callWithPointer {
-                uniffiRustCall { _status ->
-                    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_walletconnectnamespace_get_reference(
-                        it,
-                        FfiConverterString.lower(`chain`),
-                        _status,
-                    )
-                }
-            },
-        )
+    override fun `getReference`(`chain`: kotlin.String): kotlin.String? {
+            return FfiConverterOptionalString.lift(
+    callWithPointer {
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_method_walletconnectnamespace_get_reference(
+        it, FfiConverterString.lower(`chain`),_status)
+}
+    }
+    )
+    }
+    
 
+    
+
+    
+    
     companion object
+    
 }
 
-public object FfiConverterTypeWalletConnectNamespace : FfiConverter<WalletConnectNamespace, Pointer> {
-    override fun lower(value: WalletConnectNamespace): Pointer = value.uniffiClonePointer()
+public object FfiConverterTypeWalletConnectNamespace: FfiConverter<WalletConnectNamespace, Pointer> {
 
-    override fun lift(value: Pointer): WalletConnectNamespace = WalletConnectNamespace(value)
+    override fun lower(value: WalletConnectNamespace): Pointer {
+        return value.uniffiClonePointer()
+    }
+
+    override fun lift(value: Pointer): WalletConnectNamespace {
+        return WalletConnectNamespace(value)
+    }
 
     override fun read(buf: ByteBuffer): WalletConnectNamespace {
         // The Rust code always writes pointers as 8 bytes, and will
@@ -2898,129 +2622,129 @@ public object FfiConverterTypeWalletConnectNamespace : FfiConverter<WalletConnec
 
     override fun allocationSize(value: WalletConnectNamespace) = 8UL
 
-    override fun write(
-        value: WalletConnectNamespace,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: WalletConnectNamespace, buf: ByteBuffer) {
         // The Rust code always expects pointers written as 8 bytes,
         // and will fail to compile if they don't fit.
         buf.putLong(Pointer.nativeValue(lower(value)))
     }
 }
 
-data class AssetWrapper(
-    var `id`: kotlin.String,
-    var `name`: kotlin.String,
-    var `symbol`: kotlin.String,
-    var `decimals`: kotlin.Int,
-    var `assetType`: kotlin.String,
+
+
+data class AssetWrapper (
+    var `id`: kotlin.String, 
+    var `name`: kotlin.String, 
+    var `symbol`: kotlin.String, 
+    var `decimals`: kotlin.Int, 
+    var `assetType`: kotlin.String
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeAssetWrapper : FfiConverterRustBuffer<AssetWrapper> {
-    override fun read(buf: ByteBuffer): AssetWrapper =
-        AssetWrapper(
+public object FfiConverterTypeAssetWrapper: FfiConverterRustBuffer<AssetWrapper> {
+    override fun read(buf: ByteBuffer): AssetWrapper {
+        return AssetWrapper(
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
             FfiConverterInt.read(buf),
             FfiConverterString.read(buf),
         )
+    }
 
-    override fun allocationSize(value: AssetWrapper) =
-        (
+    override fun allocationSize(value: AssetWrapper) = (
             FfiConverterString.allocationSize(value.`id`) +
-                FfiConverterString.allocationSize(value.`name`) +
-                FfiConverterString.allocationSize(value.`symbol`) +
-                FfiConverterInt.allocationSize(value.`decimals`) +
-                FfiConverterString.allocationSize(value.`assetType`)
-        )
+            FfiConverterString.allocationSize(value.`name`) +
+            FfiConverterString.allocationSize(value.`symbol`) +
+            FfiConverterInt.allocationSize(value.`decimals`) +
+            FfiConverterString.allocationSize(value.`assetType`)
+    )
 
-    override fun write(
-        value: AssetWrapper,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`id`, buf)
-        FfiConverterString.write(value.`name`, buf)
-        FfiConverterString.write(value.`symbol`, buf)
-        FfiConverterInt.write(value.`decimals`, buf)
-        FfiConverterString.write(value.`assetType`, buf)
+    override fun write(value: AssetWrapper, buf: ByteBuffer) {
+            FfiConverterString.write(value.`id`, buf)
+            FfiConverterString.write(value.`name`, buf)
+            FfiConverterString.write(value.`symbol`, buf)
+            FfiConverterInt.write(value.`decimals`, buf)
+            FfiConverterString.write(value.`assetType`, buf)
     }
 }
 
-data class BitcoinChainConfig(
-    var `blocksFeePriority`: BlocksFeePriority,
+
+
+data class BitcoinChainConfig (
+    var `blocksFeePriority`: BlocksFeePriority
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeBitcoinChainConfig : FfiConverterRustBuffer<BitcoinChainConfig> {
-    override fun read(buf: ByteBuffer): BitcoinChainConfig =
-        BitcoinChainConfig(
+public object FfiConverterTypeBitcoinChainConfig: FfiConverterRustBuffer<BitcoinChainConfig> {
+    override fun read(buf: ByteBuffer): BitcoinChainConfig {
+        return BitcoinChainConfig(
             FfiConverterTypeBlocksFeePriority.read(buf),
         )
+    }
 
-    override fun allocationSize(value: BitcoinChainConfig) =
-        (
+    override fun allocationSize(value: BitcoinChainConfig) = (
             FfiConverterTypeBlocksFeePriority.allocationSize(value.`blocksFeePriority`)
-        )
+    )
 
-    override fun write(
-        value: BitcoinChainConfig,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterTypeBlocksFeePriority.write(value.`blocksFeePriority`, buf)
+    override fun write(value: BitcoinChainConfig, buf: ByteBuffer) {
+            FfiConverterTypeBlocksFeePriority.write(value.`blocksFeePriority`, buf)
     }
 }
 
-data class BlocksFeePriority(
-    var `normal`: kotlin.Int,
-    var `slow`: kotlin.Int,
-    var `fast`: kotlin.Int,
+
+
+data class BlocksFeePriority (
+    var `normal`: kotlin.Int, 
+    var `slow`: kotlin.Int, 
+    var `fast`: kotlin.Int
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeBlocksFeePriority : FfiConverterRustBuffer<BlocksFeePriority> {
-    override fun read(buf: ByteBuffer): BlocksFeePriority =
-        BlocksFeePriority(
+public object FfiConverterTypeBlocksFeePriority: FfiConverterRustBuffer<BlocksFeePriority> {
+    override fun read(buf: ByteBuffer): BlocksFeePriority {
+        return BlocksFeePriority(
             FfiConverterInt.read(buf),
             FfiConverterInt.read(buf),
             FfiConverterInt.read(buf),
         )
+    }
 
-    override fun allocationSize(value: BlocksFeePriority) =
-        (
+    override fun allocationSize(value: BlocksFeePriority) = (
             FfiConverterInt.allocationSize(value.`normal`) +
-                FfiConverterInt.allocationSize(value.`slow`) +
-                FfiConverterInt.allocationSize(value.`fast`)
-        )
+            FfiConverterInt.allocationSize(value.`slow`) +
+            FfiConverterInt.allocationSize(value.`fast`)
+    )
 
-    override fun write(
-        value: BlocksFeePriority,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterInt.write(value.`normal`, buf)
-        FfiConverterInt.write(value.`slow`, buf)
-        FfiConverterInt.write(value.`fast`, buf)
+    override fun write(value: BlocksFeePriority, buf: ByteBuffer) {
+            FfiConverterInt.write(value.`normal`, buf)
+            FfiConverterInt.write(value.`slow`, buf)
+            FfiConverterInt.write(value.`fast`, buf)
     }
 }
 
-data class BscDelegation(
-    var `delegatorAddress`: kotlin.String,
-    var `validatorAddress`: kotlin.String,
-    var `amount`: kotlin.String,
-    var `shares`: kotlin.String,
-    var `status`: BscDelegationStatus,
-    var `unlockTime`: kotlin.ULong?,
+
+
+data class BscDelegation (
+    var `delegatorAddress`: kotlin.String, 
+    var `validatorAddress`: kotlin.String, 
+    var `amount`: kotlin.String, 
+    var `shares`: kotlin.String, 
+    var `status`: BscDelegationStatus, 
+    var `unlockTime`: kotlin.ULong?
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeBscDelegation : FfiConverterRustBuffer<BscDelegation> {
-    override fun read(buf: ByteBuffer): BscDelegation =
-        BscDelegation(
+public object FfiConverterTypeBscDelegation: FfiConverterRustBuffer<BscDelegation> {
+    override fun read(buf: ByteBuffer): BscDelegation {
+        return BscDelegation(
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
@@ -3028,86 +2752,86 @@ public object FfiConverterTypeBscDelegation : FfiConverterRustBuffer<BscDelegati
             FfiConverterTypeBscDelegationStatus.read(buf),
             FfiConverterOptionalULong.read(buf),
         )
+    }
 
-    override fun allocationSize(value: BscDelegation) =
-        (
+    override fun allocationSize(value: BscDelegation) = (
             FfiConverterString.allocationSize(value.`delegatorAddress`) +
-                FfiConverterString.allocationSize(value.`validatorAddress`) +
-                FfiConverterString.allocationSize(value.`amount`) +
-                FfiConverterString.allocationSize(value.`shares`) +
-                FfiConverterTypeBscDelegationStatus.allocationSize(value.`status`) +
-                FfiConverterOptionalULong.allocationSize(value.`unlockTime`)
-        )
+            FfiConverterString.allocationSize(value.`validatorAddress`) +
+            FfiConverterString.allocationSize(value.`amount`) +
+            FfiConverterString.allocationSize(value.`shares`) +
+            FfiConverterTypeBscDelegationStatus.allocationSize(value.`status`) +
+            FfiConverterOptionalULong.allocationSize(value.`unlockTime`)
+    )
 
-    override fun write(
-        value: BscDelegation,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`delegatorAddress`, buf)
-        FfiConverterString.write(value.`validatorAddress`, buf)
-        FfiConverterString.write(value.`amount`, buf)
-        FfiConverterString.write(value.`shares`, buf)
-        FfiConverterTypeBscDelegationStatus.write(value.`status`, buf)
-        FfiConverterOptionalULong.write(value.`unlockTime`, buf)
+    override fun write(value: BscDelegation, buf: ByteBuffer) {
+            FfiConverterString.write(value.`delegatorAddress`, buf)
+            FfiConverterString.write(value.`validatorAddress`, buf)
+            FfiConverterString.write(value.`amount`, buf)
+            FfiConverterString.write(value.`shares`, buf)
+            FfiConverterTypeBscDelegationStatus.write(value.`status`, buf)
+            FfiConverterOptionalULong.write(value.`unlockTime`, buf)
     }
 }
 
-data class BscValidator(
-    var `operatorAddress`: kotlin.String,
-    var `moniker`: kotlin.String,
-    var `commission`: kotlin.ULong,
-    var `apy`: kotlin.ULong,
-    var `jailed`: kotlin.Boolean,
+
+
+data class BscValidator (
+    var `operatorAddress`: kotlin.String, 
+    var `moniker`: kotlin.String, 
+    var `commission`: kotlin.ULong, 
+    var `apy`: kotlin.ULong, 
+    var `jailed`: kotlin.Boolean
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeBscValidator : FfiConverterRustBuffer<BscValidator> {
-    override fun read(buf: ByteBuffer): BscValidator =
-        BscValidator(
+public object FfiConverterTypeBscValidator: FfiConverterRustBuffer<BscValidator> {
+    override fun read(buf: ByteBuffer): BscValidator {
+        return BscValidator(
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
             FfiConverterULong.read(buf),
             FfiConverterULong.read(buf),
             FfiConverterBoolean.read(buf),
         )
+    }
 
-    override fun allocationSize(value: BscValidator) =
-        (
+    override fun allocationSize(value: BscValidator) = (
             FfiConverterString.allocationSize(value.`operatorAddress`) +
-                FfiConverterString.allocationSize(value.`moniker`) +
-                FfiConverterULong.allocationSize(value.`commission`) +
-                FfiConverterULong.allocationSize(value.`apy`) +
-                FfiConverterBoolean.allocationSize(value.`jailed`)
-        )
+            FfiConverterString.allocationSize(value.`moniker`) +
+            FfiConverterULong.allocationSize(value.`commission`) +
+            FfiConverterULong.allocationSize(value.`apy`) +
+            FfiConverterBoolean.allocationSize(value.`jailed`)
+    )
 
-    override fun write(
-        value: BscValidator,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`operatorAddress`, buf)
-        FfiConverterString.write(value.`moniker`, buf)
-        FfiConverterULong.write(value.`commission`, buf)
-        FfiConverterULong.write(value.`apy`, buf)
-        FfiConverterBoolean.write(value.`jailed`, buf)
+    override fun write(value: BscValidator, buf: ByteBuffer) {
+            FfiConverterString.write(value.`operatorAddress`, buf)
+            FfiConverterString.write(value.`moniker`, buf)
+            FfiConverterULong.write(value.`commission`, buf)
+            FfiConverterULong.write(value.`apy`, buf)
+            FfiConverterBoolean.write(value.`jailed`, buf)
     }
 }
 
-data class ChainConfig(
-    var `networkId`: kotlin.String,
-    var `transactionTimeout`: kotlin.Double,
-    var `slip44`: kotlin.Int,
-    var `rank`: kotlin.Int,
-    var `denom`: kotlin.String?,
-    var `defaultAssetType`: kotlin.String?,
-    var `accountActivationFee`: kotlin.Int?,
+
+
+data class ChainConfig (
+    var `networkId`: kotlin.String, 
+    var `transactionTimeout`: kotlin.Double, 
+    var `slip44`: kotlin.Int, 
+    var `rank`: kotlin.Int, 
+    var `denom`: kotlin.String?, 
+    var `defaultAssetType`: kotlin.String?, 
+    var `accountActivationFee`: kotlin.Int?
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeChainConfig : FfiConverterRustBuffer<ChainConfig> {
-    override fun read(buf: ByteBuffer): ChainConfig =
-        ChainConfig(
+public object FfiConverterTypeChainConfig: FfiConverterRustBuffer<ChainConfig> {
+    override fun read(buf: ByteBuffer): ChainConfig {
+        return ChainConfig(
             FfiConverterString.read(buf),
             FfiConverterDouble.read(buf),
             FfiConverterInt.read(buf),
@@ -3116,112 +2840,112 @@ public object FfiConverterTypeChainConfig : FfiConverterRustBuffer<ChainConfig> 
             FfiConverterOptionalString.read(buf),
             FfiConverterOptionalInt.read(buf),
         )
+    }
 
-    override fun allocationSize(value: ChainConfig) =
-        (
+    override fun allocationSize(value: ChainConfig) = (
             FfiConverterString.allocationSize(value.`networkId`) +
-                FfiConverterDouble.allocationSize(value.`transactionTimeout`) +
-                FfiConverterInt.allocationSize(value.`slip44`) +
-                FfiConverterInt.allocationSize(value.`rank`) +
-                FfiConverterOptionalString.allocationSize(value.`denom`) +
-                FfiConverterOptionalString.allocationSize(value.`defaultAssetType`) +
-                FfiConverterOptionalInt.allocationSize(value.`accountActivationFee`)
-        )
+            FfiConverterDouble.allocationSize(value.`transactionTimeout`) +
+            FfiConverterInt.allocationSize(value.`slip44`) +
+            FfiConverterInt.allocationSize(value.`rank`) +
+            FfiConverterOptionalString.allocationSize(value.`denom`) +
+            FfiConverterOptionalString.allocationSize(value.`defaultAssetType`) +
+            FfiConverterOptionalInt.allocationSize(value.`accountActivationFee`)
+    )
 
-    override fun write(
-        value: ChainConfig,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`networkId`, buf)
-        FfiConverterDouble.write(value.`transactionTimeout`, buf)
-        FfiConverterInt.write(value.`slip44`, buf)
-        FfiConverterInt.write(value.`rank`, buf)
-        FfiConverterOptionalString.write(value.`denom`, buf)
-        FfiConverterOptionalString.write(value.`defaultAssetType`, buf)
-        FfiConverterOptionalInt.write(value.`accountActivationFee`, buf)
+    override fun write(value: ChainConfig, buf: ByteBuffer) {
+            FfiConverterString.write(value.`networkId`, buf)
+            FfiConverterDouble.write(value.`transactionTimeout`, buf)
+            FfiConverterInt.write(value.`slip44`, buf)
+            FfiConverterInt.write(value.`rank`, buf)
+            FfiConverterOptionalString.write(value.`denom`, buf)
+            FfiConverterOptionalString.write(value.`defaultAssetType`, buf)
+            FfiConverterOptionalInt.write(value.`accountActivationFee`, buf)
     }
 }
 
-data class Erc2612Permit(
-    var `value`: kotlin.String,
-    var `deadline`: kotlin.ULong,
-    var `signature`: kotlin.ByteArray,
+
+
+data class Erc2612Permit (
+    var `value`: kotlin.String, 
+    var `deadline`: kotlin.ULong, 
+    var `signature`: kotlin.ByteArray
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeERC2612Permit : FfiConverterRustBuffer<Erc2612Permit> {
-    override fun read(buf: ByteBuffer): Erc2612Permit =
-        Erc2612Permit(
+public object FfiConverterTypeERC2612Permit: FfiConverterRustBuffer<Erc2612Permit> {
+    override fun read(buf: ByteBuffer): Erc2612Permit {
+        return Erc2612Permit(
             FfiConverterString.read(buf),
             FfiConverterULong.read(buf),
             FfiConverterByteArray.read(buf),
         )
+    }
 
-    override fun allocationSize(value: Erc2612Permit) =
-        (
+    override fun allocationSize(value: Erc2612Permit) = (
             FfiConverterString.allocationSize(value.`value`) +
-                FfiConverterULong.allocationSize(value.`deadline`) +
-                FfiConverterByteArray.allocationSize(value.`signature`)
-        )
+            FfiConverterULong.allocationSize(value.`deadline`) +
+            FfiConverterByteArray.allocationSize(value.`signature`)
+    )
 
-    override fun write(
-        value: Erc2612Permit,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`value`, buf)
-        FfiConverterULong.write(value.`deadline`, buf)
-        FfiConverterByteArray.write(value.`signature`, buf)
+    override fun write(value: Erc2612Permit, buf: ByteBuffer) {
+            FfiConverterString.write(value.`value`, buf)
+            FfiConverterULong.write(value.`deadline`, buf)
+            FfiConverterByteArray.write(value.`signature`, buf)
     }
 }
 
-data class EvmChainConfig(
-    var `minPriorityFee`: kotlin.ULong,
-    var `isOpstack`: kotlin.Boolean,
-    var `swapWhitelistContracts`: List<kotlin.String>,
+
+
+data class EvmChainConfig (
+    var `minPriorityFee`: kotlin.ULong, 
+    var `isOpstack`: kotlin.Boolean, 
+    var `swapWhitelistContracts`: List<kotlin.String>
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeEVMChainConfig : FfiConverterRustBuffer<EvmChainConfig> {
-    override fun read(buf: ByteBuffer): EvmChainConfig =
-        EvmChainConfig(
+public object FfiConverterTypeEVMChainConfig: FfiConverterRustBuffer<EvmChainConfig> {
+    override fun read(buf: ByteBuffer): EvmChainConfig {
+        return EvmChainConfig(
             FfiConverterULong.read(buf),
             FfiConverterBoolean.read(buf),
             FfiConverterSequenceString.read(buf),
         )
+    }
 
-    override fun allocationSize(value: EvmChainConfig) =
-        (
+    override fun allocationSize(value: EvmChainConfig) = (
             FfiConverterULong.allocationSize(value.`minPriorityFee`) +
-                FfiConverterBoolean.allocationSize(value.`isOpstack`) +
-                FfiConverterSequenceString.allocationSize(value.`swapWhitelistContracts`)
-        )
+            FfiConverterBoolean.allocationSize(value.`isOpstack`) +
+            FfiConverterSequenceString.allocationSize(value.`swapWhitelistContracts`)
+    )
 
-    override fun write(
-        value: EvmChainConfig,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterULong.write(value.`minPriorityFee`, buf)
-        FfiConverterBoolean.write(value.`isOpstack`, buf)
-        FfiConverterSequenceString.write(value.`swapWhitelistContracts`, buf)
+    override fun write(value: EvmChainConfig, buf: ByteBuffer) {
+            FfiConverterULong.write(value.`minPriorityFee`, buf)
+            FfiConverterBoolean.write(value.`isOpstack`, buf)
+            FfiConverterSequenceString.write(value.`swapWhitelistContracts`, buf)
     }
 }
 
-data class LidoWithdrawalRequest(
-    var `amount`: kotlin.String,
-    var `shares`: kotlin.String,
-    var `owner`: kotlin.String,
-    var `timestamp`: kotlin.ULong,
-    var `isFinalized`: kotlin.Boolean,
-    var `isClaimed`: kotlin.Boolean,
+
+
+data class LidoWithdrawalRequest (
+    var `amount`: kotlin.String, 
+    var `shares`: kotlin.String, 
+    var `owner`: kotlin.String, 
+    var `timestamp`: kotlin.ULong, 
+    var `isFinalized`: kotlin.Boolean, 
+    var `isClaimed`: kotlin.Boolean
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeLidoWithdrawalRequest : FfiConverterRustBuffer<LidoWithdrawalRequest> {
-    override fun read(buf: ByteBuffer): LidoWithdrawalRequest =
-        LidoWithdrawalRequest(
+public object FfiConverterTypeLidoWithdrawalRequest: FfiConverterRustBuffer<LidoWithdrawalRequest> {
+    override fun read(buf: ByteBuffer): LidoWithdrawalRequest {
+        return LidoWithdrawalRequest(
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
@@ -3229,320 +2953,320 @@ public object FfiConverterTypeLidoWithdrawalRequest : FfiConverterRustBuffer<Lid
             FfiConverterBoolean.read(buf),
             FfiConverterBoolean.read(buf),
         )
+    }
 
-    override fun allocationSize(value: LidoWithdrawalRequest) =
-        (
+    override fun allocationSize(value: LidoWithdrawalRequest) = (
             FfiConverterString.allocationSize(value.`amount`) +
-                FfiConverterString.allocationSize(value.`shares`) +
-                FfiConverterString.allocationSize(value.`owner`) +
-                FfiConverterULong.allocationSize(value.`timestamp`) +
-                FfiConverterBoolean.allocationSize(value.`isFinalized`) +
-                FfiConverterBoolean.allocationSize(value.`isClaimed`)
-        )
+            FfiConverterString.allocationSize(value.`shares`) +
+            FfiConverterString.allocationSize(value.`owner`) +
+            FfiConverterULong.allocationSize(value.`timestamp`) +
+            FfiConverterBoolean.allocationSize(value.`isFinalized`) +
+            FfiConverterBoolean.allocationSize(value.`isClaimed`)
+    )
 
-    override fun write(
-        value: LidoWithdrawalRequest,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`amount`, buf)
-        FfiConverterString.write(value.`shares`, buf)
-        FfiConverterString.write(value.`owner`, buf)
-        FfiConverterULong.write(value.`timestamp`, buf)
-        FfiConverterBoolean.write(value.`isFinalized`, buf)
-        FfiConverterBoolean.write(value.`isClaimed`, buf)
+    override fun write(value: LidoWithdrawalRequest, buf: ByteBuffer) {
+            FfiConverterString.write(value.`amount`, buf)
+            FfiConverterString.write(value.`shares`, buf)
+            FfiConverterString.write(value.`owner`, buf)
+            FfiConverterULong.write(value.`timestamp`, buf)
+            FfiConverterBoolean.write(value.`isFinalized`, buf)
+            FfiConverterBoolean.write(value.`isClaimed`, buf)
     }
 }
 
-data class MplMetadata(
-    var `mint`: kotlin.String,
-    var `name`: kotlin.String,
-    var `symbol`: kotlin.String,
-    var `uri`: kotlin.String,
+
+
+data class MplMetadata (
+    var `mint`: kotlin.String, 
+    var `name`: kotlin.String, 
+    var `symbol`: kotlin.String, 
+    var `uri`: kotlin.String
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeMplMetadata : FfiConverterRustBuffer<MplMetadata> {
-    override fun read(buf: ByteBuffer): MplMetadata =
-        MplMetadata(
+public object FfiConverterTypeMplMetadata: FfiConverterRustBuffer<MplMetadata> {
+    override fun read(buf: ByteBuffer): MplMetadata {
+        return MplMetadata(
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
         )
+    }
 
-    override fun allocationSize(value: MplMetadata) =
-        (
+    override fun allocationSize(value: MplMetadata) = (
             FfiConverterString.allocationSize(value.`mint`) +
-                FfiConverterString.allocationSize(value.`name`) +
-                FfiConverterString.allocationSize(value.`symbol`) +
-                FfiConverterString.allocationSize(value.`uri`)
-        )
+            FfiConverterString.allocationSize(value.`name`) +
+            FfiConverterString.allocationSize(value.`symbol`) +
+            FfiConverterString.allocationSize(value.`uri`)
+    )
 
-    override fun write(
-        value: MplMetadata,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`mint`, buf)
-        FfiConverterString.write(value.`name`, buf)
-        FfiConverterString.write(value.`symbol`, buf)
-        FfiConverterString.write(value.`uri`, buf)
+    override fun write(value: MplMetadata, buf: ByteBuffer) {
+            FfiConverterString.write(value.`mint`, buf)
+            FfiConverterString.write(value.`name`, buf)
+            FfiConverterString.write(value.`symbol`, buf)
+            FfiConverterString.write(value.`uri`, buf)
     }
 }
 
-data class Node(
-    var `url`: kotlin.String,
-    var `priority`: NodePriority,
+
+
+data class Node (
+    var `url`: kotlin.String, 
+    var `priority`: NodePriority
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeNode : FfiConverterRustBuffer<Node> {
-    override fun read(buf: ByteBuffer): Node =
-        Node(
+public object FfiConverterTypeNode: FfiConverterRustBuffer<Node> {
+    override fun read(buf: ByteBuffer): Node {
+        return Node(
             FfiConverterString.read(buf),
             FfiConverterTypeNodePriority.read(buf),
         )
+    }
 
-    override fun allocationSize(value: Node) =
-        (
+    override fun allocationSize(value: Node) = (
             FfiConverterString.allocationSize(value.`url`) +
-                FfiConverterTypeNodePriority.allocationSize(value.`priority`)
-        )
+            FfiConverterTypeNodePriority.allocationSize(value.`priority`)
+    )
 
-    override fun write(
-        value: Node,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`url`, buf)
-        FfiConverterTypeNodePriority.write(value.`priority`, buf)
+    override fun write(value: Node, buf: ByteBuffer) {
+            FfiConverterString.write(value.`url`, buf)
+            FfiConverterTypeNodePriority.write(value.`priority`, buf)
     }
 }
 
-data class PaymentWrapper(
-    var `address`: kotlin.String,
-    var `amount`: kotlin.String?,
-    var `memo`: kotlin.String?,
-    var `assetId`: kotlin.String?,
+
+
+data class PaymentWrapper (
+    var `address`: kotlin.String, 
+    var `amount`: kotlin.String?, 
+    var `memo`: kotlin.String?, 
+    var `assetId`: kotlin.String?
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypePaymentWrapper : FfiConverterRustBuffer<PaymentWrapper> {
-    override fun read(buf: ByteBuffer): PaymentWrapper =
-        PaymentWrapper(
+public object FfiConverterTypePaymentWrapper: FfiConverterRustBuffer<PaymentWrapper> {
+    override fun read(buf: ByteBuffer): PaymentWrapper {
+        return PaymentWrapper(
             FfiConverterString.read(buf),
             FfiConverterOptionalString.read(buf),
             FfiConverterOptionalString.read(buf),
             FfiConverterOptionalString.read(buf),
         )
+    }
 
-    override fun allocationSize(value: PaymentWrapper) =
-        (
+    override fun allocationSize(value: PaymentWrapper) = (
             FfiConverterString.allocationSize(value.`address`) +
-                FfiConverterOptionalString.allocationSize(value.`amount`) +
-                FfiConverterOptionalString.allocationSize(value.`memo`) +
-                FfiConverterOptionalString.allocationSize(value.`assetId`)
-        )
+            FfiConverterOptionalString.allocationSize(value.`amount`) +
+            FfiConverterOptionalString.allocationSize(value.`memo`) +
+            FfiConverterOptionalString.allocationSize(value.`assetId`)
+    )
 
-    override fun write(
-        value: PaymentWrapper,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`address`, buf)
-        FfiConverterOptionalString.write(value.`amount`, buf)
-        FfiConverterOptionalString.write(value.`memo`, buf)
-        FfiConverterOptionalString.write(value.`assetId`, buf)
+    override fun write(value: PaymentWrapper, buf: ByteBuffer) {
+            FfiConverterString.write(value.`address`, buf)
+            FfiConverterOptionalString.write(value.`amount`, buf)
+            FfiConverterOptionalString.write(value.`memo`, buf)
+            FfiConverterOptionalString.write(value.`assetId`, buf)
     }
 }
 
-data class StakeChainConfig(
-    var `timeLock`: kotlin.ULong,
-    var `minAmount`: kotlin.ULong,
-    var `changeAmountOnUnstake`: kotlin.Boolean,
-    var `redelegate`: kotlin.Boolean,
+
+
+data class StakeChainConfig (
+    var `timeLock`: kotlin.ULong, 
+    var `minAmount`: kotlin.ULong, 
+    var `changeAmountOnUnstake`: kotlin.Boolean, 
+    var `redelegate`: kotlin.Boolean
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeStakeChainConfig : FfiConverterRustBuffer<StakeChainConfig> {
-    override fun read(buf: ByteBuffer): StakeChainConfig =
-        StakeChainConfig(
+public object FfiConverterTypeStakeChainConfig: FfiConverterRustBuffer<StakeChainConfig> {
+    override fun read(buf: ByteBuffer): StakeChainConfig {
+        return StakeChainConfig(
             FfiConverterULong.read(buf),
             FfiConverterULong.read(buf),
             FfiConverterBoolean.read(buf),
             FfiConverterBoolean.read(buf),
         )
+    }
 
-    override fun allocationSize(value: StakeChainConfig) =
-        (
+    override fun allocationSize(value: StakeChainConfig) = (
             FfiConverterULong.allocationSize(value.`timeLock`) +
-                FfiConverterULong.allocationSize(value.`minAmount`) +
-                FfiConverterBoolean.allocationSize(value.`changeAmountOnUnstake`) +
-                FfiConverterBoolean.allocationSize(value.`redelegate`)
-        )
+            FfiConverterULong.allocationSize(value.`minAmount`) +
+            FfiConverterBoolean.allocationSize(value.`changeAmountOnUnstake`) +
+            FfiConverterBoolean.allocationSize(value.`redelegate`)
+    )
 
-    override fun write(
-        value: StakeChainConfig,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterULong.write(value.`timeLock`, buf)
-        FfiConverterULong.write(value.`minAmount`, buf)
-        FfiConverterBoolean.write(value.`changeAmountOnUnstake`, buf)
-        FfiConverterBoolean.write(value.`redelegate`, buf)
+    override fun write(value: StakeChainConfig, buf: ByteBuffer) {
+            FfiConverterULong.write(value.`timeLock`, buf)
+            FfiConverterULong.write(value.`minAmount`, buf)
+            FfiConverterBoolean.write(value.`changeAmountOnUnstake`, buf)
+            FfiConverterBoolean.write(value.`redelegate`, buf)
     }
 }
 
-data class SuiCoin(
-    var `coinType`: kotlin.String,
-    var `balance`: kotlin.ULong,
-    var `objectRef`: SuiObjectRef,
+
+
+data class SuiCoin (
+    var `coinType`: kotlin.String, 
+    var `balance`: kotlin.ULong, 
+    var `objectRef`: SuiObjectRef
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeSuiCoin : FfiConverterRustBuffer<SuiCoin> {
-    override fun read(buf: ByteBuffer): SuiCoin =
-        SuiCoin(
+public object FfiConverterTypeSuiCoin: FfiConverterRustBuffer<SuiCoin> {
+    override fun read(buf: ByteBuffer): SuiCoin {
+        return SuiCoin(
             FfiConverterString.read(buf),
             FfiConverterULong.read(buf),
             FfiConverterTypeSuiObjectRef.read(buf),
         )
+    }
 
-    override fun allocationSize(value: SuiCoin) =
-        (
+    override fun allocationSize(value: SuiCoin) = (
             FfiConverterString.allocationSize(value.`coinType`) +
-                FfiConverterULong.allocationSize(value.`balance`) +
-                FfiConverterTypeSuiObjectRef.allocationSize(value.`objectRef`)
-        )
+            FfiConverterULong.allocationSize(value.`balance`) +
+            FfiConverterTypeSuiObjectRef.allocationSize(value.`objectRef`)
+    )
 
-    override fun write(
-        value: SuiCoin,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`coinType`, buf)
-        FfiConverterULong.write(value.`balance`, buf)
-        FfiConverterTypeSuiObjectRef.write(value.`objectRef`, buf)
+    override fun write(value: SuiCoin, buf: ByteBuffer) {
+            FfiConverterString.write(value.`coinType`, buf)
+            FfiConverterULong.write(value.`balance`, buf)
+            FfiConverterTypeSuiObjectRef.write(value.`objectRef`, buf)
     }
 }
 
-data class SuiGas(
-    var `budget`: kotlin.ULong,
-    var `price`: kotlin.ULong,
+
+
+data class SuiGas (
+    var `budget`: kotlin.ULong, 
+    var `price`: kotlin.ULong
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeSuiGas : FfiConverterRustBuffer<SuiGas> {
-    override fun read(buf: ByteBuffer): SuiGas =
-        SuiGas(
+public object FfiConverterTypeSuiGas: FfiConverterRustBuffer<SuiGas> {
+    override fun read(buf: ByteBuffer): SuiGas {
+        return SuiGas(
             FfiConverterULong.read(buf),
             FfiConverterULong.read(buf),
         )
+    }
 
-    override fun allocationSize(value: SuiGas) =
-        (
+    override fun allocationSize(value: SuiGas) = (
             FfiConverterULong.allocationSize(value.`budget`) +
-                FfiConverterULong.allocationSize(value.`price`)
-        )
+            FfiConverterULong.allocationSize(value.`price`)
+    )
 
-    override fun write(
-        value: SuiGas,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterULong.write(value.`budget`, buf)
-        FfiConverterULong.write(value.`price`, buf)
+    override fun write(value: SuiGas, buf: ByteBuffer) {
+            FfiConverterULong.write(value.`budget`, buf)
+            FfiConverterULong.write(value.`price`, buf)
     }
 }
 
-data class SuiObjectRef(
-    var `objectId`: kotlin.String,
-    var `digest`: kotlin.String,
-    var `version`: kotlin.ULong,
+
+
+data class SuiObjectRef (
+    var `objectId`: kotlin.String, 
+    var `digest`: kotlin.String, 
+    var `version`: kotlin.ULong
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeSuiObjectRef : FfiConverterRustBuffer<SuiObjectRef> {
-    override fun read(buf: ByteBuffer): SuiObjectRef =
-        SuiObjectRef(
+public object FfiConverterTypeSuiObjectRef: FfiConverterRustBuffer<SuiObjectRef> {
+    override fun read(buf: ByteBuffer): SuiObjectRef {
+        return SuiObjectRef(
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
             FfiConverterULong.read(buf),
         )
+    }
 
-    override fun allocationSize(value: SuiObjectRef) =
-        (
+    override fun allocationSize(value: SuiObjectRef) = (
             FfiConverterString.allocationSize(value.`objectId`) +
-                FfiConverterString.allocationSize(value.`digest`) +
-                FfiConverterULong.allocationSize(value.`version`)
-        )
+            FfiConverterString.allocationSize(value.`digest`) +
+            FfiConverterULong.allocationSize(value.`version`)
+    )
 
-    override fun write(
-        value: SuiObjectRef,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`objectId`, buf)
-        FfiConverterString.write(value.`digest`, buf)
-        FfiConverterULong.write(value.`version`, buf)
+    override fun write(value: SuiObjectRef, buf: ByteBuffer) {
+            FfiConverterString.write(value.`objectId`, buf)
+            FfiConverterString.write(value.`digest`, buf)
+            FfiConverterULong.write(value.`version`, buf)
     }
 }
 
-data class SuiStakeInput(
-    var `sender`: kotlin.String,
-    var `validator`: kotlin.String,
-    var `stakeAmount`: kotlin.ULong,
-    var `gas`: SuiGas,
-    var `coins`: List<SuiCoin>,
+
+
+data class SuiStakeInput (
+    var `sender`: kotlin.String, 
+    var `validator`: kotlin.String, 
+    var `stakeAmount`: kotlin.ULong, 
+    var `gas`: SuiGas, 
+    var `coins`: List<SuiCoin>
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeSuiStakeInput : FfiConverterRustBuffer<SuiStakeInput> {
-    override fun read(buf: ByteBuffer): SuiStakeInput =
-        SuiStakeInput(
+public object FfiConverterTypeSuiStakeInput: FfiConverterRustBuffer<SuiStakeInput> {
+    override fun read(buf: ByteBuffer): SuiStakeInput {
+        return SuiStakeInput(
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
             FfiConverterULong.read(buf),
             FfiConverterTypeSuiGas.read(buf),
             FfiConverterSequenceTypeSuiCoin.read(buf),
         )
+    }
 
-    override fun allocationSize(value: SuiStakeInput) =
-        (
+    override fun allocationSize(value: SuiStakeInput) = (
             FfiConverterString.allocationSize(value.`sender`) +
-                FfiConverterString.allocationSize(value.`validator`) +
-                FfiConverterULong.allocationSize(value.`stakeAmount`) +
-                FfiConverterTypeSuiGas.allocationSize(value.`gas`) +
-                FfiConverterSequenceTypeSuiCoin.allocationSize(value.`coins`)
-        )
+            FfiConverterString.allocationSize(value.`validator`) +
+            FfiConverterULong.allocationSize(value.`stakeAmount`) +
+            FfiConverterTypeSuiGas.allocationSize(value.`gas`) +
+            FfiConverterSequenceTypeSuiCoin.allocationSize(value.`coins`)
+    )
 
-    override fun write(
-        value: SuiStakeInput,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`sender`, buf)
-        FfiConverterString.write(value.`validator`, buf)
-        FfiConverterULong.write(value.`stakeAmount`, buf)
-        FfiConverterTypeSuiGas.write(value.`gas`, buf)
-        FfiConverterSequenceTypeSuiCoin.write(value.`coins`, buf)
+    override fun write(value: SuiStakeInput, buf: ByteBuffer) {
+            FfiConverterString.write(value.`sender`, buf)
+            FfiConverterString.write(value.`validator`, buf)
+            FfiConverterULong.write(value.`stakeAmount`, buf)
+            FfiConverterTypeSuiGas.write(value.`gas`, buf)
+            FfiConverterSequenceTypeSuiCoin.write(value.`coins`, buf)
     }
 }
 
-data class SuiTokenTransferInput(
-    var `sender`: kotlin.String,
-    var `recipient`: kotlin.String,
-    var `amount`: kotlin.ULong,
-    var `tokens`: List<SuiCoin>,
-    var `gas`: SuiGas,
-    var `gasCoin`: SuiCoin,
+
+
+data class SuiTokenTransferInput (
+    var `sender`: kotlin.String, 
+    var `recipient`: kotlin.String, 
+    var `amount`: kotlin.ULong, 
+    var `tokens`: List<SuiCoin>, 
+    var `gas`: SuiGas, 
+    var `gasCoin`: SuiCoin
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeSuiTokenTransferInput : FfiConverterRustBuffer<SuiTokenTransferInput> {
-    override fun read(buf: ByteBuffer): SuiTokenTransferInput =
-        SuiTokenTransferInput(
+public object FfiConverterTypeSuiTokenTransferInput: FfiConverterRustBuffer<SuiTokenTransferInput> {
+    override fun read(buf: ByteBuffer): SuiTokenTransferInput {
+        return SuiTokenTransferInput(
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
             FfiConverterULong.read(buf),
@@ -3550,44 +3274,44 @@ public object FfiConverterTypeSuiTokenTransferInput : FfiConverterRustBuffer<Sui
             FfiConverterTypeSuiGas.read(buf),
             FfiConverterTypeSuiCoin.read(buf),
         )
+    }
 
-    override fun allocationSize(value: SuiTokenTransferInput) =
-        (
+    override fun allocationSize(value: SuiTokenTransferInput) = (
             FfiConverterString.allocationSize(value.`sender`) +
-                FfiConverterString.allocationSize(value.`recipient`) +
-                FfiConverterULong.allocationSize(value.`amount`) +
-                FfiConverterSequenceTypeSuiCoin.allocationSize(value.`tokens`) +
-                FfiConverterTypeSuiGas.allocationSize(value.`gas`) +
-                FfiConverterTypeSuiCoin.allocationSize(value.`gasCoin`)
-        )
+            FfiConverterString.allocationSize(value.`recipient`) +
+            FfiConverterULong.allocationSize(value.`amount`) +
+            FfiConverterSequenceTypeSuiCoin.allocationSize(value.`tokens`) +
+            FfiConverterTypeSuiGas.allocationSize(value.`gas`) +
+            FfiConverterTypeSuiCoin.allocationSize(value.`gasCoin`)
+    )
 
-    override fun write(
-        value: SuiTokenTransferInput,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`sender`, buf)
-        FfiConverterString.write(value.`recipient`, buf)
-        FfiConverterULong.write(value.`amount`, buf)
-        FfiConverterSequenceTypeSuiCoin.write(value.`tokens`, buf)
-        FfiConverterTypeSuiGas.write(value.`gas`, buf)
-        FfiConverterTypeSuiCoin.write(value.`gasCoin`, buf)
+    override fun write(value: SuiTokenTransferInput, buf: ByteBuffer) {
+            FfiConverterString.write(value.`sender`, buf)
+            FfiConverterString.write(value.`recipient`, buf)
+            FfiConverterULong.write(value.`amount`, buf)
+            FfiConverterSequenceTypeSuiCoin.write(value.`tokens`, buf)
+            FfiConverterTypeSuiGas.write(value.`gas`, buf)
+            FfiConverterTypeSuiCoin.write(value.`gasCoin`, buf)
     }
 }
 
-data class SuiTransferInput(
-    var `sender`: kotlin.String,
-    var `recipient`: kotlin.String,
-    var `amount`: kotlin.ULong,
-    var `coins`: List<SuiCoin>,
-    var `sendMax`: kotlin.Boolean,
-    var `gas`: SuiGas,
+
+
+data class SuiTransferInput (
+    var `sender`: kotlin.String, 
+    var `recipient`: kotlin.String, 
+    var `amount`: kotlin.ULong, 
+    var `coins`: List<SuiCoin>, 
+    var `sendMax`: kotlin.Boolean, 
+    var `gas`: SuiGas
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeSuiTransferInput : FfiConverterRustBuffer<SuiTransferInput> {
-    override fun read(buf: ByteBuffer): SuiTransferInput =
-        SuiTransferInput(
+public object FfiConverterTypeSuiTransferInput: FfiConverterRustBuffer<SuiTransferInput> {
+    override fun read(buf: ByteBuffer): SuiTransferInput {
+        return SuiTransferInput(
             FfiConverterString.read(buf),
             FfiConverterString.read(buf),
             FfiConverterULong.read(buf),
@@ -3595,148 +3319,150 @@ public object FfiConverterTypeSuiTransferInput : FfiConverterRustBuffer<SuiTrans
             FfiConverterBoolean.read(buf),
             FfiConverterTypeSuiGas.read(buf),
         )
+    }
 
-    override fun allocationSize(value: SuiTransferInput) =
-        (
+    override fun allocationSize(value: SuiTransferInput) = (
             FfiConverterString.allocationSize(value.`sender`) +
-                FfiConverterString.allocationSize(value.`recipient`) +
-                FfiConverterULong.allocationSize(value.`amount`) +
-                FfiConverterSequenceTypeSuiCoin.allocationSize(value.`coins`) +
-                FfiConverterBoolean.allocationSize(value.`sendMax`) +
-                FfiConverterTypeSuiGas.allocationSize(value.`gas`)
-        )
+            FfiConverterString.allocationSize(value.`recipient`) +
+            FfiConverterULong.allocationSize(value.`amount`) +
+            FfiConverterSequenceTypeSuiCoin.allocationSize(value.`coins`) +
+            FfiConverterBoolean.allocationSize(value.`sendMax`) +
+            FfiConverterTypeSuiGas.allocationSize(value.`gas`)
+    )
 
-    override fun write(
-        value: SuiTransferInput,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`sender`, buf)
-        FfiConverterString.write(value.`recipient`, buf)
-        FfiConverterULong.write(value.`amount`, buf)
-        FfiConverterSequenceTypeSuiCoin.write(value.`coins`, buf)
-        FfiConverterBoolean.write(value.`sendMax`, buf)
-        FfiConverterTypeSuiGas.write(value.`gas`, buf)
+    override fun write(value: SuiTransferInput, buf: ByteBuffer) {
+            FfiConverterString.write(value.`sender`, buf)
+            FfiConverterString.write(value.`recipient`, buf)
+            FfiConverterULong.write(value.`amount`, buf)
+            FfiConverterSequenceTypeSuiCoin.write(value.`coins`, buf)
+            FfiConverterBoolean.write(value.`sendMax`, buf)
+            FfiConverterTypeSuiGas.write(value.`gas`, buf)
     }
 }
 
-data class SuiTxOutput(
-    var `txData`: kotlin.ByteArray,
-    var `hash`: kotlin.ByteArray,
+
+
+data class SuiTxOutput (
+    var `txData`: kotlin.ByteArray, 
+    var `hash`: kotlin.ByteArray
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeSuiTxOutput : FfiConverterRustBuffer<SuiTxOutput> {
-    override fun read(buf: ByteBuffer): SuiTxOutput =
-        SuiTxOutput(
+public object FfiConverterTypeSuiTxOutput: FfiConverterRustBuffer<SuiTxOutput> {
+    override fun read(buf: ByteBuffer): SuiTxOutput {
+        return SuiTxOutput(
             FfiConverterByteArray.read(buf),
             FfiConverterByteArray.read(buf),
         )
+    }
 
-    override fun allocationSize(value: SuiTxOutput) =
-        (
+    override fun allocationSize(value: SuiTxOutput) = (
             FfiConverterByteArray.allocationSize(value.`txData`) +
-                FfiConverterByteArray.allocationSize(value.`hash`)
-        )
+            FfiConverterByteArray.allocationSize(value.`hash`)
+    )
 
-    override fun write(
-        value: SuiTxOutput,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterByteArray.write(value.`txData`, buf)
-        FfiConverterByteArray.write(value.`hash`, buf)
+    override fun write(value: SuiTxOutput, buf: ByteBuffer) {
+            FfiConverterByteArray.write(value.`txData`, buf)
+            FfiConverterByteArray.write(value.`hash`, buf)
     }
 }
 
-data class SuiUnstakeInput(
-    var `sender`: kotlin.String,
-    var `stakedSui`: SuiObjectRef,
-    var `gas`: SuiGas,
-    var `gasCoin`: SuiCoin,
+
+
+data class SuiUnstakeInput (
+    var `sender`: kotlin.String, 
+    var `stakedSui`: SuiObjectRef, 
+    var `gas`: SuiGas, 
+    var `gasCoin`: SuiCoin
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeSuiUnstakeInput : FfiConverterRustBuffer<SuiUnstakeInput> {
-    override fun read(buf: ByteBuffer): SuiUnstakeInput =
-        SuiUnstakeInput(
+public object FfiConverterTypeSuiUnstakeInput: FfiConverterRustBuffer<SuiUnstakeInput> {
+    override fun read(buf: ByteBuffer): SuiUnstakeInput {
+        return SuiUnstakeInput(
             FfiConverterString.read(buf),
             FfiConverterTypeSuiObjectRef.read(buf),
             FfiConverterTypeSuiGas.read(buf),
             FfiConverterTypeSuiCoin.read(buf),
         )
+    }
 
-    override fun allocationSize(value: SuiUnstakeInput) =
-        (
+    override fun allocationSize(value: SuiUnstakeInput) = (
             FfiConverterString.allocationSize(value.`sender`) +
-                FfiConverterTypeSuiObjectRef.allocationSize(value.`stakedSui`) +
-                FfiConverterTypeSuiGas.allocationSize(value.`gas`) +
-                FfiConverterTypeSuiCoin.allocationSize(value.`gasCoin`)
-        )
+            FfiConverterTypeSuiObjectRef.allocationSize(value.`stakedSui`) +
+            FfiConverterTypeSuiGas.allocationSize(value.`gas`) +
+            FfiConverterTypeSuiCoin.allocationSize(value.`gasCoin`)
+    )
 
-    override fun write(
-        value: SuiUnstakeInput,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterString.write(value.`sender`, buf)
-        FfiConverterTypeSuiObjectRef.write(value.`stakedSui`, buf)
-        FfiConverterTypeSuiGas.write(value.`gas`, buf)
-        FfiConverterTypeSuiCoin.write(value.`gasCoin`, buf)
+    override fun write(value: SuiUnstakeInput, buf: ByteBuffer) {
+            FfiConverterString.write(value.`sender`, buf)
+            FfiConverterTypeSuiObjectRef.write(value.`stakedSui`, buf)
+            FfiConverterTypeSuiGas.write(value.`gas`, buf)
+            FfiConverterTypeSuiCoin.write(value.`gasCoin`, buf)
     }
 }
 
-data class WalletConnectConfig(
-    var `chains`: List<kotlin.String>,
+
+
+data class WalletConnectConfig (
+    var `chains`: List<kotlin.String>
 ) {
+    
     companion object
 }
 
-public object FfiConverterTypeWalletConnectConfig : FfiConverterRustBuffer<WalletConnectConfig> {
-    override fun read(buf: ByteBuffer): WalletConnectConfig =
-        WalletConnectConfig(
+public object FfiConverterTypeWalletConnectConfig: FfiConverterRustBuffer<WalletConnectConfig> {
+    override fun read(buf: ByteBuffer): WalletConnectConfig {
+        return WalletConnectConfig(
             FfiConverterSequenceString.read(buf),
         )
+    }
 
-    override fun allocationSize(value: WalletConnectConfig) =
-        (
+    override fun allocationSize(value: WalletConnectConfig) = (
             FfiConverterSequenceString.allocationSize(value.`chains`)
-        )
+    )
 
-    override fun write(
-        value: WalletConnectConfig,
-        buf: ByteBuffer,
-    ) {
-        FfiConverterSequenceString.write(value.`chains`, buf)
+    override fun write(value: WalletConnectConfig, buf: ByteBuffer) {
+            FfiConverterSequenceString.write(value.`chains`, buf)
     }
 }
 
-enum class BscDelegationStatus {
-    ACTIVE,
-    UNDELEGATING,
-    ;
 
+
+
+enum class BscDelegationStatus {
+    
+    ACTIVE,
+    UNDELEGATING;
     companion object
 }
 
-public object FfiConverterTypeBscDelegationStatus : FfiConverterRustBuffer<BscDelegationStatus> {
-    override fun read(buf: ByteBuffer) =
-        try {
-            BscDelegationStatus.values()[buf.getInt() - 1]
-        } catch (e: IndexOutOfBoundsException) {
-            throw RuntimeException("invalid enum value, something is very wrong!!", e)
-        }
+
+public object FfiConverterTypeBscDelegationStatus: FfiConverterRustBuffer<BscDelegationStatus> {
+    override fun read(buf: ByteBuffer) = try {
+        BscDelegationStatus.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
 
     override fun allocationSize(value: BscDelegationStatus) = 4UL
 
-    override fun write(
-        value: BscDelegationStatus,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: BscDelegationStatus, buf: ByteBuffer) {
         buf.putInt(value.ordinal + 1)
     }
 }
 
+
+
+
+
+
 enum class DocsUrl {
+    
     START,
     WHAT_IS_WATCH_WALLET,
     WHAT_IS_SECRET_PHRASE,
@@ -3744,70 +3470,76 @@ enum class DocsUrl {
     HOW_TO_SECURE_SECRET_PHRASE,
     TRANSACTION_STATUS,
     NETWORK_FEES,
-    STAKING_LOCK_TIME,
-    ;
-
+    STAKING_LOCK_TIME;
     companion object
 }
 
-public object FfiConverterTypeDocsUrl : FfiConverterRustBuffer<DocsUrl> {
-    override fun read(buf: ByteBuffer) =
-        try {
-            DocsUrl.values()[buf.getInt() - 1]
-        } catch (e: IndexOutOfBoundsException) {
-            throw RuntimeException("invalid enum value, something is very wrong!!", e)
-        }
+
+public object FfiConverterTypeDocsUrl: FfiConverterRustBuffer<DocsUrl> {
+    override fun read(buf: ByteBuffer) = try {
+        DocsUrl.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
 
     override fun allocationSize(value: DocsUrl) = 4UL
 
-    override fun write(
-        value: DocsUrl,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: DocsUrl, buf: ByteBuffer) {
         buf.putInt(value.ordinal + 1)
     }
 }
 
+
+
+
+
+
+
 /**
  * GemstoneError
  */
-sealed class GemstoneException : kotlin.Exception() {
+sealed class GemstoneException: kotlin.Exception() {
+    
     class AnyException(
-        val `msg`: kotlin.String,
-    ) : GemstoneException() {
+        
+        val `msg`: kotlin.String
+        ) : GemstoneException() {
         override val message
             get() = "msg=${ `msg` }"
     }
+    
 
     companion object ErrorHandler : UniffiRustCallStatusErrorHandler<GemstoneException> {
         override fun lift(error_buf: RustBuffer.ByValue): GemstoneException = FfiConverterTypeGemstoneError.lift(error_buf)
     }
+
+    
 }
 
 public object FfiConverterTypeGemstoneError : FfiConverterRustBuffer<GemstoneException> {
-    override fun read(buf: ByteBuffer): GemstoneException =
-        when (buf.getInt()) {
-            1 ->
-                GemstoneException.AnyException(
-                    FfiConverterString.read(buf),
+    override fun read(buf: ByteBuffer): GemstoneException {
+        
+
+        return when(buf.getInt()) {
+            1 -> GemstoneException.AnyException(
+                FfiConverterString.read(buf),
                 )
             else -> throw RuntimeException("invalid error enum value, something is very wrong!!")
         }
+    }
 
-    override fun allocationSize(value: GemstoneException): ULong =
-        when (value) {
+    override fun allocationSize(value: GemstoneException): ULong {
+        return when(value) {
             is GemstoneException.AnyException -> (
                 // Add the size for the Int that specifies the variant plus the size needed for all fields
-                4UL +
-                    FfiConverterString.allocationSize(value.`msg`)
+                4UL
+                + FfiConverterString.allocationSize(value.`msg`)
             )
         }
+    }
 
-    override fun write(
-        value: GemstoneException,
-        buf: ByteBuffer,
-    ) {
-        when (value) {
+    override fun write(value: GemstoneException, buf: ByteBuffer) {
+        when(value) {
             is GemstoneException.AnyException -> {
                 buf.putInt(1)
                 FfiConverterString.write(value.`msg`, buf)
@@ -3815,37 +3547,43 @@ public object FfiConverterTypeGemstoneError : FfiConverterRustBuffer<GemstoneExc
             }
         }.let { /* this makes the `when` an expression, which ensures it is exhaustive */ }
     }
+
 }
 
+
+
+
 enum class NodePriority {
+    
     HIGH,
     MEDIUM,
     LOW,
-    INACTIVE,
-    ;
-
+    INACTIVE;
     companion object
 }
 
-public object FfiConverterTypeNodePriority : FfiConverterRustBuffer<NodePriority> {
-    override fun read(buf: ByteBuffer) =
-        try {
-            NodePriority.values()[buf.getInt() - 1]
-        } catch (e: IndexOutOfBoundsException) {
-            throw RuntimeException("invalid enum value, something is very wrong!!", e)
-        }
+
+public object FfiConverterTypeNodePriority: FfiConverterRustBuffer<NodePriority> {
+    override fun read(buf: ByteBuffer) = try {
+        NodePriority.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
 
     override fun allocationSize(value: NodePriority) = 4UL
 
-    override fun write(
-        value: NodePriority,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: NodePriority, buf: ByteBuffer) {
         buf.putInt(value.ordinal + 1)
     }
 }
 
+
+
+
+
+
 enum class PublicUrl {
+    
     WEBSITE,
     ASSETS,
     PRIVACY_POLICY,
@@ -3855,31 +3593,32 @@ enum class PublicUrl {
     CODEBASE_ANDROID,
     APP_STORE,
     PLAY_STORE,
-    APK,
-    ;
-
+    APK;
     companion object
 }
 
-public object FfiConverterTypePublicUrl : FfiConverterRustBuffer<PublicUrl> {
-    override fun read(buf: ByteBuffer) =
-        try {
-            PublicUrl.values()[buf.getInt() - 1]
-        } catch (e: IndexOutOfBoundsException) {
-            throw RuntimeException("invalid enum value, something is very wrong!!", e)
-        }
+
+public object FfiConverterTypePublicUrl: FfiConverterRustBuffer<PublicUrl> {
+    override fun read(buf: ByteBuffer) = try {
+        PublicUrl.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
 
     override fun allocationSize(value: PublicUrl) = 4UL
 
-    override fun write(
-        value: PublicUrl,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: PublicUrl, buf: ByteBuffer) {
         buf.putInt(value.ordinal + 1)
     }
 }
 
+
+
+
+
+
 enum class SocialUrl {
+    
     X,
     DISCORD,
     REDDIT,
@@ -3888,31 +3627,31 @@ enum class SocialUrl {
     YOU_TUBE,
     FACEBOOK,
     HOMEPAGE,
-    COINGECKO,
-    ;
-
+    COINGECKO;
     companion object
 }
 
-public object FfiConverterTypeSocialUrl : FfiConverterRustBuffer<SocialUrl> {
-    override fun read(buf: ByteBuffer) =
-        try {
-            SocialUrl.values()[buf.getInt() - 1]
-        } catch (e: IndexOutOfBoundsException) {
-            throw RuntimeException("invalid enum value, something is very wrong!!", e)
-        }
+
+public object FfiConverterTypeSocialUrl: FfiConverterRustBuffer<SocialUrl> {
+    override fun read(buf: ByteBuffer) = try {
+        SocialUrl.values()[buf.getInt() - 1]
+    } catch (e: IndexOutOfBoundsException) {
+        throw RuntimeException("invalid enum value, something is very wrong!!", e)
+    }
 
     override fun allocationSize(value: SocialUrl) = 4UL
 
-    override fun write(
-        value: SocialUrl,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: SocialUrl, buf: ByteBuffer) {
         buf.putInt(value.ordinal + 1)
     }
 }
 
-public object FfiConverterOptionalInt : FfiConverterRustBuffer<kotlin.Int?> {
+
+
+
+
+
+public object FfiConverterOptionalInt: FfiConverterRustBuffer<kotlin.Int?> {
     override fun read(buf: ByteBuffer): kotlin.Int? {
         if (buf.get().toInt() == 0) {
             return null
@@ -3928,10 +3667,7 @@ public object FfiConverterOptionalInt : FfiConverterRustBuffer<kotlin.Int?> {
         }
     }
 
-    override fun write(
-        value: kotlin.Int?,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: kotlin.Int?, buf: ByteBuffer) {
         if (value == null) {
             buf.put(0)
         } else {
@@ -3941,7 +3677,10 @@ public object FfiConverterOptionalInt : FfiConverterRustBuffer<kotlin.Int?> {
     }
 }
 
-public object FfiConverterOptionalULong : FfiConverterRustBuffer<kotlin.ULong?> {
+
+
+
+public object FfiConverterOptionalULong: FfiConverterRustBuffer<kotlin.ULong?> {
     override fun read(buf: ByteBuffer): kotlin.ULong? {
         if (buf.get().toInt() == 0) {
             return null
@@ -3957,10 +3696,7 @@ public object FfiConverterOptionalULong : FfiConverterRustBuffer<kotlin.ULong?> 
         }
     }
 
-    override fun write(
-        value: kotlin.ULong?,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: kotlin.ULong?, buf: ByteBuffer) {
         if (value == null) {
             buf.put(0)
         } else {
@@ -3970,7 +3706,10 @@ public object FfiConverterOptionalULong : FfiConverterRustBuffer<kotlin.ULong?> 
     }
 }
 
-public object FfiConverterOptionalString : FfiConverterRustBuffer<kotlin.String?> {
+
+
+
+public object FfiConverterOptionalString: FfiConverterRustBuffer<kotlin.String?> {
     override fun read(buf: ByteBuffer): kotlin.String? {
         if (buf.get().toInt() == 0) {
             return null
@@ -3986,10 +3725,7 @@ public object FfiConverterOptionalString : FfiConverterRustBuffer<kotlin.String?
         }
     }
 
-    override fun write(
-        value: kotlin.String?,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: kotlin.String?, buf: ByteBuffer) {
         if (value == null) {
             buf.put(0)
         } else {
@@ -3999,7 +3735,10 @@ public object FfiConverterOptionalString : FfiConverterRustBuffer<kotlin.String?
     }
 }
 
-public object FfiConverterSequenceString : FfiConverterRustBuffer<List<kotlin.String>> {
+
+
+
+public object FfiConverterSequenceString: FfiConverterRustBuffer<List<kotlin.String>> {
     override fun read(buf: ByteBuffer): List<kotlin.String> {
         val len = buf.getInt()
         return List<kotlin.String>(len) {
@@ -4013,10 +3752,7 @@ public object FfiConverterSequenceString : FfiConverterRustBuffer<List<kotlin.St
         return sizeForLength + sizeForItems
     }
 
-    override fun write(
-        value: List<kotlin.String>,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: List<kotlin.String>, buf: ByteBuffer) {
         buf.putInt(value.size)
         value.iterator().forEach {
             FfiConverterString.write(it, buf)
@@ -4024,7 +3760,10 @@ public object FfiConverterSequenceString : FfiConverterRustBuffer<List<kotlin.St
     }
 }
 
-public object FfiConverterSequenceTypeBscDelegation : FfiConverterRustBuffer<List<BscDelegation>> {
+
+
+
+public object FfiConverterSequenceTypeBscDelegation: FfiConverterRustBuffer<List<BscDelegation>> {
     override fun read(buf: ByteBuffer): List<BscDelegation> {
         val len = buf.getInt()
         return List<BscDelegation>(len) {
@@ -4038,10 +3777,7 @@ public object FfiConverterSequenceTypeBscDelegation : FfiConverterRustBuffer<Lis
         return sizeForLength + sizeForItems
     }
 
-    override fun write(
-        value: List<BscDelegation>,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: List<BscDelegation>, buf: ByteBuffer) {
         buf.putInt(value.size)
         value.iterator().forEach {
             FfiConverterTypeBscDelegation.write(it, buf)
@@ -4049,7 +3785,10 @@ public object FfiConverterSequenceTypeBscDelegation : FfiConverterRustBuffer<Lis
     }
 }
 
-public object FfiConverterSequenceTypeBscValidator : FfiConverterRustBuffer<List<BscValidator>> {
+
+
+
+public object FfiConverterSequenceTypeBscValidator: FfiConverterRustBuffer<List<BscValidator>> {
     override fun read(buf: ByteBuffer): List<BscValidator> {
         val len = buf.getInt()
         return List<BscValidator>(len) {
@@ -4063,10 +3802,7 @@ public object FfiConverterSequenceTypeBscValidator : FfiConverterRustBuffer<List
         return sizeForLength + sizeForItems
     }
 
-    override fun write(
-        value: List<BscValidator>,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: List<BscValidator>, buf: ByteBuffer) {
         buf.putInt(value.size)
         value.iterator().forEach {
             FfiConverterTypeBscValidator.write(it, buf)
@@ -4074,7 +3810,10 @@ public object FfiConverterSequenceTypeBscValidator : FfiConverterRustBuffer<List
     }
 }
 
-public object FfiConverterSequenceTypeLidoWithdrawalRequest : FfiConverterRustBuffer<List<LidoWithdrawalRequest>> {
+
+
+
+public object FfiConverterSequenceTypeLidoWithdrawalRequest: FfiConverterRustBuffer<List<LidoWithdrawalRequest>> {
     override fun read(buf: ByteBuffer): List<LidoWithdrawalRequest> {
         val len = buf.getInt()
         return List<LidoWithdrawalRequest>(len) {
@@ -4088,10 +3827,7 @@ public object FfiConverterSequenceTypeLidoWithdrawalRequest : FfiConverterRustBu
         return sizeForLength + sizeForItems
     }
 
-    override fun write(
-        value: List<LidoWithdrawalRequest>,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: List<LidoWithdrawalRequest>, buf: ByteBuffer) {
         buf.putInt(value.size)
         value.iterator().forEach {
             FfiConverterTypeLidoWithdrawalRequest.write(it, buf)
@@ -4099,7 +3835,10 @@ public object FfiConverterSequenceTypeLidoWithdrawalRequest : FfiConverterRustBu
     }
 }
 
-public object FfiConverterSequenceTypeNode : FfiConverterRustBuffer<List<Node>> {
+
+
+
+public object FfiConverterSequenceTypeNode: FfiConverterRustBuffer<List<Node>> {
     override fun read(buf: ByteBuffer): List<Node> {
         val len = buf.getInt()
         return List<Node>(len) {
@@ -4113,10 +3852,7 @@ public object FfiConverterSequenceTypeNode : FfiConverterRustBuffer<List<Node>> 
         return sizeForLength + sizeForItems
     }
 
-    override fun write(
-        value: List<Node>,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: List<Node>, buf: ByteBuffer) {
         buf.putInt(value.size)
         value.iterator().forEach {
             FfiConverterTypeNode.write(it, buf)
@@ -4124,7 +3860,10 @@ public object FfiConverterSequenceTypeNode : FfiConverterRustBuffer<List<Node>> 
     }
 }
 
-public object FfiConverterSequenceTypeSuiCoin : FfiConverterRustBuffer<List<SuiCoin>> {
+
+
+
+public object FfiConverterSequenceTypeSuiCoin: FfiConverterRustBuffer<List<SuiCoin>> {
     override fun read(buf: ByteBuffer): List<SuiCoin> {
         val len = buf.getInt()
         return List<SuiCoin>(len) {
@@ -4138,10 +3877,7 @@ public object FfiConverterSequenceTypeSuiCoin : FfiConverterRustBuffer<List<SuiC
         return sizeForLength + sizeForItems
     }
 
-    override fun write(
-        value: List<SuiCoin>,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: List<SuiCoin>, buf: ByteBuffer) {
         buf.putInt(value.size)
         value.iterator().forEach {
             FfiConverterTypeSuiCoin.write(it, buf)
@@ -4149,7 +3885,9 @@ public object FfiConverterSequenceTypeSuiCoin : FfiConverterRustBuffer<List<SuiC
     }
 }
 
-public object FfiConverterMapStringSequenceString : FfiConverterRustBuffer<Map<kotlin.String, List<kotlin.String>>> {
+
+
+public object FfiConverterMapStringSequenceString: FfiConverterRustBuffer<Map<kotlin.String, List<kotlin.String>>> {
     override fun read(buf: ByteBuffer): Map<kotlin.String, List<kotlin.String>> {
         val len = buf.getInt()
         return buildMap<kotlin.String, List<kotlin.String>>(len) {
@@ -4163,19 +3901,14 @@ public object FfiConverterMapStringSequenceString : FfiConverterRustBuffer<Map<k
 
     override fun allocationSize(value: Map<kotlin.String, List<kotlin.String>>): ULong {
         val spaceForMapSize = 4UL
-        val spaceForChildren =
-            value
-                .map { (k, v) ->
-                    FfiConverterString.allocationSize(k) +
-                        FfiConverterSequenceString.allocationSize(v)
-                }.sum()
+        val spaceForChildren = value.map { (k, v) ->
+            FfiConverterString.allocationSize(k) +
+            FfiConverterSequenceString.allocationSize(v)
+        }.sum()
         return spaceForMapSize + spaceForChildren
     }
 
-    override fun write(
-        value: Map<kotlin.String, List<kotlin.String>>,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: Map<kotlin.String, List<kotlin.String>>, buf: ByteBuffer) {
         buf.putInt(value.size)
         // The parens on `(k, v)` here ensure we're calling the right method,
         // which is important for compatibility with older android devices.
@@ -4187,7 +3920,9 @@ public object FfiConverterMapStringSequenceString : FfiConverterRustBuffer<Map<k
     }
 }
 
-public object FfiConverterMapStringSequenceTypeNode : FfiConverterRustBuffer<Map<kotlin.String, List<Node>>> {
+
+
+public object FfiConverterMapStringSequenceTypeNode: FfiConverterRustBuffer<Map<kotlin.String, List<Node>>> {
     override fun read(buf: ByteBuffer): Map<kotlin.String, List<Node>> {
         val len = buf.getInt()
         return buildMap<kotlin.String, List<Node>>(len) {
@@ -4201,19 +3936,14 @@ public object FfiConverterMapStringSequenceTypeNode : FfiConverterRustBuffer<Map
 
     override fun allocationSize(value: Map<kotlin.String, List<Node>>): ULong {
         val spaceForMapSize = 4UL
-        val spaceForChildren =
-            value
-                .map { (k, v) ->
-                    FfiConverterString.allocationSize(k) +
-                        FfiConverterSequenceTypeNode.allocationSize(v)
-                }.sum()
+        val spaceForChildren = value.map { (k, v) ->
+            FfiConverterString.allocationSize(k) +
+            FfiConverterSequenceTypeNode.allocationSize(v)
+        }.sum()
         return spaceForMapSize + spaceForChildren
     }
 
-    override fun write(
-        value: Map<kotlin.String, List<Node>>,
-        buf: ByteBuffer,
-    ) {
+    override fun write(value: Map<kotlin.String, List<Node>>, buf: ByteBuffer) {
         buf.putInt(value.size)
         // The parens on `(k, v)` here ensure we're calling the right method,
         // which is important for compatibility with older android devices.
@@ -4224,440 +3954,358 @@ public object FfiConverterMapStringSequenceTypeNode : FfiConverterRustBuffer<Map
         }
     }
 }
-
-/**
- * Asset
- */
-fun `assetDefaultRank`(`chain`: kotlin.String): kotlin.Int =
-    FfiConverterInt.lift(
-        uniffiRustCall { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_asset_default_rank(
-                FfiConverterString.lower(`chain`),
-                _status,
-            )
-        },
+        /**
+         * Asset
+         */ fun `assetDefaultRank`(`chain`: kotlin.String): kotlin.Int {
+            return FfiConverterInt.lift(
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_asset_default_rank(
+        FfiConverterString.lower(`chain`),_status)
+}
     )
-
-fun `assetWrapper`(`chain`: kotlin.String): AssetWrapper =
-    FfiConverterTypeAssetWrapper.lift(
-        uniffiRustCall { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_asset_wrapper(
-                FfiConverterString.lower(`chain`),
-                _status,
-            )
-        },
+    }
+    
+ fun `assetWrapper`(`chain`: kotlin.String): AssetWrapper {
+            return FfiConverterTypeAssetWrapper.lift(
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_asset_wrapper(
+        FfiConverterString.lower(`chain`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `bscDecodeDelegationsReturn`(`result`: kotlin.ByteArray): List<BscDelegation> =
-    FfiConverterSequenceTypeBscDelegation.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_decode_delegations_return(
-                FfiConverterByteArray.lower(`result`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `bscDecodeDelegationsReturn`(`result`: kotlin.ByteArray): List<BscDelegation> {
+            return FfiConverterSequenceTypeBscDelegation.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_decode_delegations_return(
+        FfiConverterByteArray.lower(`result`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `bscDecodeUndelegationsReturn`(`result`: kotlin.ByteArray): List<BscDelegation> =
-    FfiConverterSequenceTypeBscDelegation.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_decode_undelegations_return(
-                FfiConverterByteArray.lower(`result`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `bscDecodeUndelegationsReturn`(`result`: kotlin.ByteArray): List<BscDelegation> {
+            return FfiConverterSequenceTypeBscDelegation.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_decode_undelegations_return(
+        FfiConverterByteArray.lower(`result`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `bscDecodeValidatorsReturn`(`result`: kotlin.ByteArray): List<BscValidator> =
-    FfiConverterSequenceTypeBscValidator.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_decode_validators_return(
-                FfiConverterByteArray.lower(`result`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `bscDecodeValidatorsReturn`(`result`: kotlin.ByteArray): List<BscValidator> {
+            return FfiConverterSequenceTypeBscValidator.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_decode_validators_return(
+        FfiConverterByteArray.lower(`result`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `bscEncodeClaimCall`(
-    `operatorAddress`: kotlin.String,
-    `requestNumber`: kotlin.ULong,
-): kotlin.ByteArray =
-    FfiConverterByteArray.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_claim_call(
-                FfiConverterString.lower(`operatorAddress`),
-                FfiConverterULong.lower(`requestNumber`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `bscEncodeClaimCall`(`operatorAddress`: kotlin.String, `requestNumber`: kotlin.ULong): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_claim_call(
+        FfiConverterString.lower(`operatorAddress`),FfiConverterULong.lower(`requestNumber`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `bscEncodeDelegateCall`(
-    `operatorAddress`: kotlin.String,
-    `delegateVotePower`: kotlin.Boolean,
-): kotlin.ByteArray =
-    FfiConverterByteArray.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_delegate_call(
-                FfiConverterString.lower(`operatorAddress`),
-                FfiConverterBoolean.lower(`delegateVotePower`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `bscEncodeDelegateCall`(`operatorAddress`: kotlin.String, `delegateVotePower`: kotlin.Boolean): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_delegate_call(
+        FfiConverterString.lower(`operatorAddress`),FfiConverterBoolean.lower(`delegateVotePower`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `bscEncodeDelegationsCall`(
-    `delegator`: kotlin.String,
-    `offset`: kotlin.UShort,
-    `limit`: kotlin.UShort,
-): kotlin.ByteArray =
-    FfiConverterByteArray.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_delegations_call(
-                FfiConverterString.lower(`delegator`),
-                FfiConverterUShort.lower(`offset`),
-                FfiConverterUShort.lower(`limit`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `bscEncodeDelegationsCall`(`delegator`: kotlin.String, `offset`: kotlin.UShort, `limit`: kotlin.UShort): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_delegations_call(
+        FfiConverterString.lower(`delegator`),FfiConverterUShort.lower(`offset`),FfiConverterUShort.lower(`limit`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `bscEncodeRedelegateCall`(
-    `srcValidator`: kotlin.String,
-    `dstValidator`: kotlin.String,
-    `shares`: kotlin.String,
-    `delegateVotePower`: kotlin.Boolean,
-): kotlin.ByteArray =
-    FfiConverterByteArray.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_redelegate_call(
-                FfiConverterString.lower(`srcValidator`),
-                FfiConverterString.lower(`dstValidator`),
-                FfiConverterString.lower(`shares`),
-                FfiConverterBoolean.lower(`delegateVotePower`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `bscEncodeRedelegateCall`(`srcValidator`: kotlin.String, `dstValidator`: kotlin.String, `shares`: kotlin.String, `delegateVotePower`: kotlin.Boolean): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_redelegate_call(
+        FfiConverterString.lower(`srcValidator`),FfiConverterString.lower(`dstValidator`),FfiConverterString.lower(`shares`),FfiConverterBoolean.lower(`delegateVotePower`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `bscEncodeUndelegateCall`(
-    `operatorAddress`: kotlin.String,
-    `shares`: kotlin.String,
-): kotlin.ByteArray =
-    FfiConverterByteArray.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_undelegate_call(
-                FfiConverterString.lower(`operatorAddress`),
-                FfiConverterString.lower(`shares`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `bscEncodeUndelegateCall`(`operatorAddress`: kotlin.String, `shares`: kotlin.String): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_undelegate_call(
+        FfiConverterString.lower(`operatorAddress`),FfiConverterString.lower(`shares`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `bscEncodeUndelegationsCall`(
-    `delegator`: kotlin.String,
-    `offset`: kotlin.UShort,
-    `limit`: kotlin.UShort,
-): kotlin.ByteArray =
-    FfiConverterByteArray.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_undelegations_call(
-                FfiConverterString.lower(`delegator`),
-                FfiConverterUShort.lower(`offset`),
-                FfiConverterUShort.lower(`limit`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `bscEncodeUndelegationsCall`(`delegator`: kotlin.String, `offset`: kotlin.UShort, `limit`: kotlin.UShort): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_undelegations_call(
+        FfiConverterString.lower(`delegator`),FfiConverterUShort.lower(`offset`),FfiConverterUShort.lower(`limit`),_status)
+}
     )
+    }
+    
 
-/**
- * Bsc
- */
-fun `bscEncodeValidatorsCall`(
-    `offset`: kotlin.UShort,
-    `limit`: kotlin.UShort,
-): kotlin.ByteArray =
-    FfiConverterByteArray.lift(
-        uniffiRustCall { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_validators_call(
-                FfiConverterUShort.lower(`offset`),
-                FfiConverterUShort.lower(`limit`),
-                _status,
-            )
-        },
+        /**
+         * Bsc
+         */ fun `bscEncodeValidatorsCall`(`offset`: kotlin.UShort, `limit`: kotlin.UShort): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_bsc_encode_validators_call(
+        FfiConverterUShort.lower(`offset`),FfiConverterUShort.lower(`limit`),_status)
+}
     )
+    }
+    
 
-/**
- * Cosmos
- */
-@Throws(GemstoneException::class)
-fun `cosmosConvertHrp`(
-    `address`: kotlin.String,
-    `hrp`: kotlin.String,
-): kotlin.String =
-    FfiConverterString.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_cosmos_convert_hrp(
-                FfiConverterString.lower(`address`),
-                FfiConverterString.lower(`hrp`),
-                _status,
-            )
-        },
+        /**
+         * Cosmos
+         */
+    @Throws(GemstoneException::class) fun `cosmosConvertHrp`(`address`: kotlin.String, `hrp`: kotlin.String): kotlin.String {
+            return FfiConverterString.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_cosmos_convert_hrp(
+        FfiConverterString.lower(`address`),FfiConverterString.lower(`hrp`),_status)
+}
     )
+    }
+    
+ fun `libVersion`(): kotlin.String {
+            return FfiConverterString.lift(
+    uniffiRustCall() { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lib_version(
+        _status)
+}
+    )
+    }
+    
 
-fun `libVersion`(): kotlin.String =
-    FfiConverterString.lift(
-        uniffiRustCall { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lib_version(
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `lidoDecodeGetWithdrawalStatuses`(`result`: kotlin.ByteArray): List<LidoWithdrawalRequest> {
+            return FfiConverterSequenceTypeLidoWithdrawalRequest.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_decode_get_withdrawal_statuses(
+        FfiConverterByteArray.lower(`result`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `lidoDecodeGetWithdrawalStatuses`(`result`: kotlin.ByteArray): List<LidoWithdrawalRequest> =
-    FfiConverterSequenceTypeLidoWithdrawalRequest.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_decode_get_withdrawal_statuses(
-                FfiConverterByteArray.lower(`result`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `lidoDecodeRequestWithdrawalsReturn`(`result`: kotlin.ByteArray): List<kotlin.String> {
+            return FfiConverterSequenceString.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_decode_request_withdrawals_return(
+        FfiConverterByteArray.lower(`result`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `lidoDecodeRequestWithdrawalsReturn`(`result`: kotlin.ByteArray): List<kotlin.String> =
-    FfiConverterSequenceString.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_decode_request_withdrawals_return(
-                FfiConverterByteArray.lower(`result`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `lidoDecodeWithdrawalRequestIds`(`result`: kotlin.ByteArray): List<kotlin.String> {
+            return FfiConverterSequenceString.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_decode_withdrawal_request_ids(
+        FfiConverterByteArray.lower(`result`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `lidoDecodeWithdrawalRequestIds`(`result`: kotlin.ByteArray): List<kotlin.String> =
-    FfiConverterSequenceString.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_decode_withdrawal_request_ids(
-                FfiConverterByteArray.lower(`result`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `lidoEncodeClaimWithdrawal`(`requestId`: kotlin.String): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_claim_withdrawal(
+        FfiConverterString.lower(`requestId`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `lidoEncodeClaimWithdrawal`(`requestId`: kotlin.String): kotlin.ByteArray =
-    FfiConverterByteArray.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_claim_withdrawal(
-                FfiConverterString.lower(`requestId`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `lidoEncodeRequestWithdrawals`(`amounts`: List<kotlin.String>, `owner`: kotlin.String, `permit`: Erc2612Permit): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_request_withdrawals(
+        FfiConverterSequenceString.lower(`amounts`),FfiConverterString.lower(`owner`),FfiConverterTypeERC2612Permit.lower(`permit`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `lidoEncodeRequestWithdrawals`(
-    `amounts`: List<kotlin.String>,
-    `owner`: kotlin.String,
-    `permit`: Erc2612Permit,
-): kotlin.ByteArray =
-    FfiConverterByteArray.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_request_withdrawals(
-                FfiConverterSequenceString.lower(`amounts`),
-                FfiConverterString.lower(`owner`),
-                FfiConverterTypeERC2612Permit.lower(`permit`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `lidoEncodeSubmit`(`referral`: kotlin.String): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_submit(
+        FfiConverterString.lower(`referral`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `lidoEncodeSubmit`(`referral`: kotlin.String): kotlin.ByteArray =
-    FfiConverterByteArray.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_submit(
-                FfiConverterString.lower(`referral`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `lidoEncodeWithdrawalRequestIds`(`owner`: kotlin.String): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_withdrawal_request_ids(
+        FfiConverterString.lower(`owner`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `lidoEncodeWithdrawalRequestIds`(`owner`: kotlin.String): kotlin.ByteArray =
-    FfiConverterByteArray.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_withdrawal_request_ids(
-                FfiConverterString.lower(`owner`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `lidoEncodeWithdrawalStatuses`(`requestIds`: List<kotlin.String>): kotlin.ByteArray {
+            return FfiConverterByteArray.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_withdrawal_statuses(
+        FfiConverterSequenceString.lower(`requestIds`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `lidoEncodeWithdrawalStatuses`(`requestIds`: List<kotlin.String>): kotlin.ByteArray =
-    FfiConverterByteArray.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_lido_encode_withdrawal_statuses(
-                FfiConverterSequenceString.lower(`requestIds`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `paymentDecodeUrl`(`string`: kotlin.String): PaymentWrapper {
+            return FfiConverterTypePaymentWrapper.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_payment_decode_url(
+        FfiConverterString.lower(`string`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `paymentDecodeUrl`(`string`: kotlin.String): PaymentWrapper =
-    FfiConverterTypePaymentWrapper.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_payment_decode_url(
-                FfiConverterString.lower(`string`),
-                _status,
-            )
-        },
+        /**
+         * Solana
+         */
+    @Throws(GemstoneException::class) fun `solanaDecodeMetadata`(`base64Str`: kotlin.String): MplMetadata {
+            return FfiConverterTypeMplMetadata.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_solana_decode_metadata(
+        FfiConverterString.lower(`base64Str`),_status)
+}
     )
+    }
+    
 
-/**
- * Solana
- */
-@Throws(GemstoneException::class)
-fun `solanaDecodeMetadata`(`base64Str`: kotlin.String): MplMetadata =
-    FfiConverterTypeMplMetadata.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_solana_decode_metadata(
-                FfiConverterString.lower(`base64Str`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `solanaDeriveMetadataPda`(`mint`: kotlin.String): kotlin.String {
+            return FfiConverterString.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_solana_derive_metadata_pda(
+        FfiConverterString.lower(`mint`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `solanaDeriveMetadataPda`(`mint`: kotlin.String): kotlin.String =
-    FfiConverterString.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_solana_derive_metadata_pda(
-                FfiConverterString.lower(`mint`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `suiEncodeSplitStake`(`input`: SuiStakeInput): SuiTxOutput {
+            return FfiConverterTypeSuiTxOutput.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_sui_encode_split_stake(
+        FfiConverterTypeSuiStakeInput.lower(`input`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `suiEncodeSplitStake`(`input`: SuiStakeInput): SuiTxOutput =
-    FfiConverterTypeSuiTxOutput.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_sui_encode_split_stake(
-                FfiConverterTypeSuiStakeInput.lower(`input`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `suiEncodeTokenTransfer`(`input`: SuiTokenTransferInput): SuiTxOutput {
+            return FfiConverterTypeSuiTxOutput.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_sui_encode_token_transfer(
+        FfiConverterTypeSuiTokenTransferInput.lower(`input`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `suiEncodeTokenTransfer`(`input`: SuiTokenTransferInput): SuiTxOutput =
-    FfiConverterTypeSuiTxOutput.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_sui_encode_token_transfer(
-                FfiConverterTypeSuiTokenTransferInput.lower(`input`),
-                _status,
-            )
-        },
+        /**
+         * Sui
+         */
+    @Throws(GemstoneException::class) fun `suiEncodeTransfer`(`input`: SuiTransferInput): SuiTxOutput {
+            return FfiConverterTypeSuiTxOutput.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_sui_encode_transfer(
+        FfiConverterTypeSuiTransferInput.lower(`input`),_status)
+}
     )
+    }
+    
 
-/**
- * Sui
- */
-@Throws(GemstoneException::class)
-fun `suiEncodeTransfer`(`input`: SuiTransferInput): SuiTxOutput =
-    FfiConverterTypeSuiTxOutput.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_sui_encode_transfer(
-                FfiConverterTypeSuiTransferInput.lower(`input`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `suiEncodeUnstake`(`input`: SuiUnstakeInput): SuiTxOutput {
+            return FfiConverterTypeSuiTxOutput.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_sui_encode_unstake(
+        FfiConverterTypeSuiUnstakeInput.lower(`input`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `suiEncodeUnstake`(`input`: SuiUnstakeInput): SuiTxOutput =
-    FfiConverterTypeSuiTxOutput.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_sui_encode_unstake(
-                FfiConverterTypeSuiUnstakeInput.lower(`input`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `suiValidateAndHash`(`encoded`: kotlin.String): SuiTxOutput {
+            return FfiConverterTypeSuiTxOutput.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_sui_validate_and_hash(
+        FfiConverterString.lower(`encoded`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `suiValidateAndHash`(`encoded`: kotlin.String): SuiTxOutput =
-    FfiConverterTypeSuiTxOutput.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_sui_validate_and_hash(
-                FfiConverterString.lower(`encoded`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `tonBase64ToHexAddress`(`base64Str`: kotlin.String): kotlin.String {
+            return FfiConverterString.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_ton_base64_to_hex_address(
+        FfiConverterString.lower(`base64Str`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `tonBase64ToHexAddress`(`base64Str`: kotlin.String): kotlin.String =
-    FfiConverterString.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_ton_base64_to_hex_address(
-                FfiConverterString.lower(`base64Str`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `tonDecodeJettonAddress`(`base64Data`: kotlin.String, `len`: kotlin.ULong): kotlin.String {
+            return FfiConverterString.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_ton_decode_jetton_address(
+        FfiConverterString.lower(`base64Data`),FfiConverterULong.lower(`len`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `tonDecodeJettonAddress`(
-    `base64Data`: kotlin.String,
-    `len`: kotlin.ULong,
-): kotlin.String =
-    FfiConverterString.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_ton_decode_jetton_address(
-                FfiConverterString.lower(`base64Data`),
-                FfiConverterULong.lower(`len`),
-                _status,
-            )
-        },
+        /**
+         * Ton
+         */
+    @Throws(GemstoneException::class) fun `tonEncodeGetWalletAddress`(`address`: kotlin.String): kotlin.String {
+            return FfiConverterString.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_ton_encode_get_wallet_address(
+        FfiConverterString.lower(`address`),_status)
+}
     )
+    }
+    
 
-/**
- * Ton
- */
-@Throws(GemstoneException::class)
-fun `tonEncodeGetWalletAddress`(`address`: kotlin.String): kotlin.String =
-    FfiConverterString.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_ton_encode_get_wallet_address(
-                FfiConverterString.lower(`address`),
-                _status,
-            )
-        },
+    @Throws(GemstoneException::class) fun `tonHexToBase64Address`(`hexStr`: kotlin.String): kotlin.String {
+            return FfiConverterString.lift(
+    uniffiRustCallWithError(GemstoneException) { _status ->
+    UniffiLib.INSTANCE.uniffi_gemstone_fn_func_ton_hex_to_base64_address(
+        FfiConverterString.lower(`hexStr`),_status)
+}
     )
+    }
+    
 
-@Throws(GemstoneException::class)
-fun `tonHexToBase64Address`(`hexStr`: kotlin.String): kotlin.String =
-    FfiConverterString.lift(
-        uniffiRustCallWithError(GemstoneException) { _status ->
-            UniffiLib.INSTANCE.uniffi_gemstone_fn_func_ton_hex_to_base64_address(
-                FfiConverterString.lower(`hexStr`),
-                _status,
-            )
-        },
-    )
+

@@ -10,7 +10,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.TransactionType
 import java.util.Base64
 
-class AmountParams(
+data class AmountParams(
     val assetId: AssetId,
     val txType: TransactionType,
     val destination: DestinationAddress? = null,

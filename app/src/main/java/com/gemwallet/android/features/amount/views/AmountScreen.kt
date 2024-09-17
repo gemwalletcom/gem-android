@@ -57,7 +57,7 @@ fun AmountScreen(
         qrCodeRequest(
             { scan = RecipientScreenState.Idle },
             {
-                viewModel.setQrData(scan, it)
+                viewModel.setQrData(scan, it, onConfirm)
                 scan = RecipientScreenState.Idle
             }
         )

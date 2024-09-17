@@ -7,6 +7,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.stake.StakeRepository
@@ -18,6 +19,7 @@ import com.gemwallet.android.features.confirm.models.AmountScreenModel
 import com.gemwallet.android.features.recipient.models.InputCurrency
 import com.gemwallet.android.features.recipient.models.RecipientFormError
 import com.gemwallet.android.features.recipient.models.RecipientScreenState
+import com.gemwallet.android.interactors.chain
 import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
@@ -55,6 +57,7 @@ class AmountViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val stakeRepository: StakeRepository,
+    private val validateAddressOperator: ValidateAddressOperator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -167,12 +170,24 @@ class AmountViewModel @Inject constructor(
     }
 
     fun onNext(onConfirm: (ConfirmParams) -> Unit) = viewModelScope.launch {
-        val state = state.value?.params ?: return@launch
-        onNext(state, amount, onConfirm)
+        val baseParams = state.value?.params ?: return@launch
+        val params = baseParams.copy(
+            destination = DestinationAddress(
+                address = nameRecordState.value?.address ?: addressState.value,
+                domainName = nameRecordState.value?.name,
+            ),
+            memo = memoState.value,
+        )
+
+        onNext(params, amount, onConfirm)
     }
-    fun onNext(params: AmountParams, rawAmount: String, onConfirm: (ConfirmParams) -> Unit) = viewModelScope.launch {
+
+    private fun onNext(
+        params: AmountParams,
+        rawAmount: String,
+        onConfirm: (ConfirmParams) -> Unit
+    ) = viewModelScope.launch {
         val state = state.value ?: return@launch
-//        val params = state.params
         val inputCurrency = InputCurrency.InCrypto
         val validator = validatorState.value
         val delegation = delegation.value
@@ -198,13 +213,21 @@ class AmountViewModel @Inject constructor(
             nextErrorState.update { balanceError }
             return@launch
         }
+        val destination = params.destination
+        val memo = params.memo
+        val addressError = validateDestination(asset.chain(), destination)
+        if (addressError != RecipientFormError.None) {
+            addressErrorState.update { addressError }
+            return@launch
+        }
         inputErrorState.update { AmountError.None }
         nextErrorState.update { AmountError.None }
+        addressErrorState.update { RecipientFormError.None }
         val builder = ConfirmParams.Builder(asset.id, amount.atomicValue)
         val nextParams = when (params.txType) {
             TransactionType.Transfer -> builder.transfer(
-                destination = params.destination ?: return@launch,
-                memo = params.memo,
+                destination = destination!!,
+                memo = memo,
                 isMax = maxAmount.value,
             )
             TransactionType.StakeDelegate -> builder.delegate(validator?.id!!)
@@ -218,6 +241,17 @@ class AmountViewModel @Inject constructor(
             TransactionType.TokenApproval -> throw IllegalArgumentException()
         }
         onConfirm(nextParams)
+    }
+
+    private fun validateDestination(chain: Chain, destination: DestinationAddress?): RecipientFormError {
+        if (destination == null) {
+            return RecipientFormError.None
+        }
+        return if (validateAddressOperator(destination.address, chain).getOrNull() != true) {
+            RecipientFormError.IncorrectAddress
+        } else {
+            RecipientFormError.None
+        }
     }
 
     private fun calcEquivalent(inputAmount: String, inputCurrency: InputCurrency, assetInfo: AssetInfo): String {
