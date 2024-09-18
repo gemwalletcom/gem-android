@@ -11,6 +11,7 @@ import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.stake.StakeRepository
+import com.gemwallet.android.ext.mutableStateIn
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.amount.models.AmountError
 import com.gemwallet.android.features.amount.models.AmountParams
@@ -136,7 +137,18 @@ class AmountViewModel @Inject constructor(
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    val addressErrorState = MutableStateFlow<AmountError>(AmountError.None)
+    val addressError = combine(
+        state,
+        snapshotFlow { addressState.value },
+        snapshotFlow { nameRecordState.value },
+    ) { state, address, nameRecord ->
+        val nameAddress = nameRecord?.address
+        if (state == null || (address.isEmpty() && nameAddress.isNullOrEmpty())) return@combine AmountError.None
+        val destination = DestinationAddress(nameAddress ?: address, nameRecord?.name)
+        val validation = validateDestination(state.assetInfo.asset.chain(), state.params.txType, destination)
+        validation
+    }.mutableStateIn(viewModelScope, AmountError.None)
+
     val memoErrorState = MutableStateFlow<AmountError>(AmountError.None)
     val inputErrorState = MutableStateFlow<AmountError>(AmountError.None)
     val nextErrorState = MutableStateFlow<AmountError>(AmountError.None)
@@ -216,12 +228,12 @@ class AmountViewModel @Inject constructor(
         val memo = params.memo
         val addressError = validateDestination(asset.chain(), params.txType, destination)
         if (addressError != AmountError.None) {
-            addressErrorState.update { addressError }
+            this@AmountViewModel.addressError.update { addressError }
             return@launch
         }
         inputErrorState.update { AmountError.None }
         nextErrorState.update { AmountError.None }
-        addressErrorState.update { AmountError.None }
+        this@AmountViewModel.addressError.update { AmountError.None }
         val builder = ConfirmParams.Builder(asset.id, amount.atomicValue)
         val nextParams = when (params.txType) {
             TransactionType.Transfer -> builder.transfer(

@@ -33,7 +33,7 @@ fun AmountScreen(
     val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
     val validatorState by viewModel.validatorState.collectAsStateWithLifecycle()
     val inputError by viewModel.inputErrorState.collectAsStateWithLifecycle()
-    val addressError by viewModel.addressErrorState.collectAsStateWithLifecycle()
+    val addressError by viewModel.addressError.collectAsStateWithLifecycle()
     val memoError by viewModel.memoErrorState.collectAsStateWithLifecycle()
     val amountError by viewModel.nextErrorState.collectAsStateWithLifecycle()
     val equivalent by viewModel.equivalentState.collectAsStateWithLifecycle()

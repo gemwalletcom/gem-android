@@ -80,12 +80,7 @@ fun AmountScene(
         mainAction = {
             if (!isKeyBoardOpen) {
                 MainActionButton(
-                    title = if (amountError == AmountError.None) {
-                        stringResource(id = R.string.common_continue)
-                    } else {
-                        amountErrorString(amountError)
-                    },
-                    enabled = amountError == AmountError.None,
+                    title = stringResource(id = R.string.common_continue),
                     onClick = onNext,
                 )
             }
@@ -108,7 +103,7 @@ fun AmountScene(
                     amount = amount,
                     assetSymbol = uiModel.asset.symbol,
                     equivalent = equivalent,
-                    error = amountErrorString(error = inputError),
+                    error = amountErrorString(error = if (AmountError.None == inputError) amountError else inputError),
                     onValueChange = onAmount,
                     onNext = onNext
                 )
