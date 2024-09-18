@@ -16,8 +16,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
+import com.gemwallet.android.features.amount.models.QrScanField
 import com.gemwallet.android.features.amount.viewmodels.AmountViewModel
-import com.gemwallet.android.features.recipient.models.RecipientScreenState
 import com.gemwallet.android.features.stake.validators.views.ValidatorsScreen
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.components.LoadingScene
@@ -39,7 +39,7 @@ fun AmountScreen(
     val equivalent by viewModel.equivalentState.collectAsStateWithLifecycle()
     val availableBalance by viewModel.availableBalance.collectAsStateWithLifecycle()
 
-    var scan by remember { mutableStateOf<RecipientScreenState>(RecipientScreenState.Idle) }
+    var scan by remember { mutableStateOf(QrScanField.None) }
 
     var isSelectValidator by remember {
         mutableStateOf(false)
@@ -53,12 +53,12 @@ fun AmountScreen(
         LoadingScene(stringResource(id = R.string.transfer_amount_title), onCancel)
     }
 
-    if (scan != RecipientScreenState.Idle) {
+    if (scan != QrScanField.None) {
         qrCodeRequest(
-            { scan = RecipientScreenState.Idle },
+            { scan = QrScanField.None },
             {
                 viewModel.setQrData(scan, it, onConfirm)
-                scan = RecipientScreenState.Idle
+                scan = QrScanField.None
             }
         )
         return
@@ -110,8 +110,7 @@ fun AmountScreen(
                 amountError = amountError,
                 equivalent = equivalent,
                 availableBalance = availableBalance,
-                onScanAddress = { scan = RecipientScreenState.ScanAddress },
-                onScanMemo = { scan = RecipientScreenState.ScanMemo },
+                onQrScan = { scan = it },
                 onNext = { viewModel.onNext(onConfirm) },
                 onAmount = viewModel::updateAmount,
                 onMaxAmount = viewModel::onMaxAmount,

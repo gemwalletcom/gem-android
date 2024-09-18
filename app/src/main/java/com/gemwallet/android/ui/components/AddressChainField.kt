@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.QrCodeScanner
@@ -112,8 +113,13 @@ fun ColumnScope.AddressChainField(
                     Spacer(modifier = Modifier.size(8.dp))
                 }
                 TransferTextFieldActions(
+                    value = value,
                     paste = { onValueChange(clipboardManager.getText()?.text ?: "", uiState.nameRecord) },
-                    qrScanner = onQrScanner
+                    qrScanner = onQrScanner,
+                    onClean = {
+                        onValueChange("", null)
+                        viewModel.onInput("", null)
+                    }
                 )
             }
         }
@@ -131,9 +137,21 @@ fun ColumnScope.AddressChainField(
 
 @Composable
 fun TransferTextFieldActions(
+    value: String,
     paste: (() -> Unit)? = null,
     qrScanner: (() -> Unit)? = null,
+    onClean: () -> Unit
 ) {
+    if (value.isNotEmpty()) {
+        IconButton(onClick = onClean) {
+            Icon(
+                imageVector = Icons.Default.Clear,
+                contentDescription = "clear",
+                tint = MaterialTheme.colorScheme.onSurface,
+            )
+        }
+        return
+    }
     Row {
         if (paste != null) {
             IconButton(onClick = paste) {

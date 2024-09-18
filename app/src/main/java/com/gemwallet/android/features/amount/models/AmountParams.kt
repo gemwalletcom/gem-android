@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.amount.model
+package com.gemwallet.android.features.amount.models
 
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode

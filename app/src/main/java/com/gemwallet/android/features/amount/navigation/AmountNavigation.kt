@@ -8,15 +8,15 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.gemwallet.android.features.amount.model.AmountParams
+import com.gemwallet.android.features.amount.models.AmountParams
 import com.gemwallet.android.features.amount.views.AmountScreen
 import com.gemwallet.android.features.asset_select.views.SelectSendScreen
-import com.gemwallet.android.features.recipient.navigation.sendAssetSelectRoute
 import com.gemwallet.android.model.ConfirmParams
 import com.wallet.core.primitives.AssetId
 
 internal const val paramsArg = "params"
 
+const val sendAssetSelectRoute = "sendAssetSelect"
 const val sendAmountRoute = "send_amount"
 
 fun interface OnAmount {
