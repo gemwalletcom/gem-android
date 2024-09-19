@@ -62,7 +62,7 @@ abstract class CountingUnit<T : Number, C>(
     }
 }
 
-class Crypto(atomicValue: BigInteger) : CountingUnit<BigInteger, Fiat>( // TODO: Move to BigInteger ext
+class Crypto(atomicValue: BigInteger) : CountingUnit<BigInteger, Fiat>(
     atomicValue = atomicValue,
 ) {
     constructor(value: String, decimals: Int) : this(value.toBigDecimal(), decimals)
@@ -100,7 +100,7 @@ class Crypto(atomicValue: BigInteger) : CountingUnit<BigInteger, Fiat>( // TODO:
         } else {
             formatter.maximumFractionDigits = Int.MAX_VALUE
             formatter.minimumFractionDigits = 0
-            formatter.format(value)
+            formatter.format(value.abs())
         }
         val zeroCompare = value.compareTo(BigDecimal.ZERO)
         return if (zeroCompare < 0) {
