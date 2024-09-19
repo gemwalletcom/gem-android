@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.amount.model
+package com.gemwallet.android.features.amount.models
 
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
@@ -10,7 +10,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.TransactionType
 import java.util.Base64
 
-class AmountParams(
+data class AmountParams(
     val assetId: AssetId,
     val txType: TransactionType,
     val destination: DestinationAddress? = null,

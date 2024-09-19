@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.amount.model
+package com.gemwallet.android.features.amount.models
 
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType

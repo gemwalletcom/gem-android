@@ -8,7 +8,8 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-data class PriceAlertSubsription (
-	val assetId: String
+data class PriceAlert (
+	val assetId: String,
+	val price: Double? = null
 )
 

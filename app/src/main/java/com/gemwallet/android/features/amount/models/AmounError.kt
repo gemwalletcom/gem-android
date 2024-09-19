@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.amount.model
+package com.gemwallet.android.features.amount.models
 
 sealed interface AmountError {
     data object None : AmountError
@@ -16,4 +16,6 @@ sealed interface AmountError {
     class InsufficientFeeBalance(val assetName: String) : AmountError
 
     class MinimumValue(val minimumValue: String) : AmountError
+
+    data object IncorrectAddress : AmountError
 }

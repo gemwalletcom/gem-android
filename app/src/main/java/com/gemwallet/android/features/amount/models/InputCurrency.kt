@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.recipient.models
+package com.gemwallet.android.features.amount.models
 
 import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.model.Crypto
@@ -7,7 +7,6 @@ import com.gemwallet.android.model.Fiat
 enum class InputCurrency {
 
     InCrypto {
-
         override fun getAmount(value: String, decimals: Int, price: Double): Crypto =
             Crypto(value.numberParse(), decimals)
 

@@ -103,7 +103,7 @@ android {
                 }
             }
 
-            buildConfigField("String", "TEST_PHRASE", System.getenv("ANDROID_KEYSTORE_FILENAME") ?: "\"three sense design develop sun sweet chat make meadow exile achieve project\"")
+            buildConfigField("String", "TEST_PHRASE", "${System.getenv("TEST_PHRASE")}")
         }
 
         getByName("release") {

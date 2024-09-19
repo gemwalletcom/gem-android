@@ -174,10 +174,12 @@ private fun UrlField(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 TransferTextFieldActions(
+                    value = value.value,
                     paste = {
                         value.value = clipboardManager.getText()?.text ?: ""
                         onValueChange()
                     },
+                    onClean = { value.value = "" },
                     qrScanner = onQRScan
                 )
             }
