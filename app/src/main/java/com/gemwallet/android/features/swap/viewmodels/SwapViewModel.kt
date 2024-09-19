@@ -275,7 +275,12 @@ class SwapViewModel @Inject constructor(
         if (swapScreenState.value == SwapState.Swapping) return@launch
 
         swapScreenState.update { SwapState.Swapping }
-        val fromAmount = fromValue.text.toString().numberParse()  // TODO: Number parse could throw exception!
+        val fromAmount = try {
+            fromValue.text.toString().numberParse()
+        } catch (err: Throwable) {
+            swapScreenState.update { SwapState.Error(SwapError.IncorrectInput) }
+            return@launch
+        }
         val from = assetsState.value?.from ?: return@launch
         val to = assetsState.value?.to ?: return@launch
         val requestApprove = requestApprove.value
