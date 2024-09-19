@@ -228,7 +228,7 @@ private fun AssetWatchOnly() {
             IconButton(
                 modifier = Modifier.size(24.dp),
                 onClick = {
-                    uriHandler.openUri(Config().getDocsUrl(DocsUrl.WHAT_IS_WATCH_WALLET))
+                    uriHandler.open(Config().getDocsUrl(DocsUrl.WHAT_IS_WATCH_WALLET))
                 }
             ) {
                 Icon(

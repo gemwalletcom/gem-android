@@ -15,6 +15,7 @@ import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.open
 import com.wallet.core.primitives.AssetId
 
 @Composable
@@ -57,6 +58,6 @@ private fun AssetMarketUIModel.Link.toCell(uriHandler: UriHandler): CellEntity<I
         label = label,
         icon = type.getDrawableUri(),
         data = "",
-        action = { uriHandler.openUri(url) }
+        action = { uriHandler.open(url) }
     )
 }

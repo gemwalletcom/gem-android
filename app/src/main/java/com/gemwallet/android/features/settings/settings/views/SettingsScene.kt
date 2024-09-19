@@ -38,6 +38,7 @@ import com.gemwallet.android.services.isNotificationsAvailable
 import com.gemwallet.android.ui.components.ReviewManager
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
+import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.theme.Spacer16
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
@@ -124,19 +125,19 @@ fun SettingsScene(
             
             SubheaderItem(title = stringResource(id = R.string.settings_community))
             LinkItem(title = stringResource(id = R.string.social_x), icon = R.drawable.twitter) {
-                uriHandler.openUri(Config().getSocialUrl(SocialUrl.X) ?: "")
+                uriHandler.open(Config().getSocialUrl(SocialUrl.X) ?: "")
             }
             LinkItem(title = stringResource(id = R.string.social_discord), icon = R.drawable.discord) {
-                uriHandler.openUri(Config().getSocialUrl(SocialUrl.DISCORD) ?: "")
+                uriHandler.open(Config().getSocialUrl(SocialUrl.DISCORD) ?: "")
             }
             LinkItem(title = stringResource(id = R.string.social_telegram), icon = R.drawable.telegram) {
-                uriHandler.openUri(Config().getSocialUrl(SocialUrl.TELEGRAM) ?: "")
+                uriHandler.open(Config().getSocialUrl(SocialUrl.TELEGRAM) ?: "")
             }
             LinkItem(title = stringResource(id = R.string.social_github), icon = R.drawable.github) {
-                uriHandler.openUri(Config().getSocialUrl(SocialUrl.GIT_HUB) ?: "")
+                uriHandler.open(Config().getSocialUrl(SocialUrl.GIT_HUB) ?: "")
             }
             LinkItem(title = stringResource(id = R.string.social_youtube), icon = R.drawable.youtube) {
-                uriHandler.openUri(Config().getSocialUrl(SocialUrl.YOU_TUBE) ?: "")
+                uriHandler.open(Config().getSocialUrl(SocialUrl.YOU_TUBE) ?: "")
             }
             HorizontalDivider(modifier = Modifier, thickness = 0.4.dp)
 

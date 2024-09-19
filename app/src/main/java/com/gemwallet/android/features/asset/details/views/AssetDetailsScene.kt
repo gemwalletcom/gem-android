@@ -49,6 +49,7 @@ import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.priceColor
 import com.gemwallet.android.ui.theme.padding32
 import com.wallet.core.primitives.AssetId
@@ -284,7 +285,7 @@ private fun LazyListScope.balanceDetails(
                     data = uiState.account.reserved,
                     action = {
                         if (uiState.assetId.chain == Chain.Xrp) {
-                            uriHandler.openUri("https://xrpl.org/docs/concepts/accounts/reserves")
+                            uriHandler.open("https://xrpl.org/docs/concepts/accounts/reserves")
                         }
                     },
                 )

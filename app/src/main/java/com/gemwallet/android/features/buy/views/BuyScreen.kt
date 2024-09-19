@@ -44,6 +44,7 @@ import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.MainActionButton
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.padding8
@@ -103,7 +104,7 @@ private fun Idle(
             MainActionButton(
                 title = stringResource(id = R.string.common_continue),
                 enabled = state.isAvailable(),
-                onClick = { uriHandler.openUri(state.redirectUrl ?: "") }
+                onClick = { uriHandler.open(state.redirectUrl ?: "") }
             )
         }
     ) {

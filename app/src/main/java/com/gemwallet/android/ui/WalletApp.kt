@@ -21,6 +21,7 @@ import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateW
 import com.gemwallet.android.features.import_wallet.navigation.navigateToImportWalletScreen
 import com.gemwallet.android.features.onboarding.OnboardScreen
 import com.gemwallet.android.ui.components.ReviewManager
+import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.navigation.WalletNavGraph
 import com.gemwallet.android.ui.theme.Spacer16
 
@@ -76,7 +77,7 @@ private fun ShowUpdateDialog(
         confirmButton = {
             TextButton(onClick = {
                 onCancel()
-                uriHandler.openUri("https://apk.gemwallet.com/gem_wallet_v$version.apk")
+                uriHandler.open("https://apk.gemwallet.com/gem_wallet_v$version.apk")
             }) {
                 Text(text = stringResource(id = R.string.update_app_action))
             }

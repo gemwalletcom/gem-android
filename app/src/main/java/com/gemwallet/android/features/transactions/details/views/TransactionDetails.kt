@@ -31,6 +31,7 @@ import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.titles.getTransactionTitle
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.AssetSubtype
@@ -214,7 +215,7 @@ fun TransactionDetails(
                         model.explorerName
                     ),
                     data = "",
-                    action = { uriHandler.openUri(model.explorerUrl) }
+                    action = { uriHandler.open(model.explorerUrl) }
                 )
             )
             Table(items = cells)
