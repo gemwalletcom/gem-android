@@ -15,8 +15,10 @@ import com.wallet.core.primitives.AssetFull
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
 
 @Entity(tableName = "tokens", primaryKeys = ["id"])
@@ -143,9 +145,9 @@ class TokensRoomSource(
         }
     }
 
-    override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
+    override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? = withContext(Dispatchers.IO) {
         val dbAssetInfo = tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
-        return AssetInfoMapper().asDomain(dbAssetInfo).firstOrNull()
+        AssetInfoMapper().asDomain(dbAssetInfo).firstOrNull()
     }
 
     private fun getTokenType(chain: Chain) = when (chain) {
