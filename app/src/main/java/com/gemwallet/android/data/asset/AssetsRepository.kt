@@ -215,6 +215,7 @@ class AssetsRepository @Inject constructor(
                     }
                 }
             }.awaitAll()
+        scope.launch { updatePrices(currency) }
         delay(2000) // Wait subscription
         val availableAssets = gemApi.getAssets(configRepository.getDeviceId(), wallet.index).getOrNull() ?: return@launch
         availableAssets.mapNotNull {
@@ -244,8 +245,8 @@ class AssetsRepository @Inject constructor(
             assetsLocalSource.add(owner.address, asset)
         }
         assetsLocalSource.setVisibility(walletId, owner, assetId, visibility)
-        updateBalances(assetId)
-        updatePrices(currency)
+        launch { updateBalances(assetId) }
+        launch { updatePrices(currency, assetId) }
     }
 
     suspend fun togglePin(walletId: String, assetId: AssetId) {
