@@ -12,6 +12,7 @@ import com.gemwallet.android.data.config.NodeDao
 import com.gemwallet.android.data.config.OfflineFirstConfigRepository
 import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.BalancesDao
+import com.gemwallet.android.data.database.BannersDao
 import com.gemwallet.android.data.database.GemDatabase
 import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.database.SessionDao
@@ -69,6 +70,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_28_29)
         .addMigrations(MIGRATION_29_30)
         .addMigrations(MIGRATION_30_31)
+        .addMigrations(MIGRATION_31_32)
         .build()
 
     @Singleton
@@ -114,6 +116,10 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideSessionDao(db: GemDatabase): SessionDao = db.sessionDao()
+
+    @Singleton
+    @Provides
+    fun provideBannersDao(db: GemDatabase): BannersDao = db.bannersDao()
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -619,5 +625,18 @@ val MIGRATION_30_31 = object : Migration(30, 31) {
         )
 //        db.execSQL("ALTER TABLE `assets` DROP COLUMN `is_pinned`;")
 //        db.execSQL("ALTER TABLE `assets` DROP COLUMN `is_visible`;")
+    }
+}
+
+val MIGRATION_31_32 = object : Migration(31, 32) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""
+            CREATE TABLE banners (
+                wallet_id TEXT NOT NULL,
+                asset_id TEXT NOT NULL,
+                state TEXT NOT NULL,
+                event TEXT NOT NULL,
+                PRIMARY KEY (wallet_id, asset_id)
+            )""".trimIndent())
     }
 }

@@ -8,18 +8,6 @@ fun StakeChain.Companion.isStaked(chain: Chain): Boolean = byChain(chain) != nul
 fun StakeChain.Companion.byChain(chain: Chain): StakeChain?
     = StakeChain.entries.filter { it != StakeChain.Ethereum }.firstOrNull { it.string == chain.string }
 
-fun StakeChain.lockTime(): Long = when (this) {
-    StakeChain.Cosmos,
-    StakeChain.Injective,
-    StakeChain.Sei,
-    StakeChain.Celestia -> 1_814_400
-    StakeChain.Osmosis -> 1_036_800
-    StakeChain.Solana -> 259200
-    StakeChain.Sui -> 86400
-    StakeChain.SmartChain -> 0L
-    StakeChain.Ethereum -> 0L
-}
-
 fun StakeChain.redelegated(): Boolean = when (this) {
     StakeChain.Cosmos,
     StakeChain.Injective,
