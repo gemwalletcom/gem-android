@@ -25,7 +25,6 @@ fun SelectReceiveScreen(
     AssetSelectScreen(
         title = stringResource(id = R.string.wallet_receive),
         titleBadge = ::getAssetBadge,
-        predicate = { it.type() == AssetSubtype.NATIVE },
         itemTrailing = {
             IconButton(onClick = {
                 viewModel.onChangeVisibility(it.asset.id, true)
