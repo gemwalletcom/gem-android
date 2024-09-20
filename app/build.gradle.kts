@@ -141,6 +141,10 @@ android {
     kapt {
         correctErrorTypes = true
     }
+
+    androidResources {
+        generateLocaleConfig = true
+    }
 }
 
 dependencies {

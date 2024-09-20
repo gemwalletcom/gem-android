@@ -1,8 +1,11 @@
 package com.gemwallet.android.features.settings.settings.views
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.combinedClickable
@@ -45,6 +48,7 @@ import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import uniffi.Gemstone.Config
 import uniffi.Gemstone.SocialUrl
+import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -115,6 +119,24 @@ fun SettingsScene(
                 },
                 onClick = onCurrencies,
             )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                LinkItem(
+                    title = stringResource(id = R.string.settings_language),
+                    icon = R.drawable.settings_language,
+                    supportingContent = {
+                        val language =
+                            context.resources.configuration.getLocales().get(0).displayLanguage.replaceFirstChar {
+                                if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
+                            }
+                        Text(text = language)
+                    },
+                    onClick = {
+                        val intent = Intent(Settings.ACTION_APP_LOCALE_SETTINGS)
+                        intent.data = Uri.fromParts("package", context.packageName, null)
+                        context.startActivity(intent)
+                    }
+                )
+            }
             LinkItem(title = stringResource(id = R.string.settings_networks_title), icon = R.drawable.settings_networks) {
                 onNetworks()
             }
