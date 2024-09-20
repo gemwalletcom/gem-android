@@ -1,16 +1,9 @@
 # 💎 Gem Wallet - Android
 
-[![Android Tests](https://github.com/gemwalletcom/gem-android/actions/workflows/ci.yml/badge.svg)](https://github.com/gemwalletcom/gem-android/actions/workflows/ci.yml)
-
-<b>Gem Wallet</b> is a powerful and secure mobile application designed for Android and [Android](https://github.com/gemwalletcom/gem-ios). It provides users with a seamless and intuitive experience to manage their digital assets and cryptocurrencies.
-
-The app is developed using Kotlin/Compose. The codebase also includes a [Core](https://github.com/gemwalletcom/core) library implemented in Rust, providing efficient and secure cryptographic operations for enhanced data protection.
-
-🤖 [Android available on the Google Play Store](https://play.google.com/store/apps/details?id=com.gemwallet.android&utm_campaign=github&utm_source=referral&utm_medium=github)
-
-📲️ [iOS available on the App Store](https://apps.apple.com/app/apple-store/id6448712670?ct=github&mt=8)
-
 <div align="left">
+    <a href="https://github.com/gemwalletcom/gem-android/actions/workflows/ci.yml>
+        <img src="https://github.com/gemwalletcom/gem-android/actions/workflows/ci.yml/badge.svg" alt="Android Tests">
+    </a>
     <a href="https://github.com/gemwalletcom/gem-android/blob/main/LICENSE">
         <img src="https://badgen.net/github/license/gemwalletcom/gem-android" alt="License">
     </a>
@@ -21,6 +14,14 @@ The app is developed using Kotlin/Compose. The codebase also includes a [Core](h
         <img src="https://img.shields.io/discord/974531300394434630?style=plastic" alt="Gem Wallet Discord">
     </a>
 </div>
+
+<b>Gem Wallet</b> is a powerful and secure mobile application designed for Android and [Android](https://github.com/gemwalletcom/gem-ios). It provides users with a seamless and intuitive experience to manage their digital assets and cryptocurrencies.
+
+The app is developed using Kotlin/Compose. The codebase also includes a [Core](https://github.com/gemwalletcom/core) library implemented in Rust, providing efficient and secure cryptographic operations for enhanced data protection.
+
+🤖 [Android available on the Google Play Store](https://play.google.com/store/apps/details?id=com.gemwallet.android&utm_campaign=github&utm_source=referral&utm_medium=github)
+
+📲️ [iOS available on the App Store](https://apps.apple.com/app/apple-store/id6448712670?ct=github&mt=8)
 
 ## ✨ Features
 
@@ -38,7 +39,7 @@ The app is developed using Kotlin/Compose. The codebase also includes a [Core](h
 - 🔔 **Customizable Notifications:** Set alerts for transactions, price changes, and important events.
 - 🛡️ **Advanced Security:** Encryption and secure key management.
 
-<img src="https://assets.gemwallet.com/screenshots/wallet.png" alt="" width="250" height="540" /> <img src="https://assets.gemwallet.com/screenshots/buy.png" alt="" width="250" height="540" /> <img src="https://assets.gemwallet.com/screenshots/collectibles.png" alt="" width="250" height="540" />
+<img src="https://assets.gemwallet.com/screenshots/github_preview.png" />
 
 ## 🏄‍♂️ Contributing
 
