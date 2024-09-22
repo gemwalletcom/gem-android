@@ -43,15 +43,16 @@ import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.gemwallet.android.R
 import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.services.isAvailableOperation
 import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.headerIconSize
 import com.gemwallet.android.ui.theme.padding16
-import com.gemwallet.android.ui.theme.space4
 import com.wallet.core.primitives.WalletType
 import uniffi.Gemstone.Config
 import uniffi.Gemstone.DocsUrl
@@ -75,11 +76,17 @@ fun AmountListHead(
                 .padding(start = padding16, end = padding16, bottom = padding16),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            HeaderIcon(iconUrl = iconUrl, supportIconUrl = supportIconUrl, placeholder = placeholder)
-            Spacer16()
+            if (!iconUrl.isNullOrEmpty()) {
+                HeaderIcon(
+                    iconUrl = iconUrl,
+                    supportIconUrl = supportIconUrl,
+                    placeholder = placeholder
+                )
+                Spacer16()
+            }
             DisplayText(text = amount, modifier = Modifier.fillMaxWidth())
             if (!equivalent.isNullOrEmpty()) {
-                Spacer(modifier = Modifier.size(space4))
+                Spacer4()
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = equivalent,
@@ -99,11 +106,11 @@ fun AmountListHead(
                 )
             }
             if (actions != null) {
-                Spacer16()
+                Spacer8()
                 actions()
             }
         }
-        Spacer(modifier = Modifier.size(14.dp))
+        Spacer(modifier = Modifier.size(0.dp))
         HorizontalDivider(thickness = 0.4.dp)
     }
 }
@@ -251,9 +258,7 @@ private fun AssetAction(
     onClick: () -> Unit
 ) {
     TextButton(modifier = modifier, onClick = onClick, enabled = enabled) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
                 modifier = Modifier
                     .background(
@@ -273,7 +278,7 @@ private fun AssetAction(
             Text(
                 text = title,
                 color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.W400),
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.W400, fontSize = 12.sp),
                 maxLines = 1,
             )
         }
