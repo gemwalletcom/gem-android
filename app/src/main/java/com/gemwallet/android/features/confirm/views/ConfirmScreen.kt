@@ -96,7 +96,6 @@ fun ConfirmScreen(
             )
         }
         Table(txInfoUIModel)
-        Spacer16()
         Table(
             if (allFee.size > 1) listOf(feeModel.firstOrNull()?.copy(action = { showSelectTxSpeed = true })) else feeModel
         )
