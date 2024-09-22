@@ -265,4 +265,20 @@
   <string name="common.unpin">Unpin</string>
   <string name="filter.clear">Clear</string>
   <string name="filter.title">Filters</string>
+  <string name="settings.help_center">도움말 센터</string>
+  <string name="settings.support">지원하다</string>
+  <string name="settings.price_alerts.title">가격 알림</string>
+  <string name="price_alerts.enabled_for">%s 에 대한 가격 알림이 활성화되었습니다.</string>
+  <string name="price_alerts.disabled_for">%s 에 대한 가격 알림이 비활성화되었습니다.</string>
+  <string name="lock.immediately">즉시</string>
+  <string name="lock.one_minute">1분</string>
+  <string name="lock.five_minutes">5분</string>
+  <string name="lock.fifteen_minutes">15분</string>
+  <string name="lock.one_hour">1시간</string>
+  <string name="lock.six_hours">6시간</string>
+  <string name="lock.require_authentication">Require authentication</string>
+  <string name="lock.Unlock">Unlock</string>
+  <string name="price_alerts.get_notified_explain_message">즐겨찾는 암호화폐의 가격이 크게 변동되면 알림을 받으세요.</string>
+  <string name="price_alerts.empty_state.message">아직 가격 알림이 추가되지 않았습니다.</string>
+  <string name="assets.select_asset">자산 선택</string>
 </resources>

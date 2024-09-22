@@ -265,4 +265,20 @@
   <string name="common.unpin">Unpin</string>
   <string name="filter.clear">Clear</string>
   <string name="filter.title">Filters</string>
+  <string name="settings.help_center">सहायता केंद्र</string>
+  <string name="settings.support">सहायता</string>
+  <string name="settings.price_alerts.title">मूल्य अलर्ट</string>
+  <string name="price_alerts.enabled_for">%s के लिए मूल्य अलर्ट सक्षम किया गया</string>
+  <string name="price_alerts.disabled_for">%s के लिए मूल्य चेतावनी अक्षम की गई</string>
+  <string name="lock.immediately">तुरंत</string>
+  <string name="lock.one_minute">1 मिनट</string>
+  <string name="lock.five_minutes">5 मिनट</string>
+  <string name="lock.fifteen_minutes">15 मिनटों</string>
+  <string name="lock.one_hour">1 घंटा</string>
+  <string name="lock.six_hours">6 घंटे</string>
+  <string name="lock.require_authentication">Require authentication</string>
+  <string name="lock.Unlock">Unlock</string>
+  <string name="price_alerts.get_notified_explain_message">जब आपकी पसंदीदा क्रिप्टो परिसंपत्तियों में कोई महत्वपूर्ण मूल्य परिवर्तन हो तो सूचना प्राप्त करें।</string>
+  <string name="price_alerts.empty_state.message">अभी तक कोई मूल्य अलर्ट नहीं जोड़ा गया है.</string>
+  <string name="assets.select_asset">संपत्ति का चयन करें</string>
 </resources>

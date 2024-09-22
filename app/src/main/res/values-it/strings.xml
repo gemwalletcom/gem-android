@@ -265,4 +265,20 @@
   <string name="common.unpin">Unpin</string>
   <string name="filter.clear">Clear</string>
   <string name="filter.title">Filters</string>
+  <string name="settings.help_center">Centro assistenza</string>
+  <string name="settings.support">Supporto</string>
+  <string name="settings.price_alerts.title">Avvisi sui prezzi</string>
+  <string name="price_alerts.enabled_for">Avviso di prezzo abilitato per %s</string>
+  <string name="price_alerts.disabled_for">Avviso di prezzo disabilitato per %s</string>
+  <string name="lock.immediately">Immediatamente</string>
+  <string name="lock.one_minute">1 minuto</string>
+  <string name="lock.five_minutes">5 minuti</string>
+  <string name="lock.fifteen_minutes">15 minuti</string>
+  <string name="lock.one_hour">1 ora</string>
+  <string name="lock.six_hours">6 ore</string>
+  <string name="lock.require_authentication">Require authentication</string>
+  <string name="lock.Unlock">Unlock</string>
+  <string name="price_alerts.get_notified_explain_message">Ricevi una notifica quando si verifica una variazione significativa del prezzo delle tue criptovalute preferite.</string>
+  <string name="price_alerts.empty_state.message">Nessun avviso di prezzo aggiunto ancora.</string>
+  <string name="assets.select_asset">Seleziona risorsa</string>
 </resources>

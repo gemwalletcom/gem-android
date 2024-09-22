@@ -265,4 +265,20 @@
   <string name="common.unpin">Открепить</string>
   <string name="filter.clear">Очистить</string>
   <string name="filter.title">Фильтры</string>
+  <string name="settings.help_center">Центр помощи</string>
+  <string name="settings.support">Поддерживать</string>
+  <string name="settings.price_alerts.title">Уведомления о ценах</string>
+  <string name="price_alerts.enabled_for">Оповещение о цене включено для %s</string>
+  <string name="price_alerts.disabled_for">Оповещение о цене отключено для %s</string>
+  <string name="lock.immediately">Немедленно</string>
+  <string name="lock.one_minute">1 минута</string>
+  <string name="lock.five_minutes">5 минут</string>
+  <string name="lock.fifteen_minutes">15 минут</string>
+  <string name="lock.one_hour">1 час</string>
+  <string name="lock.six_hours">6 часов</string>
+  <string name="lock.require_authentication">Требуется аутентификация</string>
+  <string name="lock.Unlock">Разблокировать</string>
+  <string name="price_alerts.get_notified_explain_message">Получайте уведомления о значительном изменении цен на ваши любимые криптоактивы.</string>
+  <string name="price_alerts.empty_state.message">Пока не добавлено ни одного ценового оповещения.</string>
+  <string name="assets.select_asset">Выберите актив</string>
 </resources>

@@ -265,4 +265,20 @@
   <string name="common.unpin">Unpin</string>
   <string name="filter.clear">Clear</string>
   <string name="filter.title">Filters</string>
+  <string name="settings.help_center">مركز المساعدة</string>
+  <string name="settings.support">يدعم</string>
+  <string name="settings.price_alerts.title">تنبيهات الأسعار</string>
+  <string name="price_alerts.enabled_for">تم تفعيل تنبيه السعر لـ %s</string>
+  <string name="price_alerts.disabled_for">تم تعطيل تنبيه السعر لـ %s</string>
+  <string name="lock.immediately">في الحال</string>
+  <string name="lock.one_minute">1 دقيقة</string>
+  <string name="lock.five_minutes">5 دقائق</string>
+  <string name="lock.fifteen_minutes">15 دقيقة</string>
+  <string name="lock.one_hour">1 ساعة</string>
+  <string name="lock.six_hours">6 ساعات</string>
+  <string name="lock.require_authentication">Require authentication</string>
+  <string name="lock.Unlock">Unlock</string>
+  <string name="price_alerts.get_notified_explain_message">احصل على إشعار عندما يكون هناك تغيير كبير في سعر الأصول المشفرة المفضلة لديك.</string>
+  <string name="price_alerts.empty_state.message">لم تتم إضافة تنبيهات الأسعار بعد.</string>
+  <string name="assets.select_asset">حدد الأصول</string>
 </resources>

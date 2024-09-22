@@ -265,4 +265,20 @@
   <string name="common.unpin">Unpin</string>
   <string name="filter.clear">Clear</string>
   <string name="filter.title">Filters</string>
+  <string name="settings.help_center">ศูนย์ช่วยเหลือ</string>
+  <string name="settings.support">สนับสนุน</string>
+  <string name="settings.price_alerts.title">การแจ้งเตือนราคา</string>
+  <string name="price_alerts.enabled_for">เปิดใช้งานการแจ้งเตือนราคาสำหรับ %s</string>
+  <string name="price_alerts.disabled_for">ปิดใช้งานการแจ้งเตือนราคาสำหรับ %s</string>
+  <string name="lock.immediately">โดยทันที</string>
+  <string name="lock.one_minute">1 นาที</string>
+  <string name="lock.five_minutes">5 นาที</string>
+  <string name="lock.fifteen_minutes">15 นาที</string>
+  <string name="lock.one_hour">1 ชั่วโมง</string>
+  <string name="lock.six_hours">6 ชั่วโมง</string>
+  <string name="lock.require_authentication">Require authentication</string>
+  <string name="lock.Unlock">Unlock</string>
+  <string name="price_alerts.get_notified_explain_message">รับการแจ้งเตือนเมื่อมีการเปลี่ยนแปลงราคาที่สำคัญในสินทรัพย์ crypto ที่คุณชื่นชอบ</string>
+  <string name="price_alerts.empty_state.message">ยังไม่มีการเพิ่มการแจ้งเตือนราคา</string>
+  <string name="assets.select_asset">เลือกสินทรัพย์</string>
 </resources>

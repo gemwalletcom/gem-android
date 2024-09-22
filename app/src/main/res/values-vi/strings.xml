@@ -265,4 +265,20 @@
   <string name="common.unpin">Unpin</string>
   <string name="filter.clear">Clear</string>
   <string name="filter.title">Filters</string>
+  <string name="settings.help_center">Trung tâm trợ giúp</string>
+  <string name="settings.support">Ủng hộ</string>
+  <string name="settings.price_alerts.title">Cảnh báo giá</string>
+  <string name="price_alerts.enabled_for">Đã bật cảnh báo giá cho %s</string>
+  <string name="price_alerts.disabled_for">Cảnh báo giá đã bị vô hiệu hóa đối với %s</string>
+  <string name="lock.immediately">Ngay lập tức</string>
+  <string name="lock.one_minute">1 phút</string>
+  <string name="lock.five_minutes">5 phút</string>
+  <string name="lock.fifteen_minutes">15 phút</string>
+  <string name="lock.one_hour">1 giờ</string>
+  <string name="lock.six_hours">6 giờ</string>
+  <string name="lock.require_authentication">Require authentication</string>
+  <string name="lock.Unlock">Unlock</string>
+  <string name="price_alerts.get_notified_explain_message">Nhận thông báo khi có thay đổi đáng kể về giá của tài sản tiền điện tử yêu thích của bạn.</string>
+  <string name="price_alerts.empty_state.message">Chưa có thông báo giá nào được thêm vào.</string>
+  <string name="assets.select_asset">Chọn Tài sản</string>
 </resources>

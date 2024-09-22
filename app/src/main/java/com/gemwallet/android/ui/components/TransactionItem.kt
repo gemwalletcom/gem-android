@@ -122,7 +122,7 @@ fun TransactionItem(
         },
         body = {
             ListItemTitle(
-                title = type.getTransactionTitle(assetSymbol = assetSymbol),
+                title = type.getTransactionTitle(direction, state, assetSymbol = assetSymbol),
                 subtitle = type.getAddress(direction, from, to),
                 titleBudge = {
                     val badge = when (state) {

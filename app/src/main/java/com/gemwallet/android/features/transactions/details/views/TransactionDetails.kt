@@ -55,7 +55,7 @@ fun TransactionDetails(
         LoadingScene(title = "", onCancel)
     } else {
         Scene(
-            title = model.type.getTransactionTitle(model.assetSymbol),
+            title = model.type.getTransactionTitle(model.direction, model.state, model.assetSymbol),
             onClose = onCancel,
         ) {
             when (model.type) {

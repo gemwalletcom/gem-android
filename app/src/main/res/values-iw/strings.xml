@@ -265,4 +265,20 @@
   <string name="common.unpin">Unpin</string>
   <string name="filter.clear">Clear</string>
   <string name="filter.title">Filters</string>
+  <string name="settings.help_center">מרכז העזרה</string>
+  <string name="settings.support">תְמִיכָה</string>
+  <string name="settings.price_alerts.title">התראות על מחירים</string>
+  <string name="price_alerts.enabled_for">התראת מחיר מופעלת עבור %s</string>
+  <string name="price_alerts.disabled_for">התראת מחיר מושבתת עבור %s</string>
+  <string name="lock.immediately">מִיָד</string>
+  <string name="lock.one_minute">דקה אחת</string>
+  <string name="lock.five_minutes">5 דקות</string>
+  <string name="lock.fifteen_minutes">15 דקות</string>
+  <string name="lock.one_hour">שעה אחת</string>
+  <string name="lock.six_hours">6 שעות</string>
+  <string name="lock.require_authentication">Require authentication</string>
+  <string name="lock.Unlock">Unlock</string>
+  <string name="price_alerts.get_notified_explain_message">קבל הודעה כאשר יש שינוי משמעותי במחיר בנכסי הקריפטו המועדפים עליך.</string>
+  <string name="price_alerts.empty_state.message">עדיין לא נוספו התראות מחיר.</string>
+  <string name="assets.select_asset">בחר נכס</string>
 </resources>

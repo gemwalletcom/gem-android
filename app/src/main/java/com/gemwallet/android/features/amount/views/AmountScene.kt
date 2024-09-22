@@ -68,7 +68,13 @@ fun AmountScene(
         focusRequester.requestFocus()
     }
     Scene(
-        title = stringResource(id = R.string.transfer_amount_title),
+        title = when (uiModel.txType) {
+            TransactionType.Transfer -> stringResource(id = R.string.transfer_send_title)
+            TransactionType.StakeDelegate -> stringResource(id = R.string.transfer_stake_title)
+            TransactionType.StakeUndelegate -> stringResource(id = R.string.transfer_unstake_title)
+            TransactionType.StakeRedelegate -> stringResource(id = R.string.transfer_redelegate_title)
+            else -> stringResource(id = R.string.transfer_amount_title)
+        },
         onClose = onCancel,
         mainAction = {
             MainActionButton(

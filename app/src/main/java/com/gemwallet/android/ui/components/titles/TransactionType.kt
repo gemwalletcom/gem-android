@@ -5,15 +5,26 @@ import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.getAddressEllipsisText
 import com.wallet.core.primitives.TransactionDirection
+import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
 
-fun TransactionType.getTitle(): Int {
+fun TransactionType.getTitle(direction: TransactionDirection? = null, state: TransactionState? = null): Int {
     return when (this) {
         TransactionType.StakeDelegate -> R.string.transfer_stake_title
         TransactionType.StakeUndelegate -> R.string.transfer_unstake_title
         TransactionType.StakeRedelegate -> R.string.transfer_redelegate_title
         TransactionType.StakeRewards -> R.string.transfer_rewards_title
-        TransactionType.Transfer -> R.string.transfer_title
+        TransactionType.Transfer -> when (state) {
+            TransactionState.Failed,
+            TransactionState.Reverted,
+            TransactionState.Pending -> R.string.transfer_title
+            TransactionState.Confirmed -> when (direction) {
+                TransactionDirection.Incoming -> R.string.transaction_title_received
+                else -> R.string.transaction_title_sent
+            }
+            else -> R.string.transfer_send_title
+        }
+
         TransactionType.Swap -> R.string.wallet_swap
         TransactionType.TokenApproval -> R.string.transfer_approve_title
         TransactionType.StakeWithdraw -> R.string.transfer_withdraw_title
@@ -21,7 +32,7 @@ fun TransactionType.getTitle(): Int {
 }
 
 @Composable
-fun TransactionType.getTransactionTitle(assetSymbol: String): String {
+fun TransactionType.getTransactionTitle(direction: TransactionDirection, state: TransactionState, assetSymbol: String): String {
     return when (this) {
         TransactionType.StakeDelegate,
         TransactionType.StakeUndelegate,
@@ -29,8 +40,8 @@ fun TransactionType.getTransactionTitle(assetSymbol: String): String {
         TransactionType.StakeRedelegate,
         TransactionType.StakeWithdraw,
         TransactionType.Transfer,
-        TransactionType.Swap -> stringResource(getTitle())
-        TransactionType.TokenApproval -> "${stringResource(id = R.string.transfer_approve_title)} ${assetSymbol}"
+        TransactionType.Swap -> stringResource(getTitle(direction, state))
+        TransactionType.TokenApproval -> "${stringResource(id = R.string.transfer_approve_title)} $assetSymbol"
     }
 }
 

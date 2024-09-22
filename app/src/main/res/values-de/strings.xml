@@ -265,4 +265,20 @@
   <string name="common.unpin">Lösen</string>
   <string name="filter.clear">Löschen</string>
   <string name="filter.title">Filter</string>
+  <string name="settings.help_center">Hilfezentrum</string>
+  <string name="settings.support">Unterstützung</string>
+  <string name="settings.price_alerts.title">Preisalarme</string>
+  <string name="price_alerts.enabled_for">Preisalarm aktiviert für %s</string>
+  <string name="price_alerts.disabled_for">Preisalarm deaktiviert für %s</string>
+  <string name="lock.immediately">Sofort</string>
+  <string name="lock.one_minute">1 Minute</string>
+  <string name="lock.five_minutes">5 Minuten</string>
+  <string name="lock.fifteen_minutes">15 Minuten</string>
+  <string name="lock.one_hour">1 Stunde</string>
+  <string name="lock.six_hours">6 Stunden</string>
+  <string name="lock.require_authentication">Require authentication</string>
+  <string name="lock.Unlock">Unlock</string>
+  <string name="price_alerts.get_notified_explain_message">Lassen Sie sich benachrichtigen, wenn es bei Ihren bevorzugten Krypto-Assets zu einer erheblichen Preisänderung kommt.</string>
+  <string name="price_alerts.empty_state.message">Es wurden noch keine Preisalarme hinzugefügt.</string>
+  <string name="assets.select_asset">Anlage auswählen</string>
 </resources>

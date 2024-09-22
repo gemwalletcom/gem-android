@@ -70,7 +70,7 @@ fun ConfirmScreen(
     }
 
     Scene(
-        title = stringResource(amountModel?.txType?.getTitle() ?: R.string.transfer_confirm),
+        title = stringResource(amountModel?.txType?.getTitle() ?: R.string.transfer_title),
         onClose = onCancel,
         mainAction = {
             MainActionButton(
