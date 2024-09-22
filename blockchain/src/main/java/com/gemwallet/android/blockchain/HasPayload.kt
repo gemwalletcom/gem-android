@@ -8,7 +8,6 @@ fun Chain.memo() = when (this) {
     Chain.Doge,
     Chain.Ethereum,
     Chain.SmartChain,
-    Chain.Solana,
     Chain.Polygon,
     Chain.Tron,
     Chain.Optimism,
@@ -35,6 +34,7 @@ fun Chain.memo() = when (this) {
     Chain.Injective,
     Chain.Xrp,
     Chain.Noble,
+    Chain.Solana,
     Chain.Ton -> PayloadType.Memo
 }
 
