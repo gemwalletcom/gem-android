@@ -18,6 +18,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.OffsetMapping
@@ -77,9 +78,17 @@ fun ColumnScope.AmountField(
 class CryptoAmountTransformation(symbol: String, color: Color) : AmountTransformation(symbol, color) {
 
     override fun transformText(text: AnnotatedString): AnnotatedString {
-        return text + AnnotatedString(
-            "${if (text.isEmpty()) "0" else ""} $symbol", SpanStyle(color = color)
-        )
+        val zeroValue = if (text.isEmpty()) "0" else ""
+        return text + buildAnnotatedString {
+            append(zeroValue)
+            append(" ")
+            append(symbol)
+            addStyle(
+                SpanStyle(color = color),
+                start = 0,
+                end = zeroValue.length,
+            )
+        }
     }
 
     override fun convertToOriginal(text: AnnotatedString, offset: Int): Int =
