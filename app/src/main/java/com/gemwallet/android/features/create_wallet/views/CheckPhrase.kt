@@ -41,9 +41,9 @@ internal fun CheckPhrase(
     onCancel: () -> Unit,
 ) {
     val random = remember {
-        val shuffled = mutableListOf<String>()
+        val shuffled = mutableListOf<Pair<Int, String>>()
         for (i in 0..words.size / 4) {
-            val part = words.subList(
+            val part = words.mapIndexed { index, word -> Pair(index, word) }.subList(
                 fromIndex = i * 4,
                 toIndex = min(i * 4 + 4, words.size)
             ).shuffled()
@@ -111,20 +111,22 @@ internal fun CheckPhrase(
             )
             AnimatedVisibility(visible = !isDone || !isSmallScreen) {
                 FlowRow(
-                    modifier = Modifier.padding(vertical = 16.dp).fillMaxWidth(),
+                    modifier = Modifier
+                        .padding(vertical = 16.dp)
+                        .fillMaxWidth(),
                     maxItemsInEachRow = 4,
                     horizontalArrangement = Arrangement.Center,
                 ) {
                     if (isSmallScreen) {
                         val slice = result.size / 4
                         if (slice < 3) {
-                            (random.slice(slice * 4..<slice * 4 + 4)).forEach { word ->
-                                WordChip(word, !result.contains(word), onWordClick)
+                            (random.slice(slice * 4..<slice * 4 + 4)).forEach {word ->
+                                WordChip(word.second, result.getOrNull(word.first) != word.second, onWordClick)
                             }
                         }
                     } else {
                         (random).forEach { word ->
-                            WordChip(word, !result.contains(word), onWordClick)
+                            WordChip(word.second, result.getOrNull(word.first) != word.second, onWordClick)
                         }
                     }
                 }
