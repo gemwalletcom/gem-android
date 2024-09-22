@@ -22,17 +22,6 @@ fun getRelativeDate(timestamp: Long): String {
         val createdAt = Calendar.getInstance()
         createdAt.timeInMillis = timestamp
         (DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT) as SimpleDateFormat)
-            .apply {
-                if (createdAt.get(Calendar.YEAR) == Calendar.getInstance()
-                        .get(Calendar.YEAR)
-                ) {
-                    applyPattern(
-                        toPattern().replace(
-                            "[^\\p{Alpha}\\W]*y+[^\\p{Alpha}\\W]*".toRegex(),
-                            ""
-                        )
-                    )
-                }
-            }.format(createdAt.time)
+            .format(createdAt.time)
     }
 }
