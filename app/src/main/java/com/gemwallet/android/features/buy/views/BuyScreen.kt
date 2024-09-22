@@ -143,7 +143,6 @@ private fun Idle(
                 )
             }
         }
-        Spacer16()
 
         if (state.isAvailable()) {
             Table(
