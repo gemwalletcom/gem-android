@@ -97,9 +97,6 @@ private fun UI(
         title = stringResource(id = R.string.receive_title, state.assetSymbol),
         onClose = onCancel,
         actions = {
-            IconButton(onCopyClick) {
-                Icon(Icons.Default.ContentCopy, "")
-            }
             IconButton(onShare) {
                 Icon(Icons.Default.Share, "")
             }
