@@ -19,3 +19,5 @@ fun String.toAssetId(): AssetId? {
 
 fun AssetId.isSwapable() = type() == AssetSubtype.NATIVE
         && (EVMChain.entries.map { it.string }.contains(chain.string) || chain == Chain.Solana)
+
+fun AssetId.same(other: AssetId) = chain == other.chain && tokenId == other.tokenId
