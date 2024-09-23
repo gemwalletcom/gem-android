@@ -90,7 +90,7 @@ fun AmountScene(
         mainAction = {
             if (!isKeyBoardOpen || !isSmallScreen) {
                 MainActionButton(
-                    title = stringResource(id = R.string.common_next),
+                    title = stringResource(id = R.string.common_continue),
                     onClick = onNext,
                 )
             }
@@ -100,7 +100,7 @@ fun AmountScene(
                 colors = ButtonDefaults.textButtonColors()
                     .copy(contentColor = MaterialTheme.colorScheme.primary)
             ) {
-                Text(stringResource(R.string.common_next).uppercase())
+                Text(stringResource(R.string.common_continue).uppercase())
             }
         }
     ) {
