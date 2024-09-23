@@ -78,7 +78,7 @@ fun DelegationScene(
                                             DelegationState.Inactive -> R.string.stake_inactive
                                             DelegationState.Activating -> R.string.stake_activating
                                             DelegationState.Deactivating -> R.string.stake_deactivating
-                                            DelegationState.AwaitingWithdrawal -> R.string.stake_awaiting_withdrawal
+                                            DelegationState.AwaitingWithdrawal -> R.string.transfer_withdraw_title
                                         }
 
                                     ),
