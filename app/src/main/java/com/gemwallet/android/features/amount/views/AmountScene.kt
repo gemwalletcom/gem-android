@@ -24,8 +24,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.blockchain.PayloadType
 import com.gemwallet.android.blockchain.memo
@@ -71,6 +73,8 @@ fun AmountScene(
 ) {
     val focusRequester = remember { FocusRequester() }
     val isKeyBoardOpen by keyboardAsState()
+    val isSmallScreen = LocalConfiguration.current.screenHeightDp.dp < 680.dp
+
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
@@ -84,7 +88,7 @@ fun AmountScene(
         },
         onClose = onCancel,
         mainAction = {
-            if (!isKeyBoardOpen) {
+            if (!isKeyBoardOpen || !isSmallScreen) {
                 MainActionButton(
                     title = stringResource(id = R.string.common_next),
                     onClick = onNext,
@@ -92,13 +96,11 @@ fun AmountScene(
             }
         },
         actions = {
-            if (isKeyBoardOpen) {
-                TextButton(onClick = onNext,
-                    colors = ButtonDefaults.textButtonColors()
-                        .copy(contentColor = MaterialTheme.colorScheme.primary)
-                ) {
-                    Text(stringResource(R.string.common_next).uppercase())
-                }
+            TextButton(onClick = onNext,
+                colors = ButtonDefaults.textButtonColors()
+                    .copy(contentColor = MaterialTheme.colorScheme.primary)
+            ) {
+                Text(stringResource(R.string.common_next).uppercase())
             }
         }
     ) {
