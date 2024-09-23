@@ -7,6 +7,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.blockchain.PayloadType
+import com.gemwallet.android.blockchain.memo
 import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
@@ -347,9 +349,9 @@ class AmountViewModel @Inject constructor(
         val memo = paymentWrapper.memo
 
         if (
-            paymentWrapper.assetId == state.value?.assetInfo?.asset?.id?.toIdentifier()
-                && address.isNotEmpty()
-                && !amount.isNullOrEmpty()
+            address.isNotEmpty()
+            && !amount.isNullOrEmpty()
+            && (state.value?.assetInfo?.asset?.chain()?.memo() == PayloadType.None || !memo.isNullOrEmpty())
         ) {
             val assetId = state.value?.assetInfo?.asset?.id ?: return
             val params = AmountParams.buildTransfer(assetId, DestinationAddress(address), memo ?: "")
@@ -368,6 +370,7 @@ class AmountViewModel @Inject constructor(
                 memoState.value = paymentWrapper.memo ?: data
             }
         }
+        this.amount = amount ?: this.amount
     }
 
     private data class State(
