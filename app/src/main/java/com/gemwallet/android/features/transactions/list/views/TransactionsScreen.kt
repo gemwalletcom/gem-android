@@ -63,9 +63,9 @@ private fun List(
         Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
             when {
                 uiState.transactions.isEmpty() -> {
-                    Column(modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())) {
+                    Column(
+                        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())
+                    ) {
                         Text(
                             modifier = Modifier
                                 .fillMaxWidth()
