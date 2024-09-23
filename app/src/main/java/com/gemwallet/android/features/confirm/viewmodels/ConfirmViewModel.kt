@@ -114,23 +114,24 @@ class ConfirmViewModel @Inject constructor(
     .flatMapLatest { assetsRepository.getAssetsInfo(it) }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val signerParams = request.filterNotNull().map { request ->
+    private val signerParams = request.filterNotNull().combine(txSpeed) { request, speed ->
         val owner = sessionRepository.getSession()?.wallet?.getAccount(request.assetId.chain)
         if (owner == null) {
             state.update { ConfirmState.FatalError }
-            return@map null
+            return@combine null
         }
 
         val preload = signerPreload(owner = owner, params = request).getOrNull()
         if (preload == null) {
             state.update { ConfirmState.Error(ConfirmError.CalculateFee) }
-            return@map null
+            return@combine null
         }
         val finalAmount = when {
             request is ConfirmParams.RewardsParams -> stakeRepository.getRewards(request.assetId, owner.address)
                 .map { BigInteger(it.base.rewards) }
                 .fold(BigInteger.ZERO) { acc, value -> acc + value }
-            request.isMax() && request.assetId == preload.info.fee().feeAssetId -> request.amount - preload.info.fee().amount
+            request.isMax() && request.assetId == preload.info.fee(speed).feeAssetId ->
+                request.amount - preload.info.fee(speed).amount
             else -> request.amount
         }
         state.update { ConfirmState.Ready }
