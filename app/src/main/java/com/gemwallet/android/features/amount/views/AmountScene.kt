@@ -2,7 +2,9 @@ package com.gemwallet.android.features.amount.views
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,11 +16,15 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.R
 import com.gemwallet.android.blockchain.PayloadType
@@ -64,6 +70,7 @@ fun AmountScene(
     onValidator: () -> Unit,
 ) {
     val focusRequester = remember { FocusRequester() }
+    val isKeyBoardOpen by keyboardAsState()
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
     }
@@ -77,14 +84,21 @@ fun AmountScene(
         },
         onClose = onCancel,
         mainAction = {
-            MainActionButton(
-                title = stringResource(id = R.string.common_next),
-                onClick = onNext,
-            )
+            if (!isKeyBoardOpen) {
+                MainActionButton(
+                    title = stringResource(id = R.string.common_next),
+                    onClick = onNext,
+                )
+            }
         },
         actions = {
-            TextButton(onClick = onNext, colors = ButtonDefaults.textButtonColors().copy(contentColor = MaterialTheme.colorScheme.primary)) {
-                Text(stringResource(R.string.common_next).uppercase())
+            if (isKeyBoardOpen) {
+                TextButton(onClick = onNext,
+                    colors = ButtonDefaults.textButtonColors()
+                        .copy(contentColor = MaterialTheme.colorScheme.primary)
+                ) {
+                    Text(stringResource(R.string.common_next).uppercase())
+                }
             }
         }
     ) {
@@ -186,4 +200,10 @@ private fun LazyListScope.addressDestinationView(
             }
         }
     }
+}
+
+@Composable
+private fun keyboardAsState(): State<Boolean> {
+    val isImeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
+    return rememberUpdatedState(isImeVisible)
 }
