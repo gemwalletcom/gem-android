@@ -81,6 +81,9 @@ import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.asset.AssetsRoomSource
 import com.gemwallet.android.data.asset.BalancesRemoteSource
 import com.gemwallet.android.data.asset.BalancesRetrofitRemoteSource
+import com.gemwallet.android.data.banners.BannersRepository
+import com.gemwallet.android.data.banners.CancelBannerCase
+import com.gemwallet.android.data.banners.GetBannersCase
 import com.gemwallet.android.data.bridge.BridgesRepository
 import com.gemwallet.android.data.bridge.ConnectionsDao
 import com.gemwallet.android.data.bridge.ConnectionsLocalSource
@@ -95,6 +98,7 @@ import com.gemwallet.android.data.config.NodesRepository
 import com.gemwallet.android.data.config.OfflineFirstConfigRepository
 import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.BalancesDao
+import com.gemwallet.android.data.database.BannersDao
 import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.database.SessionDao
 import com.gemwallet.android.data.repositories.session.SessionLocalSource
@@ -697,4 +701,21 @@ object DataModule {
     ): NodeLocalSource {
         return NodeLocalSource(nodeDao)
     }
+
+    @Singleton
+    @Provides
+    fun provideBannersRepository(
+        bannersDao: BannersDao,
+        configRepository: ConfigRepository,
+    ): BannersRepository {
+        return BannersRepository(bannersDao, configRepository)
+    }
+
+    @Singleton
+    @Provides
+    fun provideGetBannersCase(bannersRepository: BannersRepository): GetBannersCase = bannersRepository
+
+    @Singleton
+    @Provides
+    fun provideCancelBannerCase(bannersRepository: BannersRepository): CancelBannerCase = bannersRepository
 }
