@@ -168,13 +168,13 @@ fun SettingsScene(
                 icon = R.drawable.settings_about_us,
                 onClick = onAboutUs
             )
-            LinkItem(
-                title = stringResource(id = R.string.settings_rate_app),
-                icon = R.drawable.settings_rate,
-                onClick = {
-                    reviewManager.open()
-                }
-            )
+//            LinkItem(
+//                title = stringResource(id = R.string.settings_rate_app),
+//                icon = R.drawable.settings_rate,
+//                onClick = {
+//                    reviewManager.open()
+//                }
+//            )
             if (uiState.developEnabled) {
                 LinkItem(title = stringResource(id = R.string.settings_developer), icon = R.drawable.settings_developer) {
                     onDevelop()
