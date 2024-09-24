@@ -1,13 +1,13 @@
 package com.gemwallet.android.features.asset.details.models
 
 import com.gemwallet.android.features.assets.model.PriceState
-import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.WalletType
 
 class AssetInfoUIModel(
-    val assetId: AssetId,
+    val asset: Asset,
     val name: String = "",
     val iconUrl: String = "",
     val priceValue: String = "0",

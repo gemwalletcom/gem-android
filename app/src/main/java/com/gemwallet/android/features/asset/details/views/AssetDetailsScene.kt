@@ -38,7 +38,9 @@ import com.gemwallet.android.features.asset.details.models.AssetInfoUIModel
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIState
 import com.gemwallet.android.features.asset.details.models.AssetStateError
 import com.gemwallet.android.features.asset.details.viewmodels.AssetInfoViewModel
+import com.gemwallet.android.features.banners.views.BannersScene
 import com.gemwallet.android.features.transactions.components.transactionsList
+import com.gemwallet.android.interactors.chain
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
@@ -158,26 +160,29 @@ private fun Success(
                         amount = uiState.account.totalBalance,
                         equivalent = uiState.account.totalFiat,
                         iconUrl = uiState.iconUrl,
-                        supportIconUrl = if (uiState.assetId.type() == AssetSubtype.NATIVE) null else uiState.assetId.chain.getIconUrl(),
+                        supportIconUrl = if (uiState.asset.id.type() == AssetSubtype.NATIVE) null else uiState.asset.chain().getIconUrl(),
                         placeholder = uiState.tokenType.string,
                     ) {
                         AssetHeadActions(
                             walletType = uiState.account.walletType,
-                            onTransfer = { onTransfer(uiState.assetId) },
+                            onTransfer = { onTransfer(uiState.asset.id) },
                             transferEnabled = uiState.account.walletType != WalletType.view,
-                            onReceive = { onReceive(uiState.assetId) },
+                            onReceive = { onReceive(uiState.asset.id) },
                             onBuy = if (uiState.isBuyEnabled) {
-                                { onBuy(uiState.assetId) }
+                                { onBuy(uiState.asset.id) }
                             } else {
                                 null
                             },
                             onSwap = if (uiState.isSwapEnabled && uiState.account.walletType != WalletType.view) {
-                                { onSwap(uiState.assetId) }
+                                { onSwap(uiState.asset.id) }
                             } else {
                                 null
                             },
                         )
                     }
+                }
+                item {
+                    BannersScene(uiState.asset, false)
                 }
                 networkInfo(uiState, onChart)
                 balanceDetails(uiState, onStake)
@@ -217,7 +222,7 @@ private fun LazyListScope.networkInfo(
                             style = MaterialTheme.typography.bodyLarge,
                         )
                     },
-                    action = { onChart(uiState.assetId) },
+                    action = { onChart(uiState.asset.id) },
                     testTag = "assetChart"
                 )
             )
@@ -273,7 +278,7 @@ private fun LazyListScope.balanceDetails(
                 CellEntity(
                     label = stringResource(R.string.wallet_stake),
                     data = uiState.account.stake,
-                    action = { onStake(uiState.assetId) },
+                    action = { onStake(uiState.asset.id) },
                     testTag = "assetStake",
                 )
             )
@@ -284,7 +289,7 @@ private fun LazyListScope.balanceDetails(
                     label = stringResource(R.string.asset_balances_reserved),
                     data = uiState.account.reserved,
                     action = {
-                        if (uiState.assetId.chain == Chain.Xrp) {
+                        if (uiState.asset.id.chain == Chain.Xrp) {
                             uriHandler.open("https://xrpl.org/docs/concepts/accounts/reserves")
                         }
                     },

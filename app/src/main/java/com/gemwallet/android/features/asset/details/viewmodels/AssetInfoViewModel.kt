@@ -120,7 +120,7 @@ class AssetInfoViewModel @Inject constructor(
                 .fold(BigInteger.ZERO) {acc, value -> acc + value }
 
             return AssetInfoUIModel(
-                assetId = asset.id,
+                asset = asset,
                 name = if (asset.type == AssetType.NATIVE) {
                     asset.id.chain.asset().name
                 } else {

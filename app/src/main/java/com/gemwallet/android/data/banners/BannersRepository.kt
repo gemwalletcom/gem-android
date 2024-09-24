@@ -29,8 +29,8 @@ class BannersRepository(
         }
         if (isBannerAvailable(wallet, asset, event)) {
             Banner(
-                wallet = null,
-                asset = null,
+                wallet = wallet,
+                asset = asset,
                 event = event,
                 state = BannerState.active,
             )
