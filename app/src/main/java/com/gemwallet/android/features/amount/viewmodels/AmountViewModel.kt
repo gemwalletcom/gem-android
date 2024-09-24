@@ -279,7 +279,7 @@ class AmountViewModel @Inject constructor(
         val amount = if (validateAmount(assetInfo.asset, inputAmount, BigInteger.ZERO) == AmountError.None) {
             inputAmount
         } else {
-            "0"
+            return " "
         }
 
         return if (inputCurrency == InputCurrency.InFiat) {
