@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -23,7 +24,6 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
@@ -57,6 +57,7 @@ import com.gemwallet.android.ui.theme.padding32
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
+import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
 
@@ -101,10 +102,7 @@ fun AssetDetailsScene(
     }
 }
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalComposeUiApi::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Success(
     uiState: AssetInfoUIModel,
@@ -182,7 +180,16 @@ private fun Success(
                     }
                 }
                 item {
-                    BannersScene(uiState.asset, false)
+                    BannersScene(
+                        asset = uiState.asset,
+                        onClick = {
+                            if (it.event == BannerEvent.stake) {
+                                onStake(uiState.asset.id)
+                            }
+                        },
+                        false
+                    )
+                    HorizontalDivider(thickness = 0.dp)
                 }
                 networkInfo(uiState, onChart)
                 balanceDetails(uiState, onStake)
