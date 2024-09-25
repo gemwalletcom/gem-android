@@ -260,10 +260,13 @@ fun QRScanner(listener: (String) -> Unit) {
             val imageAnalyzer = ImageAnalysis.Builder()
                 .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
                 .build()
-                .also {
-                    it.setAnalyzer(
+                .also { imageAnalysis ->
+                    imageAnalysis.setAnalyzer(
                         ContextCompat.getMainExecutor(context),
-                        QRCodeAnalyzer(callback = listener)
+                        QRCodeAnalyzer(callback = {
+                            imageAnalysis.clearAnalyzer()
+                            listener.invoke(it)
+                        })
                     )
                 }
             val selector = CameraSelector.Builder()
@@ -329,7 +332,6 @@ private class QRCodeAnalyzer(
         } finally {
             imageProxy.close()
         }
-        imageProxy.close()
     }
 
 }
@@ -339,7 +341,7 @@ private fun FinderView() {
     Canvas(modifier = Modifier.fillMaxSize()) {
         val halfFullWidth = size.width / 2f
         val halfFullHeight = size.height / 2f
-        val rectSize = min(size.width, size.height) * 0.5f
+        val rectSize = min(size.width, size.height) * 0.7f
         val rectHalfSize = rectSize / 2f
         val viewFrameSize = (rectHalfSize / 2f)
 
