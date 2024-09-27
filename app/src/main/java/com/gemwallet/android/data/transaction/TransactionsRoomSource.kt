@@ -8,13 +8,13 @@ import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import com.gemwallet.android.data.database.entities.DbTransactionExtended
+import com.gemwallet.android.data.database.entities.DbTransaction
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.google.gson.Gson
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Price
 import com.wallet.core.primitives.Transaction
-import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
@@ -23,28 +23,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
-
-@Entity(tableName = "transactions")
-data class TransactionRoom(
-    @PrimaryKey val id: String,
-    val hash: String,
-    val assetId: String,
-    val feeAssetId: String,
-    val owner: String,
-    val recipient: String,
-    val contract: String? = null,
-    val metadata: String? = null,
-    val state: TransactionState,
-    val type: TransactionType,
-    val blockNumber: String,
-    val sequence: String,
-    val fee: String, // Atomic value - BigInteger
-    val value: String, // Atomic value - BigInteger
-    val payload: String? = null,
-    val direction: TransactionDirection,
-    val createdAt: Long,
-    val updatedAt: Long,
-)
 
 @Entity(tableName = "tx_swap_metadata")
 data class TxSwapMetadataRoom(
@@ -59,10 +37,10 @@ data class TxSwapMetadataRoom(
 interface TransactionsDao {
 
     @Query("SELECT * FROM transactions WHERE state = :state")
-    fun getByState(state: TransactionState): List<TransactionRoom>
+    fun getByState(state: TransactionState): List<DbTransaction>
 
-    @Insert(entity = TransactionRoom::class, onConflict = OnConflictStrategy.REPLACE)
-    fun insert(transactions: List<TransactionRoom>)
+    @Insert(entity = DbTransaction::class, onConflict = OnConflictStrategy.REPLACE)
+    fun insert(transactions: List<DbTransaction>)
 
     @Query("DELETE FROM transactions WHERE id=:id")
     fun delete(id: String)
@@ -140,7 +118,7 @@ class TransactionsRoomSource(
         return transactionsDao.getMetadata(txId)
     }
 
-    private fun toRoom(transaction: Transaction) = TransactionRoom(
+    private fun toRoom(transaction: Transaction) = DbTransaction(
         id = transaction.id,
         hash = transaction.hash,
         assetId = transaction.assetId.toIdentifier(),
@@ -161,7 +139,7 @@ class TransactionsRoomSource(
         createdAt = transaction.createdAt,
     )
 
-    private fun toTransaction(room: TransactionRoom): Transaction? {
+    private fun toTransaction(room: DbTransaction): Transaction? {
         return Transaction(
             id = room.id,
             hash = room.hash,

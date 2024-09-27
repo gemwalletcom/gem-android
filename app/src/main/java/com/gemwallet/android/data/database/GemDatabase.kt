@@ -19,7 +19,7 @@ import com.gemwallet.android.data.stake.RoomDelegationValidator
 import com.gemwallet.android.data.stake.StakeDao
 import com.gemwallet.android.data.tokens.TokenRoom
 import com.gemwallet.android.data.tokens.TokensDao
-import com.gemwallet.android.data.transaction.TransactionRoom
+import com.gemwallet.android.data.database.entities.DbTransaction
 import com.gemwallet.android.data.transaction.TransactionsDao
 import com.gemwallet.android.data.transaction.TxSwapMetadataRoom
 import com.gemwallet.android.data.wallet.AccountRoom
@@ -36,7 +36,7 @@ import com.gemwallet.android.data.wallet.WalletsDao
         DbBalance::class,
         DbPrice::class,
         TokenRoom::class,
-        TransactionRoom::class,
+        DbTransaction::class,
         TxSwapMetadataRoom::class,
         RoomConnection::class,
         RoomDelegationValidator::class,
