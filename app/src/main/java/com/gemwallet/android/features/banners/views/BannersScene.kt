@@ -50,9 +50,7 @@ fun BannersScene(
     isGlobal: Boolean = false,
     viewModel: BannersViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(asset?.id?.toIdentifier(), isGlobal) {
-        viewModel.init(asset, isGlobal)
-    }
+    LaunchedEffect(asset?.id?.toIdentifier(), isGlobal) { viewModel.init(asset, isGlobal) }
     val banners by viewModel.banners.collectAsStateWithLifecycle()
     val pageState = rememberPagerState { banners.size }
     HorizontalPager(pageState, pageSpacing = padding16) { page ->
@@ -75,7 +73,8 @@ fun BannersScene(
             BannerText(
                 title = title,
                 subtitle = description,
-                iconUrl = asset?.getIconUrl() ?: "android.resource://com.gemwallet.android/${R.drawable.brandmark}",
+                iconUrl = asset?.getIconUrl()
+                    ?: "android.resource://com.gemwallet.android/${R.drawable.brandmark}",
             ) { viewModel.onCancel(banner) }
         }
     }
@@ -93,7 +92,12 @@ private fun BannerText(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Spacer16()
-        AssetIcon(modifier = Modifier.size(36.dp), iconUrl = iconUrl, placeholder = iconUrl, supportIcon = "")
+        AssetIcon(
+            modifier = Modifier.size(36.dp),
+            iconUrl = iconUrl,
+            placeholder = iconUrl,
+            supportIcon = ""
+        )
         Spacer8()
         Column(
             modifier = Modifier.weight(1f).padding(top = padding12, end = 0.dp, bottom = padding12),
