@@ -1,14 +1,12 @@
 package com.gemwallet.android.data.transaction
 
-import androidx.room.ColumnInfo
 import androidx.room.Dao
-import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
-import androidx.room.PrimaryKey
 import androidx.room.Query
 import com.gemwallet.android.data.database.entities.DbTransactionExtended
 import com.gemwallet.android.data.database.entities.DbTransaction
+import com.gemwallet.android.data.database.entities.DbTxSwapMetadata
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.google.gson.Gson
@@ -23,15 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.withContext
-
-@Entity(tableName = "tx_swap_metadata")
-data class TxSwapMetadataRoom(
-    @PrimaryKey @ColumnInfo(name = "tx_id") val txId: String,
-    @ColumnInfo(name = "from_asset_id") val fromAssetId: String,
-    @ColumnInfo(name = "to_asset_id") val toAssetId: String,
-    @ColumnInfo(name = "from_amount") val fromAmount: String,
-    @ColumnInfo(name = "to_amount") val toAmount: String,
-)
 
 @Dao
 interface TransactionsDao {
@@ -57,11 +46,11 @@ interface TransactionsDao {
     @Query("SELECT * FROM extended_txs WHERE state = :state ORDER BY createdAt DESC")
     fun getTransactionsByState(state: TransactionState): Flow<List<DbTransactionExtended>>
 
-    @Insert(entity = TxSwapMetadataRoom::class, onConflict = OnConflictStrategy.REPLACE)
-    fun addSwapMetadata(metadata: List<TxSwapMetadataRoom>)
+    @Insert(entity = DbTxSwapMetadata::class, onConflict = OnConflictStrategy.REPLACE)
+    fun addSwapMetadata(metadata: List<DbTxSwapMetadata>)
 
     @Query("SELECT * FROM tx_swap_metadata WHERE tx_id=:txId")
-    fun getMetadata(txId: String): TxSwapMetadataRoom?
+    fun getMetadata(txId: String): DbTxSwapMetadata?
 }
 
 class TransactionsRoomSource(
@@ -212,8 +201,8 @@ class TransactionsRoomSource(
         )
     }
 
-    private fun TransactionSwapMetadata.toRoom(txId: String): TxSwapMetadataRoom {
-        return TxSwapMetadataRoom(
+    private fun TransactionSwapMetadata.toRoom(txId: String): DbTxSwapMetadata {
+        return DbTxSwapMetadata(
             txId = txId,
             fromAssetId = fromAsset.toIdentifier(),
             toAssetId = toAsset.toIdentifier(),
