@@ -20,6 +20,7 @@ fun NetworksScreen(
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val nodes by viewModel.nodes.collectAsStateWithLifecycle()
+    val nodeStates by viewModel.nodeStates.collectAsStateWithLifecycle()
 
     val selectListState = rememberLazyListState()
 
@@ -61,6 +62,7 @@ fun NetworksScreen(
             false -> NetworkScene(
                 state = state,
                 nodes = nodes,
+                nodeStates = nodeStates,
                 onRefresh = { viewModel.onSelectedChain(state.chain ?: return@NetworkScene) },
                 onSelectNode = viewModel::onSelectNode,
                 onSelectBlockExplorer = viewModel::onSelectBlockExplorer,

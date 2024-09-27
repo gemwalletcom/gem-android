@@ -14,29 +14,58 @@ import com.gemwallet.android.features.settings.networks.models.NetworksUIState
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Node
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class NetworksViewModel @Inject constructor(
     private val chainInfoRepository: ChainInfoRepository,
     private val configRepository: ConfigRepository,
     private val nodesRepository: NodesRepository,
     private val nodeStatusClientsProxy: NodeStatusClientsProxy,
+    private val nodeStatusClients: NodeStatusClientsProxy,
 ) : ViewModel() {
 
     private val state = MutableStateFlow(State())
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, NetworksUIState())
     val chainFilter = TextFieldState()
-    var nodes: StateFlow<List<Node>> = MutableStateFlow(emptyList())
+    var nodes: StateFlow<List<Node>> = state.flatMapLatest {
+        if (it.chain == null) {
+            return@flatMapLatest emptyFlow()
+        }
+        nodesRepository.getNodes(it.chain)
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    var nodeStates = nodes.map { nodes ->
+        val chain = state.value.chain ?: return@map emptyMap()
+        withContext(Dispatchers.IO) {
+            nodes.map { node ->
+                    async {
+                        Pair(node.url, nodeStatusClients(chain, node.url))
+                    }
+                }.awaitAll()
+                .groupBy { it.first }
+                .mapValues { it.value.first().second }
+        }
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
 
     init {
         viewModelScope.launch {
@@ -48,19 +77,15 @@ class NetworksViewModel @Inject constructor(
     }
 
     fun onSelectedChain(chain: Chain) {
-        viewModelScope.launch {
-            nodes = nodesRepository.getNodes(chain)
-                .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
-            state.update {
-                it.copy(
-                    chain = chain,
-                    selectChain = false,
-                    explorers = configRepository.getBlockExplorers(chain),
-                    currentNode = configRepository.getCurrentNode(chain),
-                    currentExplorer = configRepository.getCurrentBlockExplorer(chain),
-                    availableAddNode = nodeStatusClientsProxy.isMaintained(chain)
-                )
-            }
+        state.update {
+            it.copy(
+                chain = chain,
+                selectChain = false,
+                explorers = configRepository.getBlockExplorers(chain),
+                currentNode = configRepository.getCurrentNode(chain),
+                currentExplorer = configRepository.getCurrentBlockExplorer(chain),
+                availableAddNode = nodeStatusClientsProxy.isMaintained(chain)
+            )
         }
     }
 
