@@ -115,7 +115,7 @@ import com.gemwallet.android.data.tokens.TokensLocalSource
 import com.gemwallet.android.data.tokens.TokensRepository
 import com.gemwallet.android.data.tokens.TokensRepositoryImpl
 import com.gemwallet.android.data.tokens.TokensRoomSource
-import com.gemwallet.android.data.transaction.TransactionsDao
+import com.gemwallet.android.data.database.TransactionsDao
 import com.gemwallet.android.data.transaction.TransactionsLocalSource
 import com.gemwallet.android.data.transaction.TransactionsRepository
 import com.gemwallet.android.data.transaction.TransactionsRoomSource

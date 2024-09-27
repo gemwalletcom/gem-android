@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.util.Log
 import androidx.room.Room
-import androidx.room.migration.AutoMigrationSpec
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.gemwallet.android.data.bridge.ConnectionsDao
@@ -20,7 +19,7 @@ import com.gemwallet.android.data.database.entities.SESSION_REQUEST
 import com.gemwallet.android.data.repositories.session.SessionSharedPreferenceSource
 import com.gemwallet.android.data.stake.StakeDao
 import com.gemwallet.android.data.tokens.TokensDao
-import com.gemwallet.android.data.transaction.TransactionsDao
+import com.gemwallet.android.data.database.TransactionsDao
 import com.gemwallet.android.data.wallet.AccountsDao
 import com.gemwallet.android.data.wallet.WalletsDao
 import com.wallet.core.primitives.Chain
