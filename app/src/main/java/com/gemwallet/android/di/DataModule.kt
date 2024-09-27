@@ -101,10 +101,12 @@ import com.gemwallet.android.data.database.BalancesDao
 import com.gemwallet.android.data.database.BannersDao
 import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.database.SessionDao
+import com.gemwallet.android.data.database.TransactionsDao
 import com.gemwallet.android.data.repositories.session.SessionLocalSource
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.repositories.session.SessionRepositoryImpl
 import com.gemwallet.android.data.repositories.session.SessionSharedPreferenceSource
+import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.data.stake.StakeDao
 import com.gemwallet.android.data.stake.StakeLocalSource
 import com.gemwallet.android.data.stake.StakeRepository
@@ -115,10 +117,6 @@ import com.gemwallet.android.data.tokens.TokensLocalSource
 import com.gemwallet.android.data.tokens.TokensRepository
 import com.gemwallet.android.data.tokens.TokensRepositoryImpl
 import com.gemwallet.android.data.tokens.TokensRoomSource
-import com.gemwallet.android.data.database.TransactionsDao
-import com.gemwallet.android.data.transaction.TransactionsLocalSource
-import com.gemwallet.android.data.transaction.TransactionsRepository
-import com.gemwallet.android.data.transaction.TransactionsRoomSource
 import com.gemwallet.android.data.wallet.AccountsDao
 import com.gemwallet.android.data.wallet.WalletsDao
 import com.gemwallet.android.data.wallet.WalletsLocalSource
@@ -403,12 +401,14 @@ object DataModule {
     @Singleton
     @Provides
     fun provideTransactionsRepository(
-        localSource: TransactionsLocalSource,
+        transactionsDao: TransactionsDao,
         assetsLocalSource: AssetsLocalSource,
         rpcClients: RpcClientAdapter,
+        @GemJson gson: Gson,
     ): TransactionsRepository = TransactionsRepository(
-        localSource = localSource,
+        transactionsDao = transactionsDao,
         assetsLocalSource = assetsLocalSource,
+        gson = gson,
         stateClients = availableChains().map {
             when (it) {
                 Chain.Doge,
@@ -648,16 +648,6 @@ object DataModule {
         @ApplicationContext context: Context,
     ): ConfigRepository = OfflineFirstConfigRepository(
         context = context,
-    )
-
-    @Singleton
-    @Provides
-    fun provideTransactionsLocalSource(
-        transactionsDao: TransactionsDao,
-        @GemJson gson: Gson,
-    ): TransactionsLocalSource = TransactionsRoomSource(
-        transactionsDao = transactionsDao,
-        gson = gson,
     )
 
     @Singleton

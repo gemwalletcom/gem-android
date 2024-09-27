@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.transaction.TransactionsRepository
+import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.features.transactions.details.model.TxDetailsScreenModel

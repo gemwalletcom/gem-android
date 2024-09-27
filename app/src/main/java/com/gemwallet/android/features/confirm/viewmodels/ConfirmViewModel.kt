@@ -12,7 +12,7 @@ import com.gemwallet.android.blockchain.operators.SignTransfer
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.stake.StakeRepository
-import com.gemwallet.android.data.transaction.TransactionsRepository
+import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.di.GemJson
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount

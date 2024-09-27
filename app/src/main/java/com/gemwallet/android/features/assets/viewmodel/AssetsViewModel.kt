@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.transaction.TransactionsRepository
+import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.PriceUIState

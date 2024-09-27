@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.stake.StakeRepository
-import com.gemwallet.android.data.transaction.TransactionsRepository
+import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.isStaked
 import com.gemwallet.android.ext.isSwapable
