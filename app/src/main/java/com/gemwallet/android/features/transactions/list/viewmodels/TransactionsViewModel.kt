@@ -47,7 +47,7 @@ class TransactionsViewModel @Inject constructor(
 
     fun refresh() = viewModelScope.launch(Dispatchers.IO) {
         txState.update { it.copy(loading = true) }
-        syncTransactions.invoke(sessionRepository.getSession()?.wallet?.index ?: return@launch)
+        syncTransactions.invoke(sessionRepository.getSession()?.wallet ?: return@launch)
         txState.update { it.copy(loading = false) }
     }
 

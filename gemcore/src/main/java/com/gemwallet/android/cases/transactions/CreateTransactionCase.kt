@@ -12,6 +12,7 @@ import java.math.BigInteger
 interface CreateTransactionCase {
     suspend fun createTransaction(
         hash: String,
+        walletId: String,
         assetId: AssetId,
         owner: Account,
         to: String,

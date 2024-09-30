@@ -113,7 +113,7 @@ class AssetsViewModel @Inject constructor(
                 assetsRepository.sync(session.currency)
             }
             val syncTxs = async {
-                syncTransactions(session.wallet.index)
+                syncTransactions(session.wallet)
             }
             syncAssets.await()
             syncTxs.await()

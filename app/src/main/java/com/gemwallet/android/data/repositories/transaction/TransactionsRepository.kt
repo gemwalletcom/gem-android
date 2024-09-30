@@ -8,12 +8,14 @@ import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
 import com.gemwallet.android.data.asset.AssetsLocalSource
 import com.gemwallet.android.data.database.TransactionsDao
+import com.gemwallet.android.data.database.entities.DbTransactionExtended
 import com.gemwallet.android.data.database.entities.DbTxSwapMetadata
 import com.gemwallet.android.data.database.mappers.ExtendedTransactionMapper
 import com.gemwallet.android.data.database.mappers.TransactionMapper
 import com.gemwallet.android.ext.eip1559Support
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.same
+import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.TransactionChages
@@ -96,15 +98,15 @@ class TransactionsRepository(
             .mapNotNull { mapper.asEntity(it ?: return@mapNotNull null) }
     }
 
-    override suspend fun putTransactions(transactions: List<Transaction>) = withContext(Dispatchers.IO) {
-        transactionsDao.insert(
-            transactions.map { TransactionMapper().asDomain(it) }
-        )
+    override suspend fun putTransactions(walletId: String, transactions: List<Transaction>) = withContext(Dispatchers.IO) {
+        val mapper = TransactionMapper(walletId)
+        transactionsDao.insert(transactions.map { mapper.asDomain(it) })
         addSwapMetadata(transactions.filter { it.type == TransactionType.Swap })
     }
 
     override suspend fun createTransaction(
         hash: String,
+        walletId: String,
         assetId: AssetId,
         owner: Account,
         to: String,
@@ -136,54 +138,68 @@ class TransactionsRepository(
             utxoOutputs = emptyList(),
             createdAt = System.currentTimeMillis(),
         )
-        transactionsDao.insert(listOf(TransactionMapper().asDomain(transaction)))
+        transactionsDao.insert(listOf(TransactionMapper(walletId).asDomain(transaction)))
         addSwapMetadata(listOf(transaction))
         transaction
     }
 
     private suspend fun observePending() = scope.launch {
-        val pendingTxs = getPendingTransactions().firstOrNull() ?: emptyList()
+        val pendingTxs = transactionsDao.getExtendedTransactions().firstOrNull()?.filter {
+            it.state == TransactionState.Pending
+        } ?: emptyList()
         val updatedTxs = pendingTxs.map { tx ->
             async {
-                val newTx = checkTx(tx.transaction)
-                if (newTx != null && newTx.id != tx.transaction.id) {
-                    transactionsDao.delete(tx.transaction.id)
+                val newTx = checkTx(tx)
+                if (newTx != null && newTx.id != tx.id) {
+                    transactionsDao.delete(tx.id)
                 }
-                tx.copy(transaction = newTx ?: return@async null)
+                newTx
             }
         }
-            .awaitAll()
-            .filterNotNull()
+        .awaitAll()
+        .filterNotNull()
         if (updatedTxs.isNotEmpty()) {
-            changedTransactions.tryEmit(updatedTxs)
-            updateTransaction(updatedTxs.map { it.transaction })
+            changedTransactions.tryEmit(updatedTxs.mapNotNull(mapper::asEntity))
+
+            updateTransaction(updatedTxs)
         }
-        val failedByTimeOut = (getPendingTransactions().firstOrNull() ?: emptyList()).mapNotNull {
-            val timeOut =
-                Config().getChainConfig(it.transaction.assetId.chain.string).transactionTimeout * 1000
-            if (it.transaction.createdAt < System.currentTimeMillis() - timeOut) {
-                it.copy(transaction = it.transaction.copy(state = TransactionState.Failed))
-            } else {
-                null
+        val failedByTimeOut = (transactionsDao.getExtendedTransactions().firstOrNull() ?: emptyList())
+            .filter {
+                it.state == TransactionState.Pending
+            }
+            .mapNotNull {
+                val assetId = it.assetId.toAssetId() ?: return@mapNotNull null
+                val timeOut =
+                    Config().getChainConfig(assetId.chain.string).transactionTimeout * 1000
+                if (it.createdAt < System.currentTimeMillis() - timeOut) {
+                    it.copy(state = TransactionState.Failed)
+                } else {
+                    null
+                }
+            }
+        updateTransaction(failedByTimeOut)
+        changedTransactions.tryEmit(failedByTimeOut.mapNotNull(mapper::asEntity))
+    }
+
+    private suspend fun updateTransaction(txs: List<DbTransactionExtended>) = withContext(Dispatchers.IO) {
+        val data = txs.mapNotNull { tx ->
+            mapper.asEntity(tx)?.transaction?.let {
+                TransactionMapper(tx.walletId).asDomain(it)
             }
         }
-        updateTransaction(failedByTimeOut.map { it.transaction })
-        changedTransactions.tryEmit(failedByTimeOut)
+        transactionsDao.insert(data)
     }
 
-    private suspend fun updateTransaction(txs: List<Transaction>) = withContext(Dispatchers.IO) {
-        val mapper = TransactionMapper()
-        transactionsDao.insert(txs.map(mapper::asDomain))
-    }
-
-    private suspend fun checkTx(tx: Transaction): Transaction? {
-        val stateClient = stateClients.firstOrNull { it.isMaintain(tx.assetId.chain) } ?: return null
-        val stateResult = stateClient.getStatus(tx.from, tx.hash)
+    private suspend fun checkTx(tx: DbTransactionExtended): DbTransactionExtended? {
+        val assetId = tx.assetId.toAssetId() ?: return null
+        val stateClient = stateClients.firstOrNull { it.isMaintain(assetId.chain) } ?: return null
+        val stateResult = stateClient.getStatus(tx.owner, tx.hash)
         val state = stateResult.getOrElse { TransactionChages(tx.state) }
         return if (state.state != tx.state) {
+
             val newTx = tx.copy(
                 id = if (state.hashChanges != null) {
-                    "${tx.assetId.chain.string}_${state.hashChanges!!.new}"
+                    "${assetId.chain.string}_${state.hashChanges!!.new}"
                 } else {
                     tx.id
                 },
@@ -191,7 +207,7 @@ class TransactionsRepository(
                 hash = if (state.hashChanges != null) state.hashChanges!!.new else tx.hash,
             )
             when {
-                tx.assetId.chain.eip1559Support() && state.fee != null -> newTx.copy(fee = state.fee.toString())
+                assetId.chain.eip1559Support() && state.fee != null -> newTx.copy(fee = state.fee.toString())
                 else -> newTx
             }
         } else {

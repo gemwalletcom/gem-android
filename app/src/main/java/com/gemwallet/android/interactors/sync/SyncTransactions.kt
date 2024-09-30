@@ -10,6 +10,7 @@ import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Transaction
+import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -22,13 +23,13 @@ class SyncTransactions @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val tokensRepository: TokensRepository,
 ) {
-    suspend operator fun invoke(walletIndex: Int) = withContext(Dispatchers.IO) {
+    suspend operator fun invoke(wallet: Wallet) = withContext(Dispatchers.IO) {
         val deviceId = configRepository.getDeviceId()
         val lastSyncTime = configRepository.getTxSyncTime()
-        val txs = gemApiClient.getTransactions(deviceId, walletIndex, lastSyncTime).getOrNull() ?: return@withContext
+        val txs = gemApiClient.getTransactions(deviceId, wallet.index, lastSyncTime).getOrNull() ?: return@withContext
         prefetchAssets(txs)
 
-        putTransactionsCase.putTransactions(txs.toList())
+        putTransactionsCase.putTransactions(walletId = wallet.id, txs.toList())
 
         configRepository.setTxSyncTime(txs.map { listOf(it.createdAt) }.flatten().maxByOrNull { it } ?: 0L)
     }

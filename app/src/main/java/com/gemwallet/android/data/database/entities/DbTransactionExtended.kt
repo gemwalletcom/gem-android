@@ -8,6 +8,7 @@ import com.wallet.core.primitives.TransactionType
 
 const val SESSION_REQUEST = """SELECT accounts.address FROM accounts, session
     WHERE accounts.wallet_id = session.wallet_id AND session.id = 1"""
+const val CURRENT_WALLET_REQUEST = """SELECT wallet_id FROM session WHERE session.id = 1"""
 
 @DatabaseView(
     viewName = "extended_txs",
@@ -31,6 +32,7 @@ const val SESSION_REQUEST = """SELECT accounts.address FROM accounts, session
             tx.direction,
             tx.createdAt,
             tx.updatedAt,
+            tx.walletId,
             assets.decimals as assetDecimals,
             assets.name as assetName,
             assets.type as assetType,
@@ -49,12 +51,14 @@ const val SESSION_REQUEST = """SELECT accounts.address FROM accounts, session
             LEFT JOIN prices ON tx.assetId = prices.assetId
             LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.assetId 
             WHERE tx.owner IN ($SESSION_REQUEST) OR tx.recipient in ($SESSION_REQUEST)
+                AND tx.walletId in ($CURRENT_WALLET_REQUEST)
             GROUP BY tx.id
     """
 )
 data class DbTransactionExtended(
     val id: String,
     val hash: String,
+    val walletId: String,
     val assetId: String,
     val feeAssetId: String,
     val owner: String,

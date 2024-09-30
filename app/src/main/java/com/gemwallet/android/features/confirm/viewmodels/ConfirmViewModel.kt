@@ -282,6 +282,7 @@ class ConfirmViewModel @Inject constructor(
             val destinationAddress =  signerParams.input.destination()?.address ?: ""
             createTransactionsCase.createTransaction(
                 hash = txHash,
+                walletId = session.wallet.id,
                 assetId = assetInfo.id(),
                 owner = assetInfo.owner,
                 to = destinationAddress,

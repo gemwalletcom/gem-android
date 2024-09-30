@@ -5,9 +5,10 @@ import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Transaction
 
-class TransactionMapper : Mapper<Transaction, DbTransaction> {
+class TransactionMapper(val walletId: String) : Mapper<Transaction, DbTransaction> {
     override fun asDomain(entity: Transaction): DbTransaction = DbTransaction(
         id = entity.id,
+        walletId = walletId,
         hash = entity.hash,
         assetId = entity.assetId.toIdentifier(),
         feeAssetId = entity.feeAssetId.toIdentifier(),

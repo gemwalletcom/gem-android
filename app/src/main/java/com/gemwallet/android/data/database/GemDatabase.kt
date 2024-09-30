@@ -27,7 +27,7 @@ import com.gemwallet.android.data.wallet.WalletRoom
 import com.gemwallet.android.data.wallet.WalletsDao
 
 @Database(
-    version = 32,
+    version = 33,
     entities = [
         WalletRoom::class,
         AccountRoom::class,

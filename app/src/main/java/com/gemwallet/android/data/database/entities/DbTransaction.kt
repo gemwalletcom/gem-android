@@ -6,9 +6,10 @@ import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
 
-@Entity(tableName = "transactions")
+@Entity(tableName = "transactions", primaryKeys = ["id", "walletId"])
 data class DbTransaction(
-    @PrimaryKey val id: String,
+    val id: String,
+    val walletId: String,
     val hash: String,
     val assetId: String,
     val feeAssetId: String,

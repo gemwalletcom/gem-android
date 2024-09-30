@@ -40,7 +40,7 @@ class SyncService @Inject constructor(
             listOf(
                 async { SyncConfig(gemApiClient, configRepository).invoke() },
                 async { SyncDevice(gemApiClient, configRepository, sessionRepository).invoke() },
-                async { syncTransactions(sessionRepository.getSession()?.wallet?.index ?: return@async) },
+                async { syncTransactions(sessionRepository.getSession()?.wallet ?: return@async) },
             ).awaitAll()
             operators.map {
                 async { it() }

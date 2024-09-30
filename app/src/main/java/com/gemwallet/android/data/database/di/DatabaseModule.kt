@@ -70,6 +70,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_29_30)
         .addMigrations(MIGRATION_30_31)
         .addMigrations(MIGRATION_31_32)
+        .addMigrations(MIGRATION_32_33)
         .build()
 
     @Singleton
@@ -637,5 +638,80 @@ val MIGRATION_31_32 = object : Migration(31, 32) {
                 event TEXT NOT NULL,
                 PRIMARY KEY (wallet_id, asset_id)
             )""".trimIndent())
+    }
+}
+
+val MIGRATION_32_33 = object : Migration(32, 33) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("DROP VIEW IF EXISTS `extended_txs`")
+        db.execSQL("DROP TABLE IF EXISTS transactions;")
+        db.execSQL("""
+            CREATE TABLE transactions (
+                `id` TEXT NOT NULL,
+                `walletId` TEXT NOT NULL,
+                `hash` TEXT NOT NULL,
+                `assetId`TEXT NOT NULL,
+                `feeAssetId` TEXT NOT NULL,
+                `owner` TEXT NOT NULL,
+                `recipient` TEXT NOT NULL,
+                `contract` TEXT,
+                `state` TEXT NOT NULL,
+                `type` TEXT NOT NULL,
+                `blockNumber` TEXT NOT NULL,
+                `sequence` TEXT NOT NULL,
+                `fee` TEXT NOT NULL,
+                `value` TEXT NOT NULL,
+                `payload` TEXT,
+                `direction` TEXT NOT NULL,
+                `updatedAt` INTEGER NOT NULL,
+                `createdAt` INTEGER NOT NULL,
+                `metadata` TEXT,
+                PRIMARY KEY (`id`, `walletId`)
+            )""".trimIndent()
+        )
+        db.execSQL("""
+            |CREATE VIEW `extended_txs` AS SELECT
+            |            DISTINCT tx.id,
+            |            tx.hash,
+            |            tx.assetId,
+            |            tx.feeAssetId,
+            |            tx.owner,
+            |            tx.recipient,
+            |            tx.contract,
+            |            tx.state,
+            |            tx.type,
+            |            tx.blockNumber,
+            |            tx.sequence,
+            |            tx.fee,
+            |            tx.value,
+            |            tx.payload,
+            |            tx.metadata,
+            |            tx.direction,
+            |            tx.createdAt,
+            |            tx.updatedAt,
+            |            tx.walletId,
+            |            assets.decimals as assetDecimals,
+            |            assets.name as assetName,
+            |            assets.type as assetType,
+            |            assets.symbol as assetSymbol,
+            |            feeAsset.decimals as feeDecimals,
+            |            feeAsset.name as feeName,
+            |            feeAsset.type as feeType,
+            |            feeAsset.symbol as feeSymbol,
+            |            prices.value as assetPrice,
+            |            prices.dayChanged as assetPriceChanged,
+            |            feePrices.value as feePrice,
+            |            feePrices.dayChanged as feePriceChanged
+            |        FROM transactions as tx 
+            |            INNER JOIN assets ON tx.assetId = assets.id 
+            |            INNER JOIN assets as feeAsset ON tx.feeAssetId = feeAsset.id 
+            |            LEFT JOIN prices ON tx.assetId = prices.assetId
+            |            LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.assetId 
+            |            WHERE tx.owner IN (SELECT accounts.address FROM accounts, session
+            |    WHERE accounts.wallet_id = session.wallet_id AND session.id = 1) OR tx.recipient in (SELECT accounts.address FROM accounts, session
+            |    WHERE accounts.wallet_id = session.wallet_id AND session.id = 1)
+            |                AND tx.walletId in (SELECT wallet_id FROM session WHERE session.id = 1)
+            |            GROUP BY tx.id
+            """.trimMargin())
     }
 }
