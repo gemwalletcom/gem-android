@@ -9,6 +9,7 @@ import com.gemwallet.android.data.database.mappers.ExtendedTransactionMapper
 import com.gemwallet.android.data.database.mappers.TransactionMapper
 import com.gemwallet.android.ext.eip1559Support
 import com.gemwallet.android.ext.getSwapMetadata
+import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.TransactionChages
@@ -70,10 +71,10 @@ class TransactionsRepository(
             .map { list ->
                 list.filter {
                     (assetId == null
-                            || it.asset.id.toIdentifier() == assetId.toIdentifier()
-                            || it.transaction.getSwapMetadata()?.toAsset?.toIdentifier() == assetId.toIdentifier()
-                            || it.transaction.getSwapMetadata()?.fromAsset?.toIdentifier() == assetId.toIdentifier()
-                            )
+                        || it.asset.id.toIdentifier() == assetId.toIdentifier()
+                        || it.transaction.getSwapMetadata()?.toAsset?.same(assetId) == true
+                        || it.transaction.getSwapMetadata()?.fromAsset?.same(assetId) == true
+                    )
                 }.map {
                     val metadata = it.transaction.getSwapMetadata()
                     if (metadata != null) {
@@ -180,13 +181,16 @@ class TransactionsRepository(
     }
 
     private suspend fun checkTx(tx: Transaction): Transaction? {
-        val stateClient =
-            stateClients.firstOrNull { it.isMaintain(tx.assetId.chain) } ?: return null
+        val stateClient = stateClients.firstOrNull { it.isMaintain(tx.assetId.chain) } ?: return null
         val stateResult = stateClient.getStatus(tx.from, tx.hash)
         val state = stateResult.getOrElse { TransactionChages(tx.state) }
         return if (state.state != tx.state) {
             val newTx = tx.copy(
-                id = if (state.hashChanges != null) "${tx.assetId.chain.string}_${state.hashChanges!!.new}" else tx.id,
+                id = if (state.hashChanges != null) {
+                    "${tx.assetId.chain.string}_${state.hashChanges!!.new}"
+                } else {
+                    tx.id
+                },
                 state = state.state,
                 hash = if (state.hashChanges != null) state.hashChanges!!.new else tx.hash,
             )
