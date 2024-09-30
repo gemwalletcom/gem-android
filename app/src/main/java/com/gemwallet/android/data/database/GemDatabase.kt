@@ -13,14 +13,14 @@ import com.gemwallet.android.data.database.entities.DbBalance
 import com.gemwallet.android.data.database.entities.DbBanner
 import com.gemwallet.android.data.database.entities.DbPrice
 import com.gemwallet.android.data.database.entities.DbSession
+import com.gemwallet.android.data.database.entities.DbTransaction
 import com.gemwallet.android.data.database.entities.DbTransactionExtended
+import com.gemwallet.android.data.database.entities.DbTxSwapMetadata
 import com.gemwallet.android.data.stake.RoomDelegationBase
 import com.gemwallet.android.data.stake.RoomDelegationValidator
 import com.gemwallet.android.data.stake.StakeDao
 import com.gemwallet.android.data.tokens.TokenRoom
 import com.gemwallet.android.data.tokens.TokensDao
-import com.gemwallet.android.data.database.entities.DbTransaction
-import com.gemwallet.android.data.database.entities.DbTxSwapMetadata
 import com.gemwallet.android.data.wallet.AccountRoom
 import com.gemwallet.android.data.wallet.AccountsDao
 import com.gemwallet.android.data.wallet.WalletRoom

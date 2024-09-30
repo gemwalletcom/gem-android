@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.gemwallet.android.data.database.entities.DbBanner
-import com.wallet.core.primitives.Banner
 import com.wallet.core.primitives.BannerEvent
 
 @Dao

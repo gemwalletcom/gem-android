@@ -1,8 +1,5 @@
 package com.gemwallet.android.features.confirm.models
 
-import androidx.compose.runtime.Composable
-import com.gemwallet.android.R
-
 sealed class ConfirmError(message: String) : Exception(message){
 
     data object None : ConfirmError("")

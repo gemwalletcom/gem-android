@@ -2,7 +2,6 @@ package com.gemwallet.android.data.database.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.BannerState
 
