@@ -74,7 +74,11 @@ fun Chart(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val point = if (price == null) uiModel.currentPoint else price
+                val point = if (state.loading || state.period != uiModel.period) {
+                    null
+                } else {
+                    if (price == null) uiModel.currentPoint else price
+                }
                 PriceInfo(
                     priceValue =  point?.yLabel ?: "",
                     changedPercentages = point?.percentage ?: "",
