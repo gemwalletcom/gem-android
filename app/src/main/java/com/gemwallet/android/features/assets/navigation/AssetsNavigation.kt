@@ -23,7 +23,6 @@ fun NavGraphBuilder.assetsScreen(
     onSwapClick: () -> Unit,
     onShowAssetManage: () -> Unit,
     onAssetClick: (AssetId) -> Unit,
-    onTransactionClick: (String) -> Unit,
 ) {
     composable(
         route = assetsRoute,
@@ -37,7 +36,6 @@ fun NavGraphBuilder.assetsScreen(
             onReceiveClick = onReceiveClick,
             onBuyClick = onBuyClick,
             onSwapClick = onSwapClick,
-            onTransactionClick = onTransactionClick,
             onAssetClick = onAssetClick,
         )
     }

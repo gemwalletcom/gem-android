@@ -2,7 +2,6 @@ package com.gemwallet.android.features.assets.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
@@ -47,7 +46,6 @@ class AssetsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val syncTransactions: SyncTransactions,
-    getTransactionsCase: GetTransactionsCase
 ) : ViewModel() {
     val screenState = assetsRepository.syncState
         .flatMapLatest { state ->
@@ -68,8 +66,10 @@ class AssetsViewModel @Inject constructor(
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val pinnedAssets = assets.map { it.filter { asset -> asset.metadata?.isPinned ?: false }.sortedBy { it.position } }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    val pinnedAssets = assets.map { items ->
+        items.filter { asset -> asset.metadata?.isPinned ?: false }.sortedBy { it.position }
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val unpinnedAssets = assets.map { it.filter { asset -> !(asset.metadata?.isPinned ?: false) } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -80,9 +80,6 @@ class AssetsViewModel @Inject constructor(
                 .contains(asset.owner.chain.string) || asset.owner.chain == Chain.Solana
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
-    val txsState = getTransactionsCase.getPendingTransactions()
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val walletInfo: StateFlow<WalletInfoUIState> = sessionRepository.session().combine(assetsState) {session, assets ->
         if (session == null) {

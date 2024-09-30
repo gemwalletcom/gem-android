@@ -1,6 +1,5 @@
-package com.gemwallet.android.ui
+package com.gemwallet.android.features.main.views
 
-//import com.gemwallet.android.features.recipient.navigation.navigateToSendScreen
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -11,6 +10,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ElectricBolt
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Wallet
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -20,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,6 +29,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.gemwallet.android.R
 import com.gemwallet.android.features.amount.navigation.navigateToSendScreen
@@ -37,6 +41,8 @@ import com.gemwallet.android.features.assets.views.AssetsScreen
 import com.gemwallet.android.features.bridge.navigation.navigateToBridgesScreen
 import com.gemwallet.android.features.buy.navigation.navigateToBuyScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsManageScreen
+import com.gemwallet.android.features.main.models.BottomNavItem
+import com.gemwallet.android.features.main.viewmodels.MainScreenViewModel
 import com.gemwallet.android.features.receive.navigation.navigateToReceiveScreen
 import com.gemwallet.android.features.settings.navigation.navigateToAboutUsScreen
 import com.gemwallet.android.features.settings.navigation.navigateToCurrenciesScreen
@@ -52,13 +58,15 @@ import com.gemwallet.android.features.transactions.navigation.activitiesRoute
 import com.gemwallet.android.features.transactions.navigation.navigateToActivitiesScreen
 import com.gemwallet.android.features.transactions.navigation.navigateToTransactionScreen
 import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
-import com.gemwallet.android.model.BottomNavItem
 
 @Composable
 fun MainScreen(
     navController: NavController,
     currentTab: MutableState<String>,
+    viewModel: MainScreenViewModel = hiltViewModel()
 ) {
+    val pendingCount by viewModel.pendingTxCount.collectAsStateWithLifecycle()
+
     BackHandler(currentTab.value == activitiesRoute || currentTab.value == settingsRoute) {
         currentTab.value = assetsRoute
     }
@@ -67,7 +75,7 @@ fun MainScreen(
     val activitiesListState = rememberLazyListState()
     val settingsScrollState = rememberScrollState()
 
-    val navItems = remember {
+    val navItems = remember(pendingCount) {
         listOf(
             BottomNavItem(
                 label = context.getString(R.string.common_wallet),
@@ -80,6 +88,7 @@ fun MainScreen(
                 label = context.getString(R.string.activity_title),
                 icon = Icons.Default.ElectricBolt,
                 route = activitiesRoute,
+                badge = pendingCount,
                 testTag = "activitiesTab",
                 navigate = { navigateToActivitiesScreen(navOptions = it) }
             ),
@@ -113,11 +122,22 @@ fun MainScreen(
                                     contentDescription = item.label,
                                 )
                             } else {
-                                Icon(
-                                    modifier = modifier,
-                                    imageVector = item.icon,
-                                    contentDescription = item.label,
-                                )
+                                BadgedBox(
+                                    badge = {
+                                        if (!item.badge.isNullOrEmpty()) {
+                                            Badge {
+                                                Text(text = item.badge)
+                                            }
+                                        }
+                                    }
+                                ) {
+                                    Icon(
+                                        modifier = modifier,
+                                        imageVector = item.icon,
+                                        contentDescription = item.label,
+                                    )
+
+                                }
                             }
                         },
                         label = { Text(item.label) },
@@ -142,7 +162,6 @@ fun MainScreen(
                     onReceiveClick = navController::navigateToReceiveScreen,
                     onBuyClick = navController::navigateToBuyScreen,
                     onSwapClick = navController::navigateToSwap,
-                    onTransactionClick = navController::navigateToTransactionScreen,
                     onAssetClick = navController::navigateToAssetScreen,
                     listState = assetsListState,
                 )

@@ -40,6 +40,7 @@ import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsM
 import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateWalletScreen
 import com.gemwallet.android.features.import_wallet.navigation.importWalletScreen
 import com.gemwallet.android.features.import_wallet.navigation.navigateToImportWalletScreen
+import com.gemwallet.android.features.main.views.MainScreen
 import com.gemwallet.android.features.onboarding.OnboardingDest
 import com.gemwallet.android.features.receive.navigation.navigateToReceiveScreen
 import com.gemwallet.android.features.receive.navigation.receiveScreen
@@ -64,7 +65,6 @@ import com.gemwallet.android.features.wallet.navigation.navigateToWalletScreen
 import com.gemwallet.android.features.wallet.navigation.walletScreen
 import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
 import com.gemwallet.android.features.wallets.navigation.walletsScreen
-import com.gemwallet.android.ui.MainScreen
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -114,7 +114,6 @@ fun WalletNavGraph(
                 onReceiveClick = navController::navigateToReceiveScreen,
                 onBuyClick = navController::navigateToBuyScreen,
                 onSwapClick = navController::navigateToSwap,
-                onTransactionClick = navController::navigateToTransactionScreen,
                 onAssetClick = navController::navigateToAssetScreen,
             )
 

@@ -26,7 +26,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -60,7 +59,6 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.WalletInfoUIState
 import com.gemwallet.android.features.assets.viewmodel.AssetsViewModel
-import com.gemwallet.android.features.transactions.components.transactionsList
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
@@ -70,7 +68,6 @@ import com.gemwallet.android.ui.components.DropDownContextItem
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer4
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.TransactionExtended
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.ReorderableLazyListState
 import sh.calvin.reorderable.rememberReorderableLazyListState
@@ -84,7 +81,6 @@ fun AssetsScreen(
     onReceiveClick: () -> Unit,
     onBuyClick: () -> Unit,
     onSwapClick: () -> Unit,
-    onTransactionClick: (String) -> Unit,
     onAssetClick: (AssetId) -> Unit,
     listState: LazyListState = rememberLazyListState(),
     viewModel: AssetsViewModel = hiltViewModel(),
@@ -93,7 +89,6 @@ fun AssetsScreen(
     val unpinnedAssets by viewModel.unpinnedAssets.collectAsStateWithLifecycle()
     val walletInfo by viewModel.walletInfo.collectAsStateWithLifecycle()
     val swapEnabled by viewModel.swapEnabled.collectAsStateWithLifecycle()
-    val transactionsState by viewModel.txsState.collectAsStateWithLifecycle()
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
     var pinnedAssets by remember(pinnedAssetsState) { mutableStateOf(pinnedAssetsState) }
@@ -131,7 +126,6 @@ fun AssetsScreen(
                 state = listState
             ) {
                 assetsHead(walletInfo, swapEnabled, onSendClick, onReceiveClick, onBuyClick, onSwapClick)
-                pendingTransactions(transactionsState, onTransactionClick)
                 assets(
                     assets = pinnedAssets,
                     longPressState = longPressedAsset,
@@ -200,19 +194,6 @@ private fun LazyListScope.assetsListFooter(
             }
         }
         Spacer16()
-    }
-}
-
-private fun LazyListScope.pendingTransactions(
-    transactions: List<TransactionExtended>,
-    onTransactionClick: (String) -> Unit,
-) {
-    transactionsList(transactions) { onTransactionClick(it) }
-    if (transactions.isNotEmpty()) {
-        item {
-            Spacer16()
-            HorizontalDivider(thickness = 0.4.dp)
-        }
     }
 }
 
