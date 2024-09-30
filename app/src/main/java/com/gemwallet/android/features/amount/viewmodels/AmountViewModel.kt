@@ -71,7 +71,11 @@ class AmountViewModel @Inject constructor(
         .getStateFlow(paramsArg, "")
         .mapNotNull { AmountParams.unpack(it) }
 
-    private val asset: Flow<AssetInfo> = params.flatMapLatest { assetsRepository.getAssetInfo(it.assetId) }
+    private val asset: Flow<AssetInfo> = params.flatMapLatest {
+        addressState.value = it.destination?.address ?: ""
+        memoState.value = it.memo ?: ""
+        assetsRepository.getAssetInfo(it.assetId)
+    }
 
     private val delegation: StateFlow<Delegation?> = params.flatMapMerge {
         if (it.validatorId != null
@@ -100,8 +104,6 @@ class AmountViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val state: StateFlow<State?> = params.combine(asset) { params, asset ->
-        addressState.value = params.destination?.address ?: ""
-        memoState.value = params.memo ?: ""
         State(assetInfo = asset, params = params)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
