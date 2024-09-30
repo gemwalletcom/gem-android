@@ -2,11 +2,11 @@ package com.gemwallet.android.data.asset
 
 import android.util.Log
 import com.gemwallet.android.blockchain.operators.GetAsset
+import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.data.chains.ChainInfoLocalSource
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.tokens.TokensRepository
-import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
@@ -52,8 +52,8 @@ class AssetsRepository @Inject constructor(
     private val tokensRepository: TokensRepository,
     private val assetsLocalSource: AssetsLocalSource,
     private val balancesRemoteSource: BalancesRemoteSource,
-    transactionsRepository: TransactionsRepository,
     private val configRepository: ConfigRepository,
+    getTransactionsCase: GetTransactionsCase,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetAsset {
     private val visibleByDefault = listOf(Chain.Ethereum, Chain.Bitcoin, Chain.SmartChain, Chain.Solana)
@@ -65,7 +65,7 @@ class AssetsRepository @Inject constructor(
 
     init {
         scope.launch(Dispatchers.IO) {
-            transactionsRepository.getChangedTransactions().collect {
+            getTransactionsCase.getChangedTransactions().collect {
                 onTransactions(it)
             }
         }

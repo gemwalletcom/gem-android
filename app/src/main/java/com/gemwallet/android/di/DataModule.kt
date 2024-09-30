@@ -76,14 +76,18 @@ import com.gemwallet.android.blockchain.clients.xrp.XrpSignClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignerPreloader
 import com.gemwallet.android.blockchain.clients.xrp.XrpTransactionStatusClient
 import com.gemwallet.android.blockchain.operators.SignTransfer
+import com.gemwallet.android.cases.banners.CancelBannerCase
+import com.gemwallet.android.cases.banners.GetBannersCase
+import com.gemwallet.android.cases.transactions.CreateTransactionCase
+import com.gemwallet.android.cases.transactions.GetTransactionCase
+import com.gemwallet.android.cases.transactions.GetTransactionsCase
+import com.gemwallet.android.cases.transactions.PutTransactionsCase
 import com.gemwallet.android.data.asset.AssetsLocalSource
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.asset.AssetsRoomSource
 import com.gemwallet.android.data.asset.BalancesRemoteSource
 import com.gemwallet.android.data.asset.BalancesRetrofitRemoteSource
 import com.gemwallet.android.data.banners.BannersRepository
-import com.gemwallet.android.data.banners.CancelBannerCase
-import com.gemwallet.android.data.banners.GetBannersCase
 import com.gemwallet.android.data.bridge.BridgesRepository
 import com.gemwallet.android.data.bridge.ConnectionsDao
 import com.gemwallet.android.data.bridge.ConnectionsLocalSource
@@ -255,15 +259,15 @@ object DataModule {
         gemApiClient: GemApiClient,
         sessionRepository: SessionRepository,
         tokensRepository: TokensRepository,
-        transactionsRepository: TransactionsRepository,
         assetsLocalSource: AssetsLocalSource,
         balancesRemoteSource: BalancesRemoteSource,
         configRepository: ConfigRepository,
+        getTransactionsCase: GetTransactionsCase,
     ): AssetsRepository = AssetsRepository(
         gemApi = gemApiClient,
         sessionRepository = sessionRepository,
         tokensRepository = tokensRepository,
-        transactionsRepository = transactionsRepository,
+        getTransactionsCase = getTransactionsCase,
         assetsLocalSource = assetsLocalSource,
         balancesRemoteSource = balancesRemoteSource,
         configRepository = configRepository,
@@ -447,6 +451,30 @@ object DataModule {
             }
         },
     )
+
+    @Singleton
+    @Provides
+    fun provideGetTransactionsCase(transactionsRepository: TransactionsRepository): GetTransactionsCase {
+        return transactionsRepository
+    }
+
+    @Singleton
+    @Provides
+    fun provideGetTransactionCase(transactionsRepository: TransactionsRepository): GetTransactionCase {
+        return transactionsRepository
+    }
+
+    @Singleton
+    @Provides
+    fun providePutTransactionsCase(transactionsRepository: TransactionsRepository): PutTransactionsCase {
+        return transactionsRepository
+    }
+
+    @Singleton
+    @Provides
+    fun provideCreateTransactionsCase(transactionsRepository: TransactionsRepository): CreateTransactionCase {
+        return transactionsRepository
+    }
 
     @Singleton
     @Provides

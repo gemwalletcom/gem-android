@@ -10,10 +10,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gemwallet.android.R
-import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.AssetSubtype
 
 @Composable
 fun SelectReceiveScreen(

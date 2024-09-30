@@ -1,5 +1,6 @@
 package com.gemwallet.android.ui
 
+//import com.gemwallet.android.features.recipient.navigation.navigateToSendScreen
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -25,7 +26,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.gemwallet.android.R
@@ -38,7 +38,6 @@ import com.gemwallet.android.features.bridge.navigation.navigateToBridgesScreen
 import com.gemwallet.android.features.buy.navigation.navigateToBuyScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsManageScreen
 import com.gemwallet.android.features.receive.navigation.navigateToReceiveScreen
-//import com.gemwallet.android.features.recipient.navigation.navigateToSendScreen
 import com.gemwallet.android.features.settings.navigation.navigateToAboutUsScreen
 import com.gemwallet.android.features.settings.navigation.navigateToCurrenciesScreen
 import com.gemwallet.android.features.settings.navigation.navigateToDevelopScreen

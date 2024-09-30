@@ -2,6 +2,10 @@ package com.gemwallet.android.data.repositories.transaction
 
 import android.text.format.DateUtils
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
+import com.gemwallet.android.cases.transactions.CreateTransactionCase
+import com.gemwallet.android.cases.transactions.GetTransactionCase
+import com.gemwallet.android.cases.transactions.GetTransactionsCase
+import com.gemwallet.android.cases.transactions.PutTransactionsCase
 import com.gemwallet.android.data.asset.AssetsLocalSource
 import com.gemwallet.android.data.database.TransactionsDao
 import com.gemwallet.android.data.database.entities.DbTxSwapMetadata
@@ -43,7 +47,7 @@ class TransactionsRepository(
     private val assetsLocalSource: AssetsLocalSource,
     private val gson: Gson,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-) {
+) : GetTransactionsCase, GetTransactionCase, CreateTransactionCase, PutTransactionsCase {
     private val changedTransactions = MutableStateFlow<List<TransactionExtended>>(emptyList())
     private val mapper = ExtendedTransactionMapper()
 
@@ -56,22 +60,18 @@ class TransactionsRepository(
         }
     }
 
-    fun getChangedTransactions(): Flow<List<TransactionExtended>> {
+    override fun getChangedTransactions(): Flow<List<TransactionExtended>> {
         return changedTransactions
     }
 
-    fun getPendingTransactions(): Flow<List<TransactionExtended>> {
-        return transactionsDao.getTransactionsByState(TransactionState.Pending)
-            .mapNotNull { it.mapNotNull { tx -> mapper.asEntity(tx) } }
-    }
-
-    fun getTransactions(assetId: AssetId? = null): Flow<List<TransactionExtended>> {
+    override fun getTransactions(assetId: AssetId?, state: TransactionState?): Flow<List<TransactionExtended>> {
         return transactionsDao.getExtendedTransactions()
+            .map { txs -> txs.filter { state == null || it.state == state } }
             .mapNotNull { it.mapNotNull { tx -> mapper.asEntity(tx) } }
             .map { list ->
                 list.filter {
                     (assetId == null
-                        || it.asset.id.toIdentifier() == assetId.toIdentifier()
+                        || it.asset.id.same(assetId)
                         || it.transaction.getSwapMetadata()?.toAsset?.same(assetId) == true
                         || it.transaction.getSwapMetadata()?.fromAsset?.same(assetId) == true
                     )
@@ -91,19 +91,19 @@ class TransactionsRepository(
             }
     }
 
-    fun getTransaction(txId: String): Flow<TransactionExtended?> {
+    override fun getTransaction(txId: String): Flow<TransactionExtended?> {
         return transactionsDao.getExtendedTransaction(txId)
             .mapNotNull { mapper.asEntity(it ?: return@mapNotNull null) }
     }
 
-    suspend fun putTransactions(transactions: List<Transaction>) = withContext(Dispatchers.IO) {
+    override suspend fun putTransactions(transactions: List<Transaction>) = withContext(Dispatchers.IO) {
         transactionsDao.insert(
             transactions.map { TransactionMapper().asDomain(it) }
         )
         addSwapMetadata(transactions.filter { it.type == TransactionType.Swap })
     }
 
-    suspend fun addTransaction(
+    override suspend fun createTransaction(
         hash: String,
         assetId: AssetId,
         owner: Account,
@@ -113,9 +113,9 @@ class TransactionsRepository(
         amount: BigInteger,
         memo: String?,
         type: TransactionType,
-        metadata: String? = null,
+        metadata: String?,
         direction: TransactionDirection,
-    ): Result<Transaction> = withContext(Dispatchers.IO) {
+    ): Transaction = withContext(Dispatchers.IO) {
         val transaction = Transaction(
             id = "${assetId.chain.string}_$hash",
             hash = hash,
@@ -136,13 +136,14 @@ class TransactionsRepository(
             utxoOutputs = emptyList(),
             createdAt = System.currentTimeMillis(),
         )
-        addTransaction(transaction)
-        Result.success(transaction)
+        transactionsDao.insert(listOf(TransactionMapper().asDomain(transaction)))
+        addSwapMetadata(listOf(transaction))
+        transaction
     }
 
     private suspend fun observePending() = scope.launch {
-        val pendings = getPendingTransactions().firstOrNull() ?: emptyList()
-        val updatedTxs = pendings.map { tx ->
+        val pendingTxs = getPendingTransactions().firstOrNull() ?: emptyList()
+        val updatedTxs = pendingTxs.map { tx ->
             async {
                 val newTx = checkTx(tx.transaction)
                 if (newTx != null && newTx.id != tx.transaction.id) {
@@ -168,11 +169,6 @@ class TransactionsRepository(
         }
         updateTransaction(failedByTimeOut.map { it.transaction })
         changedTransactions.tryEmit(failedByTimeOut)
-    }
-
-    private suspend fun addTransaction(transaction: Transaction) = withContext(Dispatchers.IO) {
-        transactionsDao.insert(listOf(TransactionMapper().asDomain(transaction)))
-        addSwapMetadata(listOf(transaction))
     }
 
     private suspend fun updateTransaction(txs: List<Transaction>) = withContext(Dispatchers.IO) {

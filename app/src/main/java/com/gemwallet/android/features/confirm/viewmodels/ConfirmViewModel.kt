@@ -9,10 +9,10 @@ import com.gemwallet.android.blockchain.clients.SignerPreload
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.blockchain.operators.SignTransfer
+import com.gemwallet.android.cases.transactions.CreateTransactionCase
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.stake.StakeRepository
-import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.di.GemJson
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
@@ -69,7 +69,7 @@ class ConfirmViewModel @Inject constructor(
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
     private val signTransfer: SignTransfer,
     private val broadcastProxy: BroadcastProxy,
-    private val transactionsRepository: TransactionsRepository,
+    private val createTransactionsCase: CreateTransactionCase,
     private val stakeRepository: StakeRepository,
     @GemJson private val gson: Gson,
     private val savedStateHandle: SavedStateHandle,
@@ -280,7 +280,7 @@ class ConfirmViewModel @Inject constructor(
 
         broadcastResult.onSuccess { txHash ->
             val destinationAddress =  signerParams.input.destination()?.address ?: ""
-            transactionsRepository.addTransaction(
+            createTransactionsCase.createTransaction(
                 hash = txHash,
                 assetId = assetInfo.id(),
                 owner = assetInfo.owner,

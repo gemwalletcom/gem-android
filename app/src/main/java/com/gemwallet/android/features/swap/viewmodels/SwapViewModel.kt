@@ -6,10 +6,10 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.swap.SwapRepository
-import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
@@ -64,7 +64,7 @@ class SwapViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val swapRepository: SwapRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val transactionRepository: TransactionsRepository,
+    private val getTransactionCase: GetTransactionCase,
 ) : ViewModel() {
 
     val swapScreenState = MutableStateFlow<SwapState>(SwapState.None)
@@ -72,7 +72,7 @@ class SwapViewModel @Inject constructor(
     val selectPair = MutableStateFlow<SwapPairSelect?>(null)
 
     private val approveTxHash = MutableStateFlow<String?>(null)
-    val approveTx = approveTxHash.flatMapLatest { transactionRepository.getTransaction(it ?: return@flatMapLatest emptyFlow()) }
+    val approveTx = approveTxHash.flatMapLatest { getTransactionCase.getTransaction(it ?: return@flatMapLatest emptyFlow()) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val swapPairState: StateFlow<SwapPairState?> = savedStateHandle.getStateFlow<String?>(pairArg, null)

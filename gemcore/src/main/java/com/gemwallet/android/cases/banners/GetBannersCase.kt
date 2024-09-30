@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.banners
+package com.gemwallet.android.cases.banners
 
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Banner

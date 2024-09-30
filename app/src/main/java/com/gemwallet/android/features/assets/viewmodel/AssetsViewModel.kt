@@ -2,9 +2,9 @@ package com.gemwallet.android.features.assets.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.PriceUIState
@@ -47,7 +47,7 @@ class AssetsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val syncTransactions: SyncTransactions,
-    transactionsRepository: TransactionsRepository,
+    getTransactionsCase: GetTransactionsCase
 ) : ViewModel() {
     val screenState = assetsRepository.syncState
         .flatMapLatest { state ->
@@ -81,7 +81,7 @@ class AssetsViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-    val txsState = transactionsRepository.getPendingTransactions()
+    val txsState = getTransactionsCase.getPendingTransactions()
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val walletInfo: StateFlow<WalletInfoUIState> = sessionRepository.session().combine(assetsState) {session, assets ->

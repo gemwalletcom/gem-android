@@ -3,10 +3,10 @@ package com.gemwallet.android.features.transactions.details.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.features.transactions.details.model.TxDetailsScreenModel
@@ -35,14 +35,14 @@ import javax.inject.Inject
 class TransactionDetailsViewModel @Inject constructor(
     sessionRepository: SessionRepository,
     private val configRepository: ConfigRepository,
-    private val transactionsRepository: TransactionsRepository,
+    private val getTransactionCase: GetTransactionCase,
     private val assetsRepository: AssetsRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val tx: StateFlow<TransactionExtended?> = savedStateHandle.getStateFlow<String?>(txIdArg, null)
     .filterNotNull()
-    .flatMapLatest { transactionsRepository.getTransaction(it) }
+    .flatMapLatest { getTransactionCase.getTransaction(it) }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val assets = tx.flatMapLatest { tx ->

@@ -3,9 +3,9 @@ package com.gemwallet.android.features.asset.details.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.stake.StakeRepository
-import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.isStaked
 import com.gemwallet.android.ext.isSwapable
@@ -24,9 +24,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BalanceType
-import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
-import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionExtended
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -48,7 +46,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AssetInfoViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
-    private val transactionsRepository: TransactionsRepository,
+    private val getTransactionsCase: GetTransactionsCase,
     private val stakeRepository: StakeRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -65,7 +63,7 @@ class AssetInfoViewModel @Inject constructor(
 
         combine(
             assetsRepository.getAssetInfo(assetId),
-            transactionsRepository.getTransactions(assetId)
+            getTransactionsCase.getTransactions(assetId)
         ) { assetInfo, transactions ->
             Model(assetInfo, transactions)
         }
