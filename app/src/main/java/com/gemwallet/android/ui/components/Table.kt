@@ -86,6 +86,7 @@ fun Table(
                         modifier = Modifier.align(Alignment.BottomEnd),
                         expanded = isDropDownShow == item && item.dropDownActions != null,
                         offset = DpOffset(padding16, padding8),
+                        containerColor = MaterialTheme.colorScheme.background,
                         onDismissRequest = { isDropDownShow = null },
                     ) {
                         item.dropDownActions?.invoke {

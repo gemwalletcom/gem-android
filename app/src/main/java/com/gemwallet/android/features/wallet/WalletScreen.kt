@@ -6,10 +6,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -63,9 +66,7 @@ fun WalletScreen(
                 state = state as WalletUIState.Success,
                 onWalletName = viewModel::setWalletName,
                 onPhraseShow = { onPhraseShow(walletId) },
-                onDelete = {
-                    viewModel.delete(onBoard, onCancel)
-                },
+                onDelete = { viewModel.delete(onBoard, onCancel) },
                 onCancel = onCancel,
             )
         }
@@ -99,19 +100,13 @@ private fun Wallet(
         onClose = onCancel
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+            modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Container {
                 OutlinedTextField(
-                    modifier = Modifier
-                        .padding(padding16)
-                        .fillMaxWidth(),
-                    label = {
-                        Text(text = stringResource(id = R.string.wallet_name))
-                    },
+                    modifier = Modifier.padding(padding16).fillMaxWidth(),
+                    label = { Text(text = stringResource(id = R.string.wallet_name)) },
                     value = walletName,
                     onValueChange = {
                         onWalletName(it)
@@ -157,11 +152,12 @@ private fun Wallet(
                         trailingIcon = state.chainIconUrl,
                         dropDownActions = { callback ->
                             DropdownMenuItem(
-                                text = { Text(text = stringResource(id = R.string.wallet_copy_address)) },
+                                text = { Text( text = stringResource(id = R.string.wallet_copy_address)) },
+                                trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
                                 onClick = {
                                     callback()
                                     clipboardManager.setText(AnnotatedString(state.walletAddress))
-                                }
+                                },
                             )
                         },
                     )
