@@ -36,6 +36,7 @@ import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.titles.getTitle
 import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer2
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.padding16
 import com.gemwallet.android.ui.theme.trailingIcon20
@@ -145,6 +146,7 @@ private fun ConfirmErrorInfo(state: ConfirmState) {
                 style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.W400),
             )
         }
+        Spacer2()
         Text(
             text = when (state.message) {
                 is ConfirmError.Init,
