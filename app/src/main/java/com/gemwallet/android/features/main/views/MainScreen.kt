@@ -2,6 +2,7 @@ package com.gemwallet.android.features.main.views
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -88,7 +89,7 @@ fun MainScreen(
                 label = context.getString(R.string.activity_title),
                 icon = Icons.Default.ElectricBolt,
                 route = activitiesRoute,
-                badge = pendingCount,
+                badge = "1",///pendingCount,
                 testTag = "activitiesTab",
                 navigate = { navigateToActivitiesScreen(navOptions = it) }
             ),
@@ -125,7 +126,9 @@ fun MainScreen(
                                 BadgedBox(
                                     badge = {
                                         if (!item.badge.isNullOrEmpty()) {
-                                            Badge {
+                                            Badge(
+                                                modifier = Modifier.offset(x = 6.dp, y = 0.dp)
+                                            ) {
                                                 Text(text = item.badge)
                                             }
                                         }
