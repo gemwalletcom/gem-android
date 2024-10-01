@@ -218,7 +218,8 @@ private fun LazyListScope.assets(
         if (reorderableListState != null) {
             ReorderableItem(
                 state = reorderableListState,
-                item.asset.id.toIdentifier()
+                key = item.asset.id.toIdentifier(),
+                animateItemModifier = Modifier,
             ) { isDragging ->
                 AssetItem(
                     modifier = Modifier.shadow(if (isDragging) 4.dp else 0.dp),
