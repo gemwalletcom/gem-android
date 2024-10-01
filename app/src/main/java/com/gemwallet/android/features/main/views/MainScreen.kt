@@ -89,7 +89,7 @@ fun MainScreen(
                 label = context.getString(R.string.activity_title),
                 icon = Icons.Default.ElectricBolt,
                 route = activitiesRoute,
-                badge = "1",///pendingCount,
+                badge = pendingCount,
                 testTag = "activitiesTab",
                 navigate = { navigateToActivitiesScreen(navOptions = it) }
             ),
