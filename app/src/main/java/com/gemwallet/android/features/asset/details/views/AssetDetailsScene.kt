@@ -195,11 +195,10 @@ private fun Success(
                 balanceDetails(uiState, onStake)
                 if (uiState.transactions.isEmpty()) {
                     item {
-                        Box(
-                            modifier = Modifier.fillMaxWidth().padding(vertical = padding32)
-                        ) {
+                        Box(modifier = Modifier.fillMaxWidth().padding(vertical = padding32)) {
                             Text(
                                 modifier = Modifier.align(Alignment.Center),
+                                color = MaterialTheme.colorScheme.secondary,
                                 text = stringResource(R.string.activity_empty_state_message)
                             )
                         }
