@@ -277,8 +277,9 @@
   <string name="lock.one_hour">1 час</string>
   <string name="lock.six_hours">6 часов</string>
   <string name="lock.require_authentication">Требуется аутентификация</string>
-  <string name="lock.Unlock">Разблокировать</string>
+  <string name="lock.unlock">Разблокировать</string>
   <string name="price_alerts.get_notified_explain_message">Получайте уведомления о значительном изменении цен на ваши любимые криптоактивы.</string>
   <string name="price_alerts.empty_state.message">Пока не добавлено ни одного ценового оповещения.</string>
   <string name="assets.select_asset">Выберите актив</string>
+  <string name="lock.privacy_lock">Блокировка конфиденциальности</string>
 </resources>

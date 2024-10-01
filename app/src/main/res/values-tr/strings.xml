@@ -277,8 +277,9 @@
   <string name="lock.one_hour">1 saat</string>
   <string name="lock.six_hours">6 saat</string>
   <string name="lock.require_authentication">Require authentication</string>
-  <string name="lock.Unlock">Unlock</string>
+  <string name="lock.unlock">Unlock</string>
   <string name="price_alerts.get_notified_explain_message">Favori kripto varlıklarınızda önemli bir fiyat değişikliği olduğunda bildirim alın.</string>
   <string name="price_alerts.empty_state.message">Henüz fiyat uyarısı eklenmedi.</string>
   <string name="assets.select_asset">Varlık Seç</string>
+  <string name="lock.privacy_lock">Privacy Lock</string>
 </resources>

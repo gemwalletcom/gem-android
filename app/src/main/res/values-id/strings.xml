@@ -277,8 +277,9 @@
   <string name="lock.one_hour">1 jam</string>
   <string name="lock.six_hours">6 jam</string>
   <string name="lock.require_authentication">Require authentication</string>
-  <string name="lock.Unlock">Unlock</string>
+  <string name="lock.unlock">Unlock</string>
   <string name="price_alerts.get_notified_explain_message">Dapatkan pemberitahuan saat ada perubahan harga yang signifikan pada aset kripto favorit Anda.</string>
   <string name="price_alerts.empty_state.message">Belum ada peringatan harga yang ditambahkan.</string>
   <string name="assets.select_asset">Pilih Aset</string>
+  <string name="lock.privacy_lock">Privacy Lock</string>
 </resources>

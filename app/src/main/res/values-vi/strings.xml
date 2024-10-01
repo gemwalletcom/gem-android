@@ -277,8 +277,9 @@
   <string name="lock.one_hour">1 giờ</string>
   <string name="lock.six_hours">6 giờ</string>
   <string name="lock.require_authentication">Require authentication</string>
-  <string name="lock.Unlock">Unlock</string>
+  <string name="lock.unlock">Unlock</string>
   <string name="price_alerts.get_notified_explain_message">Nhận thông báo khi có thay đổi đáng kể về giá của tài sản tiền điện tử yêu thích của bạn.</string>
   <string name="price_alerts.empty_state.message">Chưa có thông báo giá nào được thêm vào.</string>
   <string name="assets.select_asset">Chọn Tài sản</string>
+  <string name="lock.privacy_lock">Privacy Lock</string>
 </resources>

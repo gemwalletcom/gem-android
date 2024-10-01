@@ -277,8 +277,9 @@
   <string name="lock.one_hour">1 Stunde</string>
   <string name="lock.six_hours">6 Stunden</string>
   <string name="lock.require_authentication">Require authentication</string>
-  <string name="lock.Unlock">Unlock</string>
+  <string name="lock.unlock">Unlock</string>
   <string name="price_alerts.get_notified_explain_message">Lassen Sie sich benachrichtigen, wenn es bei Ihren bevorzugten Krypto-Assets zu einer erheblichen Preisänderung kommt.</string>
   <string name="price_alerts.empty_state.message">Es wurden noch keine Preisalarme hinzugefügt.</string>
   <string name="assets.select_asset">Anlage auswählen</string>
+  <string name="lock.privacy_lock">Privacy Lock</string>
 </resources>

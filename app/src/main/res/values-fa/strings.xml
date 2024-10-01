@@ -277,8 +277,9 @@
   <string name="lock.one_hour">1 ساعت</string>
   <string name="lock.six_hours">6 ساعت</string>
   <string name="lock.require_authentication">Require authentication</string>
-  <string name="lock.Unlock">Unlock</string>
+  <string name="lock.unlock">Unlock</string>
   <string name="price_alerts.get_notified_explain_message">هنگامی که تغییر قیمت قابل توجهی در دارایی های رمزنگاری مورد علاقه شما ایجاد می شود مطلع شوید.</string>
   <string name="price_alerts.empty_state.message">هنوز هیچ هشدار قیمت اضافه نشده است.</string>
   <string name="assets.select_asset">Asset را انتخاب کنید</string>
+  <string name="lock.privacy_lock">Privacy Lock</string>
 </resources>

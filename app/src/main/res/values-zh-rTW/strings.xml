@@ -277,8 +277,9 @@
   <string name="lock.one_hour">1小時</string>
   <string name="lock.six_hours">6小時</string>
   <string name="lock.require_authentication">鎖定時間</string>
-  <string name="lock.Unlock">解鎖</string>
+  <string name="lock.unlock">解鎖</string>
   <string name="price_alerts.get_notified_explain_message">當您最喜歡的加密資產發生重大價格變化時收到通知。</string>
   <string name="price_alerts.empty_state.message">尚未添加價格提醒。</string>
   <string name="assets.select_asset">選擇資產</string>
+  <string name="lock.privacy_lock">隱私鎖</string>
 </resources>

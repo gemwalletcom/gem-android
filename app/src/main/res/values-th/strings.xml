@@ -277,8 +277,9 @@
   <string name="lock.one_hour">1 ชั่วโมง</string>
   <string name="lock.six_hours">6 ชั่วโมง</string>
   <string name="lock.require_authentication">Require authentication</string>
-  <string name="lock.Unlock">Unlock</string>
+  <string name="lock.unlock">Unlock</string>
   <string name="price_alerts.get_notified_explain_message">รับการแจ้งเตือนเมื่อมีการเปลี่ยนแปลงราคาที่สำคัญในสินทรัพย์ crypto ที่คุณชื่นชอบ</string>
   <string name="price_alerts.empty_state.message">ยังไม่มีการเพิ่มการแจ้งเตือนราคา</string>
   <string name="assets.select_asset">เลือกสินทรัพย์</string>
+  <string name="lock.privacy_lock">Privacy Lock</string>
 </resources>

@@ -277,8 +277,9 @@
   <string name="lock.one_hour">1 時間</string>
   <string name="lock.six_hours">6 時間</string>
   <string name="lock.require_authentication">ロック時間</string>
-  <string name="lock.Unlock">ロック解除</string>
+  <string name="lock.unlock">ロック解除</string>
   <string name="price_alerts.get_notified_explain_message">お気に入りの暗号資産の価格が大幅に変動したときに通知を受け取ります。</string>
   <string name="price_alerts.empty_state.message">価格アラートはまだ追加されていません。</string>
   <string name="assets.select_asset">資産を選択</string>
+  <string name="lock.privacy_lock">Privacy Lock</string>
 </resources>

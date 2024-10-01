@@ -141,7 +141,7 @@
   <string name="swap.provider">提供者</string>
   <string name="common.phrase">短语</string>
   <string name="stake.active">已激活</string>
-  <string name="stake.pending">待打包</string>
+  <string name="stake.pending">等待中</string>
   <string name="stake.rewards">奖励</string>
   <string name="assets.no_assets_found">未找到资产</string>
   <string name="transfer.stake.title">质押</string>
@@ -277,8 +277,9 @@
   <string name="lock.one_hour">1 小时</string>
   <string name="lock.six_hours">6 小时</string>
   <string name="lock.require_authentication">锁定时间</string>
-  <string name="lock.Unlock">解锁</string>
+  <string name="lock.unlock">解锁</string>
   <string name="price_alerts.get_notified_explain_message">您最喜欢的加密资产价格变动时通知。</string>
   <string name="price_alerts.empty_state.message">尚未添加价格警报。</string>
   <string name="assets.select_asset">选择资产</string>
+  <string name="lock.privacy_lock">隐私锁</string>
 </resources>

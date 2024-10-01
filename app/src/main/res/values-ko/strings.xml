@@ -277,8 +277,9 @@
   <string name="lock.one_hour">1시간</string>
   <string name="lock.six_hours">6시간</string>
   <string name="lock.require_authentication">Require authentication</string>
-  <string name="lock.Unlock">Unlock</string>
+  <string name="lock.unlock">Unlock</string>
   <string name="price_alerts.get_notified_explain_message">즐겨찾는 암호화폐의 가격이 크게 변동되면 알림을 받으세요.</string>
   <string name="price_alerts.empty_state.message">아직 가격 알림이 추가되지 않았습니다.</string>
   <string name="assets.select_asset">자산 선택</string>
+  <string name="lock.privacy_lock">Privacy Lock</string>
 </resources>
