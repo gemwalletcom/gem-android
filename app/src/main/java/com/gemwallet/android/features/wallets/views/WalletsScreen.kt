@@ -201,7 +201,7 @@ private fun LazyListScope.wallets(
     onDeleteWallet: (String) -> Unit,
     onTogglePin: (String) -> Unit,
 ) {
-    if (isPinned) {
+    if (isPinned && wallets.isNotEmpty()) {
         pinnedHeader()
     }
     items(items = wallets, key = { it.id }) { wallet ->
