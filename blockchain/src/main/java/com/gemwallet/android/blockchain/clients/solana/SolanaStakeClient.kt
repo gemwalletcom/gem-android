@@ -34,7 +34,7 @@ class SolanaStakeClient(
                 name = "",
                 isActive = isActive,
                 commision = it.commission.toDouble(),
-                apr = if (isActive) apr * (it.commission.toDouble() / 100) else 0.0,
+                apr = if (isActive) apr - apr * (it.commission.toDouble() / 100) else 0.0,
             )
         } ?: emptyList()
     }
