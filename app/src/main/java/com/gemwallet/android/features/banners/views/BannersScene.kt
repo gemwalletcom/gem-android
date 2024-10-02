@@ -98,9 +98,9 @@ private fun BannerText(
             placeholder = iconUrl,
             supportIcon = ""
         )
-        Spacer8()
+        Spacer16()
         Column(
-            modifier = Modifier.weight(1f).padding(top = padding12, end = 0.dp, bottom = padding12),
+            modifier = Modifier.weight(1f).padding(top = 14.dp, end = 0.dp, bottom = padding12),
             verticalArrangement = Arrangement.Center,
         ) {
             Text(
