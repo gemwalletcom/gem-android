@@ -21,6 +21,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.interactors.getSupportIconUrl
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.titles.getAddress
 import com.gemwallet.android.ui.components.titles.getTransactionTitle
 import com.gemwallet.android.ui.components.titles.getValue
@@ -35,9 +36,11 @@ import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
 import com.wallet.core.primitives.TransactionType
+import java.math.BigDecimal
 
 @Composable
 fun TransactionItem(item: TransactionExtended, isLast: Boolean, onTransactionClick: (String) -> Unit) {
+    val value = Crypto(item.transaction.value.toBigInteger())
     TransactionItem(
         assetIcon = item.asset.getIconUrl(),
         supportIcon = item.asset.getSupportIconUrl(),
@@ -47,10 +50,9 @@ fun TransactionItem(item: TransactionExtended, isLast: Boolean, onTransactionCli
         direction = item.transaction.direction,
         type = item.transaction.type,
         state = item.transaction.state,
-        value = Crypto(item.transaction.value.toBigInteger()).format(
-            item.asset.decimals,
-            item.asset.symbol,
-            2,
+        value = item.asset.format(
+            crypto = value,
+            decimalPlace = if (value.value(item.asset.decimals) < BigDecimal.ONE) 4 else 2,
             dynamicPlace = true,
         ),
         metadata = item.transaction.getSwapMetadata(),
