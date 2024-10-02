@@ -106,7 +106,7 @@ fun AmountListHead(
                 )
             }
             if (actions != null) {
-                Spacer8()
+                Spacer(modifier = Modifier.size(10.5.dp))
                 actions()
             }
         }
