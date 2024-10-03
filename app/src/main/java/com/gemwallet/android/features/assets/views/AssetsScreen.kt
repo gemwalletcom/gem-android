@@ -138,7 +138,16 @@ fun AssetsScreen(
                         viewModel.saveOrder(pinnedAssets)
                     }
                 )
-                assets(unpinnedAssets, longPressedAsset, false, null, onAssetClick, viewModel::hideAsset, viewModel::togglePin) {}
+                assets(
+                    assets = unpinnedAssets,
+                    longPressState = longPressedAsset,
+                    isPinned = false,
+                    reorderableListState = null,
+                    onAssetClick = onAssetClick,
+                    onAssetHide = viewModel::hideAsset,
+                    onTogglePin = viewModel::togglePin,
+                    onReordered = {},
+                )
                 assetsListFooter(onShowAssetManage)
             }
         }
