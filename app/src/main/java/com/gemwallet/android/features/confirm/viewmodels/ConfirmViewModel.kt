@@ -423,12 +423,13 @@ class ConfirmViewModel @Inject constructor(
             val feeAmount = signerParams.info.fee(txSpeed).amount
 
             val totalAmount = amount + if (assetInfo == feeAssetInfo) feeAmount else BigInteger.ZERO
-            val label = "${feeAssetInfo.id().chain.asset().name}(${feeAssetInfo.asset.symbol})"
 
             if (assetBalance < totalAmount) {
+                val label = "${assetInfo.id().chain.asset().name} (${assetInfo.asset.symbol})"
                 throw ConfirmError.InsufficientBalance(label)
             }
             if (feeAssetInfo.balances.available().atomicValue < feeAmount) {
+                val label = "${feeAssetInfo.id().chain.asset().name} (${feeAssetInfo.asset.symbol})"
                 throw ConfirmError.InsufficientFee(label)
             }
         }
