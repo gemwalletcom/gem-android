@@ -422,7 +422,16 @@ class ConfirmViewModel @Inject constructor(
             val amount = signerParams.finalAmount
             val feeAmount = signerParams.info.fee(txSpeed).amount
 
-            val totalAmount = amount + if (assetInfo == feeAssetInfo) feeAmount else BigInteger.ZERO
+            val totalAmount = when (signerParams.input.getTxType()) {
+                TransactionType.Transfer,
+                TransactionType.Swap,
+                TransactionType.TokenApproval,
+                TransactionType.StakeDelegate -> amount + if (assetInfo == feeAssetInfo) feeAmount else BigInteger.ZERO
+                TransactionType.StakeUndelegate,
+                TransactionType.StakeRewards,
+                TransactionType.StakeRedelegate,
+                TransactionType.StakeWithdraw -> amount
+            }
 
             if (assetBalance < totalAmount) {
                 val label = "${assetInfo.id().chain.asset().name} (${assetInfo.asset.symbol})"
