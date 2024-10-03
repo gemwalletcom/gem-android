@@ -45,7 +45,7 @@ class AssetSelectViewModel @Inject constructor(
     private var queryJob: Job? = null
     private val queryFlow = snapshotFlow { queryState.text }
 
-    val isLoading = MutableStateFlow(true)
+    val uiState = MutableStateFlow<UIState>(UIState.Loading)
 
     val isAddAssetAvailable = sessionRepository.session().map { session ->
         val availableAccounts = session?.wallet?.accounts?.map { it.chain } ?: emptyList()
@@ -56,13 +56,21 @@ class AssetSelectViewModel @Inject constructor(
     val assets = sessionRepository.session().combine(queryFlow) { session, query ->
         Pair(session, query)
     }
-    .flatMapLatest { assetsRepository.search(it.first?.wallet ?: return@flatMapLatest emptyFlow(), it.second.toString()) }
+    .flatMapLatest {
+        val wallet = it.first?.wallet ?: return@flatMapLatest emptyFlow()
+        assetsRepository.search(wallet, it.second.toString())
+    }
     .map { assets: List<AssetInfo> ->
         assets.distinctBy { it.asset.id.toIdentifier() }.sortedByDescending {
-            it.balances.available().convert(it.asset.decimals, it.price?.price?.price ?: 0.0).atomicValue
+            it.balances.available()
+                .convert(it.asset.decimals, it.price?.price?.price ?: 0.0)
+                .atomicValue
         }
     }
-    .map { assets -> assets.map { it.toUIModel() }.toImmutableList() }
+    .map { assets ->
+        uiState.update { if (assets.isEmpty()) UIState.Empty else UIState.Idle }
+        assets.map { it.toUIModel() }.toImmutableList()
+    }
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetUIState>().toImmutableList())
 
@@ -83,10 +91,15 @@ class AssetSelectViewModel @Inject constructor(
             }
             queryJob = viewModelScope.launch {
                 delay(250)
-                isLoading.update { true }
+                uiState.update { UIState.Loading }
                 tokensRepository.search(it.toString())
-                isLoading.update { false }
             }
         }
+    }
+
+    sealed interface UIState {
+        data object Idle : UIState
+        data object Empty : UIState
+        data object Loading : UIState
     }
 }

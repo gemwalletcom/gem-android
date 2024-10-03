@@ -25,7 +25,7 @@ fun AssetsManageScreen(
     viewModel: AssetSelectViewModel = hiltViewModel()
 ) {
     val isAddAssetAvailable by viewModel.isAddAssetAvailable.collectAsStateWithLifecycle()
-    val uiStates by viewModel.isLoading.collectAsStateWithLifecycle()
+    val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
     val assets by viewModel.assets.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -38,7 +38,7 @@ fun AssetsManageScreen(
         support = { if (it.asset.id.type() == AssetSubtype.NATIVE) null else it.asset.id.chain.asset().name },
         query = viewModel.queryState,
         assets = assets,
-        loading = uiStates,
+        state = uiStates,
         onCancel = onCancel,
         onAddAsset = if (isAddAssetAvailable) onAddAsset else null,
         onSelect = {},

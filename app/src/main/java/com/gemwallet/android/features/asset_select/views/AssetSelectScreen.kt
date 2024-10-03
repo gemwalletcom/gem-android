@@ -24,7 +24,7 @@ fun AssetSelectScreen(
     onAddAsset: (() -> Unit)? = null,
     viewModel: AssetSelectViewModel = hiltViewModel()
 ) {
-    val uiStates by viewModel.isLoading.collectAsStateWithLifecycle()
+    val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
     val assets by viewModel.assets.collectAsStateWithLifecycle()
 
     LaunchedEffect(Unit) {
@@ -37,7 +37,7 @@ fun AssetSelectScreen(
         support = { if (it.asset.id.type() == AssetSubtype.NATIVE) null else it.asset.id.chain.asset().name },
         query = viewModel.queryState,
         assets = assets.filter { predicate(it.asset.id) }.toImmutableList(), // TODO: Empty balance???
-        loading = uiStates,
+        state = uiStates,
         onSelect = onSelect,
         onCancel = onCancel,
         onAddAsset = onAddAsset,

@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset_select.components.SearchBar
+import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
 import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.features.assets.model.PriceUIState
@@ -49,7 +50,7 @@ internal fun AssetSelectScene(
     support: ((AssetUIState) -> String?)?,
     query: TextFieldState,
     assets: ImmutableList<AssetUIState>,
-    loading: Boolean,
+    state: AssetSelectViewModel.UIState,
     onSelect: ((AssetId) -> Unit)?,
     onCancel: () -> Unit,
     itemTrailing: (@Composable (AssetUIState) -> Unit)? = null,
@@ -71,8 +72,8 @@ internal fun AssetSelectScene(
         Spacer16()
         LazyColumn {
             assets(items, onSelect, support, titleBadge, itemTrailing)
-            loading(loading = loading)
-            notFound(items = items, loading = loading, onAddAsset = onAddAsset)
+//            loading(state)
+            notFound(state = state, onAddAsset = onAddAsset)
         }
     }
 }
@@ -105,11 +106,10 @@ private fun LazyListScope.assets(
 }
 
 private fun LazyListScope.notFound(
-    loading: Boolean,
-    items: List<AssetUIState>,
+    state: AssetSelectViewModel.UIState,
     onAddAsset: (() -> Unit)? = null,
 ) {
-    if (items.isNotEmpty() || loading) {
+    if (state !is AssetSelectViewModel.UIState.Empty) {
         return
     }
     item {
@@ -129,8 +129,8 @@ private fun LazyListScope.notFound(
     }
 }
 
-private fun LazyListScope.loading(loading: Boolean) {
-    if (!loading) {
+private fun LazyListScope.loading(state: AssetSelectViewModel.UIState) {
+    if (state !is AssetSelectViewModel.UIState.Loading) {
         return
     }
     item {
@@ -164,7 +164,7 @@ fun PreviewAssetScreenUI() {
                     )
                 )
             ).toImmutableList(),
-            loading = false,
+            state = AssetSelectViewModel.UIState.Idle,
             title = "Send",
             titleBadge = { it.asset.symbol },
             support = null,
