@@ -29,7 +29,7 @@ class StakeHub {
     }
 
     fun encodeDelegateCall(validator: String, delegateVote: Boolean): ByteArray {
-        return uniffi.Gemstone.bscEncodeDelegateCall(operatorAddress = validator, delegateVotePower = delegateVote)
+        return uniffi.Gemstone.bscEncodeDelegateCall(validator, delegateVote)
     }
 
     fun encodeValidatorsCall(offset: Int, limit: Int): String {
