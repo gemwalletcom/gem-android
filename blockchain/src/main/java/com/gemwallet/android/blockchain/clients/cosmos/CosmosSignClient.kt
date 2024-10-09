@@ -157,7 +157,16 @@ class CosmosSignClient(
 
         val cosmosFee = Cosmos.Fee.newBuilder().apply {
             this.gas = gas
-            addAmounts(getAmount(feeAmount, CosmosDenom.from(chain)))
+            when (chain) {
+                Chain.Cosmos,
+                Chain.Osmosis,
+                Chain.Celestia,
+                Chain.Injective,
+                Chain.Sei,
+                Chain.Noble -> addAmounts(getAmount(feeAmount, CosmosDenom.from(chain)))
+                else -> {}
+            }
+
         }.build()
         val memo = when (input.input.getTxType()) {
             TransactionType.StakeDelegate,
