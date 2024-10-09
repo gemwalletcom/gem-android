@@ -8,8 +8,25 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
+enum class PriceAlertDirection(val string: String) {
+	@SerialName("up")
+	Up("up"),
+	@SerialName("down")
+	Down("down"),
+}
+
+@Serializable
 data class PriceAlert (
 	val assetId: String,
-	val price: Double? = null
+	val price: Double? = null,
+	val pricePercentChange: Double? = null,
+	val priceDirection: PriceAlertDirection? = null
+)
+
+@Serializable
+data class PriceAlertData (
+	val asset: Asset,
+	val price: Price? = null,
+	val priceAlert: PriceAlert
 )
 

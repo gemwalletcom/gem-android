@@ -13,3 +13,11 @@ data class Price (
 	val priceChangePercentage24h: Double
 )
 
+@Serializable
+data class PriceData (
+	val asset: Asset,
+	val price: Price? = null,
+	val priceAlert: PriceAlert? = null,
+	val details: AssetDetailsInfo? = null
+)
+

@@ -50,7 +50,7 @@ android {
     defaultConfig {
         applicationId = "com.gemwallet.android"
         minSdk = 28
-        targetSdk = 34
+        targetSdk = 35
         versionCode = Integer.valueOf(System.getenv("BUILD_NUMBER") ?: "1")
         versionName = System.getenv("BUILD_VERSION") ?: "1.0"
 

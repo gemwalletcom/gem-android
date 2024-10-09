@@ -12,7 +12,7 @@ data class ScanAddress (
 	val name: String? = null,
 	val address: String,
 	val isVerified: Boolean,
-	val isFradulent: Boolean,
+	val isFraudulent: Boolean,
 	val isMemoRequired: Boolean
 )
 
