@@ -34,19 +34,19 @@ data class TokenRoom(
 @Dao
 interface TokensDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(token: TokenRoom)
+    suspend fun insert(token: TokenRoom)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(token: List<TokenRoom>)
+    suspend fun insert(token: List<TokenRoom>)
 
     @Query("DELETE FROM tokens WHERE id IN (:ids)")
-    fun delete(ids: List<String>)
+    suspend fun delete(ids: List<String>)
 
     @Query("SELECT * FROM tokens WHERE id IN (:ids)")
-    fun getById(ids: List<String>): List<TokenRoom>
+    suspend fun getById(ids: List<String>): List<TokenRoom>
 
     @Query("SELECT * FROM tokens WHERE type IN (:types) ORDER BY rank DESC")
-    fun getByType(types: List<AssetType>): List<TokenRoom>
+    suspend fun getByType(types: List<AssetType>): List<TokenRoom>
 
     @Query("SELECT * FROM tokens WHERE type IN (:types) " +
             "AND (id LIKE '%' || :query || '%' OR symbol LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%') " +
@@ -91,18 +91,7 @@ class TokensRoomSource(
     private val tokensDao: TokensDao,
 ) : TokensLocalSource {
 
-    override suspend fun addTokens(tokens: List<AssetFull>) {
-        tokensDao.insert(tokens.map { token ->
-            TokenRoom(
-                id = token.asset.id.toIdentifier(),
-                name = token.asset.name,
-                symbol = token.asset.symbol,
-                decimals = token.asset.decimals,
-                type = token.asset.type,
-                rank = token.score.rank,
-            )
-        })
-    }
+
 
     override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? = withContext(Dispatchers.IO) {
         val dbAssetInfo = tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())

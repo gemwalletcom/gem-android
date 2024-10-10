@@ -79,9 +79,9 @@ class TokensRepositoryImpl(
                     score = AssetScore(0),
                 )
             }
-            localSource.addTokens(assets)
+            addTokens(assets)
         } else {
-            localSource.addTokens(tokens.filter { it.asset.id != null })
+            addTokens(tokens.filter { it.asset.id != null })
         }
     }
 
@@ -94,11 +94,24 @@ class TokensRepositoryImpl(
             search(tokenId)
             return
         }
-        localSource.addTokens(listOf(AssetFull(asset, score = AssetScore(0))))
+        addTokens(listOf(AssetFull(asset, score = AssetScore(0))))
     }
 
     override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
         return localSource.assembleAssetInfo(assetId)
+    }
+
+    private suspend fun addTokens(tokens: List<AssetFull>) {
+        tokensDao.insert(tokens.map { token ->
+            TokenRoom(
+                id = token.asset.id.toIdentifier(),
+                name = token.asset.name,
+                symbol = token.asset.symbol,
+                decimals = token.asset.decimals,
+                type = token.asset.type,
+                rank = token.score.rank,
+            )
+        })
     }
 
     private fun getTokenType(chain: Chain) = when (chain) {

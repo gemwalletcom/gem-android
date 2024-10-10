@@ -8,7 +8,6 @@ import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
 
 interface TokensLocalSource {
-    suspend fun addTokens(tokens: List<AssetFull>)
 
     suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo?
 }
