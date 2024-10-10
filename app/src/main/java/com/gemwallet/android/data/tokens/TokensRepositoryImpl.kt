@@ -2,6 +2,7 @@ package com.gemwallet.android.data.tokens
 
 import com.gemwallet.android.blockchain.clients.GetTokenClient
 import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.Asset
@@ -25,7 +26,16 @@ class TokensRepositoryImpl(
 ) : TokensRepository {
 
     override suspend fun getByIds(ids: List<AssetId>): List<Asset> = withContext(Dispatchers.IO) {
-        localSource.getByIds(ids)
+        tokensDao.getById(ids.map { it.toIdentifier() })
+            .mapNotNull {
+                Asset(
+                    id = it.id.toAssetId() ?: return@mapNotNull null,
+                    name = it.name,
+                    symbol = it.symbol,
+                    decimals = it.decimals,
+                    type = it.type,
+                )
+            }
     }
 
     override suspend fun getByChains(chains: List<Chain>, query: String): Flow<List<Asset>> {

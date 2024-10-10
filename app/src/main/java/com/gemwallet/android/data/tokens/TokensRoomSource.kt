@@ -104,19 +104,6 @@ class TokensRoomSource(
         })
     }
 
-    override suspend fun getByIds(ids: List<AssetId>): List<Asset> {
-        return tokensDao.getById(ids.map { it.toIdentifier() })
-            .mapNotNull {
-                Asset(
-                    id = it.id.toAssetId() ?: return@mapNotNull null,
-                    name = it.name,
-                    symbol = it.symbol,
-                    decimals = it.decimals,
-                    type = it.type,
-                )
-            }
-    }
-
     override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? = withContext(Dispatchers.IO) {
         val dbAssetInfo = tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
         AssetInfoMapper().asDomain(dbAssetInfo).firstOrNull()

@@ -10,7 +10,5 @@ import kotlinx.coroutines.flow.Flow
 interface TokensLocalSource {
     suspend fun addTokens(tokens: List<AssetFull>)
 
-    suspend fun getByIds(ids: List<AssetId>): List<Asset>
-
     suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo?
 }
