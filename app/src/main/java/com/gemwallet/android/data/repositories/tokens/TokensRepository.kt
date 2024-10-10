@@ -1,6 +1,8 @@
 package com.gemwallet.android.data.repositories.tokens
 
 import com.gemwallet.android.blockchain.clients.GetTokenClient
+import com.gemwallet.android.cases.tokens.GetTokensCase
+import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.database.TokensDao
 import com.gemwallet.android.data.database.entities.DbToken
 import com.gemwallet.android.data.database.mappers.AssetInfoMapper
@@ -25,19 +27,19 @@ class TokensRepository (
     private val tokensDao: TokensDao,
     private val gemApiClient: GemApiClient,
     private val getTokenClients: List<GetTokenClient>,
-) {
+) : GetTokensCase, SearchTokensCase {
     private val mapper = TokenMapper()
 
-    suspend fun getByIds(ids: List<AssetId>): List<Asset> = withContext(Dispatchers.IO) {
+    override suspend fun getByIds(ids: List<AssetId>): List<Asset> = withContext(Dispatchers.IO) {
         tokensDao.getById(ids.map { it.toIdentifier() }).map(mapper::asEntity)
     }
 
-    fun getByChains(chains: List<Chain>, query: String): Flow<List<Asset>> {
+    override fun getByChains(chains: List<Chain>, query: String): Flow<List<Asset>> {
         return tokensDao.search(chains.mapNotNull { chain -> getTokenType(chain) }, query)
             .map { assets -> assets.map(mapper::asEntity) }
     }
 
-    suspend fun search(query: String) = withContext(Dispatchers.IO) {
+    override suspend fun search(query: String) = withContext(Dispatchers.IO) {
         if (query.isEmpty()) {
             return@withContext
         }
@@ -65,7 +67,7 @@ class TokensRepository (
         }
     }
 
-    suspend fun search(assetId: AssetId) {
+    override suspend fun search(assetId: AssetId) {
         val tokenId = assetId.tokenId ?: return
         val asset = getTokenClients
             .firstOrNull { it.isMaintain(assetId.chain) && it.isTokenQuery(tokenId) }
@@ -77,7 +79,7 @@ class TokensRepository (
         addTokens(listOf(AssetFull(asset, score = AssetScore(0))))
     }
 
-    suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
+    override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
         val dbAssetInfo = tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
         return AssetInfoMapper().asDomain(dbAssetInfo).firstOrNull()
     }

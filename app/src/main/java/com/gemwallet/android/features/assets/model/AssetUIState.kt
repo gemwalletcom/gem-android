@@ -34,10 +34,10 @@ fun AssetInfo.toUIModel(): AssetUIState {
         isZeroValue = balances.atomicValue == BigInteger.ZERO,
         value = asset.format(balances, 4),
         price = PriceUIState.create(price?.price, currency),
-        fiat = if (price?.price == null || price.price.price == 0.0) {
+        fiat = if (price?.price == null || price!!.price.price == 0.0) {
             ""
         } else {
-            currency.format(balances.convert(asset.decimals, price.price.price), 2)
+            currency.format(balances.convert(asset.decimals, price!!.price.price), 2)
         },
         owner = owner.address,
         metadata = metadata,

@@ -81,13 +81,13 @@ class ChartViewModel @Inject constructor(
         val periodStartPrice = prices.firstOrNull()?.value ?: 0.0f
         val currentPoint = if (assetInfo.price == null) null else {
             val percentage = if (period == ChartPeriod.Day) {
-                assetInfo.price.price.priceChangePercentage24h
+                assetInfo.price!!.price.priceChangePercentage24h
             } else {
-                (assetInfo.price.price.price - periodStartPrice) / periodStartPrice * 100
+                (assetInfo.price!!.price.price - periodStartPrice) / periodStartPrice * 100
             }
             PricePoint(
-                y = assetInfo.price.price.price.toFloat(),
-                yLabel = Fiat(assetInfo.price.price.price).format(0, currency.string, 2, dynamicPlace = true),
+                y = assetInfo.price!!.price.price.toFloat(),
+                yLabel = Fiat(assetInfo.price!!.price.price).format(0, currency.string, 2, dynamicPlace = true),
                 timestamp = System.currentTimeMillis(),
                 percentage = PriceUIState.formatPercentage(percentage, showZero = true),
                 priceState = PriceUIState.getState(percentage),

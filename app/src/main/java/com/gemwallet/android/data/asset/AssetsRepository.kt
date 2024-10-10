@@ -2,11 +2,12 @@ package com.gemwallet.android.data.asset
 
 import android.util.Log
 import com.gemwallet.android.blockchain.operators.GetAsset
+import com.gemwallet.android.cases.tokens.GetTokensCase
+import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.data.chains.ChainInfoLocalSource
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.repositories.tokens.TokensRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
@@ -49,11 +50,12 @@ import javax.inject.Singleton
 class AssetsRepository @Inject constructor(
     private val gemApi: GemApiClient,
     private val sessionRepository: SessionRepository,
-    private val tokensRepository: TokensRepository,
     private val assetsLocalSource: AssetsLocalSource,
     private val balancesRemoteSource: BalancesRemoteSource,
     private val configRepository: ConfigRepository,
     getTransactionsCase: GetTransactionsCase,
+    private val getTokensCase: GetTokensCase,
+    private val searchTokensCase: SearchTokensCase,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetAsset {
     private val visibleByDefault = listOf(Chain.Ethereum, Chain.Bitcoin, Chain.SmartChain, Chain.Solana)
@@ -114,9 +116,9 @@ class AssetsRepository @Inject constructor(
 
             assetsLocalSource.setAssetDetails(
                 assetId = assetId,
-                buyable = assetFull.details?.isBuyable ?: false,
-                swapable = assetFull.details?.isSwapable ?: false,
-                stakeable = assetFull.details?.isStakeable ?: false,
+                buyable = assetFull.details?.isBuyable == true,
+                swapable = assetFull.details?.isSwapable == true,
+                stakeable = assetFull.details?.isStakeable == true,
                 links = assetFull.details?.links,
                 market = assetFull.market,
                 rank = assetFull.score.rank,
@@ -144,7 +146,7 @@ class AssetsRepository @Inject constructor(
     suspend fun getById(wallet: Wallet, assetId: AssetId): Result<List<AssetInfo>> {
         val assetInfos = assetsLocalSource.getById(wallet.accounts, assetId).getOrNull()
         val result = if (assetInfos.isNullOrEmpty()) {
-            val tokens = tokensRepository.getByIds(listOf(assetId))
+            val tokens = getTokensCase.getByIds(listOf(assetId))
             tokens.mapNotNull { token ->
                 AssetInfo(
                     owner = wallet.getAccount(token.id.chain) ?: return@mapNotNull null,
@@ -164,19 +166,19 @@ class AssetsRepository @Inject constructor(
     fun getAssetsInfo(assetsId: List<AssetId>): Flow<List<AssetInfo>> = assetsLocalSource.getAssetsInfo(assetsId).map { assets ->
         assetsId.map { id ->
             assets.firstOrNull { it.asset.id.toIdentifier() == id.toIdentifier() }
-                ?: tokensRepository.assembleAssetInfo(id)
+                ?: getTokensCase.assembleAssetInfo(id)
         }.filterNotNull()
     }
 
     suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo> = withContext(Dispatchers.IO) {
         assetsLocalSource.getAssetInfo(assetId).mapNotNull {
-            it ?: tokensRepository.assembleAssetInfo(assetId)
+            it ?: getTokensCase.assembleAssetInfo(assetId)
         }
     }
 
     suspend fun search(wallet: Wallet, query: String): Flow<List<AssetInfo>> {
         val assetsFlow = assetsLocalSource.search(query)
-        val tokensFlow = tokensRepository.getByChains(wallet.accounts.map { it.chain }, query)
+        val tokensFlow = getTokensCase.getByChains(wallet.accounts.map { it.chain }, query)
         return combine(assetsFlow, tokensFlow) { assets, tokens ->
             assets + tokens.mapNotNull { asset ->
                 AssetInfo(
@@ -191,11 +193,11 @@ class AssetsRepository @Inject constructor(
 
     suspend fun getAssetByTokenId(chain: Chain, address: String): Asset? = withContext(Dispatchers.IO) {
         val assetId = AssetId(chain, address)
-        tokensRepository.search(assetId)
-        tokensRepository.getByIds(listOf(assetId)).firstOrNull()
+        searchTokensCase.search(assetId)
+        getTokensCase.getByIds(listOf(assetId)).firstOrNull()
     }
 
-    suspend fun invalidateDefault(wallet: Wallet, currency: Currency) = scope.launch {
+    fun invalidateDefault(wallet: Wallet, currency: Currency) = scope.launch {
         val assets = assetsLocalSource.getAssetsInfo(wallet.accounts)
             .associateBy( { it.asset.id.toIdentifier() }, { it } )
         wallet.accounts.filter { !ChainInfoLocalSource.exclude.contains(it.chain) }
@@ -226,7 +228,7 @@ class AssetsRepository @Inject constructor(
             async {
                 val account =
                     wallet.getAccount(assetId.chain) ?: return@async
-                tokensRepository.search(assetId.tokenId!!)
+                searchTokensCase.search(assetId.tokenId!!)
                 switchVisibility(wallet.id, account, assetId, true, currency)
             }
         }.awaitAll()
@@ -241,7 +243,7 @@ class AssetsRepository @Inject constructor(
     ) = withContext(Dispatchers.IO) {
         val assetResult = assetsLocalSource.getById(listOf(owner), assetId)
         if (assetResult.isFailure || assetResult.getOrNull()?.isEmpty() != false) {
-            val asset = tokensRepository.getByIds(listOf(assetId))
+            val asset = getTokensCase.getByIds(listOf(assetId))
             assetsLocalSource.add(owner.address, asset)
         }
         assetsLocalSource.setVisibility(walletId, owner, assetId, visibility)

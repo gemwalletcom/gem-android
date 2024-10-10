@@ -1,10 +1,10 @@
 package com.gemwallet.android.interactors.sync
 
+import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.repositories.tokens.TokensRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.services.GemApiClient
@@ -21,7 +21,7 @@ class SyncTransactions @Inject constructor(
     private val configRepository: ConfigRepository,
     private val putTransactionsCase: PutTransactionsCase,
     private val assetsRepository: AssetsRepository,
-    private val tokensRepository: TokensRepository,
+    private val searchTokensCase: SearchTokensCase,
 ) {
     suspend operator fun invoke(wallet: Wallet) = withContext(Dispatchers.IO) {
         val deviceId = configRepository.getDeviceId()
@@ -55,7 +55,7 @@ class SyncTransactions @Inject constructor(
             }
             notAvailableAssetsId.toSet()
         }.flatten().forEach {  assetId ->
-            tokensRepository.search(assetId)
+            searchTokensCase.search(assetId)
             assetsRepository.switchVisibility(
                 session.wallet.id,
                 session.wallet.getAccount(assetId.chain) ?: return@forEach,

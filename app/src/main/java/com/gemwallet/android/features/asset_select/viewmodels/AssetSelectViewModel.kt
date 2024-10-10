@@ -4,9 +4,9 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.repositories.tokens.TokensRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.tokenAvailableChains
@@ -38,7 +38,7 @@ import javax.inject.Inject
 class AssetSelectViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
-    private val tokensRepository: TokensRepository,
+    private val searchTokensCase: SearchTokensCase,
 ) : ViewModel() {
     val queryState = TextFieldState()
     private val queryFlow = snapshotFlow<String> { queryState.text.toString() }
@@ -46,7 +46,7 @@ class AssetSelectViewModel @Inject constructor(
         .onEach { searchState.update { SearchState.Searching } }
         .mapLatest { query ->
             delay(250)
-            tokensRepository.search(query)
+            searchTokensCase.search(query)
             query
         }
         .flowOn(Dispatchers.IO)

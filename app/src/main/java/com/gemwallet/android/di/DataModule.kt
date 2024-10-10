@@ -78,6 +78,8 @@ import com.gemwallet.android.blockchain.clients.xrp.XrpTransactionStatusClient
 import com.gemwallet.android.blockchain.operators.SignTransfer
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
+import com.gemwallet.android.cases.tokens.GetTokensCase
+import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.CreateTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
@@ -111,13 +113,13 @@ import com.gemwallet.android.data.repositories.session.SessionLocalSource
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.repositories.session.SessionRepositoryImpl
 import com.gemwallet.android.data.repositories.session.SessionSharedPreferenceSource
+import com.gemwallet.android.data.repositories.tokens.TokensRepository
 import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.data.stake.StakeDao
 import com.gemwallet.android.data.stake.StakeLocalSource
 import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.data.stake.StakeRoomSource
 import com.gemwallet.android.data.swap.SwapRepository
-import com.gemwallet.android.data.repositories.tokens.TokensRepository
 import com.gemwallet.android.data.wallet.AccountsDao
 import com.gemwallet.android.data.wallet.WalletsDao
 import com.gemwallet.android.data.wallet.WalletsLocalSource
@@ -208,6 +210,14 @@ object DataModule {
 
     @Provides
     @Singleton
+    fun provideGetTokensCase(tokensRepository: TokensRepository): GetTokensCase = tokensRepository
+
+    @Provides
+    @Singleton
+    fun provideSearchTokensCase(tokensRepository: TokensRepository): SearchTokensCase = tokensRepository
+
+    @Provides
+    @Singleton
     fun provideBalanceRemoteSource(
         rpcClients: RpcClientAdapter,
     ): BalancesRemoteSource = BalancesRetrofitRemoteSource(
@@ -255,19 +265,21 @@ object DataModule {
     fun provideAssetsRepository(
         gemApiClient: GemApiClient,
         sessionRepository: SessionRepository,
-        tokensRepository: TokensRepository,
         assetsLocalSource: AssetsLocalSource,
         balancesRemoteSource: BalancesRemoteSource,
         configRepository: ConfigRepository,
         getTransactionsCase: GetTransactionsCase,
+        getTokensCase: GetTokensCase,
+        searchTokensCase: SearchTokensCase,
     ): AssetsRepository = AssetsRepository(
         gemApi = gemApiClient,
         sessionRepository = sessionRepository,
-        tokensRepository = tokensRepository,
         getTransactionsCase = getTransactionsCase,
         assetsLocalSource = assetsLocalSource,
         balancesRemoteSource = balancesRemoteSource,
         configRepository = configRepository,
+        getTokensCase = getTokensCase,
+        searchTokensCase = searchTokensCase,
     )
 
     @Provides

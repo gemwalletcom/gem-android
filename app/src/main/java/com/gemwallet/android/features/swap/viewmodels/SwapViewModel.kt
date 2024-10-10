@@ -175,7 +175,7 @@ class SwapViewModel @Inject constructor(
         }
         val price = assets.to.price
         if (price?.currency != null && price.price.price > 0) {
-            assets.to.price.currency.format(Crypto(quote.toAmount).convert(assets.to.asset.decimals, price.price.price))
+            assets.to.price!!.currency.format(Crypto(quote.toAmount).convert(assets.to.asset.decimals, price.price.price))
         } else {
             ""
         }

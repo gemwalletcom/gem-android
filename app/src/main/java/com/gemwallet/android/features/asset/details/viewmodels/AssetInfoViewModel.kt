@@ -106,7 +106,7 @@ class AssetInfoViewModel @Inject constructor(
             val fiatTotal = if (assetInfo.price == null) {
                 null
             } else {
-                total.convert(asset.decimals, assetInfo.price.price.price)
+                total.convert(asset.decimals, assetInfo.price!!.price.price)
             }
             val stakeBalance = balances.items.filter {
                 it.balance.type != BalanceType.available && it.balance.type != BalanceType.reserved
