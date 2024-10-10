@@ -143,7 +143,7 @@ class ScreenshotsCapture {
 
     private fun setLanguage(language: String, country: String, context: Context) {
         val monitor = InstrumentationRegistry.getInstrumentation()
-            .addMonitor("com.gemwallet.android.MainActivity", null, false);
+            .addMonitor("com.gemwallet.android.MainActivity", null, false)
         val intent = context.packageManager.getLaunchIntentForPackage(BASIC_PACKAGE)?.apply {
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
         }
