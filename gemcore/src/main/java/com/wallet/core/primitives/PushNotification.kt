@@ -8,16 +8,44 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
+data class PushNotificationBuyAsset (
+	val assetId: String
+)
+
+@Serializable
 enum class PushNotificationTypes(val string: String) {
+	@SerialName("test")
+	Test("test"),
 	@SerialName("transaction")
 	Transaction("transaction"),
-	@SerialName("pricealertclient")
-	PriceAlertClient("pricealertclient"),
+	@SerialName("priceAlert")
+	PriceAlert("priceAlert"),
+	@SerialName("buyAsset")
+	BuyAsset("buyAsset"),
+	@SerialName("swapAsset")
+	SwapAsset("swapAsset"),
 }
 
 @Serializable
-data class PushNotification (
-	val type: PushNotificationTypes,
-	val data: Transaction
+data class PushNotificationPayloadType (
+	val type: PushNotificationTypes
+)
+
+@Serializable
+data class PushNotificationPriceAlert (
+	val assetId: String
+)
+
+@Serializable
+data class PushNotificationSwapAsset (
+	val fromAssetId: String,
+	val toAssetId: String
+)
+
+@Serializable
+data class PushNotificationTransaction (
+	val walletIndex: Int,
+	val assetId: String,
+	val transactionId: String
 )
 

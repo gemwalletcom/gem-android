@@ -4,19 +4,12 @@ buildscript {
         google()
         mavenCentral()
         mavenLocal()
-        maven {
-            url = uri("https://plugins.gradle.org/m2/")
-        }
-        flatDir {
-            dirs("libs")
-        }
     }
     dependencies {
         classpath(libs.kotlin.gradle.plugin)
         classpath(libs.gradle)
         classpath(libs.hilt.android.gradle.plugin)
         classpath(libs.kotlin.serialization)
-        classpath(libs.rust.plugin)
     }
 }
 
@@ -33,10 +26,11 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        mavenLocal()
         maven { url = uri("https://jitpack.io") }
     }
 }
 
 tasks.register("clean", Delete::class) {
-    delete(rootProject.buildDir)
+    delete(layout.buildDirectory)
 }

@@ -6,7 +6,6 @@ plugins {
     id("kotlinx-serialization")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
-    id("com.github.willir.rust.cargo-ndk-android")
     id("androidx.room")
     alias(libs.plugins.compose.compiler)
 }
@@ -14,18 +13,6 @@ plugins {
 repositories {
     google()
     mavenCentral()
-}
-
-cargoNdk {
-    targets = if (System.getenv("UNIT_TESTS") == "true") {
-        arrayListOf("x86_64")
-    } else {
-        arrayListOf("x86_64", "armeabi-v7a", "arm64-v8a")
-    }
-    module = "core/gemstone"
-    targetDirectory = "/../target"
-    librariesNames = arrayListOf("libgemstone.so")
-    extraCargoBuildArguments = arrayListOf("--lib")
 }
 
 android {
@@ -130,9 +117,6 @@ android {
         compose = true
         buildConfig = true
     }
-//    composeOptions {
-//        kotlinCompilerExtensionVersion = "1.5.14"
-//    }
     packaging {
         jniLibs {
             useLegacyPackaging = true
@@ -149,6 +133,11 @@ android {
 
 dependencies {
     api(project(":blockchain"))
+    // version catalog might not work
+    //noinspection UseTomlInstead
+    api("net.java.dev.jna:jna:5.15.0@aar")
+    //noinspection UseTomlInstead
+    api("com.gemwallet.gemstone:gemstone:1.0.0@aar")
     // Local wallet core
     api(files("../libs/wallet-core-4.1.5-sources.jar"))
     implementation(project(":wallet-core"))
