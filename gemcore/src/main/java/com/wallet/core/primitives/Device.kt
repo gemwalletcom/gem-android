@@ -11,6 +11,7 @@ import kotlinx.serialization.SerialName
 data class Device (
 	val id: String,
 	val platform: Platform,
+	val platformStore: PlatformStore? = null,
 	val token: String,
 	val locale: String,
 	val version: String,

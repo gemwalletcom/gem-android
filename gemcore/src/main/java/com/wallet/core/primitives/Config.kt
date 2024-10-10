@@ -31,6 +31,13 @@ data class ConfigApp (
 )
 
 @Serializable
+data class Release (
+	val version: String,
+	val store: PlatformStore,
+	val upgradeRequired: Boolean
+)
+
+@Serializable
 data class ConfigVersions (
 	val fiatAssets: Int,
 	val swapAssets: Int
@@ -39,6 +46,7 @@ data class ConfigVersions (
 @Serializable
 data class ConfigResponse (
 	val app: ConfigApp,
+	val releases: List<Release>,
 	val versions: ConfigVersions
 )
 
