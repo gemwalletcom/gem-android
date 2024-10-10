@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.tokens
 
 import com.gemwallet.android.blockchain.clients.GetTokenClient
+import com.gemwallet.android.data.database.TokensDao
 import com.gemwallet.android.data.database.entities.DbToken
 import com.gemwallet.android.data.database.mappers.AssetInfoMapper
 import com.gemwallet.android.data.database.mappers.TokenMapper

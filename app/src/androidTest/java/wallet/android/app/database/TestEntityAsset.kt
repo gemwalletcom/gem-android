@@ -9,7 +9,7 @@ import com.gemwallet.android.data.database.GemDatabase
 import com.gemwallet.android.data.database.entities.DbAsset
 import com.gemwallet.android.data.database.entities.DbSession
 import com.gemwallet.android.data.tokens.DbToken
-import com.gemwallet.android.data.tokens.TokensDao
+import com.gemwallet.android.data.database.TokensDao
 import com.gemwallet.android.data.wallet.AccountRoom
 import com.gemwallet.android.data.wallet.WalletRoom
 import com.gemwallet.android.ext.toIdentifier

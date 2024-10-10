@@ -19,7 +19,7 @@ import com.gemwallet.android.data.database.TransactionsDao
 import com.gemwallet.android.data.database.entities.SESSION_REQUEST
 import com.gemwallet.android.data.repositories.session.SessionSharedPreferenceSource
 import com.gemwallet.android.data.stake.StakeDao
-import com.gemwallet.android.data.tokens.TokensDao
+import com.gemwallet.android.data.database.TokensDao
 import com.gemwallet.android.data.wallet.AccountsDao
 import com.gemwallet.android.data.wallet.WalletsDao
 import com.wallet.core.primitives.Chain

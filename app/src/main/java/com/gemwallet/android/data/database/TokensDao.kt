@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.tokens
+package com.gemwallet.android.data.database
 
 import androidx.room.Dao
 import androidx.room.Insert
@@ -10,13 +10,12 @@ import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
 
-
 @Dao
 interface TokensDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun insert(token: DbToken)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun insert(token: List<DbToken>)
 
     @Query("DELETE FROM tokens WHERE id IN (:ids)")
