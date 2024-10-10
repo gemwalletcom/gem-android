@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.tokens
+package com.gemwallet.android.data.repositories.tokens
 
 import com.gemwallet.android.blockchain.clients.GetTokenClient
 import com.gemwallet.android.data.database.TokensDao
