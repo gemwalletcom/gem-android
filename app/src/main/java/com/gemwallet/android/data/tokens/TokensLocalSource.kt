@@ -12,9 +12,5 @@ interface TokensLocalSource {
 
     suspend fun getByIds(ids: List<AssetId>): List<Asset>
 
-//    suspend fun getByChains(chains: List<Chain>): List<Asset>
-
-    suspend fun getByChains(chains: List<Chain>, query: String): Flow<List<Asset>>
-
     suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo?
 }

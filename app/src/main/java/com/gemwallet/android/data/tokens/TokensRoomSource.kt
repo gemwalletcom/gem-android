@@ -117,58 +117,8 @@ class TokensRoomSource(
             }
     }
 
-    override suspend fun getByChains(chains: List<Chain>, query: String): Flow<List<Asset>> {
-        return tokensDao.search(chains.mapNotNull {  chain -> getTokenType(chain) }, query).map { assets ->
-            assets.mapNotNull {
-                Asset(
-                    id = it.id.toAssetId() ?: return@mapNotNull null,
-                    name = it.name,
-                    symbol = it.symbol,
-                    decimals = it.decimals,
-                    type = it.type,
-                )
-            }
-        }
-    }
-
     override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? = withContext(Dispatchers.IO) {
         val dbAssetInfo = tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
         AssetInfoMapper().asDomain(dbAssetInfo).firstOrNull()
-    }
-
-    private fun getTokenType(chain: Chain) = when (chain) {
-        Chain.SmartChain -> AssetType.BEP20
-        Chain.Base,
-        Chain.AvalancheC,
-        Chain.Polygon,
-        Chain.Arbitrum,
-        Chain.OpBNB,
-        Chain.Manta,
-        Chain.Fantom,
-        Chain.Gnosis,
-        Chain.Optimism,
-        Chain.Blast,
-        Chain.ZkSync,
-        Chain.Linea,
-        Chain.Mantle,
-        Chain.Celo,
-        Chain.Ethereum -> AssetType.ERC20
-        Chain.Solana -> AssetType.SPL
-        Chain.Tron -> AssetType.TRC20
-        Chain.Sui -> AssetType.TOKEN
-        Chain.Ton -> AssetType.JETTON
-        Chain.Cosmos,
-        Chain.Osmosis,
-        Chain.Celestia,
-        Chain.Thorchain,
-        Chain.Injective,
-        Chain.Noble,
-        Chain.Sei -> AssetType.IBC
-        Chain.Bitcoin,
-        Chain.Litecoin,
-        Chain.Doge,
-        Chain.Aptos,
-        Chain.Near,
-        Chain.Xrp -> null
     }
 }

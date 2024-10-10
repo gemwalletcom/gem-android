@@ -165,10 +165,12 @@ object DataModule {
     @Singleton
     fun provideTokensRepository(
         localSource: TokensLocalSource,
+        tokensDao: TokensDao,
         gemApiClient: GemApiClient,
         rpcClients: RpcClientAdapter,
     ): TokensRepository = TokensRepositoryImpl(
         localSource = localSource,
+        tokensDao = tokensDao,
         gemApiClient = gemApiClient,
         getTokenClients = availableChains().mapNotNull {
             when (it) {
