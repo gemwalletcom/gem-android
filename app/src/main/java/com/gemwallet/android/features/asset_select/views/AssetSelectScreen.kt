@@ -27,10 +27,6 @@ fun AssetSelectScreen(
     val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
     val assets by viewModel.assets.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.onQuery()
-    }
-
     AssetSelectScene(
         title = title,
         titleBadge = titleBadge,

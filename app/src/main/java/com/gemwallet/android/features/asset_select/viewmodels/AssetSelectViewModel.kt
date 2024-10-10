@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.asset_select.viewmodels
 
-import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
@@ -13,22 +12,22 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.tokenAvailableChains
 import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.toUIModel
-import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.AssetId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -42,37 +41,52 @@ class AssetSelectViewModel @Inject constructor(
     private val tokensRepository: TokensRepository,
 ) : ViewModel() {
     val queryState = TextFieldState()
-    private var queryJob: Job? = null
-    private val queryFlow = snapshotFlow { queryState.text }
+    private val queryFlow = snapshotFlow<String> { queryState.text.toString() }
+        .filter { it.isNotEmpty() }
+        .onEach { searchState.update { SearchState.Searching } }
+        .mapLatest { query ->
+            delay(250)
+            tokensRepository.search(query)
+            query
+        }
+        .flowOn(Dispatchers.IO)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    val uiState = MutableStateFlow<UIState>(UIState.Loading)
-
-    val isAddAssetAvailable = sessionRepository.session().map { session ->
-        val availableAccounts = session?.wallet?.accounts?.map { it.chain } ?: emptyList()
-        tokenAvailableChains.any { availableAccounts.contains(it) }
-    }
-    .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    private val searchState = MutableStateFlow<SearchState>(SearchState.Searching)
 
     val assets = sessionRepository.session().combine(queryFlow) { session, query ->
         Pair(session, query)
     }
     .flatMapLatest {
         val wallet = it.first?.wallet ?: return@flatMapLatest emptyFlow()
-        assetsRepository.search(wallet, it.second.toString())
+        assetsRepository.search(wallet, it.second)
     }
-    .map { assets: List<AssetInfo> ->
-        assets.distinctBy { it.asset.id.toIdentifier() }.sortedByDescending {
-            it.balances.available()
-                .convert(it.asset.decimals, it.price?.price?.price ?: 0.0)
-                .atomicValue
-        }
+    .map {
+        it.distinctBy { it.asset.id.toIdentifier() }
+            .sortedByDescending {
+                it.balances.available()
+                    .convert(it.asset.decimals, it.price?.price?.price ?: 0.0)
+                    .atomicValue
+            }
     }
-    .map { assets ->
-        uiState.update { if (assets.isEmpty()) UIState.Empty else UIState.Idle }
-        assets.map { it.toUIModel() }.toImmutableList()
-    }
+    .map { assets -> assets.map { it.toUIModel() }.toImmutableList() }
+    .onEach { searchState.update { SearchState.Idle } }
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetUIState>().toImmutableList())
+
+    val uiState = assets.combine(searchState) { assets, searchState ->
+        when {
+            searchState != SearchState.Idle -> UIState.Loading
+            assets.isEmpty() -> UIState.Empty
+            else -> UIState.Idle
+        }
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, UIState.Idle)
+
+    val isAddAssetAvailable = sessionRepository.session().map { session ->
+        val availableAccounts = session?.wallet?.accounts?.map { it.chain } ?: emptyList()
+        tokenAvailableChains.any { availableAccounts.contains(it) }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun onChangeVisibility(assetId: AssetId, visible: Boolean) = viewModelScope.launch(Dispatchers.IO) {
         val session = sessionRepository.getSession() ?: return@launch
@@ -80,21 +94,9 @@ class AssetSelectViewModel @Inject constructor(
         assetsRepository.switchVisibility(session.wallet.id, account, assetId, visible, session.currency)
     }
 
-    fun onQuery() = viewModelScope.launch(Dispatchers.IO) {
-        queryFlow.collectLatest {
-            if (queryJob?.isActive == true) {
-                try {
-                    queryJob?.cancel()
-                } catch (err: Throwable) {
-                    Log.d("ASSET_SELECT_VIEWMODEL", "Error on cancel job", err)
-                }
-            }
-            queryJob = viewModelScope.launch {
-                delay(250)
-                uiState.update { UIState.Loading }
-                tokensRepository.search(it.toString())
-            }
-        }
+    enum class SearchState {
+        Idle,
+        Searching,
     }
 
     sealed interface UIState {

@@ -46,33 +46,24 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 internal fun AssetSelectScene(
     title: String,
+    assets: ImmutableList<AssetUIState>,
+    state: AssetSelectViewModel.UIState,
     titleBadge: (AssetUIState) -> String?,
     support: ((AssetUIState) -> String?)?,
     query: TextFieldState,
-    assets: ImmutableList<AssetUIState>,
-    state: AssetSelectViewModel.UIState,
     onSelect: ((AssetId) -> Unit)?,
     onCancel: () -> Unit,
     itemTrailing: (@Composable (AssetUIState) -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
     onAddAsset: (() -> Unit)? = null,
 ) {
-    val items by remember(assets) {
-        mutableStateOf(assets)
-    }
-    Scene(
-        title = title,
-        actions = actions,
-        onClose = onCancel,
-    ) {
-        SearchBar(
-            modifier = Modifier.padding(horizontal = padding16),
-            query = query,
-        )
+    val items by remember(assets) { mutableStateOf(assets) }
+    Scene(title = title, actions = actions, onClose = onCancel) {
+        SearchBar(modifier = Modifier.padding(horizontal = padding16), query = query)
         Spacer16()
         LazyColumn {
             assets(items, onSelect, support, titleBadge, itemTrailing)
-//            loading(state)
+            loading(state)
             notFound(state = state, onAddAsset = onAddAsset)
         }
     }

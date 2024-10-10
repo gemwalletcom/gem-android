@@ -14,9 +14,6 @@ fun SelectSendScreen(
     AssetSelectScreen(
         title = stringResource(id = R.string.wallet_send),
         titleBadge = { null },
-//        TODO: predicate = { assetInfo ->
-//            assetInfo.balances.available().atomicValue > BigInteger.ZERO
-//        },
         itemTrailing = { ItemBalanceTrailing(it) },
         onSelect = onSelect,
         onCancel = onCancel,

@@ -117,21 +117,7 @@ class TokensRoomSource(
             }
     }
 
-    override suspend fun getByChains(chains: List<Chain>): List<Asset> {
-        return tokensDao.getByType(
-            chains.mapNotNull {  chain -> getTokenType(chain) }
-        ).mapNotNull {
-            Asset(
-                id = it.id.toAssetId() ?: return@mapNotNull null,
-                name = it.name,
-                symbol = it.symbol,
-                decimals = it.decimals,
-                type = it.type,
-            )
-        }
-    }
-
-    override suspend fun search(chains: List<Chain>, query: String): Flow<List<Asset>> {
+    override suspend fun getByChains(chains: List<Chain>, query: String): Flow<List<Asset>> {
         return tokensDao.search(chains.mapNotNull {  chain -> getTokenType(chain) }, query).map { assets ->
             assets.mapNotNull {
                 Asset(

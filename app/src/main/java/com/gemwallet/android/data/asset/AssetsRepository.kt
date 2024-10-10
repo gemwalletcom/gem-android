@@ -176,7 +176,7 @@ class AssetsRepository @Inject constructor(
 
     suspend fun search(wallet: Wallet, query: String): Flow<List<AssetInfo>> {
         val assetsFlow = assetsLocalSource.search(query)
-        val tokensFlow = tokensRepository.search(wallet.accounts.map { it.chain }, query)
+        val tokensFlow = tokensRepository.getByChains(wallet.accounts.map { it.chain }, query)
         return combine(assetsFlow, tokensFlow) { assets, tokens ->
             assets + tokens.mapNotNull { asset ->
                 AssetInfo(

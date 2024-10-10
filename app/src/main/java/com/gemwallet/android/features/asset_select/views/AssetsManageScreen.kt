@@ -28,10 +28,6 @@ fun AssetsManageScreen(
     val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
     val assets by viewModel.assets.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        viewModel.onQuery()
-    }
-
     AssetSelectScene(
         title = stringResource(id = R.string.wallet_manage_token_list),
         titleBadge = ::getAssetBadge,

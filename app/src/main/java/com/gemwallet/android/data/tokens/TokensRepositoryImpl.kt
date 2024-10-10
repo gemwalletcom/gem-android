@@ -24,8 +24,8 @@ class TokensRepositoryImpl(
         localSource.getByIds(ids)
     }
 
-    override suspend fun getByChains(chains: List<Chain>): List<Asset> = withContext(Dispatchers.IO) {
-        localSource.getByChains(chains)
+    override suspend fun getByChains(chains: List<Chain>, query: String): Flow<List<Asset>> {
+        return localSource.getByChains(chains = chains, query)
     }
 
     override suspend fun search(query: String) = withContext(Dispatchers.IO) {
@@ -43,7 +43,7 @@ class TokensRepositoryImpl(
                         } else {
                             null
                         }
-                    } catch (err: Throwable) {
+                    } catch (_: Throwable) {
                         null
                     }
 
@@ -70,10 +70,6 @@ class TokensRepositoryImpl(
             return
         }
         localSource.addTokens(listOf(AssetFull(asset, score = AssetScore(0))))
-    }
-
-    override suspend fun search(chains: List<Chain>, query: String): Flow<List<Asset>> {
-        return localSource.search(chains = chains, query)
     }
 
     override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
