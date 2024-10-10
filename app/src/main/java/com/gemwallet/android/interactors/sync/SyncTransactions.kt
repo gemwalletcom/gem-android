@@ -4,7 +4,7 @@ import com.gemwallet.android.cases.transactions.PutTransactionsCase
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.tokens.TokensRepository
+import com.gemwallet.android.data.repositories.tokens.TokensRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.services.GemApiClient
