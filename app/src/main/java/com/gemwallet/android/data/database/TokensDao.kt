@@ -62,5 +62,5 @@ interface TokensDao {
             AND accounts.chain = :chain
             AND tokens.id = :assetId
         """)
-    fun assembleAssetInfo(chain: Chain, assetId: String): List<DbAssetInfo>
+    suspend fun assembleAssetInfo(chain: Chain, assetId: String): List<DbAssetInfo>
 }

@@ -1,20 +1,135 @@
 package com.gemwallet.android.data.tokens
 
+import com.gemwallet.android.blockchain.clients.GetTokenClient
+import com.gemwallet.android.data.database.TokensDao
+import com.gemwallet.android.data.database.entities.DbToken
+import com.gemwallet.android.data.database.mappers.AssetInfoMapper
+import com.gemwallet.android.data.database.mappers.TokenMapper
+import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.Asset
+import com.wallet.core.primitives.AssetFull
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetScore
+import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 
-interface TokensRepository {
+class TokensRepository (
+    private val tokensDao: TokensDao,
+    private val gemApiClient: GemApiClient,
+    private val getTokenClients: List<GetTokenClient>,
+) {
+    private val mapper = TokenMapper()
 
-    suspend fun getByIds(ids: List<AssetId>): List<Asset>
+    suspend fun getByIds(ids: List<AssetId>): List<Asset> = withContext(Dispatchers.IO) {
+        tokensDao.getById(ids.map { it.toIdentifier() }).map(mapper::asEntity)
+    }
 
-    suspend fun getByChains(chains: List<Chain>, query: String): Flow<List<Asset>>
+    fun getByChains(chains: List<Chain>, query: String): Flow<List<Asset>> {
+        return tokensDao.search(chains.mapNotNull { chain -> getTokenType(chain) }, query)
+            .map { assets -> assets.map(mapper::asEntity) }
+    }
 
-    suspend fun search(query: String)
+    suspend fun search(query: String) = withContext(Dispatchers.IO) {
+        if (query.isEmpty()) {
+            return@withContext
+        }
+        val tokens = gemApiClient.search(query).getOrNull()
+        if (tokens.isNullOrEmpty()) {
+            val assets = getTokenClients.map {
+                async {
+                    try {
+                        if (it.isTokenQuery(query)) {
+                            it.getTokenData(query)
+                        } else {
+                            null
+                        }
+                    } catch (_: Throwable) {
+                        null
+                    }
+                }
+            }
+                .awaitAll()
+                .mapNotNull { it }
+                .map { AssetFull(asset = it, score = AssetScore(0)) }
+            addTokens(assets)
+        } else {
+            addTokens(tokens.filter { it.asset.id != null })
+        }
+    }
 
-    suspend fun search(assetId: AssetId)
+    suspend fun search(assetId: AssetId) {
+        val tokenId = assetId.tokenId ?: return
+        val asset = getTokenClients
+            .firstOrNull { it.isMaintain(assetId.chain) && it.isTokenQuery(tokenId) }
+            ?.getTokenData(tokenId)
+        if (asset == null) {
+            search(tokenId)
+            return
+        }
+        addTokens(listOf(AssetFull(asset, score = AssetScore(0))))
+    }
 
-    suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo?
+    suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
+        val dbAssetInfo = tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
+        return AssetInfoMapper().asDomain(dbAssetInfo).firstOrNull()
+    }
+
+    private suspend fun addTokens(tokens: List<AssetFull>) {
+        tokensDao.insert(tokens.map { token ->
+            DbToken(
+                id = token.asset.id.toIdentifier(),
+                name = token.asset.name,
+                symbol = token.asset.symbol,
+                decimals = token.asset.decimals,
+                type = token.asset.type,
+                rank = token.score.rank,
+            )
+        })
+    }
+
+    private fun getTokenType(chain: Chain) = when (chain) {
+        Chain.SmartChain -> AssetType.BEP20
+        Chain.Base,
+        Chain.AvalancheC,
+        Chain.Polygon,
+        Chain.Arbitrum,
+        Chain.OpBNB,
+        Chain.Manta,
+        Chain.Fantom,
+        Chain.Gnosis,
+        Chain.Optimism,
+        Chain.Blast,
+        Chain.ZkSync,
+        Chain.Linea,
+        Chain.Mantle,
+        Chain.Celo,
+        Chain.Ethereum -> AssetType.ERC20
+
+        Chain.Solana -> AssetType.SPL
+        Chain.Tron -> AssetType.TRC20
+        Chain.Sui -> AssetType.TOKEN
+        Chain.Ton -> AssetType.JETTON
+        Chain.Cosmos,
+        Chain.Osmosis,
+        Chain.Celestia,
+        Chain.Thorchain,
+        Chain.Injective,
+        Chain.Noble,
+        Chain.Sei -> AssetType.IBC
+
+        Chain.Bitcoin,
+        Chain.Litecoin,
+        Chain.Doge,
+        Chain.Aptos,
+        Chain.Near,
+        Chain.Xrp -> null
+    }
 }

@@ -105,6 +105,7 @@ import com.gemwallet.android.data.database.BalancesDao
 import com.gemwallet.android.data.database.BannersDao
 import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.database.SessionDao
+import com.gemwallet.android.data.database.TokensDao
 import com.gemwallet.android.data.database.TransactionsDao
 import com.gemwallet.android.data.repositories.session.SessionLocalSource
 import com.gemwallet.android.data.repositories.session.SessionRepository
@@ -116,9 +117,7 @@ import com.gemwallet.android.data.stake.StakeLocalSource
 import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.data.stake.StakeRoomSource
 import com.gemwallet.android.data.swap.SwapRepository
-import com.gemwallet.android.data.database.TokensDao
 import com.gemwallet.android.data.tokens.TokensRepository
-import com.gemwallet.android.data.tokens.TokensRepositoryImpl
 import com.gemwallet.android.data.wallet.AccountsDao
 import com.gemwallet.android.data.wallet.WalletsDao
 import com.gemwallet.android.data.wallet.WalletsLocalSource
@@ -165,7 +164,7 @@ object DataModule {
         tokensDao: TokensDao,
         gemApiClient: GemApiClient,
         rpcClients: RpcClientAdapter,
-    ): TokensRepository = TokensRepositoryImpl(
+    ): TokensRepository = TokensRepository(
         tokensDao = tokensDao,
         gemApiClient = gemApiClient,
         getTokenClients = availableChains().mapNotNull {
