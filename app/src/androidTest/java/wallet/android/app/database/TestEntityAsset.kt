@@ -8,7 +8,7 @@ import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.GemDatabase
 import com.gemwallet.android.data.database.entities.DbAsset
 import com.gemwallet.android.data.database.entities.DbSession
-import com.gemwallet.android.data.tokens.TokenRoom
+import com.gemwallet.android.data.tokens.DbToken
 import com.gemwallet.android.data.tokens.TokensDao
 import com.gemwallet.android.data.wallet.AccountRoom
 import com.gemwallet.android.data.wallet.WalletRoom
@@ -170,7 +170,7 @@ class TestEntityAsset {
             )
         )
         tokenDao.insert(
-            TokenRoom(
+            DbToken(
                 id = "ethereum",
                 name = "Ethereum-1",
                 symbol = "Eth",
@@ -180,7 +180,7 @@ class TestEntityAsset {
             )
         )
         tokenDao.insert(
-            TokenRoom(
+            DbToken(
                 id = "ethereum_0xabcdef12345567890",
                 name = "Ethereum-2",
                 symbol = "Eth",

@@ -117,10 +117,8 @@ import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.data.stake.StakeRoomSource
 import com.gemwallet.android.data.swap.SwapRepository
 import com.gemwallet.android.data.tokens.TokensDao
-import com.gemwallet.android.data.tokens.TokensLocalSource
 import com.gemwallet.android.data.tokens.TokensRepository
 import com.gemwallet.android.data.tokens.TokensRepositoryImpl
-import com.gemwallet.android.data.tokens.TokensRoomSource
 import com.gemwallet.android.data.wallet.AccountsDao
 import com.gemwallet.android.data.wallet.WalletsDao
 import com.gemwallet.android.data.wallet.WalletsLocalSource
@@ -164,12 +162,10 @@ object DataModule {
     @Provides
     @Singleton
     fun provideTokensRepository(
-        localSource: TokensLocalSource,
         tokensDao: TokensDao,
         gemApiClient: GemApiClient,
         rpcClients: RpcClientAdapter,
     ): TokensRepository = TokensRepositoryImpl(
-        localSource = localSource,
         tokensDao = tokensDao,
         gemApiClient = gemApiClient,
         getTokenClients = availableChains().mapNotNull {
@@ -650,14 +646,6 @@ object DataModule {
         assetsDao = assetsDao,
         balancesDao = balancesDao,
         pricesDao = pricesDao,
-    )
-
-    @Singleton
-    @Provides
-    fun provideTokensLocalSource(
-        tokensDao: TokensDao,
-    ): TokensLocalSource = TokensRoomSource(
-        tokensDao = tokensDao,
     )
 
     @Singleton

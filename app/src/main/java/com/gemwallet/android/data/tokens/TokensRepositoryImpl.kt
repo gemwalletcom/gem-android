@@ -1,7 +1,9 @@
 package com.gemwallet.android.data.tokens
 
 import com.gemwallet.android.blockchain.clients.GetTokenClient
-import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.data.database.entities.DbToken
+import com.gemwallet.android.data.database.mappers.AssetInfoMapper
+import com.gemwallet.android.data.database.mappers.TokenMapper
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.services.GemApiClient
@@ -17,48 +19,29 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import kotlin.collections.map
 
 class TokensRepositoryImpl(
-    private val localSource: TokensLocalSource,
     private val tokensDao: TokensDao,
     private val gemApiClient: GemApiClient,
     private val getTokenClients: List<GetTokenClient>,
 ) : TokensRepository {
+    private val mapper = TokenMapper()
 
     override suspend fun getByIds(ids: List<AssetId>): List<Asset> = withContext(Dispatchers.IO) {
-        tokensDao.getById(ids.map { it.toIdentifier() })
-            .mapNotNull {
-                Asset(
-                    id = it.id.toAssetId() ?: return@mapNotNull null,
-                    name = it.name,
-                    symbol = it.symbol,
-                    decimals = it.decimals,
-                    type = it.type,
-                )
-            }
+        tokensDao.getById(ids.map { it.toIdentifier() }).map(mapper::asEntity)
     }
 
     override suspend fun getByChains(chains: List<Chain>, query: String): Flow<List<Asset>> {
         return tokensDao.search(chains.mapNotNull { chain -> getTokenType(chain) }, query)
-            .map { assets ->
-                assets.mapNotNull {
-                    Asset(
-                        id = it.id.toAssetId() ?: return@mapNotNull null,
-                        name = it.name,
-                        symbol = it.symbol,
-                        decimals = it.decimals,
-                        type = it.type,
-                    )
-                }
-            }
+            .map { assets -> assets.map(mapper::asEntity) }
     }
 
     override suspend fun search(query: String) = withContext(Dispatchers.IO) {
         if (query.isEmpty()) {
             return@withContext
         }
-        val result = gemApiClient.search(query)
-        val tokens = result.getOrNull()
+        val tokens = gemApiClient.search(query).getOrNull()
         if (tokens.isNullOrEmpty()) {
             val assets = getTokenClients.map {
                 async {
@@ -71,14 +54,11 @@ class TokensRepositoryImpl(
                     } catch (_: Throwable) {
                         null
                     }
-
                 }
-            }.awaitAll().mapNotNull { it }.map {
-                AssetFull(
-                    asset = it,
-                    score = AssetScore(0),
-                )
             }
+            .awaitAll()
+            .mapNotNull { it }
+            .map { AssetFull(asset = it, score = AssetScore(0)) }
             addTokens(assets)
         } else {
             addTokens(tokens.filter { it.asset.id != null })
@@ -98,12 +78,13 @@ class TokensRepositoryImpl(
     }
 
     override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
-        return localSource.assembleAssetInfo(assetId)
+        val dbAssetInfo = tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
+        return AssetInfoMapper().asDomain(dbAssetInfo).firstOrNull()
     }
 
     private suspend fun addTokens(tokens: List<AssetFull>) {
         tokensDao.insert(tokens.map { token ->
-            TokenRoom(
+            DbToken(
                 id = token.asset.id.toIdentifier(),
                 name = token.asset.name,
                 symbol = token.asset.symbol,
