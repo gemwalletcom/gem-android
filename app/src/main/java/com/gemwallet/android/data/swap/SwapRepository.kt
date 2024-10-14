@@ -50,6 +50,5 @@ class SwapRepository(
     }
 
     fun isRequestApprove(chain: Chain): Boolean = swapClients
-        .firstOrNull { chain == it.maintainChain() }
-        ?.isRequestApprove() ?: false
+        .firstOrNull { chain == it.maintainChain() }?.isRequestApprove() == true
 }
