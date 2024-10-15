@@ -27,10 +27,24 @@ android {
         create("google") {
             dimension = channelDimension
             isDefault = true
+            buildConfigField("String", "UPDATE_URL", "\"https://play.google.com/store/apps/details?id=com.gemwallet.android\"")
         }
 
         create("fdroid") {
             dimension = channelDimension
+            buildConfigField("String", "UPDATE_URL", "\"\"")
+        }
+        create("huawei") {
+            dimension = channelDimension
+            buildConfigField("String", "UPDATE_URL", "\"https://appgallery.huawei.com/app/C109713129\"")
+        }
+        create("solana") {
+            dimension = channelDimension
+            buildConfigField("String", "UPDATE_URL", "\"solanadappstore://details?id=com.gemwallet.android\"")
+        }
+        create("universal") {
+            dimension = channelDimension
+            buildConfigField("String", "UPDATE_URL", "\"https://apk.gemwallet.com/gem_wallet_latest.apk\"")
         }
     }
 
@@ -204,11 +218,17 @@ dependencies {
     implementation(libs.reorderable)
 
     // Google Play
-    // Notifications - FCM
     "googleImplementation"(libs.firebase.messaging)
-    // In App review
     "googleImplementation"(libs.play.review)
     "googleImplementation"(libs.play.review.ktx)
+    // Solana Store
+    "solanaImplementation"(libs.firebase.messaging)
+    "solanaImplementation"(libs.play.review)
+    "solanaImplementation"(libs.play.review.ktx)
+    // Universal
+    "universalImplementation"(libs.firebase.messaging)
+    "universalImplementation"(libs.play.review)
+    "universalImplementation"(libs.play.review.ktx)
 
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)

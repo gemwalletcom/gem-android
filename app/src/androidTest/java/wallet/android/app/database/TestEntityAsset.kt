@@ -8,8 +8,8 @@ import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.GemDatabase
 import com.gemwallet.android.data.database.entities.DbAsset
 import com.gemwallet.android.data.database.entities.DbSession
-import com.gemwallet.android.data.tokens.DbToken
 import com.gemwallet.android.data.database.TokensDao
+import com.gemwallet.android.data.database.entities.DbToken
 import com.gemwallet.android.data.wallet.AccountRoom
 import com.gemwallet.android.data.wallet.WalletRoom
 import com.gemwallet.android.ext.toIdentifier
@@ -169,27 +169,27 @@ class TestEntityAsset {
                 extendedPublicKey = "",
             )
         )
-        tokenDao.insert(
-            DbToken(
-                id = "ethereum",
-                name = "Ethereum-1",
-                symbol = "Eth",
-                decimals = 18,
-                type = AssetType.NATIVE,
-                rank = 0,
-            )
-        )
-        tokenDao.insert(
-            DbToken(
-                id = "ethereum_0xabcdef12345567890",
-                name = "Ethereum-2",
-                symbol = "Eth",
-                decimals = 18,
-                type = AssetType.NATIVE,
-                rank = 0,
-            )
-        )
         runBlocking {
+            tokenDao.insert(
+                DbToken(
+                    id = "ethereum",
+                    name = "Ethereum-1",
+                    symbol = "Eth",
+                    decimals = 18,
+                    type = AssetType.NATIVE,
+                    rank = 0,
+                )
+            )
+            tokenDao.insert(
+                DbToken(
+                    id = "ethereum_0xabcdef12345567890",
+                    name = "Ethereum-2",
+                    symbol = "Eth",
+                    decimals = 18,
+                    type = AssetType.NATIVE,
+                    rank = 0,
+                )
+            )
             db.sessionDao().update(DbSession(
                 walletId = "test-wallet-1",
                 currency = Currency.USD.string

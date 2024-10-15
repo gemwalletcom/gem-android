@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.gemwallet.android.BuildConfig
 import com.gemwallet.android.R
 import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateWalletScreen
 import com.gemwallet.android.features.import_wallet.navigation.navigateToImportWalletScreen
@@ -56,7 +57,7 @@ fun WalletApp() {
         )
     }
 
-    if (state.intent == AppIntent.ShowRaview) {
+    if (state.intent == AppIntent.ShowReview) {
         viewModel.onReviewOpen()
         ReviewManager(LocalContext.current).open()
     }
@@ -77,7 +78,7 @@ private fun ShowUpdateDialog(
         confirmButton = {
             TextButton(onClick = {
                 onCancel()
-                uriHandler.open("https://apk.gemwallet.com/gem_wallet_v$version.apk")
+                uriHandler.open(BuildConfig.UPDATE_URL)
             }) {
                 Text(text = stringResource(id = R.string.update_app_action))
             }

@@ -8,6 +8,7 @@ import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.features.onboarding.OnboardingDest
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.services.GemApiClient
+import com.wallet.core.primitives.PlatformStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -56,9 +57,20 @@ class AppViewModel @Inject constructor(
         if (BuildConfig.DEBUG) {
             return@withContext
         }
-        val current = gemApiClient.getConfig().mapCatching {
-            it.app.android.version.production
-        }.getOrNull() ?: BuildConfig.VERSION_NAME
+        val current = gemApiClient.getConfig().getOrNull()
+            ?.releases?.filter {
+                val versionFlavor = when (it.store) {
+                    PlatformStore.GooglePlay -> "google"
+                    PlatformStore.Fdroid -> "fdroid"
+                    PlatformStore.Huawei -> "huawei"
+                    PlatformStore.SolanaStore -> "solana"
+                    PlatformStore.SamsungStore -> "sumsung"
+                    PlatformStore.ApkUniversal -> "universal"
+                    PlatformStore.AppStore -> it.store.string
+                }
+                BuildConfig.FLAVOR == versionFlavor
+            }
+            ?.firstOrNull()?.version ?: BuildConfig.VERSION_NAME
         val skipVersion = configRepository.getAppVersionSkip()
         if (current.compareTo(BuildConfig.VERSION_NAME) > 0 && skipVersion != current) {
             state.update {
@@ -69,7 +81,7 @@ class AppViewModel @Inject constructor(
 
     private fun rateAs() {
         if (configRepository.getLaunchNumber() == 10) {
-            state.update { it.copy(intent = AppIntent.ShowRaview) }
+            state.update { it.copy(intent = AppIntent.ShowReview) }
         }
         configRepository.increaseLaunchNumber()
     }
@@ -112,5 +124,5 @@ data class AppUIState(
 enum class AppIntent {
     None,
     ShowUpdate,
-    ShowRaview,
+    ShowReview,
 }
