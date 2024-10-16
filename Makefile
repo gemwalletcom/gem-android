@@ -37,7 +37,10 @@ extract-universal-apk:
 	./scripts/extract_aab_apk.sh
 
 release:
-	./gradlew clean buildCargoNdkGoogleRelease assembleGoogleRelease :app:bundleGoogleRelease
+	./gradlew clean :app:bundleGoogleRelease
+	./gradlew clean assembleUniversalRelease
+	./gradlew clean assembleHuaweiRelease
+	./gradlew clean assembleSolanaRelease
 
 localize:
 	@sh scripts/localize.sh android

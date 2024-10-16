@@ -28,6 +28,8 @@ import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeState
 import com.wallet.core.primitives.Platform
+import com.wallet.core.primitives.PlatformStore
+import com.wallet.core.primitives.Release
 import com.wallet.core.primitives.Subscription
 import com.wallet.core.primitives.SwapApprovalData
 import com.wallet.core.primitives.SwapProvider
@@ -388,6 +390,26 @@ interface GemApiClient {
                 provider = provider.string,
             )
         }
+    }
+
+    class ReleaseDeserialize : JsonDeserializer<Release?> {
+        override fun deserialize(
+            json: JsonElement,
+            typeOfT: Type?,
+            context: JsonDeserializationContext?
+        ): Release? {
+            val jObj = json.asJsonObject
+            val version = jObj["version"].asString
+            val upgradeRequired = jObj["upgradeRequired"].asBoolean
+            val store = jObj["store"].asString
+            val platformStore = PlatformStore.entries.firstOrNull { it.string == store} ?: throw IllegalArgumentException()
+            return Release(
+                version = version,
+                store = platformStore,
+                upgradeRequired = upgradeRequired
+            )
+        }
+
     }
 }
 

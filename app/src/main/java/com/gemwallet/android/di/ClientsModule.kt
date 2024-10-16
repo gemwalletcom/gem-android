@@ -26,6 +26,7 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.Node
+import com.wallet.core.primitives.Release
 import com.wallet.core.primitives.Subscription
 import com.wallet.core.primitives.SwapQuote
 import dagger.Module
@@ -103,6 +104,7 @@ object ClientsModule {
             .registerTypeAdapter(Transactions::class.java, GemApiClient.TransactionsSerializer())
             .registerTypeAdapter(NameRecord::class.java, GemApiClient.NameRecordDeserialize())
             .registerTypeAdapter(SwapQuote::class.java, GemApiClient.SwapQuoteDeserializer())
+            .registerTypeAdapter(Release::class.java, GemApiClient.ReleaseDeserialize())
             .registerTypeAdapter(AssetId::class.java, AssetIdSerializer())
             .create()
     }
