@@ -59,6 +59,7 @@ class AppViewModel @Inject constructor(
         }
         val current = gemApiClient.getConfig().getOrNull()
             ?.releases?.filter {
+                if (it.store == null) return@filter false
                 val versionFlavor = when (it.store) {
                     PlatformStore.GooglePlay -> "google"
                     PlatformStore.Fdroid -> "fdroid"
