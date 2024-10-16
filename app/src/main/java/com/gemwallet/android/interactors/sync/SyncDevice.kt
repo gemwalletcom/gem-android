@@ -9,6 +9,7 @@ import com.gemwallet.android.services.requestPushToken
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.Platform
+import com.wallet.core.primitives.PlatformStore
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,6 +29,14 @@ class SyncDevice(
         val device = Device(
             id = deviceId,
             platform = Platform.Android,
+            platformStore = when (BuildConfig.FLAVOR) {
+                "google" -> PlatformStore.GooglePlay
+                "universal" -> PlatformStore.ApkUniversal
+                "huawei" -> PlatformStore.Huawei
+                "solana" -> PlatformStore.SolanaStore
+                "fdroid" -> PlatformStore.Fdroid
+                else -> null
+            },
             token = "",
             locale = getLocale(Locale.getDefault()),
             isPushEnabled = pushEnabled,

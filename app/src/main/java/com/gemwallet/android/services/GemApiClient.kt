@@ -205,12 +205,14 @@ interface GemApiClient {
             context: JsonDeserializationContext?
         ): Device {
             val jObj = json?.asJsonObject ?: throw JsonSyntaxException(json?.toString())
+            val platformStore = jObj["platformStore"]?.asString
             return Device(
                 id = jObj["id"]?.asString ?: "",
                 platform = when (jObj["platform"]?.asString) {
                     Platform.IOS.string -> Platform.IOS
                     else -> Platform.Android
                 },
+                platformStore = PlatformStore.entries.firstOrNull { it.string == platformStore },
                 token = jObj["token"]?.asString ?: "",
                 locale = jObj["locale"]?.asString ?: "",
                 version = jObj["version"]?.asString ?: "",
@@ -228,6 +230,7 @@ interface GemApiClient {
             return JsonObject().apply {
                 addProperty("id", src.id)
                 addProperty("platform", src.platform.string)
+                addProperty("platformStore", src.platformStore?.string)
                 addProperty("token", src.token)
                 addProperty("locale", src.locale)
                 addProperty("version", src.version)
