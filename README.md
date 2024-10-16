@@ -15,7 +15,7 @@
     </a>
 </div>
 
-<b>Gem Wallet</b> is a powerful and secure mobile application designed for Android and [Android](https://github.com/gemwalletcom/gem-ios). It provides users with a seamless and intuitive experience to manage their digital assets and cryptocurrencies.
+<b>Gem Wallet</b> is a powerful and secure mobile application designed for Android and [iOS](https://github.com/gemwalletcom/gem-ios). It provides users with a seamless and intuitive experience to manage their digital assets and cryptocurrencies.
 
 The app is developed using Kotlin/Compose. The codebase also includes a [Core](https://github.com/gemwalletcom/core) library implemented in Rust, providing efficient and secure cryptographic operations for enhanced data protection.
 
