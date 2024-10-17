@@ -90,7 +90,7 @@ private fun ShowUpdateDialog(
                 }
                 Spacer16()
                 TextButton(onClick = { onSkip(version) }) {
-                    Text(text = "Skip")
+                    Text(text = stringResource(R.string.common_skip))
                 }
             }
         },

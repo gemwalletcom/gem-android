@@ -282,4 +282,7 @@
   <string name="price_alerts.empty_state.message">Пока не добавлено ни одного ценового оповещения.</string>
   <string name="assets.select_asset">Выберите актив</string>
   <string name="lock.privacy_lock">Блокировка конфиденциальности</string>
+  <string name="receive.your_address">Ваш адрес для получения</string>
+  <string name="verify_phrase.title">Подтвердите</string>
+  <string name="common.skip">Пропустить</string>
 </resources>

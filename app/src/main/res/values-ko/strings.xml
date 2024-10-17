@@ -282,4 +282,7 @@
   <string name="price_alerts.empty_state.message">아직 가격 알림이 추가되지 않았습니다.</string>
   <string name="assets.select_asset">자산 선택</string>
   <string name="lock.privacy_lock">Privacy Lock</string>
+  <string name="receive.your_address">Your Receiving Address</string>
+  <string name="verify_phrase.title">확인하다</string>
+  <string name="common.skip">Skip</string>
 </resources>

@@ -282,4 +282,7 @@
   <string name="price_alerts.empty_state.message">Chưa có thông báo giá nào được thêm vào.</string>
   <string name="assets.select_asset">Chọn Tài sản</string>
   <string name="lock.privacy_lock">Privacy Lock</string>
+  <string name="receive.your_address">Your Receiving Address</string>
+  <string name="verify_phrase.title">Xác nhận</string>
+  <string name="common.skip">Skip</string>
 </resources>

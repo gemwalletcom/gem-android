@@ -282,4 +282,7 @@
   <string name="price_alerts.empty_state.message">هنوز هیچ هشدار قیمت اضافه نشده است.</string>
   <string name="assets.select_asset">Asset را انتخاب کنید</string>
   <string name="lock.privacy_lock">Privacy Lock</string>
+  <string name="receive.your_address">Your Receiving Address</string>
+  <string name="verify_phrase.title">تایید کنید</string>
+  <string name="common.skip">Skip</string>
 </resources>

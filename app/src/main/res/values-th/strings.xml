@@ -282,4 +282,7 @@
   <string name="price_alerts.empty_state.message">ยังไม่มีการเพิ่มการแจ้งเตือนราคา</string>
   <string name="assets.select_asset">เลือกสินทรัพย์</string>
   <string name="lock.privacy_lock">Privacy Lock</string>
+  <string name="receive.your_address">Your Receiving Address</string>
+  <string name="verify_phrase.title">ยืนยัน</string>
+  <string name="common.skip">Skip</string>
 </resources>
