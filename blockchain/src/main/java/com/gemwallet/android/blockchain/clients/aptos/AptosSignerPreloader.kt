@@ -18,11 +18,11 @@ class AptosSignerPreloader(
         params: ConfirmParams,
     ): Result<SignerParams> {
         val sequence = try {
-            rpcClient.accounts(owner.address).getOrThrow().sequence_number.toLong()
+            rpcClient.accounts(owner.address).getOrThrow().sequence_number?.toLong() ?: 0L
         } catch (err: Throwable) {
             0
         }
-        val fee = AptosFee().invoke(chain, owner.address, rpcClient)
+        val fee = AptosFee().invoke(chain, params.destination()?.address!!, rpcClient)
         val input = SignerParams(
             input = params,
             owner = owner.address,

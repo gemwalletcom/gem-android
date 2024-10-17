@@ -4,18 +4,22 @@ import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.model.TransactionChages
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
+import java.lang.Exception
+import java.math.BigInteger
 
 class AptosTransactionStatusClient(
     private val chain: Chain,
     private val rpcClient: AptosRpcClient,
 ) : TransactionStatusClient {
     override suspend fun getStatus(owner: String, txId: String): Result<TransactionChages> {
-        val status = if (rpcClient.transactions(txId).getOrNull()?.success == true) {
+        val transaction = rpcClient.transactions(txId).getOrNull() ?: return Result.failure(Exception())
+        val status = if (transaction.success == true) {
             TransactionState.Confirmed
         } else {
-            TransactionState.Pending
+            TransactionState.Reverted
         }
-        return Result.success(TransactionChages(status))
+        val fee = BigInteger(transaction.gas_used) * BigInteger(transaction.gas_unit_price)
+        return Result.success(TransactionChages(status, fee))
     }
 
     override fun maintainChain(): Chain = chain
