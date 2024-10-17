@@ -13,6 +13,12 @@ data class AptosAccount (
 )
 
 @Serializable
+data class AptosError (
+	val message: String,
+	val error_code: String
+)
+
+@Serializable
 data class AptosGasFee (
 	val gas_estimate: Int,
 	val prioritized_gas_estimate: Int
@@ -42,11 +48,19 @@ data class AptosResourceBalance (
 
 @Serializable
 data class AptosTransaction (
-	val success: Boolean
+	val success: Boolean,
+	val gas_used: String,
+	val gas_unit_price: String
 )
 
 @Serializable
 data class AptosTransactionBroacast (
 	val hash: String
 )
+
+@Serializable
+enum class AptosErrorCode(val string: String) {
+	@SerialName("account_not_found")
+	account_not_found("account_not_found"),
+}
 

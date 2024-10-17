@@ -16,9 +16,6 @@ class SyncConfig(
     private fun saveConfig(config: ConfigResponse) {
         with(configRepository) {
             setFiatAssetsVersion(config.versions.fiatAssets)
-            setAppVersion(config.app.android.version.alpha, ConfigRepository.AppVersionType.Alpha)
-            setAppVersion(config.app.android.version.beta, ConfigRepository.AppVersionType.Beta)
-            setAppVersion(config.app.android.version.production, ConfigRepository.AppVersionType.Prod)
         }
 
     }

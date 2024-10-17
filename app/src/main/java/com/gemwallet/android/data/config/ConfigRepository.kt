@@ -11,12 +11,6 @@ interface ConfigRepository {
 
     fun setAuthRequired(enabled: Boolean)
 
-    fun getAppVersion(): String
-
-    fun setAppVersion(version: String, type: AppVersionType)
-
-    fun appVersionActual(current: String): Boolean
-
     fun getAppVersionSkip(): String
 
     fun setAppVersionSkip(version: String)
@@ -80,12 +74,6 @@ interface ConfigRepository {
     fun getLaunchNumber(): Int
 
     fun increaseLaunchNumber()
-
-    enum class AppVersionType {
-        Alpha,
-        Beta,
-        Prod,
-    }
 
     companion object {
         fun getGemNodeUrl(chain: Chain) = "https://${chain.string}.gemnodes.com"

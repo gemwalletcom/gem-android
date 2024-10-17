@@ -29,25 +29,6 @@ class OfflineFirstConfigRepository(
         putBoolean(Keys.Auth, enabled)
     }
 
-    override fun getAppVersion(): String = getString(Keys.AppVersionProd)
-
-    override fun setAppVersion(version: String, type: ConfigRepository.AppVersionType) {
-        val key = when (type) {
-            ConfigRepository.AppVersionType.Alpha -> Keys.AppVersionAlpha
-            ConfigRepository.AppVersionType.Beta -> Keys.AppVersionBeta
-            ConfigRepository.AppVersionType.Prod -> Keys.AppVersionProd
-        }
-        putString(key, version)
-    }
-
-    override fun appVersionActual(current: String): Boolean {
-        if (BuildConfig.DEBUG) {
-            return true
-        }
-        val appAppVersion = getAppVersion()
-        return current.compareTo(appAppVersion) >= 0
-    }
-
     override fun setAppVersionSkip(version: String) {
         putString(Keys.AppVersionSkip, version)
     }
@@ -217,9 +198,6 @@ class OfflineFirstConfigRepository(
     enum class Keys(val string: String) {
         Auth("auth"),
         DeviceId("device-uuid"),
-        AppVersionProd("app-version-production"),
-        AppVersionBeta("app-version-beta"),
-        AppVersionAlpha("app-version-alpha"),
         AppVersionSkip("app-version-skip"),
         FiatAssetsVersion("fiat-assets-version"),
         FiatAssetsOfflineVersion("fiat-offline-version"),

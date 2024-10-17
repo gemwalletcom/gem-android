@@ -45,7 +45,6 @@ data class ConfigVersions (
 
 @Serializable
 data class ConfigResponse (
-	val app: ConfigApp,
 	val releases: List<Release>,
 	val versions: ConfigVersions
 )
