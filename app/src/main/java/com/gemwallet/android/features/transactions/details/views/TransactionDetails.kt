@@ -38,6 +38,8 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
+import uniffi.Gemstone.Config
+import uniffi.Gemstone.DocsUrl
 
 @Composable
 fun TransactionDetails(
@@ -131,6 +133,7 @@ fun TransactionDetails(
                             else -> {}
                         }
                     },
+                    infoUrl = Config().getDocsUrl(DocsUrl.TRANSACTION_STATUS),
                     data = when (model.state) {
                         TransactionState.Pending -> stringResource(id = R.string.transaction_status_pending)
                         TransactionState.Confirmed -> stringResource(id = R.string.transaction_status_confirmed)
@@ -204,6 +207,7 @@ fun TransactionDetails(
             cells.add(
                 CellEntity(
                     label = stringResource(id = R.string.transfer_network_fee),
+                    infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
                     data = model.feeCrypto,
                     support = model.feeFiat,
                 )

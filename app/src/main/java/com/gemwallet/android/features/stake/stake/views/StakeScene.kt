@@ -37,6 +37,8 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionType
 import com.wallet.core.primitives.WalletType
+import uniffi.Gemstone.Config
+import uniffi.Gemstone.DocsUrl
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -57,6 +59,24 @@ fun StakeScene(
         Spacer(modifier = Modifier.size(16.dp))
         Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
+                item {
+                    Spacer16()
+                    SubheaderItem(title = uiState.title)
+                    Table(
+                        items = listOf(
+                            CellEntity(
+                                stringResource(id = R.string.stake_apr, ""),
+                                data = PriceUIState.formatPercentage(uiState.apr, false)
+                            ),
+                            CellEntity(
+                                label = stringResource(id = R.string.stake_lock_time),
+                                data = "${uiState.lockTime} days",
+                                infoUrl = Config().getDocsUrl(DocsUrl.STAKING_LOCK_TIME)
+                            ),
+                        ),
+                    )
+                }
+
                 actions(
                     assetId = uiState.assetId,
                     stakeChain = uiState.stakeChain,
@@ -74,23 +94,6 @@ fun StakeScene(
                         delegation = it,
                         completedAt = availableIn(it),
                         onClick = { onDelegation(it.validator.id, it.base.delegationId) }
-                    )
-                }
-
-                item {
-                    Spacer16()
-                    SubheaderItem(title = uiState.title)
-                    Table(
-                        items = listOf(
-                            CellEntity(
-                                stringResource(id = R.string.stake_apr, ""),
-                                data = PriceUIState.formatPercentage(uiState.apr, false)
-                            ),
-                            CellEntity(
-                                stringResource(id = R.string.stake_lock_time),
-                                data = "${uiState.lockTime} days",
-                            ),
-                        ),
                     )
                 }
             }
@@ -112,6 +115,8 @@ private fun LazyListScope.actions(
         return
     }
     item {
+        Spacer16()
+        SubheaderItem(title = stringResource(R.string.common_manage))
         val cells = mutableListOf<CellEntity<Any>>(
             CellEntity(label = stringResource(id = R.string.wallet_stake), data = "") {
                 onAmount(

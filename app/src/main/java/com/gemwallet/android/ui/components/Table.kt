@@ -1,6 +1,7 @@
 package com.gemwallet.android.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,9 +14,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,6 +31,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -34,6 +39,7 @@ import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.theme.padding16
 import com.gemwallet.android.ui.theme.padding8
+import kotlin.String
 
 data class CellEntity<T>(
     val label: T,
@@ -46,6 +52,7 @@ data class CellEntity<T>(
     val trailing: (@Composable () -> Unit)? = null,
     val dropDownActions: (@Composable (() -> Unit) -> Unit)? = null,
     val showActionChevron: Boolean = true,
+    val infoUrl: String = "",
     val testTag: String = "",
     val action: (() -> Unit)? = null,
 )
@@ -80,6 +87,7 @@ fun Table(
                         showActionChevron = item.showActionChevron,
                         trailingIcon = item.trailingIcon,
                         trailing = item.trailing,
+                        infoUrl =  item.infoUrl,
                         testTag = item.testTag,
                     )
                     DropdownMenu(
@@ -173,6 +181,7 @@ private fun Cell(
     icon: String? = null,
     dataColor: Color? = null,
     support: String? = null,
+    infoUrl: String = "",
     actionIcon: (@Composable () -> Unit)? = null,
     showActionChevron: Boolean = true,
     trailing: (@Composable () -> Unit)? = null,
@@ -180,6 +189,7 @@ private fun Cell(
     longAction: (() -> Unit)? = null,
     action: (() -> Unit)? = null,
 ) {
+    val uriHandler = LocalUriHandler.current
     Cell(
         label = {
             if (!icon.isNullOrEmpty()) {
@@ -196,6 +206,16 @@ private fun Cell(
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyLarge,
             )
+            if (infoUrl.isNotEmpty()) {
+                IconButton(onClick = { uriHandler.open(infoUrl) }) {
+                    Icon(
+                        modifier = Modifier.size(24.dp),
+                        imageVector = Icons.Outlined.Info,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.secondary,
+                    )
+                }
+            }
         },
         data = {
             MiddleEllipsisText(

@@ -56,6 +56,8 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import uniffi.Gemstone.Config
+import uniffi.Gemstone.DocsUrl
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -190,6 +192,7 @@ class ConfirmViewModel @Inject constructor(
             CellEntity(
                 label = R.string.transfer_network_fee,
                 data = if ((state as? ConfirmState.Error)?.message == ConfirmError.CalculateFee) "-" else "",
+                infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
                 support = null,
                 trailing = {
                     if (state !is ConfirmState.Error) {
