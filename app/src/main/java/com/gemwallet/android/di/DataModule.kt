@@ -9,6 +9,7 @@ import com.gemwallet.android.blockchain.clients.SignTransferProxy
 import com.gemwallet.android.blockchain.clients.SignerPreload
 import com.gemwallet.android.blockchain.clients.aptos.AptosBalanceClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosBroadcastClient
+import com.gemwallet.android.blockchain.clients.aptos.AptosNodeStatusClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosSignClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosSignerPreloader
 import com.gemwallet.android.blockchain.clients.aptos.AptosTransactionStatusClient
@@ -51,6 +52,7 @@ import com.gemwallet.android.blockchain.clients.solana.SolanaTransactionStatusCl
 import com.gemwallet.android.blockchain.clients.sui.SuiBalanceClient
 import com.gemwallet.android.blockchain.clients.sui.SuiBroadcastClient
 import com.gemwallet.android.blockchain.clients.sui.SuiGetTokenClient
+import com.gemwallet.android.blockchain.clients.sui.SuiNodeStatusClient
 import com.gemwallet.android.blockchain.clients.sui.SuiSignClient
 import com.gemwallet.android.blockchain.clients.sui.SuiSignerPreloader
 import com.gemwallet.android.blockchain.clients.sui.SuiStakeClient
@@ -604,8 +606,8 @@ object DataModule {
                     Chain.Litecoin,
                     Chain.Bitcoin -> BitcoinNodeStatusClient(it, rpcClients.getClient(it))
                     Chain.Near -> NearNodeStatusClient(it, rpcClients.getClient(it))
-                    Chain.Aptos,
-                    Chain.Sui -> null
+                    Chain.Aptos -> AptosNodeStatusClient(it, rpcClients.getClient(it))
+                    Chain.Sui -> SuiNodeStatusClient(it, rpcClients.getClient(it))
                 }
             }
         )

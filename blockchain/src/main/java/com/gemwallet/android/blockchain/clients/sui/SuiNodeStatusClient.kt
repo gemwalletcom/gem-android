@@ -14,15 +14,17 @@ class SuiNodeStatusClient(
 ) : NodeStatusClient {
     override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
         val chainIdJob = async { rpcClient.chainId(url) }
-        val blockJob = async { rpcClient.latestBlock(url).getOrNull()?.result }
+        val blockJob = async { rpcClient.latestBlock(url).getOrNull() }
 
-        val chainId = chainIdJob.await()
+        val chainIdResp = chainIdJob.await()
+        val block = blockJob.await()
+        val chainId = chainIdResp.body()?.result
 
         NodeStatus(
             inSync = true,
-            blockNumber = blockJob.await()?.toString() ?: return@withContext null,
-            chainId = chainId.body()?.result ?: return@withContext null,
-            latency = chainId.getLatency(),
+            blockNumber = block?.result?.toString() ?: return@withContext null,
+            chainId = chainId ?: return@withContext null,
+            latency = chainIdResp.getLatency(),
         )
     }
 

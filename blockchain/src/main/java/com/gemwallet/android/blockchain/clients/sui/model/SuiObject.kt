@@ -9,3 +9,7 @@ data class SuiObject(
         val digest: String,
     )
 }
+
+data class SuiValue(
+    val value: String?
+)

@@ -11,6 +11,7 @@ import com.gemwallet.android.data.config.NodesRepository
 import com.gemwallet.android.ext.filter
 import com.gemwallet.android.features.settings.networks.models.AddSourceType
 import com.gemwallet.android.features.settings.networks.models.NetworksUIState
+import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Node
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,18 +19,23 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.String
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -45,6 +51,8 @@ class NetworksViewModel @Inject constructor(
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, NetworksUIState())
     val chainFilter = TextFieldState()
+    val isRefreshing = MutableStateFlow<Long?>(null)
+
     var nodes: StateFlow<List<Node>> = state.flatMapLatest {
         if (it.chain == null) {
             return@flatMapLatest emptyFlow()
@@ -53,16 +61,43 @@ class NetworksViewModel @Inject constructor(
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    var nodeStates = nodes.map { nodes ->
-        val chain = state.value.chain ?: return@map emptyMap()
-        withContext(Dispatchers.IO) {
-            nodes.map { node ->
-                    async {
-                        Pair(node.url, nodeStatusClients(chain, node.url))
-                    }
+    private val refreshingStatus = isRefreshing.filter { it != null }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    var nodeStates = nodes.combine(refreshingStatus) { nodes, isRefreshing -> Pair(nodes, isRefreshing) }
+    .map { it.first }
+    .flatMapLatest { nodes ->
+        val chain = state.value.chain ?: return@flatMapLatest emptyFlow<Map<String, NodeStatus?>>()
+        flow {
+            emit(
+                nodes.map { node ->
+                    Pair(
+                        node.url,
+                        NodeStatus(
+                            chainId = "",
+                            blockNumber = "",
+                            inSync = false,
+                            latency = 0,
+                            loading = true,
+                        )
+                    )
+                }
+                .groupBy { it.first }
+                .mapValues { it.value.first().second }
+            )
+
+            val result = withContext(Dispatchers.IO) {
+                launch(Dispatchers.IO) {
+                    delay(300)
+                    isRefreshing.update { null }
+                }
+                nodes.map { node ->
+                    async { Pair(node.url, nodeStatusClients(chain, node.url)) }
                 }.awaitAll()
                 .groupBy { it.first }
                 .mapValues { it.value.first().second }
+            }
+            emit(result)
         }
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
@@ -84,9 +119,13 @@ class NetworksViewModel @Inject constructor(
                 explorers = configRepository.getBlockExplorers(chain),
                 currentNode = configRepository.getCurrentNode(chain),
                 currentExplorer = configRepository.getCurrentBlockExplorer(chain),
-                availableAddNode = nodeStatusClientsProxy.isMaintained(chain)
+                availableAddNode = nodeStatusClientsProxy.isMaintained(chain),
             )
         }
+    }
+
+    fun refresh() {
+        isRefreshing.update { System.nanoTime() }
     }
 
     fun onSelectNode(node: Node) {

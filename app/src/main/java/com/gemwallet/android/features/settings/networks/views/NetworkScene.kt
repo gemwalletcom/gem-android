@@ -1,3 +1,5 @@
+@file:kotlin.OptIn(ExperimentalMaterial3Api::class)
+
 package com.gemwallet.android.features.settings.networks.views
 
 import androidx.annotation.OptIn
@@ -18,10 +20,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -37,6 +43,7 @@ import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.settings.networks.models.NetworksUIState
 import com.gemwallet.android.model.NodeStatus
+import com.gemwallet.android.ui.components.CircularProgressIndicator10
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
@@ -47,12 +54,16 @@ import com.gemwallet.android.ui.theme.padding8
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Node
 
-@OptIn(ExperimentalGetImage::class)
+@OptIn(
+    ExperimentalGetImage::class,
+    ExperimentalMaterial3Api::class,
+)
 @Composable
 fun NetworkScene(
     state: NetworksUIState,
     nodes: List<Node>,
     nodeStates: Map<String, NodeStatus?>,
+    isRefreshing: Boolean,
     onRefresh: () -> Unit,
     onSelectNode: (Node) -> Unit,
     onSelectBlockExplorer: (String) -> Unit,
@@ -72,29 +83,44 @@ fun NetworkScene(
         },
         onClose = onCancel,
     ) {
-        LazyColumn {
-            item {
-                SubheaderItem(
-                    title = stringResource(id = R.string.settings_networks_source),
+        val pullToRefreshState = rememberPullToRefreshState()
+        PullToRefreshBox(
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            state = pullToRefreshState,
+            indicator = {
+                Indicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    isRefreshing = isRefreshing,
+                    state = pullToRefreshState,
+                    containerColor = MaterialTheme.colorScheme.background
                 )
             }
-            items(nodes) { node: Node ->
-                NodeItem(
-                    state.chain,
-                    state.currentNode,
-                    node,
-                    nodeStates[node.url],
-                    onSelectNode
-                )
-            }
-            item {
-                Spacer16()
-                SubheaderItem(
-                    title = stringResource(id = R.string.settings_networks_explorer),
-                )
-            }
-            items(state.blockExplorers) {
-                BlockExplorerItem(state.currentExplorer, it, onSelectBlockExplorer)
+        ) {
+            LazyColumn {
+                item {
+                    SubheaderItem(
+                        title = stringResource(id = R.string.settings_networks_source),
+                    )
+                }
+                items(nodes) { node: Node ->
+                    NodeItem(
+                        state.chain,
+                        state.currentNode,
+                        node,
+                        nodeStates[node.url],
+                        onSelectNode
+                    )
+                }
+                item {
+                    Spacer16()
+                    SubheaderItem(
+                        title = stringResource(id = R.string.settings_networks_explorer),
+                    )
+                }
+                items(state.blockExplorers) {
+                    BlockExplorerItem(state.currentExplorer, it, onSelectBlockExplorer)
+                }
             }
         }
     }
@@ -160,24 +186,28 @@ private fun NodeItem(
                     style = MaterialTheme.typography.bodyMedium,
                 )
             }
-            if (nodeStatus != null) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = stringResource(R.string.common_latency_in_ms, nodeStatus.latency)
-                    )
-                    Spacer4()
-                    Box(
-                        modifier = Modifier
-                            .size(16.dp)
-                            .background(
-                                if (nodeStatus.inSync) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.error,
-                                shape = CircleShape
-                            )
-                        ,
-                    ) {}
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                if (nodeStatus?.loading == true) {
+                    CircularProgressIndicator10()
+                    return@Row
                 }
+                nodeStatus?.latency?.let {
+                    Text(
+                        text = stringResource(R.string.common_latency_in_ms, it)
+                    )
+                }
+                Spacer4()
+                Box(
+                    modifier = Modifier
+                        .size(16.dp)
+                        .background(
+                            if (nodeStatus?.inSync == true) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.error,
+                            shape = CircleShape
+                        )
+                    ,
+                ) {}
             }
         }
     }

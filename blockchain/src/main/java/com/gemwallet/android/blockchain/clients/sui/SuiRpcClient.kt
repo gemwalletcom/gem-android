@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.sui
 
-import com.gemwallet.android.blockchain.clients.ethereum.EvmRpcClient
 import com.gemwallet.android.blockchain.clients.sui.model.SuiObject
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
@@ -60,7 +59,7 @@ interface SuiRpcClient {
     suspend fun chainId(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Response<JSONRpcResponse<String>>
 
     @POST
-    suspend fun latestBlock(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmRpcClient.EvmNumber>>
+    suspend fun latestBlock(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
 }
 
 internal suspend fun SuiRpcClient.coins(address: String, coinType: String): Result<JSONRpcResponse<SuiData<List<SuiCoin>>>> {
@@ -111,6 +110,6 @@ internal suspend fun SuiRpcClient.chainId(url: String): Response<JSONRpcResponse
     return chainId(url, JSONRpcRequest.create(SuiMethod.ChainId, emptyList()))
 }
 
-internal suspend fun SuiRpcClient.latestBlock(url: String): Result<JSONRpcResponse<EvmRpcClient.EvmNumber>> {
+internal suspend fun SuiRpcClient.latestBlock(url: String): Result<JSONRpcResponse<String>> {
     return latestBlock(url, JSONRpcRequest.create(SuiMethod.LatestCheckpoint, emptyList()))
 }
