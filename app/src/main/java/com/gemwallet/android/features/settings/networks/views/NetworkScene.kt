@@ -161,7 +161,9 @@ private fun NodeItem(
                 )
             }
             if (nodeStatus != null) {
-                Row {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
                         text = stringResource(R.string.common_latency_in_ms, nodeStatus.latency)
                     )
