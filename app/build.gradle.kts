@@ -69,7 +69,7 @@ android {
         create("solana") {
             dimension = channelDimension
             ndk {
-                abiFilters.add("x86_64")
+                abiFilters.add("arm64-v8a")
             }
             buildConfigField("String", "UPDATE_URL", "\"solanadappstore://details?id=com.gemwallet.android\"")
         }
