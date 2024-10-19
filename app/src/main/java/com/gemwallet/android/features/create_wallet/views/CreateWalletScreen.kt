@@ -127,7 +127,7 @@ fun UI(
         padding = PaddingValues(padding16),
         mainAction = {
             MainActionButton(
-                title = stringResource(id = R.string.common_next),
+                title = stringResource(id = R.string.common_continue),
                 onClick = { onCreate(name) }
             )
         }

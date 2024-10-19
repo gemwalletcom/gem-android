@@ -56,6 +56,8 @@
 -keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
 -keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
 
+-dontwarn com.google.firebase.analytics.connector.AnalyticsConnector
+
 -keep class wallet.core.jni.** { *; }
 -keep class wallet.core.jni.proto.** { *; }
 
