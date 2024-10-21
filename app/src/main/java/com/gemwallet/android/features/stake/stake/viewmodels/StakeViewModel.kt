@@ -14,6 +14,7 @@ import com.gemwallet.android.features.stake.stake.model.StakeUIState
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Delegation
@@ -116,7 +117,7 @@ class StakeViewModel @Inject constructor(
                         apr = apr,
                         lockTime = (Config() .getStakeConfig(account.chain.string).timeLock / (DateUtils.DAY_IN_MILLIS / 1000).toULong()).toInt(),
                         hasRewards = rewardsAmount > BigInteger.ZERO,
-                        rewardsAmount = Crypto(rewardsAmount).format(asset.asset.decimals, asset.asset.symbol, decimalPlace = 6),
+                        rewardsAmount = asset.asset.format(Crypto(rewardsAmount)),
                         delegations = delegations,
                     )
                 }

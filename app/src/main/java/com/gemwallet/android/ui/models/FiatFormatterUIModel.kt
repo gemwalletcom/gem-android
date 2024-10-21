@@ -13,6 +13,6 @@ interface FiatFormatterUIModel : CryptoAmountUIModel, AssetUIModel {
         get() {
             val price = priceValue ?: return ""
             val fiat = crypto.convert(asset.decimals, price)
-            return currency.format(fiat, decimalPlace = 2, dynamicPlace = true)
+            return currency.format(fiat)
         }
 }

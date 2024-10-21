@@ -284,11 +284,12 @@ class AmountViewModel @Inject constructor(
         }
 
         return if (inputCurrency == InputCurrency.InFiat) {
-            val unit = inputCurrency.getAmount(amount, decimals = decimals, price)
-            unit.format(0, currency.string, decimalPlace = 2, dynamicPlace = true, zeroFraction = 0)
+//            val unit = inputCurrency.getAmount(amount, decimals = decimals, price)
+//            unit.format(0, currency.string, decimalPlace = 2, dynamicPlace = true, zeroFraction = 0)
+            ""
         } else {
             val unit = Crypto(amount.numberParse(), decimals).convert(decimals, price)
-            unit.format(0, currency.string, decimalPlace = 2, dynamicPlace = true, zeroFraction = 0)
+            currency.format(unit)
         }
     }
 

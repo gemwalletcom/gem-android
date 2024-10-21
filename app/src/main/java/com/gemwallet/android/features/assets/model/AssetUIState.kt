@@ -37,7 +37,7 @@ fun AssetInfo.toUIModel(): AssetUIState {
         fiat = if (price?.price == null || price!!.price.price == 0.0) {
             ""
         } else {
-            currency.format(balances.convert(asset.decimals, price!!.price.price), 2)
+            currency.format(balances.convert(asset.decimals, price!!.price.price))
         },
         owner = owner.address,
         metadata = metadata,
@@ -52,11 +52,7 @@ data class PriceUIState(
 ) {
     companion object {
         fun create(price: AssetPrice?, currency: Currency): PriceUIState {
-            val value = if (price == null || price.price == 0.0) {
-                ""
-            } else {
-                Fiat(price.price).format(0, currency.string, 2, dynamicPlace = true)
-            }
+            val value = if (price == null || price.price == 0.0) "" else currency.format(price.price)
             val dayChanges = formatPercentage(price?.priceChangePercentage24h ?: 0.0, showZero = true)
             val state = getState(price?.priceChangePercentage24h ?: 0.0)
             return PriceUIState(value = value, state = state, dayChanges = dayChanges)

@@ -166,7 +166,7 @@ class ConfirmViewModel @Inject constructor(
         AmountUIModel(
             txType = request.getTxType(),
             amount = amount.format(decimals, symbol, -1),
-            amountEquivalent = currency.format(amount.convert(decimals, price), 2, dynamicPlace = true),
+            amountEquivalent = currency.format(amount.convert(decimals, price)),
             fromAsset = assetInfo,
             fromAmount = amount.atomicValue.toString(),
             toAsset = toAssetInfo,
@@ -206,7 +206,7 @@ class ConfirmViewModel @Inject constructor(
             val feeDecimals = feeAssetInfo.asset.decimals
             val feeCrypto = feeAssetInfo.asset.format(feeAmount, 6)
             val feeFiat = feeAssetInfo.price?.let {
-                currency.format(feeAmount.convert(feeDecimals, it.price.price), 2, dynamicPlace = true)
+                currency.format(feeAmount.convert(feeDecimals, it.price.price))
             } ?: ""
 
             try {

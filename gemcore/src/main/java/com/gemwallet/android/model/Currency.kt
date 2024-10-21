@@ -221,7 +221,7 @@ fun com.wallet.core.primitives.Currency.format(
     value: Fiat,
     decimalPlace: Int = 2,
     showSign: CountingUnit.SignMode = CountingUnit.SignMode.NoPLus,
-    dynamicPlace: Boolean = false,
+    dynamicPlace: Boolean = true,
     zeroFraction: Int = 0,
 ): String {
     return value.format(

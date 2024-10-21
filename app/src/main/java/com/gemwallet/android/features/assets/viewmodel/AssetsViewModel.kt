@@ -16,6 +16,7 @@ import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.model.WalletSummary
+import com.gemwallet.android.model.format
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain
@@ -89,8 +90,8 @@ class AssetsViewModel @Inject constructor(
         WalletInfoUIState(
             name = walletInfo.name,
             icon = walletInfo.icon,
-            totalValue = walletInfo.totalValue.format(0, session.currency.string, 2),
-            changedValue = walletInfo.changedValue.format(0, session.currency.string, 2),
+            totalValue = session.currency.format(walletInfo.totalValue),
+            changedValue = session.currency.format(walletInfo.changedValue),
             changedPercentages = PriceUIState.formatPercentage(walletInfo.changedPercentages),
             priceState = PriceUIState.getState(walletInfo.changedPercentages),
             type = walletInfo.type,

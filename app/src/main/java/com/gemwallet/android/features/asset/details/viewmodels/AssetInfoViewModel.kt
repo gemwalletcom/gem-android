@@ -19,6 +19,7 @@ import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fiat
+import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
@@ -104,9 +105,10 @@ class AssetInfoViewModel @Inject constructor(
             val balances = assetInfo.balances
             val total = balances.calcTotal()
             val fiatTotal = if (assetInfo.price == null) {
-                null
+                ""
             } else {
-                total.convert(asset.decimals, assetInfo.price!!.price.price)
+                val fiat = total.convert(asset.decimals, assetInfo.price!!.price.price)
+                currency.format(fiat)
             }
             val stakeBalance = balances.items.filter {
                 it.balance.type != BalanceType.available && it.balance.type != BalanceType.reserved
@@ -125,9 +127,7 @@ class AssetInfoViewModel @Inject constructor(
                     asset.name
                 },
                 iconUrl = asset.id.getIconUrl(),
-                priceValue = if (price == 0.0) "" else {
-                    Fiat(price).format(0, currency.string, 2, dynamicPlace = true)
-                },
+                priceValue = if (price == 0.0) "" else currency.format(price),
                 priceDayChanges = PriceUIState.formatPercentage(
                     assetInfo.price?.price?.priceChangePercentage24h ?: 0.0
                 ),
@@ -142,12 +142,12 @@ class AssetInfoViewModel @Inject constructor(
                 transactions = transactions,
                 account = AssetInfoUIModel.Account(
                     walletType = assetInfo.walletType,
-                    totalBalance = total.format(asset.decimals, asset.symbol, 6),
-                    totalFiat = fiatTotal?.format(0, currency.string, 2) ?: "",
+                    totalBalance = asset.format(total),
+                    totalFiat = fiatTotal,
                     owner = assetInfo.owner.address,
                     hasBalanceDetails = StakeChain.isStaked(asset.id.chain) || reservedBalance != BigInteger.ZERO,
                     available = if (balances.available().atomicValue != total.atomicValue) {
-                        balances.available().format(asset.decimals, asset.symbol, 6)
+                        asset.format(balances.available())
                     } else {
                         ""
                     },
@@ -155,13 +155,13 @@ class AssetInfoViewModel @Inject constructor(
                         if (stakeBalance == BigInteger.ZERO) {
                             "APR ${PriceUIState.formatPercentage(assetInfo.stakeApr ?: 0.0, false)}"
                         } else {
-                            Crypto(stakeBalance).format(asset.decimals, asset.symbol, 6)
+                            asset.format(Crypto(stakeBalance))
                         }
                     } else {
                         ""
                     },
                     reserved = if (reservedBalance != BigInteger.ZERO) {
-                        Crypto(reservedBalance).format(asset.decimals, asset.symbol, 6)
+                        asset.format(Crypto(reservedBalance))
                     } else {
                         ""
                     },

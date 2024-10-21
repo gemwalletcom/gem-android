@@ -95,8 +95,7 @@ fun TransactionItem(
                         if (swapMetadata == null || asset == null) {
                             ""
                         } else {
-                            "+${Crypto(swapMetadata.toValue)
-                                    .format(asset.decimals, asset.symbol, 2, dynamicPlace = true)}"
+                            "+${asset.format(swapMetadata.toValue, dynamicPlace = true)}"
                         }
                     }
                     else -> type.getValue(direction, value)
@@ -113,8 +112,7 @@ fun TransactionItem(
                         if (swapMetadata == null || asset == null) {
                             ""
                         } else {
-                            "-${Crypto(swapMetadata.fromValue)
-                                .format(asset.decimals, asset.symbol, 2, dynamicPlace = true)}"
+                            "-${asset.format(swapMetadata.fromValue, dynamicPlace = true)}"
                         }
                     }
                     else -> ""

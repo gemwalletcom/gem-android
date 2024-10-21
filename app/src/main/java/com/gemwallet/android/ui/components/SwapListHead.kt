@@ -21,6 +21,7 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.padding16
@@ -74,14 +75,14 @@ private fun SwapItem(assetInfo: AssetInfo, value: String, currency: Currency?) {
     ) {
         Column(Modifier.weight(1f)) {
             Text(
-                text = Crypto(value).format(decimals, symbol, 6, dynamicPlace = true),
+                text = asset.format(value, dynamicPlace = true),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Start
             )
             if (currency != null) {
                 Text(
-                    text = Crypto(value).convert(decimals, assetInfo.price?.price?.price ?: 0.0).format(0, currency.string, 2, dynamicPlace = true),
+                    text = currency.format(Crypto(value).convert(decimals, assetInfo.price?.price?.price ?: 0.0)),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Start

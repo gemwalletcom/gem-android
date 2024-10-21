@@ -61,12 +61,12 @@ class TransactionDetailsViewModel @Inject constructor(
         val feeAsset = transaction.feeAsset
         val value = Crypto(tx.value.toBigInteger())
         val fiat = transaction.price?.price?.let {
-            currency.format(value.convert(asset.decimals, it),2, dynamicPlace = true)
+            currency.format(value.convert(asset.decimals, it))
         } ?: ""
         val fee = Crypto(tx.fee.toBigInteger())
-        val feeCrypto = fee.format(feeAsset.decimals, feeAsset.symbol, 6)
+        val feeCrypto = feeAsset.format(fee)
         val feeFiat = transaction.feePrice?.price?.let {
-            currency.format(fee.convert(feeAsset.decimals, it), 2, dynamicPlace = true)
+            currency.format(fee.convert(feeAsset.decimals, it))
         } ?: ""
         val blockExplorerName = configRepository.getCurrentBlockExplorer(transaction.asset.chain())
         val explorerUrl = Explorer(asset.chain().string).getTransactionUrl(blockExplorerName, tx.hash)
@@ -76,7 +76,7 @@ class TransactionDetailsViewModel @Inject constructor(
             assetSymbol = asset.symbol,
             assetIcon = asset.getIconUrl(),
             assetType = asset.type,
-            cryptoAmount = value.format(asset.decimals, asset.symbol, 6),
+            cryptoAmount = asset.format(value),
             fiatAmount = fiat,
             createdAt = getRelativeDate(tx.createdAt),
             direction = tx.direction,
