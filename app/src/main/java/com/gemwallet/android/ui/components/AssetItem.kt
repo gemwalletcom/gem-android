@@ -22,11 +22,32 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 
+
+@Composable
+fun AssetListItem(
+    uiModel: AssetItemUIModel,
+    modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
+) {
+    AssetListItem(
+        modifier = modifier,
+        iconModifier = iconModifier,
+        assetId = uiModel.asset.id,
+        title = uiModel.name,
+        assetType = uiModel.asset.type,
+        iconUrl = uiModel.assetIconUrl,
+        value = uiModel.cryptoFormatted,
+        isZeroValue = uiModel.isZeroAmount,
+        fiatAmount = uiModel.fiatFormatted,
+        price = null,
+    )
+}
 
 @Composable
 fun AssetListItem(
@@ -40,32 +61,6 @@ fun AssetListItem(
     modifier: Modifier = Modifier,
     iconModifier: Modifier = Modifier,
     price: PriceUIState? = null,
-    badge: String? = null,
-) {
-    AssetListItem(
-        modifier = modifier,
-        iconModifier = iconModifier,
-        assetId = assetId,
-        title = title,
-        assetType = assetType,
-        iconUrl = iconUrl,
-        price = price,
-        trailing = getBalanceInfo(isZeroValue, value, fiatAmount),
-        badge = badge,
-    )
-}
-
-@Composable
-private fun AssetListItem(
-    assetId: AssetId,
-    title: String,
-    assetType: AssetType,
-    iconUrl: String,
-    modifier: Modifier = Modifier,
-    iconModifier: Modifier = Modifier,
-    price: PriceUIState? = null,
-    badge: String? = null,
-    trailing: (@Composable () -> Unit)? = null,
 ) {
     ListItem(
         modifier = modifier,
@@ -73,7 +68,7 @@ private fun AssetListItem(
         iconUrl = iconUrl,
         supportIcon = if (assetType == AssetType.NATIVE) null else assetId.chain.getIconUrl(),
         placeholder = title[0].toString(),
-        trailing = trailing
+        trailing = getBalanceInfo(isZeroValue, value, fiatAmount),
     ) {
         val priceInfo: (@Composable () -> Unit)? = if (price == null || price.value.isEmpty()) {
             null
@@ -89,7 +84,6 @@ private fun AssetListItem(
         ListItemTitle(
             modifier = Modifier.fillMaxHeight(),
             title = title,
-            titleBadge = { Badge(text = badge) },
             subtitle = priceInfo,
         )
     }
@@ -173,6 +167,10 @@ fun PriceInfo(
     }
 }
 
+fun getBalanceInfo(uiModel: AssetItemUIModel): @Composable () -> Unit {
+    return getBalanceInfo(uiModel.isZeroAmount, uiModel.cryptoFormatted, uiModel.fiatFormatted)
+}
+
 fun getBalanceInfo(isZeroValue: Boolean, value: String, fiatAmount: String): @Composable () -> Unit {
     return (@Composable {
         if (isZeroValue) {
@@ -244,8 +242,10 @@ fun PreviewAssetListItem() {
             assetId = AssetId(Chain.SmartChain),
             title = "Foo Asset",
             assetType = AssetType.BEP20,
-            badge = "BNB",
             iconUrl = "https://icon.net",
+            value = "888.9999",
+            isZeroValue = false,
+            fiatAmount = "8 888 999.999",
             price = PriceUIState(
                 value = "88 0000$",
                 dayChanges = "1000%",

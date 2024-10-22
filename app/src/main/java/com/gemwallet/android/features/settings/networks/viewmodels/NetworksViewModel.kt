@@ -4,6 +4,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.stately.collections.ConcurrentMutableMap
 import com.gemwallet.android.blockchain.clients.NodeStatusClientsProxy
 import com.gemwallet.android.data.chains.ChainInfoRepository
 import com.gemwallet.android.data.config.ConfigRepository
@@ -23,6 +24,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
@@ -34,6 +36,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.toImmutableMap
 import javax.inject.Inject
 import kotlin.String
 
@@ -68,36 +71,34 @@ class NetworksViewModel @Inject constructor(
     .map { it.first }
     .flatMapLatest { nodes ->
         val chain = state.value.chain ?: return@flatMapLatest emptyFlow<Map<String, NodeStatus?>>()
-        flow {
-            emit(
-                nodes.map { node ->
-                    Pair(
-                        node.url,
-                        NodeStatus(
-                            chainId = "",
-                            blockNumber = "",
-                            inSync = false,
-                            latency = 0,
-                            loading = true,
-                        )
-                    )
-                }
-                .groupBy { it.first }
-                .mapValues { it.value.first().second }
-            )
+        channelFlow {
+            val statuses = ConcurrentMutableMap<String, NodeStatus?>()
+            nodes.forEach { node ->
+                statuses[node.url] = NodeStatus(
+                    chainId = "",
+                    blockNumber = "",
+                    inSync = false,
+                    latency = 0,
+                    loading = true,
+                )
+            }
+            send(statuses)
 
-            val result = withContext(Dispatchers.IO) {
+            withContext(Dispatchers.IO) {
                 launch(Dispatchers.IO) {
                     delay(300)
                     isRefreshing.update { null }
                 }
                 nodes.map { node ->
-                    async { Pair(node.url, nodeStatusClients(chain, node.url)) }
+                    async(Dispatchers.IO) {
+                        val status = nodeStatusClients(chain, node.url)
+                        statuses[node.url] = status
+                        send(statuses.toImmutableMap())
+                    }
                 }.awaitAll()
-                .groupBy { it.first }
-                .mapValues { it.value.first().second }
+                send(statuses.toImmutableMap())
             }
-            emit(result)
+
         }
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())

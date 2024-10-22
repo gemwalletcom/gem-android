@@ -1,51 +1,64 @@
 package com.gemwallet.android.ui.models
 
+import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.interactors.getSupportIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.Fiat
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.Currency
 import java.math.BigInteger
 
-interface AssetItemUIModel : CryptoFormatterUIModel,  FiatFormatterUIModel {
+interface AssetItemUIModel : CryptoFormattedUIModel,  FiatFormattedUIModel {
     val name: String
     val symbol: String
+    val assetIconUrl: String
+        get() = asset.getIconUrl()
+    val assetNetworkIconUrl: String?
+        get() = asset.getSupportIconUrl()
+    val price: PriceUIModel
+    val owner: String
+    val isZeroAmount: Boolean
+    val position: Int
+    val metadata: AssetMetaData?
 }
 
 class AssetInfoUIModel(
     val assetInfo: AssetInfo,
 ) : AssetItemUIModel {
 
-//    asset = asset,
-//        isZeroValue = balances.atomicValue == BigInteger.ZERO,
-//        value = asset.format(balances, 4),
-//        price = PriceUIState.create(price?.price, currency),
-//        fiat = if (price?.price == null || price!!.price.price == 0.0) {
-//            ""
-//        } else {
-//            currency.format(balances.convert(asset.decimals, price!!.price.price), 2)
-//        },
-//        owner = owner.address,
-//        metadata = metadata,
-//        position = position,
+    override val asset: Asset
+        get() =  assetInfo.asset
 
-    override val priceValue: Double? by lazy { assetInfo.price?.price?.price }
+    override val name: String by lazy { asset.name }
 
-    override val asset: Asset by lazy { assetInfo.asset }
+    override val symbol: String by lazy { asset.symbol }
 
-    override val name: String by lazy { assetInfo.asset.name }
+    override val crypto: Crypto
+        get() = assetInfo.balances.calcTotal()
 
-    override val symbol: String by lazy { assetInfo.asset.symbol }
+    override val fiat: Fiat? by lazy {
+        val price = assetInfo.price?.price?.price ?: 0.0
+        if (price == 0.0) {
+            null
+        } else {
+            crypto.convert(asset.decimals, price)
+        }
+    }
 
-    override val crypto: Crypto by lazy { assetInfo.balances.available() }
+    override val price: PriceUIModel by lazy {
+        AssetPriceUIModel(currency, assetInfo.price?.price)
+    }
 
-    override val currency: Currency by lazy { assetInfo.price?.currency ?: Currency.USD }
+    override val currency: Currency
+        get() = assetInfo.price?.currency ?: Currency.USD
 
-    val owner: String by lazy { assetInfo.owner.address }
+    override val owner: String by lazy { assetInfo.owner.address }
 
-    val isZeroAmount: Boolean by lazy { assetInfo.balances.calcTotal().atomicValue == BigInteger.ZERO }
+    override val isZeroAmount: Boolean by lazy { crypto.atomicValue == BigInteger.ZERO }
 
-    val position: Int by lazy { assetInfo.position }
+    override val position: Int by lazy { assetInfo.position }
 
-    val metadata: AssetMetaData? by lazy { assetInfo.metadata }
+    override val metadata: AssetMetaData? by lazy { assetInfo.metadata }
 }

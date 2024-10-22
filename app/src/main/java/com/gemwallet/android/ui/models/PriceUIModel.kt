@@ -6,15 +6,8 @@ import java.math.RoundingMode
 import java.text.DecimalFormat
 import kotlin.math.absoluteValue
 
-interface PriceUIModel : UIModel {
-    val price: Double?
+interface PriceUIModel : FiatFormattedUIModel {
     val dayChange: Double?
-    val currency: Currency
-
-    val priceFormatted: String
-        get() {
-            return price?.let { currency.format(it, decimalPlace = 2, dynamicPlace = true) } ?: ""
-        }
 
     val dayChangeFormatted: String
         get() {
