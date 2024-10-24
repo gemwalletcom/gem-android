@@ -60,6 +60,7 @@ fun SettingsScene(
     onWallets: () -> Unit,
     onAboutUs: () -> Unit,
     onNetworks: () -> Unit,
+    onPriceAlerts: () -> Unit,
     scrollState: ScrollState = rememberScrollState()
 ) {
     val viewModel: SettingsViewModel = hiltViewModel()
@@ -110,7 +111,21 @@ fun SettingsScene(
                     },
                     onClick = {}
                 )
+                LinkItem(
+                    title = stringResource(id = R.string.settings_price_alerts_title),
+                    icon = R.drawable.settings_pricealert,
+//                    trailingContent = @Composable {
+//                        Switch(
+//                            checked = uiState.pushEnabled,
+//                            onCheckedChange = {
+//                                if (it) requestPushGrant = true else viewModel.notificationEnable()
+//                            }
+//                        )
+//                    },
+                    onClick = onPriceAlerts
+                )
             }
+
             LinkItem(
                 title = stringResource(R.string.settings_currency),
                 icon = R.drawable.settings_currency,

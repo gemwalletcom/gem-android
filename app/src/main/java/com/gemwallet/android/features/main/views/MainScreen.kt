@@ -49,6 +49,7 @@ import com.gemwallet.android.features.settings.navigation.navigateToAboutUsScree
 import com.gemwallet.android.features.settings.navigation.navigateToCurrenciesScreen
 import com.gemwallet.android.features.settings.navigation.navigateToDevelopScreen
 import com.gemwallet.android.features.settings.navigation.navigateToNetworksScreen
+import com.gemwallet.android.features.settings.navigation.navigateToPriceAlertsScreen
 import com.gemwallet.android.features.settings.navigation.navigateToSecurityScreen
 import com.gemwallet.android.features.settings.navigation.navigateToSettingsScreen
 import com.gemwallet.android.features.settings.navigation.settingsRoute
@@ -180,6 +181,7 @@ fun MainScreen(
                     onCurrencies = navController::navigateToCurrenciesScreen,
                     onWallets = navController::navigateToWalletsScreen,
                     onNetworks = navController::navigateToNetworksScreen,
+                    onPriceAlerts = navController::navigateToPriceAlertsScreen,
                     onAboutUs = navController::navigateToAboutUsScreen,
                 )
             }

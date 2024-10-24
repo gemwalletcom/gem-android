@@ -10,6 +10,7 @@ import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
+import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -40,6 +41,7 @@ class SyncDevice(
             token = "",
             locale = getLocale(Locale.getDefault()),
             isPushEnabled = pushEnabled,
+            isPriceAlertsEnabled = configRepository.isPriceAlertEnabled(),
             version = BuildConfig.VERSION_NAME,
             currency = (sessionRepository.getSession()?.currency ?: Currency.USD).string,
             subscriptionsVersion = configRepository.getSubscriptionVersion(),

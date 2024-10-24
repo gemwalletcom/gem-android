@@ -12,6 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.NotificationsNone
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -96,6 +98,7 @@ fun AssetDetailsScene(
             onTransaction = onTransaction,
             onChart = onChart,
             onStake = onStake,
+            onPriceAlert = viewModel::enablePriceAlert,
             onCancel = onCancel,
         )
         uiState is AssetInfoUIState.Loading || uiModel == null -> LoadingScene(assetId.chain.string, onCancel)
@@ -116,6 +119,7 @@ private fun Success(
     onTransaction: (txId: String) -> Unit,
     onChart: (AssetId) -> Unit,
     onStake: (AssetId) -> Unit,
+    onPriceAlert: (AssetId) -> Unit,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     val clipboardManager = LocalClipboardManager.current
@@ -126,6 +130,17 @@ private fun Success(
             }
         },
         actions = {
+            IconButton(
+                onClick = {
+                    onPriceAlert(uiState.asset.id)
+                }
+            ) {
+                if (uiState.priceAlertEnabled) {
+                    Icon(Icons.Default.Notifications, "")
+                } else {
+                    Icon(Icons.Default.NotificationsNone, "")
+                }
+            }
             IconButton(
                 onClick = {
                     clipboardManager.setText(AnnotatedString(uiState.account.owner))

@@ -29,6 +29,7 @@ import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeState
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
+import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.Release
 import com.wallet.core.primitives.Subscription
 import com.wallet.core.primitives.SwapApprovalData
@@ -42,6 +43,7 @@ import com.wallet.core.primitives.TransactionInput
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.POST
@@ -114,6 +116,15 @@ interface GemApiClient {
 
     @GET("/v1/assets/by_device_id/{device_id}")
     suspend fun getAssets(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int, @Query("from_timestamp") fromTimestamp: Int = 0): Result<List<String>>
+
+    @POST("/v1/price_alerts/{device_id}")
+    suspend fun includePriceAlert(@Path("device_id") deviceId: String, @Body assets: List<PriceAlert>): Result<String>
+
+    @HTTP(method = "DELETE", path = "/v1/price_alerts/{device_id}", hasBody = true)
+    suspend fun excludePriceAlert(@Path("device_id") deviceId: String, @Body assets: List<PriceAlert>): Result<String>
+
+    @GET("/v1/price_alerts/{device_id}")
+    suspend fun getPriceAlerts(@Path("device_id") deviceId: String): Result<List<PriceAlert>>
 
     data class PricesResponse(
         val currency: String,
@@ -205,7 +216,7 @@ interface GemApiClient {
             context: JsonDeserializationContext?
         ): Device {
             val jObj = json?.asJsonObject ?: throw JsonSyntaxException(json?.toString())
-            val platformStore = jObj["platformStore"]?.asString
+            val platformStore = if (jObj["platformStore"].isJsonNull) null else jObj["platformStore"]?.asString
             return Device(
                 id = jObj["id"]?.asString ?: "",
                 platform = when (jObj["platform"]?.asString) {
@@ -213,6 +224,7 @@ interface GemApiClient {
                     else -> Platform.Android
                 },
                 platformStore = PlatformStore.entries.firstOrNull { it.string == platformStore },
+                isPriceAlertsEnabled = jObj["isPriceAlertsEnabled"]?.asBoolean == true,
                 token = jObj["token"]?.asString ?: "",
                 locale = jObj["locale"]?.asString ?: "",
                 version = jObj["version"]?.asString ?: "",
@@ -237,6 +249,7 @@ interface GemApiClient {
                 addProperty("isPushEnabled", src.isPushEnabled)
                 addProperty("currency", src.currency)
                 addProperty("subscriptionsVersion", src.subscriptionsVersion)
+                addProperty("isPriceAlertsEnabled", src.isPriceAlertsEnabled)
             }
         }
 

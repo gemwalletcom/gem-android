@@ -21,7 +21,6 @@ data class AssetInfo(
     val rank: Int = 0,
     val stakeApr: Double? = null,
     val position: Int = 0,
-    val priceAlerting: Boolean = false,
 ) {
     fun id() = asset.id
 

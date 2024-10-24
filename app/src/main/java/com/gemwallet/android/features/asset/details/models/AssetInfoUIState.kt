@@ -12,6 +12,7 @@ sealed interface AssetInfoUIState {
     enum class SyncState {
         None,
         Wait,
+        Process,
         Loading,
     }
 }

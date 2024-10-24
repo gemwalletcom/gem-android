@@ -3,16 +3,19 @@ package com.gemwallet.android.ui.components
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -53,19 +56,17 @@ fun SwipeableItemWithActions(
         }
     }
 
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(IntrinsicSize.Min)
-    ) {
-        Row(
-            modifier = Modifier
-                .onSizeChanged {
-                    contextMenuWidth = it.width.toFloat()
-                },
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            actions()
+    Box(modifier = modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .onSizeChanged { contextMenuWidth = -it.width.toFloat() },
+                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.End,
+            ) {
+                actions()
+            }
         }
         Surface(
             modifier = Modifier
@@ -76,13 +77,13 @@ fun SwipeableItemWithActions(
                         onHorizontalDrag = { _, dragAmount ->
                             scope.launch {
                                 val newOffset = (offset.value + dragAmount)
-                                    .coerceIn(0f, contextMenuWidth)
+                                    .coerceIn(contextMenuWidth, 0f)
                                 offset.snapTo(newOffset)
                             }
                         },
                         onDragEnd = {
                             when {
-                                offset.value >= contextMenuWidth / 2f -> {
+                                offset.value <= contextMenuWidth / 2f -> {
                                     scope.launch {
                                         offset.animateTo(contextMenuWidth)
                                         onExpanded()
@@ -98,7 +99,8 @@ fun SwipeableItemWithActions(
                             }
                         }
                     )
-                }
+                },
+            color = MaterialTheme.colorScheme.background,
         ) {
             content()
         }
@@ -116,8 +118,7 @@ fun ActionIcon(
 ) {
     IconButton(
         onClick = onClick,
-        modifier = modifier
-            .background(backgroundColor)
+        modifier = modifier.fillMaxHeight().background(backgroundColor)
     ) {
         Icon(
             imageVector = icon,

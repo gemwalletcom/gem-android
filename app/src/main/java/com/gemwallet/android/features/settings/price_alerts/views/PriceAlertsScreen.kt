@@ -15,13 +15,15 @@ import com.gemwallet.android.features.settings.price_alerts.viewmodels.PriceAler
 import com.wallet.core.primitives.AssetId
 
 @Composable
-fun PriceAlertScreen(
+fun PriceAlertsScreen(
     onChart: (AssetId) -> Unit,
     onCancel: () -> Unit,
     viewModel: PriceAlertViewModel = hiltViewModel(),
 ) {
     var selectingAsset by remember { mutableStateOf(false) }
     val alertingAssets by viewModel.alertingAssets.collectAsStateWithLifecycle()
+    val enabled by viewModel.enabled.collectAsStateWithLifecycle()
+    val syncState by viewModel.forceSync.collectAsStateWithLifecycle()
 
     AnimatedContent(selectingAsset, label = "") { selecting ->
         when (selecting) {
@@ -29,12 +31,19 @@ fun PriceAlertScreen(
                 title = stringResource(R.string.assets_select_asset),
                 titleBadge = { null },
                 onCancel = { selectingAsset = false },
-                onSelect = viewModel::addAsset
+                onSelect = {
+                    viewModel.addAsset(it)
+                    selectingAsset = false
+                }
             )
             false -> PriceAlertScene(
                 alertingPrice = alertingAssets,
+                enabled = enabled,
+                syncState = syncState,
+                onEnablePriceAlerts = viewModel::onEnablePriceAlerts,
                 onChart = onChart,
                 onExclude = viewModel::excludeAsset,
+                onRefresh = viewModel::refresh,
                 onCancel = onCancel,
                 onAdd = {  selectingAsset = true }
             )

@@ -3,11 +3,16 @@ package com.gemwallet.android.data.config
 import android.content.Context
 import android.content.SharedPreferences
 import com.gemwallet.android.BuildConfig
+import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.serializer.AssetIdSerializer
 import com.gemwallet.android.services.GemApiClient
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FiatAssets
 import com.wallet.core.primitives.Node
+import com.wallet.core.primitives.PriceAlert
 import uniffi.Gemstone.Config
 import java.util.UUID
 
@@ -17,6 +22,7 @@ class OfflineFirstConfigRepository(
 
     private val gson = Gson()
         .newBuilder()
+        .registerTypeAdapter(AssetId::class.java, AssetIdSerializer())
         .registerTypeAdapter(Node::class.java, GemApiClient.NodeSerializer())
         .create()
     private lateinit var store: SharedPreferences
@@ -166,6 +172,37 @@ class OfflineFirstConfigRepository(
         putInt(Keys.LaunchNumber, getInt(Keys.LaunchNumber) + 1)
     }
 
+    override fun getPriceAlerts(): List<PriceAlert> {
+        val data = getString(Keys.PriceAlerts)
+        val priceAlertsType = object : TypeToken<List<PriceAlert>>() {}.type
+        val priceAlerts = gson.fromJson<List<PriceAlert>>(data, priceAlertsType) ?: emptyList()
+        return priceAlerts
+    }
+
+    override fun excludePriceAlert(assetId: AssetId) {
+        val priceAlerts = getPriceAlerts()
+        setPriceAlerts(priceAlerts.filter { it.assetId != assetId.toIdentifier() })
+    }
+
+    override fun includePriceAlert(assetId: AssetId) {
+        val priceAlerts = getPriceAlerts().toMutableList()
+        priceAlerts.add(PriceAlert(assetId = assetId.toIdentifier()))
+        setPriceAlerts(priceAlerts)
+    }
+
+    override fun setPriceAlerts(alerts: List<PriceAlert>) {
+        val data = gson.toJson(alerts)
+        putString(Keys.PriceAlerts, data)
+    }
+
+    override fun setEnablePriceAlerts(enabled: Boolean) {
+        putBoolean(Keys.PriceAlertsEnabled, enabled)
+    }
+
+    override fun isPriceAlertEnabled(): Boolean {
+        return getBoolean(Keys.PriceAlertsEnabled)
+    }
+
     private fun getStore(): SharedPreferences {
         if (!::store.isInitialized) {
             store = context.getSharedPreferences("config", Context.MODE_PRIVATE)
@@ -214,6 +251,8 @@ class OfflineFirstConfigRepository(
         CurrentNode("current_node"),
         CurrentExplorer("current_explorer"),
         LaunchNumber("launch_number"),
+        PriceAlertsEnabled("price_alerts_enabled"),
+        PriceAlerts("price_alerts"),
         ;
 
         fun buildKey(postfix: String = "") = "$string-$postfix"

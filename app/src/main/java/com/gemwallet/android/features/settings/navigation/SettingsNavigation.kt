@@ -9,10 +9,13 @@ import com.gemwallet.android.features.settings.aboutus.views.AboutUsScreen
 import com.gemwallet.android.features.settings.currency.views.CurrenciesScene
 import com.gemwallet.android.features.settings.develop.views.DevelopScene
 import com.gemwallet.android.features.settings.networks.views.NetworksScreen
+import com.gemwallet.android.features.settings.price_alerts.views.PriceAlertScene
+import com.gemwallet.android.features.settings.price_alerts.views.PriceAlertsScreen
 import com.gemwallet.android.features.settings.security.views.SecurityScene
 import com.gemwallet.android.features.settings.settings.views.SettingsScene
 import com.gemwallet.android.ui.navigation.enterTabScreenTransition
 import com.gemwallet.android.ui.navigation.exitTabScreenTransition
+import com.wallet.core.primitives.AssetId
 
 const val settingsRoute = "settings"
 const val currenciesRoute = "currencies"
@@ -20,6 +23,7 @@ const val securityRoute = "security"
 const val developRoute = "develop"
 const val aboutusRoute = "aboutus"
 const val networksRoute = "networks"
+const val priceAlertsRoute = "price_alerts"
 
 fun NavController.navigateToSettingsScreen(navOptions: NavOptions? = null) {
     navigate(settingsRoute, navOptions)
@@ -45,6 +49,10 @@ fun NavController.navigateToNetworksScreen(navOptions: NavOptions? = null) {
     navigate(networksRoute, navOptions)
 }
 
+fun NavController.navigateToPriceAlertsScreen(navOptions: NavOptions? = null) {
+    navigate(priceAlertsRoute, navOptions)
+}
+
 fun NavGraphBuilder.settingsScreen(
     onSecurity: () -> Unit,
     onCurrencies: () -> Unit,
@@ -53,6 +61,8 @@ fun NavGraphBuilder.settingsScreen(
     onDevelop: () -> Unit,
     onAboutUs: () -> Unit,
     onNetworks: () -> Unit,
+    onPriceAlerts: () -> Unit,
+    onChart: (AssetId) -> Unit,
     onCancel: () -> Unit,
 ) {
     navigation(settingsRoute, settingsRoute + "group") {
@@ -69,6 +79,7 @@ fun NavGraphBuilder.settingsScreen(
                 onAboutUs = onAboutUs,
                 onWallets = onWallets,
                 onNetworks = onNetworks,
+                onPriceAlerts = onPriceAlerts,
             )
         }
 
@@ -90,6 +101,10 @@ fun NavGraphBuilder.settingsScreen(
 
         composable(networksRoute) {
             NetworksScreen(onCancel = onCancel)
+        }
+
+        composable(priceAlertsRoute) {
+            PriceAlertsScreen(onChart = onChart, onCancel = onCancel)
         }
     }
 }

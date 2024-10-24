@@ -24,6 +24,7 @@ import com.wallet.core.primitives.AssetPricesRequest
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
@@ -75,6 +76,7 @@ class AssetsRepository @Inject constructor(
             sessionRepository.session().collectLatest {
                 sync(it?.currency ?: return@collectLatest)
             }
+            updatePriceAlerts()
         }
     }
 
@@ -271,6 +273,43 @@ class AssetsRepository @Inject constructor(
         assetsLocalSource.getAssetsInfo(tokens.toList()).firstOrNull()
             ?.updateBalances()
             ?.awaitAll()
+    }
+
+    suspend fun includeAssetAlert(assetId: AssetId) = withContext(Dispatchers.IO) {
+        try {
+            gemApi.includePriceAlert(configRepository.getDeviceId(), listOf(PriceAlert(assetId.toIdentifier())))
+        } catch (err: Throwable) {
+            Log.d("PRICE_ALERT", "Include error:", err)
+        }
+        configRepository.includePriceAlert(assetId)
+    }
+
+    suspend fun excludeAssetAlert(assetId: AssetId) = withContext(Dispatchers.IO) {
+        try {
+            gemApi.excludePriceAlert(configRepository.getDeviceId(), listOf(PriceAlert(assetId.toIdentifier())))
+        } catch (err: Throwable) {
+            Log.d("PRICE_ALERT", "Exclude error:", err)
+        }
+        configRepository.excludePriceAlert(assetId)
+    }
+
+    suspend fun getPriceAlerts(): List<PriceAlert> {
+        return configRepository.getPriceAlerts()
+    }
+
+    suspend fun updatePriceAlerts() = withContext(Dispatchers.IO) {
+        val local = configRepository.getPriceAlerts()
+        val alerts = gemApi.getPriceAlerts(configRepository.getDeviceId()).getOrNull() ?: emptyList()
+
+        val notExcluded = alerts.filter { remote -> local.firstOrNull { it.assetId == remote.assetId } == null }
+        val notIncluded = local.filter { remote -> alerts.firstOrNull { it.assetId == remote.assetId } == null }
+        if (notExcluded.isNotEmpty()) {
+            gemApi.excludePriceAlert(configRepository.getDeviceId(), notExcluded)
+        }
+        if (notIncluded.isNotEmpty()) {
+            gemApi.includePriceAlert(configRepository.getDeviceId(), notIncluded)
+        }
+        configRepository.setPriceAlerts(alerts)
     }
 
     private suspend fun updateBalances(account: Account, tokens: List<AssetId>): List<Balances> {

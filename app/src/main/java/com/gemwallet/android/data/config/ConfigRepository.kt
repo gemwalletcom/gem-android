@@ -1,9 +1,11 @@
 package com.gemwallet.android.data.config
 
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FiatAssets
 import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeState
+import com.wallet.core.primitives.PriceAlert
 
 interface ConfigRepository {
 
@@ -74,6 +76,18 @@ interface ConfigRepository {
     fun getLaunchNumber(): Int
 
     fun increaseLaunchNumber()
+
+    fun getPriceAlerts(): List<PriceAlert>
+
+    fun excludePriceAlert(assetId: AssetId)
+
+    fun includePriceAlert(assetId: AssetId)
+
+    fun setPriceAlerts(alerts: List<PriceAlert>)
+
+    fun setEnablePriceAlerts(enabled: Boolean)
+
+    fun isPriceAlertEnabled(): Boolean
 
     companion object {
         fun getGemNodeUrl(chain: Chain) = "https://${chain.string}.gemnodes.com"

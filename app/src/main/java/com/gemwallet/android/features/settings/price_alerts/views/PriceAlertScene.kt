@@ -4,18 +4,24 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
@@ -28,27 +34,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.assets.model.AssetUIState
-import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.features.asset.details.models.AssetInfoUIState
 import com.gemwallet.android.ui.components.ActionIcon
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SwipeableItemWithActions
+import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.padding16
-import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PriceAlertScene(
-    alertingPrice: List<AssetUIState>,
+    alertingPrice: List<AssetItemUIModel>,
+    enabled: Boolean,
+    syncState: Boolean,
+    onEnablePriceAlerts: (Boolean) -> Unit,
     onAdd: () -> Unit,
     onExclude: (AssetId) -> Unit,
     onChart: (AssetId) -> Unit,
+    onRefresh: () -> Unit,
     onCancel: () -> Unit,
 ) {
     var reveableAssetId = remember { mutableStateOf<AssetId?>(null) }
+    val pullToRefreshState = rememberPullToRefreshState()
     Scene(
         title = stringResource(R.string.settings_price_alerts_title),
         actions = @Composable {
@@ -56,22 +67,40 @@ fun PriceAlertScene(
                 Icon(imageVector = Icons.Default.Add, contentDescription = "")
             }
         },
-        padding = PaddingValues(horizontal = padding16),
         onClose = onCancel
     ) {
+        val isRefreshing = syncState
+        PullToRefreshBox(
+            modifier = Modifier.fillMaxSize(),
+            isRefreshing = isRefreshing,
+            onRefresh = onRefresh,
+            state = pullToRefreshState,
+            indicator = {
+                Indicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    isRefreshing = isRefreshing,
+                    state = pullToRefreshState,
+                    containerColor = MaterialTheme.colorScheme.background
+                )
+            }
+        ) {
         LazyColumn {
             item {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier.padding(horizontal = padding16),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
                     Text(
                         modifier = Modifier.weight(1f),
                         text = stringResource(R.string.settings_enable_value, "")
                     )
                     Switch(
-                        checked = false,
-                        onCheckedChange = {},
+                        checked = enabled,
+                        onCheckedChange = { onEnablePriceAlerts(it) },
                     )
                 }
                 Text(
+                    modifier = Modifier.padding(horizontal = padding16),
                     text = stringResource(R.string.price_alerts_get_notified_explain_message),
                     style = MaterialTheme.typography.bodySmall,
                 )
@@ -85,6 +114,7 @@ fun PriceAlertScene(
             )
         }
     }
+        }
 }
 
 private fun LazyListScope.emptyAlertingAssets(empty: Boolean) {
@@ -99,12 +129,13 @@ private fun LazyListScope.emptyAlertingAssets(empty: Boolean) {
             text = stringResource(R.string.price_alerts_empty_state_message),
             textAlign = TextAlign.Center,
         )
+        Spacer16()
     }
 }
 
 private fun LazyListScope.assets(
     reveableAssetId: MutableState<AssetId?>,
-    assets: List<AssetUIState>,
+    assets: List<AssetItemUIModel>,
     onChart: (AssetId) -> Unit,
     onExclude: (AssetId) -> Unit,
 ) {
@@ -125,17 +156,7 @@ private fun LazyListScope.assets(
             Box(
                 modifier = Modifier.clickable(onClick = { onChart(item.asset.id) })
             ) {
-                AssetListItem(
-                    assetId = item.asset.id,
-                    title = item.asset.name,
-                    iconUrl = item.asset.getIconUrl(),
-                    iconModifier = Modifier,
-                    value = item.value,
-                    assetType = item.asset.type,
-                    isZeroValue = item.isZeroValue,
-                    fiatAmount = item.fiat,
-                    price = item.price,
-                )
+                AssetListItem(item)
             }
         }
     }
@@ -147,9 +168,13 @@ fun PriceAlertScreenPreview() {
     WalletTheme {
         PriceAlertScene(
             alertingPrice = emptyList(),
+            enabled = true,
+            syncState = false,
+            onEnablePriceAlerts = {},
             onAdd = {},
             onCancel = {},
             onExclude = {},
+            onRefresh = {},
             onChart = {}
         )
     }

@@ -5,11 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.data.asset.AssetsRepository
+import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.isStaked
 import com.gemwallet.android.ext.isSwapable
 import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIModel
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIState
@@ -18,7 +20,6 @@ import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
-import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
@@ -49,6 +50,7 @@ class AssetInfoViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val getTransactionsCase: GetTransactionsCase,
     private val stakeRepository: StakeRepository,
+    private val configRepository: ConfigRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -57,7 +59,7 @@ class AssetInfoViewModel @Inject constructor(
     val uiState = MutableStateFlow<AssetInfoUIState>(AssetInfoUIState.Loading)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    private val model: Flow<Model> = assetIdStr.flatMapConcat {
+    private val model = assetIdStr.flatMapConcat {
         val assetId = it.toAssetId() ?: return@flatMapConcat emptyFlow()
 
         uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Wait) }
@@ -66,36 +68,61 @@ class AssetInfoViewModel @Inject constructor(
             assetsRepository.getAssetInfo(assetId),
             getTransactionsCase.getTransactions(assetId)
         ) { assetInfo, transactions ->
-            Model(assetInfo, transactions)
+            val priceAlertEnabled = priceAlertEnabled(assetId)
+            Model(assetInfo, transactions, priceAlertEnabled = priceAlertEnabled)
         }
     }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val sync: Flow<Unit> = combine(uiState, model) { uiState, model ->
-        if (uiState is AssetInfoUIState.Idle && uiState.sync == AssetInfoUIState.SyncState.Wait) {
+        if (
+            uiState is AssetInfoUIState.Idle
+                && (uiState.sync == AssetInfoUIState.SyncState.Wait || uiState.sync == AssetInfoUIState.SyncState.Process)
+            ) {
+            model ?: return@combine
             syncAssetInfo(model.assetInfo.asset.id, model.assetInfo.owner, model.assetInfo.stakeApr ?: 0.0)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
 
-    val uiModel = model.map { it.toUIState() }
+    val uiModel = model.map { it?.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    fun refresh() {
-        uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Wait) }
+    fun refresh(state: AssetInfoUIState.SyncState = AssetInfoUIState.SyncState.Wait) {
+        uiState.update { AssetInfoUIState.Idle(state) }
     }
 
     private fun syncAssetInfo(assetId: AssetId, owner: Account, apr: Double) {
-        uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Loading) }
+        uiState.update {
+            AssetInfoUIState.Idle(
+                if ((it as? AssetInfoUIState.Idle)?.sync != AssetInfoUIState.SyncState.Process) {
+                    AssetInfoUIState.SyncState.Loading
+                } else {
+                    AssetInfoUIState.SyncState.Process
+                }
+            )
+        }
         viewModelScope.launch { assetsRepository.syncAssetInfo(assetId) }
         viewModelScope.launch { stakeRepository.sync(assetId.chain, owner.address, apr) }
         viewModelScope.launch {
-            delay(500)
+            delay(300)
             uiState.update { AssetInfoUIState.Idle() }
         }
+    }
+
+    fun enablePriceAlert(assetId: AssetId) = viewModelScope.launch {
+        val enabled = priceAlertEnabled(assetId)
+        if (enabled) assetsRepository.excludeAssetAlert(assetId) else assetsRepository.includeAssetAlert(assetId)
+        refresh(AssetInfoUIState.SyncState.Process)
+    }
+
+    fun priceAlertEnabled(assetId: AssetId): Boolean {
+        return configRepository.getPriceAlerts().firstOrNull { it.assetId == assetId.toIdentifier() } != null
     }
 
     private data class Model(
         val assetInfo: AssetInfo,
         val transactions: List<TransactionExtended> = emptyList(),
+        val priceAlertEnabled: Boolean = false,
     ) {
         fun toUIState(): AssetInfoUIModel {
             val assetInfo = assetInfo
@@ -139,6 +166,7 @@ class AssetInfoViewModel @Inject constructor(
                 networkIcon = AssetId(asset.id.chain).getIconUrl(),
                 isBuyEnabled = assetInfo.metadata?.isBuyEnabled ?: false,
                 isSwapEnabled = (assetInfo.metadata?.isSwapEnabled ?: false) || asset.id.isSwapable(),
+                priceAlertEnabled = priceAlertEnabled,
                 transactions = transactions,
                 account = AssetInfoUIModel.Account(
                     walletType = assetInfo.walletType,
