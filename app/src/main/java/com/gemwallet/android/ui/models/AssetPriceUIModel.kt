@@ -8,7 +8,7 @@ class AssetPriceUIModel(
     override val currency: Currency,
     private val assetPrice: AssetPrice?,
 ) : PriceUIModel {
-    override val dayChange: Double?
+    override val percentage: Double?
         get() = assetPrice?.priceChangePercentage24h
 
     override val fiat: Fiat?

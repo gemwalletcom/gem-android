@@ -23,11 +23,11 @@ import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.models.AssetItemUIModel
+import com.gemwallet.android.ui.models.PriceUIModel
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
-
 
 @Composable
 fun AssetListItem(
@@ -45,7 +45,7 @@ fun AssetListItem(
         value = uiModel.cryptoFormatted,
         isZeroValue = uiModel.isZeroAmount,
         fiatAmount = uiModel.fiatFormatted,
-        price = null,
+        price = uiModel.price,
     )
 }
 
@@ -71,6 +71,46 @@ fun AssetListItem(
         trailing = getBalanceInfo(isZeroValue, value, fiatAmount),
     ) {
         val priceInfo: (@Composable () -> Unit)? = if (price == null || price.value.isEmpty()) {
+            null
+        } else {
+            {
+                PriceInfo(
+                    price = price,
+                    style = MaterialTheme.typography.bodyMedium,
+                    internalPadding = 4.dp
+                )
+            }
+        }
+        ListItemTitle(
+            modifier = Modifier.fillMaxHeight(),
+            title = title,
+            subtitle = priceInfo,
+        )
+    }
+}
+
+@Composable
+fun AssetListItem(
+    assetId: AssetId,
+    title: String,
+    assetType: AssetType,
+    iconUrl: String,
+    value: String,
+    isZeroValue: Boolean,
+    fiatAmount: String,
+    modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
+    price: PriceUIModel? = null,
+) {
+    ListItem(
+        modifier = modifier,
+        iconModifier = iconModifier,
+        iconUrl = iconUrl,
+        supportIcon = if (assetType == AssetType.NATIVE) null else assetId.chain.getIconUrl(),
+        placeholder = title[0].toString(),
+        trailing = getBalanceInfo(isZeroValue, value, fiatAmount),
+    ) {
+        val priceInfo: (@Composable () -> Unit)? = if (price == null || price.fiatFormatted.isEmpty()) {
             null
         } else {
             {
@@ -161,6 +201,38 @@ fun PriceInfo(
                 Modifier
             }.padding(4.dp),
             text = price.dayChanges,
+            color = color,
+            style = style,
+        )
+    }
+}
+
+@Composable
+fun PriceInfo(
+    price: PriceUIModel,
+    modifier: Modifier = Modifier,
+    style: TextStyle = MaterialTheme.typography.bodyLarge,
+    isHighlightPercentage: Boolean = false,
+    internalPadding: Dp = 16.dp,
+) {
+    val color = priceColor(price.state)
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = price.fiatFormatted,
+            color = if (isHighlightPercentage) color else MaterialTheme.colorScheme.secondary,
+            style = style,
+        )
+        Spacer(modifier = Modifier.width(internalPadding))
+        Text(
+            modifier = if (isHighlightPercentage) {
+                Modifier.background(color.copy(alpha = 0.15f), MaterialTheme.shapes.small)
+            } else {
+                Modifier
+            }.padding(4.dp),
+            text = price.percentageFormatted,
             color = color,
             style = style,
         )
