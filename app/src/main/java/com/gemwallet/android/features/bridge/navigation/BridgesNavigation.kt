@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navOptions
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.bridge.connection.views.ConnectionScene
@@ -17,11 +18,11 @@ const val bridgeRoute = "bridge"
 const val bridgesRoute = "bridges"
 
 fun NavController.navigateToBridgesScreen(navOptions: NavOptions? = null) {
-    navigate(bridgesRoute, navOptions)
+    navigate(bridgesRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavController.navigateToBridgeScreen(connectionId: String, navOptions: NavOptions? = null) {
-    navigate("$bridgeRoute/${connectionId.urlEncode()}", navOptions)
+    navigate("$bridgeRoute/${connectionId.urlEncode()}", navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavGraphBuilder.bridgesScreen(

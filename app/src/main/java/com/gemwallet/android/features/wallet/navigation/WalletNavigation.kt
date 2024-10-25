@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navOptions
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.wallet.WalletScreen
@@ -17,11 +18,13 @@ const val walletRoute = "wallet"
 const val phraseRoute = "phrase"
 
 fun NavController.navigateToWalletScreen(walletId: String, navOptions: NavOptions? = null) {
-    navigate("$walletRoute/${walletId.urlEncode()}", navOptions)
+    navigate("$walletRoute/${walletId.urlEncode()}", navOptions ?: navOptions {
+        launchSingleTop = true
+    })
 }
 
 fun NavController.navigateToPhraseScreen(walletId: String, navOptions: NavOptions? = null) {
-    navigate("$phraseRoute/${walletId.urlEncode()}", navOptions)
+    navigate("$phraseRoute/${walletId.urlEncode()}", navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavGraphBuilder.walletScreen(

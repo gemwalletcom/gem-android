@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
@@ -24,11 +25,14 @@ const val stakeRoute = "stake"
 const val delegationRoute = "delegation"
 
 fun NavController.navigateToStake(assetId: AssetId) {
-    navigate("$stakeRoute/${assetId.toIdentifier().urlEncode()}")
+    navigate("$stakeRoute/${assetId.toIdentifier().urlEncode()}", navOptions { launchSingleTop = true })
 }
 
 fun NavController.navigateToDelegation(validatorId: String, delegationId: String) {
-    navigate("$delegationRoute?$validatorIdArg=${validatorId.urlEncode()}&$delegationIdArg=${delegationId.urlEncode()}")
+    navigate(
+        route = "$delegationRoute?$validatorIdArg=${validatorId.urlEncode()}&$delegationIdArg=${delegationId.urlEncode()}",
+        navOptions = navOptions { launchSingleTop = true },
+    )
 }
 
 fun NavGraphBuilder.stake(

@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
@@ -21,9 +22,9 @@ const val buySelectAssetRoute = "buySelectAsset"
 
 fun NavController.navigateToBuyScreen(assetId: AssetId? = null, navOptions: NavOptions? = null) {
     if (assetId == null) {
-        navigate(buySelectAssetRoute, navOptions)
+        navigate(buySelectAssetRoute, navOptions ?: navOptions { launchSingleTop = true })
     } else {
-        navigate("$buyRoute/${assetId.toIdentifier().urlEncode()}", navOptions)
+        navigate("$buyRoute/${assetId.toIdentifier().urlEncode()}", navOptions ?: navOptions { launchSingleTop = true })
     }
 }
 

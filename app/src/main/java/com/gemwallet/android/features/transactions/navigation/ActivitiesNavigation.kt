@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navOptions
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.transactions.details.views.TransactionDetails
@@ -19,11 +20,13 @@ const val activitiesRoute = "transactions"
 const val transactionRoute = "transaction"
 
 fun NavController.navigateToActivitiesScreen(navOptions: NavOptions? = null) {
-    navigate(activitiesRoute, navOptions)
+    navigate(activitiesRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavController.navigateToTransactionScreen(txId: String, navOptions: NavOptions? = null) {
-    navigate("$transactionRoute/${txId.urlEncode()}", navOptions)
+    navigate("$transactionRoute/${txId.urlEncode()}", navOptions ?: navOptions {
+        launchSingleTop = true
+    })
 }
 
 fun NavGraphBuilder.activitiesScreen(

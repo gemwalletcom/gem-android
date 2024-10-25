@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navOptions
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.swap.views.SwapScreen
@@ -15,7 +16,10 @@ internal const val pairArg = "pair"
 const val swapRoute = "swap"
 
 fun NavController.navigateToSwap(from: AssetId? = null, to: AssetId? = null) {
-    navigate("$swapRoute/${from?.toIdentifier()?.urlEncode()}|${to?.toIdentifier()?.urlEncode()}")
+    navigate(
+        "$swapRoute/${from?.toIdentifier()?.urlEncode()}|${to?.toIdentifier()?.urlEncode()}",
+        navOptions { launchSingleTop = true },
+    )
 }
 
 fun NavGraphBuilder.swap(

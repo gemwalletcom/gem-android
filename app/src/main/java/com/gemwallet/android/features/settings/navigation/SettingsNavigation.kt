@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.gemwallet.android.features.settings.aboutus.views.AboutUsScreen
 import com.gemwallet.android.features.settings.currency.views.CurrenciesScene
@@ -26,31 +27,31 @@ const val networksRoute = "networks"
 const val priceAlertsRoute = "price_alerts"
 
 fun NavController.navigateToSettingsScreen(navOptions: NavOptions? = null) {
-    navigate(settingsRoute, navOptions)
+    navigate(settingsRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavController.navigateToCurrenciesScreen(navOptions: NavOptions? = null) {
-    navigate(currenciesRoute, navOptions)
+    navigate(currenciesRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavController.navigateToSecurityScreen(navOptions: NavOptions? = null) {
-    navigate(securityRoute, navOptions)
+    navigate(securityRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavController.navigateToDevelopScreen(navOptions: NavOptions? = null) {
-    navigate(developRoute, navOptions)
+    navigate(developRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavController.navigateToAboutUsScreen(navOptions: NavOptions? = null) {
-    navigate(aboutusRoute, navOptions)
+    navigate(aboutusRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavController.navigateToNetworksScreen(navOptions: NavOptions? = null) {
-    navigate(networksRoute, navOptions)
+    navigate(networksRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavController.navigateToPriceAlertsScreen(navOptions: NavOptions? = null) {
-    navigate(priceAlertsRoute, navOptions)
+    navigate(priceAlertsRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavGraphBuilder.settingsScreen(

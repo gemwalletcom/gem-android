@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navOptions
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.features.confirm.views.ConfirmScreen
 import com.gemwallet.android.model.ConfirmParams
@@ -18,7 +19,10 @@ const val txConfirmRoute = "tx_confirm"
 
 fun NavController.navigateToConfirmScreen(params: ConfirmParams) {
     val txType = params.getTxType()
-    navigate(route = "$txConfirmRoute?$paramsArg=${params.pack()}&$txTypeArg=${txType.string}")
+    navigate(
+        route = "$txConfirmRoute?$paramsArg=${params.pack()}&$txTypeArg=${txType.string}",
+        navOptions = navOptions { launchSingleTop = true },
+    )
 }
 
 fun NavGraphBuilder.confirm(

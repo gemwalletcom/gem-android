@@ -4,12 +4,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.navOptions
 import com.gemwallet.android.features.wallets.views.WalletsScreen
 
 const val walletsRoute = "wallets"
 
 fun NavController.navigateToWalletsScreen(navOptions: NavOptions? = null) {
-    navigate(walletsRoute, navOptions)
+    navigate(walletsRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavGraphBuilder.walletsScreen(

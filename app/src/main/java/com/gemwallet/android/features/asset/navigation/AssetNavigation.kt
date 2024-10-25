@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navOptions
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.urlDecode
@@ -16,7 +17,9 @@ internal const val assetIdArg = "assetId"
 const val assetRoute = "asset"
 
 fun NavController.navigateToAssetScreen(assetId: AssetId, navOptions: NavOptions? = null) {
-    navigate("$assetRoute/${assetId.toIdentifier().urlEncode()}", navOptions,)
+    navigate("$assetRoute/${assetId.toIdentifier().urlEncode()}", navOptions  ?: navOptions {
+        launchSingleTop = true
+    })
 }
 
 fun NavGraphBuilder.assetScreen(

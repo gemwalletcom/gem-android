@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.features.import_wallet.views.ImportScreen
@@ -21,11 +22,11 @@ const val importWalletRoute = "import_wallet"
 
 fun NavController.navigateToImportWalletScreen(importType: ImportType? = null, navOptions: NavOptions? = null) {
     if (importType == null) {
-        navigate(route = importSelectType, navOptions)
+        navigate(route = importSelectType, navOptions ?: navOptions { launchSingleTop = true })
     } else {
         navigate(
             route = "$importWalletRoute/${importType.walletType.string}/${importType.chain?.string}",
-            navOptions = navOptions
+            navOptions = navOptions ?: navOptions { launchSingleTop = true }
         )
     }
 }
