@@ -37,7 +37,7 @@ sealed class ConfirmParams(
 
         fun delegate(validatorId: String) = DelegateParams(assetId, amount, validatorId)
 
-        fun rewards(validatorsId: List<String>) = RewardsParams(assetId, validatorsId)
+        fun rewards(validatorsId: List<String>) = RewardsParams(assetId, validatorsId, amount)
 
         fun withdraw(delegation: Delegation) = WithdrawParams(
             assetId = assetId,
@@ -145,7 +145,8 @@ sealed class ConfirmParams(
     class RewardsParams(
         assetId: AssetId,
         val validatorsId: List<String>,
-    ) : ConfirmParams(assetId)
+        amount: BigInteger
+    ) : ConfirmParams(assetId, amount)
 
     fun pack(): String? {
         val json = getGson().toJson(this)

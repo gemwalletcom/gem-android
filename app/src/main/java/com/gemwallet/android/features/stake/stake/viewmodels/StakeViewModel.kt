@@ -85,7 +85,8 @@ class StakeViewModel @Inject constructor(
                     .filter { BigInteger(it.base.rewards) > BigInteger.ZERO }
                     .map { it.base.validatorId }
                     .toSet()
-                    .toList()
+                    .toList(),
+                amount = state.value.rewardsAmount
             )
         )
     }
