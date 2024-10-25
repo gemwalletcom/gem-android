@@ -98,7 +98,11 @@ fun ConfirmScreen(
         }
         Table(txInfoUIModel)
         Table(
-            if (allFee.size > 1) listOf(feeModel.firstOrNull()?.copy(action = { showSelectTxSpeed = true })) else feeModel
+            if (allFee.size > 1) {
+                listOf(feeModel.firstOrNull()?.copy(action = { showSelectTxSpeed = true }))
+            } else {
+                feeModel
+            }
         )
         Spacer16()
         ConfirmErrorInfo(state)

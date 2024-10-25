@@ -14,12 +14,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.padding16
 import com.gemwallet.android.ui.theme.padding8
 import kotlin.String
@@ -207,14 +206,13 @@ private fun Cell(
                 style = MaterialTheme.typography.bodyLarge,
             )
             if (infoUrl.isNotEmpty()) {
-                IconButton(onClick = { uriHandler.open(infoUrl) }) {
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = Icons.Outlined.Info,
-                        contentDescription = "",
-                        tint = MaterialTheme.colorScheme.secondary,
-                    )
-                }
+                Spacer4()
+                Icon(
+                    modifier = Modifier.size(24.dp).clickable(onClick = { uriHandler.open(infoUrl) }),
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.secondary,
+                )
             }
         },
         data = {

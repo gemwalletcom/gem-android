@@ -193,7 +193,6 @@ class ConfirmViewModel @Inject constructor(
                 label = R.string.transfer_network_fee,
                 data = if ((state as? ConfirmState.Error)?.message == ConfirmError.CalculateFee) "-" else "",
                 infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
-                support = null,
                 trailing = {
                     if (state !is ConfirmState.Error) {
                         CircularProgressIndicator16()
@@ -226,6 +225,7 @@ class ConfirmViewModel @Inject constructor(
 
             CellEntity(
                 label = R.string.transfer_network_fee,
+                infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
                 data = feeCrypto,
                 support = feeFiat,
             )
