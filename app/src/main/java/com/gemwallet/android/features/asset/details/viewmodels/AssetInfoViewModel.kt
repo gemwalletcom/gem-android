@@ -63,7 +63,7 @@ class AssetInfoViewModel @Inject constructor(
     private val model = assetIdStr.flatMapConcat {
         val assetId = it.toAssetId() ?: return@flatMapConcat emptyFlow()
 
-        uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Wait) }
+        uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process) }
 
         combine(
             assetsRepository.getAssetInfo(assetId),

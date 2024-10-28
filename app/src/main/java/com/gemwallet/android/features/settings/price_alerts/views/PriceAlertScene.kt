@@ -2,11 +2,11 @@ package com.gemwallet.android.features.settings.price_alerts.views
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
@@ -28,13 +28,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.asset.details.models.AssetInfoUIState
 import com.gemwallet.android.ui.components.ActionIcon
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.Scene
@@ -44,6 +45,9 @@ import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.padding16
 import com.wallet.core.primitives.AssetId
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalDensity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -140,10 +144,14 @@ private fun LazyListScope.assets(
     onExclude: (AssetId) -> Unit,
 ) {
     items(assets, key = { it.asset.id.toIdentifier()}) { item ->
+        var minActionWidth by remember { mutableStateOf(0.dp) }
+        val density = LocalDensity.current
+
         SwipeableItemWithActions(
             isRevealed = reveableAssetId.value?.same(item.asset.id) == true,
             actions = @Composable {
                 ActionIcon(
+                    modifier = Modifier.widthIn(min = minActionWidth),
                     onClick = { onExclude(item.asset.id) },
                     backgroundColor = MaterialTheme.colorScheme.error,
                     icon = Icons.Default.Delete,
@@ -154,7 +162,11 @@ private fun LazyListScope.assets(
             onCollapsed = { reveableAssetId.value = null },
         ) {
             Box(
-                modifier = Modifier.clickable(onClick = { onChart(item.asset.id) })
+                modifier = Modifier
+                    .clickable(onClick = { onChart(item.asset.id) })
+                    .onSizeChanged {
+                        minActionWidth = with (density) { it.height.toDp() }
+                    }
             ) {
                 AssetListItem(item)
             }
