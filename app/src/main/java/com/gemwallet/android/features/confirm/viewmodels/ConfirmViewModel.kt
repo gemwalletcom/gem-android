@@ -33,7 +33,7 @@ import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.CircularProgressIndicator16
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.google.gson.Gson
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency

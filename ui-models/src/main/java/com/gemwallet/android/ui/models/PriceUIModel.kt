@@ -1,13 +1,10 @@
 package com.gemwallet.android.ui.models
 
-import com.gemwallet.android.features.assets.model.PriceState
-import com.gemwallet.android.model.format
-import com.wallet.core.primitives.Currency
 import java.math.RoundingMode
 import java.text.DecimalFormat
-import kotlin.math.absoluteValue
 
-interface PriceUIModel : FiatFormattedUIModel, PercentageFormattedUIModel {
+interface PriceUIModel : FiatFormattedUIModel,
+    PercentageFormattedUIModel {
     val state: PriceState
         get() {
             val df = DecimalFormat("#.##")

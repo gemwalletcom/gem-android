@@ -1,8 +1,8 @@
 package com.gemwallet.android.features.assets.model
 
 import com.gemwallet.android.model.AssetInfo
-import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.format
+import com.gemwallet.android.ui.models.PriceState
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
@@ -84,10 +84,4 @@ data class PriceUIState(
             }
         }
     }
-}
-
-enum class PriceState {
-    None,
-    Up,
-    Down,
 }

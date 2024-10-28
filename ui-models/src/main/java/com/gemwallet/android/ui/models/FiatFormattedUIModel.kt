@@ -1,13 +1,12 @@
 package com.gemwallet.android.ui.models
 
-import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.format
-import com.wallet.core.primitives.Currency
+import kotlin.let
 
 interface FiatFormattedUIModel {
-    val currency: Currency
+    val currency: com.wallet.core.primitives.Currency
 
-    val fiat: Fiat?
+    val fiat: com.gemwallet.android.model.Fiat?
 
     val fiatFormatted: String
         get() = fiat?.let { currency.format(it) } ?: ""

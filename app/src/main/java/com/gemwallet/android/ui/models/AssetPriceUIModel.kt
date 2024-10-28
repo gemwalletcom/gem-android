@@ -7,7 +7,7 @@ import com.wallet.core.primitives.Currency
 class AssetPriceUIModel(
     override val currency: Currency,
     private val assetPrice: AssetPrice?,
-) : PriceUIModel {
+) : com.gemwallet.android.ui.models.PriceUIModel {
     override val percentage: Double?
         get() = assetPrice?.priceChangePercentage24h
 

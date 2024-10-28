@@ -25,10 +25,10 @@ import com.gemwallet.android.features.asset.chart.components.rememberBottomAxis
 import com.gemwallet.android.features.asset.chart.components.rememberTopAxis
 import com.gemwallet.android.features.asset.chart.models.PricePoint
 import com.gemwallet.android.features.asset.chart.viewmodels.ChartViewModel
-import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.PriceInfo
 import com.gemwallet.android.ui.components.getRelativeDate
+import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.padding4
 import com.gemwallet.android.ui.theme.space8

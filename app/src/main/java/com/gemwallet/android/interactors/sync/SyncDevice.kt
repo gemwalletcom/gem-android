@@ -10,7 +10,6 @@ import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
-import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -79,6 +78,7 @@ class SyncDevice(
                 || isPushEnabled != other.isPushEnabled
                 || version != other.version
                 || subscriptionsVersion != other.subscriptionsVersion
+                || isPriceAlertsEnabled != other.isPriceAlertsEnabled
     }
 
     companion object {

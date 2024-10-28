@@ -22,6 +22,7 @@ import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.interactors.getSupportIconUrl
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator10
 import com.gemwallet.android.ui.components.titles.getAddress
 import com.gemwallet.android.ui.components.titles.getTransactionTitle
 import com.gemwallet.android.ui.components.titles.getValue

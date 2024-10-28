@@ -37,7 +37,7 @@ import com.gemwallet.android.interactors.getIcon
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.AssetListItem
-import com.gemwallet.android.ui.components.AsyncImage
+import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.FatalStateScene

@@ -1,6 +1,6 @@
 package com.gemwallet.android.features.asset.details.models
 
-import com.gemwallet.android.features.assets.model.PriceState
+import com.gemwallet.android.ui.models.PriceState
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.TransactionExtended

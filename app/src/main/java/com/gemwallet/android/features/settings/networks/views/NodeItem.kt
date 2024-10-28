@@ -2,17 +2,12 @@ package com.gemwallet.android.features.settings.networks.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.CheckCircleOutline
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -27,22 +22,16 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.model.NodeStatus
-import com.gemwallet.android.ui.components.CircularProgressIndicator10
-import com.gemwallet.android.ui.components.CircularProgressIndicator14
-import com.gemwallet.android.ui.components.CircularProgressIndicator16
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator14
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.ListItemTitle
-import com.gemwallet.android.ui.theme.Spacer2
-import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer6
-import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.padding4
 import com.gemwallet.android.ui.theme.padding8
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeState
-import com.wallet.core.primitives.TransactionState
 
 @Composable
 internal fun NodeItem(

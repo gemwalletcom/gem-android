@@ -45,8 +45,9 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gemwallet.android.R
-import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.services.isAvailableOperation
+import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8

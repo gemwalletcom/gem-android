@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components
+package com.gemwallet.android.ui.components.progress
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CircularProgressIndicator

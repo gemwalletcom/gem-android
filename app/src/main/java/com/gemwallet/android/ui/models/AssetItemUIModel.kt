@@ -10,7 +10,7 @@ import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.Currency
 import java.math.BigInteger
 
-interface AssetItemUIModel : CryptoFormattedUIModel,  FiatFormattedUIModel {
+interface AssetItemUIModel : CryptoFormattedUIModel, FiatFormattedUIModel {
     val name: String
     val symbol: String
     val assetIconUrl: String
@@ -47,7 +47,7 @@ class AssetInfoUIModel(
         }
     }
 
-    override val price: PriceUIModel by lazy {
+    override val price: com.gemwallet.android.ui.models.PriceUIModel by lazy {
         AssetPriceUIModel(currency, assetInfo.price?.price)
     }
 

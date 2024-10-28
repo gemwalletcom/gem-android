@@ -155,7 +155,8 @@ android {
 }
 
 dependencies {
-    api(project(":blockchain"))
+    implementation(project(":blockchain"))
+    implementation(project(":ui"))
     // version catalog might not work
     //noinspection UseTomlInstead
     api("net.java.dev.jna:jna:5.15.0@aar")
@@ -165,6 +166,7 @@ dependencies {
     api(files("../libs/wallet-core-4.1.5-sources.jar"))
     implementation(project(":wallet-core"))
     implementation(project(":wallet-core-proto"))
+
     // Protobuf
     api(libs.protobuf.javalite)
 
@@ -172,7 +174,6 @@ dependencies {
 
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
-    implementation(libs.androidx.material3.adaptive.android)
     kapt(libs.hilt.compiler)
 
     implementation(libs.lifecycle.runtime.ktx)
@@ -180,17 +181,6 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.savedstate)
 
     implementation(libs.compose.activity)
-
-    implementation(libs.compose.ui)
-    implementation(libs.compose.foundation)
-    implementation(libs.compose.material)
-    implementation(libs.compose.material.icons.core)
-    implementation(libs.compose.material.icons.extended)
-    implementation(libs.compose.material3)
-    implementation(libs.compose.material3.window.size)
-    implementation(libs.kotlinx.collections.immutable)
-
-    implementation(libs.coil.compose)
 
     implementation(libs.compose.navigation)
     implementation(libs.kotlinx.serialization.json)

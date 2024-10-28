@@ -19,10 +19,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.models.AssetItemUIModel
+import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.models.PriceUIModel
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.wallet.core.primitives.AssetId
@@ -100,7 +100,7 @@ fun AssetListItem(
     fiatAmount: String,
     modifier: Modifier = Modifier,
     iconModifier: Modifier = Modifier,
-    price: PriceUIModel? = null,
+    price: com.gemwallet.android.ui.models.PriceUIModel? = null,
 ) {
     ListItem(
         modifier = modifier,

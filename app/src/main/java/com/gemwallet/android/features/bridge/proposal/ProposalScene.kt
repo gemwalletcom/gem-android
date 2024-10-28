@@ -20,7 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.features.wallets.components.WalletItem
-import com.gemwallet.android.ui.components.AsyncImage
+import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene

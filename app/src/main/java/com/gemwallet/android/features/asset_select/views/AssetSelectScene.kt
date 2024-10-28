@@ -28,12 +28,12 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset_select.components.SearchBar
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
 import com.gemwallet.android.features.assets.model.AssetUIState
-import com.gemwallet.android.features.assets.model.PriceState
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AssetListItem
-import com.gemwallet.android.ui.components.CircularProgressIndicator16
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.padding16
 import com.wallet.core.primitives.Asset

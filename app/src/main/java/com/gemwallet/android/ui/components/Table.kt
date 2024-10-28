@@ -35,6 +35,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.padding16
 import com.gemwallet.android.ui.theme.padding8
@@ -157,7 +158,11 @@ private fun Cell(
         }
         if (!trailingIcon.isNullOrEmpty()) {
             Spacer(modifier = Modifier.size(8.dp))
-            AsyncImage(modifier = Modifier.size(20.dp), model = trailingIcon, contentDescription = "")
+            AsyncImage(
+                modifier = Modifier.size(20.dp),
+                model = trailingIcon,
+                contentDescription = ""
+            )
         }
         if (action != null) {
             if (showActionChevron) {

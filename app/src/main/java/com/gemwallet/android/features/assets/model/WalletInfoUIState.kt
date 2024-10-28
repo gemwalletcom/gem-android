@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.assets.model
 
+import com.gemwallet.android.ui.models.PriceState
 import com.wallet.core.primitives.WalletType
 
 data class WalletInfoUIState(

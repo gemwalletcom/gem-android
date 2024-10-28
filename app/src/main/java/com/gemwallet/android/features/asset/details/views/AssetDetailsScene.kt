@@ -46,7 +46,7 @@ import com.gemwallet.android.interactors.chain
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
-import com.gemwallet.android.ui.components.AsyncImage
+import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene
