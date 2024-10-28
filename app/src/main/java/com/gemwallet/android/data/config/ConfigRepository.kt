@@ -77,14 +77,6 @@ interface ConfigRepository {
 
     fun increaseLaunchNumber()
 
-    fun getPriceAlerts(): List<PriceAlert>
-
-    fun excludePriceAlert(assetId: AssetId)
-
-    fun includePriceAlert(assetId: AssetId)
-
-    fun setPriceAlerts(alerts: List<PriceAlert>)
-
     fun setEnablePriceAlerts(enabled: Boolean)
 
     fun isPriceAlertEnabled(): Boolean

@@ -12,6 +12,7 @@ import com.gemwallet.android.data.database.entities.DbAssetInfo
 import com.gemwallet.android.data.database.entities.DbBalance
 import com.gemwallet.android.data.database.entities.DbBanner
 import com.gemwallet.android.data.database.entities.DbPrice
+import com.gemwallet.android.data.database.entities.DbPriceAlert
 import com.gemwallet.android.data.database.entities.DbSession
 import com.gemwallet.android.data.database.entities.DbToken
 import com.gemwallet.android.data.database.entities.DbTransaction
@@ -20,14 +21,13 @@ import com.gemwallet.android.data.database.entities.DbTxSwapMetadata
 import com.gemwallet.android.data.stake.RoomDelegationBase
 import com.gemwallet.android.data.stake.RoomDelegationValidator
 import com.gemwallet.android.data.stake.StakeDao
-import com.gemwallet.android.data.database.TokensDao
 import com.gemwallet.android.data.wallet.AccountRoom
 import com.gemwallet.android.data.wallet.AccountsDao
 import com.gemwallet.android.data.wallet.WalletRoom
 import com.gemwallet.android.data.wallet.WalletsDao
 
 @Database(
-    version = 33,
+    version = 34,
     entities = [
         WalletRoom::class,
         AccountRoom::class,
@@ -44,6 +44,7 @@ import com.gemwallet.android.data.wallet.WalletsDao
         DbSession::class,
         DbAssetConfig::class,
         DbBanner::class,
+        DbPriceAlert::class,
     ],
     views = [
         DbAssetInfo::class,
@@ -74,4 +75,6 @@ abstract class GemDatabase : RoomDatabase() {
     abstract fun sessionDao(): SessionDao
 
     abstract fun bannersDao(): BannersDao
+
+    abstract fun priceAlertsDao(): PriceAlertsDao
 }

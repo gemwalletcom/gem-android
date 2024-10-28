@@ -3,15 +3,15 @@ package com.gemwallet.android.features.asset.details.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
+import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.data.asset.AssetsRepository
-import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.isStaked
 import com.gemwallet.android.ext.isSwapable
 import com.gemwallet.android.ext.toAssetId
-import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIModel
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIState
@@ -50,13 +50,14 @@ class AssetInfoViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val getTransactionsCase: GetTransactionsCase,
     private val stakeRepository: StakeRepository,
-    private val configRepository: ConfigRepository,
+    private val getPriceAlertsCase: GetPriceAlertsCase,
+    private val enablePriceAlertCase: EnablePriceAlertCase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val assetIdStr = savedStateHandle.getStateFlow(assetIdArg, "")
 
-    val uiState = MutableStateFlow<AssetInfoUIState>(AssetInfoUIState.Loading)
+    val uiState = MutableStateFlow<AssetInfoUIState>(AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process))
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val model = assetIdStr.flatMapConcat {
@@ -66,9 +67,9 @@ class AssetInfoViewModel @Inject constructor(
 
         combine(
             assetsRepository.getAssetInfo(assetId),
-            getTransactionsCase.getTransactions(assetId)
-        ) { assetInfo, transactions ->
-            val priceAlertEnabled = priceAlertEnabled(assetId)
+            getTransactionsCase.getTransactions(assetId),
+            getPriceAlertsCase.enabled(assetId),
+        ) { assetInfo, transactions, priceAlertEnabled ->
             Model(assetInfo, transactions, priceAlertEnabled = priceAlertEnabled)
         }
     }
@@ -110,13 +111,7 @@ class AssetInfoViewModel @Inject constructor(
     }
 
     fun enablePriceAlert(assetId: AssetId) = viewModelScope.launch {
-        val enabled = priceAlertEnabled(assetId)
-        if (enabled) assetsRepository.excludeAssetAlert(assetId) else assetsRepository.includeAssetAlert(assetId)
-        refresh(AssetInfoUIState.SyncState.Process)
-    }
-
-    fun priceAlertEnabled(assetId: AssetId): Boolean {
-        return configRepository.getPriceAlerts().firstOrNull { it.assetId == assetId.toIdentifier() } != null
+        enablePriceAlertCase.enabled(assetId, model.value?.priceAlertEnabled != true)
     }
 
     private data class Model(

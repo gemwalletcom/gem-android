@@ -13,13 +13,14 @@ import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.BalancesDao
 import com.gemwallet.android.data.database.BannersDao
 import com.gemwallet.android.data.database.GemDatabase
+import com.gemwallet.android.data.database.PriceAlertsDao
 import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.database.SessionDao
+import com.gemwallet.android.data.database.TokensDao
 import com.gemwallet.android.data.database.TransactionsDao
 import com.gemwallet.android.data.database.entities.SESSION_REQUEST
 import com.gemwallet.android.data.repositories.session.SessionSharedPreferenceSource
 import com.gemwallet.android.data.stake.StakeDao
-import com.gemwallet.android.data.database.TokensDao
 import com.gemwallet.android.data.wallet.AccountsDao
 import com.gemwallet.android.data.wallet.WalletsDao
 import com.wallet.core.primitives.Chain
@@ -71,6 +72,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_30_31)
         .addMigrations(MIGRATION_31_32)
         .addMigrations(MIGRATION_32_33)
+        .addMigrations(MIGRATION_33_34)
         .build()
 
     @Singleton
@@ -120,6 +122,10 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideBannersDao(db: GemDatabase): BannersDao = db.bannersDao()
+
+    @Singleton
+    @Provides
+    fun providePriceAlertsDao(db: GemDatabase): PriceAlertsDao = db.priceAlertsDao()
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -713,5 +719,19 @@ val MIGRATION_32_33 = object : Migration(32, 33) {
             |                AND tx.walletId in (SELECT wallet_id FROM session WHERE session.id = 1)
             |            GROUP BY tx.id
             """.trimMargin())
+    }
+}
+
+val MIGRATION_33_34 = object : Migration(33, 34) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""
+            CREATE TABLE price_alerts (
+                asset_id TEXT NOT NULL,
+                enabled INTEGER NOT NULL,
+                price REAL DEFAULT NULL,
+                price_percent_change REAL DEFAULT NULL,
+                price_direction TEXT DEFAULT NULL,
+                PRIMARY KEY (asset_id)
+            )""".trimIndent())
     }
 }
