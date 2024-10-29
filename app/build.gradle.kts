@@ -222,8 +222,6 @@ dependencies {
     "googleImplementation"(libs.play.review.ktx)
     // Solana Store
     "solanaImplementation"(libs.firebase.messaging)
-    "solanaImplementation"(libs.play.review)
-    "solanaImplementation"(libs.play.review.ktx)
     // Universal
     "universalImplementation"(libs.firebase.messaging)
     "universalImplementation"(libs.play.review)
