@@ -76,10 +76,9 @@ class AssetInfoViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val sync: Flow<Unit> = combine(uiState, model) { uiState, model ->
-        if (
-            uiState is AssetInfoUIState.Idle
+        if (uiState is AssetInfoUIState.Idle
                 && (uiState.sync == AssetInfoUIState.SyncState.Wait || uiState.sync == AssetInfoUIState.SyncState.Process)
-            ) {
+        ) {
             model ?: return@combine
             syncAssetInfo(model.assetInfo.asset.id, model.assetInfo.owner, model.assetInfo.stakeApr ?: 0.0)
         }
@@ -98,7 +97,7 @@ class AssetInfoViewModel @Inject constructor(
                 if ((it as? AssetInfoUIState.Idle)?.sync != AssetInfoUIState.SyncState.Process) {
                     AssetInfoUIState.SyncState.Loading
                 } else {
-                    AssetInfoUIState.SyncState.Process
+                    AssetInfoUIState.SyncState.None
                 }
             )
         }
