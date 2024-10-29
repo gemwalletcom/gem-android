@@ -72,7 +72,7 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Build Core
-        run: make generate
+        run: make generate-stone
 
       - name: Build tests
         run: make build-test
