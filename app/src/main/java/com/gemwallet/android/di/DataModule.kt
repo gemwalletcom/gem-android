@@ -113,7 +113,7 @@ import com.gemwallet.android.data.repositories.swap.SwapRepository
 import com.gemwallet.android.data.repositories.tokens.TokensRepository
 import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.data.stake.StakeRepository
-import com.gemwallet.android.data.wallet.WalletsRepository
+import com.gemwallet.android.data.repositories.wallet.WalletsRepository
 import com.gemwallet.android.interactors.sync.SyncTransactions
 import com.gemwallet.android.services.GemApiClient
 import com.gemwallet.android.services.GemApiStaticClient

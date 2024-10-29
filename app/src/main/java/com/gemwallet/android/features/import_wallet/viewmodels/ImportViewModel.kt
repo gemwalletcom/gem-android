@@ -2,7 +2,7 @@ package com.gemwallet.android.features.import_wallet.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.data.wallet.WalletsRepository
+import com.gemwallet.android.data.repositories.wallet.WalletsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.interactors.ImportError
 import com.gemwallet.android.interactors.ImportWalletOperator

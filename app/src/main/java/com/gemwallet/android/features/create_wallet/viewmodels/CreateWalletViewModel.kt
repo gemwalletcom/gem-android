@@ -3,7 +3,7 @@ package com.gemwallet.android.features.create_wallet.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.operators.CreateWalletOperator
-import com.gemwallet.android.data.wallet.WalletsRepository
+import com.gemwallet.android.data.repositories.wallet.WalletsRepository
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.interactors.ImportWalletOperator
 import com.wallet.core.primitives.WalletType

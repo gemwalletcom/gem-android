@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.wallet
+package com.gemwallet.android.data.repositories.wallet
 
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.data.database.AccountsDao

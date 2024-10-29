@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentActivity.TELEPHONY_SERVICE
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.config.NodesRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.wallet.WalletsRepository
+import com.gemwallet.android.data.repositories.wallet.WalletsRepository
 import com.gemwallet.android.interactors.sync.SyncAvailableToBuy
 import com.gemwallet.android.interactors.sync.SyncConfig
 import com.gemwallet.android.interactors.sync.SyncDevice

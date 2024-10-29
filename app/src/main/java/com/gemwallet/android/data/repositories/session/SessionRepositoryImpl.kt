@@ -2,7 +2,7 @@ package com.gemwallet.android.data.repositories.session
 
 import com.gemwallet.android.data.database.SessionDao
 import com.gemwallet.android.data.database.mappers.SessionMapper
-import com.gemwallet.android.data.wallet.WalletsRepository
+import com.gemwallet.android.data.repositories.wallet.WalletsRepository
 import com.gemwallet.android.model.Session
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet

@@ -7,7 +7,7 @@ import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.wallet.WalletsRepository
+import com.gemwallet.android.data.repositories.wallet.WalletsRepository
 import com.gemwallet.android.interactors.sync.SyncSubscription
 import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.Chain
