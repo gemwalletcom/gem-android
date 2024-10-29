@@ -75,6 +75,7 @@ fun AssetDetailsScene(
     onChart: (AssetId) -> Unit,
     onStake: (AssetId) -> Unit,
 ) {
+    uniffi.Gemstone.AssetWrapper
     val viewModel: AssetInfoViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
@@ -198,7 +199,7 @@ private fun Success(
                     BannersScene(
                         asset = uiState.asset,
                         onClick = {
-                            if (it.event == BannerEvent.stake) {
+                            if (it.event == BannerEvent.Stake) {
                                 onStake(uiState.asset.id)
                             }
                         },

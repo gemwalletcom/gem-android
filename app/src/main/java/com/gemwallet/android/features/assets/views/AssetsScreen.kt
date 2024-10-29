@@ -202,7 +202,6 @@ private fun LazyListScope.assetsListFooter(
                 )
             }
         }
-        Spacer16()
     }
 }
 

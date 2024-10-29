@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.buy
+package com.gemwallet.android.data.repositories.buy
 
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.ext.toAssetId

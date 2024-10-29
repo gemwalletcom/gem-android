@@ -5,8 +5,11 @@ import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.cases.tokens.GetTokensCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
-import com.gemwallet.android.data.chains.ChainInfoLocalSource
 import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.data.database.AssetsDao
+import com.gemwallet.android.data.database.BalancesDao
+import com.gemwallet.android.data.database.PricesDao
+import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
@@ -48,9 +51,11 @@ import javax.inject.Singleton
 
 @Singleton
 class AssetsRepository @Inject constructor(
+    assetsDao: AssetsDao,
+    balancesDao: BalancesDao,
+    pricesDao: PricesDao,
     private val gemApi: GemApiClient,
     private val sessionRepository: SessionRepository,
-    private val assetsLocalSource: AssetsLocalSource,
     private val balancesRemoteSource: BalancesRemoteSource,
     private val configRepository: ConfigRepository,
     getTransactionsCase: GetTransactionsCase,
@@ -58,6 +63,8 @@ class AssetsRepository @Inject constructor(
     private val searchTokensCase: SearchTokensCase,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetAsset {
+
+    private val assetsLocalSource = AssetsRoomSource(assetsDao, balancesDao, pricesDao)
     private val visibleByDefault = listOf(Chain.Ethereum, Chain.Bitcoin, Chain.SmartChain, Chain.Solana)
 
     private var syncJob: Deferred<Unit>? = null
@@ -160,7 +167,7 @@ class AssetsRepository @Inject constructor(
     }
 
     fun getAssetsInfo(): Flow<List<AssetInfo>> = assetsLocalSource.getAssetsInfo().map { assets ->
-        assets.filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
+        assets.filter { !ChainInfoRepository.exclude.contains(it.asset.id.chain) }
     }
 
     fun getAssetsInfo(assetsId: List<AssetId>): Flow<List<AssetInfo>> = assetsLocalSource.getAssetsInfo(assetsId).map { assets ->
@@ -176,7 +183,7 @@ class AssetsRepository @Inject constructor(
         }
     }
 
-    suspend fun search(wallet: Wallet, query: String): Flow<List<AssetInfo>> {
+    fun search(wallet: Wallet, query: String): Flow<List<AssetInfo>> {
         val assetsFlow = assetsLocalSource.search(query)
         val tokensFlow = getTokensCase.getByChains(wallet.accounts.map { it.chain }, query)
         return combine(assetsFlow, tokensFlow) { assets, tokens ->
@@ -186,7 +193,7 @@ class AssetsRepository @Inject constructor(
                     owner = wallet.getAccount(asset.id.chain) ?: return@mapNotNull null,
                 )
             }
-            .filter { !ChainInfoLocalSource.exclude.contains(it.asset.id.chain) }
+            .filter { !ChainInfoRepository.exclude.contains(it.asset.id.chain) }
             .distinctBy { it.asset.id.toIdentifier() }
         }
     }
@@ -200,7 +207,7 @@ class AssetsRepository @Inject constructor(
     fun invalidateDefault(wallet: Wallet, currency: Currency) = scope.launch {
         val assets = assetsLocalSource.getAssetsInfo(wallet.accounts)
             .associateBy( { it.asset.id.toIdentifier() }, { it } )
-        wallet.accounts.filter { !ChainInfoLocalSource.exclude.contains(it.chain) }
+        wallet.accounts.filter { !ChainInfoRepository.exclude.contains(it.chain) }
             .map { account ->
                 Pair(account, account.chain.asset())
             }.map {

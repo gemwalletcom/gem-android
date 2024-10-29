@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.bridge
 
 import android.net.Uri
+import com.gemwallet.android.data.database.ConnectionsDao
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.model.WalletConnectAccount
 import com.gemwallet.android.services.WalletConnectDelegate
@@ -23,9 +24,10 @@ import java.util.UUID
 
 class BridgesRepository(
     private val walletsRepository: WalletsRepository,
-    private val localSource: ConnectionsLocalSource,
+    private val connectionsDao: ConnectionsDao,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
+    private val localSource = ConnectionsRoomSource(connectionsDao)
 
     init {
         scope.launch {
@@ -42,7 +44,7 @@ class BridgesRepository(
     }
 
     suspend fun getConnections(): List<WalletConnection> {
-        return localSource.getAll(walletsRepository.getAll().getOrNull() ?: return emptyList())
+        return localSource.getAll(walletsRepository.getAll())
     }
 
     private suspend fun sync(): List<WalletConnection> {

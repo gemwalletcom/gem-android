@@ -7,25 +7,13 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
+@Deprecated("Use for migration only")
 class SessionSharedPreferenceSource @Inject constructor(
     private val context: Context
-) : SessionLocalSource {
-    override fun reset() {
-        getStore().edit().remove(Props.WalletId.name).apply()
-    }
+) {
+    fun getWalletId(): String? = getString(Props.WalletId)
 
-    override fun setWallet(walletId: String) {
-        setString(Props.WalletId, walletId)
-    }
-
-    override fun getWalletId(): String? = getString(Props.WalletId)
-
-
-    override fun setCurrency(currency: String) {
-        setString(Props.Currency, currency)
-    }
-
-    override fun getCurrency(): Currency = Currency.values().first { it.string == getString(Props.Currency, Currency.USD.string)!! }
+    fun getCurrency(): Currency = Currency.values().first { it.string == getString(Props.Currency, Currency.USD.string)!! }
 
     private fun getStore() = context.getSharedPreferences("session", MODE_PRIVATE)
 

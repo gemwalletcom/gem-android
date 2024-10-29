@@ -34,13 +34,12 @@ class WalletViewModel @Inject constructor(
 
     fun init(walletId: String, isPhrase: Boolean) {
         viewModelScope.launch {
-            walletsRepository.getWallet(walletId)
-                .onSuccess {  wallet ->
-                    state.update { it.copy(wallet = wallet) }
-                }
-                .onFailure {
-                    state.update { it.copy(error = "Wallet not found") }
-                }
+            val wallet = walletsRepository.getWallet(walletId)
+            if (wallet == null) {
+                state.update { it.copy(error = "Wallet not found") }
+            } else {
+                state.update { it.copy(wallet = wallet) }
+            }
             if (isPhrase) {
                 handleShowPhrase()
             }
@@ -52,7 +51,7 @@ class WalletViewModel @Inject constructor(
             val wallet = state.value.wallet ?: return@launch
             walletsRepository.updateWallet(wallet.copy(name = name))
             if (wallet.id == sessionRepository.getSession()?.wallet?.id) {
-                val newWallet = walletsRepository.getWallet(wallet.id).getOrNull() ?: return@launch
+                val newWallet = walletsRepository.getWallet(wallet.id) ?: return@launch
                 sessionRepository.setWallet(newWallet)
             }
         }

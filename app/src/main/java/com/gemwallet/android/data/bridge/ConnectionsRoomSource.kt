@@ -1,63 +1,16 @@
 package com.gemwallet.android.data.bridge
 
-import androidx.room.ColumnInfo
-import androidx.room.Dao
-import androidx.room.Entity
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.PrimaryKey
-import androidx.room.Query
-import androidx.room.Update
+import com.gemwallet.android.data.database.ConnectionsDao
+import com.gemwallet.android.data.database.entities.DbConnection
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletConnection
 import com.wallet.core.primitives.WalletConnectionSession
 import com.wallet.core.primitives.WalletConnectionSessionAppMetadata
-import com.wallet.core.primitives.WalletConnectionState
-
-@Entity(tableName = "room_connection")
-data class RoomConnection(
-    @PrimaryKey val id: String,
-    @ColumnInfo("wallet_id") val walletId: String,
-    @ColumnInfo("session_id") val sessionId: String,
-    val state: WalletConnectionState,
-    @ColumnInfo("created_at") val createdAt: Long,
-    @ColumnInfo("expire_at") val expireAt: Long,
-    @ColumnInfo("app_name") val appName: String,
-    @ColumnInfo("app_description") val appDescription: String,
-    @ColumnInfo("app_url") val appUrl: String,
-    @ColumnInfo("app_icon") val appIcon: String,
-    @ColumnInfo("redirect_native") val redirectNative: String?,
-    @ColumnInfo("redirect_universal") val redirectUniversal: String?,
-)
-
-@Dao
-interface ConnectionsDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(connection: RoomConnection)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(connections: List<RoomConnection>)
-
-    @Update
-    fun update(connection: RoomConnection)
-
-    @Query("SELECT * FROM room_connection")
-    fun getAll(): List<RoomConnection>
-
-    @Query("SELECT * FROM room_connection WHERE session_id = :sessionId")
-    fun getBySessionId(sessionId: String): RoomConnection
-
-    @Query("DELETE FROM room_connection WHERE id = :id")
-    fun delete(id: String)
-
-    @Query("DELETE FROM room_connection")
-    fun deleteAll()
-}
 
 class ConnectionsRoomSource(
     private val connectionsDao: ConnectionsDao,
-) : ConnectionsLocalSource {
-    override suspend fun getAll(wallets: List<Wallet>): List<WalletConnection> {
+) {
+    suspend fun getAll(wallets: List<Wallet>): List<WalletConnection> {
         return connectionsDao.getAll().mapNotNull { room ->
             val wallet = wallets.firstOrNull { it.id ==  room.walletId } ?: return@mapNotNull null
             WalletConnection(
@@ -82,10 +35,10 @@ class ConnectionsRoomSource(
         }
     }
 
-    override suspend fun addConnection(connection: WalletConnection): Result<Boolean> {
+    suspend fun addConnection(connection: WalletConnection): Result<Boolean> {
         val session = connection.session
         connectionsDao.insert(
-            RoomConnection(
+            DbConnection(
                 id = session.id,
                 walletId = connection.wallet.id,
                 sessionId = session.sessionId,
@@ -103,7 +56,7 @@ class ConnectionsRoomSource(
         return Result.success(true)
     }
 
-    override suspend fun updateConnection(session: WalletConnectionSession) {
+    suspend fun updateConnection(session: WalletConnectionSession) {
         val room = connectionsDao.getBySessionId(session.sessionId)
         connectionsDao.update(
             room.copy(
@@ -118,12 +71,12 @@ class ConnectionsRoomSource(
         )
     }
 
-    override suspend fun deleteConnection(id: String): Result<Boolean> {
+    suspend fun deleteConnection(id: String): Result<Boolean> {
         connectionsDao.delete(id)
         return Result.success(true)
     }
 
-    override suspend fun deleteAllConnections(): Result<Boolean> {
+    suspend fun deleteAllConnections(): Result<Boolean> {
         connectionsDao.deleteAll()
         return Result.success(true)
     }

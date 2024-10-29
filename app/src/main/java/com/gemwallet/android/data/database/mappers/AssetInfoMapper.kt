@@ -16,10 +16,11 @@ import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.Currency
+import okio.Options
 
-class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo>, List<AssetInfo>> {
+class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo>, List<AssetInfo>, Nothing, Nothing> {
 
-    override fun asDomain(entity: List<DbAssetInfo>): List<AssetInfo> {
+    override fun asDomain(entity: List<DbAssetInfo>, options: (() -> Nothing)?): List<AssetInfo> {
         return entity.groupBy { it.id + it.address }.mapNotNull { records ->
             val entity = records.value.firstOrNull() ?: return@mapNotNull null
             val assetId = entity.id.toAssetId() ?: return@mapNotNull null
@@ -85,7 +86,7 @@ class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo
         }
     }
 
-    override fun asEntity(domain: List<AssetInfo>): List<DbAssetInfo> {
+    override fun asEntity(domain: List<AssetInfo>, options: (() -> Nothing)?): List<DbAssetInfo> {
         throw IllegalAccessError()
     }
 }

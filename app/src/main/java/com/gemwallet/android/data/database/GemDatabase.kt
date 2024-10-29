@@ -2,15 +2,17 @@ package com.gemwallet.android.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.gemwallet.android.data.bridge.ConnectionsDao
-import com.gemwallet.android.data.bridge.RoomConnection
 import com.gemwallet.android.data.config.NodeDao
-import com.gemwallet.android.data.config.RoomNode
+import com.gemwallet.android.data.config.DbNode
+import com.gemwallet.android.data.database.entities.DbAccount
 import com.gemwallet.android.data.database.entities.DbAsset
 import com.gemwallet.android.data.database.entities.DbAssetConfig
 import com.gemwallet.android.data.database.entities.DbAssetInfo
 import com.gemwallet.android.data.database.entities.DbBalance
 import com.gemwallet.android.data.database.entities.DbBanner
+import com.gemwallet.android.data.database.entities.DbConnection
+import com.gemwallet.android.data.database.entities.DbDelegationBase
+import com.gemwallet.android.data.database.entities.DbDelegationValidator
 import com.gemwallet.android.data.database.entities.DbPrice
 import com.gemwallet.android.data.database.entities.DbPriceAlert
 import com.gemwallet.android.data.database.entities.DbSession
@@ -18,29 +20,23 @@ import com.gemwallet.android.data.database.entities.DbToken
 import com.gemwallet.android.data.database.entities.DbTransaction
 import com.gemwallet.android.data.database.entities.DbTransactionExtended
 import com.gemwallet.android.data.database.entities.DbTxSwapMetadata
-import com.gemwallet.android.data.stake.RoomDelegationBase
-import com.gemwallet.android.data.stake.RoomDelegationValidator
-import com.gemwallet.android.data.stake.StakeDao
-import com.gemwallet.android.data.wallet.AccountRoom
-import com.gemwallet.android.data.wallet.AccountsDao
-import com.gemwallet.android.data.wallet.WalletRoom
-import com.gemwallet.android.data.wallet.WalletsDao
+import com.gemwallet.android.data.database.entities.DbWallet
 
 @Database(
     version = 34,
     entities = [
-        WalletRoom::class,
-        AccountRoom::class,
+        DbWallet::class,
+        DbAccount::class,
         DbAsset::class,
         DbBalance::class,
         DbPrice::class,
         DbToken::class,
         DbTransaction::class,
         DbTxSwapMetadata::class,
-        RoomConnection::class,
-        RoomDelegationValidator::class,
-        RoomDelegationBase::class,
-        RoomNode::class,
+        DbConnection::class,
+        DbDelegationValidator::class,
+        DbDelegationBase::class,
+        DbNode::class,
         DbSession::class,
         DbAssetConfig::class,
         DbBanner::class,

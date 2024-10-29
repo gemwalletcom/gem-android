@@ -1,7 +1,7 @@
 package com.gemwallet.android.features.asset_select.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.gemwallet.android.data.buy.BuyRepository
+import com.gemwallet.android.data.repositories.buy.BuyRepository
 import com.wallet.core.primitives.AssetId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

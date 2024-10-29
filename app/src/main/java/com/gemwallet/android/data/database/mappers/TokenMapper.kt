@@ -5,8 +5,8 @@ import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Asset
 
-class TokenMapper : Mapper<Asset, DbToken> {
-    override fun asDomain(entity: Asset): DbToken {
+class TokenMapper : Mapper<Asset, DbToken, Nothing, Nothing> {
+    override fun asDomain(entity: Asset, options: (() -> Nothing)?): DbToken {
         return DbToken(
             id = entity.id.toIdentifier(),
             name = entity.name,
@@ -17,7 +17,7 @@ class TokenMapper : Mapper<Asset, DbToken> {
         )
     }
 
-    override fun asEntity(domain: DbToken): Asset {
+    override fun asEntity(domain: DbToken, options: (() -> Nothing)?): Asset {
         return Asset(
             id = domain.id.toAssetId() ?: throw IllegalArgumentException(),
             name = domain.name,

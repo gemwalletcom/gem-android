@@ -11,17 +11,17 @@ import kotlinx.coroutines.flow.Flow
 interface PricesDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(priceRoom: DbPrice)
+    suspend fun insert(priceRoom: DbPrice)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(priceRoom: List<DbPrice>)
+    suspend fun insert(priceRoom: List<DbPrice>)
 
     @Query("SELECT * FROM prices")
     fun getAll(): Flow<List<DbPrice>>
 
     @Query("SELECT * FROM prices WHERE assetId IN (:assetsId)")
-    fun getByAssets(assetsId: List<String>): List<DbPrice>
+    suspend fun getByAssets(assetsId: List<String>): List<DbPrice>
 
     @Query("DELETE FROM prices")
-    fun deleteAll()
+    suspend fun deleteAll()
 }

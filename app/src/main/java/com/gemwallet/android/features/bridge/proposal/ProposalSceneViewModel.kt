@@ -75,7 +75,7 @@ class ProposalSceneViewModel @Inject constructor(
     fun onWalletSelect() {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val wallets = walletsRepository.getAll().getOrNull()?.filter { it.type != WalletType.view } ?: emptyList()
+                val wallets = walletsRepository.getAll().filter { it.type != WalletType.view }
                 state.update { it.copy(wallets = wallets) }
             }
         }
@@ -89,7 +89,7 @@ class ProposalSceneViewModel @Inject constructor(
         state.update { it.copy(wallets = null) }
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val wallet = walletsRepository.getAll().getOrNull()?.firstOrNull { it.id == walletId } ?: return@withContext
+                val wallet = walletsRepository.getAll().firstOrNull { it.id == walletId } ?: return@withContext
                 onProposal(state.value.proposal ?: return@withContext, wallet)
 
             }

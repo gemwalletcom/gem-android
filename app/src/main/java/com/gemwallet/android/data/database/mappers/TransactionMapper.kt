@@ -4,11 +4,12 @@ import com.gemwallet.android.data.database.entities.DbTransaction
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Transaction
+import com.wallet.core.primitives.Wallet
 
-class TransactionMapper(val walletId: String) : Mapper<Transaction, DbTransaction> {
-    override fun asDomain(entity: Transaction): DbTransaction = DbTransaction(
+class TransactionMapper() : Mapper<Transaction, DbTransaction, String, Nothing> {
+    override fun asDomain(entity: Transaction, options: (() -> String)?): DbTransaction = DbTransaction(
         id = entity.id,
-        walletId = walletId,
+        walletId = options?.invoke() ?: throw IllegalArgumentException(),
         hash = entity.hash,
         assetId = entity.assetId.toIdentifier(),
         feeAssetId = entity.feeAssetId.toIdentifier(),
@@ -28,7 +29,7 @@ class TransactionMapper(val walletId: String) : Mapper<Transaction, DbTransactio
         createdAt = entity.createdAt,
     )
 
-    override fun asEntity(domain: DbTransaction): Transaction = Transaction(
+    override fun asEntity(domain: DbTransaction, options: (() -> Nothing)?): Transaction = Transaction(
         id = domain.id,
         hash = domain.hash,
         assetId = domain.assetId.toAssetId() ?: throw IllegalArgumentException(),

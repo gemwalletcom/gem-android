@@ -31,6 +31,7 @@ class PriceAlertRepository(
     private val mapper = PriceAlertMapper()
 
     init {
+        // TODO: Call only on price alert screen
         scope.launch(Dispatchers.IO) { sync() }
     }
 

@@ -4,8 +4,8 @@ import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.blockchain.operators.LoadPrivateDataOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.data.asset.AssetsRepository
-import com.gemwallet.android.data.chains.ChainInfoLocalSource
 import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.wallet.WalletsRepository
 import com.gemwallet.android.interactors.sync.SyncSubscription
@@ -28,7 +28,7 @@ class CheckAccounts @Inject constructor(
     private val sessionRepository: SessionRepository,
 ) {
     suspend operator fun invoke() {
-        val wallets = walletsRepository.getAll().getOrNull() ?: return
+        val wallets = walletsRepository.getAll()
         wallets.forEach { wallet ->
             if (wallet.type != WalletType.multicoin) {
                 return@forEach
@@ -53,7 +53,7 @@ class CheckAccounts @Inject constructor(
     }
 
     private fun getChainsToAdd(available: Set<Chain>): List<Chain> {
-        val allChains = Chain.entries.toList() - ChainInfoLocalSource.exclude.toSet()
+        val allChains = Chain.entries.toList() - ChainInfoRepository.exclude.toSet()
         val toAdd = mutableListOf<Chain>()
         for (i in allChains) {
             if (!available.contains(i)) {

@@ -16,16 +16,16 @@ import kotlinx.coroutines.flow.Flow
 interface AssetsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(asset: DbAsset)
+    suspend fun insert(asset: DbAsset)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(asset: List<DbAsset>)
+    suspend fun insert(asset: List<DbAsset>)
 
     @Update
     fun update(asset: DbAsset)
 
     @Query("SELECT * FROM assets")
-    fun getAll(): List<DbAsset>
+    suspend fun getAll(): List<DbAsset>
 
     @Query("SELECT * FROM assets " +
             "WHERE owner_address IN (:addresses) " +
@@ -34,13 +34,13 @@ interface AssetsDao {
     fun getAllByOwner(addresses: List<String>, query: String): Flow<List<DbAsset>>
 
     @Query("SELECT DISTINCT * FROM assets WHERE owner_address IN (:addresses) AND id IN (:assetId)")
-    fun getById(addresses: List<String>, assetId: List<String>): List<DbAsset>
+    suspend fun getById(addresses: List<String>, assetId: List<String>): List<DbAsset>
 
     @Query("SELECT DISTINCT * FROM assets WHERE id = :assetId")
     suspend fun getById(assetId: String): List<DbAsset>
 
     @Query("SELECT * FROM assets WHERE owner_address IN (:addresses) AND type = :type")
-    fun getAssetsByType(addresses: List<String>, type: AssetType = AssetType.NATIVE): List<DbAsset>
+    suspend fun getAssetsByType(addresses: List<String>, type: AssetType = AssetType.NATIVE): List<DbAsset>
 
     @Query("SELECT * FROM asset_info WHERE chain = :chain AND id = :assetId")
     fun getAssetInfo(assetId: String, chain: Chain): Flow<List<DbAssetInfo>>
@@ -63,11 +63,11 @@ interface AssetsDao {
     fun getAssetsInfoByAccounts(accounts: List<String>): Flow<List<DbAssetInfo>>
 
     @Query("SELECT * FROM asset_config WHERE wallet_id=:walletId AND asset_id=:assetId")
-    fun getConfig(walletId: String, assetId: String): DbAssetConfig?
+    suspend fun getConfig(walletId: String, assetId: String): DbAssetConfig?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun setConfig(config: DbAssetConfig)
+    suspend fun setConfig(config: DbAssetConfig)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun setConfig(config: List<DbAssetConfig>)
+    suspend fun setConfig(config: List<DbAssetConfig>)
 }

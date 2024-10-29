@@ -32,17 +32,16 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
 @Singleton
 class AssetsRoomSource @Inject constructor(
     private val assetsDao: AssetsDao,
     private val balancesDao: BalancesDao,
     private val pricesDao: PricesDao,
-) : AssetsLocalSource {
+) {
 
     private val gson = Gson()
 
-    override suspend fun getNativeAssets(accounts: List<Account>): Result<List<Asset>> { // For check accounts
+    suspend fun getNativeAssets(accounts: List<Account>): Result<List<Asset>> { // For check accounts
         val assets = assetsDao.getAssetsByType(accounts.map { it.address }).mapNotNull {
             Asset(
                 id = it.id.toAssetId() ?: return@mapNotNull null,
@@ -55,32 +54,32 @@ class AssetsRoomSource @Inject constructor(
         return Result.success(assets)
     }
 
-    override suspend fun getAllAssetsIds(): List<AssetId> { // For update price
+    suspend fun getAllAssetsIds(): List<AssetId> { // For update price
         return assetsDao.getAll().map { it.id }.toSet().mapNotNull { it.toAssetId() }.toList()
     }
 
-    override fun getAssetsInfo(): Flow<List<AssetInfo>> = assetsDao.getAssetsInfo()
+    fun getAssetsInfo(): Flow<List<AssetInfo>> = assetsDao.getAssetsInfo()
         .map { AssetInfoMapper().asDomain(it) }
 
-    override fun getAssetsInfo(ids: List<AssetId>): Flow<List<AssetInfo>> = assetsDao
+    fun getAssetsInfo(ids: List<AssetId>): Flow<List<AssetInfo>> = assetsDao
         .getAssetsInfo(ids.map { it.toIdentifier() })
         .map { AssetInfoMapper().asDomain(it) }
 
-    override suspend fun getAssetsInfo(accounts: List<Account>): List<AssetInfo> = withContext(Dispatchers.IO) {
+    suspend fun getAssetsInfo(accounts: List<Account>): List<AssetInfo> = withContext(Dispatchers.IO) {
         assetsDao.getAssetsInfoByAccounts(accounts.map { it.address })
             .map { AssetInfoMapper().asDomain(it) }
             .firstOrNull() ?: emptyList()
     }
 
-    override suspend fun search(query: String): Flow<List<AssetInfo>> {
+    fun search(query: String): Flow<List<AssetInfo>> {
         return assetsDao.searchAssetInfo(query).map { AssetInfoMapper().asDomain(it) }
     }
 
-    override suspend fun getById(accounts: List<Account>, assetId: AssetId): Result<List<AssetInfo>> {
+    suspend fun getById(accounts: List<Account>, assetId: AssetId): Result<List<AssetInfo>> {
         return getById(accounts, listOf(assetId))
     }
 
-    override suspend fun getById(accounts: List<Account>, ids: List<AssetId>): Result<List<AssetInfo>> = withContext(Dispatchers.IO) {
+    suspend fun getById(accounts: List<Account>, ids: List<AssetId>): Result<List<AssetInfo>> = withContext(Dispatchers.IO) {
         val roomAssetId = ids.map { it.toIdentifier() }
         val addresses = accounts.map { it.address }.toSet().toList()
         val assets = assetsDao.getById(addresses, roomAssetId)
@@ -101,13 +100,13 @@ class AssetsRoomSource @Inject constructor(
         )
     }
 
-    override fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
+    fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
         val id = assetId.toIdentifier()
         return assetsDao.getAssetInfo(id, assetId.chain)
             .map { AssetInfoMapper().asDomain(it).firstOrNull() }
     }
 
-    override suspend fun getById(assetId: AssetId): Asset? {
+    suspend fun getById(assetId: AssetId): Asset? {
         val room = assetsDao.getById(assetId.toIdentifier()).firstOrNull() ?: return null
         return Asset(
             id = assetId,
@@ -118,7 +117,7 @@ class AssetsRoomSource @Inject constructor(
         )
     }
 
-    override suspend fun add(walletId: String, address: String, asset: Asset, visible: Boolean) = withContext(Dispatchers.IO) {
+    suspend fun add(walletId: String, address: String, asset: Asset, visible: Boolean) = withContext(Dispatchers.IO) {
         assetsDao.insert(modelToRoom(address, asset))
 
         assetsDao.setConfig(
@@ -130,11 +129,11 @@ class AssetsRoomSource @Inject constructor(
         )
     }
 
-    override suspend fun add(address: String, assets: List<Asset>) {
+    suspend fun add(address: String, assets: List<Asset>) {
         assetsDao.insert(assets.map{ modelToRoom(address, it)})
     }
 
-    override suspend fun setBalances(account: Account, balances: List<Balances>) = withContext(Dispatchers.IO) {
+    suspend fun setBalances(account: Account, balances: List<Balances>) = withContext(Dispatchers.IO) {
         val updatedAt = System.currentTimeMillis()
         balancesDao.insert(
             balances.map { it.items }.flatten().map {
@@ -149,7 +148,7 @@ class AssetsRoomSource @Inject constructor(
         )
     }
 
-    override suspend fun setVisibility(walletId: String, account: Account, assetId: AssetId, visibility: Boolean) = withContext(Dispatchers.IO) {
+    suspend fun setVisibility(walletId: String, account: Account, assetId: AssetId, visibility: Boolean) = withContext(Dispatchers.IO) {
         val config = assetsDao.getConfig(walletId, assetId.toIdentifier()) ?: DbAssetConfig(
             walletId = walletId,
             assetId = assetId.toIdentifier(),
@@ -157,7 +156,7 @@ class AssetsRoomSource @Inject constructor(
         assetsDao.setConfig(config.copy(isVisible = visibility, isPinned = false))
     }
 
-    override suspend fun togglePinned(walletId: String, assetId: AssetId)  = withContext(Dispatchers.IO) {
+    suspend fun togglePinned(walletId: String, assetId: AssetId)  = withContext(Dispatchers.IO) {
         val config = assetsDao.getConfig(walletId, assetId.toIdentifier()) ?: DbAssetConfig(
             walletId = walletId,
             assetId = assetId.toIdentifier(),
@@ -166,7 +165,7 @@ class AssetsRoomSource @Inject constructor(
         assetsDao.setConfig(config.copy(isVisible = true, isPinned = !config.isPinned))
     }
 
-    override suspend fun setPrices(prices: List<AssetPrice>) = withContext(Dispatchers.IO) {
+    suspend fun setPrices(prices: List<AssetPrice>) = withContext(Dispatchers.IO) {
         pricesDao.insert(
             prices.map {
                 price -> DbPrice(price.assetId, price.price, price.priceChangePercentage24h)
@@ -174,11 +173,11 @@ class AssetsRoomSource @Inject constructor(
         )
     }
 
-    override suspend fun clearPrices() {
+    suspend fun clearPrices() {
         pricesDao.deleteAll()
     }
 
-    override suspend fun setAssetDetails(
+    suspend fun setAssetDetails(
         assetId: AssetId,
         buyable: Boolean,
         swapable: Boolean,
@@ -204,11 +203,11 @@ class AssetsRoomSource @Inject constructor(
         }
     }
 
-    override suspend fun getStakingApr(assetId: AssetId): Double? {
+    suspend fun getStakingApr(assetId: AssetId): Double? {
         return assetsDao.getById(assetId.toIdentifier()).firstOrNull()?.stakingApr
     }
 
-    override suspend fun saveOrder(walletId: String, ids: List<AssetId>) = withContext(Dispatchers.IO) {
+    suspend fun saveOrder(walletId: String, ids: List<AssetId>) = withContext(Dispatchers.IO) {
         val records = ids.mapIndexed { index, assetId ->
             val assetConfig = assetsDao.getConfig(walletId, assetId.toIdentifier()) ?: DbAssetConfig(
                 assetId = assetId.toIdentifier(),

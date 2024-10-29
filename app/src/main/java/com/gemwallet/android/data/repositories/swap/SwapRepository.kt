@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.swap
+package com.gemwallet.android.data.repositories.swap
 
 import com.gemwallet.android.blockchain.clients.SwapClient
 import com.gemwallet.android.ext.toIdentifier

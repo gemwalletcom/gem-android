@@ -16,7 +16,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 @Entity(tableName = "nodes")
-data class RoomNode(
+data class DbNode(
     @PrimaryKey val url: String,
     val status: NodeState,
     val priority: Int,
@@ -27,13 +27,13 @@ data class RoomNode(
 interface NodeDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addNodes(nodes: List<RoomNode>)
+    suspend fun addNodes(nodes: List<DbNode>)
 
     @Delete
-    suspend fun deleteNode(node: List<RoomNode>)
+    suspend fun deleteNode(node: List<DbNode>)
 
     @Query("SELECT * FROM nodes")
-    fun getNodes(): Flow<List<RoomNode>>
+    fun getNodes(): Flow<List<DbNode>>
 
 }
 
@@ -52,9 +52,9 @@ class NodeLocalSource(private val dao: NodeDao) {
     }
 }
 
-private fun ChainNodes.toEntity(): List<RoomNode> {
+private fun ChainNodes.toEntity(): List<DbNode> {
     return nodes.mapNotNull {
-        RoomNode(
+        DbNode(
             chain = Chain.findByString(chain) ?: return@mapNotNull null,
             url = it.url,
             status = it.status,
@@ -63,9 +63,9 @@ private fun ChainNodes.toEntity(): List<RoomNode> {
     }
 }
 
-private fun List<ChainNodes>.toEntity(): List<RoomNode> = map { it.toEntity() }.flatten()
+private fun List<ChainNodes>.toEntity(): List<DbNode> = map { it.toEntity() }.flatten()
 
-private fun List<RoomNode>.toDomain() = groupBy { it.chain }.map { entry ->
+private fun List<DbNode>.toDomain() = groupBy { it.chain }.map { entry ->
     ChainNodes(
         chain = entry.key.string,
         nodes = entry.value.map {

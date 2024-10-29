@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.banners
+package com.gemwallet.android.data.repositories.banners
 
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
@@ -24,9 +24,9 @@ class BannersRepository(
 
     override suspend fun getActiveBanners(wallet: Wallet?, asset: Asset?): Banner? = withContext(Dispatchers.IO) {
         val event = when {
-            wallet == null && asset == null -> BannerEvent.enable_notifications
-            asset?.id?.toIdentifier() == Chain.Xrp.asset().id.toIdentifier() -> BannerEvent.account_activation
-            asset?.isStackable() == true -> BannerEvent.stake
+            wallet == null && asset == null -> BannerEvent.EnableNotifications
+            asset?.id?.toIdentifier() == Chain.Xrp.asset().id.toIdentifier() -> BannerEvent.AccountActivation
+            asset?.isStackable() == true -> BannerEvent.Stake
             else -> return@withContext null
         }
         if (isBannerAvailable(wallet, asset, event)) {
@@ -34,7 +34,7 @@ class BannersRepository(
                 wallet = wallet,
                 asset = asset,
                 event = event,
-                state = BannerState.active,
+                state = BannerState.Active,
             )
         } else {
             null
@@ -47,16 +47,16 @@ class BannersRepository(
                 walletId = banner.wallet?.id ?: "",
                 assetId = banner.asset?.id?.toIdentifier() ?: "",
                 event = banner.event,
-                state = BannerState.cancelled,
+                state = BannerState.Cancelled,
             )
         )
     }
 
     private suspend fun isBannerAvailable(wallet: Wallet?, asset: Asset?, event: BannerEvent): Boolean {
-        if (event == BannerEvent.enable_notifications && configRepository.getLaunchNumber() < 3) {
+        if (event == BannerEvent.EnableNotifications && configRepository.getLaunchNumber() < 3) {
             return false
         }
         val dbBanner = bannersDao.getBanner(wallet?.id ?: "", asset?.id?.toIdentifier() ?: "", event)
-        return dbBanner == null || dbBanner.state != BannerState.cancelled
+        return dbBanner == null || dbBanner.state != BannerState.Cancelled
     }
 }

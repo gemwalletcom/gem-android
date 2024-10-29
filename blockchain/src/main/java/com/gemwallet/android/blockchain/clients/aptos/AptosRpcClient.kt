@@ -1,14 +1,12 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
 import com.gemwallet.android.blockchain.clients.aptos.model.AptosAccount
-import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinRpcClient
 import com.wallet.core.blockchain.aptos.models.AptosGasFee
 import com.wallet.core.blockchain.aptos.models.AptosLedger
 import com.wallet.core.blockchain.aptos.models.AptosResource
 import com.wallet.core.blockchain.aptos.models.AptosResourceBalance
 import com.wallet.core.blockchain.aptos.models.AptosTransaction
 import com.wallet.core.blockchain.aptos.models.AptosTransactionBroacast
-import com.wallet.core.blockchain.bitcoin.models.BitcoinBlock
 import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body

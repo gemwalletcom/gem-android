@@ -14,7 +14,7 @@ class SyncSubscription(
 
     override suspend fun invoke() {
         val deviceId = configRepository.getDeviceId()
-        val wallets = walletsRepository.getAll().getOrNull() ?: return
+        val wallets = walletsRepository.getAll()
         val subscriptionsIndex = mutableMapOf<String, Subscription>()
 
         wallets.forEach { wallet ->

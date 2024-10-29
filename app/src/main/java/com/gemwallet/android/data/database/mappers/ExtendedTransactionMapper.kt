@@ -7,13 +7,13 @@ import com.wallet.core.primitives.Price
 import com.wallet.core.primitives.Transaction
 import com.wallet.core.primitives.TransactionExtended
 
-class ExtendedTransactionMapper : Mapper<TransactionExtended?, DbTransactionExtended> {
+class ExtendedTransactionMapper : Mapper<TransactionExtended?, DbTransactionExtended, Nothing, Nothing> {
 
-    override fun asDomain(entity: TransactionExtended?): DbTransactionExtended {
+    override fun asDomain(entity: TransactionExtended?, options: (() -> Nothing)?): DbTransactionExtended {
         throw IllegalAccessException()
     }
 
-    override fun asEntity(domain: DbTransactionExtended): TransactionExtended? {
+    override fun asEntity(domain: DbTransactionExtended, options: (() -> Nothing)?): TransactionExtended? {
         return TransactionExtended(
             transaction = Transaction(
                 id = domain.id,

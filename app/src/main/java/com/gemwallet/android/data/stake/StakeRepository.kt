@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.stake
 
 import com.gemwallet.android.blockchain.clients.StakeClient
+import com.gemwallet.android.data.database.StakeDao
 import com.gemwallet.android.services.GemApiStaticClient
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -19,10 +20,11 @@ import java.math.BigInteger
 
 class StakeRepository(
     private val gemApiStaticClient: GemApiStaticClient,
-    private val localSource: StakeLocalSource,
     private val stakeClients: List<StakeClient>,
+    stakeDao: StakeDao,
 ) {
 
+    private val localSource = StakeRoomSource(stakeDao)
     private val recommendedValidators = Config().getValidators()
 
     suspend fun sync(chain: Chain, address: String, apr: Double) = withContext(Dispatchers.IO) {
@@ -86,11 +88,11 @@ class StakeRepository(
         return localSource.getValidators(chain)
     }
 
-    suspend fun getDelegations(assetId: AssetId, owner: String): Flow<List<Delegation>> {
+    fun getDelegations(assetId: AssetId, owner: String): Flow<List<Delegation>> {
         return localSource.getDelegations(assetId, owner)
     }
 
-    suspend fun getDelegation(validatorId: String, delegationId: String = ""): Flow<Delegation?> {
+    fun getDelegation(validatorId: String, delegationId: String = ""): Flow<Delegation?> {
         return localSource.getDelegation(validatorId = validatorId, delegationId = delegationId)
     }
 

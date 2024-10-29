@@ -18,8 +18,8 @@ class DeleteWalletOperator @Inject constructor(
 
     suspend operator fun invoke(walletId: String, onBoard: () -> Unit, onComplete: () -> Unit) = withContext(Dispatchers.IO) {
         val session = sessionRepository.getSession() ?: return@withContext
-        val wallet = walletsRepository.getWallet(walletId).getOrNull() ?: return@withContext
-        if (!walletsRepository.removeWallet(walletId = walletId).getOrElse { false }) {
+        val wallet = walletsRepository.getWallet(walletId) ?: return@withContext
+        if (!walletsRepository.removeWallet(walletId = walletId)) {
             return@withContext
         }
         if (wallet.type == WalletType.multicoin) {
@@ -28,7 +28,7 @@ class DeleteWalletOperator @Inject constructor(
             }
         }
         if (session.wallet.id == walletId) {
-            val wallets = walletsRepository.getAll().getOrNull() ?: emptyList()
+            val wallets = walletsRepository.getAll()
             if (wallets.isEmpty()) {
                 sessionRepository.reset()
                 withContext(Dispatchers.Main) {

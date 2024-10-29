@@ -17,18 +17,20 @@ class SessionRepositoryImpl(
     private val walletsRepository: WalletsRepository,
 ) : SessionRepository {
 
+    private val sessionMapper = SessionMapper()
+
     override fun session(): Flow<Session?> = sessionDao.session().mapNotNull { entity ->
         val wallet = walletsRepository
-            .getWallet(entity?.walletId ?: return@mapNotNull null).getOrNull() ?: return@mapNotNull null
-        SessionMapper(wallet).asDomain(entity)
+            .getWallet(entity?.walletId ?: return@mapNotNull null) ?: return@mapNotNull null
+        sessionMapper.asDomain(entity, { wallet })
     }
 
     override fun getSession(): Session? {
         val entity = runBlocking(Dispatchers.IO) { sessionDao.getSession() } ?: return null
         val wallet = runBlocking(Dispatchers.IO) {
-            walletsRepository.getWallet(entity.walletId).getOrNull()
+            walletsRepository.getWallet(entity.walletId)
         } ?: return null
-        return SessionMapper(wallet).asDomain(entity)
+        return sessionMapper.asDomain(entity, { wallet })
     }
 
     override fun hasSession(): Boolean = getSession() != null
@@ -38,12 +40,12 @@ class SessionRepositoryImpl(
             wallet = wallet,
             currency = Currency.USD,
         )
-        sessionDao.update(SessionMapper(wallet).asEntity(session))
+        sessionDao.update(sessionMapper.asEntity(session))
     }
 
     override suspend fun setCurrency(currency: Currency) = withContext(Dispatchers.IO) {
         val session = getSession() ?: return@withContext
-        sessionDao.update(SessionMapper(session.wallet).asEntity(session.copy(currency = currency)))
+        sessionDao.update(sessionMapper.asEntity((session.copy(currency = currency))))
     }
 
     override suspend fun reset() = withContext(Dispatchers.IO) {

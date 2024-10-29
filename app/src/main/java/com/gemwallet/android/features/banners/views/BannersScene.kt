@@ -35,7 +35,6 @@ import com.gemwallet.android.features.banners.viewmodels.BannersViewModel
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AssetIcon
 import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.padding12
 import com.gemwallet.android.ui.theme.padding16
 import com.gemwallet.android.ui.theme.padding8
@@ -57,18 +56,20 @@ fun BannersScene(
         val banner = banners[page]
         Box(modifier = Modifier.clickable { onClick(banner) }) {
             val (title, description) = when (banner.event) {
-                BannerEvent.stake -> Pair(
+                BannerEvent.Stake -> Pair(
                     stringResource(R.string.banner_stake_title, asset?.name ?: ""),
                     stringResource(R.string.banner_stake_description, asset?.name ?: "")
                 )
-                BannerEvent.account_activation -> Pair(
+                BannerEvent.AccountActivation -> Pair(
                     stringResource(R.string.banner_account_activation_title, asset?.name ?: ""),
                     stringResource(R.string.banner_account_activation_description, asset?.name ?: "", "10 XRP")
                 )
-                BannerEvent.enable_notifications -> Pair(
+                BannerEvent.EnableNotifications -> Pair(
                     stringResource(R.string.banner_enable_notifications_title, asset?.name ?: ""),
                     stringResource(R.string.banner_enable_notifications_description)
                 )
+
+                BannerEvent.AccountBlockedMultiSignature -> throw IllegalArgumentException()
             }
             BannerText(
                 title = title,

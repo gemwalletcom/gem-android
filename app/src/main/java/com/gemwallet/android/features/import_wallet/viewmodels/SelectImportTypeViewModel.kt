@@ -6,7 +6,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.text.toUpperCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.data.chains.ChainInfoRepository
+import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.filter
 import com.gemwallet.android.features.assets.model.IconUrl

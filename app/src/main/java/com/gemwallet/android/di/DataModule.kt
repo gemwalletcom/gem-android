@@ -86,19 +86,10 @@ import com.gemwallet.android.cases.transactions.CreateTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
-import com.gemwallet.android.data.asset.AssetsLocalSource
 import com.gemwallet.android.data.asset.AssetsRepository
-import com.gemwallet.android.data.asset.AssetsRoomSource
 import com.gemwallet.android.data.asset.BalancesRemoteSource
 import com.gemwallet.android.data.asset.BalancesRetrofitRemoteSource
-import com.gemwallet.android.data.banners.BannersRepository
 import com.gemwallet.android.data.bridge.BridgesRepository
-import com.gemwallet.android.data.bridge.ConnectionsDao
-import com.gemwallet.android.data.bridge.ConnectionsLocalSource
-import com.gemwallet.android.data.bridge.ConnectionsRoomSource
-import com.gemwallet.android.data.buy.BuyRepository
-import com.gemwallet.android.data.chains.ChainInfoLocalSource
-import com.gemwallet.android.data.chains.ChainInfoStaticSource
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.config.NodeDao
 import com.gemwallet.android.data.config.NodeLocalSource
@@ -107,26 +98,22 @@ import com.gemwallet.android.data.config.OfflineFirstConfigRepository
 import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.BalancesDao
 import com.gemwallet.android.data.database.BannersDao
+import com.gemwallet.android.data.database.ConnectionsDao
 import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.database.SessionDao
+import com.gemwallet.android.data.database.StakeDao
 import com.gemwallet.android.data.database.TokensDao
 import com.gemwallet.android.data.database.TransactionsDao
-import com.gemwallet.android.data.repositories.session.SessionLocalSource
+import com.gemwallet.android.data.repositories.banners.BannersRepository
+import com.gemwallet.android.data.repositories.buy.BuyRepository
+import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.repositories.session.SessionRepositoryImpl
-import com.gemwallet.android.data.repositories.session.SessionSharedPreferenceSource
+import com.gemwallet.android.data.repositories.swap.SwapRepository
 import com.gemwallet.android.data.repositories.tokens.TokensRepository
 import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
-import com.gemwallet.android.data.stake.StakeDao
-import com.gemwallet.android.data.stake.StakeLocalSource
 import com.gemwallet.android.data.stake.StakeRepository
-import com.gemwallet.android.data.stake.StakeRoomSource
-import com.gemwallet.android.data.swap.SwapRepository
-import com.gemwallet.android.data.wallet.AccountsDao
-import com.gemwallet.android.data.wallet.WalletsDao
-import com.gemwallet.android.data.wallet.WalletsLocalSource
 import com.gemwallet.android.data.wallet.WalletsRepository
-import com.gemwallet.android.data.wallet.WalletsRoomSource
 import com.gemwallet.android.interactors.sync.SyncTransactions
 import com.gemwallet.android.services.GemApiClient
 import com.gemwallet.android.services.GemApiStaticClient
@@ -142,7 +129,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-internal fun availableChains() = (Chain.entries.toSet() - ChainInfoLocalSource.exclude.toSet())
+internal fun availableChains() = (Chain.entries.toSet() - ChainInfoRepository.exclude.toSet())
 
 @InstallIn(SingletonComponent::class)
 @Module
@@ -266,8 +253,10 @@ object DataModule {
     @Singleton
     fun provideAssetsRepository(
         gemApiClient: GemApiClient,
+        assetsDao: AssetsDao,
+        balancesDao: BalancesDao,
+        pricesDao: PricesDao,
         sessionRepository: SessionRepository,
-        assetsLocalSource: AssetsLocalSource,
         balancesRemoteSource: BalancesRemoteSource,
         configRepository: ConfigRepository,
         getTransactionsCase: GetTransactionsCase,
@@ -275,9 +264,11 @@ object DataModule {
         searchTokensCase: SearchTokensCase,
     ): AssetsRepository = AssetsRepository(
         gemApi = gemApiClient,
+        assetsDao = assetsDao,
+        balancesDao = balancesDao,
+        pricesDao = pricesDao,
         sessionRepository = sessionRepository,
         getTransactionsCase = getTransactionsCase,
-        assetsLocalSource = assetsLocalSource,
         balancesRemoteSource = balancesRemoteSource,
         configRepository = configRepository,
         getTokensCase = getTokensCase,
@@ -417,12 +408,16 @@ object DataModule {
     @Provides
     fun provideTransactionsRepository(
         transactionsDao: TransactionsDao,
-        assetsLocalSource: AssetsLocalSource,
+        assetsDao: AssetsDao,
+        balancesDao: BalancesDao,
+        pricesDao: PricesDao,
         rpcClients: RpcClientAdapter,
         @GemJson gson: Gson,
     ): TransactionsRepository = TransactionsRepository(
         transactionsDao = transactionsDao,
-        assetsLocalSource = assetsLocalSource,
+        assetsDao = assetsDao,
+        balancesDao = balancesDao,
+        pricesDao = pricesDao,
         gson = gson,
         stateClients = availableChains().map {
             when (it) {
@@ -520,12 +515,12 @@ object DataModule {
     @Singleton
     @Provides
     fun provideStakeRepository(
-        stakeLocalSource: StakeLocalSource,
+        stakeDao: StakeDao,
         rpcClients: RpcClientAdapter,
         gemApiStaticClient: GemApiStaticClient,
     ): StakeRepository {
         return StakeRepository(
-            localSource = stakeLocalSource,
+            stakeDao = stakeDao,
             gemApiStaticClient = gemApiStaticClient,
             stakeClients = availableChains().mapNotNull { 
                 when (it) {
@@ -623,9 +618,9 @@ object DataModule {
     @Provides
     fun provideBridgeRepository(
         walletsRepository: WalletsRepository,
-        localSource: ConnectionsLocalSource,
+        connectionsDao: ConnectionsDao,
     ): BridgesRepository {
-        return BridgesRepository(walletsRepository, localSource)
+        return BridgesRepository(walletsRepository, connectionsDao)
     }
 
     @Singleton
@@ -640,35 +635,6 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideChainInfoLocalSource(): ChainInfoLocalSource = ChainInfoStaticSource()
-
-    @Singleton
-    @Provides
-    fun provideWalletsLocalSource(
-        walletsDao: WalletsDao,
-        accountsDao: AccountsDao,
-    ): WalletsLocalSource = WalletsRoomSource(walletsDao = walletsDao, accountsDao = accountsDao)
-
-    @Singleton
-    @Provides
-    fun provideAssetsLocalSource(
-        assetsDao: AssetsDao,
-        balancesDao: BalancesDao,
-        pricesDao: PricesDao,
-    ): AssetsLocalSource = AssetsRoomSource(
-        assetsDao = assetsDao,
-        balancesDao = balancesDao,
-        pricesDao = pricesDao,
-    )
-
-    @Singleton
-    @Provides
-    fun provideSessionLocalSource(
-        @ApplicationContext context: Context,
-    ): SessionLocalSource = SessionSharedPreferenceSource(context = context)
-
-    @Singleton
-    @Provides
     fun provideNameResolveService(
         client: GemApiClient,
     ): NameResolveService = GemNameResolveService(client)
@@ -680,12 +646,6 @@ object DataModule {
     ): ConfigRepository = OfflineFirstConfigRepository(
         context = context,
     )
-
-    @Singleton
-    @Provides
-    fun provideConnectionsLocalSource(
-        connectionsDao: ConnectionsDao
-    ): ConnectionsLocalSource = ConnectionsRoomSource(connectionsDao)
 
     @Singleton
     @Provides
@@ -705,14 +665,6 @@ object DataModule {
             walletsRepository = walletsRepository,
             syncTransactions = syncTransactions,
         )
-    }
-
-    @Singleton
-    @Provides
-    fun provideStakeLocalSource(
-        stakeDao: StakeDao,
-    ): StakeLocalSource {
-        return StakeRoomSource(stakeDao)
     }
 
     @Singleton

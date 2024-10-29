@@ -10,27 +10,30 @@ import kotlinx.serialization.SerialName
 @Serializable
 enum class BannerEvent(val string: String) {
 	@SerialName("stake")
-	stake("stake"),
+	Stake("stake"),
 	@SerialName("accountActivation")
-	account_activation("accountActivation"),
+	AccountActivation("accountActivation"),
 	@SerialName("enableNotifications")
-	enable_notifications("enableNotifications"),
+	EnableNotifications("enableNotifications"),
+	@SerialName("accountBlockedMultiSignature")
+	AccountBlockedMultiSignature("accountBlockedMultiSignature"),
 }
 
 @Serializable
 enum class BannerState(val string: String) {
 	@SerialName("active")
-	active("active"),
+	Active("active"),
 	@SerialName("cancelled")
-	cancelled("cancelled"),
+	Cancelled("cancelled"),
 	@SerialName("alwaysActive")
-	always_active("alwaysActive"),
+	AlwaysActive("alwaysActive"),
 }
 
 @Serializable
 data class Banner (
 	val wallet: Wallet? = null,
 	val asset: Asset? = null,
+	val chain: Chain? = null,
 	val event: BannerEvent,
 	val state: BannerState
 )

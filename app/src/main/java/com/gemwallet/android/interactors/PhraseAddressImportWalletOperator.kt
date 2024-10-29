@@ -61,19 +61,14 @@ class PhraseAddressImportWalletOperator(
                 else -> Result.failure(ImportError.InvalidationSecretPhrase)
             }
         }
-        val result = walletsRepository.addControlled(walletName, cleanedData, importType.walletType, importType.chain)
-        val wallet = result.getOrNull()
-        return if (result.isFailure || wallet == null) {
-            result
+        val wallet = walletsRepository.addControlled(walletName, cleanedData, importType.walletType, importType.chain)
+        val password = passwordStore.createPassword(wallet.id)
+        val storeResult = storePhraseOperator(wallet, cleanedData, password)
+        return if (storeResult.isSuccess) {
+            Result.success(wallet)
         } else {
-            val password = passwordStore.createPassword(wallet.id)
-            val storeResult = storePhraseOperator(wallet, cleanedData, password)
-            if (storeResult.isSuccess) {
-                result
-            } else {
-                walletsRepository.removeWallet(wallet.id)
-                Result.failure(storeResult.exceptionOrNull() ?: ImportError.CreateError("Unknown error"))
-            }
+            walletsRepository.removeWallet(wallet.id)
+            Result.failure(storeResult.exceptionOrNull() ?: ImportError.CreateError("Unknown error"))
         }
     }
 
@@ -82,13 +77,11 @@ class PhraseAddressImportWalletOperator(
             R.string.errors_create_wallet
             return Result.failure(ImportError.InvalidAddress)
         }
-        val result = walletsRepository.addWatch(walletName, data, chain)
-        val wallet = result.getOrNull()
-
-        return if (result.isFailure || wallet == null) {
-            Result.failure(ImportError.CreateError(result.exceptionOrNull()?.message ?: "Unknown error"))
-        } else {
+        return try {
+            val wallet = walletsRepository.addWatch(walletName, data, chain)
             Result.success(wallet)
+        } catch (err: Exception) {
+            Result.failure(ImportError.CreateError(err.message ?: "Unknown error"))
         }
     }
 
@@ -98,22 +91,17 @@ class PhraseAddressImportWalletOperator(
             if (!PrivateKey.isValid(cleanedData.decodeHex(), WCChainTypeProxy().invoke(chain).curve())) {
                 throw Exception()
             }
-        } catch (err: Throwable) {
+        } catch (_: Throwable) {
             return Result.failure(ImportError.InvalidationPrivateKey)
         }
-        val result = walletsRepository.addControlled(walletName, cleanedData, WalletType.private_key, chain)
-        val wallet = result.getOrNull()
-        return if (result.isFailure || wallet == null) {
-            result
+        val wallet = walletsRepository.addControlled(walletName, cleanedData, WalletType.private_key, chain)
+        val password = passwordStore.createPassword(wallet.id)
+        val storeResult = storePhraseOperator(wallet, cleanedData, password)
+        return if (storeResult.isSuccess) {
+            Result.success(wallet)
         } else {
-            val password = passwordStore.createPassword(wallet.id)
-            val storeResult = storePhraseOperator(wallet, cleanedData, password)
-            if (storeResult.isSuccess) {
-                result
-            } else {
-                walletsRepository.removeWallet(wallet.id)
-                Result.failure(storeResult.exceptionOrNull() ?: ImportError.CreateError("Unknown error"))
-            }
+            walletsRepository.removeWallet(wallet.id)
+            Result.failure(storeResult.exceptionOrNull() ?: ImportError.CreateError("Unknown error"))
         }
     }
 }

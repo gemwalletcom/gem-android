@@ -152,6 +152,10 @@ android {
     androidResources {
         generateLocaleConfig = true
     }
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
 }
 
 dependencies {
@@ -239,8 +243,4 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)
     androidTestImplementation(libs.androidx.uiautomator)
-}
-
-room {
-    schemaDirectory("$projectDir/schemas")
 }

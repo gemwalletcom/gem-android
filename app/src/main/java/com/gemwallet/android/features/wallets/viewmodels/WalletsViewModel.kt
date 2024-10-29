@@ -34,30 +34,26 @@ class WalletsViewModel @Inject constructor(
 
     fun refresh() {
         viewModelScope.launch {
-            walletsRepository.getAll().onSuccess { wallets ->
-                val currentWallet = sessionRepository.getSession()?.wallet ?: return@launch
-                val watch = wallets.filter { it.type == WalletType.view }
-                val single = wallets.filter { it.type == WalletType.single }
-                val privateKey = wallets.filter { it.type == WalletType.private_key }
-                val multi = wallets.filter { it.type == WalletType.multicoin }
+            val wallets = walletsRepository.getAll()
+            val currentWallet = sessionRepository.getSession()?.wallet ?: return@launch
+            val watch = wallets.filter { it.type == WalletType.view }
+            val single = wallets.filter { it.type == WalletType.single }
+            val privateKey = wallets.filter { it.type == WalletType.private_key }
+            val multi = wallets.filter { it.type == WalletType.multicoin }
 
-                state.update {
-                    it.copy(
-                        currentWallet = currentWallet,
-                        wallets = multi + single + privateKey + watch,
-                    )
-                }
+            state.update {
+                it.copy(
+                    currentWallet = currentWallet,
+                    wallets = multi + single + privateKey + watch,
+                )
             }
         }
     }
 
     fun handleSelectWallet(walletId: String) {
         viewModelScope.launch {
-            walletsRepository.getWallet(walletId).onSuccess {
-                sessionRepository.setWallet(it)
-            }.onFailure {
-                // TODO: Add error handle
-            }
+            val wallet = walletsRepository.getWallet(walletId) ?: return@launch
+            sessionRepository.setWallet(wallet)
         }
     }
 

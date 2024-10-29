@@ -32,7 +32,6 @@ class PreferencePasswordStore(
         getStore().getString(walletId, null) ?: throw IllegalAccessError("Password doesn't found")
 
     private fun getStore(): SharedPreferences {
-
         val masterKey = MasterKey.Builder(context)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
             .build()
