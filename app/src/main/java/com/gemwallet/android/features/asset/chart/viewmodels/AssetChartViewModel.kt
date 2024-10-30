@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.R
-import com.gemwallet.android.data.asset.AssetsRepository
+import com.gemwallet.android.data.repositories.asset.AssetsRepository
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.asset.chart.models.AssetMarketUIModel
 import com.gemwallet.android.features.asset.navigation.assetIdArg

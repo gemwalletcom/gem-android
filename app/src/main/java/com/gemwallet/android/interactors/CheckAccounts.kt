@@ -3,7 +3,7 @@ package com.gemwallet.android.interactors
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.blockchain.operators.LoadPrivateDataOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
-import com.gemwallet.android.data.asset.AssetsRepository
+import com.gemwallet.android.data.repositories.asset.AssetsRepository
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository

@@ -2,7 +2,7 @@ package com.gemwallet.android.interactors.sync
 
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
-import com.gemwallet.android.data.asset.AssetsRepository
+import com.gemwallet.android.data.repositories.asset.AssetsRepository
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.ext.getAccount

@@ -86,8 +86,8 @@ import com.gemwallet.android.cases.transactions.CreateTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
-import com.gemwallet.android.data.asset.AssetsRepository
-import com.gemwallet.android.data.asset.BalancesRemoteSource
+import com.gemwallet.android.data.repositories.asset.AssetsRepository
+import com.gemwallet.android.data.repositories.asset.BalancesRemoteSource
 import com.gemwallet.android.data.bridge.BridgesRepository
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.config.NodeDao

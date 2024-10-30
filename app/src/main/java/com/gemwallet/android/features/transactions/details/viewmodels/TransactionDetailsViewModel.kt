@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.transactions.GetTransactionCase
-import com.gemwallet.android.data.asset.AssetsRepository
+import com.gemwallet.android.data.repositories.asset.AssetsRepository
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.ext.asset

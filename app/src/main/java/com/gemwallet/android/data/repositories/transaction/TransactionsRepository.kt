@@ -6,7 +6,7 @@ import com.gemwallet.android.cases.transactions.CreateTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
-import com.gemwallet.android.data.asset.GetAssetByIdCase
+import com.gemwallet.android.data.repositories.asset.GetAssetByIdCase
 import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.TransactionsDao
 import com.gemwallet.android.data.database.entities.DbTransactionExtended

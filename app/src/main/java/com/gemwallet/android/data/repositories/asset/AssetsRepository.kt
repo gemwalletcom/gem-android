@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.asset
+package com.gemwallet.android.data.repositories.asset
 
 import android.util.Log
 import com.gemwallet.android.blockchain.operators.GetAsset

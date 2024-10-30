@@ -2,7 +2,7 @@ package com.gemwallet.android.features.assets.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.data.asset.AssetsRepository
+import com.gemwallet.android.data.repositories.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.assets.model.AssetUIState
@@ -28,6 +28,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -52,7 +53,7 @@ class AssetsViewModel @Inject constructor(
         .flatMapLatest { state ->
             flow {
                 emit(state)
-                kotlinx.coroutines.delay(1000)
+                delay(1000)
                 emit(SyncState.Idle)
             }
         }

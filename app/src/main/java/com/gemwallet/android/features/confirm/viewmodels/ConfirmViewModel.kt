@@ -10,7 +10,7 @@ import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.blockchain.operators.SignTransfer
 import com.gemwallet.android.cases.transactions.CreateTransactionCase
-import com.gemwallet.android.data.asset.AssetsRepository
+import com.gemwallet.android.data.repositories.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.repositories.stake.StakeRepository
 import com.gemwallet.android.di.GemJson

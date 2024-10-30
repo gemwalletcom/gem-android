@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.asset
+package com.gemwallet.android.data.repositories.asset
 
 import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.ext.toIdentifier
