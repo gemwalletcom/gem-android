@@ -103,6 +103,7 @@ import com.gemwallet.android.data.repositories.bridge.BridgesRepository
 import com.gemwallet.android.data.repositories.buy.BuyRepository
 import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
 import com.gemwallet.android.data.repositories.config.ConfigRepository
+import com.gemwallet.android.data.repositories.config.ConfigStore
 import com.gemwallet.android.data.repositories.config.OfflineFirstConfigRepository
 import com.gemwallet.android.data.repositories.nodes.NodesRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
@@ -605,8 +606,14 @@ object DataModule {
     @Singleton
     @Provides
     fun provideNodesRepository(
+        gson: Gson,
+        @ApplicationContext context: Context,
         nodesDao: NodesDao,
-    ): NodesRepository = NodesRepository(nodesDao)
+    ): NodesRepository = NodesRepository(
+        gson = gson,
+        nodesDao = nodesDao,
+        configStore = ConfigStore(context.getSharedPreferences("node-config", Context.MODE_PRIVATE)),
+    )
 
     @Singleton
     @Provides

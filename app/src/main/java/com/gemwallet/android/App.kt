@@ -11,6 +11,7 @@ import com.walletconnect.android.relay.ConnectionType
 import com.walletconnect.web3.wallet.client.Wallet
 import com.walletconnect.web3.wallet.client.Web3Wallet
 import dagger.hilt.android.HiltAndroidApp
+import java.lang.System
 
 
 @HiltAndroidApp

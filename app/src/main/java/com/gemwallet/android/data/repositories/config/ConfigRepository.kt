@@ -7,76 +7,45 @@ import com.wallet.core.primitives.NodeState
 
 interface ConfigRepository {
 
-    fun authRequired(): Boolean
-
-    fun setAuthRequired(enabled: Boolean)
-
-    fun getAppVersionSkip(): String
-
-    fun setAppVersionSkip(version: String)
-
+    // Nodes - out to NodesRepository
     fun getCurrentNode(chain: Chain): Node?
-
     fun setCurrentNode(chain: Chain, node: Node)
-
     fun getBlockExplorers(chain: Chain): List<String>
-
     fun getCurrentBlockExplorer(chain: Chain): String
-
     fun setCurrentBlockExplorer(chain: Chain, name: String)
 
+    // Buy
     fun getFiatAssetsVersion(): Int
-
     fun setFiatAssetsVersion(version: Int)
-
-    fun setAvailableTokenListVersion(version: Int)
-
-    fun setAvailableTokenListVersion(chain: String, version: Int)
-
-    fun setOfflineListVersion(version: Int)
-
-    fun setOfflineTokenListVersion(chain: String, version: Int)
-
     fun getFiatAssets(): FiatAssets
-
     fun setFiatAssets(assets: FiatAssets)
 
+    // Pushes
     fun postNotificationsGranted(granted: Boolean)
-
     fun postNotificationsGranted(): Boolean
-
     fun pushEnabled(enabled: Boolean)
-
     fun pushEnabled(): Boolean
-
-    fun updateDeviceId()
-
-    fun getDeviceId(): String
-
     fun getPushToken(): String
-
     fun setPushToken(token: String)
-
-    fun developEnabled(enabled: Boolean)
-
-    fun developEnabled(): Boolean
-
-    fun getTxSyncTime(): Long
-
-    fun setTxSyncTime(time: Long)
-
     fun getSubscriptionVersion(): Int
-
     fun setSubscriptionVersion(subVersion: Int)
-
     fun increaseSubscriptionVersion()
 
+    fun updateDeviceId()
+    fun getDeviceId(): String
+
+    // UserConfig
+    fun developEnabled(enabled: Boolean)
+    fun developEnabled(): Boolean
     fun getLaunchNumber(): Int
-
     fun increaseLaunchNumber()
+    fun authRequired(): Boolean
+    fun setAuthRequired(enabled: Boolean)
+    fun getAppVersionSkip(): String
+    fun setAppVersionSkip(version: String)
 
+    // Price - out to PriceAlertsRepository
     fun setEnablePriceAlerts(enabled: Boolean)
-
     fun isPriceAlertEnabled(): Boolean
 
     companion object {
