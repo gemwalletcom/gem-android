@@ -1,6 +1,7 @@
 package com.gemwallet.android.interactors.sync
 
 import com.gemwallet.android.cases.tokens.SearchTokensCase
+import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
 import com.gemwallet.android.data.repositories.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.config.ConfigRepository
@@ -12,6 +13,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Transaction
 import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -20,18 +22,20 @@ class SyncTransactions @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val configRepository: ConfigRepository,
     private val putTransactionsCase: PutTransactionsCase,
+    private val getTransactionsCase: GetTransactionsCase,
     private val assetsRepository: AssetsRepository,
     private val searchTokensCase: SearchTokensCase,
 ) {
     suspend operator fun invoke(wallet: Wallet) = withContext(Dispatchers.IO) {
         val deviceId = configRepository.getDeviceId()
-        val lastSyncTime = configRepository.getTxSyncTime()
-        val txs = gemApiClient.getTransactions(deviceId, wallet.index, lastSyncTime).getOrNull() ?: return@withContext
+        val lastSyncTime = getTransactionsCase.getTransactions().firstOrNull()
+            ?.maxByOrNull { it.transaction.createdAt }?.transaction?.createdAt ?: 0L // TODO: Test it
+
+        val txs = gemApiClient.getTransactions(deviceId, wallet.index, lastSyncTime)
+            .getOrNull() ?: return@withContext
         prefetchAssets(txs)
 
         putTransactionsCase.putTransactions(walletId = wallet.id, txs.toList())
-
-        configRepository.setTxSyncTime(txs.map { listOf(it.createdAt) }.flatten().maxByOrNull { it } ?: 0L)
     }
 
     private suspend fun prefetchAssets(txs: List<Transaction>) {

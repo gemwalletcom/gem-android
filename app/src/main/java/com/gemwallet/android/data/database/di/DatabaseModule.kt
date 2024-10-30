@@ -330,7 +330,6 @@ class MIGRATION_12_14(private val context: Context) : Migration(12, 14) {
                 ")"
         )
         db.execSQL("DELETE FROM transactions")
-        OfflineFirstConfigRepository(context = context).setTxSyncTime(0L)
     }
 }
 

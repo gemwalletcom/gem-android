@@ -44,7 +44,7 @@ class OfflineFirstConfigRepository(
         val data = getString(Keys.CurrentNode, postfix = chain.string)
         val node = try {
             gson.fromJson(data, Node::class.java)
-        } catch (err: Throwable) {
+        } catch (_: Throwable) {
             return null
         }
         return node
@@ -71,22 +71,6 @@ class OfflineFirstConfigRepository(
     override fun getFiatAssetsVersion(): Int = getInt(Keys.FiatAssetsVersion)
     override fun setFiatAssetsVersion(version: Int) {
         putInt(Keys.FiatAssetsVersion, version)
-    }
-
-    override fun setAvailableTokenListVersion(version: Int) {
-        putInt(Keys.TokenListVersion, version)
-    }
-
-    override fun setAvailableTokenListVersion(chain: String, version: Int) {
-        putInt(Keys.TokenListVersion, version, chain)
-    }
-
-    override fun setOfflineListVersion(version: Int) {
-        putInt(Keys.TokenListOfflineVersion, version)
-    }
-
-    override fun setOfflineTokenListVersion(chain: String, version: Int) {
-        putInt(Keys.TokenListOfflineVersion, version, chain)
     }
 
     override fun getFiatAssets(): FiatAssets {
@@ -138,14 +122,6 @@ class OfflineFirstConfigRepository(
 
     override fun developEnabled(): Boolean {
         return getBoolean(Keys.DevelopEnabled)
-    }
-
-    override fun getTxSyncTime(): Long {
-        return getStore().getLong(Keys.TxSyncTime.string, 0L)
-    }
-
-    override fun setTxSyncTime(time: Long) {
-        getStore().edit().putLong(Keys.TxSyncTime.string, time).apply()
     }
 
     override fun getSubscriptionVersion(): Int {
@@ -215,7 +191,6 @@ class OfflineFirstConfigRepository(
         TokenListVersion("token-list-version"),
         TokenListOfflineVersion("token-list-offline-version"),
         FiatAssets("fiat-assets"),
-        Nodes("nodes"),
         PostNotificationsGranted("post_notifications_granted"),
         PushEnabled("push_enabled"),
         PushToken("push_token"),
@@ -226,7 +201,6 @@ class OfflineFirstConfigRepository(
         CurrentExplorer("current_explorer"),
         LaunchNumber("launch_number"),
         PriceAlertsEnabled("price_alerts_enabled"),
-        PriceAlerts("price_alerts"),
         ;
 
         fun buildKey(postfix: String = "") = "$string-$postfix"

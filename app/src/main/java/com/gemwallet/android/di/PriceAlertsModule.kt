@@ -1,15 +1,18 @@
 package com.gemwallet.android.di
 
+import android.content.Context
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
 import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.database.PriceAlertsDao
+import com.gemwallet.android.data.repositories.config.ConfigStore
 import com.gemwallet.android.data.repositories.pricealerts.PriceAlertRepository
 import com.gemwallet.android.services.GemApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -20,6 +23,7 @@ object PriceAlertsModule {
     @Provides
     @Singleton
     fun providePriceAlertsRepository(
+        @ApplicationContext context: Context,
         gemClient: GemApiClient,
         priceAlertsDao: PriceAlertsDao,
         configRepository: ConfigRepository,
@@ -28,6 +32,7 @@ object PriceAlertsModule {
             gemClient = gemClient,
             priceAlertsDao = priceAlertsDao,
             configRepository = configRepository,
+            configStore = ConfigStore(context.getSharedPreferences("price-alerts", Context.MODE_PRIVATE)),
         )
     }
 

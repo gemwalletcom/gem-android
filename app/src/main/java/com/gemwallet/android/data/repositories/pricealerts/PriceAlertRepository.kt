@@ -7,6 +7,7 @@ import com.gemwallet.android.data.database.PriceAlertsDao
 import com.gemwallet.android.data.database.entities.DbPriceAlert
 import com.gemwallet.android.data.database.mappers.PriceAlertMapper
 import com.gemwallet.android.data.repositories.config.ConfigRepository
+import com.gemwallet.android.data.repositories.config.ConfigStore
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.AssetId
@@ -24,6 +25,7 @@ class PriceAlertRepository(
     private val gemClient: GemApiClient,
     private val priceAlertsDao: PriceAlertsDao,
     private val configRepository: ConfigRepository,
+    private val configStore: ConfigStore,
 ) : GetPriceAlertsCase, PutPriceAlertCase, EnablePriceAlertCase {
 
     private val mapper = PriceAlertMapper()
@@ -70,6 +72,14 @@ class PriceAlertRepository(
         return priceAlertsDao.getAlert(assetId.toIdentifier()).map { it != null && it.enabled }
     }
 
+    fun setPriceAlertsEnabled(enabled: Boolean) {
+        configStore.putBoolean(ConfigKey.PriceAlertsEnabled.string, enabled)
+    }
+
+    fun isPriceAlertEnabled(): Boolean {
+        return configStore.getBoolean(ConfigKey.PriceAlertsEnabled.string)
+    }
+
     private suspend fun sync() {
         gemClient.includePriceAlert(getDeviceId(), getPriceAlerts().firstOrNull() ?: emptyList())
         val local = priceAlertsDao.getAlerts().firstOrNull() ?: emptyList()
@@ -81,4 +91,9 @@ class PriceAlertRepository(
     }
 
     private fun getDeviceId() = configRepository.getDeviceId()
+
+    private enum class ConfigKey(val string: String) {
+        PriceAlertsEnabled("price_alerts_enabled"),
+        ;
+    }
 }
