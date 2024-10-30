@@ -88,7 +88,6 @@ import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.asset.BalancesRemoteSource
-import com.gemwallet.android.data.asset.BalancesRetrofitRemoteSource
 import com.gemwallet.android.data.bridge.BridgesRepository
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.config.NodeDao
@@ -209,7 +208,7 @@ object DataModule {
     @Singleton
     fun provideBalanceRemoteSource(
         rpcClients: RpcClientAdapter,
-    ): BalancesRemoteSource = BalancesRetrofitRemoteSource(
+    ): BalancesRemoteSource = BalancesRemoteSource(
         availableChains().map {
             when (it) {
                 Chain.Doge,
@@ -409,8 +408,6 @@ object DataModule {
     fun provideTransactionsRepository(
         transactionsDao: TransactionsDao,
         assetsDao: AssetsDao,
-        balancesDao: BalancesDao,
-        pricesDao: PricesDao,
         rpcClients: RpcClientAdapter,
         @GemJson gson: Gson,
     ): TransactionsRepository = TransactionsRepository(
@@ -566,7 +563,7 @@ object DataModule {
         rpcClients: RpcClientAdapter,
     ): NodeStatusClientsProxy {
         return NodeStatusClientsProxy(
-            availableChains().mapNotNull {
+            availableChains().map {
                 when (it) {
                     Chain.AvalancheC,
                     Chain.Base,
