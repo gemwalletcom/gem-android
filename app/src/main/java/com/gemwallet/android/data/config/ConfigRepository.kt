@@ -1,11 +1,9 @@
 package com.gemwallet.android.data.config
 
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FiatAssets
 import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeState
-import com.wallet.core.primitives.PriceAlert
 
 interface ConfigRepository {
 

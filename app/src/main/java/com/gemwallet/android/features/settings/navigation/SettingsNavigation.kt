@@ -10,7 +10,6 @@ import com.gemwallet.android.features.settings.aboutus.views.AboutUsScreen
 import com.gemwallet.android.features.settings.currency.views.CurrenciesScene
 import com.gemwallet.android.features.settings.develop.views.DevelopScene
 import com.gemwallet.android.features.settings.networks.views.NetworksScreen
-import com.gemwallet.android.features.settings.price_alerts.views.PriceAlertScene
 import com.gemwallet.android.features.settings.price_alerts.views.PriceAlertsScreen
 import com.gemwallet.android.features.settings.security.views.SecurityScene
 import com.gemwallet.android.features.settings.settings.views.SettingsScene

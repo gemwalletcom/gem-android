@@ -37,13 +37,13 @@ import com.gemwallet.android.interactors.getIcon
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.AssetListItem
-import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.MainActionButton
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme

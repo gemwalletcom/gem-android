@@ -5,9 +5,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.gemwallet.android.data.database.entities.RoomDelegation
 import com.gemwallet.android.data.database.entities.DbDelegationBase
 import com.gemwallet.android.data.database.entities.DbDelegationValidator
+import com.gemwallet.android.data.database.entities.RoomDelegation
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
 

@@ -1,7 +1,6 @@
 package com.gemwallet.android.data.database.entities
 
 import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType

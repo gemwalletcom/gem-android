@@ -16,7 +16,6 @@ import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.Currency
-import okio.Options
 
 class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo>, List<AssetInfo>, Nothing, Nothing> {
 

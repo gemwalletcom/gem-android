@@ -11,7 +11,6 @@ import com.gemwallet.android.features.asset.chart.models.PricePoint
 import com.gemwallet.android.features.asset.navigation.assetIdArg
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.model.AssetInfo
-import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.format
 import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.ChartPeriod

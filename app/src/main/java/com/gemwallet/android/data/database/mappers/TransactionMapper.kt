@@ -4,7 +4,6 @@ import com.gemwallet.android.data.database.entities.DbTransaction
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Transaction
-import com.wallet.core.primitives.Wallet
 
 class TransactionMapper() : Mapper<Transaction, DbTransaction, String, Nothing> {
     override fun asDomain(entity: Transaction, options: (() -> String)?): DbTransaction = DbTransaction(

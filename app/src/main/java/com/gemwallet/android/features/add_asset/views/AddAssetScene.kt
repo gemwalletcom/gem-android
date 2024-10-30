@@ -22,12 +22,12 @@ import com.gemwallet.android.features.add_asset.models.AddAssetError
 import com.gemwallet.android.features.add_asset.models.AddAssetUIState
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AddressChainField
-import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.MainActionButton
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.theme.padding16
 
 @Composable

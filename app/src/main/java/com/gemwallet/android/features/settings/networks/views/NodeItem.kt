@@ -22,9 +22,9 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.model.NodeStatus
-import com.gemwallet.android.ui.components.progress.CircularProgressIndicator14
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.ListItemTitle
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator14
 import com.gemwallet.android.ui.theme.Spacer6
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.padding4

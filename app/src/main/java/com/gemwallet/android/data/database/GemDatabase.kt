@@ -2,8 +2,8 @@ package com.gemwallet.android.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.gemwallet.android.data.config.NodeDao
 import com.gemwallet.android.data.config.DbNode
+import com.gemwallet.android.data.config.NodeDao
 import com.gemwallet.android.data.database.entities.DbAccount
 import com.gemwallet.android.data.database.entities.DbAsset
 import com.gemwallet.android.data.database.entities.DbAssetConfig

@@ -53,8 +53,8 @@ import com.gemwallet.android.blockchain.operators.InvalidWords
 import com.gemwallet.android.blockchain.operators.walletcore.WCValidatePhraseOperator
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.ui.components.AddressChainViewModel
-import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.FieldBottomAction
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.padding16
 import com.wallet.core.primitives.NameRecord

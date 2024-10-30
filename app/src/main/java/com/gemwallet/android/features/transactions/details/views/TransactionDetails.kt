@@ -24,14 +24,14 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.transactions.details.viewmodels.TransactionDetailsViewModel
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountListHead
-import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.open
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.titles.getTransactionTitle
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.AssetSubtype
