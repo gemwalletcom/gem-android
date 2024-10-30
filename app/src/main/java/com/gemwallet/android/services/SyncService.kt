@@ -3,8 +3,8 @@ package com.gemwallet.android.services
 import android.content.Context
 import android.telephony.TelephonyManager
 import androidx.fragment.app.FragmentActivity.TELEPHONY_SERVICE
-import com.gemwallet.android.data.config.ConfigRepository
-import com.gemwallet.android.data.config.NodesRepository
+import com.gemwallet.android.data.repositories.config.ConfigRepository
+import com.gemwallet.android.data.repositories.nodes.NodesRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.repositories.wallet.WalletsRepository
 import com.gemwallet.android.interactors.sync.SyncAvailableToBuy

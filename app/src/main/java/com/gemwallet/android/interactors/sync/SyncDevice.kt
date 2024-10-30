@@ -1,7 +1,7 @@
 package com.gemwallet.android.interactors.sync
 
 import com.gemwallet.android.BuildConfig
-import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.interactors.SyncOperator
 import com.gemwallet.android.services.GemApiClient

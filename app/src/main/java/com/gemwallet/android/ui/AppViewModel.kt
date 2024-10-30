@@ -3,7 +3,7 @@ package com.gemwallet.android.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.BuildConfig
-import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.features.onboarding.OnboardingDest
 import com.gemwallet.android.model.Session

@@ -1,6 +1,6 @@
 package com.gemwallet.android.interactors.sync
 
-import com.gemwallet.android.data.config.NodesRepository
+import com.gemwallet.android.data.repositories.nodes.NodesRepository
 import com.gemwallet.android.interactors.SyncOperator
 import com.wallet.core.primitives.ChainNodes
 import com.wallet.core.primitives.Node

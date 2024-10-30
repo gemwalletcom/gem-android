@@ -3,7 +3,7 @@ package com.gemwallet.android.di
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
-import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.database.PriceAlertsDao
 import com.gemwallet.android.data.repositories.pricealerts.PriceAlertRepository
 import com.gemwallet.android.services.GemApiClient

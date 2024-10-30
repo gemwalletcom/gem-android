@@ -6,8 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.stately.collections.ConcurrentMutableMap
 import com.gemwallet.android.blockchain.clients.NodeStatusClientsProxy
-import com.gemwallet.android.data.config.ConfigRepository
-import com.gemwallet.android.data.config.NodesRepository
+import com.gemwallet.android.data.repositories.config.ConfigRepository
+import com.gemwallet.android.data.repositories.nodes.NodesRepository
 import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
 import com.gemwallet.android.ext.filter
 import com.gemwallet.android.features.settings.networks.models.AddSourceType

@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.config
+package com.gemwallet.android.data.repositories.config
 
 import android.content.Context
 import android.content.SharedPreferences

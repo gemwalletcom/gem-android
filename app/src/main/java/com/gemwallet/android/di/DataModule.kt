@@ -86,26 +86,25 @@ import com.gemwallet.android.cases.transactions.CreateTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
-import com.gemwallet.android.data.repositories.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.asset.BalancesRemoteSource
-import com.gemwallet.android.data.bridge.BridgesRepository
-import com.gemwallet.android.data.config.ConfigRepository
-import com.gemwallet.android.data.config.NodeDao
-import com.gemwallet.android.data.config.NodeLocalSource
-import com.gemwallet.android.data.config.NodesRepository
-import com.gemwallet.android.data.config.OfflineFirstConfigRepository
 import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.BalancesDao
 import com.gemwallet.android.data.database.BannersDao
 import com.gemwallet.android.data.database.ConnectionsDao
+import com.gemwallet.android.data.database.NodesDao
 import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.database.SessionDao
 import com.gemwallet.android.data.database.StakeDao
 import com.gemwallet.android.data.database.TokensDao
 import com.gemwallet.android.data.database.TransactionsDao
+import com.gemwallet.android.data.repositories.asset.AssetsRepository
+import com.gemwallet.android.data.repositories.asset.BalancesRemoteSource
 import com.gemwallet.android.data.repositories.banners.BannersRepository
+import com.gemwallet.android.data.repositories.bridge.BridgesRepository
 import com.gemwallet.android.data.repositories.buy.BuyRepository
 import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
+import com.gemwallet.android.data.repositories.config.ConfigRepository
+import com.gemwallet.android.data.repositories.config.OfflineFirstConfigRepository
+import com.gemwallet.android.data.repositories.nodes.NodesRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.repositories.session.SessionRepositoryImpl
 import com.gemwallet.android.data.repositories.stake.StakeRepository
@@ -606,8 +605,8 @@ object DataModule {
     @Singleton
     @Provides
     fun provideNodesRepository(
-        nodeLocalSource: NodeLocalSource,
-    ): NodesRepository = NodesRepository(nodeLocalSource)
+        nodesDao: NodesDao,
+    ): NodesRepository = NodesRepository(nodesDao)
 
     @Singleton
     @Provides
@@ -660,14 +659,6 @@ object DataModule {
             walletsRepository = walletsRepository,
             syncTransactions = syncTransactions,
         )
-    }
-
-    @Singleton
-    @Provides
-    fun provideNodesLocalSource(
-        nodeDao: NodeDao,
-    ): NodeLocalSource {
-        return NodeLocalSource(nodeDao)
     }
 
     @Singleton

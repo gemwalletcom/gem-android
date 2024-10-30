@@ -1,6 +1,6 @@
 package com.gemwallet.android.data.repositories.buy
 
-import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.services.GemApiClient

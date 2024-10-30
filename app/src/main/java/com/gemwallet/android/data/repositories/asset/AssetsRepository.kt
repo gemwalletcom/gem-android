@@ -5,7 +5,7 @@ import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.cases.tokens.GetTokensCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
-import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.BalancesDao
 import com.gemwallet.android.data.database.PricesDao

@@ -6,12 +6,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.clients.NodeStatusClientsProxy
-import com.gemwallet.android.data.config.ConfigRepository
-import com.gemwallet.android.data.config.NodesRepository
+import com.gemwallet.android.data.repositories.config.ConfigRepository
+import com.gemwallet.android.data.repositories.nodes.NodesRepository
 import com.gemwallet.android.features.settings.networks.models.AddNodeUIModel
 import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Node
+import com.wallet.core.primitives.NodeState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -50,7 +51,7 @@ class AddNodeViewModel @Inject constructor(
         val chain = state.value.chain ?: return
         viewModelScope.launch {
             nodesRepository.addNode(chain = chain, url.value)
-            configRepository.setCurrentNode(chain = chain, Node(url.value, status = com.wallet.core.primitives.NodeState.Active, 0))
+            configRepository.setCurrentNode(chain = chain, Node(url.value, status = NodeState.Active, 0))
             url.value = ""
         }
     }

@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.config
+package com.gemwallet.android.data.repositories.config
 
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FiatAssets

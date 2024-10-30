@@ -6,8 +6,8 @@ import android.util.Log
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.gemwallet.android.data.config.NodeDao
-import com.gemwallet.android.data.config.OfflineFirstConfigRepository
+import com.gemwallet.android.data.database.NodesDao
+import com.gemwallet.android.data.repositories.config.OfflineFirstConfigRepository
 import com.gemwallet.android.data.database.AccountsDao
 import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.BalancesDao
@@ -113,7 +113,7 @@ object DatabaseModule {
 
     @Singleton
     @Provides
-    fun provideNodeDao(db: GemDatabase): NodeDao = db.nodeDao()
+    fun provideNodeDao(db: GemDatabase): NodesDao = db.nodeDao()
 
     @Singleton
     @Provides

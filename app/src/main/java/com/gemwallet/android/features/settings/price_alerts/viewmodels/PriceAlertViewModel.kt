@@ -7,7 +7,7 @@ import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
 import com.gemwallet.android.data.repositories.asset.AssetsRepository
-import com.gemwallet.android.data.config.ConfigRepository
+import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.interactors.sync.SyncDevice

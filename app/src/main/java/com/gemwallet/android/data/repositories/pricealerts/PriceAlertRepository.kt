@@ -3,15 +3,14 @@ package com.gemwallet.android.data.repositories.pricealerts
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
-import com.gemwallet.android.data.config.ConfigRepository
 import com.gemwallet.android.data.database.PriceAlertsDao
 import com.gemwallet.android.data.database.entities.DbPriceAlert
 import com.gemwallet.android.data.database.mappers.PriceAlertMapper
+import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.PriceAlert
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
@@ -25,15 +24,9 @@ class PriceAlertRepository(
     private val gemClient: GemApiClient,
     private val priceAlertsDao: PriceAlertsDao,
     private val configRepository: ConfigRepository,
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetPriceAlertsCase, PutPriceAlertCase, EnablePriceAlertCase {
 
     private val mapper = PriceAlertMapper()
-
-    init {
-        // TODO: Call only on price alert screen
-        scope.launch(Dispatchers.IO) { sync() }
-    }
 
     override fun getPriceAlerts(): Flow<List<PriceAlert>> {
         return priceAlertsDao.getAlerts().map { items -> items.map(mapper::asEntity) }
@@ -61,6 +54,7 @@ class PriceAlertRepository(
             } else {
                 gemClient.excludePriceAlert(getDeviceId(), priceAlert)
             }
+            sync()
         }
     }
 

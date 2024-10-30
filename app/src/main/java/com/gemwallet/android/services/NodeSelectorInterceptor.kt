@@ -1,8 +1,8 @@
 package com.gemwallet.android.services
 
 import android.util.Log
-import com.gemwallet.android.data.config.ConfigRepository
-import com.gemwallet.android.data.config.NodesRepository
+import com.gemwallet.android.data.repositories.config.ConfigRepository
+import com.gemwallet.android.data.repositories.nodes.NodesRepository
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking

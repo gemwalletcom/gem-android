@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.bridge
+package com.gemwallet.android.data.repositories.bridge
 
 import android.net.Uri
 import com.gemwallet.android.data.database.ConnectionsDao

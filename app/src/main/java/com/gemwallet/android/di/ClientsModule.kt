@@ -12,8 +12,8 @@ import com.gemwallet.android.blockchain.clients.sui.SuiRpcClient
 import com.gemwallet.android.blockchain.clients.ton.TonRpcClient
 import com.gemwallet.android.blockchain.clients.tron.TronRpcClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpRpcClient
-import com.gemwallet.android.data.config.ConfigRepository
-import com.gemwallet.android.data.config.NodesRepository
+import com.gemwallet.android.data.repositories.config.ConfigRepository
+import com.gemwallet.android.data.repositories.nodes.NodesRepository
 import com.gemwallet.android.serializer.AssetIdSerializer
 import com.gemwallet.android.services.GemApiClient
 import com.gemwallet.android.services.GemApiStaticClient
