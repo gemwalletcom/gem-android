@@ -43,7 +43,6 @@ import com.wallet.core.primitives.TransactionInput
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.HTTP
 import retrofit2.http.POST

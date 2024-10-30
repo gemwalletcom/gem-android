@@ -6,9 +6,9 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.GemDatabase
+import com.gemwallet.android.data.database.TokensDao
 import com.gemwallet.android.data.database.entities.DbAsset
 import com.gemwallet.android.data.database.entities.DbSession
-import com.gemwallet.android.data.database.TokensDao
 import com.gemwallet.android.data.database.entities.DbToken
 import com.gemwallet.android.data.wallet.AccountRoom
 import com.gemwallet.android.data.wallet.WalletRoom
