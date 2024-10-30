@@ -50,7 +50,7 @@ generate-models: install-typeshare
 
 generate-stone:
 	@echo "Generate Gemstone lib, default build mode is ${BUILD_MODE}"
-	@cd core/gemstone && BUILD_MODE=${BUILD_MODE} just bindgen-kotlin && just build-android
+	@cd core/gemstone && BUILD_MODE=${BUILD_MODE} just build-android
 
 build-base-image:
 	docker build -t gem-android-base -f Dockerfile.base . &> build.base.log
