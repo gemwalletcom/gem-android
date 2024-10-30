@@ -2,6 +2,7 @@ package com.gemwallet.android.data.bridge
 
 import android.net.Uri
 import com.gemwallet.android.data.database.ConnectionsDao
+import com.gemwallet.android.data.database.entities.DbConnection
 import com.gemwallet.android.data.repositories.wallet.WalletsRepository
 import com.gemwallet.android.model.WalletConnectAccount
 import com.gemwallet.android.services.WalletConnectDelegate
@@ -27,7 +28,6 @@ class BridgesRepository(
     private val connectionsDao: ConnectionsDao,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
-    private val localSource = ConnectionsRoomSource(connectionsDao)
 
     init {
         scope.launch {
@@ -44,7 +44,29 @@ class BridgesRepository(
     }
 
     suspend fun getConnections(): List<WalletConnection> {
-        return localSource.getAll(walletsRepository.getAll())
+        val wallets = walletsRepository.getAll()
+        return connectionsDao.getAll().mapNotNull { room ->
+            val wallet = wallets.firstOrNull { it.id ==  room.walletId } ?: return@mapNotNull null
+            WalletConnection(
+                wallet = wallet,
+                session = WalletConnectionSession(
+                    id = room.id,
+                    sessionId = room.sessionId,
+                    state = room.state,
+                    createdAt = room.createdAt,
+                    expireAt = room.expireAt,
+                    chains = emptyList(),
+                    metadata = WalletConnectionSessionAppMetadata(
+                        name = room.appName,
+                        description = room.appDescription,
+                        icon = room.appIcon,
+                        url = room.appUrl,
+                        redirectNative = room.redirectNative,
+                        redirectUniversal = room.redirectUniversal,
+                    ),
+                )
+            )
+        }
     }
 
     private suspend fun sync(): List<WalletConnection> {
@@ -59,7 +81,7 @@ class BridgesRepository(
         }
         return if (unknownSessions.isNotEmpty()) {
             sessions.forEach { disconnect(it.topic) }
-            localSource.deleteAllConnections()
+            connectionsDao.deleteAll()
             emptyList()
         } else {
             local
@@ -77,9 +99,7 @@ class BridgesRepository(
         Web3Wallet.disconnectSession(
             params = Wallet.Params.SessionDisconnect(session.topic),
             onSuccess = {
-                scope.launch {
-                    localSource.deleteConnection(id)
-                }
+                scope.launch { connectionsDao.delete(id) }
                 onSuccess()
             },
             onError = {
@@ -141,7 +161,7 @@ class BridgesRepository(
                     )
                 )
                 scope.launch {
-                    localSource.addConnection(connection)
+                    addConnection(connection)
                 }
 
                 onSuccess()
@@ -175,22 +195,53 @@ class BridgesRepository(
         )
     }
 
+    private suspend fun addConnection(connection: WalletConnection): Result<Boolean> {
+        val session = connection.session
+        connectionsDao.insert(
+            DbConnection(
+                id = session.id,
+                walletId = connection.wallet.id,
+                sessionId = session.sessionId,
+                state = session.state,
+                createdAt = session.createdAt,
+                expireAt = session.expireAt,
+                appName = session.metadata.name,
+                appDescription = session.metadata.description,
+                appUrl = session.metadata.url,
+                appIcon = session.metadata.icon,
+                redirectNative = session.metadata.redirectNative,
+                redirectUniversal = session.metadata.redirectUniversal,
+            )
+        )
+        return Result.success(true)
+    }
+
     private suspend fun updateSession(session: Wallet.Model.Session) {
-        localSource.updateConnection(
-            WalletConnectionSession(
-                id = "",
-                sessionId = session.topic,
-                state = WalletConnectionState.Active,
-                createdAt = System.currentTimeMillis(),
-                expireAt = System.currentTimeMillis() + session.expiry,
-                chains = emptyList(),
-                metadata = WalletConnectionSessionAppMetadata(
-                    name = session.metaData?.name ?: "DApp",
-                    description = session.metaData?.description ?: "",
-                    url = session.metaData?.url ?: "",
-                    icon = session.metaData?.getIcon() ?: "",
-                    redirectNative = session.redirect,
-                )
+        val session = WalletConnectionSession(
+            id = "",
+            sessionId = session.topic,
+            state = WalletConnectionState.Active,
+            createdAt = System.currentTimeMillis(),
+            expireAt = System.currentTimeMillis() + session.expiry,
+            chains = emptyList(),
+            metadata = WalletConnectionSessionAppMetadata(
+                name = session.metaData?.name ?: "DApp",
+                description = session.metaData?.description ?: "",
+                url = session.metaData?.url ?: "",
+                icon = session.metaData?.getIcon() ?: "",
+                redirectNative = session.redirect,
+            )
+        )
+        val room = connectionsDao.getBySessionId(session.sessionId)
+        connectionsDao.update(
+            room.copy(
+                expireAt = session.expireAt,
+                appName = session.metadata.name,
+                appDescription = session.metadata.description,
+                appUrl = session.metadata.url,
+                appIcon = session.metadata.icon,
+                redirectNative = session.metadata.redirectNative,
+                redirectUniversal = session.metadata.redirectUniversal,
             )
         )
     }
