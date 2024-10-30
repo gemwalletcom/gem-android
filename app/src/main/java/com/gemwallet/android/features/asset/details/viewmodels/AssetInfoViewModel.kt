@@ -7,7 +7,7 @@ import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.data.asset.AssetsRepository
-import com.gemwallet.android.data.stake.StakeRepository
+import com.gemwallet.android.data.repositories.stake.StakeRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.isStaked
 import com.gemwallet.android.ext.isSwapable

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.stake.StakeRepository
+import com.gemwallet.android.data.repositories.stake.StakeRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.byChain
 import com.gemwallet.android.ext.getAccount
@@ -46,7 +46,7 @@ class StakeViewModel @Inject constructor(
         val session = sessionRepository.getSession() ?: return
         val account = session.wallet.getAccount(assetId.chain) ?: return
         viewModelScope.launch {
-            val asset = assetsRepository.getById(session.wallet, assetId).getOrNull()?.firstOrNull() ?: return@launch
+            val asset = assetsRepository.getById(session.wallet, assetId).firstOrNull() ?: return@launch
             val apr = assetsRepository.getStakeApr(assetId)
             state.update { it.copy(apr = apr ?: 0.0) }
             stakeRepository.getDelegations(assetId, account.address).collect { delegations ->

@@ -6,10 +6,8 @@ import com.gemwallet.android.cases.transactions.CreateTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
-import com.gemwallet.android.data.asset.AssetsRoomSource
+import com.gemwallet.android.data.asset.GetAssetByIdCase
 import com.gemwallet.android.data.database.AssetsDao
-import com.gemwallet.android.data.database.BalancesDao
-import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.database.TransactionsDao
 import com.gemwallet.android.data.database.entities.DbTransactionExtended
 import com.gemwallet.android.data.database.entities.DbTxSwapMetadata
@@ -49,14 +47,12 @@ import java.math.BigInteger
 class TransactionsRepository(
     private val transactionsDao: TransactionsDao,
     assetsDao: AssetsDao,
-    balancesDao: BalancesDao,
-    pricesDao: PricesDao,
     private val stateClients: List<TransactionStatusClient>,
     private val gson: Gson,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetTransactionsCase, GetTransactionCase, CreateTransactionCase, PutTransactionsCase {
 
-    private val assetsRoomSource = AssetsRoomSource(assetsDao, balancesDao, pricesDao)
+    private val assetsRoomSource = GetAssetByIdCase(assetsDao)
     private val changedTransactions = MutableStateFlow<List<TransactionExtended>>(emptyList())
 
     private val txMapper = TransactionMapper()

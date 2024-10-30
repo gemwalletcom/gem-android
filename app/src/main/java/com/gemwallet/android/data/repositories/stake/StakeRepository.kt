@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.stake
+package com.gemwallet.android.data.repositories.stake
 
 import com.gemwallet.android.blockchain.clients.StakeClient
 import com.gemwallet.android.data.database.StakeDao

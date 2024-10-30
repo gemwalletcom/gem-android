@@ -24,7 +24,7 @@ class BalancesRetrofitRemoteSource @Inject constructor(
         val nativeBalances = async {
             try {
                 client.getNativeBalance(account.address)
-            } catch (err: Throwable) {
+            } catch (_: Throwable) {
                 null
             }
         }
@@ -34,7 +34,7 @@ class BalancesRetrofitRemoteSource @Inject constructor(
                 .ifEmpty { return@async emptyList() }
             try {
                 client.getTokenBalances(account.address, ids)
-            } catch (err: Throwable) {
+            } catch (_: Throwable) {
                 emptyList()
             }
         }

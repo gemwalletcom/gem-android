@@ -52,7 +52,7 @@ class BuyViewModel @Inject constructor(
             state.update { it.copy(fatalError = "no session") }
             return
         }
-        val assetInfo = assetsRepository.getById(session.wallet, assetId).getOrNull()?.firstOrNull()
+        val assetInfo = assetsRepository.getById(session.wallet, assetId).firstOrNull()
         if (assetInfo == null) {
             state.update { it.copy(fatalError = "Asset not found") }
             return

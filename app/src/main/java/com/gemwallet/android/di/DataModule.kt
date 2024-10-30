@@ -109,10 +109,10 @@ import com.gemwallet.android.data.repositories.buy.BuyRepository
 import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.repositories.session.SessionRepositoryImpl
+import com.gemwallet.android.data.repositories.stake.StakeRepository
 import com.gemwallet.android.data.repositories.swap.SwapRepository
 import com.gemwallet.android.data.repositories.tokens.TokensRepository
 import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
-import com.gemwallet.android.data.stake.StakeRepository
 import com.gemwallet.android.data.repositories.wallet.WalletsRepository
 import com.gemwallet.android.interactors.sync.SyncTransactions
 import com.gemwallet.android.services.GemApiClient
@@ -416,8 +416,6 @@ object DataModule {
     ): TransactionsRepository = TransactionsRepository(
         transactionsDao = transactionsDao,
         assetsDao = assetsDao,
-        balancesDao = balancesDao,
-        pricesDao = pricesDao,
         gson = gson,
         stateClients = availableChains().map {
             when (it) {

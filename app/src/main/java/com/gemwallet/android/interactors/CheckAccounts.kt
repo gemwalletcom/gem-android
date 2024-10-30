@@ -33,8 +33,8 @@ class CheckAccounts @Inject constructor(
             if (wallet.type != WalletType.multicoin) {
                 return@forEach
             }
-            val availableChains = assetsRepository.getNativeAssets(wallet).getOrNull()
-                ?.map { it.id.chain }?.toSet() ?: emptySet()
+            val availableChains = assetsRepository.getNativeAssets(wallet)
+                .map { it.id.chain }.toSet()
             val newChains = getChainsToAdd(availableChains)
             if (newChains.isNotEmpty()) {
                 val data = loadPrivateDataOperator(wallet, passwordStore.getPassword(wallet.id))

@@ -12,7 +12,7 @@ import com.gemwallet.android.blockchain.memo
 import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.data.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.stake.StakeRepository
+import com.gemwallet.android.data.repositories.stake.StakeRepository
 import com.gemwallet.android.ext.mutableStateIn
 import com.gemwallet.android.features.amount.models.AmountError
 import com.gemwallet.android.features.amount.models.AmountParams
