@@ -88,7 +88,7 @@ fun PriceAlertScene(
                 )
             }
         ) {
-        LazyColumn {
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {
                 Row(
                     modifier = Modifier.padding(horizontal = padding16),
