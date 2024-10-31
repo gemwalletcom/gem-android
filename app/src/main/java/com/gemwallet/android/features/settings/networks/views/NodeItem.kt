@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
+import com.gemwallet.android.cases.nodes.getGemNodeUrl
 import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.model.NodeStatus
 import com.gemwallet.android.ui.components.ListItem
@@ -55,7 +56,7 @@ internal fun NodeItem(
         } else null
     ) {
         ListItemTitle(
-            title = if (node.url == ConfigRepository.Companion.getGemNodeUrl(chain)) {
+            title = if (node.url == getGemNodeUrl(chain)) {
                 "Gem Wallet Node"
             } else {
                 node.url.replace("https://", "").replace("http://", "")

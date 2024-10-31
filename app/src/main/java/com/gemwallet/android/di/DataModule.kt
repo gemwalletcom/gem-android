@@ -605,18 +605,6 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideNodesRepository(
-        gson: Gson,
-        @ApplicationContext context: Context,
-        nodesDao: NodesDao,
-    ): NodesRepository = NodesRepository(
-        gson = gson,
-        nodesDao = nodesDao,
-        configStore = ConfigStore(context.getSharedPreferences("node-config", Context.MODE_PRIVATE)),
-    )
-
-    @Singleton
-    @Provides
     fun provideBridgeRepository(
         walletsRepository: WalletsRepository,
         connectionsDao: ConnectionsDao,
@@ -661,7 +649,6 @@ object DataModule {
         return SyncService(
             gemApiClient = gemApiClient,
             configRepository = configRepository,
-            nodesRepository = nodesRepository,
             sessionRepository = sessionRepository,
             walletsRepository = walletsRepository,
             syncTransactions = syncTransactions,

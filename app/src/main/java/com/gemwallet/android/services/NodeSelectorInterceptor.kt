@@ -1,8 +1,9 @@
 package com.gemwallet.android.services
 
 import android.util.Log
-import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.repositories.nodes.NodesRepository
+import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
+import com.gemwallet.android.cases.nodes.GetNodesCase
+import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
@@ -13,19 +14,20 @@ import okhttp3.Request
 import okhttp3.Response
 
 class NodeSelectorInterceptor(
-    private val configRepository: ConfigRepository,
-    private val nodesRepository: NodesRepository,
+    private val getNodesCase: GetNodesCase,
+    private val getCurrentNodeCase: GetCurrentNodeCase,
+    private val setCurrentNodeCase: SetCurrentNodeCase,
 ) : Interceptor {
     
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
         val blockchain = Chain.entries.firstOrNull { it.string == originalRequest.url.host }
             ?: return chain.proceed(originalRequest)
-        val currentNode = configRepository.getCurrentNode(blockchain)
+        val currentNode = getCurrentNodeCase.getCurrentNode(blockchain)
         val url = if (currentNode == null) {
-            val node = runBlocking { nodesRepository.getNodes(blockchain).firstOrNull()?.firstOrNull() }
+            val node = runBlocking { getNodesCase.getNodes(blockchain).firstOrNull()?.firstOrNull() }
             if (node != null) {
-                configRepository.setCurrentNode(blockchain, node)
+                setCurrentNodeCase.setCurrentNode(blockchain, node)
             }
             node
         } else {

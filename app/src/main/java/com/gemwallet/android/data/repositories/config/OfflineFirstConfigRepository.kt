@@ -39,35 +39,7 @@ class OfflineFirstConfigRepository(
     override fun getAppVersionSkip(): String {
         return getString(Keys.AppVersionSkip)
     }
-
-    override fun getCurrentNode(chain: Chain): Node? {
-        val data = getString(Keys.CurrentNode, postfix = chain.string)
-        val node = try {
-            gson.fromJson(data, Node::class.java)
-        } catch (_: Throwable) {
-            return null
-        }
-        return node
-    }
-
-    override fun setCurrentNode(chain: Chain, node: Node) {
-        putString(Keys.CurrentNode, gson.toJson(node), chain.string)
-    }
-
-    override fun getBlockExplorers(chain: Chain): List<String> {
-        return Config().getBlockExplorers(chain.string)
-    }
-
-    override fun getCurrentBlockExplorer(chain: Chain): String {
-        return getString(Keys.CurrentExplorer, chain.string).ifEmpty {
-            getBlockExplorers(chain).firstOrNull() ?: ""
-        }
-    }
-
-    override fun setCurrentBlockExplorer(chain: Chain, name: String) {
-        putString(Keys.CurrentExplorer, name, chain.string)
-    }
-
+    
     override fun getFiatAssetsVersion(): Int = getInt(Keys.FiatAssetsVersion)
     override fun setFiatAssetsVersion(version: Int) {
         putInt(Keys.FiatAssetsVersion, version)
@@ -188,17 +160,17 @@ class OfflineFirstConfigRepository(
         AppVersionSkip("app-version-skip"),
         FiatAssetsVersion("fiat-assets-version"),
         FiatAssetsOfflineVersion("fiat-offline-version"),
-        TokenListVersion("token-list-version"),
-        TokenListOfflineVersion("token-list-offline-version"),
+//        TokenListVersion("token-list-version"),
+//        TokenListOfflineVersion("token-list-offline-version"),
         FiatAssets("fiat-assets"),
         PostNotificationsGranted("post_notifications_granted"),
         PushEnabled("push_enabled"),
         PushToken("push_token"),
         DevelopEnabled("develop_enabled"),
-        TxSyncTime("tx_sync_time"),
+//        TxSyncTime("tx_sync_time"),
         SubscriptionVersion("subscription_version"),
-        CurrentNode("current_node"),
-        CurrentExplorer("current_explorer"),
+//        CurrentNode("current_node"),
+//        CurrentExplorer("current_explorer"),
         LaunchNumber("launch_number"),
         PriceAlertsEnabled("price_alerts_enabled"),
         ;

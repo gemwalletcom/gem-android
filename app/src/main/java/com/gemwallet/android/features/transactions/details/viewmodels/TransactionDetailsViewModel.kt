@@ -3,6 +3,7 @@ package com.gemwallet.android.features.transactions.details.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorerCase
 import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.data.repositories.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.config.ConfigRepository
@@ -34,8 +35,8 @@ import javax.inject.Inject
 @HiltViewModel
 class TransactionDetailsViewModel @Inject constructor(
     sessionRepository: SessionRepository,
-    private val configRepository: ConfigRepository,
     private val getTransactionCase: GetTransactionCase,
+    private val getCurrentBlockExplorerCase: GetCurrentBlockExplorerCase,
     private val assetsRepository: AssetsRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -68,7 +69,7 @@ class TransactionDetailsViewModel @Inject constructor(
         val feeFiat = transaction.feePrice?.price?.let {
             currency.format(fee.convert(feeAsset.decimals, it))
         } ?: ""
-        val blockExplorerName = configRepository.getCurrentBlockExplorer(transaction.asset.chain())
+        val blockExplorerName = getCurrentBlockExplorerCase.getCurrentBlockExplorer(transaction.asset.chain())
         val explorerUrl = Explorer(asset.chain().string).getTransactionUrl(blockExplorerName, tx.hash)
 
         TxDetailsScreenModel(

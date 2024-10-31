@@ -4,13 +4,11 @@ import android.content.Context
 import android.telephony.TelephonyManager
 import androidx.fragment.app.FragmentActivity.TELEPHONY_SERVICE
 import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.repositories.nodes.NodesRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.repositories.wallet.WalletsRepository
 import com.gemwallet.android.interactors.sync.SyncAvailableToBuy
 import com.gemwallet.android.interactors.sync.SyncConfig
 import com.gemwallet.android.interactors.sync.SyncDevice
-import com.gemwallet.android.interactors.sync.SyncNodes
 import com.gemwallet.android.interactors.sync.SyncSubscription
 import com.gemwallet.android.interactors.sync.SyncTransactions
 import kotlinx.coroutines.Dispatchers
@@ -23,14 +21,12 @@ import javax.inject.Inject
 class SyncService @Inject constructor(
     private val gemApiClient: GemApiClient,
     private val configRepository: ConfigRepository,
-    private val nodesRepository: NodesRepository,
     private val sessionRepository: SessionRepository,
     private val walletsRepository: WalletsRepository,
     private val syncTransactions: SyncTransactions,
 ) {
 
     private val operators = listOf(
-        SyncNodes(nodesRepository),
         SyncAvailableToBuy(gemApiClient, configRepository),
         SyncSubscription(gemApiClient, walletsRepository, configRepository),
     )

@@ -6,8 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import co.touchlab.stately.collections.ConcurrentMutableMap
 import com.gemwallet.android.blockchain.clients.NodeStatusClientsProxy
-import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.repositories.nodes.NodesRepository
+import com.gemwallet.android.cases.nodes.GetBlockExplorersCase
+import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorerCase
+import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
+import com.gemwallet.android.cases.nodes.GetNodesCase
+import com.gemwallet.android.cases.nodes.SetBlockExplorerCase
+import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
 import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
 import com.gemwallet.android.ext.filter
 import com.gemwallet.android.features.settings.networks.models.AddSourceType
@@ -43,8 +47,13 @@ import kotlin.String
 @HiltViewModel
 class NetworksViewModel @Inject constructor(
     private val chainInfoRepository: ChainInfoRepository,
-    private val configRepository: ConfigRepository,
-    private val nodesRepository: NodesRepository,
+//    private val nodesRepository: NodesRepository,
+    private val getNodesCase: GetNodesCase,
+    private val getCurrentBlockExplorerCase: GetCurrentBlockExplorerCase,
+    private val getBlockExplorersCase: GetBlockExplorersCase,
+    private val setBlockExplorerCase: SetBlockExplorerCase,
+    private val getCurrentNodeCase: GetCurrentNodeCase,
+    private val setCurrentNodeCase: SetCurrentNodeCase,
     private val nodeStatusClientsProxy: NodeStatusClientsProxy,
     private val nodeStatusClients: NodeStatusClientsProxy,
 ) : ViewModel() {
@@ -59,7 +68,7 @@ class NetworksViewModel @Inject constructor(
         if (it.chain == null) {
             return@flatMapLatest emptyFlow()
         }
-        nodesRepository.getNodes(it.chain)
+        getNodesCase.getNodes(it.chain)
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
@@ -116,9 +125,9 @@ class NetworksViewModel @Inject constructor(
             it.copy(
                 chain = chain,
                 selectChain = false,
-                explorers = configRepository.getBlockExplorers(chain),
-                currentNode = configRepository.getCurrentNode(chain),
-                currentExplorer = configRepository.getCurrentBlockExplorer(chain),
+                explorers = getBlockExplorersCase.getBlockExplorers(chain),
+                currentNode = getCurrentNodeCase.getCurrentNode(chain),
+                currentExplorer = getCurrentBlockExplorerCase.getCurrentBlockExplorer(chain),
                 availableAddNode = nodeStatusClientsProxy.isMaintained(chain),
             )
         }
@@ -130,13 +139,13 @@ class NetworksViewModel @Inject constructor(
 
     fun onSelectNode(node: Node) {
         val chain = state.value.chain ?: return
-        configRepository.setCurrentNode(chain, node)
+        setCurrentNodeCase.setCurrentNode(chain, node)
         onSelectedChain(chain)
     }
 
     fun onSelectBlockExplorer(name: String) {
         val chain = state.value.chain ?: return
-        configRepository.setCurrentBlockExplorer(chain, name)
+        setBlockExplorerCase.setCurrentBlockExplorer(chain, name)
         onSelectedChain(chain)
     }
 

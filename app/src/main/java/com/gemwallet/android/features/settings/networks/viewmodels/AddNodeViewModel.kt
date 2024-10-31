@@ -6,6 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.clients.NodeStatusClientsProxy
+import com.gemwallet.android.cases.nodes.AddNodeCase
+import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
 import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.repositories.nodes.NodesRepository
 import com.gemwallet.android.features.settings.networks.models.AddNodeUIModel
@@ -24,9 +26,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddNodeViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
     private val nodeStatusClients: NodeStatusClientsProxy,
-    private val nodesRepository: NodesRepository,
+    private val addNodeCase: AddNodeCase,
+    private val setCurrentNodeCase: SetCurrentNodeCase,
 ) : ViewModel() {
 
     private val state = MutableStateFlow(State())
@@ -50,8 +52,8 @@ class AddNodeViewModel @Inject constructor(
     fun addUrl() {
         val chain = state.value.chain ?: return
         viewModelScope.launch {
-            nodesRepository.addNode(chain = chain, url.value)
-            configRepository.setCurrentNode(chain = chain, Node(url.value, status = NodeState.Active, 0))
+            addNodeCase.addNode(chain = chain, url.value)
+            setCurrentNodeCase.setCurrentNode(chain = chain, Node(url.value, status = NodeState.Active, 0))
             url.value = ""
         }
     }

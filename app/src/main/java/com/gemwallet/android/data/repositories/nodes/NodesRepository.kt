@@ -1,8 +1,15 @@
 package com.gemwallet.android.data.repositories.nodes
 
+import com.gemwallet.android.cases.nodes.AddNodeCase
+import com.gemwallet.android.cases.nodes.GetBlockExplorersCase
+import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorerCase
+import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
+import com.gemwallet.android.cases.nodes.GetNodesCase
+import com.gemwallet.android.cases.nodes.SetBlockExplorerCase
+import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
+import com.gemwallet.android.cases.nodes.getGemNode
 import com.gemwallet.android.data.database.NodesDao
 import com.gemwallet.android.data.database.entities.DbNode
-import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.repositories.config.ConfigStore
 import com.gemwallet.android.ext.findByString
 import com.google.gson.Gson
@@ -10,11 +17,14 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainNodes
 import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeState
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.Gemstone.Config
+import uniffi.Gemstone.NodePriority
 import kotlin.collections.groupBy
 import kotlin.collections.map
 import kotlin.text.ifEmpty
@@ -23,61 +33,42 @@ class NodesRepository(
     private val gson: Gson,
     private val nodesDao: NodesDao,
     private val configStore: ConfigStore,
-) {
+    scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+) : SetCurrentNodeCase,
+    GetCurrentNodeCase,
+    SetBlockExplorerCase,
+    GetBlockExplorersCase,
+    GetCurrentBlockExplorerCase,
+    GetNodesCase,
+    AddNodeCase
+{
 
-    suspend fun getNodes(chain: Chain): Flow<List<Node>> = withContext(Dispatchers.IO) {
+    init {
+        scope.launch { sync() }
+    }
+
+    override suspend fun getNodes(chain: Chain): Flow<List<Node>> = withContext(Dispatchers.IO) {
         nodesDao.getNodes().map { nodes ->
             nodes.groupBy { it.chain }.map { entry ->
                 ChainNodes(
                     chain = entry.key.string,
-                    nodes = entry.value.map {
-                        Node(
-                            url = it.url,
-                            priority = it.priority,
-                            status = it.status,
-                        )
-                    }
+                    nodes = entry.value.map { Node(it.url, it.status, it.priority) }
                 )
             }
         }
-        .map { nodes: List<ChainNodes> ->
-            listOf(ConfigRepository.Companion.getGemNode(chain)) +
-                    nodes.filter { it.chain == chain.string }.map { it.nodes }.flatten()
-        }
+        .map { nodes -> nodes.filter { it.chain == chain.string }.map { it.nodes }.flatten() }
+        .map { nodes -> listOf(getGemNode(chain)) + nodes }
     }
 
-    suspend fun setNodes(nodes: List<ChainNodes>) = withContext(Dispatchers.IO) {
-        nodesDao.addNodes(
-            nodes.map { node ->
-                node.nodes.mapNotNull {
-                    DbNode(
-                        chain = Chain.findByString(node.chain) ?: return@mapNotNull null,
-                        url = it.url,
-                        status = it.status,
-                        priority = it.priority,
-                    )
-                }
-            }.flatten()
-        )
+    override suspend fun addNode(chain: Chain, url: String) = withContext(Dispatchers.IO) {
+        nodesDao.addNodes(listOf(DbNode(url, NodeState.Active, 0, chain)))
     }
 
-    suspend fun addNode(chain: Chain, url: String) = withContext(Dispatchers.IO) {
-        val nodes = listOf(
-            DbNode(
-                chain = chain,
-                url = url,
-                status = NodeState.Active,
-                priority = 0,
-            )
-        )
-        nodesDao.addNodes(nodes)
-    }
-
-    fun setCurrentNode(chain: Chain, node: Node) {
+    override fun setCurrentNode(chain: Chain, node: Node) {
         configStore.putString(ConfigKey.CurrentNode.string, gson.toJson(node), chain.string)
     }
 
-    fun getCurrentNode(chain: Chain): Node? {
+    override fun getCurrentNode(chain: Chain): Node? {
         val data = configStore.getString(ConfigKey.CurrentNode.string, postfix = chain.string)
         val node = try {
             gson.fromJson(data, Node::class.java)
@@ -87,18 +78,42 @@ class NodesRepository(
         return node
     }
 
-    fun getBlockExplorers(chain: Chain): List<String> {
+    override fun getBlockExplorers(chain: Chain): List<String> {
         return Config().getBlockExplorers(chain.string)
     }
 
-    fun getCurrentBlockExplorer(chain: Chain): String {
+    override fun getCurrentBlockExplorer(chain: Chain): String {
         return configStore.getString(ConfigKey.CurrentExplorer.string, chain.string).ifEmpty {
             getBlockExplorers(chain).firstOrNull() ?: ""
         }
     }
 
-    fun setCurrentBlockExplorer(chain: Chain, name: String) {
+    override fun setCurrentBlockExplorer(chain: Chain, name: String) {
         configStore.putString(ConfigKey.CurrentExplorer.string, name, chain.string)
+    }
+
+    private suspend fun sync() {
+        val nodes = Config().getNodes().mapNotNull { entry ->
+            entry.value.mapNotNull {
+                DbNode(
+                    chain = Chain.findByString(entry.key) ?: return@mapNotNull null,
+                    url = it.url,
+                    status = when (it.priority) {
+                        NodePriority.HIGH,
+                        NodePriority.MEDIUM,
+                        NodePriority.LOW -> NodeState.Active
+                        NodePriority.INACTIVE -> NodeState.Inactive
+                    },
+                    priority = when (it.priority) {
+                        NodePriority.HIGH -> 3
+                        NodePriority.MEDIUM -> 2
+                        NodePriority.LOW -> 1
+                        NodePriority.INACTIVE -> 0
+                    }
+                )
+            }
+        }.flatten()
+        nodesDao.addNodes(nodes)
     }
 
     private enum class ConfigKey(val string: String) {
