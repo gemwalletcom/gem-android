@@ -33,3 +33,4 @@ app/release/
 *.jar
 *.aar
 *.sha1
+.kotlin/
