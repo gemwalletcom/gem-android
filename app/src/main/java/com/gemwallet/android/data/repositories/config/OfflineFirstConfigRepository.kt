@@ -39,7 +39,7 @@ class OfflineFirstConfigRepository(
     override fun getAppVersionSkip(): String {
         return getString(Keys.AppVersionSkip)
     }
-    
+
     override fun getFiatAssetsVersion(): Int = getInt(Keys.FiatAssetsVersion)
     override fun setFiatAssetsVersion(version: Int) {
         putInt(Keys.FiatAssetsVersion, version)

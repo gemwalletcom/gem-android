@@ -36,16 +36,4 @@ interface ConfigRepository {
     // Price - out to PriceAlertsRepository
     fun setEnablePriceAlerts(enabled: Boolean)
     fun isPriceAlertEnabled(): Boolean
-
-
-    // TODO: To remove
-//    companion object {
-//        fun getGemNodeUrl(chain: Chain) = "https://${chain.string}.gemnodes.com"
-//
-//        fun getGemNode(chain: Chain) = Node(
-//            url = getGemNodeUrl(chain),
-//            NodeState.Active,
-//            priority = 10
-//        )
-//    }
 }
