@@ -62,11 +62,11 @@ class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo
                     )
                 } else null,
                 metadata = AssetMetaData(
-                    isEnabled = entity.visible ?: true,
+                    isEnabled = entity.visible != false,
                     isBuyEnabled = entity.isBuyEnabled,
                     isSwapEnabled = entity.isSwapEnabled,
                     isStakeEnabled = entity.isStakeEnabled,
-                    isPinned = entity.pinned ?: false,
+                    isPinned = entity.pinned == true,
                 ),
                 links = if (entity.links != null) gson.fromJson(
                     entity.links,

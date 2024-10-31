@@ -4,11 +4,10 @@ import android.content.Context
 import android.telephony.TelephonyManager
 import androidx.fragment.app.FragmentActivity.TELEPHONY_SERVICE
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
+import com.gemwallet.android.data.repositories.buy.BuyRepository
 import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.repositories.wallet.WalletsRepository
-import com.gemwallet.android.interactors.sync.SyncAvailableToBuy
-import com.gemwallet.android.interactors.sync.SyncConfig
 import com.gemwallet.android.interactors.sync.SyncDevice
 import com.gemwallet.android.interactors.sync.SyncSubscription
 import com.gemwallet.android.interactors.sync.SyncTransactions
@@ -26,23 +25,17 @@ class SyncService @Inject constructor(
     private val walletsRepository: WalletsRepository,
     private val syncTransactions: SyncTransactions,
     private val enablePriceAlertCase: EnablePriceAlertCase,
+    private val buyRepository: BuyRepository,
 ) {
-
-    private val operators = listOf(
-        SyncAvailableToBuy(gemApiClient, configRepository),
-        SyncSubscription(gemApiClient, walletsRepository, configRepository),
-    )
 
     suspend fun sync() {
         withContext(Dispatchers.IO) {
             listOf(
-                async { SyncConfig(gemApiClient, configRepository).invoke() },
                 async { SyncDevice(gemApiClient, configRepository, sessionRepository, enablePriceAlertCase).invoke() },
                 async { syncTransactions(sessionRepository.getSession()?.wallet ?: return@async) },
+                async { buyRepository.sync() }
             ).awaitAll()
-            operators.map {
-                async { it() }
-            }.awaitAll()
+            SyncSubscription(gemApiClient, walletsRepository, configRepository)()
         }
     }
 }

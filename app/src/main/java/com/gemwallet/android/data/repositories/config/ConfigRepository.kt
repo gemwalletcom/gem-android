@@ -3,12 +3,6 @@ package com.gemwallet.android.data.repositories.config
 import com.wallet.core.primitives.FiatAssets
 
 interface ConfigRepository {
-    // Buy
-    fun getFiatAssetsVersion(): Int
-    fun setFiatAssetsVersion(version: Int)
-    fun getFiatAssets(): FiatAssets
-    fun setFiatAssets(assets: FiatAssets)
-
     // Pushes
     fun postNotificationsGranted(granted: Boolean)
     fun postNotificationsGranted(): Boolean

@@ -103,8 +103,8 @@ import com.gemwallet.android.data.repositories.bridge.BridgesRepository
 import com.gemwallet.android.data.repositories.buy.BuyRepository
 import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
 import com.gemwallet.android.data.repositories.config.ConfigRepository
+import com.gemwallet.android.data.repositories.config.ConfigStore
 import com.gemwallet.android.data.repositories.config.OfflineFirstConfigRepository
-import com.gemwallet.android.data.repositories.nodes.NodesRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.repositories.session.SessionRepositoryImpl
 import com.gemwallet.android.data.repositories.stake.StakeRepository
@@ -140,11 +140,11 @@ object DataModule {
     @Provides
     @Singleton
     fun provideBuyRepository(
-        configRepository: ConfigRepository,
+        @ApplicationContext context: Context,
         gemFiatQuoteClient: GemApiClient,
     ): BuyRepository = BuyRepository(
-        configRepository = configRepository,
-        remoteSource = gemFiatQuoteClient
+        ConfigStore(context.getSharedPreferences("buy_config", Context.MODE_PRIVATE)),
+        gemFiatQuoteClient
     )
 
     @Provides
@@ -642,6 +642,7 @@ object DataModule {
         configRepository: ConfigRepository,
         sessionRepository: SessionRepository,
         walletsRepository: WalletsRepository,
+        buyRepository: BuyRepository,
         syncTransactions: SyncTransactions,
         enablePriceAlertCase: EnablePriceAlertCase,
     ): SyncService {
@@ -652,6 +653,7 @@ object DataModule {
             walletsRepository = walletsRepository,
             syncTransactions = syncTransactions,
             enablePriceAlertCase = enablePriceAlertCase,
+            buyRepository = buyRepository,
         )
     }
 

@@ -11,6 +11,8 @@ class ConfigStore(
 
     fun getBoolean(key: String, default: Boolean = false) = store.getBoolean(buildKey(key), default)
 
+    fun getSet(key: String, default: Set<String> = emptySet<String>()) = store.getStringSet(key, default) ?: default
+
     fun putInt(key: String, value: Int, postfix: String = "") {
         store.edit().putInt(buildKey(key, postfix), value).apply()
     }
@@ -21,6 +23,10 @@ class ConfigStore(
 
     fun putBoolean(key: String, value: Boolean) {
         store.edit().putBoolean(buildKey(key), value).apply()
+    }
+
+    fun putSet(key: String, data: Set<String>) {
+        store.edit().putStringSet(key, data).apply()
     }
 
     private fun buildKey(key: String, postfix: String = "") = "$key-$postfix"

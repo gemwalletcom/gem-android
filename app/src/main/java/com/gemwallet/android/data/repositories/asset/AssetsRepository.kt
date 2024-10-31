@@ -5,7 +5,6 @@ import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.cases.tokens.GetTokensCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
-import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.BalancesDao
 import com.gemwallet.android.data.database.PricesDao
@@ -15,6 +14,7 @@ import com.gemwallet.android.data.database.entities.DbBalance
 import com.gemwallet.android.data.database.entities.DbPrice
 import com.gemwallet.android.data.database.mappers.AssetInfoMapper
 import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
+import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
@@ -118,12 +118,8 @@ class AssetsRepository @Inject constructor(
             val pricesJob = async(Dispatchers.IO) {
                 updatePrices(currency)
             }
-            val byJob = async(Dispatchers.IO) {
-                updateBuy()
-            }
             balancesJob.await()
             pricesJob.await()
-            byJob.await()
             _syncState.tryEmit(SyncState.Idle)
         }
     }
@@ -357,15 +353,6 @@ class AssetsRepository @Inject constructor(
         val config = assetsDao.getConfig(walletId, assetId.toIdentifier())
             ?: DbAssetConfig(walletId, assetId.toIdentifier())
         assetsDao.setConfig(config.copy(isVisible = visibility, isPinned = false))
-    }
-
-    private suspend fun updateBuy() {
-        val assets = configRepository.getFiatAssets()
-        if (assets.version.toInt() > 0 && configRepository.getFiatAssetsVersion() <= assets.version.toInt()) {
-            return
-        }
-        val availableIds = gemApi.getFiatAssets().getOrNull()//mapCatching { configRepository.setFiatAssets(it) }
-
     }
 
     private suspend fun updateBalances(account: Account, tokens: List<AssetId>): List<Balances> {

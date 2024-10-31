@@ -7,10 +7,7 @@ import com.gemwallet.android.serializer.AssetIdSerializer
 import com.gemwallet.android.services.GemApiClient
 import com.google.gson.Gson
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FiatAssets
 import com.wallet.core.primitives.Node
-import uniffi.Gemstone.Config
 import java.util.UUID
 
 class OfflineFirstConfigRepository(
@@ -38,23 +35,6 @@ class OfflineFirstConfigRepository(
 
     override fun getAppVersionSkip(): String {
         return getString(Keys.AppVersionSkip)
-    }
-
-    override fun getFiatAssetsVersion(): Int = getInt(Keys.FiatAssetsVersion)
-    override fun setFiatAssetsVersion(version: Int) {
-        putInt(Keys.FiatAssetsVersion, version)
-    }
-
-    override fun getFiatAssets(): FiatAssets {
-        val store = getStore()
-        val version = getInt(Keys.FiatAssetsOfflineVersion)
-        val assets = store.getStringSet(Keys.FiatAssets.string, emptySet())!!
-        return FiatAssets(version.toUInt(), assets.toList())
-    }
-
-    override fun setFiatAssets(assets: FiatAssets) {
-        putInt(Keys.FiatAssetsOfflineVersion, assets.version.toInt())
-        getStore().edit().putStringSet(Keys.FiatAssets.string, assets.assetIds.toSet()).apply()
     }
 
     override fun postNotificationsGranted(granted: Boolean) {
@@ -150,9 +130,6 @@ class OfflineFirstConfigRepository(
         Auth("auth"),
         DeviceId("device-uuid"),
         AppVersionSkip("app-version-skip"),
-        FiatAssetsVersion("fiat-assets-version"),
-        FiatAssetsOfflineVersion("fiat-offline-version"),
-        FiatAssets("fiat-assets"),
         PostNotificationsGranted("post_notifications_granted"),
         PushEnabled("push_enabled"),
         PushToken("push_token"),

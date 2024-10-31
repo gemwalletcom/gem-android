@@ -13,5 +13,5 @@ class SelectBuyAssetViewModel @Inject constructor(
 
     private val available = buyRepository.getAvailable()
 
-    fun getAvailableToBuy(): List<AssetId> = available
+    fun getAvailableToBuy(): List<String> = available
 }
