@@ -2,6 +2,7 @@ package com.gemwallet.android.features.settings.settings.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.OnSessionChange
 import com.gemwallet.android.data.repositories.session.SessionRepository
@@ -27,6 +28,7 @@ class SettingsViewModel @Inject constructor(
     private val config: ConfigRepository,
     private val walletsRepository: WalletsRepository,
     private val sessionRepository: SessionRepository,
+    private val enablePriceAlertCase: EnablePriceAlertCase,
 ) : ViewModel(), OnSessionChange {
 
     private val state = MutableStateFlow(SettingsViewModelState())
@@ -64,7 +66,7 @@ class SettingsViewModel @Inject constructor(
         state.update { it.copy(pushEnabled = pushEnabled) }
         viewModelScope.launch {
             config.pushEnabled(pushEnabled) // TODO: Redesign this and next actions
-            SyncDevice(gemApiClient = gemApiClient, configRepository = config, sessionRepository = sessionRepository).invoke()
+            SyncDevice(gemApiClient, config, sessionRepository, enablePriceAlertCase).invoke()
             SyncSubscription(gemApiClient = gemApiClient, configRepository = config, walletsRepository = walletsRepository).invoke() // TODO: Redesign injection
         }
     }

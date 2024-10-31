@@ -31,17 +31,17 @@ class PriceAlertViewModel @Inject constructor(
     gemApiClient: GemApiClient,
     assetsRepository: AssetsRepository,
     getPriceAlertsCase: GetPriceAlertsCase,
-    private val configRepository: ConfigRepository,
     val sessionRepository: SessionRepository,
     private val enablePriceAlertCase: EnablePriceAlertCase,
     private val putPriceAlertCase: PutPriceAlertCase,
+    configRepository: ConfigRepository,
 ) : ViewModel() {
 
-    private val syncDevice: SyncDevice = SyncDevice(gemApiClient, configRepository, sessionRepository)
+    private val syncDevice: SyncDevice = SyncDevice(gemApiClient, configRepository, sessionRepository, enablePriceAlertCase)
 
     val forceSync = MutableStateFlow(false)
 
-    val enabled = MutableStateFlow(configRepository.isPriceAlertEnabled())
+    val enabled = MutableStateFlow(enablePriceAlertCase.isPriceAlertEnabled())
 
     val alertingAssets = combine(assetsRepository.getAssetsInfo(), getPriceAlertsCase.getPriceAlerts(), forceSync) { assets, alerts, sync ->
         viewModelScope.launch(Dispatchers.IO) {
@@ -62,13 +62,15 @@ class PriceAlertViewModel @Inject constructor(
     }
 
     fun onEnablePriceAlerts(enabled: Boolean) {
-        configRepository.setEnablePriceAlerts(enabled)
-        viewModelScope.launch(Dispatchers.IO) { syncDevice() }
+        viewModelScope.launch(Dispatchers.IO) {
+            enablePriceAlertCase.setPriceAlertEnabled(enabled)
+            syncDevice()
+        }
         this.enabled.update { enabled }
     }
 
     fun excludeAsset(assetId: AssetId) = viewModelScope.launch {
-        enablePriceAlertCase.enabled(assetId, false)
+        enablePriceAlertCase.setAssetPriceAlertEnabled(assetId, false)
     }
 
     fun addAsset(assetId: AssetId) = viewModelScope.launch {

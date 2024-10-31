@@ -117,14 +117,6 @@ class OfflineFirstConfigRepository(
         putInt(Keys.LaunchNumber, getInt(Keys.LaunchNumber) + 1)
     }
 
-    override fun setEnablePriceAlerts(enabled: Boolean) {
-        putBoolean(Keys.PriceAlertsEnabled, enabled)
-    }
-
-    override fun isPriceAlertEnabled(): Boolean {
-        return getBoolean(Keys.PriceAlertsEnabled)
-    }
-
     private fun getStore(): SharedPreferences {
         if (!::store.isInitialized) {
             store = context.getSharedPreferences("config", Context.MODE_PRIVATE)
@@ -160,19 +152,13 @@ class OfflineFirstConfigRepository(
         AppVersionSkip("app-version-skip"),
         FiatAssetsVersion("fiat-assets-version"),
         FiatAssetsOfflineVersion("fiat-offline-version"),
-//        TokenListVersion("token-list-version"),
-//        TokenListOfflineVersion("token-list-offline-version"),
         FiatAssets("fiat-assets"),
         PostNotificationsGranted("post_notifications_granted"),
         PushEnabled("push_enabled"),
         PushToken("push_token"),
         DevelopEnabled("develop_enabled"),
-//        TxSyncTime("tx_sync_time"),
         SubscriptionVersion("subscription_version"),
-//        CurrentNode("current_node"),
-//        CurrentExplorer("current_explorer"),
         LaunchNumber("launch_number"),
-        PriceAlertsEnabled("price_alerts_enabled"),
         ;
 
         fun buildKey(postfix: String = "") = "$string-$postfix"

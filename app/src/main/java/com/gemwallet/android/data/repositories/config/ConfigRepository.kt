@@ -32,8 +32,4 @@ interface ConfigRepository {
     fun setAuthRequired(enabled: Boolean)
     fun getAppVersionSkip(): String
     fun setAppVersionSkip(version: String)
-
-    // Price - out to PriceAlertsRepository
-    fun setEnablePriceAlerts(enabled: Boolean)
-    fun isPriceAlertEnabled(): Boolean
 }

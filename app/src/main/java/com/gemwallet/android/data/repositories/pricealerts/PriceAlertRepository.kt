@@ -38,7 +38,7 @@ class PriceAlertRepository(
         return priceAlertsDao.getAlert(assetId.toIdentifier()).filterNotNull().map(mapper::asEntity)
     }
 
-    override suspend fun enabled(assetId: AssetId, enabled: Boolean): Unit = withContext(Dispatchers.IO) {
+    override suspend fun setAssetPriceAlertEnabled(assetId: AssetId, enabled: Boolean): Unit = withContext(Dispatchers.IO) {
         val assetIdentifier = assetId.toIdentifier()
         val priceAlert = priceAlertsDao.getAlert(assetIdentifier).firstOrNull().let {
             if (it == null) {
@@ -68,15 +68,15 @@ class PriceAlertRepository(
         Unit
     }
 
-    override fun enabled(assetId: AssetId): Flow<Boolean> {
+    override fun isAssetPriceAlertEnabled(assetId: AssetId): Flow<Boolean> {
         return priceAlertsDao.getAlert(assetId.toIdentifier()).map { it != null && it.enabled }
     }
 
-    fun setPriceAlertsEnabled(enabled: Boolean) {
+    override suspend fun setPriceAlertEnabled(enabled: Boolean) {
         configStore.putBoolean(ConfigKey.PriceAlertsEnabled.string, enabled)
     }
 
-    fun isPriceAlertEnabled(): Boolean {
+    override fun isPriceAlertEnabled(): Boolean {
         return configStore.getBoolean(ConfigKey.PriceAlertsEnabled.string)
     }
 

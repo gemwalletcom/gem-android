@@ -9,5 +9,5 @@ interface GetPriceAlertsCase {
 
     fun getPriceAlert(assetId: AssetId): Flow<PriceAlert?>
 
-    fun enabled(assetId: AssetId): Flow<Boolean>
+    fun isAssetPriceAlertEnabled(assetId: AssetId): Flow<Boolean>
 }

@@ -1,6 +1,7 @@
 package com.gemwallet.android.interactors.sync
 
 import com.gemwallet.android.BuildConfig
+import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.interactors.SyncOperator
@@ -20,6 +21,7 @@ class SyncDevice(
     private val gemApiClient: GemApiClient,
     private val configRepository: ConfigRepository,
     private val sessionRepository: SessionRepository,
+    private val enablePriceAlertCase: EnablePriceAlertCase,
 ) : SyncOperator {
 
     override suspend fun invoke() {
@@ -40,7 +42,7 @@ class SyncDevice(
             token = "",
             locale = getLocale(Locale.getDefault()),
             isPushEnabled = pushEnabled,
-            isPriceAlertsEnabled = configRepository.isPriceAlertEnabled(),
+            isPriceAlertsEnabled = enablePriceAlertCase.isPriceAlertEnabled(),
             version = BuildConfig.VERSION_NAME,
             currency = (sessionRepository.getSession()?.currency ?: Currency.USD).string,
             subscriptionsVersion = configRepository.getSubscriptionVersion(),

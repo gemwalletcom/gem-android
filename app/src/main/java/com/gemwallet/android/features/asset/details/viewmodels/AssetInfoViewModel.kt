@@ -68,7 +68,7 @@ class AssetInfoViewModel @Inject constructor(
         combine(
             assetsRepository.getAssetInfo(assetId),
             getTransactionsCase.getTransactions(assetId),
-            getPriceAlertsCase.enabled(assetId),
+            getPriceAlertsCase.isAssetPriceAlertEnabled(assetId),
         ) { assetInfo, transactions, priceAlertEnabled ->
             Model(assetInfo, transactions, priceAlertEnabled = priceAlertEnabled)
         }
@@ -110,7 +110,7 @@ class AssetInfoViewModel @Inject constructor(
     }
 
     fun enablePriceAlert(assetId: AssetId) = viewModelScope.launch {
-        enablePriceAlertCase.enabled(assetId, model.value?.priceAlertEnabled != true)
+        enablePriceAlertCase.setAssetPriceAlertEnabled(assetId, model.value?.priceAlertEnabled != true)
     }
 
     private data class Model(

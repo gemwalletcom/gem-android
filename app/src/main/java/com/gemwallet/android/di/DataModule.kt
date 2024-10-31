@@ -80,6 +80,7 @@ import com.gemwallet.android.blockchain.clients.xrp.XrpTransactionStatusClient
 import com.gemwallet.android.blockchain.operators.SignTransfer
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
+import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.tokens.GetTokensCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.CreateTransactionCase
@@ -90,7 +91,6 @@ import com.gemwallet.android.data.database.AssetsDao
 import com.gemwallet.android.data.database.BalancesDao
 import com.gemwallet.android.data.database.BannersDao
 import com.gemwallet.android.data.database.ConnectionsDao
-import com.gemwallet.android.data.database.NodesDao
 import com.gemwallet.android.data.database.PricesDao
 import com.gemwallet.android.data.database.SessionDao
 import com.gemwallet.android.data.database.StakeDao
@@ -103,7 +103,6 @@ import com.gemwallet.android.data.repositories.bridge.BridgesRepository
 import com.gemwallet.android.data.repositories.buy.BuyRepository
 import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
 import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.repositories.config.ConfigStore
 import com.gemwallet.android.data.repositories.config.OfflineFirstConfigRepository
 import com.gemwallet.android.data.repositories.nodes.NodesRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
@@ -641,10 +640,10 @@ object DataModule {
     fun provideSyncService(
         gemApiClient: GemApiClient,
         configRepository: ConfigRepository,
-        nodesRepository: NodesRepository,
         sessionRepository: SessionRepository,
         walletsRepository: WalletsRepository,
         syncTransactions: SyncTransactions,
+        enablePriceAlertCase: EnablePriceAlertCase,
     ): SyncService {
         return SyncService(
             gemApiClient = gemApiClient,
@@ -652,6 +651,7 @@ object DataModule {
             sessionRepository = sessionRepository,
             walletsRepository = walletsRepository,
             syncTransactions = syncTransactions,
+            enablePriceAlertCase = enablePriceAlertCase,
         )
     }
 

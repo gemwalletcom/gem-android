@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.gemwallet.android.MainActivity
 import com.gemwallet.android.R
+import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.interactors.sync.SyncDevice
@@ -31,6 +32,8 @@ class FCM : FirebaseMessagingService() {
     lateinit var gemApiClient: GemApiClient
     @Inject
     lateinit var sessionRepository: SessionRepository
+    @Inject
+    lateinit var enablePriceAlertCase: EnablePriceAlertCase
 
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
@@ -70,7 +73,8 @@ class FCM : FirebaseMessagingService() {
             SyncDevice(
                 gemApiClient = gemApiClient,
                 sessionRepository = sessionRepository,
-                configRepository = configRepository
+                configRepository = configRepository,
+                enablePriceAlertCase = enablePriceAlertCase,
             ).invoke()
         }
 
