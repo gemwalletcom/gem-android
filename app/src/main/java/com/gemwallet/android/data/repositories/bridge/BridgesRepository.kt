@@ -1,9 +1,9 @@
 package com.gemwallet.android.data.repositories.bridge
 
 import android.net.Uri
-import com.gemwallet.android.data.database.ConnectionsDao
-import com.gemwallet.android.data.database.entities.DbConnection
 import com.gemwallet.android.data.repositories.wallet.WalletsRepository
+import com.gemwallet.android.data.service.store.database.ConnectionsDao
+import com.gemwallet.android.data.service.store.database.entities.DbConnection
 import com.gemwallet.android.model.WalletConnectAccount
 import com.gemwallet.android.services.WalletConnectDelegate
 import com.wallet.core.primitives.Chain

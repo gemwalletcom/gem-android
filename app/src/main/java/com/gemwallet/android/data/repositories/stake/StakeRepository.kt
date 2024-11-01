@@ -1,9 +1,9 @@
 package com.gemwallet.android.data.repositories.stake
 
 import com.gemwallet.android.blockchain.clients.StakeClient
-import com.gemwallet.android.data.database.StakeDao
-import com.gemwallet.android.data.database.mappers.DelegationBaseMapper
-import com.gemwallet.android.data.database.mappers.DelegationValidatorMapper
+import com.gemwallet.android.data.service.store.database.StakeDao
+import com.gemwallet.android.data.service.store.database.mappers.DelegationBaseMapper
+import com.gemwallet.android.data.service.store.database.mappers.DelegationValidatorMapper
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.services.GemApiStaticClient
 import com.wallet.core.primitives.AssetId

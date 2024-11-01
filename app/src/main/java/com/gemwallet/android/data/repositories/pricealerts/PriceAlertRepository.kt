@@ -3,11 +3,11 @@ package com.gemwallet.android.data.repositories.pricealerts
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
-import com.gemwallet.android.data.database.PriceAlertsDao
-import com.gemwallet.android.data.database.entities.DbPriceAlert
-import com.gemwallet.android.data.database.mappers.PriceAlertMapper
 import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.repositories.config.ConfigStore
+import com.gemwallet.android.data.service.store.ConfigStore
+import com.gemwallet.android.data.service.store.database.PriceAlertsDao
+import com.gemwallet.android.data.service.store.database.entities.DbPriceAlert
+import com.gemwallet.android.data.service.store.database.mappers.PriceAlertMapper
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.AssetId
@@ -73,7 +73,10 @@ class PriceAlertRepository(
     }
 
     override suspend fun setPriceAlertEnabled(enabled: Boolean) {
-        configStore.putBoolean(ConfigKey.PriceAlertsEnabled.string, enabled)
+        configStore.putBoolean(
+            ConfigKey.PriceAlertsEnabled.string,
+            enabled
+        )
     }
 
     override fun isPriceAlertEnabled(): Boolean {

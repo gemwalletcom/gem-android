@@ -8,9 +8,8 @@ import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.cases.nodes.GetNodesCase
 import com.gemwallet.android.cases.nodes.SetBlockExplorerCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
-import com.gemwallet.android.data.database.NodesDao
-import com.gemwallet.android.data.repositories.config.ConfigStore
 import com.gemwallet.android.data.repositories.nodes.NodesRepository
+import com.gemwallet.android.data.service.store.database.NodesDao
 import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
@@ -33,7 +32,12 @@ object NodeModule {
         return NodesRepository(
             gson = gson,
             nodesDao = nodesDao,
-            configStore = ConfigStore(context.getSharedPreferences("node-config", Context.MODE_PRIVATE)),
+            configStore = com.gemwallet.android.data.service.store.ConfigStore(
+                context.getSharedPreferences(
+                    "node-config",
+                    Context.MODE_PRIVATE
+                )
+            ),
         )
     }
 

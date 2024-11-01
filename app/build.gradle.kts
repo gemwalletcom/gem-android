@@ -161,6 +161,7 @@ android {
 dependencies {
     implementation(project(":blockchain"))
     implementation(project(":ui"))
+    implementation(project(":data:services:store"))
     // version catalog might not work
     //noinspection UseTomlInstead
     api("net.java.dev.jna:jna:5.15.0@aar")
@@ -199,9 +200,9 @@ dependencies {
     implementation(libs.barcode.scanning)
 
     // Room - ORM
-    implementation(libs.room.ktx)
-    ksp(libs.room.compiler)
-    implementation(libs.room.runtime)
+//    implementation(libs.room.ktx)
+//    ksp(libs.room.compiler)
+//    implementation(libs.room.runtime)
 
     // QR Code
     implementation(libs.zxing.core)

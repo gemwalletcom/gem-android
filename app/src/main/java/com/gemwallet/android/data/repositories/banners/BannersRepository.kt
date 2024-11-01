@@ -3,8 +3,8 @@ package com.gemwallet.android.data.repositories.banners
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
 import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.database.BannersDao
-import com.gemwallet.android.data.database.entities.DbBanner
+import com.gemwallet.android.data.service.store.database.BannersDao
+import com.gemwallet.android.data.service.store.database.entities.DbBanner
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.isStackable
 import com.gemwallet.android.ext.toIdentifier

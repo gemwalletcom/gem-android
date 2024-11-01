@@ -29,7 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.services.NameResolveService
+import com.gemwallet.android.services.GemApiClient
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.theme.space4
 import com.wallet.core.primitives.Chain
@@ -177,7 +177,7 @@ fun TransferTextFieldActions(
 
 @HiltViewModel
 class AddressChainViewModel @Inject constructor(
-    private val nameResolveService: NameResolveService,
+    private val gemClient: GemApiClient,
 ) : ViewModel() {
 
     private var nameResolveJob: Job? = null
@@ -212,14 +212,14 @@ class AddressChainViewModel @Inject constructor(
         state.update { State(isLoading = true) }
         nameResolveJob = viewModelScope.launch(Dispatchers.IO) {
             delay(500L)
-            val nameRecord = nameResolveService.resolve(input.lowercase(Locale.getDefault()), chain)
+            val nameRecord = gemClient.resolve(input.lowercase(Locale.getDefault()), chain.string).getOrNull()
             setNameRecord(nameRecord, input)
         }
     }
 
     private fun setNameRecord(nameRecord: NameRecord?, input: String) {
         resolveListener?.invoke(nameRecord)
-        val isResolve = !nameRecord?.address.isNullOrEmpty() && !nameRecord?.name.isNullOrEmpty()
+        val isResolve = !nameRecord?.address.isNullOrEmpty() && nameRecord.name.isNotEmpty()
         state.update {
             State(
                 nameRecord = nameRecord,

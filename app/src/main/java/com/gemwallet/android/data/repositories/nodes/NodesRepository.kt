@@ -8,9 +8,9 @@ import com.gemwallet.android.cases.nodes.GetNodesCase
 import com.gemwallet.android.cases.nodes.SetBlockExplorerCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
 import com.gemwallet.android.cases.nodes.getGemNode
-import com.gemwallet.android.data.database.NodesDao
-import com.gemwallet.android.data.database.entities.DbNode
-import com.gemwallet.android.data.repositories.config.ConfigStore
+import com.gemwallet.android.data.service.store.ConfigStore
+import com.gemwallet.android.data.service.store.database.NodesDao
+import com.gemwallet.android.data.service.store.database.entities.DbNode
 import com.gemwallet.android.ext.findByString
 import com.google.gson.Gson
 import com.wallet.core.primitives.Chain
@@ -27,7 +27,6 @@ import uniffi.Gemstone.Config
 import uniffi.Gemstone.NodePriority
 import kotlin.collections.groupBy
 import kotlin.collections.map
-import kotlin.text.ifEmpty
 
 class NodesRepository(
     private val gson: Gson,
@@ -65,11 +64,18 @@ class NodesRepository(
     }
 
     override fun setCurrentNode(chain: Chain, node: Node) {
-        configStore.putString(ConfigKey.CurrentNode.string, gson.toJson(node), chain.string)
+        configStore.putString(
+            ConfigKey.CurrentNode.string,
+            gson.toJson(node),
+            chain.string
+        )
     }
 
     override fun getCurrentNode(chain: Chain): Node? {
-        val data = configStore.getString(ConfigKey.CurrentNode.string, postfix = chain.string)
+        val data = configStore.getString(
+            ConfigKey.CurrentNode.string,
+            postfix = chain.string
+        )
         val node = try {
             gson.fromJson(data, Node::class.java)
         } catch (_: Throwable) {
@@ -83,13 +89,20 @@ class NodesRepository(
     }
 
     override fun getCurrentBlockExplorer(chain: Chain): String {
-        return configStore.getString(ConfigKey.CurrentExplorer.string, chain.string).ifEmpty {
+        return configStore.getString(
+            ConfigKey.CurrentExplorer.string,
+            chain.string
+        ).ifEmpty {
             getBlockExplorers(chain).firstOrNull() ?: ""
         }
     }
 
     override fun setCurrentBlockExplorer(chain: Chain, name: String) {
-        configStore.putString(ConfigKey.CurrentExplorer.string, name, chain.string)
+        configStore.putString(
+            ConfigKey.CurrentExplorer.string,
+            name,
+            chain.string
+        )
     }
 
     private suspend fun sync() {

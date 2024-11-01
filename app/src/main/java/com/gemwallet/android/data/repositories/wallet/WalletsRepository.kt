@@ -1,10 +1,10 @@
 package com.gemwallet.android.data.repositories.wallet
 
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
-import com.gemwallet.android.data.database.AccountsDao
-import com.gemwallet.android.data.database.WalletsDao
-import com.gemwallet.android.data.database.mappers.AccountMapper
-import com.gemwallet.android.data.database.mappers.WalletMapper
+import com.gemwallet.android.data.service.store.database.AccountsDao
+import com.gemwallet.android.data.service.store.database.WalletsDao
+import com.gemwallet.android.data.service.store.database.mappers.AccountMapper
+import com.gemwallet.android.data.service.store.database.mappers.WalletMapper
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet

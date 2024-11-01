@@ -3,10 +3,10 @@ package com.gemwallet.android.data.repositories.tokens
 import com.gemwallet.android.blockchain.clients.GetTokenClient
 import com.gemwallet.android.cases.tokens.GetTokensCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
-import com.gemwallet.android.data.database.TokensDao
-import com.gemwallet.android.data.database.entities.DbToken
-import com.gemwallet.android.data.database.mappers.AssetInfoMapper
-import com.gemwallet.android.data.database.mappers.TokenMapper
+import com.gemwallet.android.data.service.store.database.TokensDao
+import com.gemwallet.android.data.service.store.database.entities.DbToken
+import com.gemwallet.android.data.service.store.database.mappers.AssetInfoMapper
+import com.gemwallet.android.data.service.store.database.mappers.TokenMapper
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.services.GemApiClient

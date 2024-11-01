@@ -1,6 +1,6 @@
 package com.gemwallet.android.data.repositories.asset
 
-import com.gemwallet.android.data.database.AssetsDao
+import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId

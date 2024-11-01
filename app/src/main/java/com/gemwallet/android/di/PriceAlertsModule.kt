@@ -5,9 +5,8 @@ import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
 import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.database.PriceAlertsDao
-import com.gemwallet.android.data.repositories.config.ConfigStore
 import com.gemwallet.android.data.repositories.pricealerts.PriceAlertRepository
+import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.services.GemApiClient
 import dagger.Module
 import dagger.Provides
@@ -32,7 +31,12 @@ object PriceAlertsModule {
             gemClient = gemClient,
             priceAlertsDao = priceAlertsDao,
             configRepository = configRepository,
-            configStore = ConfigStore(context.getSharedPreferences("price-alerts", Context.MODE_PRIVATE)),
+            configStore = com.gemwallet.android.data.service.store.ConfigStore(
+                context.getSharedPreferences(
+                    "price-alerts",
+                    Context.MODE_PRIVATE
+                )
+            ),
         )
     }
 

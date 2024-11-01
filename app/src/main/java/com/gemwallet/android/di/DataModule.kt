@@ -87,15 +87,6 @@ import com.gemwallet.android.cases.transactions.CreateTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
-import com.gemwallet.android.data.database.AssetsDao
-import com.gemwallet.android.data.database.BalancesDao
-import com.gemwallet.android.data.database.BannersDao
-import com.gemwallet.android.data.database.ConnectionsDao
-import com.gemwallet.android.data.database.PricesDao
-import com.gemwallet.android.data.database.SessionDao
-import com.gemwallet.android.data.database.StakeDao
-import com.gemwallet.android.data.database.TokensDao
-import com.gemwallet.android.data.database.TransactionsDao
 import com.gemwallet.android.data.repositories.asset.AssetsRepository
 import com.gemwallet.android.data.repositories.asset.BalancesRemoteSource
 import com.gemwallet.android.data.repositories.banners.BannersRepository
@@ -103,7 +94,6 @@ import com.gemwallet.android.data.repositories.bridge.BridgesRepository
 import com.gemwallet.android.data.repositories.buy.BuyRepository
 import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
 import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.repositories.config.ConfigStore
 import com.gemwallet.android.data.repositories.config.OfflineFirstConfigRepository
 import com.gemwallet.android.data.repositories.session.SessionRepository
 import com.gemwallet.android.data.repositories.session.SessionRepositoryImpl
@@ -112,11 +102,18 @@ import com.gemwallet.android.data.repositories.swap.SwapRepository
 import com.gemwallet.android.data.repositories.tokens.TokensRepository
 import com.gemwallet.android.data.repositories.transaction.TransactionsRepository
 import com.gemwallet.android.data.repositories.wallet.WalletsRepository
+import com.gemwallet.android.data.service.store.database.AssetsDao
+import com.gemwallet.android.data.service.store.database.BalancesDao
+import com.gemwallet.android.data.service.store.database.BannersDao
+import com.gemwallet.android.data.service.store.database.ConnectionsDao
+import com.gemwallet.android.data.service.store.database.PricesDao
+import com.gemwallet.android.data.service.store.database.SessionDao
+import com.gemwallet.android.data.service.store.database.StakeDao
+import com.gemwallet.android.data.service.store.database.TokensDao
+import com.gemwallet.android.data.service.store.database.TransactionsDao
 import com.gemwallet.android.interactors.sync.SyncTransactions
 import com.gemwallet.android.services.GemApiClient
 import com.gemwallet.android.services.GemApiStaticClient
-import com.gemwallet.android.services.GemNameResolveService
-import com.gemwallet.android.services.NameResolveService
 import com.gemwallet.android.services.SyncService
 import com.google.gson.Gson
 import com.wallet.core.primitives.Chain
@@ -143,7 +140,12 @@ object DataModule {
         @ApplicationContext context: Context,
         gemFiatQuoteClient: GemApiClient,
     ): BuyRepository = BuyRepository(
-        ConfigStore(context.getSharedPreferences("buy_config", Context.MODE_PRIVATE)),
+        com.gemwallet.android.data.service.store.ConfigStore(
+            context.getSharedPreferences(
+                "buy_config",
+                Context.MODE_PRIVATE
+            )
+        ),
         gemFiatQuoteClient
     )
 
@@ -620,12 +622,6 @@ object DataModule {
         sessionDao = sessionDao,
         walletsRepository = walletsRepository
     )
-
-    @Singleton
-    @Provides
-    fun provideNameResolveService(
-        client: GemApiClient,
-    ): NameResolveService = GemNameResolveService(client)
 
     @Singleton
     @Provides

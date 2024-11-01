@@ -1,6 +1,5 @@
 package com.gemwallet.android.data.repositories.buy
 
-import com.gemwallet.android.data.repositories.config.ConfigStore
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.Asset
@@ -13,23 +12,31 @@ import javax.inject.Singleton
 
 @Singleton
 class BuyRepository @Inject constructor(
-    private val configStore: ConfigStore,
+    private val configStore: com.gemwallet.android.data.service.store.ConfigStore,
     private val gemApi: GemApiClient,
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
 
     suspend fun sync() {
         val fiatVersion = gemApi.getConfig().getOrNull()?.versions?.fiatAssets ?: return
-        val currentVersion = configStore.getInt(ConfigKey.FiatAssetsVersion.string)
+        val currentVersion =
+            configStore.getInt(ConfigKey.FiatAssetsVersion.string)
         if (currentVersion > 0 && currentVersion >= fiatVersion) return
         val availableIds = gemApi.getFiatAssets().getOrNull() ?: return
         val latestVersion = availableIds.version.toInt()
-        configStore.putInt(ConfigKey.FiatAssetsVersion.string, latestVersion)
-        configStore.putSet(ConfigKey.FiatAssets.string, availableIds.assetIds.toSet())
+        configStore.putInt(
+            ConfigKey.FiatAssetsVersion.string,
+            latestVersion
+        )
+        configStore.putSet(
+            ConfigKey.FiatAssets.string,
+            availableIds.assetIds.toSet()
+        )
     }
 
     fun getAvailable(): List<String> {
-        val assets = configStore.getSet(ConfigKey.FiatAssets.string)
+        val assets =
+            configStore.getSet(ConfigKey.FiatAssets.string)
         return assets.toList()
     }
 
