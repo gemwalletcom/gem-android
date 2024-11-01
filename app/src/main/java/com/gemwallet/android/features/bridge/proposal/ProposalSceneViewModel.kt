@@ -3,9 +3,9 @@ package com.gemwallet.android.features.bridge.proposal
 import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.data.repositories.bridge.BridgesRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.repositories.wallet.WalletsRepository
+import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.features.bridge.model.PeerUI
 import com.wallet.core.primitives.WalletType
 import com.walletconnect.web3.wallet.client.Wallet

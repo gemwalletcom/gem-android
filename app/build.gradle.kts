@@ -161,7 +161,8 @@ android {
 dependencies {
     implementation(project(":blockchain"))
     implementation(project(":ui"))
-    implementation(project(":data:services:store"))
+    implementation(project(":data:repositories"))
+
     // version catalog might not work
     //noinspection UseTomlInstead
     api("net.java.dev.jna:jna:5.15.0@aar")
@@ -199,23 +200,12 @@ dependencies {
     implementation(libs.camera.view)
     implementation(libs.barcode.scanning)
 
-    // Room - ORM
-//    implementation(libs.room.ktx)
-//    ksp(libs.room.compiler)
-//    implementation(libs.room.runtime)
-
     // QR Code
     implementation(libs.zxing.core)
     // EncryptedPreferences
     implementation(libs.androidx.security.crypto)
     // Auth
     implementation(libs.androidx.biometric)
-    // Wallet Connect
-    implementation(platform(libs.walletconnect.bom))
-    implementation(libs.walletconnect.core) {
-        exclude(group = "com.jakewharton.timber", module = "timber")
-    }
-    implementation(libs.walletconnect.web3wallet)
     // Chart
     implementation(libs.vico.m3)
 

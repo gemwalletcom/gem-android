@@ -6,12 +6,12 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
-import com.gemwallet.android.data.repositories.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.interactors.sync.SyncDevice
-import com.gemwallet.android.services.GemApiClient
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.PriceAlert
@@ -28,7 +28,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PriceAlertViewModel @Inject constructor(
-    gemApiClient: GemApiClient,
+    gemApiClient: GemApiClient, // TODO: Remove it
     assetsRepository: AssetsRepository,
     getPriceAlertsCase: GetPriceAlertsCase,
     val sessionRepository: SessionRepository,

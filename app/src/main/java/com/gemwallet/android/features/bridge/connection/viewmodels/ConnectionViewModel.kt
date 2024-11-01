@@ -2,10 +2,10 @@ package com.gemwallet.android.features.bridge.connection.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.data.repositories.bridge.BridgesRepository
+import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
+import com.gemwallet.android.data.repositoreis.bridge.WalletConnectDelegate
 import com.gemwallet.android.features.bridge.connection.model.ConnectionSceneState
 import com.gemwallet.android.features.bridge.model.ConnectionUI
-import com.gemwallet.android.services.WalletConnectDelegate
 import com.wallet.core.primitives.WalletConnection
 import com.walletconnect.web3.wallet.client.Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel

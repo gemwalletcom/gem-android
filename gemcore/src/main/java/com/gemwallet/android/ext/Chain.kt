@@ -71,6 +71,10 @@ fun Chain.Companion.findByString(value: String): Chain? {
     return Chain.entries.firstOrNull{ it.string == value}
 }
 
+fun Chain.Companion.exclude() = setOf(Chain.Celo)
+
+fun Chain.Companion.available() = (Chain.entries.toSet() - exclude())
+
 fun List<Chain>.filter(query: String): List<Chain> {
     return filter {
         val asset =  it.asset()

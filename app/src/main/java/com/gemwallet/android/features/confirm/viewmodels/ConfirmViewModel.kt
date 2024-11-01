@@ -10,10 +10,10 @@ import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.blockchain.operators.SignTransfer
 import com.gemwallet.android.cases.transactions.CreateTransactionCase
-import com.gemwallet.android.data.repositories.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.repositories.stake.StakeRepository
-import com.gemwallet.android.di.GemJson
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.stake.StakeRepository
+import com.gemwallet.android.data.services.gemapi.di.GemJson
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAddressEllipsisText
@@ -73,7 +73,7 @@ class ConfirmViewModel @Inject constructor(
     private val broadcastProxy: BroadcastProxy,
     private val createTransactionsCase: CreateTransactionCase,
     private val stakeRepository: StakeRepository,
-    @GemJson private val gson: Gson,
+    @GemJson private val gson: Gson, // TODO: Clean it
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 

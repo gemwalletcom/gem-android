@@ -4,7 +4,6 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.touchlab.stately.collections.ConcurrentMutableMap
 import com.gemwallet.android.blockchain.clients.NodeStatusClientsProxy
 import com.gemwallet.android.cases.nodes.GetBlockExplorersCase
 import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorerCase
@@ -12,7 +11,7 @@ import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.cases.nodes.GetNodesCase
 import com.gemwallet.android.cases.nodes.SetBlockExplorerCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
-import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
+import com.gemwallet.android.data.repositoreis.chains.ChainInfoRepository
 import com.gemwallet.android.ext.filter
 import com.gemwallet.android.features.settings.networks.models.AddSourceType
 import com.gemwallet.android.features.settings.networks.models.NetworksUIState
@@ -40,6 +39,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.internal.toImmutableMap
+import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 import kotlin.String
 
@@ -80,7 +80,7 @@ class NetworksViewModel @Inject constructor(
     .flatMapLatest { nodes ->
         val chain = state.value.chain ?: return@flatMapLatest emptyFlow<Map<String, NodeStatus?>>()
         channelFlow {
-            val statuses = ConcurrentMutableMap<String, NodeStatus?>()
+            val statuses = ConcurrentHashMap<String, NodeStatus?>()
             nodes.forEach { node ->
                 statuses[node.url] = NodeStatus(
                     chainId = "",

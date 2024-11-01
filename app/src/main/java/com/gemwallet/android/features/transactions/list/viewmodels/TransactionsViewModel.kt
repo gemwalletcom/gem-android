@@ -3,7 +3,7 @@ package com.gemwallet.android.features.transactions.list.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
-import com.gemwallet.android.data.repositories.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.mutableStateIn
 import com.gemwallet.android.features.transactions.list.model.TxListScreenState
 import com.gemwallet.android.interactors.sync.SyncTransactions

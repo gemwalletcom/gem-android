@@ -45,8 +45,8 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.data.repositories.bridge.BridgesRepository
-import com.gemwallet.android.data.repositories.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
+import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.features.bridge.proposal.ProposalScene
 import com.gemwallet.android.features.bridge.request.RequestScene
 import com.gemwallet.android.interactors.CheckAccounts

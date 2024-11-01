@@ -3,7 +3,8 @@ package com.gemwallet.android.features.asset.chart.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.data.repositories.asset.AssetsRepository
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset.chart.models.ChartUIModel
@@ -12,7 +13,6 @@ import com.gemwallet.android.features.asset.navigation.assetIdArg
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.format
-import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.ChartPeriod
 import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel

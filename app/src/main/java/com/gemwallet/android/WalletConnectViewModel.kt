@@ -2,7 +2,7 @@ package com.gemwallet.android
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.services.WalletConnectDelegate
+import com.gemwallet.android.data.repositoreis.bridge.WalletConnectDelegate
 import com.walletconnect.web3.wallet.client.Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

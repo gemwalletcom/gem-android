@@ -2,10 +2,10 @@ package com.gemwallet.android.interactors.sync
 
 import com.gemwallet.android.BuildConfig
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
-import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.interactors.SyncOperator
-import com.gemwallet.android.services.GemApiClient
 import com.gemwallet.android.services.requestPushToken
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Device

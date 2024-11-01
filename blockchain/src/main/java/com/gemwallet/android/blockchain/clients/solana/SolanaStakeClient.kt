@@ -22,7 +22,7 @@ class SolanaStakeClient(
                 listOf(
                     mapOf(
                         "commitment" to "finalized",
-                        "keepUnstakedDelinquents" to true
+                        "keepUnstakedDelinquents" to false
                     )
                 )
             )

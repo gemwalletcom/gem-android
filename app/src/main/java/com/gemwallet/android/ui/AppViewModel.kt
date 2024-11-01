@@ -3,11 +3,11 @@ package com.gemwallet.android.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.BuildConfig
-import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.features.onboarding.OnboardingDest
 import com.gemwallet.android.model.Session
-import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.PlatformStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

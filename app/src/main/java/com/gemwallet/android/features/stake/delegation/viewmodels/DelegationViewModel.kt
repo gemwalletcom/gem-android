@@ -3,9 +3,9 @@ package com.gemwallet.android.features.stake.delegation.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.R
-import com.gemwallet.android.data.repositories.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.repositories.stake.StakeRepository
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.ext.byChain
 import com.gemwallet.android.features.amount.models.AmountParams
 import com.gemwallet.android.features.amount.navigation.OnAmount

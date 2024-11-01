@@ -3,12 +3,12 @@ package com.gemwallet.android.interactors.sync
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
-import com.gemwallet.android.data.repositories.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getSwapMetadata
-import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Transaction
 import com.wallet.core.primitives.Wallet

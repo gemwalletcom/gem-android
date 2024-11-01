@@ -4,10 +4,11 @@ import android.content.Context
 import android.telephony.TelephonyManager
 import androidx.fragment.app.FragmentActivity.TELEPHONY_SERVICE
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
-import com.gemwallet.android.data.repositories.buy.BuyRepository
-import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.repositories.wallet.WalletsRepository
+import com.gemwallet.android.data.repositoreis.buy.BuyRepository
+import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
+import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.interactors.sync.SyncDevice
 import com.gemwallet.android.interactors.sync.SyncSubscription
 import com.gemwallet.android.interactors.sync.SyncTransactions

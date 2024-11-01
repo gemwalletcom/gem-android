@@ -2,8 +2,8 @@ package com.gemwallet.android.features.stake.validators.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.data.repositories.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.stake.StakeRepository
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.stake.validators.model.ValidatorsError
 import com.gemwallet.android.features.stake.validators.model.ValidatorsUIState

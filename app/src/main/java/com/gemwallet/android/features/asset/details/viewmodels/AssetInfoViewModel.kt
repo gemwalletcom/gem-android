@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
-import com.gemwallet.android.data.repositories.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.stake.StakeRepository
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.isStaked
 import com.gemwallet.android.ext.isSwapable

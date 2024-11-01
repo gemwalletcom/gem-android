@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
-import com.gemwallet.android.data.repositories.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Banner
 import dagger.hilt.android.lifecycle.HiltViewModel

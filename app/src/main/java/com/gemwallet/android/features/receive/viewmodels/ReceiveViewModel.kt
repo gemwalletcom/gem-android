@@ -3,8 +3,8 @@ package com.gemwallet.android.features.receive.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.data.repositories.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.receive.model.ReceiveScreenModel

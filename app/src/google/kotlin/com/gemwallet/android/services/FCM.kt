@@ -12,8 +12,9 @@ import androidx.core.app.NotificationManagerCompat
 import com.gemwallet.android.MainActivity
 import com.gemwallet.android.R
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
-import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.interactors.sync.SyncDevice
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage

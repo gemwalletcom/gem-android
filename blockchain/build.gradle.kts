@@ -47,7 +47,6 @@ dependencies {
     api(libs.retrofit.converter.gson)
     api(libs.okhttp.logging.interceptor)
     implementation(libs.kotlinx.coroutines.android)
-    implementation(libs.androidx.junit.ktx)
 
     // Tests
     testImplementation(libs.junit)

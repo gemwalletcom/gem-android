@@ -18,15 +18,15 @@ import com.gemwallet.android.blockchain.operators.walletcore.WCLoadPrivateKeyOpe
 import com.gemwallet.android.blockchain.operators.walletcore.WCStorePhraseOperator
 import com.gemwallet.android.blockchain.operators.walletcore.WCValidateAddressOperator
 import com.gemwallet.android.blockchain.operators.walletcore.WCValidatePhraseOperator
-import com.gemwallet.android.data.repositories.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.config.ConfigRepository
 import com.gemwallet.android.data.password.PreferencePasswordStore
-import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.repositories.wallet.WalletsRepository
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
+import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.interactors.ImportWalletOperator
 import com.gemwallet.android.interactors.PhraseAddressImportWalletOperator
 import com.gemwallet.android.interactors.sync.SyncSubscription
-import com.gemwallet.android.services.GemApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -89,7 +89,7 @@ object InteractsModule {
     @Singleton
     @Provides
     fun provideAddWalletInteract(
-        gemApiClient: GemApiClient,
+        gemApiClient: GemApiClient, // TODO: Move to WalletsCase
         configRepository: ConfigRepository,
         walletsRepository: WalletsRepository,
         assetsRepository: AssetsRepository,

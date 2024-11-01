@@ -6,10 +6,11 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.blockchain.clients.ethereum.encodeApprove
 import com.gemwallet.android.cases.transactions.GetTransactionCase
-import com.gemwallet.android.data.repositories.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.repositories.swap.SwapRepository
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.swap.SwapRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
@@ -291,7 +292,7 @@ class SwapViewModel @Inject constructor(
         }
         if (requestApprove) {
             swapScreenState.update { SwapState.RequestApprove }
-            val meta = swapRepository.encodeApprove(quote.approval?.spender ?: "")
+            val meta = encodeApprove(quote.approval?.spender ?: "")
             onConfirm(
                 ConfirmParams.TokenApprovalParams(
                     assetId = if (from.asset.id.type() == AssetSubtype.TOKEN) from.asset.id else to.asset.id,

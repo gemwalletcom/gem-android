@@ -3,13 +3,13 @@ package com.gemwallet.android.interactors
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.blockchain.operators.LoadPrivateDataOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
-import com.gemwallet.android.data.repositories.asset.AssetsRepository
-import com.gemwallet.android.data.repositories.config.ConfigRepository
-import com.gemwallet.android.data.repositories.chains.ChainInfoRepository
-import com.gemwallet.android.data.repositories.session.SessionRepository
-import com.gemwallet.android.data.repositories.wallet.WalletsRepository
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
+import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.ext.exclude
 import com.gemwallet.android.interactors.sync.SyncSubscription
-import com.gemwallet.android.services.GemApiClient
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.WalletType
@@ -53,7 +53,7 @@ class CheckAccounts @Inject constructor(
     }
 
     private fun getChainsToAdd(available: Set<Chain>): List<Chain> {
-        val allChains = Chain.entries.toList() - ChainInfoRepository.exclude.toSet()
+        val allChains = Chain.entries.toList() - Chain.exclude().toSet()
         val toAdd = mutableListOf<Chain>()
         for (i in allChains) {
             if (!available.contains(i)) {
