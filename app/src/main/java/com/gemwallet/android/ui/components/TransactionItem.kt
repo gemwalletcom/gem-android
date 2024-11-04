@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.getSwapMetadata
-import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.ext.same
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.interactors.getSupportIconUrl
 import com.gemwallet.android.model.Crypto
@@ -32,15 +32,19 @@ import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.padding4
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Asset
+import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetType
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
 import com.wallet.core.primitives.TransactionType
 import java.math.BigDecimal
+import kotlin.String
 
 @Composable
-fun TransactionItem(item: TransactionExtended, isLast: Boolean, onTransactionClick: (String) -> Unit) {
+fun TransactionItem(item: TransactionExtended, isLast: Boolean, onTransaction: (String) -> Unit) {
     val value = Crypto(item.transaction.value.toBigInteger())
     TransactionItem(
         assetIcon = item.asset.getIconUrl(),
@@ -59,7 +63,7 @@ fun TransactionItem(item: TransactionExtended, isLast: Boolean, onTransactionCli
         metadata = item.transaction.getSwapMetadata(),
         assets = item.assets,
         isLast = isLast
-    ) { onTransactionClick(item.transaction.id) }
+    ) { onTransaction(item.transaction.id) }
 }
 
 @Composable
@@ -91,12 +95,12 @@ fun TransactionItem(
                 title = when (type) {
                     TransactionType.Swap -> {
                         val swapMetadata = metadata as? TransactionSwapMetadata
-                        val toAssetId = swapMetadata?.toAsset?.toIdentifier()
-                        val asset = assets.firstOrNull { it.id.toIdentifier() == toAssetId }
+                        val toId = swapMetadata?.toAsset
+                        val asset = assets.firstOrNull { toId?.same(it.id) == true }
                         if (swapMetadata == null || asset == null) {
                             ""
                         } else {
-                            "+${asset.format(swapMetadata.toValue, dynamicPlace = true)}"
+                            "+${asset.format(Crypto(swapMetadata.toValue), dynamicPlace = true)}"
                         }
                     }
                     else -> type.getValue(direction, value)
@@ -108,12 +112,12 @@ fun TransactionItem(
                 subtitle = when (type) {
                     TransactionType.Swap -> {
                         val swapMetadata = metadata as? TransactionSwapMetadata
-                        val toAssetId = swapMetadata?.fromAsset?.toIdentifier()
-                        val asset = assets.firstOrNull { it.id.toIdentifier() == toAssetId }
+                        val fromId = swapMetadata?.fromAsset
+                        val asset = assets.firstOrNull { fromId?.same(it.id) == true }
                         if (swapMetadata == null || asset == null) {
                             ""
                         } else {
-                            "-${asset.format(swapMetadata.fromValue, dynamicPlace = true)}"
+                            "-${asset.format(Crypto(swapMetadata.fromValue), dynamicPlace = true)}"
                         }
                     }
                     else -> ""
@@ -141,12 +145,20 @@ fun TransactionItem(
                     Row(
                         Modifier
                             .padding(start = 5.dp)
-                            .background(color = color.copy(alpha = 0.1f), shape = RoundedCornerShape(6.dp)),
+                            .background(
+                                color = color.copy(alpha = 0.1f),
+                                shape = RoundedCornerShape(6.dp)
+                            ),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         if (badge.isNotEmpty()) {
                             Text(
-                                modifier = Modifier.padding(start = 5.dp, top = 2.dp, end = padding4, bottom = 2.dp),
+                                modifier = Modifier.padding(
+                                    start = 5.dp,
+                                    top = 2.dp,
+                                    end = padding4,
+                                    bottom = 2.dp
+                                ),
                                 text = badge,
                                 color = color,
                                 maxLines = 1,
@@ -180,6 +192,46 @@ fun PreviewTransactionItem() {
             value = "0.9998888999 BTC",
             metadata = null,
             assets = emptyList(),
+            onClick = {},
+        )
+    }
+}
+
+@Composable
+@Preview
+fun PreviewSwapTransactionItem() {
+    WalletTheme {
+        TransactionItem(
+            assetIcon = "",
+            assetSymbol = "BNB",
+            from = "0xBA4D1d35bCe0e8F28E5a3403e7a0b996c5d50AC4",
+            to = "0xBA4D1d35bCe0e8F28E5a3403e7a0b996c5d50AC4",
+            direction = TransactionDirection.Outgoing,
+            type = TransactionType.Swap,
+            state = TransactionState.Confirmed,
+            value = "0.9998888999 BTC",
+            assets = listOf(
+                Asset(
+                    id = AssetId(Chain.SmartChain),
+                    name = "SmartChain",
+                    symbol = "BNB",
+                    decimals = 18,
+                    type = AssetType.NATIVE,
+                ),
+                Asset(
+                    id = AssetId(Chain.SmartChain, "0x76A797A59Ba2C17726896976B7B3747BfD1d220f"),
+                    name = "Ton",
+                    symbol = "TON",
+                    decimals = 9,
+                    type = AssetType.BEP20,
+                ),
+            ),
+            metadata = TransactionSwapMetadata(
+                fromAsset = AssetId(Chain.SmartChain),
+                toAsset = AssetId(Chain.SmartChain, "0x76A797A59Ba2C17726896976B7B3747BfD1d220f"),
+                fromValue = "90000000000000000",
+                toValue = "19000000000000",
+            ),
             onClick = {},
         )
     }
