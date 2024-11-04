@@ -213,10 +213,10 @@ private fun Cell(
             if (infoUrl.isNotEmpty()) {
                 Spacer4()
                 Icon(
-                    modifier = Modifier.size(24.dp).clickable(onClick = { uriHandler.open(infoUrl) }),
+                    modifier = Modifier.size(20.dp).clickable(onClick = { uriHandler.open(infoUrl) }),
                     imageVector = Icons.Outlined.Info,
                     contentDescription = "",
-                    tint = MaterialTheme.colorScheme.secondary,
+                    tint = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
                 )
             }
         },
