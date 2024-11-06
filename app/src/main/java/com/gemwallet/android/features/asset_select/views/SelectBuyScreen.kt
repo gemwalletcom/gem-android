@@ -5,8 +5,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.asset_select.components.ItemBalanceTrailing
 import com.gemwallet.android.features.asset_select.viewmodels.SelectBuyAssetViewModel
+import com.gemwallet.android.ui.components.getBalanceInfo
 import com.wallet.core.primitives.AssetId
 
 @Composable
@@ -18,7 +18,7 @@ fun SelectBuyScreen(
     AssetSelectScreen(
         title = stringResource(id = R.string.wallet_buy),
         titleBadge = { null },
-        itemTrailing = { ItemBalanceTrailing(it) },
+        itemTrailing = { getBalanceInfo(it)() },
         predicate = { viewModel.getAvailableToBuy().contains(it.toIdentifier()) },
         onSelect = onSelect,
         onCancel = onCancel,

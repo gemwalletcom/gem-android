@@ -34,7 +34,6 @@ import com.gemwallet.android.features.buy.models.BuyError
 import com.gemwallet.android.features.buy.models.BuyUIState
 import com.gemwallet.android.features.buy.viewmodels.BuyViewModel
 import com.gemwallet.android.interactors.getIcon
-import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.CellEntity
@@ -98,7 +97,7 @@ private fun Idle(
     val uriHandler = LocalUriHandler.current
     val isShowProviders = remember { mutableStateOf(false) }
     Scene(
-        title = stringResource(id = R.string.buy_title, state.title),
+        title = stringResource(id = R.string.buy_title, state.asset?.name ?: ""),
         onClose = onCancel,
         mainAction = {
             MainActionButton(
@@ -122,15 +121,12 @@ private fun Idle(
             Container {
                 AssetListItem(
                     modifier = Modifier.height(74.dp),
-                    chain = state.asset.id.chain,
-                    title = state.asset.name,
-                    support = if (state.asset.id.type() == AssetSubtype.NATIVE) {
+                    uiModel = state.asset,
+                    support = if (state.asset.asset.id.type() == AssetSubtype.NATIVE) {
                         null
                     } else {
-                        state.asset.id.chain.asset().name
+                        state.asset.asset.id.chain.asset().name
                     },
-                    assetType = state.asset.type,
-                    iconUrl = state.asset.getIconUrl(),
                     badge = if (state.asset.symbol == state.asset.name) null else state.asset.symbol,
                     dividerShowed = false,
                     trailing = {

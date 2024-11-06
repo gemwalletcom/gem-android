@@ -7,8 +7,8 @@ import com.gemwallet.android.R
 import com.gemwallet.android.features.settings.settings.components.LinkItem
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.open
-import uniffi.Gemstone.Config
-import uniffi.Gemstone.PublicUrl
+import uniffi.gemstone.Config
+import uniffi.gemstone.PublicUrl
 
 @Composable
 fun AboutUsScreen(

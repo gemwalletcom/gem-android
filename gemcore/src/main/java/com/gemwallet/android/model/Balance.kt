@@ -1,10 +1,11 @@
 package com.gemwallet.android.model
 
-import com.wallet.core.primitives.BalanceType
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class Balance (
-    val type: BalanceType,
-    val value: String
+data class Balance<T>(
+    val available: T,
+    val frozen: T,
+    val locked: T,
+    val staked: T,
+    val pending: T,
+    val rewards: T,
+    val reserved: T,
 )

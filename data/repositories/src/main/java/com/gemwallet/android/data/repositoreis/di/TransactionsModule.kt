@@ -43,7 +43,7 @@ object TransactionsModule {
         transactionsDao = transactionsDao,
         assetsDao = assetsDao,
         gson = gson,
-        stateClients = Chain.available().map {
+        stateClients = Chain.available().mapNotNull {
             when (it) {
                 Chain.Doge,
                 Chain.Litecoin,
@@ -81,6 +81,7 @@ object TransactionsModule {
                 Chain.Sui -> SuiTransactionStatusClient(it, rpcClients.getClient(it))
                 Chain.Xrp -> XrpTransactionStatusClient(it, rpcClients.getClient(it))
                 Chain.Near -> NearTransactionStatusClient(it, rpcClients.getClient(it))
+                Chain.World -> null
             }
         },
     )

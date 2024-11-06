@@ -88,7 +88,7 @@ abstract class StakeDao {
                 "base.rewards as rewards," +
                 "base.shares as shares" +
                 " " +
-                "FROM stake_delegation_base as base " +
+        "FROM stake_delegation_base as base " +
                 "LEFT JOIN stake_delegation_validator as validator ON base.validator_id=validator.id " +
                 "WHERE base.delegation_id=:delegationId AND validator.id=:validatorId"
     )

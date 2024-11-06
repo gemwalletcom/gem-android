@@ -20,12 +20,16 @@ import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
+import com.gemwallet.android.model.getStackedAmount
+import com.gemwallet.android.model.lockedFormatted
+import com.gemwallet.android.model.stakedFormatted
+import com.gemwallet.android.model.totalFormatted
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
-import com.wallet.core.primitives.BalanceType
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionExtended
@@ -42,7 +46,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.math.BigInteger
 import javax.inject.Inject
 
 @HiltViewModel
@@ -123,23 +126,10 @@ class AssetInfoViewModel @Inject constructor(
             val price = assetInfo.price?.price?.price ?: 0.0
             val currency = assetInfo.price?.currency ?: Currency.USD
             val asset = assetInfo.asset
-            val balances = assetInfo.balances
-            val total = balances.calcTotal()
-            val fiatTotal = if (assetInfo.price == null) {
-                ""
-            } else {
-                val fiat = total.convert(asset.decimals, assetInfo.price!!.price.price)
-                currency.format(fiat)
-            }
-            val stakeBalance = balances.items.filter {
-                it.balance.type != BalanceType.available && it.balance.type != BalanceType.reserved
-            }
-            .map { BigInteger(it.balance.value) }
-            .fold(BigInteger.ZERO) {acc, value -> acc + value }
-            val reservedBalance = balances.items.filter { it.balance.type == BalanceType.reserved }
-                .map { BigInteger(it.balance.value) }
-                .fold(BigInteger.ZERO) {acc, value -> acc + value }
-
+            val balances = assetInfo.balance
+            val total = balances.totalAmount
+            val fiatTotal = currency.format(balances.fiatTotalAmount)
+            val stakeBalance = balances.balanceAmount.getStackedAmount()
             return AssetInfoUIModel(
                 asset = asset,
                 name = if (asset.type == AssetType.NATIVE) {
@@ -164,26 +154,26 @@ class AssetInfoViewModel @Inject constructor(
                 transactions = transactions,
                 account = AssetInfoUIModel.Account(
                     walletType = assetInfo.walletType,
-                    totalBalance = asset.format(total),
+                    totalBalance = balances.totalFormatted(),
                     totalFiat = fiatTotal,
                     owner = assetInfo.owner.address,
-                    hasBalanceDetails = StakeChain.isStaked(asset.id.chain) || reservedBalance != BigInteger.ZERO,
-                    available = if (balances.available().atomicValue != total.atomicValue) {
-                        asset.format(balances.available())
+                    hasBalanceDetails = StakeChain.isStaked(asset.id.chain) || balances.balanceAmount.locked != 0.0,
+                    available = if (balances.balanceAmount.available != total) {
+                        balances.availableFormatted()
                     } else {
                         ""
                     },
                     stake = if (asset.id.type() == AssetSubtype.NATIVE && StakeChain.isStaked(asset.id.chain)) {
-                        if (stakeBalance == BigInteger.ZERO) {
+                        if (stakeBalance == 0.0) {
                             "APR ${PriceUIState.formatPercentage(assetInfo.stakeApr ?: 0.0, false)}"
                         } else {
-                            asset.format(Crypto(stakeBalance))
+                            balances.stakedFormatted()
                         }
                     } else {
                         ""
                     },
-                    reserved = if (reservedBalance != BigInteger.ZERO) {
-                        asset.format(Crypto(reservedBalance))
+                    reserved = if (balances.balanceAmount.locked != 0.0) {
+                        balances.lockedFormatted()
                     } else {
                         ""
                     },

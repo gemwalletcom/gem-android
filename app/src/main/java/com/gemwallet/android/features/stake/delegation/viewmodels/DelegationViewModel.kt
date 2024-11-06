@@ -12,6 +12,7 @@ import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.features.stake.delegation.model.DelegationSceneState
 import com.gemwallet.android.features.stake.model.availableIn
 import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.CellEntity
 import com.wallet.core.primitives.Delegation
@@ -109,11 +110,11 @@ class DelegationViewModel @Inject constructor(
             val balances = listOf(
                 CellEntity(
                     label = R.string.wallet_stake,
-                    data = assetInfo.asset.format(delegation.base.balance)
+                    data = assetInfo.asset.format(Crypto(delegation.base.balance))
                 ),
                 CellEntity(
                     label = R.string.stake_rewards,
-                    data = assetInfo.asset.format(delegation.base.rewards)
+                    data = assetInfo.asset.format(Crypto(delegation.base.rewards))
                 ),
             )
             return DelegationSceneState.Loaded(

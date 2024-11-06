@@ -19,7 +19,7 @@ interface PricesDao {
     @Query("SELECT * FROM prices")
     fun getAll(): Flow<List<DbPrice>>
 
-    @Query("SELECT * FROM prices WHERE assetId IN (:assetsId)")
+    @Query("SELECT * FROM prices WHERE asset_id IN (:assetsId)")
     suspend fun getByAssets(assetsId: List<String>): List<DbPrice>
 
     @Query("DELETE FROM prices")

@@ -10,6 +10,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.interactors.sync.SyncDevice
 import com.gemwallet.android.ui.models.AssetInfoUIModel
@@ -17,10 +18,13 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.PriceAlert
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -43,13 +47,18 @@ class PriceAlertViewModel @Inject constructor(
 
     val enabled = MutableStateFlow(enablePriceAlertCase.isPriceAlertEnabled())
 
-    val alertingAssets = combine(assetsRepository.getAssetsInfo(), getPriceAlertsCase.getPriceAlerts(), forceSync) { assets, alerts, sync ->
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val alertingAssets = getPriceAlertsCase.getPriceAlerts().flatMapLatest { alerts ->
+        val ids = alerts.mapNotNull { it.assetId.toAssetId() }
+        assetsRepository.getAssetsInfo(ids)
+    }
+    .map { it.map { AssetInfoUIModel(it) } }
+    .combine(forceSync) { items, sync ->
         viewModelScope.launch(Dispatchers.IO) {
             delay(300)
             forceSync.update { false }
         }
-        assets.filter { asset -> alerts.fastFirstOrNull { it.assetId == asset.asset.id.toIdentifier() } != null }
-            .map { AssetInfoUIModel(it) }
+        items
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 

@@ -2,8 +2,9 @@ package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.BalanceClient
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
-import com.gemwallet.android.model.Balances
-import com.wallet.core.primitives.AssetId
+import com.gemwallet.android.ext.asset
+import com.gemwallet.android.model.AssetBalance
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -15,7 +16,7 @@ class SolanaBalanceClient(
     val rpcClient: SolanaRpcClient,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(address: String): Balances? = withContext(Dispatchers.IO) {
+    override suspend fun getNativeBalance(address: String): AssetBalance? = withContext(Dispatchers.IO) {
         val getAvailable = async {
             rpcClient.getBalance(JSONRpcRequest.create(SolanaMethod.GetBalance, listOf(address)))
                 .getOrNull()?.result?.value
@@ -29,19 +30,19 @@ class SolanaBalanceClient(
         if (available == null) {
             return@withContext null
         }
-        Balances.create(
-            assetId = AssetId(chain),
-            available = available.toBigInteger(),
-            staked = staked.toBigInteger(),
+        AssetBalance.create(
+            asset = chain.asset(),
+            available = available.toString(),
+            staked = staked.toString(),
         )
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<AssetId>): List<Balances> {
-        val result = mutableListOf<Balances>()
-        for (assetId in tokens) {
-            val tokenId = assetId.tokenId ?: continue
-            val balance = getTokenBalance(address, tokenId)
-            result.add(Balances.create(assetId, balance))
+    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> {
+        val result = mutableListOf<AssetBalance>()
+        for (token in tokens) {
+            val tokenId = token.id.tokenId ?: continue
+            val balance = getTokenBalance(address, tokenId).toString()
+            result.add(AssetBalance.create(token, available = balance))
         }
         return result
     }

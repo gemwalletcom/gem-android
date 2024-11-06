@@ -56,8 +56,8 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import uniffi.Gemstone.Config
-import uniffi.Gemstone.DocsUrl
+import uniffi.gemstone.Config
+import uniffi.gemstone.DocsUrl
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -166,7 +166,7 @@ class ConfirmViewModel @Inject constructor(
         AmountUIModel(
             txType = request.getTxType(),
             amount = amount.format(decimals, symbol, -1),
-            amountEquivalent = currency.format(amount.convert(decimals, price)),
+            amountEquivalent = currency.format(amount.convert(decimals, price).atomicValue),
             fromAsset = assetInfo,
             fromAmount = amount.atomicValue.toString(),
             toAsset = toAssetInfo,
@@ -205,7 +205,7 @@ class ConfirmViewModel @Inject constructor(
             val feeDecimals = feeAssetInfo.asset.decimals
             val feeCrypto = feeAssetInfo.asset.format(feeAmount, 6)
             val feeFiat = feeAssetInfo.price?.let {
-                currency.format(feeAmount.convert(feeDecimals, it.price.price))
+                currency.format(feeAmount.convert(feeDecimals, it.price.price).atomicValue)
             } ?: ""
 
             try {
@@ -330,7 +330,7 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.TransferParams,
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams,
-            is ConfirmParams.DelegateParams -> assetInfo.balances.available().atomicValue
+            is ConfirmParams.DelegateParams -> assetInfo.balance.balance.available.toBigInteger()
             is ConfirmParams.RedeleateParams -> BigInteger(stakeRepository.getDelegation(params.srcValidatorId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.UndelegateParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.WithdrawParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
@@ -440,7 +440,7 @@ class ConfirmViewModel @Inject constructor(
                 val label = "${assetInfo.id().chain.asset().name} (${assetInfo.asset.symbol})"
                 throw ConfirmError.InsufficientBalance(label)
             }
-            if (feeAssetInfo.balances.available().atomicValue < feeAmount) {
+            if (feeAssetInfo.balance.balance.available.toBigInteger() < feeAmount) {
                 val label = "${feeAssetInfo.id().chain.asset().name} (${feeAssetInfo.asset.symbol})"
                 throw ConfirmError.InsufficientFee(label)
             }

@@ -14,6 +14,7 @@ class TonNodeStatusClient(
     override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
         val resp = rpcClient.masterChainInfo("$url/api/v2/getMasterchainInfo")
         NodeStatus(
+            url = url,
             blockNumber = resp.body()?.result?.last?.seqno?.toString() ?: return@withContext null,
             inSync = true,
             chainId = "",

@@ -12,6 +12,8 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.tokenAvailableChains
 import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.toUIModel
+import com.gemwallet.android.ui.models.AssetInfoUIModel
+import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
@@ -63,16 +65,11 @@ class AssetSelectViewModel @Inject constructor(
     }
     .map {
         it.distinctBy { it.asset.id.toIdentifier() }
-            .sortedByDescending {
-                it.balances.available()
-                    .convert(it.asset.decimals, it.price?.price?.price ?: 0.0)
-                    .atomicValue
-            }
     }
-    .map { assets -> assets.map { it.toUIModel() }.toImmutableList() }
+    .map { assets -> assets.map { AssetInfoUIModel(it) }.toImmutableList() }
     .onEach { searchState.update { SearchState.Idle } }
     .flowOn(Dispatchers.IO)
-    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetUIState>().toImmutableList())
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>().toImmutableList())
 
     val uiState = assets.combine(searchState) { assets, searchState ->
         when {

@@ -37,8 +37,8 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionType
 import com.wallet.core.primitives.WalletType
-import uniffi.Gemstone.Config
-import uniffi.Gemstone.DocsUrl
+import uniffi.gemstone.Config
+import uniffi.gemstone.DocsUrl
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable

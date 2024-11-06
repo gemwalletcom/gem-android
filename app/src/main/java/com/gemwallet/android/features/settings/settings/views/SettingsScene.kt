@@ -46,8 +46,8 @@ import com.gemwallet.android.ui.theme.Spacer16
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
-import uniffi.Gemstone.Config
-import uniffi.Gemstone.SocialUrl
+import uniffi.gemstone.Config
+import uniffi.gemstone.SocialUrl
 import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)

@@ -8,13 +8,13 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.buy.models.BuyError
 import com.gemwallet.android.features.buy.models.BuyUIState
 import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.model.AssetInfo
-import com.gemwallet.android.model.CountingUnit
+import com.gemwallet.android.model.SignMode
 import com.gemwallet.android.model.format
+import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
@@ -103,7 +103,7 @@ class BuyViewModel @Inject constructor(
         state.update { it.copy(isQuoteLoading = false, error = null) }
         val newValue = try {
             input.ifEmpty { "0.0" }.numberParse().toDouble()
-        } catch (err: Throwable) {
+        } catch (_: Throwable) {
             state.update { it.copy(error = BuyError.ValueIncorrect) }
             return
         }
@@ -132,17 +132,14 @@ class BuyViewModel @Inject constructor(
         val fatalError: String? = null,
     ) {
         fun toUIState(): BuyUIState = if (fatalError == null && assetInfo != null) {
-            val chain = assetInfo.asset.id.chain
             val quote = getQuote(selectProvider)
             BuyUIState.Idle(
                 isQuoteLoading = isQuoteLoading,
-                asset = assetInfo.asset,
-                title = assetInfo.asset.name,
-                assetType = chain.asset().type,
+                asset = AssetInfoUIModel(assetInfo),
                 cryptoAmount = if (quote == null) {
                     " "
                 } else {
-                    "~${assetInfo.asset.format(quote.cryptoAmount, showSign = CountingUnit.SignMode.NoSign, dynamicPlace = true)}"
+                    "~${assetInfo.asset.format(quote.cryptoAmount, showSign = SignMode.NoSign, dynamicPlace = true)}"
                 },
                 fiatAmount = "${fiatAmount.toInt()}",
                 currentProvider = if (quote != null) mapToProvider(quote, assetInfo.asset) else null,
@@ -159,7 +156,7 @@ class BuyViewModel @Inject constructor(
         private fun mapToProvider(quote: FiatQuote, asset: Asset): BuyUIState.Provider {
             return BuyUIState.Provider(
                 provider = quote.provider,
-                cryptoAmount = asset.format(quote.cryptoAmount, 6, CountingUnit.SignMode.NoSign, true),
+                cryptoAmount = asset.format(quote.cryptoAmount, 6, SignMode.NoSign, true),
                 rate = "1 ${asset.symbol} ~ ${currency.format(quote.fiatAmount / quote.cryptoAmount).format("USD", 2)}"
             )
         }

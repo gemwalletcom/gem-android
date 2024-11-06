@@ -64,7 +64,7 @@ object AssetsModule {
     fun provideBalanceRemoteSource(
         rpcClients: RpcClientAdapter,
     ): BalancesRemoteSource = BalancesRemoteSource(
-        Chain.available().map {
+        Chain.available().mapNotNull {
             when (it) {
                 Chain.Doge,
                 Chain.Litecoin,
@@ -102,6 +102,7 @@ object AssetsModule {
                 Chain.Sui -> SuiBalanceClient(it, rpcClients.getClient(it))
                 Chain.Xrp -> XrpBalanceClient(it, rpcClients.getClient(it))
                 Chain.Near -> NearBalanceClient(it, rpcClients.getClient(it))
+                Chain.World -> return@mapNotNull null
             }
         }
     )

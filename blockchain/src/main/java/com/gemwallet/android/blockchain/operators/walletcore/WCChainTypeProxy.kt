@@ -39,5 +39,6 @@ class WCChainTypeProxy : ChainTypeProxy<CoinType> {
         Chain.Mantle -> CoinType.MANTLE
         Chain.Celo -> CoinType.CELO
         Chain.Near -> CoinType.NEAR
+        Chain.World -> CoinType.ETHEREUM // TODO: Update integrate ethereum like
     }
 }

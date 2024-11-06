@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import androidx.sqlite.execSQL
 import com.gemwallet.android.data.service.store.database.AccountsDao
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.BalancesDao
@@ -68,6 +69,8 @@ object DatabaseModule {
         .addMigrations(MIGRATION_31_32)
         .addMigrations(MIGRATION_32_33)
         .addMigrations(MIGRATION_33_34)
+        .addMigrations(MIGRATION_34_35)
+        .addMigrations(MIGRATION_35_36)
         .build()
 
     @Singleton
@@ -702,7 +705,8 @@ val MIGRATION_32_33 = object : Migration(32, 33) {
             |    WHERE accounts.wallet_id = session.wallet_id AND session.id = 1)
             |                AND tx.walletId in (SELECT wallet_id FROM session WHERE session.id = 1)
             |            GROUP BY tx.id
-            """.trimMargin())
+            """.trimMargin()
+        )
     }
 }
 
@@ -717,5 +721,215 @@ val MIGRATION_33_34 = object : Migration(33, 34) {
                 price_direction TEXT DEFAULT NULL,
                 PRIMARY KEY (asset_id)
             )""".trimIndent())
+    }
+}
+
+val MIGRATION_34_35 = object : Migration(34, 35) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("DROP TABLE IF EXISTS balances;")
+        db.execSQL("""
+            CREATE TABLE balances (
+                asset_id TEXT NOT NULL,
+                owner TEXT NOT NULL,
+                available TEXT NOT NULL,
+                available_amount REAL NOT NULL,
+                frozen TEXT NOT NULL,
+                frozen_amount REAL NOT NULL,
+                locked TEXT NOT NULL,
+                locked_amount REAL NOT NULL,
+                staked TEXT NOT NULL,
+                staked_amount REAL NOT NULL,
+                pending TEXT NOT NULL,
+                pending_amount REAL NOT NULL,
+                rewards TEXT NOT NULL,
+                rewards_amount REAL NOT NULL,
+                reserved TEXT NOT NULL,
+                reserved_amount REAL NOT NULL,
+                total_amount REAL NOT NULL,
+                enabled INTEGER NOT NULL,
+                hidden INTEGER NOT NULL,
+                pinned INTEGER NOT NULL,
+                updated_at  INTEGER,
+                PRIMARY KEY (asset_id, owner)
+            );
+        """.trimIndent())
+        db.execSQL("DROP TABLE IF EXISTS prices;")
+        db.execSQL(
+            """
+                CREATE TABLE prices (
+                    asset_id TEXT NOT NULL,
+                    value REAL DEFAULT 0,
+                    day_changed REAL DEFAULT 0,
+                    currency TEXT NOT NULL,
+                    PRIMARY KEY (asset_id)
+                );
+            """.trimIndent()
+        )
+        db.execSQL("DROP VIEW IF EXISTS `extended_txs`")
+        db.execSQL("DROP VIEW IF EXISTS `asset_info`")
+        db.execSQL("""
+            |CREATE VIEW `asset_info` AS SELECT
+            |        assets.owner_address as address,
+            |        assets.id as id,
+            |        assets.name as name,
+            |        assets.symbol as symbol,
+            |        assets.decimals as decimals,
+            |        assets.type as type,
+            |        assets.is_buy_enabled as isBuyEnabled,
+            |        assets.is_swap_enabled as isSwapEnabled,
+            |        assets.is_stake_enabled as isStakeEnabled,
+            |        assets.staking_apr as stakingApr,
+            |        assets.links as links,
+            |        assets.market as market,
+            |        assets.rank as assetRank,
+            |        accounts.derivation_path as derivationPath,
+            |        accounts.chain as chain,
+            |        accounts.wallet_id as walletId,
+            |        accounts.extendedPublicKey as extendedPublicKey,
+            |        asset_config.is_pinned AS pinned,
+            |        asset_config.is_visible AS visible,
+            |        asset_config.list_position AS listPosition,
+            |        session.id AS sessionId,
+            |        session.currency AS priceCurrency,
+            |        wallets.type AS walletType,
+            |        wallets.name AS walletName,
+            |        prices.value AS priceValue,
+            |        prices.day_changed AS priceDayChanges,
+            |        balances.available AS balanceAvailable,
+            |        balances.available_amount AS balanceAvailableAmount,
+            |        balances.frozen AS balanceFrozen,
+            |        balances.frozen_amount AS balanceFrozenAmount,
+            |        balances.locked AS balanceLocked,
+            |        balances.locked_amount AS balanceLockedAmount,
+            |        balances.staked AS balanceStaked,
+            |        balances.staked_amount AS balanceStakedAmount,
+            |        balances.pending AS balancePending,
+            |        balances.pending_amount AS balancePendingAmount,
+            |        balances.rewards AS balanceRewards,
+            |        balances.rewards_amount AS balanceRewardsAmount,
+            |        balances.reserved AS balanceReserved,
+            |        balances.reserved_amount AS balanceReservedAmount,
+            |        balances.total_amount AS balanceTotalAmount,
+            |        (balances.total_amount * prices.value) AS balanceFiatTotalAmount,
+            |        balances.enabled AS balanceEnabled,
+            |        balances.hidden AS balanceHidden,
+            |        balances.pinned AS balancePinned,
+            |        balances.updated_at AS balanceUpdatedAt
+            |        FROM assets
+            |        JOIN accounts ON accounts.address = assets.owner_address AND assets.id LIKE accounts.chain || '%'
+            |        JOIN wallets ON wallets.id = accounts.wallet_id
+            |        JOIN session ON accounts.wallet_id = session.wallet_id
+            |        LEFT JOIN balances ON assets.owner_address = balances.owner AND assets.id = balances.asset_id
+            |        LEFT JOIN prices ON assets.id = prices.asset_id AND prices.currency = session.currency
+            |        LEFT JOIN asset_config ON assets.id = asset_config.asset_id AND wallets.id = asset_config.wallet_id
+            """.trimMargin()
+        )
+        db.execSQL("""
+            |CREATE VIEW `extended_txs` AS SELECT
+            |            DISTINCT tx.id,
+            |            tx.hash,
+            |            tx.assetId,
+            |            tx.feeAssetId,
+            |            tx.owner,
+            |            tx.recipient,
+            |            tx.contract,
+            |            tx.state,
+            |            tx.type,
+            |            tx.blockNumber,
+            |            tx.sequence,
+            |            tx.fee,
+            |            tx.value,
+            |            tx.payload,
+            |            tx.metadata,
+            |            tx.direction,
+            |            tx.createdAt,
+            |            tx.updatedAt,
+            |            tx.walletId,
+            |            assets.decimals as assetDecimals,
+            |            assets.name as assetName,
+            |            assets.type as assetType,
+            |            assets.symbol as assetSymbol,
+            |            feeAsset.decimals as feeDecimals,
+            |            feeAsset.name as feeName,
+            |            feeAsset.type as feeType,
+            |            feeAsset.symbol as feeSymbol,
+            |            prices.value as assetPrice,
+            |            prices.day_changed as assetPriceChanged,
+            |            feePrices.value as feePrice,
+            |            feePrices.day_changed as feePriceChanged
+            |        FROM transactions as tx 
+            |            INNER JOIN assets ON tx.assetId = assets.id 
+            |            INNER JOIN assets as feeAsset ON tx.feeAssetId = feeAsset.id 
+            |            LEFT JOIN prices ON tx.assetId = prices.asset_id
+            |            LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.asset_id 
+            |            WHERE tx.owner IN (SELECT accounts.address FROM accounts, session
+            |    WHERE accounts.wallet_id = session.wallet_id AND session.id = 1) OR tx.recipient in (SELECT accounts.address FROM accounts, session
+            |    WHERE accounts.wallet_id = session.wallet_id AND session.id = 1)
+            |                AND tx.walletId in (SELECT wallet_id FROM session WHERE session.id = 1)
+            |            GROUP BY tx.id
+            """.trimMargin()
+        )
+    }
+}
+
+val MIGRATION_35_36 = object : Migration(35, 36) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("DROP VIEW IF EXISTS `asset_info`")
+        db.execSQL("""
+            |CREATE VIEW `asset_info` AS SELECT
+            |        assets.owner_address as address,
+            |        assets.id as id,
+            |        assets.name as name,
+            |        assets.symbol as symbol,
+            |        assets.decimals as decimals,
+            |        assets.type as type,
+            |        assets.is_buy_enabled as isBuyEnabled,
+            |        assets.is_swap_enabled as isSwapEnabled,
+            |        assets.is_stake_enabled as isStakeEnabled,
+            |        assets.staking_apr as stakingApr,
+            |        assets.links as links,
+            |        assets.market as market,
+            |        assets.rank as assetRank,
+            |        accounts.derivation_path as derivationPath,
+            |        accounts.chain as chain,
+            |        accounts.wallet_id as walletId,
+            |        accounts.extendedPublicKey as extendedPublicKey,
+            |        asset_config.is_pinned AS pinned,
+            |        asset_config.is_visible AS visible,
+            |        asset_config.list_position AS listPosition,
+            |        session.id AS sessionId,
+            |        session.currency AS priceCurrency,
+            |        wallets.type AS walletType,
+            |        wallets.name AS walletName,
+            |        prices.value AS priceValue,
+            |        prices.day_changed AS priceDayChanges,
+            |        balances.available AS balanceAvailable,
+            |        balances.available_amount AS balanceAvailableAmount,
+            |        balances.frozen AS balanceFrozen,
+            |        balances.frozen_amount AS balanceFrozenAmount,
+            |        balances.locked AS balanceLocked,
+            |        balances.locked_amount AS balanceLockedAmount,
+            |        balances.staked AS balanceStaked,
+            |        balances.staked_amount AS balanceStakedAmount,
+            |        balances.pending AS balancePending,
+            |        balances.pending_amount AS balancePendingAmount,
+            |        balances.rewards AS balanceRewards,
+            |        balances.rewards_amount AS balanceRewardsAmount,
+            |        balances.reserved AS balanceReserved,
+            |        balances.reserved_amount AS balanceReservedAmount,
+            |        balances.total_amount AS balanceTotalAmount,
+            |        (balances.total_amount * prices.value) AS balanceFiatTotalAmount,
+            |        balances.enabled AS balanceEnabled,
+            |        balances.hidden AS balanceHidden,
+            |        balances.pinned AS balancePinned,
+            |        balances.updated_at AS balanceUpdatedAt
+            |        FROM assets
+            |        JOIN accounts ON accounts.address = assets.owner_address AND assets.id LIKE accounts.chain || '%'
+            |        JOIN wallets ON wallets.id = accounts.wallet_id
+            |        LEFT JOIN session ON accounts.wallet_id = session.wallet_id
+            |        LEFT JOIN balances ON assets.owner_address = balances.owner AND assets.id = balances.asset_id
+            |        LEFT JOIN prices ON assets.id = prices.asset_id AND prices.currency = (SELECT currency FROM session WHERE id = 1)
+            |        LEFT JOIN asset_config ON assets.id = asset_config.asset_id AND wallets.id = asset_config.wallet_id
+            """.trimMargin())
     }
 }

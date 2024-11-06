@@ -2,7 +2,9 @@ package com.gemwallet.android.blockchain.clients.near
 
 import com.gemwallet.android.blockchain.clients.BalanceClient
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
-import com.gemwallet.android.model.Balances
+import com.gemwallet.android.ext.asset
+import com.gemwallet.android.model.AssetBalance
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import java.math.BigInteger
@@ -12,7 +14,7 @@ class NearBalanceClient(
     private val rpcClient: NearRpcClient,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(address: String): Balances? {
+    override suspend fun getNativeBalance(address: String): AssetBalance? {
         return rpcClient.account(
             JSONRpcRequest(
                 method = NearMethod.Query.value,
@@ -25,7 +27,7 @@ class NearBalanceClient(
         ).fold(
             {
                 if (it.error == null) {
-                    Balances.create(AssetId(chain), BigInteger(it.result.amount))
+                    AssetBalance.create(chain.asset(), it.result.amount)
                 } else {
                     null
                 }
@@ -35,7 +37,7 @@ class NearBalanceClient(
         }
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<AssetId>): List<Balances> {
+    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> {
         return emptyList()
     }
 

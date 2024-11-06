@@ -172,7 +172,7 @@ object ClientsModule {
             ).create()
         )
         val adapter = RpcClientAdapter()
-        Chain.available().map {
+        Chain.available().mapNotNull {
             val url = "https://${it.string}"
             val rpc: Any = when (it) {
                 Chain.Doge,
@@ -208,6 +208,7 @@ object ClientsModule {
                 Chain.Sui -> buildClient(url, SuiRpcClient::class.java, converter, httpClient)
                 Chain.Xrp -> buildClient(url, XrpRpcClient::class.java, converter, httpClient)
                 Chain.Near -> buildClient(url, NearRpcClient::class.java, converter, httpClient)
+                Chain.World -> return@mapNotNull null
             }
             adapter.add(it, rpc)
         }

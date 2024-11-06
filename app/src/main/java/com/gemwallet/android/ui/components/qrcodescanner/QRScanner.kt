@@ -150,7 +150,7 @@ fun QRScannerScene(
                         mapOf(DecodeHintType.POSSIBLE_FORMATS to arrayListOf(BarcodeFormat.QR_CODE))
                     )
                 }.decode(binaryBmp)
-                imageResult = uniffi.Gemstone.paymentDecodeUrl(result.text).address
+                imageResult = uniffi.gemstone.paymentDecodeUrl(result.text).address
                 if (imageResult.isEmpty()) {
                     throw Exception()
                 }

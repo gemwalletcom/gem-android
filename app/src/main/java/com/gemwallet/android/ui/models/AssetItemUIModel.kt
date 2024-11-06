@@ -3,12 +3,9 @@ package com.gemwallet.android.ui.models
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.interactors.getSupportIconUrl
 import com.gemwallet.android.model.AssetInfo
-import com.gemwallet.android.model.Crypto
-import com.gemwallet.android.model.Fiat
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.Currency
-import java.math.BigInteger
 
 interface AssetItemUIModel : CryptoFormattedUIModel, FiatFormattedUIModel {
     val name: String
@@ -35,19 +32,15 @@ class AssetInfoUIModel(
 
     override val symbol: String by lazy { asset.symbol }
 
-    override val crypto: Crypto
-        get() = assetInfo.balances.calcTotal()
+    override val cryptoAmount: Double
+        get() = assetInfo.balance.totalAmount
 
-    override val fiat: Fiat? by lazy {
+    override val fiat: Double? by lazy {
         val price = assetInfo.price?.price?.price ?: 0.0
-        if (price == 0.0) {
-            null
-        } else {
-            crypto.convert(asset.decimals, price)
-        }
+        if (price == 0.0) null else cryptoAmount * price
     }
 
-    override val price: com.gemwallet.android.ui.models.PriceUIModel by lazy {
+    override val price: PriceUIModel by lazy {
         AssetPriceUIModel(currency, assetInfo.price?.price)
     }
 
@@ -56,7 +49,7 @@ class AssetInfoUIModel(
 
     override val owner: String by lazy { assetInfo.owner.address }
 
-    override val isZeroAmount: Boolean by lazy { crypto.atomicValue == BigInteger.ZERO }
+    override val isZeroAmount: Boolean by lazy { cryptoAmount == 0.0 }
 
     override val position: Int by lazy { assetInfo.position }
 

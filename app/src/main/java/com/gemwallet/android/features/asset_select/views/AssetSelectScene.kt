@@ -27,33 +27,28 @@ import com.gemwallet.android.R
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset_select.components.SearchBar
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
-import com.gemwallet.android.features.assets.model.AssetUIState
-import com.gemwallet.android.features.assets.model.PriceUIState
-import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
-import com.gemwallet.android.ui.models.PriceState
+import com.gemwallet.android.ui.models.AssetInfoUIModel
+import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.padding16
-import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.AssetType
-import com.wallet.core.primitives.Chain
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 internal fun AssetSelectScene(
     title: String,
-    assets: ImmutableList<AssetUIState>,
+    assets: ImmutableList<AssetItemUIModel>,
     state: AssetSelectViewModel.UIState,
-    titleBadge: (AssetUIState) -> String?,
-    support: ((AssetUIState) -> String?)?,
+    titleBadge: (AssetItemUIModel) -> String?,
+    support: ((AssetItemUIModel) -> String?)?,
     query: TextFieldState,
     onSelect: ((AssetId) -> Unit)?,
     onCancel: () -> Unit,
-    itemTrailing: (@Composable (AssetUIState) -> Unit)? = null,
+    itemTrailing: (@Composable (AssetItemUIModel) -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
     onAddAsset: (() -> Unit)? = null,
 ) {
@@ -70,11 +65,11 @@ internal fun AssetSelectScene(
 }
 
 private fun LazyListScope.assets(
-    items: List<AssetUIState>,
+    items: List<AssetItemUIModel>,
     onSelect: ((AssetId) -> Unit)?,
-    support: ((AssetUIState) -> String?)?,
-    titleBadge: (AssetUIState) -> String?,
-    itemTrailing: (@Composable (AssetUIState) -> Unit)?,
+    support: ((AssetItemUIModel) -> String?)?,
+    titleBadge: (AssetItemUIModel) -> String?,
+    itemTrailing: (@Composable (AssetItemUIModel) -> Unit)?,
 ) {
     if (items.isEmpty()) {
         return
@@ -85,11 +80,8 @@ private fun LazyListScope.assets(
             modifier = Modifier
                 .heightIn(74.dp)
                 .clickable { onSelect?.invoke(item.asset.id) },
-            chain = item.asset.id.chain,
-            title = item.asset.name,
+            uiModel = item,
             support = support?.invoke(item),
-            assetType = item.asset.type,
-            iconUrl = item.asset.getIconUrl(),
             badge = titleBadge.invoke(item),
             trailing = { itemTrailing?.invoke(item) },
         )
@@ -136,25 +128,7 @@ private fun LazyListScope.loading(state: AssetSelectViewModel.UIState) {
 fun PreviewAssetScreenUI() {
     MaterialTheme {
         AssetSelectScene(
-            assets = listOf(
-                AssetUIState(
-                    Asset(
-                        id = AssetId(Chain.Bitcoin),
-                        name = "Foo Name",
-                        decimals = 6,
-                        symbol = "BTC",
-                        type = AssetType.NATIVE,
-                    ),
-                    value = "0",
-                    isZeroValue = true,
-                    fiat = "0",
-                    price = PriceUIState(
-                        value = "0,0",
-                        state = PriceState.Up,
-                        dayChanges = "0,1%"
-                    )
-                )
-            ).toImmutableList(),
+            assets = emptyList<AssetInfoUIModel>().toImmutableList(),
             state = AssetSelectViewModel.UIState.Idle,
             title = "Send",
             titleBadge = { it.asset.symbol },

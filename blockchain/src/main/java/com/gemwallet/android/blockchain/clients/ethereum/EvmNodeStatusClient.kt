@@ -23,6 +23,7 @@ class EvmNodeStatusClient(
         val inSync = getSync.await() ?: return@withContext null
 
         NodeStatus(
+            url = url,
             chainId = chainId.body()?.result?.value?.toString() ?: return@withContext null,
             blockNumber = blockNumber,
             inSync = !inSync,

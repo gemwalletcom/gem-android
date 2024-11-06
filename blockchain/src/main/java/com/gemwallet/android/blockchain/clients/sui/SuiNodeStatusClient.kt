@@ -21,6 +21,7 @@ class SuiNodeStatusClient(
         val chainId = chainIdResp.body()?.result
 
         NodeStatus(
+            url = url,
             inSync = true,
             blockNumber = block?.result?.toString() ?: return@withContext null,
             chainId = chainId ?: return@withContext null,

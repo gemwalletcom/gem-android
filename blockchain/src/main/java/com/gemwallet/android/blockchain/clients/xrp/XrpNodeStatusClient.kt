@@ -15,6 +15,7 @@ class XrpNodeStatusClient(
         val resp = rpcClient.latestBlock(url)
 
         NodeStatus(
+            url = url,
             blockNumber = resp.body()?.result?.ledger_current_index?.toString() ?: return@withContext null,
             inSync = true,
             chainId = "",

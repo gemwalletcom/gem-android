@@ -75,5 +75,7 @@ enum class Chain(val string: String) {
 	Celo("celo"),
 	@SerialName("near")
 	Near("near"),
+	@SerialName("world")
+	World("world"),
 }
 

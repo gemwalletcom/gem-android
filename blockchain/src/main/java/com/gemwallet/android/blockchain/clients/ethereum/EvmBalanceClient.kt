@@ -2,54 +2,43 @@ package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.BalanceClient
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
-import com.gemwallet.android.math.decodeHex
-import com.gemwallet.android.math.toHexString
-import com.gemwallet.android.model.Balances
-import com.wallet.core.primitives.AssetId
+import com.gemwallet.android.ext.asset
+import com.gemwallet.android.model.AssetBalance
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
-import wallet.core.jni.EthereumAbi
-import wallet.core.jni.EthereumAbiFunction
 
 class EvmBalanceClient(
     private val chain: Chain,
     private val rpcClient: EvmRpcClient,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(address: String): Balances? {
+    override suspend fun getNativeBalance(address: String): AssetBalance? {
         val available = rpcClient.getBalance(address)
-            .fold({ Balances.create(AssetId(chain), it.result?.value ?: return null) }) { null }
+            .fold({ AssetBalance.create(chain.asset(), available = it.result?.value?.toString() ?: return null) }) { null }
         return when (chain) {
-            Chain.SmartChain -> SmartchainStakeClient(rpcClient).getBalance(address, availableBalance = available);
+            Chain.SmartChain -> SmartchainStakeClient(rpcClient).getBalance(address, availableBalance = available)
             else -> available
         }
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<AssetId>): List<Balances> {
+    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> {
         if (tokens.isEmpty()) {
             return emptyList()
         }
-        val result = mutableListOf<Balances>()
+        val result = mutableListOf<AssetBalance>()
         for (token in tokens) {
             val data = "0x70a08231000000000000000000000000${address.removePrefix("0x")}"
-            val contract = token.tokenId ?: continue
+            val contract = token.id.tokenId ?: continue
             val params = mapOf(
                 "to" to contract,
                 "data" to data,
             )
             val balance = rpcClient.callNumber(JSONRpcRequest.create(EvmMethod.Call, listOf(params, "latest")))
                 .getOrNull()?.result?.value ?: continue
-            result.add(Balances.create(token, available = balance))
+            result.add(AssetBalance.create(token, available = balance.toString()))
         }
         return result
     }
 
     override fun maintainChain(): Chain = chain
-
-    private fun encodeBalanceOf(address: String): String {
-        val function = EthereumAbiFunction("balanceOf")
-        val addressData = address.decodeHex()
-        function.addParamAddress(addressData, false)
-        function.addParamUInt256(byteArrayOf(), true)
-        return EthereumAbi.encode(function).toHexString()
-    }
 }

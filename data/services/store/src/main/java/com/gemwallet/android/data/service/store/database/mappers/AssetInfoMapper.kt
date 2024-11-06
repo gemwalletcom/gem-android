@@ -7,7 +7,6 @@ import com.gemwallet.android.model.AssetBalance
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.AssetPriceInfo
 import com.gemwallet.android.model.Balance
-import com.gemwallet.android.model.Balances
 import com.google.gson.Gson
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
@@ -23,15 +22,35 @@ class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo
         return entity.groupBy { it.id + it.address }.mapNotNull { records ->
             val entity = records.value.firstOrNull() ?: return@mapNotNull null
             val assetId = entity.id.toAssetId() ?: return@mapNotNull null
-
-            val balances = Balances(
-                records.value.mapNotNull {
-                    if (it.amount != null && it.balanceType != null) {
-                        AssetBalance(assetId, Balance(it.balanceType, it.amount))
-                    } else {
-                        null
-                    }
-                }
+            val asset = Asset(
+                id = assetId,
+                name = entity.name,
+                symbol = entity.symbol,
+                decimals = entity.decimals,
+                type = entity.type,
+            )
+            val balances = AssetBalance(
+                asset = asset,
+                balance = Balance(
+                    available = entity.balanceAvailable ?: "0",
+                    frozen = entity.balanceFrozen ?: "0",
+                    locked = entity.balanceLocked ?: "0",
+                    staked = entity.balanceStaked ?: "0",
+                    pending = entity.balancePending ?: "0",
+                    rewards = entity.balanceRewards ?: "0",
+                    reserved = entity.balanceReserved ?: "0"
+                ),
+                balanceAmount = Balance(
+                    available = entity.balanceAvailableAmount ?: 0.0,
+                    frozen = entity.balanceFrozenAmount ?: 0.0,
+                    locked = entity.balanceLockedAmount ?: 0.0,
+                    staked = entity.balanceStakedAmount ?: 0.0,
+                    pending = entity.balancePendingAmount ?: 0.0,
+                    rewards = entity.balanceRewardsAmount ?: 0.0,
+                    reserved = entity.balanceReservedAmount ?: 0.0,
+                ),
+                totalAmount = entity.balanceTotalAmount ?: 0.0,
+                fiatTotalAmount = entity.balanceFiatTotalAmount ?: 0.0,
             )
 
             val currency = Currency.entries.firstOrNull { it.string == entity.priceCurrency }
@@ -43,14 +62,8 @@ class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo
                     derivationPath = entity.derivationPath,
                     extendedPublicKey = entity.extendedPublicKey,
                 ),
-                asset = Asset(
-                    id = assetId,
-                    name = entity.name,
-                    symbol = entity.symbol,
-                    decimals = entity.decimals,
-                    type = entity.type,
-                ),
-                balances = balances,
+                asset = asset,
+                balance = balances,
                 price = if (entity.priceValue != null && currency != null) {
                     AssetPriceInfo(
                         currency = currency,

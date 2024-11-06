@@ -41,5 +41,7 @@ enum class EVMChain(val string: String) {
 	Mantle("mantle"),
 	@SerialName("celo")
 	Celo("celo"),
+	@SerialName("world")
+	World("world"),
 }
 

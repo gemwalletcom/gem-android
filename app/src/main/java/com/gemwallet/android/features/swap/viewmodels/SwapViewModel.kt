@@ -28,6 +28,7 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fiat
+import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
@@ -117,13 +118,13 @@ class SwapViewModel @Inject constructor(
         SwapPairUIModel(
             from = SwapItemModel(
                 asset = assets.from.asset.copy(symbol = assets.from.asset.symbol.padStart(symbolLength)),
-                assetBalanceValue = assets.from.balances.available().value(assets.from.asset.decimals).stripTrailingZeros().toPlainString(),
-                assetBalanceLabel = assets.from.asset.format(assets.from.balances.available(), 4),
+                assetBalanceValue = assets.from.balance.balanceAmount.available.toBigDecimal().toPlainString(),
+                assetBalanceLabel = assets.from.balance.availableFormatted(4),
             ),
             to = SwapItemModel(
                 asset = assets.to.asset.copy(symbol = assets.to.asset.symbol.padStart(symbolLength)),
-                assetBalanceValue = assets.to.balances.available().value(assets.to.asset.decimals).stripTrailingZeros().toPlainString(),
-                assetBalanceLabel = assets.to.asset.format(assets.to.balances.available(), 4),
+                assetBalanceValue = assets.to.balance.balanceAmount.available.toBigDecimal().toPlainString(),
+                assetBalanceLabel = assets.from.balance.availableFormatted(4),
             ),
         )
     }
@@ -139,7 +140,7 @@ class SwapViewModel @Inject constructor(
         } catch (err: Throwable) {
             BigDecimal.ZERO
         }
-        val fiat = Fiat(valueNum.toDouble() * price.price.price)
+        val fiat = valueNum.toDouble() * price.price.price
         price.currency.format(fiat)
     }
     .filterNotNull()
@@ -176,7 +177,7 @@ class SwapViewModel @Inject constructor(
         }
         val price = assets.to.price
         if (price?.currency != null && price.price.price > 0) {
-            assets.to.price!!.currency.format(Crypto(quote.toAmount).convert(assets.to.asset.decimals, price.price.price))
+            assets.to.price!!.currency.format(Crypto(quote.toAmount).convert(assets.to.asset.decimals, price.price.price).atomicValue)
         } else {
             ""
         }

@@ -16,6 +16,7 @@ class AptosNodeStatusClient(
         val response = rpcClient.getLedger(url)
         val ledger = response.body() ?: return@withContext null
         NodeStatus(
+            url = url,
             chainId = ledger.chain_id.toString(),
             blockNumber = ledger.ledger_version,
             inSync = true,

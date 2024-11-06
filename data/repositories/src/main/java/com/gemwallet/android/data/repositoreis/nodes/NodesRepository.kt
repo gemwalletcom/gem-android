@@ -23,8 +23,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import uniffi.Gemstone.Config
-import uniffi.Gemstone.NodePriority
+import uniffi.gemstone.Config
+import uniffi.gemstone.NodePriority
 import kotlin.collections.groupBy
 import kotlin.collections.map
 

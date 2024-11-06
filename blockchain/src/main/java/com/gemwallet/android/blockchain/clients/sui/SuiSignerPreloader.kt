@@ -15,19 +15,19 @@ import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import uniffi.Gemstone.SuiCoin
-import uniffi.Gemstone.SuiGas
-import uniffi.Gemstone.SuiObjectRef
-import uniffi.Gemstone.SuiStakeInput
-import uniffi.Gemstone.SuiTokenTransferInput
-import uniffi.Gemstone.SuiTransferInput
-import uniffi.Gemstone.SuiTxOutput
-import uniffi.Gemstone.SuiUnstakeInput
-import uniffi.Gemstone.suiEncodeSplitStake
-import uniffi.Gemstone.suiEncodeTokenTransfer
-import uniffi.Gemstone.suiEncodeTransfer
-import uniffi.Gemstone.suiEncodeUnstake
-import uniffi.Gemstone.suiValidateAndHash
+import uniffi.gemstone.SuiCoin
+import uniffi.gemstone.SuiGas
+import uniffi.gemstone.SuiObjectRef
+import uniffi.gemstone.SuiStakeInput
+import uniffi.gemstone.SuiTokenTransferInput
+import uniffi.gemstone.SuiTransferInput
+import uniffi.gemstone.SuiTxOutput
+import uniffi.gemstone.SuiUnstakeInput
+import uniffi.gemstone.suiEncodeSplitStake
+import uniffi.gemstone.suiEncodeTokenTransfer
+import uniffi.gemstone.suiEncodeTransfer
+import uniffi.gemstone.suiEncodeUnstake
+import uniffi.gemstone.suiValidateAndHash
 import wallet.core.jni.Base64
 import java.math.BigInteger
 
@@ -107,7 +107,7 @@ class SuiSignerPreloader(
             sender = sender,
             recipient = recipient,
             amount = value.toLong().toULong(),
-            coins = coins.map { it.toGemstone() },
+            coins = coins.map { it.togemstone() },
             sendMax = sendMax,
             gas = SuiGas(
                 budget = gasBudget(coinType).toLong().toULong(),
@@ -140,12 +140,12 @@ class SuiSignerPreloader(
             sender = sender,
             recipient = recipient,
             amount = value.toLong().toULong(),
-            tokens = coins.map { it.toGemstone() },
+            tokens = coins.map { it.togemstone() },
             gas = SuiGas(
                 budget = gasBudget(gasCoinType).toLong().toULong(),
                 price = gasPrice.toULong(),
             ),
-            gasCoin = gas.toGemstone(),
+            gasCoin = gas.togemstone(),
         )
         suiEncodeTokenTransfer(input)
     }
@@ -164,7 +164,7 @@ class SuiSignerPreloader(
             sender = sender,
             validator = validator,
             stakeAmount = value.toLong().toULong(),
-            coins = coins.map { it.toGemstone() },
+            coins = coins.map { it.togemstone() },
             gas = SuiGas(
                 budget = gasBudget(coinType).toLong().toULong(),
                 price = gasPrice.toULong(),
@@ -192,7 +192,7 @@ class SuiSignerPreloader(
                 digest = suiObject.data.digest,
                 version = suiObject.data.version.toULong(),
             ),
-            gasCoin = coins.map { it.toGemstone() }.first(),
+            gasCoin = coins.map { it.togemstone() }.first(),
             gas = SuiGas(
                 budget = gasBudget(coinType).toLong().toULong(),
                 price = gasPrice.toULong(),
@@ -212,7 +212,7 @@ class SuiSignerPreloader(
         override fun fee(speed: TxSpeed): Fee = fee
     }
     
-    private fun com.wallet.core.blockchain.sui.SuiCoin.toGemstone() = SuiCoin(
+    private fun com.wallet.core.blockchain.sui.SuiCoin.togemstone() = SuiCoin(
         coinType = coinType,
         balance = balance.toULong(),
         objectRef = SuiObjectRef(

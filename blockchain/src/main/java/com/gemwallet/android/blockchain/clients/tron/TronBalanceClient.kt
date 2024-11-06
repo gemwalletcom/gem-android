@@ -1,9 +1,11 @@
 package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.blockchain.clients.BalanceClient
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
-import com.gemwallet.android.model.Balances
+import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.blockchain.tron.models.TronAccountRequest
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import wallet.core.jni.Base58
@@ -14,20 +16,20 @@ class TronBalanceClient(
     private val rpcClient: TronRpcClient,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(address: String): Balances? {
+    override suspend fun getNativeBalance(address: String): AssetBalance? {
         return rpcClient.getAccount(TronAccountRequest(address, visible = true))
             .fold(
                 {
-                    Balances.create(AssetId(chain), BigInteger.valueOf(it.balance?.toLong() ?: 0L))
+                    AssetBalance.create(chain.asset(), it.balance?.toLong()?.toString() ?: return null)
                 }
             ) {
                 null
             }
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<AssetId>): List<Balances> {
-        return tokens.mapNotNull { assetId ->
-            val tokenId = assetId.tokenId ?: return@mapNotNull null
+    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> {
+        return tokens.mapNotNull { token ->
+            val tokenId = token.id.tokenId ?: return@mapNotNull null
             val owner = Base58.decode(address).toHexString("")
             rpcClient.triggerSmartContract(
                 contractAddress = Base58.decode(tokenId).toHexString(""),
@@ -40,7 +42,7 @@ class TronBalanceClient(
             ).fold(
                 {
                     val amount = BigInteger(it.constant_result?.firstOrNull() ?: "0", 16)
-                    Balances.create(assetId, amount)
+                    AssetBalance.create(token, amount.toString())
                 }
             ) {
                 null

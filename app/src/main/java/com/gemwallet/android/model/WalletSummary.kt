@@ -7,7 +7,7 @@ data class WalletSummary(
     val icon: String,
     val name: String,
     val type: WalletType,
-    val totalValue: Fiat,
-    val changedValue: Fiat,
+    val totalValue: Double,
+    val changedValue: Double,
     val changedPercentages: Double,
 )

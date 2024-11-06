@@ -52,7 +52,7 @@ import com.wallet.core.primitives.Node
 fun NetworkScene(
     state: NetworksUIState,
     nodes: List<Node>,
-    nodeStates: Map<String, NodeStatus?>,
+    nodeStates: List<NodeStatus?>,
     isRefreshing: Boolean,
     onRefresh: () -> Unit,
     onSelectNode: (Node) -> Unit,
@@ -98,7 +98,7 @@ fun NetworkScene(
                         chain = state.chain,
                         node = node,
                         selected = state.currentNode?.url == node.url,
-                        nodeStatus = nodeStates[node.url],
+                        nodeStatus = nodeStates.firstOrNull { it?.url == node.url }, // TODO: Out to viewmodel with viewmodel and data
                         onSelect = onSelectNode,
                     )
                 }

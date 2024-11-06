@@ -64,6 +64,7 @@ fun Chain.eip1559Support() = when (this) {
     Chain.Injective,
     Chain.Noble,
     Chain.Near,
+    Chain.World,
     Chain.Xrp -> false
 }
 
@@ -71,7 +72,7 @@ fun Chain.Companion.findByString(value: String): Chain? {
     return Chain.entries.firstOrNull{ it.string == value}
 }
 
-fun Chain.Companion.exclude() = setOf(Chain.Celo)
+fun Chain.Companion.exclude() = setOf(Chain.Celo, Chain.World)
 
 fun Chain.Companion.available() = (Chain.entries.toSet() - exclude())
 

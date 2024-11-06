@@ -45,17 +45,19 @@ interface AssetsDao {
     @Query("SELECT * FROM asset_info WHERE chain = :chain AND id = :assetId")
     fun getAssetInfo(assetId: String, chain: Chain): Flow<List<DbAssetInfo>>
 
-    @Query("SELECT * FROM asset_info")
+    @Query("SELECT * FROM asset_info WHERE sessionId = 1 ORDER BY balanceFiatTotalAmount DESC")
     fun getAssetsInfo(): Flow<List<DbAssetInfo>>
 
-    @Query("SELECT * FROM asset_info WHERE id IN (:ids)")
+    @Query("SELECT * FROM asset_info WHERE id IN (:ids) ORDER BY balanceFiatTotalAmount DESC")
     fun getAssetsInfo(ids: List<String>): Flow<List<DbAssetInfo>>
 
     @Query("""
         SELECT * FROM asset_info WHERE
-            id LIKE '%' || :query || '%'
+            sessionId = 1 AND
+            (id LIKE '%' || :query || '%'
             OR symbol LIKE '%' || :query || '%'
-            OR name LIKE '%' || :query || '%' COLLATE NOCASE
+            OR name LIKE '%' || :query || '%' COLLATE NOCASE)
+            ORDER BY balanceFiatTotalAmount DESC
         """)
     fun searchAssetInfo(query: String): Flow<List<DbAssetInfo>>
 

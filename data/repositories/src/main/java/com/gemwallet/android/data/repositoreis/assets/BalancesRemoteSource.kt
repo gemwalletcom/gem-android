@@ -3,9 +3,9 @@ package com.gemwallet.android.data.repositoreis.assets
 import com.gemwallet.android.blockchain.clients.BalanceClient
 import com.gemwallet.android.blockchain.clients.getClient
 import com.gemwallet.android.ext.type
-import com.gemwallet.android.model.Balances
+import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Account
-import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetSubtype
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -18,7 +18,7 @@ class BalancesRemoteSource @Inject constructor(
     private val balanceClients: List<BalanceClient>,
 ) {
 
-    suspend fun getBalances(account: Account, tokens: List<AssetId>): List<Balances> = withContext(Dispatchers.IO) {
+    suspend fun getBalances(account: Account, tokens: List<Asset>): List<AssetBalance> = withContext(Dispatchers.IO) {
         val client = balanceClients.getClient(account.chain) ?: return@withContext emptyList()
 
         val nativeBalances = async {
@@ -30,10 +30,10 @@ class BalancesRemoteSource @Inject constructor(
         }
 
         val tokensBalances = async {
-            val ids = tokens.filter { it.type() == AssetSubtype.TOKEN && account.chain == it.chain }
+            val tokens = tokens.filter { it.id.type() == AssetSubtype.TOKEN && account.chain == it.id.chain }
                 .ifEmpty { return@async emptyList() }
             try {
-                client.getTokenBalances(account.address, ids)
+                client.getTokenBalances(account.address, tokens)
             } catch (_: Throwable) {
                 emptyList()
             }

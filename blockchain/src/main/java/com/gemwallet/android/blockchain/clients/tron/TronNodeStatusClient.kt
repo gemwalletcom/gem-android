@@ -14,6 +14,7 @@ class TronNodeStatusClient(
     override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
         val resp = rpcClient.nowBlock("$url/wallet/getnowblock")
         NodeStatus(
+            url = url,
             blockNumber = resp.body()?.block_header?.raw_data?.number?.toString() ?: return@withContext null,
             inSync = true,
             chainId = "",

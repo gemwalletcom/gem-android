@@ -33,7 +33,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.settings.networks.viewmodels.AddNodeViewModel
-import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.MainActionButton
@@ -80,12 +79,7 @@ fun AddNodeScene(chain: Chain, onCancel: () -> Unit) {
         val asset = chain.asset()
         AssetListItem(
             modifier = Modifier.height(74.dp),
-            chain = asset.id.chain,
-            title = asset.name,
-            support = null,
-            assetType = asset.type,
-            iconUrl = asset.getIconUrl(),
-            badge = null,
+            asset = asset,
             dividerShowed = false,
         )
         UrlField(

@@ -5,8 +5,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.asset_select.components.ItemBalanceTrailing
 import com.gemwallet.android.features.swap.models.SwapPairSelect
+import com.gemwallet.android.ui.components.getBalanceInfo
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain
@@ -34,7 +34,7 @@ fun SelectSwapScreen(
             is SwapPairSelect.To -> stringResource(id = R.string.swap_you_receive)
         },
         titleBadge = { null },
-        itemTrailing = { ItemBalanceTrailing(it) },
+        itemTrailing = { getBalanceInfo(it)() },
         predicate = predicate,
         onSelect = { onSelect?.invoke(select.select(it)) },
         onCancel = onCancel,

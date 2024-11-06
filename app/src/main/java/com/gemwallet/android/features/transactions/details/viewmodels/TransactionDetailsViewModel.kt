@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
-import uniffi.Gemstone.Explorer
+import uniffi.gemstone.Explorer
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -61,12 +61,12 @@ class TransactionDetailsViewModel @Inject constructor(
         val feeAsset = transaction.feeAsset
         val value = Crypto(tx.value.toBigInteger())
         val fiat = transaction.price?.price?.let {
-            currency.format(value.convert(asset.decimals, it))
+            currency.format(value.convert(asset.decimals, it).atomicValue)
         } ?: ""
         val fee = Crypto(tx.fee.toBigInteger())
         val feeCrypto = feeAsset.format(fee)
         val feeFiat = transaction.feePrice?.price?.let {
-            currency.format(fee.convert(feeAsset.decimals, it))
+            currency.format(fee.convert(feeAsset.decimals, it).atomicValue)
         } ?: ""
         val blockExplorerName = getCurrentBlockExplorerCase.getCurrentBlockExplorer(transaction.asset.chain())
         val explorerUrl = Explorer(asset.chain().string).getTransactionUrl(blockExplorerName, tx.hash)

@@ -36,9 +36,6 @@ data class TronAccount (
 	val address: String? = null,
 	val active_permission: List<TronAccountPermission>? = null,
 	val votes: List<TronVote>? = null,
-	val allowance: Long? = null,
-	val net_usage: Int? = null,
-	val free_net_usage: Int? = null,
 	val frozenV2: List<TronFrozen>? = null,
 	val unfrozenV2: List<TronUnfrozen>? = null
 )
@@ -58,5 +55,10 @@ data class TronAccountUsage (
 @Serializable
 data class TronEmptyAccount (
 	val address: String? = null
+)
+
+@Serializable
+data class TronReward (
+	val reward: Long? = null
 )
 

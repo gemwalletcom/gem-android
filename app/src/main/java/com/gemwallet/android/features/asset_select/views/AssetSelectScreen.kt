@@ -8,6 +8,8 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
 import com.gemwallet.android.features.assets.model.AssetUIState
+import com.gemwallet.android.ui.models.AssetInfoUIModel
+import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import kotlinx.collections.immutable.toImmutableList
@@ -15,11 +17,11 @@ import kotlinx.collections.immutable.toImmutableList
 @Composable
 fun AssetSelectScreen(
     title: String = "",
-    titleBadge: (AssetUIState) -> String?,
+    titleBadge: (AssetItemUIModel) -> String?,
     onCancel: () -> Unit,
     onSelect: ((AssetId) -> Unit)? = null,
     predicate: (AssetId) -> Boolean = { true },
-    itemTrailing: (@Composable (AssetUIState) -> Unit)? = null,
+    itemTrailing: (@Composable (AssetItemUIModel) -> Unit)? = null,
     onAddAsset: (() -> Unit)? = null,
     viewModel: AssetSelectViewModel = hiltViewModel()
 ) {
@@ -31,7 +33,7 @@ fun AssetSelectScreen(
         titleBadge = titleBadge,
         support = { if (it.asset.id.type() == AssetSubtype.NATIVE) null else it.asset.id.chain.asset().name },
         query = viewModel.queryState,
-        assets = assets.filter { predicate(it.asset.id) }.toImmutableList(), // TODO: Empty balance???
+        assets = assets.filter { predicate(it.asset.id) }.toImmutableList(),
         state = uiStates,
         onSelect = onSelect,
         onCancel = onCancel,

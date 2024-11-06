@@ -121,6 +121,7 @@ fun NodeItemPreview() {
             ),
             selected = true,
             nodeStatus = NodeStatus(
+                url = "",
                 chainId = Chain.Ethereum.string,
                 blockNumber = "123902302938",
                 inSync = true,

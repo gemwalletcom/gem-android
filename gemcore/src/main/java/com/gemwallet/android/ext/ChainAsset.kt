@@ -240,5 +240,12 @@ fun Chain.asset(): Asset {
             decimals = 24,
             type = AssetType.NATIVE,
         )
+        Chain.World ->  Asset(
+            id = assetId,
+            name = "World",
+            symbol = "WRLD",
+            decimals = 24,
+            type = AssetType.NATIVE,
+        )
     }
 }

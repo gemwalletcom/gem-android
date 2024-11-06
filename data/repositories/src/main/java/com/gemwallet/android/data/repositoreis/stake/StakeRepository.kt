@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
-import uniffi.Gemstone.Config
+import uniffi.gemstone.Config
 import java.math.BigInteger
 
 class StakeRepository(
@@ -120,7 +120,7 @@ class StakeRepository(
 
     private suspend fun update(address: String, delegations: List<DelegationBase>) {
         if (delegations.isNotEmpty()) {
-            val baseDelegations = delegations.map { delegationMapper.asEntity(it) }
+            val baseDelegations = delegations.map { delegationMapper.asEntity(it, { address }) }
             stakeDao.update(baseDelegations)
         } else {
             stakeDao.deleteBaseDelegation(address)

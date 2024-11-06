@@ -1,9 +1,9 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.StakeClient
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.decodeHex
-import com.gemwallet.android.model.Balances
-import com.wallet.core.primitives.AssetId
+import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.DelegationBase
 import com.wallet.core.primitives.DelegationState
@@ -35,7 +35,7 @@ class SmartchainStakeClient(
         delegations + undelegations
     }
 
-    suspend fun getBalance(address: String, availableBalance: Balances?): Balances? = withContext(Dispatchers.IO) {
+    suspend fun getBalance(address: String, availableBalance: AssetBalance?): AssetBalance? = withContext(Dispatchers.IO) {
         if (availableBalance == null) {
             return@withContext null
         }
@@ -47,11 +47,11 @@ class SmartchainStakeClient(
         val staked = delegations.sumBalances()
         val pending = undelegations.sumBalances()
 
-        Balances.create(
-            assetId = AssetId(Chain.SmartChain),
-            available = availableBalance.available().atomicValue,
-            staked = staked,
-            pending = pending
+        AssetBalance.create(
+            asset = Chain.SmartChain.asset(),
+            available = availableBalance.balance.available,
+            staked = staked.toString(),
+            pending = pending.toString()
         )
     }
 
@@ -70,7 +70,7 @@ class SmartchainStakeClient(
     }
 
     private fun List<DelegationBase>.sumBalances(): BigInteger = filter { it.state == DelegationState.Active }
-        .map { try { it.balance.toBigInteger() } catch (err: Throwable) { BigInteger.ZERO} }
+        .map { try { it.balance.toBigInteger() } catch (_: Throwable) { BigInteger.ZERO} }
         .fold(BigInteger.ZERO) {
                 acc, value -> acc + value
         }

@@ -73,7 +73,7 @@ object DataModule {
     fun providesBroadcastProxy(
         rpcClients: RpcClientAdapter,
     ): BroadcastProxy = BroadcastProxy(
-        Chain.available().map {
+        Chain.available().mapNotNull {
             when (it) {
                 Chain.Doge,
                 Chain.Litecoin,
@@ -108,6 +108,7 @@ object DataModule {
                 Chain.Sui -> SuiBroadcastClient(it, rpcClients.getClient(it))
                 Chain.Xrp -> XrpBroadcastClient(it, rpcClients.getClient(it))
                 Chain.Near -> NearBroadcastClient(it, rpcClients.getClient(it))
+                Chain.World -> null
             }
         },
     )
@@ -117,7 +118,7 @@ object DataModule {
     fun provideSignerPreloader(
         rpcClients: RpcClientAdapter,
     ): SignerPreload = SignPreloaderProxy(
-        Chain.available().map {
+        Chain.available().mapNotNull {
             when (it) {
                 Chain.Doge,
                 Chain.Litecoin,
@@ -152,6 +153,7 @@ object DataModule {
                 Chain.Sui -> SuiSignerPreloader(it, rpcClients.getClient(it))
                 Chain.Xrp -> XrpSignerPreloader(it, rpcClients.getClient(it))
                 Chain.Near -> NearSignerPreloader(it, rpcClients.getClient(it))
+                Chain.World -> null
             }
         },
     )
@@ -203,7 +205,7 @@ object DataModule {
         rpcClients: RpcClientAdapter,
     ): NodeStatusClientsProxy {
         return NodeStatusClientsProxy(
-            Chain.available().map {
+            Chain.available().mapNotNull {
                 when (it) {
                     Chain.AvalancheC,
                     Chain.Base,
@@ -238,6 +240,7 @@ object DataModule {
                     Chain.Near -> NearNodeStatusClient(it, rpcClients.getClient(it))
                     Chain.Aptos -> AptosNodeStatusClient(it, rpcClients.getClient(it))
                     Chain.Sui -> SuiNodeStatusClient(it, rpcClients.getClient(it))
+                    Chain.World -> null
                 }
             }
         )

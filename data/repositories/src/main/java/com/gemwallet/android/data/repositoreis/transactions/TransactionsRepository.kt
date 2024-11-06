@@ -41,7 +41,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import uniffi.Gemstone.Config
+import uniffi.gemstone.Config
 import java.math.BigInteger
 
 class TransactionsRepository(

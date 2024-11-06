@@ -7,7 +7,6 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.Currency
-import java.math.BigInteger
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import kotlin.math.absoluteValue
@@ -26,18 +25,18 @@ data class AssetUIState(
 )
 
 fun AssetInfo.toUIModel(): AssetUIState {
-    val balances = balances.calcTotal()
+    val balances = this.balance.totalAmount
     val currency = price?.currency ?: Currency.USD
 
     return AssetUIState(
         asset = asset,
-        isZeroValue = balances.atomicValue == BigInteger.ZERO,
+        isZeroValue = balances == 0.0,
         value = asset.format(balances, 4),
         price = PriceUIState.create(price?.price, currency),
         fiat = if (price?.price == null || price!!.price.price == 0.0) {
             ""
         } else {
-            currency.format(balances.convert(asset.decimals, price!!.price.price))
+            currency.format(balance.fiatTotalAmount)
         },
         owner = owner.address,
         metadata = metadata,

@@ -26,7 +26,6 @@ import com.gemwallet.android.model.AssetBalance
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.AssetPriceInfo
 import com.gemwallet.android.model.Balance
-import com.gemwallet.android.model.Balances
 import com.gemwallet.android.model.SyncState
 import com.google.gson.Gson
 import com.wallet.core.primitives.Account
@@ -58,7 +57,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.math.BigInteger
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.map
@@ -256,7 +254,7 @@ class AssetsRepository @Inject constructor(
                 async {
                     if (isNew) {
                         val balances = updateBalances(it.first, emptyList()).firstOrNull()
-                        if ((balances?.calcTotal()?.atomicValue?.compareTo(BigInteger.ZERO) ?: 0) > 0) {
+                        if ((balances?.totalAmount ?: 0.0) > 0.0) {
                             setVisibility(wallet.id, it.second.id, true)
                         }
                     }
@@ -317,7 +315,7 @@ class AssetsRepository @Inject constructor(
             .getOrNull()?.prices ?: emptyList()
         pricesDao.insert(
             prices.map {
-                    price -> DbPrice(price.assetId, price.price, price.priceChangePercentage24h)
+                    price -> DbPrice(price.assetId, price.price, price.priceChangePercentage24h, currency.string)
             }
         )
     }
@@ -355,16 +353,29 @@ class AssetsRepository @Inject constructor(
         assetsDao.setConfig(config.copy(isVisible = visibility, isPinned = false))
     }
 
-    private suspend fun updateBalances(account: Account, tokens: List<AssetId>): List<Balances> {
+    private suspend fun updateBalances(account: Account, tokens: List<Asset>): List<AssetBalance> {
         val balances = balancesRemoteSource.getBalances(account, tokens)
         val updatedAt = System.currentTimeMillis()
         balancesDao.insert(
-            balances.map { it.items }.flatten().map {
+            balances.map {
                 DbBalance(
-                    assetId = it.assetId.toIdentifier(),
-                    address = account.address,
-                    type = it.balance.type,
-                    amount = it.balance.value,
+                    assetId = it.asset.id.toIdentifier(),
+                    owner = account.address,
+                    available = it.balance.available,
+                    availableAmount = it.balanceAmount.available,
+                    frozen = it.balance.frozen,
+                    frozenAmount = it.balanceAmount.frozen,
+                    locked = it.balance.locked,
+                    lockedAmount = it.balanceAmount.locked,
+                    staked = it.balance.staked,
+                    stakedAmount = it.balanceAmount.staked,
+                    pending = it.balance.pending,
+                    pendingAmount = it.balanceAmount.pending,
+                    rewards = it.balance.rewards,
+                    rewardsAmount = it.balanceAmount.rewards,
+                    reserved = "",
+                    reservedAmount = 0.0,
+                    totalAmount = it.totalAmount,
                     updatedAt = updatedAt,
                 )
             }
@@ -375,12 +386,12 @@ class AssetsRepository @Inject constructor(
     private fun onTransactions(txs: List<TransactionExtended>) = scope.launch {
         txs.map { tx ->
             async {
-                val tokens = mutableListOf<AssetId>().apply {
+                val tokens = mutableListOf<Asset>().apply {
                     if (tx.asset.id.type() == AssetSubtype.TOKEN) {
-                        add(tx.asset.id)
+                        add(tx.asset)
                     }
                     if (tx.feeAsset.id.type() == AssetSubtype.TOKEN) {
-                        add(tx.asset.id)
+                        add(tx.asset)
                     }
                 }
                 updateBalances(Account(tx.transaction.assetId.chain, tx.transaction.from, ""), tokens)
@@ -388,10 +399,10 @@ class AssetsRepository @Inject constructor(
         }.awaitAll()
     }
 
-    private suspend fun List<AssetInfo>.updateBalances(): List<Deferred<List<Balances>>> = withContext(Dispatchers.IO) {
+    private suspend fun List<AssetInfo>.updateBalances(): List<Deferred<List<AssetBalance>>> = withContext(Dispatchers.IO) {
         groupBy { it.owner.chain }
             .mapKeys { it.value.firstOrNull()?.owner }
-            .mapValues { entry -> entry.value.filter { it.metadata?.isEnabled == true }.map { it.asset.id } }
+            .mapValues { entry -> entry.value.filter { it.metadata?.isEnabled == true }.map { it.asset } }
             .mapNotNull { entry ->
                 val account = entry.key ?: return@mapNotNull null
                 if (entry.value.isEmpty()) {
@@ -412,7 +423,7 @@ class AssetsRepository @Inject constructor(
         }
         val balances = balancesDao.getByAssetId(addresses, dbAssetId)
         val prices = pricesDao.getByAssets(assets.map { it.id }).map {
-            AssetPriceInfo(price = AssetPrice(it.assetId, it.value, it.dayChanged), currency = Currency.USD)
+            AssetPriceInfo(price = AssetPrice(it.assetId, it.value ?: 0.0, it.dayChanged ?: 0.0), currency = Currency.USD)
         }
         assets.mapNotNull { asset ->
             val assetId = asset.id.toAssetId() ?: return@mapNotNull null
@@ -429,32 +440,58 @@ class AssetsRepository @Inject constructor(
         room: DbAsset,
         balances: List<DbBalance>,
         prices: List<AssetPriceInfo>
-    ) = AssetInfo(
-        owner = account,
-        asset = Asset(
+    ): AssetInfo {
+        val price = prices.firstOrNull { it.price.assetId == room.id}
+        val asset = Asset(
             id = assetId,
             name = room.name,
             symbol = room.symbol,
             decimals = room.decimals,
             type = room.type,
-        ),
-        balances = Balances(
-            balances
-                .filter { it.assetId == room.id && it.address == room.address }
-                .map { AssetBalance(assetId, Balance(value = it.amount, type = it.type)) }
-        ),
-        price = prices.firstOrNull { it.price.assetId ==  room.id},
-        metadata = AssetMetaData(
-            isEnabled = true, // TODO: Deprecated
-            isBuyEnabled = room.isBuyEnabled,
-            isSwapEnabled = room.isSwapEnabled,
-            isStakeEnabled = room.isStakeEnabled,
-            isPinned = false,
-        ),
-        links = if (room.links != null) gson.fromJson(room.links, AssetLinks::class.java) else null,
-        market = if (room.market != null) gson.fromJson(room.market, AssetMarket::class.java) else null,
-        rank = room.rank,
-    )
+        )
+        return AssetInfo(
+            owner = account,
+            asset = asset,
+            balance = balances
+                .filter { it.assetId == room.id && it.owner == room.address }
+                .map {
+                    AssetBalance(
+                        asset = asset,
+                        balance = Balance(
+                            available = it.available,
+                            frozen = it.frozen,
+                            locked = it.locked,
+                            staked = it.staked,
+                            pending = it.pending,
+                            rewards = it.rewards,
+                            reserved = it.reserved,
+                        ),
+                        balanceAmount = Balance(
+                            it.availableAmount,
+                            it.frozenAmount,
+                            it.lockedAmount,
+                            it.stakedAmount,
+                            it.pendingAmount,
+                            it.rewardsAmount,
+                            it.reservedAmount
+                        ),
+                        totalAmount = it.totalAmount,
+                        fiatTotalAmount = it.totalAmount * (price?.price?.price ?: 0.0)
+                    )
+                }.firstOrNull() ?: AssetBalance(asset),
+            price = price,
+            metadata = AssetMetaData(
+                isEnabled = true, // TODO: Deprecated
+                isBuyEnabled = room.isBuyEnabled,
+                isSwapEnabled = room.isSwapEnabled,
+                isStakeEnabled = room.isStakeEnabled,
+                isPinned = false,
+            ),
+            links = if (room.links != null) gson.fromJson(room.links, AssetLinks::class.java) else null,
+            market = if (room.market != null) gson.fromJson(room.market, AssetMarket::class.java) else null,
+            rank = room.rank,
+        )
+    }
 
     private fun modelToRoom(address: String, asset: Asset) = DbAsset(
         id = asset.id.toIdentifier(),

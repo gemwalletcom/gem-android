@@ -56,15 +56,14 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.WalletInfoUIState
 import com.gemwallet.android.features.assets.viewmodel.AssetsViewModel
-import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.DropDownContextItem
 import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.gemwallet.android.ui.theme.Spacer4
 import com.wallet.core.primitives.AssetId
 import sh.calvin.reorderable.ReorderableItem
@@ -206,7 +205,7 @@ private fun LazyListScope.assetsListFooter(
 
 @OptIn(ExperimentalFoundationApi::class)
 private fun LazyListScope.assets(
-    assets: List<AssetUIState>,
+    assets: List<AssetItemUIModel>,
     longPressState: MutableState<AssetId?>,
     isPinned: Boolean = false,
     reorderableListState: ReorderableLazyListState? = null,
@@ -258,7 +257,7 @@ private fun LazyListScope.assets(
 
 @Composable
 private fun AssetItem(
-    item: AssetUIState,
+    item: AssetItemUIModel,
     longPressState: MutableState<AssetId?>,
     modifier: Modifier = Modifier,
     iconModifier: Modifier = Modifier,
@@ -273,19 +272,7 @@ private fun AssetItem(
         isExpanded = longPressState.value == item.asset.id,
         imeCompensate = false,
         onDismiss = { longPressState.value = null },
-        content = {
-            AssetListItem(
-                assetId = item.asset.id,
-                title = item.asset.name,
-                iconUrl = item.asset.getIconUrl(),
-                iconModifier = iconModifier,
-                value = item.value,
-                assetType = item.asset.type,
-                isZeroValue = item.isZeroValue,
-                fiatAmount = item.fiat,
-                price = item.price,
-            )
-        },
+        content = { AssetListItem(item, iconModifier) },
         menuItems = {
             DropdownMenuItem(
                 text = { Text( text = stringResource(id = if (isPinned) R.string.common_unpin else R.string.common_pin)) },

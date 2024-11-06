@@ -6,7 +6,7 @@ import com.gemwallet.android.ext.toEVM
 import com.gemwallet.android.math.toHexString
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
-import uniffi.Gemstone.Config
+import uniffi.gemstone.Config
 import wallet.core.jni.AnyAddress
 import wallet.core.jni.CoinType
 import wallet.core.jni.EthereumAbi
@@ -54,7 +54,7 @@ class EvmSwapClient(
 
     override fun checkSpender(spender: String): Boolean {
         val evmChain = chain.toEVM() ?: throw Exception("Not EVM compatible chain!")
-        val oneinch = Config().getEvmChainConfig(evmChain.string).swapWhitelistContracts
+        val oneinch = "Config().getEvmChainConfig(evmChain.string).swapWhitelistContracts" // TODO Change swap to gemstone
         if (!oneinch.contains(spender)) {
             throw Exception("Not whitelisted spender $spender)")
         }

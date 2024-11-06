@@ -20,6 +20,7 @@ class CosmosNodeStatusClient(
         val nodeInfo = nodeInfoJob.await() ?: return@withContext null
 
         NodeStatus(
+            url = url,
             inSync = !(inSync.body()?.syncing ?: return@withContext null),
             blockNumber = nodeInfo.height,
             chainId = nodeInfo.chain_id,

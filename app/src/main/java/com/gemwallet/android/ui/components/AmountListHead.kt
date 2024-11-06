@@ -55,8 +55,8 @@ import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.headerIconSize
 import com.gemwallet.android.ui.theme.padding16
 import com.wallet.core.primitives.WalletType
-import uniffi.Gemstone.Config
-import uniffi.Gemstone.DocsUrl
+import uniffi.gemstone.Config
+import uniffi.gemstone.DocsUrl
 
 @Composable
 fun AmountListHead(

@@ -68,7 +68,6 @@ fun SwapListHead(
 @Composable
 private fun SwapItem(assetInfo: AssetInfo, value: String, currency: Currency?) {
     val asset = assetInfo.asset
-    val symbol = asset.symbol
     val decimals = asset.decimals
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -82,7 +81,7 @@ private fun SwapItem(assetInfo: AssetInfo, value: String, currency: Currency?) {
             )
             if (currency != null) {
                 Text(
-                    text = currency.format(Crypto(value).convert(decimals, assetInfo.price?.price?.price ?: 0.0)),
+                    text = currency.format(Crypto(value).convert(decimals, assetInfo.price?.price?.price ?: 0.0).atomicValue),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.secondary,
                     textAlign = TextAlign.Start

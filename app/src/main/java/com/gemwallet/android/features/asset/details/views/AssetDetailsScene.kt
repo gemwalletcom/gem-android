@@ -75,7 +75,7 @@ fun AssetDetailsScene(
     onChart: (AssetId) -> Unit,
     onStake: (AssetId) -> Unit,
 ) {
-    uniffi.Gemstone.AssetWrapper
+    uniffi.gemstone.AssetWrapper
     val viewModel: AssetInfoViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()

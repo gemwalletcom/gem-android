@@ -132,6 +132,7 @@ class TokensRepository (
         Chain.Doge,
         Chain.Aptos,
         Chain.Near,
+        Chain.World,
         Chain.Xrp -> null
     }
 }

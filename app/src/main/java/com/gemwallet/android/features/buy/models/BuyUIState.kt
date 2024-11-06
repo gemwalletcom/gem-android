@@ -1,6 +1,7 @@
 package com.gemwallet.android.features.buy.models
 
 import androidx.compose.runtime.Stable
+import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.FiatProvider
@@ -8,9 +9,7 @@ import com.wallet.core.primitives.FiatProvider
 sealed interface BuyUIState {
     data class Idle(
         val isQuoteLoading: Boolean = false,
-        val asset: Asset? = null,
-        val title: String = "",
-        val assetType: AssetType = AssetType.NATIVE,
+        val asset: AssetItemUIModel? = null,
         val cryptoAmount: String = "",
         val fiatAmount: String = "",
         val currentProvider: Provider? = null,

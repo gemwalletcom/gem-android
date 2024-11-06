@@ -21,6 +21,7 @@ class SolanaNodeStatusClient(
         val inSync = inSyncJob.await()
 
         NodeStatus(
+            url = url,
             inSync = inSync.body()?.result == "ok",
             blockNumber = slotJob.await().toString(),
             chainId = chainIdJob.await() ?: return@withContext null,

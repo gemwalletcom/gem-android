@@ -14,7 +14,8 @@ import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
-import com.gemwallet.android.features.assets.model.AssetUIState
+import com.gemwallet.android.ui.models.AssetInfoUIModel
+import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetSubtype
 
 @Composable
@@ -53,6 +54,6 @@ fun AssetsManageScreen(
     )
 }
 
-internal fun getAssetBadge(item: AssetUIState): String {
+internal fun getAssetBadge(item: AssetItemUIModel): String {
     return if (item.asset.symbol == item.asset.name) "" else item.asset.symbol
 }

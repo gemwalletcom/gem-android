@@ -67,6 +67,7 @@ object TokensModule {
                 Chain.Aptos,
                 Chain.Xrp,
                 Chain.Near -> null
+                Chain.World -> null
             }
         }
     )

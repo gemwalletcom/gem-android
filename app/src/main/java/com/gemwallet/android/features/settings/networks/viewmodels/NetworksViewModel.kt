@@ -83,6 +83,7 @@ class NetworksViewModel @Inject constructor(
             val statuses = ConcurrentHashMap<String, NodeStatus?>()
             nodes.forEach { node ->
                 statuses[node.url] = NodeStatus(
+                    url = node.url,
                     chainId = "",
                     blockNumber = "",
                     inSync = false,
@@ -92,24 +93,24 @@ class NetworksViewModel @Inject constructor(
             }
             send(statuses)
 
-            withContext(Dispatchers.IO) {
-                launch(Dispatchers.IO) {
-                    delay(300)
-                    isRefreshing.update { null }
-                }
-                nodes.map { node ->
-                    async(Dispatchers.IO) {
-                        val status = nodeStatusClients(chain, node.url)
-                        statuses[node.url] = status
-                        send(statuses.toImmutableMap())
-                    }
-                }.awaitAll()
-                send(statuses.toImmutableMap())
+            launch(Dispatchers.IO) {
+                delay(300)
+                isRefreshing.update { null }
             }
-
+            nodes.map { node ->
+                async(Dispatchers.IO) {
+                    val status = nodeStatusClients(chain, node.url)
+                    statuses[node.url] = status
+                    send(statuses.toImmutableMap())
+                }
+            }.awaitAll()
+            send(statuses.toImmutableMap())
         }
     }
-    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
+    .map {
+        it.values.toList()
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     init {
         viewModelScope.launch {

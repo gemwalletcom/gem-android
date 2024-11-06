@@ -16,16 +16,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.interactors.getSupportIconUrl
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.models.PriceUIModel
-import com.gemwallet.android.ui.theme.WalletTheme
-import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 
@@ -35,47 +33,20 @@ fun AssetListItem(
     modifier: Modifier = Modifier,
     iconModifier: Modifier = Modifier,
 ) {
-    AssetListItem(
+    ListItem(
         modifier = modifier,
         iconModifier = iconModifier,
-        assetId = uiModel.asset.id,
-        title = uiModel.name,
-        assetType = uiModel.asset.type,
         iconUrl = uiModel.assetIconUrl,
-        value = uiModel.cryptoFormatted,
-        isZeroValue = uiModel.isZeroAmount,
-        fiatAmount = uiModel.fiatFormatted,
-        price = uiModel.price,
-    )
-}
-
-@Composable
-fun AssetListItem(
-    assetId: AssetId,
-    title: String,
-    assetType: AssetType,
-    iconUrl: String,
-    value: String,
-    isZeroValue: Boolean,
-    fiatAmount: String,
-    modifier: Modifier = Modifier,
-    iconModifier: Modifier = Modifier,
-    price: PriceUIState? = null,
-) {
-    ListItem(
-        modifier = modifier,
-        iconModifier = iconModifier,
-        iconUrl = iconUrl,
-        supportIcon = if (assetType == AssetType.NATIVE) null else assetId.chain.getIconUrl(),
-        placeholder = title[0].toString(),
-        trailing = getBalanceInfo(isZeroValue, value, fiatAmount),
+        supportIcon = uiModel.assetNetworkIconUrl,
+        placeholder = uiModel.name[0].toString(),
+        trailing = getBalanceInfo(uiModel),
     ) {
-        val priceInfo: (@Composable () -> Unit)? = if (price == null || price.value.isEmpty()) {
+        val priceInfo: (@Composable () -> Unit)? = if (uiModel.price.fiatFormatted.isEmpty()) {
             null
         } else {
             {
                 PriceInfo(
-                    price = price,
+                    price = uiModel.price,
                     style = MaterialTheme.typography.bodyMedium,
                     internalPadding = 4.dp
                 )
@@ -83,7 +54,7 @@ fun AssetListItem(
         }
         ListItemTitle(
             modifier = Modifier.fillMaxHeight(),
-            title = title,
+            title = uiModel.name,
             subtitle = priceInfo,
         )
     }
@@ -91,51 +62,8 @@ fun AssetListItem(
 
 @Composable
 fun AssetListItem(
-    assetId: AssetId,
-    title: String,
-    assetType: AssetType,
-    iconUrl: String,
-    value: String,
-    isZeroValue: Boolean,
-    fiatAmount: String,
-    modifier: Modifier = Modifier,
-    iconModifier: Modifier = Modifier,
-    price: com.gemwallet.android.ui.models.PriceUIModel? = null,
-) {
-    ListItem(
-        modifier = modifier,
-        iconModifier = iconModifier,
-        iconUrl = iconUrl,
-        supportIcon = if (assetType == AssetType.NATIVE) null else assetId.chain.getIconUrl(),
-        placeholder = title[0].toString(),
-        trailing = getBalanceInfo(isZeroValue, value, fiatAmount),
-    ) {
-        val priceInfo: (@Composable () -> Unit)? = if (price == null || price.fiatFormatted.isEmpty()) {
-            null
-        } else {
-            {
-                PriceInfo(
-                    price = price,
-                    style = MaterialTheme.typography.bodyMedium,
-                    internalPadding = 4.dp
-                )
-            }
-        }
-        ListItemTitle(
-            modifier = Modifier.fillMaxHeight(),
-            title = title,
-            subtitle = priceInfo,
-        )
-    }
-}
-
-@Composable
-fun AssetListItem(
-    chain: Chain,
-    title: String,
+    uiModel: AssetItemUIModel,
     support: String?,
-    assetType: AssetType,
-    iconUrl: String,
     modifier: Modifier = Modifier,
     iconModifier: Modifier = Modifier,
     dividerShowed: Boolean = true,
@@ -145,15 +73,43 @@ fun AssetListItem(
     ListItem(
         modifier = modifier,
         iconModifier = iconModifier,
-        iconUrl = iconUrl,
-        supportIcon = if (assetType == AssetType.NATIVE) null else chain.getIconUrl(),
-        placeholder = title[0].toString(),
+        iconUrl = uiModel.assetIconUrl,
+        supportIcon = uiModel.assetNetworkIconUrl,
+        placeholder = uiModel.name[0].toString(),
         dividerShowed = dividerShowed,
         trailing = trailing
     ) {
         ListItemTitle(
             modifier = Modifier.fillMaxHeight(),
-            title = title,
+            title = uiModel.name,
+            titleBudge = { Badge(text = badge) },
+            subtitle = support,
+        )
+    }
+}
+
+@Composable
+fun AssetListItem(
+    asset: Asset,
+    modifier: Modifier = Modifier,
+    iconModifier: Modifier = Modifier,
+    dividerShowed: Boolean = true,
+    support: String? = null,
+    badge: String? = null,
+    trailing: (@Composable () -> Unit)? = null,
+) {
+    ListItem(
+        modifier = modifier,
+        iconModifier = iconModifier,
+        iconUrl = asset.getIconUrl(),
+        supportIcon = asset.getSupportIconUrl(),
+        placeholder = asset.name[0].toString(),
+        dividerShowed = dividerShowed,
+        trailing = trailing
+    ) {
+        ListItemTitle(
+            modifier = Modifier.fillMaxHeight(),
+            title = asset.name,
             titleBudge = { Badge(text = badge) },
             subtitle = support,
         )
@@ -173,38 +129,6 @@ fun Badge(text: String?) {
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.W400,
     )
-}
-
-@Composable
-fun PriceInfo(
-    price: PriceUIState,
-    modifier: Modifier = Modifier,
-    style: TextStyle = MaterialTheme.typography.bodyLarge,
-    isHighlightPercentage: Boolean = false,
-    internalPadding: Dp = 16.dp,
-) {
-    val color = priceColor(price.state)
-    Row(
-        modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Text(
-            text = price.value,
-            color = if (isHighlightPercentage) color else MaterialTheme.colorScheme.secondary,
-            style = style,
-        )
-        Spacer(modifier = Modifier.width(internalPadding))
-        Text(
-            modifier = if (isHighlightPercentage) {
-                Modifier.background(color.copy(alpha = 0.15f), MaterialTheme.shapes.small)
-            } else {
-                Modifier
-            }.padding(4.dp),
-            text = price.dayChanges,
-            color = color,
-            style = style,
-        )
-    }
 }
 
 @Composable
@@ -240,24 +164,20 @@ fun PriceInfo(
 }
 
 fun getBalanceInfo(uiModel: AssetItemUIModel): @Composable () -> Unit {
-    return getBalanceInfo(uiModel.isZeroAmount, uiModel.cryptoFormatted, uiModel.fiatFormatted)
-}
-
-fun getBalanceInfo(isZeroValue: Boolean, value: String, fiatAmount: String): @Composable () -> Unit {
     return (@Composable {
-        if (isZeroValue) {
+        if (uiModel.isZeroAmount) {
             ListItemTitle(
                 modifier = Modifier.defaultMinSize(minHeight = 40.dp),
-                title = value,
+                title = uiModel.cryptoFormatted,
                 color = MaterialTheme.colorScheme.secondary,
                 subtitle = "",
                 horizontalAlignment = Alignment.End,
             )
         } else {
             ListItemTitle(
-                title = value,
+                title = uiModel.cryptoFormatted,
                 color = MaterialTheme.colorScheme.onSurface,
-                subtitle = fiatAmount,
+                subtitle = uiModel.fiatFormatted,
                 horizontalAlignment = Alignment.End
             )
         }
@@ -304,46 +224,4 @@ fun priceColor(state: PriceState) = when (state) {
     PriceState.Up -> MaterialTheme.colorScheme.tertiary
     PriceState.Down -> MaterialTheme.colorScheme.error
     PriceState.None -> MaterialTheme.colorScheme.secondary
-}
-
-@Preview
-@Composable
-fun PreviewAssetListItem() {
-    WalletTheme {
-        AssetListItem(
-            assetId = AssetId(Chain.SmartChain),
-            title = "Foo Asset",
-            assetType = AssetType.BEP20,
-            iconUrl = "https://icon.net",
-            value = "888.9999",
-            isZeroValue = false,
-            fiatAmount = "8 888 999.999",
-            price = PriceUIState(
-                value = "88 0000$",
-                dayChanges = "1000%",
-                state = PriceState.Up,
-            )
-        )
-    }
-}
-
-@Preview
-@Composable
-fun PreviewAssetListItemWithBalance() {
-    WalletTheme {
-        AssetListItem(
-            assetId = AssetId(Chain.SmartChain),
-            title = "Foo Asset",
-            assetType = AssetType.BEP20,
-            iconUrl = "https://icon.net",
-            isZeroValue = false,
-            value = "10 BNB",
-            fiatAmount = "10000$",
-            price = PriceUIState(
-                value = "88 0000$",
-                dayChanges = "1000%",
-                state = PriceState.Up,
-            )
-        )
-    }
 }

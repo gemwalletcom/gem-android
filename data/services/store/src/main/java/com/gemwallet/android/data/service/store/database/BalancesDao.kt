@@ -19,9 +19,9 @@ interface BalancesDao {
     @Update
     fun update(balance: DbBalance)
 
-    @Query("SELECT * FROM balances WHERE address IN (:addresses)")
+    @Query("SELECT * FROM balances WHERE owner IN (:addresses)")
     fun getAllByOwner(addresses: List<String>): Flow<List<DbBalance>>
 
-    @Query("SELECT * FROM balances WHERE address IN (:addresses) AND asset_id IN (:assetId)")
+    @Query("SELECT * FROM balances WHERE owner IN (:addresses) AND asset_id IN (:assetId)")
     fun getByAssetId(addresses: List<String>, assetId: List<String>): List<DbBalance>
 }

@@ -15,7 +15,7 @@ import com.wallet.core.primitives.SolanaTokenProgramId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import uniffi.Gemstone.Config
+import uniffi.gemstone.Config
 
 class SolanaSignerPreloader(
     private val rpcClient: SolanaRpcClient,

@@ -1,8 +1,9 @@
 package com.gemwallet.android.blockchain.clients.ton
 
 import com.gemwallet.android.blockchain.clients.BalanceClient
-import com.gemwallet.android.model.Balances
-import com.wallet.core.primitives.AssetId
+import com.gemwallet.android.ext.asset
+import com.gemwallet.android.model.AssetBalance
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.asFlow
@@ -16,22 +17,22 @@ class TonBalanceClient(
     private val rpcClient: TonRpcClient,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(address: String): Balances? {
+    override suspend fun getNativeBalance(address: String): AssetBalance? {
         return rpcClient.balance(address)
-            .fold( { Balances.create(AssetId(chain), it.result.toBigInteger()) } ) { null }
+            .fold( { AssetBalance.create(chain.asset(), it.result) } ) { null }
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<AssetId>): List<Balances> {
+    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> {
         return tokens.asFlow()
             .mapNotNull {
-                val tokenId = it.tokenId ?: return@mapNotNull null
+                val tokenId = it.id.tokenId ?: return@mapNotNull null
                 val jettonAddress = jettonAddress(rpcClient, tokenId, address) ?: return@mapNotNull null
                 val isActive = rpcClient.addressState(jettonAddress).getOrNull()?.result == "active"
 
                 if (isActive) {
-                    Balances.create(it, tokenBalance(jettonAddress))
+                    AssetBalance.create(it, available = tokenBalance(jettonAddress).toString())
                 } else {
-                    Balances.create(it, BigInteger.ZERO)
+                    AssetBalance.create(it)
                 }
             }
             .flowOn(Dispatchers.IO)

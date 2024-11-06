@@ -29,7 +29,7 @@ class SyncTransactions @Inject constructor(
     suspend operator fun invoke(wallet: Wallet) = withContext(Dispatchers.IO) {
         val deviceId = configRepository.getDeviceId()
         val lastSyncTime = getTransactionsCase.getTransactions().firstOrNull()
-            ?.maxByOrNull { it.transaction.createdAt }?.transaction?.createdAt ?: 0L // TODO: Test it
+            ?.maxByOrNull { it.transaction.createdAt }?.transaction?.createdAt ?: 0L
 
         val txs = gemApiClient.getTransactions(deviceId, wallet.index, lastSyncTime)
             .getOrNull() ?: return@withContext

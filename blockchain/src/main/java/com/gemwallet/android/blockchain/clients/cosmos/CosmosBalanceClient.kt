@@ -1,8 +1,9 @@
 package com.gemwallet.android.blockchain.clients.cosmos
 
 import com.gemwallet.android.blockchain.clients.BalanceClient
-import com.gemwallet.android.model.Balances
-import com.wallet.core.primitives.AssetId
+import com.gemwallet.android.ext.asset
+import com.gemwallet.android.model.AssetBalance
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.CosmosDenom
 import kotlinx.coroutines.Dispatchers
@@ -15,8 +16,7 @@ class CosmosBalanceClient(
     private val rpcClient: CosmosRpcClient,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(address: String): Balances? = withContext(Dispatchers.IO) {
-        val assetId = AssetId(chain)
+    override suspend fun getNativeBalance(address: String): AssetBalance? = withContext(Dispatchers.IO) {
         val denom = CosmosDenom.from(chain)
 
         val getBalances = async { rpcClient.getBalance(address).getOrNull()?.balances }
@@ -27,7 +27,7 @@ class CosmosBalanceClient(
 
         when (chain) {
             Chain.Thorchain -> {
-                Balances.create(AssetId(chain), balance)
+                AssetBalance.create(chain.asset(), available =  balance.toString())
             }
             else -> {
                 val getDelegations = async { rpcClient.delegations(address).getOrNull()?.delegation_responses }
@@ -48,32 +48,30 @@ class CosmosBalanceClient(
                             .map { it.amount.toBigDecimal().toBigInteger() }
                             .reduceOrNull { acc, value -> acc + value}
                     }?.reduceOrNull { acc, value -> acc + value } ?: BigInteger.ZERO
-                Balances.create(
-                    assetId = assetId,
-                    available = balance,
-                    staked = delegations,
-                    pending = undelegations,
-                    rewards = rewards,
-                    locked = BigInteger.ZERO,
-                    frozen = BigInteger.ZERO,
+                AssetBalance.create(
+                    asset = chain.asset(),
+                    available = balance.toString(),
+                    staked = delegations.toString(),
+                    pending = undelegations.toString(),
+                    rewards = rewards.toString(),
                 )
             }
         }
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<AssetId>): List<Balances> {
+    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> {
         val balances = try {
             rpcClient.getBalance(address).getOrNull() ?: return emptyList()
-        } catch (err: Throwable) {
+        } catch (_: Throwable) {
             return emptyList()
         }
-        return tokens.map {  assetId ->
-            val amount = balances.balances.firstOrNull { it.denom == assetId.tokenId }?.amount ?: "0"
-            Balances.create(
-                assetId,
+        return tokens.map {  asset ->
+            val amount = balances.balances.firstOrNull { it.denom == asset.id.tokenId }?.amount ?: "0"
+            AssetBalance.create(
+                asset,
                 available = try {
-                    BigInteger(amount)
-                } catch (err: Throwable) {
+                    amount
+                } catch (_: Throwable) {
                     return@map null
                 }
             )

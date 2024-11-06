@@ -27,7 +27,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import uniffi.Gemstone.Config
+import uniffi.gemstone.Config
 import java.math.BigInteger
 import javax.inject.Inject
 

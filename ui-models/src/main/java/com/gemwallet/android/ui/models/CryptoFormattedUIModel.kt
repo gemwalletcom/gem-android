@@ -1,10 +1,15 @@
 package com.gemwallet.android.ui.models
 
+import com.gemwallet.android.model.cryptoFormat
 import com.gemwallet.android.model.format
+import java.math.BigDecimal
 
-interface CryptoFormattedUIModel : CryptoAmountUIModel,
-    com.gemwallet.android.ui.models.AssetUIModel {
-
+interface CryptoFormattedUIModel : CryptoAmountUIModel, AssetUIModel {
     val cryptoFormatted: String
-        get() = asset.format(crypto = crypto, decimalPlace = 6, dynamicPlace = true)
+        get() = cryptoFormat(
+            value = BigDecimal.valueOf(cryptoAmount),
+            symbol = asset.symbol,
+            decimalPlace = 6,
+            dynamicPlace = true
+        )
 }

@@ -38,8 +38,8 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
-import uniffi.Gemstone.Config
-import uniffi.Gemstone.DocsUrl
+import uniffi.gemstone.Config
+import uniffi.gemstone.DocsUrl
 
 @Composable
 fun TransactionDetails(

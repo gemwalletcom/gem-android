@@ -49,7 +49,7 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import uniffi.Gemstone.Config
+import uniffi.gemstone.Config
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -121,7 +121,7 @@ class AmountViewModel @Inject constructor(
             TransactionType.Transfer,
             TransactionType.Swap,
             TransactionType.TokenApproval,
-            TransactionType.StakeDelegate -> state.assetInfo.balances.available()
+            TransactionType.StakeDelegate -> Crypto(state.assetInfo.balance.balance.available)
             TransactionType.StakeRewards -> Crypto(BigInteger(delegation?.base?.rewards ?: "0"))
             TransactionType.StakeUndelegate,
             TransactionType.StakeRedelegate,
@@ -177,7 +177,7 @@ class AmountViewModel @Inject constructor(
     fun onMaxAmount() = viewModelScope.launch {
         val asset = state.value?.assetInfo ?: return@launch
         val balance = when (delegation.value) {
-            null -> asset.balances.available()
+            null -> Crypto(asset.balance.balance.available)
             else -> Crypto(delegation.value?.base?.balance?.toBigIntegerOrNull() ?: BigInteger.ZERO)
         }
 
@@ -245,7 +245,7 @@ class AmountViewModel @Inject constructor(
                 isMax = maxAmount.value,
             )
             TransactionType.StakeDelegate -> builder.delegate(validator?.id!!)
-            TransactionType.StakeUndelegate -> builder.undelegate(delegation!!) // TODO: ???
+            TransactionType.StakeUndelegate -> builder.undelegate(delegation!!)
             TransactionType.StakeRewards -> builder.rewards(
                 stakeRepository.getRewards(asset.id, state.assetInfo.owner.address).map { it.validator.id }
             )
@@ -289,7 +289,7 @@ class AmountViewModel @Inject constructor(
             ""
         } else {
             val unit = Crypto(amount.numberParse(), decimals).convert(decimals, price)
-            currency.format(unit)
+            currency.format(unit.atomicValue)
         }
     }
 
@@ -323,7 +323,7 @@ class AmountViewModel @Inject constructor(
             TransactionType.Swap,
             TransactionType.TokenApproval,
             TransactionType.StakeDelegate,
-            TransactionType.StakeRewards -> assetInfo.balances.available()
+            TransactionType.StakeRewards -> Crypto(assetInfo.balance.balance.available)
             TransactionType.StakeUndelegate,
             TransactionType.StakeRedelegate,
             TransactionType.StakeWithdraw -> Crypto(BigInteger(delegation?.base?.balance ?: "0"))
@@ -345,7 +345,7 @@ class AmountViewModel @Inject constructor(
     }
 
     fun setQrData(type: QrScanField, data: String, onConfirm: (ConfirmParams) -> Unit) {
-        val paymentWrapper = uniffi.Gemstone.paymentDecodeUrl(data)
+        val paymentWrapper = uniffi.gemstone.paymentDecodeUrl(data)
         val amount = paymentWrapper.amount
         val address = paymentWrapper.address
         val memo = paymentWrapper.memo

@@ -1,5 +1,8 @@
 package com.gemwallet.android.ui.models
 
-interface CryptoAmountUIModel : com.gemwallet.android.ui.models.UIModel {
-    val crypto: com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.Crypto
+import java.math.BigDecimal
+
+interface CryptoAmountUIModel : UIModel {
+    val cryptoAmount: Double
 }

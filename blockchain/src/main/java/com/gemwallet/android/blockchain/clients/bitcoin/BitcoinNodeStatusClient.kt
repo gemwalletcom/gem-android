@@ -20,6 +20,7 @@ class BitcoinNodeStatusClient(
         val chainId = chainIdJob.await()
 
         NodeStatus(
+            url = url,
             chainId = chainId.body()?.previousBlockHash ?: return@withContext null,
             blockNumber = nodeInfo.blockbook.bestHeight.toString(),
             inSync = nodeInfo.blockbook.inSync,

@@ -54,7 +54,8 @@ interface TokensDao {
             0 AS isBuyEnabled,
             0 AS isSwapEnabled,
             0 AS isStakeEnabled,
-            0 AS assetRank
+            0 AS assetRank,
+            0 AS sessionId
         FROM tokens, accounts
         JOIN wallets ON wallets.id = accounts.wallet_id
         WHERE

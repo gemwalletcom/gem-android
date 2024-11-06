@@ -3,7 +3,7 @@ package com.gemwallet.android.blockchain.clients.ton
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 
 internal suspend fun jettonAddress(rpcClient: TonRpcClient, tokenId: String, address: String): String? {
-    val data = uniffi.Gemstone.tonEncodeGetWalletAddress(address)
+    val data = uniffi.gemstone.tonEncodeGetWalletAddress(address)
     val response = rpcClient.getJetonAddress(
         JSONRpcRequest(
             method = "runGetMethod",
@@ -20,5 +20,5 @@ internal suspend fun jettonAddress(rpcClient: TonRpcClient, tokenId: String, add
         )
     )
     val result = response.getOrNull() ?: return null
-    return uniffi.Gemstone.tonDecodeJettonAddress(result.b64, result.len.toULong())
+    return uniffi.gemstone.tonDecodeJettonAddress(result.b64, result.len.toULong())
 }

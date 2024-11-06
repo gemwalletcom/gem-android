@@ -25,6 +25,7 @@ fun Chain.memo() = when (this) {
     Chain.Mantle,
     Chain.Celo,
     Chain.Near,
+    Chain.World,
     Chain.Arbitrum -> PayloadType.None
     Chain.Cosmos,
     Chain.Osmosis,

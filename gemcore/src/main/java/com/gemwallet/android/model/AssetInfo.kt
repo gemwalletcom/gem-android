@@ -11,7 +11,7 @@ import com.wallet.core.primitives.WalletType
 data class AssetInfo(
     val owner: Account,
     val asset: Asset,
-    val balances: Balances = Balances(),
+    val balance: AssetBalance = AssetBalance(asset),
     val walletType: WalletType = WalletType.view,
     val walletName: String = "",
     val price: AssetPriceInfo? = null,
@@ -27,13 +27,13 @@ data class AssetInfo(
     override fun equals(other: Any?): Boolean {
         return (other as? AssetInfo)?.let { info ->
             asset.same(info.asset)
-        } ?: false
+        } == true
     }
 
     override fun hashCode(): Int {
         var result = owner.hashCode()
         result = 31 * result + asset.hashCode()
-        result = 31 * result + balances.hashCode()
+        result = 31 * result + this@AssetInfo.balance.hashCode()
         result = 31 * result + walletType.hashCode()
         result = 31 * result + walletName.hashCode()
         result = 31 * result + (price?.hashCode() ?: 0)

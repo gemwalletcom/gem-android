@@ -5,18 +5,17 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
-import com.gemwallet.android.features.assets.model.AssetUIState
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.features.assets.model.WalletInfoUIState
-import com.gemwallet.android.features.assets.model.toUIModel
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.interactors.sync.SyncTransactions
 import com.gemwallet.android.model.AssetInfo
-import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.model.WalletSummary
 import com.gemwallet.android.model.format
+import com.gemwallet.android.ui.models.AssetInfoUIModel
+import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain
@@ -63,17 +62,17 @@ class AssetsViewModel @Inject constructor(
 
     private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAssetsInfo()
 
-    private val assets: StateFlow<List<AssetUIState>> = assetsState
+    private val assets: StateFlow<List<AssetItemUIModel>> = assetsState
         .map { handleAssets(it) }
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val pinnedAssets = assets.map { items ->
-        items.filter { asset -> asset.metadata?.isPinned ?: false }.sortedBy { it.position }
+        items.filter { asset -> asset.metadata?.isPinned == true }.sortedBy { it.position }
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val unpinnedAssets = assets.map { it.filter { asset -> !(asset.metadata?.isPinned ?: false) } }
+    val unpinnedAssets = assets.map { it.filter { asset -> asset.metadata?.isPinned != true } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val swapEnabled = assetsState.map {assets ->
@@ -119,13 +118,9 @@ class AssetsViewModel @Inject constructor(
         }
     }
 
-    private fun handleAssets(assets: List<AssetInfo>): ImmutableList<AssetUIState> {
-        return assets
-            .filter { asset -> asset.metadata?.isEnabled == true }
-            .sortedByDescending {
-                it.balances.calcTotal().convert(it.asset.decimals, it.price?.price?.price ?: 0.0).atomicValue
-            }
-            .map { it.toUIModel() }
+    private fun handleAssets(assets: List<AssetInfo>): ImmutableList<AssetItemUIModel> {
+        return assets.filter { asset -> asset.metadata?.isEnabled == true }
+            .map { AssetInfoUIModel(it) }
             .toImmutableList()
     }
 
@@ -139,10 +134,7 @@ class AssetsViewModel @Inject constructor(
 
     private fun calcWalletInfo(wallet: Wallet, assets: List<AssetInfo>): WalletSummary {
         val totals = assets.map {
-            val current = it.balances
-                .calcTotal()
-                .convert(it.asset.decimals, it.price?.price?.price ?: 0.0)
-                .atomicValue.toDouble()
+            val current = it.balance.fiatTotalAmount
             val changed = current * ((it.price?.price?.priceChangePercentage24h ?: 0.0) / 100)
             Pair(current, changed)
         }.fold(Pair(0.0, 0.0)) { acc, pair ->
@@ -158,13 +150,9 @@ class AssetsViewModel @Inject constructor(
                 wallet.accounts.firstOrNull()?.chain?.getIconUrl() ?: ""
             },
             type = wallet.type,
-            totalValue = Fiat(totals.first),
-            changedValue = Fiat(totals.second),
-            changedPercentages = if (changedPercentages.isNaN()) {
-                0.0
-            } else {
-                changedPercentages
-            },
+            totalValue = totals.first,
+            changedValue = totals.second,
+            changedPercentages = if (changedPercentages.isNaN()) 0.0 else changedPercentages,
         )
     }
 
@@ -175,7 +163,7 @@ class AssetsViewModel @Inject constructor(
         )
     }
 
-    fun saveOrder(pinnedAssets: List<AssetUIState>) = viewModelScope.launch {
+    fun saveOrder(pinnedAssets: List<AssetItemUIModel>) = viewModelScope.launch {
         assetsRepository.saveOrder(
             walletId = sessionRepository.getSession()?.wallet?.id ?: return@launch,
             order = pinnedAssets.map { it.asset.id }

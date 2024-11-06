@@ -42,14 +42,14 @@ const val CURRENT_WALLET_REQUEST = """SELECT wallet_id FROM session WHERE sessio
             feeAsset.type as feeType,
             feeAsset.symbol as feeSymbol,
             prices.value as assetPrice,
-            prices.dayChanged as assetPriceChanged,
+            prices.day_changed as assetPriceChanged,
             feePrices.value as feePrice,
-            feePrices.dayChanged as feePriceChanged
+            feePrices.day_changed as feePriceChanged
         FROM transactions as tx 
             INNER JOIN assets ON tx.assetId = assets.id 
             INNER JOIN assets as feeAsset ON tx.feeAssetId = feeAsset.id 
-            LEFT JOIN prices ON tx.assetId = prices.assetId
-            LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.assetId 
+            LEFT JOIN prices ON tx.assetId = prices.asset_id
+            LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.asset_id 
             WHERE tx.owner IN ($SESSION_REQUEST) OR tx.recipient in ($SESSION_REQUEST)
                 AND tx.walletId in ($CURRENT_WALLET_REQUEST)
             GROUP BY tx.id

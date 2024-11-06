@@ -26,6 +26,7 @@ class NearNodeStatusClient(
         }
         val block = getBlock.await()
         NodeStatus(
+            url = url,
             blockNumber = block.body()?.result?.header?.height?.toString() ?: return@withContext null,
             chainId = "",
             inSync = true,

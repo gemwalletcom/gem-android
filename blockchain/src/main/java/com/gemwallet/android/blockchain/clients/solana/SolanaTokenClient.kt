@@ -14,7 +14,7 @@ class SolanaTokenClient(
 ) : GetTokenClient {
 
     override suspend fun getTokenData(tokenId: String): Asset? {
-        val metadataKey = uniffi.Gemstone.solanaDeriveMetadataPda(tokenId)
+        val metadataKey = uniffi.gemstone.solanaDeriveMetadataPda(tokenId)
         val tokenInfo = rpcClient.getAccountInfoSpl(
             JSONRpcRequest(
                 SolanaMethod.GetAccountInfo.value,
@@ -38,7 +38,7 @@ class SolanaTokenClient(
                 )
             )
         ).getOrNull()?.result?.value?.data?.first() ?: return null
-        val metadata = uniffi.Gemstone.solanaDecodeMetadata(base64)
+        val metadata = uniffi.gemstone.solanaDecodeMetadata(base64)
         return Asset(
             id = AssetId(chain = chain, tokenId = tokenId),
             name = metadata.name,
