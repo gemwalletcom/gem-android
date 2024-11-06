@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">Privacy Lock</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">पुष्टि करना</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">छोडना</string>
+  <string name="common.warning">चेतावनी</string>
+  <string name="warnings.multi_signature_blocked">जब तक आप सुनिश्चित न हों कि आप निजी कुंजियों को नियंत्रित करते हैं, तब तक इस %s मल्टी-सिग्नेचर वॉलेट में धनराशि स्थानांतरित न करें। ऐसा न करने पर आप धोखाधड़ी के शिकार हो सकते हैं, और आप अपनी संपत्ति हमेशा के लिए खो सकते हैं।</string>
+  <string name="swap.price_impact">मूल्य प्रभाव</string>
 </resources>

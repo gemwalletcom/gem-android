@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">Privacy Lock</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Xác nhận</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">Nhảy</string>
+  <string name="common.warning">Cảnh báo</string>
+  <string name="warnings.multi_signature_blocked">Không chuyển tiền vào ví Đa chữ ký %s này trừ khi bạn chắc chắn mình kiểm soát được khóa riêng. Nếu không làm như vậy, bạn có thể bị lừa đảo và có thể mất vĩnh viễn tài sản của mình.</string>
+  <string name="swap.price_impact">Tác động giá</string>
 </resources>

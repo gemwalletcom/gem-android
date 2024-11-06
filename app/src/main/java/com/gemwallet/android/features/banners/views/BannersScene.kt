@@ -32,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.banners.viewmodels.BannersViewModel
+import com.gemwallet.android.interactors.chain
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AssetIcon
 import com.gemwallet.android.ui.theme.Spacer16
@@ -68,8 +69,10 @@ fun BannersScene(
                     stringResource(R.string.banner_enable_notifications_title, asset?.name ?: ""),
                     stringResource(R.string.banner_enable_notifications_description)
                 )
-
-                BannerEvent.AccountBlockedMultiSignature -> throw IllegalArgumentException()
+                BannerEvent.AccountBlockedMultiSignature -> Pair(
+                    stringResource(R.string.common_warning),
+                    stringResource(R.string.warnings_multi_signature_blocked, asset?.chain() ?: "")
+                )
             }
             BannerText(
                 title = title,

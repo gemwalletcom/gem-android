@@ -5,5 +5,5 @@ import com.wallet.core.primitives.Banner
 import com.wallet.core.primitives.Wallet
 
 interface GetBannersCase {
-    suspend fun getActiveBanners(wallet: Wallet?, asset: Asset?): Banner?
+    suspend fun getActiveBanners(wallet: Wallet?, asset: Asset?): List<Banner>
 }

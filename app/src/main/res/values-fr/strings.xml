@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">Privacy Lock</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Confirmer</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">Sauter</string>
+  <string name="common.warning">Avertissement</string>
+  <string name="warnings.multi_signature_blocked">Ne transférez pas de fonds vers ce portefeuille multisignature %s à moins d\'être certain de contrôler les clés privées. Le non-respect de cette règle pourrait vous exposer à des escroqueries et vous pourriez perdre définitivement vos actifs.</string>
+  <string name="swap.price_impact">Impact sur les prix</string>
 </resources>

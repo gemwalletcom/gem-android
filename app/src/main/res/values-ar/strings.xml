@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">Privacy Lock</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">يتأكد</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">يتخطى</string>
+  <string name="common.warning">تحذير</string>
+  <string name="warnings.multi_signature_blocked">لا تقم بتحويل الأموال إلى محفظة التوقيعات المتعددة %s هذه إلا إذا كنت متأكدًا من أنك تتحكم في المفاتيح الخاصة. قد يؤدي عدم القيام بذلك إلى تعريضك للاحتيال، وقد تفقد أصولك بشكل دائم.</string>
+  <string name="swap.price_impact">تأثير السعر</string>
 </resources>

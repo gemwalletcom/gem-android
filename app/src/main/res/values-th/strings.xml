@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">Privacy Lock</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">ยืนยัน</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">ข้าม</string>
+  <string name="common.warning">คำเตือน</string>
+  <string name="warnings.multi_signature_blocked">อย่าโอนเงินไปยังกระเป๋าเงินหลายลายเซ็น %s นี้ เว้นแต่คุณจะแน่ใจว่าคุณควบคุมคีย์ส่วนตัวได้ การไม่ทำเช่นนั้นอาจทำให้คุณตกเป็นเหยื่อของการหลอกลวง และคุณอาจสูญเสียทรัพย์สินของคุณไปอย่างถาวร</string>
+  <string name="swap.price_impact">ผลกระทบต่อราคา</string>
 </resources>

@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">Privacy Lock</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">確認する</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">スキップ</string>
+  <string name="common.warning">警告</string>
+  <string name="warnings.multi_signature_blocked">秘密鍵を確実に管理していない限り、この%sマルチ署名ウォレットに資金を送金しないでください。そうしないと、詐欺に遭う可能性があり、資産を永久に失う可能性があります。</string>
+  <string name="swap.price_impact">価格の影響</string>
 </resources>

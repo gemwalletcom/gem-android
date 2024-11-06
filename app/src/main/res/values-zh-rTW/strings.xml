@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">隱私鎖</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">確認</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">跳過</string>
+  <string name="common.warning">警告</string>
+  <string name="warnings.multi_signature_blocked">除非您確定您控制著私鑰，否則請勿將資金轉移到此%s多重簽名錢包。如果不這樣做，您可能會遭受詐騙，並且您可能會永久失去您的資產。</string>
+  <string name="swap.price_impact">價格影響</string>
 </resources>

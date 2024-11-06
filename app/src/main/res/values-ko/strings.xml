@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">Privacy Lock</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">확인하다</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">건너뛰다</string>
+  <string name="common.warning">경고</string>
+  <string name="warnings.multi_signature_blocked">개인 키를 제어하고 있다는 확신이 없다면 이 %s 다중 서명 지갑으로 자금을 이체하지 마십시오. 그렇지 않으면 사기에 노출될 수 있으며 자산을 영구적으로 잃을 수 있습니다.</string>
+  <string name="swap.price_impact">가격 영향</string>
 </resources>

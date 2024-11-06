@@ -285,4 +285,7 @@
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Confirm</string>
   <string name="common.skip">Skip</string>
+  <string name="common.warning">Warning</string>
+  <string name="warnings.multi_signature_blocked">Do not transfer funds to this %s Multi-Signature wallet unless you are certain you control the private keys. Failure to do so could expose you to scams, and you may permanently lose your assets.</string>
+  <string name="swap.price_impact">Price Impact</string>
 </resources>

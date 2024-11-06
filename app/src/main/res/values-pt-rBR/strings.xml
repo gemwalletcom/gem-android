@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">Bloqueio de privacidade</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Confirmar</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">Pular</string>
+  <string name="common.warning">Aviso</string>
+  <string name="warnings.multi_signature_blocked">Não transfira fundos para esta carteira %s Multi-Signature a menos que tenha certeza de que controla as chaves privadas. Não fazer isso pode expô-lo a golpes e você pode perder seus ativos permanentemente.</string>
+  <string name="swap.price_impact">Impacto no preço</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.repositoreis.banners
 
+import com.gemwallet.android.cases.banners.AddBannerCase
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
 import com.gemwallet.android.data.repositoreis.config.ConfigRepository
@@ -20,25 +21,34 @@ import kotlinx.coroutines.withContext
 class BannersRepository(
     private val bannersDao: BannersDao,
     private val configRepository: ConfigRepository
-) : GetBannersCase, CancelBannerCase {
+) : GetBannersCase, CancelBannerCase, AddBannerCase {
 
-    override suspend fun getActiveBanners(wallet: Wallet?, asset: Asset?): Banner? = withContext(Dispatchers.IO) {
+    override suspend fun getActiveBanners(wallet: Wallet?, asset: Asset?): List<Banner> = withContext(Dispatchers.IO) {
         val event = when {
             wallet == null && asset == null -> BannerEvent.EnableNotifications
             asset?.id?.toIdentifier() == Chain.Xrp.asset().id.toIdentifier() -> BannerEvent.AccountActivation
             asset?.isStackable() == true -> BannerEvent.Stake
-            else -> return@withContext null
+            else -> null
         }
-        if (isBannerAvailable(wallet, asset, event)) {
-            Banner(
-                wallet = wallet,
-                asset = asset,
-                event = event,
-                state = BannerState.Active,
-            )
-        } else {
-            null
-        }
+        val externalEvents = bannersDao.getBanner(
+            walletId = wallet?.id ?: "",
+            assetId = asset?.id?.toIdentifier() ?: "",
+            chain = asset?.id?.chain,
+        )
+            .map { it.event } + event
+        externalEvents.filterNotNull().mapNotNull {
+                if (isBannerAvailable(wallet, asset, it)) {
+                    Banner(
+                        wallet = wallet,
+                        asset = asset,
+                        event = it,
+                        state = BannerState.Active,
+                    )
+                } else {
+                    null
+                }
+            }
+
     }
 
     override suspend fun cancelBanner(banner: Banner) = withContext(Dispatchers.IO) {
@@ -47,6 +57,7 @@ class BannersRepository(
                 walletId = banner.wallet?.id ?: "",
                 assetId = banner.asset?.id?.toIdentifier() ?: "",
                 event = banner.event,
+                chain = banner.chain,
                 state = BannerState.Cancelled,
             )
         )
@@ -56,7 +67,23 @@ class BannersRepository(
         if (event == BannerEvent.EnableNotifications && configRepository.getLaunchNumber() < 3) {
             return false
         }
-        val dbBanner = bannersDao.getBanner(wallet?.id ?: "", asset?.id?.toIdentifier() ?: "", event)
+        val dbBanner = bannersDao.getBanner(wallet?.id ?: "", asset?.id?.toIdentifier() ?: "", asset?.id?.chain?.string, event)
         return dbBanner == null || dbBanner.state != BannerState.Cancelled
+    }
+
+    override suspend fun addBanner(
+        wallet: Wallet?,
+        asset: Asset?,
+        chain: Chain?,
+        event: BannerEvent
+    ) {
+        val banner = DbBanner(
+            walletId = wallet?.id ?: "",
+            assetId = asset?.id?.toIdentifier() ?: "",
+            chain = chain,
+            event = event,
+            state = BannerState.Active,
+        )
+        bannersDao.saveBanner(banner)
     }
 }

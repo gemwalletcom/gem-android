@@ -1,6 +1,8 @@
 package com.gemwallet.android.interactors
 
 import com.gemwallet.android.R
+import com.gemwallet.android.blockchain.clients.AddressStatusClient
+import com.gemwallet.android.blockchain.clients.getClient
 import com.gemwallet.android.blockchain.operators.InvalidPhrase
 import com.gemwallet.android.blockchain.operators.InvalidWords
 import com.gemwallet.android.blockchain.operators.PasswordStore
@@ -8,14 +10,18 @@ import com.gemwallet.android.blockchain.operators.StorePhraseOperator
 import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.blockchain.operators.ValidatePhraseOperator
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
+import com.gemwallet.android.cases.banners.AddBannerCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.interactors.sync.SyncSubscription
 import com.gemwallet.android.math.decodeHex
+import com.gemwallet.android.model.AddressStatus
+import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.Price
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import wallet.core.jni.PrivateKey
@@ -29,6 +35,8 @@ class PhraseAddressImportWalletOperator(
     private val addressValidate: ValidateAddressOperator,
     private val passwordStore: PasswordStore,
     private val syncSubscription: SyncSubscription,
+    private val addressStatusClients: List<AddressStatusClient>,
+    private val addBannerCase: AddBannerCase,
 ) : ImportWalletOperator {
     override suspend fun invoke(
         importType: ImportType,
@@ -47,6 +55,7 @@ class PhraseAddressImportWalletOperator(
         val wallet = result.getOrNull() ?: return Result.failure(Exception("Unknown error"))
         syncSubscription.invoke()
         assetsRepository.invalidateDefault(wallet, sessionRepository.getSession()?.currency ?: Currency.USD)
+        checkAddresses(wallet)
         sessionRepository.setWallet(wallet)
         return Result.success(wallet)
     }
@@ -102,6 +111,17 @@ class PhraseAddressImportWalletOperator(
         } else {
             walletsRepository.removeWallet(wallet.id)
             Result.failure(storeResult.exceptionOrNull() ?: ImportError.CreateError("Unknown error"))
+        }
+    }
+
+    private suspend fun checkAddresses(wallet: Wallet) {
+        wallet.accounts.forEach {
+            val statuses = addressStatusClients.getClient(it.chain)?.getAddressStatus(it.address) ?: emptyList()
+            for (status in statuses) {
+                if (status == AddressStatus.MultiSignature) {
+                    addBannerCase.addBanner(wallet = wallet, chain = it.chain, event = BannerEvent.AccountBlockedMultiSignature)
+                }
+            }
         }
     }
 }

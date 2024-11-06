@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">Privacy Lock</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Mengonfirmasi</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">Melewati</string>
+  <string name="common.warning">Peringatan</string>
+  <string name="warnings.multi_signature_blocked">Jangan mentransfer dana ke dompet Multi-Signature %s ini kecuali Anda yakin bahwa Anda memegang kunci pribadi. Kegagalan untuk melakukannya dapat membuat Anda rentan terhadap penipuan, dan Anda dapat kehilangan aset Anda secara permanen.</string>
+  <string name="swap.price_impact">Dampak Harga</string>
 </resources>

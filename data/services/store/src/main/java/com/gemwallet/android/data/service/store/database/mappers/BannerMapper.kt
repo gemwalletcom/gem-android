@@ -13,6 +13,7 @@ class BannerMapper : Mapper<DbBanner, Banner, Nothing, Nothing> {
         return DbBanner(
             walletId = domain.wallet?.id ?: "",
             assetId = domain.asset?.id?.toIdentifier() ?: "",
+            chain = domain.chain,
             event = domain.event,
             state = domain.state,
         )

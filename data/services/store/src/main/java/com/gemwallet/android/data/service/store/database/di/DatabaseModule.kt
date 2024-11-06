@@ -4,7 +4,6 @@ import android.content.Context
 import androidx.room.Room
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
-import androidx.sqlite.execSQL
 import com.gemwallet.android.data.service.store.database.AccountsDao
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.BalancesDao
@@ -71,6 +70,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_33_34)
         .addMigrations(MIGRATION_34_35)
         .addMigrations(MIGRATION_35_36)
+        .addMigrations(MIGRATION_36_37)
         .build()
 
     @Singleton
@@ -931,5 +931,12 @@ val MIGRATION_35_36 = object : Migration(35, 36) {
             |        LEFT JOIN prices ON assets.id = prices.asset_id AND prices.currency = (SELECT currency FROM session WHERE id = 1)
             |        LEFT JOIN asset_config ON assets.id = asset_config.asset_id AND wallets.id = asset_config.wallet_id
             """.trimMargin())
+    }
+}
+
+val MIGRATION_36_37 = object : Migration(36, 37) {
+
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("ALTER TABLE banners ADD COLUMN chain TEXT")
     }
 }

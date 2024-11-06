@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">Privacy Lock</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">לְאַשֵׁר</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">לְדַלֵג</string>
+  <string name="common.warning">אַזהָרָה</string>
+  <string name="warnings.multi_signature_blocked">אל תעביר כספים לארנק ריבוי חתימות %s זה אלא אם אתה בטוח שאתה שולט במפתחות הפרטיים. אם לא תעשה זאת, תוכל לחשוף אותך להונאות, ואתה עלול לאבד לצמיתות את הנכסים שלך.</string>
+  <string name="swap.price_impact">השפעת המחיר</string>
 </resources>

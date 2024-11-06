@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">Privacy Lock</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Potwierdzać</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">Pominąć</string>
+  <string name="common.warning">Ostrzeżenie</string>
+  <string name="warnings.multi_signature_blocked">Nie przelewaj środków do tego portfela Multi-Signature %s chyba że masz pewność, że kontrolujesz klucze prywatne. Niedopełnienie tego obowiązku może narazić Cię na oszustwa i możesz trwale utracić swoje aktywa.</string>
+  <string name="swap.price_impact">Wpływ na cenę</string>
 </resources>

@@ -29,8 +29,8 @@ class BannersViewModel @Inject constructor(
             sessionRepository.getSession()?.wallet
         }
         viewModelScope.launch {
-            val banner = getBannersCase.getActiveBanners(wallet, asset)
-            banners.update { listOf(banner).mapNotNull { it } }
+            val banners = getBannersCase.getActiveBanners(wallet, asset)
+            this@BannersViewModel.banners.update { banners }
         }
     }
 

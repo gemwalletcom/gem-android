@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">Privacy Lock</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">تایید کنید</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">پرش کنید</string>
+  <string name="common.warning">هشدار</string>
+  <string name="warnings.multi_signature_blocked">وجه را به این کیف پول چند امضایی %s منتقل نکنید، مگر اینکه مطمئن باشید کلیدهای خصوصی را کنترل می کنید. عدم انجام این کار می تواند شما را در معرض کلاهبرداری قرار دهد و ممکن است برای همیشه دارایی های خود را از دست بدهید.</string>
+  <string name="swap.price_impact">تاثیر قیمت</string>
 </resources>

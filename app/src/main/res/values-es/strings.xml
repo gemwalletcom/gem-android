@@ -284,5 +284,8 @@
   <string name="lock.privacy_lock">Privacy Lock</string>
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Confirmar</string>
-  <string name="common.skip">Skip</string>
+  <string name="common.skip">Saltar</string>
+  <string name="common.warning">Advertencia</string>
+  <string name="warnings.multi_signature_blocked">No transfiera fondos a esta billetera multifirma %s a menos que esté seguro de que controla las claves privadas. Si no lo hace, podría exponerse a estafas y perder sus activos de forma permanente.</string>
+  <string name="swap.price_impact">Impacto en el precio</string>
 </resources>

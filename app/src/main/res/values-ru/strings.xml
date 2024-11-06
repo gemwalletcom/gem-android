@@ -285,4 +285,7 @@
   <string name="receive.your_address">Ваш адрес для получения</string>
   <string name="verify_phrase.title">Подтвердите</string>
   <string name="common.skip">Пропустить</string>
+  <string name="common.warning">Внимание</string>
+  <string name="warnings.multi_signature_blocked">Не переводите средства на этот %s кошелек Multi-Signature, если вы не уверены, что контролируете закрытые ключи. Невыполнение этого требования может подвергнуть вас мошенничеству, и вы можете навсегда потерять свои активы.</string>
+  <string name="swap.price_impact">Влияние цены</string>
 </resources>

@@ -285,4 +285,7 @@
   <string name="receive.your_address">Ваша адреса для отримання</string>
   <string name="verify_phrase.title">Підтвердити</string>
   <string name="common.skip">Пропустити</string>
+  <string name="common.warning">УВАГА</string>
+  <string name="warnings.multi_signature_blocked">Не переказуйте кошти на цей %s гаманець Multi-Signature, якщо ви не впевнені, що контролюєте закриті ключі. Якщо цього не зробити, ви можете стати жертвою шахрайства та назавжди втратити свої активи.</string>
+  <string name="swap.price_impact">Вплив ціни</string>
 </resources>
