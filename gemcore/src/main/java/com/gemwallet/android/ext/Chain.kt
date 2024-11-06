@@ -1,5 +1,7 @@
 package com.gemwallet.android.ext
 
+import com.wallet.core.primitives.Asset
+import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import java.math.BigInteger
 
@@ -46,6 +48,7 @@ fun Chain.eip1559Support() = when (this) {
     Chain.Linea,
     Chain.Mantle,
     Chain.Celo,
+    Chain.World,
     Chain.Ethereum -> true
     Chain.Bitcoin,
     Chain.Litecoin,
@@ -64,15 +67,25 @@ fun Chain.eip1559Support() = when (this) {
     Chain.Injective,
     Chain.Noble,
     Chain.Near,
-    Chain.World,
     Chain.Xrp -> false
+}
+
+fun Chain.asset(): Asset {
+    val wrapper = uniffi.gemstone.assetWrapper(string)
+    return Asset(
+        id = wrapper.id.toAssetId() ?: throw IllegalArgumentException(),
+        name = wrapper.name,
+        symbol = wrapper.symbol,
+        decimals = wrapper.decimals,
+        type = AssetType.entries.firstOrNull { string == wrapper.assetType } ?: AssetType.NATIVE
+    )
 }
 
 fun Chain.Companion.findByString(value: String): Chain? {
     return Chain.entries.firstOrNull{ it.string == value}
 }
 
-fun Chain.Companion.exclude() = setOf(Chain.Celo, Chain.World)
+fun Chain.Companion.exclude() = setOf(Chain.Celo)
 
 fun Chain.Companion.available() = (Chain.entries.toSet() - exclude())
 

@@ -93,6 +93,7 @@ object DataModule {
                 Chain.Linea,
                 Chain.Mantle,
                 Chain.Celo,
+                Chain.World,
                 Chain.Ethereum -> EvmBroadcastClient(it, rpcClients.getClient(it))
                 Chain.Solana -> SolanaBroadcastClient(rpcClients.getClient(Chain.Solana))
                 Chain.Thorchain,
@@ -108,7 +109,6 @@ object DataModule {
                 Chain.Sui -> SuiBroadcastClient(it, rpcClients.getClient(it))
                 Chain.Xrp -> XrpBroadcastClient(it, rpcClients.getClient(it))
                 Chain.Near -> NearBroadcastClient(it, rpcClients.getClient(it))
-                Chain.World -> null
             }
         },
     )
@@ -138,6 +138,7 @@ object DataModule {
                 Chain.Linea,
                 Chain.Mantle,
                 Chain.Celo,
+                Chain.World,
                 Chain.Ethereum -> EvmSignerPreloader(it, rpcClients.getClient(it))
                 Chain.Solana -> SolanaSignerPreloader(rpcClients.getClient(Chain.Solana))
                 Chain.Thorchain,
@@ -153,7 +154,6 @@ object DataModule {
                 Chain.Sui -> SuiSignerPreloader(it, rpcClients.getClient(it))
                 Chain.Xrp -> XrpSignerPreloader(it, rpcClients.getClient(it))
                 Chain.Near -> NearSignerPreloader(it, rpcClients.getClient(it))
-                Chain.World -> null
             }
         },
     )
@@ -222,6 +222,7 @@ object DataModule {
                     Chain.Linea,
                     Chain.Mantle,
                     Chain.Celo,
+                    Chain.World,
                     Chain.Ethereum -> EvmNodeStatusClient(it, rpcClients.getClient(it))
                     Chain.Solana -> SolanaNodeStatusClient(it, rpcClients.getClient(it))
                     Chain.Thorchain,
@@ -240,7 +241,6 @@ object DataModule {
                     Chain.Near -> NearNodeStatusClient(it, rpcClients.getClient(it))
                     Chain.Aptos -> AptosNodeStatusClient(it, rpcClients.getClient(it))
                     Chain.Sui -> SuiNodeStatusClient(it, rpcClients.getClient(it))
-                    Chain.World -> null
                 }
             }
         )

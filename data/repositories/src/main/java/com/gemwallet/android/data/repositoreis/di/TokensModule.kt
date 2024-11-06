@@ -48,6 +48,7 @@ object TokensModule {
                 Chain.Linea,
                 Chain.Mantle,
                 Chain.Celo,
+                Chain.World,
                 Chain.Ethereum -> EvmGetTokenClient(it, rpcClients.getClient(it))
 
                 Chain.Tron -> TronGetTokenClient(it, rpcClients.getClient(Chain.Tron))
@@ -67,7 +68,6 @@ object TokensModule {
                 Chain.Aptos,
                 Chain.Xrp,
                 Chain.Near -> null
-                Chain.World -> null
             }
         }
     )

@@ -166,8 +166,6 @@ dependencies {
     // version catalog might not work
     //noinspection UseTomlInstead
     api("net.java.dev.jna:jna:5.15.0@aar")
-    //noinspection UseTomlInstead
-    api("com.gemwallet.gemstone:gemstone:1.0.0@aar")
     // Local wallet core
     api(files("../libs/wallet-core-4.1.5-sources.jar"))
     implementation(project(":wallet-core"))

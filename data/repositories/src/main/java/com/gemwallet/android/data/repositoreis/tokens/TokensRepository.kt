@@ -113,6 +113,7 @@ class TokensRepository (
         Chain.Linea,
         Chain.Mantle,
         Chain.Celo,
+        Chain.World,
         Chain.Ethereum -> AssetType.ERC20
 
         Chain.Solana -> AssetType.SPL
@@ -132,7 +133,6 @@ class TokensRepository (
         Chain.Doge,
         Chain.Aptos,
         Chain.Near,
-        Chain.World,
         Chain.Xrp -> null
     }
 }

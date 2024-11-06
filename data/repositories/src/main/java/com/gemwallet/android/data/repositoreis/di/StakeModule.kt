@@ -53,6 +53,7 @@ object StakeModule {
                 Chain.Mantle,
                 Chain.Celo,
                 Chain.Near,
+                Chain.World,
                 Chain.Gnosis -> null
 
                 Chain.Osmosis,
@@ -65,7 +66,6 @@ object StakeModule {
                 Chain.Sui -> SuiStakeClient(rpcClients.getClient(it))
                 Chain.Solana -> SolanaStakeClient(rpcClients.getClient(it))
                 Chain.SmartChain -> SmartchainStakeClient(rpcClients.getClient(it))
-                Chain.World -> return@mapNotNull null
             }
         }
     )

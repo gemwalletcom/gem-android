@@ -85,6 +85,7 @@ object AssetsModule {
                 Chain.Linea,
                 Chain.Mantle,
                 Chain.Celo,
+                Chain.World,
                 Chain.Ethereum -> EvmBalanceClient(it, rpcClients.getClient(it))
 
                 Chain.Solana -> SolanaBalanceClient(it, rpcClients.getClient(Chain.Solana))
@@ -102,7 +103,6 @@ object AssetsModule {
                 Chain.Sui -> SuiBalanceClient(it, rpcClients.getClient(it))
                 Chain.Xrp -> XrpBalanceClient(it, rpcClients.getClient(it))
                 Chain.Near -> NearBalanceClient(it, rpcClients.getClient(it))
-                Chain.World -> return@mapNotNull null
             }
         }
     )

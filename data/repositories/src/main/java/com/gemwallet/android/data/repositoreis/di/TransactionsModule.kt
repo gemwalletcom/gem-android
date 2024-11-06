@@ -64,6 +64,7 @@ object TransactionsModule {
                 Chain.Linea,
                 Chain.Mantle,
                 Chain.Celo,
+                Chain.World,
                 Chain.Ethereum -> EvmTransactionStatusClient(it, rpcClients.getClient(it))
 
                 Chain.Solana -> SolanaTransactionStatusClient(rpcClients.getClient(Chain.Solana))
@@ -81,7 +82,6 @@ object TransactionsModule {
                 Chain.Sui -> SuiTransactionStatusClient(it, rpcClients.getClient(it))
                 Chain.Xrp -> XrpTransactionStatusClient(it, rpcClients.getClient(it))
                 Chain.Near -> NearTransactionStatusClient(it, rpcClients.getClient(it))
-                Chain.World -> null
             }
         },
     )

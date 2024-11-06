@@ -193,6 +193,7 @@ object ClientsModule {
                 Chain.Linea,
                 Chain.Mantle,
                 Chain.Celo,
+                Chain.World,
                 Chain.Ethereum -> buildClient(url, EvmRpcClient::class.java, ethConverter, httpClient)
                 Chain.Solana -> buildClient(url, SolanaRpcClient::class.java, converter, httpClient)
                 Chain.Osmosis,
@@ -208,7 +209,6 @@ object ClientsModule {
                 Chain.Sui -> buildClient(url, SuiRpcClient::class.java, converter, httpClient)
                 Chain.Xrp -> buildClient(url, XrpRpcClient::class.java, converter, httpClient)
                 Chain.Near -> buildClient(url, NearRpcClient::class.java, converter, httpClient)
-                Chain.World -> return@mapNotNull null
             }
             adapter.add(it, rpc)
         }
