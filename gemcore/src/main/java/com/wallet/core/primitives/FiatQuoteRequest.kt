@@ -15,3 +15,11 @@ data class FiatBuyRequest (
 	val walletAddress: String
 )
 
+@Serializable
+data class FiatSellRequest (
+	val assetId: String,
+	val fiatCurrency: String,
+	val cryptoAmount: Double,
+	val walletAddress: String
+)
+

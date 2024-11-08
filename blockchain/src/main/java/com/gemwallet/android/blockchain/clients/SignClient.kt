@@ -10,6 +10,8 @@ interface SignClient : BlockchainClient {
         privateKey: ByteArray,
     ): ByteArray = byteArrayOf()
 
+    suspend fun signTypedMessage(input: ByteArray, privateKey: ByteArray): ByteArray = byteArrayOf()
+
     suspend fun signTransfer(
         params: SignerParams,
         txSpeed: TxSpeed = TxSpeed.Normal,

@@ -32,7 +32,7 @@ sealed class ConfirmParams(
         }
 
         fun approval(approvalData: String, provider: String): TokenApprovalParams {
-            return TokenApprovalParams(assetId, approvalData, provider)
+            return TokenApprovalParams(assetId, approvalData, provider, contract = "")
         }
 
         fun delegate(validatorId: String) = DelegateParams(assetId, amount, validatorId)
@@ -92,8 +92,9 @@ sealed class ConfirmParams(
 
     class TokenApprovalParams(
         assetId: AssetId,
-        val approvalData: String,
+        val data: String,
         val provider: String,
+        val contract: String
     ) : ConfirmParams(assetId)
 
     class SwapParams(

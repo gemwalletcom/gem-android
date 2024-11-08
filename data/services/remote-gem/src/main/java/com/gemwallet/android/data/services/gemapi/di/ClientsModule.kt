@@ -16,8 +16,8 @@ import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.cases.nodes.GetNodesCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
 import com.gemwallet.android.data.services.gemapi.GemApiClient
-import com.gemwallet.android.data.services.gemapi.Transactions
-import com.gemwallet.android.data.services.gemapi.http.GemApiStaticClient
+import com.gemwallet.android.data.services.gemapi.models.Transactions
+import com.gemwallet.android.data.services.gemapi.GemApiStaticClient
 import com.gemwallet.android.data.services.gemapi.http.NodeSelectorInterceptor
 import com.gemwallet.android.data.services.gemapi.http.ResultCallAdapterFactory
 import com.gemwallet.android.data.services.gemapi.models.DeviceSerializer

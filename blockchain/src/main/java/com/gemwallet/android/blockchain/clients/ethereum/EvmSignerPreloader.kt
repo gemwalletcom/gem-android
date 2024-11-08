@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
+import android.util.Log
 import com.gemwallet.android.blockchain.clients.SignerPreload
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
@@ -35,53 +36,72 @@ class EvmSignerPreloader(
         }
         val coinType = WCChainTypeProxy().invoke(chain)
         val chainIdJob = async {
-            rpcClient.getNetVersion(JSONRpcRequest.create(EvmMethod.GetNetVersion, emptyList()))
-                .fold({ it.result?.value }) { null } ?: BigInteger(coinType.chainId())
+            try {
+                rpcClient.getNetVersion(JSONRpcRequest.create(EvmMethod.GetNetVersion, emptyList()))
+                    .fold({ it.result?.value }) { null } ?: BigInteger(coinType.chainId())
+            } catch (err: Throwable) {
+                Log.d("ERROR", "Err: ", err)
+                BigInteger(coinType.chainId())
+            }
         }
         val nonceJob = async {
-            val nonceParams = listOf(owner.address, "latest")
-            rpcClient.getNonce(JSONRpcRequest.create(EvmMethod.GetNonce, nonceParams))
-                .fold({ it.result?.value }) { null } ?: BigInteger.ZERO
+            try {
+                val nonceParams = listOf(owner.address, "latest")
+                rpcClient.getNonce(JSONRpcRequest.create(EvmMethod.GetNonce, nonceParams))
+                    .fold({ it.result?.value }) { null } ?: BigInteger.ZERO
+            } catch (err: Throwable) {
+                Log.d("ERROR", "Err: ", err)
+                BigInteger.ZERO
+            }
         }
         val gasLimitJob = async {
-            getGasLimit(
-                assetId = assetId,
-                rpcClient = rpcClient,
-                from = owner.address,
-                recipient = when (params) {
-                    is ConfirmParams.SwapParams -> params.to
-                    is ConfirmParams.TokenApprovalParams -> params.assetId.tokenId!!
-                    is ConfirmParams.TransferParams -> params.destination().address
-                    is ConfirmParams.RedeleateParams,
-                    is ConfirmParams.WithdrawParams,
-                    is ConfirmParams.UndelegateParams,
-                    is ConfirmParams.RewardsParams,
-                    is ConfirmParams.DelegateParams -> StakeHub.address
-                    else -> throw IllegalArgumentException()
-                },
-                outputAmount = when (params) {
-                    is ConfirmParams.SwapParams -> BigInteger(params.value)
-                    is ConfirmParams.TokenApprovalParams -> BigInteger.ZERO
-                    is ConfirmParams.TransferParams,
-                    is ConfirmParams.DelegateParams -> params.amount
-                    is ConfirmParams.RedeleateParams,
-                    is ConfirmParams.WithdrawParams,
-                    is ConfirmParams.UndelegateParams -> BigInteger.ZERO
-                    else -> throw IllegalArgumentException()
-                },
-                payload = when (params) {
-                    is ConfirmParams.SwapParams -> params.swapData
-                    is ConfirmParams.TokenApprovalParams -> params.approvalData
-                    is ConfirmParams.RedeleateParams,
-                    is ConfirmParams.WithdrawParams,
-                    is ConfirmParams.UndelegateParams,
-                    is ConfirmParams.DelegateParams -> when (params.assetId.chain) {
-                        Chain.SmartChain -> StakeHub().encodeStake(params)
+            try {
+                getGasLimit(
+                    assetId = assetId,
+                    rpcClient = rpcClient,
+                    from = owner.address,
+                    recipient = when (params) {
+                        is ConfirmParams.SwapParams -> params.to
+                        is ConfirmParams.TokenApprovalParams -> params.contract
+                        is ConfirmParams.TransferParams -> params.destination().address
+                        is ConfirmParams.RedeleateParams,
+                        is ConfirmParams.WithdrawParams,
+                        is ConfirmParams.UndelegateParams,
+                        is ConfirmParams.RewardsParams,
+                        is ConfirmParams.DelegateParams -> StakeHub.address
+
                         else -> throw IllegalArgumentException()
-                    }
-                    else -> params.memo()
-                },
-            )
+                    },
+                    outputAmount = when (params) {
+                        is ConfirmParams.SwapParams -> BigInteger(params.value)
+                        is ConfirmParams.TokenApprovalParams -> BigInteger.ZERO
+                        is ConfirmParams.TransferParams,
+                        is ConfirmParams.DelegateParams -> params.amount
+
+                        is ConfirmParams.RedeleateParams,
+                        is ConfirmParams.WithdrawParams,
+                        is ConfirmParams.UndelegateParams -> BigInteger.ZERO
+
+                        else -> throw IllegalArgumentException()
+                    },
+                    payload = when (params) {
+                        is ConfirmParams.SwapParams -> params.swapData
+                        is ConfirmParams.TokenApprovalParams -> params.data
+                        is ConfirmParams.RedeleateParams,
+                        is ConfirmParams.WithdrawParams,
+                        is ConfirmParams.UndelegateParams,
+                        is ConfirmParams.DelegateParams -> when (params.assetId.chain) {
+                            Chain.SmartChain -> StakeHub().encodeStake(params)
+                            else -> throw IllegalArgumentException()
+                        }
+
+                        else -> params.memo()
+                    },
+                )
+            } catch (err: Throwable) {
+                Log.d("ERROR", "Err: ", err)
+                throw err
+            }
         }
         val chainId = chainIdJob.await()
         val nonce = nonceJob.await()

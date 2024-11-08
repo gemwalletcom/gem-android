@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.settings.price_alerts.viewmodels
 
-import androidx.compose.ui.util.fastFirstOrNull
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
@@ -10,7 +9,6 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
-import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.interactors.sync.SyncDevice
 import com.gemwallet.android.ui.models.AssetInfoUIModel
@@ -49,8 +47,8 @@ class PriceAlertViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val alertingAssets = getPriceAlertsCase.getPriceAlerts().flatMapLatest { alerts ->
-        val ids = alerts.mapNotNull { it.assetId.toAssetId() }
-        assetsRepository.getAssetsInfo(ids)
+        val ids = alerts.map { it.assetId }
+        assetsRepository.getAssetsInfoByAllWallets(ids)
     }
     .map { it.map { AssetInfoUIModel(it) } }
     .combine(forceSync) { items, sync ->

@@ -22,18 +22,17 @@ import com.gemwallet.android.features.swap.models.SwapPairSelect
 import com.gemwallet.android.features.swap.models.SwapPairUIModel
 import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.features.swap.navigation.pairArg
+import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.numberParse
-import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
-import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
-import com.wallet.core.primitives.SwapQuote
 import com.wallet.core.primitives.TransactionState
+import com.walletconnect.util.bytesToHex
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -54,6 +53,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import uniffi.gemstone.ApprovalType
 import java.math.BigDecimal
 import java.math.BigInteger
 import javax.inject.Inject
@@ -124,7 +124,7 @@ class SwapViewModel @Inject constructor(
             to = SwapItemModel(
                 asset = assets.to.asset.copy(symbol = assets.to.asset.symbol.padStart(symbolLength)),
                 assetBalanceValue = assets.to.balance.balanceAmount.available.toBigDecimal().toPlainString(),
-                assetBalanceLabel = assets.from.balance.availableFormatted(4),
+                assetBalanceLabel = assets.to.balance.availableFormatted(4),
             ),
         )
     }
@@ -137,7 +137,7 @@ class SwapViewModel @Inject constructor(
         val price = assets?.from?.price ?: return@combine null
         val valueNum = try {
             value.numberParse()
-        } catch (err: Throwable) {
+        } catch (_: Throwable) {
             BigDecimal.ZERO
         }
         val fiat = valueNum.toDouble() * price.price.price
@@ -146,28 +146,43 @@ class SwapViewModel @Inject constructor(
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    private val quote = fromValueFlow.mapLatest { input ->
-        val value = try {
-            input.numberParse()
-        } catch (err: Throwable) {
+    private val quote  = combine(fromValueFlow, assetsState, approveTx) { fromValue, assets, tx ->
+        Triple(fromValue, assets, tx)
+    }.mapLatest {
+        val assets = it.second
+        val fromAsset = assets?.from
+        val toAsset = assets?.to
+        val fromValue = try {
+            it.first.numberParse()
+        } catch (_: Throwable) {
             BigDecimal.ZERO
         }
-        Pair(value, assetsState.value)
-    }
-    .mapLatest {
-        val fromAsset = it.second?.from
-        val toAsset = it.second?.to
-        if (fromAsset == null || toAsset == null || it.first == BigDecimal.ZERO) {
+        if (fromAsset == null || toAsset == null || fromValue.compareTo(BigDecimal.ZERO) == 0) {
             withContext(Dispatchers.Main) { toValue.edit { replace(0, length, "0") } }
+            swapScreenState.update { SwapState.None }
             return@mapLatest null
         }
+        if (it.third?.transaction?.state == TransactionState.Pending) {
+            swapScreenState.update { SwapState.Approving }
+            delay(1000L) // Wait transactions and don't spam servers, it'll cancel on next values. Return null isn't correct
+        }
         swapScreenState.update { SwapState.GetQuote }
-        delay(500L)
-        val quote = getQuote(fromAsset, toAsset, it.first)
-        val amount = toAsset.asset.format(Crypto(quote?.toAmount ?: "0"), 8, showSymbol = false)
+        delay(500L) // User input type - doesn't want spam nodes
+        val quote = swapRepository.getQuote(
+            from = fromAsset.asset.id,
+            to = toAsset.asset.id,
+            ownerAddress = fromAsset.owner.address,
+            amount = Crypto(fromValue, fromAsset.asset.decimals).atomicValue.toString(),
+        )
+        val amount = toAsset.asset.format(Crypto(quote?.toValue ?: "0"), 8, showSymbol = false)
         withContext(Dispatchers.Main) { toValue.edit { replace(0, length, amount) } }
+        val requestApprove = quote?.approval is ApprovalType.Approve
+        swapScreenState.update {
+            if (requestApprove) SwapState.RequestApprove else SwapState.Ready
+        }
         quote
-    }.flowOn(Dispatchers.IO)
+    }
+    .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val toValue: TextFieldState = TextFieldState()
@@ -177,43 +192,13 @@ class SwapViewModel @Inject constructor(
         }
         val price = assets.to.price
         if (price?.currency != null && price.price.price > 0) {
-            assets.to.price!!.currency.format(Crypto(quote.toAmount).convert(assets.to.asset.decimals, price.price.price).atomicValue)
+            assets.to.price!!.currency.format(Crypto(quote.toValue).convert(assets.to.asset.decimals, price.price.price).atomicValue)
         } else {
             ""
         }
     }
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
-
-    private val requestApprove = combine(quote, assetsState, approveTx) { quote, assets, tx ->
-        if (assets?.from == null) {
-            swapScreenState.update { SwapState.None }
-            return@combine false
-        }
-        if (!swapRepository.isRequestApprove(assets.from.id().chain) || assets.from.asset.id.type() != AssetSubtype.TOKEN) {
-            swapScreenState.update { SwapState.Ready }
-            return@combine false
-        }
-
-        if (tx?.transaction?.state == TransactionState.Pending) {
-            swapScreenState.update { SwapState.Approving }
-            return@combine false
-        }
-
-        val spender = quote?.approval?.spender
-        if (spender.isNullOrEmpty()) {
-            swapScreenState.update { SwapState.None }
-            return@combine false
-        }
-
-        swapScreenState.update { SwapState.CheckAllowance }
-        val allowance = swapRepository.getAllowance(assets.from.id(), assets.from.owner.address, spender)
-        val requestApprove = allowance < BigInteger(quote.fromAmount)
-        swapScreenState.update { if (requestApprove) SwapState.RequestApprove else SwapState.Ready }
-        requestApprove
-    }
-    .flowOn(Dispatchers.IO)
-    .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     private val sync = swapPairState.flatMapLatest {
         flow {
@@ -246,7 +231,7 @@ class SwapViewModel @Inject constructor(
         selectPair.update { update }
     }
 
-    private suspend fun updateBalances(fromId: AssetId, toId: AssetId) {
+    private fun updateBalances(fromId: AssetId, toId: AssetId) {
         val session = sessionRepository.getSession() ?: return
         val account = session.wallet.getAccount(fromId.chain) ?: return
         viewModelScope.launch(Dispatchers.IO) {
@@ -255,17 +240,6 @@ class SwapViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             assetsRepository.switchVisibility(session.wallet.id, account, toId, true, session.currency)
         }
-    }
-
-    private suspend fun getQuote(from: AssetInfo, to: AssetInfo, amount: BigDecimal, includeData: Boolean = false): SwapQuote? {
-        val quote = swapRepository.getQuote(
-            from = from.asset.id,
-            to = to.asset.id,
-            ownerAddress = from.owner.address,
-            amount = Crypto(amount, from.asset.decimals).atomicValue.toString(),
-            includeData = includeData,
-        )
-        return quote
     }
 
     fun switchSwap() {
@@ -279,42 +253,48 @@ class SwapViewModel @Inject constructor(
         swapScreenState.update { SwapState.Swapping }
         val fromAmount = try {
             fromValue.text.toString().numberParse()
-        } catch (err: Throwable) {
+        } catch (_: Throwable) {
             swapScreenState.update { SwapState.Error(SwapError.IncorrectInput) }
             return@launch
         }
         val from = assetsState.value?.from ?: return@launch
         val to = assetsState.value?.to ?: return@launch
-        val requestApprove = requestApprove.value
-        val quote = getQuote(from, to, fromAmount, !requestApprove)
+        val quote = quote.value
         if (quote == null) {
             swapScreenState.update { SwapState.Error(SwapError.NoQuote) }
             return@launch
         }
-        if (requestApprove) {
-            swapScreenState.update { SwapState.RequestApprove }
-            val meta = encodeApprove(quote.approval?.spender ?: "")
-            onConfirm(
-                ConfirmParams.TokenApprovalParams(
-                    assetId = if (from.asset.id.type() == AssetSubtype.TOKEN) from.asset.id else to.asset.id,
-                    approvalData = meta.toHexString(),
-                    provider = quote.provider.name,
+        val wallet = sessionRepository.getSession()?.wallet ?: return@launch
+        val swapData = swapRepository.getQuoteData(quote, wallet)
+        val approvalData = quote.approval
+        when (approvalData) {
+            is ApprovalType.Approve -> {
+                swapScreenState.update { SwapState.RequestApprove }
+                onConfirm(
+                    ConfirmParams.TokenApprovalParams(
+                        assetId = if (from.asset.id.type() == AssetSubtype.TOKEN) from.asset.id else to.asset.id,
+                        data = encodeApprove(approvalData.v1.spender).bytesToHex(),
+                        provider = quote.provider.name,
+                        contract = approvalData.v1.token,
+                    )
                 )
-            )
-        } else {
-            swapScreenState.update { SwapState.Ready }
-            onConfirm(
-                ConfirmParams.SwapParams(
-                    fromAssetId = from.asset.id,
-                    toAssetId = to.asset.id,
-                    fromAmount = Crypto(fromAmount, from.asset.decimals).atomicValue,
-                    toAmount = BigInteger(quote.toAmount),
-                    swapData = quote.data?.data ?: return@launch,
-                    provider = quote.provider.name,
-                    to = quote.data?.to ?: return@launch,
-                    value = quote.data?.value ?: return@launch,
+            }
+            is ApprovalType.Permit2,
+            ApprovalType.None -> {
+                swapScreenState.update { SwapState.Ready }
+                onConfirm(
+                    ConfirmParams.SwapParams(
+                        fromAssetId = from.asset.id,
+                        toAssetId = to.asset.id,
+                        fromAmount = Crypto(fromAmount, from.asset.decimals).atomicValue,
+                        toAmount = BigInteger(quote.toValue),
+                        swapData = swapData.data,
+                        provider = quote.provider.name,
+                        to = swapData.to,
+                        value = (swapData.value.hexToBigInteger() ?: BigInteger.ZERO).toString(),
+                    )
                 )
-            )
+            }
         }
     }
 

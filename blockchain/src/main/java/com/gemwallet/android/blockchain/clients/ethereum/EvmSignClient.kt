@@ -16,6 +16,7 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
+import wallet.core.jni.EthereumMessageSigner
 import wallet.core.jni.PrivateKey
 import wallet.core.jni.proto.Ethereum
 import wallet.core.jni.proto.Ethereum.Transaction.ContractGeneric
@@ -29,6 +30,12 @@ class EvmSignClient(
         val result = PrivateKey(privateKey).sign(input, CoinType.ETHEREUM.curve())
         result[64] = (result[64] + 27).toByte()
         return result
+    }
+
+    override suspend fun signTypedMessage(input: ByteArray, privateKey: ByteArray): ByteArray {
+        val privateKey = PrivateKey(privateKey)
+        val json = String(input)
+        return EthereumMessageSigner.signTypedMessage(privateKey, json).decodeHex()
     }
 
     override suspend fun signTransfer(
@@ -75,7 +82,7 @@ class EvmSignClient(
             destinationAddress = params.input.destination()?.address ?: "",
             memo = when (input) {
                 is ConfirmParams.SwapParams -> input.swapData
-                is ConfirmParams.TokenApprovalParams -> input.approvalData
+                is ConfirmParams.TokenApprovalParams -> input.data
                 else -> input.memo()
             },
             privateKey = privateKey,

@@ -7,7 +7,7 @@ import com.gemwallet.android.blockchain.clients.solana.SolanaStakeClient
 import com.gemwallet.android.blockchain.clients.sui.SuiStakeClient
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.data.service.store.database.StakeDao
-import com.gemwallet.android.data.services.gemapi.http.GemApiStaticClient
+import com.gemwallet.android.data.services.gemapi.GemApiStaticClient
 import com.gemwallet.android.ext.available
 import com.wallet.core.primitives.Chain
 import dagger.Module

@@ -26,12 +26,10 @@ class SignTransferProxy(
         }
     }
 
-    override suspend fun invoke(chain: Chain, input: ByteArray, privateKey: ByteArray): Result<ByteArray> {
+    override suspend fun invoke(chain: Chain, input: ByteArray, privateKey: ByteArray, isTyped: Boolean): Result<ByteArray> {
         return try {
-            val result = clients.firstOrNull { it.isMaintain(chain) }?.signMessage(
-                input = input,
-                privateKey = privateKey
-            ) ?: throw Exception("Impossible sign transfer")
+            val client = clients.firstOrNull { it.isMaintain(chain) } ?: throw Exception("Impossible sign transfer")
+            val result = if (isTyped) client.signTypedMessage(input, privateKey) else client.signMessage(input, privateKey)
             Result.success(result)
         } catch (err: Throwable) {
             Result.failure(err)

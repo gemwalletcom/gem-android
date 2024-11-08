@@ -4,7 +4,7 @@ import com.gemwallet.android.blockchain.clients.StakeClient
 import com.gemwallet.android.data.service.store.database.StakeDao
 import com.gemwallet.android.data.service.store.database.mappers.DelegationBaseMapper
 import com.gemwallet.android.data.service.store.database.mappers.DelegationValidatorMapper
-import com.gemwallet.android.data.services.gemapi.http.GemApiStaticClient
+import com.gemwallet.android.data.services.gemapi.GemApiStaticClient
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain

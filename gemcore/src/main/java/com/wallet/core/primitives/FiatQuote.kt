@@ -8,8 +8,17 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
+enum class FiatQuoteType(val string: String) {
+	@SerialName("buy")
+	Buy("buy"),
+	@SerialName("sell")
+	Sell("sell"),
+}
+
+@Serializable
 data class FiatQuote (
 	val provider: FiatProvider,
+	val type: FiatQuoteType,
 	val fiatAmount: Double,
 	val fiatCurrency: String,
 	val cryptoAmount: Double,

@@ -120,7 +120,6 @@ private fun BannerText(
             Text(
                 modifier = Modifier.padding(top = 0.dp, bottom = 2.dp),
                 text = subtitle,
-                maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.bodyMedium,

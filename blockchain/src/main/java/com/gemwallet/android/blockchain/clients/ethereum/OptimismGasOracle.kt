@@ -51,13 +51,13 @@ class OptimismGasOracle {
             amount = amount,
             destinationAddress = when (params) {
                 is ConfirmParams.SwapParams -> params.to
-                is ConfirmParams.TokenApprovalParams -> params.assetId.tokenId!!
+                is ConfirmParams.TokenApprovalParams -> params.contract
                 is ConfirmParams.TransferParams -> params.destination.address
                 else -> throw IllegalArgumentException()
             },
             meta = when (params) {
                 is ConfirmParams.SwapParams -> params.swapData
-                is ConfirmParams.TokenApprovalParams -> params.approvalData
+                is ConfirmParams.TokenApprovalParams -> params.data
                 else -> params.memo()
             },
             chainId = chainId,

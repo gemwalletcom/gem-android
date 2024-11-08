@@ -2,7 +2,6 @@ package com.gemwallet.android.data.services.gemapi.models
 
 import android.icu.text.SimpleDateFormat
 import android.icu.util.TimeZone
-import com.gemwallet.android.data.services.gemapi.Transactions
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement

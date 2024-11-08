@@ -1,11 +1,10 @@
 package com.gemwallet.android.data.repositoreis.di
 
-import com.gemwallet.android.blockchain.RpcClientAdapter
-import com.gemwallet.android.blockchain.clients.ethereum.EvmSwapClient
+import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
+import com.gemwallet.android.blockchain.operators.PasswordStore
+import com.gemwallet.android.blockchain.operators.SignTransfer
+import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.data.repositoreis.swap.SwapRepository
-import com.gemwallet.android.data.services.gemapi.GemApiClient
-import com.gemwallet.android.ext.available
-import com.wallet.core.primitives.Chain
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,32 +17,15 @@ object SwapModule {
     @Singleton
     @Provides
     fun provideSwapRepository(
-        gemApiClient: GemApiClient,
-        rpcClients: RpcClientAdapter,
+        signTransfer: SignTransfer,
+        getCurrentNodeCase: GetCurrentNodeCase,
+        passwordStore: PasswordStore,
+        loadPrivateDataOperator: LoadPrivateKeyOperator,
     ): SwapRepository = SwapRepository(
-        gemApiClient = gemApiClient,
-        swapClients = Chain.available().mapNotNull {
-            when (it) {
-                Chain.AvalancheC,
-                Chain.Base,
-                Chain.SmartChain,
-                Chain.Arbitrum,
-                Chain.Polygon,
-                Chain.OpBNB,
-                Chain.Fantom,
-                Chain.Gnosis,
-                Chain.Optimism,
-                Chain.Manta,
-                Chain.Blast,
-                Chain.ZkSync,
-                Chain.Linea,
-                Chain.Mantle,
-                Chain.Celo,
-                Chain.Ethereum -> EvmSwapClient(it, rpcClients.getClient(it))
-
-                else -> null
-            }
-        }
+        signClient = signTransfer,
+        getCurrentNodeCase = getCurrentNodeCase,
+        passwordStore = passwordStore,
+        loadPrivateKeyOperator = loadPrivateDataOperator,
     )
 
 }

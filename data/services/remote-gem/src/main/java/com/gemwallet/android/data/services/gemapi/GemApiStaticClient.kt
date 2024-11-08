@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.services.gemapi.http
+package com.gemwallet.android.data.services.gemapi
 
 import com.wallet.core.primitives.StakeValidator
 import retrofit2.http.GET

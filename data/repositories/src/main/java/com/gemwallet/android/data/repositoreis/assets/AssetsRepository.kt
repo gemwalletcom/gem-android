@@ -19,6 +19,7 @@ import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.exclude
 import com.gemwallet.android.ext.getAccount
+import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
@@ -205,10 +206,20 @@ class AssetsRepository @Inject constructor(
         .map { AssetInfoMapper().asDomain(it) }
         .map { assets ->
             assetsId.map { id ->
-                assets.firstOrNull { it.asset.id.toIdentifier() == id.toIdentifier() }
+                assets.firstOrNull { it.asset.id.same(id) }
                     ?: getTokensCase.assembleAssetInfo(id)
             }.filterNotNull()
         }
+
+    fun getAssetsInfoByAllWallets(assetsId: List<String>): Flow<List<AssetInfo>> {
+        return assetsDao.getAssetsInfoByAllWallets(assetsId).map { AssetInfoMapper().asDomain(it) }
+            .map { assets ->
+                assetsId.mapNotNull { id ->
+                    assets.firstOrNull { it.asset.id.toIdentifier() == id }
+                        ?: getTokensCase.assembleAssetInfo(id.toAssetId() ?: return@mapNotNull null)
+                }
+            }
+    }
 
     suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo> = withContext(Dispatchers.IO) {
         assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)

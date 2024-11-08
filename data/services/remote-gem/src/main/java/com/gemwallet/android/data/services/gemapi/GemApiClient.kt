@@ -2,6 +2,7 @@ package com.gemwallet.android.data.services.gemapi
 
 import com.gemwallet.android.data.services.gemapi.models.PricesResponse
 import com.gemwallet.android.data.services.gemapi.models.SwapRequest
+import com.gemwallet.android.data.services.gemapi.models.Transactions
 import com.wallet.core.primitives.AssetFull
 import com.wallet.core.primitives.AssetPricesRequest
 import com.wallet.core.primitives.Charts
@@ -13,7 +14,6 @@ import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.Subscription
 import com.wallet.core.primitives.SwapQuoteResult
-import com.wallet.core.primitives.Transaction
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HTTP
@@ -21,8 +21,6 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 import retrofit2.http.Query
-
-class Transactions : ArrayList<Transaction>()
 
 interface GemApiClient {
     @GET("/v1/config")

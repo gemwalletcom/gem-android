@@ -15,5 +15,6 @@ interface SignTransfer {
         chain: Chain,
         input: ByteArray,
         privateKey: ByteArray,
+        isTyped: Boolean = false,
     ): Result<ByteArray>
 }

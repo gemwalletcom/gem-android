@@ -74,7 +74,7 @@ private fun SwapItem(assetInfo: AssetInfo, value: String, currency: Currency?) {
     ) {
         Column(Modifier.weight(1f)) {
             Text(
-                text = asset.format(value, dynamicPlace = true),
+                text = asset.format(Crypto(value), dynamicPlace = true),
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.onSurface,
                 textAlign = TextAlign.Start

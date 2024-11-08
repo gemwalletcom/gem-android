@@ -42,14 +42,17 @@ interface AssetsDao {
     @Query("SELECT * FROM assets WHERE owner_address IN (:addresses) AND type = :type")
     suspend fun getAssetsByType(addresses: List<String>, type: AssetType = AssetType.NATIVE): List<DbAsset>
 
-    @Query("SELECT * FROM asset_info WHERE chain = :chain AND id = :assetId")
+    @Query("SELECT * FROM asset_info WHERE chain = :chain AND id = :assetId AND sessionId=1")
     fun getAssetInfo(assetId: String, chain: Chain): Flow<List<DbAssetInfo>>
 
     @Query("SELECT * FROM asset_info WHERE sessionId = 1 ORDER BY balanceFiatTotalAmount DESC")
     fun getAssetsInfo(): Flow<List<DbAssetInfo>>
 
-    @Query("SELECT * FROM asset_info WHERE id IN (:ids) ORDER BY balanceFiatTotalAmount DESC")
+    @Query("SELECT * FROM asset_info WHERE id IN (:ids) AND sessionId=1 ORDER BY balanceFiatTotalAmount DESC")
     fun getAssetsInfo(ids: List<String>): Flow<List<DbAssetInfo>>
+
+    @Query("SELECT * FROM asset_info WHERE id IN (:ids) ORDER BY balanceFiatTotalAmount DESC")
+    fun getAssetsInfoByAllWallets(ids: List<String>): Flow<List<DbAssetInfo>>
 
     @Query("""
         SELECT * FROM asset_info WHERE
@@ -61,7 +64,7 @@ interface AssetsDao {
         """)
     fun searchAssetInfo(query: String): Flow<List<DbAssetInfo>>
 
-    @Query("SELECT * FROM asset_info WHERE address in (:accounts)")
+    @Query("SELECT * FROM asset_info WHERE address in (:accounts) AND sessionId=1 ")
     fun getAssetsInfoByAccounts(accounts: List<String>): Flow<List<DbAssetInfo>>
 
     @Query("SELECT * FROM asset_config WHERE wallet_id=:walletId AND asset_id=:assetId")

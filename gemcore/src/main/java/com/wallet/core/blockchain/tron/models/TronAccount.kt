@@ -62,3 +62,16 @@ data class TronReward (
 	val reward: Long? = null
 )
 
+@Serializable
+data class WitnessAccount (
+	val address: String,
+	val voteCount: Long? = null,
+	val url: String,
+	val isJobs: Boolean? = null
+)
+
+@Serializable
+data class WitnessesList (
+	val witnesses: List<WitnessAccount>
+)
+
