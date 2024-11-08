@@ -24,8 +24,6 @@ import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.models.PriceUIModel
 import com.wallet.core.primitives.Asset
-import com.wallet.core.primitives.AssetType
-import com.wallet.core.primitives.Chain
 
 @Composable
 fun AssetListItem(

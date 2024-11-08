@@ -18,9 +18,14 @@ interface BannersDao {
         SELECT * FROM
             banners
         WHERE
-            wallet_id=:walletId AND (asset_id=:assetId OR chain=:chain) AND state=:state
+            wallet_id=:walletId AND (asset_id=:assetId OR chain=:chain) AND state IN (:state)
     """)
-    suspend fun getBanner(walletId: String, assetId: String, chain: Chain?, state: BannerState = BannerState.Active): List<DbBanner>
+    suspend fun getBanner(
+        walletId: String,
+        assetId: String,
+        chain: Chain?,
+        state: List<BannerState> = listOf(BannerState.Active, BannerState.AlwaysActive)
+    ): List<DbBanner>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun saveBanner(banner: DbBanner)

@@ -62,6 +62,8 @@ import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
+import uniffi.gemstone.Config
+import uniffi.gemstone.DocsUrl
 
 @Composable
 fun AssetDetailsScene(
@@ -124,6 +126,7 @@ private fun Success(
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     val clipboardManager = LocalClipboardManager.current
+    val uriHandler = LocalUriHandler.current
     Scene(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -199,8 +202,11 @@ private fun Success(
                     BannersScene(
                         asset = uiState.asset,
                         onClick = {
-                            if (it.event == BannerEvent.Stake) {
-                                onStake(uiState.asset.id)
+                            when (it.event) {
+                                BannerEvent.Stake -> onStake(uiState.asset.id)
+                                BannerEvent.AccountBlockedMultiSignature ->
+                                    uriHandler.open(Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
+                                else -> {}
                             }
                         },
                         false

@@ -56,15 +56,26 @@ interface AssetsDao {
 
     @Query("""
         SELECT * FROM asset_info WHERE
-            sessionId = 1 AND
-            (id LIKE '%' || :query || '%'
+            sessionId = 1
+            AND id NOT IN (:exclude)
+            AND (id LIKE '%' || :query || '%'
             OR symbol LIKE '%' || :query || '%'
             OR name LIKE '%' || :query || '%' COLLATE NOCASE)
             ORDER BY balanceFiatTotalAmount DESC
         """)
-    fun searchAssetInfo(query: String): Flow<List<DbAssetInfo>>
+    fun searchAssetInfo(query: String, exclude: List<String> = emptyList()): Flow<List<DbAssetInfo>>
 
-    @Query("SELECT * FROM asset_info WHERE address in (:accounts) AND sessionId=1 ")
+    @Query("""
+        SELECT * FROM asset_info WHERE
+            id NOT IN (:exclude)
+            AND (id LIKE '%' || :query || '%'
+            OR symbol LIKE '%' || :query || '%'
+            OR name LIKE '%' || :query || '%' COLLATE NOCASE)
+            ORDER BY balanceFiatTotalAmount DESC
+        """)
+    fun searchAssetInfoByAllWallets(query: String, exclude: List<String> = emptyList()): Flow<List<DbAssetInfo>>
+
+    @Query("SELECT * FROM asset_info WHERE address IN (:accounts) AND sessionId=1 ")
     fun getAssetsInfoByAccounts(accounts: List<String>): Flow<List<DbAssetInfo>>
 
     @Query("SELECT * FROM asset_config WHERE wallet_id=:walletId AND asset_id=:assetId")

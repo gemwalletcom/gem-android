@@ -30,7 +30,7 @@ import com.wallet.core.primitives.WalletType
         asset_config.is_visible AS visible,
         asset_config.list_position AS listPosition,
         session.id AS sessionId,
-        session.currency AS priceCurrency,
+        prices.currency AS priceCurrency,
         wallets.type AS walletType,
         wallets.name AS walletName,
         prices.value AS priceValue,

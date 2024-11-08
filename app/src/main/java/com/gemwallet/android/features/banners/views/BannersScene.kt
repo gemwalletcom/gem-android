@@ -36,12 +36,14 @@ import com.gemwallet.android.interactors.chain
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AssetIcon
 import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.padding12
 import com.gemwallet.android.ui.theme.padding16
 import com.gemwallet.android.ui.theme.padding8
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Banner
 import com.wallet.core.primitives.BannerEvent
+import com.wallet.core.primitives.BannerState
 
 @Composable
 fun BannersScene(
@@ -79,6 +81,7 @@ fun BannersScene(
                 subtitle = description,
                 iconUrl = asset?.getIconUrl()
                     ?: "android.resource://com.gemwallet.android/${R.drawable.brandmark}",
+                state = banner.state,
             ) { viewModel.onCancel(banner) }
         }
     }
@@ -89,6 +92,7 @@ private fun BannerText(
     title: String,
     subtitle: String,
     iconUrl: String,
+    state: BannerState,
     onCancel: () -> Unit,
 ) {
     Row(
@@ -125,9 +129,13 @@ private fun BannerText(
                 style = MaterialTheme.typography.bodyMedium,
             )
         }
-        Spacer(modifier = Modifier.size(padding8))
-        IconButton(onClick = onCancel) {
-            Icon(imageVector = Icons.Default.Close, contentDescription = "cancel_banner")
+        if (state != BannerState.AlwaysActive) {
+            Spacer8()
+            IconButton(onClick = onCancel) {
+                Icon(imageVector = Icons.Default.Close, contentDescription = "cancel_banner")
+            }
+        } else {
+            Spacer16()
         }
     }
 }

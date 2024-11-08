@@ -26,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset_select.components.SearchBar
-import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
+import com.gemwallet.android.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
@@ -42,7 +42,7 @@ import kotlinx.collections.immutable.toImmutableList
 internal fun AssetSelectScene(
     title: String,
     assets: ImmutableList<AssetItemUIModel>,
-    state: AssetSelectViewModel.UIState,
+    state: BaseAssetSelectViewModel.UIState,
     titleBadge: (AssetItemUIModel) -> String?,
     support: ((AssetItemUIModel) -> String?)?,
     query: TextFieldState,
@@ -89,10 +89,10 @@ private fun LazyListScope.assets(
 }
 
 private fun LazyListScope.notFound(
-    state: AssetSelectViewModel.UIState,
+    state: BaseAssetSelectViewModel.UIState,
     onAddAsset: (() -> Unit)? = null,
 ) {
-    if (state !is AssetSelectViewModel.UIState.Empty) {
+    if (state !is BaseAssetSelectViewModel.UIState.Empty) {
         return
     }
     item {
@@ -112,8 +112,8 @@ private fun LazyListScope.notFound(
     }
 }
 
-private fun LazyListScope.loading(state: AssetSelectViewModel.UIState) {
-    if (state !is AssetSelectViewModel.UIState.Loading) {
+private fun LazyListScope.loading(state: BaseAssetSelectViewModel.UIState) {
+    if (state !is BaseAssetSelectViewModel.UIState.Loading) {
         return
     }
     item {
@@ -129,7 +129,7 @@ fun PreviewAssetScreenUI() {
     MaterialTheme {
         AssetSelectScene(
             assets = emptyList<AssetInfoUIModel>().toImmutableList(),
-            state = AssetSelectViewModel.UIState.Idle,
+            state = BaseAssetSelectViewModel.UIState.Idle,
             title = "Send",
             titleBadge = { it.asset.symbol },
             support = null,

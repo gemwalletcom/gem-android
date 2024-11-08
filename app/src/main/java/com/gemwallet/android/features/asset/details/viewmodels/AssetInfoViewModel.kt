@@ -19,7 +19,6 @@ import com.gemwallet.android.features.asset.navigation.assetIdArg
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.AssetInfo
-import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
 import com.gemwallet.android.model.getStackedAmount

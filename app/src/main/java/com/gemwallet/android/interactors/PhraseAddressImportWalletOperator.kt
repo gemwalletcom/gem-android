@@ -19,9 +19,9 @@ import com.gemwallet.android.interactors.sync.SyncSubscription
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.model.AddressStatus
 import com.wallet.core.primitives.BannerEvent
+import com.wallet.core.primitives.BannerState
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
-import com.wallet.core.primitives.Price
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import wallet.core.jni.PrivateKey
@@ -119,7 +119,12 @@ class PhraseAddressImportWalletOperator(
             val statuses = addressStatusClients.getClient(it.chain)?.getAddressStatus(it.address) ?: emptyList()
             for (status in statuses) {
                 if (status == AddressStatus.MultiSignature) {
-                    addBannerCase.addBanner(wallet = wallet, chain = it.chain, event = BannerEvent.AccountBlockedMultiSignature)
+                    addBannerCase.addBanner(
+                        wallet = wallet,
+                        chain = it.chain,
+                        event = BannerEvent.AccountBlockedMultiSignature,
+                        state = BannerState.AlwaysActive,
+                    )
                 }
             }
         }

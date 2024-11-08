@@ -10,8 +10,6 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.tokenAvailableChains
-import com.gemwallet.android.features.assets.model.AssetUIState
-import com.gemwallet.android.features.assets.model.toUIModel
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
@@ -20,6 +18,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -35,13 +34,26 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+fun interface GetExclude {
+    fun invoke(): Flow<List<String>>
+}
+
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class AssetSelectViewModel @Inject constructor(
+    sessionRepository: SessionRepository,
+    assetsRepository: AssetsRepository,
+    searchTokensCase: SearchTokensCase,
+) : BaseAssetSelectViewModel(sessionRepository, assetsRepository, searchTokensCase, { MutableStateFlow(emptyList()) })
+
+@OptIn(ExperimentalCoroutinesApi::class)
+open class BaseAssetSelectViewModel(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val searchTokensCase: SearchTokensCase,
+    getExclude: GetExclude,
 ) : ViewModel() {
+
     val queryState = TextFieldState()
     private val queryFlow = snapshotFlow<String> { queryState.text.toString() }
         .filter { it.isNotEmpty() }
@@ -56,12 +68,12 @@ class AssetSelectViewModel @Inject constructor(
 
     private val searchState = MutableStateFlow<SearchState>(SearchState.Searching)
 
-    val assets = sessionRepository.session().combine(queryFlow) { session, query ->
-        Pair(session, query)
+    val assets = combine(sessionRepository.session(), queryFlow, getExclude.invoke()) { session, query, exclude ->
+        Triple(session, query, exclude)
     }
     .flatMapLatest {
         val wallet = it.first?.wallet ?: return@flatMapLatest emptyFlow()
-        assetsRepository.search(wallet, it.second)
+        assetsRepository.search(wallet, it.second, isSearchByAllWallets(), it.third)
     }
     .map {
         it.distinctBy { it.asset.id.toIdentifier() }
@@ -90,6 +102,8 @@ class AssetSelectViewModel @Inject constructor(
         val account = session.wallet.getAccount(assetId.chain) ?: return@launch
         assetsRepository.switchVisibility(session.wallet.id, account, assetId, visible, session.currency)
     }
+
+    internal open fun isSearchByAllWallets() = false
 
     enum class SearchState {
         Idle,

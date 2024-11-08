@@ -2,8 +2,6 @@ package com.gemwallet.android.features.buy.models
 
 import androidx.compose.runtime.Stable
 import com.gemwallet.android.ui.models.AssetItemUIModel
-import com.wallet.core.primitives.Asset
-import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.FiatProvider
 
 sealed interface BuyUIState {

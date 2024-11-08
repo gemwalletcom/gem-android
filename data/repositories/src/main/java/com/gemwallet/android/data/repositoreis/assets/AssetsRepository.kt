@@ -58,6 +58,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.web3j.abi.datatypes.Bool
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.map
@@ -211,6 +212,12 @@ class AssetsRepository @Inject constructor(
             }.filterNotNull()
         }
 
+    suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo> = withContext(Dispatchers.IO) {
+        assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
+            .map { AssetInfoMapper().asDomain(it).firstOrNull() }
+            .mapNotNull { it ?: getTokensCase.assembleAssetInfo(assetId) }
+    }
+
     fun getAssetsInfoByAllWallets(assetsId: List<String>): Flow<List<AssetInfo>> {
         return assetsDao.getAssetsInfoByAllWallets(assetsId).map { AssetInfoMapper().asDomain(it) }
             .map { assets ->
@@ -221,14 +228,12 @@ class AssetsRepository @Inject constructor(
             }
     }
 
-    suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo> = withContext(Dispatchers.IO) {
-        assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
-            .map { AssetInfoMapper().asDomain(it).firstOrNull() }
-            .mapNotNull { it ?: getTokensCase.assembleAssetInfo(assetId) }
-    }
-
-    fun search(wallet: Wallet, query: String): Flow<List<AssetInfo>> {
-        val assetsFlow = assetsDao.searchAssetInfo(query).map { AssetInfoMapper().asDomain(it) }
+    fun search(wallet: Wallet, query: String, byAllWallets: Boolean, exclude: List<String>): Flow<List<AssetInfo>> {
+        val assetsFlow = if (byAllWallets) {
+            assetsDao.searchAssetInfoByAllWallets(query, exclude)
+        } else {
+            assetsDao.searchAssetInfo(query, exclude)
+        }.map { AssetInfoMapper().asDomain(it) }
         val tokensFlow = getTokensCase.getByChains(wallet.accounts.map { it.chain }, query)
         return combine(assetsFlow, tokensFlow) { assets, tokens ->
             assets + tokens.mapNotNull { asset ->

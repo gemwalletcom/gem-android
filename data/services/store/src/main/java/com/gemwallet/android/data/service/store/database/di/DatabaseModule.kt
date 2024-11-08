@@ -71,6 +71,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_34_35)
         .addMigrations(MIGRATION_35_36)
         .addMigrations(MIGRATION_36_37)
+        .addMigrations(MIGRATION_37_38)
         .build()
 
     @Singleton
@@ -938,5 +939,67 @@ val MIGRATION_36_37 = object : Migration(36, 37) {
 
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL("ALTER TABLE banners ADD COLUMN chain TEXT")
+    }
+}
+
+val MIGRATION_37_38 = object : Migration(37, 38) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("DROP VIEW IF EXISTS `asset_info`")
+        db.execSQL("""
+            |CREATE VIEW `asset_info` AS SELECT
+            |        assets.owner_address as address,
+            |        assets.id as id,
+            |        assets.name as name,
+            |        assets.symbol as symbol,
+            |        assets.decimals as decimals,
+            |        assets.type as type,
+            |        assets.is_buy_enabled as isBuyEnabled,
+            |        assets.is_swap_enabled as isSwapEnabled,
+            |        assets.is_stake_enabled as isStakeEnabled,
+            |        assets.staking_apr as stakingApr,
+            |        assets.links as links,
+            |        assets.market as market,
+            |        assets.rank as assetRank,
+            |        accounts.derivation_path as derivationPath,
+            |        accounts.chain as chain,
+            |        accounts.wallet_id as walletId,
+            |        accounts.extendedPublicKey as extendedPublicKey,
+            |        asset_config.is_pinned AS pinned,
+            |        asset_config.is_visible AS visible,
+            |        asset_config.list_position AS listPosition,
+            |        session.id AS sessionId,
+            |        prices.currency AS priceCurrency,
+            |        wallets.type AS walletType,
+            |        wallets.name AS walletName,
+            |        prices.value AS priceValue,
+            |        prices.day_changed AS priceDayChanges,
+            |        balances.available AS balanceAvailable,
+            |        balances.available_amount AS balanceAvailableAmount,
+            |        balances.frozen AS balanceFrozen,
+            |        balances.frozen_amount AS balanceFrozenAmount,
+            |        balances.locked AS balanceLocked,
+            |        balances.locked_amount AS balanceLockedAmount,
+            |        balances.staked AS balanceStaked,
+            |        balances.staked_amount AS balanceStakedAmount,
+            |        balances.pending AS balancePending,
+            |        balances.pending_amount AS balancePendingAmount,
+            |        balances.rewards AS balanceRewards,
+            |        balances.rewards_amount AS balanceRewardsAmount,
+            |        balances.reserved AS balanceReserved,
+            |        balances.reserved_amount AS balanceReservedAmount,
+            |        balances.total_amount AS balanceTotalAmount,
+            |        (balances.total_amount * prices.value) AS balanceFiatTotalAmount,
+            |        balances.enabled AS balanceEnabled,
+            |        balances.hidden AS balanceHidden,
+            |        balances.pinned AS balancePinned,
+            |        balances.updated_at AS balanceUpdatedAt
+            |        FROM assets
+            |        JOIN accounts ON accounts.address = assets.owner_address AND assets.id LIKE accounts.chain || '%'
+            |        JOIN wallets ON wallets.id = accounts.wallet_id
+            |        LEFT JOIN session ON accounts.wallet_id = session.wallet_id
+            |        LEFT JOIN balances ON assets.owner_address = balances.owner AND assets.id = balances.asset_id
+            |        LEFT JOIN prices ON assets.id = prices.asset_id AND prices.currency = (SELECT currency FROM session WHERE id = 1)
+            |        LEFT JOIN asset_config ON assets.id = asset_config.asset_id AND wallets.id = asset_config.wallet_id
+            """.trimMargin())
     }
 }
