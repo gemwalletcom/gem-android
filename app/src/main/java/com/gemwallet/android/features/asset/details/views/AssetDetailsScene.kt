@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIModel
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIState
@@ -72,7 +73,7 @@ fun AssetDetailsScene(
     onTransfer: (AssetId) -> Unit,
     onReceive: (AssetId) -> Unit,
     onBuy: (AssetId) -> Unit,
-    onSwap: (AssetId) -> Unit,
+    onSwap: (AssetId, AssetId?) -> Unit,
     onTransaction: (txId: String) -> Unit,
     onChart: (AssetId) -> Unit,
     onStake: (AssetId) -> Unit,
@@ -118,7 +119,7 @@ private fun Success(
     onTransfer: (AssetId) -> Unit,
     onReceive: (AssetId) -> Unit,
     onBuy: (AssetId) -> Unit,
-    onSwap: (AssetId) -> Unit,
+    onSwap: (AssetId, AssetId?) -> Unit,
     onTransaction: (txId: String) -> Unit,
     onChart: (AssetId) -> Unit,
     onStake: (AssetId) -> Unit,
@@ -191,7 +192,14 @@ private fun Success(
                                 null
                             },
                             onSwap = if (uiState.isSwapEnabled && uiState.account.walletType != WalletType.view) {
-                                { onSwap(uiState.asset.id) }
+                                {
+                                    val toAssetId = if (uiState.asset.type == AssetType.NATIVE) {
+                                        null
+                                    } else {
+                                        uiState.asset.id.chain.asset().id
+                                    }
+                                    onSwap(uiState.asset.id, toAssetId)
+                                }
                             } else {
                                 null
                             },

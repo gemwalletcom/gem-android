@@ -170,7 +170,7 @@ private fun LazyListScope.assetsHead(
                     transferEnabled = true,
                     onReceive = onReceiveClick,
                     onBuy = onBuyClick,
-                    onSwap = if (swapEnabled) onSwapClick else null,
+                    onSwap = null, // if (swapEnabled) onSwapClick else null
                 )
             }
         )

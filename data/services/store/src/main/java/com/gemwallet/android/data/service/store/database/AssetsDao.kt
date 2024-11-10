@@ -45,7 +45,7 @@ interface AssetsDao {
     @Query("SELECT * FROM asset_info WHERE chain = :chain AND id = :assetId AND sessionId=1")
     fun getAssetInfo(assetId: String, chain: Chain): Flow<List<DbAssetInfo>>
 
-    @Query("SELECT * FROM asset_info WHERE sessionId = 1 ORDER BY balanceFiatTotalAmount DESC")
+    @Query("SELECT * FROM asset_info WHERE sessionId = 1 AND visible != 0 ORDER BY balanceFiatTotalAmount DESC")
     fun getAssetsInfo(): Flow<List<DbAssetInfo>>
 
     @Query("SELECT * FROM asset_info WHERE id IN (:ids) AND sessionId=1 ORDER BY balanceFiatTotalAmount DESC")

@@ -48,7 +48,7 @@ fun NavGraphBuilder.assetScreen(
                 onTransfer = onTransfer,
                 onReceive = onReceive,
                 onBuy = onBuy,
-                onSwap = { onSwap(assetId, null) },
+                onSwap = onSwap,
                 onTransaction = onTransaction,
                 onChart = onChart,
                 onStake = onStake,

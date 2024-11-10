@@ -364,8 +364,8 @@ class AssetsRepository @Inject constructor(
     }
 
     private suspend fun setVisibility(walletId: String, assetId: AssetId, visibility: Boolean) = withContext(Dispatchers.IO) {
-        val config = assetsDao.getConfig(walletId, assetId.toIdentifier())
-            ?: DbAssetConfig(walletId, assetId.toIdentifier())
+        val config = assetsDao.getConfig(walletId = walletId, assetId = assetId.toIdentifier())
+            ?: DbAssetConfig(assetId = assetId.toIdentifier(), walletId = walletId)
         assetsDao.setConfig(config.copy(isVisible = visibility, isPinned = false))
     }
 

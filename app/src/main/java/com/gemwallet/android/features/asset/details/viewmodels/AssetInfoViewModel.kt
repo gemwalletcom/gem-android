@@ -23,6 +23,7 @@ import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
 import com.gemwallet.android.model.getStackedAmount
 import com.gemwallet.android.model.lockedFormatted
+import com.gemwallet.android.model.reservedFormatted
 import com.gemwallet.android.model.stakedFormatted
 import com.gemwallet.android.model.totalFormatted
 import com.wallet.core.primitives.Account
@@ -30,6 +31,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionExtended
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,6 +48,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.map
 
 @HiltViewModel
 class AssetInfoViewModel @Inject constructor(
@@ -148,7 +151,8 @@ class AssetInfoViewModel @Inject constructor(
                 networkTitle = "${asset.id.chain.asset().name} (${asset.type.string})",
                 networkIcon = AssetId(asset.id.chain).getIconUrl(),
                 isBuyEnabled = assetInfo.metadata?.isBuyEnabled ?: false,
-                isSwapEnabled = (assetInfo.metadata?.isSwapEnabled ?: false) || asset.id.isSwapable(),
+                isSwapEnabled = EVMChain.entries.map { it.string }.contains(asset.id.chain.string),
+                // TODO: Return later: (assetInfo.metadata?.isSwapEnabled ?: false) || asset.id.isSwapable(),
                 priceAlertEnabled = priceAlertEnabled,
                 transactions = transactions,
                 account = AssetInfoUIModel.Account(
@@ -156,7 +160,7 @@ class AssetInfoViewModel @Inject constructor(
                     totalBalance = balances.totalFormatted(),
                     totalFiat = fiatTotal,
                     owner = assetInfo.owner.address,
-                    hasBalanceDetails = StakeChain.isStaked(asset.id.chain) || balances.balanceAmount.locked != 0.0,
+                    hasBalanceDetails = StakeChain.isStaked(asset.id.chain) || balances.balanceAmount.reserved != 0.0,
                     available = if (balances.balanceAmount.available != total) {
                         balances.availableFormatted()
                     } else {
@@ -171,8 +175,8 @@ class AssetInfoViewModel @Inject constructor(
                     } else {
                         ""
                     },
-                    reserved = if (balances.balanceAmount.locked != 0.0) {
-                        balances.lockedFormatted()
+                    reserved = if (balances.balanceAmount.reserved != 0.0) {
+                        balances.reservedFormatted()
                     } else {
                         ""
                     },
