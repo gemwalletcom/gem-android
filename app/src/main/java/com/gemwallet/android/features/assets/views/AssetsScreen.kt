@@ -89,13 +89,14 @@ fun AssetsScreen(
     val swapEnabled by viewModel.swapEnabled.collectAsStateWithLifecycle()
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
-    var pinnedAssets by remember(pinnedAssetsState) { mutableStateOf(pinnedAssetsState) }
+    var pinnedAssets by remember(pinnedAssetsState.map { it.asset.id.toIdentifier() }.joinToString()) { mutableStateOf(pinnedAssetsState) }
 
     val reorderableLazyListState = rememberReorderableLazyListState(listState) { from, to ->
         pinnedAssets = pinnedAssets.toMutableList().apply {
             val toIndex = indexOfFirst { it.asset.id.toIdentifier() == to.key }
             val fromIndex = indexOfFirst { it.asset.id.toIdentifier() == from.key }
-            add(toIndex, removeAt(fromIndex))
+            val item = removeAt(fromIndex)
+            add(toIndex, item)
         }
     }
 
