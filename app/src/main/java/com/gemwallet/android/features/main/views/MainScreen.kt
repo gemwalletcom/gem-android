@@ -1,10 +1,12 @@
 package com.gemwallet.android.features.main.views
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
@@ -24,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -60,6 +63,7 @@ import com.gemwallet.android.features.transactions.navigation.activitiesRoute
 import com.gemwallet.android.features.transactions.navigation.navigateToActivitiesScreen
 import com.gemwallet.android.features.transactions.navigation.navigateToTransactionScreen
 import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(
@@ -76,6 +80,7 @@ fun MainScreen(
     val assetsListState = rememberLazyListState()
     val activitiesListState = rememberLazyListState()
     val settingsScrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
 
     val navItems = remember(pendingCount) {
         listOf(
@@ -114,6 +119,14 @@ fun MainScreen(
                         selected = item.route == currentTab.value,
                         onClick = {
                             currentTab.value = item.route
+                            coroutineScope.launch {
+                                when (item.route) {
+                                    assetsRoute -> assetsListState.animateScrollToItem(0)
+                                    activitiesRoute -> activitiesListState.animateScrollToItem(0)
+                                    settingsRoute -> settingsScrollState.animateScrollTo(0)
+                                    else -> null
+                                }
+                            }
                         },
                         icon = {
                             val modifier = Modifier.size(24.dp)
