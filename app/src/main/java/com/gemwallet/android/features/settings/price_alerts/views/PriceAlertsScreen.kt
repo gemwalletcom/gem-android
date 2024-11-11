@@ -24,7 +24,7 @@ fun PriceAlertsScreen(
 
     AnimatedContent(selectingAsset, label = "") { selecting ->
         when (selecting) {
-            true -> AssetSelectScreen(
+            true -> PriceAlertSelectScreen(
                 onCancel = { selectingAsset = false },
                 onSelect = {
                     viewModel.addAsset(it)

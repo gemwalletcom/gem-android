@@ -39,7 +39,6 @@ import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.padding12
 import com.gemwallet.android.ui.theme.padding16
-import com.gemwallet.android.ui.theme.padding8
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Banner
 import com.wallet.core.primitives.BannerEvent

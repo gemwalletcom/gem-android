@@ -9,12 +9,12 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.gemwallet.android.R
 import com.gemwallet.android.features.stake.model.formatApr
 import com.gemwallet.android.features.stake.model.getIconUrl
 import com.gemwallet.android.ui.components.ListItem
+import com.gemwallet.android.ui.components.ListItemSupportText
 import com.gemwallet.android.ui.components.ListItemTitle
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.space4
@@ -37,7 +37,7 @@ fun ValidatorItem(
             Row {
                 ListItemTitle(
                     title = "",
-                    subtitle = stringResource(id = R.string.stake_apr, " ${data.formatApr()}"),
+                    subtitle = { ListItemSupportText(R.string.stake_apr, " ${data.formatApr()}") },
                 )
                 if (isSelected) {
                     Spacer(modifier = Modifier.size(space4))
@@ -49,7 +49,7 @@ fun ValidatorItem(
             }
         },
         body = {
-            ListItemTitle(title = data.name, subtitle = "")
+            ListItemTitle(title = data.name)
         }
     )
 }

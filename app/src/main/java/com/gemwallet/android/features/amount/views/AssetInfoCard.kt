@@ -13,6 +13,7 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.ListItem
+import com.gemwallet.android.ui.components.ListItemSupportText
 import com.gemwallet.android.ui.components.ListItemTitle
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
@@ -48,7 +49,10 @@ fun AssetInfoCard(
                 }
             }
         ) {
-            ListItemTitle(title = assetTitle, subtitle = stringResource(id = R.string.transfer_balance, availableAmount))
+            ListItemTitle(
+                title = assetTitle,
+                subtitle = { ListItemSupportText(stringResource(id = R.string.transfer_balance, availableAmount)) },
+            )
         }
     }
 }

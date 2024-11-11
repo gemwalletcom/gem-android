@@ -10,7 +10,6 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.isStaked
-import com.gemwallet.android.ext.isSwapable
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIModel
@@ -22,7 +21,6 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
 import com.gemwallet.android.model.getStackedAmount
-import com.gemwallet.android.model.lockedFormatted
 import com.gemwallet.android.model.reservedFormatted
 import com.gemwallet.android.model.stakedFormatted
 import com.gemwallet.android.model.totalFormatted

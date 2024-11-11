@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 @HiltViewModel
-class PriceAlertsAssetSelectViewModel @Inject constructor(
+class PriceAlertsSelectViewModel @Inject constructor(
     private val getPriceAlertsCase: GetPriceAlertsCase,
     sessionRepository: SessionRepository,
     assetsRepository: AssetsRepository,

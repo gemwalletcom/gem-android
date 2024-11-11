@@ -109,18 +109,29 @@ fun TransactionItem(
                     TransactionType.Swap -> MaterialTheme.colorScheme.tertiary
                     else -> direction.getValueColor()
                 },
-                subtitle = when (type) {
-                    TransactionType.Swap -> {
-                        val swapMetadata = metadata as? TransactionSwapMetadata
-                        val fromId = swapMetadata?.fromAsset
-                        val asset = assets.firstOrNull { fromId?.same(it.id) == true }
-                        if (swapMetadata == null || asset == null) {
-                            ""
-                        } else {
-                            "-${asset.format(Crypto(swapMetadata.fromValue), dynamicPlace = true)}"
+                subtitle = {
+                    val text = when (type) {
+                        TransactionType.Swap -> {
+                            val swapMetadata = metadata as? TransactionSwapMetadata
+                            val fromId = swapMetadata?.fromAsset
+                            val asset = assets.firstOrNull { fromId?.same(it.id) == true }
+                            if (swapMetadata == null || asset == null) {
+                                ""
+                            } else {
+                                "-${
+                                    asset.format(
+                                        Crypto(swapMetadata.fromValue),
+                                        dynamicPlace = true
+                                    )
+                                }"
+                            }
                         }
+
+                        else -> ""
                     }
-                    else -> ""
+                    if (text.isNotEmpty()) {
+                        ListItemSupportText(text)
+                    }
                 },
                 horizontalAlignment = Alignment.End,
             )
@@ -128,8 +139,8 @@ fun TransactionItem(
         body = {
             ListItemTitle(
                 title = type.getTransactionTitle(direction, state, assetSymbol = assetSymbol),
-                subtitle = type.getAddress(direction, from, to),
-                titleBudge = {
+                subtitle = { ListItemSupportText(type.getAddress(direction, from, to)) },
+                titleBadge = {
                     val badge = when (state) {
                         TransactionState.Pending -> stringResource(id = R.string.transaction_status_pending)
                         TransactionState.Confirmed -> ""

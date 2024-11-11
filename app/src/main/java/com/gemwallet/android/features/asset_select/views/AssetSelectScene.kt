@@ -44,7 +44,7 @@ internal fun AssetSelectScene(
     assets: ImmutableList<AssetItemUIModel>,
     state: BaseAssetSelectViewModel.UIState,
     titleBadge: (AssetItemUIModel) -> String?,
-    support: ((AssetItemUIModel) -> String?)?,
+    support: ((AssetItemUIModel) -> (@Composable () -> Unit)?)?,
     query: TextFieldState,
     onSelect: ((AssetId) -> Unit)?,
     onCancel: () -> Unit,
@@ -67,7 +67,7 @@ internal fun AssetSelectScene(
 private fun LazyListScope.assets(
     items: List<AssetItemUIModel>,
     onSelect: ((AssetId) -> Unit)?,
-    support: ((AssetItemUIModel) -> String?)?,
+    support: ((AssetItemUIModel) -> (@Composable () -> Unit)?)?,
     titleBadge: (AssetItemUIModel) -> String?,
     itemTrailing: (@Composable (AssetItemUIModel) -> Unit)?,
 ) {

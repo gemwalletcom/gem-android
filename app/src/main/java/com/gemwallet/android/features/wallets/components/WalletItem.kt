@@ -19,6 +19,7 @@ import com.gemwallet.android.features.assets.model.IconUrl
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.Badge
 import com.gemwallet.android.ui.components.ListItem
+import com.gemwallet.android.ui.components.ListItemSupportText
 import com.gemwallet.android.ui.components.ListItemTitle
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
@@ -97,8 +98,8 @@ fun WalletItem(
     ) {
         ListItemTitle(
             title = name,
-            subtitle = typeLabel,
-            titleBudge = if (type == WalletType.view) {
+            subtitle = { ListItemSupportText(typeLabel) },
+            titleBadge = if (type == WalletType.view) {
                 { Badge(stringResource(id = R.string.wallets_watch).uppercase()) }
             } else {
                 null

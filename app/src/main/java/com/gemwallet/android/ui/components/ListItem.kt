@@ -1,5 +1,6 @@
 package com.gemwallet.android.ui.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -49,7 +51,9 @@ fun ListItem(
             leading()
             Spacer(modifier = Modifier.size(padding16))
         }
-        Box(modifier = Modifier.heightIn(72.dp).weight(1f)) {
+        Box(modifier = Modifier
+            .heightIn(72.dp)
+            .weight(1f)) {
             Row(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -131,35 +135,19 @@ fun ListItemTitle(
 }
 
 @Composable
-fun ListItemTitle(
-    title: String,
-    modifier: Modifier = Modifier,
-    color: Color = MaterialTheme.colorScheme.onSurface,
-    titleBudge: (@Composable () -> Unit)? = null,
-    subtitle: String? = null,
-    horizontalAlignment: Alignment.Horizontal = Alignment.Start,
-) {
-    val subtitleRender: (@Composable () -> Unit)? = if (subtitle.isNullOrEmpty()) {
-        null
-    } else {
-        {
-            Text(
-                modifier = Modifier.padding(top = 0.dp, bottom = 2.dp),
-                text = subtitle,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.bodyMedium,
-            )
-        }
-    }
-    ListItemTitle(
-        modifier = modifier,
-        title = title,
-        color = color,
-        titleBadge = titleBudge,
-        subtitle = subtitleRender,
-        horizontalAlignment = horizontalAlignment,
+fun ListItemSupportText(@StringRes stringId: Int, vararg formatArgs: Any) {
+    ListItemSupportText(stringResource(stringId, *formatArgs))
+}
+
+@Composable
+fun ListItemSupportText(text: String) {
+    Text(
+        modifier = Modifier.padding(top = 0.dp, bottom = 2.dp),
+        text = text,
+        maxLines = 1,
+        overflow = TextOverflow.Ellipsis,
+        color = MaterialTheme.colorScheme.secondary,
+        style = MaterialTheme.typography.bodyMedium,
     )
 }
 
@@ -216,14 +204,14 @@ fun PreviewListItemTitle() {
             trailing = {
                 ListItemTitle(
                     title = "89.9384 BTC",
-                    subtitle = "$100",
+                    subtitle = { ListItemSupportText("$100") },
                     horizontalAlignment = Alignment.End,
                 )
             },
             body = {
                 ListItemTitle(
                     title = "BNB Smart chain network and addition long text",
-                    subtitle = "$100"
+                    subtitle = { ListItemSupportText("$100") }
                 )
             }
         )

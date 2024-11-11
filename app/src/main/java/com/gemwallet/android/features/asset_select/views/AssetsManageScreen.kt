@@ -14,6 +14,7 @@ import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
+import com.gemwallet.android.ui.components.ListItemSupportText
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetSubtype
 
@@ -30,7 +31,11 @@ fun AssetsManageScreen(
     AssetSelectScene(
         title = stringResource(id = R.string.wallet_manage_token_list),
         titleBadge = ::getAssetBadge,
-        support = { if (it.asset.id.type() == AssetSubtype.NATIVE) null else it.asset.id.chain.asset().name },
+        support = {
+            if (it.asset.id.type() == AssetSubtype.NATIVE) null else {
+                { ListItemSupportText(it.asset.id.chain.asset().name) }
+            }
+        },
         query = viewModel.queryState,
         assets = assets,
         state = uiStates,

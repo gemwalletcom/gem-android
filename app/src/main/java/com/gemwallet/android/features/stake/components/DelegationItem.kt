@@ -10,6 +10,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.gemwallet.android.R
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.ui.components.ListItem
+import com.gemwallet.android.ui.components.ListItemSupportText
 import com.gemwallet.android.ui.components.ListItemTitle
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Delegation
@@ -39,11 +40,13 @@ fun DelegationItem(
                 subtitle = when (delegation.base.state) {
                     Pending,
                     Activating,
-                    Deactivating -> completedAt
+                    Deactivating -> {
+                        { ListItemSupportText(completedAt) }
+                    }
                     Active,
                     Undelegating,
                     Inactive,
-                    AwaitingWithdrawal -> ""
+                    AwaitingWithdrawal -> null
                 },
             )
         }

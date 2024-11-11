@@ -33,6 +33,7 @@ import com.gemwallet.android.R
 import com.gemwallet.android.features.bridge.connections.viewmodels.ConnectionsViewModel
 import com.gemwallet.android.features.bridge.model.ConnectionUI
 import com.gemwallet.android.ui.components.ListItem
+import com.gemwallet.android.ui.components.ListItemSupportText
 import com.gemwallet.android.ui.components.ListItemTitle
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.qrcodescanner.qrCodeRequest
@@ -131,7 +132,7 @@ fun ConnectionItem(
     ) {
         ListItemTitle(
             title = connection.name,
-            subtitle = connection.uri,
+            subtitle = { ListItemSupportText(connection.uri) },
         )
     }
 }

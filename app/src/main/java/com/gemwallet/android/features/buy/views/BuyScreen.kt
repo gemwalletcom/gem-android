@@ -39,6 +39,7 @@ import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.FatalStateScene
+import com.gemwallet.android.ui.components.ListItemSupportText
 import com.gemwallet.android.ui.components.MainActionButton
 import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.Table
@@ -125,7 +126,7 @@ private fun Idle(
                     support = if (state.asset.asset.id.type() == AssetSubtype.NATIVE) {
                         null
                     } else {
-                        state.asset.asset.id.chain.asset().name
+                        { ListItemSupportText(state.asset.asset.id.chain.asset().name) }
                     },
                     badge = if (state.asset.symbol == state.asset.name) null else state.asset.symbol,
                     dividerShowed = false,

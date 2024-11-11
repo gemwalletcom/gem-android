@@ -61,7 +61,7 @@ fun AssetListItem(
 @Composable
 fun AssetListItem(
     uiModel: AssetItemUIModel,
-    support: String?,
+    support: @Composable (() -> Unit)?,
     modifier: Modifier = Modifier,
     iconModifier: Modifier = Modifier,
     dividerShowed: Boolean = true,
@@ -80,7 +80,7 @@ fun AssetListItem(
         ListItemTitle(
             modifier = Modifier.fillMaxHeight(),
             title = uiModel.name,
-            titleBudge = { Badge(text = badge) },
+            titleBadge = { Badge(text = badge) },
             subtitle = support,
         )
     }
@@ -108,8 +108,10 @@ fun AssetListItem(
         ListItemTitle(
             modifier = Modifier.fillMaxHeight(),
             title = asset.name,
-            titleBudge = { Badge(text = badge) },
-            subtitle = support,
+            titleBadge = { Badge(text = badge) },
+            subtitle = if (support.isNullOrEmpty()) null else {
+                { ListItemSupportText(support) }
+            },
         )
     }
 }
@@ -168,14 +170,13 @@ fun getBalanceInfo(uiModel: AssetItemUIModel): @Composable () -> Unit {
                 modifier = Modifier.defaultMinSize(minHeight = 40.dp),
                 title = uiModel.cryptoFormatted,
                 color = MaterialTheme.colorScheme.secondary,
-                subtitle = "",
                 horizontalAlignment = Alignment.End,
             )
         } else {
             ListItemTitle(
                 title = uiModel.cryptoFormatted,
                 color = MaterialTheme.colorScheme.onSurface,
-                subtitle = uiModel.fiatFormatted,
+                subtitle = { ListItemSupportText(uiModel.fiatFormatted) },
                 horizontalAlignment = Alignment.End
             )
         }
