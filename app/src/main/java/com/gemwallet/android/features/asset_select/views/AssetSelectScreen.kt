@@ -7,6 +7,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
+import com.gemwallet.android.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
@@ -21,7 +22,7 @@ fun AssetSelectScreen(
     predicate: (AssetId) -> Boolean = { true },
     itemTrailing: (@Composable (AssetItemUIModel) -> Unit)? = null,
     onAddAsset: (() -> Unit)? = null,
-    viewModel: AssetSelectViewModel = hiltViewModel()
+    viewModel: BaseAssetSelectViewModel,
 ) {
     val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
     val assets by viewModel.assets.collectAsStateWithLifecycle()

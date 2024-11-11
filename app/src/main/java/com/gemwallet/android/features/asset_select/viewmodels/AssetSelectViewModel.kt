@@ -10,6 +10,7 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.tokenAvailableChains
+import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
@@ -78,7 +79,7 @@ open class BaseAssetSelectViewModel(
     .map {
         it.distinctBy { it.asset.id.toIdentifier() }
     }
-    .map { assets -> assets.map { AssetInfoUIModel(it) }.toImmutableList() }
+    .map { assets -> assets.filter(::filterAsset).map { AssetInfoUIModel(it) }.toImmutableList() }
     .onEach { searchState.update { SearchState.Idle } }
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>().toImmutableList())
@@ -102,6 +103,8 @@ open class BaseAssetSelectViewModel(
         val account = session.wallet.getAccount(assetId.chain) ?: return@launch
         assetsRepository.switchVisibility(session.wallet.id, account, assetId, visible, session.currency)
     }
+
+    open fun filterAsset(assetInfo: AssetInfo): Boolean = true
 
     internal open fun isSearchByAllWallets() = false
 

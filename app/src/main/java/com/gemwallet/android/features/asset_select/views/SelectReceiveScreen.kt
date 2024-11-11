@@ -17,8 +17,8 @@ import com.wallet.core.primitives.AssetId
 fun SelectReceiveScreen(
     onCancel: () -> Unit,
     onSelect: ((AssetId) -> Unit)?,
+    viewModel: AssetSelectViewModel = hiltViewModel(),
 ) {
-    val viewModel: AssetSelectViewModel = hiltViewModel()
     val clipboardManager = LocalClipboardManager.current
     AssetSelectScreen(
         title = stringResource(id = R.string.wallet_receive),
@@ -33,5 +33,6 @@ fun SelectReceiveScreen(
         },
         onCancel = onCancel,
         onSelect = onSelect,
+        viewModel = viewModel,
     )
 }
