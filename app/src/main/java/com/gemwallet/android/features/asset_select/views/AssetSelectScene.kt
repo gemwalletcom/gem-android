@@ -9,15 +9,20 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -37,6 +42,7 @@ import com.gemwallet.android.ui.theme.padding16
 import com.wallet.core.primitives.AssetId
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.launch
 
 @Composable
 internal fun AssetSelectScene(
@@ -52,12 +58,34 @@ internal fun AssetSelectScene(
     actions: @Composable RowScope.() -> Unit = {},
     onAddAsset: (() -> Unit)? = null,
 ) {
-    val items by remember(assets) { mutableStateOf(assets) }
+    val listState = rememberLazyListState()
+    val coroutineScope = rememberCoroutineScope()
+    var isReturnToTop by remember { mutableStateOf(false) }
+
+    LaunchedEffect(true) {
+        coroutineScope.launch {
+            snapshotFlow { query.text.toString() }.collect {
+                isReturnToTop = it.isEmpty()
+            }
+        }
+    }
+
+    LaunchedEffect(assets) {
+        if (isReturnToTop) {
+            coroutineScope.launch {
+                listState.animateScrollToItem(0)
+            }
+            isReturnToTop = false
+        }
+    }
+
     Scene(title = title, actions = actions, onClose = onCancel) {
         SearchBar(modifier = Modifier.padding(horizontal = padding16), query = query)
         Spacer16()
-        LazyColumn {
-            assets(items, onSelect, support, titleBadge, itemTrailing)
+        LazyColumn(
+            state = listState,
+        ) {
+            assets(assets, onSelect, support, titleBadge, itemTrailing)
             loading(state)
             notFound(state = state, onAddAsset = onAddAsset)
         }

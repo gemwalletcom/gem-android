@@ -40,7 +40,7 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIModel
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIState
 import com.gemwallet.android.features.asset.details.models.AssetStateError
-import com.gemwallet.android.features.asset.details.viewmodels.AssetInfoViewModel
+import com.gemwallet.android.features.asset.details.viewmodels.AsseDetailsViewModel
 import com.gemwallet.android.features.banners.views.BannersScene
 import com.gemwallet.android.features.transactions.components.transactionsList
 import com.gemwallet.android.interactors.chain
@@ -79,7 +79,7 @@ fun AssetDetailsScene(
     onStake: (AssetId) -> Unit,
 ) {
     uniffi.gemstone.AssetWrapper
-    val viewModel: AssetInfoViewModel = hiltViewModel()
+    val viewModel: AsseDetailsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
 
@@ -179,7 +179,7 @@ private fun Success(
                         equivalent = uiState.account.totalFiat,
                         iconUrl = uiState.iconUrl,
                         supportIconUrl = if (uiState.asset.id.type() == AssetSubtype.NATIVE) null else uiState.asset.chain().getIconUrl(),
-                        placeholder = uiState.tokenType.string,
+                        placeholder = uiState.asset.name.getOrNull(0)?.toString() ?: uiState.asset.type.string,
                     ) {
                         AssetHeadActions(
                             walletType = uiState.account.walletType,

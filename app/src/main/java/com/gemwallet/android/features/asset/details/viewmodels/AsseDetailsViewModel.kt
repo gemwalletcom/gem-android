@@ -49,7 +49,7 @@ import javax.inject.Inject
 import kotlin.collections.map
 
 @HiltViewModel
-class AssetInfoViewModel @Inject constructor(
+class AsseDetailsViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val getTransactionsCase: GetTransactionsCase,
     private val stakeRepository: StakeRepository,

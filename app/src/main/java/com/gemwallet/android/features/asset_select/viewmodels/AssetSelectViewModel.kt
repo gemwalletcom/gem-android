@@ -57,7 +57,6 @@ open class BaseAssetSelectViewModel(
 
     val queryState = TextFieldState()
     private val queryFlow = snapshotFlow<String> { queryState.text.toString() }
-        .filter { it.isNotEmpty() }
         .onEach { searchState.update { SearchState.Searching } }
         .mapLatest { query ->
             delay(250)
