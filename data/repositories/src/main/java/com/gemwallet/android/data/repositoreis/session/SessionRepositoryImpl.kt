@@ -7,6 +7,7 @@ import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
@@ -51,4 +52,8 @@ class SessionRepositoryImpl(
     override suspend fun reset() = withContext(Dispatchers.IO) {
         sessionDao.clear()
     }
+
+    override fun getCurrentCurrency(): Currency = getSession()?.currency ?: Currency.USD
+
+    override fun getCurrency(): Flow<Currency> = session().map { it?.currency ?: Currency.USD }
 }

@@ -11,11 +11,11 @@ import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.blockchain.operators.ValidatePhraseOperator
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.cases.banners.AddBannerCase
+import com.gemwallet.android.cases.device.SyncSubscriptionCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
-import com.gemwallet.android.interactors.sync.SyncSubscription
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.model.AddressStatus
 import com.wallet.core.primitives.BannerEvent
@@ -34,7 +34,7 @@ class PhraseAddressImportWalletOperator(
     private val phraseValidate: ValidatePhraseOperator,
     private val addressValidate: ValidateAddressOperator,
     private val passwordStore: PasswordStore,
-    private val syncSubscription: SyncSubscription,
+    private val syncSubscriptionCase: SyncSubscriptionCase,
     private val addressStatusClients: List<AddressStatusClient>,
     private val addBannerCase: AddBannerCase,
 ) : ImportWalletOperator {
@@ -53,7 +53,7 @@ class PhraseAddressImportWalletOperator(
             return result
         }
         val wallet = result.getOrNull() ?: return Result.failure(Exception("Unknown error"))
-        syncSubscription.invoke()
+        syncSubscriptionCase.syncSubscription(listOf(wallet))
         assetsRepository.invalidateDefault(wallet, sessionRepository.getSession()?.currency ?: Currency.USD)
         checkAddresses(wallet)
         sessionRepository.setWallet(wallet)

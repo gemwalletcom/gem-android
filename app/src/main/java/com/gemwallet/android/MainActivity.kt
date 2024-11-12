@@ -249,7 +249,6 @@ class MainViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, MainUIState())
 
     init {
-        configRepository.updateDeviceId()
         maintain()
     }
 

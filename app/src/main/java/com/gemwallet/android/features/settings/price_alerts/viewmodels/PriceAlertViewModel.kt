@@ -2,6 +2,7 @@ package com.gemwallet.android.features.settings.price_alerts.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.device.SyncDeviceInfoCase
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
@@ -10,7 +11,6 @@ import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.interactors.sync.SyncDevice
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.PriceAlert
@@ -30,16 +30,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PriceAlertViewModel @Inject constructor(
-    gemApiClient: GemApiClient, // TODO: Remove it
     assetsRepository: AssetsRepository,
     getPriceAlertsCase: GetPriceAlertsCase,
     val sessionRepository: SessionRepository,
     private val enablePriceAlertCase: EnablePriceAlertCase,
     private val putPriceAlertCase: PutPriceAlertCase,
-    configRepository: ConfigRepository,
+    private val syncDeviceInfoCase: SyncDeviceInfoCase,
 ) : ViewModel() {
-
-    private val syncDevice: SyncDevice = SyncDevice(gemApiClient, configRepository, sessionRepository, enablePriceAlertCase)
 
     val forceSync = MutableStateFlow(false)
 
@@ -71,7 +68,7 @@ class PriceAlertViewModel @Inject constructor(
     fun onEnablePriceAlerts(enabled: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             enablePriceAlertCase.setPriceAlertEnabled(enabled)
-            syncDevice()
+            syncDeviceInfoCase.syncDeviceInfo()
         }
         this.enabled.update { enabled }
     }

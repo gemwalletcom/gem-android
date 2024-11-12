@@ -1,9 +1,9 @@
 package com.gemwallet.android.data.repositoreis.pricealerts
 
+import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.service.store.database.entities.DbPriceAlert
@@ -24,7 +24,7 @@ import kotlin.collections.map
 class PriceAlertRepository(
     private val gemClient: GemApiClient,
     private val priceAlertsDao: PriceAlertsDao,
-    private val configRepository: ConfigRepository,
+    private val getDeviceIdCase: GetDeviceIdCase,
     private val configStore: ConfigStore,
 ) : GetPriceAlertsCase, PutPriceAlertCase, EnablePriceAlertCase {
 
@@ -93,7 +93,7 @@ class PriceAlertRepository(
         gemClient.excludePriceAlert(getDeviceId(), toExclude)
     }
 
-    private fun getDeviceId() = configRepository.getDeviceId()
+    private fun getDeviceId() = getDeviceIdCase.getDeviceId()
 
     private enum class ConfigKey(val string: String) {
         PriceAlertsEnabled("price_alerts_enabled"),

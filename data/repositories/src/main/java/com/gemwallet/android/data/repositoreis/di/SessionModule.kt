@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.repositoreis.di
 
+import com.gemwallet.android.cases.session.GetCurrentCurrencyCase
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepositoryImpl
 import com.gemwallet.android.data.service.store.database.SessionDao
@@ -21,5 +22,7 @@ object SessionModule {
         sessionDao = sessionDao,
         walletsRepository = walletsRepository
     )
-}
 
+    @Provides
+    fun provideGetCurrentCurrencyCase(sessionRepository: SessionRepository): GetCurrentCurrencyCase = sessionRepository
+}

@@ -1,7 +1,12 @@
 package com.gemwallet.android.services
 
-fun requestPushToken(onToken: (String) -> Unit) {
-    onToken("")
+import com.gemwallet.android.cases.device.RequestPushToken
+import com.google.firebase.messaging.FirebaseMessaging
+
+class StoreRequestPushToken : RequestPushToken {
+    override suspend fun invoke(onToken: (String) -> Unit) {
+        onToken("")
+    }
 }
 
 fun isNotificationsAvailable() = false

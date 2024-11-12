@@ -2,14 +2,17 @@ package com.gemwallet.android.features.settings.settings.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
+import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.device.GetPushEnabledCase
+import com.gemwallet.android.cases.device.GetPushTokenCase
+import com.gemwallet.android.cases.device.SwitchPushEnabledCase
+import com.gemwallet.android.cases.device.SyncDeviceInfoCase
+import com.gemwallet.android.cases.device.SyncSubscriptionCase
 import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.data.repositoreis.session.OnSessionChange
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
-import com.gemwallet.android.interactors.sync.SyncDevice
-import com.gemwallet.android.interactors.sync.SyncSubscription
 import com.gemwallet.android.model.Session
 import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -24,11 +27,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val gemApiClient: GemApiClient, // TODO: Redesign - Encapsulate api clients (remote source)
     private val config: ConfigRepository,
     private val walletsRepository: WalletsRepository,
     private val sessionRepository: SessionRepository,
-    private val enablePriceAlertCase: EnablePriceAlertCase,
+    private val syncDeviceInfoCase: SyncDeviceInfoCase,
+    private val getDeviceIdCase: GetDeviceIdCase,
+    private val switchPushEnabledCase: SwitchPushEnabledCase,
+    private val getPushTokenCase: GetPushTokenCase,
+    private val getPushEnabledCase: GetPushEnabledCase,
+    private val syncSubscriptionCase: SyncSubscriptionCase,
 ) : ViewModel(), OnSessionChange {
 
     private val state = MutableStateFlow(SettingsViewModelState())
@@ -48,10 +55,10 @@ class SettingsViewModel @Inject constructor(
         state.update {
             it.copy(
                 currency = sessionRepository.getSession()?.currency ?: Currency.USD,
-                pushEnabled = config.pushEnabled(),
+                pushEnabled = getPushEnabledCase.getPushEnabled(),
                 developEnabled = config.developEnabled(),
-                deviceId = config.getDeviceId(),
-                pushToken = config.getPushToken()
+                deviceId = getDeviceIdCase.getDeviceId(),
+                pushToken = getPushTokenCase.getPushToken()
             )
         }
     }
@@ -65,9 +72,9 @@ class SettingsViewModel @Inject constructor(
         val pushEnabled = !state.value.pushEnabled
         state.update { it.copy(pushEnabled = pushEnabled) }
         viewModelScope.launch {
-            config.pushEnabled(pushEnabled) // TODO: Redesign this and next actions
-            SyncDevice(gemApiClient, config, sessionRepository, enablePriceAlertCase).invoke()
-            SyncSubscription(gemApiClient = gemApiClient, configRepository = config, walletsRepository = walletsRepository).invoke() // TODO: Redesign injection
+            switchPushEnabledCase.switchPushEnabledCase(pushEnabled)
+            syncDeviceInfoCase.syncDeviceInfo()
+            syncSubscriptionCase.syncSubscription(walletsRepository.getAll())
         }
     }
 

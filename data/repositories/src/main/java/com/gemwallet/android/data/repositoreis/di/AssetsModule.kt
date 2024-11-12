@@ -11,12 +11,12 @@ import com.gemwallet.android.blockchain.clients.sui.SuiBalanceClient
 import com.gemwallet.android.blockchain.clients.ton.TonBalanceClient
 import com.gemwallet.android.blockchain.clients.tron.TronBalanceClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpBalanceClient
+import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.GetTokensCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.assets.BalancesRemoteSource
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.BalancesDao
@@ -42,10 +42,10 @@ object AssetsModule {
         pricesDao: PricesDao,
         sessionRepository: SessionRepository,
         balancesRemoteSource: BalancesRemoteSource,
-        configRepository: ConfigRepository,
         getTransactionsCase: GetTransactionsCase,
         getTokensCase: GetTokensCase,
         searchTokensCase: SearchTokensCase,
+        getDeviceIdCase: GetDeviceIdCase,
     ): AssetsRepository = AssetsRepository(
         gemApi = gemApiClient,
         assetsDao = assetsDao,
@@ -54,9 +54,9 @@ object AssetsModule {
         sessionRepository = sessionRepository,
         getTransactionsCase = getTransactionsCase,
         balancesRemoteSource = balancesRemoteSource,
-        configRepository = configRepository,
         getTokensCase = getTokensCase,
         searchTokensCase = searchTokensCase,
+        getDeviceIdCase = getDeviceIdCase,
     )
 
     @Provides

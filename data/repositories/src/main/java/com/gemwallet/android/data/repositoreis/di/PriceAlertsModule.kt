@@ -1,10 +1,10 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import android.content.Context
+import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.data.repositoreis.pricealerts.PriceAlertRepository
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.services.gemapi.GemApiClient
@@ -25,12 +25,12 @@ object PriceAlertsModule {
         @ApplicationContext context: Context,
         gemClient: GemApiClient,
         priceAlertsDao: PriceAlertsDao,
-        configRepository: ConfigRepository,
+        getDeviceIdCase: GetDeviceIdCase,
     ): PriceAlertRepository {
         return PriceAlertRepository(
             gemClient = gemClient,
             priceAlertsDao = priceAlertsDao,
-            configRepository = configRepository,
+            getDeviceIdCase = getDeviceIdCase,
             configStore = com.gemwallet.android.data.service.store.ConfigStore(
                 context.getSharedPreferences(
                     "price-alerts",

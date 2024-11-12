@@ -3,13 +3,11 @@ package com.gemwallet.android.interactors
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.blockchain.operators.LoadPrivateDataOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
+import com.gemwallet.android.cases.device.SyncSubscriptionCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.exclude
-import com.gemwallet.android.interactors.sync.SyncSubscription
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.WalletType
@@ -18,14 +16,13 @@ import javax.inject.Singleton
 
 @Singleton
 class CheckAccounts @Inject constructor(
-    private val gemApiClient: GemApiClient,
     private val walletsRepository: WalletsRepository,
     private val assetsRepository: AssetsRepository,
     private val loadPrivateDataOperator: LoadPrivateDataOperator,
     private val passwordStore: PasswordStore,
     private val createAccountOperator: CreateAccountOperator,
-    private val configRepository: ConfigRepository,
     private val sessionRepository: SessionRepository,
+    private val syncSubscriptionCase: SyncSubscriptionCase,
 ) {
     suspend operator fun invoke() {
         val wallets = walletsRepository.getAll()
@@ -47,7 +44,7 @@ class CheckAccounts @Inject constructor(
                         sessionRepository.getSession()?.currency ?: Currency.USD
                     )
                 }
-                SyncSubscription(gemApiClient = gemApiClient, walletsRepository = walletsRepository, configRepository = configRepository).invoke()
+                syncSubscriptionCase.syncSubscription(walletsRepository.getAll())
             }
         }
     }

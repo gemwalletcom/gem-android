@@ -2,10 +2,10 @@ package com.gemwallet.android.data.repositoreis.assets
 
 import android.util.Log
 import com.gemwallet.android.blockchain.operators.GetAsset
+import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.GetTokensCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.BalancesDao
@@ -58,7 +58,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.web3j.abi.datatypes.Bool
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.collections.map
@@ -72,10 +71,10 @@ class AssetsRepository @Inject constructor(
     private val gemApi: GemApiClient,
     private val sessionRepository: SessionRepository,
     private val balancesRemoteSource: BalancesRemoteSource,
-    private val configRepository: ConfigRepository,
     getTransactionsCase: GetTransactionsCase,
     private val getTokensCase: GetTokensCase,
     private val searchTokensCase: SearchTokensCase,
+    private val getDeviceIdCase: GetDeviceIdCase,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetAsset {
     private val visibleByDefault = listOf(Chain.Ethereum, Chain.Bitcoin, Chain.SmartChain, Chain.Solana)
@@ -278,7 +277,7 @@ class AssetsRepository @Inject constructor(
             }.awaitAll()
         scope.launch { updatePrices(currency) }
         delay(2000) // Wait subscription
-        val availableAssets = gemApi.getAssets(configRepository.getDeviceId(), wallet.index).getOrNull() ?: return@launch
+        val availableAssets = gemApi.getAssets(getDeviceIdCase.getDeviceId(), wallet.index).getOrNull() ?: return@launch
         availableAssets.mapNotNull {
             it.toAssetId()
         }.filter {

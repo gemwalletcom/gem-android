@@ -1,10 +1,10 @@
 package com.gemwallet.android.interactors.sync
 
+import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.getAccount
@@ -20,14 +20,14 @@ import javax.inject.Inject
 class SyncTransactions @Inject constructor(
     private val gemApiClient: GemApiClient,
     private val sessionRepository: SessionRepository,
-    private val configRepository: ConfigRepository,
+    private val getDeviceIdCase: GetDeviceIdCase,
     private val putTransactionsCase: PutTransactionsCase,
     private val getTransactionsCase: GetTransactionsCase,
     private val assetsRepository: AssetsRepository,
     private val searchTokensCase: SearchTokensCase,
 ) {
     suspend operator fun invoke(wallet: Wallet) = withContext(Dispatchers.IO) {
-        val deviceId = configRepository.getDeviceId()
+        val deviceId = getDeviceIdCase.getDeviceId()
         val lastSyncTime = getTransactionsCase.getTransactions().firstOrNull()
             ?.maxByOrNull { it.transaction.createdAt }?.transaction?.createdAt ?: 0L
 

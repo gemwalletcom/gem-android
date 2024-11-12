@@ -1,7 +1,9 @@
 package com.gemwallet.android.services
 
-fun requestPushToken(onToken: (String) -> Unit) {
-    onToken("")
+class StoreRequestPushToken : RequestPushToken {
+    override suspend fun invoke(onToken: (String) -> Unit) {
+        onToken("")
+    }
 }
 
 fun isNotificationsAvailable() = false

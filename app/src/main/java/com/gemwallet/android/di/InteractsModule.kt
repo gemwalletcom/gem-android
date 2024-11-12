@@ -21,16 +21,14 @@ import com.gemwallet.android.blockchain.operators.walletcore.WCStorePhraseOperat
 import com.gemwallet.android.blockchain.operators.walletcore.WCValidateAddressOperator
 import com.gemwallet.android.blockchain.operators.walletcore.WCValidatePhraseOperator
 import com.gemwallet.android.cases.banners.AddBannerCase
+import com.gemwallet.android.cases.device.SyncSubscriptionCase
 import com.gemwallet.android.data.password.PreferencePasswordStore
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.available
 import com.gemwallet.android.interactors.ImportWalletOperator
 import com.gemwallet.android.interactors.PhraseAddressImportWalletOperator
-import com.gemwallet.android.interactors.sync.SyncSubscription
 import com.wallet.core.primitives.Chain
 import dagger.Module
 import dagger.Provides
@@ -94,8 +92,6 @@ object InteractsModule {
     @Singleton
     @Provides
     fun provideAddWalletInteract(
-        gemApiClient: GemApiClient, // TODO: Move to WalletsCase
-        configRepository: ConfigRepository,
         walletsRepository: WalletsRepository,
         assetsRepository: AssetsRepository,
         sessionRepository: SessionRepository,
@@ -105,6 +101,7 @@ object InteractsModule {
         passwordStore: PasswordStore,
         rpcClients: RpcClientAdapter,
         addBannerCase: AddBannerCase,
+        syncSubscriptionCase: SyncSubscriptionCase,
     ): ImportWalletOperator = PhraseAddressImportWalletOperator(
         walletsRepository = walletsRepository,
         assetsRepository = assetsRepository,
@@ -113,8 +110,8 @@ object InteractsModule {
         phraseValidate = phraseValidate,
         addressValidate = addressValidate,
         passwordStore = passwordStore,
-        syncSubscription = SyncSubscription(gemApiClient, walletsRepository, configRepository),
         addBannerCase = addBannerCase,
+        syncSubscriptionCase = syncSubscriptionCase,
         addressStatusClients = Chain.available().mapNotNull {
             when (it) {
                 Chain.Tron -> TronAddressStatusClient(it, rpcClients.getClient(it))

@@ -47,13 +47,11 @@ import com.gemwallet.android.blockchain.clients.xrp.XrpNodeStatusClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignerPreloader
 import com.gemwallet.android.blockchain.operators.SignTransfer
-import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
+import com.gemwallet.android.cases.device.SyncSubscriptionCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.available
 import com.gemwallet.android.interactors.sync.SyncTransactions
 import com.gemwallet.android.services.SyncService
@@ -249,22 +247,18 @@ object DataModule {
     @Singleton
     @Provides
     fun provideSyncService(
-        gemApiClient: GemApiClient,
-        configRepository: ConfigRepository,
         sessionRepository: SessionRepository,
         walletsRepository: WalletsRepository,
         buyRepository: BuyRepository,
         syncTransactions: SyncTransactions,
-        enablePriceAlertCase: EnablePriceAlertCase,
+        syncSubscriptionCase: SyncSubscriptionCase,
     ): SyncService {
         return SyncService(
-            gemApiClient = gemApiClient,
-            configRepository = configRepository,
             sessionRepository = sessionRepository,
             walletsRepository = walletsRepository,
             syncTransactions = syncTransactions,
-            enablePriceAlertCase = enablePriceAlertCase,
             buyRepository = buyRepository,
+            syncSubscriptionCase = syncSubscriptionCase,
         )
     }
 }
