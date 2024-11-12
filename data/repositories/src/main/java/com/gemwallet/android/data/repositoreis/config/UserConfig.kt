@@ -3,40 +3,40 @@ package com.gemwallet.android.data.repositoreis.config
 import android.content.Context
 import android.content.SharedPreferences
 
-class OfflineFirstConfigRepository(
+class UserConfig(
     private val context: Context,
-) : ConfigRepository {
+) {
     private lateinit var store: SharedPreferences
 
-    override fun authRequired(): Boolean {
+    fun authRequired(): Boolean {
         return getBoolean(Keys.Auth)
     }
 
-    override fun setAuthRequired(enabled: Boolean) {
+    fun setAuthRequired(enabled: Boolean) {
         putBoolean(Keys.Auth, enabled)
     }
 
-    override fun setAppVersionSkip(version: String) {
+    fun setAppVersionSkip(version: String) {
         putString(Keys.AppVersionSkip, version)
     }
 
-    override fun getAppVersionSkip(): String {
+    fun getAppVersionSkip(): String {
         return getString(Keys.AppVersionSkip)
     }
 
-    override fun developEnabled(enabled: Boolean) {
+    fun developEnabled(enabled: Boolean) {
         putBoolean(Keys.DevelopEnabled, enabled)
     }
 
-    override fun developEnabled(): Boolean {
+    fun developEnabled(): Boolean {
         return getBoolean(Keys.DevelopEnabled)
     }
 
-    override fun getLaunchNumber(): Int {
+    fun getLaunchNumber(): Int {
         return getInt(Keys.LaunchNumber)
     }
 
-    override fun increaseLaunchNumber() {
+    fun increaseLaunchNumber() {
         putInt(Keys.LaunchNumber, getInt(Keys.LaunchNumber) + 1)
     }
 
@@ -69,8 +69,6 @@ class OfflineFirstConfigRepository(
         Auth("auth"),
         DeviceId("device-uuid"),
         AppVersionSkip("app-version-skip"),
-//        PushEnabled("push_enabled"),
-//        PushToken("push_token"),
         DevelopEnabled("develop_enabled"),
         SubscriptionVersion("subscription_version"),
         LaunchNumber("launch_number"),

@@ -15,7 +15,7 @@ import com.gemwallet.android.cases.device.GetPushEnabledCase
 import com.gemwallet.android.cases.device.SetPushTokenCase
 import com.gemwallet.android.cases.device.SyncDeviceInfoCase
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.google.firebase.messaging.FirebaseMessagingService
@@ -30,7 +30,7 @@ import javax.inject.Inject
 class FCM : FirebaseMessagingService() {
 
     @Inject
-    lateinit var configRepository: ConfigRepository
+    lateinit var userConfig: UserConfig
     @Inject
     lateinit var gemApiClient: GemApiClient
     @Inject

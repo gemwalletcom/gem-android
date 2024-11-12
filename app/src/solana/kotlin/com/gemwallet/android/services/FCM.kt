@@ -11,11 +11,13 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.gemwallet.android.MainActivity
 import com.gemwallet.android.R
+import com.gemwallet.android.cases.device.GetPushEnabledCase
+import com.gemwallet.android.cases.device.SetPushTokenCase
+import com.gemwallet.android.cases.device.SyncDeviceInfoCase
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
-import com.gemwallet.android.interactors.sync.SyncDevice
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,23 +25,30 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.jvm.java
 
 @AndroidEntryPoint
 class FCM : FirebaseMessagingService() {
 
     @Inject
-    lateinit var configRepository: ConfigRepository
+    lateinit var userConfig: UserConfig
     @Inject
     lateinit var gemApiClient: GemApiClient
     @Inject
     lateinit var sessionRepository: SessionRepository
     @Inject
     lateinit var enablePriceAlertCase: EnablePriceAlertCase
+    @Inject
+    lateinit var syncDeviceInfoCase: SyncDeviceInfoCase
+    @Inject
+    lateinit var getPushEnabledCase: GetPushEnabledCase
+    @Inject
+    lateinit var setPushTokenCase: SetPushTokenCase
 
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun onMessageReceived(message: RemoteMessage) {
-        if (!configRepository.pushEnabled()) {
+        if (!getPushEnabledCase.getPushEnabled()) {
             return
         }
         scope.launch {
@@ -70,13 +79,8 @@ class FCM : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         scope.launch {
-            configRepository.setPushToken(token)
-            SyncDevice(
-                gemApiClient = gemApiClient,
-                sessionRepository = sessionRepository,
-                configRepository = configRepository,
-                enablePriceAlertCase = enablePriceAlertCase,
-            ).invoke()
+            setPushTokenCase.setPushToken(token)
+            syncDeviceInfoCase.syncDeviceInfo()
         }
 
     }

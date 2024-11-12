@@ -4,7 +4,7 @@ import com.gemwallet.android.cases.banners.AddBannerCase
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
 import com.gemwallet.android.data.repositoreis.banners.BannersRepository
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.service.store.database.BannersDao
 import dagger.Module
 import dagger.Provides
@@ -19,7 +19,7 @@ object BannersModule {
     @Provides
     fun provideBannersRepository(
         bannersDao: BannersDao,
-        configRepository: ConfigRepository,
+        configRepository: UserConfig,
     ): BannersRepository {
         return BannersRepository(
             bannersDao,

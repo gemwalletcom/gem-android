@@ -3,7 +3,7 @@ package com.gemwallet.android.data.repositoreis.banners
 import com.gemwallet.android.cases.banners.AddBannerCase
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.service.store.database.BannersDao
 import com.gemwallet.android.data.service.store.database.entities.DbBanner
 import com.gemwallet.android.data.service.store.database.mappers.BannerMapper
@@ -21,7 +21,7 @@ import kotlinx.coroutines.withContext
 
 class BannersRepository(
     private val bannersDao: BannersDao,
-    private val configRepository: ConfigRepository
+    private val userConfig: UserConfig
 ) : GetBannersCase, CancelBannerCase, AddBannerCase {
 
     val mapper = BannerMapper()
@@ -84,7 +84,7 @@ class BannersRepository(
     }
 
     private suspend fun isBannerAvailable(wallet: Wallet?, asset: Asset?, event: BannerEvent): Boolean {
-        if (event == BannerEvent.EnableNotifications && configRepository.getLaunchNumber() < 3) {
+        if (event == BannerEvent.EnableNotifications && userConfig.getLaunchNumber() < 3) {
             return false
         }
         val dbBanner = bannersDao.getBanner(wallet?.id ?: "", asset?.id?.toIdentifier() ?: "", asset?.id?.chain?.string, event)

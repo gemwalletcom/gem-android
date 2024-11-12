@@ -8,11 +8,10 @@ import com.gemwallet.android.cases.device.GetPushTokenCase
 import com.gemwallet.android.cases.device.SwitchPushEnabledCase
 import com.gemwallet.android.cases.device.SyncDeviceInfoCase
 import com.gemwallet.android.cases.device.SyncSubscriptionCase
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.OnSessionChange
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.model.Session
 import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val config: ConfigRepository,
+    private val userConfig: UserConfig,
     private val walletsRepository: WalletsRepository,
     private val sessionRepository: SessionRepository,
     private val syncDeviceInfoCase: SyncDeviceInfoCase,
@@ -56,7 +55,7 @@ class SettingsViewModel @Inject constructor(
             it.copy(
                 currency = sessionRepository.getSession()?.currency ?: Currency.USD,
                 pushEnabled = getPushEnabledCase.getPushEnabled(),
-                developEnabled = config.developEnabled(),
+                developEnabled = userConfig.developEnabled(),
                 deviceId = getDeviceIdCase.getDeviceId(),
                 pushToken = getPushTokenCase.getPushToken()
             )
@@ -64,7 +63,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun developEnable() {
-        config.developEnabled(!config.developEnabled())
+        userConfig.developEnabled(!userConfig.developEnabled())
         refresh()
     }
 

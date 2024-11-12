@@ -3,7 +3,7 @@ package com.gemwallet.android.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.BuildConfig
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.features.onboarding.OnboardingDest
@@ -24,7 +24,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AppViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
-    private val configRepository: ConfigRepository,
+    private val userConfig: UserConfig,
     private val gemApiClient: GemApiClient,
 ) : ViewModel() {
 
@@ -43,7 +43,7 @@ class AppViewModel @Inject constructor(
     }
 
     fun onSkip(version: String) {
-        configRepository.setAppVersionSkip(version)
+        userConfig.setAppVersionSkip(version)
         state.update { it.copy(intent = AppIntent.None) }
     }
 
@@ -72,7 +72,7 @@ class AppViewModel @Inject constructor(
             }
             ?.firstOrNull()?.version ?: return@withContext
 
-        val skipVersion = configRepository.getAppVersionSkip()
+        val skipVersion = userConfig.getAppVersionSkip()
         if (current.compareTo(BuildConfig.VERSION_NAME) > 0 && skipVersion != current) {
             state.update {
                 it.copy(intent = AppIntent.ShowUpdate, version = current)
@@ -81,10 +81,10 @@ class AppViewModel @Inject constructor(
     }
 
     private fun rateAs() {
-        if (configRepository.getLaunchNumber() == 10) {
+        if (userConfig.getLaunchNumber() == 10) {
             state.update { it.copy(intent = AppIntent.ShowReview) }
         }
-        configRepository.increaseLaunchNumber()
+        userConfig.increaseLaunchNumber()
     }
 
     private fun onSession(session: Session) {

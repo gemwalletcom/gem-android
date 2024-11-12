@@ -7,9 +7,7 @@ import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.wallet.core.primitives.AssetId

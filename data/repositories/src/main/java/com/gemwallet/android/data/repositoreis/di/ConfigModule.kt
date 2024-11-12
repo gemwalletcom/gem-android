@@ -1,8 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import android.content.Context
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
-import com.gemwallet.android.data.repositoreis.config.OfflineFirstConfigRepository
+import com.gemwallet.android.data.repositoreis.config.UserConfig
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,7 +17,7 @@ object ConfigModule {
     @Provides
     fun provideConfigRepository(
         @ApplicationContext context: Context,
-    ): ConfigRepository = OfflineFirstConfigRepository(context = context)
+    ): UserConfig = UserConfig(context = context)
 
 }
 

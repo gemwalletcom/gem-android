@@ -11,7 +11,7 @@ import com.gemwallet.android.cases.device.SyncDeviceInfoCase
 import com.gemwallet.android.cases.device.SyncSubscriptionCase
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.session.GetCurrentCurrencyCase
-import com.gemwallet.android.data.repositoreis.config.OfflineFirstConfigRepository.Keys
+import com.gemwallet.android.data.repositoreis.config.UserConfig.Keys
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.wallet.core.primitives.Device

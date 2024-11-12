@@ -1,20 +1,20 @@
 package com.gemwallet.android.features.settings.security.viewmodels
 
 import androidx.lifecycle.ViewModel
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.config.UserConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class SecurityViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
+    private val userConfig: UserConfig,
 ) : ViewModel() {
 
     fun authRequired(): Boolean {
-        return configRepository.authRequired()
+        return userConfig.authRequired()
     }
 
     fun setAuthRequired(required: Boolean) {
-        configRepository.setAuthRequired(required)
+        userConfig.setAuthRequired(required)
     }
 }

@@ -46,7 +46,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
-import com.gemwallet.android.data.repositoreis.config.ConfigRepository
+import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.features.bridge.proposal.ProposalScene
 import com.gemwallet.android.features.bridge.request.RequestScene
 import com.gemwallet.android.interactors.CheckAccounts
@@ -234,7 +234,7 @@ class MainActivity : FragmentActivity() {
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val configRepository: ConfigRepository,
+    private val userConfig: UserConfig,
     private val bridgesRepository: BridgesRepository,
     private val syncService: SyncService,
     private val checkAccounts: CheckAccounts,
@@ -242,7 +242,7 @@ class MainViewModel @Inject constructor(
 
     private val state = MutableStateFlow(
         MainState(
-            initialAuth = if (configRepository.authRequired()) AuthState.Required else AuthState.Success
+            initialAuth = if (userConfig.authRequired()) AuthState.Required else AuthState.Success
         )
     )
     val uiState = state.map { it.toUIState() }
@@ -253,7 +253,7 @@ class MainViewModel @Inject constructor(
     }
 
     fun isAuthRequired(authRequest: AuthRequest): Boolean =
-        authRequest == AuthRequest.Enable || configRepository.authRequired()
+        authRequest == AuthRequest.Enable || userConfig.authRequired()
 
     private fun maintain() {
         viewModelScope.launch(Dispatchers.IO) {
