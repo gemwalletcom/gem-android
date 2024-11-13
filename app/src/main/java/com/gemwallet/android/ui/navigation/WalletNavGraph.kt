@@ -66,6 +66,8 @@ import com.gemwallet.android.features.wallet.navigation.navigateToWalletScreen
 import com.gemwallet.android.features.wallet.navigation.walletScreen
 import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
 import com.gemwallet.android.features.wallets.navigation.walletsScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
+import com.gemwallet.android.ui.navigation.routes.recipientInput
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -111,7 +113,7 @@ fun WalletNavGraph(
             assetsScreen(
                 onShowWallets = navController::navigateToWalletsScreen,
                 onShowAssetManage = navController::navigateToAssetsManageScreen,
-                onSendClick = navController::navigateToSendScreen,
+                onSendClick = navController::navigateToRecipientInput,//navController::navigateToSendScreen,
                 onReceiveClick = navController::navigateToReceiveScreen,
                 onBuyClick = navController::navigateToBuyScreen,
                 onSwapClick = navController::navigateToSwap,
@@ -120,7 +122,7 @@ fun WalletNavGraph(
 
             assetScreen(
                 onCancel = onCancel,
-                onTransfer = navController::navigateToSendScreen,
+                onTransfer = navController::navigateToRecipientInput,//navController::navigateToSendScreen,
                 onReceive = navController::navigateToReceiveScreen,
                 onBuy = navController::navigateToBuyScreen,
                 onSwap = navController::navigateToSwap,
@@ -141,6 +143,13 @@ fun WalletNavGraph(
             swap(
                 onConfirm = navController::navigateToConfirmScreen,
                 onCancel = onCancel
+            )
+
+            recipientInput(
+                cancelAction = onCancel,
+                recipientAction = navController::navigateToRecipientInput,
+                amountAction = navController::navigateToAmountScreen,
+                confirmAction = navController::navigateToConfirmScreen,
             )
 
             amount(

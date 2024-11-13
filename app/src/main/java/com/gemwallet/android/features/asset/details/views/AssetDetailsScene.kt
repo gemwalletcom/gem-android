@@ -57,6 +57,7 @@ import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.priceColor
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
@@ -70,7 +71,7 @@ import uniffi.gemstone.DocsUrl
 fun AssetDetailsScene(
     assetId: AssetId,
     onCancel: () -> Unit,
-    onTransfer: (AssetId) -> Unit,
+    onTransfer: AssetIdAction,
     onReceive: (AssetId) -> Unit,
     onBuy: (AssetId) -> Unit,
     onSwap: (AssetId, AssetId?) -> Unit,
@@ -116,7 +117,7 @@ private fun Success(
     syncState: AssetInfoUIState.SyncState,
     onRefresh: () -> Unit,
     onCancel: () -> Unit,
-    onTransfer: (AssetId) -> Unit,
+    onTransfer: AssetIdAction,
     onReceive: (AssetId) -> Unit,
     onBuy: (AssetId) -> Unit,
     onSwap: (AssetId, AssetId?) -> Unit,

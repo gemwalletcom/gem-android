@@ -163,6 +163,9 @@ dependencies {
     implementation(project(":ui"))
     implementation(project(":data:repositories"))
 
+    // Features
+    implementation(project(":features:recipient:presents"))
+
     // version catalog might not work
     //noinspection UseTomlInstead
     api("net.java.dev.jna:jna:5.15.0@aar")

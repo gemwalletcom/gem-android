@@ -7,7 +7,6 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.ext.byChain
-import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.features.stake.delegation.model.DelegationSceneState
 import com.gemwallet.android.features.stake.model.availableIn
 import com.gemwallet.android.model.AmountParams
@@ -15,6 +14,7 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.CellEntity
+import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionType
@@ -53,7 +53,7 @@ class DelegationViewModel @Inject constructor(
         }
     }
 
-    fun onStake(call: OnAmount) {
+    fun onStake(call: AmountTransactionAction) {
         call(
             AmountParams.buildStake(
                 assetId = state.value.assetInfo?.asset?.id!!,
@@ -64,7 +64,7 @@ class DelegationViewModel @Inject constructor(
         )
     }
 
-    fun onUnstake(call: OnAmount) {
+    fun onUnstake(call: AmountTransactionAction) {
         call(
             AmountParams.buildStake(
                 assetId = state.value.assetInfo?.asset?.id!!,
@@ -75,7 +75,7 @@ class DelegationViewModel @Inject constructor(
         )
     }
 
-    fun onRedelegate(call: OnAmount) {
+    fun onRedelegate(call: AmountTransactionAction) {
         call(
             AmountParams.buildStake(
                 assetId = state.value.assetInfo?.asset?.id!!,
@@ -86,7 +86,7 @@ class DelegationViewModel @Inject constructor(
         )
     }
 
-    fun onWithdraw(call: OnAmount) {
+    fun onWithdraw(call: AmountTransactionAction) {
         call(
             AmountParams.buildStake(
                 assetId = state.value.assetInfo?.asset?.id!!,

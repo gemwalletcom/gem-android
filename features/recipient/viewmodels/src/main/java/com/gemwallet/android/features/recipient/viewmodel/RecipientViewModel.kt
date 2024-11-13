@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 import java.math.BigInteger
 import javax.inject.Inject
 
-val assetIdArg = "asset_id"
+val assetIdArg = "assetId"
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel

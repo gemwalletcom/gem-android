@@ -7,17 +7,11 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.blockchain.PayloadType
-import com.gemwallet.android.blockchain.memo
-import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
-import com.gemwallet.android.ext.chain
-import com.gemwallet.android.ext.mutableStateIn
 import com.gemwallet.android.features.amount.models.AmountError
 import com.gemwallet.android.features.amount.models.InputCurrency
-import com.gemwallet.android.features.amount.models.QrScanField
 import com.gemwallet.android.features.amount.navigation.paramsArg
 import com.gemwallet.android.features.confirm.models.AmountScreenModel
 import com.gemwallet.android.math.numberParse
@@ -25,13 +19,11 @@ import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
-import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.DelegationValidator
-import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -59,21 +51,14 @@ class AmountViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val stakeRepository: StakeRepository,
-    private val validateAddressOperator: ValidateAddressOperator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
-
-    val addressState = mutableStateOf("")
-    val memoState = mutableStateOf("")
-    val nameRecordState = mutableStateOf<NameRecord?>(null)
 
     private val params = savedStateHandle
         .getStateFlow(paramsArg, "")
         .mapNotNull { AmountParams.unpack(it) }
 
     private val asset: Flow<AssetInfo> = params.flatMapLatest {
-        addressState.value = it.destination?.address ?: ""
-        memoState.value = it.memo ?: ""
         assetsRepository.getAssetInfo(it.assetId)
     }
 
@@ -136,23 +121,10 @@ class AmountViewModel @Inject constructor(
         private set
 
     val equivalentState = snapshotFlow { amount }.combine(asset) { amount, assetInfo ->
-        calcEquivalent(amount, InputCurrency.InCrypto, assetInfo)
+        calcEquivalent(amount, assetInfo)
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    val addressError = combine(
-        state,
-        snapshotFlow { addressState.value },
-        snapshotFlow { nameRecordState.value },
-    ) { state, address, nameRecord ->
-        val nameAddress = nameRecord?.address
-        if (state == null || (address.isEmpty() && nameAddress.isNullOrEmpty())) return@combine AmountError.None
-        val destination = DestinationAddress(nameAddress ?: address, nameRecord?.name)
-        val validation = validateDestination(state.assetInfo.asset.chain(), state.params.txType, destination)
-        validation
-    }.mutableStateIn(viewModelScope, AmountError.None)
-
-    val memoErrorState = MutableStateFlow<AmountError>(AmountError.None)
     val inputErrorState = MutableStateFlow<AmountError>(AmountError.None)
     val nextErrorState = MutableStateFlow<AmountError>(AmountError.None)
 
@@ -169,8 +141,6 @@ class AmountViewModel @Inject constructor(
 
     fun updateAmount(input: String, isMax: Boolean = false) {
         amount = input
-        inputErrorState.update { AmountError.None }
-        nextErrorState.update { AmountError.None }
         maxAmount.update { isMax }
     }
 
@@ -185,14 +155,7 @@ class AmountViewModel @Inject constructor(
     }
 
     fun onNext(onConfirm: (ConfirmParams) -> Unit) = viewModelScope.launch {
-        val params = state.value?.params?.copy(
-            destination = DestinationAddress(
-                address = nameRecordState.value?.address ?: addressState.value,
-                domainName = nameRecordState.value?.name,
-            ),
-            memo = memoState.value,
-        ) ?: return@launch
-
+        val params = state.value?.params ?: return@launch
         onNext(params, amount, onConfirm)
     }
 
@@ -229,14 +192,8 @@ class AmountViewModel @Inject constructor(
         }
         val destination = params.destination
         val memo = params.memo
-        val addressError = validateDestination(asset.chain(), params.txType, destination)
-        if (addressError != AmountError.None) {
-            this@AmountViewModel.addressError.update { addressError }
-            return@launch
-        }
         inputErrorState.update { AmountError.None }
         nextErrorState.update { AmountError.None }
-        this@AmountViewModel.addressError.update { AmountError.None }
         val builder = ConfirmParams.Builder(asset.id, amount.atomicValue)
         val nextParams = when (params.txType) {
             TransactionType.Transfer -> builder.transfer(
@@ -257,22 +214,7 @@ class AmountViewModel @Inject constructor(
         onConfirm(nextParams)
     }
 
-    private fun validateDestination(
-        chain: Chain,
-        txType: TransactionType,
-        destination: DestinationAddress?
-    ): AmountError {
-        if (txType != TransactionType.Transfer) {
-            return AmountError.None
-        }
-        return if (validateAddressOperator(destination?.address ?: "", chain).getOrNull() != true) {
-            AmountError.IncorrectAddress
-        } else {
-            AmountError.None
-        }
-    }
-
-    private fun calcEquivalent(inputAmount: String, inputCurrency: InputCurrency, assetInfo: AssetInfo): String {
+    private fun calcEquivalent(inputAmount: String, assetInfo: AssetInfo): String {
         val currency = sessionRepository.getSession()?.currency ?: return ""
         val price = assetInfo.price?.price?.price ?: return ""
         val decimals = assetInfo.asset.decimals
@@ -282,15 +224,8 @@ class AmountViewModel @Inject constructor(
         } else {
             return " "
         }
-
-        return if (inputCurrency == InputCurrency.InFiat) {
-//            val unit = inputCurrency.getAmount(amount, decimals = decimals, price)
-//            unit.format(0, currency.string, decimalPlace = 2, dynamicPlace = true, zeroFraction = 0)
-            ""
-        } else {
-            val unit = Crypto(amount.numberParse(), decimals).convert(decimals, price)
-            currency.format(unit.atomicValue)
-        }
+        val unit = Crypto(amount.numberParse(), decimals).convert(decimals, price)
+        return currency.format(unit.atomicValue)
     }
 
     private fun validateAmount(asset: Asset, amount: String, minValue: BigInteger): AmountError {
@@ -342,37 +277,6 @@ class AmountViewModel @Inject constructor(
             )
             else -> BigInteger.ZERO
         }
-    }
-
-    fun setQrData(type: QrScanField, data: String, onConfirm: (ConfirmParams) -> Unit) {
-        val paymentWrapper = uniffi.gemstone.paymentDecodeUrl(data)
-        val amount = paymentWrapper.amount
-        val address = paymentWrapper.address
-        val memo = paymentWrapper.memo
-
-        if (
-            address.isNotEmpty()
-            && !amount.isNullOrEmpty()
-            && (state.value?.assetInfo?.asset?.chain()?.memo() == PayloadType.None || !memo.isNullOrEmpty())
-        ) {
-            val assetId = state.value?.assetInfo?.asset?.id ?: return
-            val params = AmountParams.buildTransfer(assetId, DestinationAddress(address), memo ?: "")
-            onNext(params, amount, onConfirm)
-            return
-        }
-
-        when (type) {
-            QrScanField.None -> {}
-            QrScanField.Address -> {
-                addressState.value = address.ifEmpty { data }
-                memoState.value = memo?.ifEmpty { memoState.value } ?: memoState.value
-            }
-            QrScanField.Memo -> {
-                addressState.value = address.ifEmpty { addressState.value }
-                memoState.value = paymentWrapper.memo ?: data
-            }
-        }
-        this.amount = amount ?: this.amount
     }
 
     private data class State(

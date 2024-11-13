@@ -11,7 +11,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.redelegated
-import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.features.stake.delegation.model.DelegationSceneState
 import com.gemwallet.android.features.stake.delegation.viewmodels.DelegationViewModel
 import com.gemwallet.android.features.stake.model.formatApr
@@ -20,6 +19,7 @@ import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.DelegationState
 import com.wallet.core.primitives.StakeChain
@@ -29,7 +29,7 @@ import com.wallet.core.primitives.WalletType
 fun DelegationScene(
     validatorId: String,
     delegationId: String,
-    onAmount: OnAmount,
+    onAmount: AmountTransactionAction,
     onCancel: () -> Unit,
     viewModel: DelegationViewModel = hiltViewModel(),
 ) {

@@ -11,6 +11,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.asset.details.views.AssetDetailsScene
+import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.wallet.core.primitives.AssetId
 
 internal const val assetIdArg = "assetId"
@@ -24,7 +25,7 @@ fun NavController.navigateToAssetScreen(assetId: AssetId, navOptions: NavOptions
 
 fun NavGraphBuilder.assetScreen(
     onCancel: () -> Unit,
-    onTransfer: (AssetId) -> Unit,
+    onTransfer: AssetIdAction,
     onReceive: (AssetId) -> Unit,
     onBuy: (AssetId) -> Unit,
     onSwap: (AssetId?, AssetId?) -> Unit,

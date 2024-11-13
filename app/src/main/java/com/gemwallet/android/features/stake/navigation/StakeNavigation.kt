@@ -11,10 +11,10 @@ import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
-import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.features.stake.delegation.views.DelegationScene
 import com.gemwallet.android.features.stake.stake.views.StakeScreen
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.wallet.core.primitives.AssetId
 
 internal const val assetIdArg = "asset_id"
@@ -36,7 +36,7 @@ fun NavController.navigateToDelegation(validatorId: String, delegationId: String
 }
 
 fun NavGraphBuilder.stake(
-    onAmount: OnAmount,
+    onAmount: AmountTransactionAction,
     onConfirm: (ConfirmParams) -> Unit,
     onDelegation: (String, String) -> Unit,
     onCancel: () -> Unit,
@@ -58,7 +58,7 @@ fun NavGraphBuilder.stake(
             }
             StakeScreen(
                 assetId = assetId,
-                onAmount = onAmount,
+                amountAction = onAmount,
                 onDelegation = onDelegation,
                 onConfirm = onConfirm,
                 onCancel = onCancel,

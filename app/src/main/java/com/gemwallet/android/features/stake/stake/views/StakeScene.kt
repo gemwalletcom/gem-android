@@ -19,7 +19,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.claimed
-import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.features.stake.components.DelegationItem
 import com.gemwallet.android.features.stake.model.availableIn
@@ -31,6 +30,7 @@ import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -44,7 +44,7 @@ import uniffi.gemstone.DocsUrl
 @Composable
 fun StakeScene(
     uiState: StakeUIState.Loaded,
-    onAmount: OnAmount,
+    amountAction: AmountTransactionAction,
     onRefresh: () -> Unit,
     onConfirm: () -> Unit,
     onDelegation: (String, String) -> Unit,
@@ -82,7 +82,7 @@ fun StakeScene(
                     stakeChain = uiState.stakeChain,
                     rewardsAmount = uiState.rewardsAmount,
                     hasRewards = uiState.hasRewards,
-                    onAmount = onAmount,
+                    amountAction = amountAction,
                     onConfirm = onConfirm,
                     walletType = uiState.walletType,
                 )
@@ -107,7 +107,7 @@ private fun LazyListScope.actions(
     stakeChain: StakeChain,
     rewardsAmount: String,
     hasRewards: Boolean,
-    onAmount: OnAmount,
+    amountAction: AmountTransactionAction,
     walletType: WalletType,
     onConfirm: () -> Unit
 ) {
@@ -119,7 +119,7 @@ private fun LazyListScope.actions(
         SubheaderItem(title = stringResource(R.string.common_manage))
         val cells = mutableListOf<CellEntity<Any>>(
             CellEntity(label = stringResource(id = R.string.wallet_stake), data = "") {
-                onAmount(
+                amountAction(
                     AmountParams.buildStake(
                         assetId = assetId,
                         txType = TransactionType.StakeDelegate,
@@ -161,7 +161,7 @@ fun PreviewStakeScene() {
                 hasRewards = true,
             ),
             onRefresh = { },
-            onAmount = { },
+            amountAction = { _ -> },
             onConfirm = { },
             onDelegation = {_, _ -> },
         ) {

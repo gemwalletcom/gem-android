@@ -6,14 +6,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -27,23 +25,37 @@ import com.gemwallet.android.localize.R
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.keyboardAsState
+import com.gemwallet.android.ui.components.qrCodeRequest
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
+import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.ConfirmTransactionAction
 import com.wallet.core.primitives.NameRecord
 
 @Composable
 fun RecipientScene(
-    onCancel: () -> Unit,
+    cancelAction: CancelAction,
     amountAction: AmountTransactionAction,
     confirmAction: ConfirmTransactionAction,
-    viewModel: RecipientViewModel = hiltViewModel()
 ) {
+    val viewModel: RecipientViewModel = hiltViewModel()
+
     val assetInfo by viewModel.asset.collectAsStateWithLifecycle()
     val addressError by viewModel.addressError.collectAsStateWithLifecycle()
     val memoError by viewModel.memoErrorState.collectAsStateWithLifecycle()
 
     var scan by remember { mutableStateOf(QrScanField.None) }
+
+    if (scan != QrScanField.None) {
+        qrCodeRequest(
+            { scan = QrScanField.None },
+            {
+                viewModel.setQrData(scan, it, confirmAction)
+                scan = QrScanField.None
+            }
+        )
+        return
+    }
 
     RecipientScene(
         assetInfo = assetInfo ?: return, // TODO: Improve it.
@@ -55,7 +67,7 @@ fun RecipientScene(
         memoError = memoError,
         onQrScan = { scan = it },
         onNext = { viewModel.onNext(amountAction) },
-        onCancel = onCancel,
+        onCancel = cancelAction,
     )
 }
 
@@ -70,18 +82,14 @@ fun RecipientScene(
     memoError: RecipientError,
     onQrScan: (QrScanField) -> Unit,
     onNext: () -> Unit,
-    onCancel: () -> Unit,
+    onCancel: CancelAction,
 ) {
-    val focusRequester = remember { FocusRequester() }
     val isKeyBoardOpen by keyboardAsState()
     val isSmallScreen = LocalConfiguration.current.screenHeightDp.dp < 680.dp
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
     Scene(
         title = stringResource(id = R.string.transfer_send_title),
-        onClose = onCancel,
+        onClose = { onCancel() },
         mainAction = {
             if (!isKeyBoardOpen || !isSmallScreen) {
                 MainActionButton(
