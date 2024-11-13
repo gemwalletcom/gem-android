@@ -33,12 +33,12 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset_select.components.SearchBar
 import com.gemwallet.android.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.gemwallet.android.ui.components.AssetListItem
-import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.padding16
 import com.wallet.core.primitives.AssetId
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList

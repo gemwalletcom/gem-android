@@ -13,14 +13,14 @@ import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
+import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.mutableStateIn
 import com.gemwallet.android.features.amount.models.AmountError
-import com.gemwallet.android.features.amount.models.AmountParams
+import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.features.amount.models.InputCurrency
 import com.gemwallet.android.features.amount.models.QrScanField
 import com.gemwallet.android.features.amount.navigation.paramsArg
 import com.gemwallet.android.features.confirm.models.AmountScreenModel
-import com.gemwallet.android.interactors.chain
 import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
@@ -82,7 +82,7 @@ class AmountViewModel @Inject constructor(
             && (it.txType == TransactionType.StakeUndelegate
                     || it.txType == TransactionType.StakeRedelegate
                     || it.txType == TransactionType.StakeWithdraw)) {
-            stakeRepository.getDelegation(it.validatorId, it.delegationId ?: "")
+            stakeRepository.getDelegation(it.validatorId!!, it.delegationId ?: "")
         } else {
             emptyFlow()
         }
@@ -299,7 +299,7 @@ class AmountViewModel @Inject constructor(
         }
         try {
             amount.numberParse()
-        } catch (err: Throwable) {
+        } catch (_: Throwable) {
             return AmountError.IncorrectAmount
         }
         val crypto = Crypto(amount.numberParse(), asset.decimals)

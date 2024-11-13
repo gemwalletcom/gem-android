@@ -17,7 +17,7 @@ import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.ListItemSupportText
 import com.gemwallet.android.ui.components.ListItemTitle
 import com.gemwallet.android.ui.theme.WalletTheme
-import com.gemwallet.android.ui.theme.space4
+import com.gemwallet.android.ui.components.designsystem.space4
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.DelegationValidator
 

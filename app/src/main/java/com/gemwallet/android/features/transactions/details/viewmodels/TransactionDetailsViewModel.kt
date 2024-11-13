@@ -8,10 +8,10 @@ import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.features.transactions.details.model.TxDetailsScreenModel
 import com.gemwallet.android.features.transactions.navigation.txIdArg
-import com.gemwallet.android.interactors.chain
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format

@@ -24,9 +24,9 @@ import com.gemwallet.android.R
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.TxSpeed
-import com.gemwallet.android.ui.theme.Spacer8
-import com.gemwallet.android.ui.theme.padding16
-import com.gemwallet.android.ui.theme.trailingIcon16
+import com.gemwallet.android.ui.components.designsystem.Spacer8
+import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.designsystem.trailingIcon16
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -2,6 +2,7 @@ package com.gemwallet.android.ui
 
 import android.content.Context
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -10,6 +11,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -24,7 +26,7 @@ import com.gemwallet.android.features.onboarding.OnboardScreen
 import com.gemwallet.android.ui.components.ReviewManager
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.navigation.WalletNavGraph
-import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.components.designsystem.Spacer16
 
 @Composable
 fun WalletApp() {
@@ -40,6 +42,7 @@ fun WalletApp() {
         currentRoute = dest.route
     }
     WalletNavGraph(
+        modifier = Modifier.navigationBarsPadding(),
         navController = navController,
         startDestination = startDestination,
         onboard = {

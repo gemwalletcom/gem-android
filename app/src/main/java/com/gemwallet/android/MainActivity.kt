@@ -41,6 +41,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -52,9 +54,9 @@ import com.gemwallet.android.features.bridge.request.RequestScene
 import com.gemwallet.android.interactors.CheckAccounts
 import com.gemwallet.android.services.SyncService
 import com.gemwallet.android.ui.WalletApp
-import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
-import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.components.designsystem.padding16
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -107,6 +109,11 @@ class MainActivity : FragmentActivity() {
                 }
             }
             WalletTheme {
+//                val insetsController = WindowCompat.getInsetsController(window, window.decorView)
+//                insetsController.apply {
+//                    hide(WindowInsetsCompat.Type.navigationBars())
+//                }
+
                 if (state.initialAuth == AuthState.Success) {
                     WalletApp()
                     when (walletConnect) {

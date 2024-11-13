@@ -24,8 +24,8 @@ import com.gemwallet.android.R
 import com.gemwallet.android.features.swap.models.SwapPairUIModel
 import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.mainActionHeight
+import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.mainActionHeight
 
 @Composable
 internal fun SwapAction(swapState: SwapState, pair: SwapPairUIModel, onSwap: () -> Unit) {

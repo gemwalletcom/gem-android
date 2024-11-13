@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.gemwallet.android.features.amount.components.amountErrorString
 import com.gemwallet.android.features.amount.models.AmountError
 import com.gemwallet.android.ui.components.TransferTextFieldActions
-import com.gemwallet.android.ui.theme.space4
+import com.gemwallet.android.ui.components.designsystem.space4
 
 @Composable
 fun MemoTextField(

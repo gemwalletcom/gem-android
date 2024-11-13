@@ -189,17 +189,6 @@ dependencies {
     implementation(libs.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
 
-    // Permissions request
-    implementation(libs.compose.permissions)
-
-    // QRCode scanner: only for none private data: recipient, memo, amount, etc
-    implementation(libs.camera.camera2)
-    implementation(libs.camera.lifecycle)
-    implementation(libs.camera.view)
-    implementation(libs.barcode.scanning)
-
-    // QR Code
-    implementation(libs.zxing.core)
     // EncryptedPreferences
     implementation(libs.androidx.security.crypto)
     // Auth

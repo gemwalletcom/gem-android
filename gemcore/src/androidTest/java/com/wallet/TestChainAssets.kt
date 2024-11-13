@@ -44,6 +44,7 @@ class TestChainAssets {
                 Chain.Mantle -> assertEquals(chain.asset().decimals, 18)
                 Chain.Celo -> assertEquals(chain.asset().decimals, 18)
                 Chain.Near -> assertEquals(chain.asset().decimals, 24)
+                Chain.World -> assertEquals(chain.asset().decimals, 18)
             }
         }
     }
@@ -85,6 +86,7 @@ class TestChainAssets {
                 Chain.Mantle -> assertEquals(chain.asset().symbol, "MNT")
                 Chain.Celo -> assertEquals(chain.asset().symbol, "CELO")
                 Chain.Near -> assertEquals(chain.asset().symbol, "NEAR")
+                Chain.World -> assertEquals(chain.asset().symbol, "ETH")
             }
         }
     }

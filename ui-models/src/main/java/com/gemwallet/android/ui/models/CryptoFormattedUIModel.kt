@@ -12,4 +12,10 @@ interface CryptoFormattedUIModel : CryptoAmountUIModel, AssetUIModel {
             decimalPlace = 6,
             dynamicPlace = true
         )
+
+
+//    decimalPlace: Int,
+//    showSign: SignMode = SignMode.NoPLus,
+//    dynamicPlace: Boolean = false,
+//    zeroFraction: Int = 0,
 }

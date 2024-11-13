@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components.qrcodescanner
+package com.gemwallet.android.ui.components
 
 import android.Manifest
 import android.graphics.Bitmap
@@ -9,15 +9,7 @@ import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.OptIn
-import androidx.camera.core.CameraSelector
 import androidx.camera.core.ExperimentalGetImage
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
-import androidx.camera.core.ImageProxy
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -58,11 +50,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
-import com.gemwallet.android.R
-import com.gemwallet.android.ui.components.Scene
-import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.screen.Scene
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -75,11 +67,12 @@ import com.google.zxing.RGBLuminanceSource
 import com.google.zxing.common.HybridBinarizer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import uniffi.gemstone.paymentDecodeUrl
 import java.nio.ByteBuffer
 import kotlin.math.min
+import com.gemwallet.android.localize.R
 
 @kotlin.OptIn(ExperimentalPermissionsApi::class)
-@ExperimentalGetImage
 @Composable
 fun qrCodeRequest(
     onCancel: () -> Unit,
@@ -113,7 +106,6 @@ fun qrCodeRequest(
     }
 }
 
-@OptIn(ExperimentalGetImage::class)
 @Composable
 fun QRScannerScene(
     onCancel: () -> Unit,
@@ -143,14 +135,18 @@ fun QRScannerScene(
             bitmap.getPixels(intArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight())
 
             try {
-                val source = RGBLuminanceSource(bitmap.getWidth(), bitmap.getHeight(), intArray)
+                val source =RGBLuminanceSource(
+                    bitmap.getWidth(),
+                    bitmap.getHeight(),
+                    intArray
+                )
                 val binaryBmp = BinaryBitmap(HybridBinarizer(source))
                 val result = MultiFormatReader().apply {
                     setHints(
                         mapOf(DecodeHintType.POSSIBLE_FORMATS to arrayListOf(BarcodeFormat.QR_CODE))
                     )
                 }.decode(binaryBmp)
-                imageResult = uniffi.gemstone.paymentDecodeUrl(result.text).address
+                imageResult = paymentDecodeUrl(result.text).address
                 if (imageResult.isEmpty()) {
                     throw Exception()
                 }
@@ -187,7 +183,7 @@ fun QRScannerScene(
                         .fillMaxSize()
                         .background(Color.Black)
                 ) {
-                    coil.compose.AsyncImage(
+                    AsyncImage(
                         model = ImageRequest.Builder(LocalContext.current)
                             .data(imageUri)
                             .diskCachePolicy(policy = CachePolicy.ENABLED)
@@ -245,20 +241,20 @@ fun QRScanner(listener: (String) -> Unit) {
     val localContext = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val cameraProviderFeature = remember {
-        ProcessCameraProvider.getInstance(localContext)
+        androidx.camera.lifecycle.ProcessCameraProvider.Companion.getInstance(localContext)
     }
     Box(modifier = Modifier.fillMaxSize()) {
         AndroidView({ context ->
-            val previewView = PreviewView(context).also {
-                it.scaleType = PreviewView.ScaleType.FILL_CENTER
+            val previewView = androidx.camera.view.PreviewView(context).also {
+                it.scaleType = androidx.camera.view.PreviewView.ScaleType.FILL_CENTER
             }
-            val preview = Preview.Builder()
+            val preview = androidx.camera.core.Preview.Builder()
                 .build()
                 .also {
                     it.surfaceProvider = previewView.surfaceProvider
                 }
-            val imageAnalyzer = ImageAnalysis.Builder()
-                .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
+            val imageAnalyzer = androidx.camera.core.ImageAnalysis.Builder()
+                .setBackpressureStrategy(androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
                 .build()
                 .also { imageAnalysis ->
                     imageAnalysis.setAnalyzer(
@@ -269,8 +265,8 @@ fun QRScanner(listener: (String) -> Unit) {
                         })
                     )
                 }
-            val selector = CameraSelector.Builder()
-                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+            val selector = androidx.camera.core.CameraSelector.Builder()
+                .requireLensFacing(androidx.camera.core.CameraSelector.LENS_FACING_BACK)
                 .build()
             try {
                 val provider = cameraProviderFeature.get()
@@ -297,14 +293,14 @@ fun QRScanner(listener: (String) -> Unit) {
 @ExperimentalGetImage
 private class QRCodeAnalyzer(
     val callback: (String) -> Unit
-) : ImageAnalysis.Analyzer {
+) : androidx.camera.core.ImageAnalysis.Analyzer {
     private val supportedImageFormats = listOf(
         ImageFormat.YUV_420_888,
         ImageFormat.YUV_422_888,
         ImageFormat.YUV_444_888
     )
 
-    override fun analyze(imageProxy: ImageProxy) {
+    override fun analyze(imageProxy: androidx.camera.core.ImageProxy) {
         if (imageProxy.format !in supportedImageFormats) {
             return
         }
@@ -327,7 +323,7 @@ private class QRCodeAnalyzer(
                 )
             }.decode(binaryBmp)
             callback(result.text)
-        } catch (e: Exception) {
+        } catch (_: Exception) {
 //            Quite
         } finally {
             imageProxy.close()

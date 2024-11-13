@@ -7,7 +7,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.ext.byChain
-import com.gemwallet.android.features.amount.models.AmountParams
+import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.features.amount.navigation.OnAmount
 import com.gemwallet.android.features.stake.delegation.model.DelegationSceneState
 import com.gemwallet.android.features.stake.model.availableIn

@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components
+package com.gemwallet.android.ui.components.screen
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
@@ -26,9 +26,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.padding16
-import com.gemwallet.android.ui.theme.padding32
+import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.designsystem.padding32
 
 @Composable
 fun Scene(
@@ -38,7 +38,7 @@ fun Scene(
     onClose: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
     mainAction: (@Composable () -> Unit)? = null,
-    mainActionPadding: PaddingValues = PaddingValues(start = padding16, top = padding16, end = padding16, bottom = padding32),
+    mainActionPadding: PaddingValues = PaddingValues(start = padding16, top = padding16, end = padding16, bottom = padding16),
     snackbar: SnackbarHostState? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {

@@ -5,7 +5,7 @@ plugins {
 
 android {
     namespace = "com.gemwallet.android.ui.models"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 28

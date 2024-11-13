@@ -9,7 +9,7 @@ import com.gemwallet.android.BuildConfig
 import com.gemwallet.android.R
 import com.gemwallet.android.features.settings.develop.viewmodels.DevelopViewModel
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.Table
 
 @Composable

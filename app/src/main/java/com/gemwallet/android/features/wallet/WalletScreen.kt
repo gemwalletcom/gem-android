@@ -39,10 +39,10 @@ import com.gemwallet.android.R
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.FatalStateScene
-import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.Table
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.padding16
 import com.wallet.core.primitives.WalletType
 
 @Composable

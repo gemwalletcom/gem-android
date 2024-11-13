@@ -30,10 +30,10 @@ import com.gemwallet.android.features.swap.models.SwapPairSelect
 import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.features.swap.viewmodels.SwapViewModel
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.TransactionItem
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.padding16
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType

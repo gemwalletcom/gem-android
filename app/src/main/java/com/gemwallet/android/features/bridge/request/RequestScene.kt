@@ -23,8 +23,8 @@ import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene
-import com.gemwallet.android.ui.components.MainActionButton
-import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.components.buttons.MainActionButton
+import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.Table
 import com.wallet.core.primitives.AssetId
 import com.walletconnect.web3.wallet.client.Wallet

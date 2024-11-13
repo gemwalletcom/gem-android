@@ -13,8 +13,8 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.asset_select.components.SearchBar
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.ChainItem
-import com.gemwallet.android.ui.components.Scene
-import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.components.designsystem.padding16
 import com.wallet.core.primitives.Chain
 
 @Composable

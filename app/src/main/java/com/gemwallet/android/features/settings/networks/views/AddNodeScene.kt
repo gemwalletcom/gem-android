@@ -1,8 +1,6 @@
 package com.gemwallet.android.features.settings.networks.views
 
 import androidx.activity.compose.BackHandler
-import androidx.annotation.OptIn
-import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,16 +33,15 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.settings.networks.viewmodels.AddNodeViewModel
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.MainActionButton
-import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.TransferTextFieldActions
-import com.gemwallet.android.ui.components.qrcodescanner.qrCodeRequest
-import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.components.buttons.MainActionButton
+import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.qrCodeRequest
+import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Chain
 import java.text.NumberFormat
 
-@OptIn(ExperimentalGetImage::class)
 @Composable
 fun AddNodeScene(chain: Chain, onCancel: () -> Unit) {
     val viewModel: AddNodeViewModel = hiltViewModel()

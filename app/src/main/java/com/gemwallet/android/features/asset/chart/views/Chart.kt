@@ -29,9 +29,9 @@ import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.PriceInfo
 import com.gemwallet.android.ui.components.getRelativeDate
 import com.gemwallet.android.ui.models.PriceState
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.padding4
-import com.gemwallet.android.ui.theme.space8
+import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.padding4
+import com.gemwallet.android.ui.components.designsystem.space8
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineSpec

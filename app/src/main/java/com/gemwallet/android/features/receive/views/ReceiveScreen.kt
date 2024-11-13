@@ -45,9 +45,9 @@ import com.gemwallet.android.features.receive.model.ReceiveScreenModel
 import com.gemwallet.android.features.receive.viewmodels.ReceiveViewModel
 import com.gemwallet.android.ui.components.FieldBottomAction
 import com.gemwallet.android.ui.components.LoadingScene
-import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.rememberQRCodePainter
-import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.wallet.core.primitives.Chain
 

@@ -29,7 +29,7 @@ import com.gemwallet.android.R
 import com.gemwallet.android.features.transactions.components.transactionsList
 import com.gemwallet.android.features.transactions.list.model.TxListScreenState
 import com.gemwallet.android.features.transactions.list.viewmodels.TransactionsViewModel
-import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.components.screen.Scene
 
 @Composable
 fun TransactionsScreen(

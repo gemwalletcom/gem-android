@@ -38,8 +38,8 @@ import com.gemwallet.android.features.swap.models.SwapItemType
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AssetIcon
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
-import com.gemwallet.android.ui.theme.Spacer8
-import com.gemwallet.android.ui.theme.padding4
+import com.gemwallet.android.ui.components.designsystem.Spacer8
+import com.gemwallet.android.ui.components.designsystem.padding4
 import com.wallet.core.primitives.AssetSubtype
 
 @Composable

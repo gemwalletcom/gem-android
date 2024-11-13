@@ -17,7 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.components.designsystem.padding8
 
 private enum class WordState {
     Error,

@@ -5,7 +5,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.R
 import com.gemwallet.android.features.settings.settings.components.LinkItem
-import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.open
 import uniffi.gemstone.Config
 import uniffi.gemstone.PublicUrl

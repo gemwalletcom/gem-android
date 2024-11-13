@@ -12,7 +12,7 @@ import com.gemwallet.android.features.asset.chart.viewmodels.AssetChartViewModel
 import com.gemwallet.android.interactors.getDrawableUri
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.LoadingScene
-import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.open

@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.bridge.connections.views
 
-import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,11 +34,10 @@ import com.gemwallet.android.features.bridge.model.ConnectionUI
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.ListItemSupportText
 import com.gemwallet.android.ui.components.ListItemTitle
-import com.gemwallet.android.ui.components.Scene
-import com.gemwallet.android.ui.components.qrcodescanner.qrCodeRequest
+import com.gemwallet.android.ui.components.qrCodeRequest
+import com.gemwallet.android.ui.components.screen.Scene
 import kotlinx.coroutines.launch
 
-@androidx.annotation.OptIn(ExperimentalGetImage::class)
 @Composable
 fun ConnectionsScene(
     onConnection: (String) -> Unit,

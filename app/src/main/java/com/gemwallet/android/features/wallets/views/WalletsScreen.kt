@@ -57,10 +57,10 @@ import com.gemwallet.android.features.wallets.viewmodels.WalletItemUIState
 import com.gemwallet.android.features.wallets.viewmodels.WalletsViewModel
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.DropDownContextItem
-import com.gemwallet.android.ui.components.Scene
-import com.gemwallet.android.ui.theme.Spacer4
-import com.gemwallet.android.ui.theme.Spacer8
-import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.components.designsystem.Spacer4
+import com.gemwallet.android.ui.components.designsystem.Spacer8
+import com.gemwallet.android.ui.components.designsystem.padding16
 import com.wallet.core.primitives.WalletType
 
 @Composable

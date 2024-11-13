@@ -21,8 +21,8 @@ import com.gemwallet.android.ui.components.Badge
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.ListItemSupportText
 import com.gemwallet.android.ui.components.ListItemTitle
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 

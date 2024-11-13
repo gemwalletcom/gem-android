@@ -39,10 +39,10 @@ import com.gemwallet.android.features.settings.settings.components.LinkItem
 import com.gemwallet.android.features.settings.settings.viewmodels.SettingsViewModel
 import com.gemwallet.android.services.isNotificationsAvailable
 import com.gemwallet.android.ui.components.ReviewManager
-import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.open
-import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState

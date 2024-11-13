@@ -1,8 +1,6 @@
 package com.gemwallet.android.features.amount.views
 
 import androidx.activity.compose.BackHandler
-import androidx.annotation.OptIn
-import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
@@ -21,9 +19,8 @@ import com.gemwallet.android.features.amount.viewmodels.AmountViewModel
 import com.gemwallet.android.features.stake.validators.views.ValidatorsScreen
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.components.LoadingScene
-import com.gemwallet.android.ui.components.qrcodescanner.qrCodeRequest
+import com.gemwallet.android.ui.components.qrCodeRequest
 
-@OptIn(ExperimentalGetImage::class)
 @Composable
 fun AmountScreen(
     onCancel: () -> Unit,

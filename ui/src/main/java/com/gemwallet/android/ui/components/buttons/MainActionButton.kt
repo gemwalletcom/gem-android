@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components
+package com.gemwallet.android.ui.components.buttons
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
-import com.gemwallet.android.ui.theme.mainActionHeight
+import com.gemwallet.android.ui.components.designsystem.mainActionHeight
 
 @Composable
 fun MainActionButton(

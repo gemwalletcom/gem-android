@@ -1,8 +1,7 @@
-package com.gemwallet.android.features.amount.models
+package com.gemwallet.android.model
 
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
-import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.serializer.AssetIdSerializer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder

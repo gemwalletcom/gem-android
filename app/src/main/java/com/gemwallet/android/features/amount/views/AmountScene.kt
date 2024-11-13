@@ -2,9 +2,7 @@ package com.gemwallet.android.features.amount.views
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.ime
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -16,36 +14,34 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.blockchain.PayloadType
 import com.gemwallet.android.blockchain.memo
+import com.gemwallet.android.ext.chain
 import com.gemwallet.android.features.amount.components.amountErrorString
 import com.gemwallet.android.features.amount.models.AmountError
 import com.gemwallet.android.features.amount.models.QrScanField
 import com.gemwallet.android.features.confirm.models.AmountScreenModel
 import com.gemwallet.android.features.stake.components.ValidatorItem
-import com.gemwallet.android.interactors.chain
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AddressChainField
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.Container
-import com.gemwallet.android.ui.components.MainActionButton
-import com.gemwallet.android.ui.components.Scene
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.padding16
-import com.gemwallet.android.ui.theme.space4
+import com.gemwallet.android.ui.components.buttons.MainActionButton
+import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.designsystem.space4
+import com.gemwallet.android.ui.components.keyboardAsState
+import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.TransactionType
@@ -202,10 +198,4 @@ private fun LazyListScope.addressDestinationView(
             }
         }
     }
-}
-
-@Composable
-private fun keyboardAsState(): State<Boolean> {
-    val isImeVisible = WindowInsets.ime.getBottom(LocalDensity.current) > 0
-    return rememberUpdatedState(isImeVisible)
 }

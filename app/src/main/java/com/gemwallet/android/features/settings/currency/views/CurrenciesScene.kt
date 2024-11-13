@@ -12,7 +12,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.gemwallet.android.R
 import com.gemwallet.android.features.settings.currency.components.CurrencyItem
 import com.gemwallet.android.features.settings.currency.viewmodels.CurrenciesViewModel
-import com.gemwallet.android.ui.components.Scene
+import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
 
 @Composable

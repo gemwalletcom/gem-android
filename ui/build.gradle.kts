@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.gemwallet.android.ui"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 28
@@ -39,7 +39,9 @@ android {
 
 dependencies {
     api(project(":ui-models"))
+    implementation(project(":localize"))
 
+    // Compose
     api(libs.androidx.material3.adaptive.android)
     api(libs.compose.ui)
     api(libs.compose.foundation)
@@ -49,8 +51,21 @@ dependencies {
     api(libs.compose.material3)
     api(libs.compose.material3.window.size)
     api(libs.kotlinx.collections.immutable)
+    api(libs.compose.activity)
 
+    // QRCode scanner: only for none private data: recipient, memo, amount, etc
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+    implementation(libs.barcode.scanning)
+    // QR Code
+    api(libs.zxing.core)
+
+    // Images
     api(libs.coil.compose)
+
+    // Permissions request
+    api(libs.compose.permissions)
 
     implementation(libs.ktx.core)
     testImplementation(libs.junit)

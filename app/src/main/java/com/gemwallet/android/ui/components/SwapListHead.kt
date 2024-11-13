@@ -22,9 +22,9 @@ import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.Spacer8
-import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.Spacer8
+import com.gemwallet.android.ui.components.designsystem.padding16
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Currency
 

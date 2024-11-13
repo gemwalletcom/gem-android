@@ -7,7 +7,8 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.gemwallet.android.ui.theme.padding16
+import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.screen.Scene
 
 @Composable
 fun LoadingScene(title: String, onCancel: () -> Unit) {

@@ -2,8 +2,6 @@
 
 package com.gemwallet.android.features.settings.networks.views
 
-import androidx.annotation.OptIn
-import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
@@ -38,16 +36,12 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.settings.networks.models.NetworksUIState
 import com.gemwallet.android.model.NodeStatus
 import com.gemwallet.android.ui.components.ListItem
-import com.gemwallet.android.ui.components.Scene
 import com.gemwallet.android.ui.components.SubheaderItem
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.padding8
+import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Node
 
-@OptIn(
-    ExperimentalGetImage::class,
-    ExperimentalMaterial3Api::class,
-)
 @Composable
 fun NetworkScene(
     state: NetworksUIState,

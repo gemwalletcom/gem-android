@@ -1,24 +1,18 @@
-@file:kotlin.OptIn(ExperimentalFoundationApi::class)
-
 package com.gemwallet.android.features.add_asset.views
 
 import androidx.activity.compose.BackHandler
-import androidx.annotation.OptIn
-import androidx.camera.core.ExperimentalGetImage
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.add_asset.models.AddAssetUIState
 import com.gemwallet.android.features.add_asset.viewmodels.AddAssetViewModel
-import com.gemwallet.android.ui.components.qrcodescanner.qrCodeRequest
+import com.gemwallet.android.ui.components.qrCodeRequest
 
-@OptIn(ExperimentalGetImage::class)
 @Composable
 fun AddAssetScree(
     onFinish: () -> Unit,
