@@ -6,10 +6,10 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.gemwallet.android.localize.R
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.features.recipient.viewmodel.models.QrScanField
 import com.gemwallet.android.features.recipient.viewmodel.models.RecipientError
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.padding16

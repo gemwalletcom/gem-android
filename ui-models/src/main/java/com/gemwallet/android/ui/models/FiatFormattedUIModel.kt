@@ -1,7 +1,6 @@
 package com.gemwallet.android.ui.models
 
 import com.gemwallet.android.model.format
-import java.math.BigDecimal
 import kotlin.let
 
 interface FiatFormattedUIModel {

@@ -6,7 +6,6 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.blockchain.tron.models.TronAccountRequest
 import com.wallet.core.primitives.Asset
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import wallet.core.jni.Base58
 import java.math.BigInteger

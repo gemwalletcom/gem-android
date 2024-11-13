@@ -6,7 +6,6 @@ import com.gemwallet.android.ext.toEVM
 import com.gemwallet.android.math.toHexString
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
-import uniffi.gemstone.Config
 import wallet.core.jni.AnyAddress
 import wallet.core.jni.CoinType
 import wallet.core.jni.EthereumAbi

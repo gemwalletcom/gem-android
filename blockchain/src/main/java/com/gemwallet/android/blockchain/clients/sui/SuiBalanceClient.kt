@@ -6,7 +6,6 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.total
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Asset
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

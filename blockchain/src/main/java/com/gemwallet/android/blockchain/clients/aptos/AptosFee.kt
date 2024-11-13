@@ -3,7 +3,6 @@ package com.gemwallet.android.blockchain.clients.aptos
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.TxSpeed
-import com.google.gson.Gson
 import com.wallet.core.blockchain.aptos.models.AptosErrorCode
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
