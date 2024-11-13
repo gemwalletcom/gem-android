@@ -34,12 +34,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.features.create_wallet.viewmodels.CreateWalletViewModel
-import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.PhraseLayout
-import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.WalletTheme
 
 @Composable
 fun CreateWalletScreen(

@@ -41,12 +41,12 @@ import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.components.ActionIcon
 import com.gemwallet.android.ui.components.AssetListItem
-import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.SwipeableItemWithActions
-import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.AssetItemUIModel
+import com.gemwallet.android.ui.theme.WalletTheme
 import com.wallet.core.primitives.AssetId
 
 @OptIn(ExperimentalMaterial3Api::class)

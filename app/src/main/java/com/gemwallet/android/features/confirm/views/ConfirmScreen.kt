@@ -30,16 +30,16 @@ import com.gemwallet.android.features.confirm.models.ConfirmState
 import com.gemwallet.android.features.confirm.viewmodels.ConfirmViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.components.AmountListHead
-import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
-import com.gemwallet.android.ui.components.titles.getTitle
+import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer2
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIcon20
+import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.components.titles.getTitle
 import com.wallet.core.primitives.TransactionType
 
 @Composable

@@ -14,8 +14,8 @@ import com.gemwallet.android.MainActivity
 import com.gemwallet.android.R
 import com.gemwallet.android.features.settings.security.viewmodels.SecurityViewModel
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.screen.Scene
 
 @Composable
 fun SecurityScene(

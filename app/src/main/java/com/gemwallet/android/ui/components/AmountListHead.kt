@@ -46,14 +46,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gemwallet.android.R
 import com.gemwallet.android.services.isAvailableOperation
-import com.gemwallet.android.ui.components.image.AsyncImage
-import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
-import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.components.designsystem.headerIconSize
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.models.PriceState
+import com.gemwallet.android.ui.theme.WalletTheme
 import com.wallet.core.primitives.WalletType
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl

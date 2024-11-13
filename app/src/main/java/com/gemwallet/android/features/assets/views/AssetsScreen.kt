@@ -62,9 +62,9 @@ import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.DropDownContextItem
+import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.models.AssetItemUIModel
-import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.wallet.core.primitives.AssetId
 import sh.calvin.reorderable.ReorderableItem
 import sh.calvin.reorderable.ReorderableLazyListState

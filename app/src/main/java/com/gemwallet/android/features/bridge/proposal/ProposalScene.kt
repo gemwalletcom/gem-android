@@ -23,10 +23,10 @@ import com.gemwallet.android.features.wallets.components.WalletItem
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene
-import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.WalletType
 import com.walletconnect.web3.wallet.client.Wallet
 

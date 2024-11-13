@@ -53,6 +53,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil.compose.AsyncImage
 import coil.request.CachePolicy
 import coil.request.ImageRequest
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -70,7 +71,6 @@ import kotlinx.coroutines.launch
 import uniffi.gemstone.paymentDecodeUrl
 import java.nio.ByteBuffer
 import kotlin.math.min
-import com.gemwallet.android.localize.R
 
 @kotlin.OptIn(ExperimentalPermissionsApi::class)
 @Composable

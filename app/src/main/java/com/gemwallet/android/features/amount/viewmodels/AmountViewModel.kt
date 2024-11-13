@@ -16,12 +16,12 @@ import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.mutableStateIn
 import com.gemwallet.android.features.amount.models.AmountError
-import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.features.amount.models.InputCurrency
 import com.gemwallet.android.features.amount.models.QrScanField
 import com.gemwallet.android.features.amount.navigation.paramsArg
 import com.gemwallet.android.features.confirm.models.AmountScreenModel
 import com.gemwallet.android.math.numberParse
+import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto

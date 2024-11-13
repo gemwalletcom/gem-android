@@ -23,12 +23,12 @@ import com.gemwallet.android.features.add_asset.models.AddAssetUIState
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AddressChainField
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.buttons.MainActionButton
+import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
-import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.screen.Scene
 
 @Composable
 fun AddAssetScene(

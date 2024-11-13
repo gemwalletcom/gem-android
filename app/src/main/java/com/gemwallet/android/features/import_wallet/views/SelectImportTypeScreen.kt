@@ -21,9 +21,9 @@ import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.features.import_wallet.viewmodels.SelectImportTypeViewModel
 import com.gemwallet.android.ui.components.ChainItem
 import com.gemwallet.android.ui.components.Container
-import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
 

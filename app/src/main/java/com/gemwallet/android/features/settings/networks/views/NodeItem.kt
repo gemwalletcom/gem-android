@@ -24,11 +24,11 @@ import com.gemwallet.android.cases.nodes.getGemNodeUrl
 import com.gemwallet.android.model.NodeStatus
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.ListItemTitle
-import com.gemwallet.android.ui.components.progress.CircularProgressIndicator14
 import com.gemwallet.android.ui.components.designsystem.Spacer6
-import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.components.designsystem.padding4
 import com.gemwallet.android.ui.components.designsystem.padding8
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator14
+import com.gemwallet.android.ui.theme.WalletTheme
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeState
