@@ -81,8 +81,9 @@ class NetworksViewModel @Inject constructor(
         channelFlow {
             val statuses = ConcurrentHashMap<String, NodeStatus?>()
             nodes.forEach { node ->
-                statuses[node.url] = NodeStatus(
-                    url = node.url,
+                val url = node.url
+                statuses[url] = NodeStatus(
+                    url = url,
                     chainId = "",
                     blockNumber = "",
                     inSync = false,
@@ -99,7 +100,11 @@ class NetworksViewModel @Inject constructor(
             nodes.map { node ->
                 async(Dispatchers.IO) {
                     val status = nodeStatusClients(chain, node.url)
-                    statuses[node.url] = status
+                    statuses[node.url] = if (status == null) {
+                        statuses[node.url]?.copy(loading = false)
+                    } else {
+                        status
+                    }
                     send(statuses.toImmutableMap())
                 }
             }.awaitAll()
