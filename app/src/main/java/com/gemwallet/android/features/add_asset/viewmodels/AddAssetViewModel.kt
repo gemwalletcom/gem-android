@@ -10,9 +10,9 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.assetType
 import com.gemwallet.android.ext.filter
 import com.gemwallet.android.ext.getAccount
-import com.gemwallet.android.ext.tokenAvailableChains
 import com.gemwallet.android.features.add_asset.models.AddAssetError
 import com.gemwallet.android.features.add_asset.models.AddAssetUIState
 import com.gemwallet.android.interactors.getIconUrl
@@ -46,7 +46,12 @@ class AddAssetViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             val chains = getAvailableChains()
-            state.update { it.copy(chains = chains, chain = chains.firstOrNull { chain -> chain == Chain.Ethereum } ?: chains.firstOrNull() ?: Chain.Ethereum) }
+            state.update {
+                it.copy(
+                    chains = chains,
+                    chain = chains.firstOrNull { chain -> chain == Chain.Ethereum } ?: chains.firstOrNull() ?: Chain.Ethereum
+                )
+            }
         }
         viewModelScope.launch {
             snapshotFlow { chainFilter.text }.collectLatest { query ->
@@ -130,10 +135,7 @@ class AddAssetViewModel @Inject constructor(
 
     private fun getAvailableChains(): List<Chain> {
         val wallet = sessionRepository.getSession()?.wallet ?: return emptyList()
-        val availableAccounts = wallet.accounts.map { it.chain }
-        return tokenAvailableChains.filter {
-            availableAccounts.contains(it)
-        }
+        return wallet.accounts.map { it.chain }.filter { it.assetType() != null }
     }
 
     private data class State(

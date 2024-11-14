@@ -53,6 +53,7 @@ import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.ext.available
+import com.gemwallet.android.ext.toChainType
 import com.gemwallet.android.interactors.sync.SyncTransactions
 import com.gemwallet.android.services.SyncService
 import com.wallet.core.primitives.Chain
@@ -72,42 +73,18 @@ object DataModule {
     fun providesBroadcastProxy(
         rpcClients: RpcClientAdapter,
     ): BroadcastProxy = BroadcastProxy(
-        Chain.available().mapNotNull {
-            when (it) {
-                Chain.Doge,
-                Chain.Litecoin,
-                Chain.Bitcoin -> BitcoinBroadcastClient(it, rpcClients.getClient(it))
-                Chain.AvalancheC,
-                Chain.Base,
-                Chain.SmartChain,
-                Chain.Arbitrum,
-                Chain.Polygon,
-                Chain.OpBNB,
-                Chain.Fantom,
-                Chain.Gnosis,
-                Chain.Optimism,
-                Chain.Manta,
-                Chain.Blast,
-                Chain.ZkSync,
-                Chain.Linea,
-                Chain.Mantle,
-                Chain.Celo,
-                Chain.World,
-                Chain.Ethereum -> EvmBroadcastClient(it, rpcClients.getClient(it))
-                Chain.Solana -> SolanaBroadcastClient(rpcClients.getClient(Chain.Solana))
-                Chain.Thorchain,
-                Chain.Osmosis,
-                Chain.Celestia,
-                Chain.Injective,
-                Chain.Sei,
-                Chain.Noble,
-                Chain.Cosmos -> CosmosBroadcastClient(it, rpcClients.getClient(it))
-                Chain.Ton -> TonBroadcastClient(rpcClients.getClient(it))
-                Chain.Tron -> TronBroadcastClient(rpcClients.getClient(Chain.Tron))
-                Chain.Aptos -> AptosBroadcastClient(it, rpcClients.getClient(it))
-                Chain.Sui -> SuiBroadcastClient(it, rpcClients.getClient(it))
-                Chain.Xrp -> XrpBroadcastClient(it, rpcClients.getClient(it))
-                Chain.Near -> NearBroadcastClient(it, rpcClients.getClient(it))
+        Chain.available().map {
+            when (it.toChainType()) {
+                ChainType.Bitcoin -> BitcoinBroadcastClient(it, rpcClients.getClient(it))
+                ChainType.Ethereum -> EvmBroadcastClient(it, rpcClients.getClient(it))
+                ChainType.Solana -> SolanaBroadcastClient(rpcClients.getClient(Chain.Solana))
+                ChainType.Cosmos -> CosmosBroadcastClient(it, rpcClients.getClient(it))
+                ChainType.Ton -> TonBroadcastClient(rpcClients.getClient(it))
+                ChainType.Tron -> TronBroadcastClient(rpcClients.getClient(Chain.Tron))
+                ChainType.Aptos -> AptosBroadcastClient(it, rpcClients.getClient(it))
+                ChainType.Sui -> SuiBroadcastClient(it, rpcClients.getClient(it))
+                ChainType.Xrp -> XrpBroadcastClient(it, rpcClients.getClient(it))
+                ChainType.Near -> NearBroadcastClient(it, rpcClients.getClient(it))
             }
         },
     )
@@ -117,42 +94,18 @@ object DataModule {
     fun provideSignerPreloader(
         rpcClients: RpcClientAdapter,
     ): SignerPreload = SignPreloaderProxy(
-        Chain.available().mapNotNull {
-            when (it) {
-                Chain.Doge,
-                Chain.Litecoin,
-                Chain.Bitcoin -> BitcoinSignerPreloader(it, rpcClients.getClient(it))
-                Chain.AvalancheC,
-                Chain.Base,
-                Chain.SmartChain,
-                Chain.Arbitrum,
-                Chain.Polygon,
-                Chain.OpBNB,
-                Chain.Fantom,
-                Chain.Gnosis,
-                Chain.Optimism,
-                Chain.Manta,
-                Chain.Blast,
-                Chain.ZkSync,
-                Chain.Linea,
-                Chain.Mantle,
-                Chain.Celo,
-                Chain.World,
-                Chain.Ethereum -> EvmSignerPreloader(it, rpcClients.getClient(it))
-                Chain.Solana -> SolanaSignerPreloader(rpcClients.getClient(Chain.Solana))
-                Chain.Thorchain,
-                Chain.Osmosis,
-                Chain.Celestia,
-                Chain.Injective,
-                Chain.Sei,
-                Chain.Noble,
-                Chain.Cosmos -> CosmosSignerPreloader(it, rpcClients.getClient(it))
-                Chain.Ton -> TonSignerPreloader(rpcClients.getClient(it))
-                Chain.Tron -> TronSignerPreloader(rpcClients.getClient(Chain.Tron))
-                Chain.Aptos -> AptosSignerPreloader(it, rpcClients.getClient(it))
-                Chain.Sui -> SuiSignerPreloader(it, rpcClients.getClient(it))
-                Chain.Xrp -> XrpSignerPreloader(it, rpcClients.getClient(it))
-                Chain.Near -> NearSignerPreloader(it, rpcClients.getClient(it))
+        Chain.available().map {
+            when (it.toChainType()) {
+                ChainType.Bitcoin -> BitcoinSignerPreloader(it, rpcClients.getClient(it))
+                ChainType.Ethereum -> EvmSignerPreloader(it, rpcClients.getClient(it))
+                ChainType.Solana -> SolanaSignerPreloader(rpcClients.getClient(Chain.Solana))
+                ChainType.Cosmos -> CosmosSignerPreloader(it, rpcClients.getClient(it))
+                ChainType.Ton -> TonSignerPreloader(rpcClients.getClient(it))
+                ChainType.Tron -> TronSignerPreloader(rpcClients.getClient(Chain.Tron))
+                ChainType.Aptos -> AptosSignerPreloader(it, rpcClients.getClient(it))
+                ChainType.Sui -> SuiSignerPreloader(it, rpcClients.getClient(it))
+                ChainType.Xrp -> XrpSignerPreloader(it, rpcClients.getClient(it))
+                ChainType.Near -> NearSignerPreloader(it, rpcClients.getClient(it))
             }
         },
     )
@@ -162,42 +115,18 @@ object DataModule {
     fun provideSignService(
         assetsRepository: AssetsRepository,
     ): SignTransfer = SignTransferProxy(
-        clients = Chain.available().mapNotNull {
-            when (it) {
-                Chain.Doge,
-                Chain.Litecoin,
-                Chain.Bitcoin -> BitcoinSignClient(it)
-                Chain.AvalancheC,
-                Chain.Base,
-                Chain.SmartChain,
-                Chain.Arbitrum,
-                Chain.Polygon,
-                Chain.OpBNB,
-                Chain.Fantom,
-                Chain.Gnosis,
-                Chain.Optimism,
-                Chain.Manta,
-                Chain.Blast,
-                Chain.ZkSync,
-                Chain.Linea,
-                Chain.Mantle,
-                Chain.Celo,
-                Chain.World,
-                Chain.Ethereum -> EvmSignClient(it)
-                Chain.Solana -> SolanaSignClient(assetsRepository)
-                Chain.Thorchain,
-                Chain.Osmosis,
-                Chain.Celestia,
-                Chain.Injective,
-                Chain.Sei,
-                Chain.Noble,
-                Chain.Cosmos -> CosmosSignClient(it)
-                Chain.Ton -> TonSignClient()
-                Chain.Tron -> TronSignClient()
-                Chain.Aptos -> AptosSignClient(it)
-                Chain.Sui -> SuiSignClient(it)
-                Chain.Xrp -> XrpSignClient(it)
-                Chain.Near -> NearSignClient(it)
+        clients = Chain.available().map {
+            when (it.toChainType()) {
+                ChainType.Ethereum -> EvmSignClient(it)
+                ChainType.Bitcoin -> BitcoinSignClient(it)
+                ChainType.Solana -> SolanaSignClient(assetsRepository)
+                ChainType.Cosmos -> CosmosSignClient(it)
+                ChainType.Ton -> TonSignClient()
+                ChainType.Tron -> TronSignClient()
+                ChainType.Aptos -> AptosSignClient(it)
+                ChainType.Sui -> SuiSignClient(it)
+                ChainType.Xrp -> XrpSignClient(it)
+                ChainType.Near -> NearSignClient(it)
             }
         },
     )
@@ -208,42 +137,18 @@ object DataModule {
         rpcClients: RpcClientAdapter,
     ): NodeStatusClientsProxy {
         return NodeStatusClientsProxy(
-            Chain.available().mapNotNull {
-                when (it) {
-                    Chain.AvalancheC,
-                    Chain.Base,
-                    Chain.SmartChain,
-                    Chain.Arbitrum,
-                    Chain.Polygon,
-                    Chain.OpBNB,
-                    Chain.Fantom,
-                    Chain.Gnosis,
-                    Chain.Optimism,
-                    Chain.Manta,
-                    Chain.Blast,
-                    Chain.ZkSync,
-                    Chain.Linea,
-                    Chain.Mantle,
-                    Chain.Celo,
-                    Chain.World,
-                    Chain.Ethereum -> EvmNodeStatusClient(it, rpcClients.getClient(it))
-                    Chain.Solana -> SolanaNodeStatusClient(it, rpcClients.getClient(it))
-                    Chain.Thorchain,
-                    Chain.Osmosis,
-                    Chain.Celestia,
-                    Chain.Injective,
-                    Chain.Sei,
-                    Chain.Noble,
-                    Chain.Cosmos -> CosmosNodeStatusClient(it, rpcClients.getClient(it))
-                    Chain.Ton -> TonNodeStatusClient(it, rpcClients.getClient(it))
-                    Chain.Tron -> TronNodeStatusClient(it, rpcClients.getClient(it))
-                    Chain.Xrp -> XrpNodeStatusClient(it, rpcClients.getClient(it))
-                    Chain.Doge,
-                    Chain.Litecoin,
-                    Chain.Bitcoin -> BitcoinNodeStatusClient(it, rpcClients.getClient(it))
-                    Chain.Near -> NearNodeStatusClient(it, rpcClients.getClient(it))
-                    Chain.Aptos -> AptosNodeStatusClient(it, rpcClients.getClient(it))
-                    Chain.Sui -> SuiNodeStatusClient(it, rpcClients.getClient(it))
+            Chain.available().map {
+                when (it.toChainType()) {
+                    ChainType.Ethereum -> EvmNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.Bitcoin -> BitcoinNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.Solana -> SolanaNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.Cosmos -> CosmosNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.Ton -> TonNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.Tron -> TronNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.Aptos -> AptosNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.Sui -> SuiNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.Xrp -> XrpNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.Near -> NearNodeStatusClient(it, rpcClients.getClient(it))
                 }
             }
         )

@@ -20,8 +20,10 @@ import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
 import com.gemwallet.android.data.services.gemapi.di.GemJson
 import com.gemwallet.android.ext.available
+import com.gemwallet.android.ext.toChainType
 import com.google.gson.Gson
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.ChainType
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,70 +45,43 @@ object TransactionsModule {
         transactionsDao = transactionsDao,
         assetsDao = assetsDao,
         gson = gson,
-        stateClients = Chain.available().mapNotNull {
-            when (it) {
-                Chain.Doge,
-                Chain.Litecoin,
-                Chain.Bitcoin -> BitcoinTransactionStatusClient(it, rpcClients.getClient(it))
-
-                Chain.AvalancheC,
-                Chain.Base,
-                Chain.SmartChain,
-                Chain.Arbitrum,
-                Chain.Polygon,
-                Chain.OpBNB,
-                Chain.Fantom,
-                Chain.Gnosis,
-                Chain.Optimism,
-                Chain.Manta,
-                Chain.Blast,
-                Chain.ZkSync,
-                Chain.Linea,
-                Chain.Mantle,
-                Chain.Celo,
-                Chain.World,
-                Chain.Ethereum -> EvmTransactionStatusClient(it, rpcClients.getClient(it))
-
-                Chain.Solana -> SolanaTransactionStatusClient(rpcClients.getClient(Chain.Solana))
-                Chain.Thorchain,
-                Chain.Osmosis,
-                Chain.Celestia,
-                Chain.Injective,
-                Chain.Sei,
-                Chain.Noble,
-                Chain.Cosmos -> CosmosTransactionStatusClient(it, rpcClients.getClient(it))
-
-                Chain.Ton -> TonTransactionStatusClient(rpcClients.getClient(it))
-                Chain.Tron -> TronTransactionStatusClient(rpcClients.getClient(Chain.Tron))
-                Chain.Aptos -> AptosTransactionStatusClient(it, rpcClients.getClient(it))
-                Chain.Sui -> SuiTransactionStatusClient(it, rpcClients.getClient(it))
-                Chain.Xrp -> XrpTransactionStatusClient(it, rpcClients.getClient(it))
-                Chain.Near -> NearTransactionStatusClient(it, rpcClients.getClient(it))
+        stateClients = Chain.available().map {
+            when (it.toChainType()) {
+                ChainType.Bitcoin -> BitcoinTransactionStatusClient(it, rpcClients.getClient(it))
+                ChainType.Ethereum -> EvmTransactionStatusClient(it, rpcClients.getClient(it))
+                ChainType.Solana -> SolanaTransactionStatusClient(rpcClients.getClient(Chain.Solana))
+                ChainType.Cosmos -> CosmosTransactionStatusClient(it, rpcClients.getClient(it))
+                ChainType.Ton -> TonTransactionStatusClient(rpcClients.getClient(it))
+                ChainType.Tron -> TronTransactionStatusClient(rpcClients.getClient(Chain.Tron))
+                ChainType.Aptos -> AptosTransactionStatusClient(it, rpcClients.getClient(it))
+                ChainType.Sui -> SuiTransactionStatusClient(it, rpcClients.getClient(it))
+                ChainType.Xrp -> XrpTransactionStatusClient(it, rpcClients.getClient(it))
+                ChainType.Near -> NearTransactionStatusClient(it, rpcClients.getClient(it))
             }
         },
     )
 
     @Singleton
     @Provides
-    fun provideGetTransactionsCase(transactionsRepository: com.gemwallet.android.data.repositoreis.transactions.TransactionsRepository): GetTransactionsCase {
+    fun provideGetTransactionsCase(transactionsRepository: TransactionsRepository): GetTransactionsCase {
         return transactionsRepository
     }
 
     @Singleton
     @Provides
-    fun provideGetTransactionCase(transactionsRepository: com.gemwallet.android.data.repositoreis.transactions.TransactionsRepository): GetTransactionCase {
+    fun provideGetTransactionCase(transactionsRepository: TransactionsRepository): GetTransactionCase {
         return transactionsRepository
     }
 
     @Singleton
     @Provides
-    fun providePutTransactionsCase(transactionsRepository: com.gemwallet.android.data.repositoreis.transactions.TransactionsRepository): PutTransactionsCase {
+    fun providePutTransactionsCase(transactionsRepository: TransactionsRepository): PutTransactionsCase {
         return transactionsRepository
     }
 
     @Singleton
     @Provides
-    fun provideCreateTransactionsCase(transactionsRepository: com.gemwallet.android.data.repositoreis.transactions.TransactionsRepository): CreateTransactionCase {
+    fun provideCreateTransactionsCase(transactionsRepository: TransactionsRepository): CreateTransactionCase {
         return transactionsRepository
     }
 

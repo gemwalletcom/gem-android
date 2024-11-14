@@ -3,30 +3,54 @@ package com.gemwallet.android.ext
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.ChainType
 import java.math.BigInteger
 
-val tokenAvailableChains = listOf( // TODO: Redisign
-    Chain.AvalancheC,
-    Chain.Base,
-    Chain.SmartChain,
-    Chain.Arbitrum,
-    Chain.Polygon,
-    Chain.OpBNB,
-    Chain.Fantom,
-    Chain.Gnosis,
-    Chain.Optimism,
-    Chain.Manta,
-    Chain.Blast,
-    Chain.ZkSync,
-    Chain.Linea,
-    Chain.Mantle,
-    Chain.Celo,
-    Chain.Ethereum,
-    Chain.Tron,
-    Chain.Solana,
-    Chain.Sui,
-    Chain.Ton,
-)
+fun Chain.assetType(): AssetType? {
+    return when (this) {
+        Chain.OpBNB,
+        Chain.SmartChain -> AssetType.BEP20
+
+        Chain.Tron -> AssetType.TRC20
+
+        Chain.Solana -> AssetType.SPL
+
+        Chain.Ton -> AssetType.JETTON
+
+        Chain.Sui -> AssetType.TOKEN
+
+        Chain.Cosmos,
+        Chain.Osmosis,
+        Chain.Celestia,
+        Chain.Injective,
+        Chain.Sei,
+        Chain.Noble -> null
+
+        Chain.Ethereum,
+        Chain.Polygon,
+        Chain.Arbitrum,
+        Chain.Optimism,
+        Chain.Base,
+        Chain.AvalancheC,
+        Chain.Fantom,
+        Chain.Gnosis,
+        Chain.Manta,
+        Chain.Blast,
+        Chain.ZkSync,
+        Chain.Linea,
+        Chain.Mantle,
+        Chain.World -> AssetType.ERC20
+
+        Chain.Celo,
+        Chain.Bitcoin,
+        Chain.Litecoin,
+        Chain.Doge,
+        Chain.Thorchain,
+        Chain.Aptos,
+        Chain.Xrp,
+        Chain.Near -> null
+    }
+}
 
 fun Chain.getReserveBalance(): BigInteger = when (this) {
     Chain.Xrp -> BigInteger.valueOf(10_000_000)
@@ -95,5 +119,44 @@ fun List<Chain>.filter(query: String): List<Chain> {
         asset.symbol.lowercase().startsWith(query) ||
         asset.name.lowercase().startsWith(query) ||
         it.string.lowercase().startsWith(query)
+    }
+}
+
+fun Chain.toChainType(): ChainType {
+    return when (this) {
+        Chain.Solana -> ChainType.Solana
+        Chain.Ton -> ChainType.Ton
+        Chain.Tron -> ChainType.Tron
+        Chain.Aptos -> ChainType.Aptos
+        Chain.Sui -> ChainType.Sui
+        Chain.Xrp -> ChainType.Xrp
+        Chain.Near -> ChainType.Near
+        Chain.Bitcoin,
+        Chain.Doge,
+        Chain.Litecoin -> ChainType.Bitcoin
+        Chain.Thorchain,
+        Chain.Osmosis,
+        Chain.Celestia,
+        Chain.Injective,
+        Chain.Sei,
+        Chain.Noble,
+        Chain.Cosmos -> ChainType.Cosmos
+        Chain.AvalancheC,
+        Chain.Base,
+        Chain.SmartChain,
+        Chain.Arbitrum,
+        Chain.Polygon,
+        Chain.OpBNB,
+        Chain.Fantom,
+        Chain.Gnosis,
+        Chain.Optimism,
+        Chain.Manta,
+        Chain.Blast,
+        Chain.ZkSync,
+        Chain.Linea,
+        Chain.Mantle,
+        Chain.Celo,
+        Chain.World,
+        Chain.Ethereum -> ChainType.Ethereum
     }
 }

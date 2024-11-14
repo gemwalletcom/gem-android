@@ -28,10 +28,12 @@ import com.gemwallet.android.data.services.gemapi.models.SwapQuoteDeserializer
 import com.gemwallet.android.data.services.gemapi.models.Transactions
 import com.gemwallet.android.data.services.gemapi.models.TransactionsSerializer
 import com.gemwallet.android.ext.available
+import com.gemwallet.android.ext.toChainType
 import com.gemwallet.android.serializer.AssetIdSerializer
 import com.google.gson.Gson
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.ChainType
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.Node
@@ -172,43 +174,19 @@ object ClientsModule {
             ).create()
         )
         val adapter = RpcClientAdapter()
-        Chain.available().mapNotNull {
+        Chain.available().map {
             val url = "https://${it.string}"
-            val rpc: Any = when (it) {
-                Chain.Doge,
-                Chain.Litecoin,
-                Chain.Bitcoin -> buildClient(url, BitcoinRpcClient::class.java, converter, httpClient)
-                Chain.AvalancheC,
-                Chain.Polygon,
-                Chain.Arbitrum,
-                Chain.Base,
-                Chain.OpBNB,
-                Chain.SmartChain,
-                Chain.Fantom,
-                Chain.Gnosis,
-                Chain.Optimism,
-                Chain.Manta,
-                Chain.Blast,
-                Chain.ZkSync,
-                Chain.Linea,
-                Chain.Mantle,
-                Chain.Celo,
-                Chain.World,
-                Chain.Ethereum -> buildClient(url, EvmRpcClient::class.java, ethConverter, httpClient)
-                Chain.Solana -> buildClient(url, SolanaRpcClient::class.java, converter, httpClient)
-                Chain.Osmosis,
-                Chain.Thorchain,
-                Chain.Celestia,
-                Chain.Injective,
-                Chain.Sei,
-                Chain.Noble,
-                Chain.Cosmos -> buildClient(url, CosmosRpcClient::class.java, converter, httpClient)
-                Chain.Ton -> buildClient(url, TonRpcClient::class.java, tonConverter, httpClient)
-                Chain.Tron -> buildClient(url, TronRpcClient::class.java, converter, httpClient)
-                Chain.Aptos -> buildClient(url, AptosRpcClient::class.java, converter, httpClient)
-                Chain.Sui -> buildClient(url, SuiRpcClient::class.java, converter, httpClient)
-                Chain.Xrp -> buildClient(url, XrpRpcClient::class.java, converter, httpClient)
-                Chain.Near -> buildClient(url, NearRpcClient::class.java, converter, httpClient)
+            val rpc: Any = when (it.toChainType()) {
+                ChainType.Bitcoin -> buildClient(url, BitcoinRpcClient::class.java, converter, httpClient)
+                ChainType.Ethereum -> buildClient(url, EvmRpcClient::class.java, ethConverter, httpClient)
+                ChainType.Solana -> buildClient(url, SolanaRpcClient::class.java, converter, httpClient)
+                ChainType.Cosmos -> buildClient(url, CosmosRpcClient::class.java, converter, httpClient)
+                ChainType.Ton -> buildClient(url, TonRpcClient::class.java, tonConverter, httpClient)
+                ChainType.Tron -> buildClient(url, TronRpcClient::class.java, converter, httpClient)
+                ChainType.Aptos -> buildClient(url, AptosRpcClient::class.java, converter, httpClient)
+                ChainType.Sui -> buildClient(url, SuiRpcClient::class.java, converter, httpClient)
+                ChainType.Xrp -> buildClient(url, XrpRpcClient::class.java, converter, httpClient)
+                ChainType.Near -> buildClient(url, NearRpcClient::class.java, converter, httpClient)
             }
             adapter.add(it, rpc)
         }

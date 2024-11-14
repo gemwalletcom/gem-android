@@ -7,9 +7,9 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.ext.assetType
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.ext.tokenAvailableChains
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
@@ -92,8 +92,7 @@ open class BaseAssetSelectViewModel(
     .stateIn(viewModelScope, SharingStarted.Eagerly, UIState.Idle)
 
     val isAddAssetAvailable = sessionRepository.session().map { session ->
-        val availableAccounts = session?.wallet?.accounts?.map { it.chain } ?: emptyList()
-        tokenAvailableChains.any { availableAccounts.contains(it) }
+        session?.wallet?.accounts?.filter { it.chain.assetType() != null }?.isNotEmpty() == true
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun onChangeVisibility(assetId: AssetId, visible: Boolean) = viewModelScope.launch(Dispatchers.IO) {
