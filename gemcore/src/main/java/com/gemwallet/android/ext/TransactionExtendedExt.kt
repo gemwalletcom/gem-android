@@ -7,6 +7,8 @@ import com.wallet.core.primitives.TransactionSwapMetadata
 import com.wallet.core.primitives.TransactionType
 import org.json.JSONObject
 
+
+// TODO: Get assosiated assetId
 fun Transaction.getSwapMetadata(): TransactionSwapMetadata? {
     if (type != TransactionType.Swap ||  metadata.isNullOrEmpty()) {
         return null

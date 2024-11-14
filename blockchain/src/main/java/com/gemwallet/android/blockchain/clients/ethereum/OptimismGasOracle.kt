@@ -37,7 +37,7 @@ class OptimismGasOracle {
         val gasPrice = baseFee + priorityFee
         val minerFee = when (params.getTxType()) {
             TransactionType.Transfer -> if (assetId.type() == AssetSubtype.NATIVE && params.isMax()) gasPrice else priorityFee
-            TransactionType.Swap -> priorityFee
+            TransactionType.Swap, TransactionType.TokenApproval -> priorityFee
             else -> throw IllegalAccessException("Operation doesn't available")
         }
         val amount = when (params.getTxType()) {
@@ -71,7 +71,7 @@ class OptimismGasOracle {
             ),
         )
         val l2Fee = gasPrice * gasLimit
-        val l1Fee = getL1Fee(encoded, rpcClient)!!
+        val l1Fee = getL1Fee(encoded, rpcClient) ?: throw IllegalStateException("Can't get L1 Fee")
         GasFee(
             feeAssetId = feeAssetId,
             speed = TxSpeed.Normal,

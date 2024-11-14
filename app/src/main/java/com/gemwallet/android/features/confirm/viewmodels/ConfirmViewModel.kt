@@ -203,9 +203,9 @@ class ConfirmViewModel @Inject constructor(
             val feeAmount = Crypto(amount)
             val currency = feeAssetInfo.price?.currency ?: Currency.USD
             val feeDecimals = feeAssetInfo.asset.decimals
-            val feeCrypto = feeAssetInfo.asset.format(feeAmount, 6)
+            val feeCrypto = feeAssetInfo.asset.format(feeAmount, 6, dynamicPlace = true)
             val feeFiat = feeAssetInfo.price?.let {
-                currency.format(feeAmount.convert(feeDecimals, it.price.price).atomicValue)
+                currency.format(feeAmount.convert(feeDecimals, it.price.price).atomicValue, dynamicPlace = true) // TODO: Move to UI - Model
             } ?: ""
 
             try {

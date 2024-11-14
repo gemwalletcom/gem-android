@@ -56,6 +56,7 @@ import com.gemwallet.android.ext.available
 import com.gemwallet.android.interactors.sync.SyncTransactions
 import com.gemwallet.android.services.SyncService
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.ChainType
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -161,40 +162,44 @@ object DataModule {
     fun provideSignService(
         assetsRepository: AssetsRepository,
     ): SignTransfer = SignTransferProxy(
-        clients = listOf(
-            SolanaSignClient(assetsRepository),
-            TronSignClient(),
-            BitcoinSignClient(Chain.Bitcoin),
-            BitcoinSignClient(Chain.Doge),
-            BitcoinSignClient(Chain.Litecoin),
-            TonSignClient(),
-            EvmSignClient(Chain.Ethereum),
-            EvmSignClient(Chain.Fantom),
-            EvmSignClient(Chain.Gnosis),
-            EvmSignClient(Chain.AvalancheC),
-            EvmSignClient(Chain.Base),
-            EvmSignClient(Chain.SmartChain),
-            EvmSignClient(Chain.Arbitrum),
-            EvmSignClient(Chain.Polygon),
-            EvmSignClient(Chain.OpBNB),
-            EvmSignClient(Chain.Manta),
-            EvmSignClient(Chain.Blast),
-            EvmSignClient(Chain.ZkSync),
-            EvmSignClient(Chain.Linea),
-            EvmSignClient(Chain.Mantle),
-            EvmSignClient(Chain.Celo),
-            CosmosSignClient(Chain.Cosmos),
-            CosmosSignClient(Chain.Osmosis),
-            CosmosSignClient(Chain.Thorchain),
-            CosmosSignClient(Chain.Celestia),
-            CosmosSignClient(Chain.Injective),
-            CosmosSignClient(Chain.Sei),
-            CosmosSignClient(Chain.Noble),
-            AptosSignClient(Chain.Aptos),
-            SuiSignClient(Chain.Sui),
-            XrpSignClient(Chain.Xrp),
-            NearSignClient(Chain.Near),
-        ),
+        clients = Chain.available().mapNotNull {
+            when (it) {
+                Chain.Doge,
+                Chain.Litecoin,
+                Chain.Bitcoin -> BitcoinSignClient(it)
+                Chain.AvalancheC,
+                Chain.Base,
+                Chain.SmartChain,
+                Chain.Arbitrum,
+                Chain.Polygon,
+                Chain.OpBNB,
+                Chain.Fantom,
+                Chain.Gnosis,
+                Chain.Optimism,
+                Chain.Manta,
+                Chain.Blast,
+                Chain.ZkSync,
+                Chain.Linea,
+                Chain.Mantle,
+                Chain.Celo,
+                Chain.World,
+                Chain.Ethereum -> EvmSignClient(it)
+                Chain.Solana -> SolanaSignClient(assetsRepository)
+                Chain.Thorchain,
+                Chain.Osmosis,
+                Chain.Celestia,
+                Chain.Injective,
+                Chain.Sei,
+                Chain.Noble,
+                Chain.Cosmos -> CosmosSignClient(it)
+                Chain.Ton -> TonSignClient()
+                Chain.Tron -> TronSignClient()
+                Chain.Aptos -> AptosSignClient(it)
+                Chain.Sui -> SuiSignClient(it)
+                Chain.Xrp -> XrpSignClient(it)
+                Chain.Near -> NearSignClient(it)
+            }
+        },
     )
 
     @Singleton

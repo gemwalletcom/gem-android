@@ -48,7 +48,7 @@ class SyncTransactions @Inject constructor(
             if (assetsRepository.getAsset(it.feeAssetId) == null) {
                 notAvailableAssetsId.add(it.assetId)
             }
-            val swapMetadata = it.getSwapMetadata()
+            val swapMetadata = it.getSwapMetadata() // TODO: transaction.getAssocientedAssetIds()
             if (swapMetadata != null) {
                 if (assetsRepository.getAsset(swapMetadata.fromAsset) == null) {
                     notAvailableAssetsId.add(swapMetadata.fromAsset)
@@ -59,7 +59,7 @@ class SyncTransactions @Inject constructor(
             }
             notAvailableAssetsId.toSet()
         }.flatten().forEach {  assetId ->
-            searchTokensCase.search(assetId)
+            searchTokensCase.search(assetId) // TODO: Move to Gem Api - butch
             assetsRepository.switchVisibility(
                 session.wallet.id,
                 session.wallet.getAccount(assetId.chain) ?: return@forEach,

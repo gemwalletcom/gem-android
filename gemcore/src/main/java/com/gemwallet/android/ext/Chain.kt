@@ -5,7 +5,7 @@ import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import java.math.BigInteger
 
-val tokenAvailableChains = listOf(
+val tokenAvailableChains = listOf( // TODO: Redisign
     Chain.AvalancheC,
     Chain.Base,
     Chain.SmartChain,

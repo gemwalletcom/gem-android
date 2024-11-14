@@ -19,6 +19,7 @@ import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.exclude
 import com.gemwallet.android.ext.getAccount
+import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
@@ -399,17 +400,26 @@ class AssetsRepository @Inject constructor(
     }
 
     private fun onTransactions(txs: List<TransactionExtended>) = scope.launch {
-        txs.map { tx ->
+        txs.map { txEx ->
             async {
                 val tokens = mutableListOf<Asset>().apply {
-                    if (tx.asset.id.type() == AssetSubtype.TOKEN) {
-                        add(tx.asset)
+                    val metadata = txEx.transaction.getSwapMetadata()
+                    if (metadata != null) {
+                        addAll(
+                            listOf(
+                                getAsset(metadata.fromAsset),
+                                getAsset(metadata.toAsset)
+                            ).filterNotNull()
+                        )
                     }
-                    if (tx.feeAsset.id.type() == AssetSubtype.TOKEN) {
-                        add(tx.asset)
+                    if (txEx.asset.id.type() == AssetSubtype.TOKEN) {
+                        add(txEx.asset)
+                    }
+                    if (txEx.feeAsset.id.type() == AssetSubtype.TOKEN) {
+                        add(txEx.asset)
                     }
                 }
-                updateBalances(Account(tx.transaction.assetId.chain, tx.transaction.from, ""), tokens)
+                updateBalances(Account(txEx.transaction.assetId.chain, txEx.transaction.from, ""), tokens)
             }
         }.awaitAll()
     }

@@ -53,7 +53,7 @@ class TransactionsRepository(
 ) : GetTransactionsCase, GetTransactionCase, CreateTransactionCase, PutTransactionsCase {
 
     private val assetsRoomSource = GetAssetByIdCase(assetsDao)
-    private val changedTransactions = MutableStateFlow<List<TransactionExtended>>(emptyList())
+    private val changedTransactions = MutableStateFlow<List<TransactionExtended>>(emptyList()) // TODO: Update balances.
 
     private val txMapper = TransactionMapper()
     private val extTxMapper = ExtendedTransactionMapper()

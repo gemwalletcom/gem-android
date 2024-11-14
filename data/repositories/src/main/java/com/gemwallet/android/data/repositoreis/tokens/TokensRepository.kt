@@ -58,16 +58,16 @@ class TokensRepository (
                     }
                 }
             }
-                .awaitAll()
-                .mapNotNull { it }
-                .map { AssetFull(asset = it, score = AssetScore(0)) }
+            .awaitAll()
+            .mapNotNull { it }
+            .map { AssetFull(asset = it, score = AssetScore(0)) }
             addTokens(assets)
         } else {
             addTokens(tokens.filter { it.asset.id != null })
         }
     }
 
-    override suspend fun search(assetId: AssetId) {
+    override suspend fun search(assetId: AssetId) { // TODO: Legacy
         val tokenId = assetId.tokenId ?: return
         val asset = getTokenClients
             .firstOrNull { it.isMaintain(assetId.chain) && it.isTokenQuery(tokenId) }
