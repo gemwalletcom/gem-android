@@ -40,13 +40,17 @@ import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIcon20
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.titles.getTitle
+import com.gemwallet.android.ui.models.actions.CancelAction
+import com.gemwallet.android.ui.models.actions.FinishConfirmAction
+import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType
 
 @Composable
 fun ConfirmScreen(
     params: ConfirmParams? = null,
-    onFinish: (String) -> Unit,
-    onCancel: () -> Unit,
+    finishAction: FinishConfirmAction,
+    cancelAction: CancelAction,
     viewModel: ConfirmViewModel = hiltViewModel(),
 ) {
     val amountModel by viewModel.amountUIModel.collectAsStateWithLifecycle()
@@ -67,18 +71,18 @@ fun ConfirmScreen(
     }
 
     BackHandler(true) {
-        onCancel()
+        cancelAction()
     }
 
     Scene(
         title = stringResource(amountModel?.txType?.getTitle() ?: R.string.transfer_title),
-        onClose = onCancel,
+        onClose = { cancelAction() },
         mainAction = {
             MainActionButton(
                 title = state.buttonLabel(),
                 enabled = state !is ConfirmState.Prepare && state !is ConfirmState.Sending,
                 loading = state is ConfirmState.Sending,
-                onClick = { viewModel.send(onFinish) },
+                onClick = { viewModel.send(finishAction) },
             )
         }
     ) {

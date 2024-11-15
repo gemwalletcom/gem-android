@@ -34,6 +34,7 @@ import com.gemwallet.android.model.TxSpeed
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
+import com.gemwallet.android.ui.models.actions.FinishConfirmAction
 import com.google.gson.Gson
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
@@ -250,7 +251,7 @@ class ConfirmViewModel @Inject constructor(
         txSpeed.update { speed }
     }
 
-    fun send(onFinish: (String) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+    fun send(finishAction: FinishConfirmAction) = viewModelScope.launch(Dispatchers.IO) {
         if (state.value is ConfirmState.Error) {
             restart.update { !it }
             return@launch
@@ -264,7 +265,7 @@ class ConfirmViewModel @Inject constructor(
 
         val broadcastResult = try {
 
-            if (assetInfo == null || signerParams == null || session == null || feeAssetInfo == null) {
+            if (assetInfo == null || session == null || feeAssetInfo == null) {
                 throw ConfirmError.TransactionIncorrect
             }
             validateBalance(
@@ -302,7 +303,7 @@ class ConfirmViewModel @Inject constructor(
                 },
             )
             state.update { ConfirmState.Result(txHash = txHash) }
-            viewModelScope.launch(Dispatchers.Main) { onFinish(txHash) }
+            viewModelScope.launch(Dispatchers.Main) { finishAction(assetId = assetInfo.id(), hash = txHash) }
         }.onFailure { err ->
             state.update { ConfirmState.Error(ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
         }

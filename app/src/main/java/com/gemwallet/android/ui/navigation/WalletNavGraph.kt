@@ -66,6 +66,8 @@ import com.gemwallet.android.features.wallet.navigation.navigateToWalletScreen
 import com.gemwallet.android.features.wallet.navigation.walletScreen
 import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
 import com.gemwallet.android.features.wallets.navigation.walletsScreen
+import com.gemwallet.android.ui.navigation.routes.SendSelect
+import com.gemwallet.android.ui.navigation.routes.Transfer
 import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
 import com.gemwallet.android.ui.navigation.routes.recipientInput
 
@@ -145,25 +147,35 @@ fun WalletNavGraph(
                 onCancel = onCancel
             )
 
-            recipientInput(
-                cancelAction = onCancel,
-                recipientAction = navController::navigateToRecipientInput,
-                amountAction = navController::navigateToAmountScreen,
-                confirmAction = navController::navigateToConfirmScreen,
-            )
+            navigation<Transfer>(startDestination = SendSelect) {
+                recipientInput(
+                    cancelAction = onCancel,
+                    recipientAction = navController::navigateToRecipientInput,
+                    amountAction = navController::navigateToAmountScreen,
+                    confirmAction = navController::navigateToConfirmScreen,
+                )
 
-            amount(
-                onCancel = onCancel,
-                onSend = navController::navigateToSendScreen,
-                onConfirm = navController::navigateToConfirmScreen,
-            )
+                amount(
+                    onCancel = onCancel,
+                    onSend = navController::navigateToSendScreen,
+                    onConfirm = navController::navigateToConfirmScreen,
+                )
 
-            confirm(
-                {
-                    navController.navigateToRoot()
-                    currentTab.value = assetsRoute
-                }, onCancel
-            )
+                confirm(
+                    finishAction = { assetId, hash ->
+                        navController.navigateToAssetScreen(
+                            assetId,
+                            navOptions {
+                                launchSingleTop = true
+                                popUpTo(Transfer) {
+                                    inclusive = true
+                                }
+                            }
+                        )
+                    },
+                    cancelAction = onCancel
+                )
+            }
 
             buyScreen(
                 onCancel = onCancel,

@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigInteger
 import javax.inject.Inject
@@ -74,6 +75,11 @@ class RecipientViewModel @Inject constructor(
             domainName = nameRecordState.value?.name,
         )
         val memo = memoState.value
+        val addressError = validateDestination(assetId.chain, destination)
+        if (addressError != RecipientError.None) {
+            this@RecipientViewModel.addressError.update { addressError }
+            return@launch
+        }
         amountAction(AmountParams.buildTransfer(assetId, destination, memo))
     }
 

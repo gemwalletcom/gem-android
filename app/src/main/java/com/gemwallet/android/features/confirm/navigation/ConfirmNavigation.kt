@@ -9,6 +9,8 @@ import androidx.navigation.navOptions
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.features.confirm.views.ConfirmScreen
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.ui.models.actions.CancelAction
+import com.gemwallet.android.ui.models.actions.FinishConfirmAction
 import com.wallet.core.primitives.TransactionType
 
 
@@ -26,8 +28,8 @@ fun NavController.navigateToConfirmScreen(params: ConfirmParams) {
 }
 
 fun NavGraphBuilder.confirm(
-    onFinish: (String) -> Unit,
-    onCancel: () -> Unit,
+    finishAction: FinishConfirmAction,
+    cancelAction: CancelAction,
 ) {
     composable(
         route = "$txConfirmRoute?$paramsArg={$paramsArg}&$txTypeArg={$txTypeArg}",
@@ -47,7 +49,7 @@ fun NavGraphBuilder.confirm(
         val txType = TransactionType.entries.firstOrNull { it.string == txTypeString }
 
         if (txType == null || paramsPack == null) {
-            onCancel()
+            cancelAction()
             return@composable
         }
         val params = ConfirmParams.unpack(
@@ -65,14 +67,14 @@ fun NavGraphBuilder.confirm(
         )
 
         if (params == null) {
-            onCancel()
+            cancelAction()
             return@composable
         }
 
         ConfirmScreen(
             params = params,
-            onCancel = onCancel,
-            onFinish = onFinish,
+            cancelAction = cancelAction,
+            finishAction = finishAction,
         )
     }
 }
