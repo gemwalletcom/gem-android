@@ -74,7 +74,7 @@ fun DelegationScene(
                                                 false -> R.string.stake_inactive
                                             }
                                             DelegationState.Pending -> R.string.stake_pending
-                                            DelegationState.Undelegating -> R.string.transfer_unstake_title // TODO: Check
+                                            DelegationState.Undelegating -> R.string.transfer_unstake_title
                                             DelegationState.Inactive -> R.string.stake_inactive
                                             DelegationState.Activating -> R.string.stake_activating
                                             DelegationState.Deactivating -> R.string.stake_deactivating

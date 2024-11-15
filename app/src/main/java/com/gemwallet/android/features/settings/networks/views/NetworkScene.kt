@@ -92,7 +92,7 @@ fun NetworkScene(
                         chain = state.chain,
                         node = node,
                         selected = state.currentNode?.url == node.url,
-                        nodeStatus = nodeStates.firstOrNull { it?.url == node.url }, // TODO: Out to viewmodel with viewmodel and data
+                        nodeStatus = nodeStates.firstOrNull { it?.url == node.url },
                         onSelect = onSelectNode,
                     )
                 }
