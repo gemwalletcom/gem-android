@@ -127,13 +127,11 @@ internal fun ImportInput(
                 decorationBox = { innerTextField ->
                     if (inputState.text.isEmpty()) {
                         Text(
-                            text = stringResource(
-                                id = when (importType.walletType) {
-                                    WalletType.view -> R.string.wallet_import_address_field
-                                    WalletType.private_key -> R.string.wallet_import_private_key
-                                    else -> R.string.wallet_import_secret_phrase
-                                }
-                            ),
+                            text = when (importType.walletType) {
+                                WalletType.view -> stringResource(R.string.wallet_import_address_field)
+                                WalletType.private_key -> stringResource(R.string.common_private_key)
+                                else -> stringResource(R.string.wallet_import_secret_phrase)
+                            },
                             style = MaterialTheme.typography.bodyLarge,
                             color = MaterialTheme.colorScheme.secondary,
                         )
@@ -141,7 +139,7 @@ internal fun ImportInput(
                     innerTextField()
                 },
                 keyboardOptions = KeyboardOptions(
-                    autoCorrect = false
+                    autoCorrectEnabled = false
                 ),
                 interactionSource = interactionSource,
             )

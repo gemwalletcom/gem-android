@@ -179,11 +179,11 @@ private fun ImportScene(
                     onTypeChange(it)
                     inputState = TextFieldValue()
                 }
-                WalletTypeTab(WalletType.view, importType.walletType) {
+                WalletTypeTab(WalletType.private_key, importType.walletType) {
                     onTypeChange(it)
                     inputState = TextFieldValue()
                 }
-                WalletTypeTab(WalletType.private_key, importType.walletType) {
+                WalletTypeTab(WalletType.view, importType.walletType) {
                     onTypeChange(it)
                     inputState = TextFieldValue()
                 }
