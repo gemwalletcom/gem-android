@@ -9,6 +9,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
+import com.gemwallet.android.ext.getAssociatedAssetIds
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.features.transactions.details.model.TxDetailsScreenModel
 import com.gemwallet.android.features.transactions.navigation.txIdArg
@@ -46,8 +47,8 @@ class TransactionDetailsViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val assets = tx.flatMapLatest { tx ->
-        val swapMetadata = tx?.transaction?.getSwapMetadata() ?: return@flatMapLatest emptyFlow()
-        assetsRepository.getAssetsInfo(listOf(swapMetadata.fromAsset, swapMetadata.toAsset))
+        val ids = tx?.transaction?.getAssociatedAssetIds() ?: return@flatMapLatest emptyFlow()
+        assetsRepository.getAssetsInfo(ids)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val screenModel = tx.combine(assets) { transaction, assets ->

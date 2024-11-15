@@ -1,13 +1,13 @@
 package com.gemwallet.android.interactors.sync
 
 import com.gemwallet.android.cases.device.GetDeviceIdCase
-import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.cases.transactions.PutTransactionsCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.getAccount
+import com.gemwallet.android.ext.getAssociatedAssetIds
 import com.gemwallet.android.ext.getSwapMetadata
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Transaction
@@ -24,7 +24,6 @@ class SyncTransactions @Inject constructor(
     private val putTransactionsCase: PutTransactionsCase,
     private val getTransactionsCase: GetTransactionsCase,
     private val assetsRepository: AssetsRepository,
-    private val searchTokensCase: SearchTokensCase,
 ) {
     suspend operator fun invoke(wallet: Wallet) = withContext(Dispatchers.IO) {
         val deviceId = getDeviceIdCase.getDeviceId()
@@ -40,33 +39,9 @@ class SyncTransactions @Inject constructor(
 
     private suspend fun prefetchAssets(txs: List<Transaction>) {
         val session = sessionRepository.getSession() ?: return
-        txs.map {
-            val notAvailableAssetsId = mutableListOf<AssetId>()
-            if (assetsRepository.getAsset(it.assetId) == null) {
-                notAvailableAssetsId.add(it.assetId)
-            }
-            if (assetsRepository.getAsset(it.feeAssetId) == null) {
-                notAvailableAssetsId.add(it.assetId)
-            }
-            val swapMetadata = it.getSwapMetadata() // TODO: transaction.getAssocientedAssetIds()
-            if (swapMetadata != null) {
-                if (assetsRepository.getAsset(swapMetadata.fromAsset) == null) {
-                    notAvailableAssetsId.add(swapMetadata.fromAsset)
-                }
-                if (assetsRepository.getAsset(swapMetadata.toAsset) == null) {
-                    notAvailableAssetsId.add(swapMetadata.toAsset)
-                }
-            }
-            notAvailableAssetsId.toSet()
-        }.flatten().forEach {  assetId ->
-            searchTokensCase.search(assetId) // TODO: Move to Gem Api - butch
-            assetsRepository.switchVisibility(
-                session.wallet.id,
-                session.wallet.getAccount(assetId.chain) ?: return@forEach,
-                assetId,
-                false,
-                session.currency,
-            )
-        }
+        val notAvailableAssetIds = txs.map {
+            it.getAssociatedAssetIds().filter { assetsRepository.getAsset(it) == null }.toSet()
+        }.flatten()
+        assetsRepository.resolve(session.currency, session.wallet, notAvailableAssetIds)
     }
 }

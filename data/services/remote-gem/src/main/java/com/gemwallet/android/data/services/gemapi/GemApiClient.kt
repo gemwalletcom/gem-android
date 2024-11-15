@@ -1,7 +1,6 @@
 package com.gemwallet.android.data.services.gemapi
 
 import com.gemwallet.android.data.services.gemapi.models.PricesResponse
-import com.gemwallet.android.data.services.gemapi.models.SwapRequest
 import com.gemwallet.android.data.services.gemapi.models.Transactions
 import com.wallet.core.primitives.AssetFull
 import com.wallet.core.primitives.AssetPricesRequest
@@ -13,7 +12,6 @@ import com.wallet.core.primitives.FiatQuotes
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.Subscription
-import com.wallet.core.primitives.SwapQuoteResult
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HTTP
@@ -74,8 +72,8 @@ interface GemApiClient {
     @GET("/v1/assets/{asset_id}")
     suspend fun getAsset(@Path("asset_id") assetId: String, @Query("currency") currency: String): Result<AssetFull>
 
-    @POST("/v1/swap/quote")
-    suspend fun getSwapQuote(@Body request: SwapRequest): Result<SwapQuoteResult>
+    @POST("/v1/assets")
+    suspend fun getAssets(@Body ids: List<String>): Result<List<AssetFull>>
 
     @GET("/v1/assets/search")
     suspend fun search(

@@ -17,13 +17,13 @@ import com.gemwallet.android.data.service.store.database.entities.DbPrice
 import com.gemwallet.android.data.service.store.database.mappers.AssetInfoMapper
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.exclude
 import com.gemwallet.android.ext.getAccount
-import com.gemwallet.android.ext.getSwapMetadata
+import com.gemwallet.android.ext.getAssociatedAssetIds
 import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.AssetBalance
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.AssetPriceInfo
@@ -38,7 +38,6 @@ import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.AssetPricesRequest
-import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.TransactionExtended
@@ -247,6 +246,43 @@ class AssetsRepository @Inject constructor(
         }
     }
 
+    suspend fun resolve(currency: Currency, wallet: Wallet, assetsId: List<AssetId>) = withContext(Dispatchers.IO) {
+        if (assetsId.isEmpty()) {
+            return@withContext
+        }
+        val gson = Gson()
+        val assetsFull = gemApi.getAssets(assetsId.map { it.toIdentifier() }).getOrNull() ?: return@withContext
+        val assets = assetsFull.mapNotNull { assetFull ->
+            DbAsset(
+                address = wallet.getAccount(assetFull.asset.chain())?.address ?: return@mapNotNull null,
+                id = assetFull.asset.id.toIdentifier(),
+                name = assetFull.asset.name,
+                symbol = assetFull.asset.symbol,
+                decimals = assetFull.asset.decimals,
+                type = assetFull.asset.type,
+                isPinned = false,
+                isBuyEnabled = assetFull.details?.isBuyable == true,
+                isSwapEnabled = assetFull.details?.isSwapable == true,
+                isStakeEnabled = assetFull.details?.isStakeable == true,
+                stakingApr = assetFull.details?.stakingApr,
+                links = assetFull.details?.links?.let { gson.toJson(it) },
+                market = assetFull.market?.let { gson.toJson(it) },
+                rank = assetFull.score.rank,
+            )
+        }
+        assetsDao.insert(assets)
+        assetsId.forEach { setVisibility(wallet.id, it, true) }
+
+        val balancesJob = async(Dispatchers.IO) {
+            getAssetsInfo(assetsId).firstOrNull()?.updateBalances()
+        }
+        val pricesJob = async(Dispatchers.IO) {
+            updatePrices(currency)
+        }
+        balancesJob.await()
+        pricesJob.await()
+    }
+
     suspend fun getAssetByTokenId(chain: Chain, address: String): Asset? = withContext(Dispatchers.IO) {
         val assetId = AssetId(chain, address)
         searchTokensCase.search(assetId)
@@ -307,7 +343,7 @@ class AssetsRepository @Inject constructor(
         }
         setVisibility(walletId, assetId, visibility)
         launch { updateBalances(assetId) }
-        launch { updatePrices(currency, assetId) }
+        launch { updatePrices(currency) }
     }
 
     suspend fun togglePin(walletId: String, assetId: AssetId) {
@@ -402,24 +438,7 @@ class AssetsRepository @Inject constructor(
     private fun onTransactions(txs: List<TransactionExtended>) = scope.launch {
         txs.map { txEx ->
             async {
-                val tokens = mutableListOf<Asset>().apply {
-                    val metadata = txEx.transaction.getSwapMetadata()
-                    if (metadata != null) {
-                        addAll(
-                            listOf(
-                                getAsset(metadata.fromAsset),
-                                getAsset(metadata.toAsset)
-                            ).filterNotNull()
-                        )
-                    }
-                    if (txEx.asset.id.type() == AssetSubtype.TOKEN) {
-                        add(txEx.asset)
-                    }
-                    if (txEx.feeAsset.id.type() == AssetSubtype.TOKEN) {
-                        add(txEx.asset)
-                    }
-                }
-                updateBalances(Account(txEx.transaction.assetId.chain, txEx.transaction.from, ""), tokens)
+                getAssetsInfo(txEx.transaction.getAssociatedAssetIds()).firstOrNull()?.updateBalances()
             }
         }.awaitAll()
     }

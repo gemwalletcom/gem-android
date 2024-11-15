@@ -63,7 +63,7 @@ class EvmFee {
         ): Pair<BigInteger, BigInteger> {
             val feeHistory = rpcClient.getFeeHistory(
                 JSONRpcRequest.create(EvmMethod.GetFeeHistory, listOf("10", "latest", listOf(25)))
-            ).getOrNull()?.result ?: throw Exception("Unable to calculate base fee") // TODO: Handle errors
+            ).getOrNull()?.result ?: throw Exception("Unable to calculate base fee")
             val reward = feeHistory.reward
                 .mapNotNull { it.firstOrNull() }
                 .mapNotNull { it.hexToBigInteger() }

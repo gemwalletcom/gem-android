@@ -7,8 +7,11 @@ import com.wallet.core.primitives.TransactionSwapMetadata
 import com.wallet.core.primitives.TransactionType
 import org.json.JSONObject
 
+fun Transaction.getAssociatedAssetIds(): List<AssetId> {
+    val swapAssets = getSwapMetadata()?.let { setOf(it.fromAsset, it.toAsset) } ?: emptySet()
+    return (swapAssets + setOf(assetId, feeAssetId)).toList()
+}
 
-// TODO: Get assosiated assetId
 fun Transaction.getSwapMetadata(): TransactionSwapMetadata? {
     if (type != TransactionType.Swap ||  metadata.isNullOrEmpty()) {
         return null
@@ -31,7 +34,7 @@ fun Transaction.getSwapMetadata(): TransactionSwapMetadata? {
             fromValue = json.getString("fromValue"),
             toValue = json.getString("toValue"),
         )
-    } catch (err: Throwable) {
+    } catch (_: Throwable) {
         null
     }
 }
