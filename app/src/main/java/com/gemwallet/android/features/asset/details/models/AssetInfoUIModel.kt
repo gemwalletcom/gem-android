@@ -21,6 +21,7 @@ class AssetInfoUIModel(
     val isSwapEnabled: Boolean = false,
     val priceAlertEnabled: Boolean = false,
     val transactions: List<TransactionExtended> = emptyList(),
+    val updated: Long = System.currentTimeMillis(),
 ) {
     data class Account(
         val walletType: WalletType = WalletType.view,

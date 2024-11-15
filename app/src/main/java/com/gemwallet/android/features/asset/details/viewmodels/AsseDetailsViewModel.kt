@@ -73,7 +73,7 @@ class AsseDetailsViewModel @Inject constructor(
             getTransactionsCase.getTransactions(assetId),
             getPriceAlertsCase.isAssetPriceAlertEnabled(assetId),
         ) { assetInfo, transactions, priceAlertEnabled ->
-            Model(assetInfo, transactions, priceAlertEnabled = priceAlertEnabled)
+            Model(assetInfo, transactions, priceAlertEnabled, System.currentTimeMillis())
         }
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -120,6 +120,7 @@ class AsseDetailsViewModel @Inject constructor(
         val assetInfo: AssetInfo,
         val transactions: List<TransactionExtended> = emptyList(),
         val priceAlertEnabled: Boolean = false,
+        val updated: Long = System.currentTimeMillis(),
     ) {
         fun toUIState(): AssetInfoUIModel {
             val assetInfo = assetInfo
@@ -148,11 +149,12 @@ class AsseDetailsViewModel @Inject constructor(
                 tokenType = asset.type,
                 networkTitle = "${asset.id.chain.asset().name} (${asset.type.string})",
                 networkIcon = AssetId(asset.id.chain).getIconUrl(),
-                isBuyEnabled = assetInfo.metadata?.isBuyEnabled ?: false,
+                isBuyEnabled = assetInfo.metadata?.isBuyEnabled == true,
                 isSwapEnabled = EVMChain.entries.map { it.string }.contains(asset.id.chain.string),
                 // TODO: Return later: (assetInfo.metadata?.isSwapEnabled ?: false) || asset.id.isSwapable(),
                 priceAlertEnabled = priceAlertEnabled,
                 transactions = transactions,
+                updated = updated,
                 account = AssetInfoUIModel.Account(
                     walletType = assetInfo.walletType,
                     totalBalance = balances.totalFormatted(),

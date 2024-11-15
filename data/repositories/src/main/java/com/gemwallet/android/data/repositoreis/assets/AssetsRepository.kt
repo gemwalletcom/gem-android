@@ -138,8 +138,8 @@ class AssetsRepository @Inject constructor(
             assetsDao.getById(assetId.toIdentifier()).map {
                 it.copy(
                     isBuyEnabled = assetFull.details?.isBuyable == true,
-                    isSwapEnabled = assetFull.details?.isBuyable == true,
-                    isStakeEnabled = assetFull.details?.isSwapable == true,
+                    isSwapEnabled = assetFull.details?.isSwapable == true,
+                    isStakeEnabled = assetFull.details?.isStakeable == true,
                     stakingApr = assetFull.details?.stakingApr,
                     links =  assetFull.details?.links?.let { gson.toJson(it) },
                     market = assetFull.market?.let { gson.toJson(it) },
