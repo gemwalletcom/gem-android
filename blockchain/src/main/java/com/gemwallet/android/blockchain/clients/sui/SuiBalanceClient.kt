@@ -16,9 +16,9 @@ class SuiBalanceClient(
     private val chain: Chain,
     private val rpcClient: SuiRpcClient,
 ) : BalanceClient {
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
-    override suspend fun getNativeBalance(address: String): AssetBalance = withContext(Dispatchers.IO) {
+    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance = withContext(Dispatchers.IO) {
         val amountJob = async {
             rpcClient.balance(address).mapCatching {
                 it.result.totalBalance.toBigInteger()
@@ -36,7 +36,7 @@ class SuiBalanceClient(
         AssetBalance.create(chain.asset(), available = amount.toString(), staked = staked.toString())
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> {
+    override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> {
         return rpcClient.balances(address).mapCatching { response ->
             val balances = response.result
             tokens.mapNotNull { token ->

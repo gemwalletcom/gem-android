@@ -7,9 +7,10 @@ import com.wallet.core.primitives.TransactionState
 import java.math.BigInteger
 
 class TronTransactionStatusClient(
+    private val chain: Chain,
     private val rpcClient: TronRpcClient
 ) : TransactionStatusClient {
-    override suspend fun getStatus(owner: String, txId: String): Result<TransactionChages> {
+    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
         return rpcClient.transaction(TronRpcClient.TronValue(value = txId)).mapCatching {
             if (it.receipt != null && it.receipt?.result == "OUT_OF_ENERGY") {
                 return@mapCatching TransactionChages(TransactionState.Reverted)
@@ -25,5 +26,5 @@ class TronTransactionStatusClient(
         }
     }
 
-    override fun maintainChain(): Chain = Chain.Tron
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

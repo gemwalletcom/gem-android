@@ -1,8 +1,7 @@
 package com.gemwallet.android.interactors
 
 import com.gemwallet.android.R
-import com.gemwallet.android.blockchain.clients.AddressStatusClient
-import com.gemwallet.android.blockchain.clients.getClient
+import com.gemwallet.android.blockchain.clients.AddressStatusClientProxy
 import com.gemwallet.android.blockchain.operators.InvalidPhrase
 import com.gemwallet.android.blockchain.operators.InvalidWords
 import com.gemwallet.android.blockchain.operators.PasswordStore
@@ -35,7 +34,7 @@ class PhraseAddressImportWalletOperator(
     private val addressValidate: ValidateAddressOperator,
     private val passwordStore: PasswordStore,
     private val syncSubscriptionCase: SyncSubscriptionCase,
-    private val addressStatusClients: List<AddressStatusClient>,
+    private val addressStatusClients: AddressStatusClientProxy,
     private val addBannerCase: AddBannerCase,
 ) : ImportWalletOperator {
     override suspend fun invoke(
@@ -116,7 +115,7 @@ class PhraseAddressImportWalletOperator(
 
     private suspend fun checkAddresses(wallet: Wallet) {
         wallet.accounts.forEach {
-            val statuses = addressStatusClients.getClient(it.chain)?.getAddressStatus(it.address) ?: emptyList()
+            val statuses = addressStatusClients.getAddressStatus(it.chain, it.address) ?: emptyList()
             for (status in statuses) {
                 if (status == AddressStatus.MultiSignature) {
                     addBannerCase.addBanner(

@@ -10,14 +10,14 @@ class AptosBalanceClient(
     private val chain: Chain,
     private val rpcClient: AptosRpcClient,
 ) : BalanceClient {
-    override suspend fun getNativeBalance(address: String): AssetBalance? {
+    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
         return rpcClient.balance(address)
             .fold({
                 AssetBalance.create(chain.asset(), available = it.data.coin.value)
             }) { null }
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> = emptyList()
+    override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> = emptyList()
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

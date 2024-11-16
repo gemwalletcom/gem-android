@@ -12,7 +12,7 @@ class CosmosNodeStatusClient(
     private val chain: Chain,
     private val rpcClient: CosmosRpcClient
 ) : NodeStatusClient {
-    override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
+    override suspend fun getNodeStatus(chain: Chain, url: String): NodeStatus? = withContext(Dispatchers.IO) {
         val inSyncJob = async { rpcClient.syncing("$url/cosmos/base/tendermint/v1beta1/syncing") } //.getOrNull()?.syncing == false }
         val nodeInfoJob = async { rpcClient.getNodeInfo("$url/cosmos/base/tendermint/v1beta1/blocks/latest").getOrNull()?.block?.header }
 
@@ -28,5 +28,5 @@ class CosmosNodeStatusClient(
         )
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

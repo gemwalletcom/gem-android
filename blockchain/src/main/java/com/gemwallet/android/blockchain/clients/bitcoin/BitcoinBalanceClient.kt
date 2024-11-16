@@ -11,7 +11,7 @@ class BitcoinBalanceClient(
     private val rpcClient: BitcoinRpcClient,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(address: String): AssetBalance? {
+    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
         return rpcClient.getBalance(address)
             .fold(
                 {
@@ -24,7 +24,5 @@ class BitcoinBalanceClient(
             ) { null }
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> = emptyList()
-
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

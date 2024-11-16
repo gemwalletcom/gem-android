@@ -13,7 +13,7 @@ class EvmNodeStatusClient(
     private val rpcClient: EvmRpcClient,
 ) : NodeStatusClient {
 
-    override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
+    override suspend fun getNodeStatus(chain: Chain, url: String): NodeStatus? = withContext(Dispatchers.IO) {
         val getChainId = async { rpcClient.getChainId(url) }
         val getLatestBlock = async { rpcClient.latestBlock(url).getOrNull()?.result?.value?.toString() }
         val getSync = async { rpcClient.sync(url).getOrNull()?.result }
@@ -31,5 +31,5 @@ class EvmNodeStatusClient(
         )
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

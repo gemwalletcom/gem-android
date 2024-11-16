@@ -13,7 +13,7 @@ class BitcoinNodeStatusClient(
     private val rpcClient: BitcoinRpcClient
 ) : NodeStatusClient {
 
-    override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
+    override suspend fun getNodeStatus(chain: Chain, url: String): NodeStatus? = withContext(Dispatchers.IO) {
         val nodeInfoJob = async { rpcClient.getNodeInfo(url).getOrNull() }
         val chainIdJob = async { rpcClient.getBlock(url) }
         val nodeInfo = nodeInfoJob.await() ?: return@withContext null
@@ -28,5 +28,5 @@ class BitcoinNodeStatusClient(
         )
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

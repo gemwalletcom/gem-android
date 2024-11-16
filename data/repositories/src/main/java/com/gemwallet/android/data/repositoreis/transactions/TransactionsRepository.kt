@@ -197,7 +197,7 @@ class TransactionsRepository(
     private suspend fun checkTx(tx: DbTransactionExtended): DbTransactionExtended? {
         val assetId = tx.assetId.toAssetId() ?: return null
         val stateClient = stateClients.firstOrNull { it.isMaintain(assetId.chain) } ?: return null
-        val stateResult = stateClient.getStatus(tx.owner, tx.hash)
+        val stateResult = stateClient.getStatus(assetId.chain, tx.owner, tx.hash)
         val state = stateResult.getOrElse { TransactionChages(tx.state) }
         return if (state.state != tx.state) {
 

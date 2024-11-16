@@ -4,11 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.R
-import com.gemwallet.android.blockchain.clients.BroadcastProxy
+import com.gemwallet.android.blockchain.clients.BroadcastClientProxy
+import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.clients.SignerPreload
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
-import com.gemwallet.android.blockchain.operators.SignTransfer
 import com.gemwallet.android.cases.transactions.CreateTransactionCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -70,8 +70,8 @@ class ConfirmViewModel @Inject constructor(
     private val signerPreload: SignerPreload,
     private val passwordStore: PasswordStore,
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
-    private val signTransfer: SignTransfer,
-    private val broadcastProxy: BroadcastProxy,
+    private val signClient: SignClientProxy,
+    private val broadcastClientProxy: BroadcastClientProxy,
     private val createTransactionsCase: CreateTransactionCase,
     private val stakeRepository: StakeRepository,
     @GemJson private val gson: Gson, // TODO: Clean it
@@ -276,7 +276,7 @@ class ConfirmViewModel @Inject constructor(
                 getBalance(assetInfo, signerParams.input),
             )
             val sign = sign(signerParams, session, assetInfo)
-            broadcastProxy.broadcast(assetInfo.owner, sign, signerParams.input.getTxType())
+            broadcastClientProxy.send(assetInfo.owner, sign, signerParams.input.getTxType())
         } catch (err: ConfirmError) {
             state.update { ConfirmState.Error(err) }
             return@launch
@@ -310,18 +310,18 @@ class ConfirmViewModel @Inject constructor(
     }
 
     private suspend fun sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo): ByteArray {
-        val signResult = signTransfer(
-            input = signerParams,
-            txSpeed = txSpeed.value,
-            privateKey = loadPrivateKeyOperator(
-                session.wallet,
-                assetInfo.id().chain,
-                passwordStore.getPassword(session.wallet.id)
+        val sign = try {
+            signClient.signTransfer(
+                params = signerParams,
+                txSpeed = txSpeed.value,
+                privateKey = loadPrivateKeyOperator(
+                    session.wallet,
+                    assetInfo.id().chain,
+                    passwordStore.getPassword(session.wallet.id)
+                )
             )
-        )
-        val sign = signResult.getOrNull()
-        if (sign == null || signResult.isFailure) {
-            throw ConfirmError.SignFail(signResult.exceptionOrNull()?.message ?: "Can't sign transfer")
+        } catch (ex: Throwable) {
+            throw ConfirmError.SignFail(ex.message ?: "Can't sign transfer")
         }
         return sign
     }

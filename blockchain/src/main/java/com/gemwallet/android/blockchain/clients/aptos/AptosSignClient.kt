@@ -34,5 +34,5 @@ class AptosSignClient(
         return output.json.toByteArray()
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

@@ -2,6 +2,7 @@ package com.gemwallet.android.di
 
 import android.content.Context
 import com.gemwallet.android.blockchain.RpcClientAdapter
+import com.gemwallet.android.blockchain.clients.AddressStatusClientProxy
 import com.gemwallet.android.blockchain.clients.tron.TronAddressStatusClient
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.blockchain.operators.CreateWalletOperator
@@ -112,11 +113,13 @@ object InteractsModule {
         passwordStore = passwordStore,
         addBannerCase = addBannerCase,
         syncSubscriptionCase = syncSubscriptionCase,
-        addressStatusClients = Chain.available().mapNotNull {
-            when (it) {
-                Chain.Tron -> TronAddressStatusClient(it, rpcClients.getClient(it))
-                else -> null
+        addressStatusClients = AddressStatusClientProxy(
+            clients = Chain.available().mapNotNull {
+                when (it) {
+                    Chain.Tron -> TronAddressStatusClient(it, rpcClients.getClient(it))
+                    else -> null
+                }
             }
-        }
+        )
     )
 }

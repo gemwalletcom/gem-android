@@ -12,7 +12,7 @@ class NearBalanceClient(
     private val rpcClient: NearRpcClient,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(address: String): AssetBalance? {
+    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
         return rpcClient.account(
             JSONRpcRequest(
                 method = NearMethod.Query.value,
@@ -35,9 +35,5 @@ class NearBalanceClient(
         }
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> {
-        return emptyList()
-    }
-
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

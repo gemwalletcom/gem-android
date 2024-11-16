@@ -16,7 +16,7 @@ class SolanaBalanceClient(
     val rpcClient: SolanaRpcClient,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(address: String): AssetBalance? = withContext(Dispatchers.IO) {
+    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? = withContext(Dispatchers.IO) {
         val getAvailable = async {
             rpcClient.getBalance(JSONRpcRequest.create(SolanaMethod.GetBalance, listOf(address)))
                 .getOrNull()?.result?.value
@@ -37,7 +37,7 @@ class SolanaBalanceClient(
         )
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> {
+    override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> {
         val result = mutableListOf<AssetBalance>()
         for (token in tokens) {
             val tokenId = token.id.tokenId ?: continue
@@ -64,5 +64,5 @@ class SolanaBalanceClient(
             ?.result?.value?.amount?.toBigInteger() ?: return BigInteger.ZERO
     }
 
-    override fun maintainChain(): Chain = Chain.Solana
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

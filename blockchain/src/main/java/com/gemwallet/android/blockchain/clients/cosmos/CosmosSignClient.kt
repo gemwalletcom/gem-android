@@ -196,5 +196,5 @@ class CosmosSignClient(
         return sign.serialized.toByteArray()
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

@@ -13,6 +13,7 @@ import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.SolanaTokenProgramId
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -28,7 +29,7 @@ class TestSolanaSign {
 
     @Test
     fun testNativeSign() {
-        val signClient = SolanaSignClient(object : GetAsset {
+        val signClient = SolanaSignClient(Chain.Solana, object : GetAsset {
             override suspend fun getAsset(assetId: AssetId): Asset? {
                 return null
             }

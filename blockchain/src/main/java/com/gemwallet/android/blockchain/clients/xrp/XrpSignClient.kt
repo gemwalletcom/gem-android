@@ -29,5 +29,5 @@ class XrpSignClient(
         return output.encoded.toByteArray()
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

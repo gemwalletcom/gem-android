@@ -16,7 +16,7 @@ class CosmosBalanceClient(
     private val rpcClient: CosmosRpcClient,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(address: String): AssetBalance? = withContext(Dispatchers.IO) {
+    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? = withContext(Dispatchers.IO) {
         val denom = CosmosDenom.from(chain)
 
         val getBalances = async { rpcClient.getBalance(address).getOrNull()?.balances }
@@ -59,7 +59,7 @@ class CosmosBalanceClient(
         }
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> {
+    override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> {
         val balances = try {
             rpcClient.getBalance(address).getOrNull() ?: return emptyList()
         } catch (_: Throwable) {
@@ -78,7 +78,7 @@ class CosmosBalanceClient(
         }.mapNotNull { it }
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }
 
 fun CosmosDenom.Companion.from(chain: Chain): String = when (chain) {

@@ -7,6 +7,7 @@ import com.wallet.core.primitives.TransactionType
 import java.nio.charset.StandardCharsets
 
 class TonBroadcastClient(
+    private val chain: Chain,
     private val rpcClient: TonRpcClient,
 ) : BroadcastClient {
     override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): Result<String> {
@@ -14,5 +15,5 @@ class TonBroadcastClient(
         return rpcClient.broadcast(TonRpcClient.Boc(encodedMessage)).mapCatching { it.result.hash }
     }
 
-    override fun maintainChain(): Chain = Chain.Ton
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

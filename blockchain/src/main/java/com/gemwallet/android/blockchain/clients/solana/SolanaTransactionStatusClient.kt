@@ -7,10 +7,11 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
 
 class SolanaTransactionStatusClient(
+    private val chain: Chain,
     private val rpcClient: SolanaRpcClient,
 ) : TransactionStatusClient {
 
-    override suspend fun getStatus(owner: String, txId: String): Result<TransactionChages> {
+    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
         val request = JSONRpcRequest(
             SolanaMethod.GetTransaction.value,
             listOf(
@@ -36,5 +37,5 @@ class SolanaTransactionStatusClient(
         }
     }
 
-    override fun maintainChain(): Chain = Chain.Solana
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

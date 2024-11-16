@@ -33,7 +33,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -45,7 +44,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gemwallet.android.R
-import com.gemwallet.android.services.isAvailableOperation
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
@@ -185,7 +183,7 @@ fun AssetHeadActions(
                 onClick = onReceive,
             )
         }
-        if (onBuy != null && isAvailableOperation(LocalContext.current)) {
+        if (onBuy != null) {
             AssetAction(
                 modifier = (if (windowSizeClass == WindowWidthSizeClass.Compact) Modifier.weight(1f) else Modifier)
                     .testTag("assetBuy"),
@@ -195,7 +193,7 @@ fun AssetHeadActions(
                 onClick = onBuy,
             )
         }
-        if (onSwap != null && isAvailableOperation(LocalContext.current)) {
+        if (onSwap != null) {
             AssetAction(
                 modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) Modifier.weight(1f) else Modifier,
                 title = stringResource(id = R.string.wallet_swap),

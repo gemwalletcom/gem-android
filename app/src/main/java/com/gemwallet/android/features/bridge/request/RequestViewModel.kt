@@ -2,9 +2,9 @@ package com.gemwallet.android.features.bridge.request
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
-import com.gemwallet.android.blockchain.operators.SignTransfer
 import com.gemwallet.android.data.repositoreis.bridge.findByNamespace
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.features.bridge.model.PeerUI
@@ -34,7 +34,7 @@ class RequestViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val passwordStore: PasswordStore,
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
-    val signClient: SignTransfer,
+    val signClient: SignClientProxy,
 ) : ViewModel() {
     private val state = MutableStateFlow(RequestViewModelState())
     val sceneState = state.map { it.toSceneState() }.stateIn(viewModelScope, SharingStarted.Eagerly, RequestSceneState.Loading)
@@ -107,24 +107,26 @@ class RequestViewModel @Inject constructor(
 
             val password = passwordStore.getPassword(session.wallet.id)
             val privateKey = loadPrivateKeyOperator(session.wallet, chain, password)
-            val signResult = signClient(chain, param, privateKey)
-            signResult.onSuccess { signedData ->
-                Web3Wallet.respondSessionRequest(
-                    params = Wallet.Params.SessionRequestResponse(
-                        sessionTopic = sessionRequest.topic,
-                        jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
-                            sessionRequest.request.id,
-                            signedData.toHexString()
-                        )
-                    ),
-                    onSuccess = { state.update { it.copy(canceled = true) } },
-                    onError = { error ->
-                        state.update { it.copy(error = error.throwable.message ?: "Can't sent sign to WalletConnect") }
-                    }
-                )
-            }.onFailure { err ->
+            val sign = try {
+                signClient.signMessage(chain, param, privateKey)
+            } catch (err: Throwable) {
                 state.update { it.copy(error = err.message ?: "Sign error") }
+                return@launch
             }
+
+            Web3Wallet.respondSessionRequest(
+                params = Wallet.Params.SessionRequestResponse(
+                    sessionTopic = sessionRequest.topic,
+                    jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
+                        sessionRequest.request.id,
+                        sign.toHexString()
+                    )
+                ),
+                onSuccess = { state.update { it.copy(canceled = true) } },
+                onError = { error ->
+                    state.update { it.copy(error = error.throwable.message ?: "Can't sent sign to WalletConnect") }
+                }
+            )
         }
     }
 

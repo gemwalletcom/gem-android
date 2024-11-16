@@ -15,10 +15,11 @@ import wallet.core.jni.EthereumAbiValue
 import java.math.BigInteger
 
 class SmartchainStakeClient(
+    private val chain: Chain,
     private val evmRpcClient: EvmRpcClient,
     private val stakeHub: StakeHub = StakeHub(),
 ) : StakeClient {
-    override suspend fun getValidators(apr: Double): List<DelegationValidator> {
+    override suspend fun getValidators(chain: Chain, apr: Double): List<DelegationValidator> {
         val limit = getMaxElectedValidators()
         val data = stakeHub.encodeValidatorsCall(0, limit)
         val result = evmRpcClient.callString(StakeHub.reader, data) ?: return emptyList()
@@ -26,7 +27,7 @@ class SmartchainStakeClient(
         return validators
     }
 
-    override suspend fun getStakeDelegations(address: String, apr: Double): List<DelegationBase> = withContext(Dispatchers.IO) {
+    override suspend fun getStakeDelegations(chain: Chain, address: String, apr: Double): List<DelegationBase> = withContext(Dispatchers.IO) {
         val limit = getMaxElectedValidators()
         val getDelegationCall = async { getDelegations(address, limit) }
         val getUndelegationsCall = async { getUndelegations(address, limit) }
@@ -55,7 +56,7 @@ class SmartchainStakeClient(
         )
     }
 
-    override fun maintainChain(): Chain = Chain.SmartChain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
     private suspend fun getDelegations(address: String, limit: Int): List<DelegationBase> {
         val data = evmRpcClient.callString(StakeHub.reader, stakeHub.encodeDelegationsCall(address, limit))

@@ -13,7 +13,7 @@ class SolanaNodeStatusClient(
     private val rpcClient: SolanaRpcClient,
 ) : NodeStatusClient {
 
-    override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
+    override suspend fun getNodeStatus(chain: Chain, url: String): NodeStatus? = withContext(Dispatchers.IO) {
         val inSyncJob = async { rpcClient.health(url) }
         val slotJob = async { rpcClient.slot(url).getOrNull()?.result }
         val chainIdJob = async { rpcClient.genesisHash(url).getOrNull()?.result }
@@ -29,5 +29,5 @@ class SolanaNodeStatusClient(
         )
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

@@ -8,6 +8,7 @@ import com.wallet.core.primitives.TransactionType
 import java.nio.charset.StandardCharsets
 
 class SolanaBroadcastClient(
+    private val chain: Chain,
     private val rpcClient: SolanaRpcClient,
 ) : BroadcastClient {
     override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): Result<String> {
@@ -32,5 +33,5 @@ class SolanaBroadcastClient(
         }
     }
 
-    override fun maintainChain(): Chain = Chain.Solana
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

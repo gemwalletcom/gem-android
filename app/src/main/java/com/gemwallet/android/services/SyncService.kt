@@ -1,8 +1,5 @@
 package com.gemwallet.android.services
 
-import android.content.Context
-import android.telephony.TelephonyManager
-import androidx.fragment.app.FragmentActivity.TELEPHONY_SERVICE
 import com.gemwallet.android.cases.device.SyncSubscriptionCase
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -12,7 +9,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
-import java.util.Locale
 import javax.inject.Inject
 
 class SyncService @Inject constructor(
@@ -33,8 +29,3 @@ class SyncService @Inject constructor(
         }
     }
 }
-
-fun isAvailableOperation(context: Context): Boolean = (context.getSystemService(TELEPHONY_SERVICE) as TelephonyManager)
-    .networkCountryIso.let {
-        !(it.lowercase() == "uk" || it.lowercase() == "gb" || Locale.getDefault().country.lowercase() == "gb")
-    }

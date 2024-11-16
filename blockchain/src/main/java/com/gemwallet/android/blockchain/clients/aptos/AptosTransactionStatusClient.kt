@@ -11,7 +11,8 @@ class AptosTransactionStatusClient(
     private val chain: Chain,
     private val rpcClient: AptosRpcClient,
 ) : TransactionStatusClient {
-    override suspend fun getStatus(owner: String, txId: String): Result<TransactionChages> {
+
+    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
         val transaction = rpcClient.transactions(txId).getOrNull() ?: return Result.failure(Exception())
         val status = if (transaction.success == true) {
             TransactionState.Confirmed
@@ -22,5 +23,5 @@ class AptosTransactionStatusClient(
         return Result.success(TransactionChages(status, fee))
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

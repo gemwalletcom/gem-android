@@ -15,7 +15,7 @@ class TronBalanceClient(
     private val rpcClient: TronRpcClient,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(address: String): AssetBalance? {
+    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
         return rpcClient.getAccount(TronAccountRequest(address, visible = true))
             .fold(
                 {
@@ -26,7 +26,7 @@ class TronBalanceClient(
             }
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> {
+    override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> {
         return tokens.mapNotNull { token ->
             val tokenId = token.id.tokenId ?: return@mapNotNull null
             val owner = Base58.decode(address).toHexString("")
@@ -49,5 +49,5 @@ class TronBalanceClient(
         }
     }
 
-    override fun maintainChain(): Chain = Chain.Tron
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

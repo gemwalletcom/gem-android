@@ -30,7 +30,7 @@ class SuiGetTokenClient(
 
     override suspend fun isTokenQuery(query: String): Boolean = isTokenAddress(query)
 
-    override fun maintainChain(): Chain = Chain.Sui
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
     companion object {
         fun isTokenAddress(tokenId: String): Boolean {

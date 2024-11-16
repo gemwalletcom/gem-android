@@ -14,7 +14,7 @@ class NearNodeStatusClient(
     private val rpcClient: NearRpcClient,
 ) : NodeStatusClient {
 
-    override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
+    override suspend fun getNodeStatus(chain: Chain, url: String): NodeStatus? = withContext(Dispatchers.IO) {
         val getBlock = async {
             rpcClient.latestBlock(
                 url,
@@ -34,5 +34,5 @@ class NearNodeStatusClient(
         )
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

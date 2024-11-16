@@ -14,7 +14,9 @@ import wallet.core.jni.CoinType
 import wallet.core.jni.proto.Tron
 import java.math.BigInteger
 
-class TronSignClient : SignClient {
+class TronSignClient(
+    private val chain: Chain,
+) : SignClient {
     override suspend fun signTransfer(
         params: SignerParams,
         txSpeed: TxSpeed,
@@ -67,5 +69,5 @@ class TronSignClient : SignClient {
         this.amount = ByteString.copyFrom(value.toByteArray())
     }.build()
 
-    override fun maintainChain(): Chain = Chain.Tron
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

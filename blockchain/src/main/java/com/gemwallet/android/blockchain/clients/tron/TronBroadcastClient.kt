@@ -9,6 +9,7 @@ import com.wallet.core.primitives.TransactionType
 import okhttp3.RequestBody.Companion.toRequestBody
 
 class TronBroadcastClient(
+    private val chain: Chain,
     private val rpcClient: TronRpcClient,
 ) : BroadcastClient {
 
@@ -19,5 +20,5 @@ class TronBroadcastClient(
         }
     }
 
-    override fun maintainChain(): Chain = Chain.Tron
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

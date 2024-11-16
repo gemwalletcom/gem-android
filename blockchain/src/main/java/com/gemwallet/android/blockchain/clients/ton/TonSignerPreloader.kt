@@ -17,6 +17,7 @@ import kotlinx.coroutines.withContext
 internal const val tokenAccountCreationKey: String = "tokenAccountCreation"
 
 class TonSignerPreloader(
+    private val chain: Chain,
     private val rpcClient: TonRpcClient,
 ) : SignerPreload {
 
@@ -28,7 +29,7 @@ class TonSignerPreloader(
 
     }
 
-    override fun maintainChain(): Chain = Chain.Ton
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
     private suspend fun coinSign(owner: Account, params: ConfirmParams): Result<SignerParams> {
         val fee = TonFee().invoke(rpcClient, params.assetId, params.destination()?.address!!, params.memo())

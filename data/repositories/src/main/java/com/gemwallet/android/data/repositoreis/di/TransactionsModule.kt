@@ -49,10 +49,10 @@ object TransactionsModule {
             when (it.toChainType()) {
                 ChainType.Bitcoin -> BitcoinTransactionStatusClient(it, rpcClients.getClient(it))
                 ChainType.Ethereum -> EvmTransactionStatusClient(it, rpcClients.getClient(it))
-                ChainType.Solana -> SolanaTransactionStatusClient(rpcClients.getClient(Chain.Solana))
+                ChainType.Solana -> SolanaTransactionStatusClient(it, rpcClients.getClient(Chain.Solana))
                 ChainType.Cosmos -> CosmosTransactionStatusClient(it, rpcClients.getClient(it))
-                ChainType.Ton -> TonTransactionStatusClient(rpcClients.getClient(it))
-                ChainType.Tron -> TronTransactionStatusClient(rpcClients.getClient(Chain.Tron))
+                ChainType.Ton -> TonTransactionStatusClient(it, rpcClients.getClient(it))
+                ChainType.Tron -> TronTransactionStatusClient(it, rpcClients.getClient(Chain.Tron))
                 ChainType.Aptos -> AptosTransactionStatusClient(it, rpcClients.getClient(it))
                 ChainType.Sui -> SuiTransactionStatusClient(it, rpcClients.getClient(it))
                 ChainType.Xrp -> XrpTransactionStatusClient(it, rpcClients.getClient(it))

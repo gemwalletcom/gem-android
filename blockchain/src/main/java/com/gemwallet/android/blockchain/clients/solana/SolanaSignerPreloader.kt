@@ -18,6 +18,7 @@ import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
 
 class SolanaSignerPreloader(
+    private val chain: Chain,
     private val rpcClient: SolanaRpcClient,
 ) : SignerPreload {
 
@@ -111,7 +112,7 @@ class SolanaSignerPreloader(
         Triple(senderTokenAddressJob.await(), recipientTokenAddressJob.await(), tokenProgramJob.await())
     }
 
-    override fun maintainChain(): Chain = Chain.Solana
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
     data class Info(
         val blockhash: String,

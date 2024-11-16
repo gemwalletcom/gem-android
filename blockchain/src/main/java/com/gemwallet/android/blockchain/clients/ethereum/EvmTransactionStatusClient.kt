@@ -13,7 +13,7 @@ class EvmTransactionStatusClient(
     private val chain: Chain,
     private val rpcClient: EvmRpcClient,
 ) : TransactionStatusClient {
-    override suspend fun getStatus(owner: String, txId: String): Result<TransactionChages> {
+    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
         return Result.success(getStatus(txId))
     }
 
@@ -43,5 +43,5 @@ class EvmTransactionStatusClient(
             ) { TransactionChages(TransactionState.Pending) }
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

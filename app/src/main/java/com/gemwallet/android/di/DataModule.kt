@@ -1,11 +1,13 @@
 package com.gemwallet.android.di
 
 import com.gemwallet.android.blockchain.RpcClientAdapter
-import com.gemwallet.android.blockchain.clients.BroadcastProxy
-import com.gemwallet.android.blockchain.clients.NodeStatusClientsProxy
-import com.gemwallet.android.blockchain.clients.SignPreloaderProxy
-import com.gemwallet.android.blockchain.clients.SignTransferProxy
+import com.gemwallet.android.blockchain.clients.BroadcastClientProxy
+import com.gemwallet.android.blockchain.clients.NodeStatusClient
+import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
+import com.gemwallet.android.blockchain.clients.SignClient
+import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.clients.SignerPreload
+import com.gemwallet.android.blockchain.clients.SignerPreloaderProxy
 import com.gemwallet.android.blockchain.clients.aptos.AptosBroadcastClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosNodeStatusClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosSignClient
@@ -46,7 +48,6 @@ import com.gemwallet.android.blockchain.clients.xrp.XrpBroadcastClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpNodeStatusClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignerPreloader
-import com.gemwallet.android.blockchain.operators.SignTransfer
 import com.gemwallet.android.cases.device.SyncSubscriptionCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
@@ -72,15 +73,15 @@ object DataModule {
     @Singleton
     fun providesBroadcastProxy(
         rpcClients: RpcClientAdapter,
-    ): BroadcastProxy = BroadcastProxy(
+    ): BroadcastClientProxy = BroadcastClientProxy(
         Chain.available().map {
             when (it.toChainType()) {
                 ChainType.Bitcoin -> BitcoinBroadcastClient(it, rpcClients.getClient(it))
                 ChainType.Ethereum -> EvmBroadcastClient(it, rpcClients.getClient(it))
-                ChainType.Solana -> SolanaBroadcastClient(rpcClients.getClient(Chain.Solana))
+                ChainType.Solana -> SolanaBroadcastClient(it, rpcClients.getClient(Chain.Solana))
                 ChainType.Cosmos -> CosmosBroadcastClient(it, rpcClients.getClient(it))
-                ChainType.Ton -> TonBroadcastClient(rpcClients.getClient(it))
-                ChainType.Tron -> TronBroadcastClient(rpcClients.getClient(Chain.Tron))
+                ChainType.Ton -> TonBroadcastClient(it, rpcClients.getClient(it))
+                ChainType.Tron -> TronBroadcastClient(it, rpcClients.getClient(Chain.Tron))
                 ChainType.Aptos -> AptosBroadcastClient(it, rpcClients.getClient(it))
                 ChainType.Sui -> SuiBroadcastClient(it, rpcClients.getClient(it))
                 ChainType.Xrp -> XrpBroadcastClient(it, rpcClients.getClient(it))
@@ -93,15 +94,15 @@ object DataModule {
     @Singleton
     fun provideSignerPreloader(
         rpcClients: RpcClientAdapter,
-    ): SignerPreload = SignPreloaderProxy(
+    ): SignerPreload = SignerPreloaderProxy(
         Chain.available().map {
             when (it.toChainType()) {
                 ChainType.Bitcoin -> BitcoinSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Ethereum -> EvmSignerPreloader(it, rpcClients.getClient(it))
-                ChainType.Solana -> SolanaSignerPreloader(rpcClients.getClient(Chain.Solana))
+                ChainType.Solana -> SolanaSignerPreloader(it, rpcClients.getClient(Chain.Solana))
                 ChainType.Cosmos -> CosmosSignerPreloader(it, rpcClients.getClient(it))
-                ChainType.Ton -> TonSignerPreloader(rpcClients.getClient(it))
-                ChainType.Tron -> TronSignerPreloader(rpcClients.getClient(Chain.Tron))
+                ChainType.Ton -> TonSignerPreloader(it, rpcClients.getClient(it))
+                ChainType.Tron -> TronSignerPreloader(it, rpcClients.getClient(Chain.Tron))
                 ChainType.Aptos -> AptosSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Sui -> SuiSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Xrp -> XrpSignerPreloader(it, rpcClients.getClient(it))
@@ -114,15 +115,15 @@ object DataModule {
     @Singleton
     fun provideSignService(
         assetsRepository: AssetsRepository,
-    ): SignTransfer = SignTransferProxy(
+    ): SignClientProxy = SignClientProxy(
         clients = Chain.available().map {
             when (it.toChainType()) {
                 ChainType.Ethereum -> EvmSignClient(it)
                 ChainType.Bitcoin -> BitcoinSignClient(it)
-                ChainType.Solana -> SolanaSignClient(assetsRepository)
+                ChainType.Solana -> SolanaSignClient(it, assetsRepository)
                 ChainType.Cosmos -> CosmosSignClient(it)
-                ChainType.Ton -> TonSignClient()
-                ChainType.Tron -> TronSignClient()
+                ChainType.Ton -> TonSignClient(it)
+                ChainType.Tron -> TronSignClient(it)
                 ChainType.Aptos -> AptosSignClient(it)
                 ChainType.Sui -> SuiSignClient(it)
                 ChainType.Xrp -> XrpSignClient(it)
@@ -135,8 +136,8 @@ object DataModule {
     @Provides
     fun provideNodeStatusClient(
         rpcClients: RpcClientAdapter,
-    ): NodeStatusClientsProxy {
-        return NodeStatusClientsProxy(
+    ): NodeStatusClientProxy {
+        return NodeStatusClientProxy(
             Chain.available().map {
                 when (it.toChainType()) {
                     ChainType.Ethereum -> EvmNodeStatusClient(it, rpcClients.getClient(it))

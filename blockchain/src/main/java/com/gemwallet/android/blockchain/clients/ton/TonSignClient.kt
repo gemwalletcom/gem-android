@@ -12,7 +12,9 @@ import wallet.core.jni.CoinType
 import wallet.core.jni.proto.TheOpenNetwork
 import java.math.BigInteger
 
-class TonSignClient : SignClient {
+class TonSignClient(
+    private val chain: Chain,
+) : SignClient {
     override suspend fun signTransfer(
         params: SignerParams,
         txSpeed: TxSpeed,
@@ -40,7 +42,7 @@ class TonSignClient : SignClient {
         return output.encoded.toByteArray()
     }
 
-    override fun maintainChain(): Chain = Chain.Ton
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
     private fun signToken(params: SignerParams, privateKey: ByteArray): ByteArray {
         val meta = params.info as TonSignerPreloader.Info

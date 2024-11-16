@@ -9,7 +9,7 @@ class SuiTransactionStatusClient(
     private val chain: Chain,
     private val rpcClient: SuiRpcClient,
 ) : TransactionStatusClient {
-    override suspend fun getStatus(owner: String, txId: String): Result<TransactionChages> {
+    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
         return rpcClient.transaction(txId).mapCatching {
             TransactionChages(
                 when (it.result.effects.status.status) {
@@ -21,5 +21,5 @@ class SuiTransactionStatusClient(
         }
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

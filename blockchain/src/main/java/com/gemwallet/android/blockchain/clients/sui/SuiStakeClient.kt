@@ -12,14 +12,15 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 class SuiStakeClient(
+    private val chain: Chain,
     private val rpcClient: SuiRpcClient
 ): StakeClient {
-    override suspend fun getValidators(apr: Double): List<DelegationValidator> {
+    override suspend fun getValidators(chain: Chain, apr: Double): List<DelegationValidator> {
         val validators = rpcClient.validators(JSONRpcRequest.create(SuiMethod.Validators, listOf()))
             .getOrNull()?.result?.apys ?: return emptyList()
         return validators.map {
             DelegationValidator(
-                chain = maintainChain(),
+                chain = chain,
                 id = it.address,
                 name = "",
                 isActive = true,
@@ -30,7 +31,7 @@ class SuiStakeClient(
         }
     }
 
-    override suspend fun getStakeDelegations(address: String, apr: Double): List<DelegationBase> = withContext(Dispatchers.IO) {
+    override suspend fun getStakeDelegations(chain: Chain, address: String, apr: Double): List<DelegationBase> = withContext(Dispatchers.IO) {
         val getDelegations = async {
             rpcClient.delegations(JSONRpcRequest.create(SuiMethod.Delegations, listOf(address)))
                 .getOrNull()?.result
@@ -51,7 +52,7 @@ class SuiStakeClient(
                 }
 
                 DelegationBase(
-                    assetId = maintainChain().asset().id,
+                    assetId = chain.asset().id,
                     state = state,
                     rewards = stake.estimatedReward ?: "0",
                     delegationId = stake.stakedSuiId,
@@ -64,5 +65,5 @@ class SuiStakeClient(
         }.flatten()
     }
 
-    override fun maintainChain(): Chain = Chain.Sui
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

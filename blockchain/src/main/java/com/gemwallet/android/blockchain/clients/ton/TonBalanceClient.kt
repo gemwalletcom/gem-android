@@ -17,12 +17,12 @@ class TonBalanceClient(
     private val rpcClient: TonRpcClient,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(address: String): AssetBalance? {
+    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
         return rpcClient.balance(address)
             .fold( { AssetBalance.create(chain.asset(), it.result) } ) { null }
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> {
+    override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> {
         return tokens.asFlow()
             .mapNotNull {
                 val tokenId = it.id.tokenId ?: return@mapNotNull null
@@ -39,7 +39,7 @@ class TonBalanceClient(
             .toList()
     }
 
-    override fun maintainChain(): Chain = Chain.Ton
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
     private suspend fun tokenBalance(jettonAddress: String): BigInteger {
         return BigInteger.valueOf(

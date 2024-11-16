@@ -18,6 +18,6 @@ class SuiBroadcastClient(
         }
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
 }

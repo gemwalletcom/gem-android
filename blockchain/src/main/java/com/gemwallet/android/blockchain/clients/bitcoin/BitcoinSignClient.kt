@@ -27,11 +27,11 @@ class BitcoinSignClient(
         privateKey: ByteArray
     ): ByteArray {
         val metadata = params.info as BitcoinSignerPreloader.Info
-        val coinType = WCChainTypeProxy().invoke(maintainChain())
+        val coinType = WCChainTypeProxy().invoke(chain)
         val gasFee = metadata.fee(txSpeed) as GasFee
         val signingInput = Bitcoin.SigningInput.newBuilder().apply {
             this.coinType = coinType.value()
-            this.hashType = BitcoinSigHashType.ALL.value()//BitcoinScript.hashTypeForCoin(coinType)
+            this.hashType = BitcoinSigHashType.ALL.value()
             this.amount = params.finalAmount.toLong()
             this.byteFee = gasFee.maxGasPrice.toLong()
             this.toAddress = params.input.destination()?.address
@@ -39,11 +39,11 @@ class BitcoinSignClient(
             this.useMaxAmount = params.input.isMax()
             this.addPrivateKey(ByteString.copyFrom(privateKey))
             this.addAllUtxo(metadata.utxo.getUtxoTransactions(params.owner, coinType))
-            for (utxo in metadata.utxo) {
+            metadata.utxo.forEach {
                 val redeemScript = BitcoinScript.lockScriptForAddress(params.owner, coinType)
                 val scriptData = redeemScript.data()
                 if (coinType == CoinType.BITCOIN || scriptData?.isNotEmpty() == true) {
-                    continue
+                    return@forEach
                 }
                 val keyHash = if (redeemScript.isPayToWitnessPublicKeyHash) {
                     redeemScript.matchPayToWitnessPublicKeyHash()
@@ -51,7 +51,6 @@ class BitcoinSignClient(
                     redeemScript.matchPayToPubkeyHash()
                 }.toHexString()
                 putScripts(keyHash, ByteString.copyFrom(redeemScript.data()))
-
             }
         }.build()
         val output = AnySigner.sign(signingInput, coinType, Bitcoin.SigningOutput.parser())
@@ -64,7 +63,7 @@ class BitcoinSignClient(
         return output.encoded.toByteArray()
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }
 
 fun List<BitcoinUTXO>.getUtxoTransactions(address: String, coinType: CoinType): List<Bitcoin.UnspentTransaction> {

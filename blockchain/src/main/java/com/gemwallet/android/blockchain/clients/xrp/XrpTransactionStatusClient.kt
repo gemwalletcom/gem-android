@@ -9,7 +9,7 @@ class XrpTransactionStatusClient(
     private val chain: Chain,
     private val rpcClient: XrpRpcClient,
 ) : TransactionStatusClient {
-    override suspend fun getStatus(owner: String, txId: String): Result<TransactionChages> {
+    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
         return rpcClient.transaction(txId).mapCatching {
             TransactionChages(
                 if (it.result.status == "success") TransactionState.Confirmed else TransactionState.Pending
@@ -17,5 +17,5 @@ class XrpTransactionStatusClient(
         }
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

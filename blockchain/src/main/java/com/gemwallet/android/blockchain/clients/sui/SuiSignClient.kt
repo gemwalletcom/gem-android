@@ -17,7 +17,7 @@ class SuiSignClient(
         return signTxDataDigest(metadata.messageBytes, privateKey)
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
     private fun signTxDataDigest(data: String, privateKey: ByteArray): ByteArray {
         val key = PrivateKey(privateKey)

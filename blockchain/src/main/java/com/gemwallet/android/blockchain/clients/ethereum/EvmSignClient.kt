@@ -26,13 +26,13 @@ class EvmSignClient(
     private val chain: Chain,
 ) : SignClient {
 
-    override suspend fun signMessage(input: ByteArray, privateKey: ByteArray): ByteArray {
+    override suspend fun signMessage(chain: Chain, input: ByteArray, privateKey: ByteArray): ByteArray {
         val result = PrivateKey(privateKey).sign(input, CoinType.ETHEREUM.curve())
         result[64] = (result[64] + 27).toByte()
         return result
     }
 
-    override suspend fun signTypedMessage(input: ByteArray, privateKey: ByteArray): ByteArray {
+    override suspend fun signTypedMessage(chain: Chain, input: ByteArray, privateKey: ByteArray): ByteArray {
         val privateKey = PrivateKey(privateKey)
         val json = String(input)
         return EthereumMessageSigner.signTypedMessage(privateKey, json).decodeHex()
@@ -170,5 +170,5 @@ class EvmSignClient(
         }.build()
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

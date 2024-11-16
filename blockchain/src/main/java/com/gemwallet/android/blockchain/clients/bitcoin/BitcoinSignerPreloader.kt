@@ -29,7 +29,7 @@ class BitcoinSignerPreloader(
         }
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
     data class Info(
         val utxo: List<BitcoinUTXO>,

@@ -1,8 +1,8 @@
 package com.gemwallet.android.data.repositoreis.swap
 
+import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
-import com.gemwallet.android.blockchain.operators.SignTransfer
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
@@ -22,7 +22,7 @@ import uniffi.gemstone.SwapQuoteData
 import uniffi.gemstone.permit2DataToEip712Json
 
 class SwapRepository(
-    private val signClient: SignTransfer,
+    private val signClient: SignClientProxy,
     private val passwordStore: PasswordStore,
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
     getCurrentNodeCase: GetCurrentNodeCase,
@@ -60,12 +60,11 @@ class SwapRepository(
         val chain = quote.request.fromAsset.toAssetId()?.chain ?: throw IllegalArgumentException()
         val permit2Single = permit2Single(approval.v1.token, approval.v1.spender, approval.v1.value, approval.v1.permit2Nonce)
         val permit2Json = permit2DataToEip712Json(chain.string, permit2Single)
-        val signature = signClient.invoke(
+        val signature = signClient.signTypedMessage(
             chain = chain,
             input = permit2Json.toByteArray(),
             privateKey = loadPrivateKeyOperator.invoke(wallet, chain, passwordStore.getPassword(walletId = wallet.id)),
-            isTyped = true,
-        ).getOrNull() ?: throw IllegalArgumentException()
+        )
         return Permit2Data(permit2Single, signature)
     }
 

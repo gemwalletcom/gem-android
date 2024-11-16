@@ -12,7 +12,8 @@ class AptosNodeStatusClient(
     private val chain: Chain,
     private val rpcClient: AptosRpcClient,
 ) : NodeStatusClient {
-    override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
+
+    override suspend fun getNodeStatus(chain: Chain, url: String): NodeStatus? = withContext(Dispatchers.IO) {
         val response = rpcClient.getLedger(url)
         val ledger = response.body() ?: return@withContext null
         NodeStatus(
@@ -24,5 +25,5 @@ class AptosNodeStatusClient(
         )
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

@@ -10,7 +10,7 @@ class TronAddressStatusClient(
     private val rpcClient: TronRpcClient,
 ) : AddressStatusClient {
 
-    override suspend fun getAddressStatus(address: String): List<AddressStatus> {
+    override suspend fun getAddressStatus(chain: Chain, address: String): List<AddressStatus> {
         val activePermission = rpcClient.getAccount(TronAccountRequest(address, visible = true))
             .getOrNull()
             ?.active_permission ?: emptyList()
@@ -19,5 +19,5 @@ class TronAddressStatusClient(
         } else emptyList()
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = chain == this.chain
 }

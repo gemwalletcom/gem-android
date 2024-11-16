@@ -14,6 +14,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 
 class TronSignerPreloader(
+    private val chain: Chain,
     private val rpcClient: TronRpcClient,
 ) : SignerPreload {
     override suspend fun invoke(owner: Account, params: ConfirmParams): Result<SignerParams> = withContext(Dispatchers.IO) {
@@ -53,7 +54,7 @@ class TronSignerPreloader(
         }
     }
 
-    override fun maintainChain(): Chain = Chain.Tron
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
     data class Info(
         val number: Long,

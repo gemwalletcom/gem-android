@@ -9,9 +9,10 @@ import com.wallet.core.primitives.TransactionState
 import wallet.core.jni.Base64
 
 class TonTransactionStatusClient(
+    private val chain: Chain,
     private val rpcClient: TonRpcClient,
 ) : TransactionStatusClient {
-    override suspend fun getStatus(owner: String, txId: String): Result<TransactionChages> {
+    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
         val txHashData = Base64.decode(txId)
         return rpcClient.transaction(txHashData.toHexString(""))
             .mapCatching {
@@ -22,5 +23,5 @@ class TonTransactionStatusClient(
             }
     }
 
-    override fun maintainChain(): Chain = Chain.Ton
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

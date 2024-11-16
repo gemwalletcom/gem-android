@@ -4,7 +4,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.blockchain.clients.NodeStatusClientsProxy
+import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
 import com.gemwallet.android.cases.nodes.GetBlockExplorersCase
 import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorerCase
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
@@ -46,15 +46,13 @@ import kotlin.String
 @HiltViewModel
 class NetworksViewModel @Inject constructor(
     private val chainInfoRepository: ChainInfoRepository,
-//    private val nodesRepository: NodesRepository,
     private val getNodesCase: GetNodesCase,
     private val getCurrentBlockExplorerCase: GetCurrentBlockExplorerCase,
     private val getBlockExplorersCase: GetBlockExplorersCase,
     private val setBlockExplorerCase: SetBlockExplorerCase,
     private val getCurrentNodeCase: GetCurrentNodeCase,
     private val setCurrentNodeCase: SetCurrentNodeCase,
-    private val nodeStatusClientsProxy: NodeStatusClientsProxy,
-    private val nodeStatusClients: NodeStatusClientsProxy,
+    private val nodeStatusClient: NodeStatusClientProxy,
 ) : ViewModel() {
 
     private val state = MutableStateFlow(State())
@@ -99,7 +97,7 @@ class NetworksViewModel @Inject constructor(
             }
             nodes.map { node ->
                 async(Dispatchers.IO) {
-                    val status = nodeStatusClients(chain, node.url)
+                    val status = nodeStatusClient.getNodeStatus(chain, node.url)
                     statuses[node.url] = if (status == null) {
                         statuses[node.url]?.copy(loading = false)
                     } else {
@@ -133,7 +131,7 @@ class NetworksViewModel @Inject constructor(
                 explorers = getBlockExplorersCase.getBlockExplorers(chain),
                 currentNode = getCurrentNodeCase.getCurrentNode(chain),
                 currentExplorer = getCurrentBlockExplorerCase.getCurrentBlockExplorer(chain),
-                availableAddNode = nodeStatusClientsProxy.isMaintained(chain),
+                availableAddNode = nodeStatusClient.isMaintain(chain),
             )
         }
     }

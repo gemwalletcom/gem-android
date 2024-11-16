@@ -99,7 +99,6 @@ class EvmSignerPreloader(
                     },
                 )
             } catch (err: Throwable) {
-                Log.d("ERROR", "Err: ", err)
                 throw err
             }
         }
@@ -127,7 +126,7 @@ class EvmSignerPreloader(
         )
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
     private suspend fun getGasLimit(
         assetId: AssetId,

@@ -23,7 +23,7 @@ class BalancesRemoteSource @Inject constructor(
 
         val nativeBalances = async {
             try {
-                client.getNativeBalance(account.address)
+                client.getNativeBalance(account.chain, account.address)
             } catch (_: Throwable) {
                 null
             }
@@ -33,7 +33,7 @@ class BalancesRemoteSource @Inject constructor(
             val tokens = tokens.filter { it.id.type() == AssetSubtype.TOKEN && account.chain == it.id.chain }
                 .ifEmpty { return@async emptyList() }
             try {
-                client.getTokenBalances(account.address, tokens)
+                client.getTokenBalances(account.chain, account.address, tokens)
             } catch (_: Throwable) {
                 emptyList()
             }

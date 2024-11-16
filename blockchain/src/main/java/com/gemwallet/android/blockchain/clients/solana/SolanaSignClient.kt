@@ -22,10 +22,11 @@ import wallet.core.jni.SolanaAddress
 import wallet.core.jni.proto.Solana
 
 class SolanaSignClient(
+    private val chain: Chain,
     private val getAsset: GetAsset,
 ) : SignClient {
 
-    override suspend fun signMessage(input: ByteArray, privateKey: ByteArray): ByteArray {
+    override suspend fun signMessage(chain: Chain, input: ByteArray, privateKey: ByteArray): ByteArray {
         val str = String(input)
         val bytes = Base64.decode(str)
         if (bytes[0].toInt() != 1) {
@@ -166,5 +167,5 @@ class SolanaSignClient(
             .toByteArray()
     }
 
-    override fun maintainChain(): Chain = Chain.Solana
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

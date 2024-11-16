@@ -19,7 +19,7 @@ class AptosSignerPreloader(
     ): Result<SignerParams> {
         val sequence = try {
             rpcClient.accounts(owner.address).getOrThrow().sequence_number?.toLong() ?: 0L
-        } catch (err: Throwable) {
+        } catch (_: Throwable) {
             0
         }
         val fee = AptosFee().invoke(chain, params.destination()?.address!!, rpcClient)
@@ -31,7 +31,7 @@ class AptosSignerPreloader(
         return Result.success(input)
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
     data class Info(
         val sequence: Long,

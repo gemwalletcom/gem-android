@@ -10,7 +10,7 @@ class NearTransactionStatusClient(
     private val chain: Chain,
     private val rpcClient: NearRpcClient,
 ) : TransactionStatusClient {
-    override suspend fun getStatus(owner: String, txId: String): Result<TransactionChages> {
+    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
         return rpcClient.transaction(
             JSONRpcRequest(
                 method = NearMethod.Transaction.value,
@@ -31,5 +31,5 @@ class NearTransactionStatusClient(
         }
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

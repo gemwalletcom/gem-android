@@ -11,7 +11,7 @@ class XrpNodeStatusClient(
     private val chain: Chain,
     private val rpcClient: XrpRpcClient,
 ) : NodeStatusClient {
-    override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
+    override suspend fun getNodeStatus(chain: Chain, url: String): NodeStatus? = withContext(Dispatchers.IO) {
         val resp = rpcClient.latestBlock(url)
 
         NodeStatus(
@@ -23,5 +23,5 @@ class XrpNodeStatusClient(
         )
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

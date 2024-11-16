@@ -18,5 +18,5 @@ class AptosBroadcastClient(
         Result.failure(err)
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.cosmos
 
+import android.annotation.SuppressLint
 import com.gemwallet.android.blockchain.clients.StakeClient
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -18,7 +19,10 @@ class CosmosStakeClient(
     private val rpcClient: CosmosRpcClient,
 ) : StakeClient {
 
-    override suspend fun getValidators(apr: Double): List<DelegationValidator> {
+    @SuppressLint("SimpleDateFormat")
+    private val completionDateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
+
+    override suspend fun getValidators(chain: Chain, apr: Double): List<DelegationValidator> {
         return rpcClient.validators().getOrNull()?.validators?.map {
             val commission = it.commission.commission_rates.rate.toDouble()
             val isActive = !it.jailed && it.status == "BOND_STATUS_BONDED"
@@ -33,7 +37,7 @@ class CosmosStakeClient(
         } ?: emptyList()
     }
 
-    override suspend fun getStakeDelegations(address: String, apr: Double): List<DelegationBase> = withContext(Dispatchers.IO) {
+    override suspend fun getStakeDelegations(chain: Chain, address: String, apr: Double): List<DelegationBase> = withContext(Dispatchers.IO) {
         val getDelegations = async { rpcClient.delegations(address).getOrNull()?.delegation_responses }
         val getUnboundingDelegations = async { rpcClient.undelegations(address).getOrNull()?.unbonding_responses }
         val getRewards = async {
@@ -45,7 +49,7 @@ class CosmosStakeClient(
                         .mapNotNull {
                             try {
                                 BigInteger(it.amount.split(".")[0])
-                            } catch (err: Throwable) {
+                            } catch (_: Throwable) {
                                 BigInteger.ZERO
                             }
                         }
@@ -76,7 +80,7 @@ class CosmosStakeClient(
                     assetId = AssetId(chain),
                     state = DelegationState.Pending,
                     balance = entry.balance,
-                    completionDate = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX").parse(entry.completion_time)?.time, //2024-02-28T08:12:56.376120563Z
+                    completionDate = completionDateFormatter.parse(entry.completion_time)?.time, //2024-02-28T08:12:56.376120563Z
                     delegationId = entry.creation_height,
                     validatorId = undelegation.validator_address,
                     rewards = rewards[undelegation.validator_address] ?: "0",
@@ -88,5 +92,5 @@ class CosmosStakeClient(
         (baseDelegations + baseUndelegations)
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

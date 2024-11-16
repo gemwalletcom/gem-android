@@ -9,7 +9,8 @@ class BitcoinTransactionStatusClient(
     private val chain: Chain,
     private val rpcClient: BitcoinRpcClient
 ) : TransactionStatusClient {
-    override suspend fun getStatus(owner: String, txId: String): Result<TransactionChages> {
+
+    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
         return rpcClient.transaction(txId).mapCatching {
             TransactionChages(
                 if (it.blockHeight > 0) TransactionState.Confirmed else TransactionState.Pending
@@ -17,5 +18,5 @@ class BitcoinTransactionStatusClient(
         }
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

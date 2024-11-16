@@ -53,7 +53,7 @@ class CosmosSignerPreloader(
         }
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
     data class Info(
         val chainId: String,

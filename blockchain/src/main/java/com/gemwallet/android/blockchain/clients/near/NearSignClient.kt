@@ -39,7 +39,7 @@ class NearSignClient(
         return Base64.encode(output.signedTransaction.toByteArray()).toByteArray()
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }
 
 private fun BigInteger.littleIndian(): ByteArray? {

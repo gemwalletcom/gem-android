@@ -11,7 +11,7 @@ class TronNodeStatusClient(
     private val chain: Chain,
     private val rpcClient: TronRpcClient,
 ) : NodeStatusClient {
-    override suspend fun getNodeStatus(url: String): NodeStatus? = withContext(Dispatchers.IO) {
+    override suspend fun getNodeStatus(chain: Chain, url: String): NodeStatus? = withContext(Dispatchers.IO) {
         val resp = rpcClient.nowBlock("$url/wallet/getnowblock")
         NodeStatus(
             url = url,
@@ -22,5 +22,5 @@ class TronNodeStatusClient(
         )
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

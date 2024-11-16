@@ -5,7 +5,7 @@ import android.webkit.URLUtil
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.blockchain.clients.NodeStatusClientsProxy
+import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
 import com.gemwallet.android.cases.nodes.AddNodeCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
 import com.gemwallet.android.features.settings.networks.models.AddNodeUIModel
@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddNodeViewModel @Inject constructor(
-    private val nodeStatusClients: NodeStatusClientsProxy,
+    private val nodeStatusClient: NodeStatusClientProxy,
     private val addNodeCase: AddNodeCase,
     private val setCurrentNodeCase: SetCurrentNodeCase,
 ) : ViewModel() {
@@ -42,7 +42,7 @@ class AddNodeViewModel @Inject constructor(
         viewModelScope.launch {
             state.update { it.copy(checking = true, nodeState = null) }
             val chain = state.value.chain ?: return@launch
-            val status = nodeStatusClients(chain, url)
+            val status = nodeStatusClient.getNodeStatus(chain, url)
             state.update { it.copy(nodeState = status, checking = false) }
         }
     }

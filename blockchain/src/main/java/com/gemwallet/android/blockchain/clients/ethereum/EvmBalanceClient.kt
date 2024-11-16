@@ -12,16 +12,16 @@ class EvmBalanceClient(
     private val rpcClient: EvmRpcClient,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(address: String): AssetBalance? {
+    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
         val available = rpcClient.getBalance(address)
             .fold({ AssetBalance.create(chain.asset(), available = it.result?.value?.toString() ?: return null) }) { null }
         return when (chain) {
-            Chain.SmartChain -> SmartchainStakeClient(rpcClient).getBalance(address, availableBalance = available)
+            Chain.SmartChain -> SmartchainStakeClient(chain, rpcClient).getBalance(address, availableBalance = available)
             else -> available
         }
     }
 
-    override suspend fun getTokenBalances(address: String, tokens: List<Asset>): List<AssetBalance> {
+    override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> {
         if (tokens.isEmpty()) {
             return emptyList()
         }
@@ -40,5 +40,5 @@ class EvmBalanceClient(
         return result
     }
 
-    override fun maintainChain(): Chain = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }

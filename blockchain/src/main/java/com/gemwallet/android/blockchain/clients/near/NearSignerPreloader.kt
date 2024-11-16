@@ -77,7 +77,7 @@ class NearSignerPreloader(
         )
     }
 
-    override fun maintainChain(): Chain  = chain
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 
     data class Info(
         val block: String,

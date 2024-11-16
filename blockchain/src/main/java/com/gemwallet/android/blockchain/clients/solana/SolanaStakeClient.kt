@@ -13,9 +13,10 @@ import kotlinx.coroutines.withContext
 import java.math.BigInteger
 
 class SolanaStakeClient(
+    private val chain: Chain,
     private val rpcClient: SolanaRpcClient
 ): StakeClient {
-    override suspend fun getValidators(apr: Double): List<DelegationValidator> {
+    override suspend fun getValidators(chain: Chain, apr: Double): List<DelegationValidator> {
         return rpcClient.validators(
             JSONRpcRequest.create(
                 SolanaMethod.GetValidators,
@@ -29,7 +30,7 @@ class SolanaStakeClient(
         ).getOrNull()?.result?.current?.map {
             val isActive = it.epochVoteAccount
             DelegationValidator(
-                chain = maintainChain(),
+                chain = chain,
                 id = it.votePubkey,
                 name = "",
                 isActive = isActive,
@@ -39,7 +40,7 @@ class SolanaStakeClient(
         } ?: emptyList()
     }
 
-    override suspend fun getStakeDelegations(address: String, apr: Double): List<DelegationBase> = withContext(Dispatchers.IO) {
+    override suspend fun getStakeDelegations(chain: Chain, address: String, apr: Double): List<DelegationBase> = withContext(Dispatchers.IO) {
         val getEpoch = async {
             rpcClient.epoch(JSONRpcRequest.create(SolanaMethod.GetEpoch, emptyList()))
                 .getOrNull()?.result
@@ -53,12 +54,12 @@ class SolanaStakeClient(
             val info = delegation.account.data.parsed.info
             val deactivateEpoch = try {
                 info.stake.delegation.deactivationEpoch.toInt()
-            } catch (err: Throwable) {
+            } catch (_: Throwable) {
                 null
             }
             val activationEpoch = try {
                 info.stake.delegation.activationEpoch.toInt()
-            } catch (err: Throwable) {
+            } catch (_: Throwable) {
                 null
             }
             val state = fun(): DelegationState {
@@ -79,7 +80,7 @@ class SolanaStakeClient(
             }()
             val balance = delegation.account.lamports.toString()
             DelegationBase(
-                assetId = maintainChain().asset().id,
+                assetId = chain.asset().id,
                 state = state,
                 balance = balance,
                 rewards = (BigInteger(balance) - BigInteger(info.stake.delegation.stake)).toString(),
@@ -91,5 +92,5 @@ class SolanaStakeClient(
         }
     }
 
-    override fun maintainChain(): Chain = Chain.Solana
+    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
 }
