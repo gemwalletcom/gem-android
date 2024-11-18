@@ -158,15 +158,6 @@ class AssetsViewModel @Inject constructor(
 
     fun togglePin(assetId: AssetId) = viewModelScope.launch(Dispatchers.IO) {
         val session = sessionRepository.getSession() ?: return@launch
-        assetsRepository.togglePin(
-            session.wallet.id, assetId
-        )
-    }
-
-    fun saveOrder(pinnedAssets: List<AssetItemUIModel>) = viewModelScope.launch {
-        assetsRepository.saveOrder(
-            walletId = sessionRepository.getSession()?.wallet?.id ?: return@launch,
-            order = pinnedAssets.map { it.asset.id }
-        )
+        assetsRepository.togglePin(session.wallet.id, assetId)
     }
 }

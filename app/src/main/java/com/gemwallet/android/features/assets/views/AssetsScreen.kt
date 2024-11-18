@@ -44,7 +44,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -66,9 +65,6 @@ import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
-import sh.calvin.reorderable.ReorderableItem
-import sh.calvin.reorderable.ReorderableLazyListState
-import sh.calvin.reorderable.rememberReorderableLazyListState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,15 +86,6 @@ fun AssetsScreen(
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
     var pinnedAssets by remember(pinnedAssetsState.map { it.asset.id.toIdentifier() }.joinToString()) { mutableStateOf(pinnedAssetsState) }
-
-    val reorderableLazyListState = rememberReorderableLazyListState(listState) { from, to ->
-        pinnedAssets = pinnedAssets.toMutableList().apply {
-            val toIndex = indexOfFirst { it.asset.id.toIdentifier() == to.key }
-            val fromIndex = indexOfFirst { it.asset.id.toIdentifier() == from.key }
-            val item = removeAt(fromIndex)
-            add(toIndex, item)
-        }
-    }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -129,23 +116,17 @@ fun AssetsScreen(
                     assets = pinnedAssets,
                     longPressState = longPressedAsset,
                     isPinned = true,
-                    reorderableListState = reorderableLazyListState,
                     onAssetClick = onAssetClick,
                     onAssetHide = viewModel::hideAsset,
                     onTogglePin = viewModel::togglePin,
-                    onReordered = {
-                        viewModel.saveOrder(pinnedAssets)
-                    }
                 )
                 assets(
                     assets = unpinnedAssets,
                     longPressState = longPressedAsset,
                     isPinned = false,
-                    reorderableListState = null,
                     onAssetClick = onAssetClick,
                     onAssetHide = viewModel::hideAsset,
                     onTogglePin = viewModel::togglePin,
-                    onReordered = {},
                 )
                 assetsListFooter(onShowAssetManage)
             }
@@ -209,11 +190,9 @@ private fun LazyListScope.assets(
     assets: List<AssetItemUIModel>,
     longPressState: MutableState<AssetId?>,
     isPinned: Boolean = false,
-    reorderableListState: ReorderableLazyListState? = null,
     onAssetClick: (AssetId) -> Unit,
     onAssetHide: (AssetId) -> Unit,
     onTogglePin: (AssetId) -> Unit,
-    onReordered: () -> Unit,
 ) {
     if (assets.isEmpty()) return
 
@@ -222,34 +201,15 @@ private fun LazyListScope.assets(
     }
 
     items(items = assets, key = { it.asset.id.toIdentifier() }) { item ->
-        if (reorderableListState != null) {
-            ReorderableItem(
-                state = reorderableListState,
-                key = item.asset.id.toIdentifier(),
-                animateItemModifier = Modifier,
-            ) { isDragging ->
-                AssetItem(
-                    modifier = Modifier.shadow(if (isDragging) 4.dp else 0.dp),
-                    iconModifier = Modifier.draggableHandle(onDragStopped = onReordered),
-                    item = item,
-                    longPressState = longPressState,
-                    isPinned = isPinned,
-                    onAssetClick = onAssetClick,
-                    onAssetHide = onAssetHide,
-                    onTogglePin = onTogglePin,
-                )
-            }
-        } else {
-            AssetItem(
-                modifier = Modifier.testTag(item.asset.id.toIdentifier()),
-                item = item,
-                longPressState = longPressState,
-                isPinned = isPinned,
-                onAssetClick = onAssetClick,
-                onAssetHide = onAssetHide,
-                onTogglePin = onTogglePin,
-            )
-        }
+        AssetItem(
+            modifier = Modifier.testTag(item.asset.id.toIdentifier()),
+            item = item,
+            longPressState = longPressState,
+            isPinned = isPinned,
+            onAssetClick = onAssetClick,
+            onAssetHide = onAssetHide,
+            onTogglePin = onTogglePin,
+        )
     }
     if (isPinned) {
         item { Spacer(modifier = Modifier.height(32.dp)) }

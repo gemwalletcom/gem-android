@@ -376,17 +376,6 @@ class AssetsRepository @Inject constructor(
         getAssetsInfo(tokens.toList()).firstOrNull()?.updateBalances()?.awaitAll()
     }
 
-    suspend fun saveOrder(walletId: String, order: List<AssetId>) {
-        val records = order.mapIndexed { index, assetId ->
-            val assetConfig = assetsDao.getConfig(walletId, assetId.toIdentifier()) ?: DbAssetConfig(
-                assetId = assetId.toIdentifier(),
-                walletId = walletId,
-            )
-            assetConfig.copy(listPosition = index)
-        }
-        assetsDao.setConfig(records)
-    }
-
     suspend fun add(walletId: String, address: String, asset: Asset, visible: Boolean) = withContext(Dispatchers.IO) {
         assetsDao.insert(modelToRoom(address, asset))
 
