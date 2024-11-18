@@ -6,10 +6,7 @@ import com.gemwallet.android.cases.transactions.PutTransactionsCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
-import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAssociatedAssetIds
-import com.gemwallet.android.ext.getSwapMetadata
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Transaction
 import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.Dispatchers

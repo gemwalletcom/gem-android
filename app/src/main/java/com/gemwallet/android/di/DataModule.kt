@@ -2,9 +2,7 @@ package com.gemwallet.android.di
 
 import com.gemwallet.android.blockchain.RpcClientAdapter
 import com.gemwallet.android.blockchain.clients.BroadcastClientProxy
-import com.gemwallet.android.blockchain.clients.NodeStatusClient
 import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
-import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.clients.SignerPreload
 import com.gemwallet.android.blockchain.clients.SignerPreloaderProxy

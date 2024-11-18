@@ -42,8 +42,6 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.titles.getTitle
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
-import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType
 
 @Composable
