@@ -305,8 +305,8 @@
   <string name="settings.balance_privacy">Balance Privacy</string>
   <string name="common.popular">Popüler</string>
   <string name="errors.dust_threshold">The transaction failed because the amount is too small to meet the %s network’s minimum requirement (dust threshold). This limit ensures the transaction value covers the fees and processing costs. Increase the amount or reduce the fees to proceed.</string>
-  <string name="rootcheck.security_alert">Security Alert</string>
-  <string name="rootcheck.body">Your device appears to be rooted. This may compromise the security of the app.</string>
+  <string name="rootcheck.security_alert">Güvenlik Uyarısı</string>
+  <string name="rootcheck.body">Cihazınızın kök erişimi var gibi görünüyor, bu da güvenlik risklerini önemli ölçüde artırabilir. Bu uygulamayı köklü bir cihazda kullanmak varlıklarınızı yetkisiz erişime ve olası kayba maruz bırakabilir. Fonlarınızın güvenliği için köklü olmayan bir cihaz kullanmanızı şiddetle öneririz.</string>
   <string name="rootcheck.ignore">Ignore</string>
   <string name="rootcheck.exit">Exit</string>
   <string name="errors.swap.no_quote_available">No quote available.</string>

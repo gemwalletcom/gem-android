@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.widget.Toast
 import android.widget.Toast.makeText
 import androidx.activity.SystemBarStyle
-import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.biometric.BiometricManager
@@ -31,6 +30,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -41,7 +41,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -70,7 +69,7 @@ import javax.inject.Inject
 import kotlin.system.exitProcess
 
 @AndroidEntryPoint
-class MainActivity : FragmentActivity() {
+class MainActivity : SecureBaseFragmentActivity() {
     private val authenticators = if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
         BIOMETRIC_STRONG or DEVICE_CREDENTIAL
     } else {
@@ -85,88 +84,88 @@ class MainActivity : FragmentActivity() {
     private lateinit var promptInfo: BiometricPrompt.PromptInfo
     private var onSuccessAuth: (() -> Unit)? = null
 
-    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         prepareBiometricAuth()
+    }
 
-        setContent {
-            val state by viewModel.uiState.collectAsStateWithLifecycle()
-            val walletConnect by walletConnectViewModel.uiState.collectAsStateWithLifecycle()
-            val darkTheme = isSystemInDarkTheme()
-            enableEdgeToEdge(
-                statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { darkTheme },
-                navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { darkTheme },
-            )
-            if ((state.initialAuth == AuthState.Required || state.authState == AuthState.Required) && enabledSysAuth()) {
-                biometricPrompt.authenticate(promptInfo)
+    @OptIn(ExperimentalMaterial3Api::class)
+    @Composable
+    override fun MainContent() {
+        val state by viewModel.uiState.collectAsStateWithLifecycle()
+        val walletConnect by walletConnectViewModel.uiState.collectAsStateWithLifecycle()
+        val darkTheme = isSystemInDarkTheme()
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { darkTheme },
+            navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { darkTheme },
+        )
+        if ((state.initialAuth == AuthState.Required || state.authState == AuthState.Required) && enabledSysAuth()) {
+            biometricPrompt.authenticate(promptInfo)
+        } else {
+            if (state.authState == AuthState.Success) {
+                onSuccessAuth?.invoke()
+            }
+        }
+        WalletTheme {
+            if (state.initialAuth == AuthState.Success) {
+                WalletApp()
+                when (walletConnect) {
+                    is WalletConnectIntent.AuthRequest -> {}
+                    is WalletConnectIntent.ConnectionState -> {}
+                    WalletConnectIntent.None -> {}
+                    WalletConnectIntent.SessionDelete -> {}
+                    is WalletConnectIntent.SessionProposal -> ProposalScene(
+                        proposal = (walletConnect as WalletConnectIntent.SessionProposal).sessionProposal,
+                        onCancel = walletConnectViewModel::onCancel,
+                    )
+                    is WalletConnectIntent.SessionRequest -> RequestScene(
+                        request = (walletConnect as WalletConnectIntent.SessionRequest).request,
+                        onCancel = walletConnectViewModel::onCancel,
+                    )
+                }
             } else {
-                if (state.authState == AuthState.Success) {
-                    onSuccessAuth?.invoke()
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .background(MaterialTheme.colorScheme.surface)) {
+                    Image(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .align(Alignment.Center),
+                        painter = painterResource(id = R.drawable.ic_splash),
+                        contentDescription = "splash"
+                    )
                 }
             }
-            WalletTheme {
-                if (state.initialAuth == AuthState.Success) {
-                    WalletApp()
-                    when (walletConnect) {
-                        is WalletConnectIntent.AuthRequest -> {}
-                        is WalletConnectIntent.ConnectionState -> {}
-                        WalletConnectIntent.None -> {}
-                        WalletConnectIntent.SessionDelete -> {}
-                        is WalletConnectIntent.SessionProposal -> ProposalScene(
-                            proposal = (walletConnect as WalletConnectIntent.SessionProposal).sessionProposal,
-                            onCancel = walletConnectViewModel::onCancel,
-                        )
-                        is WalletConnectIntent.SessionRequest -> RequestScene(
-                            request = (walletConnect as WalletConnectIntent.SessionRequest).request,
-                            onCancel = walletConnectViewModel::onCancel,
-                        )
-                    }
-                } else {
-                    Box(modifier = Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.surface)) {
-                        Image(
-                            modifier = Modifier
-                                .size(100.dp)
-                                .align(Alignment.Center),
-                            painter = painterResource(id = R.drawable.ic_splash),
-                            contentDescription = "splash"
-                        )
-                    }
-                }
 
-                if (viewModel.resetWCPairing()) {
-                    makeText(LocalContext.current, stringResource(id = R.string.wallet_connect_connection_title), Toast.LENGTH_SHORT).show()
-                }
+            if (viewModel.resetWCPairing()) {
+                makeText(LocalContext.current, stringResource(id = R.string.wallet_connect_connection_title), Toast.LENGTH_SHORT).show()
+            }
 
-                if (!state.wcError.isNullOrEmpty()) {
-                    BasicAlertDialog(
-                        onDismissRequest = viewModel::resetWcError,
+            if (!state.wcError.isNullOrEmpty()) {
+                BasicAlertDialog(
+                    onDismissRequest = viewModel::resetWcError,
+                ) {
+                    Box(
+                        contentAlignment= Alignment.Center,
+                        modifier = Modifier.background(
+                            MaterialTheme.colorScheme.background,
+                            shape = RoundedCornerShape(8.dp)
+                        )
                     ) {
-                        Box(
-                            contentAlignment= Alignment.Center,
-                            modifier = Modifier.background(
-                                MaterialTheme.colorScheme.background,
-                                shape = RoundedCornerShape(8.dp)
-                            )
+                        Column(
+                            modifier = Modifier.padding(start = padding16, end = padding16, top = padding16),
+                            horizontalAlignment = Alignment.End
                         ) {
-                            Column(
-                                modifier = Modifier.padding(start = padding16, end = padding16, top = padding16),
-                                horizontalAlignment = Alignment.End
-                            ) {
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = state.wcError!!,
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.W400,
-                                    textAlign = TextAlign.Center,
-                                )
-                                Spacer16()
-                                TextButton(onClick = viewModel::resetWcError) {
-                                    Text(text = stringResource(id = R.string.common_cancel))
-                                }
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = state.wcError!!,
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.W400,
+                                textAlign = TextAlign.Center,
+                            )
+                            Spacer16()
+                            TextButton(onClick = viewModel::resetWcError) {
+                                Text(text = stringResource(id = R.string.common_cancel))
                             }
                         }
                     }

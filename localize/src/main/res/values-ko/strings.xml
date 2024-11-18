@@ -305,8 +305,8 @@
   <string name="settings.balance_privacy">Balance Privacy</string>
   <string name="common.popular">인기 있는</string>
   <string name="errors.dust_threshold">The transaction failed because the amount is too small to meet the %s network’s minimum requirement (dust threshold). This limit ensures the transaction value covers the fees and processing costs. Increase the amount or reduce the fees to proceed.</string>
-  <string name="rootcheck.security_alert">Security Alert</string>
-  <string name="rootcheck.body">Your device appears to be rooted. This may compromise the security of the app.</string>
+  <string name="rootcheck.security_alert">보안 경고</string>
+  <string name="rootcheck.body">귀하의 기기는 루트 액세스 권한이 있는 것으로 보이며, 이는 보안 위험을 상당히 증가시킬 수 있습니다. 루팅된 기기에서 이 앱을 사용하면 자산이 무단 액세스 및 잠재적 손실에 노출될 수 있습니다. 자금의 안전을 위해 루팅되지 않은 기기를 사용하는 것이 좋습니다.</string>
   <string name="rootcheck.ignore">Ignore</string>
   <string name="rootcheck.exit">Exit</string>
   <string name="errors.swap.no_quote_available">No quote available.</string>

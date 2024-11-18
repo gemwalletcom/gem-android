@@ -305,8 +305,8 @@
   <string name="settings.balance_privacy">Конфіденційність балансу</string>
   <string name="common.popular">Популярний</string>
   <string name="errors.dust_threshold">The transaction failed because the amount is too small to meet the %s network’s minimum requirement (dust threshold). This limit ensures the transaction value covers the fees and processing costs. Increase the amount or reduce the fees to proceed.</string>
-  <string name="rootcheck.security_alert">Security Alert</string>
-  <string name="rootcheck.body">Your device appears to be rooted. This may compromise the security of the app.</string>
+  <string name="rootcheck.security_alert">Попередження безпеки</string>
+  <string name="rootcheck.body">Схоже, ваш пристрій має кореневий доступ, що може значно збільшити ризики для безпеки. Використання цієї програми на пристрої з root-доступом може наражати ваші активи на несанкціонований доступ і потенційну втрату. Для безпеки ваших коштів ми наполегливо рекомендуємо використовувати пристрій без рутованих прав.</string>
   <string name="rootcheck.ignore">Ignore</string>
   <string name="rootcheck.exit">Exit</string>
   <string name="errors.swap.no_quote_available">No quote available.</string>
