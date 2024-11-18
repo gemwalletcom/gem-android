@@ -10,6 +10,7 @@ class AddAssetUIState(
     val networkIcon: String = "",
     val address: String = "",
     val asset: Asset? = null,
+    val isSelectChainAvailable: Boolean = true,
     val isLoading: Boolean = false,
     val error: AddAssetError = AddAssetError.None,
     val chains: List<Chain> = emptyList()

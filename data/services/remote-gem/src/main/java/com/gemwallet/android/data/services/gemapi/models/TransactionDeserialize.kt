@@ -1,8 +1,5 @@
 package com.gemwallet.android.data.services.gemapi.models
 
-import android.icu.text.DateFormat
-import android.icu.text.SimpleDateFormat
-import android.icu.util.TimeZone
 import com.gemwallet.android.ext.findByString
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
@@ -15,6 +12,8 @@ import com.wallet.core.primitives.TransactionInput
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
 import java.lang.reflect.Type
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 class TransactionDeserialize : JsonDeserializer<Transaction?> {
     override fun deserialize(
@@ -22,12 +21,10 @@ class TransactionDeserialize : JsonDeserializer<Transaction?> {
         typeOfT: Type,
         context: JsonDeserializationContext?
     ): Transaction? {
-        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
-        format.timeZone = TimeZone.getTimeZone("GMT")
-        return toTransaction(json, format)
+        return toTransaction(json)
     }
     companion object {
-        fun toTransaction(jsonElement: JsonElement, format: DateFormat): Transaction? {
+        fun toTransaction(jsonElement: JsonElement): Transaction? {
             val jObj = jsonElement.asJsonObject
             val assetIdJson = jObj["assetId"].asJsonObject
             val feeAssetIdJson = jObj["feeAssetId"].asJsonObject
@@ -90,8 +87,10 @@ class TransactionDeserialize : JsonDeserializer<Transaction?> {
                     )
                 } ?: emptyList(),
                 createdAt = try {
-                    format.parse(jObj["createdAt"].asString).time
-                } catch (err: Throwable) {
+                    ZonedDateTime.parse(jObj["createdAt"].asString, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                        .toInstant()
+                        .toEpochMilli()
+                } catch (_: Throwable) {
                     return null
                 },
             )

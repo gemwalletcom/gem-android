@@ -1,7 +1,5 @@
 package com.gemwallet.android.data.services.gemapi.models
 
-import android.icu.text.SimpleDateFormat
-import android.icu.util.TimeZone
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
@@ -14,12 +12,10 @@ class TransactionsSerializer : JsonDeserializer<Transactions> {
         typeOfT: Type?,
         context: JsonDeserializationContext?
     ): Transactions {
-        val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS")
-        format.timeZone = TimeZone.getTimeZone("GMT")
         val jArr = json.asJsonArray ?: throw JsonSyntaxException(json.toString())
         val result = Transactions()
         jArr.mapNotNull {
-            TransactionDeserialize.toTransaction(it, format)
+            TransactionDeserialize.toTransaction(it)
         }.forEach {
             result.add(it)
         }

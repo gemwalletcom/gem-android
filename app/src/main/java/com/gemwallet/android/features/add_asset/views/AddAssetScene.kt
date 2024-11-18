@@ -60,16 +60,10 @@ fun AddAssetScene(
         Table(
             items = listOf(
                 CellEntity(
-                    label = stringResource(id = R.string.transfer_network),
-                    data = uiState.networkTitle,
-                    trailing = {
-                        AsyncImage(
-                            modifier = Modifier.size(20.dp),
-                            model = uiState.networkIcon,
-                            contentDescription = "asset_icon"
-                        )
-                    },
-                    action = onChainSelect
+                    label = uiState.networkTitle,
+                    data = "",
+                    icon = uiState.networkIcon,
+                    action = if (uiState.isSelectChainAvailable) onChainSelect else null
                 )
             )
         )
