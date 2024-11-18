@@ -139,7 +139,11 @@ fun TransactionItem(
         body = {
             ListItemTitle(
                 title = type.getTransactionTitle(direction, state, assetSymbol = assetSymbol),
-                subtitle = { ListItemSupportText(type.getAddress(direction, from, to)) },
+                subtitle = type.getAddress(direction, from, to).let{
+                    if (it.isNotEmpty()) {
+                        { ListItemSupportText(it) }
+                    } else null
+                },
                 titleBadge = {
                     val badge = when (state) {
                         TransactionState.Pending -> stringResource(id = R.string.transaction_status_pending)
