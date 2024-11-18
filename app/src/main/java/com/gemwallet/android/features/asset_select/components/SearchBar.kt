@@ -40,7 +40,6 @@ fun SearchBar(
     modifier: Modifier = Modifier,
 ) {
     val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
 
     Row(modifier = modifier.fillMaxWidth().height(40.dp)) {
         Box(modifier = Modifier.fillMaxWidth()) {
@@ -79,7 +78,6 @@ fun SearchBar(
                     modifier = Modifier.align(Alignment.CenterEnd),
                     onClick = {
                         query.clearText()
-                        focusManager.clearFocus()
                     }
                 ) {
                     Icon(imageVector = Icons.Default.Close, contentDescription = "Clear")
