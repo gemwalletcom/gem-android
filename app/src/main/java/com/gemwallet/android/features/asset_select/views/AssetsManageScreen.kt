@@ -39,6 +39,7 @@ fun AssetsManageScreen(
         query = viewModel.queryState,
         assets = assets,
         state = uiStates,
+        isAddAvailable = isAddAssetAvailable,
         onCancel = onCancel,
         onAddAsset = if (isAddAssetAvailable) onAddAsset else null,
         onSelect = {},

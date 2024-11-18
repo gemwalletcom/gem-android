@@ -52,6 +52,7 @@ internal fun AssetSelectScene(
     titleBadge: (AssetItemUIModel) -> String?,
     support: ((AssetItemUIModel) -> (@Composable () -> Unit)?)?,
     query: TextFieldState,
+    isAddAvailable: Boolean = false,
     onSelect: ((AssetId) -> Unit)?,
     onCancel: () -> Unit,
     itemTrailing: (@Composable (AssetItemUIModel) -> Unit)? = null,
@@ -87,7 +88,7 @@ internal fun AssetSelectScene(
         ) {
             assets(assets, onSelect, support, titleBadge, itemTrailing)
             loading(state)
-            notFound(state = state, onAddAsset = onAddAsset)
+            notFound(state = state, onAddAsset = onAddAsset, isAddAvailable = isAddAvailable)
         }
     }
 }
@@ -118,6 +119,7 @@ private fun LazyListScope.assets(
 
 private fun LazyListScope.notFound(
     state: BaseAssetSelectViewModel.UIState,
+    isAddAvailable: Boolean = false,
     onAddAsset: (() -> Unit)? = null,
 ) {
     if (state !is BaseAssetSelectViewModel.UIState.Empty) {
@@ -132,8 +134,10 @@ private fun LazyListScope.notFound(
         ) {
             Column(modifier = Modifier.align(Alignment.Center)) {
                 Text(text = stringResource(id = R.string.assets_no_assets_found))
-                TextButton(onClick = { onAddAsset?.invoke() }) {
-                    Text(text = stringResource(id = R.string.assets_add_custom_token))
+                if (isAddAvailable) {
+                    TextButton(onClick = { onAddAsset?.invoke() }) {
+                        Text(text = stringResource(id = R.string.assets_add_custom_token))
+                    }
                 }
             }
         }

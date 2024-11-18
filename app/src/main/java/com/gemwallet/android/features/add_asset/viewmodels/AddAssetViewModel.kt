@@ -146,6 +146,7 @@ class AddAssetViewModel @Inject constructor(
         val asset: Asset? = null,
         val isLoading: Boolean = false,
         val isSelectChain: Boolean = false,
+        val isSelectChainAvailable: Boolean = true,
         val error: AddAssetError = AddAssetError.None,
     ) {
         fun toUIState(): AddAssetUIState {

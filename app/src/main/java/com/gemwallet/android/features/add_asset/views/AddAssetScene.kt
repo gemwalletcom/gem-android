@@ -63,7 +63,7 @@ fun AddAssetScene(
                     label = uiState.networkTitle,
                     data = "",
                     icon = uiState.networkIcon,
-                    action = if (uiState.isSelectChainAvailable) onChainSelect else null
+                    action = if (uiState.chains.size > 1) onChainSelect else null
                 )
             )
         )

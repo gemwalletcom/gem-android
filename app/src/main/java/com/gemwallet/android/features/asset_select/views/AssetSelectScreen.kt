@@ -26,6 +26,7 @@ fun AssetSelectScreen(
 ) {
     val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
     val assets by viewModel.assets.collectAsStateWithLifecycle()
+    val isAddAvailable by viewModel.isAddAssetAvailable.collectAsStateWithLifecycle()
 
     AssetSelectScene(
         title = title,
@@ -42,6 +43,7 @@ fun AssetSelectScreen(
         query = viewModel.queryState,
         assets = assets.filter { predicate(it.asset.id) }.toImmutableList(),
         state = uiStates,
+        isAddAvailable = isAddAvailable && onAddAsset != null,
         onSelect = onSelect,
         onCancel = onCancel,
         onAddAsset = onAddAsset,
