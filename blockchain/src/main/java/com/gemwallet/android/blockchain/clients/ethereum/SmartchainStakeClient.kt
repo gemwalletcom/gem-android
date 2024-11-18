@@ -45,8 +45,10 @@ class SmartchainStakeClient(
         val getUndelegationsCall = async { getUndelegations(address, limit) }
         val delegations = getDelegationCall.await()
         val undelegations = getUndelegationsCall.await()
-        val staked = delegations.sumBalances()
-        val pending = undelegations.sumBalances()
+        val staked = delegations.filter { it.state == DelegationState.Active }.sumBalances()
+        val pending = undelegations.filter {
+            it.state == DelegationState.Undelegating || it.state == DelegationState.AwaitingWithdrawal
+        }.sumBalances()
 
         AssetBalance.create(
             asset = Chain.SmartChain.asset(),
@@ -70,11 +72,9 @@ class SmartchainStakeClient(
         return stakeHub.decodeUnelegationsResult(data)
     }
 
-    private fun List<DelegationBase>.sumBalances(): BigInteger = filter { it.state == DelegationState.Active }
-        .map { try { it.balance.toBigInteger() } catch (_: Throwable) { BigInteger.ZERO} }
-        .fold(BigInteger.ZERO) {
-                acc, value -> acc + value
-        }
+    private fun List<DelegationBase>.sumBalances(): BigInteger =
+        map { it.balance.toBigIntegerOrNull() ?: BigInteger.ZERO }
+        .fold(BigInteger.ZERO) {acc, value -> acc + value }
 
     private suspend fun getMaxElectedValidators(): Int {
         val result = evmRpcClient.callString(StakeHub.address, stakeHub.encodeMaxElectedValidators())
