@@ -213,13 +213,7 @@ private fun ImportScene(
                     return@ImportInput
                 }
                 val result = WCFindPhraseWord().invoke(word.toString())
-                if (result.size == 1 && !autoComplete.contains(word)) {
-                    autoComplete = result.first()
-                    val processed = setSuggestion(inputState, result.first())
-                    inputState = processed
-                } else {
-                    suggestions.addAll(result)
-                }
+                suggestions.addAll(result)
             }
         ) {
             nameRecordState = it
