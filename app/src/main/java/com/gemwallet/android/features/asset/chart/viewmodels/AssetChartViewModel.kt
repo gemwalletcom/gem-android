@@ -43,22 +43,26 @@ class AssetChartViewModel @Inject constructor(
             assetTitle = asset.name,
             assetLinks = assetInfo.links?.toModel() ?: emptyList(),
             currency = assetInfo.price?.currency ?: Currency.USD,
-            marketCells = listOfNotNull(
-                CellEntity(
-                    label = R.string.asset_market_cap,
-                    data = currency.format(assetInfo.market?.marketCap ?: 0.0,0),
-                ),
-                CellEntity(
-                    label = R.string.asset_circulating_supply,
-                    data = Crypto(BigInteger.valueOf(assetInfo.market?.circulatingSupply?.toLong() ?: 0L))
-                        .format(0, asset.symbol, 0),
-                ),
-                CellEntity(
-                    label = R.string.asset_total_supply,
-                    data = Crypto(BigInteger.valueOf(assetInfo.market?.totalSupply?.toLong() ?: 0L))
-                        .format(0, asset.symbol, 0),
-                ),
-            )
+            marketCells = mapOf(
+                R.string.asset_market_cap to (assetInfo.market?.marketCap ?: 0.0),
+                R.string.asset_circulating_supply to (assetInfo.market?.circulatingSupply ?: 0.0),
+                R.string.asset_total_supply to (assetInfo.market?.totalSupply ?: 0.0)
+            ).filterValues { it > 0.0 }
+                .map { (label, value) ->
+                    CellEntity(
+                        label = label,
+                        data = when (label) {
+                            R.string.asset_market_cap -> currency.format(value, 0)
+                            R.string.asset_circulating_supply -> Crypto(BigInteger.valueOf(value.toLong()))
+                                .format(0, asset.symbol, 0)
+
+                            R.string.asset_total_supply -> Crypto(BigInteger.valueOf(value.toLong()))
+                                .format(0, asset.symbol, 0)
+
+                            else -> ""
+                        }
+                    )
+                }
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -67,11 +71,14 @@ class AssetChartViewModel @Inject constructor(
             "coingecko", coingecko!!, R.string.social_coingecko
         ),
         if (twitter.isNullOrEmpty()) null else AssetMarketUIModel.Link(
-            "twitter", twitter!!, R.string.social_x),
+            "twitter", twitter!!, R.string.social_x
+        ),
         if (telegram.isNullOrEmpty()) null else AssetMarketUIModel.Link(
-            "telegram", telegram!!, R.string.social_telegram),
+            "telegram", telegram!!, R.string.social_telegram
+        ),
         if (github.isNullOrEmpty()) null else AssetMarketUIModel.Link(
-            "github", github!!, R.string.social_github),
+            "github", github!!, R.string.social_github
+        ),
     )
 }
 
