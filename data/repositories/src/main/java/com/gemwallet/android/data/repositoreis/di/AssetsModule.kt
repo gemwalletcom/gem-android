@@ -12,6 +12,7 @@ import com.gemwallet.android.blockchain.clients.ton.TonBalanceClient
 import com.gemwallet.android.blockchain.clients.tron.TronBalanceClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpBalanceClient
 import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.swap.GetSwapSupportChainsCase
 import com.gemwallet.android.cases.tokens.GetTokensCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
@@ -48,6 +49,7 @@ object AssetsModule {
         getTokensCase: GetTokensCase,
         searchTokensCase: SearchTokensCase,
         getDeviceIdCase: GetDeviceIdCase,
+        getSwapSupportChainsCase: GetSwapSupportChainsCase,
     ): AssetsRepository = AssetsRepository(
         gemApi = gemApiClient,
         assetsDao = assetsDao,
@@ -59,6 +61,7 @@ object AssetsModule {
         getTokensCase = getTokensCase,
         searchTokensCase = searchTokensCase,
         getDeviceIdCase = getDeviceIdCase,
+        getSwapSupportChainsCase = getSwapSupportChainsCase,
     )
 
     @Provides

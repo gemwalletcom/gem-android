@@ -18,7 +18,6 @@ fun AssetSelectScreen(
     titleBadge: (AssetItemUIModel) -> String?,
     onCancel: () -> Unit,
     onSelect: ((AssetId) -> Unit)? = null,
-    predicate: (AssetId) -> Boolean = { true },
     itemTrailing: (@Composable (AssetItemUIModel) -> Unit)? = null,
     itemSupport: ((AssetItemUIModel) -> (@Composable () -> Unit)?)? = null,
     onAddAsset: (() -> Unit)? = null,
@@ -41,7 +40,7 @@ fun AssetSelectScreen(
             itemSupport
         },
         query = viewModel.queryState,
-        assets = assets.filter { predicate(it.asset.id) }.toImmutableList(),
+        assets = assets,
         state = uiStates,
         isAddAvailable = isAddAvailable && onAddAsset != null,
         onSelect = onSelect,

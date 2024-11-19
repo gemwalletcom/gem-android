@@ -119,7 +119,7 @@ internal fun SwapItem(
             Row(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.medium)
-//                    .clickable { onAssetSelect(type) }
+                    .clickable { onAssetSelect(type) }
                     .padding(padding4),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,

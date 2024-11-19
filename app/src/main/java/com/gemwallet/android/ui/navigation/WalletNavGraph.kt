@@ -115,7 +115,7 @@ fun WalletNavGraph(
             assetsScreen(
                 onShowWallets = navController::navigateToWalletsScreen,
                 onShowAssetManage = navController::navigateToAssetsManageScreen,
-                onSendClick = navController::navigateToRecipientInput,//navController::navigateToSendScreen,
+                onSendClick = navController::navigateToRecipientInput,
                 onReceiveClick = navController::navigateToReceiveScreen,
                 onBuyClick = navController::navigateToBuyScreen,
                 onSwapClick = navController::navigateToSwap,
@@ -124,7 +124,7 @@ fun WalletNavGraph(
 
             assetScreen(
                 onCancel = onCancel,
-                onTransfer = navController::navigateToRecipientInput,//navController::navigateToSendScreen,
+                onTransfer = navController::navigateToRecipientInput,
                 onReceive = navController::navigateToReceiveScreen,
                 onBuy = navController::navigateToBuyScreen,
                 onSwap = navController::navigateToSwap,
@@ -142,12 +142,12 @@ fun WalletNavGraph(
                 onCancel = onCancel,
             )
 
-            swap(
-                onConfirm = navController::navigateToConfirmScreen,
-                onCancel = onCancel
-            )
-
             navigation<Transfer>(startDestination = SendSelect) {
+                swap(
+                    onConfirm = navController::navigateToConfirmScreen,
+                    onCancel = onCancel
+                )
+
                 recipientInput(
                     cancelAction = onCancel,
                     recipientAction = navController::navigateToRecipientInput,
@@ -163,6 +163,7 @@ fun WalletNavGraph(
 
                 confirm(
                     finishAction = { assetId, hash ->
+                        navController.popBackStack()
                         navController.navigateToAssetScreen(
                             assetId,
                             navOptions {

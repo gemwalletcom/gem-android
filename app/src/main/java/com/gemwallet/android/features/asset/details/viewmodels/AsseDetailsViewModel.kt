@@ -29,7 +29,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Currency
-import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionExtended
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -46,7 +45,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.collections.map
 
 @HiltViewModel
 class AsseDetailsViewModel @Inject constructor(
@@ -150,8 +148,7 @@ class AsseDetailsViewModel @Inject constructor(
                 networkTitle = "${asset.id.chain.asset().name} (${asset.type.string})",
                 networkIcon = AssetId(asset.id.chain).getIconUrl(),
                 isBuyEnabled = assetInfo.metadata?.isBuyEnabled == true,
-                isSwapEnabled = EVMChain.entries.map { it.string }.contains(asset.id.chain.string),
-                // TODO: Return later: (assetInfo.metadata?.isSwapEnabled ?: false) || asset.id.isSwapable(),
+                isSwapEnabled = assetInfo.metadata?.isSwapEnabled == true,
                 priceAlertEnabled = priceAlertEnabled,
                 transactions = transactions,
                 updated = updated,

@@ -86,4 +86,10 @@ interface AssetsDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun setConfig(config: List<DbAssetConfig>)
+
+    @Query("UPDATE assets SET is_swap_enabled=1 WHERE chain IN (:chains)")
+    suspend fun setSwapable(chains: List<Chain>)
+
+    @Query("UPDATE assets SET is_swap_enabled=0")
+    suspend fun resetSwapable()
 }

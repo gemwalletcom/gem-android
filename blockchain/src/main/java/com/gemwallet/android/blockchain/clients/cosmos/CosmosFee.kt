@@ -40,14 +40,13 @@ class  CosmosFee(
             else -> throw IllegalArgumentException()
         }
         val limit = when (txType) {
-            TransactionType.Transfer -> BigInteger.valueOf(200_000L)
+            TransactionType.Transfer, TransactionType.Swap -> BigInteger.valueOf(200_000L)
             TransactionType.StakeDelegate,
             TransactionType.StakeUndelegate -> BigInteger.valueOf(1_000_000)
             TransactionType.StakeRewards -> BigInteger.valueOf(900_000)
             TransactionType.StakeRedelegate -> BigInteger.valueOf(1_250_000)
-            TransactionType.Swap,
             TransactionType.StakeWithdraw,
-            TransactionType.TokenApproval -> throw IllegalArgumentException()
+            TransactionType.TokenApproval -> throw IllegalArgumentException("Chain not available: no limit fee")
         }
         return GasFee(
             feeAssetId = assetId,

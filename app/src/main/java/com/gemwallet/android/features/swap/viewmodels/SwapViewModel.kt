@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.swap.viewmodels
 
+import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.snapshotFlow
@@ -54,6 +55,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.ApprovalType
+import uniffi.gemstone.swapProviderNameToString
 import java.math.BigDecimal
 import java.math.BigInteger
 import javax.inject.Inject
@@ -96,7 +98,7 @@ class SwapViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val assetsState = swapPairState.flatMapLatest { ids ->
-        if (ids?.fromId == null || ids.toId == null || ids.fromId.chain != ids.toId.chain || ids.fromId.toIdentifier() == ids.toId.toIdentifier()) {
+        if (ids?.fromId == null || ids.toId == null || ids.fromId.toIdentifier() == ids.toId.toIdentifier()) {
             return@flatMapLatest emptyFlow()
         }
         assetsRepository.getAssetsInfo(listOf(ids.fromId, ids.toId))
@@ -168,12 +170,18 @@ class SwapViewModel @Inject constructor(
         }
         swapScreenState.update { SwapState.GetQuote }
         delay(500L) // User input type - doesn't want spam nodes
-        val quote = swapRepository.getQuote(
-            from = fromAsset.asset.id,
-            to = toAsset.asset.id,
-            ownerAddress = fromAsset.owner.address,
-            amount = Crypto(fromValue, fromAsset.asset.decimals).atomicValue.toString(),
-        )
+        val quote = try {
+            swapRepository.getQuote(
+                from = fromAsset.asset.id,
+                to = toAsset.asset.id,
+                ownerAddress = fromAsset.owner.address,
+                destination = toAsset.owner.address,
+                amount = Crypto(fromValue, fromAsset.asset.decimals).atomicValue.toString(),
+            )
+        } catch (err: Throwable) {
+            Log.d("SWAP-ERROR", "Error", err)
+            null
+        }
         val amount = toAsset.asset.format(Crypto(quote?.toValue ?: "0"), 8, showSymbol = false)
         withContext(Dispatchers.Main) { toValue.edit { replace(0, length, amount) } }
         val requestApprove = quote?.approval is ApprovalType.Approve
@@ -222,7 +230,7 @@ class SwapViewModel @Inject constructor(
         } else {
             select
         }
-        val update = if (current.sameChain()) {
+        val update = if (current.sameChain()) { // TODO: Change it validation
             savedStateHandle[pairArg] = "${current.fromId?.toIdentifier()}|${current.toId?.toIdentifier()}"
             null
         } else {
@@ -274,7 +282,7 @@ class SwapViewModel @Inject constructor(
                     ConfirmParams.TokenApprovalParams(
                         assetId = if (from.asset.id.type() == AssetSubtype.TOKEN) from.asset.id else to.asset.id,
                         data = encodeApprove(approvalData.v1.spender).bytesToHex(),
-                        provider = quote.provider.name,
+                        provider = swapProviderNameToString(quote.data.provider),
                         contract = approvalData.v1.token,
                     )
                 )
@@ -289,9 +297,9 @@ class SwapViewModel @Inject constructor(
                         fromAmount = Crypto(fromAmount, from.asset.decimals).atomicValue,
                         toAmount = BigInteger(quote.toValue),
                         swapData = swapData.data,
-                        provider = quote.provider.name,
+                        provider = swapProviderNameToString(quote.data.provider),
                         to = swapData.to,
-                        value = (swapData.value.hexToBigInteger() ?: BigInteger.ZERO).toString(),
+                        value = swapData.value,
                     )
                 )
             }

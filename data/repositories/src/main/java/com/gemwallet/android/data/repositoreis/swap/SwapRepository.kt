@@ -3,14 +3,13 @@ package com.gemwallet.android.data.repositoreis.swap
 import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
-import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Wallet
 import uniffi.gemstone.ApprovalType
+import uniffi.gemstone.Config
 import uniffi.gemstone.FetchQuoteData
-import uniffi.gemstone.GemSwapFee
 import uniffi.gemstone.GemSwapMode
 import uniffi.gemstone.GemSwapOptions
 import uniffi.gemstone.GemSwapper
@@ -19,27 +18,27 @@ import uniffi.gemstone.Permit2Detail
 import uniffi.gemstone.PermitSingle
 import uniffi.gemstone.SwapQuote
 import uniffi.gemstone.SwapQuoteData
+import uniffi.gemstone.SwapQuoteRequest
 import uniffi.gemstone.permit2DataToEip712Json
 
 class SwapRepository(
+    private val gemSwapper: GemSwapper,
     private val signClient: SignClientProxy,
     private val passwordStore: PasswordStore,
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
-    getCurrentNodeCase: GetCurrentNodeCase,
 ) {
-    private val gemSwapper = GemSwapper(NativeProvider(getCurrentNodeCase))
 
-    suspend fun getQuote(ownerAddress: String, from: AssetId, to: AssetId, amount: String): SwapQuote? {
-        val swapRequest = uniffi.gemstone.SwapQuoteRequest(
+    suspend fun getQuote(ownerAddress: String, destination: String, from: AssetId, to: AssetId, amount: String): SwapQuote? {
+        val swapRequest = SwapQuoteRequest(
             fromAsset = from.toIdentifier(),
             toAsset = to.toIdentifier(),
             walletAddress = ownerAddress,
-            destinationAddress = ownerAddress,
+            destinationAddress = destination,
             value = amount,
             mode = GemSwapMode.EXACT_IN,
             options = GemSwapOptions(
                 slippageBps = 100u,
-                fee = GemSwapFee(bps = 50u, address = "0x0D9DAB1A248f63B0a48965bA8435e4de7497a3dC"),
+                fee = Config().getSwapConfig().referralFee,
                 preferredProviders = emptyList()
             )
         )
