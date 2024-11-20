@@ -36,6 +36,7 @@ import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.CellEntity
+import com.gemwallet.android.ui.components.SheetEntity
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
 import com.google.gson.Gson
@@ -60,8 +61,6 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import uniffi.gemstone.Config
-import uniffi.gemstone.DocsUrl
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -190,17 +189,26 @@ class ConfirmViewModel @Inject constructor(
         ).mapNotNull { it }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
+    val showInfoSheet = MutableStateFlow<SheetEntity?>(null)
+
     val feeUIModel = combine(signerParams, feeAssetInfo, state, txSpeed) { signerParams, feeAssetInfo, state, speed ->
         val amount = signerParams?.info?.fee(speed)?.amount
         val result = if (amount == null || feeAssetInfo == null) {
             CellEntity(
                 label = R.string.transfer_network_fee,
                 data = if ((state as? ConfirmState.Error)?.message == ConfirmError.CalculateFee) "-" else "",
-                infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
                 trailing = {
                     if (state !is ConfirmState.Error) {
                         CircularProgressIndicator16()
                     }
+                },
+                onInfo = {
+                    showInfoSheet.value = SheetEntity.NetworkFeeInfo(
+                        networkTitle = feeAssetInfo?.asset?.name,
+                        onClose = {
+                            showInfoSheet.value = null
+                        }
+                    )
                 }
             )
         } else {
@@ -229,9 +237,16 @@ class ConfirmViewModel @Inject constructor(
 
             CellEntity(
                 label = R.string.transfer_network_fee,
-                infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
                 data = feeCrypto,
                 support = feeFiat,
+                onInfo = {
+                    showInfoSheet.value = SheetEntity.NetworkFeeInfo(
+                        networkTitle = feeAssetInfo.asset.name,
+                        onClose = {
+                            showInfoSheet.value = null
+                        }
+                    )
+                }
             )
         }
 

@@ -14,6 +14,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +31,7 @@ import com.gemwallet.android.features.confirm.models.ConfirmState
 import com.gemwallet.android.features.confirm.viewmodels.ConfirmViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.components.AmountListHead
+import com.gemwallet.android.ui.components.InfoBottomSheet
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
@@ -57,6 +59,7 @@ fun ConfirmScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val txSpeed by viewModel.txSpeed.collectAsStateWithLifecycle()
     val allFee by viewModel.allFee.collectAsStateWithLifecycle()
+    val showInfoSheet by viewModel.showInfoSheet.collectAsState()
 
     var showSelectTxSpeed by remember { mutableStateOf(false) }
 
@@ -119,6 +122,7 @@ fun ConfirmScreen(
                 }
             ) { showSelectTxSpeed = false }
         }
+        InfoBottomSheet(showInfoSheet)
     }
 }
 

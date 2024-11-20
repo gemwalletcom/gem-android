@@ -30,6 +30,10 @@ import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -208,6 +212,7 @@ fun AssetHeadActions(
 @Composable
 private fun AssetWatchOnly() {
     val uriHandler = LocalUriHandler.current
+    var showInfoSheet by remember { mutableStateOf<SheetEntity?>(null) }
     Button(
         onClick = {},
         enabled = false,
@@ -234,7 +239,11 @@ private fun AssetWatchOnly() {
             IconButton(
                 modifier = Modifier.size(24.dp),
                 onClick = {
-                    uriHandler.open(Config().getDocsUrl(DocsUrl.WHAT_IS_WATCH_WALLET))
+                    showInfoSheet = SheetEntity.WatchWalletInfo(
+                        onClose = {
+                            showInfoSheet = null
+                        }
+                    )
                 }
             ) {
                 Icon(
@@ -245,6 +254,7 @@ private fun AssetWatchOnly() {
             }
         }
     }
+    InfoBottomSheet(item = showInfoSheet)
 }
 
 @Composable
