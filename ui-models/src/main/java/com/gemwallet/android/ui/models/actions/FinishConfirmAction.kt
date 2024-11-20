@@ -4,5 +4,5 @@ import com.wallet.core.primitives.AssetId
 
 
 fun interface FinishConfirmAction {
-    operator fun invoke(assetId: AssetId, hash: String)
+    operator fun invoke(assetId: AssetId, hash: String, route: String)
 }

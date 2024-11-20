@@ -19,11 +19,14 @@ import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.urlDecode
+import com.gemwallet.android.features.asset.navigation.assetRoute
 import com.gemwallet.android.features.confirm.models.AmountUIModel
 import com.gemwallet.android.features.confirm.models.ConfirmError
 import com.gemwallet.android.features.confirm.models.ConfirmState
 import com.gemwallet.android.features.confirm.navigation.paramsArg
 import com.gemwallet.android.features.confirm.navigation.txTypeArg
+import com.gemwallet.android.features.stake.navigation.stakeRoute
+import com.gemwallet.android.features.swap.navigation.swapRoute
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
@@ -204,7 +207,7 @@ class ConfirmViewModel @Inject constructor(
             val feeAmount = Crypto(amount)
             val currency = feeAssetInfo.price?.currency ?: Currency.USD
             val feeDecimals = feeAssetInfo.asset.decimals
-            val feeCrypto = feeAssetInfo.asset.format(feeAmount, 6, dynamicPlace = true)
+            val feeCrypto = feeAssetInfo.asset.format(feeAmount, 8, dynamicPlace = true)
             val feeFiat = feeAssetInfo.price?.let {
                 currency.format(feeAmount.convert(feeDecimals, it.price.price).atomicValue, dynamicPlace = true) // TODO: Move to UI - Model
             } ?: ""
@@ -303,7 +306,17 @@ class ConfirmViewModel @Inject constructor(
                 },
             )
             state.update { ConfirmState.Result(txHash = txHash) }
-            viewModelScope.launch(Dispatchers.Main) { finishAction(assetId = assetInfo.id(), hash = txHash) }
+            val finishRoute = when (signerParams.input) {
+                is ConfirmParams.DelegateParams,
+                is ConfirmParams.RedeleateParams,
+                is ConfirmParams.RewardsParams,
+                is ConfirmParams.UndelegateParams,
+                is ConfirmParams.WithdrawParams -> stakeRoute
+                is ConfirmParams.SwapParams,
+                is ConfirmParams.TokenApprovalParams -> swapRoute
+                is ConfirmParams.TransferParams -> assetRoute
+            }
+            viewModelScope.launch(Dispatchers.Main) { finishAction(assetId = assetInfo.id(), hash = txHash, route = finishRoute) }
         }.onFailure { err ->
             state.update { ConfirmState.Error(ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
         }

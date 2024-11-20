@@ -12,9 +12,7 @@ class CosmosTransactionStatusClient(
     override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
         return rpcClient.transaction(txId).mapCatching {
             TransactionChages(
-                if (it.tx_response == null) {
-                    TransactionState.Reverted
-                } else if (it.tx_response.txhash.isEmpty()) {
+                if (it.tx_response == null || it.tx_response.txhash.isEmpty()) {
                     TransactionState.Pending
                 } else if (it.tx_response.code == 0) {
                     TransactionState.Confirmed

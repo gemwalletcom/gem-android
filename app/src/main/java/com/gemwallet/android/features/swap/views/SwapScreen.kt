@@ -124,7 +124,7 @@ fun SwapScreen(
         LocalSoftwareKeyboardController.current?.hide()
         ConfirmScreen(
             approveParams ?: return@AnimatedVisibility,
-            finishAction = { assetId, hash ->
+            finishAction = { assetId, hash, route ->
                 approveParams = null
                 viewModel.onTxHash(hash)
             },
