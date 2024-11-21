@@ -248,7 +248,7 @@ class AssetsRepository @Inject constructor(
                     asset = asset,
                     owner = wallet.getAccount(asset.id.chain) ?: return@mapNotNull null,
                     metadata = AssetMetaData(
-                        isEnabled = true,
+                        isEnabled = false,
                         isSwapEnabled = swapSupportChains.contains(asset.id.chain),
                         isBuyEnabled = false,
                         isSellEnabled = false,
