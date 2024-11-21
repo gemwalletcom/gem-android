@@ -75,11 +75,7 @@ class EvmFee {
                     ?: throw Exception("Unable to calculate base fee")
             val defaultPriorityFee =
                 BigInteger(Config().getEvmChainConfig(chain.string).minPriorityFee.toString())
-            val priorityFee = when (reward.compareTo(defaultPriorityFee)) {
-                -1 -> defaultPriorityFee
-                else -> reward
-            }
-
+            val priorityFee = if (reward < defaultPriorityFee) defaultPriorityFee else reward
             return Pair(baseFee, priorityFee)
         }
     }
