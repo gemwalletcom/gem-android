@@ -132,7 +132,7 @@ class AssetsRepository @Inject constructor(
     }
 
     suspend fun syncAssetInfo(assetId: AssetId) = withContext(Dispatchers.IO) {
-        syncSwapSupportChains()
+        delay(500)
         val assetInfo = getAssetInfo(assetId).firstOrNull() ?: return@withContext
         val currency = assetInfo.price?.currency ?: return@withContext
 
@@ -154,7 +154,7 @@ class AssetsRepository @Inject constructor(
                     chain = it.asset.chain(),
                     isBuyEnabled = assetFull.details?.isBuyable == true,
                     isStakeEnabled = assetFull.details?.isStakeable == true,
-                    isSwapEnabled = it.metadata?.isSwapEnabled == true,
+                    isSwapEnabled = getSwapSupportChainsCase.getSwapSupportChains().contains(it.id().chain),
                     stakingApr = assetFull.details?.stakingApr,
                     links =  assetFull.details?.links?.let { gson.toJson(it) },
                     market = assetFull.market?.let { gson.toJson(it) },

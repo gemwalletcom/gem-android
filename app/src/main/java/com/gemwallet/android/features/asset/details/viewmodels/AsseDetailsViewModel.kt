@@ -32,6 +32,7 @@ import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionExtended
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -40,6 +41,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -71,9 +73,10 @@ class AsseDetailsViewModel @Inject constructor(
             getTransactionsCase.getTransactions(assetId),
             getPriceAlertsCase.isAssetPriceAlertEnabled(assetId),
         ) { assetInfo, transactions, priceAlertEnabled ->
-            Model(assetInfo, transactions, priceAlertEnabled, System.currentTimeMillis())
+            Model(assetInfo, transactions, priceAlertEnabled)
         }
     }
+    .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val sync: Flow<Unit> = combine(uiState, model) { uiState, model ->
@@ -83,7 +86,9 @@ class AsseDetailsViewModel @Inject constructor(
             model ?: return@combine
             syncAssetInfo(model.assetInfo.asset.id, model.assetInfo.owner, model.assetInfo.stakeApr ?: 0.0)
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
+    }
+    .flowOn(Dispatchers.IO)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
 
     val uiModel = model.map { it?.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -118,7 +123,6 @@ class AsseDetailsViewModel @Inject constructor(
         val assetInfo: AssetInfo,
         val transactions: List<TransactionExtended> = emptyList(),
         val priceAlertEnabled: Boolean = false,
-        val updated: Long = System.currentTimeMillis(),
     ) {
         fun toUIState(): AssetInfoUIModel {
             val assetInfo = assetInfo
@@ -151,7 +155,6 @@ class AsseDetailsViewModel @Inject constructor(
                 isSwapEnabled = assetInfo.metadata?.isSwapEnabled == true,
                 priceAlertEnabled = priceAlertEnabled,
                 transactions = transactions,
-                updated = updated,
                 account = AssetInfoUIModel.Account(
                     walletType = assetInfo.walletType,
                     totalBalance = balances.totalFormatted(),
