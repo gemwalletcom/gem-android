@@ -130,6 +130,7 @@ class AssetsRepository @Inject constructor(
     }
 
     suspend fun syncAssetInfo(assetId: AssetId) = withContext(Dispatchers.IO) {
+        syncSwapSupportChains()
         val assetInfo = getAssetInfo(assetId).firstOrNull() ?: return@withContext
         val currency = assetInfo.price?.currency ?: return@withContext
 
@@ -528,6 +529,7 @@ class AssetsRepository @Inject constructor(
                 isBuyEnabled = room.isBuyEnabled,
                 isSwapEnabled = room.isSwapEnabled,
                 isStakeEnabled = room.isStakeEnabled,
+                isSellEnabled = false,
                 isPinned = false,
             ),
             links = if (room.links != null) gson.fromJson(room.links, AssetLinks::class.java) else null,

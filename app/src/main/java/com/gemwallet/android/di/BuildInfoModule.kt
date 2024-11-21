@@ -22,7 +22,7 @@ object BuildInfoModule {
             "huawei" -> PlatformStore.Huawei
             "solana" -> PlatformStore.SolanaStore
             "fdroid" -> PlatformStore.Fdroid
-            else -> PlatformStore.ApkUniversal
+            else -> PlatformStore.Local
         }
         return BuildInfo(
             platformStore = platformStore,

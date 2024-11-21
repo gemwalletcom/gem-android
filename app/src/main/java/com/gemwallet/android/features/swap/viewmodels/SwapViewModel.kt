@@ -55,6 +55,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.ApprovalType
+import uniffi.gemstone.SwapperException
 import uniffi.gemstone.swapProviderNameToString
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -150,12 +151,12 @@ class SwapViewModel @Inject constructor(
 
     private val quote  = combine(fromValueFlow, assetsState, approveTx) { fromValue, assets, tx ->
         Triple(fromValue, assets, tx)
-    }.mapLatest {
-        val assets = it.second
+    }.mapLatest { data ->
+        val assets = data.second
         val fromAsset = assets?.from
         val toAsset = assets?.to
         val fromValue = try {
-            it.first.numberParse()
+            data.first.numberParse()
         } catch (_: Throwable) {
             BigDecimal.ZERO
         }
@@ -164,7 +165,7 @@ class SwapViewModel @Inject constructor(
             swapScreenState.update { SwapState.None }
             return@mapLatest null
         }
-        if (it.third?.transaction?.state == TransactionState.Pending) {
+        if (data.third?.transaction?.state == TransactionState.Pending) {
             swapScreenState.update { SwapState.Approving }
             delay(1000L) // Wait transactions and don't spam servers, it'll cancel on next values. Return null isn't correct
         }
@@ -179,13 +180,24 @@ class SwapViewModel @Inject constructor(
                 amount = Crypto(fromValue, fromAsset.asset.decimals).atomicValue.toString(),
             )
         } catch (err: Throwable) {
-            Log.d("SWAP-ERROR", "Error", err)
-            null
+            swapScreenState.update {
+                SwapState.Error(
+                    when (err) {
+                        is SwapperException.NotSupportedAsset -> SwapError.NotSupportedAsset
+                        is SwapperException.NotSupportedPair -> SwapError.NotSupportedPair
+                        is SwapperException.NotSupportedChain -> SwapError.NotSupportedChain
+                        is SwapperException.NoQuoteAvailable -> SwapError.NoQuote
+                        else -> SwapError.Unknown(err.localizedMessage ?: err.message ?: "")
+                    }
+                )
+            }
+            return@mapLatest null
         }
         val amount = toAsset.asset.format(Crypto(quote?.toValue ?: "0"), 8, showSymbol = false)
         withContext(Dispatchers.Main) { toValue.edit { replace(0, length, amount) } }
         val requestApprove = quote?.approval is ApprovalType.Approve
         swapScreenState.update {
+            if (it == SwapState.Approving) return@update it
             if (requestApprove) SwapState.RequestApprove else SwapState.Ready
         }
         quote

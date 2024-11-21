@@ -20,6 +20,7 @@ import uniffi.gemstone.SwapQuote
 import uniffi.gemstone.SwapQuoteData
 import uniffi.gemstone.SwapQuoteRequest
 import uniffi.gemstone.permit2DataToEip712Json
+import java.math.BigInteger
 
 class SwapRepository(
     private val gemSwapper: GemSwapper,
@@ -42,7 +43,9 @@ class SwapRepository(
                 preferredProviders = emptyList()
             )
         )
-        val quote = gemSwapper.fetchQuote(swapRequest).firstOrNull() ?: return null
+        val quote = gemSwapper.fetchQuote(swapRequest)
+            .sortedByDescending { BigInteger(it.toValue) }
+            .firstOrNull() ?: return null
         return quote
     }
 
@@ -58,7 +61,7 @@ class SwapRepository(
         val approval = quote.approval as ApprovalType.Permit2
         val chain = quote.request.fromAsset.toAssetId()?.chain ?: throw IllegalArgumentException()
         val permit2Single = permit2Single(approval.v1.token, approval.v1.spender, approval.v1.value, approval.v1.permit2Nonce)
-        val permit2Json = permit2DataToEip712Json(chain.string, permit2Single)
+        val permit2Json = permit2DataToEip712Json(chain.string, permit2Single, (quote.approval as ApprovalType.Permit2).v1.permit2Contract)
         val signature = signClient.signTypedMessage(
             chain = chain,
             input = permit2Json.toByteArray(),
