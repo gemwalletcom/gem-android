@@ -30,7 +30,6 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.StakeChain
-import com.wallet.core.primitives.TransactionExtended
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,14 +39,17 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.flatMapConcat
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import okhttp3.internal.toImmutableList
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class AsseDetailsViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
@@ -58,26 +60,27 @@ class AsseDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val assetIdStr = savedStateHandle.getStateFlow(assetIdArg, "")
+    private val assetId = savedStateHandle.getStateFlow(assetIdArg, "").map { it.toAssetId() }
 
     val uiState = MutableStateFlow<AssetInfoUIState>(AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process))
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val model = assetIdStr.flatMapConcat {
-        val assetId = it.toAssetId() ?: return@flatMapConcat emptyFlow()
-
-        uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process) }
-
-        combine(
-            assetsRepository.getAssetInfo(assetId),
-            getTransactionsCase.getTransactions(assetId),
-            getPriceAlertsCase.isAssetPriceAlertEnabled(assetId),
-        ) { assetInfo, transactions, priceAlertEnabled ->
-            Model(assetInfo, transactions, priceAlertEnabled)
+    private val model = assetId
+        .onEach { uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process) } }
+        .flatMapLatest {
+            assetsRepository.getAssetInfo(it ?: return@flatMapLatest emptyFlow()).map { Model(it) }
         }
-    }
-    .flowOn(Dispatchers.IO)
-    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        .flowOn(Dispatchers.IO)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val priceAlertEnabled = assetId.flatMapLatest {
+            getPriceAlertsCase.isAssetPriceAlertEnabled(it ?: return@flatMapLatest emptyFlow())
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    val transactions = assetId.flatMapLatest { getTransactionsCase.getTransactions(it) }
+        .map { it.toImmutableList() }
+        .flowOn(Dispatchers.IO)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val sync: Flow<Unit> = combine(uiState, model) { uiState, model ->
         if (uiState is AssetInfoUIState.Idle
@@ -116,13 +119,11 @@ class AsseDetailsViewModel @Inject constructor(
     }
 
     fun enablePriceAlert(assetId: AssetId) = viewModelScope.launch {
-        enablePriceAlertCase.setAssetPriceAlertEnabled(assetId, model.value?.priceAlertEnabled != true)
+        enablePriceAlertCase.setAssetPriceAlertEnabled(assetId, priceAlertEnabled.value != true)
     }
 
     private data class Model(
         val assetInfo: AssetInfo,
-        val transactions: List<TransactionExtended> = emptyList(),
-        val priceAlertEnabled: Boolean = false,
     ) {
         fun toUIState(): AssetInfoUIModel {
             val assetInfo = assetInfo
@@ -153,8 +154,6 @@ class AsseDetailsViewModel @Inject constructor(
                 networkIcon = AssetId(asset.id.chain).getIconUrl(),
                 isBuyEnabled = assetInfo.metadata?.isBuyEnabled == true,
                 isSwapEnabled = assetInfo.metadata?.isSwapEnabled == true,
-                priceAlertEnabled = priceAlertEnabled,
-                transactions = transactions,
                 account = AssetInfoUIModel.Account(
                     walletType = assetInfo.walletType,
                     totalBalance = balances.totalFormatted(),

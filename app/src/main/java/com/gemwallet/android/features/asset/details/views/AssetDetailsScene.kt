@@ -63,6 +63,7 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.WalletType
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl
@@ -82,6 +83,8 @@ fun AssetDetailsScene(
     uniffi.gemstone.AssetWrapper
     val viewModel: AsseDetailsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val transactions by viewModel.transactions.collectAsStateWithLifecycle()
+    val priceAlertEnabled by viewModel.priceAlertEnabled.collectAsStateWithLifecycle()
     val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
 
     when {
@@ -94,6 +97,8 @@ fun AssetDetailsScene(
         )
         uiState is AssetInfoUIState.Idle && uiModel != null -> Success(
             uiState = uiModel ?: return,
+            transactions = transactions,
+            priceAlertEnabled = priceAlertEnabled,
             syncState = (uiState as AssetInfoUIState.Idle).sync,
             onRefresh = viewModel::refresh,
             onTransfer = onTransfer,
@@ -114,6 +119,8 @@ fun AssetDetailsScene(
 @Composable
 private fun Success(
     uiState: AssetInfoUIModel,
+    transactions: List<TransactionExtended>,
+    priceAlertEnabled: Boolean,
     syncState: AssetInfoUIState.SyncState,
     onRefresh: () -> Unit,
     onCancel: () -> Unit,
@@ -141,7 +148,7 @@ private fun Success(
                     onPriceAlert(uiState.asset.id)
                 }
             ) {
-                if (uiState.priceAlertEnabled) {
+                if (priceAlertEnabled) {
                     Icon(Icons.Default.Notifications, "")
                 } else {
                     Icon(Icons.Default.NotificationsNone, "")
@@ -224,7 +231,7 @@ private fun Success(
                 }
                 networkInfo(uiState, onChart)
                 balanceDetails(uiState, onStake)
-                if (uiState.transactions.isEmpty()) {
+                if (transactions.isEmpty()) {
                     item {
                         Box(modifier = Modifier.fillMaxWidth().padding(vertical = padding32)) {
                             Text(
@@ -235,7 +242,7 @@ private fun Success(
                         }
                     }
                 }
-                transactionsList(uiState.transactions, onTransaction)
+                transactionsList(transactions, onTransaction)
             }
         }
     }

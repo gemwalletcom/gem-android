@@ -19,8 +19,6 @@ class AssetInfoUIModel(
     val account: Account = Account(),
     val isBuyEnabled: Boolean = false,
     val isSwapEnabled: Boolean = false,
-    val priceAlertEnabled: Boolean = false,
-    val transactions: List<TransactionExtended> = emptyList(),
     val updated: Long = System.currentTimeMillis(),
 ) {
     data class Account(

@@ -132,7 +132,6 @@ class AssetsRepository @Inject constructor(
     }
 
     suspend fun syncAssetInfo(assetId: AssetId) = withContext(Dispatchers.IO) {
-        delay(500)
         val assetInfo = getAssetInfo(assetId).firstOrNull() ?: return@withContext
         val currency = assetInfo.price?.currency ?: return@withContext
 

@@ -36,7 +36,6 @@ class StakeRepository(
     suspend fun sync(chain: Chain, address: String, apr: Double) = withContext(Dispatchers.IO) {
         syncValidators(chain, apr)
         syncDelegations(chain, address, apr)
-
     }
 
     private suspend fun syncDelegations(chain: Chain, address: String, apr: Double) = withContext(Dispatchers.IO) {
