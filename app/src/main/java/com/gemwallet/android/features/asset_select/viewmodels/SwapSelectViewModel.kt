@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
@@ -35,12 +36,12 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SwapSelectViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
+    sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val searchTokensCase: SearchTokensCase,
 ) : ViewModel() {
 
-    private val pair: MutableStateFlow<SwapPairSelect?> = MutableStateFlow(null)
+    private val preSetPair: MutableStateFlow<SwapPairSelect?> = MutableStateFlow(null)
 
     val queryState = TextFieldState()
     private val searchState = MutableStateFlow<SearchState>(SearchState.Searching)
@@ -55,13 +56,13 @@ class SwapSelectViewModel @Inject constructor(
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    val assets = combine(sessionRepository.session(), queryFlow, pair) { session, query, pair ->
+    val assets = combine(sessionRepository.session(), queryFlow, preSetPair) { session, query, pair ->
         Triple(session, query, pair)
     }
     .flatMapLatest {
         val (session, query, pair) = it
         val wallet = it.first?.wallet ?: return@flatMapLatest emptyFlow()
-        pair ?: return@flatMapLatest emptyFlow()
+        pair ?: return@flatMapLatest flow { emit(emptyList()) }
         assetsRepository.search(wallet, query, false, listOf(pair.oppositeId()?.toIdentifier() ?: ""))
     }
     .map { it.distinctBy { it.asset.id.toIdentifier() } }
@@ -82,10 +83,10 @@ class SwapSelectViewModel @Inject constructor(
 
     fun filterAsset(assetInfo: AssetInfo): Boolean {
         return assetInfo.metadata?.isSwapEnabled == true
-                && if (pair.value is SwapPairSelect.From) assetInfo.balance.totalAmount > 0.0 else true
+                && if (preSetPair.value is SwapPairSelect.From) assetInfo.balance.totalAmount > 0.0 else true
     }
 
     fun setPair(select: SwapPairSelect) {
-        pair.update { select }
+        preSetPair.update { select }
     }
 }

@@ -154,7 +154,7 @@ class AssetsRepository @Inject constructor(
                     chain = it.asset.chain(),
                     isBuyEnabled = assetFull.details?.isBuyable == true,
                     isStakeEnabled = assetFull.details?.isStakeable == true,
-                    isSwapEnabled = assetFull.details?.isSwapable == true,
+                    isSwapEnabled = it.metadata?.isSwapEnabled == true,
                     stakingApr = assetFull.details?.stakingApr,
                     links =  assetFull.details?.links?.let { gson.toJson(it) },
                     market = assetFull.market?.let { gson.toJson(it) },

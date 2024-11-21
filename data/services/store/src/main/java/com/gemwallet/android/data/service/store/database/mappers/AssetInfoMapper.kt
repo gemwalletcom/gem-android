@@ -16,10 +16,10 @@ import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.Currency
 
-class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo>, List<AssetInfo>, Nothing, Nothing> {
+class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo?>, List<AssetInfo>, Nothing, Nothing> {
 
-    override fun asDomain(entity: List<DbAssetInfo>, options: (() -> Nothing)?): List<AssetInfo> {
-        return entity.groupBy { it.id + it.address }.mapNotNull { records ->
+    override fun asDomain(entity: List<DbAssetInfo?>, options: (() -> Nothing)?): List<AssetInfo> {
+        return entity.filterNotNull().groupBy { it.id + it.address }.mapNotNull { records ->
             val entity = records.value.firstOrNull() ?: return@mapNotNull null
             val assetId = entity.id.toAssetId() ?: return@mapNotNull null
             val asset = Asset(
