@@ -62,10 +62,10 @@ class SwapSelectViewModel @Inject constructor(
         val (session, query, pair) = it
         val wallet = it.first?.wallet ?: return@flatMapLatest emptyFlow()
         pair ?: return@flatMapLatest emptyFlow()
-        assetsRepository.search(wallet, it.second, false, listOf(pair.oppositeId()?.toIdentifier() ?: ""))
+        assetsRepository.search(wallet, query, false, listOf(pair.oppositeId()?.toIdentifier() ?: ""))
     }
     .map { it.distinctBy { it.asset.id.toIdentifier() } }
-    .map { assets -> assets.filter(::filterAsset).map { AssetInfoUIModel(it) }.toImmutableList() }
+    .map { assets -> assets.filter(::filterAsset).map { AssetInfoUIModel(it) }.toImmutableList() } // TODO: Change filter: to db
     .onEach { searchState.update { SearchState.Idle } }
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>().toImmutableList())
@@ -82,7 +82,7 @@ class SwapSelectViewModel @Inject constructor(
 
     fun filterAsset(assetInfo: AssetInfo): Boolean {
         return assetInfo.metadata?.isSwapEnabled == true
-                && if (pair.value is SwapPairSelect.From) assetInfo.balance.totalAmount != 0.0 else true
+                && if (pair.value is SwapPairSelect.From) assetInfo.balance.totalAmount > 0.0 else true
     }
 
     fun setPair(select: SwapPairSelect) {

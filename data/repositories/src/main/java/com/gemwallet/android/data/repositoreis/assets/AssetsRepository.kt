@@ -61,6 +61,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.Boolean
 import kotlin.collections.map
 import kotlin.collections.mapNotNull
 
@@ -240,11 +241,20 @@ class AssetsRepository @Inject constructor(
             assetsDao.searchAssetInfo(query, exclude)
         }.map { AssetInfoMapper().asDomain(it) }
         val tokensFlow = getTokensCase.getByChains(wallet.accounts.map { it.chain }, query)
+        val swapSupportChains = getSwapSupportChainsCase.getSwapSupportChains()
         return combine(assetsFlow, tokensFlow) { assets, tokens ->
             assets + tokens.mapNotNull { asset ->
                 AssetInfo(
                     asset = asset,
                     owner = wallet.getAccount(asset.id.chain) ?: return@mapNotNull null,
+                    metadata = AssetMetaData(
+                        isEnabled = true,
+                        isSwapEnabled = swapSupportChains.contains(asset.id.chain),
+                        isBuyEnabled = false,
+                        isSellEnabled = false,
+                        isStakeEnabled = false,
+                        isPinned = false,
+                    )
                 )
             }
             .filter { !Chain.exclude().contains(it.asset.id.chain) }
