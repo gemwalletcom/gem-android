@@ -7,7 +7,7 @@ import com.gemwallet.android.cases.device.SyncSubscriptionCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.ext.exclude
+import com.gemwallet.android.ext.available
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.WalletType
@@ -26,23 +26,28 @@ class CheckAccounts @Inject constructor(
 ) {
     suspend operator fun invoke() {
         val wallets = walletsRepository.getAll()
+        val currency = sessionRepository.getSession()?.currency ?: Currency.USD
+
         wallets.forEach { wallet ->
+            val nativeAssets = assetsRepository.getNativeAssets(wallet)
+
             if (wallet.type != WalletType.multicoin) {
+                if (nativeAssets.isEmpty()) {
+                    assetsRepository.invalidateDefault(wallet, currency)
+                }
                 return@forEach
             }
-            val availableChains = assetsRepository.getNativeAssets(wallet)
-                .map { it.id.chain }.toSet()
+
+            val availableChains = nativeAssets.map { it.id().chain }.toSet()
             val newChains = getChainsToAdd(availableChains)
+
             if (newChains.isNotEmpty()) {
                 val data = loadPrivateDataOperator(wallet, passwordStore.getPassword(wallet.id))
                 val newAccounts = newChains.map { createAccountOperator(wallet.type, data, it) }
                 val newWallet = wallet.copy(accounts = wallet.accounts + newAccounts)
                 walletsRepository.updateWallet(newWallet)
                 if (newAccounts.isNotEmpty()) {
-                    assetsRepository.invalidateDefault(
-                        newWallet,
-                        sessionRepository.getSession()?.currency ?: Currency.USD
-                    )
+                    assetsRepository.invalidateDefault(newWallet, currency)
                 }
                 syncSubscriptionCase.syncSubscription(walletsRepository.getAll())
             }
@@ -50,7 +55,7 @@ class CheckAccounts @Inject constructor(
     }
 
     private fun getChainsToAdd(available: Set<Chain>): List<Chain> {
-        val allChains = Chain.entries.toList() - Chain.exclude().toSet()
+        val allChains = Chain.available().toSet()
         val toAdd = mutableListOf<Chain>()
         for (i in allChains) {
             if (!available.contains(i)) {

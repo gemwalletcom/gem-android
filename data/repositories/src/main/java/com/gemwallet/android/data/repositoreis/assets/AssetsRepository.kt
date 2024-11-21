@@ -39,6 +39,7 @@ import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.AssetPricesRequest
+import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.TransactionExtended
@@ -142,49 +143,44 @@ class AssetsRepository @Inject constructor(
                 .getOrNull() ?: return@async
 
             val gson = Gson()
-            assetsDao.getById(assetId.toIdentifier()).map {
-                it.copy(
+            val asset = getAssetInfo(assetId).map {
+                DbAsset(
+                    address = it.owner.address,
+                    id = it.id().toIdentifier(),
+                    name = it.asset.name,
+                    symbol = it.asset.symbol,
+                    decimals = it.asset.decimals,
+                    type = it.asset.type,
+                    chain = it.asset.chain(),
                     isBuyEnabled = assetFull.details?.isBuyable == true,
                     isStakeEnabled = assetFull.details?.isStakeable == true,
+                    isSwapEnabled = assetFull.details?.isSwapable == true,
                     stakingApr = assetFull.details?.stakingApr,
                     links =  assetFull.details?.links?.let { gson.toJson(it) },
                     market = assetFull.market?.let { gson.toJson(it) },
                     rank = assetFull.score.rank,
+                    updatedAt = System.currentTimeMillis(),
                 )
-            }.forEach {
-                assetsDao.update(it)
-            }
+            }.firstOrNull() ?: return@async
+            assetsDao.update(asset)
         }
         updatePriceJob.await()
         updateBalancesJob.await()
         getAssetFull.await()
     }
 
-    suspend fun getNativeAssets(wallet: Wallet): List<Asset> = withContext(Dispatchers.IO) {
-        assetsDao.getAssetsByType(wallet.accounts.map { it.address }).mapNotNull {
-            Asset( // TODO: Mapper
-                id = it.id.toAssetId() ?: return@mapNotNull null,
-                name = it.name,
-                symbol = it.symbol,
-                decimals = it.decimals,
-                type = it.type,
-            )
-        }
-    }
-
-    override suspend fun getAsset(assetId: AssetId): Asset? = withContext(Dispatchers.IO) {
-        val room = assetsDao.getById(assetId.toIdentifier()).firstOrNull() ?: return@withContext null
-        Asset( // TODO: Mapper
-            id = assetId,
-            name = room.name,
-            symbol = room.symbol,
-            decimals = room.decimals,
-            type = room.type,
+    suspend fun getNativeAssets(wallet: Wallet): List<AssetInfo> = withContext(Dispatchers.IO) {
+        assetsDao.getAssetsInfoByAccountsInWallet(
+            accounts = wallet.accounts.map { it.address },
+            walletId = wallet.id,
+            type = AssetType.NATIVE,
         )
+        .map { AssetInfoMapper().asDomain(it) }
+        .firstOrNull() ?: emptyList()
     }
 
     suspend fun getStakeApr(assetId: AssetId): Double? = withContext(Dispatchers.IO) {
-        assetsDao.getById(assetId.toIdentifier()).firstOrNull()?.stakingApr
+        getAssetInfo(assetId).firstOrNull()?.stakeApr
     }
 
     @Deprecated("Use the getAssetInfo() method")
@@ -204,9 +200,12 @@ class AssetsRepository @Inject constructor(
         return result
     }
 
+    override suspend fun getAsset(assetId: AssetId): Asset? = withContext(Dispatchers.IO) {
+        getAssetInfo(assetId).firstOrNull()?.asset
+    }
+
     fun getAssetsInfo(): Flow<List<AssetInfo>> = assetsDao.getAssetsInfo()
         .map { AssetInfoMapper().asDomain(it) }
-        .map { assets -> assets.filter { !Chain.exclude().contains(it.asset.id.chain) } }
 
     fun getAssetsInfo(assetsId: List<AssetId>): Flow<List<AssetInfo>> = assetsDao
         .getAssetsInfo(assetsId.map { it.toIdentifier() })
@@ -220,7 +219,7 @@ class AssetsRepository @Inject constructor(
 
     suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo> = withContext(Dispatchers.IO) {
         assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
-            .map { AssetInfoMapper().asDomain(it).firstOrNull() }
+            .map { AssetInfoMapper().asDomain(listOf(it)).firstOrNull() }
             .mapNotNull { it ?: getTokensCase.assembleAssetInfo(assetId) }
     }
 
@@ -305,7 +304,7 @@ class AssetsRepository @Inject constructor(
     }
 
     fun invalidateDefault(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
-        val assets = assetsDao.getAssetsInfoByAccounts(wallet.accounts.map { it.address })
+        val assets = assetsDao.getAssetsInfoByAccountsInWallet(wallet.accounts.map { it.address }, wallet.id)
             .map { AssetInfoMapper().asDomain(it) }
             .firstOrNull()
             ?.associateBy( { it.asset.id.toIdentifier() }, { it } )?: emptyMap()
@@ -315,11 +314,11 @@ class AssetsRepository @Inject constructor(
                 Pair(account, account.chain.asset())
             }.map {
                 val isNew = assets[it.first.chain.string] == null
-                val isVisible = assets[it.second.id.toIdentifier()]?.metadata?.isEnabled
-                    ?: visibleByDefault.contains(it.first.chain) || wallet.type != WalletType.multicoin
-                add(wallet.id, it.first.address, it.second, isVisible)
                 async {
                     if (isNew) {
+                        val isVisible = assets[it.second.id.toIdentifier()]?.metadata?.isEnabled
+                                ?: visibleByDefault.contains(it.first.chain) || wallet.type != WalletType.multicoin
+                        add(wallet.id, it.first.address, it.second, isVisible)
                         val balances = updateBalances(it.first, emptyList()).firstOrNull()
                         if ((balances?.totalAmount ?: 0.0) > 0.0) {
                             setVisibility(wallet.id, it.second.id, true)
@@ -402,6 +401,7 @@ class AssetsRepository @Inject constructor(
             )
         )
     }
+
 
     private suspend fun setVisibility(walletId: String, assetId: AssetId, visibility: Boolean) = withContext(Dispatchers.IO) {
         val config = assetsDao.getConfig(walletId = walletId, assetId = assetId.toIdentifier())

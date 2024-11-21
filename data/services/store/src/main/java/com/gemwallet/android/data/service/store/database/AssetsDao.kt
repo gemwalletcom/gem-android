@@ -27,23 +27,11 @@ interface AssetsDao {
     @Query("SELECT * FROM assets")
     suspend fun getAll(): List<DbAsset>
 
-    @Query("SELECT * FROM assets " +
-            "WHERE owner_address IN (:addresses) " +
-            "AND (id LIKE '%' || :query || '%' OR symbol LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%') " +
-            "COLLATE NOCASE")
-    fun getAllByOwner(addresses: List<String>, query: String): Flow<List<DbAsset>>
-
     @Query("SELECT DISTINCT * FROM assets WHERE owner_address IN (:addresses) AND id IN (:assetId)")
     suspend fun getById(addresses: List<String>, assetId: List<String>): List<DbAsset>
 
-    @Query("SELECT DISTINCT * FROM assets WHERE id = :assetId")
-    suspend fun getById(assetId: String): List<DbAsset>
-
-    @Query("SELECT * FROM assets WHERE owner_address IN (:addresses) AND type = :type")
-    suspend fun getAssetsByType(addresses: List<String>, type: AssetType = AssetType.NATIVE): List<DbAsset>
-
-    @Query("SELECT * FROM asset_info WHERE chain = :chain AND id = :assetId AND sessionId=1")
-    fun getAssetInfo(assetId: String, chain: Chain): Flow<List<DbAssetInfo>>
+    @Query("SELECT * FROM asset_info WHERE chain = :chain AND id = :assetId AND sessionId = 1")
+    fun getAssetInfo(assetId: String, chain: Chain): Flow<DbAssetInfo>
 
     @Query("SELECT * FROM asset_info WHERE sessionId = 1 AND visible != 0 ORDER BY balanceFiatTotalAmount DESC")
     fun getAssetsInfo(): Flow<List<DbAssetInfo>>
@@ -77,6 +65,12 @@ interface AssetsDao {
 
     @Query("SELECT * FROM asset_info WHERE address IN (:accounts) AND sessionId=1 ")
     fun getAssetsInfoByAccounts(accounts: List<String>): Flow<List<DbAssetInfo>>
+
+    @Query("SELECT * FROM asset_info WHERE address IN (:accounts) AND walletId=:walletId ")
+    fun getAssetsInfoByAccountsInWallet(accounts: List<String>, walletId: String): Flow<List<DbAssetInfo>>
+
+    @Query("SELECT * FROM asset_info WHERE address IN (:accounts) AND walletId=:walletId AND type=:type")
+    fun getAssetsInfoByAccountsInWallet(accounts: List<String>, walletId: String, type: AssetType): Flow<List<DbAssetInfo>>
 
     @Query("SELECT * FROM asset_config WHERE wallet_id=:walletId AND asset_id=:assetId")
     suspend fun getConfig(walletId: String, assetId: String): DbAssetConfig?
