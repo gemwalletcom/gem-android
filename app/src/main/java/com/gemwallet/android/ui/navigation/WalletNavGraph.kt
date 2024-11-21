@@ -22,6 +22,7 @@ import com.gemwallet.android.features.amount.navigation.amount
 import com.gemwallet.android.features.amount.navigation.navigateToAmountScreen
 import com.gemwallet.android.features.amount.navigation.navigateToSendScreen
 import com.gemwallet.android.features.asset.navigation.assetChartScreen
+import com.gemwallet.android.features.asset.navigation.assetRoute
 import com.gemwallet.android.features.asset.navigation.assetScreen
 import com.gemwallet.android.features.asset.navigation.navigateToAssetChartScreen
 import com.gemwallet.android.features.asset.navigation.navigateToAssetScreen
@@ -55,8 +56,10 @@ import com.gemwallet.android.features.settings.navigation.settingsScreen
 import com.gemwallet.android.features.stake.navigation.navigateToDelegation
 import com.gemwallet.android.features.stake.navigation.navigateToStake
 import com.gemwallet.android.features.stake.navigation.stake
+import com.gemwallet.android.features.stake.navigation.stakeRoute
 import com.gemwallet.android.features.swap.navigation.navigateToSwap
 import com.gemwallet.android.features.swap.navigation.swap
+import com.gemwallet.android.features.swap.navigation.swapRoute
 import com.gemwallet.android.features.transactions.navigation.activitiesRoute
 import com.gemwallet.android.features.transactions.navigation.activitiesScreen
 import com.gemwallet.android.features.transactions.navigation.navigateToTransactionScreen
@@ -70,6 +73,7 @@ import com.gemwallet.android.ui.navigation.routes.SendSelect
 import com.gemwallet.android.ui.navigation.routes.Transfer
 import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
 import com.gemwallet.android.ui.navigation.routes.recipientInput
+import com.wallet.core.primitives.AssetId
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -115,7 +119,7 @@ fun WalletNavGraph(
             assetsScreen(
                 onShowWallets = navController::navigateToWalletsScreen,
                 onShowAssetManage = navController::navigateToAssetsManageScreen,
-                onSendClick = navController::navigateToRecipientInput,//navController::navigateToSendScreen,
+                onSendClick = navController::navigateToRecipientInput,
                 onReceiveClick = navController::navigateToReceiveScreen,
                 onBuyClick = navController::navigateToBuyScreen,
                 onSwapClick = navController::navigateToSwap,
@@ -124,7 +128,7 @@ fun WalletNavGraph(
 
             assetScreen(
                 onCancel = onCancel,
-                onTransfer = navController::navigateToRecipientInput,//navController::navigateToSendScreen,
+                onTransfer = navController::navigateToRecipientInput,
                 onReceive = navController::navigateToReceiveScreen,
                 onBuy = navController::navigateToBuyScreen,
                 onSwap = navController::navigateToSwap,
@@ -142,12 +146,12 @@ fun WalletNavGraph(
                 onCancel = onCancel,
             )
 
-            swap(
-                onConfirm = navController::navigateToConfirmScreen,
-                onCancel = onCancel
-            )
-
             navigation<Transfer>(startDestination = SendSelect) {
+                swap(
+                    onConfirm = navController::navigateToConfirmScreen,
+                    onCancel = onCancel
+                )
+
                 recipientInput(
                     cancelAction = onCancel,
                     recipientAction = navController::navigateToRecipientInput,
@@ -162,16 +166,12 @@ fun WalletNavGraph(
                 )
 
                 confirm(
-                    finishAction = { assetId, hash ->
-                        navController.navigateToAssetScreen(
-                            assetId,
-                            navOptions {
-                                launchSingleTop = true
-                                popUpTo(Transfer) {
-                                    inclusive = true
-                                }
-                            }
-                        )
+                    finishAction = { assetId, hash, route ->
+                        when (route) {
+                            assetRoute -> NavigateAfterConfirm.Transfer(assetId).navigate(navController)
+                            stakeRoute -> NavigateAfterConfirm.Stake().navigate(navController)
+                            swapRoute -> NavigateAfterConfirm.Swap(assetId).navigate(navController)
+                        }
                     },
                     cancelAction = onCancel
                 )
@@ -301,4 +301,45 @@ fun NavController.navigateToRoot() {
             }
         }
     )
+}
+
+sealed interface NavigateAfterConfirm {
+    fun navigate(navController: NavController)
+
+    class Transfer(private val assetId: AssetId) : NavigateAfterConfirm {
+
+        override fun navigate(navController: NavController) {
+            navController.navigateToAssetScreen(
+                assetId,
+                navOptions {
+                    launchSingleTop = true
+                    popUpTo(Transfer) {
+                        inclusive = true
+                    }
+                }
+            )
+        }
+    }
+
+    class Stake() : NavigateAfterConfirm {
+
+        override fun navigate(navController: NavController) {
+            navController.popBackStack(stakeRoute, true)
+        }
+    }
+
+    class Swap(private val assetId: AssetId) : NavigateAfterConfirm {
+
+        override fun navigate(navController: NavController) {
+            navController.navigateToAssetScreen(
+                assetId,
+                navOptions {
+                    launchSingleTop = true
+                    popUpTo(Transfer) {
+                        inclusive = true
+                    }
+                }
+            )
+        }
+    }
 }

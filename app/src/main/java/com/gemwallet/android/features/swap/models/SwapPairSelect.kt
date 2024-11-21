@@ -33,7 +33,7 @@ sealed class SwapPairSelect(val fromId: AssetId?, val toId: AssetId?) {
 
     abstract fun select(assetId: AssetId): SwapPairSelect
 
-    fun sameChain(): Boolean = fromId != null && toId != null && fromId.chain == toId.chain
+    fun sameChain(): Boolean = fromId != null && toId != null
 
     companion object {
         fun request(fromId: AssetId?, toId: AssetId?) =

@@ -250,7 +250,6 @@
   <string name="social.coingecko">CoinGecko</string>
   <string name="errors.unable_estimate_network_fee">現在、ネットワーク料金を計算することができません。</string>
   <string name="errors.invalid_asset_address">無効な %s アドレス</string>
-  <string name="buy.empty_amount">金額を入力してください</string>
   <string name="transaction.title.received">受け取った</string>
   <string name="transaction.title.sent">送信済み</string>
   <string name="stake.stake">ステーク</string>
@@ -290,4 +289,28 @@
   <string name="swap.price_impact">価格の影響</string>
   <string name="wallet.sell">売る</string>
   <string name="sell.title">Sell %s</string>
+  <string name="common.learn_more">Learn More</string>
+  <string name="info.network_fee.title">ネットワーク料金</string>
+  <string name="info.watch_wallet.title">Watch Wallet</string>
+  <string name="info.watch_wallet.description">アクセス権はありませんが、取引や動きを監視できるウォレットです。</string>
+  <string name="info.network_fee.description">%s network charges transaction fee, which varies based on network usage. Paid to miners to process your transaction.</string>
+  <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
+  <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
+  <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
+  <string name="info.lock_time.description">Lock time, also known as the unbonding or unfreezing period, is the duration during which staked assets are inaccessible after you decide to unstake them.</string>
+  <string name="input.enter_amount_to">Please enter amount to %s</string>
+  <string name="input.buy">buy</string>
+  <string name="input.sell">sell</string>
+  <string name="input.transfer">transfer</string>
+  <string name="settings.balance_privacy">Balance Privacy</string>
+  <string name="common.popular">人気のある</string>
+  <string name="errors.dust_threshold">The transaction failed because the amount is too small to meet the %s network’s minimum requirement (dust threshold). This limit ensures the transaction value covers the fees and processing costs. Increase the amount or reduce the fees to proceed.</string>
+  <string name="rootcheck.security_alert">Security Alert</string>
+  <string name="rootcheck.body">Your device appears to be rooted. This may compromise the security of the app.</string>
+  <string name="rootcheck.ignore">Ignore</string>
+  <string name="rootcheck.exit">Exit</string>
+  <string name="errors.swap.no_quote_available">No quote available.</string>
+  <string name="errors.swap.not_supported_chain">Not supported chain.</string>
+  <string name="errors.swap.not_supported_asset">Not supported asset.</string>
+  <string name="errors.swap.not_supported_pair">Not supported pair.</string>
 </resources>

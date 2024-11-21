@@ -15,7 +15,12 @@ class PriceAlertsSelectViewModel @Inject constructor(
     sessionRepository: SessionRepository,
     assetsRepository: AssetsRepository,
     searchTokensCase: SearchTokensCase,
-) : BaseAssetSelectViewModel(sessionRepository, assetsRepository, searchTokensCase, { getPriceAlertsCase.getPriceAlerts().map { it.map { it.assetId } } }) {
+) : BaseAssetSelectViewModel(
+    sessionRepository,
+    assetsRepository,
+    searchTokensCase,
+    { getPriceAlertsCase.getPriceAlerts().map { it.map { it.assetId } } },
+) {
 
     override fun isSearchByAllWallets(): Boolean = true
 }

@@ -5,6 +5,8 @@ import com.gemwallet.android.blockchain.clients.SignerPreload
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.type
+import com.gemwallet.android.math.append0x
+import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
@@ -150,7 +152,7 @@ class EvmSignerPreloader(
             from = from,
             to = to,
             value = "0x${amount.toString(16)}",
-            data = if (data.isNullOrEmpty()) "0x" else data,
+            data = if (data.isNullOrEmpty()) "0x" else data.append0x(),
         )
         val request = JSONRpcRequest.create(EvmMethod.GetGasLimit, listOf(transaction))
         val gasLimitResult = rpcClient.getGasLimit(request)

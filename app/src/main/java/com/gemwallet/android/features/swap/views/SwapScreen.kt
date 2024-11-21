@@ -4,26 +4,40 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SwapVert
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.features.asset_select.views.SelectSwapScreen
+import com.gemwallet.android.features.confirm.models.ConfirmError
+import com.gemwallet.android.features.confirm.models.ConfirmState
 import com.gemwallet.android.features.confirm.views.ConfirmScreen
+import com.gemwallet.android.features.swap.models.SwapError
 import com.gemwallet.android.features.swap.models.SwapItemModel
 import com.gemwallet.android.features.swap.models.SwapItemType
 import com.gemwallet.android.features.swap.models.SwapPairSelect
@@ -32,7 +46,10 @@ import com.gemwallet.android.features.swap.viewmodels.SwapViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.components.TransactionItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.Spacer2
+import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.designsystem.trailingIcon20
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
@@ -113,6 +130,8 @@ fun SwapScreen(
             if (tx?.transaction?.state == TransactionState.Pending) {
                 TransactionItem(tx, true) { }
             }
+            Spacer16()
+            SwapError(swapState)
         }
     }
 
@@ -124,7 +143,7 @@ fun SwapScreen(
         LocalSoftwareKeyboardController.current?.hide()
         ConfirmScreen(
             approveParams ?: return@AnimatedVisibility,
-            finishAction = { assetId, hash ->
+            finishAction = { assetId, hash, route ->
                 approveParams = null
                 viewModel.onTxHash(hash)
             },
@@ -151,6 +170,52 @@ fun SwapScreen(
                 }
             },
             onSelect = {select -> viewModel.onSelect(select) },
+        )
+    }
+}
+
+@Composable
+private fun SwapError(state: SwapState) {
+    if (state !is SwapState.Error || state.error == SwapError.None) {
+        return
+    }
+    Column(
+        modifier = Modifier
+            .padding(padding16)
+            .background(
+                MaterialTheme.colorScheme.errorContainer.copy(0.2f),
+                shape = MaterialTheme.shapes.medium
+            )
+            .fillMaxWidth()
+            .padding(padding16),
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                modifier = Modifier.size(trailingIcon20),
+                imageVector = Icons.Outlined.Warning,
+                tint = MaterialTheme.colorScheme.error,
+                contentDescription = ""
+            )
+            Spacer8()
+            Text(
+                text = stringResource(R.string.errors_error_occured),
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.W400),
+            )
+        }
+        Spacer2()
+        Text(
+            text = when (state.error) {
+                SwapError.IncorrectInput -> stringResource(R.string.common_required_field, stringResource(R.string.swap_you_pay))
+                SwapError.NoQuote -> stringResource(R.string.errors_swap_no_quote_data)
+                SwapError.None -> ""
+                SwapError.NotSupportedAsset -> stringResource(com.gemwallet.android.localize.R.string.errors_swap_not_supported_asset)
+                SwapError.NotSupportedChain -> stringResource(com.gemwallet.android.localize.R.string.errors_swap_not_supported_chain)
+                SwapError.NotSupportedPair -> stringResource(com.gemwallet.android.localize.R.string.errors_swap_not_supported_pair)
+                is SwapError.Unknown -> TODO()
+            },
+            style = MaterialTheme.typography.bodyMedium,
         )
     }
 }

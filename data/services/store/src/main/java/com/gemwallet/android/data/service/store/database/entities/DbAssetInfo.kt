@@ -51,9 +51,6 @@ import com.wallet.core.primitives.WalletType
         balances.reserved_amount AS balanceReservedAmount,
         balances.total_amount AS balanceTotalAmount,
         (balances.total_amount * prices.value) AS balanceFiatTotalAmount,
-        balances.enabled AS balanceEnabled,
-        balances.hidden AS balanceHidden,
-        balances.pinned AS balancePinned,
         balances.updated_at AS balanceUpdatedAt
         FROM assets
         JOIN accounts ON accounts.address = assets.owner_address AND assets.id LIKE accounts.chain || '%'
@@ -111,8 +108,6 @@ data class DbAssetInfo(
     val balanceReservedAmount: Double?,
     val balanceTotalAmount: Double?,
     val balanceFiatTotalAmount: Double?,
-    val balanceEnabled: Boolean?,
-    val balanceHidden: Boolean?,
-    val balancePinned: Boolean?,
+
     val balanceUpdatedAt: Long?,
 )

@@ -3,6 +3,7 @@ package com.gemwallet.android.data.repositoreis.assets
 import android.util.Log
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.swap.GetSwapSupportChainsCase
 import com.gemwallet.android.cases.tokens.GetTokensCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
@@ -75,6 +76,7 @@ class AssetsRepository @Inject constructor(
     private val getTokensCase: GetTokensCase,
     private val searchTokensCase: SearchTokensCase,
     private val getDeviceIdCase: GetDeviceIdCase,
+    private val getSwapSupportChainsCase: GetSwapSupportChainsCase,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetAsset {
     private val visibleByDefault = listOf(Chain.Ethereum, Chain.Bitcoin, Chain.SmartChain, Chain.Solana)
@@ -94,6 +96,10 @@ class AssetsRepository @Inject constructor(
             sessionRepository.session().collectLatest {
                 sync(it?.currency ?: return@collectLatest)
             }
+        }
+
+        scope.launch(Dispatchers.IO) {
+            syncSwapSupportChains()
         }
     }
 
@@ -124,6 +130,7 @@ class AssetsRepository @Inject constructor(
     }
 
     suspend fun syncAssetInfo(assetId: AssetId) = withContext(Dispatchers.IO) {
+        syncSwapSupportChains()
         val assetInfo = getAssetInfo(assetId).firstOrNull() ?: return@withContext
         val currency = assetInfo.price?.currency ?: return@withContext
 
@@ -137,7 +144,6 @@ class AssetsRepository @Inject constructor(
             assetsDao.getById(assetId.toIdentifier()).map {
                 it.copy(
                     isBuyEnabled = assetFull.details?.isBuyable == true,
-                    isSwapEnabled = assetFull.details?.isSwapable == true,
                     isStakeEnabled = assetFull.details?.isStakeable == true,
                     stakingApr = assetFull.details?.stakingApr,
                     links =  assetFull.details?.links?.let { gson.toJson(it) },
@@ -256,13 +262,12 @@ class AssetsRepository @Inject constructor(
             DbAsset(
                 address = wallet.getAccount(assetFull.asset.chain())?.address ?: return@mapNotNull null,
                 id = assetFull.asset.id.toIdentifier(),
+                chain = assetFull.asset.chain(),
                 name = assetFull.asset.name,
                 symbol = assetFull.asset.symbol,
                 decimals = assetFull.asset.decimals,
                 type = assetFull.asset.type,
-                isPinned = false,
                 isBuyEnabled = assetFull.details?.isBuyable == true,
-                isSwapEnabled = assetFull.details?.isSwapable == true,
                 isStakeEnabled = assetFull.details?.isStakeable == true,
                 stakingApr = assetFull.details?.stakingApr,
                 links = assetFull.details?.links?.let { gson.toJson(it) },
@@ -394,6 +399,12 @@ class AssetsRepository @Inject constructor(
         assetsDao.setConfig(config.copy(isVisible = visibility))
     }
 
+    private suspend fun syncSwapSupportChains() {
+        val chains = getSwapSupportChainsCase.getSwapSupportChains()
+        assetsDao.resetSwapable()
+        assetsDao.setSwapable(chains)
+    }
+
     private suspend fun updateBalances(account: Account, tokens: List<Asset>): List<AssetBalance> {
         val balances = balancesRemoteSource.getBalances(account, tokens)
         val updatedAt = System.currentTimeMillis()
@@ -518,6 +529,7 @@ class AssetsRepository @Inject constructor(
                 isBuyEnabled = room.isBuyEnabled,
                 isSwapEnabled = room.isSwapEnabled,
                 isStakeEnabled = room.isStakeEnabled,
+                isSellEnabled = false,
                 isPinned = false,
             ),
             links = if (room.links != null) gson.fromJson(room.links, AssetLinks::class.java) else null,
@@ -528,6 +540,7 @@ class AssetsRepository @Inject constructor(
 
     private fun modelToRoom(address: String, asset: Asset) = DbAsset(
         id = asset.id.toIdentifier(),
+        chain = asset.chain(),
         address = address,
         name = asset.name,
         symbol = asset.symbol,

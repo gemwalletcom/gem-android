@@ -52,12 +52,60 @@ class CosmosSignClient(
             )
             is ConfirmParams.RewardsParams -> getRewardsMessage(from, input.validatorsId)
             is ConfirmParams.UndelegateParams -> getUnstakeMessage(from, input.validatorId, getAmount(params.input.amount, denom))
-            is ConfirmParams.SwapParams,
+            is ConfirmParams.SwapParams -> when (chain) {
+                Chain.Thorchain -> listOf(getThorChainSwapMessage(params, coin))
+                else -> getTransferMessage(
+                    from = from,
+                    recipient = input.destination().address,
+                    coin = coin,
+                    amount = getAmount(params.finalAmount, denom = denom)
+                )
+            }
             is ConfirmParams.TokenApprovalParams,
             is ConfirmParams.WithdrawParams -> throw IllegalArgumentException()
         }
         return sign(params, privateKey, message)
     }
+
+    private fun getThorChainSwapMessage(params: SignerParams, coinType: CoinType): Message {
+        val swapParams = params.input as ConfirmParams.SwapParams
+        val message = Message.newBuilder().apply {
+            this.setThorchainDepositMessage(
+                Message.THORChainDeposit.newBuilder().apply {
+                    addCoins(
+                        Cosmos.THORChainCoin.newBuilder().apply {
+                            this.amount = params.input.amount.toString()
+                            this.asset = Cosmos.THORChainAsset.newBuilder().apply {
+                                this.chain = "THOR"
+                                this.symbol = "RUNE"
+                                this.ticker = "RUNE"
+                            }.build()
+                        }
+                    )
+                    this.memo = swapParams.swapData
+                    this.signer = ByteString.copyFrom(AnyAddress(params.owner, coinType).data())
+                }
+            )
+        }.build()
+        return message
+    }
+
+//    return CosmosMessage.with {
+//                $0.thorchainDepositMessage = CosmosMessage.THORChainDeposit.with {
+//                    $0.coins = [
+//                        CosmosTHORChainCoin.with {
+//                            $0.amount = input.value.description
+//                            $0.asset = CosmosTHORChainAsset.with {
+//                                $0.chain = chainName
+//                                $0.symbol = symbol
+//                                $0.ticker = symbol
+//                            }
+//                        }
+//                    ]
+//                    $0.memo = memo
+//                    $0.signer = AnyAddress(string: input.senderAddress, coin: chain.chain.coinType)!.data
+//                }
+//            }
 
     private fun getTransferMessage(
         from: String,
@@ -174,7 +222,7 @@ class CosmosSignClient(
             TransactionType.StakeRewards,
             TransactionType.StakeRedelegate,
             TransactionType.StakeWithdraw -> "Stake via Gem Wallet"
-            TransactionType.Swap,
+            TransactionType.Swap -> (input.input as? ConfirmParams.SwapParams)?.swapData ?: throw IllegalArgumentException("No swap data") // TODO: Doesn't for Throchain
             TransactionType.Transfer,
             TransactionType.TokenApproval -> input.input.memo() ?: ""
         }

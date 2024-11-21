@@ -4,6 +4,7 @@ import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
@@ -29,6 +30,7 @@ class BitcoinSignClient(
         val metadata = params.info as BitcoinSignerPreloader.Info
         val coinType = WCChainTypeProxy().invoke(chain)
         val gasFee = metadata.fee(txSpeed) as GasFee
+        val input = params.input
         val signingInput = Bitcoin.SigningInput.newBuilder().apply {
             this.coinType = coinType.value()
             this.hashType = BitcoinSigHashType.ALL.value()
@@ -37,6 +39,10 @@ class BitcoinSignClient(
             this.toAddress = params.input.destination()?.address
             this.changeAddress = params.owner
             this.useMaxAmount = params.input.isMax()
+            when (input) {
+                is ConfirmParams.SwapParams -> this.outputOpReturn = ByteString.copyFrom(input.swapData.toByteArray())
+                else -> {}
+            }
             this.addPrivateKey(ByteString.copyFrom(privateKey))
             this.addAllUtxo(metadata.utxo.getUtxoTransactions(params.owner, coinType))
             metadata.utxo.forEach {

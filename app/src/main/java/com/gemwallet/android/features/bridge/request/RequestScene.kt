@@ -63,7 +63,7 @@ fun RequestScene(
                     destination = DestinationAddress(address = (sceneState as RequestSceneState.SendTransaction).to),
                     memo = (sceneState as RequestSceneState.SendTransaction).data,
                 ),
-                finishAction = { assetId, hash -> viewModel.onSent(hash) },
+                finishAction = { assetId, hash, route -> viewModel.onSent(hash) },
                 cancelAction = viewModel::onReject
             )
         }

@@ -18,7 +18,7 @@ class BuyRepository @Inject constructor(
 ) {
 
     suspend fun sync() {
-        val fiatVersion = gemApi.getConfig().getOrNull()?.versions?.fiatAssets ?: return
+        val fiatVersion = gemApi.getConfig().getOrNull()?.versions?.fiatOnRampAssets ?: return
         val currentVersion =
             configStore.getInt(ConfigKey.FiatAssetsVersion.string)
         if (currentVersion > 0 && currentVersion >= fiatVersion) return

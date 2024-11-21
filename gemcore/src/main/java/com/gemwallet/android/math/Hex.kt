@@ -37,6 +37,8 @@ fun String.decodeHex(): ByteArray {
     }
 }
 
+fun String.append0x(): String = if (startsWith("0x")) this else "0x$this"
+
 fun String.hexToBigInteger(): BigInteger? = try {
     if (has0xPrefix()) BigInteger(clean0xPrefix(), 16) else BigInteger(this)
 } catch (err: NumberFormatException) {
