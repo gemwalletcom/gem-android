@@ -35,6 +35,7 @@ class TonSignClient(
                     this.bounceable = false
                 }.build()
             )
+            this.walletVersion = TheOpenNetwork.WalletVersion.WALLET_V4_R2
             this.privateKey = ByteString.copyFrom(privateKey)
         }.build()
         val output = AnySigner.sign(signingInput, CoinType.TON, TheOpenNetwork.SigningOutput.parser())
