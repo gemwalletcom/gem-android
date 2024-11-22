@@ -1,5 +1,7 @@
 package com.gemwallet.android.ui.models
 
+import androidx.compose.runtime.Stable
+import com.gemwallet.android.ext.same
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.interactors.getSupportIconUrl
 import com.gemwallet.android.model.AssetInfo
@@ -21,6 +23,7 @@ interface AssetItemUIModel : CryptoFormattedUIModel, FiatFormattedUIModel {
     val metadata: AssetMetaData?
 }
 
+@Stable
 class AssetInfoUIModel(
     val assetInfo: AssetInfo,
 ) : AssetItemUIModel {
@@ -54,4 +57,32 @@ class AssetInfoUIModel(
     override val position: Int by lazy { assetInfo.position }
 
     override val metadata: AssetMetaData? by lazy { assetInfo.metadata }
+
+    override fun equals(other: Any?): Boolean {
+        return (other is AssetInfoUIModel) && other.asset.id.same(asset.id)
+                && other.assetInfo.price == assetInfo.price
+                && other.assetInfo.balance == assetInfo.balance
+                && other.metadata?.isEnabled == assetInfo.metadata?.isEnabled
+                && other.metadata?.isSwapEnabled == assetInfo.metadata?.isSwapEnabled
+                && other.metadata?.isBuyEnabled == assetInfo.metadata?.isBuyEnabled
+                && other.metadata?.isStakeEnabled == assetInfo.metadata?.isStakeEnabled
+                && other.metadata?.isPinned == assetInfo.metadata?.isPinned
+                && other.metadata?.isSellEnabled == assetInfo.metadata?.isSellEnabled
+    }
+
+    override fun hashCode(): Int {
+        var result = assetInfo.hashCode()
+        result = 31 * result + asset.hashCode()
+        result = 31 * result + name.hashCode()
+        result = 31 * result + symbol.hashCode()
+        result = 31 * result + cryptoAmount.hashCode()
+        result = 31 * result + (fiat?.hashCode() ?: 0)
+        result = 31 * result + price.hashCode()
+        result = 31 * result + currency.hashCode()
+        result = 31 * result + owner.hashCode()
+        result = 31 * result + isZeroAmount.hashCode()
+        result = 31 * result + position
+        result = 31 * result + (metadata?.hashCode() ?: 0)
+        return result
+    }
 }

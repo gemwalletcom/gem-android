@@ -1,5 +1,6 @@
 package com.gemwallet.android.model
 
+import com.gemwallet.android.ext.same
 import com.wallet.core.primitives.Asset
 import java.math.BigInteger
 import kotlin.String
@@ -11,6 +12,13 @@ data class AssetBalance(
     val totalAmount: Double = 0.0,
     val fiatTotalAmount: Double = 0.0,
 ) {
+
+    override fun equals(other: Any?): Boolean {
+        return other is AssetBalance
+                && asset.id.same(other.asset.id)
+                && balance == other.balance
+                && totalAmount == other.totalAmount
+    }
     companion object {
         fun create(
             asset: Asset,
@@ -40,6 +48,16 @@ data class AssetBalance(
                 fiatTotalAmount = 0.0,
             )
         }
+    }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + asset.hashCode()
+        result = 31 * result + balance.hashCode()
+        result = 31 * result + balanceAmount.hashCode()
+        result = 31 * result + totalAmount.hashCode()
+        result = 31 * result + fiatTotalAmount.hashCode()
+        return result
     }
 }
 
