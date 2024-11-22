@@ -136,12 +136,20 @@ class SolanaSignClient(
                     this.tokenProgramId = tokenProgramId
                 }.build()
             } else {
+                val walletAddress = SolanaAddress(recipient)
+
+                val recipientTokenAddress = when (tokenProgramId) {
+                    Solana.TokenProgramId.TokenProgram -> walletAddress.defaultTokenAddress(tokenId)
+                    Solana.TokenProgramId.Token2022Program -> walletAddress.token2022Address(tokenId)
+                    else -> throw IllegalArgumentException("Incorrect Solana program")
+                }
+
                 this.tokenTransferTransaction = Solana.TokenTransfer.newBuilder().apply {
                     this.amount = amount
                     this.decimals = decimals
                     this.tokenMintAddress = tokenId
                     this.senderTokenAddress = metadata.senderTokenAddress
-                    this.recipientTokenAddress = metadata.recipientTokenAddress
+                    this.recipientTokenAddress = recipientTokenAddress
                     this.memo = input.input.memo() ?: ""
                     this.tokenProgramId = tokenProgramId
                 }.build()

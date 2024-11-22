@@ -1,4 +1,4 @@
-WALLET_CORE_VERSION ?= 4.1.5
+WALLET_CORE_VERSION ?= 4.1.19
 
 install:
 	@echo Install Rust

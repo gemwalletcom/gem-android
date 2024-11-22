@@ -28,7 +28,6 @@ class TonSignClient(
             expireAt = (System.currentTimeMillis() / 1000).toInt() + 600
             this.addMessages(
                 TheOpenNetwork.Transfer.newBuilder().apply {
-                    this.walletVersion = TheOpenNetwork.WalletVersion.WALLET_V4_R2
                     this.dest = params.input.destination()?.address
                     this.amount = params.finalAmount.toLong()
                     this.comment = params.input.memo() ?: ""
@@ -55,7 +54,6 @@ class TonSignClient(
         }.build()
 
         val transfer = TheOpenNetwork.Transfer.newBuilder().apply {
-            this.walletVersion = TheOpenNetwork.WalletVersion.WALLET_V4_R2
             this.dest = meta.jettonAddress
             this.amount = (meta.fee().options[tokenAccountCreationKey] ?: BigInteger.ZERO).toLong()
             if (!params.input.memo().isNullOrEmpty()) {
@@ -67,6 +65,7 @@ class TonSignClient(
         }.build()
 
         val signingInput = TheOpenNetwork.SigningInput.newBuilder().apply {
+            this.walletVersion = TheOpenNetwork.WalletVersion.WALLET_V4_R2
             this.sequenceNumber = meta.sequence
             this.addMessages(transfer)
             this.privateKey = ByteString.copyFrom(privateKey)
