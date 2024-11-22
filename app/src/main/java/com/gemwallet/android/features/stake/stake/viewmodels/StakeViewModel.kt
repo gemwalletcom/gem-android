@@ -11,6 +11,7 @@ import com.gemwallet.android.ext.byChain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.stake.stake.model.StakeError
 import com.gemwallet.android.features.stake.stake.model.StakeUIState
+import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
@@ -109,6 +110,7 @@ class StakeViewModel @Inject constructor(
                         loading = loading,
                         error = error,
                         assetId = asset.asset.id,
+                        assetIcon = asset.id().getIconUrl(),
                         walletType = walletType,
                         stakeChain = StakeChain.byChain(asset.asset.id.chain)!!,
                         assetDecimals = asset.asset.decimals,

@@ -11,6 +11,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
@@ -25,7 +28,9 @@ import com.gemwallet.android.features.transactions.details.viewmodels.Transactio
 import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.CellEntity
+import com.gemwallet.android.ui.components.InfoBottomSheet
 import com.gemwallet.android.ui.components.LoadingScene
+import com.gemwallet.android.ui.components.SheetEntity
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.image.AsyncImage
@@ -38,8 +43,6 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
-import uniffi.gemstone.Config
-import uniffi.gemstone.DocsUrl
 
 @Composable
 fun TransactionDetails(
@@ -47,6 +50,7 @@ fun TransactionDetails(
     viewModel: TransactionDetailsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.screenModel.collectAsStateWithLifecycle()
+    var showInfoSheet by remember { mutableStateOf<SheetEntity?>(null) }
 
     val uriHandler = LocalUriHandler.current
     val clipboardManager = LocalClipboardManager.current
@@ -133,14 +137,22 @@ fun TransactionDetails(
                             else -> {}
                         }
                     },
-                    infoUrl = Config().getDocsUrl(DocsUrl.TRANSACTION_STATUS),
                     data = when (model.state) {
                         TransactionState.Pending -> stringResource(id = R.string.transaction_status_pending)
                         TransactionState.Confirmed -> stringResource(id = R.string.transaction_status_confirmed)
                         TransactionState.Failed -> stringResource(id = R.string.transaction_status_failed)
                         TransactionState.Reverted -> stringResource(id = R.string.transaction_status_reverted)
                     },
-                    dataColor = dataColor
+                    dataColor = dataColor,
+                    onInfo = {
+                        showInfoSheet = SheetEntity.TransactionInfo(
+                            icon = model.assetIcon,
+                            state = model.state,
+                            onClose = {
+                                showInfoSheet = null
+                            }
+                        )
+                    }
                 ),
             )
             when (model.type) {
@@ -207,9 +219,16 @@ fun TransactionDetails(
             cells.add(
                 CellEntity(
                     label = stringResource(id = R.string.transfer_network_fee),
-                    infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
                     data = model.feeCrypto,
                     support = model.feeFiat,
+                    onInfo = {
+                        showInfoSheet = SheetEntity.NetworkFeeInfo(
+                            networkTitle = model.networkTitle,
+                            onClose = {
+                                showInfoSheet = null
+                            }
+                        )
+                    }
                 )
             )
             cells.add(
@@ -225,4 +244,5 @@ fun TransactionDetails(
             Table(items = cells)
         }
     }
+    InfoBottomSheet(item = showInfoSheet)
 }

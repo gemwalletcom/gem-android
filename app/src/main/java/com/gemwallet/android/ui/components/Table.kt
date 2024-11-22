@@ -39,7 +39,6 @@ import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.padding8
 import com.gemwallet.android.ui.components.image.AsyncImage
-import kotlin.String
 
 data class CellEntity<T>(
     val label: T,
@@ -52,9 +51,9 @@ data class CellEntity<T>(
     val trailing: (@Composable () -> Unit)? = null,
     val dropDownActions: (@Composable (() -> Unit) -> Unit)? = null,
     val showActionChevron: Boolean = true,
-    val infoUrl: String = "",
     val testTag: String = "",
     val action: (() -> Unit)? = null,
+    val onInfo: (() -> Unit)? = null,
 )
 
 @Composable
@@ -87,8 +86,8 @@ fun Table(
                         showActionChevron = item.showActionChevron,
                         trailingIcon = item.trailingIcon,
                         trailing = item.trailing,
-                        infoUrl =  item.infoUrl,
                         testTag = item.testTag,
+                        onInfo = item.onInfo,
                     )
                     DropdownMenu(
                         modifier = Modifier.align(Alignment.BottomEnd),
@@ -185,13 +184,13 @@ private fun Cell(
     icon: String? = null,
     dataColor: Color? = null,
     support: String? = null,
-    infoUrl: String = "",
     actionIcon: (@Composable () -> Unit)? = null,
     showActionChevron: Boolean = true,
     trailing: (@Composable () -> Unit)? = null,
     trailingIcon: String? = null,
     longAction: (() -> Unit)? = null,
     action: (() -> Unit)? = null,
+    onInfo: (() -> Unit)? = null,
 ) {
     val uriHandler = LocalUriHandler.current
     Cell(
@@ -210,10 +209,12 @@ private fun Cell(
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyLarge,
             )
-            if (infoUrl.isNotEmpty()) {
+            if (onInfo != null) {
                 Spacer4()
                 Icon(
-                    modifier = Modifier.size(20.dp).clickable(onClick = { uriHandler.open(infoUrl) }),
+                    modifier = Modifier
+                        .size(20.dp)
+                        .clickable(onClick = onInfo),
                     imageVector = Icons.Outlined.Info,
                     contentDescription = "",
                     tint = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),

@@ -302,7 +302,7 @@
   <string name="input.buy">покупки</string>
   <string name="input.sell">продажи</string>
   <string name="input.transfer">отправки</string>
-  <string name="settings.balance_privacy">Конфиденциальность баланса</string>
+  <string name="settings.hide_balance">Спрятать баланс</string>
   <string name="common.popular">Популярный</string>
   <string name="errors.dust_threshold">The transaction failed because the amount is too small to meet the %s network’s minimum requirement (dust threshold). This limit ensures the transaction value covers the fees and processing costs. Increase the amount or reduce the fees to proceed.</string>
   <string name="rootcheck.security_alert">Предупреждение о безопасности</string>

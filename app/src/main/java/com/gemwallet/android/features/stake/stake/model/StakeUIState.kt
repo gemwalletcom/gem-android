@@ -18,6 +18,7 @@ sealed interface StakeUIState {
         val error: StakeError,
         val walletType: WalletType,
         val assetId: AssetId,
+        val assetIcon: String? = "",
         val stakeChain: StakeChain,
         val assetDecimals: Int,
         val assetSymbol: String,

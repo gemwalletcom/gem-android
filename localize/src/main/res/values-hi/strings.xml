@@ -302,7 +302,7 @@
   <string name="input.buy">buy</string>
   <string name="input.sell">sell</string>
   <string name="input.transfer">transfer</string>
-  <string name="settings.balance_privacy">Balance Privacy</string>
+  <string name="settings.hide_balance">Hide Balance</string>
   <string name="common.popular">लोकप्रिय</string>
   <string name="errors.dust_threshold">The transaction failed because the amount is too small to meet the %s network’s minimum requirement (dust threshold). This limit ensures the transaction value covers the fees and processing costs. Increase the amount or reduce the fees to proceed.</string>
   <string name="rootcheck.security_alert">सुरक्षा चेतावनी</string>
