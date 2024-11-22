@@ -56,7 +56,7 @@ sealed class SheetEntity(
         icon = icon,
         badgeIcon = null,
         title = R.string.stake_lock_time,
-        description = com.gemwallet.android.localize.R.string.info_lock_time_description,
+        description = R.string.info_lock_time_description,
         infoUrl = Config().getDocsUrl(DocsUrl.STAKING_LOCK_TIME),
         onClose = onClose
     )
@@ -77,7 +77,7 @@ sealed class SheetEntity(
         description = when (state) {
             TransactionState.Pending -> R.string.info_transaction_pending_description
             TransactionState.Confirmed -> R.string.info_transaction_success_description
-            TransactionState.Failed, TransactionState.Reverted -> com.gemwallet.android.localize.R.string.info_transaction_error_description
+            TransactionState.Failed, TransactionState.Reverted -> R.string.info_transaction_error_description
         },
         infoUrl = Config().getDocsUrl(DocsUrl.TRANSACTION_STATUS),
         onClose = onClose
@@ -86,8 +86,8 @@ sealed class SheetEntity(
     class WatchWalletInfo(onClose: () -> Unit) : SheetEntity(
         icon = "android.resource://com.gemwallet.android/drawable/ic_splash",
         badgeIcon = "android.resource://com.gemwallet.android/drawable/watch_badge",
-        title = com.gemwallet.android.localize.R.string.info_watch_wallet_title,
-        description = com.gemwallet.android.localize.R.string.info_watch_wallet_description,
+        title = R.string.info_watch_wallet_title,
+        description = R.string.info_watch_wallet_description,
         infoUrl = Config().getDocsUrl(DocsUrl.WHAT_IS_WATCH_WALLET),
         onClose = onClose
     )
