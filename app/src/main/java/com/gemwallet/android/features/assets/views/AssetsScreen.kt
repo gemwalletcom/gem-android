@@ -157,12 +157,16 @@ private fun LazyListScope.assetsListFooter(
     onShowAssetManage: () -> Unit,
 ) {
     item {
-        Box(modifier = Modifier
-            .clickable(onClick = onShowAssetManage)
-            .fillMaxWidth()) {
-            Row(modifier = Modifier
-                .align(Alignment.Center)
-                .padding(16.dp)) {
+        Box(
+            modifier = Modifier
+                .clickable(onClick = onShowAssetManage)
+                .fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .padding(16.dp)
+            ) {
                 Icon(
                     imageVector = Icons.Default.Tune,
                     tint = MaterialTheme.colorScheme.onSurface,
