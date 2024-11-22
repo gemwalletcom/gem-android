@@ -101,6 +101,7 @@ android {
                 ndk {
                     abiFilters.remove("arm64-v8a")
                     abiFilters.remove("armeabi-v7a")
+                    abiFilters.add("x86_64")
                 }
 
                 splits {
