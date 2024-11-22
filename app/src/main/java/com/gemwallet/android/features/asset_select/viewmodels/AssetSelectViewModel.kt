@@ -55,6 +55,8 @@ open class BaseAssetSelectViewModel(
 ) : ViewModel() {
 
     val queryState = TextFieldState()
+    private val searchState = MutableStateFlow<SearchState>(SearchState.Searching)
+
     private val queryFlow = snapshotFlow<String> { queryState.text.toString() }
         .onEach { searchState.update { SearchState.Searching } }
         .mapLatest { query ->
@@ -64,8 +66,6 @@ open class BaseAssetSelectViewModel(
         }
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
-
-    private val searchState = MutableStateFlow<SearchState>(SearchState.Searching)
 
     val assets = combine(sessionRepository.session(), queryFlow, getExclude.invoke()) { session, query, exclude ->
         Triple(session, query, exclude)
