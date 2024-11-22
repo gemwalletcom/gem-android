@@ -116,6 +116,11 @@ suspend fun SolanaRpcClient.delegations(
     return delegations(request)
 }
 
+suspend fun SolanaRpcClient.getPriorityFees(): List<SolanaPrioritizationFee> {
+    val request = JSONRpcRequest.create(SolanaMethod.GetPriorityFee, listOf<String>())
+    return getPriorityFees(request).getOrNull()?.result ?: throw Exception()
+}
+
 suspend fun SolanaRpcClient.health(url: String): Response<JSONRpcResponse<String>> {
     return health(url, JSONRpcRequest.create(SolanaMethod.GetHealth, emptyList()))
 }

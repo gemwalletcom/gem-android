@@ -30,7 +30,7 @@ class SolanaSignerPreloader(
             rpcClient.getBlockhash(JSONRpcRequest.create(SolanaMethod.GetLatestBlockhash, emptyList()))
                 .getOrNull()?.result?.value?.blockhash
         }
-        val feeJob = async { SolanaFee().invoke(rpcClient) }
+        val feeJob = async { SolanaFee().invoke(rpcClient, params.getTxType(), params.assetId.type()) }
         val (fee, blockhash) = Pair(feeJob.await(), blockhashJob.await())
 
         if (blockhash.isNullOrEmpty()) {

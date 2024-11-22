@@ -22,4 +22,5 @@ class GasFee(
     val minerFee: BigInteger = BigInteger.ZERO,
     val relay: BigInteger = BigInteger.ZERO,
     amount: BigInteger = limit.multiply(maxGasPrice).add(relay),
-) : Fee(feeAssetId = feeAssetId, speed = speed, amount = amount)
+    options: Map<String, BigInteger> = emptyMap()
+) : Fee(feeAssetId = feeAssetId, speed = speed, amount = amount, options = options)

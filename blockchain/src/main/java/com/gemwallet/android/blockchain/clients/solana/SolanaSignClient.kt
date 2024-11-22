@@ -4,10 +4,10 @@ import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
-import com.google.protobuf.MessageLite
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.SolanaTokenProgramId
@@ -20,6 +20,7 @@ import wallet.core.jni.Curve
 import wallet.core.jni.PrivateKey
 import wallet.core.jni.SolanaAddress
 import wallet.core.jni.proto.Solana
+import java.math.BigInteger
 
 class SolanaSignClient(
     private val chain: Chain,
@@ -44,7 +45,9 @@ class SolanaSignClient(
         txSpeed: TxSpeed,
         privateKey: ByteArray
     ): ByteArray {
+        val fee = params.info.fee(txSpeed) as GasFee
         val recentBlockhash = (params.info as SolanaSignerPreloader.Info).blockhash
+
         return when(params.input.getTxType()) {
             TransactionType.Swap -> swap(params, privateKey).toByteArray()
             TransactionType.Transfer -> {
@@ -53,10 +56,10 @@ class SolanaSignClient(
                     AssetSubtype.TOKEN -> signToken(params)
                 }
                 signInput.privateKey = ByteString.copyFrom(privateKey)
-                sign(message = signInput.build())
+                sign(input = signInput, fee = fee)
             }
             TransactionType.StakeDelegate -> {
-                val signingInput = Solana.SigningInput.newBuilder().apply {
+                val signInput = Solana.SigningInput.newBuilder().apply {
                     this.recentBlockhash = recentBlockhash
                     this.delegateStakeTransaction = Solana.DelegateStake.newBuilder().apply {
                         this.validatorPubkey = (params.input as ConfirmParams.DelegateParams).validatorId
@@ -64,20 +67,20 @@ class SolanaSignClient(
                     }.build()
                     this.privateKey = ByteString.copyFrom(privateKey)
                 }
-                sign(message = signingInput.build())
+                sign(input = signInput, fee = fee)
             }
             TransactionType.StakeUndelegate -> {
-                val signingInput = Solana.SigningInput.newBuilder().apply {
+                val signInput = Solana.SigningInput.newBuilder().apply {
                     this.recentBlockhash = recentBlockhash
                     this.deactivateStakeTransaction = Solana.DeactivateStake.newBuilder().apply {
                         this.stakeAccount = (params.input as ConfirmParams.UndelegateParams).delegationId
                     }.build()
                     this.privateKey = ByteString.copyFrom(privateKey)
                 }
-                sign(message = signingInput.build())
+                sign(input = signInput, fee = fee)
             }
             TransactionType.StakeWithdraw -> {
-                val signingInput = Solana.SigningInput.newBuilder().apply {
+                val signInput = Solana.SigningInput.newBuilder().apply {
                     this.recentBlockhash = recentBlockhash
                     this.withdrawTransaction = Solana.WithdrawStake.newBuilder().apply {
                         stakeAccount = (params.input as ConfirmParams.WithdrawParams).delegationId
@@ -85,7 +88,7 @@ class SolanaSignClient(
                     }.build()
                     this.privateKey = ByteString.copyFrom(privateKey)
                 }
-                sign(message = signingInput.build())
+                sign(input = signInput, fee = fee)
             }
             TransactionType.TokenApproval,
             TransactionType.StakeRedelegate,
@@ -158,8 +161,18 @@ class SolanaSignClient(
         return Base64.encode(signed + signature + message)
     }
 
-    private fun sign(message: MessageLite): ByteArray {
-        val output = AnySigner.sign(message, CoinType.SOLANA, Solana.SigningOutput.parser())
+    private fun sign(input: Solana.SigningInput.Builder, fee: GasFee): ByteArray {
+        input.apply {
+            this.priorityFeeLimit = Solana.PriorityFeeLimit.newBuilder().apply {
+                this.limit = fee.limit.toInt()
+            }.build()
+            if (fee.minerFee > BigInteger.ZERO) {
+                this.priorityFeePrice = Solana.PriorityFeePrice.newBuilder().apply {
+                    this.price = fee.minerFee.toLong()
+                }.build()
+            }
+        }
+        val output = AnySigner.sign(input.build(), CoinType.SOLANA, Solana.SigningOutput.parser())
         val data = Base58.decodeNoCheck(output.encoded) ?: throw IllegalStateException("string is not Base58 encoding!")
         val base64 = Base64.encode(data)
         val offset = base64.length % 4
