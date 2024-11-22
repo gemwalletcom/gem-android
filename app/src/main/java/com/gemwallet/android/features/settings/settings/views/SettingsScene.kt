@@ -47,6 +47,8 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
 import uniffi.gemstone.Config
+import uniffi.gemstone.DocsUrl
+import uniffi.gemstone.PublicUrl
 import uniffi.gemstone.SocialUrl
 import java.util.Locale
 
@@ -178,6 +180,18 @@ fun SettingsScene(
             }
             HorizontalDivider(modifier = Modifier, thickness = 0.4.dp)
 
+            LinkItem(
+                title = stringResource(id = R.string.settings_help_center),
+                icon = R.drawable.settings_help_center,
+            ) {
+                uriHandler.open(Config().getDocsUrl(DocsUrl.START))
+            }
+            LinkItem(
+                title = stringResource(id = R.string.settings_support),
+                icon = R.drawable.settings_support,
+            ) {
+                uriHandler.open(Config().getPublicUrl(PublicUrl.SUPPORT))
+            }
             LinkItem(
                 title = stringResource(id = R.string.settings_aboutus),
                 icon = R.drawable.settings_about_us,
