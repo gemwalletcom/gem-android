@@ -74,18 +74,14 @@ fun AssetsScreen(
     onSendClick: () -> Unit,
     onReceiveClick: () -> Unit,
     onBuyClick: () -> Unit,
-    onSwapClick: () -> Unit,
     onAssetClick: (AssetId) -> Unit,
     listState: LazyListState = rememberLazyListState(),
     viewModel: AssetsViewModel = hiltViewModel(),
 ) {
-    val pinnedAssetsState by viewModel.pinnedAssets.collectAsStateWithLifecycle()
+    val pinnedAssets by viewModel.pinnedAssets.collectAsStateWithLifecycle()
     val unpinnedAssets by viewModel.unpinnedAssets.collectAsStateWithLifecycle()
     val walletInfo by viewModel.walletInfo.collectAsStateWithLifecycle()
-    val swapEnabled by viewModel.swapEnabled.collectAsStateWithLifecycle()
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
-
-    var pinnedAssets by remember(pinnedAssetsState.map { it.asset.id.toIdentifier() }.joinToString()) { mutableStateOf(pinnedAssetsState) }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -111,7 +107,7 @@ fun AssetsScreen(
                 modifier = Modifier.testTag("assets_list"),
                 state = listState
             ) {
-                assetsHead(walletInfo, swapEnabled, onSendClick, onReceiveClick, onBuyClick, onSwapClick)
+                assetsHead(walletInfo, onSendClick, onReceiveClick, onBuyClick)
                 assets(
                     assets = pinnedAssets,
                     longPressState = longPressedAsset,
@@ -136,11 +132,9 @@ fun AssetsScreen(
 
 private fun LazyListScope.assetsHead(
     walletInfo: WalletInfoUIState,
-    swapEnabled: Boolean,
     onSendClick: () -> Unit,
     onReceiveClick: () -> Unit,
     onBuyClick: () -> Unit,
-    onSwapClick: () -> Unit,
 ) {
     item {
         AmountListHead(

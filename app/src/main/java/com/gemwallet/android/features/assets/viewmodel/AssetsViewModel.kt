@@ -12,17 +12,13 @@ import com.gemwallet.android.interactors.sync.SyncTransactions
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SyncState
-import com.gemwallet.android.model.WalletSummary
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,6 +36,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.map
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -63,40 +60,22 @@ class AssetsViewModel @Inject constructor(
     private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAssetsInfo()
 
     private val assets: StateFlow<List<AssetItemUIModel>> = assetsState
-        .map { handleAssets(it) }
+        .map { it.map { AssetInfoUIModel(it) }.toImmutableList() }
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val pinnedAssets = assets.map { items ->
-        items.filter { asset -> asset.metadata?.isPinned == true }.sortedBy { it.position }
-    }
-    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    val pinnedAssets = assets
+        .map { items -> items.filter { asset -> asset.metadata?.isPinned == true }}
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val unpinnedAssets = assets.map { it.filter { asset -> asset.metadata?.isPinned != true } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val swapEnabled = assetsState.map {assets ->
-        assets.any { asset ->
-            EVMChain.entries.map { it.string }
-                .contains(asset.owner.chain.string) || asset.owner.chain == Chain.Solana
-        }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
-
     val walletInfo: StateFlow<WalletInfoUIState> = sessionRepository.session().combine(assetsState) {session, assets ->
-        if (session == null) {
-            return@combine null
-        }
-        val walletInfo = calcWalletInfo(session.wallet, assets)
-        WalletInfoUIState(
-            name = walletInfo.name,
-            icon = walletInfo.icon,
-            totalValue = session.currency.format(walletInfo.totalValue),
-            changedValue = session.currency.format(walletInfo.changedValue),
-            changedPercentages = PriceUIState.formatPercentage(walletInfo.changedPercentages),
-            priceState = PriceUIState.getState(walletInfo.changedPercentages),
-            type = walletInfo.type,
-        )
+        val wallet = session?.wallet ?: return@combine null
+        calcWalletInfo(wallet, assets)
     }
+    .flowOn(Dispatchers.IO)
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, WalletInfoUIState())
 
@@ -118,12 +97,6 @@ class AssetsViewModel @Inject constructor(
         }
     }
 
-    private fun handleAssets(assets: List<AssetInfo>): ImmutableList<AssetItemUIModel> {
-        return assets.filter { asset -> asset.metadata?.isEnabled == true }
-            .map { AssetInfoUIModel(it) }
-            .toImmutableList()
-    }
-
     fun hideAsset(assetId: AssetId) {
         viewModelScope.launch(Dispatchers.IO) {
             val session = sessionRepository.getSession() ?: return@launch
@@ -132,27 +105,31 @@ class AssetsViewModel @Inject constructor(
         }
     }
 
-    private fun calcWalletInfo(wallet: Wallet, assets: List<AssetInfo>): WalletSummary {
-        val totals = assets.map {
+    private fun calcWalletInfo(wallet: Wallet, assets: List<AssetInfo>): WalletInfoUIState? {
+        val (totalValue, changedValue) = assets.map {
             val current = it.balance.fiatTotalAmount
             val changed = current * ((it.price?.price?.priceChangePercentage24h ?: 0.0) / 100)
             Pair(current, changed)
         }.fold(Pair(0.0, 0.0)) { acc, pair ->
             Pair(acc.first + pair.first, acc.second + pair.second)
         }
-        val changedPercentages = totals.second / (totals.first / 100.0)
-        return WalletSummary(
-            walletId = wallet.id,
+        val changedPercentages = (changedValue / (totalValue / 100.0)).let {
+            if (it.isNaN()) 0.0 else it
+        }
+        val icon = if (wallet.type == WalletType.multicoin) {
+            ""
+        } else {
+            wallet.accounts.firstOrNull()?.chain?.getIconUrl() ?: ""
+        }
+        val currency = assets.firstOrNull()?.price?.currency ?: return null
+        return WalletInfoUIState(
             name = wallet.name,
-            icon = if (wallet.type == WalletType.multicoin) {
-                ""
-            } else {
-                wallet.accounts.firstOrNull()?.chain?.getIconUrl() ?: ""
-            },
+            icon = icon,
+            totalValue = currency.format(totalValue),
+            changedValue = currency.format(changedValue),
+            changedPercentages = PriceUIState.formatPercentage(changedPercentages),
+            priceState = PriceUIState.getState(changedPercentages),
             type = wallet.type,
-            totalValue = totals.first,
-            changedValue = totals.second,
-            changedPercentages = if (changedPercentages.isNaN()) 0.0 else changedPercentages,
         )
     }
 

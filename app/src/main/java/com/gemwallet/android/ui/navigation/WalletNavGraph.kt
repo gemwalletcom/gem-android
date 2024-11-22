@@ -105,7 +105,7 @@ fun WalletNavGraph(
                 }
             )
         ) {
-            val reset = it.arguments?.getBoolean("reset") ?: false
+            val reset = it.arguments?.getBoolean("reset") == true
             if (reset) {
                 currentTab.value = assetsRoute
             }
@@ -122,7 +122,6 @@ fun WalletNavGraph(
                 onSendClick = navController::navigateToRecipientInput,
                 onReceiveClick = navController::navigateToReceiveScreen,
                 onBuyClick = navController::navigateToBuyScreen,
-                onSwapClick = navController::navigateToSwap,
                 onAssetClick = navController::navigateToAssetScreen,
             )
 

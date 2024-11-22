@@ -21,7 +21,6 @@ fun NavGraphBuilder.assetsScreen(
     onSendClick: () -> Unit,
     onReceiveClick: () -> Unit,
     onBuyClick: () -> Unit,
-    onSwapClick: () -> Unit,
     onShowAssetManage: () -> Unit,
     onAssetClick: (AssetId) -> Unit,
 ) {
@@ -36,7 +35,6 @@ fun NavGraphBuilder.assetsScreen(
             onSendClick = onSendClick,
             onReceiveClick = onReceiveClick,
             onBuyClick = onBuyClick,
-            onSwapClick = onSwapClick,
             onAssetClick = onAssetClick,
         )
     }

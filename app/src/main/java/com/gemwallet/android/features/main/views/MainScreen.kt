@@ -54,7 +54,6 @@ import com.gemwallet.android.features.settings.navigation.navigateToSecurityScre
 import com.gemwallet.android.features.settings.navigation.navigateToSettingsScreen
 import com.gemwallet.android.features.settings.navigation.settingsRoute
 import com.gemwallet.android.features.settings.settings.views.SettingsScene
-import com.gemwallet.android.features.swap.navigation.navigateToSwap
 import com.gemwallet.android.features.transactions.list.views.TransactionsScreen
 import com.gemwallet.android.features.transactions.navigation.activitiesRoute
 import com.gemwallet.android.features.transactions.navigation.navigateToActivitiesScreen
@@ -176,7 +175,6 @@ fun MainScreen(
                     onSendClick = navController::navigateToRecipientInput,
                     onReceiveClick = navController::navigateToReceiveScreen,
                     onBuyClick = navController::navigateToBuyScreen,
-                    onSwapClick = navController::navigateToSwap,
                     onAssetClick = navController::navigateToAssetScreen,
                     listState = assetsListState,
                 )
