@@ -12,7 +12,7 @@ import com.wallet.core.primitives.TransactionType
 
 class SolanaFee {
 
-    private val staticBaseFee = 50_000L
+    private val staticBaseFee = 5_000L
     private val tokenAccountSize = 165
 
     suspend operator fun invoke(rpcClient: SolanaRpcClient, transactionType: TransactionType, assetType: AssetSubtype): Fee {
