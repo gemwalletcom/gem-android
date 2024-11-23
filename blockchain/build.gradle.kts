@@ -37,7 +37,7 @@ dependencies {
     //noinspection UseTomlInstead
     api("com.gemwallet.gemstone:gemstone:1.0.0@aar")
     // Local wallet core
-    api(files("../libs/wallet-core-4.1.5-sources.jar"))
+    api(files("../libs/wallet-core-4.1.19-sources.jar"))
     implementation(project(":wallet-core"))
     implementation(project(":wallet-core-proto"))
     // Protobuf

@@ -171,7 +171,7 @@ dependencies {
     //noinspection UseTomlInstead
     api("net.java.dev.jna:jna:5.15.0@aar")
     // Local wallet core
-    api(files("../libs/wallet-core-4.1.5-sources.jar"))
+    api(files("../libs/wallet-core-4.1.19-sources.jar"))
     implementation(project(":wallet-core"))
     implementation(project(":wallet-core-proto"))
 
