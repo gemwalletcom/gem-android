@@ -67,15 +67,15 @@ class AssetChartViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private fun List<AssetLink>.toModel() = mapNotNull {
-        val label = when (it.name) {
-            "coingecko" -> R.string.social_coingecko
-            "twitter" -> R.string.social_x
-            "telegram" -> R.string.social_telegram
-            "github" -> R.string.social_github
+        val (label, icon) = when (it.name) {
+            "coingecko" -> Pair(R.string.social_coingecko, R.drawable.coingecko)
+            "twitter" -> Pair(R.string.social_x, R.drawable.twitter)
+            "telegram" -> Pair(R.string.social_telegram, R.drawable.telegram)
+            "github" -> Pair(R.string.social_github, R.drawable.github)
             else -> return@mapNotNull null
         }
         AssetMarketUIModel.Link(
-            it.name, it.url, label
+            it.name, it.url, label, icon
         )
     }
 }

@@ -63,6 +63,8 @@ dependencies {
 
     // Images
     api(libs.coil.compose)
+    api(libs.coil.network)
+
 
     // Permissions request
     api(libs.compose.permissions)

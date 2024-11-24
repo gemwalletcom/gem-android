@@ -64,7 +64,7 @@ private fun SelectImportTypeScene(
                     ChainItem(
                         modifier = Modifier.testTag("multicoin_item"),
                         title = stringResource(id = R.string.wallet_multicoin),
-                        icon = "android.resource://com.gemwallet.android/drawable/ic_splash",
+                        icon = "android.resource://com.gemwallet.android/drawable/${R.drawable.ic_splash}",
                         dividerShowed = false,
                     ) {
                         onSelect(ImportType(WalletType.multicoin))

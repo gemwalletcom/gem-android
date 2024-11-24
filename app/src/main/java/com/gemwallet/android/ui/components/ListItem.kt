@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import com.gemwallet.android.ui.components.designsystem.listItemIconSize
 import com.gemwallet.android.ui.components.designsystem.padding12
 import com.gemwallet.android.ui.components.designsystem.padding16

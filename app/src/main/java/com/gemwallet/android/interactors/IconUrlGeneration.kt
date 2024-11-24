@@ -21,5 +21,3 @@ fun AssetId.getIconUrl(): String {
 fun Chain.getIconUrl(): String = "file:///android_asset/chains/icons/${string}.png"
 
 fun FiatProvider.getIcon(): String = "file:///android_asset/fiat/${name.lowercase()}.png"
-
-fun String.getDrawableUri(): String = "android.resource://com.gemwallet.android/drawable/$this"

@@ -67,9 +67,9 @@ fun WalletItem(
 ) {
     ListItem(
         modifier = modifier.heightIn(72.dp),
-        iconUrl = icon.ifEmpty { "android.resource://com.gemwallet.android/drawable/multicoin_wallet" },
+        iconUrl = icon.ifEmpty { "android.resource://com.gemwallet.android/drawable/${R.drawable.multicoin_wallet}" },
         supportIcon = if (type == WalletType.view) {
-            "android.resource://com.gemwallet.android/drawable/watch_badge"
+            "android.resource://com.gemwallet.android/drawable/${R.drawable.watch_badge}"
         } else null,
         trailing = {
             Row(
