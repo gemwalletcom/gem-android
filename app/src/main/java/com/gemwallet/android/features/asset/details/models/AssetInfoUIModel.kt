@@ -3,6 +3,7 @@ package com.gemwallet.android.features.asset.details.models
 import com.gemwallet.android.ui.models.PriceState
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.WalletType
 
@@ -15,6 +16,8 @@ class AssetInfoUIModel(
     val priceChangedType: PriceState = PriceState.Up,
     val tokenType: AssetType = AssetType.NATIVE,
     val networkTitle: String = "",
+    val networkIcon: String = "",
+    val chain: Chain,
     val account: Account = Account(),
     val isBuyEnabled: Boolean = false,
     val isSwapEnabled: Boolean = false,

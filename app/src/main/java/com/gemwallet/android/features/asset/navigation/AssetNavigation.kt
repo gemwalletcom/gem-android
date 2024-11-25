@@ -5,7 +5,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import androidx.navigation.navOptions
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.urlDecode
@@ -18,9 +17,7 @@ internal const val assetIdArg = "assetId"
 const val assetRoute = "asset"
 
 fun NavController.navigateToAssetScreen(assetId: AssetId, navOptions: NavOptions? = null) {
-    navigate("$assetRoute/${assetId.toIdentifier().urlEncode()}", navOptions  ?: navOptions {
-        launchSingleTop = true
-    })
+    navigate("$assetRoute/${assetId.toIdentifier().urlEncode()}", navOptions)
 }
 
 fun NavGraphBuilder.assetScreen(
@@ -31,6 +28,7 @@ fun NavGraphBuilder.assetScreen(
     onSwap: (AssetId?, AssetId?) -> Unit,
     onTransaction: (txId: String) -> Unit,
     onChart: (AssetId) -> Unit,
+    onChain: (AssetId) -> Unit,
     onStake: (AssetId) -> Unit,
 ) {
     composable(
@@ -52,6 +50,7 @@ fun NavGraphBuilder.assetScreen(
                 onSwap = onSwap,
                 onTransaction = onTransaction,
                 onChart = onChart,
+                onChain = onChain,
                 onStake = onStake,
             )
         }

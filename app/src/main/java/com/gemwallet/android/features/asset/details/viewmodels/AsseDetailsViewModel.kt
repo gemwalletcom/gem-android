@@ -9,6 +9,7 @@ import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.isStaked
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.type
@@ -153,6 +154,8 @@ class AsseDetailsViewModel @Inject constructor(
                 ),
                 tokenType = asset.type,
                 networkTitle = "${asset.id.chain.asset().name} (${asset.type.string})",
+                networkIcon = AssetId(asset.id.chain).getIconUrl(),
+                chain = asset.chain(),
                 isBuyEnabled = assetInfo.metadata?.isBuyEnabled == true,
                 isSwapEnabled = assetInfo.metadata?.isSwapEnabled == true,
                 account = AssetInfoUIModel.Account(
