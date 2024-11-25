@@ -52,8 +52,8 @@ data class CellEntity<T>(
     val dropDownActions: (@Composable (() -> Unit) -> Unit)? = null,
     val showActionChevron: Boolean = true,
     val testTag: String = "",
-    val action: (() -> Unit)? = null,
     val onInfo: (() -> Unit)? = null,
+    val action: (() -> Unit)? = null,
 )
 
 @Composable

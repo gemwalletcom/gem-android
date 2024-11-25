@@ -31,10 +31,11 @@ import com.gemwallet.android.model.AssetPriceInfo
 import com.gemwallet.android.model.Balance
 import com.gemwallet.android.model.SyncState
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.AssetLinks
+import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
@@ -138,9 +139,15 @@ class AssetsRepository @Inject constructor(
         val updatePriceJob = async { updatePrices(currency, assetId) }
         val updateBalancesJob = async { updateBalances(assetId) }
         val getAssetFull = async {
-            val assetFull = gemApi.getAsset(assetId.toIdentifier(), currency.string)
-                .getOrNull() ?: return@async
+            val assetFullJob = async {
+                gemApi.getAsset(assetId.toIdentifier(), currency.string).getOrNull()
+            }
+            val marketInfoJob = async {
+                gemApi.getMarket(assetId.toIdentifier(), currency.string).getOrNull()
+            }
 
+            val assetFull = assetFullJob.await() ?: return@async
+            val marketInfo = marketInfoJob.await()
             val gson = Gson()
             val asset = getAssetInfo(assetId).map {
                 DbAsset(
@@ -151,12 +158,12 @@ class AssetsRepository @Inject constructor(
                     decimals = it.asset.decimals,
                     type = it.asset.type,
                     chain = it.asset.chain(),
-                    isBuyEnabled = assetFull.details?.isBuyable == true,
-                    isStakeEnabled = assetFull.details?.isStakeable == true,
+                    isBuyEnabled = assetFull.properties.isBuyable == true,
+                    isStakeEnabled = assetFull.properties.isStakeable == true,
                     isSwapEnabled = getSwapSupportChainsCase.getSwapSupportChains().contains(it.id().chain),
-                    stakingApr = assetFull.details?.stakingApr,
-                    links =  assetFull.details?.links?.let { gson.toJson(it) },
-                    market = assetFull.market?.let { gson.toJson(it) },
+                    stakingApr = assetFull.properties.stakingApr,
+                    links =  assetFull.links.let { gson.toJson(it) },
+                    market = marketInfo?.market?.let { gson.toJson(it) },
                     rank = assetFull.score.rank,
                     updatedAt = System.currentTimeMillis(),
                 )
@@ -275,11 +282,11 @@ class AssetsRepository @Inject constructor(
                 symbol = assetFull.asset.symbol,
                 decimals = assetFull.asset.decimals,
                 type = assetFull.asset.type,
-                isBuyEnabled = assetFull.details?.isBuyable == true,
-                isStakeEnabled = assetFull.details?.isStakeable == true,
-                stakingApr = assetFull.details?.stakingApr,
-                links = assetFull.details?.links?.let { gson.toJson(it) },
-                market = assetFull.market?.let { gson.toJson(it) },
+                isBuyEnabled = assetFull.properties.isBuyable == true,
+                isStakeEnabled = assetFull.properties.isStakeable == true,
+                stakingApr = assetFull.properties.stakingApr,
+                links = assetFull.links.let { gson.toJson(it) },
+//                market = assetFull.market?.let { gson.toJson(it) },
                 rank = assetFull.score.rank,
             )
         }
@@ -541,7 +548,13 @@ class AssetsRepository @Inject constructor(
                 isSellEnabled = false,
                 isPinned = false,
             ),
-            links = if (room.links != null) gson.fromJson(room.links, AssetLinks::class.java) else null,
+            links = if (room.links != null) {
+                try {
+                    gson.fromJson(room.links, object : TypeToken<List<AssetLink>>() {}.type)
+                } catch (_: Throwable) {
+                    emptyList()
+                }
+            } else emptyList(),
             market = if (room.market != null) gson.fromJson(room.market, AssetMarket::class.java) else null,
             rank = room.rank,
         )

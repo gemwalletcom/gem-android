@@ -11,6 +11,7 @@ import com.wallet.core.primitives.FiatAssets
 import com.wallet.core.primitives.FiatQuotes
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.PriceAlert
+import com.wallet.core.primitives.PriceData
 import com.wallet.core.primitives.Subscription
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -71,6 +72,9 @@ interface GemApiClient {
 
     @GET("/v1/assets/{asset_id}")
     suspend fun getAsset(@Path("asset_id") assetId: String, @Query("currency") currency: String): Result<AssetFull>
+
+    @GET("/v1/prices/{asset_id}")
+    suspend fun getMarket(@Path("asset_id") assetId: String, @Query("currency") currency: String): Result<PriceData>
 
     @POST("/v1/assets")
     suspend fun getAssets(@Body ids: List<String>): Result<List<AssetFull>>

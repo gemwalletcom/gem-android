@@ -13,6 +13,7 @@ import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetFull
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetProperties
 import com.wallet.core.primitives.AssetScore
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
@@ -60,7 +61,7 @@ class TokensRepository (
             }
             .awaitAll()
             .mapNotNull { it }
-            .map { AssetFull(asset = it, score = AssetScore(0)) }
+            .map { AssetFull(asset = it, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false)) }
             addTokens(assets)
         } else {
             addTokens(tokens.filter { it.asset.id != null })
@@ -76,7 +77,7 @@ class TokensRepository (
             search(tokenId)
             return
         }
-        addTokens(listOf(AssetFull(asset, score = AssetScore(0))))
+        addTokens(listOf(AssetFull(asset, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false))))
     }
 
     override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {

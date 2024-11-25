@@ -8,8 +8,10 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.AssetPriceInfo
 import com.gemwallet.android.model.Balance
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
+import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.AssetLinks
 import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.AssetMetaData
@@ -82,10 +84,16 @@ class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo
                     isPinned = entity.pinned == true,
                     isSellEnabled = false
                 ),
-                links = if (entity.links != null) gson.fromJson(
-                    entity.links,
-                    AssetLinks::class.java
-                ) else null,
+                links = if (entity.links != null) {
+                    try {
+                        gson.fromJson(
+                            entity.links,
+                            object : TypeToken<List<AssetLink>>() {}.type
+                        )
+                    } catch (_: Throwable) {
+                        emptyList()
+                    }
+                } else emptyList(),
                 market = if (entity.market != null) gson.fromJson(
                     entity.market,
                     AssetMarket::class.java

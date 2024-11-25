@@ -10,12 +10,6 @@ import androidx.compose.runtime.NoLiveLiterals
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class AssetLink (
-	val name: String,
-	val url: String
-)
-
-@Serializable
 data class AssetInfo (
 	val website: String,
 	val links: List<AssetLink>

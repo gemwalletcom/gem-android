@@ -8,6 +8,22 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
+data class AssetProperties (
+	val isBuyable: Boolean,
+	val isSellable: Boolean,
+	val isSwapable: Boolean,
+	val isStakeable: Boolean,
+	val stakingApr: Double? = null
+)
+
+@Serializable
+data class AssetBasic (
+	val asset: Asset,
+	val properties: AssetProperties,
+	val score: AssetScore
+)
+
+@Serializable
 data class AssetLinks (
 	val homepage: String? = null,
 	val explorer: String? = null,
@@ -39,11 +55,16 @@ data class AssetDetailsInfo (
 )
 
 @Serializable
+data class AssetLink (
+	val name: String,
+	val url: String
+)
+
+@Serializable
 data class AssetFull (
 	val asset: Asset,
-	val details: AssetDetails? = null,
-	val price: Price? = null,
-	val market: AssetMarket? = null,
+	val links: List<AssetLink>,
+	val properties: AssetProperties,
 	val score: AssetScore
 )
 

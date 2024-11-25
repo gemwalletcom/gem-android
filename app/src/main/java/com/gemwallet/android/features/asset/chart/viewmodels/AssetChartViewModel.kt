@@ -11,7 +11,7 @@ import com.gemwallet.android.features.asset.navigation.assetIdArg
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.CellEntity
-import com.wallet.core.primitives.AssetLinks
+import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,7 +41,7 @@ class AssetChartViewModel @Inject constructor(
         AssetMarketUIModel(
             assetId = asset.id,
             assetTitle = asset.name,
-            assetLinks = assetInfo.links?.toModel() ?: emptyList(),
+            assetLinks = assetInfo.links.toModel(),
             currency = assetInfo.price?.currency ?: Currency.USD,
             marketCells = mapOf(
                 R.string.asset_market_cap to (assetInfo.market?.marketCap ?: 0.0),
@@ -66,19 +66,17 @@ class AssetChartViewModel @Inject constructor(
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private fun AssetLinks.toModel() = listOfNotNull(
-        if (coingecko.isNullOrEmpty()) null else AssetMarketUIModel.Link(
-            "coingecko", coingecko!!, R.string.social_coingecko
-        ),
-        if (twitter.isNullOrEmpty()) null else AssetMarketUIModel.Link(
-            "twitter", twitter!!, R.string.social_x
-        ),
-        if (telegram.isNullOrEmpty()) null else AssetMarketUIModel.Link(
-            "telegram", telegram!!, R.string.social_telegram
-        ),
-        if (github.isNullOrEmpty()) null else AssetMarketUIModel.Link(
-            "github", github!!, R.string.social_github
-        ),
-    )
+    private fun List<AssetLink>.toModel() = mapNotNull {
+        val label = when (it.name) {
+            "coingecko" -> R.string.social_coingecko
+            "twitter" -> R.string.social_x
+            "telegram" -> R.string.social_telegram
+            "github" -> R.string.social_github
+            else -> return@mapNotNull null
+        }
+        AssetMarketUIModel.Link(
+            it.name, it.url, label
+        )
+    }
 }
 

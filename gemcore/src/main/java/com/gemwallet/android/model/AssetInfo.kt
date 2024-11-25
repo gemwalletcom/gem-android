@@ -3,7 +3,7 @@ package com.gemwallet.android.model
 import com.gemwallet.android.ext.same
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
-import com.wallet.core.primitives.AssetLinks
+import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.WalletType
@@ -16,7 +16,7 @@ data class AssetInfo(
     val walletName: String = "",
     val price: AssetPriceInfo? = null,
     val metadata: AssetMetaData? = null,
-    val links: AssetLinks? = null,
+    val links: List<AssetLink> = emptyList(),
     val market: AssetMarket? = null,
     val rank: Int = 0,
     val stakeApr: Double? = null,
