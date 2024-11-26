@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.swap.viewmodels
 
-import android.util.Log
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
 import androidx.compose.runtime.snapshotFlow
@@ -23,7 +22,6 @@ import com.gemwallet.android.features.swap.models.SwapPairSelect
 import com.gemwallet.android.features.swap.models.SwapPairUIModel
 import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.features.swap.navigation.pairArg
-import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
