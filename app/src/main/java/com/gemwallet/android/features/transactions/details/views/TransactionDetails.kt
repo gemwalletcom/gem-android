@@ -199,7 +199,7 @@ fun TransactionDetails(
                             placeholderText = model.assetType.string,
                             modifier = Modifier.size(20.dp),
                         )
-                    },
+                    }
                 )
             )
             cells.add(

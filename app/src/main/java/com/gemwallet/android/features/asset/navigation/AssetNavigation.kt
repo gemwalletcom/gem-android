@@ -28,7 +28,7 @@ fun NavGraphBuilder.assetScreen(
     onSwap: (AssetId?, AssetId?) -> Unit,
     onTransaction: (txId: String) -> Unit,
     onChart: (AssetId) -> Unit,
-    onChain: (AssetId) -> Unit,
+    openNetwork: AssetIdAction,
     onStake: (AssetId) -> Unit,
 ) {
     composable(
@@ -50,7 +50,7 @@ fun NavGraphBuilder.assetScreen(
                 onSwap = onSwap,
                 onTransaction = onTransaction,
                 onChart = onChart,
-                onChain = onChain,
+                openNetwork = openNetwork,
                 onStake = onStake,
             )
         }

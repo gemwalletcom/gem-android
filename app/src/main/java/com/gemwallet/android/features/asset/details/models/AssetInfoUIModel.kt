@@ -17,7 +17,7 @@ class AssetInfoUIModel(
     val tokenType: AssetType = AssetType.NATIVE,
     val networkTitle: String = "",
     val networkIcon: String = "",
-    val chain: Chain,
+    val network: Asset,
     val account: Account = Account(),
     val isBuyEnabled: Boolean = false,
     val isSwapEnabled: Boolean = false,
