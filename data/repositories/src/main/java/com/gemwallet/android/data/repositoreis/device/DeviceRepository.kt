@@ -133,6 +133,7 @@ class DeviceRepository(
         if (subscriptionsIndex.isNotEmpty()) {
             gemApiClient.addSubscriptions(deviceId, subscriptionsIndex.values.toList())
             increaseSubscriptionVersion()
+            syncDeviceInfo()
         }
     }
 

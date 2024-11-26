@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.assets.viewmodel
 
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
@@ -25,6 +26,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -34,6 +36,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.collections.map
@@ -45,7 +48,13 @@ class AssetsViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val syncTransactions: SyncTransactions,
 ) : ViewModel() {
-    val screenState = assetsRepository.syncState
+    val refreshingState = MutableStateFlow<RefresingState>(RefresingState.OnOpen)
+    val screenState = assetsRepository.syncState.combine(refreshingState) { syncState, refreshingState ->
+            when (refreshingState) {
+                RefresingState.OnOpen -> SyncState.Idle
+                RefresingState.OnForce -> syncState
+            }
+        }
         .flatMapLatest { state ->
             flow {
                 emit(state)
@@ -81,6 +90,7 @@ class AssetsViewModel @Inject constructor(
 
     fun onRefresh() {
         val session = sessionRepository.getSession() ?: return
+        refreshingState.update { RefresingState.OnForce }
         updateAssetData(session)
     }
 
@@ -136,5 +146,10 @@ class AssetsViewModel @Inject constructor(
     fun togglePin(assetId: AssetId) = viewModelScope.launch(Dispatchers.IO) {
         val session = sessionRepository.getSession() ?: return@launch
         assetsRepository.togglePin(session.wallet.id, assetId)
+    }
+
+    enum class RefresingState {
+        OnOpen,
+        OnForce,
     }
 }
