@@ -8,7 +8,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
@@ -17,7 +16,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.AuthRequest
 import com.gemwallet.android.MainActivity
 import com.gemwallet.android.R
+import com.gemwallet.android.features.wallets.components.ConfirmWalletDeleteDialog
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.FatalStateScene
@@ -180,29 +179,13 @@ private fun Wallet(
     }
 
     if (isShowDelete) {
-        AlertDialog(
-            onDismissRequest = { isShowDelete = false },
-            containerColor = MaterialTheme.colorScheme.background,
-            title = {
-                Text(stringResource(R.string.common_delete_confirmation, walletName))
-            },
-            confirmButton = {
-                TextButton(
-                    colors = ButtonDefaults.textButtonColors().copy(contentColor = MaterialTheme.colorScheme.error),
-                    onClick = {
-                        isShowDelete = false
-                        onDelete()
-                    },
-                ) {
-                    Text(text = stringResource(id = R.string.common_delete))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { isShowDelete = false })  {
-                    Text(stringResource(R.string.common_cancel))
-                }
+        ConfirmWalletDeleteDialog(
+            walletName = walletName,
+            onConfirm = {
+                isShowDelete = false
+                onDelete()
             }
-        )
+        ) { isShowDelete = false }
     }
 }
 

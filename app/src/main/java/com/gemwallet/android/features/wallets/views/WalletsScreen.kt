@@ -21,14 +21,11 @@ import androidx.compose.material.icons.filled.ArrowDownward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -52,6 +49,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.getAddressEllipsisText
+import com.gemwallet.android.features.wallets.components.ConfirmWalletDeleteDialog
 import com.gemwallet.android.features.wallets.components.WalletItem
 import com.gemwallet.android.features.wallets.viewmodels.WalletItemUIState
 import com.gemwallet.android.features.wallets.viewmodels.WalletsViewModel
@@ -112,35 +110,16 @@ fun WalletsScreen(
     )
 
     if (deleteWalletId.isNotEmpty()) {
-        AlertDialog(
-            text = {
-                Text(
-                    text = stringResource(
-                        id = R.string.common_delete_confirmation,
-                        uiState.wallets.firstOrNull{ it.id == deleteWalletId}?.name ?: "" ),
-                )
-            },
-            onDismissRequest = { deleteWalletId = "" },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        val walletId = deleteWalletId
-                        deleteWalletId = ""
-                        viewModel.handleDeleteWallet(walletId = walletId, onBoard)
-                    },
-                    colors = ButtonDefaults.textButtonColors(contentColor = MaterialTheme.colorScheme.error)
-                ) {
-                    Text(text = stringResource(id = R.string.common_delete))
-                }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = { deleteWalletId = "" },
-                ) {
-                    Text(text = stringResource(id = R.string.common_cancel))
-                }
-            },
-        )
+        ConfirmWalletDeleteDialog(
+            walletName = uiState.wallets.firstOrNull{ it.id == deleteWalletId}?.name ?: "",
+            onConfirm = {
+                val walletId = deleteWalletId
+                deleteWalletId = ""
+                viewModel.handleDeleteWallet(walletId = walletId, onBoard)
+            }
+        ) {
+            deleteWalletId = ""
+        }
     }
 }
 

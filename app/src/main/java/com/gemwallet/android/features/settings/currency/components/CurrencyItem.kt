@@ -3,6 +3,7 @@ package com.gemwallet.android.features.settings.currency.components
 import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -23,7 +24,7 @@ fun CurrencyItem(
         trailing = if (currency == selectedCurrency) {
             @Composable {
                 Icon(
-                    imageVector = Icons.Default.Check,
+                    imageVector = Icons.Default.CheckCircleOutline,
                     contentDescription = "selected_currency"
                 )
             }

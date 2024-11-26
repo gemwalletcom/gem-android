@@ -113,9 +113,7 @@ fun ListItemTitle(
         horizontalAlignment = horizontalAlignment,
     ) {
         if (title.isNotEmpty()) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     modifier = Modifier.weight(1f, false),
                     text = title,
