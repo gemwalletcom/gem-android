@@ -41,12 +41,12 @@ class TestSolanaSign {
             signClient.signTransfer(
                 params = SignerParams(
                     input = ConfirmParams.TransferParams(
-                        assetId = com.wallet.core.primitives.Chain.Solana.asset().id,
-                        amount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Solana.asset().decimals),
+                        assetId = Chain.Solana.asset().id,
+                        amount = BigInteger.TEN.pow(Chain.Solana.asset().decimals),
                         destination = DestinationAddress("4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S"),
                     ),
                     owner = "4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S",
-                    finalAmount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Solana.asset().decimals),
+                    finalAmount = BigInteger.TEN.pow(Chain.Solana.asset().decimals),
                     info = SolanaSignerPreloader.Info(
                         blockhash = "DzfXchZJoLMG3cNftcf2sw7qatkkuwQf4xH15N5wkKAb",
                         senderTokenAddress = "",
@@ -58,7 +58,7 @@ class TestSolanaSign {
                             minerFee = BigInteger.TEN,
                             relay = BigInteger.TEN,
                             speed = TxSpeed.Normal,
-                            feeAssetId = com.wallet.core.primitives.Chain.Solana.asset().id,
+                            feeAssetId = Chain.Solana.asset().id,
                         )
                     )
                 ),
@@ -67,7 +67,7 @@ class TestSolanaSign {
             )
         }
         Assert.assertEquals(
-            "0x416349776a555a6b6f65466f7569306d6a38506a6861672f32333372787346687570304b2b4b3862575145774c77704b7678736d6e2f3761754c635059652f6b7378446c332b63346970574b38334e6d6e6c4d4a77774942414145445365626b44466a2b415242396b4b486b394f4167745057456e614370426a475a3869707a61372f4e43577330767554324f647746546758414767305a6175317474703157354f7153437a77434c53384e5738357a715141414141414141414141414141414141414141414141414141414141414141414141414141414141414177524870726c566e6a4f6f2b6532723437724d564a482b38475179334444524c66686c6d5850413172497742416749414151774341414141414d71614f7741414141413d",
+            "0x41634c77313244776a6937474d4565476a386c64457669664e555350394e445947744251476c36557150726362583569444e546f483330514b6f6a316756376755496e4e575031442f555a6571516d6a424b7a5161513842414149455365626b44466a2b415242396b4b486b394f4167745057456e614370426a475a3869707a61372f4e43577330767554324f647746546758414767305a6175317474703157354f7153437a77434c53384e5738357a71514d47526d2f6c495263792f2b7974756e4c446d2b65386a4f573778666353617978446d7a704141414141414141414141414141414141414141414141414141414141414141414141414141414141414141414141444245656d755657654d366a353761766a757378556b6637775a444c634d4e45742b47575a63384457736a414d4341416b44436741414141414141414143414155434346494141414d434141454d416741414141444b6d6a734141414141",
             sign.toHexString()
         )
     }
