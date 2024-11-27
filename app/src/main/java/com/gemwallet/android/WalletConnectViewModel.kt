@@ -3,7 +3,7 @@ package com.gemwallet.android
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.bridge.WalletConnectDelegate
-import com.walletconnect.web3.wallet.client.Wallet
+import com.reown.walletkit.client.Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -42,7 +42,7 @@ sealed interface WalletConnectIntent {
 
     class SessionRequest(val request: Wallet.Model.SessionRequest) : WalletConnectIntent
 
-    class AuthRequest(val request: Wallet.Model.AuthRequest) : WalletConnectIntent
+    class AuthRequest(val request: Wallet.Model.SessionAuthenticate) : WalletConnectIntent
 
     class SessionProposal(val sessionProposal: Wallet.Model.SessionProposal) : WalletConnectIntent
 
@@ -53,7 +53,7 @@ private fun Wallet.Model.toUIState(): WalletConnectIntent {
     return when (this) {
         is Wallet.Model.SessionRequest -> WalletConnectIntent.SessionRequest(this)
 
-        is Wallet.Model.AuthRequest -> WalletConnectIntent.AuthRequest(this)
+        is Wallet.Model.SessionAuthenticate -> WalletConnectIntent.AuthRequest(this)
 
         is Wallet.Model.SessionDelete -> WalletConnectIntent.SessionDelete
         is Wallet.Model.SessionProposal -> WalletConnectIntent.SessionProposal(this)

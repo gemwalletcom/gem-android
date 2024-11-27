@@ -23,6 +23,7 @@ import com.gemwallet.android.features.swap.models.SwapPairUIModel
 import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.features.swap.navigation.pairArg
 import com.gemwallet.android.math.numberParse
+import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
@@ -31,7 +32,6 @@ import com.gemwallet.android.model.format
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.TransactionState
-import com.walletconnect.util.bytesToHex
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -291,7 +291,7 @@ class SwapViewModel @Inject constructor(
                 onConfirm(
                     ConfirmParams.TokenApprovalParams(
                         assetId = if (from.asset.id.type() == AssetSubtype.TOKEN) from.asset.id else to.asset.id,
-                        data = encodeApprove(approvalData.v1.spender).bytesToHex(),
+                        data = encodeApprove(approvalData.v1.spender).toHexString(),
                         provider = swapProviderNameToString(quote.data.provider),
                         contract = approvalData.v1.token,
                     )

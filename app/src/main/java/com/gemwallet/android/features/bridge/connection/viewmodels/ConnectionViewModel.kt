@@ -6,8 +6,8 @@ import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
 import com.gemwallet.android.data.repositoreis.bridge.WalletConnectDelegate
 import com.gemwallet.android.features.bridge.connection.model.ConnectionSceneState
 import com.gemwallet.android.features.bridge.model.ConnectionUI
+import com.reown.walletkit.client.Wallet
 import com.wallet.core.primitives.WalletConnection
-import com.walletconnect.web3.wallet.client.Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow

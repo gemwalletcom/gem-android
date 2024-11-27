@@ -1,10 +1,9 @@
 package com.gemwallet.android.data.repositoreis.bridge
 
 import android.util.Log
-import com.walletconnect.android.Core
-import com.walletconnect.android.CoreClient
-import com.walletconnect.web3.wallet.client.Wallet
-import com.walletconnect.web3.wallet.client.Web3Wallet
+import com.reown.android.CoreClient
+import com.reown.walletkit.client.Wallet
+import com.reown.walletkit.client.WalletKit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -13,7 +12,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-object WalletConnectDelegate : Web3Wallet.WalletDelegate, CoreClient.CoreDelegate {
+object WalletConnectDelegate : WalletKit.WalletDelegate, CoreClient.CoreDelegate {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val _walletEvents: MutableSharedFlow<Wallet.Model> = MutableSharedFlow()
@@ -21,18 +20,15 @@ object WalletConnectDelegate : Web3Wallet.WalletDelegate, CoreClient.CoreDelegat
 
     init {
         CoreClient.setDelegate(this)
-        Web3Wallet.setWalletDelegate(this)
+        WalletKit.setWalletDelegate(this)
     }
 
-    override fun onAuthRequest(
-        authRequest: Wallet.Model.AuthRequest,
-        verifyContext: Wallet.Model.VerifyContext
-    ) {
-        Log.d("WALLET-CONNECT", "Auth request")
-        scope.launch {
-            _walletEvents.emit(authRequest)
+    override val onSessionAuthenticate: ((Wallet.Model.SessionAuthenticate, Wallet.Model.VerifyContext) -> Unit)? =
+        { sessionAuth, verifyContext ->
+            scope.launch {
+                _walletEvents.emit(sessionAuth)
+            }
         }
-    }
 
     override fun onConnectionStateChange(state: Wallet.Model.ConnectionState) {
         Log.d("WALLET-CONNECT", "Connection state change")
@@ -97,20 +93,5 @@ object WalletConnectDelegate : Web3Wallet.WalletDelegate, CoreClient.CoreDelegat
         scope.launch {
             _walletEvents.emit(sessionUpdateResponse)
         }
-    }
-
-    override fun onPairingDelete(deletedPairing: Core.Model.DeletedPairing) {
-        Log.d("WALLET-CONNECT", "On pairing delete")
-//        scope.launch {
-//            _coreEvents.emit(deletedPairing)
-//        }
-    }
-
-    override fun onPairingExpired(expiredPairing: Core.Model.ExpiredPairing) {
-        Log.d("WALLET-CONNECT", "onPairingExpired")
-    }
-
-    override fun onPairingState(pairingState: Core.Model.PairingState) {
-        Log.d("WALLET-CONNECT", "onPairingExpired")
     }
 }

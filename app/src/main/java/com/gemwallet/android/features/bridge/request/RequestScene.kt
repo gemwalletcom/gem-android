@@ -26,8 +26,8 @@ import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.screen.Scene
+import com.reown.walletkit.client.Wallet
 import com.wallet.core.primitives.AssetId
-import com.walletconnect.web3.wallet.client.Wallet
 
 @Composable
 fun RequestScene(

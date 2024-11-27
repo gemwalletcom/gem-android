@@ -11,10 +11,10 @@ import com.gemwallet.android.features.bridge.model.PeerUI
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.toHexString
+import com.reown.walletkit.client.Wallet
+import com.reown.walletkit.client.WalletKit
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletConnectionMethods
-import com.walletconnect.web3.wallet.client.Wallet
-import com.walletconnect.web3.wallet.client.Web3Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -74,7 +74,7 @@ class RequestViewModel @Inject constructor(
                 )
             )
 
-            Web3Wallet.respondSessionRequest(response,
+            WalletKit.respondSessionRequest(response,
                 onSuccess = {
                     state.update { it.copy(canceled = true) }
                 },
@@ -114,7 +114,7 @@ class RequestViewModel @Inject constructor(
                 return@launch
             }
 
-            Web3Wallet.respondSessionRequest(
+            WalletKit.respondSessionRequest(
                 params = Wallet.Params.SessionRequestResponse(
                     sessionTopic = sessionRequest.topic,
                     jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
@@ -141,7 +141,7 @@ class RequestViewModel @Inject constructor(
             )
         )
 
-        Web3Wallet.respondSessionRequest(
+        WalletKit.respondSessionRequest(
             result,
             onSuccess = { state.update { it.copy(canceled = true) } },
             onError = { state.update { it.copy(canceled = true) } }

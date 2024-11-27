@@ -4,15 +4,15 @@ import android.net.Uri
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.data.service.store.database.ConnectionsDao
 import com.gemwallet.android.data.service.store.database.entities.DbConnection
+import com.reown.android.Core
+import com.reown.walletkit.client.Wallet
+import com.reown.walletkit.client.WalletKit
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletConnection
 import com.wallet.core.primitives.WalletConnectionEvents
 import com.wallet.core.primitives.WalletConnectionSession
 import com.wallet.core.primitives.WalletConnectionSessionAppMetadata
 import com.wallet.core.primitives.WalletConnectionState
-import com.walletconnect.android.Core
-import com.walletconnect.web3.wallet.client.Wallet
-import com.walletconnect.web3.wallet.client.Web3Wallet
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -70,8 +70,8 @@ class BridgesRepository(
     private suspend fun sync(): List<WalletConnection> {
         val local = getConnections()
         val sessions = try {
-            Web3Wallet.getListOfActiveSessions().filter { wcSession -> wcSession.metaData != null }
-        } catch (err: Throwable) {
+            WalletKit.getListOfActiveSessions().filter { wcSession -> wcSession.metaData != null }
+        } catch (_: Throwable) {
             return local
         }
         val unknownSessions = sessions.filter { session ->
@@ -89,12 +89,13 @@ class BridgesRepository(
     suspend fun disconnect(id: String, onSuccess: () -> Unit = {}, onError: (String) -> Unit = {}) {
         val connection = getConnections().firstOrNull { it.session.id == id } ?: return
         val session = try {
-            Web3Wallet.getListOfActiveSessions()
+            WalletKit.getListOfActiveSessions()
                 .firstOrNull { wcSession -> connection.session.sessionId == wcSession.topic }
-        } catch (err: Throwable) {
+                ?: throw IllegalStateException("Active sessions is null")
+        } catch (_: Throwable) {
             return
-        } ?: return
-        Web3Wallet.disconnectSession(
+        }
+        WalletKit.disconnectSession(
             params = Wallet.Params.SessionDisconnect(session.topic),
             onSuccess = {
                 scope.launch { connectionsDao.delete(id) }
@@ -107,7 +108,7 @@ class BridgesRepository(
     }
 
     fun addPairing(uri: String, onSuccess: () -> Unit = {}, onError: (String) -> Unit = {}) {
-        Web3Wallet.pair(
+        WalletKit.pair(
             params = Wallet.Params.Pair(uri),
             onSuccess = {  onSuccess() },
             onError = {
@@ -116,23 +117,26 @@ class BridgesRepository(
         )
     }
 
-    suspend fun approveConnection(
+    fun approveConnection(
         wallet: com.wallet.core.primitives.Wallet,
         proposal: Wallet.Model.SessionProposal,
         onSuccess: () -> Unit,
         onError: (String) -> Unit,
     ) {
-        if (Web3Wallet.getSessionProposals().isEmpty()) {
+        if (WalletKit.getSessionProposals().isEmpty()) {
             onSuccess()
             return
         }
         val proposalPublicKey = proposal.proposerPublicKey
-        val sessionProposal: Wallet.Model.SessionProposal = requireNotNull(Web3Wallet.getSessionProposals().find { it.proposerPublicKey == proposalPublicKey })
+        val sessionProposal: Wallet.Model.SessionProposal = requireNotNull(WalletKit.getSessionProposals().find { it.proposerPublicKey == proposalPublicKey })
         val supportedNamespaces = getSupportedNamespaces(wallet)
-        val sessionNamespaces = Web3Wallet.generateApprovedNamespaces(sessionProposal = sessionProposal, supportedNamespaces = supportedNamespaces)
+        val sessionNamespaces = WalletKit.generateApprovedNamespaces(
+            sessionProposal = sessionProposal,
+            supportedNamespaces = supportedNamespaces
+        )
         val approveProposal = Wallet.Params.SessionApprove(proposerPublicKey = sessionProposal.proposerPublicKey, namespaces = sessionNamespaces)
 
-        Web3Wallet.approveSession(
+        WalletKit.approveSession(
             params = approveProposal,
             onError = { error ->
                 onError(error.throwable.message ?: "Unknown error")
@@ -172,14 +176,14 @@ class BridgesRepository(
         onSuccess: () -> Unit,
         onError: (String) -> Unit,
     ) {
-        if (Web3Wallet.getSessionProposals().isEmpty()) {
+        if (WalletKit.getSessionProposals().isEmpty()) {
             onSuccess()
             return
         }
         val proposalPublicKey = proposal.proposerPublicKey
-        val sessionProposal: Wallet.Model.SessionProposal = requireNotNull(Web3Wallet.getSessionProposals().find { it.proposerPublicKey == proposalPublicKey })
+        val sessionProposal: Wallet.Model.SessionProposal = requireNotNull(WalletKit.getSessionProposals().find { it.proposerPublicKey == proposalPublicKey })
 
-        Web3Wallet.rejectSession(
+        WalletKit.rejectSession(
             params = Wallet.Params.SessionReject(
                 proposerPublicKey = sessionProposal.proposerPublicKey,
                 reason = "Reject Session"

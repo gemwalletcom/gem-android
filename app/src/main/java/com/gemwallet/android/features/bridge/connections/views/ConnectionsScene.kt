@@ -64,9 +64,7 @@ fun ConnectionsScene(
         actions = {
             IconButton(
                 onClick = {
-                    viewModel.addPairing(
-                        clipboardManager.getText()?.text ?: return@IconButton
-                    ) {
+                    viewModel.addPairing(clipboardManager.getText()?.text ?: return@IconButton) {
                         scope.launch {
                             snackbar.showSnackbar(
                                 message = connectionToastText

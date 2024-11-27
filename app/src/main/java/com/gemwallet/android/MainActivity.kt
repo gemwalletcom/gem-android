@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import android.widget.Toast.makeText
@@ -22,6 +23,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +37,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -93,7 +96,6 @@ class MainActivity : SecureBaseFragmentActivity() {
     @Composable
     override fun MainContent() {
         val state by viewModel.uiState.collectAsStateWithLifecycle()
-        val walletConnect by walletConnectViewModel.uiState.collectAsStateWithLifecycle()
         val darkTheme = isSystemInDarkTheme()
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { darkTheme },
@@ -109,20 +111,7 @@ class MainActivity : SecureBaseFragmentActivity() {
         WalletTheme {
             if (state.initialAuth == AuthState.Success) {
                 WalletApp()
-                when (walletConnect) {
-                    is WalletConnectIntent.AuthRequest -> {}
-                    is WalletConnectIntent.ConnectionState -> {}
-                    WalletConnectIntent.None -> {}
-                    WalletConnectIntent.SessionDelete -> {}
-                    is WalletConnectIntent.SessionProposal -> ProposalScene(
-                        proposal = (walletConnect as WalletConnectIntent.SessionProposal).sessionProposal,
-                        onCancel = walletConnectViewModel::onCancel,
-                    )
-                    is WalletConnectIntent.SessionRequest -> RequestScene(
-                        request = (walletConnect as WalletConnectIntent.SessionRequest).request,
-                        onCancel = walletConnectViewModel::onCancel,
-                    )
-                }
+                OnWalletConnect()
             } else {
                 Box(modifier = Modifier
                     .fillMaxSize()
@@ -179,6 +168,30 @@ class MainActivity : SecureBaseFragmentActivity() {
         val data = intent.data ?: return
         when (data.scheme) {
             "wc" -> viewModel.addPairing(data.toString())
+        }
+    }
+
+    @Composable
+    private fun OnWalletConnect() {
+        val walletConnect by walletConnectViewModel.uiState.collectAsStateWithLifecycle()
+
+        Box(
+            modifier = Modifier.navigationBarsPadding(),
+        ) {
+            when (walletConnect) {
+                is WalletConnectIntent.AuthRequest -> {}
+                is WalletConnectIntent.ConnectionState -> {}
+                WalletConnectIntent.None -> {}
+                WalletConnectIntent.SessionDelete -> {}
+                is WalletConnectIntent.SessionProposal -> ProposalScene(
+                    proposal = (walletConnect as WalletConnectIntent.SessionProposal).sessionProposal,
+                    onCancel = walletConnectViewModel::onCancel,
+                )
+                is WalletConnectIntent.SessionRequest -> RequestScene(
+                    request = (walletConnect as WalletConnectIntent.SessionRequest).request,
+                    onCancel = walletConnectViewModel::onCancel,
+                )
+            }
         }
     }
 
@@ -275,6 +288,9 @@ class MainViewModel @Inject constructor(
     fun addPairing(uri: String) {
         state.update {
             it.copy(showWCPairing = true)
+        }
+        if (uri.contains("requestId")) {
+            return
         }
         viewModelScope.launch(Dispatchers.IO) {
             bridgesRepository.addPairing(

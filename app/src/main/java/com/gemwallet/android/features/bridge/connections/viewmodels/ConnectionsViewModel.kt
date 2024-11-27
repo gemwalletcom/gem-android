@@ -6,8 +6,8 @@ import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
 import com.gemwallet.android.data.repositoreis.bridge.WalletConnectDelegate
 import com.gemwallet.android.features.bridge.connections.model.ConnectionsSceneState
 import com.gemwallet.android.features.bridge.model.ConnectionUI
+import com.reown.walletkit.client.Wallet
 import com.wallet.core.primitives.WalletConnection
-import com.walletconnect.web3.wallet.client.Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,8 +39,6 @@ class ConnectionsViewModel @Inject constructor(
                     is Wallet.Model.Session,
                     is Wallet.Model.SessionEvent,
                     is Wallet.Model.SessionDelete,
-                    is Wallet.Model.SessionDelete.Error,
-                    is Wallet.Model.SessionDelete.Success,
                     is Wallet.Model.SessionUpdateResponse.Error,
                     is Wallet.Model.SessionUpdateResponse.Result,
                     is Wallet.Model.SettledSessionResponse.Error,
@@ -62,7 +60,10 @@ class ConnectionsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             bridgesRepository.addPairing(
                 uri = uri,
-                onSuccess = { refresh() },
+                onSuccess = {
+                    refresh()
+                    onSuccess()
+                },
                 onError = { msg -> state.update { it.copy(pairError = msg) } }
             )
         }
