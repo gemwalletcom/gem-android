@@ -14,8 +14,8 @@ class TonGetTokenClient(
         val data = rpcClient.tokenData(tokenId).getOrNull()?.result?.jetton_content?.data ?: return null
         return Asset(
             id = AssetId(chain, tokenId),
-            name = data.name,
-            symbol = data.symbol,
+            name = data.name ?: return null,
+            symbol = data.symbol ?: return null,
             decimals = data.decimals.toIntOrNull() ?: return null,
             type = AssetType.JETTON,
         )
