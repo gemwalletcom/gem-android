@@ -17,6 +17,7 @@ import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -82,7 +83,8 @@ class AssetsViewModel @Inject constructor(
 
     val walletInfo: StateFlow<WalletInfoUIState> = sessionRepository.session().combine(assetsState) {session, assets ->
         val wallet = session?.wallet ?: return@combine null
-        calcWalletInfo(wallet, assets)
+        val currency = session.currency
+        calcWalletInfo(wallet, currency, assets)
     }
     .flowOn(Dispatchers.IO)
     .filterNotNull()
@@ -115,7 +117,7 @@ class AssetsViewModel @Inject constructor(
         }
     }
 
-    private fun calcWalletInfo(wallet: Wallet, assets: List<AssetInfo>): WalletInfoUIState? {
+    private fun calcWalletInfo(wallet: Wallet, currency: Currency, assets: List<AssetInfo>): WalletInfoUIState? {
         val (totalValue, changedValue) = assets.map {
             val current = it.balance.fiatTotalAmount
             val changed = current * ((it.price?.price?.priceChangePercentage24h ?: 0.0) / 100)
@@ -131,7 +133,6 @@ class AssetsViewModel @Inject constructor(
         } else {
             wallet.accounts.firstOrNull()?.chain?.getIconUrl() ?: ""
         }
-        val currency = assets.firstOrNull()?.price?.currency ?: return null
         return WalletInfoUIState(
             name = wallet.name,
             icon = icon,

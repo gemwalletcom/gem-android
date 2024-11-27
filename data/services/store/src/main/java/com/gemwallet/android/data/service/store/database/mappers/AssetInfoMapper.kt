@@ -77,7 +77,7 @@ class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo
                     )
                 } else null,
                 metadata = AssetMetaData(
-                    isEnabled = entity.visible != false,
+                    isEnabled = entity.visible == true,
                     isBuyEnabled = entity.isBuyEnabled,
                     isSwapEnabled = entity.isSwapEnabled,
                     isStakeEnabled = entity.isStakeEnabled,

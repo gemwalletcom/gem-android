@@ -312,6 +312,7 @@ class AssetsRepository @Inject constructor(
     fun invalidateDefault(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
         val assets = assetsDao.getAssetsInfoByAccountsInWallet(wallet.accounts.map { it.address }, wallet.id)
             .map { AssetInfoMapper().asDomain(it) }
+            .map { it.filter { it.asset.type == AssetType.NATIVE } }
             .firstOrNull()
             ?.associateBy( { it.asset.id.toIdentifier() }, { it } )?: emptyMap()
 
@@ -320,11 +321,11 @@ class AssetsRepository @Inject constructor(
                 Pair(account, account.chain.asset())
             }.map {
                 val isNew = assets[it.first.chain.string] == null
+                val isVisible = assets[it.second.id.toIdentifier()]?.metadata?.isEnabled
+                        ?: visibleByDefault.contains(it.first.chain) || wallet.type != WalletType.multicoin
+                add(wallet.id, it.first.address, it.second, isVisible)
                 async {
                     if (isNew) {
-                        val isVisible = assets[it.second.id.toIdentifier()]?.metadata?.isEnabled
-                                ?: visibleByDefault.contains(it.first.chain) || wallet.type != WalletType.multicoin
-                        add(wallet.id, it.first.address, it.second, isVisible)
                         val balances = updateBalances(it.first, emptyList()).firstOrNull()
                         if ((balances?.totalAmount ?: 0.0) > 0.0) {
                             setVisibility(wallet.id, it.second.id, true)
