@@ -67,8 +67,9 @@ class AsseDetailsViewModel @Inject constructor(
     private val model = assetId
         .onEach { uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process) } }
         .flatMapLatest {
-            assetsRepository.getAssetInfo(it ?: return@flatMapLatest emptyFlow()).map { Model(it) }
+            assetsRepository.getAssetInfo(it ?: return@flatMapLatest emptyFlow())
         }
+        .map { Model(it, System.currentTimeMillis()) }
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -124,6 +125,7 @@ class AsseDetailsViewModel @Inject constructor(
 
     private data class Model(
         val assetInfo: AssetInfo,
+        val updatedAt: Long,
     ) {
         fun toUIState(): AssetInfoUIModel {
             val assetInfo = assetInfo
