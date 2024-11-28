@@ -37,7 +37,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -57,8 +56,6 @@ import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.wallet.core.primitives.WalletType
-import uniffi.gemstone.Config
-import uniffi.gemstone.DocsUrl
 
 @Composable
 fun AmountListHead(
@@ -81,7 +78,7 @@ fun AmountListHead(
         ) {
             if (!iconUrl.isNullOrEmpty()) {
                 HeaderIcon(
-                    iconUrl = iconUrl,
+                    iconModel = iconUrl,
                     supportIconUrl = supportIconUrl,
                     placeholder = placeholder
                 )
@@ -120,18 +117,16 @@ fun AmountListHead(
 
 @Composable
 internal fun HeaderIcon(
-    iconUrl: String?,
-    supportIconUrl: String? = null,
+    iconModel: Any?,
+    supportIconUrl: Any? = null,
     placeholder: String?,
     iconSize: Dp = headerIconSize,
 ) {
-    if (iconUrl == null) {
-        return
-    }
+    if (iconModel == null) { return }
     Box {
         AsyncImage(
             modifier = Modifier.size(iconSize),
-            model = iconUrl,
+            model = iconModel,
             placeholderText = placeholder,
             contentDescription = "header_icon"
         )
@@ -211,7 +206,6 @@ fun AssetHeadActions(
 
 @Composable
 private fun AssetWatchOnly() {
-    val uriHandler = LocalUriHandler.current
     var showInfoSheet by remember { mutableStateOf<SheetEntity?>(null) }
     Button(
         onClick = {},

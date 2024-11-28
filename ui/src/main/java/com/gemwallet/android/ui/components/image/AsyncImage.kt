@@ -1,5 +1,6 @@
 package com.gemwallet.android.ui.components.image
 
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -8,19 +9,27 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.rememberTextMeasurer
-import coil.compose.AsyncImage
-import coil.request.CachePolicy
-import coil.request.ImageRequest
-import coil.transform.CircleCropTransformation
+import androidx.compose.ui.unit.Dp
+import coil3.compose.AsyncImage
+import coil3.request.CachePolicy
+import coil3.request.ImageRequest
+import coil3.request.transformations
+import coil3.transform.CircleCropTransformation
+import com.gemwallet.android.ui.components.designsystem.iconSize
+import com.wallet.core.primitives.Asset
 
 @Composable
 fun AsyncImage(
-    model: String,
-    contentDescription: String,
+    model: Any?,
+    size: Dp = iconSize,
     modifier: Modifier = Modifier,
+    contentDescription: String = "",
     placeholderText: String? = null,
     errorImageVector: ImageVector? = null,
 ) {
+    if (model == null) {
+        return
+    }
     val placeholder = if (placeholderText.isNullOrEmpty()) {
         null
     } else {
@@ -47,6 +56,22 @@ fun AsyncImage(
         placeholder = placeholder,
         error = error,
         contentDescription = contentDescription,
+        modifier = modifier.size(size),
+    )
+}
+
+@Composable
+fun AsyncImage(
+    model: Asset,
+    modifier: Modifier = Modifier,
+    placeholderText: String? = model.symbol,
+    errorImageVector: ImageVector? = null,
+) {
+    AsyncImage(
+        model = model.getIconUrl(),
+        contentDescription = "asset_icon",
         modifier = modifier,
+        placeholderText = placeholderText,
+        errorImageVector = errorImageVector
     )
 }

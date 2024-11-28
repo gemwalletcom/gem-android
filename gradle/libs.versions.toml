@@ -6,7 +6,7 @@ walletconnect = "1.0.2"
 barcodeScanning = "17.3.0"
 biometric = "1.2.0-alpha05"
 cameraCamera2 = "1.4.0"
-coilCompose = "2.7.0"
+coilCompose = "3.0.4"
 vico = "2.0.0-alpha.21"
 core = "3.5.3"
 coreKtx = "1.15.0"
@@ -120,7 +120,8 @@ camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cam
 camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraCamera2" }
 
 # Images
-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
+coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
 
 # di
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,11 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.features.add_asset.models.AddAssetError
 import com.gemwallet.android.features.add_asset.models.AddAssetUIState
-import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AddressChainField
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Table
@@ -29,6 +26,7 @@ import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
+import com.wallet.core.primitives.Asset
 
 @Composable
 fun AddAssetScene(
@@ -100,31 +98,30 @@ fun AddAssetScene(
                 )
             }
         }
-        if (uiState.asset != null) {
-            Table(
-                items = listOf(
-                    CellEntity(
-                        label = stringResource(id = R.string.asset_name),
-                        data = uiState.asset.name,
-                        trailing = {
-                            AsyncImage(
-                                modifier = Modifier.size(32.dp),
-                                model = uiState.asset.getIconUrl(),
-                                placeholderText = uiState.asset.symbol,
-                                contentDescription = "asset_icon"
-                            )
-                        },
-                    ),
-                    CellEntity(
-                        label = stringResource(id = R.string.asset_symbol),
-                        data = uiState.asset.symbol,
-                    ),
-                    CellEntity(
-                        label = stringResource(id = R.string.asset_decimals),
-                        data = uiState.asset.decimals.toString(),
-                    ),
-                )
-            )
-        }
+        AssetInfoTable(uiState.asset)
     }
+}
+
+@Composable
+private fun AssetInfoTable(asset: Asset?) { // TODO: Find and replace same
+    if (asset == null) {
+        return
+    }
+    Table(
+        items = listOf(
+            CellEntity(
+                label = stringResource(id = R.string.asset_name),
+                data = asset.name,
+                trailing = { AsyncImage(model = asset) },
+            ),
+            CellEntity(
+                label = stringResource(id = R.string.asset_symbol),
+                data = asset.symbol,
+            ),
+            CellEntity(
+                label = stringResource(id = R.string.asset_decimals),
+                data = asset.decimals.toString(),
+            ),
+        )
+    )
 }

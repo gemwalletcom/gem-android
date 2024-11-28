@@ -29,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -38,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.padding8
+import com.gemwallet.android.ui.components.designsystem.trailingIcon20
 import com.gemwallet.android.ui.components.image.AsyncImage
 
 data class CellEntity<T>(
@@ -47,7 +47,7 @@ data class CellEntity<T>(
     val support: String? = null,
     val actionIcon: (@Composable () -> Unit)? = null,
     val trailingIcon: String? = null,
-    val icon: String? = null,
+    val icon: Any? = null,
     val trailing: (@Composable () -> Unit)? = null,
     val dropDownActions: (@Composable (() -> Unit) -> Unit)? = null,
     val showActionChevron: Boolean = true,
@@ -157,11 +157,7 @@ private fun Cell(
         }
         if (!trailingIcon.isNullOrEmpty()) {
             Spacer(modifier = Modifier.size(8.dp))
-            AsyncImage(
-                modifier = Modifier.size(20.dp),
-                model = trailingIcon,
-                contentDescription = ""
-            )
+            AsyncImage(trailingIcon, trailingIcon20)
         }
         if (action != null) {
             if (showActionChevron) {
@@ -181,7 +177,7 @@ private fun Cell(
     label: String,
     data: String,
     testTag: String,
-    icon: String? = null,
+    icon: Any? = null,
     dataColor: Color? = null,
     support: String? = null,
     actionIcon: (@Composable () -> Unit)? = null,
@@ -192,15 +188,10 @@ private fun Cell(
     action: (() -> Unit)? = null,
     onInfo: (() -> Unit)? = null,
 ) {
-    val uriHandler = LocalUriHandler.current
     Cell(
         label = {
-            if (!icon.isNullOrEmpty()) {
-                AsyncImage(
-                    modifier = Modifier.size(24.dp),
-                    model = icon,
-                    contentDescription = ""
-                )
+            if (icon != null) {
+                AsyncImage(icon, 24.dp)
                 Spacer(modifier = Modifier.size(8.dp))
             }
             Text(

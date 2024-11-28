@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.features.assets.model.IconUrl
-import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.Badge
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.ListItemSupportText
@@ -59,7 +59,7 @@ fun WalletItem(
     id: String,
     name: String,
     typeLabel: String,
-    icon: IconUrl,
+    icon: Any?,
     isCurrent: Boolean,
     type: WalletType,
     modifier: Modifier = Modifier,
@@ -67,9 +67,9 @@ fun WalletItem(
 ) {
     ListItem(
         modifier = modifier.heightIn(72.dp),
-        iconUrl = icon.ifEmpty { "android.resource://com.gemwallet.android/drawable/multicoin_wallet" },
+        icon = icon,
         supportIcon = if (type == WalletType.view) {
-            "android.resource://com.gemwallet.android/drawable/watch_badge"
+            "android.resource://com.gemwallet.android/drawable/${R.drawable.watch_badge}"
         } else null,
         trailing = {
             Row(

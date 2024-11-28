@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.asset.chart.models
 
+import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import com.gemwallet.android.ui.components.CellEntity
 import com.wallet.core.primitives.AssetId
@@ -16,5 +17,6 @@ class AssetMarketUIModel(
         val type: String,
         val url: String,
         @StringRes val label: Int,
+        @DrawableRes val icon: Int,
     )
 }

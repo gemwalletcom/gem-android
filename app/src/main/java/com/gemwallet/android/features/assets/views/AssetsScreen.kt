@@ -41,7 +41,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
@@ -219,7 +218,7 @@ private fun AssetItem(
     item: AssetItemUIModel,
     longPressState: MutableState<AssetId?>,
     modifier: Modifier = Modifier,
-    iconModifier: Modifier = Modifier,
+//    iconModifier: Modifier = Modifier,
     isPinned: Boolean = false,
     onAssetClick: (AssetId) -> Unit,
     onAssetHide: (AssetId) -> Unit,
@@ -231,7 +230,7 @@ private fun AssetItem(
         isExpanded = longPressState.value == item.asset.id,
         imeCompensate = false,
         onDismiss = { longPressState.value = null },
-        content = { AssetListItem(item, iconModifier) },
+        content = { AssetListItem(item) },
         menuItems = {
             DropdownMenuItem(
                 text = { Text( text = stringResource(id = if (isPinned) R.string.common_unpin else R.string.common_pin)) },
@@ -307,10 +306,7 @@ private fun AssetsTopBar(
                 TextButton(onClick = onShowWallets) {
                     Row(verticalAlignment = Alignment.CenterVertically ) {
                         AsyncImage(
-                            model = walletInfo.icon.ifEmpty {
-                                "android.resource://com.gemwallet.android/drawable/multicoin_wallet"
-                            },
-                            contentDescription = "icon",
+                            model = walletInfo.icon,
                             placeholderText = null,
                             modifier = Modifier.size(24.dp),
                         )

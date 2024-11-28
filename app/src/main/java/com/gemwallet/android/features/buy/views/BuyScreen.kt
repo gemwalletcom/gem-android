@@ -33,7 +33,7 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.buy.models.BuyError
 import com.gemwallet.android.features.buy.models.BuyUIState
 import com.gemwallet.android.features.buy.viewmodels.BuyViewModel
-import com.gemwallet.android.interactors.getIcon
+import com.gemwallet.android.ui.components.image.getIcon
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.CellEntity
@@ -150,9 +150,8 @@ private fun Idle(
                         action = { isShowProviders.value = true },
                         trailing = {
                             AsyncImage(
-                                modifier = Modifier.size(trailingIcon20),
-                                model = state.currentProvider?.provider?.getIcon() ?: "",
-                                contentDescription = ""
+                                model = state.currentProvider?.provider?.getIcon(),
+                                size = trailingIcon20,
                             )
                         }
                     ),

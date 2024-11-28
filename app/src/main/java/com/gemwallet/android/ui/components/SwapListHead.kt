@@ -18,13 +18,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ext.type
-import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.image.getSupportIconUrl
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Currency
 
@@ -89,8 +90,8 @@ private fun SwapItem(assetInfo: AssetInfo, value: String, currency: Currency?) {
             }
         }
         HeaderIcon(
-            iconUrl = asset.getIconUrl(),
-            supportIconUrl = if (asset.id.type() == AssetSubtype.NATIVE) null else asset.id.chain.getIconUrl(),
+            iconModel = asset.getIconUrl(),
+            supportIconUrl = asset.id.getSupportIconUrl(),
             placeholder = asset.id.chain.getIconUrl(),
             iconSize = 50.dp,
         )

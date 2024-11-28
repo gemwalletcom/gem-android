@@ -1,19 +1,20 @@
 package com.gemwallet.android.features.assets.viewmodel
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.R
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.features.assets.model.WalletInfoUIState
-import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.interactors.sync.SyncTransactions
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.model.format
+import com.gemwallet.android.ui.components.image.getDrawableUri
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
@@ -128,10 +129,9 @@ class AssetsViewModel @Inject constructor(
         val changedPercentages = (changedValue / (totalValue / 100.0)).let {
             if (it.isNaN()) 0.0 else it
         }
-        val icon = if (wallet.type == WalletType.multicoin) {
-            ""
-        } else {
-            wallet.accounts.firstOrNull()?.chain?.getIconUrl() ?: ""
+        val icon = when (wallet.type) {
+            WalletType.multicoin -> R.drawable.multicoin_wallet
+            else -> wallet.accounts.firstOrNull()?.chain?.getIconUrl()
         }
         return WalletInfoUIState(
             name = wallet.name,

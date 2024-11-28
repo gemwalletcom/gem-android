@@ -18,12 +18,12 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.same
-import com.gemwallet.android.interactors.getIconUrl
-import com.gemwallet.android.interactors.getSupportIconUrl
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding4
+import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.ui.components.image.getSupportIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator10
 import com.gemwallet.android.ui.components.titles.getAddress
 import com.gemwallet.android.ui.components.titles.getTransactionTitle
@@ -86,7 +86,7 @@ fun TransactionItem(
         modifier = Modifier
             .clickable(onClick = onClick)
             .heightIn(72.dp),
-        iconUrl = assetIcon,
+        icon = assetIcon,
         supportIcon = supportIcon,
         placeholder = assetSymbol,
         dividerShowed = !isLast,

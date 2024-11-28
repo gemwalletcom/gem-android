@@ -18,8 +18,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.interactors.getIconUrl
-import com.gemwallet.android.interactors.getSupportIconUrl
+import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.ui.components.image.getSupportIconUrl
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.models.PriceUIModel
@@ -29,12 +29,10 @@ import com.wallet.core.primitives.Asset
 fun AssetListItem(
     uiModel: AssetItemUIModel,
     modifier: Modifier = Modifier,
-    iconModifier: Modifier = Modifier,
 ) {
     ListItem(
         modifier = modifier,
-        iconModifier = iconModifier,
-        iconUrl = uiModel.assetIconUrl,
+        icon = uiModel.assetIconUrl,
         supportIcon = uiModel.assetNetworkIconUrl,
         placeholder = uiModel.name[0].toString(),
         trailing = getBalanceInfo(uiModel),
@@ -63,15 +61,13 @@ fun AssetListItem(
     uiModel: AssetItemUIModel,
     support: @Composable (() -> Unit)?,
     modifier: Modifier = Modifier,
-    iconModifier: Modifier = Modifier,
     dividerShowed: Boolean = true,
     badge: String? = null,
     trailing: (@Composable () -> Unit)? = null,
 ) {
     ListItem(
         modifier = modifier,
-        iconModifier = iconModifier,
-        iconUrl = uiModel.assetIconUrl,
+        icon = uiModel.assetIconUrl,
         supportIcon = uiModel.assetNetworkIconUrl,
         placeholder = uiModel.name[0].toString(),
         dividerShowed = dividerShowed,
@@ -90,7 +86,6 @@ fun AssetListItem(
 fun AssetListItem(
     asset: Asset,
     modifier: Modifier = Modifier,
-    iconModifier: Modifier = Modifier,
     dividerShowed: Boolean = true,
     support: String? = null,
     badge: String? = null,
@@ -98,8 +93,7 @@ fun AssetListItem(
 ) {
     ListItem(
         modifier = modifier,
-        iconModifier = iconModifier,
-        iconUrl = asset.getIconUrl(),
+        icon = asset.getIconUrl(),
         supportIcon = asset.getSupportIconUrl(),
         placeholder = asset.name[0].toString(),
         dividerShowed = dividerShowed,

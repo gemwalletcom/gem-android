@@ -16,7 +16,6 @@ import com.gemwallet.android.features.asset.details.models.AssetInfoUIModel
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIState
 import com.gemwallet.android.features.asset.navigation.assetIdArg
 import com.gemwallet.android.features.assets.model.PriceUIState
-import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
@@ -24,6 +23,7 @@ import com.gemwallet.android.model.getStackedAmount
 import com.gemwallet.android.model.reservedFormatted
 import com.gemwallet.android.model.stakedFormatted
 import com.gemwallet.android.model.totalFormatted
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
@@ -153,7 +153,6 @@ class AsseDetailsViewModel @Inject constructor(
                 ),
                 tokenType = asset.type,
                 networkTitle = "${asset.id.chain.asset().name} (${asset.type.string})",
-                networkIcon = AssetId(asset.id.chain).getIconUrl(),
                 isBuyEnabled = assetInfo.metadata?.isBuyEnabled == true,
                 isSwapEnabled = assetInfo.metadata?.isSwapEnabled == true,
                 account = AssetInfoUIModel.Account(

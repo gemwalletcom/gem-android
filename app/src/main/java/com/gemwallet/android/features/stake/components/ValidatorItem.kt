@@ -30,7 +30,7 @@ fun ValidatorItem(
 ) {
     ListItem(
         modifier = Modifier.clickable(enabled = onClick != null) { onClick?.invoke(data.id) },
-        iconUrl = data.getIconUrl(),
+        icon = data.getIconUrl(),
         placeholder = data.name.firstOrNull()?.toString() ?: data.id.firstOrNull()?.toString() ?: "V",
         dividerShowed = !inContainer,
         trailing = {

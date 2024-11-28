@@ -339,19 +339,25 @@ fun PreviewWalletScreen() {
             UI(
                 wallets = listOf(
                     WalletItemUIState(
-                        "1", "Foo wallet #1", WalletType.view, typeLabel = "view", pinned = false),
+                        "1", "Foo wallet #1", WalletType.view, typeLabel = "view", icon = "", pinned = false
+                    ),
                     WalletItemUIState(
-                        "2", "Foo wallet #2", WalletType.view, typeLabel = "view", pinned = false),
+                        "2", "Foo wallet #2", WalletType.view, typeLabel = "view", icon = "", pinned = false
+                    ),
                     WalletItemUIState(
-                        "3", "Foo wallet #3", WalletType.multicoin, typeLabel = "view", pinned = false),
+                        "3", "Foo wallet #3", WalletType.multicoin, typeLabel = "view", icon = "", pinned = false
+                    ),
                     WalletItemUIState(
-                        "4", "Foo wallet #4", WalletType.multicoin, typeLabel = "view", pinned = false),
+                        "4", "Foo wallet #4", WalletType.multicoin, typeLabel = "view", icon = "", pinned = false
+                    ),
                     WalletItemUIState(
-                        "5", "Foo wallet #5", WalletType.view, typeLabel = "view", pinned = false),
+                        "5", "Foo wallet #5", WalletType.view, typeLabel = "view", icon = "", pinned = false
+                    ),
                 ),
                 pinnedWallets = listOf(
                     WalletItemUIState(
-                        "6", "Foo wallet #6", WalletType.view, typeLabel = "view", pinned = true),
+                        "6", "Foo wallet #6", WalletType.view, typeLabel = "view", pinned = true, icon = ""
+                    ),
                 ),
                 currentWalletId = "1",
                 onEdit = {},

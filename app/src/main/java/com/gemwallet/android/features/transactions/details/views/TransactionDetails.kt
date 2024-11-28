@@ -23,9 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
-import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.transactions.details.viewmodels.TransactionDetailsViewModel
-import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.InfoBottomSheet
@@ -34,12 +32,13 @@ import com.gemwallet.android.ui.components.SheetEntity
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.ui.components.image.getSupportIconUrl
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.titles.getTransactionTitle
 import com.gemwallet.android.ui.theme.pendingColor
-import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
@@ -73,7 +72,7 @@ fun TransactionDetails(
                 )
                 else -> AmountListHead(
                     iconUrl = model.assetIcon,
-                    supportIconUrl = if (model.assetId.type() == AssetSubtype.NATIVE) null else model.assetId.chain.getIconUrl(),
+                    supportIconUrl = model.assetId.getSupportIconUrl(),
                     placeholder = model.assetType.string,
                     amount = when (model.type) {
                         TransactionType.StakeDelegate,
@@ -208,7 +207,7 @@ fun TransactionDetails(
                     data = model.networkTitle,
                     trailing = {
                         AsyncImage(
-                            model = "file:///android_asset/chains/icons/${model.assetId.chain.string}.png",
+                            model = model.assetId.getIconUrl(),
                             contentDescription = "asset_icon",
                             placeholderText = model.assetType.string,
                             modifier = Modifier.size(20.dp),

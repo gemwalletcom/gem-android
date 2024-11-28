@@ -122,7 +122,7 @@ fun ConnectionItem(
     ListItem(
         modifier = (if (onClick == null) Modifier else Modifier.clickable { onClick(connection.id) })
             .heightIn(72.dp),
-        iconUrl = connection.icon,
+        icon = connection.icon,
         placeholder = if (connection.name.isEmpty()) "WC" else connection.name[0].toString(),
         dividerShowed = onClick != null
     ) {

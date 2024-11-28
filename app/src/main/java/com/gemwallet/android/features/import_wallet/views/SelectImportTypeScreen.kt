@@ -23,6 +23,7 @@ import com.gemwallet.android.ui.components.ChainItem
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.image.getDrawableUri
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
@@ -64,7 +65,7 @@ private fun SelectImportTypeScene(
                     ChainItem(
                         modifier = Modifier.testTag("multicoin_item"),
                         title = stringResource(id = R.string.wallet_multicoin),
-                        icon = "android.resource://com.gemwallet.android/drawable/ic_splash",
+                        icon = R.drawable.multicoin_wallet,
                         dividerShowed = false,
                     ) {
                         onSelect(ImportType(WalletType.multicoin))

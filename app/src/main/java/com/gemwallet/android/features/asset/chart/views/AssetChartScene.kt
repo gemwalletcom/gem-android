@@ -9,7 +9,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.asset.chart.models.AssetMarketUIModel
 import com.gemwallet.android.features.asset.chart.viewmodels.AssetChartViewModel
-import com.gemwallet.android.interactors.getDrawableUri
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.SubheaderItem
@@ -56,7 +55,7 @@ fun AssetChartScene(
 private fun AssetMarketUIModel.Link.toCell(uriHandler: UriHandler): CellEntity<Int> {
     return CellEntity(
         label = label,
-        icon = type.getDrawableUri(),
+        icon = icon,
         data = "",
         action = { uriHandler.open(url) }
     )

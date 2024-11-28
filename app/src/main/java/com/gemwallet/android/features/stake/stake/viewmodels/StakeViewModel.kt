@@ -11,7 +11,7 @@ import com.gemwallet.android.ext.byChain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.stake.stake.model.StakeError
 import com.gemwallet.android.features.stake.stake.model.StakeUIState
-import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
