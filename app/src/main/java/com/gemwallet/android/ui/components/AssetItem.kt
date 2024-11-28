@@ -1,10 +1,10 @@
 package com.gemwallet.android.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.defaultMinSize
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -18,8 +18,10 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ui.components.image.getIconUrl
-import com.gemwallet.android.ui.components.image.getSupportIconUrl
+import com.gemwallet.android.ui.components.designsystem.Spacer2
+import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.components.list_item.ListItemSupportText
+import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.models.PriceUIModel
@@ -32,12 +34,9 @@ fun AssetListItem(
 ) {
     ListItem(
         modifier = modifier,
-        icon = uiModel.assetIconUrl,
-        supportIcon = uiModel.assetNetworkIconUrl,
-        placeholder = uiModel.name[0].toString(),
-        trailing = getBalanceInfo(uiModel),
-    ) {
-        val priceInfo: (@Composable () -> Unit)? = if (uiModel.price.fiatFormatted.isEmpty()) {
+        leading = { IconWithBadge(uiModel.asset) },
+        title = { ListItemTitleText(uiModel.name) },
+        subtitle = if (uiModel.price.fiatFormatted.isEmpty()) {
             null
         } else {
             {
@@ -47,13 +46,9 @@ fun AssetListItem(
                     internalPadding = 4.dp
                 )
             }
-        }
-        ListItemTitle(
-            modifier = Modifier.fillMaxHeight(),
-            title = uiModel.name,
-            subtitle = priceInfo,
-        )
-    }
+        },
+        trailing = getBalanceInfo(uiModel),
+    )
 }
 
 @Composable
@@ -67,19 +62,12 @@ fun AssetListItem(
 ) {
     ListItem(
         modifier = modifier,
-        icon = uiModel.assetIconUrl,
-        supportIcon = uiModel.assetNetworkIconUrl,
-        placeholder = uiModel.name[0].toString(),
+        leading = { IconWithBadge(uiModel.asset) },
+        title = { ListItemTitleText(uiModel.name, { Badge(text = badge) }) },
+        subtitle = support,
         dividerShowed = dividerShowed,
         trailing = trailing
-    ) {
-        ListItemTitle(
-            modifier = Modifier.fillMaxHeight(),
-            title = uiModel.name,
-            titleBadge = { Badge(text = badge) },
-            subtitle = support,
-        )
-    }
+    )
 }
 
 @Composable
@@ -93,21 +81,16 @@ fun AssetListItem(
 ) {
     ListItem(
         modifier = modifier,
-        icon = asset.getIconUrl(),
-        supportIcon = asset.getSupportIconUrl(),
-        placeholder = asset.name[0].toString(),
+        leading = {
+            IconWithBadge(asset)
+        },
+        title = { ListItemTitleText(asset.name, { Badge(text = badge) }) },
+        subtitle = if (support.isNullOrEmpty()) null else {
+            { ListItemSupportText(support) }
+        },
         dividerShowed = dividerShowed,
         trailing = trailing
-    ) {
-        ListItemTitle(
-            modifier = Modifier.fillMaxHeight(),
-            title = asset.name,
-            titleBadge = { Badge(text = badge) },
-            subtitle = if (support.isNullOrEmpty()) null else {
-                { ListItemSupportText(support) }
-            },
-        )
-    }
+    )
 }
 
 @Composable
@@ -159,20 +142,18 @@ fun PriceInfo(
 
 fun getBalanceInfo(uiModel: AssetItemUIModel): @Composable () -> Unit {
     return (@Composable {
-        if (uiModel.isZeroAmount) {
-            ListItemTitle(
-                modifier = Modifier.defaultMinSize(minHeight = 40.dp),
-                title = uiModel.cryptoFormatted,
-                color = MaterialTheme.colorScheme.secondary,
-                horizontalAlignment = Alignment.End,
-            )
-        } else {
-            ListItemTitle(
-                title = uiModel.cryptoFormatted,
-                color = MaterialTheme.colorScheme.onSurface,
-                subtitle = { ListItemSupportText(uiModel.fiatFormatted) },
-                horizontalAlignment = Alignment.End
-            )
+        val color = MaterialTheme.colorScheme.let {
+            if (uiModel.isZeroAmount) it.secondary else it.onSurface
+        }
+        Column(
+            modifier = Modifier.defaultMinSize(40.dp),
+            horizontalAlignment = Alignment.End
+        ) {
+            ListItemTitleText(uiModel.cryptoFormatted, color = color)
+            if (!uiModel.isZeroAmount) {
+                Spacer2()
+                ListItemSupportText(uiModel.fiatFormatted)
+            }
         }
     })
 }

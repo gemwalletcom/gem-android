@@ -6,7 +6,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.BaseAssetSelectViewModel
-import com.gemwallet.android.ui.components.ListItemSupportText
+import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype

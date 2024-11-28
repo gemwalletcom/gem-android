@@ -35,7 +35,7 @@ import com.gemwallet.android.R
 import com.gemwallet.android.features.swap.models.SwapItemModel
 import com.gemwallet.android.features.swap.models.SwapItemType
 import com.gemwallet.android.ui.components.image.getIconUrl
-import com.gemwallet.android.ui.components.image.IconWithSupport
+import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding4
 import com.gemwallet.android.ui.components.image.getSupportIconUrl
@@ -123,12 +123,7 @@ internal fun SwapItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
             ) {
-                IconWithSupport(
-                    size = 36.dp,
-                    icon = item.asset.getIconUrl(),
-                    placeholder = item.asset.type.string,
-                    supportIcon = item.asset.getSupportIconUrl(),
-                )
+                IconWithBadge(item.asset, 36.dp)
                 Spacer(modifier = Modifier.size(8.dp))
                 Text(
                     text = item.asset.symbol,

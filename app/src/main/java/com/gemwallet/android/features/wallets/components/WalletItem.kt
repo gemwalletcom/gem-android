@@ -15,14 +15,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
-import com.gemwallet.android.features.assets.model.IconUrl
-import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.Badge
 import com.gemwallet.android.ui.components.ListItem
-import com.gemwallet.android.ui.components.ListItemSupportText
-import com.gemwallet.android.ui.components.ListItemTitle
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer8
+import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.ui.components.list_item.ListItemSupportText
+import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 
@@ -67,10 +67,25 @@ fun WalletItem(
 ) {
     ListItem(
         modifier = modifier.heightIn(72.dp),
-        icon = icon,
-        supportIcon = if (type == WalletType.view) {
-            "android.resource://com.gemwallet.android/drawable/${R.drawable.watch_badge}"
-        } else null,
+        leading = @Composable {
+            IconWithBadge(
+                icon = icon,
+                supportIcon = if (type == WalletType.view) {
+                    "android.resource://com.gemwallet.android/drawable/${R.drawable.watch_badge}"
+                } else null,
+            )
+        },
+        title = {
+            ListItemTitleText(
+                text = name,
+                titleBadge = if (type == WalletType.view) {
+                    { Badge(stringResource(id = R.string.wallets_watch).uppercase()) }
+                } else {
+                    null
+                }
+            )
+        },
+        subtitle = { ListItemSupportText(typeLabel) },
         trailing = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -95,17 +110,7 @@ fun WalletItem(
                 }
             }
         }
-    ) {
-        ListItemTitle(
-            title = name,
-            subtitle = { ListItemSupportText(typeLabel) },
-            titleBadge = if (type == WalletType.view) {
-                { Badge(stringResource(id = R.string.wallets_watch).uppercase()) }
-            } else {
-                null
-            }
-        )
-    }
+    )
 }
 
 @Preview

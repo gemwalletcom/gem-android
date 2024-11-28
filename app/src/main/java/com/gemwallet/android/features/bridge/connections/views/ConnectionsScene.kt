@@ -32,8 +32,9 @@ import com.gemwallet.android.R
 import com.gemwallet.android.features.bridge.connections.viewmodels.ConnectionsViewModel
 import com.gemwallet.android.features.bridge.model.ConnectionUI
 import com.gemwallet.android.ui.components.ListItem
-import com.gemwallet.android.ui.components.ListItemSupportText
-import com.gemwallet.android.ui.components.ListItemTitle
+import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.components.list_item.ListItemSupportText
+import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.qrCodeRequest
 import com.gemwallet.android.ui.components.screen.Scene
 import kotlinx.coroutines.launch
@@ -122,13 +123,11 @@ fun ConnectionItem(
     ListItem(
         modifier = (if (onClick == null) Modifier else Modifier.clickable { onClick(connection.id) })
             .heightIn(72.dp),
-        icon = connection.icon,
-        placeholder = if (connection.name.isEmpty()) "WC" else connection.name[0].toString(),
-        dividerShowed = onClick != null
-    ) {
-        ListItemTitle(
-            title = connection.name,
-            subtitle = { ListItemSupportText(connection.uri) },
-        )
-    }
+        leading = {
+            IconWithBadge(connection.icon, placeholder = if (connection.name.isEmpty()) "WC" else connection.name[0].toString())
+        },
+        title = { ListItemTitleText(connection.name) },
+        subtitle = { ListItemSupportText(connection.uri) },
+        dividerShowed = onClick != null,
+    )
 }

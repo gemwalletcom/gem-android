@@ -132,6 +132,14 @@ private fun BlockExplorerItem(
     ListItem(
         modifier = Modifier.clickable { onSelect(explorerName) },
         dividerShowed = true,
+        title = {
+            Text(
+                text = explorerName,
+                maxLines = 1,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        },
         trailing = {
             if (explorerName == current) {
                 Icon(
@@ -143,12 +151,5 @@ private fun BlockExplorerItem(
                 )
             }
         }
-    ) {
-        Text(
-            text = explorerName,
-            maxLines = 1,
-            color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.bodyLarge,
-        )
-    }
+    )
 }

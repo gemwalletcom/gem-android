@@ -10,8 +10,7 @@ import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.features.assets.model.IconUrl
-import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.wallet.core.primitives.Chain
 
 @Composable
@@ -25,16 +24,21 @@ fun ChainItem(
 ) {
     ListItem(
         modifier = modifier.clickable { onClick() }.heightIn(64.dp),
-        icon = icon,
-        placeholder = chain?.string?.get(0).toString(),
+        leading = {
+            IconWithBadge(
+                icon = icon,
+                placeholder = chain?.string?.get(0).toString(),
+            )
+        },
+        title = {
+            Text(
+                modifier = Modifier,
+                text = title.capitalize(Locale.current),
+                color = MaterialTheme.colorScheme.onSurface,
+            )
+        },
         dividerShowed = dividerShowed,
-    ) {
-        Text(
-            modifier = Modifier,
-            text = title.capitalize(Locale.current),
-            color = MaterialTheme.colorScheme.onSurface,
-        )
-    }
+    )
 }
 
 @Preview

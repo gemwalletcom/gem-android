@@ -14,9 +14,10 @@ import com.gemwallet.android.R
 import com.gemwallet.android.features.stake.model.formatApr
 import com.gemwallet.android.features.stake.model.getIconUrl
 import com.gemwallet.android.ui.components.ListItem
-import com.gemwallet.android.ui.components.ListItemSupportText
-import com.gemwallet.android.ui.components.ListItemTitle
 import com.gemwallet.android.ui.components.designsystem.space4
+import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.components.list_item.ListItemSupportText
+import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.DelegationValidator
@@ -30,15 +31,17 @@ fun ValidatorItem(
 ) {
     ListItem(
         modifier = Modifier.clickable(enabled = onClick != null) { onClick?.invoke(data.id) },
-        icon = data.getIconUrl(),
-        placeholder = data.name.firstOrNull()?.toString() ?: data.id.firstOrNull()?.toString() ?: "V",
+        leading = {
+            IconWithBadge(
+                icon = data.getIconUrl(),
+                placeholder = data.name.firstOrNull()?.toString() ?: data.id.firstOrNull()?.toString() ?: "V",
+            )
+        },
         dividerShowed = !inContainer,
+        title = { ListItemTitleText(data.name) },
         trailing = {
             Row {
-                ListItemTitle(
-                    title = "",
-                    subtitle = { ListItemSupportText(R.string.stake_apr, " ${data.formatApr()}") },
-                )
+                ListItemSupportText(R.string.stake_apr, " ${data.formatApr()}")
                 if (isSelected) {
                     Spacer(modifier = Modifier.size(space4))
                     Icon(
@@ -48,9 +51,6 @@ fun ValidatorItem(
                 }
             }
         },
-        body = {
-            ListItemTitle(title = data.name)
-        }
     )
 }
 

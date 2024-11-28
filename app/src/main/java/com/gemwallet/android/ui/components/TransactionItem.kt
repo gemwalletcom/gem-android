@@ -2,6 +2,7 @@ package com.gemwallet.android.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
@@ -20,10 +21,14 @@ import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.same
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
+import com.gemwallet.android.ui.components.designsystem.Spacer2
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding4
+import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.image.getSupportIconUrl
+import com.gemwallet.android.ui.components.list_item.ListItemSupportText
+import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator10
 import com.gemwallet.android.ui.components.titles.getAddress
 import com.gemwallet.android.ui.components.titles.getTransactionTitle
@@ -86,64 +91,16 @@ fun TransactionItem(
         modifier = Modifier
             .clickable(onClick = onClick)
             .heightIn(72.dp),
-        icon = assetIcon,
-        supportIcon = supportIcon,
-        placeholder = assetSymbol,
-        dividerShowed = !isLast,
-        trailing = {
-            ListItemTitle(
-                title = when (type) {
-                    TransactionType.Swap -> {
-                        val swapMetadata = metadata as? TransactionSwapMetadata
-                        val toId = swapMetadata?.toAsset
-                        val asset = assets.firstOrNull { toId?.same(it.id) == true }
-                        if (swapMetadata == null || asset == null) {
-                            ""
-                        } else {
-                            "+${asset.format(Crypto(swapMetadata.toValue), dynamicPlace = true)}"
-                        }
-                    }
-                    else -> type.getValue(direction, value)
-                },
-                color = when (type) {
-                    TransactionType.Swap -> MaterialTheme.colorScheme.tertiary
-                    else -> direction.getValueColor()
-                },
-                subtitle = {
-                    val text = when (type) {
-                        TransactionType.Swap -> {
-                            val swapMetadata = metadata as? TransactionSwapMetadata
-                            val fromId = swapMetadata?.fromAsset
-                            val asset = assets.firstOrNull { fromId?.same(it.id) == true }
-                            if (swapMetadata == null || asset == null) {
-                                ""
-                            } else {
-                                "-${
-                                    asset.format(
-                                        Crypto(swapMetadata.fromValue),
-                                        dynamicPlace = true
-                                    )
-                                }"
-                            }
-                        }
-
-                        else -> ""
-                    }
-                    if (text.isNotEmpty()) {
-                        ListItemSupportText(text)
-                    }
-                },
-                horizontalAlignment = Alignment.End,
+        leading = {
+            IconWithBadge(
+                icon = assetIcon,
+                supportIcon = supportIcon,
+                placeholder = assetSymbol,
             )
         },
-        body = {
-            ListItemTitle(
-                title = type.getTransactionTitle(direction, state, assetSymbol = assetSymbol),
-                subtitle = type.getAddress(direction, from, to).let{
-                    if (it.isNotEmpty()) {
-                        { ListItemSupportText(it) }
-                    } else null
-                },
+        title = {
+            ListItemTitleText(
+                type.getTransactionTitle(direction, state, assetSymbol = assetSymbol),
                 titleBadge = {
                     val badge = when (state) {
                         TransactionState.Pending -> stringResource(id = R.string.transaction_status_pending)
@@ -189,6 +146,58 @@ fun TransactionItem(
                 }
             )
         },
+        subtitle = type.getAddress(direction, from, to).let{
+            if (it.isNotEmpty()) {
+                { ListItemSupportText(it) }
+            } else null
+        },
+        dividerShowed = !isLast,
+        trailing = {
+            Column(horizontalAlignment = Alignment.End) {
+                ListItemTitleText(
+                    text = when (type) {
+                        TransactionType.Swap -> {
+                            val swapMetadata = metadata as? TransactionSwapMetadata
+                            val toId = swapMetadata?.toAsset
+                            val asset = assets.firstOrNull { toId?.same(it.id) == true }
+                            if (swapMetadata == null || asset == null) {
+                                ""
+                            } else {
+                                "+${asset.format(Crypto(swapMetadata.toValue), dynamicPlace = true)}"
+                            }
+                        }
+                        else -> type.getValue(direction, value)
+                    },
+                    color = when (type) {
+                        TransactionType.Swap -> MaterialTheme.colorScheme.tertiary
+                        else -> direction.getValueColor()
+                    },
+                )
+                val text = when (type) {
+                    TransactionType.Swap -> {
+                        val swapMetadata = metadata as? TransactionSwapMetadata
+                        val fromId = swapMetadata?.fromAsset
+                        val asset = assets.firstOrNull { fromId?.same(it.id) == true }
+                        if (swapMetadata == null || asset == null) {
+                            ""
+                        } else {
+                            "-${
+                                asset.format(
+                                    Crypto(swapMetadata.fromValue),
+                                    dynamicPlace = true
+                                )
+                            }"
+                        }
+                    }
+
+                    else -> ""
+                }
+                if (text.isNotEmpty()) {
+                    Spacer2()
+                    ListItemSupportText(text)
+                }
+            }
+        }
     )
 }
 

@@ -33,7 +33,7 @@ import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.banners.viewmodels.BannersViewModel
 import com.gemwallet.android.ui.components.image.getIconUrl
-import com.gemwallet.android.ui.components.image.IconWithSupport
+import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding12
@@ -98,7 +98,7 @@ private fun BannerText(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Spacer16()
-        IconWithSupport(icon = iconUrl, placeholder = iconUrl, size = 36.dp)
+        IconWithBadge(icon = iconUrl, placeholder = iconUrl, size = 36.dp)
         Spacer16()
         Column(
             modifier = Modifier.weight(1f).padding(top = 14.dp, end = 0.dp, bottom = padding12),

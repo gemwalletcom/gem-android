@@ -1,14 +1,18 @@
 package com.gemwallet.android.features.settings.currency.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.CheckCircleOutline
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.ListItem
-import com.gemwallet.android.ui.components.ListItemTitle
+import com.gemwallet.android.ui.components.designsystem.padding8
+import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.wallet.core.primitives.Currency
 
 @Composable
@@ -21,19 +25,20 @@ fun CurrencyItem(
 
     ListItem(
         modifier = Modifier.clickable { onSelect(currency) },
+        title = { ListItemTitleText("${emojiFlags[currency.string] ?: ""}  ${currency.string} - $title") },
         trailing = if (currency == selectedCurrency) {
             @Composable {
                 Icon(
-                    imageVector = Icons.Default.CheckCircleOutline,
-                    contentDescription = "selected_currency"
+                    modifier = Modifier.Companion.padding(end = padding8).size(20.dp),
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "selected_currency",
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
         } else {
             null
         },
-    ) {
-        ListItemTitle(title = "${emojiFlags[currency.string] ?: ""}  ${currency.string} - $title")
-    }
+    )
 }
 
 internal val emojiFlags = mapOf(
