@@ -2,8 +2,8 @@ package com.gemwallet.android.ui.models
 
 import androidx.compose.runtime.Stable
 import com.gemwallet.android.ext.same
-import com.gemwallet.android.interactors.getIconUrl
-import com.gemwallet.android.interactors.getSupportIconUrl
+import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.ui.components.image.getSupportIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetMetaData

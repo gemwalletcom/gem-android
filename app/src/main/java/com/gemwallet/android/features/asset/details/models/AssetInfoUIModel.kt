@@ -15,7 +15,6 @@ class AssetInfoUIModel(
     val priceChangedType: PriceState = PriceState.Up,
     val tokenType: AssetType = AssetType.NATIVE,
     val networkTitle: String = "",
-    val networkIcon: String = "",
     val account: Account = Account(),
     val isBuyEnabled: Boolean = false,
     val isSwapEnabled: Boolean = false,

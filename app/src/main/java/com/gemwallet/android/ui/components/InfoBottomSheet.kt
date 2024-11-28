@@ -36,8 +36,8 @@ import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl
 
 sealed class SheetEntity(
-    val icon: String,
-    val badgeIcon: String? = null,
+    val icon: Any,
+    val badgeIcon: Any? = null,
     @StringRes val title: Int,
     @StringRes val description: Int,
     val descriptionArgs: Any? = null,
@@ -45,7 +45,7 @@ sealed class SheetEntity(
     val onClose: () -> Unit,
 ) {
     class NetworkFeeInfo(networkTitle: String?, onClose: () -> Unit) : SheetEntity(
-        icon = "android.resource://com.gemwallet.android/drawable/${R.drawable.ic_network_fee}",
+        icon = R.drawable.ic_network_fee,
         title = com.gemwallet.android.R.string.transfer_network_fee,
         description = LR.string.info_network_fee_description,
         descriptionArgs = networkTitle,
@@ -65,9 +65,9 @@ sealed class SheetEntity(
     class TransactionInfo(icon: String, state: TransactionState, onClose: () -> Unit) : SheetEntity(
         icon = icon,
         badgeIcon = when (state) {
-            TransactionState.Pending -> "android.resource://com.gemwallet.android/drawable/${R.drawable.transaction_state_pending}"
-            TransactionState.Confirmed -> "android.resource://com.gemwallet.android/drawable/${R.drawable.transaction_state_success}"
-            TransactionState.Failed, TransactionState.Reverted -> "android.resource://com.gemwallet.android/drawable/${R.drawable.transaction_state_error}"
+            TransactionState.Pending -> R.drawable.transaction_state_pending
+            TransactionState.Confirmed -> R.drawable.transaction_state_success
+            TransactionState.Failed, TransactionState.Reverted -> R.drawable.transaction_state_error
         },
         title = when (state) {
             TransactionState.Pending -> R.string.transaction_status_pending
@@ -85,8 +85,8 @@ sealed class SheetEntity(
     )
 
     class WatchWalletInfo(onClose: () -> Unit) : SheetEntity(
-        icon = "android.resource://com.gemwallet.android/drawable/${R.drawable.ic_splash}",
-        badgeIcon = "android.resource://com.gemwallet.android/drawable/${R.drawable.watch_badge}",
+        icon = R.drawable.ic_splash,
+        badgeIcon = R.drawable.watch_badge,
         title = LR.string.info_watch_wallet_title,
         description = LR.string.info_watch_wallet_description,
         infoUrl = Config().getDocsUrl(DocsUrl.WHAT_IS_WATCH_WALLET),

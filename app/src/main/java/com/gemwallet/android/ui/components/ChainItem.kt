@@ -11,6 +11,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.features.assets.model.IconUrl
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.Chain
 
 @Composable
@@ -18,13 +19,13 @@ fun ChainItem(
     title: String,
     modifier: Modifier = Modifier,
     chain: Chain? = null,
-    icon: IconUrl = "",
+    icon: Any? = null,
     dividerShowed: Boolean = true,
     onClick: () -> Unit = {},
 ) {
     ListItem(
         modifier = modifier.clickable { onClick() }.heightIn(64.dp),
-        iconUrl = icon.ifEmpty { "file:///android_asset/chains/icons/${chain?.string}.png" },
+        icon = icon,
         placeholder = chain?.string?.get(0).toString(),
         dividerShowed = dividerShowed,
     ) {

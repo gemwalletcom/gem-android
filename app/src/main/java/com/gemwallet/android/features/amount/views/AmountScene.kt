@@ -23,7 +23,6 @@ import com.gemwallet.android.features.amount.components.amountErrorString
 import com.gemwallet.android.features.amount.models.AmountError
 import com.gemwallet.android.features.confirm.models.AmountScreenModel
 import com.gemwallet.android.features.stake.components.ValidatorItem
-import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.buttons.MainActionButton
@@ -99,10 +98,7 @@ fun AmountScene(
             validatorView(uiModel, validatorState, onValidator)
             item {
                 AssetInfoCard(
-                    assetId = uiModel.asset.id,
-                    assetIcon = uiModel.asset.getIconUrl(),
-                    assetTitle = uiModel.asset.name,
-                    assetType = uiModel.asset.type,
+                    asset = uiModel.asset,
                     availableAmount = availableBalance,
                     onMaxAmount = onMaxAmount
                 )

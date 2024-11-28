@@ -8,6 +8,7 @@ import androidx.compose.ui.unit.dp
 
 val headerIconSize = 64.dp
 val listItemIconSize = 40.dp
+val iconSize = 32.dp
 val trailingIcon20 = 20.dp
 val trailingIcon16 = 16.dp
 

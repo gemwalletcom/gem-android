@@ -15,7 +15,7 @@ import com.gemwallet.android.ext.filter
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.add_asset.models.AddAssetError
 import com.gemwallet.android.features.add_asset.models.AddAssetUIState
-import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
 import dagger.hilt.android.lifecycle.HiltViewModel

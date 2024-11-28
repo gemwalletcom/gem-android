@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
@@ -33,8 +32,8 @@ import com.gemwallet.android.R
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.banners.viewmodels.BannersViewModel
-import com.gemwallet.android.interactors.getIconUrl
-import com.gemwallet.android.ui.components.AssetIcon
+import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.ui.components.image.IconWithSupport
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding12
@@ -99,12 +98,7 @@ private fun BannerText(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Spacer16()
-        AssetIcon(
-            modifier = Modifier.size(36.dp),
-            iconUrl = iconUrl,
-            placeholder = iconUrl,
-            supportIcon = ""
-        )
+        IconWithSupport(icon = iconUrl, placeholder = iconUrl, size = 36.dp)
         Spacer16()
         Column(
             modifier = Modifier.weight(1f).padding(top = 14.dp, end = 0.dp, bottom = padding12),

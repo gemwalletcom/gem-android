@@ -5,7 +5,7 @@ import com.wallet.core.primitives.WalletType
 
 data class WalletInfoUIState(
     val name: String = "",
-    val icon: String = "",
+    val icon: Any? = null,
     val totalValue: String = "0.0",
     val changedValue: String = "0.0",
     val changedPercentages: String = "0.0%",

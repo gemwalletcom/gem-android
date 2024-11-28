@@ -9,32 +9,25 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
-import com.gemwallet.android.ext.type
-import com.gemwallet.android.interactors.getIconUrl
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.ListItemSupportText
 import com.gemwallet.android.ui.components.ListItemTitle
-import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.AssetSubtype
-import com.wallet.core.primitives.AssetType
+import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.ui.components.image.getSupportIconUrl
+import com.wallet.core.primitives.Asset
 
 @Composable
 fun AssetInfoCard(
-    assetId: AssetId,
-    assetIcon: String,
-    assetTitle: String,
-    assetType: AssetType,
+    asset: Asset,
     availableAmount: String,
     onMaxAmount: () -> Unit,
 ) {
     Container {
         ListItem(
-            iconUrl = assetIcon,
-            supportIcon = if (assetId.type() != AssetSubtype.NATIVE) {
-                assetId.chain.getIconUrl()
-            } else { null },
-            placeholder = assetType.string,
+            icon = asset.getIconUrl(),
+            supportIcon = asset.getSupportIconUrl(),
+            placeholder = asset.type.string,
             dividerShowed = false,
             trailing = {
                 Button(
@@ -50,7 +43,7 @@ fun AssetInfoCard(
             }
         ) {
             ListItemTitle(
-                title = assetTitle,
+                title = asset.name,
                 subtitle = { ListItemSupportText(stringResource(id = R.string.transfer_balance, availableAmount)) },
             )
         }

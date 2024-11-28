@@ -4,9 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.features.assets.model.IconUrl
 import com.gemwallet.android.interactors.DeleteWalletOperator
-import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.gemwallet.android.R
 
 @HiltViewModel
 class WalletsViewModel @Inject constructor(
@@ -90,7 +90,7 @@ private fun Wallet.toUIState() = WalletItemUIState(
         WalletType.multicoin -> "Multi-coin"
     },
     icon = if (accounts.size > 1) {
-        ""
+        R.drawable.multicoin_wallet
     } else {
         accounts.firstOrNull()?.chain?.getIconUrl() ?: ""
     }
@@ -108,5 +108,5 @@ data class WalletItemUIState(
     val type: WalletType,
     val pinned: Boolean,
     val typeLabel: String,
-    val icon: IconUrl = ""
+    val icon: Any,
 )

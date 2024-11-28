@@ -33,7 +33,7 @@ fun DelegationItem(
 ) {
     ListItem(
         modifier = Modifier.clickable(onClick = onClick),
-        iconUrl = "https://assets.gemwallet.com/blockchains/${delegation.validator.chain.string}/validators/${delegation.validator.id}/logo.png",
+        icon = "https://assets.gemwallet.com/blockchains/${delegation.validator.chain.string}/validators/${delegation.validator.id}/logo.png",
         placeholder = delegation.validator.name.firstOrNull()?.toString() ?: delegation.validator.id.firstOrNull()?.toString() ?: "",
         trailing = {
             ListItemTitle(

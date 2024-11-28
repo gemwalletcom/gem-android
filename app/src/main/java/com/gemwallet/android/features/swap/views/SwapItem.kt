@@ -32,15 +32,14 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
-import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.swap.models.SwapItemModel
 import com.gemwallet.android.features.swap.models.SwapItemType
-import com.gemwallet.android.interactors.getIconUrl
-import com.gemwallet.android.ui.components.AssetIcon
+import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.ui.components.image.IconWithSupport
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding4
+import com.gemwallet.android.ui.components.image.getSupportIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
-import com.wallet.core.primitives.AssetSubtype
 
 @Composable
 internal fun SwapItem(
@@ -124,15 +123,11 @@ internal fun SwapItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
             ) {
-                AssetIcon(
-                    modifier = Modifier.size(36.dp),
-                    iconUrl = item.asset.getIconUrl(),
+                IconWithSupport(
+                    size = 36.dp,
+                    icon = item.asset.getIconUrl(),
                     placeholder = item.asset.type.string,
-                    supportIcon = if (item.asset.id.type() == AssetSubtype.NATIVE) {
-                        null
-                    } else {
-                        item.asset.id.chain.getIconUrl()
-                    },
+                    supportIcon = item.asset.getSupportIconUrl(),
                 )
                 Spacer(modifier = Modifier.size(8.dp))
                 Text(

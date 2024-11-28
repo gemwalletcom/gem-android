@@ -13,7 +13,7 @@ import com.gemwallet.android.ext.getAssociatedAssetIds
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.features.transactions.details.model.TxDetailsScreenModel
 import com.gemwallet.android.features.transactions.navigation.txIdArg
-import com.gemwallet.android.interactors.getIconUrl
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.getRelativeDate

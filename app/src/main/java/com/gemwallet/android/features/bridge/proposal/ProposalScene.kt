@@ -86,8 +86,8 @@ private fun Proposal(
         onClose = onReject,
     ) {
         AsyncImage(
-            modifier = Modifier.size(74.dp),
             model = state.peer.peerIcon,
+            size = 74.dp,
             placeholderText = state.peer.peerName.substring(0..1),
             contentDescription = "peer_icon"
         )
