@@ -233,11 +233,7 @@ private fun AssetWatchOnly() {
             IconButton(
                 modifier = Modifier.size(24.dp),
                 onClick = {
-                    showInfoSheet = SheetEntity.WatchWalletInfo(
-                        onClose = {
-                            showInfoSheet = null
-                        }
-                    )
+                    showInfoSheet = SheetEntity.WatchWalletInfo()
                 }
             ) {
                 Icon(
@@ -248,7 +244,7 @@ private fun AssetWatchOnly() {
             }
         }
     }
-    InfoBottomSheet(item = showInfoSheet)
+    InfoBottomSheet(item = showInfoSheet, onClose = { showInfoSheet = null })
 }
 
 @Composable

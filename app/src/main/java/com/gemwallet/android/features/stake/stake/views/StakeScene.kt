@@ -30,7 +30,6 @@ import com.gemwallet.android.features.stake.stake.model.StakeError
 import com.gemwallet.android.features.stake.stake.model.StakeUIState
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.InfoBottomSheet
 import com.gemwallet.android.ui.components.SheetEntity
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
@@ -55,7 +54,6 @@ fun StakeScene(
     onCancel: () -> Unit,
 ) {
     val pullRefreshState = rememberPullRefreshState(uiState.loading, { onRefresh() })
-    var showInfoSheet by remember { mutableStateOf<SheetEntity?>(null) }
 
     Scene(
         title = stringResource(id = R.string.transfer_stake_title),
@@ -76,14 +74,7 @@ fun StakeScene(
                             CellEntity(
                                 label = stringResource(id = R.string.stake_lock_time),
                                 data = "${uiState.lockTime} days",
-                                onInfo = {
-                                    showInfoSheet = SheetEntity.StakeLockTimeInfo(
-                                        icon = uiState.assetIcon ?: "",
-                                        onClose = {
-                                            showInfoSheet = null
-                                        }
-                                    )
-                                }
+                                info = SheetEntity.StakeLockTimeInfo(icon = uiState.assetIcon ?: "")
                             ),
                         ),
                     )
@@ -111,7 +102,6 @@ fun StakeScene(
             }
             PullRefreshIndicator(uiState.loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
         }
-        InfoBottomSheet(item = showInfoSheet)
     }
 }
 
