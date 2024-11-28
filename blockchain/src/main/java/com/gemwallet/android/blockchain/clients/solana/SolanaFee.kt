@@ -6,9 +6,9 @@ import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
-import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType
+import kotlin.math.max
 
 class SolanaFee {
 
@@ -16,29 +16,38 @@ class SolanaFee {
     private val tokenAccountSize = 165
 
     suspend operator fun invoke(rpcClient: SolanaRpcClient, transactionType: TransactionType, assetType: AssetSubtype): Fee {
-        val gasLimit = 100_000L
-        val priorityFees = rpcClient.getPriorityFees()
-        val averagePriorityFee = if (priorityFees.isEmpty()) {
-            0
-        } else {
-            priorityFees.map { it.prioritizationFee }.fold(0) { acc, i -> acc + i } / priorityFees.size
-        }
-        val multipleOf = when (transactionType) {
-            TransactionType.Transfer -> if (assetType == AssetSubtype.NATIVE) 10_000L else 100_000L
-            TransactionType.TokenApproval,
+        val gasLimit = when (transactionType) {
+            TransactionType.TokenApproval -> throw IllegalArgumentException("Solana doesn't support token approval")
             TransactionType.StakeDelegate,
             TransactionType.StakeUndelegate,
             TransactionType.StakeRewards,
             TransactionType.StakeRedelegate,
             TransactionType.StakeWithdraw,
-            TransactionType.Swap -> 100_000
+            TransactionType.Transfer -> 100_000L
+            TransactionType.Swap -> 1_400_000
         }
-        val minerFee = ((averagePriorityFee + multipleOf - 1) / multipleOf) * multipleOf
+        val priorityFees = rpcClient.getPriorityFees()
+        val multipleOf = when (transactionType) {
+            TransactionType.Transfer -> if (assetType == AssetSubtype.NATIVE) 10_000L else 100_000L
+            TransactionType.TokenApproval -> throw IllegalArgumentException("Solana doesn't support token approval")
+            TransactionType.StakeDelegate,
+            TransactionType.StakeUndelegate,
+            TransactionType.StakeRewards,
+            TransactionType.StakeRedelegate,
+            TransactionType.StakeWithdraw -> 10_000
+            TransactionType.Swap -> 250_000
+        }
+        val minerFee = if (priorityFees.isEmpty()) {
+            multipleOf
+        } else {
+            val averagePriorityFee = priorityFees.map { it.prioritizationFee }.fold(0) { acc, i -> acc + i } / priorityFees.size
+            max(((averagePriorityFee + multipleOf - 1) / multipleOf) * multipleOf, multipleOf)
+        }
 
         val tokenAccountCreation = rpcClient.rentExemption(JSONRpcRequest(id = 1, method = SolanaMethod.RentExemption.value, params = listOf(tokenAccountSize)))
             .getOrNull()?.result?.toBigInteger() ?: throw Exception("Can't get fee")
 
-        val totalFee = staticBaseFee + (minerFee / (gasLimit / 10_000L))
+        val totalFee = staticBaseFee + (minerFee * gasLimit / 1_000_000)
         return GasFee(
             feeAssetId = AssetId(Chain.Solana),
             speed = TxSpeed.Normal,

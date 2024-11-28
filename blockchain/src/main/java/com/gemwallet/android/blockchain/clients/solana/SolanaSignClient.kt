@@ -19,6 +19,8 @@ import wallet.core.jni.CoinType
 import wallet.core.jni.Curve
 import wallet.core.jni.PrivateKey
 import wallet.core.jni.SolanaAddress
+import wallet.core.jni.SolanaTransaction
+import wallet.core.jni.TransactionDecoder
 import wallet.core.jni.proto.Solana
 import java.math.BigInteger
 
@@ -49,7 +51,7 @@ class SolanaSignClient(
         val recentBlockhash = (params.info as SolanaSignerPreloader.Info).blockhash
 
         return when(params.input.getTxType()) {
-            TransactionType.Swap -> swap(params, privateKey).toByteArray()
+            TransactionType.Swap -> swap(params, txSpeed, privateKey).toByteArray()
             TransactionType.Transfer -> {
                 val signInput = when (params.input.assetId.type()) {
                     AssetSubtype.NATIVE -> signNative(params)
@@ -157,16 +159,29 @@ class SolanaSignClient(
         }
     }
 
-    private fun swap(input: SignerParams, privateKey: ByteArray): String {
+    private fun swap(input: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): String {
+        val fee = input.info.fee(txSpeed) as? GasFee ?: throw java.lang.IllegalArgumentException("Incorrect fee data")
+        val feePrice = fee.minerFee
+        val feeLimit = fee.limit
         val swapParams = input.input as ConfirmParams.SwapParams
-        val bytes = Base64.decode(swapParams.swapData)
-        if (bytes[0] != 1.toByte()) {
-            throw IllegalArgumentException("only support one signature")
+
+        val rawTx = SolanaTransaction.setComputeUnitPrice(swapParams.swapData, feePrice.toString()).ifEmpty {
+            throw IllegalStateException("Unable to set compute unit price")
         }
-        val message = bytes.copyOfRange(65, bytes.size)
-        val signature = PrivateKey(privateKey).sign(message, Curve.CURVE25519)
-        val signed = byteArrayOf(0x1)
-        return Base64.encode(signed + signature + message)
+        val transaction = SolanaTransaction.setComputeUnitLimit(rawTx, feeLimit.toString()).ifEmpty {
+            throw IllegalStateException("Unable to set compute unit limit")
+        }
+        val transactionData = Base64.decode(transaction)
+
+        val decodeOutputData = TransactionDecoder.decode(CoinType.SOLANA, transactionData)
+        val decodeOutput = Solana.DecodingTransactionOutput.parseFrom(decodeOutputData)
+        val signingInput = Solana.SigningInput.newBuilder().apply {
+            this.privateKey = ByteString.copyFrom(privateKey)
+            this.rawMessage = decodeOutput.transaction
+            this.txEncoding = Solana.Encoding.Base64
+        }.build()
+        val output: Solana.SigningOutput = AnySigner.sign(signingInput, CoinType.SOLANA, Solana.SigningOutput.parser())
+        return output.encoded
     }
 
     private fun sign(input: Solana.SigningInput.Builder, fee: GasFee): ByteArray {
