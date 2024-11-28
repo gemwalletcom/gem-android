@@ -55,7 +55,7 @@ fun AssetChartScene(
 private fun AssetMarketUIModel.Link.toCell(uriHandler: UriHandler): CellEntity<Int> {
     return CellEntity(
         label = label,
-        icon = "android.resource://com.gemwallet.android/drawable/${icon}",
+        icon = icon,
         data = "",
         action = { uriHandler.open(url) }
     )

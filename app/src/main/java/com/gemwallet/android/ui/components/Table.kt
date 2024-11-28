@@ -47,7 +47,7 @@ data class CellEntity<T>(
     val support: String? = null,
     val actionIcon: (@Composable () -> Unit)? = null,
     val trailingIcon: String? = null,
-    val icon: String? = null,
+    val icon: Any? = null,
     val trailing: (@Composable () -> Unit)? = null,
     val dropDownActions: (@Composable (() -> Unit) -> Unit)? = null,
     val showActionChevron: Boolean = true,
@@ -177,7 +177,7 @@ private fun Cell(
     label: String,
     data: String,
     testTag: String,
-    icon: String? = null,
+    icon: Any? = null,
     dataColor: Color? = null,
     support: String? = null,
     actionIcon: (@Composable () -> Unit)? = null,
@@ -190,7 +190,7 @@ private fun Cell(
 ) {
     Cell(
         label = {
-            if (!icon.isNullOrEmpty()) {
+            if (icon != null) {
                 AsyncImage(icon, 24.dp)
                 Spacer(modifier = Modifier.size(8.dp))
             }
