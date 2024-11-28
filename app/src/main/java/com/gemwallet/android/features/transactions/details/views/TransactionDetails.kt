@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
+import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.transactions.details.viewmodels.TransactionDetailsViewModel
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.CellEntity
@@ -34,6 +36,7 @@ import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.titles.getTransactionTitle
+import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
@@ -42,6 +45,7 @@ import com.wallet.core.primitives.TransactionType
 @Composable
 fun TransactionDetails(
     onCancel: () -> Unit,
+    openNetwork: AssetIdAction,
     viewModel: TransactionDetailsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.screenModel.collectAsStateWithLifecycle()
@@ -199,7 +203,12 @@ fun TransactionDetails(
                             placeholderText = model.assetType.string,
                             modifier = Modifier.size(20.dp),
                         )
-                    }
+                    },
+                    action = {
+                        uiState?.assetId?.chain?.asset()?.id?.let { id ->
+                            openNetwork(id)
+                        }
+                    },
                 )
             )
             cells.add(

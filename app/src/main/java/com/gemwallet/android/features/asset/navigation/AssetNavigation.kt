@@ -17,7 +17,12 @@ internal const val assetIdArg = "assetId"
 const val assetRoute = "asset"
 
 fun NavController.navigateToAssetScreen(assetId: AssetId, navOptions: NavOptions? = null) {
-    navigate("$assetRoute/${assetId.toIdentifier().urlEncode()}", navOptions)
+    val route = "$assetRoute/${assetId.toIdentifier().urlEncode()}"
+    navigate(route, navOptions  ?: androidx.navigation.navOptions {
+        popUpTo(route) {
+            inclusive = true
+        }
+    })
 }
 
 fun NavGraphBuilder.assetScreen(

@@ -11,6 +11,7 @@ import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.transactions.details.views.TransactionDetails
 import com.gemwallet.android.features.transactions.list.views.TransactionsScreen
+import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.navigation.enterTabScreenTransition
 import com.gemwallet.android.ui.navigation.exitTabScreenTransition
 
@@ -45,6 +46,7 @@ fun NavGraphBuilder.activitiesScreen(
 
 fun NavGraphBuilder.transactionScreen(
     onCancel: () -> Unit,
+    openNetwork: AssetIdAction,
 ) {
     composable(
         "$transactionRoute/{$txIdArg}",
@@ -57,7 +59,7 @@ fun NavGraphBuilder.transactionScreen(
         if (it.arguments?.getString(txIdArg)?.urlDecode().isNullOrEmpty()) {
             onCancel()
         } else {
-            TransactionDetails(onCancel = onCancel)
+            TransactionDetails(onCancel = onCancel, openNetwork = openNetwork)
         }
     }
 }
