@@ -207,7 +207,7 @@ fun TransactionDetails(
                     data = model.networkTitle,
                     trailing = {
                         AsyncImage(
-                            model = model.assetId.getIconUrl(),
+                            model = model.assetId.chain.getIconUrl(),
                             contentDescription = "asset_icon",
                             placeholderText = model.assetType.string,
                             modifier = Modifier.size(20.dp),
