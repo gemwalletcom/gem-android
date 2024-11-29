@@ -4,7 +4,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,6 +34,7 @@ import com.gemwallet.android.R
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset_select.components.SearchBar
 import com.gemwallet.android.features.asset_select.viewmodels.BaseAssetSelectViewModel
+import com.gemwallet.android.ui.components.pinnedAssetsHeader
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
@@ -47,7 +50,8 @@ import kotlinx.coroutines.launch
 @Composable
 internal fun AssetSelectScene(
     title: String,
-    assets: ImmutableList<AssetItemUIModel>,
+    pinned: ImmutableList<AssetItemUIModel>,
+    unpinned: ImmutableList<AssetItemUIModel>,
     state: BaseAssetSelectViewModel.UIState,
     titleBadge: (AssetItemUIModel) -> String?,
     support: ((AssetItemUIModel) -> (@Composable () -> Unit)?)?,
@@ -71,7 +75,7 @@ internal fun AssetSelectScene(
         }
     }
 
-    LaunchedEffect(assets) {
+    LaunchedEffect(pinned, unpinned) {
         if (isReturnToTop) {
             coroutineScope.launch {
                 listState.animateScrollToItem(0)
@@ -86,7 +90,8 @@ internal fun AssetSelectScene(
         LazyColumn(
             state = listState,
         ) {
-            assets(assets, onSelect, support, titleBadge, itemTrailing)
+            assets(pinned, true, onSelect, support, titleBadge, itemTrailing)
+            assets(unpinned, false, onSelect, support, titleBadge, itemTrailing)
             loading(state)
             notFound(state = state, onAddAsset = onAddAsset, isAddAvailable = isAddAvailable)
         }
@@ -95,14 +100,18 @@ internal fun AssetSelectScene(
 
 private fun LazyListScope.assets(
     items: List<AssetItemUIModel>,
+    isPinned: Boolean,
     onSelect: ((AssetId) -> Unit)?,
     support: ((AssetItemUIModel) -> (@Composable () -> Unit)?)?,
     titleBadge: (AssetItemUIModel) -> String?,
     itemTrailing: (@Composable (AssetItemUIModel) -> Unit)?,
 ) {
-    if (items.isEmpty()) {
-        return
+    if (items.isEmpty()) return
+
+    if (isPinned) {
+        pinnedAssetsHeader()
     }
+
     items(items.size, key = { items[it].asset.id.toIdentifier() }) { index ->
         val item = items[index]
         AssetListItem(
@@ -114,6 +123,10 @@ private fun LazyListScope.assets(
             badge = titleBadge.invoke(item),
             trailing = { itemTrailing?.invoke(item) },
         )
+    }
+
+    if (isPinned) {
+        item { Spacer(modifier = Modifier.height(32.dp)) }
     }
 }
 
@@ -160,7 +173,8 @@ private fun LazyListScope.loading(state: BaseAssetSelectViewModel.UIState) {
 fun PreviewAssetScreenUI() {
     MaterialTheme {
         AssetSelectScene(
-            assets = emptyList<AssetInfoUIModel>().toImmutableList(),
+            pinned = emptyList<AssetInfoUIModel>().toImmutableList(),
+            unpinned = emptyList<AssetInfoUIModel>().toImmutableList(),
             state = BaseAssetSelectViewModel.UIState.Idle,
             title = "Send",
             titleBadge = { it.asset.symbol },

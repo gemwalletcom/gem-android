@@ -24,7 +24,8 @@ fun AssetSelectScreen(
     viewModel: BaseAssetSelectViewModel,
 ) {
     val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
-    val assets by viewModel.assets.collectAsStateWithLifecycle()
+    val pinned by viewModel.pinned.collectAsStateWithLifecycle()
+    val unpinned by viewModel.unpinned.collectAsStateWithLifecycle()
     val isAddAvailable by viewModel.isAddAssetAvailable.collectAsStateWithLifecycle()
 
     AssetSelectScene(
@@ -40,7 +41,8 @@ fun AssetSelectScreen(
             itemSupport
         },
         query = viewModel.queryState,
-        assets = assets,
+        pinned = pinned,
+        unpinned = unpinned,
         state = uiStates,
         isAddAvailable = isAddAvailable && onAddAsset != null,
         onSelect = onSelect,

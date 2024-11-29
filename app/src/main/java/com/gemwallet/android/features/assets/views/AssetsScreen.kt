@@ -1,7 +1,6 @@
 package com.gemwallet.android.features.assets.views
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -60,8 +59,8 @@ import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.DropDownContextItem
-import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.components.pinnedAssetsHeader
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
 
@@ -263,31 +262,6 @@ private fun AssetItem(
         },
         onLongClick = { longPressState.value = item.asset.id }
     ) { onAssetClick(item.asset.id) }
-}
-
-private fun LazyListScope.pinnedAssetsHeader() {
-    item {
-        Row(
-            modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Icon(
-                modifier = Modifier.size(16.dp),
-                imageVector = Icons.Default.PushPin,
-                tint = MaterialTheme.colorScheme.secondary,
-                contentDescription = "pinned_section",
-            )
-            Spacer4()
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = MaterialTheme.colorScheme.background),
-                text = stringResource(R.string.common_pinned),
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.secondary,
-            )
-        }
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

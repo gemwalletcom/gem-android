@@ -26,7 +26,8 @@ fun AssetsManageScreen(
 ) {
     val isAddAssetAvailable by viewModel.isAddAssetAvailable.collectAsStateWithLifecycle()
     val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
-    val assets by viewModel.assets.collectAsStateWithLifecycle()
+    val pinned by viewModel.pinned.collectAsStateWithLifecycle()
+    val unpinned by viewModel.unpinned.collectAsStateWithLifecycle()
 
     AssetSelectScene(
         title = stringResource(id = R.string.wallet_manage_token_list),
@@ -37,7 +38,8 @@ fun AssetsManageScreen(
             }
         },
         query = viewModel.queryState,
-        assets = assets,
+        pinned = pinned,
+        unpinned = unpinned,
         state = uiStates,
         isAddAvailable = isAddAssetAvailable,
         onCancel = onCancel,

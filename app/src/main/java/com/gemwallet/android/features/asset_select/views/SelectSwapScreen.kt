@@ -23,7 +23,8 @@ fun SelectSwapScreen(
     }
 
     val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
-    val assets by viewModel.assets.collectAsStateWithLifecycle()
+    val pinned by viewModel.pinned.collectAsStateWithLifecycle()
+    val unpinned by viewModel.unpinned.collectAsStateWithLifecycle()
 
     AssetSelectScene(
         title = when (select) {
@@ -32,7 +33,8 @@ fun SelectSwapScreen(
         },
         titleBadge = { null },
         query = viewModel.queryState,
-        assets = assets,
+        pinned = pinned,
+        unpinned = unpinned,
         state = uiStates,
         onSelect = { onSelect?.invoke(select.select(it)) },
         onCancel = onCancel,

@@ -51,11 +51,21 @@ open class BaseAssetSelectViewModel(
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    val assets = search(sessionRepository.session(), queryFlow)
-        .map { items -> items.map { AssetInfoUIModel(it) }.toImmutableList() }
+    private val assets = search(sessionRepository.session(), queryFlow)
+        .map { items -> items.map { AssetInfoUIModel(it) } }
         .onEach { searchState.update { SearchState.Idle } }
         .flowOn(Dispatchers.IO)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>().toImmutableList())
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>())
+
+    val pinned = assets.map { items: List<AssetItemUIModel> ->
+        items.filter { it.metadata?.isPinned == true }.toImmutableList()
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>().toImmutableList())
+
+    val unpinned = assets.map { items: List<AssetItemUIModel> ->
+        items.filter { it.metadata?.isPinned != true }.toImmutableList()
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>().toImmutableList())
 
     val uiState = assets.combine(searchState) { assets, searchState ->
         when {
