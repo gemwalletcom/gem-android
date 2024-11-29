@@ -14,6 +14,9 @@ class AssetSelectViewModel @Inject constructor(
     sessionRepository: SessionRepository,
     assetsRepository: AssetsRepository,
     searchTokensCase: SearchTokensCase,
-) : BaseAssetSelectViewModel(sessionRepository, assetsRepository, searchTokensCase,
+) : BaseAssetSelectViewModel(
+    sessionRepository,
+    assetsRepository,
+    searchTokensCase,
     BaseSelectSearch(assetsRepository)
 )

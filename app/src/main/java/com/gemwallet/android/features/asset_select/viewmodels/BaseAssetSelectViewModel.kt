@@ -70,7 +70,7 @@ open class BaseAssetSelectViewModel(
     val uiState = assets.combine(searchState) { assets, searchState ->
         when {
             searchState != SearchState.Idle -> UIState.Loading
-            assets.isEmpty() -> UIState.Empty
+            assets.isEmpty() && searchState == SearchState.Idle -> UIState.Empty
             else -> UIState.Idle
         }
     }
