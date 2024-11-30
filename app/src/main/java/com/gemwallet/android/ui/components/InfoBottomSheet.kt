@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl
 
-sealed class SheetEntity(
+sealed class InfoSheetEntity(
     val icon: Any,
     val badgeIcon: Any? = null,
     @StringRes val title: Int,
@@ -43,7 +43,7 @@ sealed class SheetEntity(
     val descriptionArgs: Any? = null,
     val infoUrl: String?,
 ) {
-    class NetworkFeeInfo(networkTitle: String?) : SheetEntity(
+    class NetworkFeeInfo(networkTitle: String?) : InfoSheetEntity(
         icon = R.drawable.ic_network_fee,
         title = R.string.transfer_network_fee,
         description = LR.string.info_network_fee_description,
@@ -51,7 +51,7 @@ sealed class SheetEntity(
         infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
     )
 
-    class StakeLockTimeInfo(icon: Any) : SheetEntity(
+    class StakeLockTimeInfo(icon: Any) : InfoSheetEntity(
         icon = icon,
         badgeIcon = null,
         title = R.string.stake_lock_time,
@@ -59,7 +59,7 @@ sealed class SheetEntity(
         infoUrl = Config().getDocsUrl(DocsUrl.STAKING_LOCK_TIME),
     )
 
-    class TransactionInfo(icon: Any, state: TransactionState) : SheetEntity(
+    class TransactionInfo(icon: Any, state: TransactionState) : InfoSheetEntity(
         icon = icon,
         badgeIcon = when (state) {
             TransactionState.Pending -> R.drawable.transaction_state_pending
@@ -80,7 +80,7 @@ sealed class SheetEntity(
         infoUrl = Config().getDocsUrl(DocsUrl.TRANSACTION_STATUS),
     )
 
-    class WatchWalletInfo : SheetEntity(
+    class WatchWalletInfo : InfoSheetEntity(
         icon = R.drawable.ic_splash,
         badgeIcon = R.drawable.watch_badge,
         title = LR.string.info_watch_wallet_title,
@@ -92,7 +92,7 @@ sealed class SheetEntity(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InfoBottomSheet(
-    item: SheetEntity?,
+    item: InfoSheetEntity?,
     onClose: (() -> Unit),
 ) {
     if (item == null) return

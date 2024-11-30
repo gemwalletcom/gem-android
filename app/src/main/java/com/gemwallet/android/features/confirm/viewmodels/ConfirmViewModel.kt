@@ -35,7 +35,7 @@ import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.SheetEntity
+import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
@@ -200,7 +200,7 @@ class ConfirmViewModel @Inject constructor(
                         CircularProgressIndicator16()
                     }
                 },
-                info = SheetEntity.NetworkFeeInfo(networkTitle = feeAssetInfo?.asset?.name),
+                info = InfoSheetEntity.NetworkFeeInfo(networkTitle = feeAssetInfo?.asset?.name),
             )
         } else {
             val feeAmount = Crypto(amount)
@@ -230,7 +230,7 @@ class ConfirmViewModel @Inject constructor(
                 label = R.string.transfer_network_fee,
                 data = feeCrypto,
                 support = feeFiat,
-                info = SheetEntity.NetworkFeeInfo(networkTitle = feeAssetInfo.asset.name)
+                info = InfoSheetEntity.NetworkFeeInfo(networkTitle = feeAssetInfo.asset.name)
             )
         }
 

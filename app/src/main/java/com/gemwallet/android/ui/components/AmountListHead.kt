@@ -206,7 +206,7 @@ fun AssetHeadActions(
 
 @Composable
 private fun AssetWatchOnly() {
-    var showInfoSheet by remember { mutableStateOf<SheetEntity?>(null) }
+    var showInfoSheet by remember { mutableStateOf<InfoSheetEntity?>(null) }
     Button(
         onClick = {},
         enabled = false,
@@ -233,7 +233,7 @@ private fun AssetWatchOnly() {
             IconButton(
                 modifier = Modifier.size(24.dp),
                 onClick = {
-                    showInfoSheet = SheetEntity.WatchWalletInfo()
+                    showInfoSheet = InfoSheetEntity.WatchWalletInfo()
                 }
             ) {
                 Icon(

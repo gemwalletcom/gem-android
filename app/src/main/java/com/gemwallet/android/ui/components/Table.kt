@@ -49,7 +49,7 @@ data class CellEntity<T>(
     val trailingIcon: String? = null,
     val icon: Any? = null,
     val trailing: (@Composable () -> Unit)? = null,
-    val info: SheetEntity? = null,
+    val info: InfoSheetEntity? = null,
     val dropDownActions: (@Composable (() -> Unit) -> Unit)? = null,
     val showActionChevron: Boolean = true,
     val testTag: String = "",
@@ -184,7 +184,7 @@ private fun Cell(
     showActionChevron: Boolean = true,
     trailing: (@Composable () -> Unit)? = null,
     trailingIcon: String? = null,
-    info: SheetEntity? = null,
+    info: InfoSheetEntity? = null,
     longAction: (() -> Unit)? = null,
     action: (() -> Unit)? = null,
 ) {
@@ -200,9 +200,7 @@ private fun Cell(
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyLarge,
             )
-            if (info != null) {
-                InfoCell(info)
-            }
+            info?.let { InfoButton(it) }
         },
         data = {
             MiddleEllipsisText(
@@ -236,12 +234,12 @@ private fun Cell(
 }
 
 @Composable
-private fun InfoCell(entity: SheetEntity) {
+private fun InfoButton(entity: InfoSheetEntity) {
     var showBottomSheet by remember { mutableStateOf(false) }
     Spacer4()
     Icon(
         modifier = Modifier
-            .size(20.dp)
+            .size(trailingIcon20)
             .clickable(onClick = { showBottomSheet = true }),
         imageVector = Icons.Outlined.Info,
         contentDescription = "",

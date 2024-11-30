@@ -24,7 +24,7 @@ import com.gemwallet.android.features.transactions.details.viewmodels.Transactio
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.LoadingScene
-import com.gemwallet.android.ui.components.SheetEntity
+import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.image.AsyncImage
@@ -138,7 +138,7 @@ fun TransactionDetails(
                         TransactionState.Reverted -> stringResource(id = R.string.transaction_status_reverted)
                     },
                     dataColor = dataColor,
-                    info = SheetEntity.TransactionInfo(icon = model.assetIcon, state = model.state)
+                    info = InfoSheetEntity.TransactionInfo(icon = model.assetIcon, state = model.state)
                 ),
             )
             when (model.type) {
@@ -207,7 +207,7 @@ fun TransactionDetails(
                     label = stringResource(id = R.string.transfer_network_fee),
                     data = model.feeCrypto,
                     support = model.feeFiat,
-                    info = SheetEntity.NetworkFeeInfo(networkTitle = model.networkTitle)
+                    info = InfoSheetEntity.NetworkFeeInfo(networkTitle = model.networkTitle)
                 )
             )
             cells.add(
