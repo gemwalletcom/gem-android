@@ -1,7 +1,6 @@
 package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
-import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
@@ -15,7 +14,7 @@ class SolanaFee {
     private val staticBaseFee = 5_000L
     private val tokenAccountSize = 165
 
-    suspend operator fun invoke(rpcClient: SolanaRpcClient, transactionType: TransactionType, assetType: AssetSubtype): Fee {
+    suspend operator fun invoke(rpcClient: SolanaRpcClient, transactionType: TransactionType, assetType: AssetSubtype): GasFee {
         val gasLimit = when (transactionType) {
             TransactionType.TokenApproval -> throw IllegalArgumentException("Solana doesn't support token approval")
             TransactionType.StakeDelegate,

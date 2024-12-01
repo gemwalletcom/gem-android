@@ -5,6 +5,7 @@ import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
+import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerInputInfo
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
@@ -52,7 +53,7 @@ class SolanaSignerPreloader(
                         senderTokenAddress = senderTokenAddress,
                         recipientTokenAddress = recipientTokenAddress,
                         tokenProgram = tokenProgram,
-                        if (recipientTokenAddress.isNullOrEmpty()) {
+                        fee = if (recipientTokenAddress.isNullOrEmpty()) {
                             fee.withOptions("tokenAccountCreation")
                         } else {
                             fee
@@ -119,7 +120,7 @@ class SolanaSignerPreloader(
         val senderTokenAddress: String,
         val recipientTokenAddress: String?,
         val tokenProgram: SolanaTokenProgramId,
-        val fee: Fee,
+        val fee: GasFee,
     ) : SignerInputInfo {
         override fun fee(speed: TxSpeed): Fee = fee
     }
