@@ -211,7 +211,7 @@ private fun SwapError(state: SwapState) {
                 SwapError.NotSupportedAsset -> stringResource(com.gemwallet.android.localize.R.string.errors_swap_not_supported_asset)
                 SwapError.NotSupportedChain -> stringResource(com.gemwallet.android.localize.R.string.errors_swap_not_supported_chain)
                 SwapError.NotSupportedPair -> stringResource(com.gemwallet.android.localize.R.string.errors_swap_not_supported_pair)
-                is SwapError.Unknown -> TODO()
+                is SwapError.Unknown -> "${stringResource(com.gemwallet.android.localize.R.string.errors_unknown_try_again)}: ${state.error.message}"
             },
             style = MaterialTheme.typography.bodyMedium,
         )

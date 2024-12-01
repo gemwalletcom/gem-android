@@ -201,8 +201,8 @@ class AmountViewModel @Inject constructor(
                 memo = memo,
                 isMax = maxAmount.value,
             )
-            TransactionType.StakeDelegate -> builder.delegate(validator?.id!!)
-            TransactionType.StakeUndelegate -> builder.undelegate(delegation!!)
+            TransactionType.StakeDelegate -> builder.delegate(validator?.id ?: return@launch) // TODO: Add error showing
+            TransactionType.StakeUndelegate -> builder.undelegate(delegation ?: return@launch)  // TODO: Add error showing
             TransactionType.StakeRewards -> builder.rewards(
                 stakeRepository.getRewards(asset.id, state.assetInfo.owner.address).map { it.validator.id }
             )

@@ -384,8 +384,12 @@ class AssetsRepository @Inject constructor(
             assetsDao.getAll().map { it.id }.toSet().mapNotNull { it.toAssetId() }.toList()
         }
         .map { it.toIdentifier() }
-        val prices = gemApi.prices(AssetPricesRequest(currency.string, ids))
-            .getOrNull()?.prices ?: emptyList()
+        // TODO: java.lang.ClassCastException:
+        //  at com.gemwallet.android.data.repositoreis.assets.AssetsRepository$updatePrices$2.invokeSuspend (AssetsRepository.kt:388)
+        val prices = try {
+            gemApi.prices(AssetPricesRequest(currency.string, ids))
+                .getOrNull()?.prices ?: emptyList()
+        } catch (_: Throwable) { emptyList() }
         pricesDao.insert(
             prices.map {
                     price -> DbPrice(price.assetId, price.price, price.priceChangePercentage24h, currency.string)
