@@ -41,45 +41,46 @@ import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
-import com.gemwallet.android.features.receive.model.ReceiveScreenModel
 import com.gemwallet.android.features.receive.viewmodels.ReceiveViewModel
+import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.components.FieldBottomAction
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.rememberQRCodePainter
 import com.gemwallet.android.ui.theme.WalletTheme
-import com.wallet.core.primitives.Chain
 
 @Composable
 fun ReceiveScreen(onCancel: () -> Unit) {
     val viewModel: ReceiveViewModel = hiltViewModel()
-    val uiState by viewModel.screenModel.collectAsStateWithLifecycle()
-    UI(uiState, viewModel::setVisible, onCancel)
+    val assetInfo by viewModel.asset.collectAsStateWithLifecycle()
+
+    if (assetInfo != null) {
+        ReceiveScene(assetInfo, viewModel::setVisible, onCancel)
+    } else {
+        LoadingScene(title = stringResource(R.string.wallet_receive), onCancel)
+    }
 }
 
 @Composable
-private fun UI(
-    state: ReceiveScreenModel?,
+private fun ReceiveScene(
+    assetInfo: AssetInfo?,
     onCopy: () -> Unit,
     onCancel: () -> Unit,
 ) {
-    if (state == null) {
-        LoadingScene(title = stringResource(R.string.wallet_receive), onCancel)
-        return
-    }
+    assetInfo ?: return
     val clipboardManager = LocalClipboardManager.current
     val context = LocalContext.current
     val shareTitle = stringResource(id = R.string.common_share)
 
     val onShare = fun () {
         val type = "text/plain"
-        val subject = "${state.chain}\n${state.assetSymbol}"
+        val subject = "${assetInfo.owner.chain}\n${assetInfo.asset.symbol}"
 
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = type
         intent.putExtra(Intent.EXTRA_SUBJECT, subject)
-        intent.putExtra(Intent.EXTRA_TEXT, state.address)
+        intent.putExtra(Intent.EXTRA_TEXT, assetInfo.owner.address)
 
         ContextCompat.startActivity(
             context,
@@ -90,11 +91,11 @@ private fun UI(
 
     val onCopyClick = fun () {
         onCopy()
-        clipboardManager.setText(AnnotatedString(state.address))
+        clipboardManager.setText(AnnotatedString(assetInfo.owner.address))
     }
 
     Scene(
-        title = stringResource(id = R.string.receive_title, state.assetSymbol),
+        title = stringResource(id = R.string.receive_title, assetInfo.asset.symbol),
         onClose = onCancel,
         actions = {
             IconButton(onShare) {
@@ -102,7 +103,7 @@ private fun UI(
             }
         }
     ) {
-        if (state.address.isEmpty() || state.chain == null) {
+        if (assetInfo.owner.address.isEmpty()) {
             return@Scene
         }
         Column(
@@ -134,8 +135,8 @@ private fun UI(
                                 .heightIn(100.dp, 400.dp)
                                 .padding(12.dp),
                             painter = rememberQRCodePainter(
-                                content = state.address,
-                                cacheName = "${state.chain.string}_${state.address}",
+                                content = assetInfo.owner.address,
+                                cacheName = "${assetInfo.owner.chain.string}_${assetInfo.owner.address}",
                                 size = 300.dp
                             ),
                             contentDescription = "Receive QR",
@@ -144,14 +145,14 @@ private fun UI(
                     }
                     Spacer16()
                     Text(
-                        text = state.walletName,
+                        text = assetInfo.walletName,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.titleLarge,
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = state.address,
+                        text = assetInfo.owner.address,
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.secondary,
                         style = MaterialTheme.typography.bodyLarge,
@@ -185,13 +186,8 @@ private fun UI(
 @Composable
 fun PreviewReceiveScreen() {
     WalletTheme {
-        UI(
-            ReceiveScreenModel(
-                address = "0xverylong foo foo address very long foo address",
-                walletName = "Foo wallet",
-                assetSymbol = "FOO",
-                chain = Chain.Bitcoin,
-            ),
+        ReceiveScene(
+            null,
             onCancel = {},
             onCopy = {},
         )

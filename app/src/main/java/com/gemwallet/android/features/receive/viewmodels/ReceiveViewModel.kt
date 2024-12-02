@@ -7,7 +7,6 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
-import com.gemwallet.android.features.receive.model.ReceiveScreenModel
 import com.gemwallet.android.features.receive.navigation.assetIdArg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,23 +27,11 @@ class ReceiveViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val asset = savedStateHandle.getStateFlow(assetIdArg, "")
+    val asset = savedStateHandle.getStateFlow(assetIdArg, "")
         .map { it.toAssetId() }
         .filterNotNull()
         .flatMapLatest { assetsRepository.getAssetInfo(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    val screenModel = asset
-        .filterNotNull()
-        .map {
-            ReceiveScreenModel(
-                walletName = it.walletName,
-                address = it.owner.address,
-                assetTitle = it.asset.name,
-                assetSymbol = it.asset.symbol,
-                chain = it.owner.chain,
-            )
-        }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun setVisible() {
         val assetId = asset.value?.asset?.id ?: return
