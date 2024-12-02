@@ -113,7 +113,7 @@ class SolanaSignerPreloader(
         Triple(senderTokenAddressJob.await(), recipientTokenAddressJob.await(), tokenProgramJob.await())
     }
 
-    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 
     data class Info(
         val blockhash: String,

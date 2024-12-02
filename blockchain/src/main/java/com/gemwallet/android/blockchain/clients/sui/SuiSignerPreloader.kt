@@ -88,7 +88,7 @@ class SuiSignerPreloader(
         )
     }
 
-    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 
     private fun gasBudget(coinType: String): BigInteger = BigInteger.valueOf(25_000_000)
 

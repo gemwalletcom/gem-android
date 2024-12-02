@@ -50,7 +50,7 @@ class SolanaTokenClient(
 
     override suspend fun isTokenQuery(query: String): Boolean = isTokenAddress(query)
 
-    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 
     companion object {
         fun isTokenAddress(tokenId: String): Boolean {

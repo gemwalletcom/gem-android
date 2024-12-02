@@ -41,7 +41,7 @@ class EvmGetTokenClient(
 
     override suspend fun isTokenQuery(query: String): Boolean = isTokenAddress(query)
 
-    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 
     private suspend fun getERC20Decimals(contract: String): BigInteger? {
         val data = EthereumAbi.encode(EthereumAbiFunction("decimals"))

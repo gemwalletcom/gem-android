@@ -17,7 +17,7 @@ class BroadcastClientProxy(
             ?: Result.failure<String>(Exception("Chain isn't support"))
     }
 
-    override fun isMaintain(chain: Chain): Boolean {
+    override fun supported(chain: Chain): Boolean {
         return clients.getClient(chain) != null
     }
 }

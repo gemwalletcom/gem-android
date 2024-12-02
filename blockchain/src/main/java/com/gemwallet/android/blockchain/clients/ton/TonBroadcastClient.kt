@@ -15,5 +15,5 @@ class TonBroadcastClient(
         return rpcClient.broadcast(TonRpcClient.Boc(encodedMessage)).mapCatching { it.result.hash }
     }
 
-    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 }

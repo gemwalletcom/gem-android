@@ -23,5 +23,5 @@ class AptosTransactionStatusClient(
         return Result.success(TransactionChages(status, fee))
     }
 
-    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 }

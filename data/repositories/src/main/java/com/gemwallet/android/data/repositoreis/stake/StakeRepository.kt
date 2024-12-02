@@ -40,7 +40,7 @@ class StakeRepository(
 
     private suspend fun syncDelegations(chain: Chain, address: String, apr: Double) = withContext(Dispatchers.IO) {
         val delegations = try {
-            stakeClients.firstOrNull { it.isMaintain(chain) }?.getStakeDelegations(chain, address, apr) ?: return@withContext
+            stakeClients.firstOrNull { it.supported(chain) }?.getStakeDelegations(chain, address, apr) ?: return@withContext
         } catch (_: Throwable) {
             return@withContext
         }
@@ -54,7 +54,7 @@ class StakeRepository(
             ?.mapValues { it.value.firstOrNull() }
             ?: emptyMap()
         val validators = stakeClients
-            .filter { it.isMaintain(chain) }
+            .filter { it.supported(chain) }
             .asFlow()
             .mapNotNull {
                 try {

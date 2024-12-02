@@ -20,6 +20,6 @@ class XrpBalanceClient(
         return AssetBalance.create(chain.asset(), available = amount.toString(), reserved = reservedBalance.toString())
     }
 
-    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 
 }

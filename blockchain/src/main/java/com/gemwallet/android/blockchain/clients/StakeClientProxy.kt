@@ -22,7 +22,7 @@ class StakeClientProxy(
         return clients.getClient(chain)?.getStakeDelegations(chain, address, apr) ?: emptyList()
     }
 
-    override fun isMaintain(chain: Chain): Boolean {
+    override fun supported(chain: Chain): Boolean {
         return clients.getClient(chain) != null
     }
 }

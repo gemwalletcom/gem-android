@@ -29,7 +29,7 @@ class TonSignerPreloader(
 
     }
 
-    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 
     private suspend fun coinSign(owner: Account, params: ConfirmParams): Result<SignerParams> {
         val fee = TonFee().invoke(rpcClient, params.assetId, params.destination()?.address!!, params.memo())

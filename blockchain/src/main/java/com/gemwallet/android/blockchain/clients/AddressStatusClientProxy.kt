@@ -11,7 +11,7 @@ class AddressStatusClientProxy(
         return clients.getClient(chain)?.getAddressStatus(chain, address) ?: emptyList()
     }
 
-    override fun isMaintain(chain: Chain): Boolean {
+    override fun supported(chain: Chain): Boolean {
         return clients.getClient(chain) != null
     }
 }

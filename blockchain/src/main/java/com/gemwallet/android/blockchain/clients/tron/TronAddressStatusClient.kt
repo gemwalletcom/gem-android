@@ -19,5 +19,5 @@ class TronAddressStatusClient(
         } else emptyList()
     }
 
-    override fun isMaintain(chain: Chain): Boolean = chain == this.chain
+    override fun supported(chain: Chain): Boolean = chain == this.chain
 }

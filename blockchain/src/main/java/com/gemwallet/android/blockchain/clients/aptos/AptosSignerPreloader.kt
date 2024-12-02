@@ -31,7 +31,7 @@ class AptosSignerPreloader(
         return Result.success(input)
     }
 
-    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 
     data class Info(
         val sequence: Long,

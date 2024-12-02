@@ -131,7 +131,7 @@ class NetworksViewModel @Inject constructor(
                 explorers = getBlockExplorersCase.getBlockExplorers(chain),
                 currentNode = getCurrentNodeCase.getCurrentNode(chain),
                 currentExplorer = getCurrentBlockExplorerCase.getCurrentBlockExplorer(chain),
-                availableAddNode = nodeStatusClient.isMaintain(chain),
+                availableAddNode = nodeStatusClient.supported(chain),
             )
         }
     }

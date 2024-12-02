@@ -16,7 +16,7 @@ class SuiBalanceClient(
     private val chain: Chain,
     private val rpcClient: SuiRpcClient,
 ) : BalanceClient {
-    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 
     override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance = withContext(Dispatchers.IO) {
         val amountJob = async {

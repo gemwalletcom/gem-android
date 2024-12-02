@@ -58,7 +58,7 @@ class SmartchainStakeClient(
         )
     }
 
-    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 
     private suspend fun getDelegations(address: String, limit: Int): List<DelegationBase> {
         val data = evmRpcClient.callString(StakeHub.reader, stakeHub.encodeDelegationsCall(address, limit))

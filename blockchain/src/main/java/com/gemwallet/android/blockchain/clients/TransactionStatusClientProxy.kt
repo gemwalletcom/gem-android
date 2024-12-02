@@ -14,7 +14,7 @@ class TransactionStatusClientProxy(
         return clients.getClient(chain)?.getStatus(chain, owner, txId) ?: Result.failure(Exception("Chain isn't support"))
     }
 
-    override fun isMaintain(chain: Chain): Boolean {
+    override fun supported(chain: Chain): Boolean {
         return clients.getClient(chain) != null
     }
 }

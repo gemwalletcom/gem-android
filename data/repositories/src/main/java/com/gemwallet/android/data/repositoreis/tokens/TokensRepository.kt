@@ -71,7 +71,7 @@ class TokensRepository (
     override suspend fun search(assetId: AssetId) {
         val tokenId = assetId.tokenId ?: return
         val asset = getTokenClients
-            .firstOrNull { it.isMaintain(assetId.chain) && it.isTokenQuery(tokenId) }
+            .firstOrNull { it.supported(assetId.chain) && it.isTokenQuery(tokenId) }
             ?.getTokenData(tokenId)
         if (asset == null) {
             search(tokenId)

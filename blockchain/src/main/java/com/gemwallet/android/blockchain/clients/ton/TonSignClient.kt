@@ -42,7 +42,7 @@ class TonSignClient(
         return output.encoded.toByteArray()
     }
 
-    override fun isMaintain(chain: Chain): Boolean = this.chain == chain
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 
     private fun signToken(params: SignerParams, privateKey: ByteArray): ByteArray {
         val meta = params.info as TonSignerPreloader.Info
