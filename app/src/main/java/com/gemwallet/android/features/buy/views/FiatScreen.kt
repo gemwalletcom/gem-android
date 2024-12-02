@@ -30,7 +30,7 @@ import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.buy.models.BuyError
-import com.gemwallet.android.features.buy.models.BuyProvider
+import com.gemwallet.android.features.buy.models.BuyFiatProviderUIModel
 import com.gemwallet.android.features.buy.viewmodels.FiatSceneState
 import com.gemwallet.android.features.buy.viewmodels.FiatViewModel
 import com.gemwallet.android.model.AssetInfo
@@ -84,9 +84,9 @@ fun FiatScreen(
 @Composable
 private fun BuyScene(
     asset: AssetInfo?,
-    providers: List<BuyProvider>,
+    providers: List<BuyFiatProviderUIModel>,
     state: FiatSceneState?,
-    selectedProvider: BuyProvider?,
+    selectedProvider: BuyFiatProviderUIModel?,
     fiatAmount: String,
     cancelAction: CancelAction,
     onLotSelect: (Double) -> Unit,
@@ -113,7 +113,7 @@ private fun BuyScene(
         AmountField(
             amount = fiatAmount,
             assetSymbol = "$",
-            equivalent = if (state == null) selectedProvider?.cryptoAmount ?: "" else " ",
+            equivalent = if (state == null) selectedProvider?.cryptoFormatted ?: "" else " ",
             error = "",
             onValueChange = onAmount,
             textStyle = MaterialTheme.typography.displayMedium,

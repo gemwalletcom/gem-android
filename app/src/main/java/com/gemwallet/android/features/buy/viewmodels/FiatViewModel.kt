@@ -8,11 +8,8 @@ import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.buy.models.BuyError
-import com.gemwallet.android.features.buy.models.BuyProvider
+import com.gemwallet.android.features.buy.models.toProviderUIModel
 import com.gemwallet.android.math.numberParse
-import com.gemwallet.android.model.AssetInfo
-import com.gemwallet.android.model.SignMode
-import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.FiatProvider
 import com.wallet.core.primitives.FiatQuote
@@ -72,13 +69,13 @@ class FiatViewModel @Inject constructor(
 
     val providers = combine(asset.filterNotNull(), quotes) { asset, quotes ->
         quotes.map { quote ->
-            quote.toProvider(asset)
+            quote.toProviderUIModel(asset.asset, currency)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val selectedProvider = combine(asset, _selectedQuote) { asset, quote ->
         return@combine asset?.let {
-            quote?.toProvider(asset)
+            quote?.toProviderUIModel(asset.asset, currency)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -135,17 +132,6 @@ class FiatViewModel @Inject constructor(
     fun setProvider(provider: FiatProvider) {
         _selectedQuote.value = _quotes.value.firstOrNull { it.provider.name == provider.name }
     }
-
-    private fun FiatQuote.toProvider(
-        asset: AssetInfo,
-    ) = BuyProvider(
-        provider = provider,
-        cryptoAmount = "≈ ${asset.asset.format(cryptoAmount, 6, SignMode.NoSign, true)}",
-        rate = "1 ${asset.asset.symbol} ≈ ${
-            currency.format(fiatAmount / cryptoAmount).format("USD", 2)
-        }",
-        redirectUrl = redirectUrl
-    )
 
     companion object {
         const val MIN_FIAT_AMOUNT = 20.0
