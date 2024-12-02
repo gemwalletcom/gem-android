@@ -27,7 +27,6 @@ import com.gemwallet.android.features.confirm.navigation.paramsArg
 import com.gemwallet.android.features.confirm.navigation.txTypeArg
 import com.gemwallet.android.features.stake.navigation.stakeRoute
 import com.gemwallet.android.features.swap.navigation.swapRoute
-import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
@@ -36,7 +35,8 @@ import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.SheetEntity
+import com.gemwallet.android.ui.components.InfoSheetEntity
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
 import com.google.gson.Gson
@@ -189,8 +189,6 @@ class ConfirmViewModel @Inject constructor(
         ).mapNotNull { it }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val showInfoSheet = MutableStateFlow<SheetEntity?>(null)
-
     val feeUIModel = combine(signerParams, feeAssetInfo, state, txSpeed) { signerParams, feeAssetInfo, state, speed ->
         val amount = signerParams?.info?.fee(speed)?.amount
         val result = if (amount == null || feeAssetInfo == null) {
@@ -202,14 +200,7 @@ class ConfirmViewModel @Inject constructor(
                         CircularProgressIndicator16()
                     }
                 },
-                onInfo = {
-                    showInfoSheet.value = SheetEntity.NetworkFeeInfo(
-                        networkTitle = feeAssetInfo?.asset?.name,
-                        onClose = {
-                            showInfoSheet.value = null
-                        }
-                    )
-                }
+                info = InfoSheetEntity.NetworkFeeInfo(networkTitle = feeAssetInfo?.asset?.name),
             )
         } else {
             val feeAmount = Crypto(amount)
@@ -239,14 +230,7 @@ class ConfirmViewModel @Inject constructor(
                 label = R.string.transfer_network_fee,
                 data = feeCrypto,
                 support = feeFiat,
-                onInfo = {
-                    showInfoSheet.value = SheetEntity.NetworkFeeInfo(
-                        networkTitle = feeAssetInfo.asset.name,
-                        onClose = {
-                            showInfoSheet.value = null
-                        }
-                    )
-                }
+                info = InfoSheetEntity.NetworkFeeInfo(networkTitle = feeAssetInfo.asset.name)
             )
         }
 

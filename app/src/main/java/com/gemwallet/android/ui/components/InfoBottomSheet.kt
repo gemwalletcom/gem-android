@@ -35,34 +35,31 @@ import kotlinx.coroutines.launch
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl
 
-sealed class SheetEntity(
+sealed class InfoSheetEntity(
     val icon: Any,
     val badgeIcon: Any? = null,
     @StringRes val title: Int,
     @StringRes val description: Int,
     val descriptionArgs: Any? = null,
     val infoUrl: String?,
-    val onClose: () -> Unit,
 ) {
-    class NetworkFeeInfo(networkTitle: String?, onClose: () -> Unit) : SheetEntity(
+    class NetworkFeeInfo(networkTitle: String?) : InfoSheetEntity(
         icon = R.drawable.ic_network_fee,
-        title = com.gemwallet.android.R.string.transfer_network_fee,
+        title = R.string.transfer_network_fee,
         description = LR.string.info_network_fee_description,
         descriptionArgs = networkTitle,
         infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
-        onClose = onClose
     )
 
-    class StakeLockTimeInfo(icon: String, onClose: () -> Unit) : SheetEntity(
+    class StakeLockTimeInfo(icon: Any) : InfoSheetEntity(
         icon = icon,
         badgeIcon = null,
         title = R.string.stake_lock_time,
         description = LR.string.info_lock_time_description,
         infoUrl = Config().getDocsUrl(DocsUrl.STAKING_LOCK_TIME),
-        onClose = onClose
     )
 
-    class TransactionInfo(icon: String, state: TransactionState, onClose: () -> Unit) : SheetEntity(
+    class TransactionInfo(icon: Any, state: TransactionState) : InfoSheetEntity(
         icon = icon,
         badgeIcon = when (state) {
             TransactionState.Pending -> R.drawable.transaction_state_pending
@@ -81,23 +78,22 @@ sealed class SheetEntity(
             TransactionState.Failed, TransactionState.Reverted -> LR.string.info_transaction_error_description
         },
         infoUrl = Config().getDocsUrl(DocsUrl.TRANSACTION_STATUS),
-        onClose = onClose
     )
 
-    class WatchWalletInfo(onClose: () -> Unit) : SheetEntity(
+    class WatchWalletInfo : InfoSheetEntity(
         icon = R.drawable.ic_splash,
         badgeIcon = R.drawable.watch_badge,
         title = LR.string.info_watch_wallet_title,
         description = LR.string.info_watch_wallet_description,
         infoUrl = Config().getDocsUrl(DocsUrl.WHAT_IS_WATCH_WALLET),
-        onClose = onClose
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InfoBottomSheet(
-    item: SheetEntity?,
+    item: InfoSheetEntity?,
+    onClose: (() -> Unit),
 ) {
     if (item == null) return
     val uriHandler = LocalUriHandler.current
@@ -108,7 +104,7 @@ fun InfoBottomSheet(
         shape = RoundedCornerShape(24.dp),
         containerColor = MaterialTheme.colorScheme.background,
         onDismissRequest = {
-            scope.launch { sheetState.hide() }.invokeOnCompletion { item.onClose.invoke() }
+            scope.launch { sheetState.hide() }.invokeOnCompletion { onClose.invoke() }
         },
         content = {
             Column(

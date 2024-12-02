@@ -49,10 +49,10 @@ data class CellEntity<T>(
     val trailingIcon: String? = null,
     val icon: Any? = null,
     val trailing: (@Composable () -> Unit)? = null,
+    val info: InfoSheetEntity? = null,
     val dropDownActions: (@Composable (() -> Unit) -> Unit)? = null,
     val showActionChevron: Boolean = true,
     val testTag: String = "",
-    val onInfo: (() -> Unit)? = null,
     val action: (() -> Unit)? = null,
 )
 
@@ -86,8 +86,8 @@ fun Table(
                         showActionChevron = item.showActionChevron,
                         trailingIcon = item.trailingIcon,
                         trailing = item.trailing,
+                        info = item.info,
                         testTag = item.testTag,
-                        onInfo = item.onInfo,
                     )
                     DropdownMenu(
                         modifier = Modifier.align(Alignment.BottomEnd),
@@ -184,9 +184,9 @@ private fun Cell(
     showActionChevron: Boolean = true,
     trailing: (@Composable () -> Unit)? = null,
     trailingIcon: String? = null,
+    info: InfoSheetEntity? = null,
     longAction: (() -> Unit)? = null,
     action: (() -> Unit)? = null,
-    onInfo: (() -> Unit)? = null,
 ) {
     Cell(
         label = {
@@ -200,17 +200,7 @@ private fun Cell(
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyLarge,
             )
-            if (onInfo != null) {
-                Spacer4()
-                Icon(
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clickable(onClick = onInfo),
-                    imageVector = Icons.Outlined.Info,
-                    contentDescription = "",
-                    tint = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
-                )
-            }
+            info?.let { InfoButton(it) }
         },
         data = {
             MiddleEllipsisText(
@@ -241,4 +231,23 @@ private fun Cell(
         actionIcon = actionIcon,
         testTag = testTag,
     )
+}
+
+@Composable
+private fun InfoButton(entity: InfoSheetEntity) {
+    var showBottomSheet by remember { mutableStateOf(false) }
+    Spacer4()
+    Icon(
+        modifier = Modifier
+            .size(trailingIcon20)
+            .clickable(onClick = { showBottomSheet = true }),
+        imageVector = Icons.Outlined.Info,
+        contentDescription = "",
+        tint = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+    )
+    if (showBottomSheet) {
+        InfoBottomSheet(entity) {
+            showBottomSheet = false
+        }
+    }
 }

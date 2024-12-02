@@ -12,10 +12,6 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -30,8 +26,7 @@ import com.gemwallet.android.features.stake.stake.model.StakeError
 import com.gemwallet.android.features.stake.stake.model.StakeUIState
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.InfoBottomSheet
-import com.gemwallet.android.ui.components.SheetEntity
+import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.designsystem.Spacer16
@@ -55,7 +50,6 @@ fun StakeScene(
     onCancel: () -> Unit,
 ) {
     val pullRefreshState = rememberPullRefreshState(uiState.loading, { onRefresh() })
-    var showInfoSheet by remember { mutableStateOf<SheetEntity?>(null) }
 
     Scene(
         title = stringResource(id = R.string.transfer_stake_title),
@@ -76,14 +70,7 @@ fun StakeScene(
                             CellEntity(
                                 label = stringResource(id = R.string.stake_lock_time),
                                 data = "${uiState.lockTime} days",
-                                onInfo = {
-                                    showInfoSheet = SheetEntity.StakeLockTimeInfo(
-                                        icon = uiState.assetIcon ?: "",
-                                        onClose = {
-                                            showInfoSheet = null
-                                        }
-                                    )
-                                }
+                                info = InfoSheetEntity.StakeLockTimeInfo(icon = uiState.assetIcon ?: "")
                             ),
                         ),
                     )
@@ -111,7 +98,6 @@ fun StakeScene(
             }
             PullRefreshIndicator(uiState.loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
         }
-        InfoBottomSheet(item = showInfoSheet)
     }
 }
 

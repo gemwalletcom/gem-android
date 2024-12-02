@@ -11,9 +11,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
@@ -26,9 +23,8 @@ import com.gemwallet.android.R
 import com.gemwallet.android.features.transactions.details.viewmodels.TransactionDetailsViewModel
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.InfoBottomSheet
 import com.gemwallet.android.ui.components.LoadingScene
-import com.gemwallet.android.ui.components.SheetEntity
+import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.image.AsyncImage
@@ -49,7 +45,6 @@ fun TransactionDetails(
     viewModel: TransactionDetailsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.screenModel.collectAsStateWithLifecycle()
-    var showInfoSheet by remember { mutableStateOf<SheetEntity?>(null) }
 
     val uriHandler = LocalUriHandler.current
     val clipboardManager = LocalClipboardManager.current
@@ -143,15 +138,7 @@ fun TransactionDetails(
                         TransactionState.Reverted -> stringResource(id = R.string.transaction_status_reverted)
                     },
                     dataColor = dataColor,
-                    onInfo = {
-                        showInfoSheet = SheetEntity.TransactionInfo(
-                            icon = model.assetIcon,
-                            state = model.state,
-                            onClose = {
-                                showInfoSheet = null
-                            }
-                        )
-                    }
+                    info = InfoSheetEntity.TransactionInfo(icon = model.assetIcon, state = model.state)
                 ),
             )
             when (model.type) {
@@ -220,14 +207,7 @@ fun TransactionDetails(
                     label = stringResource(id = R.string.transfer_network_fee),
                     data = model.feeCrypto,
                     support = model.feeFiat,
-                    onInfo = {
-                        showInfoSheet = SheetEntity.NetworkFeeInfo(
-                            networkTitle = model.networkTitle,
-                            onClose = {
-                                showInfoSheet = null
-                            }
-                        )
-                    }
+                    info = InfoSheetEntity.NetworkFeeInfo(networkTitle = model.networkTitle)
                 )
             )
             cells.add(
@@ -243,5 +223,4 @@ fun TransactionDetails(
             Table(items = cells)
         }
     }
-    InfoBottomSheet(item = showInfoSheet)
 }
