@@ -40,7 +40,7 @@ class BuyRepository @Inject constructor(
         return assets.toList()
     }
 
-    suspend fun getQuote(
+    suspend fun getBuyQuotes(
         asset: Asset,
         fiatCurrency: String,
         fiatAmount: Double,
