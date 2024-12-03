@@ -20,10 +20,10 @@ class StakeHub {
 
     fun encodeStake(params: ConfirmParams): String {
         return when (params) {
-            is ConfirmParams.DelegateParams -> encodeDelegateCall(params.validatorId, false)
-            is ConfirmParams.RedeleateParams -> encodeRedelegateCall(params, false)
-            is ConfirmParams.UndelegateParams -> encodeUndelegateCall(params)
-            is ConfirmParams.WithdrawParams -> encodeClaim(params, (0).toULong())
+            is ConfirmParams.Stake.DelegateParams -> encodeDelegateCall(params.validatorId, false)
+            is ConfirmParams.Stake.RedeleateParams -> encodeRedelegateCall(params, false)
+            is ConfirmParams.Stake.UndelegateParams -> encodeUndelegateCall(params)
+            is ConfirmParams.Stake.WithdrawParams -> encodeClaim(params, (0).toULong())
             else -> throw IllegalArgumentException()
         }.toHexString()
     }
@@ -65,12 +65,12 @@ class StakeHub {
         return uniffi.gemstone.bscDecodeUndelegationsReturn(data.decodeHex()).map { it.into() }
     }
 
-    fun encodeUndelegateCall(params: ConfirmParams.UndelegateParams): ByteArray {
+    fun encodeUndelegateCall(params: ConfirmParams.Stake.UndelegateParams): ByteArray {
         val amountShare = params.amount * params.share!!.toBigInteger() / params.balance!!.toBigInteger()
         return uniffi.gemstone.bscEncodeUndelegateCall(operatorAddress = params.validatorId, shares = amountShare.toString())
     }
 
-    fun encodeRedelegateCall(params: ConfirmParams.RedeleateParams, votePower: Boolean): ByteArray {
+    fun encodeRedelegateCall(params: ConfirmParams.Stake.RedeleateParams, votePower: Boolean): ByteArray {
         val amountShare = params.amount * params.share!!.toBigInteger() / params.balance!!.toBigInteger()
         return uniffi.gemstone.bscEncodeRedelegateCall(
             srcValidator = params.srcValidatorId,
@@ -80,7 +80,7 @@ class StakeHub {
         )
     }
 
-    fun encodeClaim(params: ConfirmParams.WithdrawParams, requestNumber: ULong): ByteArray {
+    fun encodeClaim(params: ConfirmParams.Stake.WithdrawParams, requestNumber: ULong): ByteArray {
         return uniffi.gemstone.bscEncodeClaimCall(operatorAddress = params.validatorId, requestNumber = requestNumber)
     }
 

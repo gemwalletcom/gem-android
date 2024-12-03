@@ -64,7 +64,7 @@ class SolanaSignClient(
                 val signInput = Solana.SigningInput.newBuilder().apply {
                     this.recentBlockhash = recentBlockhash
                     this.delegateStakeTransaction = Solana.DelegateStake.newBuilder().apply {
-                        this.validatorPubkey = (params.input as ConfirmParams.DelegateParams).validatorId
+                        this.validatorPubkey = (params.input as ConfirmParams.Stake.DelegateParams).validatorId
                         this.value = params.finalAmount.toLong()
                     }.build()
                     this.privateKey = ByteString.copyFrom(privateKey)
@@ -75,7 +75,7 @@ class SolanaSignClient(
                 val signInput = Solana.SigningInput.newBuilder().apply {
                     this.recentBlockhash = recentBlockhash
                     this.deactivateStakeTransaction = Solana.DeactivateStake.newBuilder().apply {
-                        this.stakeAccount = (params.input as ConfirmParams.UndelegateParams).delegationId
+                        this.stakeAccount = (params.input as ConfirmParams.Stake.UndelegateParams).delegationId
                     }.build()
                     this.privateKey = ByteString.copyFrom(privateKey)
                 }
@@ -85,7 +85,7 @@ class SolanaSignClient(
                 val signInput = Solana.SigningInput.newBuilder().apply {
                     this.recentBlockhash = recentBlockhash
                     this.withdrawTransaction = Solana.WithdrawStake.newBuilder().apply {
-                        stakeAccount = (params.input as ConfirmParams.WithdrawParams).delegationId
+                        stakeAccount = (params.input as ConfirmParams.Stake.WithdrawParams).delegationId
                         value = params.finalAmount.toLong()
                     }.build()
                     this.privateKey = ByteString.copyFrom(privateKey)

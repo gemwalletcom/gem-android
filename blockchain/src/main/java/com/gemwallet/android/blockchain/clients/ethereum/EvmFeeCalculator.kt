@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.hexToBigInteger
+import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
@@ -14,44 +15,66 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
 import wallet.core.jni.CoinType
+import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.Locale
 
 class EvmFeeCalculator(private val rpcClient: EvmRpcClient, coinType: CoinType) {
+
     private val optimismGasOracle = OptimismGasOracle(rpcClient, coinType)
+
+    private val nativeGasLimit = BigInteger.valueOf(21_000L)
 
     suspend fun calculate(
         params: ConfirmParams,
+        assetId: AssetId,
+        recipient: String,
+        outputAmount: BigInteger,
+        payload: String?,
         chainId: BigInteger,
         nonce: BigInteger,
-        gasLimit: BigInteger,
     ): Fee = withContext(Dispatchers.IO) {
-        val assetId = params.assetId
         val isMaxAmount = params.isMax()
-        val feeAssetId = AssetId(assetId.chain)
+        val feeAssetId = AssetId(params.assetId.chain)
+
+        val gasLimit = getGasLimit(assetId, params.from.address, recipient, outputAmount, payload)
 
         if (EVMChain.isOpStack(params.assetId.chain)) {
             return@withContext optimismGasOracle.estimate(params, chainId, nonce, gasLimit)
         }
-        val (baseFee, priorityFee) = getBasePriorityFee(assetId.chain, rpcClient)
+        val (baseFee, priorityFee) = getBasePriorityFee(params.assetId.chain, rpcClient)
         val maxGasPrice = baseFee.plus(priorityFee)
         val minerFee = when (params) {
             is ConfirmParams.Stake,
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams -> priorityFee
-            is ConfirmParams.TransferParams -> if (assetId.type() == AssetSubtype.NATIVE && isMaxAmount) maxGasPrice else priorityFee
+            is ConfirmParams.TransferParams -> if (params.assetId.type() == AssetSubtype.NATIVE && isMaxAmount) maxGasPrice else priorityFee
+        }
+        GasFee(feeAssetId = feeAssetId, speed = TxSpeed.Normal, limit = gasLimit, maxGasPrice = maxGasPrice, minerFee = minerFee)
+    }
+
+    private suspend fun getGasLimit(
+        assetId: AssetId,
+        from: String,
+        recipient: String,
+        outputAmount: BigInteger,
+        payload: String?,
+    ): BigInteger {
+        val (amount, to, data) = when (assetId.type()) {
+            AssetSubtype.NATIVE -> Triple(outputAmount, recipient, payload)
+            AssetSubtype.TOKEN -> Triple(
+                BigInteger.ZERO,    // Amount
+                assetId.tokenId!!.lowercase(Locale.ROOT), // token
+                EVMChain.encodeTransactionData(assetId, payload, outputAmount, recipient).toHexString()
+            )
         }
 
-//        val minerFee = when (params.getTxType()) {
-//            TransactionType.Transfer -> if (assetId.type() == AssetSubtype.NATIVE && isMaxAmount) maxGasPrice else priorityFee
-//            TransactionType.StakeUndelegate,
-//            TransactionType.StakeWithdraw,
-//            TransactionType.StakeRedelegate,
-//            TransactionType.StakeDelegate,
-//            TransactionType.StakeRewards,
-//            TransactionType.Swap,
-//            TransactionType.TokenApproval -> priorityFee
-//        }
-        GasFee(feeAssetId = feeAssetId, speed = TxSpeed.Normal, limit = gasLimit, maxGasPrice = maxGasPrice, minerFee = minerFee)
+        val gasLimit = rpcClient.getGasLimit(from, to, amount, data)
+        return if (gasLimit == nativeGasLimit) {
+            gasLimit
+        } else {
+            gasLimit.add(gasLimit.toBigDecimal().multiply(BigDecimal.valueOf(0.5)).toBigInteger())
+        }
     }
 
     companion object {

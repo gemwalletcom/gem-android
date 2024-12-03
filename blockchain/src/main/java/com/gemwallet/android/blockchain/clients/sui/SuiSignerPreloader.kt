@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.sui
 
-import com.gemwallet.android.blockchain.clients.BlockchainClient
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
@@ -35,7 +34,7 @@ import java.math.BigInteger
 class SuiSignerPreloader(
     private val chain: Chain,
     private val rpcClient: SuiRpcClient,
-) : BlockchainClient, NativeTransferPreloader, TokenTransferPreloader, StakeTransactionPreloader, SwapTransactionPreloader {
+) : NativeTransferPreloader, TokenTransferPreloader, StakeTransactionPreloader, SwapTransactionPreloader {
 
     private val feeCalculator = SuiFeeCalculator(rpcClient)
 

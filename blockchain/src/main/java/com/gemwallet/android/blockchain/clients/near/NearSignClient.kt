@@ -20,7 +20,7 @@ class NearSignClient(
         val metadata = params.chainData as NearSignerPreloader.NearChainData
 
         val input = NEAR.SigningInput.newBuilder().apply {
-            this.signerId = params.owner
+            this.signerId = params.input.from.address
             this.nonce = metadata.sequence
             this.receiverId = params.input.destination()?.address
             this.addAllActions(

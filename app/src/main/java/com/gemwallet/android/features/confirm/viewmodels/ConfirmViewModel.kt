@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.R
 import com.gemwallet.android.blockchain.clients.BroadcastClientProxy
 import com.gemwallet.android.blockchain.clients.SignClientProxy
-import com.gemwallet.android.blockchain.clients.SignerPreload
+import com.gemwallet.android.blockchain.clients.SignerPreloaderProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.cases.transactions.CreateTransactionCase
@@ -69,7 +69,7 @@ import javax.inject.Inject
 class ConfirmViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
-    private val signerPreload: SignerPreload,
+    private val signerPreload: SignerPreloaderProxy,
     private val passwordStore: PasswordStore,
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
     private val signClient: SignClientProxy,
@@ -98,11 +98,11 @@ class ConfirmViewModel @Inject constructor(
                     TransactionType.Transfer -> ConfirmParams.TransferParams::class.java
                     TransactionType.Swap -> ConfirmParams.SwapParams::class.java
                     TransactionType.TokenApproval -> ConfirmParams.TokenApprovalParams::class.java
-                    TransactionType.StakeDelegate -> ConfirmParams.DelegateParams::class.java
-                    TransactionType.StakeUndelegate -> ConfirmParams.UndelegateParams::class.java
-                    TransactionType.StakeRewards -> ConfirmParams.RewardsParams::class.java
-                    TransactionType.StakeRedelegate -> ConfirmParams.RedeleateParams::class.java
-                    TransactionType.StakeWithdraw -> ConfirmParams.WithdrawParams::class.java
+                    TransactionType.StakeDelegate -> ConfirmParams.Stake.DelegateParams::class.java
+                    TransactionType.StakeUndelegate -> ConfirmParams.Stake.UndelegateParams::class.java
+                    TransactionType.StakeRewards -> ConfirmParams.Stake.RewardsParams::class.java
+                    TransactionType.StakeRedelegate -> ConfirmParams.Stake.RedeleateParams::class.java
+                    TransactionType.StakeWithdraw -> ConfirmParams.Stake.WithdrawParams::class.java
                 },
                 paramsPack,
             )
@@ -126,15 +126,16 @@ class ConfirmViewModel @Inject constructor(
             return@map null
         }
 
-        val preload = signerPreload(owner = owner, params = request).getOrNull()
-        if (preload == null) {
-            state.update { ConfirmState.Error(ConfirmError.CalculateFee) }
+        val preload = try {
+            signerPreload.preload(params = request)
+        } catch (err: Throwable) {
+            state.update { ConfirmState.Error(ConfirmError.PreloadError(err.message ?: "Preload error")) }
             return@map null
         }
         preload
     }.filterNotNull().combine(txSpeed) { params, txSpeed ->
         val finalAmount = when {
-            params.input is ConfirmParams.RewardsParams -> stakeRepository.getRewards(params.input.assetId, params.owner)
+            params.input is ConfirmParams.Stake.RewardsParams -> stakeRepository.getRewards(params.input.assetId, params.input.from.address)
                 .map { BigInteger(it.base.rewards) }
                 .fold(BigInteger.ZERO) { acc, value -> acc + value }
             params.input.isMax() && params.input.assetId == params.chainData.fee(txSpeed).feeAssetId ->
@@ -194,7 +195,7 @@ class ConfirmViewModel @Inject constructor(
         val result = if (amount == null || feeAssetInfo == null) {
             CellEntity(
                 label = R.string.transfer_network_fee,
-                data = if ((state as? ConfirmState.Error)?.message == ConfirmError.CalculateFee) "-" else "",
+                data = if (state is ConfirmState.Error) "-" else "",
                 trailing = {
                     if (state !is ConfirmState.Error) {
                         CircularProgressIndicator16()
@@ -306,11 +307,7 @@ class ConfirmViewModel @Inject constructor(
             )
             state.update { ConfirmState.Result(txHash = txHash) }
             val finishRoute = when (signerParams.input) {
-                is ConfirmParams.DelegateParams,
-                is ConfirmParams.RedeleateParams,
-                is ConfirmParams.RewardsParams,
-                is ConfirmParams.UndelegateParams,
-                is ConfirmParams.WithdrawParams -> stakeRoute
+                is ConfirmParams.Stake -> stakeRoute
                 is ConfirmParams.SwapParams,
                 is ConfirmParams.TokenApprovalParams -> swapRoute
                 is ConfirmParams.TransferParams -> assetRoute
@@ -343,22 +340,22 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.TransferParams,
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams,
-            is ConfirmParams.DelegateParams -> assetInfo.balance.balance.available.toBigInteger()
-            is ConfirmParams.RedeleateParams -> BigInteger(stakeRepository.getDelegation(params.srcValidatorId).firstOrNull()?.base?.balance ?: "0")
-            is ConfirmParams.UndelegateParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
-            is ConfirmParams.WithdrawParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
-            is ConfirmParams.RewardsParams -> stakeRepository.getRewards(assetInfo.asset.id, assetInfo.owner.address)
+            is ConfirmParams.Stake.DelegateParams -> assetInfo.balance.balance.available.toBigInteger()
+            is ConfirmParams.Stake.RedeleateParams -> BigInteger(stakeRepository.getDelegation(params.srcValidatorId).firstOrNull()?.base?.balance ?: "0")
+            is ConfirmParams.Stake.UndelegateParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
+            is ConfirmParams.Stake.WithdrawParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
+            is ConfirmParams.Stake.RewardsParams -> stakeRepository.getRewards(assetInfo.asset.id, assetInfo.owner.address)
                 .fold(BigInteger.ZERO) { acc, delegation -> acc + BigInteger(delegation.base.balance) }
         }
     }
 
     private suspend fun getValidator(params: ConfirmParams): DelegationValidator? {
         val validatorId = when (params) {
-            is ConfirmParams.DelegateParams -> params.validatorId
-            is ConfirmParams.RedeleateParams -> params.dstValidatorId
-            is ConfirmParams.UndelegateParams -> params.validatorId
-            is ConfirmParams.WithdrawParams -> params.validatorId
-            is ConfirmParams.RewardsParams,
+            is ConfirmParams.Stake.DelegateParams -> params.validatorId
+            is ConfirmParams.Stake.RedeleateParams -> params.dstValidatorId
+            is ConfirmParams.Stake.UndelegateParams -> params.validatorId
+            is ConfirmParams.Stake.WithdrawParams -> params.validatorId
+            is ConfirmParams.Stake.RewardsParams,
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams,
             is ConfirmParams.TransferParams -> null
@@ -373,11 +370,11 @@ class ConfirmViewModel @Inject constructor(
 
     private fun ConfirmParams.getRecipientCell(validator: DelegationValidator?): CellEntity<Int>? {
         return when (this) {
-            is ConfirmParams.RewardsParams -> null
-            is ConfirmParams.DelegateParams,
-            is ConfirmParams.RedeleateParams,
-            is ConfirmParams.UndelegateParams,
-            is ConfirmParams.WithdrawParams -> CellEntity(label = R.string.stake_validator, data = validator?.name ?: "")
+            is ConfirmParams.Stake.RewardsParams -> null
+            is ConfirmParams.Stake.DelegateParams,
+            is ConfirmParams.Stake.RedeleateParams,
+            is ConfirmParams.Stake.UndelegateParams,
+            is ConfirmParams.Stake.WithdrawParams -> CellEntity(label = R.string.stake_validator, data = validator?.name ?: "")
             is ConfirmParams.SwapParams -> CellEntity(label = R.string.swap_provider, data = provider)
             is ConfirmParams.TokenApprovalParams -> CellEntity(label = R.string.swap_provider, data = provider)
             is ConfirmParams.TransferParams -> {

@@ -1,20 +1,16 @@
 package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
-import com.gemwallet.android.blockchain.clients.SignerPreload
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.clients.solana.SolanaSignerPreloader.SolanaChainData
-import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
-import com.wallet.core.primitives.Account
-import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.SolanaTokenProgramId
 import kotlinx.coroutines.Dispatchers
@@ -25,7 +21,7 @@ import uniffi.gemstone.Config
 class SolanaSignerPreloader(
     private val chain: Chain,
     private val rpcClient: SolanaRpcClient,
-) : SignerPreload, NativeTransferPreloader, TokenTransferPreloader, SwapTransactionPreloader, StakeTransactionPreloader {
+) : NativeTransferPreloader, TokenTransferPreloader, SwapTransactionPreloader, StakeTransactionPreloader {
 
     private val feeCalculator = SolanaFeeCalculator(rpcClient)
 
@@ -72,82 +68,15 @@ class SolanaSignerPreloader(
         recipientTokenAddress: String? = null,
         tokenProgram: SolanaTokenProgramId = SolanaTokenProgramId.Token
     ): SignerParams = withContext(Dispatchers.IO) {
-        val blockhashJob = async { rpcClient.getBlockhash() }
+        val blockHashJob = async { rpcClient.getBlockhash() }
         val feeJob = async { feeCalculator.calculate(params) }
 
-        val (fee, blockhash) = Pair(feeJob.await(), blockhashJob.await())
+        val (fee, blockHash) = Pair(feeJob.await(), blockHashJob.await())
 
-        val chainData = SolanaChainData(blockhash, senderTokenAddress, recipientTokenAddress, tokenProgram, fee)
+        val chainData = SolanaChainData(blockHash, senderTokenAddress, recipientTokenAddress, tokenProgram, fee)
         SignerParams(params, chainData)
     }
 
-    override suspend fun invoke(
-        owner: Account,
-        params: ConfirmParams,
-    ): Result<SignerParams> = withContext(Dispatchers.IO) {
-        val blockhashJob = async { rpcClient.getBlockhash() }
-        val feeJob = async { feeCalculator.calculate(params) }
-
-        val (fee, blockhash) = Pair(feeJob.await(), blockhashJob.await())
-
-        val info = when (params) {
-            is ConfirmParams.TransferParams -> when (params.assetId.type()) {
-                AssetSubtype.NATIVE -> {
-                    SolanaChainData(blockhash, "", null, SolanaTokenProgramId.Token, fee)
-                }
-                AssetSubtype.TOKEN -> {
-                    val (senderTokenAddress, recipientTokenAddress, tokenProgram) = getTokenAccounts(params.assetId.tokenId!!, owner.address, params.destination.address)
-
-                    if (senderTokenAddress.isNullOrEmpty()) {
-                        return@withContext Result.failure(Exception("Sender token address is empty"))
-                    }
-                    SolanaChainData(
-                        blockhash = blockhash,
-                        senderTokenAddress = senderTokenAddress,
-                        recipientTokenAddress = recipientTokenAddress,
-                        tokenProgram = tokenProgram,
-                        fee = if (recipientTokenAddress.isNullOrEmpty()) {
-                            fee.withOptions("tokenAccountCreation")
-                        } else {
-                            fee
-                        },
-                    )
-                }
-            }
-            is ConfirmParams.SwapParams -> SolanaChainData(blockhash, "", null, SolanaTokenProgramId.Token, fee)
-            is ConfirmParams.Stake -> SolanaChainData(blockhash, "", null, SolanaTokenProgramId.Token, fee)
-            is ConfirmParams.TokenApprovalParams -> throw IllegalArgumentException("Token approval doesn't supported")
-        }
-        Result.success(
-            SignerParams(
-                input = params,
-                chainData = info,
-            )
-        )
-    }
-
-    private suspend fun getTokenAccounts(
-        tokenId: String,
-        senderAddress: String,
-        recipientAddress: String,
-    ): Triple<String?, String?, SolanaTokenProgramId> = withContext(Dispatchers.IO) {
-        val senderTokenAddressJob = async { rpcClient.getTokenAccountByOwner(senderAddress, tokenId) }
-        val recipientTokenAddressJob = async { rpcClient.getTokenAccountByOwner(recipientAddress, tokenId) }
-        val tokenProgramJob = async {
-            val owner = rpcClient.getTokenInfo(tokenId)
-
-            if (owner != null) {
-                SolanaTokenProgramId.entries.firstOrNull { it.string == Config().getSolanaTokenProgramId(owner) } ?: SolanaTokenProgramId.Token
-            } else {
-                SolanaTokenProgramId.Token
-            }
-        }
-        Triple(
-            senderTokenAddressJob.await(),
-            recipientTokenAddressJob.await(),
-            tokenProgramJob.await()
-        )
-    }
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
     data class SolanaChainData(

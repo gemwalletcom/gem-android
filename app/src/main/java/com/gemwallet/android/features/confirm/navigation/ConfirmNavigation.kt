@@ -57,11 +57,11 @@ fun NavGraphBuilder.confirm(
                 TransactionType.Transfer -> ConfirmParams.TransferParams::class.java
                 TransactionType.Swap -> ConfirmParams.SwapParams::class.java
                 TransactionType.TokenApproval -> ConfirmParams.TokenApprovalParams::class.java
-                TransactionType.StakeDelegate -> ConfirmParams.DelegateParams::class.java
-                TransactionType.StakeUndelegate -> ConfirmParams.UndelegateParams::class.java
-                TransactionType.StakeRewards -> ConfirmParams.RewardsParams::class.java
-                TransactionType.StakeRedelegate -> ConfirmParams.RedeleateParams::class.java
-                TransactionType.StakeWithdraw -> ConfirmParams.WithdrawParams::class.java
+                TransactionType.StakeDelegate -> ConfirmParams.Stake.DelegateParams::class.java
+                TransactionType.StakeUndelegate -> ConfirmParams.Stake.UndelegateParams::class.java
+                TransactionType.StakeRewards -> ConfirmParams.Stake.RewardsParams::class.java
+                TransactionType.StakeRedelegate -> ConfirmParams.Stake.RedeleateParams::class.java
+                TransactionType.StakeWithdraw -> ConfirmParams.Stake.WithdrawParams::class.java
             },
             paramsPack,
         )
