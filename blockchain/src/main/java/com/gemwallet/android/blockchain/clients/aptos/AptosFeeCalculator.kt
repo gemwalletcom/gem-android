@@ -11,12 +11,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 
-internal class AptosFee {
-    suspend operator fun invoke(
-        chain: Chain,
-        destination: String,
-        rpcClient: AptosRpcClient,
-    ): Fee = withContext(Dispatchers.IO) {
+internal class AptosFeeCalculator(
+    private val chain: Chain,
+    private val rpcClient: AptosRpcClient,
+) {
+    suspend fun calculate(destination: String, ): Fee = withContext(Dispatchers.IO) {
         val gasPriceJob =
             async { rpcClient.feePrice().getOrThrow().prioritized_gas_estimate.toBigInteger() }
         val isNewJob = async {

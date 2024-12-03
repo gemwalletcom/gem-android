@@ -3,7 +3,7 @@ package com.gemwallet.android.blockchain.clients.xrp
 import com.gemwallet.android.blockchain.clients.SignerPreload
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.SignerInputInfo
+import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
@@ -27,7 +27,7 @@ class XrpSignerPreloader(
             SignerParams(
                 input = params,
                 owner = owner.address,
-                info = Info(
+                chainData = Info(
                     sequence = sequence,
                     fee = fee,
                 )
@@ -41,7 +41,7 @@ class XrpSignerPreloader(
     data class Info(
         val sequence: Int,
         val fee: Fee,
-    ) : SignerInputInfo {
+    ) : ChainSignData {
         override fun fee(speed: TxSpeed): Fee = fee
     }
 }

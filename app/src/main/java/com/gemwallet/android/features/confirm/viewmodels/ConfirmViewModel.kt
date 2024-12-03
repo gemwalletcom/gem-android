@@ -137,8 +137,8 @@ class ConfirmViewModel @Inject constructor(
             params.input is ConfirmParams.RewardsParams -> stakeRepository.getRewards(params.input.assetId, params.owner)
                 .map { BigInteger(it.base.rewards) }
                 .fold(BigInteger.ZERO) { acc, value -> acc + value }
-            params.input.isMax() && params.input.assetId == params.info.fee(txSpeed).feeAssetId ->
-                params.input.amount - params.info.fee(txSpeed).amount
+            params.input.isMax() && params.input.assetId == params.chainData.fee(txSpeed).feeAssetId ->
+                params.input.amount - params.chainData.fee(txSpeed).amount
             else -> params.input.amount
         }
         state.update { ConfirmState.Ready }
@@ -147,7 +147,7 @@ class ConfirmViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val feeAssetInfo = signerParams.filterNotNull().flatMapLatest { signerParams ->
-        assetsRepository.getAssetInfo(signerParams.info.fee().feeAssetId)
+        assetsRepository.getAssetInfo(signerParams.chainData.fee().feeAssetId)
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -190,7 +190,7 @@ class ConfirmViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val feeUIModel = combine(signerParams, feeAssetInfo, state, txSpeed) { signerParams, feeAssetInfo, state, speed ->
-        val amount = signerParams?.info?.fee(speed)?.amount
+        val amount = signerParams?.chainData?.fee(speed)?.amount
         val result = if (amount == null || feeAssetInfo == null) {
             CellEntity(
                 label = R.string.transfer_network_fee,
@@ -238,7 +238,7 @@ class ConfirmViewModel @Inject constructor(
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val allFee = signerParams.filterNotNull().map { it.info.allFee() }
+    val allFee = signerParams.filterNotNull().map { it.chainData.allFee() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     fun init(params: ConfirmParams) {
@@ -293,7 +293,7 @@ class ConfirmViewModel @Inject constructor(
                 owner = assetInfo.owner,
                 to = destinationAddress,
                 state = TransactionState.Pending,
-                fee = signerParams.info.fee(),
+                fee = signerParams.chainData.fee(),
                 amount = signerParams.finalAmount,
                 memo = signerParams.input.memo() ?: "",
                 type = signerParams.input.getTxType(),
@@ -436,7 +436,7 @@ class ConfirmViewModel @Inject constructor(
             assetBalance: BigInteger,
         ) {
             val amount = signerParams.finalAmount
-            val feeAmount = signerParams.info.fee(txSpeed).amount
+            val feeAmount = signerParams.chainData.fee(txSpeed).amount
 
             val totalAmount = when (signerParams.input.getTxType()) {
                 TransactionType.Transfer,

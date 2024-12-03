@@ -13,7 +13,7 @@ class XrpSignClient(
     private val chain: Chain,
 ) : SignClient {
     override suspend fun signTransfer(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): ByteArray {
-        val metadata = params.info as XrpSignerPreloader.Info
+        val metadata = params.chainData as XrpSignerPreloader.Info
         val signInput = Ripple.SigningInput.newBuilder().apply {
             this.fee = metadata.fee().amount.toLong()
             this.sequence = metadata.sequence

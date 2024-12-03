@@ -56,7 +56,7 @@ class EvmSignClient(
             }
             else -> {}
         }
-        val meta = params.info as EvmSignerPreloader.Info
+        val meta = params.chainData as EvmSignerPreloader.EvmChainData
         val fee = meta.fee() as? GasFee ?: throw IllegalArgumentException()
         val coinType = WCChainTypeProxy().invoke(chain)
         val input = params.input
@@ -93,7 +93,7 @@ class EvmSignClient(
     }
 
     private fun stakeSmartchain(params: SignerParams, privateKey: ByteArray): ByteArray {
-        val meta = params.info as EvmSignerPreloader.Info
+        val meta = params.chainData as EvmSignerPreloader.EvmChainData
         val fee = meta.fee as? GasFee ?: throw IllegalArgumentException()
         val valueData = when (params.input) {
             is ConfirmParams.DelegateParams -> params.finalAmount.toByteArray()

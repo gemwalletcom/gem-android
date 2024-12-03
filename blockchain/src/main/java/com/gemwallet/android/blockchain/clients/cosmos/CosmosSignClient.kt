@@ -32,7 +32,7 @@ class CosmosSignClient(
         txSpeed: TxSpeed,
         privateKey: ByteArray,
     ): ByteArray {
-        val from = params.owner
+        val from = params.input.from.address
         val coin = WCChainTypeProxy().invoke(chain)
         val input = params.input
         val denom = if (input.assetId.type() == AssetSubtype.NATIVE) CosmosDenom.from(chain) else input.assetId.tokenId!!
@@ -83,7 +83,7 @@ class CosmosSignClient(
                         }
                     )
                     this.memo = swapParams.swapData
-                    this.signer = ByteString.copyFrom(AnyAddress(params.owner, coinType).data())
+                    this.signer = ByteString.copyFrom(AnyAddress(params.input.from.address, coinType).data())
                 }
             )
         }.build()
@@ -197,7 +197,7 @@ class CosmosSignClient(
     }
 
     private fun sign(input: SignerParams, privateKey: ByteArray, messages: List<Message>): ByteArray {
-        val meta = input.info as CosmosSignerPreloader.Info
+        val meta = input.chainData as CosmosSignerPreloader.CosmosChainData
         val fee = meta.fee() as GasFee
         val feeAmount = fee.amount
         val gas = fee.limit.toLong() * messages.size

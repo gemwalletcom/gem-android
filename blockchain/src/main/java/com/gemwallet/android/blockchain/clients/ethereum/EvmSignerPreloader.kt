@@ -1,16 +1,19 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
-import android.util.Log
+import com.gemwallet.android.blockchain.clients.ApprovalTransactionPreloader
+import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.SignerPreload
+import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
+import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
+import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.append0x
-import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
+import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.SignerInputInfo
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
@@ -18,7 +21,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain
-import com.wallet.core.primitives.TransactionType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -29,102 +31,63 @@ import java.util.Locale
 class EvmSignerPreloader(
     private val chain: Chain,
     private val rpcClient: EvmRpcClient,
-) : SignerPreload {
-    override suspend fun invoke(owner: Account, params: ConfirmParams): Result<SignerParams> = withContext(Dispatchers.IO) {
-        val assetId = if (params.getTxType() == TransactionType.Swap) {
-            AssetId(params.assetId.chain)
-        } else {
-            params.assetId
-        }
-        val coinType = WCChainTypeProxy().invoke(chain)
-        val chainIdJob = async {
-            try {
-                rpcClient.getNetVersion(JSONRpcRequest.create(EvmMethod.GetNetVersion, emptyList()))
-                    .fold({ it.result?.value }) { null } ?: BigInteger(coinType.chainId())
-            } catch (err: Throwable) {
-                Log.d("ERROR", "Err: ", err)
-                BigInteger(coinType.chainId())
-            }
-        }
-        val nonceJob = async {
-            try {
-                val nonceParams = listOf(owner.address, "latest")
-                rpcClient.getNonce(JSONRpcRequest.create(EvmMethod.GetNonce, nonceParams))
-                    .fold({ it.result?.value }) { null } ?: BigInteger.ZERO
-            } catch (err: Throwable) {
-                Log.d("ERROR", "Err: ", err)
-                BigInteger.ZERO
-            }
-        }
-        val gasLimitJob = async {
-            try {
-                getGasLimit(
-                    assetId = assetId,
-                    rpcClient = rpcClient,
-                    from = owner.address,
-                    recipient = when (params) {
-                        is ConfirmParams.SwapParams -> params.to
-                        is ConfirmParams.TokenApprovalParams -> params.contract
-                        is ConfirmParams.TransferParams -> params.destination().address
-                        is ConfirmParams.RedeleateParams,
-                        is ConfirmParams.WithdrawParams,
-                        is ConfirmParams.UndelegateParams,
-                        is ConfirmParams.RewardsParams,
-                        is ConfirmParams.DelegateParams -> StakeHub.address
+) : SignerPreload, NativeTransferPreloader, TokenTransferPreloader, SwapTransactionPreloader, StakeTransactionPreloader, ApprovalTransactionPreloader {
 
-                        else -> throw IllegalArgumentException()
-                    },
-                    outputAmount = when (params) {
-                        is ConfirmParams.SwapParams -> BigInteger(params.value)
-                        is ConfirmParams.TokenApprovalParams -> BigInteger.ZERO
-                        is ConfirmParams.TransferParams,
-                        is ConfirmParams.DelegateParams -> params.amount
+    private val NATIVE_GAS_LIMIT = BigInteger.valueOf(21_000L)
 
-                        is ConfirmParams.RedeleateParams,
-                        is ConfirmParams.WithdrawParams,
-                        is ConfirmParams.UndelegateParams -> BigInteger.ZERO
+    private val wcCoinType = WCChainTypeProxy().invoke(chain)
+    private val feeCalculator = EvmFeeCalculator(rpcClient, wcCoinType)
 
-                        else -> throw IllegalArgumentException()
-                    },
-                    payload = when (params) {
-                        is ConfirmParams.SwapParams -> params.swapData
-                        is ConfirmParams.TokenApprovalParams -> params.data
-                        is ConfirmParams.RedeleateParams,
-                        is ConfirmParams.WithdrawParams,
-                        is ConfirmParams.UndelegateParams,
-                        is ConfirmParams.DelegateParams -> when (params.assetId.chain) {
-                            Chain.SmartChain -> StakeHub().encodeStake(params)
-                            else -> throw IllegalArgumentException()
-                        }
+    override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams): SignerParams =
+        preload(params.assetId, params.from, params.destination().address, params.amount, params.memo, params)
 
-                        else -> params.memo()
-                    },
-                )
-            } catch (err: Throwable) {
-                throw err
-            }
-        }
+    override suspend fun preloadTokenTransfer(params: ConfirmParams.TransferParams): SignerParams =
+        preload(params.assetId, params.from, params.destination().address, params.amount, params.memo, params)
+
+    override suspend fun preloadStake(params: ConfirmParams.Stake): SignerParams =
+        preload(
+            assetId = params.assetId,
+            from = params.from,
+            recipient = StakeHub.address,
+            outputAmount = when (params) {
+                is ConfirmParams.Stake.DelegateParams -> params.amount
+                else -> BigInteger.ZERO
+            },
+            payload = when (params.assetId.chain) {
+                Chain.SmartChain -> StakeHub().encodeStake(params)
+                else -> throw IllegalArgumentException("Stake doesn't suppoted for chain ${params.assetId.chain} ")
+            },
+            params = params,
+        )
+
+    override suspend fun preloadSwap(params: ConfirmParams.SwapParams): SignerParams =
+        preload(AssetId(params.assetId.chain), params.from, params.to, params.value.toBigInteger(), params.swapData, params)
+
+    override suspend fun preloadApproval(params: ConfirmParams.TokenApprovalParams): SignerParams =
+        preload(params.assetId, params.from, params.contract, BigInteger.ZERO, params.data, params)
+
+    private suspend fun preload(
+        assetId: AssetId,
+        from: Account,
+        recipient: String,
+        outputAmount: BigInteger,
+        payload: String?,
+        params: ConfirmParams,
+    ) = withContext(Dispatchers.IO) {
+
+        val chainIdJob = async { rpcClient.getNetVersion(wcCoinType) }
+        val nonceJob = async { rpcClient.getNonce(from.address) }
+        val gasLimitJob = async { getGasLimit(assetId, from.address, recipient, outputAmount, payload) }
+
         val chainId = chainIdJob.await()
         val nonce = nonceJob.await()
         val gasLimit = gasLimitJob.await()
-        val fee = try {
-            EvmFee().invoke(
-                rpcClient,
-                params,
-                chainId,
-                nonce,
-                gasLimit,
-                WCChainTypeProxy().invoke(chain)
-            )
-        } catch (err: Throwable) {
-            return@withContext Result.failure(err)
-        }
-        Result.success(
-            SignerParams(
-                input = params,
-                owner = owner.address,
-                info = Info(chainId, nonce, fee),
-            )
+
+        val fee = feeCalculator.calculate(params, chainId, nonce, gasLimit)
+
+        SignerParams(
+            input = params,
+            chainData = EvmChainData(chainId, nonce, fee),
         )
     }
 
@@ -132,7 +95,6 @@ class EvmSignerPreloader(
 
     private suspend fun getGasLimit(
         assetId: AssetId,
-        rpcClient: EvmRpcClient,
         from: String,
         recipient: String,
         outputAmount: BigInteger,
@@ -143,38 +105,30 @@ class EvmSignerPreloader(
             AssetSubtype.TOKEN -> Triple(
                 BigInteger.ZERO,    // Amount
                 assetId.tokenId!!.lowercase(Locale.ROOT), // token
-                EVMChain.encodeTransactionData(assetId, payload, outputAmount, recipient)
-                    .toHexString()
+                EVMChain.encodeTransactionData(assetId, payload, outputAmount, recipient).toHexString()
             )
-            else -> throw IllegalArgumentException()
         }
-        val transaction = EvmRpcClient.Transaction(
-            from = from,
-            to = to,
-            value = "0x${amount.toString(16)}",
-            data = if (data.isNullOrEmpty()) "0x" else data.append0x(),
-        )
-        val request = JSONRpcRequest.create(EvmMethod.GetGasLimit, listOf(transaction))
-        val gasLimitResult = rpcClient.getGasLimit(request)
-        val gasLimit = gasLimitResult.fold({ it.result?.value ?: BigInteger.ZERO}) {
-            BigInteger.ZERO
-        }
-        return if (gasLimit == BigInteger.valueOf(21_000L)) {
+
+        val gasLimit = rpcClient.getGasLimit(from, to, amount, data)
+        return if (gasLimit == NATIVE_GAS_LIMIT) {
             gasLimit
         } else {
-            gasLimit.add(
-                gasLimit.toBigDecimal().multiply(
-                    BigDecimal.valueOf(0.5)
-                ).toBigInteger()
-            )
+            gasLimit.add(gasLimit.toBigDecimal().multiply(BigDecimal.valueOf(0.5)).toBigInteger())
         }
     }
 
-    data class Info(
+    override suspend fun invoke(
+        owner: Account,
+        params: ConfirmParams
+    ): Result<SignerParams> {
+        TODO("Not yet implemented")
+    }
+
+    data class EvmChainData(
         val chainId: BigInteger,
         val nonce: BigInteger,
         val fee: Fee,
-    ) : SignerInputInfo {
+    ) : ChainSignData {
         override fun fee(speed: TxSpeed): Fee = fee
     }
 }

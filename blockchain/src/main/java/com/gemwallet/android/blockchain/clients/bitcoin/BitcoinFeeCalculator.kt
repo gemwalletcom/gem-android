@@ -21,9 +21,10 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.RoundingMode
 
-class BitcoinFee {
-    suspend operator fun invoke(
-        rpcClient: BitcoinRpcClient,
+class BitcoinFeeCalculator(
+    private val rpcClient: BitcoinRpcClient,
+) {
+    suspend fun calculate(
         utxos: List<BitcoinUTXO>,
         account: Account,
         recipient: String,
@@ -32,7 +33,7 @@ class BitcoinFee {
         val ownerAddress = account.address
         val chain = account.chain
         val fee = TxSpeed.entries.map {
-            val price = estimateFeePrice(chain, it, rpcClient)
+            val price = estimateFeePrice(chain, it)
             val limit = calcFee(chain, ownerAddress, recipient, amount.toLong(), price.toLong(), utxos)
             GasFee(
                 feeAssetId = AssetId(chain),
@@ -44,7 +45,7 @@ class BitcoinFee {
         return fee
     }
 
-    private suspend fun estimateFeePrice(chain: Chain, speed: TxSpeed, rpcClient: BitcoinRpcClient): BigInteger {
+    private suspend fun estimateFeePrice(chain: Chain, speed: TxSpeed): BigInteger {
         val decimals = CoinTypeConfiguration.getDecimals(WCChainTypeProxy().invoke(chain))
         val minimumByteFee = getMinimumByteFee(chain)
         return rpcClient.estimateFee(getFeePriority(chain, speed)).fold(

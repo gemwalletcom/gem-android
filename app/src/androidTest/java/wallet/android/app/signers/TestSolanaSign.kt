@@ -47,7 +47,7 @@ class TestSolanaSign {
                     ),
                     owner = "4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S",
                     finalAmount = BigInteger.TEN.pow(Chain.Solana.asset().decimals),
-                    info = SolanaSignerPreloader.Info(
+                    chainData = SolanaSignerPreloader.SolanaChainData(
                         blockhash = "DzfXchZJoLMG3cNftcf2sw7qatkkuwQf4xH15N5wkKAb",
                         senderTokenAddress = "",
                         recipientTokenAddress = null,

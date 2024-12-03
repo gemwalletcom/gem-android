@@ -4,7 +4,7 @@ import com.gemwallet.android.blockchain.clients.SignerPreload
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.SignerInputInfo
+import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
@@ -37,7 +37,7 @@ class TonSignerPreloader(
             SignerParams(
                 input = params,
                 owner = owner.address,
-                info = Info(sequence = it.result.seqno ?: 0, fee = fee)
+                chainData = Info(sequence = it.result.seqno ?: 0, fee = fee)
             )
         }
     }
@@ -54,7 +54,7 @@ class TonSignerPreloader(
         val signerParams = SignerParams(
             input = params,
             owner = owner.address,
-            info = Info(
+            chainData = Info(
                 sequence = walletInfo.result.seqno ?: 0,
                 jettonAddress = jettonAddress,
                 fee = fee,
@@ -68,7 +68,7 @@ class TonSignerPreloader(
         val sequence: Int,
         val jettonAddress: String? = null,
         val fee: Fee,
-    ) : SignerInputInfo {
+    ) : ChainSignData {
         override fun fee(speed: TxSpeed): Fee = fee
     }
 }

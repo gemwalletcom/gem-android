@@ -24,7 +24,7 @@ class TonSignClient(
             return signToken(params, privateKey)
         }
         val signingInput = TheOpenNetwork.SigningInput.newBuilder().apply {
-            sequenceNumber = (params.info as TonSignerPreloader.Info).sequence
+            sequenceNumber = (params.chainData as TonSignerPreloader.Info).sequence
             expireAt = (System.currentTimeMillis() / 1000).toInt() + 600
             this.addMessages(
                 TheOpenNetwork.Transfer.newBuilder().apply {
@@ -45,7 +45,7 @@ class TonSignClient(
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
     private fun signToken(params: SignerParams, privateKey: ByteArray): ByteArray {
-        val meta = params.info as TonSignerPreloader.Info
+        val meta = params.chainData as TonSignerPreloader.Info
 
         val jettonTransfer = TheOpenNetwork.JettonTransfer.newBuilder().apply {
             this.jettonAmount = params.finalAmount.toLong()

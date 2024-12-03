@@ -77,10 +77,7 @@ interface SolanaRpcClient {
 
 class SolanaTokenOwner(val owner: String)
 
-suspend fun SolanaRpcClient.getTokenAccountByOwner(
-    owner: String,
-    tokenId: String,
-): Result<JSONRpcResponse<SolanaValue<List<SolanaTokenAccount>>>> {
+suspend fun SolanaRpcClient.getTokenAccountByOwner(owner: String, tokenId: String): String? {
     val accountRequest = JSONRpcRequest.create(
         method = SolanaMethod.GetTokenAccountByOwner,
         params = listOf(
@@ -89,7 +86,7 @@ suspend fun SolanaRpcClient.getTokenAccountByOwner(
             mapOf("encoding" to "jsonParsed"),
         )
     )
-    return getTokenAccountByOwner(accountRequest)
+    return getTokenAccountByOwner(accountRequest).getOrNull()?.result?.value?.firstOrNull()?.pubkey
 }
 
 suspend fun SolanaRpcClient.delegations(
@@ -131,4 +128,27 @@ suspend fun SolanaRpcClient.slot(url: String): Result<JSONRpcResponse<Int>> {
 
 suspend fun SolanaRpcClient.genesisHash(url: String): Result<JSONRpcResponse<String>> {
     return genesisHash(url, JSONRpcRequest.create(SolanaMethod.GetGenesisHash, emptyList()))
+}
+
+suspend fun SolanaRpcClient.getBlockhash(): String {
+    val blockhash = getBlockhash(JSONRpcRequest.create(SolanaMethod.GetLatestBlockhash, emptyList()))
+        .getOrNull()?.result?.value?.blockhash
+    if (blockhash.isNullOrEmpty()) {
+        throw Exception("Can't get latest blockhash")
+    }
+    return blockhash
+}
+
+suspend fun SolanaRpcClient.getTokenInfo(tokenId: String): String? {
+    return getTokenInfo(
+        JSONRpcRequest(
+            SolanaMethod.GetAccountInfo.value,
+            params = listOf(
+                tokenId,
+                mapOf(
+                    "encoding" to "jsonParsed"
+                ),
+            )
+            )
+    ).getOrNull()?.result?.value?.owner
 }

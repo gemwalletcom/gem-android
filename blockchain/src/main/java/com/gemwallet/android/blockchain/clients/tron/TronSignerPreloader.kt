@@ -4,7 +4,7 @@ import com.gemwallet.android.blockchain.clients.SignerPreload
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.SignerInputInfo
+import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
@@ -41,7 +41,7 @@ class TronSignerPreloader(
             SignerParams(
                 input = params,
                 owner = owner.address,
-                info = Info(
+                chainData = Info(
                     number = it.block_header.raw_data.number,
                     version = it.block_header.raw_data.version,
                     txTrieRoot = it.block_header.raw_data.txTrieRoot,
@@ -64,7 +64,7 @@ class TronSignerPreloader(
         val parentHash: String,
         val timestamp: Long,
         val fee: Fee,
-    ) : SignerInputInfo {
+    ) : ChainSignData {
         override fun fee(speed: TxSpeed): Fee = fee
     }
 }

@@ -20,19 +20,20 @@ import wallet.core.jni.PrivateKey
 import wallet.core.jni.proto.Ethereum
 import java.math.BigInteger
 
-class OptimismGasOracle {
+class OptimismGasOracle(
+    private val rpcClient: EvmRpcClient,
+    private val coinType: CoinType,
+) {
 
-    suspend operator fun invoke(
+    suspend fun estimate(
         params: ConfirmParams,
         chainId: BigInteger,
         nonce: BigInteger,
         gasLimit: BigInteger,
-        coin: CoinType,
-        rpcClient: EvmRpcClient
     ): GasFee = withContext(Dispatchers.IO) {
         val assetId = params.assetId
         val feeAssetId = AssetId(assetId.chain)
-        val basePriorityFee = async { EvmFee.getBasePriorityFee(assetId.chain, rpcClient) }
+        val basePriorityFee = async { EvmFeeCalculator.getBasePriorityFee(assetId.chain, rpcClient) }
         val (baseFee, priorityFee) = basePriorityFee.await()
         val gasPrice = baseFee + priorityFee
         val minerFee = when (params.getTxType()) {
@@ -47,7 +48,7 @@ class OptimismGasOracle {
         }
         val encoded = encode(
             assetId = assetId,
-            coin = coin,
+            coin = coinType,
             amount = amount,
             destinationAddress = when (params) {
                 is ConfirmParams.SwapParams -> params.to

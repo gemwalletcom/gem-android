@@ -52,7 +52,7 @@ class TestEthSign {
                     ),
                     owner = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                     finalAmount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Ethereum.asset().decimals),
-                    info = EvmSignerPreloader.Info(
+                    chainData = EvmSignerPreloader.EvmChainData(
                         chainId = BigInteger.ONE,
                         nonce = BigInteger.ONE,
                         fee = GasFee(
@@ -91,7 +91,7 @@ class TestEthSign {
                     ),
                     owner = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                     finalAmount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Ethereum.asset().decimals),
-                    info = EvmSignerPreloader.Info(
+                    chainData = EvmSignerPreloader.EvmChainData(
                         chainId = BigInteger.ONE,
                         nonce = BigInteger.ONE,
                         fee = GasFee(

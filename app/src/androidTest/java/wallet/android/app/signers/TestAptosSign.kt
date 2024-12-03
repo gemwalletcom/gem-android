@@ -39,7 +39,7 @@ class TestAptosSign {
                     ),
                     owner = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                     finalAmount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Aptos.asset().decimals),
-                    info = AptosSignerPreloader.Info(
+                    chainData = AptosSignerPreloader.AptosChainData(
                         sequence = 1L,
                         fee = GasFee(
                             speed = TxSpeed.Normal,

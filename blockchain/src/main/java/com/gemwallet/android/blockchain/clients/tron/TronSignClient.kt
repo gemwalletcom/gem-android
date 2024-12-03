@@ -22,7 +22,7 @@ class TronSignClient(
         txSpeed: TxSpeed,
         privateKey: ByteArray
     ): ByteArray {
-        val blockInfo = params.info as TronSignerPreloader.Info
+        val blockInfo = params.chainData as TronSignerPreloader.Info
         val transaction = Tron.Transaction.newBuilder().apply {
             this.blockHeader = Tron.BlockHeader.newBuilder().apply {
                 this.number = blockInfo.number
