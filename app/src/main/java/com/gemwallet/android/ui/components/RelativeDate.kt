@@ -21,7 +21,7 @@ fun getRelativeDate(timestamp: Long): String {
     } else {
         val createdAt = Calendar.getInstance()
         createdAt.timeInMillis = timestamp
-        (DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT) as SimpleDateFormat)
+        (DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.SHORT) as SimpleDateFormat)
             .format(createdAt.time)
     }
 }
