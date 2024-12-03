@@ -154,7 +154,6 @@ class AsseDetailsViewModel @Inject constructor(
                 ),
                 tokenType = asset.type,
                 networkTitle = "${asset.id.chain.asset().name} (${asset.type.string})",
-                networkIcon = AssetId(asset.id.chain).getIconUrl(),
                 isBuyEnabled = assetInfo.metadata?.isBuyEnabled == true,
                 isSwapEnabled = assetInfo.metadata?.isSwapEnabled == true,
                 account = AssetInfoUIModel.Account(
