@@ -278,7 +278,14 @@ private fun LazyListScope.networkInfo(
                 CellEntity(
                     label = stringResource(id = R.string.transfer_network),
                     data = uiState.networkTitle,
-                    trailing = { AsyncImage(uiState.asset.networkAsset(), trailingIcon20) },
+                    trailing = {
+                        AsyncImage(
+                            modifier = Modifier.size(20.dp),
+                            model = uiState.asset.chain().getIconUrl(),
+                            placeholderText = uiState.tokenType.string,
+                            contentDescription = "asset_icon"
+                        )
+                    },
                 )
             )
         }
