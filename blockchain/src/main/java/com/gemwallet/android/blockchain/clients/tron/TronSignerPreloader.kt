@@ -18,7 +18,17 @@ class TronSignerPreloader(
 ) : NativeTransferPreloader, TokenTransferPreloader {
     val feeCalculator = TronFeeCalculator(chain, rpcClient)
 
-    override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams = withContext(Dispatchers.IO) {
+    override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
+        return preloadTransfer(params)
+    }
+
+    override suspend fun preloadTokenTransfer(params: ConfirmParams.TransferParams.Token): SignerParams {
+        return preloadTransfer(params)
+    }
+
+    override fun supported(chain: Chain): Boolean = this.chain == chain
+
+    private suspend fun preloadTransfer(params: ConfirmParams.TransferParams): SignerParams = withContext(Dispatchers.IO) {
         val feeJob = async { feeCalculator.calculate(params) }
         val nowBlockJob = async { rpcClient.nowBlock() }
 
@@ -38,12 +48,6 @@ class TronSignerPreloader(
             )
         )
     }
-
-    override suspend fun preloadTokenTransfer(params: ConfirmParams.TransferParams.Token): SignerParams {
-        TODO("Not yet implemented")
-    }
-
-    override fun supported(chain: Chain): Boolean = this.chain == chain
 
     data class TronChainData(
         val number: Long,
