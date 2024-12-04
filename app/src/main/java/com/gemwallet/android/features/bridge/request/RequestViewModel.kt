@@ -49,6 +49,7 @@ class RequestViewModel @Inject constructor(
                 val data = JSONArray(request.request.params).getString(1)
                 String(data.decodeHex())
             }
+            WalletConnectionMethods.eth_sign_typed_data_v4.string,
             WalletConnectionMethods.eth_sign_typed_data.string -> {
                 JSONArray(request.request.params).getString(1)
             }
@@ -92,23 +93,30 @@ class RequestViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val method = WalletConnectionMethods.entries
                 .firstOrNull { it.string == sessionRequest.request.method }
-            val param = when (method) {
-                WalletConnectionMethods.eth_sign,
-                WalletConnectionMethods.personal_sign -> {
-                    val data = state.value.params.toByteArray()
-                    val messagePrefix = "\u0019Ethereum Signed Message:\n${data.size}"
-                    val prefix = messagePrefix.toByteArray()
-                    Hash.keccak256(prefix + data)
-                }
-                WalletConnectionMethods.eth_sign_typed_data -> EthereumAbi.encodeTyped(state.value.params)
-                WalletConnectionMethods.solana_sign_message -> state.value.params.toByteArray()
-                else -> return@launch
-            }
-
             val password = passwordStore.getPassword(session.wallet.id)
             val privateKey = loadPrivateKeyOperator(session.wallet, chain, password)
+
             val sign = try {
-                signClient.signMessage(chain, param, privateKey)
+                when (method) {
+                    WalletConnectionMethods.eth_sign,
+                    WalletConnectionMethods.personal_sign -> {
+                        val data = state.value.params.toByteArray()
+                        val messagePrefix = "\u0019Ethereum Signed Message:\n${data.size}"
+                        val prefix = messagePrefix.toByteArray()
+                        val param = Hash.keccak256(prefix + data)
+                        signClient.signMessage(chain, param, privateKey)
+                    }
+                    WalletConnectionMethods.eth_sign_typed_data,
+                    WalletConnectionMethods.eth_sign_typed_data_v4 -> {
+                        val param = EthereumAbi.encodeTyped(state.value.params)
+                        signClient.signTypedMessage(chain, param, privateKey)
+                    }
+                    WalletConnectionMethods.solana_sign_message -> {
+                        val param = state.value.params.toByteArray()
+                        signClient.signMessage(chain, param, privateKey)
+                    }
+                    else -> return@launch
+                }
             } catch (err: Throwable) {
                 state.update { it.copy(error = err.message ?: "Sign error") }
                 return@launch
@@ -171,6 +179,7 @@ private data class RequestViewModelState(
         return when (sessionRequest.request.method) {
             WalletConnectionMethods.eth_sign.string,
             WalletConnectionMethods.personal_sign.string,
+            WalletConnectionMethods.eth_sign_typed_data_v4.string,
             WalletConnectionMethods.eth_sign_typed_data.string -> RequestSceneState.SignMessage(
                 walletName = wallet?.name ?: "",
                 peer = PeerUI(
