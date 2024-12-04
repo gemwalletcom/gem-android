@@ -27,14 +27,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
-import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.buy.models.BuyError
 import com.gemwallet.android.features.buy.models.BuyFiatProviderUIModel
 import com.gemwallet.android.features.buy.viewmodels.FiatSceneState
 import com.gemwallet.android.features.buy.viewmodels.FiatSuggestion
 import com.gemwallet.android.features.buy.viewmodels.FiatViewModel
-import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.CellEntity
@@ -54,8 +51,8 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.theme.WalletTheme
-import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.FiatProvider
+import com.wallet.core.primitives.FiatTransactionType
 
 @Composable
 fun FiatScreen(
@@ -72,6 +69,7 @@ fun FiatScreen(
     BuyScene(
         asset = asset,
         state = state,
+        type = viewModel.type,
         providers = providers,
         selectedProvider = selectedProvider,
         cancelAction = cancelAction,
@@ -85,8 +83,9 @@ fun FiatScreen(
 
 @Composable
 private fun BuyScene(
-    asset: AssetInfo?,
+    asset: AssetInfoUIModel?,
     state: FiatSceneState?,
+    type: FiatTransactionType,
     providers: List<BuyFiatProviderUIModel>,
     selectedProvider: BuyFiatProviderUIModel?,
     fiatAmount: String,
@@ -115,8 +114,8 @@ private fun BuyScene(
         Spacer16()
         AmountField(
             amount = fiatAmount,
-            assetSymbol = "$",
-            equivalent = if (state == null) selectedProvider?.cryptoFormatted ?: "" else " ",
+            assetSymbol = if (type == FiatTransactionType.Buy) "$" else asset.symbol,
+            equivalent = if (state == null) selectedProvider?.cryptoFormatted ?: " " else " ",
             error = "",
             onValueChange = onAmount,
             textStyle = MaterialTheme.typography.displayMedium,
@@ -125,11 +124,9 @@ private fun BuyScene(
         Container {
             AssetListItem(
                 modifier = Modifier.height(74.dp),
-                uiModel = AssetInfoUIModel(asset),
-                support = if (asset.asset.id.type() == AssetSubtype.NATIVE) {
-                    null
-                } else {
-                    { ListItemSupportText(asset.asset.id.chain.asset().name) }
+                uiModel = asset,
+                support = {
+                    ListItemSupportText(asset.cryptoFormatted)
                 },
                 badge = if (asset.asset.symbol == asset.asset.name) null else asset.asset.symbol,
                 dividerShowed = false,
@@ -147,6 +144,12 @@ private fun BuyScene(
                                         suggestion, onLotSelect
                                     )
                                     Spacer8()
+                                }
+
+                                FiatSuggestion.MaxAmount -> {
+                                    LotButton(
+                                        suggestion, onLotSelect
+                                    )
                                 }
                             }
                         }
