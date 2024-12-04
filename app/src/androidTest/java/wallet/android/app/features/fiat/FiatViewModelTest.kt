@@ -6,7 +6,6 @@ import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.features.buy.viewmodels.FiatSceneState
 import com.gemwallet.android.features.buy.viewmodels.FiatViewModel
-import com.gemwallet.android.features.buy.viewmodels.FiatViewModel.Companion.DEFAULT_BUY_AMOUNT
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
@@ -43,7 +42,7 @@ class FiatViewModelTest {
     @Test
     fun testDefaultAmountText() = runTest {
         viewModel.amount.test {
-            assertEquals(DEFAULT_BUY_AMOUNT.toString(), awaitItem())
+            assertEquals(viewModel.defaultAmount, awaitItem())
         }
     }
 

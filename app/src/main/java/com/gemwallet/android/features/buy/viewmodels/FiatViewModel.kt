@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.random.Random
 
 @HiltViewModel
 class FiatViewModel @Inject constructor(
@@ -39,9 +40,7 @@ class FiatViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val type: FiatTransactionType = FiatTransactionType.Buy
-    private val amountValidator = AmountValidator(MIN_FIAT_AMOUNT)
-    private val currency = Currency.USD
+    private val type: FiatTransactionType = FiatTransactionType.Buy // now always buy
 
     private val assetId = savedStateHandle.getStateFlow("assetId", "")
         .mapNotNull { it.toAssetId() }
@@ -49,6 +48,31 @@ class FiatViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val asset = assetId.flatMapLatest { assetsRepository.getAssetInfo(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val amountValidator = AmountValidator(MIN_FIAT_AMOUNT)
+    private val currency = Currency.USD
+    private val currencySymbol = java.util.Currency.getInstance(currency.name).symbol
+
+    val suggestedAmounts: List<FiatSuggestion>
+        get() = when (type) {
+            FiatTransactionType.Buy -> listOf(
+                FiatSuggestion.SuggestionAmount("${currencySymbol}100", 100.0),
+                FiatSuggestion.SuggestionAmount("${currencySymbol}150", 250.0),
+                FiatSuggestion.RandomAmount,
+            )
+
+            FiatTransactionType.Sell -> listOf(
+                FiatSuggestion.SuggestionPercent("25%", 25.0),
+                FiatSuggestion.SuggestionPercent("50%", 50.0),
+                FiatSuggestion.SuggestionPercent("100%", 100.0)
+            )
+        }
+
+    val defaultAmount: String
+        get() = when (type) {
+            FiatTransactionType.Buy -> "50"
+            FiatTransactionType.Sell -> "0"
+        }
 
     private val _amount = MutableStateFlow("")
     val amount: StateFlow<String> get() = _amount
@@ -80,10 +104,7 @@ class FiatViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private fun setDefaultAmount() {
-        _amount.value = when (type) {
-            FiatTransactionType.Buy -> DEFAULT_BUY_AMOUNT
-            FiatTransactionType.Sell -> 0
-        }.toString()
+        _amount.value = defaultAmount
     }
 
     @OptIn(FlowPreview::class)
@@ -130,13 +151,27 @@ class FiatViewModel @Inject constructor(
         _amount.value = newAmount
     }
 
+    fun updateAmount(suggestion: FiatSuggestion) {
+        _amount.value = when (suggestion) {
+            FiatSuggestion.RandomAmount -> randomAmount().toString()
+            is FiatSuggestion.SuggestionAmount -> suggestion.value.toInt().toString()
+            is FiatSuggestion.SuggestionPercent -> return
+        }
+    }
+
     fun setProvider(provider: FiatProvider) {
         _selectedQuote.value = _quotes.value.firstOrNull { it.provider.name == provider.name }
     }
 
+    private fun randomAmount(maxAmount: Double = 1000.0): Int {
+        return when (type) {
+            FiatTransactionType.Buy -> Random.nextInt(defaultAmount.toInt(), maxAmount.toInt())
+            FiatTransactionType.Sell -> return 0
+        }
+    }
+
     companion object {
         const val MIN_FIAT_AMOUNT = 20.0
-        const val DEFAULT_BUY_AMOUNT = 50.0
     }
 }
 
@@ -145,7 +180,17 @@ sealed interface FiatSceneState {
     data class Error(val error: BuyError?) : FiatSceneState
 }
 
-internal class AmountValidator(private val minValue: Double) {
+sealed class FiatSuggestion(open val text: String, open val value: Double) {
+    class SuggestionAmount(override val text: String, override val value: Double) :
+        FiatSuggestion(text, value)
+
+    data class SuggestionPercent(override val text: String, override val value: Double) :
+        FiatSuggestion(text, value)
+
+    data object RandomAmount : FiatSuggestion("random", 0.0)
+}
+
+private class AmountValidator(private val minValue: Double) {
     var error: BuyError? = null
         private set
 

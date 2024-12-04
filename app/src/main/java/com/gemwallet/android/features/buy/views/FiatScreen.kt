@@ -32,6 +32,7 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.buy.models.BuyError
 import com.gemwallet.android.features.buy.models.BuyFiatProviderUIModel
 import com.gemwallet.android.features.buy.viewmodels.FiatSceneState
+import com.gemwallet.android.features.buy.viewmodels.FiatSuggestion
 import com.gemwallet.android.features.buy.viewmodels.FiatViewModel
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.components.AmountField
@@ -40,7 +41,9 @@ import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
+import com.gemwallet.android.ui.components.buttons.RandomGradientButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding8
 import com.gemwallet.android.ui.components.designsystem.trailingIcon20
 import com.gemwallet.android.ui.components.image.AsyncImage
@@ -68,28 +71,28 @@ fun FiatScreen(
 
     BuyScene(
         asset = asset,
-        providers = providers,
         state = state,
+        providers = providers,
         selectedProvider = selectedProvider,
         cancelAction = cancelAction,
         fiatAmount = amount,
+        suggestedAmounts = viewModel.suggestedAmounts,
         onAmount = viewModel::updateAmount,
-        onLotSelect = {
-            viewModel.updateAmount(it.toInt().toString())
-        },
-        onProviderSelect = viewModel::setProvider
+        onLotSelect = viewModel::updateAmount,
+        onProviderSelect = viewModel::setProvider,
     )
 }
 
 @Composable
 private fun BuyScene(
     asset: AssetInfo?,
-    providers: List<BuyFiatProviderUIModel>,
     state: FiatSceneState?,
+    providers: List<BuyFiatProviderUIModel>,
     selectedProvider: BuyFiatProviderUIModel?,
     fiatAmount: String,
+    suggestedAmounts: List<FiatSuggestion>,
     cancelAction: CancelAction,
-    onLotSelect: (Double) -> Unit,
+    onLotSelect: (FiatSuggestion) -> Unit,
     onAmount: (String) -> Unit,
     onProviderSelect: (FiatProvider) -> Unit,
 ) {
@@ -132,9 +135,21 @@ private fun BuyScene(
                 dividerShowed = false,
                 trailing = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        LotButton("$100", 100.0, onLotSelect)
-                        Spacer16()
-                        LotButton("$150", 150.0, onLotSelect)
+                        suggestedAmounts.forEach { suggestion ->
+                            when (suggestion) {
+                                FiatSuggestion.RandomAmount -> RandomGradientButton(
+                                    onClick = { onLotSelect(FiatSuggestion.RandomAmount) }
+                                )
+
+                                is FiatSuggestion.SuggestionAmount,
+                                is FiatSuggestion.SuggestionPercent -> {
+                                    LotButton(
+                                        suggestion, onLotSelect
+                                    )
+                                    Spacer8()
+                                }
+                            }
+                        }
                     }
                 },
             )
@@ -195,16 +210,16 @@ private fun BuyScene(
 }
 
 @Composable
-fun LotButton(title: String, value: Double, onLotClick: (Double) -> Unit) {
+fun LotButton(fiatSuggestion: FiatSuggestion, onLotClick: (FiatSuggestion) -> Unit) {
     Button(
         modifier = Modifier,
         colors = ButtonDefaults.buttonColors()
             .copy(containerColor = MaterialTheme.colorScheme.scrim),
         contentPadding = PaddingValues(padding8),
-        onClick = { onLotClick(value) }
+        onClick = { onLotClick(fiatSuggestion) }
     ) {
         Text(
-            text = title,
+            text = fiatSuggestion.text,
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.W400),
         )
@@ -215,7 +230,7 @@ fun LotButton(title: String, value: Double, onLotClick: (Double) -> Unit) {
 fun BuyError.mapError() = when (this) {
     BuyError.MinimumAmount -> stringResource(
         id = R.string.transfer_minimum_amount,
-        "20$"
+        "${FiatViewModel.MIN_FIAT_AMOUNT}$"
     )
 
     BuyError.QuoteNotAvailable -> stringResource(id = R.string.buy_no_results)
