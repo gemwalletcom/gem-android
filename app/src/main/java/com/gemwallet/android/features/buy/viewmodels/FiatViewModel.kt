@@ -81,7 +81,7 @@ class FiatViewModel @Inject constructor(
 
     private fun setDefaultAmount() {
         _amount.value = when (type) {
-            FiatTransactionType.Buy -> 50
+            FiatTransactionType.Buy -> DEFAULT_BUY_AMOUNT
             FiatTransactionType.Sell -> 0
         }.toString()
     }
@@ -114,8 +114,9 @@ class FiatViewModel @Inject constructor(
                 amount.value.numberParse().toDouble(),
                 asset.owner.address
             ).onSuccess { result ->
-                _selectedQuote.update { result.firstOrNull() }
-                _quotes.update { result }
+                val sortedResult = result.sortedByDescending { quote -> quote.cryptoAmount }
+                _selectedQuote.update { sortedResult.firstOrNull() }
+                _quotes.update { sortedResult }
                 _state.value = null
             }.onFailure {
                 _state.value = FiatSceneState.Error(BuyError.QuoteNotAvailable)
@@ -135,6 +136,7 @@ class FiatViewModel @Inject constructor(
 
     companion object {
         const val MIN_FIAT_AMOUNT = 20.0
+        const val DEFAULT_BUY_AMOUNT = 50.0
     }
 }
 

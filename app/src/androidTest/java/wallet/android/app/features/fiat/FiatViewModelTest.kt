@@ -6,10 +6,12 @@ import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.features.buy.viewmodels.FiatSceneState
 import com.gemwallet.android.features.buy.viewmodels.FiatViewModel
+import com.gemwallet.android.features.buy.viewmodels.FiatViewModel.Companion.DEFAULT_BUY_AMOUNT
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 
@@ -32,9 +34,16 @@ class FiatViewModelTest {
     }
 
     @Test
+    fun testInitialState() = runTest {
+        viewModel.state.test {
+            assertNull(awaitItem())
+        }
+    }
+
+    @Test
     fun testDefaultAmountText() = runTest {
         viewModel.amount.test {
-            assertEquals("50", awaitItem())
+            assertEquals(DEFAULT_BUY_AMOUNT.toString(), awaitItem())
         }
     }
 
@@ -59,7 +68,7 @@ class FiatViewModelTest {
     @Test
     fun testValidAmountSetsLoadingState() = runTest {
         viewModel.state.test {
-            viewModel.updateAmount("50")
+            viewModel.updateAmount("100")
             skipItems(1)
             assert(awaitItem() is FiatSceneState.Loading)
         }
