@@ -146,9 +146,7 @@ private fun Success(
         },
         actions = {
             IconButton(
-                onClick = {
-                    onPriceAlert(uiState.asset.id)
-                }
+                onClick = { onPriceAlert(uiState.asset.id) }
             ) {
                 if (priceAlertEnabled) {
                     Icon(Icons.Default.Notifications, "")
@@ -157,9 +155,7 @@ private fun Success(
                 }
             }
             IconButton(
-                onClick = {
-                    clipboardManager.setText(AnnotatedString(uiState.account.owner))
-                }
+                onClick = { clipboardManager.setText(AnnotatedString(uiState.account.owner)) }
             ) {
                 Icon(Icons.Default.ContentCopy, "")
             }
