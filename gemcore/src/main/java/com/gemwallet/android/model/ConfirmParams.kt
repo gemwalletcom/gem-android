@@ -4,6 +4,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
+import com.gemwallet.android.serializer.AccountSerializer
 import com.gemwallet.android.serializer.AssetIdSerializer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -236,14 +237,39 @@ sealed class ConfirmParams(
     }
 
     companion object {
-        fun <T : ConfirmParams> unpack(type: Class<T>, input: String): T? {
+        fun unpack(txType: TransactionType, input: String): ConfirmParams {
             val json = String(Base64.getDecoder().decode(input.urlDecode()))
-            return getGson().fromJson(json, type)
+            val type = when (txType) {
+                TransactionType.Transfer -> TransferParams.Native::class.java
+                TransactionType.Swap -> SwapParams::class.java
+                TransactionType.TokenApproval -> TokenApprovalParams::class.java
+                TransactionType.StakeDelegate -> Stake.DelegateParams::class.java
+                TransactionType.StakeUndelegate -> Stake.UndelegateParams::class.java
+                TransactionType.StakeRewards -> Stake.RewardsParams::class.java
+                TransactionType.StakeRedelegate -> Stake.RedeleateParams::class.java
+                TransactionType.StakeWithdraw -> Stake.WithdrawParams::class.java
+            }
+
+            val result = getGson().fromJson(json, type)
+
+            return if (result.assetId.type() == AssetSubtype.TOKEN && result is TransferParams.Native) {
+                TransferParams.Token(
+                    result.assetId,
+                    result.from,
+                    result.amount,
+                    result.destination,
+                    result.memo,
+                    result.isMaxAmount,
+                )
+            } else {
+                result
+            }
         }
 
         private fun getGson(): Gson {
             return GsonBuilder()
                 .registerTypeAdapter(AssetId::class.java, AssetIdSerializer())
+                .registerTypeAdapter(Account::class.java, AccountSerializer())
                 .create()
         }
     }
