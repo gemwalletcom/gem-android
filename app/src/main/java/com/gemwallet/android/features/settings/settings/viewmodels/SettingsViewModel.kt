@@ -50,7 +50,7 @@ class SettingsViewModel @Inject constructor(
         refresh()
     }
 
-    private fun refresh() {
+    fun refresh() {
         state.update {
             it.copy(
                 currency = sessionRepository.getSession()?.currency ?: Currency.USD,
@@ -60,11 +60,6 @@ class SettingsViewModel @Inject constructor(
                 pushToken = getPushTokenCase.getPushToken()
             )
         }
-    }
-
-    fun developEnable() {
-        userConfig.developEnabled(!userConfig.developEnabled())
-        refresh()
     }
 
     fun notificationEnable() {
