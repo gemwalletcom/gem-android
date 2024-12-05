@@ -47,7 +47,7 @@ import com.gemwallet.android.ui.components.FieldBottomAction
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.rememberQRCodePainter
+import com.gemwallet.android.ui.components.qr_code.rememberQRCodePainter
 import com.gemwallet.android.ui.theme.WalletTheme
 
 @Composable
