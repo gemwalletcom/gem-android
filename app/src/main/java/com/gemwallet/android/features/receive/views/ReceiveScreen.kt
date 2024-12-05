@@ -114,7 +114,7 @@ private fun ReceiveScene(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 52.dp, vertical = 24.dp)
+                .padding(horizontal = 36.dp, vertical = 24.dp)
                 .verticalScroll(rememberScrollState()),
         ) {
             Spacer(modifier = Modifier.weight(1F))
