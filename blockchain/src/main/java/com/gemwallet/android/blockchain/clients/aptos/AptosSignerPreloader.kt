@@ -1,7 +1,8 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
-import com.gemwallet.android.blockchain.clients.aptos.rpc.AptosRpcClient
+import com.gemwallet.android.blockchain.clients.aptos.services.AptosAccountsService
+import com.gemwallet.android.blockchain.clients.aptos.services.AptosFeeService
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
@@ -11,14 +12,16 @@ import com.wallet.core.primitives.Chain
 
 class AptosSignerPreloader(
     private val chain: Chain,
-    private val rpcClient: AptosRpcClient,
+    private val accountsService: AptosAccountsService,
+    feeService: AptosFeeService,
 ) : NativeTransferPreloader {
 
-    private val feeCalculator = AptosFeeCalculator(chain, rpcClient)
+    private val feeCalculator = AptosFeeCalculator(chain, feeService, accountsService)
 
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
         val sequence = try {
-            rpcClient.accounts(params.from.address).getOrThrow().sequence_number?.toLong() ?: 0L
+            val response = accountsService.accounts(params.from.address).getOrThrow()
+            response.sequence_number?.toLong() ?: 0L
         } catch (_: Throwable) {
             0L
         }

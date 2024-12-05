@@ -104,7 +104,7 @@ object DataModule {
                 ChainType.Cosmos -> CosmosSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Ton -> TonSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Tron -> TronSignerPreloader(it, rpcClients.getClient(Chain.Tron))
-                ChainType.Aptos -> AptosSignerPreloader(it, rpcClients.getClient(it))
+                ChainType.Aptos -> AptosSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Sui -> SuiSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Xrp -> XrpSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Near -> NearSignerPreloader(it, rpcClients.getClient(it))
