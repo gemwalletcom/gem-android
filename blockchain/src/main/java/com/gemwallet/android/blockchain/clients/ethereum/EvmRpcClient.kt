@@ -46,9 +46,6 @@ interface EvmRpcClient {
     suspend fun callString(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<String?>>
 
     @POST("/")
-    suspend fun getTransactionByHash(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionByHash?>>
-
-    @POST("/")
     suspend fun transaction(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept>>
 
     @POST
@@ -64,10 +61,6 @@ interface EvmRpcClient {
         val value: BigInteger?,
     )
 
-    class EvmCallResult<T>(
-        val value: T?
-    )
-
     class TokenBalance(
         val value: BigInteger?,
     )
@@ -79,22 +72,6 @@ interface EvmRpcClient {
         val data: String?,
     )
 
-    class ButchItem(
-        val from: String,
-        val to: String,
-        val data: String,
-    )
-
-    class AllowanceCall(
-        val from: String,
-        val to: String,
-        val data: String,
-    )
-
-    class EthereumTransactionByHash(
-        val blockNumber: String,
-    )
-
     class BalanceDeserializer : JsonDeserializer<EvmNumber> {
         override fun deserialize(
             json: JsonElement?,
@@ -104,7 +81,7 @@ interface EvmRpcClient {
             return EvmNumber(
                 try {
                     json?.asString?.hexToBigInteger()
-                } catch (err: Throwable) {
+                } catch (_: Throwable) {
                     null
                 }
             )
@@ -120,7 +97,7 @@ interface EvmRpcClient {
             return TokenBalance(
                 try {
                     EthereumAbiValue.decodeUInt256(json?.asString?.decodeHex()).toBigIntegerOrNull()
-                } catch (err: Throwable) {
+                } catch (_: Throwable) {
                     null
                 }
             )
@@ -129,7 +106,7 @@ interface EvmRpcClient {
     }
 }
 
-internal suspend fun EvmRpcClient.getBalance(address: String): Result<JSONRpcResponse<EvmRpcClient.EvmNumber?>> {
+internal suspend fun EvmRpcClient.getBalance(address: String): Result<JSONRpcResponse<EvmNumber?>> {
     return getBalance(
         JSONRpcRequest.create(
             method = EvmMethod.GetBalance,
