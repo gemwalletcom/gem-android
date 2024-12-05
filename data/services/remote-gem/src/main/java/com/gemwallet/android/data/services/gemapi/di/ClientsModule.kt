@@ -2,7 +2,7 @@ package com.gemwallet.android.data.services.gemapi.di
 
 import android.content.Context
 import com.gemwallet.android.blockchain.RpcClientAdapter
-import com.gemwallet.android.blockchain.clients.aptos.AptosRpcClient
+import com.gemwallet.android.blockchain.clients.aptos.rpc.AptosRpcClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinRpcClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosRpcClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmRpcClient

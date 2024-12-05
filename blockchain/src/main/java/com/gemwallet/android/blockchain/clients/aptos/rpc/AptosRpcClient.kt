@@ -1,4 +1,4 @@
-package com.gemwallet.android.blockchain.clients.aptos
+package com.gemwallet.android.blockchain.clients.aptos.rpc
 
 import com.gemwallet.android.blockchain.clients.aptos.model.AptosAccount
 import com.wallet.core.blockchain.aptos.models.AptosGasFee

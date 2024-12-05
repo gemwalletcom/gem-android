@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
+import com.gemwallet.android.blockchain.clients.aptos.rpc.AptosRpcClient
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.TxSpeed

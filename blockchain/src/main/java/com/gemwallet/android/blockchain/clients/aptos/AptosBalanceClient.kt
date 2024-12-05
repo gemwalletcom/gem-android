@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
 import com.gemwallet.android.blockchain.clients.BalanceClient
+import com.gemwallet.android.blockchain.clients.aptos.rpc.AptosRpcClient
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Asset

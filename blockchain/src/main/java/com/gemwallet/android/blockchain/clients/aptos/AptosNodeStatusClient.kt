@@ -1,6 +1,8 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
 import com.gemwallet.android.blockchain.clients.NodeStatusClient
+import com.gemwallet.android.blockchain.clients.aptos.rpc.AptosRpcClient
+import com.gemwallet.android.blockchain.clients.aptos.rpc.getLedger
 import com.gemwallet.android.blockchain.rpc.getLatency
 import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain
