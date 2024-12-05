@@ -2,13 +2,10 @@ package com.gemwallet.android.features.settings.settings.views
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +14,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -52,7 +47,6 @@ import uniffi.gemstone.PublicUrl
 import uniffi.gemstone.SocialUrl
 import java.util.Locale
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SettingsScene(
     onSecurity: () -> Unit,
@@ -69,11 +63,6 @@ fun SettingsScene(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val reviewManager = remember { ReviewManager(context) }
-    val version = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
-    } else {
-        context.packageManager.getPackageInfo(context.packageName, 0)
-    }.versionName
 
     val uriHandler = LocalUriHandler.current
     var requestPushGrant by remember {
@@ -161,7 +150,7 @@ fun SettingsScene(
                 onBridges()
             }
             HorizontalDivider(modifier = Modifier, thickness = 0.4.dp)
-            
+
             SubheaderItem(title = stringResource(id = R.string.settings_community))
             LinkItem(title = stringResource(id = R.string.social_x), icon = R.drawable.twitter) {
                 uriHandler.open(Config().getSocialUrl(SocialUrl.X) ?: "")
@@ -209,21 +198,6 @@ fun SettingsScene(
                     onDevelop()
                 }
             }
-            LinkItem(
-                title = stringResource(id = R.string.settings_version),
-                icon = R.drawable.settings_version,
-                trailingContent = {
-                    Text(
-                        modifier = Modifier.combinedClickable(
-                            onClick = {},
-                            onLongClick = viewModel::developEnable
-                        ),
-                        text = "${stringResource(id = R.string.settings_version)}: $version",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-            ) {}
             Spacer16()
         }
     }

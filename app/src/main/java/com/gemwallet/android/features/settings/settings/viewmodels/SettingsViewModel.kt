@@ -2,6 +2,7 @@ package com.gemwallet.android.features.settings.settings.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.device.GetPushEnabledCase
 import com.gemwallet.android.cases.device.GetPushTokenCase
@@ -48,23 +49,30 @@ class SettingsViewModel @Inject constructor(
             }
         }
         refresh()
+        observeDevelop()
     }
 
-    private fun refresh() {
+    fun refresh() {
         state.update {
             it.copy(
                 currency = sessionRepository.getSession()?.currency ?: Currency.USD,
                 pushEnabled = getPushEnabledCase.getPushEnabled(),
-                developEnabled = userConfig.developEnabled(),
                 deviceId = getDeviceIdCase.getDeviceId(),
                 pushToken = getPushTokenCase.getPushToken()
             )
         }
     }
 
-    fun developEnable() {
-        userConfig.developEnabled(!userConfig.developEnabled())
-        refresh()
+    private fun observeDevelop() {
+        viewModelScope.launch {
+            userConfig.isDevelopEnabled.collect { value ->
+                state.update {
+                    it.copy(
+                        developEnabled = value
+                    )
+                }
+            }
+        }
     }
 
     fun notificationEnable() {
