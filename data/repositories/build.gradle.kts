@@ -50,6 +50,7 @@ dependencies {
         exclude(group = "com.jakewharton.timber", module = "timber")
     }
     api(libs.walletconnect.web3wallet)
+    api(libs.datastore)
 
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)

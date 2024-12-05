@@ -2,6 +2,7 @@ package com.gemwallet.android.features.settings.aboutus.views
 
 import android.content.pm.PackageManager
 import android.os.Build
+import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.material3.HorizontalDivider
@@ -27,12 +28,17 @@ fun AboutUsScreen(
     onCancel: () -> Unit
 ) {
     val viewModel: AboutUsViewModel = hiltViewModel()
+    val context = LocalContext.current
 
     AboutUsScene(
         onCancel = onCancel,
-        onDevelopEnable = viewModel::developEnable
+        onDevelopEnable = {
+            val developer = context.getString(R.string.settings_developer)
+            val enable = context.getString(R.string.settings_enable_value, developer)
+            Toast.makeText(context, enable, Toast.LENGTH_SHORT).show()
+            viewModel.developEnable()
+        }
     )
-
 }
 
 @OptIn(ExperimentalFoundationApi::class)

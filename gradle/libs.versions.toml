@@ -45,6 +45,7 @@ material3AdaptiveAndroid = "1.0.0-alpha06"
 turbine = "1.1.0"
 protobuf = "4.27.2"
 reorderable = "2.3.3"
+datastore = "1.1.1"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -76,6 +77,9 @@ compose-material3-window-size = { module = "androidx.compose.material3:material3
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+
+#Data store
+datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
 
 #Google play review and notifications
 play-review = { module = "com.google.android.play:review", version.ref = "review" }
