@@ -11,7 +11,7 @@ class XrpBalanceClient(
     private val chain: Chain,
     private val rpcClient: XrpRpcClient,
 ) : BalanceClient {
-    private val reservedBalance = BigInteger.valueOf(10_000_000)
+    private val reservedBalance = BigInteger.valueOf(1_000_000)
 
     override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance {
         val amount = rpcClient.account(address).mapCatching {
