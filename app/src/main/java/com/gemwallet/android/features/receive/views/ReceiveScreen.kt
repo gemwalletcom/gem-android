@@ -2,39 +2,41 @@ package com.gemwallet.android.features.receive.views
 
 import android.content.Intent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
@@ -43,11 +45,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.features.receive.viewmodels.ReceiveViewModel
 import com.gemwallet.android.model.AssetInfo
-import com.gemwallet.android.ui.components.FieldBottomAction
+import com.gemwallet.android.ui.components.AssetListItem
+import com.gemwallet.android.ui.components.CenterEllipsisText
 import com.gemwallet.android.ui.components.LoadingScene
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.components.buttons.MainActionButton
+import com.gemwallet.android.ui.components.designsystem.padding8
 import com.gemwallet.android.ui.components.qr_code.rememberQRCodePainter
+import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.theme.WalletTheme
 
 @Composable
@@ -109,75 +114,80 @@ private fun ReceiveScene(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp)
-                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 52.dp, vertical = 24.dp)
+                .verticalScroll(rememberScrollState()),
         ) {
-            Box(
-                modifier = Modifier.weight(1f)
+            Spacer(modifier = Modifier.weight(1F))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(
+                        elevation = 4.dp,
+                        shape = RoundedCornerShape(16.dp),
+                        clip = false,
+                    )
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(
+                        MaterialTheme.colorScheme.scrim
+                            .copy(alpha = 0.3f)
+                            .compositeOver(MaterialTheme.colorScheme.background)
+                    ),
             ) {
-                Column(
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                        .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                        .clip(RoundedCornerShape(12.dp))
+                        .background(Color.White)
                 ) {
-                    ElevatedCard(
-                        modifier = Modifier,
-                        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White,
-                            contentColor = Color.White,
-                        )
-                    ) {
-                        Image(
-                            modifier = Modifier
-                                .widthIn(100.dp, 400.dp)
-                                .heightIn(100.dp, 400.dp)
-                                .padding(12.dp),
-                            painter = rememberQRCodePainter(
-                                content = assetInfo.owner.address,
-                                cacheName = "${assetInfo.owner.chain.string}_${assetInfo.owner.address}",
-                                size = 300.dp
-                            ),
-                            contentDescription = "Receive QR",
-                            contentScale = ContentScale.FillWidth
-                        )
-                    }
-                    Spacer16()
-                    Text(
-                        text = assetInfo.walletName,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.titleLarge,
+                    Image(
+                        modifier = Modifier
+                            .widthIn(100.dp, 400.dp)
+                            .heightIn(100.dp, 400.dp)
+                            .padding(12.dp),
+                        painter = rememberQRCodePainter(
+                            content = assetInfo.owner.address,
+                            cacheName = "${assetInfo.owner.chain.string}_${assetInfo.owner.address}",
+                            size = 300.dp
+                        ),
+                        contentDescription = "Receive QR",
+                        contentScale = ContentScale.FillWidth
                     )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = assetInfo.owner.address,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.secondary,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Row {
-                        FieldBottomAction(
-                            modifier = Modifier.weight(1f),
-                            imageVector = Icons.Default.ContentCopy,
-                            contentDescription = "paste",
-                            text = stringResource(id = R.string.common_copy),
-                            onClick = onCopyClick,
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        FieldBottomAction(
-                            modifier = Modifier.weight(1f),
-                            imageVector = Icons.Default.Share,
-                            contentDescription = "share",
-                            text = stringResource(id = R.string.common_share),
-                            onClick = onShare
-                        )
-                    }
-                    Spacer16()
                 }
+
+                AssetListItem(
+                    modifier = Modifier.height(74.dp),
+                    uiModel = AssetInfoUIModel(assetInfo),
+                    support = {
+                        CenterEllipsisText(
+                            text = assetInfo.owner.address,
+                            color = MaterialTheme.colorScheme.secondary,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    },
+                    badge = if (assetInfo.asset.symbol == assetInfo.asset.name) null else assetInfo.asset.symbol,
+                    dividerShowed = false,
+                    trailing = {
+                        Button(
+                            modifier = Modifier,
+                            colors = ButtonDefaults.buttonColors()
+                                .copy(containerColor = MaterialTheme.colorScheme.scrim),
+                            contentPadding = PaddingValues(padding8),
+                            onClick = onCopyClick
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.common_copy),
+                                color = MaterialTheme.colorScheme.onSurface,
+                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.W400),
+                            )
+                        }
+                    },
+                )
             }
+            Spacer(modifier = Modifier.weight(1F))
+            MainActionButton(
+                title = stringResource(id = R.string.common_share),
+                onClick = onShare
+            )
         }
     }
 }

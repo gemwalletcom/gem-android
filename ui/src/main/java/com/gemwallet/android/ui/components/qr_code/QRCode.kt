@@ -19,7 +19,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
-import java.util.UUID
 
 @Composable
 fun rememberQRCodePainter(
@@ -32,7 +31,6 @@ fun rememberQRCodePainter(
     val sizePx = with(density) { size.roundToPx() }
     val paddingPx = with(density) { padding.roundToPx() }
     val context = LocalContext.current
-    val generator = QRCodeGenerator()
 
     var bitmap by remember(cacheName) {
         mutableStateOf<Bitmap?>(null)
@@ -46,7 +44,7 @@ fun rememberQRCodePainter(
             bitmap = if (qrFile.exists()) {
                 BitmapFactory.decodeFile(qrFile.absolutePath)
             } else {
-                val newBitmap = generator.generate(
+                val newBitmap = QRCodeGenerator().generate(
                     context = context,
                     content = content,
                     size = sizePx,
