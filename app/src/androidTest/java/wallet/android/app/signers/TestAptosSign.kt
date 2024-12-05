@@ -34,12 +34,12 @@ class TestAptosSign {
             signClient.signTransfer(
                 params = SignerParams(
                     input = ConfirmParams.TransferParams.Native(
-                        assetId = com.wallet.core.primitives.Chain.Aptos.asset().id,
-                        amount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Aptos.asset().decimals),
+                        assetId = Chain.Aptos.asset().id,
+                        amount = BigInteger.TEN.pow(Chain.Aptos.asset().decimals),
                         destination = DestinationAddress("0x82111f2975a0f6080d178236369b7479f6aed1203ef4a23f8205e4b91716b783"),
                         from = Account(chain = Chain.Aptos, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "", ""),
                     ),
-                    finalAmount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Aptos.asset().decimals),
+                    finalAmount = BigInteger.TEN.pow(Chain.Aptos.asset().decimals),
                     chainData = AptosSignerPreloader.AptosChainData(
                         sequence = 1L,
                         fee = GasFee(
@@ -48,7 +48,7 @@ class TestAptosSign {
                             limit = BigInteger("21000"),
                             minerFee = BigInteger.TEN,
                             relay = BigInteger.TEN,
-                            feeAssetId = com.wallet.core.primitives.Chain.Aptos.asset().id,
+                            feeAssetId = Chain.Aptos.asset().id,
                         )
                     )
                 ),

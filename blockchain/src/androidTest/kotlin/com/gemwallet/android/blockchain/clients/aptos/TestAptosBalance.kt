@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.aptos
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosBalancesService
+import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.blockchain.aptos.models.AptosResource
 import com.wallet.core.blockchain.aptos.models.AptosResourceBalance
@@ -20,8 +21,7 @@ class TestAptosBalance {
 
     companion object {
         init {
-            System.loadLibrary("TrustWalletCore")
-            System.loadLibrary("gemstone")
+            includeLibs()
         }
     }
 
