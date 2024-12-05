@@ -11,6 +11,7 @@ import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
+import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.runBlocking
@@ -45,12 +46,12 @@ class TestEthSign {
         val sign = runBlocking {
             signClient.signTransfer(
                 params = SignerParams(
-                    input = ConfirmParams.TransferParams(
-                        assetId = com.wallet.core.primitives.Chain.Ethereum.asset().id,
-                        amount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Ethereum.asset().decimals),
+                    input = ConfirmParams.TransferParams.Native(
+                        assetId = Chain.Ethereum.asset().id,
+                        amount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                         destination = DestinationAddress("0x9b1DB81180c31B1b428572Be105E209b5A6222b7"),
+                        from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
                     ),
-                    owner = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                     finalAmount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Ethereum.asset().decimals),
                     chainData = EvmSignerPreloader.EvmChainData(
                         chainId = BigInteger.ONE,
@@ -84,12 +85,12 @@ class TestEthSign {
         val sign = runBlocking {
             signClient.signTransfer(
                 params = SignerParams(
-                    input = ConfirmParams.TransferParams(
+                    input = ConfirmParams.TransferParams.Token(
                         assetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
-                        amount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Ethereum.asset().decimals),
+                        amount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                         destination = DestinationAddress("0x9b1DB81180c31B1b428572Be105E209b5A6222b7"),
+                        from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
                     ),
-                    owner = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                     finalAmount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Ethereum.asset().decimals),
                     chainData = EvmSignerPreloader.EvmChainData(
                         chainId = BigInteger.ONE,
