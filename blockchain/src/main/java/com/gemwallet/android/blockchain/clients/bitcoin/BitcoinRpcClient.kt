@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.bitcoin
 
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinBalanceService
+import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinBroadcastService
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinFeeService
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinUTXOService
 import com.wallet.core.blockchain.bitcoin.models.BitcoinAccount
@@ -21,12 +22,9 @@ import retrofit2.http.Url
 interface BitcoinRpcClient :
     BitcoinBalanceService,
     BitcoinUTXOService,
-    BitcoinFeeService
+    BitcoinFeeService,
+    BitcoinBroadcastService
 {
-
-    @POST("/api/v2/sendtx/")
-    suspend fun broadcast(@Body body: RequestBody): Result<BitcoinTransactionBroacastResult>
-
     @GET("/api/v2/tx/{txId}")
     suspend fun transaction(@Path("txId") txId: String): Result<BitcoinTransaction>
 
