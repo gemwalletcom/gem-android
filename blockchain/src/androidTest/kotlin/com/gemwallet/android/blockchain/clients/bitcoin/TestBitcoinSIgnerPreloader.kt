@@ -83,7 +83,7 @@ class TestBitcoinSignerPreloader {
         val result = runBlocking {
             preloader.preloadNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    assetId = AssetId(Chain.Aptos),
+                    assetId = AssetId(Chain.Bitcoin),
                     from = Account(
                         Chain.Doge,
                         "DDyZeg24eU3csLa7LMWrZEoqnHXccz6c94",
@@ -99,7 +99,7 @@ class TestBitcoinSignerPreloader {
         assertEquals("dgub8rNuTi8ofZu1jVDKpBxW9VFo62kjjx3b6CcameEZnrNNHJ3sKCnWBxQSv6qAP6jrwZEpfT1ZdKsrcBFKGTMV8zgBtjZmvQt29VPnLzbHjjD", requestPubKey)
         assertEquals(BigInteger.valueOf(10_000_000_000), result.input.amount)
         assertEquals("DDyZeg24eU3csLa7LMWrZEoqnHXccz6c94", result.input.from.address)
-        assertEquals(AssetId(Chain.Aptos).toIdentifier(), result.input.assetId.toIdentifier())
+        assertEquals(AssetId(Chain.Bitcoin).toIdentifier(), result.input.assetId.toIdentifier())
         assertEquals(false, result.input.isMax())
         assertEquals("D8UBj4EfNfNWNCdnCSgpY48yZDqPdTZXWW", result.input.destination()?.address)
         assertEquals(null, result.input.memo())

@@ -21,7 +21,7 @@ class StakeHub {
     fun encodeStake(params: ConfirmParams): String {
         return when (params) {
             is ConfirmParams.Stake.DelegateParams -> encodeDelegateCall(params.validatorId, false)
-            is ConfirmParams.Stake.RedeleateParams -> encodeRedelegateCall(params, false)
+            is ConfirmParams.Stake.RedelegateParams -> encodeRedelegateCall(params, false)
             is ConfirmParams.Stake.UndelegateParams -> encodeUndelegateCall(params)
             is ConfirmParams.Stake.WithdrawParams -> encodeClaim(params, (0).toULong())
             else -> throw IllegalArgumentException()
@@ -70,7 +70,7 @@ class StakeHub {
         return uniffi.gemstone.bscEncodeUndelegateCall(operatorAddress = params.validatorId, shares = amountShare.toString())
     }
 
-    fun encodeRedelegateCall(params: ConfirmParams.Stake.RedeleateParams, votePower: Boolean): ByteArray {
+    fun encodeRedelegateCall(params: ConfirmParams.Stake.RedelegateParams, votePower: Boolean): ByteArray {
         val amountShare = params.amount * params.share!!.toBigInteger() / params.balance!!.toBigInteger()
         return uniffi.gemstone.bscEncodeRedelegateCall(
             srcValidator = params.srcValidatorId,

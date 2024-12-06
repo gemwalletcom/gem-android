@@ -44,7 +44,7 @@ class CosmosSignClient(
                 amount = getAmount(params.finalAmount, denom = denom)
             )
             is ConfirmParams.Stake.DelegateParams -> getStakeMessage(from, input.validatorId, getAmount(params.finalAmount, denom))
-            is ConfirmParams.Stake.RedeleateParams -> getRedelegateMessage(
+            is ConfirmParams.Stake.RedelegateParams -> getRedelegateMessage(
                 delegatorAddress = from,
                 validatorSrcAddress = input.srcValidatorId,
                 validatorDstAddress = input.dstValidatorId,

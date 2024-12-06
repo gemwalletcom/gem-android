@@ -76,8 +76,8 @@ sealed class ConfirmParams(
             )
         }
 
-        fun redelegate(dstValidatorId: String, delegation: Delegation): Stake.RedeleateParams {
-            return Stake.RedeleateParams(
+        fun redelegate(dstValidatorId: String, delegation: Delegation): Stake.RedelegateParams {
+            return Stake.RedelegateParams(
                 assetId,
                 from = from,
                 amount,
@@ -185,7 +185,7 @@ sealed class ConfirmParams(
             val balance: String?
         ) : Stake(assetId, from, amount, validatorId)
 
-        class RedeleateParams(
+        class RedelegateParams(
             assetId: AssetId,
             from: Account,
             amount: BigInteger,
@@ -215,7 +215,7 @@ sealed class ConfirmParams(
             is SwapParams  -> TransactionType.Swap
             is Stake.DelegateParams  -> TransactionType.StakeDelegate
             is Stake.RewardsParams -> TransactionType.StakeRewards
-            is Stake.RedeleateParams  -> TransactionType.StakeRedelegate
+            is Stake.RedelegateParams  -> TransactionType.StakeRedelegate
             is Stake.UndelegateParams  -> TransactionType.StakeUndelegate
             is Stake.WithdrawParams  -> TransactionType.StakeWithdraw
             is Stake -> throw IllegalArgumentException("Invalid stake parameter")
@@ -246,7 +246,7 @@ sealed class ConfirmParams(
                 TransactionType.StakeDelegate -> Stake.DelegateParams::class.java
                 TransactionType.StakeUndelegate -> Stake.UndelegateParams::class.java
                 TransactionType.StakeRewards -> Stake.RewardsParams::class.java
-                TransactionType.StakeRedelegate -> Stake.RedeleateParams::class.java
+                TransactionType.StakeRedelegate -> Stake.RedelegateParams::class.java
                 TransactionType.StakeWithdraw -> Stake.WithdrawParams::class.java
             }
 

@@ -329,7 +329,7 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams,
             is ConfirmParams.Stake.DelegateParams -> assetInfo.balance.balance.available.toBigInteger()
-            is ConfirmParams.Stake.RedeleateParams -> BigInteger(stakeRepository.getDelegation(params.srcValidatorId).firstOrNull()?.base?.balance ?: "0")
+            is ConfirmParams.Stake.RedelegateParams -> BigInteger(stakeRepository.getDelegation(params.srcValidatorId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.Stake.UndelegateParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.Stake.WithdrawParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.Stake.RewardsParams -> stakeRepository.getRewards(assetInfo.asset.id, assetInfo.owner.address)
@@ -340,7 +340,7 @@ class ConfirmViewModel @Inject constructor(
     private suspend fun getValidator(params: ConfirmParams): DelegationValidator? {
         val validatorId = when (params) {
             is ConfirmParams.Stake.DelegateParams -> params.validatorId
-            is ConfirmParams.Stake.RedeleateParams -> params.dstValidatorId
+            is ConfirmParams.Stake.RedelegateParams -> params.dstValidatorId
             is ConfirmParams.Stake.UndelegateParams -> params.validatorId
             is ConfirmParams.Stake.WithdrawParams -> params.validatorId
             is ConfirmParams.Stake.RewardsParams,
@@ -360,7 +360,7 @@ class ConfirmViewModel @Inject constructor(
         return when (this) {
             is ConfirmParams.Stake.RewardsParams -> null
             is ConfirmParams.Stake.DelegateParams,
-            is ConfirmParams.Stake.RedeleateParams,
+            is ConfirmParams.Stake.RedelegateParams,
             is ConfirmParams.Stake.UndelegateParams,
             is ConfirmParams.Stake.WithdrawParams -> CellEntity(label = R.string.stake_validator, data = validator?.name ?: "")
             is ConfirmParams.SwapParams -> CellEntity(label = R.string.swap_provider, data = provider)

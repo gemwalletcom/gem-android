@@ -103,7 +103,7 @@ class SuiSignerPreloader(
                 stakeId = params.delegationId,
             )
             is ConfirmParams.Stake.RewardsParams,
-            is ConfirmParams.Stake.RedeleateParams,
+            is ConfirmParams.Stake.RedelegateParams,
             is ConfirmParams.Stake.WithdrawParams -> throw IllegalArgumentException("Not supported")
         }
         return build(params, data)

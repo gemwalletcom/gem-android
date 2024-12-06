@@ -44,7 +44,7 @@ class EvmSignClient(
         privateKey: ByteArray,
     ): ByteArray {
         when (params.input) {
-            is ConfirmParams.Stake.RedeleateParams,
+            is ConfirmParams.Stake.RedelegateParams,
             is ConfirmParams.Stake.DelegateParams,
             is ConfirmParams.Stake.UndelegateParams,
             is ConfirmParams.Stake.RewardsParams,
