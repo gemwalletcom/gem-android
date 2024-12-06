@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import android.widget.Toast.makeText
@@ -37,7 +36,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -52,6 +50,7 @@ import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.features.bridge.proposal.ProposalScene
 import com.gemwallet.android.features.bridge.request.RequestScene
 import com.gemwallet.android.interactors.CheckAccounts
+import com.gemwallet.android.localize.R.*
 import com.gemwallet.android.services.SyncService
 import com.gemwallet.android.ui.WalletApp
 import com.gemwallet.android.ui.components.designsystem.Spacer16
@@ -120,14 +119,14 @@ class MainActivity : SecureBaseFragmentActivity() {
                         modifier = Modifier
                             .size(100.dp)
                             .align(Alignment.Center),
-                        painter = painterResource(id = R.drawable.ic_splash),
+                        painter = painterResource(id = com.gemwallet.android.images.R.drawable.ic_splash),
                         contentDescription = "splash"
                     )
                 }
             }
 
             if (viewModel.resetWCPairing()) {
-                makeText(LocalContext.current, stringResource(id = R.string.wallet_connect_connection_title), Toast.LENGTH_SHORT).show()
+                makeText(LocalContext.current, stringResource(id = string.wallet_connect_connection_title), Toast.LENGTH_SHORT).show()
             }
 
             if (!state.wcError.isNullOrEmpty()) {
@@ -154,7 +153,7 @@ class MainActivity : SecureBaseFragmentActivity() {
                             )
                             Spacer16()
                             TextButton(onClick = viewModel::resetWcError) {
-                                Text(text = stringResource(id = R.string.common_cancel))
+                                Text(text = stringResource(id = string.common_cancel))
                             }
                         }
                     }
@@ -222,7 +221,7 @@ class MainActivity : SecureBaseFragmentActivity() {
         })
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(getString(R.string.settings_security_authentication))
+            .setTitle(getString(string.settings_security_authentication))
             .setAllowedAuthenticators(authenticators)
             .build()
     }

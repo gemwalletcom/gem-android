@@ -3,7 +3,7 @@ package com.gemwallet.android.features.asset.chart.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R.*
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.asset.chart.models.AssetMarketUIModel
@@ -44,19 +44,19 @@ class AssetChartViewModel @Inject constructor(
             assetLinks = assetInfo.links.toModel(),
             currency = assetInfo.price?.currency ?: Currency.USD,
             marketCells = mapOf(
-                R.string.asset_market_cap to (assetInfo.market?.marketCap ?: 0.0),
-                R.string.asset_circulating_supply to (assetInfo.market?.circulatingSupply ?: 0.0),
-                R.string.asset_total_supply to (assetInfo.market?.totalSupply ?: 0.0)
+                string.asset_market_cap to (assetInfo.market?.marketCap ?: 0.0),
+                string.asset_circulating_supply to (assetInfo.market?.circulatingSupply ?: 0.0),
+                string.asset_total_supply to (assetInfo.market?.totalSupply ?: 0.0)
             ).filterValues { it > 0.0 }
                 .map { (label, value) ->
                     CellEntity(
                         label = label,
                         data = when (label) {
-                            R.string.asset_market_cap -> currency.format(value, 0)
-                            R.string.asset_circulating_supply -> Crypto(BigInteger.valueOf(value.toLong()))
+                            string.asset_market_cap -> currency.format(value, 0)
+                            string.asset_circulating_supply -> Crypto(BigInteger.valueOf(value.toLong()))
                                 .format(0, asset.symbol, 0)
 
-                            R.string.asset_total_supply -> Crypto(BigInteger.valueOf(value.toLong()))
+                            string.asset_total_supply -> Crypto(BigInteger.valueOf(value.toLong()))
                                 .format(0, asset.symbol, 0)
 
                             else -> ""
@@ -68,10 +68,10 @@ class AssetChartViewModel @Inject constructor(
 
     private fun List<AssetLink>.toModel() = mapNotNull {
         return@mapNotNull when (it.name) {
-            "coingecko" -> AssetMarketUIModel.Link(it.name, it.url, R.string.social_coingecko, R.drawable.coingecko)
-            "twitter" -> AssetMarketUIModel.Link(it.name, it.url, R.string.social_x, R.drawable.twitter)
-            "telegram" -> AssetMarketUIModel.Link(it.name, it.url, R.string.social_telegram, R.drawable.telegram)
-            "github" -> AssetMarketUIModel.Link(it.name, it.url, R.string.social_github, R.drawable.github)
+            "coingecko" -> AssetMarketUIModel.Link(it.name, it.url, string.social_coingecko, com.gemwallet.android.R.drawable.coingecko)
+            "twitter" -> AssetMarketUIModel.Link(it.name, it.url, string.social_x, com.gemwallet.android.R.drawable.twitter)
+            "telegram" -> AssetMarketUIModel.Link(it.name, it.url, string.social_telegram,com.gemwallet.android.R.drawable.telegram)
+            "github" -> AssetMarketUIModel.Link(it.name, it.url, string.social_github, com.gemwallet.android.R.drawable.github)
             else -> null
         }
     }

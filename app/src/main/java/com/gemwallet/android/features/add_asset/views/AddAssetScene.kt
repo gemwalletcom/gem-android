@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import com.gemwallet.android.R
 import com.gemwallet.android.features.add_asset.models.AddAssetError
 import com.gemwallet.android.features.add_asset.models.AddAssetUIState
+import com.gemwallet.android.localize.R.*
 import com.gemwallet.android.ui.components.AddressChainField
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Table
@@ -45,10 +46,10 @@ fun AddAssetScene(
     }
 
     Scene(
-        title = stringResource(id = R.string.assets_add_custom_token),
+        title = stringResource(id = string.assets_add_custom_token),
         mainAction = {
             MainActionButton(
-                title = stringResource(id = R.string.assets_add_custom_token),
+                title = stringResource(id = string.assets_add_custom_token),
                 enabled = uiState.error == AddAssetError.None && uiState.asset != null,
                 onClick = onAddAsset,
             )
@@ -92,7 +93,7 @@ fun AddAssetScene(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(padding16),
-                    text = stringResource(id = R.string.errors_token_unable_fetch_token_information, uiState.address),
+                    text = stringResource(id = string.errors_token_unable_fetch_token_information, uiState.address),
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center,
                 )
@@ -110,16 +111,16 @@ private fun AssetInfoTable(asset: Asset?) { // TODO: Find and replace same
     Table(
         items = listOf(
             CellEntity(
-                label = stringResource(id = R.string.asset_name),
+                label = stringResource(id = string.asset_name),
                 data = asset.name,
                 trailing = { AsyncImage(model = asset) },
             ),
             CellEntity(
-                label = stringResource(id = R.string.asset_symbol),
+                label = stringResource(id = string.asset_symbol),
                 data = asset.symbol,
             ),
             CellEntity(
-                label = stringResource(id = R.string.asset_decimals),
+                label = stringResource(id = string.asset_decimals),
                 data = asset.decimals.toString(),
             ),
         )
