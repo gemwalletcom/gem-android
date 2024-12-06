@@ -5,7 +5,7 @@ import com.wallet.core.blockchain.bitcoin.models.BitcoinNodeInfo
 import retrofit2.Response
 
 interface BitcoinRpcClient :
-    BitcoinBalanceService,
+    BitcoinBalancesService,
     BitcoinUTXOService,
     BitcoinFeeService,
     BitcoinBroadcastService,

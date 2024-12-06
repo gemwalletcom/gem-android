@@ -21,8 +21,6 @@ import retrofit2.http.Path
 import retrofit2.http.Url
 
 interface CosmosRpcClient {
-    @GET("/cosmos/bank/v1beta1/balances/{owner}")
-    suspend fun getBalance(@Path("owner") owner: String): Result<CosmosBalances>
 
     @GET("/cosmos/auth/v1beta1/accounts/{owner}")
     suspend fun getAccountData(@Path("owner") owner: String): Result<CosmosAccountResponse<CosmosAccount>>
@@ -41,15 +39,6 @@ interface CosmosRpcClient {
 
     @GET("/cosmos/staking/v1beta1/validators?pagination.limit=1000")
     suspend fun validators(): Result<CosmosValidators>
-
-    @GET("/cosmos/staking/v1beta1/delegations/{address}")
-    suspend fun delegations(@Path("address") address: String): Result<CosmosDelegations>
-
-    @GET("/cosmos/staking/v1beta1/delegators/{address}/unbonding_delegations")
-    suspend fun undelegations(@Path("address") address: String): Result<CosmosUnboundingDelegations>
-
-    @GET("/cosmos/distribution/v1beta1/delegators/{address}/rewards")
-    suspend fun rewards(@Path("address") address: String): Result<CosmosRewards>
 
     @GET//("/cosmos/base/tendermint/v1beta1/syncing")
     suspend fun syncing(@Url url: String): Response<CosmosSyncing>
