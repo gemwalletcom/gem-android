@@ -27,7 +27,7 @@ class BitcoinSignClient(
         txSpeed: TxSpeed,
         privateKey: ByteArray
     ): ByteArray {
-        val metadata = params.chainData as BitcoinSignerPreloader.BtcChainData
+        val metadata = params.chainData as BitcoinSignerPreloader.BitcoinChainData
         val coinType = WCChainTypeProxy().invoke(chain)
         val gasFee = metadata.fee(txSpeed) as GasFee
         val input = params.input
