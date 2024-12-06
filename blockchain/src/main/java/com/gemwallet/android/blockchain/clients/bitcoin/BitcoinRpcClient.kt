@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.bitcoin
 
+import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinBalanceService
 import com.wallet.core.blockchain.bitcoin.models.BitcoinAccount
 import com.wallet.core.blockchain.bitcoin.models.BitcoinBlock
 import com.wallet.core.blockchain.bitcoin.models.BitcoinFeeResult
@@ -15,10 +16,7 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Url
 
-interface BitcoinRpcClient {
-    @GET("/api/v2/address/{address}")
-    suspend fun getBalance(@Path("address") address: String): Result<BitcoinAccount>
-
+interface BitcoinRpcClient : BitcoinBalanceService {
     @GET("/api/v2/utxo/{address}")
     suspend fun getUTXO(@Path("address") address: String): Result<List<BitcoinUTXO>>
 
