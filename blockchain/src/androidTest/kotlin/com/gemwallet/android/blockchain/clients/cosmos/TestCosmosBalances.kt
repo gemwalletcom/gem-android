@@ -1,6 +1,5 @@
-package com.gemwallet.android.blockchain.cosmos
+package com.gemwallet.android.blockchain.clients.cosmos
 
-import com.gemwallet.android.blockchain.clients.cosmos.CosmosBalanceClient
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosBalancesService
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosStakeService
 import com.gemwallet.android.ext.toIdentifier
