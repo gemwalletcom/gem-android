@@ -32,6 +32,8 @@ import com.gemwallet.android.R
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.banners.viewmodels.BannersViewModel
+import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.designsystem.Spacer16
@@ -42,6 +44,8 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Banner
 import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.BannerState
+import com.wallet.core.primitives.Chain
+import uniffi.gemstone.Config
 
 @Composable
 fun BannersScene(
@@ -51,8 +55,10 @@ fun BannersScene(
     viewModel: BannersViewModel = hiltViewModel(),
 ) {
     LaunchedEffect(asset?.id?.toIdentifier(), isGlobal) { viewModel.init(asset, isGlobal) }
+
     val banners by viewModel.banners.collectAsStateWithLifecycle()
     val pageState = rememberPagerState { banners.size }
+
     HorizontalPager(pageState, pageSpacing = padding16) { page ->
         val banner = banners[page]
         Box(modifier = Modifier.clickable { onClick(banner) }) {
@@ -63,8 +69,9 @@ fun BannersScene(
                 )
                 BannerEvent.AccountActivation -> Pair(
                     stringResource(R.string.banner_account_activation_title, asset?.name ?: ""),
-                    stringResource(R.string.banner_account_activation_description, asset?.name ?: "", "10 XRP")
-                )
+                    stringResource(R.string.banner_account_activation_description, asset?.name ?: "",
+                        viewModel.getActivationFee(asset)
+                ))
                 BannerEvent.EnableNotifications -> Pair(
                     stringResource(R.string.banner_enable_notifications_title, asset?.name ?: ""),
                     stringResource(R.string.banner_enable_notifications_description)
