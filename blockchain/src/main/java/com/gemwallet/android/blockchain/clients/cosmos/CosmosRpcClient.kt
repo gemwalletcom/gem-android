@@ -1,5 +1,8 @@
 package com.gemwallet.android.blockchain.clients.cosmos
 
+import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosAccountsService
+import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosBalancesService
+import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosStakeService
 import com.wallet.core.blockchain.cosmos.models.CosmosBlockResponse
 import com.wallet.core.blockchain.cosmos.models.CosmosBroadcastResponse
 import com.wallet.core.blockchain.cosmos.models.CosmosSyncing
@@ -13,7 +16,10 @@ import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Url
 
-interface CosmosRpcClient {
+interface CosmosRpcClient :
+    CosmosBalancesService,
+    CosmosAccountsService,
+    CosmosStakeService {
 
     @POST("/cosmos/tx/v1beta1/txs")
     suspend fun broadcast(@Body body: RequestBody): Result<CosmosBroadcastResponse>
