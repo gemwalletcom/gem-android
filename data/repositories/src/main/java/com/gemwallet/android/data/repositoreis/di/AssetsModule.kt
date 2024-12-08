@@ -74,7 +74,7 @@ object AssetsModule {
                 ChainType.Bitcoin -> BitcoinBalanceClient(it, rpcClients.getClient(it))
                 ChainType.Ethereum -> EvmBalanceClient(it, rpcClients.getClient(it))
                 ChainType.Solana -> SolanaBalanceClient(it, rpcClients.getClient(Chain.Solana))
-                ChainType.Cosmos -> CosmosBalanceClient(it, rpcClients.getClient(it))
+                ChainType.Cosmos -> CosmosBalanceClient(it, rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Ton -> TonBalanceClient(it, rpcClients.getClient(Chain.Ton))
                 ChainType.Tron -> TronBalanceClient(it, rpcClients.getClient(Chain.Tron))
                 ChainType.Aptos -> AptosBalanceClient(it, rpcClients.getClient(it))

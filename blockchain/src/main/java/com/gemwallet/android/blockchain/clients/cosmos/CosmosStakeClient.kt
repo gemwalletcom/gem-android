@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.cosmos
 
 import android.annotation.SuppressLint
 import com.gemwallet.android.blockchain.clients.StakeClient
+import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosStakeService
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.CosmosDenom
@@ -17,6 +18,7 @@ import java.text.SimpleDateFormat
 class CosmosStakeClient(
     private val chain: Chain,
     private val rpcClient: CosmosRpcClient,
+    private val stakeService: CosmosStakeService,
 ) : StakeClient {
 
     @SuppressLint("SimpleDateFormat")
@@ -38,10 +40,10 @@ class CosmosStakeClient(
     }
 
     override suspend fun getStakeDelegations(chain: Chain, address: String, apr: Double): List<DelegationBase> = withContext(Dispatchers.IO) {
-        val getDelegations = async { rpcClient.delegations(address).getOrNull()?.delegation_responses }
-        val getUnboundingDelegations = async { rpcClient.undelegations(address).getOrNull()?.unbonding_responses }
+        val getDelegations = async { stakeService.delegations(address).getOrNull()?.delegation_responses }
+        val getUnboundingDelegations = async { stakeService.undelegations(address).getOrNull()?.unbonding_responses }
         val getRewards = async {
-            rpcClient.rewards(address).getOrNull()?.rewards
+            stakeService.rewards(address).getOrNull()?.rewards
                 ?.associateBy { it.validator_address }
                 ?.mapValues { entry ->
                     entry.value.reward

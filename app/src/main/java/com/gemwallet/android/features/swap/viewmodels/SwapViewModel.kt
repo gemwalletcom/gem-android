@@ -291,6 +291,7 @@ class SwapViewModel @Inject constructor(
                 onConfirm(
                     ConfirmParams.TokenApprovalParams(
                         assetId = if (from.asset.id.type() == AssetSubtype.TOKEN) from.asset.id else to.asset.id,
+                        from = from.owner,
                         data = encodeApprove(approvalData.v1.spender).toHexString(),
                         provider = swapProviderNameToString(quote.data.provider),
                         contract = approvalData.v1.token,
@@ -302,6 +303,7 @@ class SwapViewModel @Inject constructor(
                 swapScreenState.update { SwapState.Ready }
                 onConfirm(
                     ConfirmParams.SwapParams(
+                        from = from.owner,
                         fromAssetId = from.asset.id,
                         toAssetId = to.asset.id,
                         fromAmount = Crypto(fromAmount, from.asset.decimals).atomicValue,

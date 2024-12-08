@@ -32,7 +32,7 @@ class CosmosSignClient(
         txSpeed: TxSpeed,
         privateKey: ByteArray,
     ): ByteArray {
-        val from = params.owner
+        val from = params.input.from.address
         val coin = WCChainTypeProxy().invoke(chain)
         val input = params.input
         val denom = if (input.assetId.type() == AssetSubtype.NATIVE) CosmosDenom.from(chain) else input.assetId.tokenId!!
@@ -43,15 +43,15 @@ class CosmosSignClient(
                 coin = coin,
                 amount = getAmount(params.finalAmount, denom = denom)
             )
-            is ConfirmParams.DelegateParams -> getStakeMessage(from, input.validatorId, getAmount(params.finalAmount, denom))
-            is ConfirmParams.RedeleateParams -> getRedelegateMessage(
+            is ConfirmParams.Stake.DelegateParams -> getStakeMessage(from, input.validatorId, getAmount(params.finalAmount, denom))
+            is ConfirmParams.Stake.RedelegateParams -> getRedelegateMessage(
                 delegatorAddress = from,
                 validatorSrcAddress = input.srcValidatorId,
                 validatorDstAddress = input.dstValidatorId,
                 amount = getAmount(params.input.amount, denom),
             )
-            is ConfirmParams.RewardsParams -> getRewardsMessage(from, input.validatorsId)
-            is ConfirmParams.UndelegateParams -> getUnstakeMessage(from, input.validatorId, getAmount(params.input.amount, denom))
+            is ConfirmParams.Stake.RewardsParams -> getRewardsMessage(from, input.validatorsId)
+            is ConfirmParams.Stake.UndelegateParams -> getUnstakeMessage(from, input.validatorId, getAmount(params.input.amount, denom))
             is ConfirmParams.SwapParams -> when (chain) {
                 Chain.Thorchain -> listOf(getThorChainSwapMessage(params, coin))
                 else -> getTransferMessage(
@@ -62,7 +62,7 @@ class CosmosSignClient(
                 )
             }
             is ConfirmParams.TokenApprovalParams,
-            is ConfirmParams.WithdrawParams -> throw IllegalArgumentException()
+            is ConfirmParams.Stake.WithdrawParams -> throw IllegalArgumentException()
         }
         return sign(params, privateKey, message)
     }
@@ -83,7 +83,7 @@ class CosmosSignClient(
                         }
                     )
                     this.memo = swapParams.swapData
-                    this.signer = ByteString.copyFrom(AnyAddress(params.owner, coinType).data())
+                    this.signer = ByteString.copyFrom(AnyAddress(params.input.from.address, coinType).data())
                 }
             )
         }.build()
@@ -150,7 +150,7 @@ class CosmosSignClient(
         return listOf(message)
     }
 
-    suspend fun getRewardsMessage(delegatorAddress: String, validators: List<String>): List<Message> {
+    fun getRewardsMessage(delegatorAddress: String, validators: List<String>): List<Message> {
         return validators.map { validator ->
             Message.newBuilder().apply {
                 withdrawStakeRewardMessage = WithdrawDelegationReward.newBuilder().apply {
@@ -197,7 +197,7 @@ class CosmosSignClient(
     }
 
     private fun sign(input: SignerParams, privateKey: ByteArray, messages: List<Message>): ByteArray {
-        val meta = input.info as CosmosSignerPreloader.Info
+        val meta = input.chainData as CosmosSignerPreloader.CosmosChainData
         val fee = meta.fee() as GasFee
         val feeAmount = fee.amount
         val gas = fee.limit.toLong() * messages.size

@@ -1,13 +1,15 @@
 package com.gemwallet.android.blockchain.clients.bitcoin
 
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
+import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinRpcClient
+import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinTransactionsService
 import com.gemwallet.android.model.TransactionChages
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
 
 class BitcoinTransactionStatusClient(
     private val chain: Chain,
-    private val rpcClient: BitcoinRpcClient
+    private val rpcClient: BitcoinTransactionsService
 ) : TransactionStatusClient {
 
     override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {

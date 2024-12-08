@@ -44,11 +44,11 @@ class EvmSignClient(
         privateKey: ByteArray,
     ): ByteArray {
         when (params.input) {
-            is ConfirmParams.RedeleateParams,
-            is ConfirmParams.DelegateParams,
-            is ConfirmParams.UndelegateParams,
-            is ConfirmParams.RewardsParams,
-            is ConfirmParams.WithdrawParams -> when (params.input.assetId.chain) {
+            is ConfirmParams.Stake.RedelegateParams,
+            is ConfirmParams.Stake.DelegateParams,
+            is ConfirmParams.Stake.UndelegateParams,
+            is ConfirmParams.Stake.RewardsParams,
+            is ConfirmParams.Stake.WithdrawParams -> when (params.input.assetId.chain) {
                 Chain.SmartChain -> {
                     return stakeSmartchain(params, privateKey)
                 }
@@ -56,7 +56,7 @@ class EvmSignClient(
             }
             else -> {}
         }
-        val meta = params.info as EvmSignerPreloader.Info
+        val meta = params.chainData as EvmSignerPreloader.EvmChainData
         val fee = meta.fee() as? GasFee ?: throw IllegalArgumentException()
         val coinType = WCChainTypeProxy().invoke(chain)
         val input = params.input
@@ -93,10 +93,10 @@ class EvmSignClient(
     }
 
     private fun stakeSmartchain(params: SignerParams, privateKey: ByteArray): ByteArray {
-        val meta = params.info as EvmSignerPreloader.Info
+        val meta = params.chainData as EvmSignerPreloader.EvmChainData
         val fee = meta.fee as? GasFee ?: throw IllegalArgumentException()
         val valueData = when (params.input) {
-            is ConfirmParams.DelegateParams -> params.finalAmount.toByteArray()
+            is ConfirmParams.Stake.DelegateParams -> params.finalAmount.toByteArray()
             else -> BigInteger.ZERO.toByteArray()
         }
         val callData = StakeHub().encodeStake(params.input)

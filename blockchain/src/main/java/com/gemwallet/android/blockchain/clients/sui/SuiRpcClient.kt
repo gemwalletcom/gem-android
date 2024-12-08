@@ -7,6 +7,7 @@ import com.wallet.core.blockchain.sui.SuiBroadcastTransaction
 import com.wallet.core.blockchain.sui.SuiCoin
 import com.wallet.core.blockchain.sui.SuiCoinBalance
 import com.wallet.core.blockchain.sui.SuiData
+import com.wallet.core.blockchain.sui.SuiGasUsed
 import com.wallet.core.blockchain.sui.SuiStakeDelegation
 import com.wallet.core.blockchain.sui.SuiTransaction
 import com.wallet.core.blockchain.sui.SuiValidators
@@ -16,6 +17,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Url
+import java.lang.Exception
 
 interface SuiRpcClient {
 
@@ -112,4 +114,9 @@ internal suspend fun SuiRpcClient.chainId(url: String): Response<JSONRpcResponse
 
 internal suspend fun SuiRpcClient.latestBlock(url: String): Result<JSONRpcResponse<String>> {
     return latestBlock(url, JSONRpcRequest.create(SuiMethod.LatestCheckpoint, emptyList()))
+}
+
+internal suspend fun SuiRpcClient.dryRun(data: String): SuiGasUsed {
+    return dryRun(JSONRpcRequest.create(SuiMethod.DryRun, listOf(data))).getOrNull()?.result?.effects?.gasUsed
+        ?: throw Exception("Can't load SUI gas")
 }

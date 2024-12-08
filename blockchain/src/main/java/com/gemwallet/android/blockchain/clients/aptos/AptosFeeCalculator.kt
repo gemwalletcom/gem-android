@@ -1,5 +1,7 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
+import com.gemwallet.android.blockchain.clients.aptos.services.AptosAccountsService
+import com.gemwallet.android.blockchain.clients.aptos.services.AptosFeeService
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.TxSpeed
@@ -11,16 +13,16 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 
-internal class AptosFee {
-    suspend operator fun invoke(
-        chain: Chain,
-        destination: String,
-        rpcClient: AptosRpcClient,
-    ): Fee = withContext(Dispatchers.IO) {
+internal class AptosFeeCalculator(
+    private val chain: Chain,
+    private val feeRpcClient: AptosFeeService,
+    private val accountsRpcClient: AptosAccountsService,
+) {
+    suspend fun calculate(destination: String): Fee = withContext(Dispatchers.IO) {
         val gasPriceJob =
-            async { rpcClient.feePrice().getOrThrow().prioritized_gas_estimate.toBigInteger() }
+            async { feeRpcClient.feePrice().getOrThrow().prioritized_gas_estimate.toBigInteger() }
         val isNewJob = async {
-            val result = rpcClient.accounts(destination).getOrThrow()
+            val result = accountsRpcClient.accounts(destination).getOrThrow()
             if (result.sequence_number != null) {
                 false
             } else {

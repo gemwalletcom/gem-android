@@ -13,7 +13,7 @@ class SuiSignClient(
     private val chain: Chain,
 ) : SignClient {
     override suspend fun signTransfer(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): ByteArray {
-        val metadata = params.info as SuiSignerPreloader.Info
+        val metadata = params.chainData as SuiSignerPreloader.SuiChainData
         return signTxDataDigest(metadata.messageBytes, privateKey)
     }
 

@@ -22,7 +22,7 @@ class TronSignClient(
         txSpeed: TxSpeed,
         privateKey: ByteArray
     ): ByteArray {
-        val blockInfo = params.info as TronSignerPreloader.Info
+        val blockInfo = params.chainData as TronSignerPreloader.TronChainData
         val transaction = Tron.Transaction.newBuilder().apply {
             this.blockHeader = Tron.BlockHeader.newBuilder().apply {
                 this.number = blockInfo.number
@@ -33,11 +33,11 @@ class TronSignClient(
                 this.txTrieRoot = ByteString.copyFrom(blockInfo.txTrieRoot.decodeHex())
             }.build()
             when (params.input.assetId.type()) {
-                AssetSubtype.NATIVE -> this.transfer = getTransferContract(params.finalAmount, params.owner, params.input.destination()?.address ?: "")
+                AssetSubtype.NATIVE -> this.transfer = getTransferContract(params.finalAmount, params.input.from.address, params.input.destination()?.address ?: "")
                 AssetSubtype.TOKEN -> this.transferTrc20Contract = getTransferTRC20Contract(
                     params.input.assetId.tokenId!!,
                     params.finalAmount,
-                    params.owner,
+                    params.input.from.address,
                     params.input.destination()?.address ?: ""
                 )
                 else -> throw IllegalArgumentException("Unsupported type")

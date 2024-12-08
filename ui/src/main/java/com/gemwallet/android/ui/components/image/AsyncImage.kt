@@ -63,12 +63,14 @@ fun AsyncImage(
 @Composable
 fun AsyncImage(
     model: Asset,
+    size: Dp = iconSize,
     modifier: Modifier = Modifier,
     placeholderText: String? = model.symbol,
     errorImageVector: ImageVector? = null,
 ) {
     AsyncImage(
         model = model.getIconUrl(),
+        size = size,
         contentDescription = "asset_icon",
         modifier = modifier,
         placeholderText = placeholderText,

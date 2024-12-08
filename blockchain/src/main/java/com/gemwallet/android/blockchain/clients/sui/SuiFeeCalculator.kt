@@ -6,15 +6,12 @@ import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 
-class SuiFee {
-    suspend operator fun invoke(
-        rpcClient: SuiRpcClient,
-        account: Account,
-        data: String,
-    ): Fee {
+class SuiFeeCalculator(
+    private val rpcClient: SuiRpcClient,
+) {
+    suspend fun calculate(account: Account, data: String): Fee {
         val chain = account.chain
-        val gasUsed = rpcClient.dryRun(JSONRpcRequest.create(SuiMethod.DryRun, listOf(data)))
-            .getOrThrow().result.effects.gasUsed
+        val gasUsed = rpcClient.dryRun(data)
         val computationCost = gasUsed.computationCost.toBigInteger()
         val storageCost = gasUsed.storageCost.toBigInteger()
         val storageRebate = gasUsed.storageRebate.toBigInteger()

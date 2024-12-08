@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.ethereum
 import com.gemwallet.android.blockchain.clients.ethereum.EvmRpcClient.EvmNumber
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
+import com.gemwallet.android.math.append0x
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.hexToBigInteger
 import com.google.gson.JsonDeserializationContext
@@ -14,6 +15,7 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Url
+import wallet.core.jni.CoinType
 import wallet.core.jni.EthereumAbiValue
 import java.lang.reflect.Type
 import java.math.BigInteger
@@ -44,9 +46,6 @@ interface EvmRpcClient {
     suspend fun callString(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<String?>>
 
     @POST("/")
-    suspend fun getTransactionByHash(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionByHash?>>
-
-    @POST("/")
     suspend fun transaction(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept>>
 
     @POST
@@ -62,10 +61,6 @@ interface EvmRpcClient {
         val value: BigInteger?,
     )
 
-    class EvmCallResult<T>(
-        val value: T?
-    )
-
     class TokenBalance(
         val value: BigInteger?,
     )
@@ -77,22 +72,6 @@ interface EvmRpcClient {
         val data: String?,
     )
 
-    class ButchItem(
-        val from: String,
-        val to: String,
-        val data: String,
-    )
-
-    class AllowanceCall(
-        val from: String,
-        val to: String,
-        val data: String,
-    )
-
-    class EthereumTransactionByHash(
-        val blockNumber: String,
-    )
-
     class BalanceDeserializer : JsonDeserializer<EvmNumber> {
         override fun deserialize(
             json: JsonElement?,
@@ -102,7 +81,7 @@ interface EvmRpcClient {
             return EvmNumber(
                 try {
                     json?.asString?.hexToBigInteger()
-                } catch (err: Throwable) {
+                } catch (_: Throwable) {
                     null
                 }
             )
@@ -118,7 +97,7 @@ interface EvmRpcClient {
             return TokenBalance(
                 try {
                     EthereumAbiValue.decodeUInt256(json?.asString?.decodeHex()).toBigIntegerOrNull()
-                } catch (err: Throwable) {
+                } catch (_: Throwable) {
                     null
                 }
             )
@@ -127,7 +106,7 @@ interface EvmRpcClient {
     }
 }
 
-internal suspend fun EvmRpcClient.getBalance(address: String): Result<JSONRpcResponse<EvmRpcClient.EvmNumber?>> {
+internal suspend fun EvmRpcClient.getBalance(address: String): Result<JSONRpcResponse<EvmNumber?>> {
     return getBalance(
         JSONRpcRequest.create(
             method = EvmMethod.GetBalance,
@@ -161,4 +140,37 @@ internal suspend fun EvmRpcClient.latestBlock(url: String): Result<JSONRpcRespon
 
 internal suspend fun EvmRpcClient.sync(url: String): Result<JSONRpcResponse<Boolean?>> {
     return sync(url, JSONRpcRequest.create(EvmMethod.Sync, emptyList()))
+}
+
+internal suspend fun EvmRpcClient.getFeeHistory(): EthereumFeeHistory? {
+    return getFeeHistory(JSONRpcRequest.create(EvmMethod.GetFeeHistory, listOf("10", "latest", listOf(25))))
+        .getOrNull()?.result
+}
+
+internal suspend fun EvmRpcClient.getNetVersion(coinType: CoinType): BigInteger {
+    return try {
+        getNetVersion(JSONRpcRequest.create(EvmMethod.GetNetVersion, emptyList()))
+            .fold({ it.result?.value }) { null } ?: BigInteger(coinType.chainId())
+    } catch (_: Throwable) {
+        return BigInteger(coinType.chainId())
+    }
+}
+
+internal suspend fun EvmRpcClient.getNonce(fromAddress: String): BigInteger {
+    val nonceParams = listOf(fromAddress, "latest")
+    return getNonce(JSONRpcRequest.create(EvmMethod.GetNonce, nonceParams))
+        .fold({ it.result?.value }) { null } ?: BigInteger.ZERO
+}
+
+internal suspend fun EvmRpcClient.getGasLimit(from: String, to: String, amount: BigInteger, data: String?): BigInteger {
+    val transaction = EvmRpcClient.Transaction(
+        from = from,
+        to = to,
+        value = "0x${amount.toString(16)}",
+        data = if (data.isNullOrEmpty()) "0x" else data.append0x(),
+    )
+    val request = JSONRpcRequest.create(EvmMethod.GetGasLimit, listOf(transaction))
+    return getGasLimit(request).fold({ it.result?.value ?: BigInteger.ZERO}) {
+        BigInteger.ZERO
+    }
 }

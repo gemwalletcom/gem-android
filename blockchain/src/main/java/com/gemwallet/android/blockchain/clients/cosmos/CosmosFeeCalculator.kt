@@ -8,10 +8,10 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType
 import java.math.BigInteger
 
-class  CosmosFee(
-    private val txType: TransactionType,
+class  CosmosFeeCalculator(
+    private val chain: Chain,
 ) {
-    operator fun invoke(chain: Chain): Fee {
+    fun calculate(txType: TransactionType): Fee {
         val assetId = AssetId(chain)
         val maxGasFee = when (chain) {
             Chain.Cosmos -> when (txType) {
@@ -37,7 +37,7 @@ class  CosmosFee(
                 else -> BigInteger.valueOf(200_000L)
             }
             Chain.Noble -> BigInteger.valueOf(25_000)
-            else -> throw IllegalArgumentException()
+            else -> throw IllegalArgumentException("Unsupported chain")
         }
         val limit = when (txType) {
             TransactionType.Transfer, TransactionType.Swap -> BigInteger.valueOf(200_000L)

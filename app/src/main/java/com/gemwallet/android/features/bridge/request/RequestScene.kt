@@ -57,8 +57,9 @@ fun RequestScene(
         )
         is RequestSceneState.SendTransaction -> {
             ConfirmScreen(
-                params = ConfirmParams.TransferParams(
-                    assetId = AssetId((sceneState as RequestSceneState.SendTransaction).chain),
+                params = ConfirmParams.TransferParams.Native(
+                    from = (sceneState as RequestSceneState.SendTransaction).account,
+                    assetId = AssetId((sceneState as RequestSceneState.SendTransaction).account.chain),
                     amount = (sceneState as RequestSceneState.SendTransaction).value,
                     destination = DestinationAddress(address = (sceneState as RequestSceneState.SendTransaction).to),
                     memo = (sceneState as RequestSceneState.SendTransaction).data,

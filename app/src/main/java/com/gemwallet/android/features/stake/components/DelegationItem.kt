@@ -72,7 +72,7 @@ fun DelegationItem(
         trailing = {
             Column(
                 verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.Start,
+                horizontalAlignment = Alignment.End,
             ) {
                 ListItemTitleText(Crypto(delegation.base.balance).format(assetDecimals, assetSymbol, 2))
 
