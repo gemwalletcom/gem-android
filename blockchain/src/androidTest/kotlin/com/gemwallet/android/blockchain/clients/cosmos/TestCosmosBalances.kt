@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.cosmos
 
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosBalancesService
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosStakeService
 import com.gemwallet.android.ext.toIdentifier
@@ -20,7 +21,9 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import org.junit.runner.RunWith
 
+@RunWith(AndroidJUnit4::class)
 class TestCosmosBalances {
 
     private class TestCosmosStakeService(
