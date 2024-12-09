@@ -50,7 +50,7 @@ class TestCosmosPreload {
                     from = Account(Chain.Osmosis, "osmo1q0d0q8w8y8t6h4l9w5u8p8s8h8f8e8r8t8y8u8i8o8p8", ""),
                     amount = BigInteger.ONE,
                     assetId = AssetId(Chain.Osmosis),
-                    destination = DestinationAddress("osmo1q0d0q8w8y8t6h4l9w5u8p8s8h8f8e8r8t8y8u8i8o8p8"),
+                    destination = DestinationAddress("osmo1rcjvzz8wzktqfz8qjf0l9q45kzxvd0z0n7l5cf"),
                 )
             )
         }
@@ -60,7 +60,7 @@ class TestCosmosPreload {
         assertEquals("osmo1q0d0q8w8y8t6h4l9w5u8p8s8h8f8e8r8t8y8u8i8o8p8", result.input.from.address)
         assertEquals(AssetId(Chain.Osmosis).toIdentifier(), result.input.assetId.toIdentifier())
         assertEquals(false, result.input.isMax())
-        assertEquals("osmo1q0d0q8w8y8t6h4l9w5u8p8s8h8f8e8r8t8y8u8i8o8p8", result.input.destination()?.address)
+        assertEquals("osmo1rcjvzz8wzktqfz8qjf0l9q45kzxvd0z0n7l5cf", result.input.destination()?.address)
         assertEquals(null, result.input.memo())
 
         assertEquals(BigInteger.valueOf(10000L), result.chainData.fee().amount)
