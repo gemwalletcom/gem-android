@@ -6,7 +6,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gemwallet.android.BuildConfig
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.features.settings.develop.viewmodels.DevelopViewModel
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Table

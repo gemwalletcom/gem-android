@@ -11,7 +11,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gemwallet.android.AuthRequest
 import com.gemwallet.android.MainActivity
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.features.settings.security.viewmodels.SecurityViewModel
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Table

@@ -32,7 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.features.asset_select.views.SelectSwapScreen
 import com.gemwallet.android.features.confirm.views.ConfirmScreen
 import com.gemwallet.android.features.swap.models.SwapError

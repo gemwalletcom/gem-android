@@ -20,7 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.features.swap.models.SwapPairUIModel
 import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.ui.components.designsystem.Spacer16

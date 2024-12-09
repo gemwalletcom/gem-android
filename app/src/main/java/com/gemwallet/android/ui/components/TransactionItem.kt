@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.same
 import com.gemwallet.android.model.Crypto

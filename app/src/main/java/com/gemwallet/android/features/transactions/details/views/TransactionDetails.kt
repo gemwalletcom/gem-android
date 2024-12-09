@@ -19,7 +19,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.features.transactions.details.viewmodels.TransactionDetailsViewModel
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.CellEntity

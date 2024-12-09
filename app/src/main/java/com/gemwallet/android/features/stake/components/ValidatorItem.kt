@@ -10,7 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.features.stake.model.formatApr
 import com.gemwallet.android.features.stake.model.getIconUrl
 import com.gemwallet.android.ui.components.ListItem

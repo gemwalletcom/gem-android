@@ -2,7 +2,7 @@ package com.gemwallet.android.ui.components.titles
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.ext.getAddressEllipsisText
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState

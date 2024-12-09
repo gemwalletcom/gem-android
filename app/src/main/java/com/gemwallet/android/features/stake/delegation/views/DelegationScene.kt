@@ -9,7 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.ext.redelegated
 import com.gemwallet.android.features.stake.delegation.model.DelegationSceneState
 import com.gemwallet.android.features.stake.delegation.viewmodels.DelegationViewModel

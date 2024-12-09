@@ -2,7 +2,8 @@ package com.gemwallet.android.features.assets.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
+import com.gemwallet.android.images.R as imagesR
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
@@ -14,7 +15,6 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.model.format
-import com.gemwallet.android.ui.components.image.getDrawableUri
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
@@ -130,7 +130,7 @@ class AssetsViewModel @Inject constructor(
             if (it.isNaN()) 0.0 else it
         }
         val icon = when (wallet.type) {
-            WalletType.multicoin -> R.drawable.multicoin_wallet
+            WalletType.multicoin -> imagesR.drawable.multicoin_wallet
             else -> wallet.accounts.firstOrNull()?.chain?.getIconUrl()
         }
         return WalletInfoUIState(

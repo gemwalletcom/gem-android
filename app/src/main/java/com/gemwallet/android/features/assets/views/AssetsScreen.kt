@@ -51,7 +51,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
+import com.gemwallet.android.images.R as imagesR
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.assets.model.WalletInfoUIState
 import com.gemwallet.android.features.assets.viewmodel.AssetsViewModel
@@ -234,7 +235,7 @@ private fun AssetItem(
             DropdownMenuItem(
                 text = { Text( text = stringResource(id = if (isPinned) R.string.common_unpin else R.string.common_pin)) },
                 trailingIcon = {
-                    if (isPinned) Icon(painterResource(R.drawable.keep_off), "unpin")
+                    if (isPinned) Icon(painterResource(imagesR.drawable.keep_off), "unpin")
                     else Icon(Icons.Default.PushPin, "pin")
 
                 },

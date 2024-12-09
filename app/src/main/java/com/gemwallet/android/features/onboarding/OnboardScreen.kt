@@ -20,7 +20,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.R
+import com.gemwallet.android.images.R as imagesR
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 
@@ -42,7 +43,7 @@ fun OnboardScreen(
                 .weight(1f),
         ) {
             Image(
-                painterResource(id = R.drawable.brandmark),
+                painterResource(id = imagesR.drawable.brandmark),
                 contentDescription = "welcome_icon",
                 modifier = Modifier.size(100.dp),
             )

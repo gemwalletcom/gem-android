@@ -10,7 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.designsystem.Spacer2
