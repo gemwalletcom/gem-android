@@ -99,7 +99,7 @@ class EvmSignClient(
             is ConfirmParams.Stake.DelegateParams -> params.finalAmount.toByteArray()
             else -> BigInteger.ZERO.toByteArray()
         }
-        val callData = StakeHub().encodeStake(params.input)
+        val callData = StakeHub.encodeStake(params.input)
         val signInput = Ethereum.SigningInput.newBuilder().apply {
             when (chain.eip1559Support()) {
                 true -> {

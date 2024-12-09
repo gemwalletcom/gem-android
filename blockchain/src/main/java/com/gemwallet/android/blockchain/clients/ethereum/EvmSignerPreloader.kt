@@ -5,6 +5,7 @@ import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
@@ -22,10 +23,11 @@ import java.math.BigInteger
 class EvmSignerPreloader(
     private val chain: Chain,
     private val rpcClient: EvmRpcClient,
+    callService: EvmCallService,
 ) : NativeTransferPreloader, TokenTransferPreloader, SwapTransactionPreloader, StakeTransactionPreloader, ApprovalTransactionPreloader {
 
     private val wcCoinType = WCChainTypeProxy().invoke(chain)
-    private val feeCalculator = EvmFeeCalculator(rpcClient, wcCoinType)
+    private val feeCalculator = EvmFeeCalculator(rpcClient, callService, wcCoinType)
 
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams =
         preload(params.assetId, params.from, params.destination().address, params.amount, params.memo, params)
@@ -43,7 +45,7 @@ class EvmSignerPreloader(
                 else -> BigInteger.ZERO
             },
             payload = when (params.assetId.chain) {
-                Chain.SmartChain -> StakeHub().encodeStake(params)
+                Chain.SmartChain -> StakeHub.encodeStake(params)
                 else -> throw IllegalArgumentException("Stake doesn't suppoted for chain ${params.assetId.chain} ")
             },
             params = params,

@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.toHexString
@@ -22,6 +23,7 @@ import java.math.BigInteger
 
 class OptimismGasOracle(
     private val rpcClient: EvmRpcClient,
+    private val callService: EvmCallService,
     private val coinType: CoinType,
 ) {
 
@@ -99,7 +101,7 @@ class OptimismGasOracle(
                 "latest",
             )
         )
-        return rpcClient.callNumber(request).getOrNull()?.result?.value
+        return callService.callNumber(request).getOrNull()?.result?.value
     }
 
     private fun encode(

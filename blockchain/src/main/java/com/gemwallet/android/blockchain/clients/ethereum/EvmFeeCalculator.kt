@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.toHexString
@@ -19,9 +20,13 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.util.Locale
 
-class EvmFeeCalculator(private val rpcClient: EvmRpcClient, coinType: CoinType) {
+class EvmFeeCalculator(
+    private val rpcClient: EvmRpcClient,
+    callService: EvmCallService,
+    coinType: CoinType
+) {
 
-    private val optimismGasOracle = OptimismGasOracle(rpcClient, coinType)
+    private val optimismGasOracle = OptimismGasOracle(rpcClient, callService, coinType)
 
     private val nativeGasLimit = BigInteger.valueOf(21_000L)
 

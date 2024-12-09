@@ -21,8 +21,6 @@ import java.lang.reflect.Type
 import java.math.BigInteger
 
 interface EvmRpcClient {
-    @POST("/")
-    suspend fun getBalance(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmNumber?>>
 
     @POST("/")
     suspend fun getFeeHistory(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<EthereumFeeHistory>>
@@ -38,12 +36,6 @@ interface EvmRpcClient {
 
     @POST("/")
     suspend fun broadcast(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
-
-    @POST("/")
-    suspend fun callNumber(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<EvmNumber?>>
-
-    @POST("/")
-    suspend fun callString(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<String?>>
 
     @POST("/")
     suspend fun transaction(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept>>
@@ -104,30 +96,6 @@ interface EvmRpcClient {
         }
 
     }
-}
-
-internal suspend fun EvmRpcClient.getBalance(address: String): Result<JSONRpcResponse<EvmNumber?>> {
-    return getBalance(
-        JSONRpcRequest.create(
-            method = EvmMethod.GetBalance,
-            params = listOf(address, "latest")
-        )
-    )
-}
-
-internal suspend fun EvmRpcClient.callString(contract: String, hexData: String): String? {
-    val params = mapOf(
-        "to" to contract,
-        "data" to hexData
-    )
-    val request = JSONRpcRequest.create(
-        EvmMethod.Call,
-        listOf(
-            params,
-            "latest"
-        )
-    )
-    return callString(request).getOrNull()?.result
 }
 
 internal suspend fun EvmRpcClient.getChainId(url: String): Response<JSONRpcResponse<EvmNumber?>> {
