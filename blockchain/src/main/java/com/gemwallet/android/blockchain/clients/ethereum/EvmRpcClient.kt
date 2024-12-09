@@ -1,6 +1,8 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.ethereum.EvmRpcClient.EvmNumber
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmBalancesService
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.gemwallet.android.math.append0x
@@ -20,7 +22,10 @@ import wallet.core.jni.EthereumAbiValue
 import java.lang.reflect.Type
 import java.math.BigInteger
 
-interface EvmRpcClient {
+interface EvmRpcClient :
+    EvmCallService,
+    EvmBalancesService
+{
 
     @POST("/")
     suspend fun getFeeHistory(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<EthereumFeeHistory>>
