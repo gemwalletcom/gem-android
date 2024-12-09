@@ -17,7 +17,6 @@ import java.text.SimpleDateFormat
 
 class CosmosStakeClient(
     private val chain: Chain,
-    private val rpcClient: CosmosRpcClient,
     private val stakeService: CosmosStakeService,
 ) : StakeClient {
 
@@ -25,7 +24,7 @@ class CosmosStakeClient(
     private val completionDateFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX")
 
     override suspend fun getValidators(chain: Chain, apr: Double): List<DelegationValidator> {
-        return rpcClient.validators().getOrNull()?.validators?.map {
+        return stakeService.validators().getOrNull()?.validators?.map {
             val commission = it.commission.commission_rates.rate.toDouble()
             val isActive = !it.jailed && it.status == "BOND_STATUS_BONDED"
             DelegationValidator(

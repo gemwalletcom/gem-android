@@ -3,10 +3,15 @@ package com.gemwallet.android.blockchain.clients.cosmos.services
 import com.wallet.core.blockchain.cosmos.models.CosmosDelegations
 import com.wallet.core.blockchain.cosmos.models.CosmosRewards
 import com.wallet.core.blockchain.cosmos.models.CosmosUnboundingDelegations
+import com.wallet.core.blockchain.cosmos.models.CosmosValidators
 import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface CosmosStakeService {
+
+    @GET("/cosmos/staking/v1beta1/validators?pagination.limit=1000")
+    suspend fun validators(): Result<CosmosValidators>
+
     @GET("/cosmos/staking/v1beta1/delegations/{address}")
     suspend fun delegations(@Path("address") address: String): Result<CosmosDelegations>
 

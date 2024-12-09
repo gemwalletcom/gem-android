@@ -13,6 +13,7 @@ import com.wallet.core.blockchain.cosmos.models.CosmosRewards
 import com.wallet.core.blockchain.cosmos.models.CosmosUnboudingDelegationEntry
 import com.wallet.core.blockchain.cosmos.models.CosmosUnboundingDelegation
 import com.wallet.core.blockchain.cosmos.models.CosmosUnboundingDelegations
+import com.wallet.core.blockchain.cosmos.models.CosmosValidators
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import junit.framework.TestCase.assertEquals
@@ -31,6 +32,10 @@ class TestCosmosBalances {
         var delegationsAddressRequest: String = ""
         var unboundingAddressRequest: String = ""
         var rewardsAddressRequest: String = ""
+
+        override suspend fun validators(): Result<CosmosValidators> {
+            return Result.success(CosmosValidators(emptyList()))
+        }
 
         override suspend fun delegations(address: String): Result<CosmosDelegations> {
             delegationsAddressRequest = address

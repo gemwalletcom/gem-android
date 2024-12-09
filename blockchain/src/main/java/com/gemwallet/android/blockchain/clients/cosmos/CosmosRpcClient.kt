@@ -27,9 +27,6 @@ interface CosmosRpcClient :
     @GET("/cosmos/tx/v1beta1/txs/{txId}")
     suspend fun transaction(@Path("txId") txId: String): Result<CosmosTransactionResponse>
 
-    @GET("/cosmos/staking/v1beta1/validators?pagination.limit=1000")
-    suspend fun validators(): Result<CosmosValidators>
-
     @GET//("/cosmos/base/tendermint/v1beta1/syncing")
     suspend fun syncing(@Url url: String): Response<CosmosSyncing>
 
