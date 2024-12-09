@@ -14,7 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
+import com.gemwallet.android.images.R as imagesR
 import com.gemwallet.android.features.asset_select.components.SearchBar
 import com.gemwallet.android.features.import_wallet.viewmodels.ChainUIState
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
@@ -23,7 +24,6 @@ import com.gemwallet.android.ui.components.ChainItem
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.image.getDrawableUri
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
@@ -65,7 +65,7 @@ private fun SelectImportTypeScene(
                     ChainItem(
                         modifier = Modifier.testTag("multicoin_item"),
                         title = stringResource(id = R.string.wallet_multicoin),
-                        icon = R.drawable.multicoin_wallet,
+                        icon = imagesR.drawable.multicoin_wallet,
                         dividerShowed = false,
                     ) {
                         onSelect(ImportType(WalletType.multicoin))

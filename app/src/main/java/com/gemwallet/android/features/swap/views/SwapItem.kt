@@ -31,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.features.swap.models.SwapItemModel
 import com.gemwallet.android.features.swap.models.SwapItemType
 import com.gemwallet.android.ui.components.image.getIconUrl

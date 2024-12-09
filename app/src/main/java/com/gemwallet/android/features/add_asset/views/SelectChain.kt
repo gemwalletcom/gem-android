@@ -8,7 +8,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.asset_select.components.SearchBar
 import com.gemwallet.android.ui.components.image.getIconUrl

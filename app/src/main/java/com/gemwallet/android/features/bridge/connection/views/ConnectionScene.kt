@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.features.bridge.connection.viewmodels.ConnectionViewModel
 import com.gemwallet.android.features.bridge.connections.views.ConnectionItem
 import com.gemwallet.android.ui.components.CellEntity

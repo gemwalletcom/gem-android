@@ -6,7 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.stake.stake.model.StakeUIState
 import com.gemwallet.android.features.stake.stake.viewmodels.StakeViewModel

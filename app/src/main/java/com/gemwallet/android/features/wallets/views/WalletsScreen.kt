@@ -47,7 +47,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
+import com.gemwallet.android.images.R as imagesR
 import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.features.wallets.components.ConfirmWalletDeleteDialog
 import com.gemwallet.android.features.wallets.components.WalletItem
@@ -207,7 +208,7 @@ private fun LazyListScope.wallets(
                 DropdownMenuItem(
                     text = { Text( text = stringResource(id = if (wallet.pinned) R.string.common_unpin else R.string.common_pin)) },
                     trailingIcon = {
-                        if (wallet.pinned) Icon(painterResource(R.drawable.keep_off), "unpin")
+                        if (wallet.pinned) Icon(painterResource(imagesR.drawable.keep_off), "unpin")
                         else Icon(Icons.Default.PushPin, "pin")
                     },
                     onClick = {

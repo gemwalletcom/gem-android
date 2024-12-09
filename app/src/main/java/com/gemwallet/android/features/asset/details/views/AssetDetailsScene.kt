@@ -34,10 +34,8 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
-import com.gemwallet.android.ext.networkAsset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIModel
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIState
@@ -45,6 +43,7 @@ import com.gemwallet.android.features.asset.details.models.AssetStateError
 import com.gemwallet.android.features.asset.details.viewmodels.AsseDetailsViewModel
 import com.gemwallet.android.features.banners.views.BannersScene
 import com.gemwallet.android.features.transactions.components.transactionsList
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
 import com.gemwallet.android.ui.components.CellEntity
@@ -53,7 +52,6 @@ import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.designsystem.padding32
-import com.gemwallet.android.ui.components.designsystem.trailingIcon20
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.open
@@ -235,7 +233,9 @@ private fun Success(
                 balanceDetails(uiState, onStake)
                 if (transactions.isEmpty()) {
                     item {
-                        Box(modifier = Modifier.fillMaxWidth().padding(vertical = padding32)) {
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = padding32)) {
                             Text(
                                 modifier = Modifier.align(Alignment.Center),
                                 color = MaterialTheme.colorScheme.secondary,
@@ -278,7 +278,14 @@ private fun LazyListScope.networkInfo(
                 CellEntity(
                     label = stringResource(id = R.string.transfer_network),
                     data = uiState.networkTitle,
-                    trailing = { AsyncImage(uiState.asset.networkAsset(), trailingIcon20) },
+                    trailing = {
+                        AsyncImage(
+                            model = uiState.asset.chain().getIconUrl(),
+                            contentDescription = "asset_icon",
+                            placeholderText = uiState.asset.type.string,
+                            modifier = Modifier.size(20.dp),
+                        )
+                    },
                 )
             )
         }

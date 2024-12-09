@@ -33,7 +33,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
+import com.gemwallet.android.images.R as imagesR
 import com.gemwallet.android.features.settings.currency.components.emojiFlags
 import com.gemwallet.android.features.settings.settings.components.LinkItem
 import com.gemwallet.android.features.settings.settings.viewmodels.SettingsViewModel
@@ -90,19 +91,19 @@ fun SettingsScene(
         ) {
             LinkItem(
                 title = stringResource(id = R.string.wallets_title),
-                icon = R.drawable.settings_wallets,
+                icon = imagesR.drawable.settings_wallets,
                 onClick = onWallets
             )
             LinkItem(
                 title = stringResource(id = R.string.settings_security),
-                icon = R.drawable.settings_security,
+                icon = imagesR.drawable.settings_security,
                 onClick = onSecurity
             )
             HorizontalDivider(modifier = Modifier, thickness = 0.4.dp)
             if (isNotificationsAvailable()) {
                 LinkItem(
                     title = stringResource(id = R.string.settings_notifications_title),
-                    icon = R.drawable.settings_notifications,
+                    icon = imagesR.drawable.settings_notifications,
                     trailingContent = @Composable {
                         Switch(
                             checked = uiState.pushEnabled,
@@ -115,7 +116,7 @@ fun SettingsScene(
                 )
                 LinkItem(
                     title = stringResource(id = R.string.settings_price_alerts_title),
-                    icon = R.drawable.settings_pricealert,
+                    icon = imagesR.drawable.settings_pricealert,
 //                    trailingContent = @Composable {
 //                        Switch(
 //                            checked = uiState.pushEnabled,
@@ -130,7 +131,7 @@ fun SettingsScene(
 
             LinkItem(
                 title = stringResource(R.string.settings_currency),
-                icon = R.drawable.settings_currency,
+                icon = imagesR.drawable.settings_currency,
                 supportingContent = {
                     Text(text = "${emojiFlags[uiState.currency.string]}  ${uiState.currency.string}")
                 },
@@ -139,7 +140,7 @@ fun SettingsScene(
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 LinkItem(
                     title = stringResource(id = R.string.settings_language),
-                    icon = R.drawable.settings_language,
+                    icon = imagesR.drawable.settings_language,
                     supportingContent = {
                         val language =
                             context.resources.configuration.getLocales().get(0).displayLanguage.replaceFirstChar {
@@ -154,64 +155,64 @@ fun SettingsScene(
                     }
                 )
             }
-            LinkItem(title = stringResource(id = R.string.settings_networks_title), icon = R.drawable.settings_networks) {
+            LinkItem(title = stringResource(id = R.string.settings_networks_title), icon = imagesR.drawable.settings_networks) {
                 onNetworks()
             }
-            LinkItem(title = stringResource(id = R.string.wallet_connect_title), icon = R.drawable.settings_wc) {
+            LinkItem(title = stringResource(id = R.string.wallet_connect_title), icon = imagesR.drawable.settings_wc) {
                 onBridges()
             }
             HorizontalDivider(modifier = Modifier, thickness = 0.4.dp)
             
             SubheaderItem(title = stringResource(id = R.string.settings_community))
-            LinkItem(title = stringResource(id = R.string.social_x), icon = R.drawable.twitter) {
+            LinkItem(title = stringResource(id = R.string.social_x), icon = imagesR.drawable.twitter) {
                 uriHandler.open(Config().getSocialUrl(SocialUrl.X) ?: "")
             }
-            LinkItem(title = stringResource(id = R.string.social_discord), icon = R.drawable.discord) {
+            LinkItem(title = stringResource(id = R.string.social_discord), icon = imagesR.drawable.discord) {
                 uriHandler.open(Config().getSocialUrl(SocialUrl.DISCORD) ?: "")
             }
-            LinkItem(title = stringResource(id = R.string.social_telegram), icon = R.drawable.telegram) {
+            LinkItem(title = stringResource(id = R.string.social_telegram), icon = imagesR.drawable.telegram) {
                 uriHandler.open(Config().getSocialUrl(SocialUrl.TELEGRAM) ?: "")
             }
-            LinkItem(title = stringResource(id = R.string.social_github), icon = R.drawable.github) {
+            LinkItem(title = stringResource(id = R.string.social_github), icon = imagesR.drawable.github) {
                 uriHandler.open(Config().getSocialUrl(SocialUrl.GIT_HUB) ?: "")
             }
-            LinkItem(title = stringResource(id = R.string.social_youtube), icon = R.drawable.youtube) {
+            LinkItem(title = stringResource(id = R.string.social_youtube), icon = imagesR.drawable.youtube) {
                 uriHandler.open(Config().getSocialUrl(SocialUrl.YOU_TUBE) ?: "")
             }
             HorizontalDivider(modifier = Modifier, thickness = 0.4.dp)
 
             LinkItem(
                 title = stringResource(id = R.string.settings_help_center),
-                icon = R.drawable.settings_help_center,
+                icon = imagesR.drawable.settings_help_center,
             ) {
                 uriHandler.open(Config().getDocsUrl(DocsUrl.START))
             }
             LinkItem(
                 title = stringResource(id = R.string.settings_support),
-                icon = R.drawable.settings_support,
+                icon = imagesR.drawable.settings_support,
             ) {
                 uriHandler.open(Config().getPublicUrl(PublicUrl.SUPPORT))
             }
             LinkItem(
                 title = stringResource(id = R.string.settings_aboutus),
-                icon = R.drawable.settings_about_us,
+                icon = imagesR.drawable.settings_about_us,
                 onClick = onAboutUs
             )
 //            LinkItem(
 //                title = stringResource(id = R.string.settings_rate_app),
-//                icon = R.drawable.settings_rate,
+//                icon = imagesR.drawable.settings_rate,
 //                onClick = {
 //                    reviewManager.open()
 //                }
 //            )
             if (uiState.developEnabled) {
-                LinkItem(title = stringResource(id = R.string.settings_developer), icon = R.drawable.settings_developer) {
+                LinkItem(title = stringResource(id = R.string.settings_developer), icon = imagesR.drawable.settings_developer) {
                     onDevelop()
                 }
             }
             LinkItem(
                 title = stringResource(id = R.string.settings_version),
-                icon = R.drawable.settings_version,
+                icon = imagesR.drawable.settings_version,
                 trailingContent = {
                     Text(
                         modifier = Modifier.combinedClickable(

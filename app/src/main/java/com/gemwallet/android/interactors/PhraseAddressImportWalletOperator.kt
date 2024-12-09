@@ -1,6 +1,6 @@
 package com.gemwallet.android.interactors
 
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.blockchain.clients.AddressStatusClientProxy
 import com.gemwallet.android.blockchain.operators.InvalidPhrase
 import com.gemwallet.android.blockchain.operators.InvalidWords

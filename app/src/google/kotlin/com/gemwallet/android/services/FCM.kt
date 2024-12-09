@@ -10,7 +10,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.gemwallet.android.MainActivity
-import com.gemwallet.android.R
+import com.gemwallet.android.images.R
 import com.gemwallet.android.cases.device.GetPushEnabledCase
 import com.gemwallet.android.cases.device.SetPushTokenCase
 import com.gemwallet.android.cases.device.SyncDeviceInfoCase

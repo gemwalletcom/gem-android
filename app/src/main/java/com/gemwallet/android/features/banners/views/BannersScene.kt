@@ -28,12 +28,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
+import com.gemwallet.android.images.R as imagesR
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.banners.viewmodels.BannersViewModel
-import com.gemwallet.android.model.Crypto
-import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.designsystem.Spacer16
@@ -44,8 +43,6 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Banner
 import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.BannerState
-import com.wallet.core.primitives.Chain
-import uniffi.gemstone.Config
 
 @Composable
 fun BannersScene(
@@ -85,7 +82,7 @@ fun BannersScene(
                 title = title,
                 subtitle = description,
                 iconUrl = asset?.getIconUrl()
-                    ?: "android.resource://com.gemwallet.android/${R.drawable.brandmark}",
+                    ?: "android.resource://com.gemwallet.android/${imagesR.drawable.brandmark}",
                 state = banner.state,
             ) { viewModel.onCancel(banner) }
         }

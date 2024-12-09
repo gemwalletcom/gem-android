@@ -26,8 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.gemwallet.android.R
-import com.gemwallet.android.localize.R as LR
+import com.gemwallet.android.localize.R
+import com.gemwallet.android.images.R as imagesR
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.wallet.core.primitives.TransactionState
@@ -44,9 +44,9 @@ sealed class InfoSheetEntity(
     val infoUrl: String?,
 ) {
     class NetworkFeeInfo(networkTitle: String?) : InfoSheetEntity(
-        icon = R.drawable.ic_network_fee,
+        icon = imagesR.drawable.ic_network_fee,
         title = R.string.transfer_network_fee,
-        description = LR.string.info_network_fee_description,
+        description = R.string.info_network_fee_description,
         descriptionArgs = networkTitle,
         infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
     )
@@ -55,16 +55,16 @@ sealed class InfoSheetEntity(
         icon = icon,
         badgeIcon = null,
         title = R.string.stake_lock_time,
-        description = LR.string.info_lock_time_description,
+        description = R.string.info_lock_time_description,
         infoUrl = Config().getDocsUrl(DocsUrl.STAKING_LOCK_TIME),
     )
 
     class TransactionInfo(icon: Any, state: TransactionState) : InfoSheetEntity(
         icon = icon,
         badgeIcon = when (state) {
-            TransactionState.Pending -> R.drawable.transaction_state_pending
-            TransactionState.Confirmed -> R.drawable.transaction_state_success
-            TransactionState.Failed, TransactionState.Reverted -> R.drawable.transaction_state_error
+            TransactionState.Pending -> imagesR.drawable.transaction_state_pending
+            TransactionState.Confirmed -> imagesR.drawable.transaction_state_success
+            TransactionState.Failed, TransactionState.Reverted -> imagesR.drawable.transaction_state_error
         },
         title = when (state) {
             TransactionState.Pending -> R.string.transaction_status_pending
@@ -73,18 +73,18 @@ sealed class InfoSheetEntity(
             TransactionState.Reverted -> R.string.transaction_status_reverted
         },
         description = when (state) {
-            TransactionState.Pending -> LR.string.info_transaction_pending_description
-            TransactionState.Confirmed -> LR.string.info_transaction_success_description
-            TransactionState.Failed, TransactionState.Reverted -> LR.string.info_transaction_error_description
+            TransactionState.Pending -> R.string.info_transaction_pending_description
+            TransactionState.Confirmed -> R.string.info_transaction_success_description
+            TransactionState.Failed, TransactionState.Reverted -> R.string.info_transaction_error_description
         },
         infoUrl = Config().getDocsUrl(DocsUrl.TRANSACTION_STATUS),
     )
 
     class WatchWalletInfo : InfoSheetEntity(
-        icon = R.drawable.ic_splash,
-        badgeIcon = R.drawable.watch_badge,
-        title = LR.string.info_watch_wallet_title,
-        description = LR.string.info_watch_wallet_description,
+        icon = imagesR.drawable.ic_splash,
+        badgeIcon = imagesR.drawable.watch_badge,
+        title = R.string.info_watch_wallet_title,
+        description = R.string.info_watch_wallet_description,
         infoUrl = Config().getDocsUrl(DocsUrl.WHAT_IS_WATCH_WALLET),
     )
 }
@@ -168,7 +168,7 @@ fun InfoBottomSheet(
                         .padding(vertical = 16.dp, horizontal = 32.dp),
                 ) {
                     MainActionButton(
-                        title = stringResource(LR.string.common_learn_more),
+                        title = stringResource(R.string.common_learn_more),
                         onClick = {
                             item.infoUrl?.let { uriHandler.open(it) }
                         },

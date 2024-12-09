@@ -40,6 +40,7 @@ android {
 dependencies {
     api(project(":ui-models"))
     implementation(project(":localize"))
+    implementation(project(":images"))
 
     // Compose
     api(libs.androidx.material3.adaptive.android)

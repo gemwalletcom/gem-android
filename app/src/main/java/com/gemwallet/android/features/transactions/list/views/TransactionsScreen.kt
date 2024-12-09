@@ -25,7 +25,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.features.transactions.components.transactionsList
 import com.gemwallet.android.features.transactions.list.model.TxListScreenState
 import com.gemwallet.android.features.transactions.list.viewmodels.TransactionsViewModel

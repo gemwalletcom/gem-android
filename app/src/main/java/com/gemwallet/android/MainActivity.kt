@@ -50,7 +50,7 @@ import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.features.bridge.proposal.ProposalScene
 import com.gemwallet.android.features.bridge.request.RequestScene
 import com.gemwallet.android.interactors.CheckAccounts
-import com.gemwallet.android.localize.R.*
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.services.SyncService
 import com.gemwallet.android.ui.WalletApp
 import com.gemwallet.android.ui.components.designsystem.Spacer16
@@ -126,7 +126,7 @@ class MainActivity : SecureBaseFragmentActivity() {
             }
 
             if (viewModel.resetWCPairing()) {
-                makeText(LocalContext.current, stringResource(id = string.wallet_connect_connection_title), Toast.LENGTH_SHORT).show()
+                makeText(LocalContext.current, stringResource(id = R.string.wallet_connect_connection_title), Toast.LENGTH_SHORT).show()
             }
 
             if (!state.wcError.isNullOrEmpty()) {
@@ -153,7 +153,7 @@ class MainActivity : SecureBaseFragmentActivity() {
                             )
                             Spacer16()
                             TextButton(onClick = viewModel::resetWcError) {
-                                Text(text = stringResource(id = string.common_cancel))
+                                Text(text = stringResource(id = R.string.common_cancel))
                             }
                         }
                     }
@@ -221,7 +221,7 @@ class MainActivity : SecureBaseFragmentActivity() {
         })
 
         promptInfo = BiometricPrompt.PromptInfo.Builder()
-            .setTitle(getString(string.settings_security_authentication))
+            .setTitle(getString(R.string.settings_security_authentication))
             .setAllowedAuthenticators(authenticators)
             .build()
     }
