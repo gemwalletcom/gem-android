@@ -174,7 +174,6 @@ dependencies {
     api(files("../libs/wallet-core-4.1.19-sources.jar"))
     implementation(project(":wallet-core"))
     implementation(project(":wallet-core-proto"))
-    implementation(project(":images"))
 
     // Protobuf
     api(libs.protobuf.javalite)
