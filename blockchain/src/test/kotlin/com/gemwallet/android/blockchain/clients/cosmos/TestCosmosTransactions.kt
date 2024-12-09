@@ -1,9 +1,6 @@
 package com.gemwallet.android.blockchain.clients.cosmos
 
-import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinTransactionStatusClient
-import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinTransactionsService
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosTransactionsService
-import com.wallet.core.blockchain.bitcoin.models.BitcoinTransaction
 import com.wallet.core.blockchain.cosmos.models.CosmosTransactionDataResponse
 import com.wallet.core.blockchain.cosmos.models.CosmosTransactionResponse
 import com.wallet.core.primitives.Chain
@@ -16,7 +13,7 @@ import org.junit.Test
 class TestCosmosTransactions {
 
     @Test
-    fun testBitcoinTransaction() {
+    fun testCosmosTransaction() {
         var requestId: String = ""
         val transactionsService = object : CosmosTransactionsService {
             override suspend fun transaction(txId: String): Result<CosmosTransactionResponse> {
@@ -27,7 +24,7 @@ class TestCosmosTransactions {
         }
         val transactionsClient = CosmosTransactionStatusClient(Chain.Osmosis, transactionsService)
         val result = runBlocking {
-            transactionsClient.getStatus(Chain.Bitcoin, "some_address", "some_id")
+            transactionsClient.getStatus(Chain.Cosmos, "some_address", "some_id")
         }.getOrNull()
         assertNotNull(result)
         assertEquals("some_id", requestId)
@@ -35,7 +32,7 @@ class TestCosmosTransactions {
     }
 
     @Test
-    fun testBitcoinTransactionPending() {
+    fun testCosmosTransactionPending() {
         val transactionsService = object : CosmosTransactionsService {
             override suspend fun transaction(txId: String): Result<CosmosTransactionResponse> {
                 return Result.success(CosmosTransactionResponse(CosmosTransactionDataResponse("", 0)))
@@ -44,14 +41,14 @@ class TestCosmosTransactions {
         }
         val transactionsClient = CosmosTransactionStatusClient(Chain.Osmosis, transactionsService)
         val result = runBlocking {
-            transactionsClient.getStatus(Chain.Bitcoin, "some_address", "some_id")
+            transactionsClient.getStatus(Chain.Cosmos, "some_address", "some_id")
         }.getOrNull()
         assertNotNull(result)
         assertEquals(TransactionState.Pending, result!!.state)
     }
 
     @Test
-    fun testBitcoinTransactionReverted() {
+    fun testCosmosTransactionReverted() {
         val transactionsService = object : CosmosTransactionsService {
             override suspend fun transaction(txId: String): Result<CosmosTransactionResponse> {
                 return Result.success(CosmosTransactionResponse(CosmosTransactionDataResponse(txId, 1)))
@@ -60,7 +57,7 @@ class TestCosmosTransactions {
         }
         val transactionsClient = CosmosTransactionStatusClient(Chain.Osmosis, transactionsService)
         val result = runBlocking {
-            transactionsClient.getStatus(Chain.Bitcoin, "some_address", "some_id")
+            transactionsClient.getStatus(Chain.Cosmos, "some_address", "some_id")
         }.getOrNull()
         assertNotNull(result)
         assertEquals(TransactionState.Reverted, result!!.state)
