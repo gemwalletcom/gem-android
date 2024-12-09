@@ -37,7 +37,7 @@ object StakeModule {
                     else -> null
                 }
                 ChainType.Solana -> SolanaStakeClient(it, rpcClients.getClient(it))
-                ChainType.Cosmos -> CosmosStakeClient(it, rpcClients.getClient(it), rpcClients.getClient(it))
+                ChainType.Cosmos -> CosmosStakeClient(it, rpcClients.getClient(it))
                 ChainType.Sui -> SuiStakeClient(it, rpcClients.getClient(it))
                 ChainType.Bitcoin,
                 ChainType.Ton,

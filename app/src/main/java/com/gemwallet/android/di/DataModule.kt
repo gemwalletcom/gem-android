@@ -99,7 +99,7 @@ object DataModule {
         val preloaders = Chain.available().map {
             when (it.toChainType()) {
                 ChainType.Bitcoin -> BitcoinSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it))
-                ChainType.Ethereum -> EvmSignerPreloader(it, rpcClients.getClient(it))
+                ChainType.Ethereum -> EvmSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Solana -> SolanaSignerPreloader(it, rpcClients.getClient(Chain.Solana))
                 ChainType.Cosmos -> CosmosSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Ton -> TonSignerPreloader(it, rpcClients.getClient(it))
