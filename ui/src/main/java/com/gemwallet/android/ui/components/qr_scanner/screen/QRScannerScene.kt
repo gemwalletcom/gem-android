@@ -14,13 +14,25 @@ import androidx.camera.core.ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,14 +43,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil3.compose.AsyncImage
 import com.gemwallet.android.localize.R
+import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.qr_scanner.viewmodel.QRScannerViewModel
 import com.gemwallet.android.ui.components.qr_scanner.viewmodel.ScannerState
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.actions.CancelAction
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.DecodeHintType
@@ -50,15 +67,15 @@ import java.nio.ByteBuffer
 @OptIn(ExperimentalGetImage::class)
 @Composable
 fun QRScannerScene(
-    onCancel: () -> Unit,
+    permissionsGranted: Boolean,
+    onCancel: CancelAction,
     onResult: (String) -> Unit,
 ) {
-    val viewModel = QRScannerViewModel()
+    val viewModel = QRScannerViewModel(permissionsGranted)
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
     val scannerState by viewModel.scannerState.collectAsState()
-    val errorMessage by viewModel.errorMessage.collectAsState()
     val scanResult by viewModel.scanResult.collectAsState()
     val selectedImageUri by viewModel.selectedImageUri.collectAsState()
 
@@ -72,7 +89,7 @@ fun QRScannerScene(
         }
 
     BackHandler {
-        if (scannerState == ScannerState.PROCESSING) {
+        if (scannerState == ScannerState.Processing) {
             viewModel.reset()
         } else {
             onCancel()
@@ -81,8 +98,8 @@ fun QRScannerScene(
 
     Scene(
         title = stringResource(id = R.string.wallet_scan_qr_code),
-        onClose = onCancel,
-        mainAction = {
+        onClose = { onCancel() },
+        actions = {
             IconButton(onClick = { galleryLauncher.launch("image/*") }) {
                 Icon(imageVector = Icons.Default.Image, contentDescription = "Select from gallery")
             }
@@ -94,11 +111,11 @@ fun QRScannerScene(
             contentAlignment = Alignment.Center
         ) {
             when (scannerState) {
-                ScannerState.IDLE -> {
+                ScannerState.Idle -> {
                     CircularProgressIndicator()
                 }
 
-                ScannerState.SCANNING -> {
+                ScannerState.Scanning -> {
                     AndroidView(
                         factory = { context ->
                             val previewView = PreviewView(context).apply {
@@ -118,7 +135,7 @@ fun QRScannerScene(
                                         ContextCompat.getMainExecutor(context),
                                         QRCodeAnalyzer { result ->
                                             viewModel.scanResult.value = result
-                                            viewModel.scannerState.value = ScannerState.SUCCESS
+                                            viewModel.scannerState.value = ScannerState.Success
                                         }
                                     )
                                 }
@@ -141,7 +158,7 @@ fun QRScannerScene(
                     )
                 }
 
-                ScannerState.PROCESSING -> {
+                ScannerState.Processing -> {
                     selectedImageUri?.let { uri ->
                         LaunchedEffect(uri) {
                             viewModel.decodeQRCodeBitmap(
@@ -162,17 +179,22 @@ fun QRScannerScene(
                     }
                 }
 
-                ScannerState.SUCCESS -> {
+                ScannerState.Success -> {
                     scanResult?.let { result ->
-                        SuccessView(result = result) { onResult(it) }
+                        onResult(result)
                     }
                 }
 
-                ScannerState.ERROR -> {
+                is ScannerState.Error -> {
                     ErrorView(
-                        errorMessage = errorMessage ?: "Unknown error",
-                        onRetry = { viewModel.setScanningState() },
-                        onCancel = onCancel
+                        errorType = scannerState,
+                        onRetry = {
+                            if (scannerState is ScannerState.Error.Unsupported) {
+                                galleryLauncher.launch("image/*")
+                            } else {
+                                viewModel.setScanningState()
+                            }
+                        },
                     )
                 }
             }
@@ -180,15 +202,71 @@ fun QRScannerScene(
     }
 }
 
-
 @Composable
-fun ErrorView(errorMessage: String, onRetry: () -> Unit, onCancel: () -> Unit) {
+fun ErrorView(errorType: ScannerState, onRetry: () -> Unit) {
+    val isUnsupportedError = errorType is ScannerState.Error.Unsupported
 
-}
+    val icon = if (isUnsupportedError) Icons.Filled.Warning else Icons.Filled.Error
+    val title = stringResource(
+        if (isUnsupportedError) R.string.errors_not_supported
+        else R.string.errors_decoding
+    )
+    val retryButtonText = stringResource(
+        if (isUnsupportedError) R.string.library_select_from_photo_library
+        else R.string.common_try_again
+    )
 
-@Composable
-fun SuccessView(result: String, onResult: (String) -> Unit) {
+    val errorMessage = stringResource(
+        if (isUnsupportedError) R.string.errors_not_supported_qr
+        else R.string.errors_decoding_qr
+    )
 
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            modifier = Modifier.size(64.dp),
+        )
+
+        Spacer8()
+
+        Text(
+            text = title,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.headlineMedium
+        )
+
+        Spacer8()
+
+        Text(
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 32.dp),
+            text = errorMessage,
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center
+        )
+
+        Spacer8()
+
+        TextButton(
+            onClick = onRetry,
+        ) {
+            Text(
+                text = retryButtonText,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+    }
 }
 
 @ExperimentalGetImage

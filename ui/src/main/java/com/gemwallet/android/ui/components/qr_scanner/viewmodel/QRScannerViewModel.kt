@@ -10,9 +10,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
 
-class QRScannerViewModel {
-    val scannerState = MutableStateFlow(ScannerState.SCANNING)
-    val errorMessage = MutableStateFlow<String?>(null)
+class QRScannerViewModel(private val permissionsGranted: Boolean) {
+    val scannerState = MutableStateFlow(
+        if (!permissionsGranted) {
+            ScannerState.Error.Unsupported
+        } else {
+            ScannerState.Scanning
+        }
+    )
     val scanResult = MutableStateFlow<String?>(null)
     val selectedImageUri = MutableStateFlow<Uri?>(null)
 
@@ -20,27 +25,29 @@ class QRScannerViewModel {
         try {
             val result = decodeQRCodeFromBitmap(bitmap)
             scanResult.value = result
-            scannerState.value = ScannerState.SUCCESS
+            scannerState.value = ScannerState.Success
         } catch (e: Exception) {
-            errorMessage.value = "Failed to decode QR code"
-            scannerState.value = ScannerState.ERROR
+            scannerState.value = ScannerState.Error.Detection
         }
     }
 
     fun reset() {
-        scannerState.value = ScannerState.IDLE
-        errorMessage.value = null
+        scannerState.value = ScannerState.Idle
         scanResult.value = null
         selectedImageUri.value = null
     }
 
     fun setScanningState() {
-        scannerState.value = ScannerState.SCANNING
+        scannerState.value = if (!permissionsGranted) {
+            ScannerState.Error.Unsupported
+        } else {
+            ScannerState.Scanning
+        }
     }
 
     fun setProcessingState(uri: Uri) {
         selectedImageUri.value = uri
-        scannerState.value = ScannerState.PROCESSING
+        scannerState.value = ScannerState.Processing
     }
 
     private fun decodeQRCodeFromBitmap(bitmap: Bitmap): String? {
@@ -56,6 +63,13 @@ class QRScannerViewModel {
     }
 }
 
-enum class ScannerState {
-    IDLE, SCANNING, PROCESSING, SUCCESS, ERROR
+sealed interface ScannerState {
+    data object Idle : ScannerState
+    data object Scanning : ScannerState
+    data object Processing : ScannerState
+    data object Success : ScannerState
+    sealed interface Error : ScannerState {
+        data object Unsupported : Error
+        data object Detection : Error
+    }
 }

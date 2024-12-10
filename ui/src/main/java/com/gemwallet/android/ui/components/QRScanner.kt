@@ -6,6 +6,10 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.ui.components.qr_scanner.screen.QRScannerScene
 import com.gemwallet.android.localize.R
@@ -19,12 +23,13 @@ fun qrCodeRequest(
     onCancel: () -> Unit,
     onResult: (String) -> Unit,
 ): Boolean {
+    var skipped by rememberSaveable { mutableStateOf(false) }
     val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
     BackHandler(true) {
         onCancel()
     }
-    return if (cameraPermissionState.status.isGranted) {
-        QRScannerScene(onCancel, onResult)
+    return if (cameraPermissionState.status.isGranted || skipped) {
+        QRScannerScene(cameraPermissionState.status.isGranted, onCancel, onResult)
         true
     } else {
         AlertDialog(
@@ -38,7 +43,7 @@ fun qrCodeRequest(
                 }
             },
             dismissButton = {
-                Button(onClick = { onCancel() }) {
+                Button(onClick = { skipped = true }) {
                     Text(text = stringResource(id = R.string.common_cancel))
                 }
             }
