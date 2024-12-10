@@ -2,11 +2,33 @@ package com.gemwallet.android.data.repositoreis.config
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.datastore.preferences.SharedPreferencesMigration
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.map
 
 class UserConfig(
     private val context: Context,
 ) {
     private lateinit var store: SharedPreferences
+
+    private val Context.dataStore by preferencesDataStore(
+        name = "config",
+        produceMigrations = { context ->
+            listOf(
+                SharedPreferencesMigration(
+                    context,
+                    "config",
+                    setOf(Keys.DevelopEnabled.buildKey())
+                )
+            )
+        }
+    )
+
+    val isDevelopEnabled = context.dataStore.data.map { preferences ->
+        preferences[booleanPreferencesKey(Keys.DevelopEnabled.buildKey())] ?: false
+    }
 
     fun authRequired(): Boolean {
         return getBoolean(Keys.Auth)
@@ -24,12 +46,12 @@ class UserConfig(
         return getString(Keys.AppVersionSkip)
     }
 
-    fun developEnabled(enabled: Boolean) {
-        putBoolean(Keys.DevelopEnabled, enabled)
-    }
-
-    fun developEnabled(): Boolean {
-        return getBoolean(Keys.DevelopEnabled)
+    suspend fun turnDevelopEnabled() {
+        context.dataStore.edit { config ->
+            val currentValue =
+                config[booleanPreferencesKey(Keys.DevelopEnabled.buildKey())] ?: false
+            config[booleanPreferencesKey(Keys.DevelopEnabled.buildKey())] = !currentValue
+        }
     }
 
     fun getLaunchNumber(): Int {
@@ -52,6 +74,7 @@ class UserConfig(
     private fun getString(key: Keys, postfix: String = "") = getStore().getString(key.buildKey(postfix), "") ?: ""
 
     private fun getBoolean(key: Keys, default: Boolean = false) = getStore().getBoolean(key.buildKey(), default)
+
 
     private fun putInt(key: Keys, value: Int, postfix: String = "") {
         getStore().edit().putInt(key.buildKey(postfix), value).apply()
