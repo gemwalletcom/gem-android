@@ -52,6 +52,7 @@ import com.gemwallet.android.interactors.ImportError
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer8
+import com.gemwallet.android.ui.components.designsystem.mainActionHeight
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.space4
 import com.gemwallet.android.ui.components.screen.Scene
@@ -168,7 +169,7 @@ private fun ImportScene(
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(bottom = 60.dp)
+                .padding(bottom = mainActionHeight)
         ) {
             WalletNameTextField(
                 value = nameState,
