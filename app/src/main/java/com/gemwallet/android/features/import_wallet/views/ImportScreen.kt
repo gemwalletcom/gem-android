@@ -2,14 +2,18 @@ package com.gemwallet.android.features.import_wallet.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -67,7 +71,7 @@ fun ImportScreen(
     DisposableEffect(Unit) {
         viewModel.importSelect(importType)
 
-        onDispose {  }
+        onDispose { }
     }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ImportScene(
@@ -86,11 +90,11 @@ fun ImportScreen(
     )
     if (uiState.loading) {
         Dialog(
-            onDismissRequest = {  },
+            onDismissRequest = { },
             DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)
         ) {
             Box(
-                contentAlignment= Alignment.Center,
+                contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(100.dp)
                     .background(
@@ -121,7 +125,8 @@ private fun ImportScene(
     var inputState by remember {
         mutableStateOf(TextFieldValue())
     }
-    val chainWalletName = stringResource(id = R.string.wallet_default_name_chain, chainName, generatedNameIndex)
+    val chainWalletName =
+        stringResource(id = R.string.wallet_default_name_chain, chainName, generatedNameIndex)
     val mainWalletName = stringResource(id = R.string.wallet_default_name, generatedNameIndex)
     val generatedName = remember(key1 = importType.walletType, key2 = generatedNameIndex) {
         if (generatedNameIndex == 0 || importType.walletType == WalletType.multicoin) {
@@ -149,7 +154,7 @@ private fun ImportScene(
     Scene(
         title = stringResource(id = R.string.wallet_import_title),
         padding = PaddingValues(padding16),
-        mainActionPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 48.dp),
+        mainActionPadding = PaddingValues(start = 16.dp, top = 16.dp, end = 16.dp, bottom = 16.dp),
         onClose = onCancel,
         mainAction = {
             MainActionButton(
@@ -160,97 +165,110 @@ private fun ImportScene(
             )
         },
     ) {
-        WalletNameTextField(
-            value = nameState,
-            onValueChange = { newValue -> nameState = newValue },
-            placeholder = stringResource(id = R.string.wallet_name),
-            error = walletNameError,
-        )
-        Spacer16()
-        if (importType.walletType != WalletType.multicoin) {
-            PrimaryTabRow(
-                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)),
-                selectedTabIndex = 0,
-                indicator = { Box {} },
-                containerColor = Color.Transparent,//(0xFFEBEBEB),
-                divider = {}
-            ) {
-                WalletTypeTab(WalletType.single, importType.walletType) {
-                    onTypeChange(it)
-                    inputState = TextFieldValue()
-                }
-                WalletTypeTab(WalletType.private_key, importType.walletType) {
-                    onTypeChange(it)
-                    inputState = TextFieldValue()
-                }
-                WalletTypeTab(WalletType.view, importType.walletType) {
-                    onTypeChange(it)
-                    inputState = TextFieldValue()
-                }
-            }
-            Spacer16()
-        }
-
-        ImportInput(
-            inputState = inputState,
-            importType = importType,
-            onValueChange = { query ->
-                inputState = query
-                suggestions.clear()
-                dataErrorState = null
-
-                if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
-                    return@ImportInput
-                }
-
-                val cursorPosition = query.selection.start
-                if (query.text.isEmpty()) {
-                    return@ImportInput
-                }
-                val word = query.text.substring(0..<cursorPosition).split(" ")
-                    .lastOrNull()
-                if (word.isNullOrEmpty()) {
-                    return@ImportInput
-                }
-                val result = WCFindPhraseWord().invoke(word.toString())
-                suggestions.addAll(result)
-            }
+        Column(
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(bottom = 60.dp)
         ) {
-            nameRecordState = it
-        }
+            WalletNameTextField(
+                value = nameState,
+                onValueChange = { newValue -> nameState = newValue },
+                placeholder = stringResource(id = R.string.wallet_name),
+                error = walletNameError,
+            )
+            Spacer16()
+            if (importType.walletType != WalletType.multicoin) {
+                PrimaryTabRow(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(4.dp)),
+                    selectedTabIndex = 0,
+                    indicator = { Box {} },
+                    containerColor = Color.Transparent,//(0xFFEBEBEB),
+                    divider = {}
+                ) {
+                    WalletTypeTab(WalletType.single, importType.walletType) {
+                        onTypeChange(it)
+                        inputState = TextFieldValue()
+                    }
+                    WalletTypeTab(WalletType.private_key, importType.walletType) {
+                        onTypeChange(it)
+                        inputState = TextFieldValue()
+                    }
+                    WalletTypeTab(WalletType.view, importType.walletType) {
+                        onTypeChange(it)
+                        inputState = TextFieldValue()
+                    }
+                }
+                Spacer16()
+            }
 
-        if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
-            Spacer8()
-            LazyRow {
-                items(suggestions) { word ->
-                    SuggestionChip(
-                        onClick = {
-                            val processed = setSuggestion(inputState, word)
-                            inputState = processed
-                            autoComplete = ""
-                            suggestions.clear()
-                        },
-                        label = { Text(text = word) }
-                    )
-                    Spacer8()
+            ImportInput(
+                inputState = inputState,
+                importType = importType,
+                onValueChange = { query ->
+                    inputState = query
+                    suggestions.clear()
+                    dataErrorState = null
+
+                    if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
+                        return@ImportInput
+                    }
+
+                    val cursorPosition = query.selection.start
+                    if (query.text.isEmpty()) {
+                        return@ImportInput
+                    }
+                    val word = query.text.substring(0..<cursorPosition).split(" ")
+                        .lastOrNull()
+                    if (word.isNullOrEmpty()) {
+                        return@ImportInput
+                    }
+                    val result = WCFindPhraseWord().invoke(word.toString())
+                    suggestions.addAll(result)
+                }
+            ) {
+                nameRecordState = it
+            }
+
+            if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
+                Spacer8()
+                LazyRow {
+                    items(suggestions) { word ->
+                        SuggestionChip(
+                            onClick = {
+                                val processed = setSuggestion(inputState, word)
+                                inputState = processed
+                                autoComplete = ""
+                                suggestions.clear()
+                            },
+                            label = { Text(text = word) }
+                        )
+                        Spacer8()
+                    }
                 }
             }
-        }
 
-        val error = dataErrorState
-        if (error != null) {
-            Spacer(modifier = Modifier.size(space4))
-            val text = when (error) {
-                is ImportError.CreateError -> stringResource(R.string.errors_create_wallet, error.message ?: "")
-                is ImportError.InvalidWords -> stringResource(
-                    R.string.errors_import_invalid_secret_phrase_word,
-                    error.words.joinToString()
-                )
-                ImportError.InvalidationSecretPhrase -> stringResource(R.string.errors_import_invalid_secret_phrase)
-                ImportError.InvalidAddress -> stringResource(R.string.errors_invalid_address_name)
-                ImportError.InvalidationPrivateKey -> "Invalid private key"
+            val error = dataErrorState
+            if (error != null) {
+                Spacer(modifier = Modifier.size(space4))
+                val text = when (error) {
+                    is ImportError.CreateError -> stringResource(
+                        R.string.errors_create_wallet,
+                        error.message ?: ""
+                    )
+
+                    is ImportError.InvalidWords -> stringResource(
+                        R.string.errors_import_invalid_secret_phrase_word,
+                        error.words.joinToString()
+                    )
+
+                    ImportError.InvalidationSecretPhrase -> stringResource(R.string.errors_import_invalid_secret_phrase)
+                    ImportError.InvalidAddress -> stringResource(R.string.errors_invalid_address_name)
+                    ImportError.InvalidationPrivateKey -> "Invalid private key"
+                }
+                Text(text = text, color = MaterialTheme.colorScheme.error)
             }
-            Text(text = text, color = MaterialTheme.colorScheme.error)
         }
     }
 }
@@ -286,7 +304,7 @@ fun PreviewImportAddress() {
                 walletNameError = "Foo wallet name error",
                 nameRecord = null,
                 dataError = null,
-                onImport = {_, _, _, _ -> },
+                onImport = { _, _, _, _ -> },
                 onTypeChange = {},
                 onCancel = {},
             )
