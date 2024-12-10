@@ -1,6 +1,10 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmFeeService
+import com.gemwallet.android.blockchain.clients.ethereum.services.getFeeHistory
+import com.gemwallet.android.blockchain.clients.ethereum.services.getGasLimit
+import com.gemwallet.android.ext.toEVM
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.toHexString
@@ -21,12 +25,12 @@ import java.math.BigInteger
 import java.util.Locale
 
 class EvmFeeCalculator(
-    private val rpcClient: EvmRpcClient,
+    private val feeService: EvmFeeService,
     callService: EvmCallService,
     coinType: CoinType
 ) {
 
-    private val optimismGasOracle = OptimismGasOracle(rpcClient, callService, coinType)
+    private val optimismGasOracle = OptimismGasOracle(feeService, callService, coinType)
 
     private val nativeGasLimit = BigInteger.valueOf(21_000L)
 
@@ -36,7 +40,7 @@ class EvmFeeCalculator(
         recipient: String,
         outputAmount: BigInteger,
         payload: String?,
-        chainId: BigInteger,
+        chainId: String,
         nonce: BigInteger,
     ): Fee = withContext(Dispatchers.IO) {
         val isMaxAmount = params.isMax()
@@ -44,10 +48,10 @@ class EvmFeeCalculator(
 
         val gasLimit = getGasLimit(assetId, params.from.address, recipient, outputAmount, payload)
 
-        if (EVMChain.isOpStack(params.assetId.chain)) {
+        if (params.assetId.chain.toEVM()?.isOpStack() == true) {
             return@withContext optimismGasOracle.estimate(params, chainId, nonce, gasLimit)
         }
-        val (baseFee, priorityFee) = getBasePriorityFee(params.assetId.chain, rpcClient)
+        val (baseFee, priorityFee) = getBasePriorityFee(params.assetId.chain, feeService)
         val maxGasPrice = baseFee.plus(priorityFee)
         val minerFee = when (params) {
             is ConfirmParams.Stake,
@@ -74,7 +78,7 @@ class EvmFeeCalculator(
             )
         }
 
-        val gasLimit = rpcClient.getGasLimit(from, to, amount, data)
+        val gasLimit = feeService.getGasLimit(from, to, amount, data)
         return if (gasLimit == nativeGasLimit) {
             gasLimit
         } else {
@@ -83,8 +87,8 @@ class EvmFeeCalculator(
     }
 
     companion object {
-        internal suspend fun getBasePriorityFee(chain: Chain, rpcClient: EvmRpcClient): Pair<BigInteger, BigInteger> {
-            val feeHistory = rpcClient.getFeeHistory() ?: throw Exception("Unable to calculate base fee")
+        internal suspend fun getBasePriorityFee(chain: Chain, feeService: EvmFeeService): Pair<BigInteger, BigInteger> {
+            val feeHistory = feeService.getFeeHistory() ?: throw Exception("Unable to calculate base fee")
 
             val reward = feeHistory.reward.mapNotNull { it.firstOrNull()?.hexToBigInteger() }.maxOrNull()
                 ?: throw Exception("Unable to calculate priority fee")

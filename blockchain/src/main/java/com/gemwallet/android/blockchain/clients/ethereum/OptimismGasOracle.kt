@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmFeeService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.toHexString
@@ -22,20 +23,20 @@ import wallet.core.jni.proto.Ethereum
 import java.math.BigInteger
 
 class OptimismGasOracle(
-    private val rpcClient: EvmRpcClient,
+    private val feeService: EvmFeeService,
     private val callService: EvmCallService,
     private val coinType: CoinType,
 ) {
 
     suspend fun estimate(
         params: ConfirmParams,
-        chainId: BigInteger,
+        chainId: String,
         nonce: BigInteger,
         gasLimit: BigInteger,
     ): GasFee = withContext(Dispatchers.IO) {
         val assetId = params.assetId
         val feeAssetId = AssetId(assetId.chain)
-        val basePriorityFee = async { EvmFeeCalculator.getBasePriorityFee(assetId.chain, rpcClient) }
+        val basePriorityFee = async { EvmFeeCalculator.getBasePriorityFee(assetId.chain, feeService) }
         val (baseFee, priorityFee) = basePriorityFee.await()
         val gasPrice = baseFee + priorityFee
         val minerFee = when (params.getTxType()) {
@@ -74,7 +75,7 @@ class OptimismGasOracle(
             ),
         )
         val l2Fee = gasPrice * gasLimit
-        val l1Fee = getL1Fee(encoded, rpcClient) ?: throw IllegalStateException("Can't get L1 Fee")
+        val l1Fee = getL1Fee(encoded) ?: throw IllegalStateException("Can't get L1 Fee")
         GasFee(
             feeAssetId = feeAssetId,
             speed = TxSpeed.Normal,
@@ -87,7 +88,7 @@ class OptimismGasOracle(
 
     class BaseFeeRequest(val to: String, val data: String)
 
-    private suspend fun getL1Fee(data: ByteArray, rpcClient: EvmRpcClient): BigInteger? {
+    private suspend fun getL1Fee(data: ByteArray): BigInteger? {
         val abiFn = EthereumAbiFunction("getL1Fee").apply {
             this.addParamBytes(data, false)
         }
@@ -110,7 +111,7 @@ class OptimismGasOracle(
         destinationAddress: String,
         amount: BigInteger,
         meta: String?,
-        chainId: BigInteger,
+        chainId: String,
         nonce: BigInteger,
         gasFee: GasFee,
     ): ByteArray {
@@ -119,7 +120,7 @@ class OptimismGasOracle(
             amount = amount,
             tokenAmount = amount,
             fee = gasFee,
-            chainId = chainId,
+            chainId = chainId.toBigInteger(),
             nonce = nonce,
             destinationAddress = destinationAddress,
             memo = meta,

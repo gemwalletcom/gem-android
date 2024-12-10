@@ -77,7 +77,7 @@ class EvmSignClient(
             amount = amount,
             tokenAmount = params.finalAmount,
             fee = fee,
-            chainId = meta.chainId,
+            chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.input.destination()?.address ?: "",
             memo = when (input) {

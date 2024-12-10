@@ -7,6 +7,7 @@ import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
+import com.gemwallet.android.ext.getNetworkId
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
@@ -65,14 +66,17 @@ class EvmSignerPreloader(
         payload: String?,
         params: ConfirmParams,
     ) = withContext(Dispatchers.IO) {
-
-        val chainIdJob = async { rpcClient.getNetVersion(wcCoinType) }
-        val nonceJob = async { rpcClient.getNonce(from.address) }
-
-        val chainId = chainIdJob.await()
-        val nonce = nonceJob.await()
-
-        val fee = feeCalculator.calculate(params, assetId, recipient, outputAmount, payload, chainId, nonce)
+        val nonce = rpcClient.getNonce(from.address)
+        val chainId = chain.getNetworkId()
+        val fee = feeCalculator.calculate(
+            params = params,
+            assetId = assetId,
+            recipient = recipient,
+            outputAmount = outputAmount,
+            payload = payload,
+            chainId = chainId,
+            nonce = nonce
+        )
 
         SignerParams(params, EvmChainData(chainId, nonce, fee))
     }
@@ -80,7 +84,7 @@ class EvmSignerPreloader(
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
     data class EvmChainData(
-        val chainId: BigInteger,
+        val chainId: String,
         val nonce: BigInteger,
         val fee: Fee,
     ) : ChainSignData {
