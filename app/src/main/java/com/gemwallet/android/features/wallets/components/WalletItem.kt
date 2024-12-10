@@ -14,7 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
+import com.gemwallet.android.images.R as imagesR
 import com.gemwallet.android.ui.components.Badge
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
@@ -71,7 +72,7 @@ fun WalletItem(
             IconWithBadge(
                 icon = icon,
                 supportIcon = if (type == WalletType.view) {
-                    "android.resource://com.gemwallet.android/drawable/${R.drawable.watch_badge}"
+                    "android.resource://com.gemwallet.android/drawable/${imagesR.drawable.watch_badge}"
                 } else null,
             )
         },

@@ -34,7 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
+import com.gemwallet.android.images.R as imagesR
 import com.gemwallet.android.features.asset.navigation.navigateToAssetScreen
 import com.gemwallet.android.features.assets.navigation.assetsRoute
 import com.gemwallet.android.features.assets.navigation.navigateToAssetsScreen
@@ -130,7 +131,7 @@ fun MainScreen(
                             if (item.route == assetsRoute) {
                                 Icon(
                                     modifier = modifier,
-                                    painter = painterResource(R.drawable.wallets),
+                                    painter = painterResource(imagesR.drawable.wallets),
                                     contentDescription = item.label,
                                 )
                             } else {

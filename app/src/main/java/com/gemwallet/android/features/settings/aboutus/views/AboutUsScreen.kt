@@ -3,7 +3,7 @@ package com.gemwallet.android.features.settings.aboutus.views
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.features.settings.settings.components.LinkItem
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.screen.Scene

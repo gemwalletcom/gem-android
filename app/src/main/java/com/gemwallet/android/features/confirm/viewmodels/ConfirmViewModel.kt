@@ -3,7 +3,7 @@ package com.gemwallet.android.features.confirm.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.blockchain.clients.BroadcastClientProxy
 import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.clients.SignerPreload

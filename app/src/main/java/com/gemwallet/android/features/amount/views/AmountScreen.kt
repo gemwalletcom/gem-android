@@ -13,7 +13,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.features.amount.viewmodels.AmountViewModel
 import com.gemwallet.android.features.stake.validators.views.ValidatorsScreen
 import com.gemwallet.android.model.ConfirmParams

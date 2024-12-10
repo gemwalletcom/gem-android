@@ -15,9 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import com.gemwallet.android.R
 import com.gemwallet.android.features.add_asset.models.AddAssetError
 import com.gemwallet.android.features.add_asset.models.AddAssetUIState
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.ui.components.AddressChainField
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Table

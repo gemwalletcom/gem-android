@@ -3,7 +3,8 @@ package com.gemwallet.android.features.asset.chart.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
+import com.gemwallet.android.images.R as imagesR
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.asset.chart.models.AssetMarketUIModel
@@ -68,10 +69,10 @@ class AssetChartViewModel @Inject constructor(
 
     private fun List<AssetLink>.toModel() = mapNotNull {
         return@mapNotNull when (it.name) {
-            "coingecko" -> AssetMarketUIModel.Link(it.name, it.url, R.string.social_coingecko, R.drawable.coingecko)
-            "twitter" -> AssetMarketUIModel.Link(it.name, it.url, R.string.social_x, R.drawable.twitter)
-            "telegram" -> AssetMarketUIModel.Link(it.name, it.url, R.string.social_telegram, R.drawable.telegram)
-            "github" -> AssetMarketUIModel.Link(it.name, it.url, R.string.social_github, R.drawable.github)
+            "coingecko" -> AssetMarketUIModel.Link(it.name, it.url, R.string.social_coingecko, imagesR.drawable.coingecko)
+            "twitter" -> AssetMarketUIModel.Link(it.name, it.url, R.string.social_x, imagesR.drawable.twitter)
+            "telegram" -> AssetMarketUIModel.Link(it.name, it.url, R.string.social_telegram, imagesR.drawable.telegram)
+            "github" -> AssetMarketUIModel.Link(it.name, it.url, R.string.social_github, imagesR.drawable.github)
             else -> null
         }
     }

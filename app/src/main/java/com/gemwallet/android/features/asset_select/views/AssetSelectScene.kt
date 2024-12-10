@@ -30,7 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset_select.components.SearchBar
 import com.gemwallet.android.features.asset_select.viewmodels.BaseAssetSelectViewModel

@@ -18,7 +18,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.R
+import com.gemwallet.android.localize.R
 import com.gemwallet.android.features.amount.components.amountErrorString
 import com.gemwallet.android.features.amount.models.AmountError
 import com.gemwallet.android.features.confirm.models.AmountScreenModel
