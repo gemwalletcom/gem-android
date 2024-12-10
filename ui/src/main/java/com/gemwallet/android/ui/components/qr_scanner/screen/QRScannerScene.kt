@@ -22,7 +22,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.Image
@@ -40,7 +39,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -49,7 +47,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
-import coil3.compose.AsyncImage
 import com.gemwallet.android.localize.R
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.qr_scanner.viewmodel.QRScannerViewModel
@@ -64,22 +61,18 @@ import com.google.zxing.PlanarYUVLuminanceSource
 import com.google.zxing.common.HybridBinarizer
 import java.nio.ByteBuffer
 
-@OptIn(ExperimentalGetImage::class)
 @Composable
 fun QRScannerScene(
     permissionsGranted: Boolean,
     onCancel: CancelAction,
-    onResult: (String) -> Unit,
+    onQrResultAction: QrResultAction,
 ) {
     val viewModel = QRScannerViewModel(permissionsGranted)
     val context = LocalContext.current
-    val lifecycleOwner = LocalLifecycleOwner.current
-
     val scannerState by viewModel.scannerState.collectAsState()
     val scanResult by viewModel.scanResult.collectAsState()
     val selectedImageUri by viewModel.selectedImageUri.collectAsState()
 
-    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
 
     val galleryLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
@@ -116,45 +109,11 @@ fun QRScannerScene(
                 }
 
                 ScannerState.Scanning -> {
-                    AndroidView(
-                        factory = { context ->
-                            val previewView = PreviewView(context).apply {
-                                scaleType = PreviewView.ScaleType.FILL_CENTER
-                            }
-
-                            val cameraProvider = cameraProviderFuture.get()
-                            val preview = Preview.Builder().build().apply {
-                                surfaceProvider = previewView.surfaceProvider
-                            }
-
-                            val imageAnalysis = Builder()
-                                .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
-                                .build()
-                                .apply {
-                                    setAnalyzer(
-                                        ContextCompat.getMainExecutor(context),
-                                        QRCodeAnalyzer { result ->
-                                            viewModel.scanResult.value = result
-                                            viewModel.scannerState.value = ScannerState.Success
-                                        }
-                                    )
-                                }
-
-                            val cameraSelector = CameraSelector.Builder()
-                                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
-                                .build()
-
-                            cameraProvider.unbindAll()
-                            cameraProvider.bindToLifecycle(
-                                lifecycleOwner,
-                                cameraSelector,
-                                preview,
-                                imageAnalysis
-                            )
-
-                            previewView
-                        },
-                        modifier = Modifier.fillMaxSize()
+                    ScanningView(
+                        onQrResultAction = { result ->
+                            viewModel.scanResult.value = result
+                            viewModel.scannerState.value = ScannerState.Success
+                        }
                     )
                 }
 
@@ -170,18 +129,12 @@ fun QRScannerScene(
                                 ).copy(Bitmap.Config.RGBA_F16, true)
                             )
                         }
-                        AsyncImage(
-                            model = uri,
-                            contentDescription = "Selected Image",
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.Fit
-                        )
                     }
                 }
 
                 ScannerState.Success -> {
                     scanResult?.let { result ->
-                        onResult(result)
+                        onQrResultAction(result)
                     }
                 }
 
@@ -202,8 +155,57 @@ fun QRScannerScene(
     }
 }
 
+@OptIn(ExperimentalGetImage::class)
 @Composable
-fun ErrorView(errorType: ScannerState, onRetry: () -> Unit) {
+internal fun ScanningView(
+    onQrResultAction: QrResultAction,
+) {
+    val context = LocalContext.current
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+    AndroidView(
+        factory = { localContext ->
+            val previewView = PreviewView(localContext).apply {
+                scaleType = PreviewView.ScaleType.FILL_CENTER
+            }
+
+            val cameraProvider = cameraProviderFuture.get()
+            val preview = Preview.Builder().build().apply {
+                surfaceProvider = previewView.surfaceProvider
+            }
+
+            val imageAnalysis = Builder()
+                .setBackpressureStrategy(STRATEGY_KEEP_ONLY_LATEST)
+                .build()
+                .apply {
+                    setAnalyzer(
+                        ContextCompat.getMainExecutor(localContext),
+                        QRCodeAnalyzer { result ->
+                            onQrResultAction.invoke(result)
+                        }
+                    )
+                }
+
+            val cameraSelector = CameraSelector.Builder()
+                .requireLensFacing(CameraSelector.LENS_FACING_BACK)
+                .build()
+
+            cameraProvider.unbindAll()
+            cameraProvider.bindToLifecycle(
+                lifecycleOwner,
+                cameraSelector,
+                preview,
+                imageAnalysis
+            )
+
+            previewView
+        },
+        modifier = Modifier.fillMaxSize()
+    )
+}
+
+@Composable
+internal fun ErrorView(errorType: ScannerState, onRetry: () -> Unit) {
     val isUnsupportedError = errorType is ScannerState.Error.Unsupported
 
     val icon = if (isUnsupportedError) Icons.Filled.Warning else Icons.Filled.Error
@@ -211,14 +213,13 @@ fun ErrorView(errorType: ScannerState, onRetry: () -> Unit) {
         if (isUnsupportedError) R.string.errors_not_supported
         else R.string.errors_decoding
     )
-    val retryButtonText = stringResource(
-        if (isUnsupportedError) R.string.library_select_from_photo_library
-        else R.string.common_try_again
-    )
-
     val errorMessage = stringResource(
         if (isUnsupportedError) R.string.errors_not_supported_qr
         else R.string.errors_decoding_qr
+    )
+    val retryButtonText = stringResource(
+        if (isUnsupportedError) R.string.library_select_from_photo_library
+        else R.string.common_try_again
     )
 
     Column(

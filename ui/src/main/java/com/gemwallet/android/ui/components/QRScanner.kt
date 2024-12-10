@@ -13,6 +13,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.ui.components.qr_scanner.screen.QRScannerScene
 import com.gemwallet.android.localize.R
+import com.gemwallet.android.ui.components.qr_scanner.screen.QrResultAction
+import com.gemwallet.android.ui.models.actions.CancelAction
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -20,8 +22,8 @@ import com.google.accompanist.permissions.rememberPermissionState
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun qrCodeRequest(
-    onCancel: () -> Unit,
-    onResult: (String) -> Unit,
+    onCancel: CancelAction,
+    onResult: QrResultAction,
 ): Boolean {
     var skipped by rememberSaveable { mutableStateOf(false) }
     val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
@@ -33,7 +35,7 @@ fun qrCodeRequest(
         true
     } else {
         AlertDialog(
-            onDismissRequest = onCancel,
+            onDismissRequest = { onCancel.invoke() },
             text = {
                 Text(text = stringResource(id = R.string.camera_permission_request_camera))
             },
