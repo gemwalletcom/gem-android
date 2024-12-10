@@ -61,8 +61,8 @@ class SmartchainStakeClient(
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
     private suspend fun getDelegations(address: String, limit: Int): List<DelegationBase> {
-        val data = callService.callString(StakeHub.reader, StakeHub.encodeDelegationsCall(address, limit))
-            ?: return emptyList()
+        val dataRequest = StakeHub.encodeDelegationsCall(address, limit)
+        val data = callService.callString(StakeHub.reader, dataRequest) ?: return emptyList()
         return StakeHub.decodeDelegationsResult(data)
     }
 
