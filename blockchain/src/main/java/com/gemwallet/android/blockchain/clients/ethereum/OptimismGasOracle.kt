@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.toHexString
@@ -10,7 +11,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.TransactionType
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
@@ -20,20 +20,21 @@ import wallet.core.jni.PrivateKey
 import wallet.core.jni.proto.Ethereum
 import java.math.BigInteger
 
-class OptimismGasOracle {
+class OptimismGasOracle(
+    private val callService: EvmCallService,
+    private val coinType: CoinType,
+) {
 
-    suspend operator fun invoke(
+    suspend fun estimate(
         params: ConfirmParams,
-        chainId: BigInteger,
+        chainId: String,
         nonce: BigInteger,
+        baseFee: BigInteger,
+        priorityFee: BigInteger,
         gasLimit: BigInteger,
-        coin: CoinType,
-        rpcClient: EvmRpcClient
     ): GasFee = withContext(Dispatchers.IO) {
         val assetId = params.assetId
         val feeAssetId = AssetId(assetId.chain)
-        val basePriorityFee = async { EvmFee.getBasePriorityFee(assetId.chain, rpcClient) }
-        val (baseFee, priorityFee) = basePriorityFee.await()
         val gasPrice = baseFee + priorityFee
         val minerFee = when (params.getTxType()) {
             TransactionType.Transfer -> if (assetId.type() == AssetSubtype.NATIVE && params.isMax()) gasPrice else priorityFee
@@ -47,7 +48,7 @@ class OptimismGasOracle {
         }
         val encoded = encode(
             assetId = assetId,
-            coin = coin,
+            coin = coinType,
             amount = amount,
             destinationAddress = when (params) {
                 is ConfirmParams.SwapParams -> params.to
@@ -71,7 +72,7 @@ class OptimismGasOracle {
             ),
         )
         val l2Fee = gasPrice * gasLimit
-        val l1Fee = getL1Fee(encoded, rpcClient) ?: throw IllegalStateException("Can't get L1 Fee")
+        val l1Fee = getL1Fee(encoded) ?: throw IllegalStateException("Can't get L1 Fee")
         GasFee(
             feeAssetId = feeAssetId,
             speed = TxSpeed.Normal,
@@ -82,9 +83,7 @@ class OptimismGasOracle {
         )
     }
 
-    class BaseFeeRequest(val to: String, val data: String)
-
-    private suspend fun getL1Fee(data: ByteArray, rpcClient: EvmRpcClient): BigInteger? {
+    private suspend fun getL1Fee(data: ByteArray): BigInteger? {
         val abiFn = EthereumAbiFunction("getL1Fee").apply {
             this.addParamBytes(data, false)
         }
@@ -92,13 +91,14 @@ class OptimismGasOracle {
         val request = JSONRpcRequest.create(
             EvmMethod.Call,
             listOf(
-                BaseFeeRequest(
-                    to = "0x420000000000000000000000000000000000000F", encodedFn.toHexString(),
+                mapOf(
+                    "to" to "0x420000000000000000000000000000000000000F",
+                    "data" to encodedFn.toHexString(),
                 ),
                 "latest",
             )
         )
-        return rpcClient.callNumber(request).getOrNull()?.result?.value
+        return callService.callNumber(request).getOrNull()?.result?.value
     }
 
     private fun encode(
@@ -107,7 +107,7 @@ class OptimismGasOracle {
         destinationAddress: String,
         amount: BigInteger,
         meta: String?,
-        chainId: BigInteger,
+        chainId: String,
         nonce: BigInteger,
         gasFee: GasFee,
     ): ByteArray {
@@ -116,7 +116,7 @@ class OptimismGasOracle {
             amount = amount,
             tokenAmount = amount,
             fee = gasFee,
-            chainId = chainId,
+            chainId = chainId.toBigInteger(),
             nonce = nonce,
             destinationAddress = destinationAddress,
             memo = meta,

@@ -10,6 +10,7 @@ import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
+import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -32,14 +33,14 @@ class TestCosmosSign {
         val sign = runBlocking {
             signClient.signTransfer(
                 params = SignerParams(
-                    input = ConfirmParams.TransferParams(
-                        assetId = com.wallet.core.primitives.Chain.Cosmos.asset().id,
+                    input = ConfirmParams.TransferParams.Native(
+                        assetId = Chain.Cosmos.asset().id,
                         amount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Cosmos.asset().decimals),
                         destination = DestinationAddress("cosmos1kglemumu8mn658j6g4z9jzn3zef2qdyyydv7tr"),
+                        from = Account(chain = Chain.Cosmos, address = "cosmos1kglemumu8mn658j6g4z9jzn3zef2qdyyydv7tr", "", "")
                     ),
-                    owner = "cosmos1kglemumu8mn658j6g4z9jzn3zef2qdyyydv7tr",
                     finalAmount = BigInteger.TEN.pow(com.wallet.core.primitives.Chain.Cosmos.asset().decimals),
-                    info = CosmosSignerPreloader.Info(
+                    chainData = CosmosSignerPreloader.CosmosChainData(
                         chainId = "",
                         accountNumber = 1L,
                         sequence = 1L,

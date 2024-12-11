@@ -1,13 +1,12 @@
 package com.gemwallet.android.blockchain.clients.tron
 
-import com.gemwallet.android.blockchain.clients.SignerPreload
-import com.gemwallet.android.ext.type
+import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
+import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
+import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.SignerInputInfo
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
-import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -16,47 +15,41 @@ import kotlinx.coroutines.withContext
 class TronSignerPreloader(
     private val chain: Chain,
     private val rpcClient: TronRpcClient,
-) : SignerPreload {
-    override suspend fun invoke(owner: Account, params: ConfirmParams): Result<SignerParams> = withContext(Dispatchers.IO) {
-        val feeJob = async {
-            try {
-                TronFee().invoke(
-                    rpcClient = rpcClient,
-                    account = owner,
-                    recipientAddress = params.destination()?.address!!,
-                    value = params.amount,
-                    contractAddress = params.assetId.tokenId,
-                    type = params.assetId.type(),
-                )
-            } catch (err: Throwable) {
-                null
-            }
-        }
-        val nowBlockJob = async { rpcClient.nowBlock() }
+) : NativeTransferPreloader, TokenTransferPreloader {
+    val feeCalculator = TronFeeCalculator(chain, rpcClient)
 
-        val fee = feeJob.await() ?: return@withContext Result.failure(Exception("Fee calculation error"))
-        val nowBlock = nowBlockJob.await()
+    override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
+        return preloadTransfer(params)
+    }
 
-        nowBlock.mapCatching {
-            SignerParams(
-                input = params,
-                owner = owner.address,
-                info = Info(
-                    number = it.block_header.raw_data.number,
-                    version = it.block_header.raw_data.version,
-                    txTrieRoot = it.block_header.raw_data.txTrieRoot,
-                    witnessAddress = it.block_header.raw_data.witness_address,
-                    parentHash = it.block_header.raw_data.parentHash,
-                    timestamp = it.block_header.raw_data.timestamp,
-                    fee = fee,
-                )
-            )
-        }
+    override suspend fun preloadTokenTransfer(params: ConfirmParams.TransferParams.Token): SignerParams {
+        return preloadTransfer(params)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
-    data class Info(
+    private suspend fun preloadTransfer(params: ConfirmParams.TransferParams): SignerParams = withContext(Dispatchers.IO) {
+        val feeJob = async { feeCalculator.calculate(params) }
+        val nowBlockJob = async { rpcClient.nowBlock() }
+
+        val fee = feeJob.await()
+        val nowBlock = nowBlockJob.await().getOrThrow()
+
+        SignerParams(
+            input = params,
+            chainData = TronChainData(
+                number = nowBlock.block_header.raw_data.number,
+                version = nowBlock.block_header.raw_data.version,
+                txTrieRoot = nowBlock.block_header.raw_data.txTrieRoot,
+                witnessAddress = nowBlock.block_header.raw_data.witness_address,
+                parentHash = nowBlock.block_header.raw_data.parentHash,
+                timestamp = nowBlock.block_header.raw_data.timestamp,
+                fee = fee,
+            )
+        )
+    }
+
+    data class TronChainData(
         val number: Long,
         val version: Long,
         val txTrieRoot: String,
@@ -64,7 +57,7 @@ class TronSignerPreloader(
         val parentHash: String,
         val timestamp: Long,
         val fee: Fee,
-    ) : SignerInputInfo {
+    ) : ChainSignData {
         override fun fee(speed: TxSpeed): Fee = fee
     }
 }

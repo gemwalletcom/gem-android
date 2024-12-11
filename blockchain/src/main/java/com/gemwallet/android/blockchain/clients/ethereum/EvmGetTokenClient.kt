@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.GetTokenClient
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.has0xPrefix
@@ -19,7 +20,7 @@ import java.math.BigInteger
 
 class EvmGetTokenClient(
     private val chain: Chain,
-    private val rpcClient: EvmRpcClient,
+    private val callService: EvmCallService,
 ) : GetTokenClient {
     override suspend fun getTokenData(tokenId: String): Asset? = withContext(Dispatchers.IO) {
         val getNameJob = async { getERC20Name(tokenId) }
@@ -56,7 +57,7 @@ class EvmGetTokenClient(
                 "latest",
             ),
         )
-        return rpcClient.callNumber(request).getOrNull()?.result?.value
+        return callService.callNumber(request).getOrNull()?.result?.value
     }
 
     private suspend fun getERC20Name(contract: String): String? {
@@ -72,7 +73,7 @@ class EvmGetTokenClient(
                 "latest"
             )
         )
-        val response = rpcClient.callString(request).getOrNull()?.result ?: return null
+        val response = callService.callString(request).getOrNull()?.result ?: return null
         return decodeAbi(response)
     }
 
@@ -89,7 +90,7 @@ class EvmGetTokenClient(
                 "latest"
             )
         )
-        val response = rpcClient.callString(request).getOrNull()?.result ?: return null
+        val response = callService.callString(request).getOrNull()?.result ?: return null
         return decodeAbi(response)
     }
 

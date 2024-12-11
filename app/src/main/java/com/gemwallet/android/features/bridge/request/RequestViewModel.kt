@@ -7,12 +7,14 @@ import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.data.repositoreis.bridge.findByNamespace
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.bridge.model.PeerUI
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.toHexString
 import com.reown.walletkit.client.Wallet
 import com.reown.walletkit.client.WalletKit
+import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletConnectionMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -176,11 +178,13 @@ private data class RequestViewModelState(
         if (sessionRequest == null) {
             return RequestSceneState.Loading
         }
+        val account = wallet?.getAccount(chain!!)!!
         return when (sessionRequest.request.method) {
             WalletConnectionMethods.eth_sign.string,
             WalletConnectionMethods.personal_sign.string,
             WalletConnectionMethods.eth_sign_typed_data_v4.string,
             WalletConnectionMethods.eth_sign_typed_data.string -> RequestSceneState.SignMessage(
+                account = account,
                 walletName = wallet?.name ?: "",
                 peer = PeerUI(
                     peerName = sessionRequest.peerMetaData?.name ?: "",
@@ -198,7 +202,7 @@ private data class RequestViewModelState(
                     val value = jObj.optString("value", "0x0").hexToBigInteger() ?: BigInteger.ZERO
                     val data = jObj.getString("data")
                     RequestSceneState.SendTransaction(
-                        chain = chain!!,
+                        account = account,
                         to = to,
                         value = value,
                         data = data,
@@ -222,12 +226,13 @@ sealed interface RequestSceneState {
 
     class SignMessage(
         val walletName: String,
+        val account: Account,
         val peer: PeerUI,
         val params: String,
     ) : RequestSceneState
 
     class SendTransaction(
-        val chain: Chain,
+        val account: Account,
         val to: String,
         val value: BigInteger,
         val data: String,

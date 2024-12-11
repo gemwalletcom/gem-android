@@ -4,6 +4,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
+import uniffi.gemstone.Config
 import java.math.BigInteger
 
 fun Chain.assetType(): AssetType? {
@@ -159,4 +160,8 @@ fun Chain.toChainType(): ChainType {
         Chain.World,
         Chain.Ethereum -> ChainType.Ethereum
     }
+}
+
+fun Chain.getNetworkId(): String {
+    return Config().getChainConfig(string).networkId
 }

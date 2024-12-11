@@ -1,6 +1,8 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
 import com.gemwallet.android.blockchain.clients.NodeStatusClient
+import com.gemwallet.android.blockchain.clients.aptos.services.AptosService
+import com.gemwallet.android.blockchain.clients.aptos.services.getLedger
 import com.gemwallet.android.blockchain.rpc.getLatency
 import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain
@@ -10,7 +12,7 @@ import kotlin.String
 
 class AptosNodeStatusClient(
     private val chain: Chain,
-    private val rpcClient: AptosRpcClient,
+    private val rpcClient: AptosService,
 ) : NodeStatusClient {
 
     override suspend fun getNodeStatus(chain: Chain, url: String): NodeStatus? = withContext(Dispatchers.IO) {

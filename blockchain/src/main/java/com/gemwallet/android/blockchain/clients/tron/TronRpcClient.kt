@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.tron
 
+import com.gemwallet.android.math.toHexString
 import com.wallet.core.blockchain.tron.models.TronAccount
 import com.wallet.core.blockchain.tron.models.TronAccountRequest
 import com.wallet.core.blockchain.tron.models.TronAccountUsage
@@ -14,6 +15,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Url
+import wallet.core.jni.Base58
 
 interface TronRpcClient {
     @POST("/wallet/getnowblock")
@@ -62,4 +64,26 @@ suspend fun TronRpcClient.triggerSmartContract(
         "visible" to visible,
     )
     return triggerSmartContract(call)
+}
+
+suspend fun TronRpcClient.getAccount(address: String): Boolean {
+    return try {
+        getAccount(
+            TronAccountRequest(
+                address = Base58.decode(address).toHexString(""),
+                visible = false
+            )
+        ).getOrNull()?.address.isNullOrEmpty()
+    } catch (_: Throwable) {
+        true
+    }
+}
+
+suspend fun TronRpcClient.getAccountUsage(address: String): TronAccountUsage? {
+    return getAccountUsage(
+        TronAccountRequest(
+            address = Base58.decode(address).toHexString(""),
+            visible = false
+        )
+    ).getOrNull()
 }

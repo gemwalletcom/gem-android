@@ -1,16 +1,16 @@
 package com.gemwallet.android.blockchain.clients.sui
 
-import com.gemwallet.android.blockchain.clients.SignerPreload
+import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
+import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
+import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
+import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
-import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.toHexString
+import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.SignerInputInfo
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
-import com.wallet.core.primitives.Account
-import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -34,102 +34,40 @@ import java.math.BigInteger
 class SuiSignerPreloader(
     private val chain: Chain,
     private val rpcClient: SuiRpcClient,
-) : SignerPreload {
+) : NativeTransferPreloader, TokenTransferPreloader, StakeTransactionPreloader, SwapTransactionPreloader {
+
+    private val feeCalculator = SuiFeeCalculator(rpcClient)
 
     private val coinId = "0x2::sui::SUI"
 
-    override suspend fun invoke(owner: Account, params: ConfirmParams): Result<SignerParams> {
-        val txData = when (params) {
-            is ConfirmParams.TransferParams -> when (params.assetId.type()) {
-                AssetSubtype.NATIVE -> encodeTransfer(
-                    sender = owner.address,
-                    recipient = params.destination.address,
-                    value = params.amount,
-                    coinType = coinId,
-                    sendMax = params.isMax(),
-                )
-                AssetSubtype.TOKEN -> encodeTokenTransfer(
-                    sender = owner.address,
-                    recipient = params.destination.address,
-                    value = params.amount,
-                    coinType = params.assetId.tokenId!!,
-                    gasCoinType = coinId
-                )
-            }
-            is ConfirmParams.DelegateParams -> encodeStake(
-                sender = owner.address,
-                validator = params.validatorId,
-                coinType = coinId,
-                value = params.amount,
-            )
-            is ConfirmParams.UndelegateParams -> encodeUnstake(
-                sender = owner.address,
-                coinType = coinId,
-                stakeId = params.delegationId,
-            )
-            is ConfirmParams.SwapParams -> encodeSwap(params)
-            is ConfirmParams.RewardsParams,
-            is ConfirmParams.RedeleateParams,
-
-            is ConfirmParams.TokenApprovalParams,
-            is ConfirmParams.WithdrawParams -> throw java.lang.IllegalArgumentException()
-        }
-
-        val fee = SuiFee().invoke(rpcClient, owner, Base64.encode(txData.txData))
-        return Result.success(
-            SignerParams(
-                input = params,
-                owner = owner.address,
-                info = Info(
-                    messageBytes = "${Base64.encode(txData.txData)}_${txData.hash.toHexString()}",
-                    fee = fee,
-                )
-            )
-        )
-    }
-
-    override fun supported(chain: Chain): Boolean = this.chain == chain
-
-    private fun gasBudget(coinType: String): BigInteger = BigInteger.valueOf(25_000_000)
-
-    private suspend fun encodeTransfer(
-        sender: String,
-        recipient: String,
-        coinType: String,
-        value: BigInteger,
-        sendMax: Boolean
-    ) = withContext(Dispatchers.IO) {
-        val getCoins = async { rpcClient.coins(sender, coinType).getOrThrow().result.data }
+    override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams = withContext(Dispatchers.IO) {
+        val sender = params.from.address
+        val getCoins = async { rpcClient.coins(sender, coinId).getOrThrow().result.data }
         val getGasPrice = async { rpcClient.gasPrice(JSONRpcRequest.create(SuiMethod.GasPrice, emptyList())).getOrNull()?.result ?: "750" }
         val coins = getCoins.await()
         val gasPrice = getGasPrice.await()
         val input = SuiTransferInput(
             sender = sender,
-            recipient = recipient,
-            amount = value.toLong().toULong(),
+            recipient = params.destination.address,
+            amount = params.amount.toLong().toULong(),
             coins = coins.map { it.togemstone() },
-            sendMax = sendMax,
+            sendMax = params.isMax(),
             gas = SuiGas(
-                budget = gasBudget(coinType).toLong().toULong(),
+                budget = gasBudget(coinId).toLong().toULong(),
                 price = gasPrice.toULong(),
             )
         )
-        suiEncodeTransfer(input)
+        val data = suiEncodeTransfer(input)
+        build(params, data)
     }
 
-
-    private suspend fun encodeTokenTransfer(
-        sender: String,
-        recipient: String,
-        coinType: String,
-        gasCoinType: String,
-        value: BigInteger,
-    ) = withContext(Dispatchers.IO) {
+    override suspend fun preloadTokenTransfer(params: ConfirmParams.TransferParams.Token): SignerParams = withContext(Dispatchers.IO) {
+        val sender = params.from.address
         val getCoins = async {
-            rpcClient.coins(sender, coinType).getOrThrow().result.data
+            rpcClient.coins(sender, params.assetId.tokenId!!).getOrThrow().result.data
         }
         val getGasCoins = async {
-            rpcClient.coins(sender, gasCoinType).getOrThrow().result.data
+            rpcClient.coins(sender, coinId).getOrThrow().result.data
         }
         val getGasPrice = async { rpcClient.gasPrice(JSONRpcRequest.create(SuiMethod.GasPrice, emptyList())).getOrNull()?.result ?: "750" }
         val coins = getCoins.await()
@@ -138,17 +76,59 @@ class SuiSignerPreloader(
         val gas = gasCoins.firstOrNull() ?: throw IllegalStateException("no gas coin")
         val input = SuiTokenTransferInput(
             sender = sender,
-            recipient = recipient,
-            amount = value.toLong().toULong(),
+            recipient = params.destination.address,
+            amount = params.amount.toLong().toULong(),
             tokens = coins.map { it.togemstone() },
             gas = SuiGas(
-                budget = gasBudget(gasCoinType).toLong().toULong(),
+                budget = gasBudget(coinId).toLong().toULong(),
                 price = gasPrice.toULong(),
             ),
             gasCoin = gas.togemstone(),
         )
-        suiEncodeTokenTransfer(input)
+        val data = suiEncodeTokenTransfer(input)
+        build(params, data)
     }
+
+    override suspend fun preloadStake(params: ConfirmParams.Stake): SignerParams {
+        val data = when (params) {
+            is ConfirmParams.Stake.DelegateParams -> encodeStake(
+                sender = params.from.address,
+                validator = params.validatorId,
+                coinType = coinId,
+                value = params.amount,
+            )
+            is ConfirmParams.Stake.UndelegateParams -> encodeUnstake(
+                sender = params.from.address,
+                coinType = coinId,
+                stakeId = params.delegationId,
+            )
+            is ConfirmParams.Stake.RewardsParams,
+            is ConfirmParams.Stake.RedelegateParams,
+            is ConfirmParams.Stake.WithdrawParams -> throw IllegalArgumentException("Not supported")
+        }
+        return build(params, data)
+    }
+
+    override suspend fun preloadSwap(params: ConfirmParams.SwapParams): SignerParams {
+        val data = suiValidateAndHash(params.swapData)
+        return build(params, data)
+    }
+
+    private suspend fun build(params: ConfirmParams, data: SuiTxOutput): SignerParams {
+        val fee = feeCalculator.calculate(params.from, Base64.encode(data.txData))
+
+        return SignerParams(
+            input = params,
+            chainData = SuiChainData(
+                messageBytes = "${Base64.encode(data.txData)}_${data.hash.toHexString()}",
+                fee = fee,
+            )
+        )
+    }
+
+    override fun supported(chain: Chain): Boolean = this.chain == chain
+
+    private fun gasBudget(coinType: String): BigInteger = BigInteger.valueOf(25_000_000)
 
     private suspend fun encodeStake(
         sender: String,
@@ -201,17 +181,13 @@ class SuiSignerPreloader(
         suiEncodeUnstake(input)
     }
 
-    private fun encodeSwap(input: ConfirmParams.SwapParams): SuiTxOutput {
-        return suiValidateAndHash(input.swapData)
-    }
-
-    data class Info(
+    data class SuiChainData(
         val messageBytes: String,
         val fee: Fee,
-    ) : SignerInputInfo {
+    ) : ChainSignData {
         override fun fee(speed: TxSpeed): Fee = fee
     }
-    
+
     private fun com.wallet.core.blockchain.sui.SuiCoin.togemstone() = SuiCoin(
         coinType = coinType,
         balance = balance.toULong(),

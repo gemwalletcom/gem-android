@@ -10,7 +10,7 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class EthereumFeeHistory (
 	val reward: List<List<String>>,
-	val baseFeePerGas: List<String>
+	val baseFeePerGas: List<String>,
 )
 
 @Serializable

@@ -11,6 +11,7 @@ import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
+import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -40,14 +41,14 @@ class TestSolanaSign {
         val sign = runBlocking {
             signClient.signTransfer(
                 params = SignerParams(
-                    input = ConfirmParams.TransferParams(
+                    input = ConfirmParams.TransferParams.Token(
                         assetId = Chain.Solana.asset().id,
                         amount = BigInteger.TEN.pow(Chain.Solana.asset().decimals),
+                        from = Account(chain = Chain.Solana, address = "4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S", "", null),
                         destination = DestinationAddress("4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S"),
                     ),
-                    owner = "4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S",
                     finalAmount = BigInteger.TEN.pow(Chain.Solana.asset().decimals),
-                    info = SolanaSignerPreloader.Info(
+                    chainData = SolanaSignerPreloader.SolanaChainData(
                         blockhash = "DzfXchZJoLMG3cNftcf2sw7qatkkuwQf4xH15N5wkKAb",
                         senderTokenAddress = "",
                         recipientTokenAddress = null,

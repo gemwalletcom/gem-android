@@ -6,7 +6,7 @@ sealed class ConfirmError(message: String) : Exception(message){
 
     class Init(message: String) : ConfirmError(message)
 
-    data object CalculateFee : ConfirmError("Calculate fee error")
+    class PreloadError(message: String) : ConfirmError(message)
 
     data object TransactionIncorrect : ConfirmError("Transaction data incorrect")
 

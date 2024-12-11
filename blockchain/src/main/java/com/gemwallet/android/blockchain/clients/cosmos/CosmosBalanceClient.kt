@@ -1,6 +1,8 @@
 package com.gemwallet.android.blockchain.clients.cosmos
 
 import com.gemwallet.android.blockchain.clients.BalanceClient
+import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosBalancesService
+import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosStakeService
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Asset
@@ -13,13 +15,14 @@ import java.math.BigInteger
 
 class CosmosBalanceClient(
     private val chain: Chain,
-    private val rpcClient: CosmosRpcClient,
+    private val balancesService: CosmosBalancesService,
+    private val stakeService: CosmosStakeService,
 ) : BalanceClient {
 
     override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? = withContext(Dispatchers.IO) {
         val denom = CosmosDenom.from(chain)
 
-        val getBalances = async { rpcClient.getBalance(address).getOrNull()?.balances }
+        val getBalances = async { balancesService.getBalance(address).getOrNull()?.balances }
         val balance = getBalances.await()
             ?.filter { it.denom == denom }
             ?.map { it.amount.toBigDecimal().toBigInteger() }
@@ -30,9 +33,9 @@ class CosmosBalanceClient(
                 AssetBalance.create(chain.asset(), available =  balance.toString())
             }
             else -> {
-                val getDelegations = async { rpcClient.delegations(address).getOrNull()?.delegation_responses }
-                val getUnboundingDelegations = async { rpcClient.undelegations(address).getOrNull()?.unbonding_responses }
-                val getRewards = async { rpcClient.rewards(address).getOrNull()?.rewards }
+                val getDelegations = async { stakeService.delegations(address).getOrNull()?.delegation_responses }
+                val getUnboundingDelegations = async { stakeService.undelegations(address).getOrNull()?.unbonding_responses }
+                val getRewards = async { stakeService.rewards(address).getOrNull()?.rewards }
 
                 val delegations = getDelegations.await()
                     ?.filter { it.balance.denom == denom }
@@ -61,7 +64,7 @@ class CosmosBalanceClient(
 
     override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> {
         val balances = try {
-            rpcClient.getBalance(address).getOrNull() ?: return emptyList()
+            balancesService.getBalance(address).getOrNull() ?: return emptyList()
         } catch (_: Throwable) {
             return emptyList()
         }

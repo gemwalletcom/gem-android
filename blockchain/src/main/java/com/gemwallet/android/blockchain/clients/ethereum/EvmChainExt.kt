@@ -7,6 +7,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain
+import uniffi.gemstone.Config
 import wallet.core.jni.AnyAddress
 import wallet.core.jni.EthereumAbi
 import wallet.core.jni.EthereumAbiFunction
@@ -39,11 +40,6 @@ fun EVMChain.Companion.getDestinationAddress(
     }
 }
 
-fun EVMChain.Companion.isOpStack(chain: Chain): Boolean {
-    return when (chain) {
-        Chain.Optimism,
-        Chain.Base,
-        Chain.OpBNB -> true
-        else -> false
-    }
+fun EVMChain.isOpStack(): Boolean {
+    return Config().getEvmChainConfig(string).isOpstack
 }

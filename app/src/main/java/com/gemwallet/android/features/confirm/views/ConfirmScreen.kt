@@ -14,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -158,7 +157,7 @@ private fun ConfirmErrorInfo(state: ConfirmState) {
             text = when (state.message) {
                 is ConfirmError.Init,
                 is ConfirmError.TransactionIncorrect,
-                is ConfirmError.CalculateFee -> stringResource(R.string.confirm_fee_error)
+                is ConfirmError.PreloadError -> stringResource(R.string.confirm_fee_error)
                 is ConfirmError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_network_fee_balance, state.message.chainTitle)
                 is ConfirmError.InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, state.message.chainTitle)
                 is ConfirmError.BroadcastError ->  "${stringResource(R.string.errors_transfer_error)}: ${state.message.message ?: stringResource(R.string.errors_unknown)}"
