@@ -42,6 +42,7 @@ fun AmountScreen(
 
     if (uiModel == null) {
         LoadingScene(stringResource(id = R.string.transfer_amount_title), onCancel)
+        return
     }
 
     AnimatedContent(

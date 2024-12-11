@@ -5,12 +5,15 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Banner
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import uniffi.gemstone.Config
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,6 +35,12 @@ class BannersViewModel @Inject constructor(
             val banners = getBannersCase.getActiveBanners(wallet, asset)
             this@BannersViewModel.banners.update { banners }
         }
+    }
+
+    fun getActivationFee(asset: Asset?): String {
+        asset ?: return ""
+        val value = Config().getChainConfig(asset.id.chain.string).accountActivationFee?.toString() ?: return ""
+        return asset.format(Crypto(value))
     }
 
     fun onCancel(banner: Banner) = viewModelScope.launch {
