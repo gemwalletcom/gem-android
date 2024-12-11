@@ -1,7 +1,6 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
-import com.gemwallet.android.blockchain.clients.ethereum.services.EvmFeeService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.toHexString
@@ -12,7 +11,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.TransactionType
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
@@ -23,7 +21,6 @@ import wallet.core.jni.proto.Ethereum
 import java.math.BigInteger
 
 class OptimismGasOracle(
-    private val feeService: EvmFeeService,
     private val callService: EvmCallService,
     private val coinType: CoinType,
 ) {
@@ -32,12 +29,12 @@ class OptimismGasOracle(
         params: ConfirmParams,
         chainId: String,
         nonce: BigInteger,
+        baseFee: BigInteger,
+        priorityFee: BigInteger,
         gasLimit: BigInteger,
     ): GasFee = withContext(Dispatchers.IO) {
         val assetId = params.assetId
         val feeAssetId = AssetId(assetId.chain)
-        val basePriorityFee = async { EvmFeeCalculator.getBasePriorityFee(assetId.chain, feeService) }
-        val (baseFee, priorityFee) = basePriorityFee.await()
         val gasPrice = baseFee + priorityFee
         val minerFee = when (params.getTxType()) {
             TransactionType.Transfer -> if (assetId.type() == AssetSubtype.NATIVE && params.isMax()) gasPrice else priorityFee
@@ -86,8 +83,6 @@ class OptimismGasOracle(
         )
     }
 
-    class BaseFeeRequest(val to: String, val data: String)
-
     private suspend fun getL1Fee(data: ByteArray): BigInteger? {
         val abiFn = EthereumAbiFunction("getL1Fee").apply {
             this.addParamBytes(data, false)
@@ -96,8 +91,9 @@ class OptimismGasOracle(
         val request = JSONRpcRequest.create(
             EvmMethod.Call,
             listOf(
-                BaseFeeRequest(
-                    to = "0x420000000000000000000000000000000000000F", encodedFn.toHexString(),
+                mapOf(
+                    "to" to "0x420000000000000000000000000000000000000F",
+                    "data" to encodedFn.toHexString(),
                 ),
                 "latest",
             )

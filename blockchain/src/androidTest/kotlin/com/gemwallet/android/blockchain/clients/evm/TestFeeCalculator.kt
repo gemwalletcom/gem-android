@@ -52,6 +52,10 @@ class TestFeeCalculator {
             gasLimitRequest = request.params
             return Result.success(JSONRpcResponse(EvmRpcClient.EvmNumber(gasLimit)))
         }
+
+        override suspend fun getNonce(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmRpcClient.EvmNumber?>> {
+            return Result.success(JSONRpcResponse(EvmRpcClient.EvmNumber(BigInteger.ZERO)))
+        }
     }
 
     private class CallService : EvmCallService {
@@ -68,11 +72,15 @@ class TestFeeCalculator {
     fun testEvm_transfer_fee_calculation_network_fail_gas_limit() {
         val feeService = object : EvmFeeService {
             override suspend fun getFeeHistory(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<EthereumFeeHistory>> {
-                throw Exception("Fee history fail")
+                return Result.failure(Exception("Fee history fail"))
             }
 
             override suspend fun getGasLimit(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<EvmRpcClient.EvmNumber?>> {
-                throw Exception("Gas limit fail")
+                return Result.failure(Exception("Gas limit fail"))
+            }
+
+            override suspend fun getNonce(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmRpcClient.EvmNumber?>> {
+                return Result.failure(Exception("Nonce fail"))
             }
         }
         val callService = object : EvmCallService {
@@ -108,16 +116,16 @@ class TestFeeCalculator {
             }
             assertTrue(false)
         } catch (err: Throwable) {
-            assertEquals("Gas limit fail", err.message)
+            assertTrue("Unable to calculate base fee" == err.message || "Fail calculate gas limit" == err.message)
         }
     }
 
     @Test
-    fun test_Evm_gas_limit_transfer_calculation() {
+    fun test_Evm_fee_transfer_calculation() {
         val feeService = FeeService(
             EthereumFeeHistory(
                 reward = listOf(listOf("0x3b9aca00")),
-                baseFeePerGas = listOf("0x0", "0x0")
+                baseFeePerGas = listOf("0xa", "0xc")
             ),
             gasLimit = BigInteger.valueOf(25_000)
         )
@@ -144,9 +152,51 @@ class TestFeeCalculator {
             )
         }
         assertEquals(TxSpeed.Normal, result.speed)
-        assertEquals(BigInteger("37500000000000"), result.amount)
-        assertEquals((BigDecimal("25000") + (BigDecimal("25000") * BigDecimal("0.5"))).toBigInteger(), (result as GasFee).limit)
+        assertEquals(BigInteger("37500000450000"), result.amount)
+        assertEquals(BigInteger("1000000000"), (result as GasFee).minerFee)
+        assertEquals(BigInteger("1000000012"), result.maxGasPrice)
+        assertEquals(BigInteger("37500"), result.limit)
     }
+
+    @Test
+    fun test_Evm_fee_transfer_max_amount_calculation() {
+        val feeService = FeeService(
+            EthereumFeeHistory(
+                reward = listOf(listOf("0x3b9aca00")),
+                baseFeePerGas = listOf("0xa", "0xc")
+            ),
+            gasLimit = BigInteger.valueOf(25_000)
+        )
+        val feeCalculator = EvmFeeCalculator(
+            feeService = feeService,
+            callService = CallService(),
+            coinType = CoinType.SMARTCHAIN,
+        )
+        val result = runBlocking {
+            feeCalculator.calculate(
+                ConfirmParams.Builder(
+                    AssetId(Chain.SmartChain),
+                    Account(Chain.SmartChain, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
+                    amount = BigInteger.TEN,
+                ).transfer(
+                    destination = DestinationAddress("0x9b1DB81180c31B1b428572Be105E209b5A6222b7"),
+                    isMax = true
+                ),
+                AssetId(Chain.SmartChain),
+                "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
+                outputAmount = BigInteger.TEN,
+                null,
+                chainId = Config().getChainConfig(Chain.SmartChain.string).networkId,
+                BigInteger.ZERO,
+            )
+        }
+        assertEquals(TxSpeed.Normal, result.speed)
+        assertEquals(BigInteger("37500000450000"), result.amount)
+        assertEquals(BigInteger("1000000012"), (result as GasFee).minerFee)
+        assertEquals(BigInteger("1000000012"), result.maxGasPrice)
+        assertEquals(BigInteger("37500"), result.limit)
+    }
+
 
     @Test
     fun test_Evm_gas_limit_native_transfer_calculation() {

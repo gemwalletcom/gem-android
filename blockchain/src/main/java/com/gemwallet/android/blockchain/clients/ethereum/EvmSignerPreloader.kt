@@ -6,6 +6,8 @@ import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmFeeService
+import com.gemwallet.android.blockchain.clients.ethereum.services.getNonce
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.ext.getNetworkId
 import com.gemwallet.android.model.ChainSignData
@@ -17,18 +19,17 @@ import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 
 class EvmSignerPreloader(
     private val chain: Chain,
-    private val rpcClient: EvmRpcClient,
+    private val feeService: EvmFeeService,
     callService: EvmCallService,
 ) : NativeTransferPreloader, TokenTransferPreloader, SwapTransactionPreloader, StakeTransactionPreloader, ApprovalTransactionPreloader {
 
     private val wcCoinType = WCChainTypeProxy().invoke(chain)
-    private val feeCalculator = EvmFeeCalculator(rpcClient, callService, wcCoinType)
+    private val feeCalculator = EvmFeeCalculator(feeService, callService, wcCoinType)
 
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams =
         preload(params.assetId, params.from, params.destination().address, params.amount, params.memo, params)
@@ -66,7 +67,7 @@ class EvmSignerPreloader(
         payload: String?,
         params: ConfirmParams,
     ) = withContext(Dispatchers.IO) {
-        val nonce = rpcClient.getNonce(from.address)
+        val nonce = feeService.getNonce(from.address)
         val chainId = chain.getNetworkId()
         val fee = feeCalculator.calculate(
             params = params,

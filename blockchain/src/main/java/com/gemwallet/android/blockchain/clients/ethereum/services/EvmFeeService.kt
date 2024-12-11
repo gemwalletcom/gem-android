@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.ethereum.services
 
 import com.gemwallet.android.blockchain.clients.ethereum.EvmMethod
+import com.gemwallet.android.blockchain.clients.ethereum.EvmRpcClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmRpcClient.EvmNumber
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
@@ -9,6 +10,7 @@ import com.wallet.core.blockchain.ethereum.models.EthereumFeeHistory
 import retrofit2.http.Body
 import retrofit2.http.POST
 import java.math.BigInteger
+import kotlin.fold
 
 interface EvmFeeService {
     @POST("/")
@@ -16,6 +18,9 @@ interface EvmFeeService {
 
     @POST("/")
     suspend fun getGasLimit(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<EvmNumber?>>
+
+    @POST("/")
+    suspend fun getNonce(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmNumber?>>
 }
 
 internal suspend fun EvmFeeService.getFeeHistory(): EthereumFeeHistory? {
@@ -31,7 +36,12 @@ internal suspend fun EvmFeeService.getGasLimit(from: String, to: String, amount:
         "data" to if (data.isNullOrEmpty()) "0x" else data.append0x(),
     )
     val request = JSONRpcRequest.create(EvmMethod.GetGasLimit, listOf<Any>(transaction))
-    return getGasLimit(request).fold({ it.result?.value ?: BigInteger.ZERO}) {
-        BigInteger.ZERO
-    }
+    return getGasLimit(request).getOrNull()?.result?.value
+        ?: throw Exception("Fail calculate gas limit")
+}
+
+internal suspend fun EvmFeeService.getNonce(fromAddress: String): BigInteger {
+    val nonceParams = listOf(fromAddress, "latest")
+    return getNonce(JSONRpcRequest.create(EvmMethod.GetNonce, nonceParams))
+        .getOrNull()?.result?.value ?: throw Exception("Fail get current nonce")
 }

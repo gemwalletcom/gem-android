@@ -17,6 +17,7 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
 import wallet.core.jni.CoinType
@@ -30,7 +31,7 @@ class EvmFeeCalculator(
     coinType: CoinType
 ) {
 
-    private val optimismGasOracle = OptimismGasOracle(feeService, callService, coinType)
+    private val optimismGasOracle = OptimismGasOracle(callService, coinType)
 
     private val nativeGasLimit = BigInteger.valueOf(21_000L)
 
@@ -43,23 +44,40 @@ class EvmFeeCalculator(
         chainId: String,
         nonce: BigInteger,
     ): Fee = withContext(Dispatchers.IO) {
-        val isMaxAmount = params.isMax()
-        val feeAssetId = AssetId(params.assetId.chain)
-
-        val gasLimit = getGasLimit(assetId, params.from.address, recipient, outputAmount, payload)
+        val getGasLimit = async { getGasLimit(assetId, params.from.address, recipient, outputAmount, payload) }
+        val getBasePriorityFee = async { getBasePriorityFee(params.assetId.chain, feeService) }
+        val gasLimit = getGasLimit.await()
+        val (baseFee, priorityFee) = getBasePriorityFee.await()
 
         if (params.assetId.chain.toEVM()?.isOpStack() == true) {
-            return@withContext optimismGasOracle.estimate(params, chainId, nonce, gasLimit)
+            return@withContext optimismGasOracle.estimate(
+                params = params,
+                chainId = chainId,
+                nonce = nonce,
+                gasLimit = gasLimit,
+                baseFee = baseFee,
+                priorityFee = priorityFee,
+            )
         }
-        val (baseFee, priorityFee) = getBasePriorityFee(params.assetId.chain, feeService)
+
         val maxGasPrice = baseFee.plus(priorityFee)
         val minerFee = when (params) {
             is ConfirmParams.Stake,
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams -> priorityFee
-            is ConfirmParams.TransferParams -> if (params.assetId.type() == AssetSubtype.NATIVE && isMaxAmount) maxGasPrice else priorityFee
+            is ConfirmParams.TransferParams -> if (params.assetId.type() == AssetSubtype.NATIVE && params.isMax()) {
+                maxGasPrice
+            } else {
+                priorityFee
+            }
         }
-        GasFee(feeAssetId = feeAssetId, speed = TxSpeed.Normal, limit = gasLimit, maxGasPrice = maxGasPrice, minerFee = minerFee)
+        GasFee(
+            feeAssetId = AssetId(params.assetId.chain),
+            speed = TxSpeed.Normal,
+            limit = gasLimit,
+            maxGasPrice = maxGasPrice,
+            minerFee = minerFee,
+        )
     }
 
     private suspend fun getGasLimit(
@@ -86,19 +104,17 @@ class EvmFeeCalculator(
         }
     }
 
-    companion object {
-        internal suspend fun getBasePriorityFee(chain: Chain, feeService: EvmFeeService): Pair<BigInteger, BigInteger> {
-            val feeHistory = feeService.getFeeHistory() ?: throw Exception("Unable to calculate base fee")
+    internal suspend fun getBasePriorityFee(chain: Chain, feeService: EvmFeeService): Pair<BigInteger, BigInteger> {
+        val feeHistory = feeService.getFeeHistory() ?: throw Exception("Unable to calculate base fee")
 
-            val reward = feeHistory.reward.mapNotNull { it.firstOrNull()?.hexToBigInteger() }.maxOrNull()
-                ?: throw Exception("Unable to calculate priority fee")
+        val reward = feeHistory.reward.mapNotNull { it.firstOrNull()?.hexToBigInteger() }.maxOrNull()
+            ?: throw Exception("Unable to calculate priority fee")
 
-            val baseFee = feeHistory.baseFeePerGas.mapNotNull { it.hexToBigInteger() }.maxOrNull()
-                    ?: throw Exception("Unable to calculate base fee")
+        val baseFee = feeHistory.baseFeePerGas.mapNotNull { it.hexToBigInteger() }.maxOrNull()
+            ?: throw Exception("Unable to calculate base fee")
 
-            val defaultPriorityFee = BigInteger(Config().getEvmChainConfig(chain.string).minPriorityFee.toString()) // Long is too small for it. Don't change to BigInteger.valueOf()
-            val priorityFee = if (reward < defaultPriorityFee) defaultPriorityFee else reward
-            return Pair(baseFee, priorityFee)
-        }
+        val defaultPriorityFee = BigInteger(Config().getEvmChainConfig(chain.string).minPriorityFee.toString())
+        val priorityFee = if (reward < defaultPriorityFee) defaultPriorityFee else reward
+        return Pair(baseFee, priorityFee)
     }
 }

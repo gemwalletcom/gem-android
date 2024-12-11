@@ -7,7 +7,6 @@ enum class EvmMethod(val value: String) : JSONRpcMethod {
     GetGasLimit("eth_estimateGas"),
     GetFeeHistory("eth_feeHistory"),
     GetChainId("eth_chainId"),
-    GetNetVersion("eth_chainId"),
     GetNonce("eth_getTransactionCount"),
     Broadcast("eth_sendRawTransaction"),
     Call("eth_call"),

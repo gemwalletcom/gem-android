@@ -25,8 +25,6 @@ interface EvmRpcClient :
     EvmBalancesService,
     EvmFeeService
 {
-    @POST("/")
-    suspend fun getNonce(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmNumber?>>
 
     @POST("/")
     suspend fun broadcast(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
@@ -95,10 +93,4 @@ internal suspend fun EvmRpcClient.latestBlock(url: String): Result<JSONRpcRespon
 
 internal suspend fun EvmRpcClient.sync(url: String): Result<JSONRpcResponse<Boolean?>> {
     return sync(url, JSONRpcRequest.create(EvmMethod.Sync, emptyList()))
-}
-
-internal suspend fun EvmRpcClient.getNonce(fromAddress: String): BigInteger {
-    val nonceParams = listOf(fromAddress, "latest")
-    return getNonce(JSONRpcRequest.create(EvmMethod.GetNonce, nonceParams))
-        .fold({ it.result?.value }) { null } ?: BigInteger.ZERO
 }
