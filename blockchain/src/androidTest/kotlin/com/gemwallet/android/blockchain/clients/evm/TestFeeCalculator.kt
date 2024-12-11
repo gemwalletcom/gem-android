@@ -2,7 +2,7 @@ package com.gemwallet.android.blockchain.clients.evm
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.gemwallet.android.blockchain.clients.ethereum.EvmFeeCalculator
-import com.gemwallet.android.blockchain.clients.ethereum.EvmRpcClient
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
 import com.gemwallet.android.blockchain.clients.ethereum.StakeHub
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmFeeService
@@ -24,7 +24,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import uniffi.gemstone.Config
 import wallet.core.jni.CoinType
-import java.math.BigDecimal
 import java.math.BigInteger
 
 @RunWith(AndroidJUnit4::class)

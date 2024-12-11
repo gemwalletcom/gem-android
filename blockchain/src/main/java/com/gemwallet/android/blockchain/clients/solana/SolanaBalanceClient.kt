@@ -22,8 +22,7 @@ class SolanaBalanceClient(
                 .getOrNull()?.result?.value
         }
         val getStaked = async {
-            rpcClient.delegations(address)
-                .getOrNull()?.result?.map { it.account.lamports }
+            rpcClient.delegations(address).getOrNull()?.result?.map { it.account.lamports }
                 ?.fold(0L) { acc, value -> acc + value } ?: 0L
         }
         val (available, staked) = Pair(getAvailable.await(), getStaked.await())

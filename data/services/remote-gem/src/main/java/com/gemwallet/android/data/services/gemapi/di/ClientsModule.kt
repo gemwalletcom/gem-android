@@ -5,7 +5,7 @@ import com.gemwallet.android.blockchain.RpcClientAdapter
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosService
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinRpcClient
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosRpcClient
-import com.gemwallet.android.blockchain.clients.ethereum.EvmRpcClient
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
 import com.gemwallet.android.blockchain.clients.near.NearRpcClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaRpcClient
 import com.gemwallet.android.blockchain.clients.sui.SuiRpcClient
