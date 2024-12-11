@@ -13,7 +13,7 @@ coreKtx = "1.15.0"
 espressoCore = "3.6.1"
 firebaseMessaging = "24.1.0"
 foundation = "1.7.5"
-gradle = "8.7.2"
+gradle = "8.7.3"
 gson = "2.11.0"
 hiltAndroid = "2.52"
 hiltNavigationCompose = "1.2.0"
@@ -38,7 +38,7 @@ ui = "1.7.5"
 uiTestJunit4 = "1.7.5"
 testRunner = "1.6.2"
 ksp = "2.0.21-1.0.26"
-android-lib = "8.7.2"
+android-lib = "8.7.3"
 kotlin = "2.0.21"
 google-services = "4.4.2"
 material3AdaptiveAndroid = "1.0.0-alpha06"
@@ -121,6 +121,7 @@ camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = 
 # Images
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
+coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coilCompose" }
 
 # di
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }
