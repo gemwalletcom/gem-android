@@ -3,7 +3,6 @@ package com.gemwallet.android.data.repositoreis.assets
 import android.util.Log
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.cases.device.GetDeviceIdCase
-import com.gemwallet.android.cases.swap.GetSwapSupportChainsCase
 import com.gemwallet.android.cases.tokens.GetTokensCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
@@ -22,7 +21,9 @@ import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.exclude
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAssociatedAssetIds
+import com.gemwallet.android.ext.isSwapSupport
 import com.gemwallet.android.ext.same
+import com.gemwallet.android.ext.swapSupport
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetBalance
@@ -79,7 +80,6 @@ class AssetsRepository @Inject constructor(
     private val getTokensCase: GetTokensCase,
     private val searchTokensCase: SearchTokensCase,
     private val getDeviceIdCase: GetDeviceIdCase,
-    private val getSwapSupportChainsCase: GetSwapSupportChainsCase,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetAsset {
     private val visibleByDefault = listOf(Chain.Ethereum, Chain.Bitcoin, Chain.SmartChain, Chain.Solana)
@@ -160,7 +160,7 @@ class AssetsRepository @Inject constructor(
                     chain = it.asset.chain(),
                     isBuyEnabled = assetFull.properties.isBuyable == true,
                     isStakeEnabled = assetFull.properties.isStakeable == true,
-                    isSwapEnabled = getSwapSupportChainsCase.getSwapSupportChains().contains(it.id().chain),
+                    isSwapEnabled = it.id().chain.isSwapSupport(),
                     stakingApr = assetFull.properties.stakingApr,
                     links =  assetFull.links.let { gson.toJson(it) },
                     market = marketInfo?.market?.let { gson.toJson(it) },
@@ -246,7 +246,6 @@ class AssetsRepository @Inject constructor(
             assetsDao.searchAssetInfo(query, exclude)
         }.map { AssetInfoMapper().asDomain(it) }
         val tokensFlow = getTokensCase.getByChains(wallet.accounts.map { it.chain }, query)
-        val swapSupportChains = getSwapSupportChainsCase.getSwapSupportChains()
         return combine(assetsFlow, tokensFlow) { assets, tokens ->
             assets + tokens.mapNotNull { asset ->
                 AssetInfo(
@@ -254,7 +253,7 @@ class AssetsRepository @Inject constructor(
                     owner = wallet.getAccount(asset.id.chain) ?: return@mapNotNull null,
                     metadata = AssetMetaData(
                         isEnabled = false,
-                        isSwapEnabled = swapSupportChains.contains(asset.id.chain),
+                        isSwapEnabled = asset.id.chain.isSwapSupport(),
                         isBuyEnabled = false,
                         isSellEnabled = false,
                         isStakeEnabled = false,
@@ -284,9 +283,9 @@ class AssetsRepository @Inject constructor(
                 type = assetFull.asset.type,
                 isBuyEnabled = assetFull.properties.isBuyable == true,
                 isStakeEnabled = assetFull.properties.isStakeable == true,
+                isSwapEnabled = assetFull.asset.chain().isSwapSupport(),
                 stakingApr = assetFull.properties.stakingApr,
                 links = assetFull.links.let { gson.toJson(it) },
-//                market = assetFull.market?.let { gson.toJson(it) },
                 rank = assetFull.score.rank,
             )
         }
@@ -421,9 +420,8 @@ class AssetsRepository @Inject constructor(
     }
 
     private suspend fun syncSwapSupportChains() {
-        val chains = getSwapSupportChainsCase.getSwapSupportChains()
         assetsDao.resetSwapable()
-        assetsDao.setSwapable(chains)
+        assetsDao.setSwapable(Chain.swapSupport())
     }
 
     private suspend fun updateBalances(account: Account, tokens: List<Asset>): List<AssetBalance> {
@@ -573,6 +571,7 @@ class AssetsRepository @Inject constructor(
         symbol = asset.symbol,
         decimals = asset.decimals,
         type = asset.type,
+        isSwapEnabled = asset.chain().isSwapSupport(),
         createdAt = System.currentTimeMillis(),
     )
 }

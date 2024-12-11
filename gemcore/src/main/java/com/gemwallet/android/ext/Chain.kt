@@ -4,6 +4,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
+import uniffi.gemstone.Config
 import java.math.BigInteger
 
 fun Chain.assetType(): AssetType? {
@@ -160,3 +161,9 @@ fun Chain.toChainType(): ChainType {
         Chain.Ethereum -> ChainType.Ethereum
     }
 }
+
+fun Chain.isSwapSupport(): Boolean {
+    return Config().getChainConfig(string).isSwapSupported
+}
+
+fun Chain.Companion.swapSupport() = Chain.entries.filter { it.isSwapSupport() }
