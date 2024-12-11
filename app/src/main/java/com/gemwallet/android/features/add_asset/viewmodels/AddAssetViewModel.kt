@@ -9,63 +9,105 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.assetType
 import com.gemwallet.android.ext.filter
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.add_asset.models.AddAssetError
 import com.gemwallet.android.features.add_asset.models.AddAssetUIState
-import com.gemwallet.android.ui.components.image.getIconUrl
-import com.wallet.core.primitives.Asset
+import com.gemwallet.android.features.add_asset.models.TokenSearchState
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.collections.firstOrNull
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class AddAssetViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
 ) : ViewModel() {
 
-    private val state = MutableStateFlow(State())
+    private val state = MutableStateFlow(
+        State(
+            onSelectChain = this::selectChain,
+            isSelectChainAvailable = isSelectChainAvailable()
+        )
+    )
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, AddAssetUIState())
     var input by mutableStateOf("")
-    val chainFilter = TextFieldState()
 
-    init {
-        viewModelScope.launch {
-            val chains = getAvailableChains()
-            state.update {
-                it.copy(
-                    chains = chains,
-                    chain = chains.firstOrNull { chain -> chain == Chain.Ethereum } ?: chains.firstOrNull() ?: Chain.Ethereum
-                )
-            }
+    val chainFilter = TextFieldState()
+    val chains = snapshotFlow { chainFilter.text }.mapLatest { query ->
+        getAvailableChains().filter(query.toString().lowercase())
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val chain = MutableStateFlow(
+        getAvailableChains().let {
+            it.firstOrNull { chain -> chain == Chain.Ethereum } ?: it.firstOrNull() ?: Chain.Ethereum
         }
-        viewModelScope.launch {
-            snapshotFlow { chainFilter.text }.collectLatest { query ->
-                state.update { it.copy(chains = getAvailableChains().filter(query.toString().lowercase())) }
+    )
+
+    val addressState = mutableStateOf("")
+    val addressQuery = snapshotFlow { addressState.value.toString() }
+
+    val searchState = addressQuery.combine(chain) { address, chain ->
+        Pair(address, chain)
+    }.flatMapLatest {
+        val (address, chain) = it
+        flow {
+            if (address.isEmpty()) {
+                emit(TokenSearchState.Idle)
+                return@flow
             }
+
+            emit(TokenSearchState.Loading)
+
+            val success = assetsRepository.searchToken(AssetId(chain, address))
+
+            emit(
+                if (success) {
+                    TokenSearchState.Idle
+                } else {
+                    TokenSearchState.Error(AddAssetError.TokenNotFound)
+                }
+            )
         }
     }
+    .flowOn(Dispatchers.IO)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, TokenSearchState.Idle)
+
+    val token = combine(addressQuery, chain) { address, chain ->
+            Pair(address.toString().trim(), chain)
+        }
+        .flatMapLatest {
+            val (address, chain) = it
+            if (address.isEmpty()) {
+                return@flatMapLatest flowOf(null)
+            }
+            assetsRepository.getToken(AssetId(chain, address))
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun onQrScan() {
         state.update { it.copy(isQrScan = true) }
-    }
-
-    fun onQuery(data: String) {
-        setQrData(data)
     }
 
     fun cancelScan() {
@@ -77,13 +119,8 @@ class AddAssetViewModel @Inject constructor(
     }
 
     fun setQrData(data: String) {
-        state.update {
-            it.copy(
-                isQrScan = false,
-                address = data
-            )
-        }
-        searchToken(data)
+        addressState.value = data
+        state.update { it.copy(isQrScan = false) }
     }
 
     fun selectChain() {
@@ -95,7 +132,8 @@ class AddAssetViewModel @Inject constructor(
     }
 
     fun setChain(chain: Chain) {
-        state.update { it.copy(chain = chain, isSelectChain = false, address = "", error = AddAssetError.None) }
+        this.chain.update { chain }
+        state.update { it.copy(isSelectChain = false) }
     }
 
     fun addAsset(onFinish: () -> Unit) = viewModelScope.launch {
@@ -104,50 +142,26 @@ class AddAssetViewModel @Inject constructor(
             val session = sessionRepository.getSession() ?: return@async
             assetsRepository.switchVisibility(
                 walletId = session.wallet.id,
-                owner = session.wallet.getAccount(state.value.chain) ?: return@async,
-                assetId = state.value.asset?.id ?: return@async,
+                owner = session.wallet.getAccount(chain.value) ?: return@async,
+                assetId = token.value?.id ?: return@async,
                 visibility = true,
                 currency = session.currency
             )
         }.await()
     }
-
-    private fun searchToken(rawAddress: String) {
-        val address = rawAddress.trim()
-        if (address.isEmpty()) {
-            return
-        }
-        state.update { it.copy(isLoading = true) }
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                val asset = assetsRepository.getAssetByTokenId(state.value.chain, address)
-                state.update {
-                    it.copy(
-                        asset = asset,
-                        address = address,
-                        error = if (asset == null) AddAssetError.TokenNotFound else AddAssetError.None,
-                        isLoading = false,
-                    )
-                }
-            }
-        }
-    }
-
+    
     private fun getAvailableChains(): List<Chain> {
         val wallet = sessionRepository.getSession()?.wallet ?: return emptyList()
         return wallet.accounts.map { it.chain }.filter { it.assetType() != null }
     }
 
+    fun isSelectChainAvailable(): Boolean = getAvailableChains().size > 1
+
     private data class State(
-        val chains: List<Chain> = emptyList(),
-        val chain: Chain = Chain.Ethereum,
         val isQrScan: Boolean = false,
-        val address: String = "",
-        val asset: Asset? = null,
-        val isLoading: Boolean = false,
         val isSelectChain: Boolean = false,
         val isSelectChainAvailable: Boolean = true,
-        val error: AddAssetError = AddAssetError.None,
+        val onSelectChain: (() -> Unit)?,
     ) {
         fun toUIState(): AddAssetUIState {
             return AddAssetUIState(
@@ -156,14 +170,7 @@ class AddAssetViewModel @Inject constructor(
                     isSelectChain -> AddAssetUIState.Scene.SelectChain
                     else -> AddAssetUIState.Scene.Form
                 },
-                networkIcon = chain.getIconUrl(),
-                networkTitle = chain.asset().name,
-                chains = chains,
-                chain = chain,
-                address = address,
-                asset = asset,
-                isLoading = isLoading,
-                error = error,
+                onSelectChain = onSelectChain,
             )
         }
     }

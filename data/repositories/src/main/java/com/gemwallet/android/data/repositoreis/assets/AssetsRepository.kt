@@ -223,6 +223,18 @@ class AssetsRepository @Inject constructor(
             }.filterNotNull()
         }
 
+
+    suspend fun searchToken(assetId: AssetId): Boolean {
+        return searchTokensCase.search(assetId)
+    }
+
+    suspend fun getToken(assetId: AssetId): Flow<Asset?> = withContext(Dispatchers.IO) {
+        assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
+            .map { AssetInfoMapper().asDomain(listOf(it)).firstOrNull() }
+            .map { it ?: getTokensCase.assembleAssetInfo(assetId) }
+            .map { it?.asset }
+    }
+
     suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo> = withContext(Dispatchers.IO) {
         assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
             .map { AssetInfoMapper().asDomain(listOf(it)).firstOrNull() }
@@ -300,12 +312,6 @@ class AssetsRepository @Inject constructor(
         }
         balancesJob.await()
         pricesJob.await()
-    }
-
-    suspend fun getAssetByTokenId(chain: Chain, address: String): Asset? = withContext(Dispatchers.IO) {
-        val assetId = AssetId(chain, address)
-        searchTokensCase.search(assetId)
-        getTokensCase.getByIds(listOf(assetId)).firstOrNull()
     }
 
     fun invalidateDefault(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {

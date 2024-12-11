@@ -40,12 +40,12 @@ class TokensRepository (
             .map { assets -> assets.map(mapper::asEntity) }
     }
 
-    override suspend fun search(query: String) = withContext(Dispatchers.IO) {
+    override suspend fun search(query: String): Boolean = withContext(Dispatchers.IO) {
         if (query.isEmpty()) {
-            return@withContext
+            return@withContext false
         }
         val tokens = gemApiClient.search(query).getOrNull()
-        if (tokens.isNullOrEmpty()) {
+        val assets = if (tokens.isNullOrEmpty()) {
             val assets = getTokenClients.map {
                 async {
                     try {
@@ -63,21 +63,25 @@ class TokensRepository (
             .mapNotNull { it }
             .map { AssetFull(asset = it, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false)) }
             addTokens(assets)
+            assets
         } else {
-            addTokens(tokens.filter { it.asset.id != null })
+            val assets = tokens.filter { it.asset.id != null }
+            addTokens(assets)
+            assets
         }
+        assets.isNotEmpty()
     }
 
-    override suspend fun search(assetId: AssetId) {
-        val tokenId = assetId.tokenId ?: return
+    override suspend fun search(assetId: AssetId): Boolean {
+        val tokenId = assetId.tokenId ?: return false
         val asset = getTokenClients
             .firstOrNull { it.supported(assetId.chain) && it.isTokenQuery(tokenId) }
             ?.getTokenData(tokenId)
         if (asset == null) {
-            search(tokenId)
-            return
+            return search(tokenId)
         }
         addTokens(listOf(AssetFull(asset, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false))))
+        return true
     }
 
     override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
