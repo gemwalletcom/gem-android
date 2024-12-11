@@ -57,7 +57,6 @@ class EvmSignClient(
             else -> {}
         }
         val meta = params.chainData as EvmSignerPreloader.EvmChainData
-        val fee = meta.fee() as? GasFee ?: throw IllegalArgumentException()
         val coinType = WCChainTypeProxy().invoke(chain)
         val input = params.input
         val amount = when (input) {
@@ -76,7 +75,7 @@ class EvmSignClient(
             },
             amount = amount,
             tokenAmount = params.finalAmount,
-            fee = fee,
+            fee = meta.gasGee(),
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.input.destination()?.address ?: "",
