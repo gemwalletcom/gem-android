@@ -32,7 +32,7 @@ class SolanaBalanceClient(
 
         available ?: return@withContext null
 
-        AssetBalance.create(chain.asset(), available.toString(), staked.toString())
+        AssetBalance.create(chain.asset(), available.toString(), staked = staked.toString())
     }
 
     override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> {
