@@ -40,6 +40,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import javax.inject.Inject
 import kotlin.collections.map
 
@@ -120,13 +121,13 @@ class AssetsViewModel @Inject constructor(
 
     private fun calcWalletInfo(wallet: Wallet, currency: Currency, assets: List<AssetInfo>): WalletInfoUIState? {
         val (totalValue, changedValue) = assets.map {
-            val current = it.balance.fiatTotalAmount
-            val changed = current * ((it.price?.price?.priceChangePercentage24h ?: 0.0) / 100)
+            val current = it.balance.fiatTotalAmount.toBigDecimal()
+            val changed = current * ((it.price?.price?.priceChangePercentage24h ?: 0.0) / 100).toBigDecimal()
             Pair(current, changed)
-        }.fold(Pair(0.0, 0.0)) { acc, pair ->
+        }.fold(Pair(BigDecimal.ZERO, BigDecimal.ZERO)) { acc, pair ->
             Pair(acc.first + pair.first, acc.second + pair.second)
         }
-        val changedPercentages = (changedValue / (totalValue / 100.0)).let {
+        val changedPercentages = (changedValue.toDouble() / (totalValue.toDouble() / 100.0)).let {
             if (it.isNaN()) 0.0 else it
         }
         val icon = when (wallet.type) {
