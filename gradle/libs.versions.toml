@@ -121,6 +121,7 @@ camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = 
 # Images
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
+coil-svg = { module = "io.coil-kt.coil3:coil-svg", version.ref = "coilCompose" }
 
 # di
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hiltAndroid" }

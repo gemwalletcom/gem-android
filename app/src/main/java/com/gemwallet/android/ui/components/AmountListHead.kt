@@ -125,15 +125,15 @@ internal fun HeaderIcon(
     if (iconModel == null) { return }
     Box {
         AsyncImage(
-            modifier = Modifier.size(iconSize),
+            size = iconSize,
             model = iconModel,
             placeholderText = placeholder,
             contentDescription = "header_icon"
         )
         if (supportIconUrl != null) {
             AsyncImage(
+                size = 24.dp,
                 modifier = Modifier
-                    .size(24.dp)
                     .align(Alignment.BottomEnd)
                     .border(0.5.dp, color = MaterialTheme.colorScheme.surface, shape = CircleShape),
                 model = supportIconUrl,

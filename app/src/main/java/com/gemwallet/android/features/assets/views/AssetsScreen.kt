@@ -217,7 +217,6 @@ private fun AssetItem(
     item: AssetItemUIModel,
     longPressState: MutableState<AssetId?>,
     modifier: Modifier = Modifier,
-//    iconModifier: Modifier = Modifier,
     isPinned: Boolean = false,
     onAssetClick: (AssetId) -> Unit,
     onAssetHide: (AssetId) -> Unit,
@@ -279,11 +278,7 @@ private fun AssetsTopBar(
             Box {
                 TextButton(onClick = onShowWallets) {
                     Row(verticalAlignment = Alignment.CenterVertically ) {
-                        AsyncImage(
-                            model = walletInfo.icon,
-                            placeholderText = null,
-                            modifier = Modifier.size(24.dp),
-                        )
+                        AsyncImage(model = walletInfo.icon, size = 24.dp)
                         Spacer(modifier = Modifier.size(8.dp))
                         Text(
                             text = walletInfo.name,

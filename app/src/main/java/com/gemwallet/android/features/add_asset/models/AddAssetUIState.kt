@@ -1,19 +1,8 @@
 package com.gemwallet.android.features.add_asset.models
 
-import com.wallet.core.primitives.Asset
-import com.wallet.core.primitives.Chain
-
 class AddAssetUIState(
     val scene: Scene = Scene.Form,
-    val chain: Chain = Chain.Ethereum,
-    val networkTitle: String = "",
-    val networkIcon: String = "",
-    val address: String = "",
-    val asset: Asset? = null,
-    val isSelectChainAvailable: Boolean = true,
-    val isLoading: Boolean = false,
-    val error: AddAssetError = AddAssetError.None,
-    val chains: List<Chain> = emptyList()
+    val onSelectChain: (() -> Unit)? = null,
 ) {
     enum class Scene {
         QrScanner,
@@ -22,3 +11,8 @@ class AddAssetUIState(
     }
 }
 
+sealed interface TokenSearchState {
+    object Idle : TokenSearchState
+    object Loading : TokenSearchState
+    class Error(val message: AddAssetError) : TokenSearchState
+}

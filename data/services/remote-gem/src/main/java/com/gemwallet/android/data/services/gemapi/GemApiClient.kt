@@ -13,6 +13,7 @@ import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.PriceData
 import com.wallet.core.primitives.Subscription
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HTTP
@@ -50,16 +51,16 @@ interface GemApiClient {
     suspend fun resolve(@Path("domain") domain: String, @Query("chain") chain: String): Result<NameRecord>
 
     @POST("/v1/devices")
-    suspend fun registerDevice(@Body request: Device): Result<Device>
+    suspend fun registerDevice(@Body request: Device): Response<Device>
 
     @GET("/v1/devices/{device_id}")
-    suspend fun getDevice(@Path("device_id") deviceId: String): Result<Device>
+    suspend fun getDevice(@Path("device_id") deviceId: String): Response<Device>
 
     @PUT("/v1/devices/{device_id}")
-    suspend fun updateDevice(@Path("device_id") deviceId: String, @Body request: Device): Result<Device>
+    suspend fun updateDevice(@Path("device_id") deviceId: String, @Body request: Device): Response<Device>
 
     @GET("/v1/subscriptions/{device_id}")
-    suspend fun getSubscriptions(@Path("device_id") deviceId: String): Result<List<Subscription>>
+    suspend fun getSubscriptions(@Path("device_id") deviceId: String): Response<List<Subscription>>
 
     @HTTP(method = "DELETE", path = "/v1/subscriptions/{device_id}", hasBody = true)
     suspend fun deleteSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Result<Any>
