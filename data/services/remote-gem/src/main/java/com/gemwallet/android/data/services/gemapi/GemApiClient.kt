@@ -51,13 +51,13 @@ interface GemApiClient {
     suspend fun resolve(@Path("domain") domain: String, @Query("chain") chain: String): Result<NameRecord>
 
     @POST("/v1/devices")
-    suspend fun registerDevice(@Body request: Device): Result<Device>
+    suspend fun registerDevice(@Body request: Device): Response<Device>
 
     @GET("/v1/devices/{device_id}")
-    suspend fun getDevice(@Path("device_id") deviceId: String): Result<Device>
+    suspend fun getDevice(@Path("device_id") deviceId: String): Response<Device>
 
     @PUT("/v1/devices/{device_id}")
-    suspend fun updateDevice(@Path("device_id") deviceId: String, @Body request: Device): Result<Device>
+    suspend fun updateDevice(@Path("device_id") deviceId: String, @Body request: Device): Response<Device>
 
     @GET("/v1/subscriptions/{device_id}")
     suspend fun getSubscriptions(@Path("device_id") deviceId: String): Response<List<Subscription>>
