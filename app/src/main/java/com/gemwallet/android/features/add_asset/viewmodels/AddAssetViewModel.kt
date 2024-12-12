@@ -149,7 +149,7 @@ class AddAssetViewModel @Inject constructor(
             )
         }.await()
     }
-    
+
     private fun getAvailableChains(): List<Chain> {
         val wallet = sessionRepository.getSession()?.wallet ?: return emptyList()
         return wallet.accounts.map { it.chain }.filter { it.assetType() != null }

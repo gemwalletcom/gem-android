@@ -125,8 +125,11 @@ class DeviceRepository(
             }
         }
 
-        val result = gemApiClient.getSubscriptions(deviceId)
-        val remoteSubscriptions = result.getOrNull() ?: emptyList()
+        val remoteSubscriptions = try {
+            gemApiClient.getSubscriptions(deviceId).body() ?: throw Exception()
+        } catch (_: Exception) {
+            emptyList()
+        }
         remoteSubscriptions.forEach {
             subscriptionsIndex.remove("${it.chain.string}_${it.address}_${it.wallet_index}")
         }
