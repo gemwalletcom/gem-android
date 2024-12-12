@@ -16,7 +16,7 @@ class TonGetTokenClient(
             id = AssetId(chain, tokenId),
             name = data.name ?: return null,
             symbol = data.symbol ?: return null,
-            decimals = data.decimals.toIntOrNull() ?: return null,
+            decimals = data.decimals?.toIntOrNull() ?: return null,
             type = AssetType.JETTON,
         )
     }
