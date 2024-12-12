@@ -4,9 +4,12 @@ import com.gemwallet.android.blockchain.clients.solana.models.SolanaArrayData
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaInfo
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaParsedData
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaParsedSplTokenInfo
+import com.gemwallet.android.blockchain.clients.solana.models.SolanaTokenOwner
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaAccountsService
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaBalancesService
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaStakeService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
-import com.wallet.core.blockchain.solana.models.SolanaBalance
 import com.wallet.core.blockchain.solana.models.SolanaBalanceValue
 import com.wallet.core.blockchain.solana.models.SolanaBlockhashResult
 import com.wallet.core.blockchain.solana.models.SolanaEpoch
@@ -22,12 +25,11 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.Url
 
-interface SolanaRpcClient {
-    @POST("/")
-    suspend fun getBalance(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SolanaBalance>>
-
-    @POST("/")
-    suspend fun getTokenAccountByOwner(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<List<SolanaTokenAccount>>>>
+interface SolanaRpcClient :
+    SolanaAccountsService,
+    SolanaBalancesService,
+    SolanaStakeService
+{
 
     @POST("/")
     suspend fun getAccountInfoSpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaParsedData<SolanaInfo<SolanaParsedSplTokenInfo>>>>>
@@ -37,9 +39,6 @@ interface SolanaRpcClient {
 
     @POST("/")
     suspend fun getAccountInfoMpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaArrayData<String>>>>
-
-    @POST("/")
-    suspend fun getTokenBalance(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SolanaValue<SolanaBalanceValue>>>
 
     @POST("/")
     suspend fun rentExemption(@Body request: JSONRpcRequest<List<Int>>): Result<JSONRpcResponse<Int>>
@@ -56,15 +55,6 @@ interface SolanaRpcClient {
     @POST("/")
     suspend fun transaction(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaTransaction>>
 
-    @POST("/")
-    suspend fun validators(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValidators>>
-
-    @POST("/")
-    suspend fun delegations(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<List<SolanaTokenAccountResult<SolanaStakeAccount>>>>
-
-    @POST("/")
-    suspend fun epoch(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SolanaEpoch>>
-
     @POST
     suspend fun health(@Url url: String,@Body request: JSONRpcRequest<List<String>>): Response<JSONRpcResponse<String>>
 
@@ -73,44 +63,6 @@ interface SolanaRpcClient {
 
     @POST
     suspend fun genesisHash(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
-}
-
-class SolanaTokenOwner(val owner: String)
-
-suspend fun SolanaRpcClient.getTokenAccountByOwner(owner: String, tokenId: String): String? {
-    val accountRequest = JSONRpcRequest.create(
-        method = SolanaMethod.GetTokenAccountByOwner,
-        params = listOf(
-            owner,
-            mapOf("mint" to tokenId),
-            mapOf("encoding" to "jsonParsed"),
-        )
-    )
-    return getTokenAccountByOwner(accountRequest).getOrNull()?.result?.value?.firstOrNull()?.pubkey
-}
-
-suspend fun SolanaRpcClient.delegations(
-    owner: String,
-): Result<JSONRpcResponse<List<SolanaTokenAccountResult<SolanaStakeAccount>>>> {
-    val request = JSONRpcRequest.create(
-        SolanaMethod.GetDelegations,
-        listOf(
-            "Stake11111111111111111111111111111111111111",
-            mapOf(
-                "encoding" to "jsonParsed",
-                "commitment" to "finalized",
-                "filters" to listOf(
-                    mapOf(
-                        "memcmp" to mapOf(
-                            "bytes" to owner,
-                            "offset" to 44,
-                        )
-                    )
-                )
-            )
-        )
-    )
-    return delegations(request)
 }
 
 suspend fun SolanaRpcClient.getPriorityFees(): List<SolanaPrioritizationFee> {

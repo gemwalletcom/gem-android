@@ -5,6 +5,8 @@ import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.clients.solana.SolanaSignerPreloader.SolanaChainData
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaAccountsService
+import com.gemwallet.android.blockchain.clients.solana.services.getTokenAccountByOwner
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
@@ -21,6 +23,7 @@ import uniffi.gemstone.Config
 class SolanaSignerPreloader(
     private val chain: Chain,
     private val rpcClient: SolanaRpcClient,
+    private val accountsService: SolanaAccountsService,
 ) : NativeTransferPreloader, TokenTransferPreloader, SwapTransactionPreloader, StakeTransactionPreloader {
 
     private val feeCalculator = SolanaFeeCalculator(rpcClient)
@@ -31,8 +34,8 @@ class SolanaSignerPreloader(
 
     override suspend fun preloadTokenTransfer(params: ConfirmParams.TransferParams.Token): SignerParams  = withContext(Dispatchers.IO) {
         val tokenId = params.assetId.tokenId!!
-        val senderTokenAddressJob = async { rpcClient.getTokenAccountByOwner(params.from.address, tokenId) }
-        val recipientTokenAddressJob = async { rpcClient.getTokenAccountByOwner(params.destination.address, tokenId) }
+        val senderTokenAddressJob = async { accountsService.getTokenAccountByOwner(params.from.address, tokenId) }
+        val recipientTokenAddressJob = async { accountsService.getTokenAccountByOwner(params.destination.address, tokenId) }
         val tokenProgramJob = async {
             val owner = rpcClient.getTokenInfo(tokenId)
 

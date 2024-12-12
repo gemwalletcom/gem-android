@@ -1,7 +1,10 @@
 package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.StakeClient
-import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaStakeService
+import com.gemwallet.android.blockchain.clients.solana.services.delegations
+import com.gemwallet.android.blockchain.clients.solana.services.epoch
+import com.gemwallet.android.blockchain.clients.solana.services.validators
 import com.gemwallet.android.ext.asset
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.DelegationBase
@@ -14,20 +17,10 @@ import java.math.BigInteger
 
 class SolanaStakeClient(
     private val chain: Chain,
-    private val rpcClient: SolanaRpcClient
+    private val stakeService: SolanaStakeService,
 ): StakeClient {
     override suspend fun getValidators(chain: Chain, apr: Double): List<DelegationValidator> {
-        return rpcClient.validators(
-            JSONRpcRequest.create(
-                SolanaMethod.GetValidators,
-                listOf(
-                    mapOf(
-                        "commitment" to "finalized",
-                        "keepUnstakedDelinquents" to false
-                    )
-                )
-            )
-        ).getOrNull()?.result?.current?.map {
+        return stakeService.validators()?.map {
             val isActive = it.epochVoteAccount
             DelegationValidator(
                 chain = chain,
@@ -41,11 +34,8 @@ class SolanaStakeClient(
     }
 
     override suspend fun getStakeDelegations(chain: Chain, address: String, apr: Double): List<DelegationBase> = withContext(Dispatchers.IO) {
-        val getEpoch = async {
-            rpcClient.epoch(JSONRpcRequest.create(SolanaMethod.GetEpoch, emptyList()))
-                .getOrNull()?.result
-        }
-        val getDelegations = async { rpcClient.delegations(address).getOrNull()?.result }
+        val getEpoch = async { stakeService.epoch() }
+        val getDelegations = async { stakeService.delegations(address) }
         val epoch = getEpoch.await() ?: return@withContext emptyList()
         val delegations = getDelegations.await() ?: return@withContext emptyList()
         val nextEpoch = System.currentTimeMillis() + ((epoch.slotsInEpoch - epoch.slotIndex) * 420)
