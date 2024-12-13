@@ -25,5 +25,7 @@ enum class FeeUnitType(val string: String) {
 	satB("satB"),
 	@SerialName("gwei")
 	gwei("gwei"),
+	@SerialName("native")
+	native("native"),
 }
 
