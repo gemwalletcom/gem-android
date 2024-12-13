@@ -7,6 +7,7 @@ import com.gemwallet.android.blockchain.clients.solana.models.SolanaParsedSplTok
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaTokenOwner
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaAccountsService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaBalancesService
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaFeeService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaStakeService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
@@ -28,9 +29,9 @@ import retrofit2.http.Url
 interface SolanaRpcClient :
     SolanaAccountsService,
     SolanaBalancesService,
-    SolanaStakeService
+    SolanaStakeService,
+    SolanaFeeService
 {
-
     @POST("/")
     suspend fun getAccountInfoSpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaParsedData<SolanaInfo<SolanaParsedSplTokenInfo>>>>>
 
@@ -41,13 +42,7 @@ interface SolanaRpcClient :
     suspend fun getAccountInfoMpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaArrayData<String>>>>
 
     @POST("/")
-    suspend fun rentExemption(@Body request: JSONRpcRequest<List<Int>>): Result<JSONRpcResponse<Int>>
-
-    @POST("/")
     suspend fun getBlockhash(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SolanaBlockhashResult>>
-
-    @POST("/")
-    suspend fun getPriorityFees(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<List<SolanaPrioritizationFee>>>
 
     @POST("/")
     suspend fun broadcast(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<String>>
@@ -63,11 +58,6 @@ interface SolanaRpcClient :
 
     @POST
     suspend fun genesisHash(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
-}
-
-suspend fun SolanaRpcClient.getPriorityFees(): List<SolanaPrioritizationFee> {
-    val request = JSONRpcRequest.create(SolanaMethod.GetPriorityFee, listOf<String>())
-    return getPriorityFees(request).getOrNull()?.result ?: throw Exception()
 }
 
 suspend fun SolanaRpcClient.health(url: String): Response<JSONRpcResponse<String>> {

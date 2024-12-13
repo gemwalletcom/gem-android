@@ -1,5 +1,8 @@
 package com.gemwallet.android.blockchain.clients.solana
 
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaFeeService
+import com.gemwallet.android.blockchain.clients.solana.services.getPriorityFees
+import com.gemwallet.android.blockchain.clients.solana.services.rentExemption
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.ConfirmParams
@@ -12,7 +15,7 @@ import com.wallet.core.primitives.Chain
 import kotlin.math.max
 
 class SolanaFeeCalculator(
-    private val rpcClient: SolanaRpcClient,
+    private val feeService: SolanaFeeService
 ) {
 
     private val staticBaseFee = 5_000L
@@ -48,16 +51,14 @@ class SolanaFeeCalculator(
     }
 
     private suspend fun calculate(gasLimit: Long, multipleOf: Long): GasFee {
-        val priorityFees = rpcClient.getPriorityFees()
+        val priorityFees = feeService.getPriorityFees()
         val minerFee = if (priorityFees.isEmpty()) {
             multipleOf
         } else {
             val averagePriorityFee = priorityFees.map { it.prioritizationFee }.fold(0) { acc, i -> acc + i } / priorityFees.size
             max(((averagePriorityFee + multipleOf - 1) / multipleOf) * multipleOf, multipleOf)
         }
-
-        val tokenAccountCreation = rpcClient.rentExemption(JSONRpcRequest(id = 1, method = SolanaMethod.RentExemption.value, params = listOf(tokenAccountSize)))
-            .getOrNull()?.result?.toBigInteger() ?: throw Exception("Can't get fee")
+        val tokenAccountCreation = feeService.rentExemption(tokenAccountSize)
         val totalFee = staticBaseFee + (minerFee * gasLimit / 1_000_000)
         return GasFee(
             feeAssetId = AssetId(Chain.Solana),
