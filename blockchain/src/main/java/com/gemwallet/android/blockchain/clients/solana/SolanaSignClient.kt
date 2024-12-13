@@ -181,6 +181,9 @@ class SolanaSignClient(
             this.txEncoding = Solana.Encoding.Base64
         }.build()
         val output: Solana.SigningOutput = AnySigner.sign(signingInput, CoinType.SOLANA, Solana.SigningOutput.parser())
+        if (!output.errorMessage.isNullOrEmpty()) {
+            throw Exception(output.errorMessage)
+        }
         return output.encoded
     }
 
