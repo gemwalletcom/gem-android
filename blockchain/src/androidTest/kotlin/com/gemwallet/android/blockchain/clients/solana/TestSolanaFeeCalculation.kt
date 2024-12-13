@@ -1,12 +1,8 @@
 package com.gemwallet.android.blockchain.clients.solana
 
-import com.gemwallet.android.blockchain.clients.solana.services.SolanaFeeService
 import com.gemwallet.android.blockchain.includeLibs
-import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
-import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
-import com.wallet.core.blockchain.solana.models.SolanaPrioritizationFee
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -22,23 +18,9 @@ class TestSolanaFeeCalculation {
         }
     }
 
-    private class TestFeeService(
-        private val fees: List<Int> = listOf(100000000, 2000000000),
-        private val rentExemption: Int = 30,
-    ) : SolanaFeeService {
-
-        override suspend fun rentExemption(request: JSONRpcRequest<List<Int>>): Result<JSONRpcResponse<Int>> {
-            return Result.success(JSONRpcResponse(rentExemption))
-        }
-
-        override suspend fun getPriorityFees(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<List<SolanaPrioritizationFee>>> {
-            return Result.success(JSONRpcResponse(fees.map { SolanaPrioritizationFee(it) }))
-        }
-    }
-
     @Test
     fun testSolana_calculate_native_fee() {
-        val feeCalculator = SolanaFeeCalculator(TestFeeService())
+        val feeCalculator = SolanaFeeCalculator(TestSolanaFeeService())
 
         val result = runBlocking {
             feeCalculator.calculate(
@@ -58,7 +40,7 @@ class TestSolanaFeeCalculation {
 
     @Test
     fun testSolana_calculate_native_fee_without_priority_fee() {
-        val feeCalculator = SolanaFeeCalculator(TestFeeService(fees = emptyList()))
+        val feeCalculator = SolanaFeeCalculator(TestSolanaFeeService(fees = emptyList()))
 
         val result = runBlocking {
             feeCalculator.calculate(
@@ -78,7 +60,7 @@ class TestSolanaFeeCalculation {
 
     @Test
     fun testSolana_calculate_native_fee_without_create() {
-        val feeCalculator = SolanaFeeCalculator(TestFeeService(fees = emptyList(), rentExemption = 0))
+        val feeCalculator = SolanaFeeCalculator(TestSolanaFeeService(fees = emptyList(), rentExemption = 0))
 
         val result = runBlocking {
             feeCalculator.calculate(
@@ -98,7 +80,7 @@ class TestSolanaFeeCalculation {
 
     @Test
     fun testSolana_calculate_token_fee_without_create() {
-        val feeCalculator = SolanaFeeCalculator(TestFeeService(listOf(100, 200)))
+        val feeCalculator = SolanaFeeCalculator(TestSolanaFeeService(listOf(100, 200)))
 
         val result = runBlocking {
             feeCalculator.calculate(

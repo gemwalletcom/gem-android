@@ -8,6 +8,7 @@ import com.gemwallet.android.blockchain.clients.solana.models.SolanaTokenOwner
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaAccountsService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaBalancesService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaFeeService
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaNetworkInfoService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaStakeService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
@@ -30,19 +31,14 @@ interface SolanaRpcClient :
     SolanaAccountsService,
     SolanaBalancesService,
     SolanaStakeService,
-    SolanaFeeService
+    SolanaFeeService,
+    SolanaNetworkInfoService
 {
     @POST("/")
     suspend fun getAccountInfoSpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaParsedData<SolanaInfo<SolanaParsedSplTokenInfo>>>>>
 
     @POST("/")
-    suspend fun getTokenInfo(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaTokenOwner>>>
-
-    @POST("/")
     suspend fun getAccountInfoMpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaArrayData<String>>>>
-
-    @POST("/")
-    suspend fun getBlockhash(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SolanaBlockhashResult>>
 
     @POST("/")
     suspend fun broadcast(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<String>>
@@ -72,25 +68,3 @@ suspend fun SolanaRpcClient.genesisHash(url: String): Result<JSONRpcResponse<Str
     return genesisHash(url, JSONRpcRequest.create(SolanaMethod.GetGenesisHash, emptyList()))
 }
 
-suspend fun SolanaRpcClient.getBlockhash(): String {
-    val blockhash = getBlockhash(JSONRpcRequest.create(SolanaMethod.GetLatestBlockhash, emptyList()))
-        .getOrNull()?.result?.value?.blockhash
-    if (blockhash.isNullOrEmpty()) {
-        throw Exception("Can't get latest blockhash")
-    }
-    return blockhash
-}
-
-suspend fun SolanaRpcClient.getTokenInfo(tokenId: String): String? {
-    return getTokenInfo(
-        JSONRpcRequest(
-            SolanaMethod.GetAccountInfo.value,
-            params = listOf(
-                tokenId,
-                mapOf(
-                    "encoding" to "jsonParsed"
-                ),
-            )
-            )
-    ).getOrNull()?.result?.value?.owner
-}

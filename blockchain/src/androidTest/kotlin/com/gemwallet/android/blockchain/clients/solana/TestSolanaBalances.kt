@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.solana
 
-import com.gemwallet.android.blockchain.clients.solana.services.SolanaAccountsService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaBalancesService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaStakeService
 import com.gemwallet.android.blockchain.includeLibs
@@ -17,7 +16,6 @@ import com.wallet.core.blockchain.solana.models.SolanaStakeAccountDataParsedInfo
 import com.wallet.core.blockchain.solana.models.SolanaStakeAccountDataParsedInfoMeta
 import com.wallet.core.blockchain.solana.models.SolanaStakeAccountDataParsedInfoStake
 import com.wallet.core.blockchain.solana.models.SolanaStakeAccountDataParsedInfoStakeDelegation
-import com.wallet.core.blockchain.solana.models.SolanaTokenAccount
 import com.wallet.core.blockchain.solana.models.SolanaTokenAccountResult
 import com.wallet.core.blockchain.solana.models.SolanaValidator
 import com.wallet.core.blockchain.solana.models.SolanaValidators
@@ -70,25 +68,6 @@ class TestSolanaBalances {
         }
     }
 
-    private class TestAccountsService : SolanaAccountsService {
-        var tokenAccountRequest: JSONRpcRequest<List<Any>>? = null
-
-        override suspend fun getTokenAccountByOwner(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<List<SolanaTokenAccount>>>> {
-            tokenAccountRequest = request
-            return Result.success(
-                JSONRpcResponse(
-                    SolanaValue(
-                        listOf(
-                            SolanaTokenAccount(
-                                (request.params[1] as Map<*, *>)["mint"].toString()
-                            ),
-                        )
-                    )
-                )
-            )
-        }
-    }
-
     private class TestStakeService(
         private val delegationsResponse: JSONRpcResponse<List<SolanaTokenAccountResult<SolanaStakeAccount>>> = JSONRpcResponse(emptyList())
     ) : SolanaStakeService {
@@ -130,7 +109,7 @@ class TestSolanaBalances {
 
     @Test
     fun testSolana_balance_native() {
-        val accountsService = TestAccountsService()
+        val accountsService = TestSolanaAccountsService()
         val balancesService = TestBalancesService()
         val stakeService = TestStakeService()
 
@@ -159,7 +138,7 @@ class TestSolanaBalances {
 
     @Test
     fun testSolana_balance_token() {
-        val accountsService = TestAccountsService()
+        val accountsService = TestSolanaAccountsService()
         val balancesService = TestBalancesService()
         val stakeService = TestStakeService()
 
@@ -201,7 +180,7 @@ class TestSolanaBalances {
 
     @Test
     fun testSolana_balance_native_width_single_stake() {
-        val accountsService = TestAccountsService()
+        val accountsService = TestSolanaAccountsService()
         val balancesService = TestBalancesService()
         val stakeService = TestStakeService(
             delegationsResponse = JSONRpcResponse(
@@ -253,7 +232,7 @@ class TestSolanaBalances {
 
     @Test
     fun testSolana_balance_native_width_multi_stake() {
-        val accountsService = TestAccountsService()
+        val accountsService = TestSolanaAccountsService()
         val balancesService = TestBalancesService()
         val stakeService = TestStakeService(
             delegationsResponse = JSONRpcResponse(
