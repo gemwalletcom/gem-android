@@ -243,7 +243,6 @@ fun WalletNavGraph(
 
             transactionScreen(
                 onCancel = onCancel,
-                openNetwork = navController::navigateToAssetScreen
             )
         }
 

@@ -279,7 +279,7 @@ private fun LazyListScope.networkInfo(
                     label = stringResource(id = R.string.transfer_network),
                     data = uiState.networkTitle,
                     trailing = { AsyncImage(uiState.asset.networkAsset(), trailingIcon20) },
-                    action = { openNetwork(uiState.asset.chain().asset().id) },
+                    action = { openNetwork(AssetId(uiState.asset.chain())) },
                 )
             )
         }

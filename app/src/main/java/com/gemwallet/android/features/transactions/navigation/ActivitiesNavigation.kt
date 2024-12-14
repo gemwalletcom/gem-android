@@ -46,7 +46,6 @@ fun NavGraphBuilder.activitiesScreen(
 
 fun NavGraphBuilder.transactionScreen(
     onCancel: () -> Unit,
-    openNetwork: AssetIdAction,
 ) {
     composable(
         "$transactionRoute/{$txIdArg}",
@@ -59,7 +58,7 @@ fun NavGraphBuilder.transactionScreen(
         if (it.arguments?.getString(txIdArg)?.urlDecode().isNullOrEmpty()) {
             onCancel()
         } else {
-            TransactionDetails(onCancel = onCancel, openNetwork = openNetwork)
+            TransactionDetails(onCancel = onCancel)
         }
     }
 }
