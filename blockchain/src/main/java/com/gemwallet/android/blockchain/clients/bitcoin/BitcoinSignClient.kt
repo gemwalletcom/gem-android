@@ -27,7 +27,7 @@ class BitcoinSignClient(
         txSpeed: TxSpeed,
         privateKey: ByteArray
     ): ByteArray {
-        val metadata = params.info as BitcoinSignerPreloader.Info
+        val metadata = params.chainData as BitcoinSignerPreloader.BitcoinChainData
         val coinType = WCChainTypeProxy().invoke(chain)
         val gasFee = metadata.fee(txSpeed) as GasFee
         val input = params.input
@@ -37,16 +37,16 @@ class BitcoinSignClient(
             this.amount = params.finalAmount.toLong()
             this.byteFee = gasFee.maxGasPrice.toLong()
             this.toAddress = params.input.destination()?.address
-            this.changeAddress = params.owner
+            this.changeAddress = params.input.from.address
             this.useMaxAmount = params.input.isMax()
             when (input) {
                 is ConfirmParams.SwapParams -> this.outputOpReturn = ByteString.copyFrom(input.swapData.toByteArray())
                 else -> {}
             }
             this.addPrivateKey(ByteString.copyFrom(privateKey))
-            this.addAllUtxo(metadata.utxo.getUtxoTransactions(params.owner, coinType))
+            this.addAllUtxo(metadata.utxo.getUtxoTransactions(params.input.from.address, coinType))
             metadata.utxo.forEach {
-                val redeemScript = BitcoinScript.lockScriptForAddress(params.owner, coinType)
+                val redeemScript = BitcoinScript.lockScriptForAddress(params.input.from.address, coinType)
                 val scriptData = redeemScript.data()
                 if (coinType == CoinType.BITCOIN || scriptData?.isNotEmpty() == true) {
                     return@forEach

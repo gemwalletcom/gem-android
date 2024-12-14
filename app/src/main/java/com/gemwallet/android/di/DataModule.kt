@@ -1,11 +1,14 @@
 package com.gemwallet.android.di
 
 import com.gemwallet.android.blockchain.RpcClientAdapter
+import com.gemwallet.android.blockchain.clients.ApprovalTransactionPreloader
 import com.gemwallet.android.blockchain.clients.BroadcastClientProxy
 import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
 import com.gemwallet.android.blockchain.clients.SignClientProxy
-import com.gemwallet.android.blockchain.clients.SignerPreload
 import com.gemwallet.android.blockchain.clients.SignerPreloaderProxy
+import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
+import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
+import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.clients.aptos.AptosBroadcastClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosNodeStatusClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosSignClient
@@ -92,22 +95,29 @@ object DataModule {
     @Singleton
     fun provideSignerPreloader(
         rpcClients: RpcClientAdapter,
-    ): SignerPreload = SignerPreloaderProxy(
-        Chain.available().map {
+    ): SignerPreloaderProxy {
+        val preloaders = Chain.available().map {
             when (it.toChainType()) {
-                ChainType.Bitcoin -> BitcoinSignerPreloader(it, rpcClients.getClient(it))
-                ChainType.Ethereum -> EvmSignerPreloader(it, rpcClients.getClient(it))
-                ChainType.Solana -> SolanaSignerPreloader(it, rpcClients.getClient(Chain.Solana))
+                ChainType.Bitcoin -> BitcoinSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it))
+                ChainType.Ethereum -> EvmSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it))
+                ChainType.Solana -> SolanaSignerPreloader(it, rpcClients.getClient(Chain.Solana), rpcClients.getClient(Chain.Solana), rpcClients.getClient(Chain.Solana))
                 ChainType.Cosmos -> CosmosSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Ton -> TonSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Tron -> TronSignerPreloader(it, rpcClients.getClient(Chain.Tron))
-                ChainType.Aptos -> AptosSignerPreloader(it, rpcClients.getClient(it))
+                ChainType.Aptos -> AptosSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Sui -> SuiSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Xrp -> XrpSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Near -> NearSignerPreloader(it, rpcClients.getClient(it))
             }
-        },
-    )
+        }
+        return SignerPreloaderProxy(
+            nativeTransferClients = preloaders,
+            tokenTransferClients = preloaders.mapNotNull { it as? TokenTransferPreloader },
+            stakeTransactionClients = preloaders.mapNotNull { it as? StakeTransactionPreloader },
+            swapTransactionClients = preloaders.mapNotNull { it as? SwapTransactionPreloader },
+            approvalTransactionClients = preloaders.mapNotNull { it as? ApprovalTransactionPreloader },
+        )
+    }
 
     @Provides
     @Singleton

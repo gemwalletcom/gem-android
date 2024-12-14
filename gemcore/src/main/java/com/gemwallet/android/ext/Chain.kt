@@ -162,6 +162,11 @@ fun Chain.toChainType(): ChainType {
     }
 }
 
+
+fun Chain.getNetworkId(): String {
+    return Config().getChainConfig(string).networkId
+}
+
 fun Chain.isSwapSupport(): Boolean {
     return Config().getChainConfig(string).isSwapSupported
 }

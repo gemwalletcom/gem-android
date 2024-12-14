@@ -80,8 +80,9 @@ class StakeViewModel @Inject constructor(
     fun onRewards(onConfirm: (ConfirmParams) -> Unit) {
         val currentState = state.value
         onConfirm(
-            ConfirmParams.RewardsParams(
+            ConfirmParams.Stake.RewardsParams(
                 assetId = currentState.asset?.asset?.id!!,
+                from = currentState.asset.owner,
                 validatorsId = currentState.delegations
                     .filter { BigInteger(it.base.rewards) > BigInteger.ZERO }
                     .map { it.base.validatorId }

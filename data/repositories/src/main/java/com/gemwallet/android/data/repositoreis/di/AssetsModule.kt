@@ -5,6 +5,7 @@ import com.gemwallet.android.blockchain.clients.aptos.AptosBalanceClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinBalanceClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosBalanceClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmBalanceClient
+import com.gemwallet.android.blockchain.clients.ethereum.SmartchainStakeClient
 import com.gemwallet.android.blockchain.clients.near.NearBalanceClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaBalanceClient
 import com.gemwallet.android.blockchain.clients.sui.SuiBalanceClient
@@ -69,9 +70,9 @@ object AssetsModule {
         Chain.available().map {
             when (it.toChainType()) {
                 ChainType.Bitcoin -> BitcoinBalanceClient(it, rpcClients.getClient(it))
-                ChainType.Ethereum -> EvmBalanceClient(it, rpcClients.getClient(it))
-                ChainType.Solana -> SolanaBalanceClient(it, rpcClients.getClient(Chain.Solana))
-                ChainType.Cosmos -> CosmosBalanceClient(it, rpcClients.getClient(it))
+                ChainType.Ethereum -> EvmBalanceClient(it, rpcClients.getClient(it), rpcClients.getClient(it), SmartchainStakeClient(it, rpcClients.getClient(it)))
+                ChainType.Solana -> SolanaBalanceClient(it, rpcClients.getClient(Chain.Solana), rpcClients.getClient(Chain.Solana), rpcClients.getClient(Chain.Solana))
+                ChainType.Cosmos -> CosmosBalanceClient(it, rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Ton -> TonBalanceClient(it, rpcClients.getClient(Chain.Ton))
                 ChainType.Tron -> TronBalanceClient(it, rpcClients.getClient(Chain.Tron))
                 ChainType.Aptos -> AptosBalanceClient(it, rpcClients.getClient(it))

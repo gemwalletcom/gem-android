@@ -52,19 +52,7 @@ fun NavGraphBuilder.confirm(
             cancelAction()
             return@composable
         }
-        val params = ConfirmParams.unpack(
-            when (txType) {
-                TransactionType.Transfer -> ConfirmParams.TransferParams::class.java
-                TransactionType.Swap -> ConfirmParams.SwapParams::class.java
-                TransactionType.TokenApproval -> ConfirmParams.TokenApprovalParams::class.java
-                TransactionType.StakeDelegate -> ConfirmParams.DelegateParams::class.java
-                TransactionType.StakeUndelegate -> ConfirmParams.UndelegateParams::class.java
-                TransactionType.StakeRewards -> ConfirmParams.RewardsParams::class.java
-                TransactionType.StakeRedelegate -> ConfirmParams.RedeleateParams::class.java
-                TransactionType.StakeWithdraw -> ConfirmParams.WithdrawParams::class.java
-            },
-            paramsPack,
-        )
+        val params = ConfirmParams.unpack(txType, paramsPack)
 
         if (params == null) {
             cancelAction()

@@ -1,6 +1,8 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.StakeClient
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
+import com.gemwallet.android.blockchain.clients.ethereum.services.callString
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.model.AssetBalance
@@ -16,14 +18,14 @@ import java.math.BigInteger
 
 class SmartchainStakeClient(
     private val chain: Chain,
-    private val evmRpcClient: EvmRpcClient,
-    private val stakeHub: StakeHub = StakeHub(),
+    private val callService: EvmCallService,
 ) : StakeClient {
+
     override suspend fun getValidators(chain: Chain, apr: Double): List<DelegationValidator> {
         val limit = getMaxElectedValidators()
-        val data = stakeHub.encodeValidatorsCall(0, limit)
-        val result = evmRpcClient.callString(StakeHub.reader, data) ?: return emptyList()
-        val validators = stakeHub.decodeValidatorsReturn(result)
+        val data = StakeHub.encodeValidatorsCall(0, limit)
+        val result = callService.callString(StakeHub.reader, data) ?: return emptyList()
+        val validators = StakeHub.decodeValidatorsReturn(result)
         return validators
     }
 
@@ -36,10 +38,8 @@ class SmartchainStakeClient(
         delegations + undelegations
     }
 
-    suspend fun getBalance(address: String, availableBalance: AssetBalance?): AssetBalance? = withContext(Dispatchers.IO) {
-        if (availableBalance == null) {
-            return@withContext null
-        }
+    suspend fun getBalance(address: String, availableValue: String?): AssetBalance? = withContext(Dispatchers.IO) {
+        availableValue ?: return@withContext null
         val limit = getMaxElectedValidators()
         val getDelegationCall = async { getDelegations(address, limit) }
         val getUndelegationsCall = async { getUndelegations(address, limit) }
@@ -52,7 +52,7 @@ class SmartchainStakeClient(
 
         AssetBalance.create(
             asset = Chain.SmartChain.asset(),
-            available = availableBalance.balance.available,
+            available = availableValue,
             staked = staked.toString(),
             pending = pending.toString()
         )
@@ -61,24 +61,24 @@ class SmartchainStakeClient(
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
     private suspend fun getDelegations(address: String, limit: Int): List<DelegationBase> {
-        val data = evmRpcClient.callString(StakeHub.reader, stakeHub.encodeDelegationsCall(address, limit))
-            ?: return emptyList()
-        return stakeHub.decodeDelegationsResult(data)
+        val dataRequest = StakeHub.encodeDelegationsCall(address, limit)
+        val data = callService.callString(StakeHub.reader, dataRequest) ?: return emptyList()
+        return StakeHub.decodeDelegationsResult(data)
     }
 
     private suspend fun getUndelegations(address: String, limit: Int): List<DelegationBase> {
-        val data = evmRpcClient.callString(StakeHub.reader, stakeHub.encodeUndelegationsCall(address, limit))
+        val data = callService.callString(StakeHub.reader, StakeHub.encodeUndelegationsCall(address, limit))
             ?: return emptyList()
-        return stakeHub.decodeUnelegationsResult(data)
+        return StakeHub.decodeUnelegationsResult(data)
+    }
+
+    private suspend fun getMaxElectedValidators(): Int {
+        val result = callService.callString(StakeHub.address, StakeHub.encodeMaxElectedValidators())
+            ?: throw IllegalStateException("Unable to get validators")
+        return EthereumAbiValue.decodeUInt256(result.decodeHex()).toUShort().toInt()
     }
 
     private fun List<DelegationBase>.sumBalances(): BigInteger =
         map { it.balance.toBigIntegerOrNull() ?: BigInteger.ZERO }
-        .fold(BigInteger.ZERO) {acc, value -> acc + value }
-
-    private suspend fun getMaxElectedValidators(): Int {
-        val result = evmRpcClient.callString(StakeHub.address, stakeHub.encodeMaxElectedValidators())
-            ?: throw IllegalStateException("Unable to get validators")
-        return EthereumAbiValue.decodeUInt256(result.decodeHex()).toUShort().toInt()
-    }
+            .fold(BigInteger.ZERO) {acc, value -> acc + value }
 }

@@ -1,6 +1,8 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
+import com.gemwallet.android.blockchain.clients.aptos.services.AptosService
+import com.gemwallet.android.blockchain.clients.aptos.services.AptosTransactionsService
 import com.gemwallet.android.model.TransactionChages
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
@@ -9,7 +11,7 @@ import java.math.BigInteger
 
 class AptosTransactionStatusClient(
     private val chain: Chain,
-    private val rpcClient: AptosRpcClient,
+    private val rpcClient: AptosTransactionsService,
 ) : TransactionStatusClient {
 
     override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
