@@ -20,7 +20,7 @@ fun AssetId.getIconUrl(): String {
 
 fun AssetId.getSupportIconUrl(): String? = if (type() == AssetSubtype.NATIVE) null else chain.getIconUrl()
 
-fun Chain.getIconUrl(): String = "file:///android_asset/chains/icons/${string}.png"
+fun Chain.getIconUrl(): String = "file:///android_asset/chains/icons/${string}.svg"
 
 fun FiatProvider.getIcon(): String = "file:///android_asset/fiat/${name.lowercase()}.png"
 

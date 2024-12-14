@@ -29,6 +29,7 @@ import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.designsystem.trailingIcon20
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.image.getSupportIconUrl
@@ -198,10 +199,9 @@ fun TransactionDetails(
                     data = model.networkTitle,
                     trailing = {
                         AsyncImage(
-                            model = model.assetId.chain.getIconUrl(),
-                            contentDescription = "asset_icon",
+                            model = model.assetId.chain.asset(),
+                            size = trailingIcon20,
                             placeholderText = model.assetType.string,
-                            modifier = Modifier.size(20.dp),
                         )
                     },
                     action = {

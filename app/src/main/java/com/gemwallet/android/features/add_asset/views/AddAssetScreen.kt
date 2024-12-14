@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.add_asset.models.AddAssetUIState
 import com.gemwallet.android.features.add_asset.viewmodels.AddAssetViewModel
 import com.gemwallet.android.ui.components.qrCodeRequest
@@ -20,6 +21,10 @@ fun AddAssetScree(
     viewModel: AddAssetViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val chains by viewModel.chains.collectAsStateWithLifecycle()
+    val network by viewModel.chain.collectAsStateWithLifecycle()
+    val token by viewModel.token.collectAsStateWithLifecycle()
+    val searchState by viewModel.searchState.collectAsStateWithLifecycle()
 
     BackHandler(uiState.scene != AddAssetUIState.Scene.Form) {
         viewModel.cancelSelectChain()
@@ -52,12 +57,14 @@ fun AddAssetScree(
         when (it) {
             AddAssetUIState.Scene.Form -> {
                 AddAssetScene(
-                    uiState = uiState,
+                    searchState = searchState,
+                    addressState = viewModel.addressState,
+                    network = network.asset(),
+                    token = token,
                     onCancel = onCancel,
-                    onQuery = viewModel::onQuery,
                     onScan = viewModel::onQrScan,
                     onAddAsset = { viewModel.addAsset(onFinish) },
-                    onChainSelect = viewModel::selectChain,
+                    onChainSelect = uiState.onSelectChain,
                 )
             }
             AddAssetUIState.Scene.QrScanner -> {
@@ -67,7 +74,7 @@ fun AddAssetScree(
                 )
             }
             AddAssetUIState.Scene.SelectChain -> SelectChain(
-                chains = uiState.chains,
+                chains = chains,
                 chainFilter = viewModel.chainFilter,
                 onSelect = viewModel::setChain,
                 onCancel = viewModel::cancelSelectChain,

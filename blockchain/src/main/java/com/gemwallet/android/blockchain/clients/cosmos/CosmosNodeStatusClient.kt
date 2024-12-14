@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.cosmos
 
 import com.gemwallet.android.blockchain.clients.NodeStatusClient
+import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosNodeStatusService
 import com.gemwallet.android.blockchain.rpc.getLatency
 import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain
@@ -10,11 +11,11 @@ import kotlinx.coroutines.withContext
 
 class CosmosNodeStatusClient(
     private val chain: Chain,
-    private val rpcClient: CosmosRpcClient
+    private val nodeStatusService: CosmosNodeStatusService,
 ) : NodeStatusClient {
     override suspend fun getNodeStatus(chain: Chain, url: String): NodeStatus? = withContext(Dispatchers.IO) {
-        val inSyncJob = async { rpcClient.syncing("$url/cosmos/base/tendermint/v1beta1/syncing") } //.getOrNull()?.syncing == false }
-        val nodeInfoJob = async { rpcClient.getNodeInfo("$url/cosmos/base/tendermint/v1beta1/blocks/latest").getOrNull()?.block?.header }
+        val inSyncJob = async { nodeStatusService.syncing("$url/cosmos/base/tendermint/v1beta1/syncing") }
+        val nodeInfoJob = async { nodeStatusService.getNodeInfo("$url/cosmos/base/tendermint/v1beta1/blocks/latest").getOrNull()?.block?.header }
 
         val inSync = inSyncJob.await()
         val nodeInfo = nodeInfoJob.await() ?: return@withContext null

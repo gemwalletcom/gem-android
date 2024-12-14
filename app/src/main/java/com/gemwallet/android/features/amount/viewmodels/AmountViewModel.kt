@@ -194,7 +194,7 @@ class AmountViewModel @Inject constructor(
         val memo = params.memo
         inputErrorState.update { AmountError.None }
         nextErrorState.update { AmountError.None }
-        val builder = ConfirmParams.Builder(asset.id, amount.atomicValue)
+        val builder = ConfirmParams.Builder(asset.id, state.assetInfo.owner, amount.atomicValue)
         val nextParams = when (params.txType) {
             TransactionType.Transfer -> builder.transfer(
                 destination = destination!!,

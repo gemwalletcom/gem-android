@@ -1,43 +1,42 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
-import com.gemwallet.android.blockchain.clients.SignerPreload
+import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
+import com.gemwallet.android.blockchain.clients.aptos.services.AptosAccountsService
+import com.gemwallet.android.blockchain.clients.aptos.services.AptosFeeService
+import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.SignerInputInfo
+import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
-import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 
 class AptosSignerPreloader(
     private val chain: Chain,
-    private val rpcClient: AptosRpcClient,
-) : SignerPreload {
-    override suspend fun invoke(
-        owner: Account,
-        params: ConfirmParams,
-    ): Result<SignerParams> {
+    private val accountsService: AptosAccountsService,
+    feeService: AptosFeeService,
+) : NativeTransferPreloader {
+
+    private val feeCalculator = AptosFeeCalculator(chain, feeService, accountsService)
+
+    override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
         val sequence = try {
-            rpcClient.accounts(owner.address).getOrThrow().sequence_number?.toLong() ?: 0L
+            val response = accountsService.accounts(params.from.address).getOrThrow()
+            response.sequence_number?.toLong() ?: 0L
         } catch (_: Throwable) {
-            0
+            0L
         }
-        val fee = AptosFee().invoke(chain, params.destination()?.address!!, rpcClient)
-        val input = SignerParams(
-            input = params,
-            owner = owner.address,
-            info = Info(sequence = sequence, fee)
-        )
-        return Result.success(input)
+        val fee = feeCalculator.calculate(params.destination().address)
+        val input = SignerParams(params, AptosChainData(sequence, fee))
+        return input
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
-    data class Info(
+    data class AptosChainData(
         val sequence: Long,
         val fee: Fee,
-    ) : SignerInputInfo {
+    ) : ChainSignData {
         override fun fee(speed: TxSpeed): Fee = fee
-
     }
 }

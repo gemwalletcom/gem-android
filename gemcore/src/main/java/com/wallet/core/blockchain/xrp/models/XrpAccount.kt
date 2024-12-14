@@ -20,6 +20,7 @@ data class XRPAccountResult (
 
 @Serializable
 data class XRPDrops (
+	val minimum_fee: String,
 	val median_fee: String
 )
 

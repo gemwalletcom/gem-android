@@ -9,6 +9,7 @@ class SuiBroadcastClient(
     private val chain: Chain,
     private val rpcClient: SuiRpcClient,
 ) : BroadcastClient {
+
     override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): Result<String> {
         val parts = String(signedMessage).split("_")
         val data = parts.first()

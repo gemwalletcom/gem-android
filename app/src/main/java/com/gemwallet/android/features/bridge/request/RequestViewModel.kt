@@ -7,12 +7,14 @@ import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.data.repositoreis.bridge.findByNamespace
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.bridge.model.PeerUI
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.toHexString
 import com.reown.walletkit.client.Wallet
 import com.reown.walletkit.client.WalletKit
+import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletConnectionMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,6 +51,7 @@ class RequestViewModel @Inject constructor(
                 val data = JSONArray(request.request.params).getString(1)
                 String(data.decodeHex())
             }
+            WalletConnectionMethods.eth_sign_typed_data_v4.string,
             WalletConnectionMethods.eth_sign_typed_data.string -> {
                 JSONArray(request.request.params).getString(1)
             }
@@ -92,23 +95,30 @@ class RequestViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val method = WalletConnectionMethods.entries
                 .firstOrNull { it.string == sessionRequest.request.method }
-            val param = when (method) {
-                WalletConnectionMethods.eth_sign,
-                WalletConnectionMethods.personal_sign -> {
-                    val data = state.value.params.toByteArray()
-                    val messagePrefix = "\u0019Ethereum Signed Message:\n${data.size}"
-                    val prefix = messagePrefix.toByteArray()
-                    Hash.keccak256(prefix + data)
-                }
-                WalletConnectionMethods.eth_sign_typed_data -> EthereumAbi.encodeTyped(state.value.params)
-                WalletConnectionMethods.solana_sign_message -> state.value.params.toByteArray()
-                else -> return@launch
-            }
-
             val password = passwordStore.getPassword(session.wallet.id)
             val privateKey = loadPrivateKeyOperator(session.wallet, chain, password)
+
             val sign = try {
-                signClient.signMessage(chain, param, privateKey)
+                when (method) {
+                    WalletConnectionMethods.eth_sign,
+                    WalletConnectionMethods.personal_sign -> {
+                        val data = state.value.params.toByteArray()
+                        val messagePrefix = "\u0019Ethereum Signed Message:\n${data.size}"
+                        val prefix = messagePrefix.toByteArray()
+                        val param = Hash.keccak256(prefix + data)
+                        signClient.signMessage(chain, param, privateKey)
+                    }
+                    WalletConnectionMethods.eth_sign_typed_data,
+                    WalletConnectionMethods.eth_sign_typed_data_v4 -> {
+                        val param = EthereumAbi.encodeTyped(state.value.params)
+                        signClient.signTypedMessage(chain, param, privateKey)
+                    }
+                    WalletConnectionMethods.solana_sign_message -> {
+                        val param = state.value.params.toByteArray()
+                        signClient.signMessage(chain, param, privateKey)
+                    }
+                    else -> return@launch
+                }
             } catch (err: Throwable) {
                 state.update { it.copy(error = err.message ?: "Sign error") }
                 return@launch
@@ -168,10 +178,13 @@ private data class RequestViewModelState(
         if (sessionRequest == null) {
             return RequestSceneState.Loading
         }
+        val account = wallet?.getAccount(chain!!)!!
         return when (sessionRequest.request.method) {
             WalletConnectionMethods.eth_sign.string,
             WalletConnectionMethods.personal_sign.string,
+            WalletConnectionMethods.eth_sign_typed_data_v4.string,
             WalletConnectionMethods.eth_sign_typed_data.string -> RequestSceneState.SignMessage(
+                account = account,
                 walletName = wallet?.name ?: "",
                 peer = PeerUI(
                     peerName = sessionRequest.peerMetaData?.name ?: "",
@@ -189,7 +202,7 @@ private data class RequestViewModelState(
                     val value = jObj.optString("value", "0x0").hexToBigInteger() ?: BigInteger.ZERO
                     val data = jObj.getString("data")
                     RequestSceneState.SendTransaction(
-                        chain = chain!!,
+                        account = account,
                         to = to,
                         value = value,
                         data = data,
@@ -213,12 +226,13 @@ sealed interface RequestSceneState {
 
     class SignMessage(
         val walletName: String,
+        val account: Account,
         val peer: PeerUI,
         val params: String,
     ) : RequestSceneState
 
     class SendTransaction(
-        val chain: Chain,
+        val account: Account,
         val to: String,
         val value: BigInteger,
         val data: String,

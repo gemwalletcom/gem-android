@@ -47,8 +47,8 @@ class SolanaSignClient(
         txSpeed: TxSpeed,
         privateKey: ByteArray
     ): ByteArray {
-        val fee = params.info.fee(txSpeed) as GasFee
-        val recentBlockhash = (params.info as SolanaSignerPreloader.Info).blockhash
+        val fee = params.chainData.fee(txSpeed) as GasFee
+        val recentBlockhash = (params.chainData as SolanaSignerPreloader.SolanaChainData).blockhash
 
         return when(params.input.getTxType()) {
             TransactionType.Swap -> swap(params, txSpeed, privateKey).toByteArray()
@@ -64,7 +64,7 @@ class SolanaSignClient(
                 val signInput = Solana.SigningInput.newBuilder().apply {
                     this.recentBlockhash = recentBlockhash
                     this.delegateStakeTransaction = Solana.DelegateStake.newBuilder().apply {
-                        this.validatorPubkey = (params.input as ConfirmParams.DelegateParams).validatorId
+                        this.validatorPubkey = (params.input as ConfirmParams.Stake.DelegateParams).validatorId
                         this.value = params.finalAmount.toLong()
                     }.build()
                     this.privateKey = ByteString.copyFrom(privateKey)
@@ -75,7 +75,7 @@ class SolanaSignClient(
                 val signInput = Solana.SigningInput.newBuilder().apply {
                     this.recentBlockhash = recentBlockhash
                     this.deactivateStakeTransaction = Solana.DeactivateStake.newBuilder().apply {
-                        this.stakeAccount = (params.input as ConfirmParams.UndelegateParams).delegationId
+                        this.stakeAccount = (params.input as ConfirmParams.Stake.UndelegateParams).delegationId
                     }.build()
                     this.privateKey = ByteString.copyFrom(privateKey)
                 }
@@ -85,7 +85,7 @@ class SolanaSignClient(
                 val signInput = Solana.SigningInput.newBuilder().apply {
                     this.recentBlockhash = recentBlockhash
                     this.withdrawTransaction = Solana.WithdrawStake.newBuilder().apply {
-                        stakeAccount = (params.input as ConfirmParams.WithdrawParams).delegationId
+                        stakeAccount = (params.input as ConfirmParams.Stake.WithdrawParams).delegationId
                         value = params.finalAmount.toLong()
                     }.build()
                     this.privateKey = ByteString.copyFrom(privateKey)
@@ -99,7 +99,7 @@ class SolanaSignClient(
     }
 
     private fun signNative(input: SignerParams): Solana.SigningInput.Builder {
-        val blockhash = (input.info as SolanaSignerPreloader.Info).blockhash
+        val blockhash = (input.chainData as SolanaSignerPreloader.SolanaChainData).blockhash
 
         return Solana.SigningInput.newBuilder().apply {
             this.transferTransaction = Solana.Transfer.newBuilder().apply {
@@ -118,7 +118,7 @@ class SolanaSignClient(
         val tokenId = input.input.assetId.tokenId
         val amount = input.finalAmount.toLong()
         val recipient = input.input.destination()?.address
-        val metadata = input.info as SolanaSignerPreloader.Info
+        val metadata = input.chainData as SolanaSignerPreloader.SolanaChainData
         val tokenProgramId = when (metadata.tokenProgram) {
             SolanaTokenProgramId.Token -> Solana.TokenProgramId.TokenProgram
             SolanaTokenProgramId.Token2022 -> Solana.TokenProgramId.Token2022Program
@@ -160,7 +160,7 @@ class SolanaSignClient(
     }
 
     private fun swap(input: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): String {
-        val fee = input.info.fee(txSpeed) as? GasFee ?: throw java.lang.IllegalArgumentException("Incorrect fee data")
+        val fee = input.chainData.fee(txSpeed) as? GasFee ?: throw java.lang.IllegalArgumentException("Incorrect fee data")
         val feePrice = fee.minerFee
         val feeLimit = fee.limit
         val swapParams = input.input as ConfirmParams.SwapParams
@@ -181,6 +181,9 @@ class SolanaSignClient(
             this.txEncoding = Solana.Encoding.Base64
         }.build()
         val output: Solana.SigningOutput = AnySigner.sign(signingInput, CoinType.SOLANA, Solana.SigningOutput.parser())
+        if (!output.errorMessage.isNullOrEmpty()) {
+            throw Exception(output.errorMessage)
+        }
         return output.encoded
     }
 

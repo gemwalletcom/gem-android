@@ -17,10 +17,10 @@ class NearSignClient(
     private val chain: Chain,
 ) : SignClient {
     override suspend fun signTransfer(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): ByteArray {
-        val metadata = params.info as NearSignerPreloader.Info
+        val metadata = params.chainData as NearSignerPreloader.NearChainData
 
         val input = NEAR.SigningInput.newBuilder().apply {
-            this.signerId = params.owner
+            this.signerId = params.input.from.address
             this.nonce = metadata.sequence
             this.receiverId = params.input.destination()?.address
             this.addAllActions(

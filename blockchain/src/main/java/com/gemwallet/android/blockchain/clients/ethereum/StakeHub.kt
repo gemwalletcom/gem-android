@@ -11,7 +11,10 @@ import com.wallet.core.primitives.DelegationValidator
 import uniffi.gemstone.BscDelegation
 import uniffi.gemstone.BscDelegationStatus
 
-class StakeHub {
+object StakeHub {
+    val offset: UShort = (0).toUShort()
+    const val address = "0x0000000000000000000000000000000000002002"
+    const val reader = "0x830295c0abe7358f7e24bc38408095621474280b"
 
     fun encodeMaxElectedValidators(): String {
         // cast calldata "maxElectedValidators()"
@@ -20,10 +23,14 @@ class StakeHub {
 
     fun encodeStake(params: ConfirmParams): String {
         return when (params) {
-            is ConfirmParams.DelegateParams -> encodeDelegateCall(params.validatorId, false)
-            is ConfirmParams.RedeleateParams -> encodeRedelegateCall(params, false)
-            is ConfirmParams.UndelegateParams -> encodeUndelegateCall(params)
-            is ConfirmParams.WithdrawParams -> encodeClaim(params, (0).toULong())
+            is ConfirmParams.Stake.DelegateParams -> encodeDelegateCall(
+                params.validatorId,
+                false
+            )
+
+            is ConfirmParams.Stake.RedelegateParams -> encodeRedelegateCall(params, false)
+            is ConfirmParams.Stake.UndelegateParams -> encodeUndelegateCall(params)
+            is ConfirmParams.Stake.WithdrawParams -> encodeClaim(params, (0).toULong())
             else -> throw IllegalArgumentException()
         }.toHexString()
     }
@@ -33,14 +40,15 @@ class StakeHub {
     }
 
     fun encodeValidatorsCall(offset: Int, limit: Int): String {
-        return uniffi.gemstone.bscEncodeValidatorsCall(offset.toUShort(), limit.toUShort()).toHexString()
+        return uniffi.gemstone.bscEncodeValidatorsCall(offset.toUShort(), limit.toUShort())
+            .toHexString()
     }
 
     fun decodeValidatorsReturn(hexData: String): List<DelegationValidator> {
         return uniffi.gemstone.bscDecodeValidatorsReturn(hexData.decodeHex()).map {
             DelegationValidator(
                 chain = Chain.SmartChain,
-                id =  it.operatorAddress,
+                id = it.operatorAddress,
                 name = it.moniker,
                 isActive = !it.jailed,
                 commision = it.commission.toDouble() / 100,
@@ -50,7 +58,8 @@ class StakeHub {
     }
 
     fun encodeDelegationsCall(address: String, limit: Int): String {
-        return uniffi.gemstone.bscEncodeDelegationsCall(address, offset, limit.toUShort()).toHexString()
+        return uniffi.gemstone.bscEncodeDelegationsCall(address, offset, limit.toUShort())
+            .toHexString()
     }
 
     fun decodeDelegationsResult(data: String): List<DelegationBase> {
@@ -58,20 +67,29 @@ class StakeHub {
     }
 
     fun encodeUndelegationsCall(address: String, limit: Int): String {
-        return uniffi.gemstone.bscEncodeUndelegationsCall(address, offset, limit.toUShort()).toHexString()
+        return uniffi.gemstone.bscEncodeUndelegationsCall(address, offset, limit.toUShort())
+            .toHexString()
     }
 
     fun decodeUnelegationsResult(data: String): List<DelegationBase> {
         return uniffi.gemstone.bscDecodeUndelegationsReturn(data.decodeHex()).map { it.into() }
     }
 
-    fun encodeUndelegateCall(params: ConfirmParams.UndelegateParams): ByteArray {
-        val amountShare = params.amount * params.share!!.toBigInteger() / params.balance!!.toBigInteger()
-        return uniffi.gemstone.bscEncodeUndelegateCall(operatorAddress = params.validatorId, shares = amountShare.toString())
+    fun encodeUndelegateCall(params: ConfirmParams.Stake.UndelegateParams): ByteArray {
+        val amountShare =
+            params.amount * params.share!!.toBigInteger() / params.balance!!.toBigInteger()
+        return uniffi.gemstone.bscEncodeUndelegateCall(
+            operatorAddress = params.validatorId,
+            shares = amountShare.toString()
+        )
     }
 
-    fun encodeRedelegateCall(params: ConfirmParams.RedeleateParams, votePower: Boolean): ByteArray {
-        val amountShare = params.amount * params.share!!.toBigInteger() / params.balance!!.toBigInteger()
+    fun encodeRedelegateCall(
+        params: ConfirmParams.Stake.RedelegateParams,
+        votePower: Boolean
+    ): ByteArray {
+        val amountShare =
+            params.amount * params.share!!.toBigInteger() / params.balance!!.toBigInteger()
         return uniffi.gemstone.bscEncodeRedelegateCall(
             srcValidator = params.srcValidatorId,
             dstValidator = params.dstValidatorId,
@@ -80,14 +98,14 @@ class StakeHub {
         )
     }
 
-    fun encodeClaim(params: ConfirmParams.WithdrawParams, requestNumber: ULong): ByteArray {
-        return uniffi.gemstone.bscEncodeClaimCall(operatorAddress = params.validatorId, requestNumber = requestNumber)
-    }
-
-    companion object {
-        val offset: UShort = (0).toUShort()
-        const val address = "0x0000000000000000000000000000000000002002"
-        const val reader = "0x830295c0abe7358f7e24bc38408095621474280b"
+    fun encodeClaim(
+        params: ConfirmParams.Stake.WithdrawParams,
+        requestNumber: ULong
+    ): ByteArray {
+        return uniffi.gemstone.bscEncodeClaimCall(
+            operatorAddress = params.validatorId,
+            requestNumber = requestNumber
+        )
     }
 }
 

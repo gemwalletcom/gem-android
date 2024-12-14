@@ -4,8 +4,6 @@ import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
-import com.gemwallet.android.cases.swap.GetSwapSupportChainsCase
-import com.gemwallet.android.data.repositoreis.swap.GetSwapSupportChains
 import com.gemwallet.android.data.repositoreis.swap.NativeProvider
 import com.gemwallet.android.data.repositoreis.swap.SwapRepository
 import dagger.Module
@@ -38,9 +36,5 @@ object SwapModule {
         passwordStore = passwordStore,
         loadPrivateKeyOperator = loadPrivateDataOperator,
     )
-
-    @Provides
-    fun provideGetSwapSupportChains(gemSwapper: GemSwapper): GetSwapSupportChainsCase =
-        GetSwapSupportChains(gemSwapper)
 }
 

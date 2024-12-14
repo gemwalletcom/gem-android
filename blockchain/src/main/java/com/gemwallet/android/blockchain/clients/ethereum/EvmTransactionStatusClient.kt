@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmTransactionsService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.eip1559Support
 import com.gemwallet.android.math.hexToBigInteger
@@ -11,14 +12,15 @@ import java.math.BigInteger
 
 class EvmTransactionStatusClient(
     private val chain: Chain,
-    private val rpcClient: EvmRpcClient,
+    private val transactionsService: EvmTransactionsService,
 ) : TransactionStatusClient {
+
     override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
         return Result.success(getStatus(txId))
     }
 
     private suspend fun getStatus(txId: String): TransactionChages {
-        return rpcClient.transaction(JSONRpcRequest.create(EvmMethod.GetTransaction, listOf(txId)))
+        return transactionsService.transaction(JSONRpcRequest.create(EvmMethod.GetTransaction, listOf(txId)))
             .fold(
                 {
                     if (it.result?.status != "0x0" && it.result?.status != "0x1") {

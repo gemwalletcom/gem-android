@@ -1,6 +1,9 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.BalanceClient
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmBalancesService
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
+import com.gemwallet.android.blockchain.clients.ethereum.services.getBalance
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.AssetBalance
@@ -9,15 +12,18 @@ import com.wallet.core.primitives.Chain
 
 class EvmBalanceClient(
     private val chain: Chain,
-    private val rpcClient: EvmRpcClient,
+    private val callService: EvmCallService,
+    private val balancesService: EvmBalancesService,
+    private val smartChainStakeClient: SmartchainStakeClient,
 ) : BalanceClient {
 
     override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
-        val available = rpcClient.getBalance(address)
-            .fold({ AssetBalance.create(chain.asset(), available = it.result?.value?.toString() ?: return null) }) { null }
+        val availableValue = balancesService.getBalance(address)
+            .getOrNull()?.result?.value?.toString()
+
         return when (chain) {
-            Chain.SmartChain -> SmartchainStakeClient(chain, rpcClient).getBalance(address, availableBalance = available)
-            else -> available
+            Chain.SmartChain -> smartChainStakeClient.getBalance(address, availableValue)
+            else -> AssetBalance.create(chain.asset(), available = availableValue ?: return null)
         }
     }
 
@@ -33,7 +39,7 @@ class EvmBalanceClient(
                 "to" to contract,
                 "data" to data,
             )
-            val balance = rpcClient.callNumber(JSONRpcRequest.create(EvmMethod.Call, listOf(params, "latest")))
+            val balance = callService.callNumber(JSONRpcRequest.create(EvmMethod.Call, listOf(params, "latest")))
                 .getOrNull()?.result?.value ?: continue
             result.add(AssetBalance.create(token, available = balance.toString()))
         }
