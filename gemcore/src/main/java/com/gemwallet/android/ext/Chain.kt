@@ -54,7 +54,7 @@ fun Chain.assetType(): AssetType? {
 }
 
 fun Chain.getReserveBalance(): BigInteger = when (this) {
-    Chain.Xrp -> BigInteger.valueOf(10_000_000)
+    Chain.Xrp -> Config().getChainConfig(this.string).accountActivationFee?.toBigInteger() ?: BigInteger.ZERO
     else -> BigInteger.ZERO
 }
 
