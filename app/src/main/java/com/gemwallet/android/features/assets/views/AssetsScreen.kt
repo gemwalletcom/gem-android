@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -102,7 +103,9 @@ fun AssetsScreen(
         ) {
             val longPressedAsset = remember { mutableStateOf<AssetId?>(null) }
             LazyColumn(
-                modifier = Modifier.testTag("assets_list"),
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .testTag("assets_list"),
                 state = listState
             ) {
                 assetsHead(walletInfo, onSendClick, onReceiveClick, onBuyClick)
