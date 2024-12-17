@@ -199,7 +199,7 @@ private fun LazyListScope.assets(
         pinnedAssetsHeader()
     }
 
-    items(items = assets, key = { it.asset.id.toIdentifier() }) { item ->
+    items(items = assets, key = { "${it.asset.id.toIdentifier()}-$isPinned" }) { item ->
         AssetItem(
             modifier = Modifier.testTag(item.asset.id.toIdentifier()),
             item = item,
