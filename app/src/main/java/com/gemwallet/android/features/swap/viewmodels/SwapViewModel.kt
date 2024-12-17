@@ -116,15 +116,19 @@ class SwapViewModel @Inject constructor(
             return@mapNotNull null
         }
         val symbolLength = max(assets.from.asset.symbol.length, assets.to.asset.symbol.length)
+        val payAvailableBalance = Crypto(assets.from.balance.balance.available).value(assets.from.asset.decimals)
+            .stripTrailingZeros().toPlainString()
+        val receiveAvailableBalance = Crypto(assets.to.balance.balance.available).value(assets.to.asset.decimals)
+            .stripTrailingZeros().toPlainString()
         SwapPairUIModel(
             from = SwapItemModel(
                 asset = assets.from.asset.copy(symbol = assets.from.asset.symbol.padStart(symbolLength)),
-                assetBalanceValue = assets.from.balance.balanceAmount.available.toBigDecimal().toPlainString(),
+                assetBalanceValue = payAvailableBalance,
                 assetBalanceLabel = assets.from.balance.availableFormatted(4),
             ),
             to = SwapItemModel(
                 asset = assets.to.asset.copy(symbol = assets.to.asset.symbol.padStart(symbolLength)),
-                assetBalanceValue = assets.to.balance.balanceAmount.available.toBigDecimal().toPlainString(),
+                assetBalanceValue = receiveAvailableBalance,
                 assetBalanceLabel = assets.to.balance.availableFormatted(4),
             ),
         )
