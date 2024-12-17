@@ -6,11 +6,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.gemwallet.android.R
 import com.gemwallet.android.features.asset_select.viewmodels.BuySelectViewModel
 import com.gemwallet.android.ui.components.getBalanceInfo
+import com.gemwallet.android.ui.models.actions.CancelAction
 import com.wallet.core.primitives.AssetId
 
 @Composable
 fun SelectBuyScreen(
-    onCancel: () -> Unit,
+    cancelAction: CancelAction,
     onSelect: ((AssetId) -> Unit)?,
     viewModel: BuySelectViewModel = hiltViewModel()
 ) {
@@ -19,7 +20,9 @@ fun SelectBuyScreen(
         titleBadge = { null },
         itemTrailing = { getBalanceInfo(it)() },
         onSelect = onSelect,
-        onCancel = onCancel,
+        onCancel = {
+            cancelAction.invoke()
+        },
         viewModel = viewModel,
     )
 }
