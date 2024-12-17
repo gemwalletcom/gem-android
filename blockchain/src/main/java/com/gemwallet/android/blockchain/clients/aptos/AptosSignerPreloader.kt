@@ -26,7 +26,7 @@ class AptosSignerPreloader(
         } catch (_: Throwable) {
             0L
         }
-        val fee = feeCalculator.calculate(params.destination().address)
+        val fee = feeCalculator.calculate(params.assetId, params.destination().address)
         val input = SignerParams(params, AptosChainData(sequence, fee))
         return input
     }

@@ -186,14 +186,14 @@ class TestEvmBalance {
                         name = "ton",
                         symbol = "ton",
                         decimals = 9,
-                        type = AssetType.TOKEN
+                        type = AssetType.ERC20
                     ),
                     Asset(
                         AssetId(Chain.SmartChain, "0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c"),
                         name = "Wrapped BNB",
                         symbol = "WBNB",
                         decimals = 18,
-                        type = AssetType.TOKEN
+                        type = AssetType.ERC20
                     ),
                 )
             )

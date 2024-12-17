@@ -28,10 +28,6 @@ class TestAptosBalancesService(
         )
     }
 
-    override fun resource(address: String, resource: String) {
-        TODO("Not yet implemented")
-    }
-
     override fun resources(address: String): Result<List<AptosResource<AptosResourceBalanceOptional>>> {
         tokenRequest = address
         return Result.success(

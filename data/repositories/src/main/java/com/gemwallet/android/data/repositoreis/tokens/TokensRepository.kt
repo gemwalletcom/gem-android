@@ -123,8 +123,11 @@ class TokensRepository (
 
         Chain.Solana -> AssetType.SPL
         Chain.Tron -> AssetType.TRC20
+
+        Chain.Aptos,
         Chain.Sui -> AssetType.TOKEN
         Chain.Ton -> AssetType.JETTON
+
         Chain.Cosmos,
         Chain.Osmosis,
         Chain.Celestia,

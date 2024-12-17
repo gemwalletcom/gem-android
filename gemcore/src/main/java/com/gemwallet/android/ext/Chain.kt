@@ -18,6 +18,7 @@ fun Chain.assetType(): AssetType? {
 
         Chain.Ton -> AssetType.JETTON
 
+        Chain.Aptos,
         Chain.Sui -> AssetType.TOKEN
 
         Chain.Cosmos,
