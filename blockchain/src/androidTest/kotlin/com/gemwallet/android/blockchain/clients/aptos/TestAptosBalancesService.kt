@@ -28,7 +28,7 @@ class TestAptosBalancesService(
         )
     }
 
-    override fun resources(address: String): Result<List<AptosResource<AptosResourceBalanceOptional>>> {
+    override suspend fun resources(address: String): Result<List<AptosResource<AptosResourceBalanceOptional>>> {
         tokenRequest = address
         return Result.success(
             listOf(

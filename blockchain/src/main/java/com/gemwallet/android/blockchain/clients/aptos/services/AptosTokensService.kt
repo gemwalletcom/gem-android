@@ -8,5 +8,5 @@ import retrofit2.http.Path
 interface AptosTokensService {
 
     @GET("/v1/accounts/{address}/resource/{resource}")
-    fun resource(@Path("address") address: String, @Path("resource") resource: String): Result<AptosResource<AptosCoinInfo>>
+    suspend fun resource(@Path("address") address: String, @Path("resource") resource: String): Result<AptosResource<AptosCoinInfo>>
 }

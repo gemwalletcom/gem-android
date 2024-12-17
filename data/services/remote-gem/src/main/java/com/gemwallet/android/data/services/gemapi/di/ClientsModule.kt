@@ -2,7 +2,7 @@ package com.gemwallet.android.data.services.gemapi.di
 
 import android.content.Context
 import com.gemwallet.android.blockchain.RpcClientAdapter
-import com.gemwallet.android.blockchain.clients.aptos.services.AptosService
+import com.gemwallet.android.blockchain.clients.aptos.services.AptosServices
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinRpcClient
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosRpcClient
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
@@ -183,7 +183,7 @@ object ClientsModule {
                 ChainType.Cosmos -> buildClient(url, CosmosRpcClient::class.java, converter, httpClient)
                 ChainType.Ton -> buildClient(url, TonRpcClient::class.java, tonConverter, httpClient)
                 ChainType.Tron -> buildClient(url, TronRpcClient::class.java, converter, httpClient)
-                ChainType.Aptos -> buildClient(url, AptosService::class.java, converter, httpClient)
+                ChainType.Aptos -> buildClient(url, AptosServices::class.java, converter, httpClient)
                 ChainType.Sui -> buildClient(url, SuiRpcClient::class.java, converter, httpClient)
                 ChainType.Xrp -> buildClient(url, XrpRpcClient::class.java, converter, httpClient)
                 ChainType.Near -> buildClient(url, NearRpcClient::class.java, converter, httpClient)

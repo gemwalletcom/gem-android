@@ -11,5 +11,5 @@ interface AptosBalancesService {
     suspend fun balance(@Path("address") address: String): Result<AptosResource<AptosResourceBalance>>
 
     @GET("/v1/accounts/{address}/resources")
-    fun resources(@Path("address") address: String): Result<List<AptosResource<AptosResourceBalanceOptional>>>
+    suspend fun resources(@Path("address") address: String): Result<List<AptosResource<AptosResourceBalanceOptional>>>
 }

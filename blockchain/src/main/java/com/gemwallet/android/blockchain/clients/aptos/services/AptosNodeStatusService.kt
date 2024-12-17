@@ -9,7 +9,7 @@ interface AptosNodeStatusService {
     @GET
     suspend fun ledger(@Url url: String): Response<AptosLedger>
 
-    suspend fun AptosService.getLedger(url: String): Response<AptosLedger> {
+    suspend fun AptosServices.getLedger(url: String): Response<AptosLedger> {
         return ledger("$url/v1")
     }
 }
