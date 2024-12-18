@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.gemwallet.android.data.service.store.database.entities.DbAssetInfo
 import com.gemwallet.android.data.service.store.database.entities.DbToken
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
@@ -33,6 +34,15 @@ interface TokensDao {
             " ORDER BY rank DESC"
     )
     fun search(types: List<AssetType>, query: String): Flow<List<DbToken>>
+
+    @Query("""
+        SELECT * FROM tokens WHERE (type IN (:types) OR id IN (:assetIds))
+            AND (id LIKE '%' || :query || '%' OR symbol LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%')
+            COLLATE NOCASE
+        ORDER BY rank DESC
+        """
+    )
+    fun swapSearch(types: List<AssetType>, assetIds: List<String>, query: String): Flow<List<DbToken>>
 
     @Query("""
         SELECT
