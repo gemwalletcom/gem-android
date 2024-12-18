@@ -26,9 +26,13 @@ class AptosGetTokenClient(
         )
     }
 
-    override suspend fun isTokenQuery(query: String): Boolean {
-        return query.has0xPrefix() && query.contains("::")
-    }
+    override suspend fun isTokenQuery(query: String): Boolean = isTokenQuery(query)
 
     override fun supported(chain: Chain): Boolean = chain == this.chain
+
+    companion object {
+        fun isTokenAddress(tokenId: String): Boolean {
+            return tokenId.has0xPrefix() && tokenId.contains("::")
+        }
+    }
 }
