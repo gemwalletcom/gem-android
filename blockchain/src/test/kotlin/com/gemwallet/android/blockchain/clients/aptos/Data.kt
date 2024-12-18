@@ -12,4 +12,5 @@ internal val aptosAccountResponse = AptosAccount(
 internal val aptosFeeResponse = AptosGasFee(
     gas_estimate = 100,
     prioritized_gas_estimate = 150,
+    deprioritized_gas_estimate = 250,
 )

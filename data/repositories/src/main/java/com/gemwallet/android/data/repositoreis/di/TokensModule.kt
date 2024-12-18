@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import com.gemwallet.android.blockchain.RpcClientAdapter
+import com.gemwallet.android.blockchain.clients.aptos.AptosGetTokenClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmGetTokenClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaTokenClient
 import com.gemwallet.android.blockchain.clients.sui.SuiGetTokenClient
@@ -40,9 +41,9 @@ object TokensModule {
                 ChainType.Ton -> TonGetTokenClient(chain, rpcClients.getClient(chain))
                 ChainType.Tron -> TronGetTokenClient(chain, rpcClients.getClient(chain))
                 ChainType.Sui -> SuiGetTokenClient(chain, rpcClients.getClient(chain))
+                ChainType.Aptos -> AptosGetTokenClient(chain, rpcClients.getClient(chain))
                 ChainType.Bitcoin,
                 ChainType.Cosmos,
-                ChainType.Aptos,
                 ChainType.Xrp,
                 ChainType.Near -> null
             }

@@ -10,9 +10,6 @@ interface AptosBalancesService {
     @GET("/v1/accounts/{address}/resource/0x1::coin::CoinStore<0x1::aptos_coin::AptosCoin>")
     suspend fun balance(@Path("address") address: String): Result<AptosResource<AptosResourceBalance>>
 
-    @GET("/v1/accounts/{address}/resource/{resource}")
-    fun resource(@Path("address") address: String, @Path("resource") resource: String)
-
     @GET("/v1/accounts/{address}/resources")
-    fun resources(@Path("address") address: String): Result<List<AptosResource<AptosResourceBalanceOptional>>>
+    suspend fun resources(@Path("address") address: String): Result<List<AptosResource<AptosResourceBalanceOptional>>>
 }
