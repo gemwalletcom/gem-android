@@ -6,6 +6,7 @@ import com.gemwallet.android.R
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
+import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.features.assets.model.WalletInfoUIState
 import com.gemwallet.android.ui.components.image.getIconUrl
@@ -72,12 +73,12 @@ class AssetsViewModel @Inject constructor(
     private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAssetsInfo()
 
     private val assets: StateFlow<List<AssetItemUIModel>> = assetsState
-        .map { it.map { AssetInfoUIModel(it) }.toImmutableList() }
+        .map { it.map { AssetInfoUIModel(it) }.distinctBy { it.asset.id.toIdentifier() } }
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val pinnedAssets = assets
-        .map { items -> items.filter { asset -> asset.metadata?.isPinned == true }}
+        .map { items -> items.filter { asset -> asset.metadata?.isPinned == true } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val unpinnedAssets = assets.map { it.filter { asset -> asset.metadata?.isPinned != true } }
