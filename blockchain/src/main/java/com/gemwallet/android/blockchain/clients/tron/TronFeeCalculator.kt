@@ -1,5 +1,7 @@
 package com.gemwallet.android.blockchain.clients.tron
 
+import com.gemwallet.android.blockchain.clients.tron.services.getAccount
+import com.gemwallet.android.blockchain.clients.tron.services.triggerSmartContract
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
