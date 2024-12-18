@@ -84,9 +84,9 @@ class TokensRepository (
         return true
     }
 
-    override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
-        val dbAssetInfo = tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
-        return AssetInfoMapper().asDomain(dbAssetInfo).firstOrNull()
+    override suspend fun assembleAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
+        return tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
+            .map { AssetInfoMapper().asDomain(it).firstOrNull() }
     }
 
     private suspend fun addTokens(tokens: List<AssetFull>) {

@@ -11,5 +11,5 @@ interface GetTokensCase {
 
     fun getByChains(chains: List<Chain>, query: String): Flow<List<Asset>>
 
-    suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo?
+    suspend fun assembleAssetInfo(assetId: AssetId): Flow<AssetInfo?>
 }

@@ -219,7 +219,7 @@ class AssetsRepository @Inject constructor(
         .map { assets ->
             assetsId.map { id ->
                 assets.firstOrNull { it.asset.id.same(id) }
-                    ?: getTokensCase.assembleAssetInfo(id)
+                    ?: getTokensCase.assembleAssetInfo(id).firstOrNull()
             }.filterNotNull()
         }
 
@@ -229,16 +229,23 @@ class AssetsRepository @Inject constructor(
     }
 
     suspend fun getToken(assetId: AssetId): Flow<Asset?> = withContext(Dispatchers.IO) {
-        assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
-            .map { AssetInfoMapper().asDomain(listOf(it)).firstOrNull() }
-            .map { it ?: getTokensCase.assembleAssetInfo(assetId) }
-            .map { it?.asset }
+        combine(
+            assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain),
+            getTokensCase.assembleAssetInfo(assetId)
+        ) { asset, token ->
+            if (asset == null) {
+                token
+            } else {
+                AssetInfoMapper().asDomain(listOf(asset)).firstOrNull()
+            }
+        }
+        .map { it?.asset }
     }
 
     suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo> = withContext(Dispatchers.IO) {
         assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
             .map { AssetInfoMapper().asDomain(listOf(it)).firstOrNull() }
-            .mapNotNull { it ?: getTokensCase.assembleAssetInfo(assetId) }
+            .mapNotNull { it ?: getTokensCase.assembleAssetInfo(assetId).firstOrNull() }
     }
 
     fun getAssetsInfoByAllWallets(assetsId: List<String>): Flow<List<AssetInfo>> {
@@ -246,7 +253,7 @@ class AssetsRepository @Inject constructor(
             .map { assets ->
                 assetsId.mapNotNull { id ->
                     assets.firstOrNull { it.asset.id.toIdentifier() == id }
-                        ?: getTokensCase.assembleAssetInfo(id.toAssetId() ?: return@mapNotNull null)
+                        ?: getTokensCase.assembleAssetInfo(id.toAssetId() ?: return@mapNotNull null).firstOrNull()
                 }
             }
     }
