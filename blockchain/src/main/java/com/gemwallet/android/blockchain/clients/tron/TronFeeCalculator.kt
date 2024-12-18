@@ -21,7 +21,10 @@ class TronFeeCalculator(
 
 ) {
     suspend fun calculate(inParams: ConfirmParams.TransferParams) = withContext(Dispatchers.IO) {
-        val getIsNewAccount = async { rpcClient.getAccount(inParams.from.address) }
+        val getIsNewAccount = async {
+            val account = rpcClient.getAccount(inParams.from.address)
+            account?.address.isNullOrEmpty()
+        }
         val getAccountUsage = async { rpcClient.getAccountUsage(inParams.from.address) }
         val getParams = async { rpcClient.getChainParameters().fold({ it.chainParameter }) { null } }
 

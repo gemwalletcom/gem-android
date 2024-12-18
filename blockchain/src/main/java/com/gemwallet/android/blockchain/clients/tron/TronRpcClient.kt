@@ -66,16 +66,16 @@ suspend fun TronRpcClient.triggerSmartContract(
     return triggerSmartContract(call)
 }
 
-suspend fun TronRpcClient.getAccount(address: String): Boolean {
+suspend fun TronRpcClient.getAccount(address: String): TronAccount? {
     return try {
         getAccount(
             TronAccountRequest(
                 address = Base58.decode(address).toHexString(""),
                 visible = false
             )
-        ).getOrNull()?.address.isNullOrEmpty()
+        ).getOrThrow()
     } catch (_: Throwable) {
-        true
+        null
     }
 }
 
