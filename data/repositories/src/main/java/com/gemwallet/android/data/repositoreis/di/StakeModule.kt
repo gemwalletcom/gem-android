@@ -5,6 +5,7 @@ import com.gemwallet.android.blockchain.clients.cosmos.CosmosStakeClient
 import com.gemwallet.android.blockchain.clients.ethereum.SmartchainStakeClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaStakeClient
 import com.gemwallet.android.blockchain.clients.sui.SuiStakeClient
+import com.gemwallet.android.blockchain.clients.tron.TronStakeClient
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.data.service.store.database.StakeDao
 import com.gemwallet.android.data.services.gemapi.GemApiStaticClient
@@ -39,6 +40,7 @@ object StakeModule {
                 ChainType.Solana -> SolanaStakeClient(it, rpcClients.getClient(it))
                 ChainType.Cosmos -> CosmosStakeClient(it, rpcClients.getClient(it))
                 ChainType.Sui -> SuiStakeClient(it, rpcClients.getClient(it))
+                ChainType.Tron -> TronStakeClient(it, rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Bitcoin,
                 ChainType.Ton,
                 ChainType.Tron,

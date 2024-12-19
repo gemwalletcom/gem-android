@@ -4,6 +4,7 @@ import android.text.format.DateUtils
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.decodeHex
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
@@ -17,6 +18,7 @@ import java.math.BigInteger
 class TronSignClient(
     private val chain: Chain,
 ) : SignClient {
+
     override suspend fun signTransfer(
         params: SignerParams,
         txSpeed: TxSpeed,
@@ -52,6 +54,27 @@ class TronSignClient(
         }.build()
         val signingOutput = AnySigner.sign(signInput, CoinType.TRON, Tron.SigningOutput.parser())
         return signingOutput.json.toByteArray()
+    }
+    public fun signDelegate(params: SignerParams) {
+        val chainData = params.chainData as TronSignerPreloader.TronChainData
+        val votes = chainData.votes
+        val freezContract = Tron.FreezeBalanceV2Contract.newBuilder().apply {
+            this.ownerAddress = params.input.from.address
+            this.frozenBalance = params.input.amount.toLong()
+            this.resource = "BANDWIDTH"
+        }
+        val vooteContract = Tron.VoteWitnessContract.newBuilder().apply {
+            this.ownerAddress = params.input.from.address
+            this.support = true
+            this.addAllVotes(
+                votes.map {
+                    Tron.VoteWitnessContract.Vote.newBuilder().apply {
+                        this.voteAddress = it.key
+                        this.voteCount = it.value
+                    }.build()
+                }
+            )
+        }
     }
 
     private fun getTransferContract(value: BigInteger, ownerAddress: String, recipient: String)

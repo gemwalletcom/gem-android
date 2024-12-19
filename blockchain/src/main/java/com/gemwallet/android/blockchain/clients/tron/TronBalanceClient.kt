@@ -5,6 +5,7 @@ import com.gemwallet.android.blockchain.clients.tron.services.TronAccountsServic
 import com.gemwallet.android.blockchain.clients.tron.services.TronCallService
 import com.gemwallet.android.blockchain.clients.tron.services.TronStakeService
 import com.gemwallet.android.blockchain.clients.tron.services.getAccount
+import com.gemwallet.android.blockchain.clients.tron.services.staked
 import com.gemwallet.android.blockchain.clients.tron.services.triggerSmartContract
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
@@ -32,10 +33,8 @@ class TronBalanceClient(
         val pending = account.unfrozenV2?.mapNotNull { unfroze ->
             unfroze.unfreeze_amount ?: return@mapNotNull null
         }?.fold(0L) { acc, amount -> acc + amount }?.toString() ?: "0"
-        val votes = account.votes ?: emptyList()
-        val totalVotes = votes.fold(0L) { acc, item -> acc + item.vote_count }
-        val staked = (BigInteger.valueOf(totalVotes) * BigInteger.TEN.pow(chain.asset().decimals)).toString()
         val rewards = getRewards.await()
+        val staked = account.staked(chain).toString()
 
         if (available == "0" && staked == "0" && rewards == "0" && pending == "0") {
             return@withContext null
