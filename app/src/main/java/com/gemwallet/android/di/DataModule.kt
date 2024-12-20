@@ -9,6 +9,10 @@ import com.gemwallet.android.blockchain.clients.SignerPreloaderProxy
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
+import com.gemwallet.android.blockchain.clients.algorand.AlgorandBroadcastClient
+import com.gemwallet.android.blockchain.clients.algorand.AlgorandNodeStatusClient
+import com.gemwallet.android.blockchain.clients.algorand.AlgorandSignClient
+import com.gemwallet.android.blockchain.clients.algorand.AlgorandSignPreloadClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosBroadcastClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosNodeStatusClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosSignClient
@@ -33,6 +37,10 @@ import com.gemwallet.android.blockchain.clients.solana.SolanaBroadcastClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaNodeStatusClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaSignClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaSignerPreloader
+import com.gemwallet.android.blockchain.clients.stellar.StellarBroadcastClient
+import com.gemwallet.android.blockchain.clients.stellar.StellarNodeStatusClient
+import com.gemwallet.android.blockchain.clients.stellar.StellarSignClient
+import com.gemwallet.android.blockchain.clients.stellar.StellarSignPreloadClient
 import com.gemwallet.android.blockchain.clients.sui.SuiBroadcastClient
 import com.gemwallet.android.blockchain.clients.sui.SuiNodeStatusClient
 import com.gemwallet.android.blockchain.clients.sui.SuiSignClient
@@ -87,6 +95,8 @@ object DataModule {
                 ChainType.Sui -> SuiBroadcastClient(it, rpcClients.getClient(it))
                 ChainType.Xrp -> XrpBroadcastClient(it, rpcClients.getClient(it))
                 ChainType.Near -> NearBroadcastClient(it, rpcClients.getClient(it))
+                ChainType.Algorand -> AlgorandBroadcastClient(it, rpcClients.getClient(it))
+                ChainType.Stellar -> StellarBroadcastClient(it, rpcClients.getClient(it))
             }
         },
     )
@@ -108,6 +118,8 @@ object DataModule {
                 ChainType.Sui -> SuiSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Xrp -> XrpSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Near -> NearSignerPreloader(it, rpcClients.getClient(it))
+                ChainType.Algorand -> AlgorandSignPreloadClient(it, rpcClients.getClient(it))
+                ChainType.Stellar -> StellarSignPreloadClient(it, rpcClients.getClient(it), rpcClients.getClient(it))
             }
         }
         return SignerPreloaderProxy(
@@ -136,6 +148,8 @@ object DataModule {
                 ChainType.Sui -> SuiSignClient(it)
                 ChainType.Xrp -> XrpSignClient(it)
                 ChainType.Near -> NearSignClient(it)
+                ChainType.Algorand -> AlgorandSignClient(it)
+                ChainType.Stellar -> StellarSignClient(it)
             }
         },
     )
@@ -158,6 +172,8 @@ object DataModule {
                     ChainType.Sui -> SuiNodeStatusClient(it, rpcClients.getClient(it))
                     ChainType.Xrp -> XrpNodeStatusClient(it, rpcClients.getClient(it))
                     ChainType.Near -> NearNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.Algorand -> AlgorandNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.Stellar -> StellarNodeStatusClient(it, rpcClients.getClient(it))
                 }
             }
         )

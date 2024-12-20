@@ -44,6 +44,8 @@ object StakeModule {
                 ChainType.Tron,
                 ChainType.Aptos,
                 ChainType.Xrp,
+                ChainType.Algorand,
+                ChainType.Stellar,
                 ChainType.Near -> null
             }
         }

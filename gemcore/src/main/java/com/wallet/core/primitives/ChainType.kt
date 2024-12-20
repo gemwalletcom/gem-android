@@ -29,5 +29,9 @@ enum class ChainType(val string: String) {
 	Xrp("xrp"),
 	@SerialName("near")
 	Near("near"),
+	@SerialName("stellar")
+	Stellar("stellar"),
+	@SerialName("algorand")
+	Algorand("algorand"),
 }
 
