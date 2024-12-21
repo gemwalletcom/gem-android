@@ -43,5 +43,7 @@ enum class EVMChain(val string: String) {
 	Celo("celo"),
 	@SerialName("world")
 	World("world"),
+	@SerialName("sonic")
+	Sonic("sonic"),
 }
 

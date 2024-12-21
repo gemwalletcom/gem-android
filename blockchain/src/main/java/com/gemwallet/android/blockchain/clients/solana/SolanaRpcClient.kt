@@ -4,7 +4,6 @@ import com.gemwallet.android.blockchain.clients.solana.models.SolanaArrayData
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaInfo
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaParsedData
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaParsedSplTokenInfo
-import com.gemwallet.android.blockchain.clients.solana.models.SolanaTokenOwner
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaAccountsService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaBalancesService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaFeeService
@@ -12,15 +11,7 @@ import com.gemwallet.android.blockchain.clients.solana.services.SolanaNetworkInf
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaStakeService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
-import com.wallet.core.blockchain.solana.models.SolanaBalanceValue
-import com.wallet.core.blockchain.solana.models.SolanaBlockhashResult
-import com.wallet.core.blockchain.solana.models.SolanaEpoch
-import com.wallet.core.blockchain.solana.models.SolanaPrioritizationFee
-import com.wallet.core.blockchain.solana.models.SolanaStakeAccount
-import com.wallet.core.blockchain.solana.models.SolanaTokenAccount
-import com.wallet.core.blockchain.solana.models.SolanaTokenAccountResult
 import com.wallet.core.blockchain.solana.models.SolanaTransaction
-import com.wallet.core.blockchain.solana.models.SolanaValidators
 import com.wallet.core.blockchain.solana.models.SolanaValue
 import retrofit2.Response
 import retrofit2.http.Body

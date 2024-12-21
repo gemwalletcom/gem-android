@@ -40,5 +40,8 @@ class WCChainTypeProxy : ChainTypeProxy<CoinType> {
         Chain.Celo -> CoinType.CELO
         Chain.Near -> CoinType.NEAR
         Chain.World -> CoinType.ETHEREUM
+        Chain.Sonic -> CoinType.ETHEREUM
+        Chain.Algorand -> CoinType.ALGORAND
+        Chain.Stellar -> CoinType.STELLAR
     }
 }

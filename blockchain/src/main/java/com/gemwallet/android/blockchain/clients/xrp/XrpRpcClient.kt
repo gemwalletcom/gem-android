@@ -2,7 +2,6 @@ package com.gemwallet.android.blockchain.clients.xrp
 
 import com.gemwallet.android.blockchain.clients.xrp.services.XrpAccountsService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
-import com.wallet.core.blockchain.xrp.models.XRPAccountResult
 import com.wallet.core.blockchain.xrp.models.XRPFee
 import com.wallet.core.blockchain.xrp.models.XRPLatestBlock
 import com.wallet.core.blockchain.xrp.models.XRPResult

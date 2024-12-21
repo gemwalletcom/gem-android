@@ -2,7 +2,6 @@ package com.gemwallet.android.blockchain.clients
 
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.SignerParams
-import com.wallet.core.primitives.Account
 
 interface NativeTransferPreloader : BlockchainClient {
     suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams

@@ -1,12 +1,14 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import com.gemwallet.android.blockchain.RpcClientAdapter
+import com.gemwallet.android.blockchain.clients.algorand.AlgorandTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.near.NearTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaTransactionStatusClient
+import com.gemwallet.android.blockchain.clients.stellar.StellarTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.sui.SuiTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.ton.TonTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.tron.TronTransactionStatusClient
@@ -57,6 +59,8 @@ object TransactionsModule {
                 ChainType.Sui -> SuiTransactionStatusClient(it, rpcClients.getClient(it))
                 ChainType.Xrp -> XrpTransactionStatusClient(it, rpcClients.getClient(it))
                 ChainType.Near -> NearTransactionStatusClient(it, rpcClients.getClient(it))
+                ChainType.Algorand -> AlgorandTransactionStatusClient(it, rpcClients.getClient(it))
+                ChainType.Stellar -> StellarTransactionStatusClient(it, rpcClients.getClient(it))
             }
         },
     )

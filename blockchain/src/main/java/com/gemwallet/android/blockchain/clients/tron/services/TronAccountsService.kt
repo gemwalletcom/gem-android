@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.tron.services
 
-import com.gemwallet.android.blockchain.clients.tron.TronRpcClient
 import com.gemwallet.android.math.toHexString
 import com.wallet.core.blockchain.tron.models.TronAccount
 import com.wallet.core.blockchain.tron.models.TronAccountRequest

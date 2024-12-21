@@ -7,7 +7,6 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getReserveBalance
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Chain
-import uniffi.gemstone.Config
 import java.math.BigInteger
 
 class XrpBalanceClient(

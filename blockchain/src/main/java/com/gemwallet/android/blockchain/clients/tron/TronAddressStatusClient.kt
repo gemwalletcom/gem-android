@@ -4,7 +4,6 @@ import com.gemwallet.android.blockchain.clients.AddressStatusClient
 import com.gemwallet.android.blockchain.clients.tron.services.TronAccountsService
 import com.gemwallet.android.blockchain.clients.tron.services.getAccount
 import com.gemwallet.android.model.AddressStatus
-import com.wallet.core.blockchain.tron.models.TronAccountRequest
 import com.wallet.core.primitives.Chain
 
 class TronAddressStatusClient(
