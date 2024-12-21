@@ -48,7 +48,7 @@ class StellarSignPreloadClient(
                     speed = it.speed,
                     feeAssetId = it.feeAssetId,
                     amount = it.amount,
-                    options = mapOf("tokenAccountCreation" to BigInteger.ZERO)
+                    options = mapOf(StellarChainData.tokenAccountCreation to BigInteger.ZERO)
                 )
             }
         }
@@ -70,5 +70,9 @@ class StellarSignPreloadClient(
         override fun fee(speed: TxSpeed): Fee = fees.firstOrNull { it.speed == speed } ?: fees.first()
 
         override fun allFee(): List<Fee> = fees
+
+        companion object {
+            const val tokenAccountCreation = "tokenAccountCreation"
+        }
     }
 }

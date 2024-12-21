@@ -1,12 +1,12 @@
 package com.gemwallet.android.blockchain.clients.algorand
 
+import com.gemwallet.android.blockchain.Mime
 import com.gemwallet.android.blockchain.clients.BroadcastClient
 import com.gemwallet.android.blockchain.clients.algorand.services.AlgorandBroadcastService
-import com.google.gson.Gson
-import com.wallet.core.blockchain.algorand.AlgorandTransactionBroadcastError
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class AlgorandBroadcastClient(
     private val chain: Chain,
@@ -18,20 +18,15 @@ class AlgorandBroadcastClient(
         signedMessage: ByteArray,
         type: TransactionType
     ): Result<String> {
-        val resp =  broadcastService.broadcast(signedMessage)
-        return if (resp.isSuccessful) {
-            Result.success(resp.body()?.txId ?: throw Exception("Broadcast transaction fail"))
+        val result =  broadcastService.broadcast(signedMessage.toRequestBody(Mime.Binary.value))
+        val resp = result.getOrNull()
+            ?: return Result.failure(Exception("Broadcast transaction fail"))
+        return if (resp.txId.isNullOrEmpty()) {
+            Result.failure(Exception(resp.message ?: "Broadcast transaction fail"))
         } else {
-            val message = try {
-                Gson().fromJson(resp.errorBody()?.string(), AlgorandTransactionBroadcastError::class.java).message
-            } catch (_: Throwable) {
-                "Broadcast transaction fail"
-            }
-            throw Exception(message)
+            Result.success(resp.txId)
         }
     }
 
-    override fun supported(chain: Chain): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 }

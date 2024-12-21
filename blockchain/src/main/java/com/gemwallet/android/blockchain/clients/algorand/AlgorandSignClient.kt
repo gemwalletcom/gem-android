@@ -23,7 +23,7 @@ class AlgorandSignClient(
             ?: throw Exception("bad params")
         val input = Algorand.SigningInput.newBuilder().apply {
             this.genesisId = chainData.chainId
-            this.genesisHash = ByteString.copyFrom(Base64.encode(chainData.block.toByteArray()).toByteArray())
+            this.genesisHash = ByteString.copyFrom(Base64.decode(chainData.block))
             if (params.input.memo() != null) {
                 this.note = params.input.memo()?.let {
                     ByteString.copyFrom(it.toByteArray())

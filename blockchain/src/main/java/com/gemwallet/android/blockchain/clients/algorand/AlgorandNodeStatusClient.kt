@@ -19,7 +19,6 @@ class AlgorandNodeStatusClient(
         val resp = try {
             nodeStatusService.transactionsParams("$url/v2/transactions/params")
         } catch (err: Throwable) {
-            Log.d("ALGO-NODE-STATUS", "Error: ", err)
             throw err
         }
         val result = resp.body()

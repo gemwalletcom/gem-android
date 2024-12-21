@@ -181,6 +181,8 @@ object ClientsModule {
         )
         val algorandConverter = Json {
             ignoreUnknownKeys = true
+            coerceInputValues = true
+            explicitNulls = false
         }
         .asConverterFactory("application/json; charset=UTF8".toMediaType())
         val adapter = RpcClientAdapter()

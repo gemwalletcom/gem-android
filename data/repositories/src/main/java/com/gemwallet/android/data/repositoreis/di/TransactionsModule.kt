@@ -1,7 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import com.gemwallet.android.blockchain.RpcClientAdapter
-import com.gemwallet.android.blockchain.clients.algorand.AlgorandTxStatusClient
+import com.gemwallet.android.blockchain.clients.algorand.AlgorandTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosTransactionStatusClient
@@ -59,7 +59,7 @@ object TransactionsModule {
                 ChainType.Sui -> SuiTransactionStatusClient(it, rpcClients.getClient(it))
                 ChainType.Xrp -> XrpTransactionStatusClient(it, rpcClients.getClient(it))
                 ChainType.Near -> NearTransactionStatusClient(it, rpcClients.getClient(it))
-                ChainType.Algorand -> AlgorandTxStatusClient(it, rpcClients.getClient(it))
+                ChainType.Algorand -> AlgorandTransactionStatusClient(it, rpcClients.getClient(it))
                 ChainType.Stellar -> StellarTransactionStatusClient(it, rpcClients.getClient(it))
             }
         },

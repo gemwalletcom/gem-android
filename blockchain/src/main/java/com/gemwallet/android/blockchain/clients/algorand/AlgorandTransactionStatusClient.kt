@@ -6,7 +6,7 @@ import com.gemwallet.android.model.TransactionChages
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
 
-class AlgorandTxStatusClient(
+class AlgorandTransactionStatusClient(
     private val chain: Chain,
     private val txStatusService: AlgorandTxStatusService,
 ) : TransactionStatusClient {

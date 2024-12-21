@@ -31,7 +31,7 @@ class StellarSignClient(
                     this.text = params.input.memo()!!
                 }.build()
             }
-            if (chainData.fee(txSpeed).options.contains("tokenAccountCreation")) {
+            if (chainData.fee(txSpeed).options.contains(StellarSignPreloadClient.StellarChainData.tokenAccountCreation)) {
                 this.opCreateAccount = Stellar.OperationCreateAccount.newBuilder().apply {
                     this.destination = params.input.destination()!!.address
                     this.amount = params.finalAmount.toLong()
