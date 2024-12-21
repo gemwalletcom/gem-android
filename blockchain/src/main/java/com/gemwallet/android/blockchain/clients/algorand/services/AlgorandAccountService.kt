@@ -1,7 +1,6 @@
 package com.gemwallet.android.blockchain.clients.algorand.services
 
 import com.wallet.core.blockchain.algorand.AlgorandAccount
-import okhttp3.Address
 import retrofit2.http.GET
 import retrofit2.http.Path
 

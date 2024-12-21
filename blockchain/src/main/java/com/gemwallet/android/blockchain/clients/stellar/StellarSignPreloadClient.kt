@@ -18,7 +18,7 @@ import java.math.BigInteger
 class StellarSignPreloadClient(
     private val chain: Chain,
     private val accountService: StellarAccountService,
-    private val feeService: StellarFeeService,
+    feeService: StellarFeeService,
 ) : NativeTransferPreloader {
 
     private val feeCalculator = StellarFeeCalculator(chain, feeService)
@@ -27,7 +27,10 @@ class StellarSignPreloadClient(
         params: ConfirmParams.TransferParams.Native
     ): SignerParams = withContext(Dispatchers.IO) {
         val getAccount = async { accountService.accounts(params.from.address) }
-        val getIsDestinationAccountExist = async { accountService.accounts(params.destination.address) != null }
+        val getIsDestinationAccountExist = async {
+            val destAccount = accountService.accounts(params.destination.address)
+            destAccount?.status != 404
+        }
         val getDefaultFees = async { feeCalculator.calculate() }
 
         val account = getAccount.await()
@@ -53,7 +56,7 @@ class StellarSignPreloadClient(
             input = params,
             chainData = StellarChainData(
                 fees = fees,
-                sequence = account.sequence.toLong()
+                sequence = account.sequence.toLong() + 1
             )
         )
     }

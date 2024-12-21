@@ -8,7 +8,7 @@ import com.gemwallet.android.blockchain.clients.cosmos.CosmosTransactionStatusCl
 import com.gemwallet.android.blockchain.clients.ethereum.EvmTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.near.NearTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaTransactionStatusClient
-import com.gemwallet.android.blockchain.clients.stellar.StellarTxStatusClient
+import com.gemwallet.android.blockchain.clients.stellar.StellarTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.sui.SuiTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.ton.TonTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.tron.TronTransactionStatusClient
@@ -60,7 +60,7 @@ object TransactionsModule {
                 ChainType.Xrp -> XrpTransactionStatusClient(it, rpcClients.getClient(it))
                 ChainType.Near -> NearTransactionStatusClient(it, rpcClients.getClient(it))
                 ChainType.Algorand -> AlgorandTxStatusClient(it, rpcClients.getClient(it))
-                ChainType.Stellar -> StellarTxStatusClient(it, rpcClients.getClient(it))
+                ChainType.Stellar -> StellarTransactionStatusClient(it, rpcClients.getClient(it))
             }
         },
     )

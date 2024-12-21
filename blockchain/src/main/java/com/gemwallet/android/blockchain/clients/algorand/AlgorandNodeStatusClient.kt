@@ -3,7 +3,6 @@ package com.gemwallet.android.blockchain.clients.algorand
 import android.util.Log
 import com.gemwallet.android.blockchain.clients.NodeStatusClient
 import com.gemwallet.android.blockchain.clients.algorand.services.AlgorandNodeStatusService
-import com.gemwallet.android.blockchain.clients.stellar.services.StellarNodeStatusService
 import com.gemwallet.android.blockchain.rpc.getLatency
 import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain

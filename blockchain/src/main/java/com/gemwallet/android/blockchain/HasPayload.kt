@@ -3,7 +3,6 @@ package com.gemwallet.android.blockchain
 import com.gemwallet.android.ext.toChainType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
-import uniffi.gemstone.Config
 
 fun Chain.supportMemo(): Boolean = when (this.toChainType()) {
     ChainType.Cosmos,
