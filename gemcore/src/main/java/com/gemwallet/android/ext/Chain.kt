@@ -183,3 +183,5 @@ fun Chain.isSwapSupport(): Boolean {
 }
 
 fun Chain.Companion.swapSupport() = Chain.entries.filter { it.isSwapSupport() }
+
+fun Chain.feeUnitType() = Config().getChainConfig(string).feeUnitType

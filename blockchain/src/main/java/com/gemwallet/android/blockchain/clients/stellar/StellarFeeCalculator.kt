@@ -23,12 +23,12 @@ class StellarFeeCalculator(
                 amount = min,
             ),
             Fee(
-                speed = TxSpeed.Slow,
+                speed = TxSpeed.Normal,
                 feeAssetId = assetId,
                 amount = min,
             ),
             Fee(
-                speed = TxSpeed.Slow,
+                speed = TxSpeed.Fast,
                 feeAssetId = assetId,
                 amount = BigInteger(fees.fee_charged.p95) * BigInteger("2"),
             ),
