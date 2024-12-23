@@ -5,6 +5,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface AlgorandTxStatusService {
-    @GET("/v2/transactions/pending/{id})")
+    @GET("/v2/transactions/pending/{id}")
     suspend fun transaction(@Path("id") id: String): Result<AlgorandTransactionStatus>
 }
