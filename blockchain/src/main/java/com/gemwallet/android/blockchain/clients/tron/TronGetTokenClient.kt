@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.blockchain.clients.GetTokenClient
+import com.gemwallet.android.blockchain.clients.tron.services.triggerSmartContract
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString

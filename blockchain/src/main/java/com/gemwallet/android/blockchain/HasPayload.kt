@@ -8,6 +8,8 @@ fun Chain.supportMemo(): Boolean = when (this.toChainType()) {
     ChainType.Cosmos,
     ChainType.Xrp,
     ChainType.Solana,
+    ChainType.Algorand,
+    ChainType.Stellar,
     ChainType.Ton -> true
 
     ChainType.Near,

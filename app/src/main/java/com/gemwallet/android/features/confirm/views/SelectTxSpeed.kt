@@ -21,9 +21,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
+import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.feeUnitType
+import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.TxSpeed
+import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIcon16
@@ -76,8 +80,9 @@ private fun TxSpeedView(fee: Fee, isSelected: Boolean, onClick: () -> Unit) {
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyLarge,
             )
+            val feeUnitType = fee.feeAssetId.chain.feeUnitType()
             Text(
-                text = "${(fee as? GasFee)?.maxGasPrice.toString()} sat/vB",
+                text = "${(fee as? GasFee)?.maxGasPrice?.toString() ?: fee.feeAssetId.chain.asset().format(Crypto(fee.amount))} $feeUnitType",
                 textAlign = TextAlign.End,
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.bodyLarge,

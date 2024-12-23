@@ -97,9 +97,9 @@ class TokensRepository (
         return true
     }
 
-    override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
-        val dbAssetInfo = tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
-        return AssetInfoMapper().asDomain(dbAssetInfo).firstOrNull()
+    override suspend fun assembleAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
+        return tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
+            .map { AssetInfoMapper().asDomain(it).firstOrNull() }
     }
 
     private suspend fun addTokens(tokens: List<AssetFull>) {
@@ -132,6 +132,7 @@ class TokensRepository (
         Chain.Mantle,
         Chain.Celo,
         Chain.World,
+        Chain.Sonic,
         Chain.Ethereum -> AssetType.ERC20
 
         Chain.Solana -> AssetType.SPL
@@ -152,8 +153,9 @@ class TokensRepository (
         Chain.Bitcoin,
         Chain.Litecoin,
         Chain.Doge,
-        Chain.Aptos,
         Chain.Near,
+        Chain.Algorand,
+        Chain.Stellar,
         Chain.Xrp -> null
     }
 }

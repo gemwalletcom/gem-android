@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.sui
 
-import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account

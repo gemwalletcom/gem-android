@@ -13,5 +13,5 @@ interface GetTokensCase {
 
     fun swapSearch(chains: List<Chain>, assetIds: List<AssetId>, query: String): Flow<List<Asset>>
 
-    suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo?
+    suspend fun assembleAssetInfo(assetId: AssetId): Flow<AssetInfo?>
 }
