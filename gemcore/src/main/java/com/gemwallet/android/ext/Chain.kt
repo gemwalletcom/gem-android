@@ -1,5 +1,6 @@
 package com.gemwallet.android.ext
 
+import android.util.Log
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
@@ -41,6 +42,7 @@ fun Chain.assetType(): AssetType? {
         Chain.ZkSync,
         Chain.Linea,
         Chain.Mantle,
+        Chain.Sonic,
         Chain.World -> AssetType.ERC20
 
         Chain.Celo,
@@ -50,6 +52,8 @@ fun Chain.assetType(): AssetType? {
         Chain.Thorchain,
         Chain.Aptos,
         Chain.Xrp,
+        Chain.Algorand,
+        Chain.Stellar,
         Chain.Near -> null
     }
 }
@@ -75,6 +79,7 @@ fun Chain.eip1559Support() = when (this) {
     Chain.Mantle,
     Chain.Celo,
     Chain.World,
+    Chain.Sonic,
     Chain.Ethereum -> true
     Chain.Bitcoin,
     Chain.Litecoin,
@@ -93,6 +98,8 @@ fun Chain.eip1559Support() = when (this) {
     Chain.Injective,
     Chain.Noble,
     Chain.Near,
+    Chain.Algorand,
+    Chain.Stellar,
     Chain.Xrp -> false
 }
 
@@ -133,6 +140,8 @@ fun Chain.toChainType(): ChainType {
         Chain.Sui -> ChainType.Sui
         Chain.Xrp -> ChainType.Xrp
         Chain.Near -> ChainType.Near
+        Chain.Stellar -> ChainType.Stellar
+        Chain.Algorand -> ChainType.Algorand
         Chain.Bitcoin,
         Chain.Doge,
         Chain.Litecoin -> ChainType.Bitcoin
@@ -159,6 +168,7 @@ fun Chain.toChainType(): ChainType {
         Chain.Mantle,
         Chain.Celo,
         Chain.World,
+        Chain.Sonic,
         Chain.Ethereum -> ChainType.Ethereum
     }
 }
@@ -173,3 +183,5 @@ fun Chain.isSwapSupport(): Boolean {
 }
 
 fun Chain.Companion.swapSupport() = Chain.entries.filter { it.isSwapSupport() }
+
+fun Chain.feeUnitType() = Config().getChainConfig(string).feeUnitType

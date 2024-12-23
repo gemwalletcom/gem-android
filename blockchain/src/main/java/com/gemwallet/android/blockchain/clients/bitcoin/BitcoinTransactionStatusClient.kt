@@ -1,7 +1,6 @@
 package com.gemwallet.android.blockchain.clients.bitcoin
 
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
-import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinRpcClient
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinTransactionsService
 import com.gemwallet.android.model.TransactionChages
 import com.wallet.core.primitives.Chain

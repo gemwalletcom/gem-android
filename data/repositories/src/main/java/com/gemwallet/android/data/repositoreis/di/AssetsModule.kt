@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import com.gemwallet.android.blockchain.RpcClientAdapter
+import com.gemwallet.android.blockchain.clients.algorand.AlgorandBalanceClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosBalanceClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinBalanceClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosBalanceClient
@@ -8,6 +9,7 @@ import com.gemwallet.android.blockchain.clients.ethereum.EvmBalanceClient
 import com.gemwallet.android.blockchain.clients.ethereum.SmartchainStakeClient
 import com.gemwallet.android.blockchain.clients.near.NearBalanceClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaBalanceClient
+import com.gemwallet.android.blockchain.clients.stellar.StellarBalanceClient
 import com.gemwallet.android.blockchain.clients.sui.SuiBalanceClient
 import com.gemwallet.android.blockchain.clients.ton.TonBalanceClient
 import com.gemwallet.android.blockchain.clients.tron.TronBalanceClient
@@ -79,6 +81,8 @@ object AssetsModule {
                 ChainType.Sui -> SuiBalanceClient(it, rpcClients.getClient(it))
                 ChainType.Xrp -> XrpBalanceClient(it, rpcClients.getClient(it))
                 ChainType.Near -> NearBalanceClient(it, rpcClients.getClient(it))
+                ChainType.Algorand -> AlgorandBalanceClient(it, rpcClients.getClient(it))
+                ChainType.Stellar -> StellarBalanceClient(it, rpcClients.getClient(it))
             }
         }
     )

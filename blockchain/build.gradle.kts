@@ -1,6 +1,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    id("kotlinx-serialization")
 }
 
 android {
@@ -46,6 +47,8 @@ dependencies {
     // Network
     api(libs.retrofit)
     api(libs.retrofit.converter.gson)
+    api(libs.retrofit.converter.kotlin.serializer)
+    api(libs.kotlinx.serialization.json)
     api(libs.okhttp.logging.interceptor)
     implementation(libs.kotlinx.coroutines.android)
 

@@ -1,13 +1,16 @@
 package com.gemwallet.android.data.services.gemapi.di
 
 import android.content.Context
+import com.gemwallet.android.blockchain.Mime
 import com.gemwallet.android.blockchain.RpcClientAdapter
+import com.gemwallet.android.blockchain.clients.algorand.services.AlgorandService
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosServices
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinRpcClient
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosRpcClient
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
 import com.gemwallet.android.blockchain.clients.near.NearRpcClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaRpcClient
+import com.gemwallet.android.blockchain.clients.stellar.services.StellarService
 import com.gemwallet.android.blockchain.clients.sui.SuiRpcClient
 import com.gemwallet.android.blockchain.clients.ton.TonRpcClient
 import com.gemwallet.android.blockchain.clients.tron.TronRpcClient
@@ -45,13 +48,16 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
 import okhttp3.Cache
 import okhttp3.ConnectionPool
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter.Factory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -173,6 +179,12 @@ object ClientsModule {
                 TonRpcClient.JetonAddressSerializer()
             ).create()
         )
+        val algorandConverter = Json {
+            ignoreUnknownKeys = true
+            coerceInputValues = true
+            explicitNulls = false
+        }
+        .asConverterFactory("application/json; charset=UTF8".toMediaType())
         val adapter = RpcClientAdapter()
         Chain.available().map {
             val url = "https://${it.string}"
@@ -187,6 +199,8 @@ object ClientsModule {
                 ChainType.Sui -> buildClient(url, SuiRpcClient::class.java, converter, httpClient)
                 ChainType.Xrp -> buildClient(url, XrpRpcClient::class.java, converter, httpClient)
                 ChainType.Near -> buildClient(url, NearRpcClient::class.java, converter, httpClient)
+                ChainType.Algorand -> buildClient(url, AlgorandService::class.java, algorandConverter, httpClient)
+                ChainType.Stellar -> buildClient(url, StellarService::class.java, converter, httpClient)
             }
             adapter.add(it, rpc)
         }
@@ -198,11 +212,13 @@ object ClientsModule {
         clazz: Class<T>,
         converterFactory: Factory,
         httpClient: OkHttpClient
-    ): T = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .client(httpClient)
-        .addConverterFactory(converterFactory)
-        .addCallAdapterFactory(ResultCallAdapterFactory())
-        .build()
-        .create(clazz)
+    ): T {
+        return Retrofit.Builder()
+            .baseUrl(baseUrl)
+            .client(httpClient)
+            .addConverterFactory(converterFactory)
+            .addCallAdapterFactory(ResultCallAdapterFactory())
+            .build()
+            .create(clazz)
+    }
 }

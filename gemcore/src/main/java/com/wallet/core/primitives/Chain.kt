@@ -77,5 +77,11 @@ enum class Chain(val string: String) {
 	Near("near"),
 	@SerialName("world")
 	World("world"),
+	@SerialName("stellar")
+	Stellar("stellar"),
+	@SerialName("sonic")
+	Sonic("sonic"),
+	@SerialName("algorand")
+	Algorand("algorand"),
 }
 
