@@ -201,10 +201,10 @@ class TransactionsRepository(
         val stateClient = stateClients.firstOrNull { it.supported(assetId.chain) } ?: return null
         val stateResult = stateClient.getStatus(
             TransactionStateRequest(
-                assetId.chain,
-                tx.owner,
-                tx.hash,
-                tx.blockNumber,
+                chain = assetId.chain,
+                sender = tx.owner,
+                hash = tx.hash,
+                block = tx.blockNumber,
             )
         )
         val state = stateResult.getOrElse { TransactionChages(tx.state) }

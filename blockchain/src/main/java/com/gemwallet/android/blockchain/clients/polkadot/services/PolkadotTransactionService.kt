@@ -7,11 +7,11 @@ import retrofit2.http.Query
 
 interface PolkadotTransactionService {
     @GET("/transaction/material?noMeta=true")
-    fun transactionMaterial(): Result<PolkadotTransactionMaterial>
+    suspend fun transactionMaterial(): Result<PolkadotTransactionMaterial>
 
     @GET("/blocks/head")
-    fun blockHead(): Result<PolkadotBlock>
+    suspend fun blockHead(): Result<PolkadotBlock>
 
-    @GET("/blocks?range={range}&noFees=true")
-    fun blocks(@Query("range") range: String): Result<List<PolkadotBlock>>
+    @GET("/blocks?noFees=true")
+    suspend fun blocks(@Query("range") range: String): Result<List<PolkadotBlock>>
 }

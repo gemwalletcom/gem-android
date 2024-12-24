@@ -8,5 +8,5 @@ import retrofit2.http.POST
 
 interface PolkadotFeeService {
     @POST("/transaction/fee-estimate")
-    fun fee(@Body data: PolkadotTransactionPayload): Result<PolkadotEstimateFee>
+    suspend fun fee(@Body data: PolkadotTransactionPayload): Result<PolkadotEstimateFee>
 }

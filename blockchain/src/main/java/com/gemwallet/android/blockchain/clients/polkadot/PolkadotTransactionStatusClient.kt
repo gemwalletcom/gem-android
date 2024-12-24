@@ -30,7 +30,7 @@ class PolkadotTransactionStatusClient(
             for (extr in block.extrinsics) {
                 if (extr.hash == request.hash) {
                     val state = if (extr.success) TransactionState.Confirmed else TransactionState.Failed
-                    Result.success(TransactionChages(state))
+                    return Result.success(TransactionChages(state))
                 }
             }
         }

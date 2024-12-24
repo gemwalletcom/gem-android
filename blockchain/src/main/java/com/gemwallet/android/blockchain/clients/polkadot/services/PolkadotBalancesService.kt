@@ -6,5 +6,5 @@ import retrofit2.http.Path
 
 interface PolkadotBalancesService {
     @GET("/accounts/{address}/balance-info")
-    fun balance(@Path("address") address: String): Result<PolkadotAccountBalance>
+    suspend fun balance(@Path("address") address: String): Result<PolkadotAccountBalance>
 }

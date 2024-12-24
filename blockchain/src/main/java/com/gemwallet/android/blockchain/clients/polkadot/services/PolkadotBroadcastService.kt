@@ -7,5 +7,5 @@ import retrofit2.http.POST
 
 interface PolkadotBroadcastService {
     @POST("/transaction")
-    fun broadcast(@Body data: PolkadotTransactionPayload): Result<PolkadotTransactionBroadcast>
+    suspend fun broadcast(@Body data: PolkadotTransactionPayload): Result<PolkadotTransactionBroadcast>
 }

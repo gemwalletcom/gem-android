@@ -36,9 +36,10 @@ class PolkadotSignerPreloaderClient(
         val balance = getBalance.await() ?: throw Exception("Can't load chain data")
         val nonce = getNonce.await() ?: throw Exception("Can't load nonce")
 
-        if (Crypto(balance.reserved).value(chain.asset().decimals) < BigDecimal.ONE) {
-            throw IllegalStateException("Doesn't active recipient")
-        }
+//        TODO: Check reserved 1DOT
+//        if (Crypto(balance.reserved).value(chain.asset().decimals) < BigDecimal.ONE) {
+//            throw IllegalStateException("Doesn't active recipient")
+//        }
 
         val signData = PolkadotSigningData(
             genesisHash = transactionMaterial.genesisHash,

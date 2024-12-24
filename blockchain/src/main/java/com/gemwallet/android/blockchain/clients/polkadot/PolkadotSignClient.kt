@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.polkadot
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.clients.polkadot.models.PolkadotSigningData
 import com.gemwallet.android.math.append0x
+import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
@@ -26,8 +27,8 @@ class PolkadotSignClient(
         val chainData = (params.chainData as? PolkadotSignerPreloaderClient.PolkadotChainData) ?: throw Exception("incomplete data")
         val data = chainData.data
         val input = Polkadot.SigningInput.newBuilder().apply {
-            this.genesisHash = ByteString.copyFrom(data.genesisHash.toByteArray())
-            this.blockHash = ByteString.copyFrom(data.blockHash.toByteArray())
+            this.genesisHash = ByteString.copyFrom(data.genesisHash.decodeHex())
+            this.blockHash = ByteString.copyFrom(data.blockHash.decodeHex())
             this.nonce = nonce
             this.specVersion = data.specVersion.toInt()
             this.network = CoinType.POLKADOT.ss58Prefix()
@@ -48,9 +49,7 @@ class PolkadotSignClient(
         return output.encoded.toByteArray()
     }
 
-    override fun supported(chain: Chain): Boolean {
-        TODO("Not yet implemented")
-    }
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 
     companion object {
         fun transactionPayload(toAdresss: String, value: BigInteger, nonce: Long, data: PolkadotSigningData): String {

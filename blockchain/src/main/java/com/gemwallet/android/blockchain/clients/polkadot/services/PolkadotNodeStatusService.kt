@@ -8,8 +8,8 @@ import retrofit2.http.Url
 
 interface PolkadotNodeStatusService {
     @GET//(/node/version)
-    fun nodeVersion(@Url url: String): Response<PolkadotNodeVersion>
+    suspend fun nodeVersion(@Url url: String): Response<PolkadotNodeVersion>
 
     @GET//("/blocks/head")
-    fun blockHead(@Url url: String): Response<PolkadotBlock>
+    suspend fun blockHead(@Url url: String): Response<PolkadotBlock>
 }
