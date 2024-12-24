@@ -33,5 +33,7 @@ enum class ChainType(val string: String) {
 	Stellar("stellar"),
 	@SerialName("algorand")
 	Algorand("algorand"),
+	@SerialName("polkadot")
+	Polkadot("polkadot"),
 }
 

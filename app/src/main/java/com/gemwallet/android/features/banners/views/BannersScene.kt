@@ -80,6 +80,8 @@ fun BannersScene(
                     stringResource(R.string.common_warning),
                     stringResource(R.string.warnings_multi_signature_blocked, asset?.chain() ?: "")
                 )
+
+                BannerEvent.ActivateAsset -> TODO()
             }
             BannerText(
                 title = title,

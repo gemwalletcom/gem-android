@@ -292,6 +292,7 @@ class ConfirmViewModel @Inject constructor(
                 } else {
                     TransactionDirection.Outgoing
                 },
+                blockNumber = signerParams.chainData.blockNumber()
             )
             state.update { ConfirmState.Result(txHash = txHash) }
             val finishRoute = when (signerParams.input) {
@@ -432,6 +433,7 @@ class ConfirmViewModel @Inject constructor(
                 TransactionType.StakeRewards,
                 TransactionType.StakeRedelegate,
                 TransactionType.StakeWithdraw -> amount
+                TransactionType.AssetActivation -> TODO()
             }
 
             if (assetBalance < totalAmount) {

@@ -46,6 +46,7 @@ object StakeModule {
                 ChainType.Xrp,
                 ChainType.Algorand,
                 ChainType.Stellar,
+                ChainType.Polkadot,
                 ChainType.Near -> null
             }
         }

@@ -207,7 +207,6 @@
   <string name="social.github">GitHub</string>
   <string name="social.youtube">YouTube</string>
   <string name="social.links">Links</string>
-  <string name="social.homepage">Homepage</string>
   <string name="social.facebook">Facebook</string>
   <string name="nodes.import_node.title">Add node</string>
   <string name="nodes.import_node.chain_id">Chain ID</string>
@@ -313,4 +312,13 @@
   <string name="errors.swap.not_supported_chain">Not supported chain.</string>
   <string name="errors.swap.not_supported_asset">Not supported asset.</string>
   <string name="errors.swap.not_supported_pair">Not supported pair.</string>
+  <string name="social.website">Website</string>
+  <string name="asset.contract">Contract</string>
+  <string name="filter.types">Types</string>
+  <string name="fee_rate.gwei">%s gwei</string>
+  <string name="swap.slippage">Slippage</string>
+  <string name="swap.quote_fee">Quote includes a %s Gem fee.</string>
+  <string name="common.short_name">Gem</string>
+  <string name="transfer.activate_asset.title">Activate Asset</string>
+  <string name="banner.activate_asset.description" formatted="false">To use the %s asset, you must first enable it on the %s network by fulfilling the network’s specific requirements.</string>
 </resources>

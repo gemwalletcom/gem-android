@@ -277,6 +277,7 @@ class AssetsRepository @Inject constructor(
                         isSellEnabled = false,
                         isStakeEnabled = false,
                         isPinned = false,
+                        isActive = false,
                     )
                 )
             }
@@ -306,6 +307,7 @@ class AssetsRepository @Inject constructor(
                         isSellEnabled = false,
                         isStakeEnabled = false,
                         isPinned = false,
+                        isActive = false,
                     )
                 )
             }
@@ -592,6 +594,7 @@ class AssetsRepository @Inject constructor(
                 isStakeEnabled = room.isStakeEnabled,
                 isSellEnabled = false,
                 isPinned = false,
+                isActive = true,
             ),
             links = if (room.links != null) {
                 try {

@@ -12,7 +12,6 @@ import com.google.gson.reflect.TypeToken
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetLink
-import com.wallet.core.primitives.AssetLinks
 import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
@@ -82,7 +81,8 @@ class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo
                     isSwapEnabled = entity.isSwapEnabled,
                     isStakeEnabled = entity.isStakeEnabled,
                     isPinned = entity.pinned == true,
-                    isSellEnabled = false
+                    isSellEnabled = false,
+                    isActive = true,
                 ),
                 links = if (entity.links != null) {
                     try {

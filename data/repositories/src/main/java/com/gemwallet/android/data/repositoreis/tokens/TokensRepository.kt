@@ -152,10 +152,12 @@ class TokensRepository (
 
         Chain.Bitcoin,
         Chain.Litecoin,
+        Chain.BitcoinCash,
         Chain.Doge,
         Chain.Near,
         Chain.Algorand,
         Chain.Stellar,
+        Chain.Polkadot,
         Chain.Xrp -> null
     }
 }

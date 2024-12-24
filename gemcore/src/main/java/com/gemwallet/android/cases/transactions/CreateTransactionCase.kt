@@ -23,5 +23,6 @@ interface CreateTransactionCase {
         type: TransactionType,
         metadata: String? = null,
         direction: TransactionDirection,
+        blockNumber: String,
     ): Transaction
 }

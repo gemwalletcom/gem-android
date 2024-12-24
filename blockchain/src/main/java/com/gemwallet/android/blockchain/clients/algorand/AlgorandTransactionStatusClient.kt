@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.algorand
 
+import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.blockchain.clients.algorand.services.AlgorandTxStatusService
 import com.gemwallet.android.model.TransactionChages
@@ -11,12 +12,8 @@ class AlgorandTransactionStatusClient(
     private val txStatusService: AlgorandTxStatusService,
 ) : TransactionStatusClient {
 
-    override suspend fun getStatus(
-        chain: Chain,
-        owner: String,
-        txId: String
-    ): Result<TransactionChages> {
-        val round = txStatusService.transaction(txId).getOrNull()?.confirmed_round
+    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
+        val round = txStatusService.transaction(request.hash).getOrNull()?.confirmed_round
             ?: return Result.failure(Exception())
         return Result.success(
             TransactionChages(

@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.ton
 
+import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.HashChanges
@@ -12,14 +13,14 @@ class TonTransactionStatusClient(
     private val chain: Chain,
     private val rpcClient: TonRpcClient,
 ) : TransactionStatusClient {
-    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
-        val txHashData = Base64.decode(txId)
+    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
+        val txHashData = Base64.decode(request.hash)
         return rpcClient.transaction(txHashData.toHexString(""))
             .mapCatching {
                 val rawHash = it.firstOrNull()?.hash
                     ?: return@mapCatching TransactionChages(TransactionState.Pending)
                 val newId = Base64.decode(rawHash).toHexString("")
-                TransactionChages(TransactionState.Confirmed, hashChanges = HashChanges(old = txId, new = newId))
+                TransactionChages(TransactionState.Confirmed, hashChanges = HashChanges(old = request.hash, new = newId))
             }
     }
 

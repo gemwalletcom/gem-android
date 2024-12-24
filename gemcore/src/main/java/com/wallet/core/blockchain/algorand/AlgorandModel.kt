@@ -8,18 +8,38 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
+data class AlgorandAccountAccount (
+	@SerialName("amount")
+	val amount: Long,
+	@SerialName("asset-id")
+	val asset_id: Int
+)
+
+@Serializable
 data class AlgorandAccount (
-	val amount: Long
+	val amount: Long,
+	val assets: List<AlgorandAccountAccount>
+)
+
+@Serializable
+data class AlgorandAsset (
+	@SerialName("decimals")
+	val decimals: Int,
+	@SerialName("name")
+	val name: String,
+	@SerialName("unit-name")
+	val unit_name: String
+)
+
+@Serializable
+data class AlgorandAssetResponse (
+	val params: AlgorandAsset
 )
 
 @Serializable
 data class AlgorandTransactionBroadcast (
-	val txId: String
-)
-
-@Serializable
-data class AlgorandTransactionBroadcastError (
-	val message: String
+	val txId: String? = null,
+	val message: String? = null
 )
 
 @Serializable

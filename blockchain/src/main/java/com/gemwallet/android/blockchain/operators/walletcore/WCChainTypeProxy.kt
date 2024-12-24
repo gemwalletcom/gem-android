@@ -8,7 +8,12 @@ class WCChainTypeProxy : ChainTypeProxy<CoinType> {
     override operator fun invoke(chain: Chain): CoinType = when (chain) {
         Chain.Bitcoin -> CoinType.BITCOIN
         Chain.Litecoin -> CoinType.LITECOIN
-        Chain.Ethereum -> CoinType.ETHEREUM
+        Chain.BitcoinCash -> CoinType.BITCOINCASH
+        Chain.Doge -> CoinType.DOGECOIN
+        Chain.Ethereum,
+        Chain.World,
+        Chain.Sonic,
+        Chain.Blast -> CoinType.ETHEREUM
         Chain.SmartChain -> CoinType.SMARTCHAIN
         Chain.Solana -> CoinType.SOLANA
         Chain.Polygon -> CoinType.POLYGON
@@ -18,7 +23,6 @@ class WCChainTypeProxy : ChainTypeProxy<CoinType> {
         Chain.Arbitrum -> CoinType.ARBITRUM
         Chain.Ton -> CoinType.TON
         Chain.Tron -> CoinType.TRON
-        Chain.Doge -> CoinType.DOGECOIN
         Chain.Optimism -> CoinType.OPTIMISM
         Chain.AvalancheC -> CoinType.AVALANCHECCHAIN
         Chain.Base -> CoinType.BASE
@@ -32,16 +36,14 @@ class WCChainTypeProxy : ChainTypeProxy<CoinType> {
         Chain.Injective -> CoinType.NATIVEINJECTIVE
         Chain.Sei -> CoinType.SEI
         Chain.Manta -> CoinType.MANTAPACIFIC
-        Chain.Blast -> CoinType.ETHEREUM
         Chain.Noble -> CoinType.NOBLE
         Chain.ZkSync -> CoinType.ZKSYNC
         Chain.Linea -> CoinType.LINEA
         Chain.Mantle -> CoinType.MANTLE
         Chain.Celo -> CoinType.CELO
         Chain.Near -> CoinType.NEAR
-        Chain.World -> CoinType.ETHEREUM
-        Chain.Sonic -> CoinType.ETHEREUM
         Chain.Algorand -> CoinType.ALGORAND
         Chain.Stellar -> CoinType.STELLAR
+        Chain.Polkadot -> CoinType.POLKADOT
     }
 }
