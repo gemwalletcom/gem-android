@@ -88,6 +88,8 @@ android {
             keyPassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
             storeFile = file(System.getenv("ANDROID_KEYSTORE_FILENAME") ?: "release.keystore")
             storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+            enableV1Signing = true
+            enableV2Signing  = true
         }
     }
 
