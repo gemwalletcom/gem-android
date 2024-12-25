@@ -35,5 +35,7 @@ enum class AssetType(val string: String) {
 	JETTON("JETTON"),
 	@SerialName("SYNTH")
 	SYNTH("SYNTH"),
+	@SerialName("ASA")
+	ASA("ASA"),
 }
 

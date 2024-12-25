@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
+import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmTransactionsService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
@@ -15,8 +16,8 @@ class EvmTransactionStatusClient(
     private val transactionsService: EvmTransactionsService,
 ) : TransactionStatusClient {
 
-    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
-        return Result.success(getStatus(txId))
+    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
+        return Result.success(getStatus(request.hash))
     }
 
     private suspend fun getStatus(txId: String): TransactionChages {

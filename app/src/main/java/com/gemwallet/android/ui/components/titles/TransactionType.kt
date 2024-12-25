@@ -28,6 +28,7 @@ fun TransactionType.getTitle(direction: TransactionDirection? = null, state: Tra
         TransactionType.Swap -> R.string.wallet_swap
         TransactionType.TokenApproval -> R.string.transfer_approve_title
         TransactionType.StakeWithdraw -> R.string.transfer_withdraw_title
+        TransactionType.AssetActivation -> TODO()
     }
 }
 
@@ -42,6 +43,7 @@ fun TransactionType.getTransactionTitle(direction: TransactionDirection, state: 
         TransactionType.Transfer,
         TransactionType.Swap -> stringResource(getTitle(direction, state))
         TransactionType.TokenApproval -> "${stringResource(id = R.string.transfer_approve_title)} $assetSymbol"
+        TransactionType.AssetActivation -> TODO()
     }
 }
 
@@ -59,6 +61,7 @@ fun TransactionType.getValue(direction: TransactionDirection, value: String): St
             TransactionDirection.Incoming -> "+${value}"
         }
         TransactionType.TokenApproval -> ""
+        TransactionType.AssetActivation -> TODO()
     }
 }
 
@@ -77,5 +80,7 @@ fun TransactionType.getAddress(direction: TransactionDirection, from: String, to
         TransactionType.StakeRedelegate,
         TransactionType.StakeWithdraw,
         TransactionType.StakeRewards -> ""
+
+        TransactionType.AssetActivation -> TODO()
     }
 }

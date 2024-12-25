@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.near
 
+import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.model.TransactionChages
@@ -10,13 +11,13 @@ class NearTransactionStatusClient(
     private val chain: Chain,
     private val rpcClient: NearRpcClient,
 ) : TransactionStatusClient {
-    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
+    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
         return rpcClient.transaction(
             JSONRpcRequest(
                 method = NearMethod.Transaction.value,
                 params = mapOf(
-                    "tx_hash" to txId,
-                    "sender_account_id" to owner,
+                    "tx_hash" to request.hash,
+                    "sender_account_id" to request.sender,
                     "wait_until" to  "EXECUTED",
                 ),
             )

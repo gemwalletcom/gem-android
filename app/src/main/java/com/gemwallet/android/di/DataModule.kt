@@ -33,6 +33,10 @@ import com.gemwallet.android.blockchain.clients.near.NearBroadcastClient
 import com.gemwallet.android.blockchain.clients.near.NearNodeStatusClient
 import com.gemwallet.android.blockchain.clients.near.NearSignClient
 import com.gemwallet.android.blockchain.clients.near.NearSignerPreloader
+import com.gemwallet.android.blockchain.clients.polkadot.PolkadotBroadcastClient
+import com.gemwallet.android.blockchain.clients.polkadot.PolkadotNodeStatusClient
+import com.gemwallet.android.blockchain.clients.polkadot.PolkadotSignClient
+import com.gemwallet.android.blockchain.clients.polkadot.PolkadotSignerPreloaderClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaBroadcastClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaNodeStatusClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaSignClient
@@ -97,6 +101,7 @@ object DataModule {
                 ChainType.Near -> NearBroadcastClient(it, rpcClients.getClient(it))
                 ChainType.Algorand -> AlgorandBroadcastClient(it, rpcClients.getClient(it))
                 ChainType.Stellar -> StellarBroadcastClient(it, rpcClients.getClient(it))
+                ChainType.Polkadot -> PolkadotBroadcastClient(it, rpcClients.getClient(it))
             }
         },
     )
@@ -120,6 +125,7 @@ object DataModule {
                 ChainType.Near -> NearSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Algorand -> AlgorandSignPreloadClient(it, rpcClients.getClient(it))
                 ChainType.Stellar -> StellarSignPreloadClient(it, rpcClients.getClient(it), rpcClients.getClient(it))
+                ChainType.Polkadot -> PolkadotSignerPreloaderClient(it, rpcClients.getClient(it), rpcClients.getClient(it), rpcClients.getClient(it))
             }
         }
         return SignerPreloaderProxy(
@@ -150,6 +156,7 @@ object DataModule {
                 ChainType.Near -> NearSignClient(it)
                 ChainType.Algorand -> AlgorandSignClient(it)
                 ChainType.Stellar -> StellarSignClient(it)
+                ChainType.Polkadot -> PolkadotSignClient(it)
             }
         },
     )
@@ -174,6 +181,7 @@ object DataModule {
                     ChainType.Near -> NearNodeStatusClient(it, rpcClients.getClient(it))
                     ChainType.Algorand -> AlgorandNodeStatusClient(it, rpcClients.getClient(it))
                     ChainType.Stellar -> StellarNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.Polkadot -> PolkadotNodeStatusClient(it, rpcClients.getClient(it))
                 }
             }
         )

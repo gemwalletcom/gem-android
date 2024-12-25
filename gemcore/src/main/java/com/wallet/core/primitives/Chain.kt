@@ -11,6 +11,8 @@ import kotlinx.serialization.SerialName
 enum class Chain(val string: String) {
 	@SerialName("bitcoin")
 	Bitcoin("bitcoin"),
+	@SerialName("bitcoincash")
+	BitcoinCash("bitcoincash"),
 	@SerialName("litecoin")
 	Litecoin("litecoin"),
 	@SerialName("ethereum")
@@ -83,5 +85,7 @@ enum class Chain(val string: String) {
 	Sonic("sonic"),
 	@SerialName("algorand")
 	Algorand("algorand"),
+	@SerialName("polkadot")
+	Polkadot("polkadot"),
 }
 

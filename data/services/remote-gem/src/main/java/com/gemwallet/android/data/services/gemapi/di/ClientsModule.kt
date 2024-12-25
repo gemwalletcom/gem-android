@@ -9,6 +9,7 @@ import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinRpcClien
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosRpcClient
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
 import com.gemwallet.android.blockchain.clients.near.NearRpcClient
+import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotServices
 import com.gemwallet.android.blockchain.clients.solana.SolanaRpcClient
 import com.gemwallet.android.blockchain.clients.stellar.services.StellarService
 import com.gemwallet.android.blockchain.clients.sui.SuiRpcClient
@@ -201,6 +202,7 @@ object ClientsModule {
                 ChainType.Near -> buildClient(url, NearRpcClient::class.java, converter, httpClient)
                 ChainType.Algorand -> buildClient(url, AlgorandService::class.java, algorandConverter, httpClient)
                 ChainType.Stellar -> buildClient(url, StellarService::class.java, converter, httpClient)
+                ChainType.Polkadot -> buildClient(url, PolkadotServices::class.java, converter, httpClient)
             }
             adapter.add(it, rpc)
         }
