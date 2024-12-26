@@ -1,5 +1,7 @@
 package com.gemwallet.android.blockchain.clients.tron
 
+import com.gemwallet.android.blockchain.clients.tron.services.getAccount
+import com.gemwallet.android.blockchain.clients.tron.services.triggerSmartContract
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
@@ -21,7 +23,10 @@ class TronFeeCalculator(
 
 ) {
     suspend fun calculate(inParams: ConfirmParams.TransferParams) = withContext(Dispatchers.IO) {
-        val getIsNewAccount = async { rpcClient.getAccount(inParams.from.address) }
+        val getIsNewAccount = async {
+            val account = rpcClient.getAccount(inParams.from.address)
+            account?.address.isNullOrEmpty()
+        }
         val getAccountUsage = async { rpcClient.getAccountUsage(inParams.from.address) }
         val getParams = async { rpcClient.getChainParameters().fold({ it.chainParameter }) { null } }
 

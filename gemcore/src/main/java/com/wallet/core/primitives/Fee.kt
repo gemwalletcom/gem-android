@@ -10,22 +10,20 @@ import kotlinx.serialization.SerialName
 @Serializable
 enum class FeePriority(val string: String) {
 	@SerialName("slow")
-	slow("slow"),
+	Slow("slow"),
 	@SerialName("normal")
-	normal("normal"),
+	Normal("normal"),
 	@SerialName("fast")
-	fast("fast"),
+	Fast("fast"),
 }
 
 @Serializable
 enum class FeeUnitType(val string: String) {
 	@SerialName("satVb")
-	satVb("satVb"),
-	@SerialName("satB")
-	satB("satB"),
+	SatVb("satVb"),
 	@SerialName("gwei")
-	gwei("gwei"),
+	Gwei("gwei"),
 	@SerialName("native")
-	native("native"),
+	Native("native"),
 }
 

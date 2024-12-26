@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import uniffi.gemstone.Config
 import wallet.core.java.AnySigner
 import wallet.core.jni.BitcoinSigHashType
 import wallet.core.jni.CoinTypeConfiguration
@@ -57,7 +58,14 @@ class BitcoinFeeCalculator(
     private suspend fun estimateFeePrice(chain: Chain, speed: TxSpeed): BigInteger {
         val decimals = CoinTypeConfiguration.getDecimals(WCChainTypeProxy().invoke(chain))
         val minimumByteFee = getMinimumByteFee(chain)
-        return feeService.estimateFee(getFeePriority(chain, speed)).fold(
+        val priority = Config().getBitcoinChainConfig(chain.toBitcoinChain().string).blocksFeePriority.let {
+            when (speed) {
+                Slow -> it.slow
+                Normal -> it.normal
+                Fast -> it.fast
+            }
+        }.toString()
+        return feeService.estimateFee(priority).fold(
             {
                 val networkFeePerKb = Crypto(it.result, decimals).atomicValue
                 val feePerByte = networkFeePerKb.toBigDecimal().divide(BigDecimal(1000), RoundingMode.CEILING).toBigInteger()
@@ -117,25 +125,8 @@ class BitcoinFeeCalculator(
         fun getMinimumByteFee(chain: Chain) = when (chain.toBitcoinChain()) {
             BitcoinChain.Litecoin -> BigInteger("5")
             BitcoinChain.Doge -> BigInteger("1000")
+            BitcoinChain.BitcoinCash,
             BitcoinChain.Bitcoin -> BigInteger.ONE
         }
-
-        fun getFeePriority(chain: Chain, speed: TxSpeed) = when (chain.toBitcoinChain()) {
-            BitcoinChain.Litecoin -> when (speed) {
-                Fast -> 1
-                Normal -> 3
-                Slow -> 6
-            }
-            BitcoinChain.Doge -> when (speed) {
-                Fast -> 2
-                Normal -> 4
-                Slow -> 8
-            }
-            BitcoinChain.Bitcoin -> when (speed) {
-                Fast -> 1
-                Normal -> 3
-                Slow -> 6
-            }
-        }.toString()
     }
 }

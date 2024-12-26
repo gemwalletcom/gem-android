@@ -21,7 +21,20 @@ class AptosBalanceClient(
         }
     }
 
-    override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> = emptyList()
+    override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> {
+        if (tokens.isEmpty()) {
+            return emptyList()
+        }
+        val resources = balanceService.resources(address).getOrNull() ?: return emptyList()
+        val result = mutableListOf<AssetBalance>()
+
+        tokens.mapNotNull { token ->
+            val resource = resources.firstOrNull { it.type == "0x1::coin::CoinStore<${token.id.tokenId}>" } ?: return@mapNotNull null
+            val balance = resource.data.coin?.value ?: return@mapNotNull null
+            result.add(AssetBalance.create(token, available = balance.toString()))
+        }
+        return result
+    }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
 }

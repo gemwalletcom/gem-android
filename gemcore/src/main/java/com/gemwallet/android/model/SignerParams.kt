@@ -14,6 +14,8 @@ interface  ChainSignData {
     fun gasGee(speed: TxSpeed = TxSpeed.Normal): GasFee = (fee(speed) as? GasFee) ?: throw Exception("Fee error: wait gas fee")
 
     fun allFee(): List<Fee> = emptyList()
+
+    fun blockNumber(): String = ""
 }
 
 enum class TxSpeed {

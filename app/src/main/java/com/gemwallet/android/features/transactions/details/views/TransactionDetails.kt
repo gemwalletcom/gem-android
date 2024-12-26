@@ -80,6 +80,7 @@ fun TransactionDetails(
                         TransactionType.Swap,
                         TransactionType.Transfer -> model.cryptoAmount
                         TransactionType.TokenApproval -> model.assetSymbol
+                        TransactionType.AssetActivation -> TODO()
                     },
                     equivalent = when (model.type) {
                         TransactionType.StakeDelegate,
@@ -90,6 +91,7 @@ fun TransactionDetails(
                         TransactionType.Swap,
                         TransactionType.Transfer -> model.fiatAmount
                         TransactionType.TokenApproval -> null
+                        TransactionType.AssetActivation -> TODO()
                     },
                 )
             }
@@ -183,6 +185,8 @@ fun TransactionDetails(
                 TransactionType.StakeRewards,
                 TransactionType.StakeRedelegate,
                 TransactionType.StakeWithdraw -> {}
+
+                TransactionType.AssetActivation -> TODO()
             }
             if (!model.memo.isNullOrEmpty()) {
                 CellEntity(

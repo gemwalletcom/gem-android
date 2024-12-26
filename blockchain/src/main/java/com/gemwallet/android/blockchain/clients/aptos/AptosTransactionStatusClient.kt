@@ -1,7 +1,7 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
+import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
-import com.gemwallet.android.blockchain.clients.aptos.services.AptosService
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosTransactionsService
 import com.gemwallet.android.model.TransactionChages
 import com.wallet.core.primitives.Chain
@@ -14,8 +14,8 @@ class AptosTransactionStatusClient(
     private val rpcClient: AptosTransactionsService,
 ) : TransactionStatusClient {
 
-    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
-        val transaction = rpcClient.transactions(txId).getOrNull() ?: return Result.failure(Exception())
+    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
+        val transaction = rpcClient.transactions(request.hash).getOrNull() ?: return Result.failure(Exception())
         val status = if (transaction.success == true) {
             TransactionState.Confirmed
         } else {

@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.tron
 
+import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.model.TransactionChages
 import com.wallet.core.primitives.Chain
@@ -10,8 +11,8 @@ class TronTransactionStatusClient(
     private val chain: Chain,
     private val rpcClient: TronRpcClient
 ) : TransactionStatusClient {
-    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
-        return rpcClient.transaction(TronRpcClient.TronValue(value = txId)).mapCatching {
+    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
+        return rpcClient.transaction(TronRpcClient.TronValue(request.hash)).mapCatching {
             if (it.receipt != null && it.receipt?.result == "OUT_OF_ENERGY") {
                 return@mapCatching TransactionChages(TransactionState.Reverted)
             }

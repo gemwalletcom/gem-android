@@ -94,6 +94,7 @@ class SolanaSignClient(
             }
             TransactionType.TokenApproval,
             TransactionType.StakeRedelegate,
+            TransactionType.AssetActivation,
             TransactionType.StakeRewards -> throw IllegalArgumentException()
         }
     }

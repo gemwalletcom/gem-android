@@ -219,7 +219,7 @@ class AssetsRepository @Inject constructor(
         .map { assets ->
             assetsId.map { id ->
                 assets.firstOrNull { it.asset.id.same(id) }
-                    ?: getTokensCase.assembleAssetInfo(id)
+                    ?: getTokensCase.assembleAssetInfo(id).firstOrNull()
             }.filterNotNull()
         }
 
@@ -229,16 +229,23 @@ class AssetsRepository @Inject constructor(
     }
 
     suspend fun getToken(assetId: AssetId): Flow<Asset?> = withContext(Dispatchers.IO) {
-        assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
-            .map { AssetInfoMapper().asDomain(listOf(it)).firstOrNull() }
-            .map { it ?: getTokensCase.assembleAssetInfo(assetId) }
-            .map { it?.asset }
+        combine(
+            assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain),
+            getTokensCase.assembleAssetInfo(assetId)
+        ) { asset, token ->
+            if (asset == null) {
+                token
+            } else {
+                AssetInfoMapper().asDomain(listOf(asset)).firstOrNull()
+            }
+        }
+        .map { it?.asset }
     }
 
     suspend fun getAssetInfo(assetId: AssetId): Flow<AssetInfo> = withContext(Dispatchers.IO) {
         assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
             .map { AssetInfoMapper().asDomain(listOf(it)).firstOrNull() }
-            .mapNotNull { it ?: getTokensCase.assembleAssetInfo(assetId) }
+            .mapNotNull { it ?: getTokensCase.assembleAssetInfo(assetId).firstOrNull() }
     }
 
     fun getAssetsInfoByAllWallets(assetsId: List<String>): Flow<List<AssetInfo>> {
@@ -246,7 +253,7 @@ class AssetsRepository @Inject constructor(
             .map { assets ->
                 assetsId.mapNotNull { id ->
                     assets.firstOrNull { it.asset.id.toIdentifier() == id }
-                        ?: getTokensCase.assembleAssetInfo(id.toAssetId() ?: return@mapNotNull null)
+                        ?: getTokensCase.assembleAssetInfo(id.toAssetId() ?: return@mapNotNull null).firstOrNull()
                 }
             }
     }
@@ -270,11 +277,42 @@ class AssetsRepository @Inject constructor(
                         isSellEnabled = false,
                         isStakeEnabled = false,
                         isPinned = false,
+                        isActive = false,
                     )
                 )
             }
             .filter { !Chain.exclude().contains(it.asset.id.chain) }
             .distinctBy { it.asset.id.toIdentifier() }
+        }
+    }
+
+    fun swapSearch(wallet: Wallet, query: String, exclude: List<String>, byChains: List<Chain>, byAssets: List<AssetId>): Flow<List<AssetInfo>> {
+        val walletChains = wallet.accounts.map { it.chain }
+        val includeChains = byChains.filter { walletChains.contains(it) }
+        val includeAssetIds = byAssets.filter { walletChains.contains(it.chain) }.map { it.toIdentifier() }
+
+        val assetsFlow = assetsDao.searchAssetInfo(query, exclude, includeChains, includeAssetIds)
+            .map { AssetInfoMapper().asDomain(it) }
+
+        val tokensFlow = getTokensCase.getByChains(includeChains, query)
+        return combine(assetsFlow, tokensFlow) { assets, tokens ->
+            assets + tokens.mapNotNull { asset ->
+                AssetInfo(
+                    asset = asset,
+                    owner = wallet.getAccount(asset.id.chain) ?: return@mapNotNull null,
+                    metadata = AssetMetaData(
+                        isEnabled = false,
+                        isSwapEnabled = asset.id.chain.isSwapSupport(),
+                        isBuyEnabled = false,
+                        isSellEnabled = false,
+                        isStakeEnabled = false,
+                        isPinned = false,
+                        isActive = false,
+                    )
+                )
+            }
+                .filter { !Chain.exclude().contains(it.asset.id.chain) }
+                .distinctBy { it.asset.id.toIdentifier() }
         }
     }
 
@@ -556,6 +594,7 @@ class AssetsRepository @Inject constructor(
                 isStakeEnabled = room.isStakeEnabled,
                 isSellEnabled = false,
                 isPinned = false,
+                isActive = true,
             ),
             links = if (room.links != null) {
                 try {

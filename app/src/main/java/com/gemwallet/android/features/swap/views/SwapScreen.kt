@@ -205,12 +205,14 @@ private fun SwapError(state: SwapState) {
         Spacer2()
         Text(
             text = when (state.error) {
+                SwapError.None -> ""
                 SwapError.IncorrectInput -> stringResource(R.string.common_required_field, stringResource(R.string.swap_you_pay))
                 SwapError.NoQuote -> stringResource(R.string.errors_swap_no_quote_data)
-                SwapError.None -> ""
                 SwapError.NotSupportedAsset -> stringResource(com.gemwallet.android.localize.R.string.errors_swap_not_supported_asset)
                 SwapError.NotSupportedChain -> stringResource(com.gemwallet.android.localize.R.string.errors_swap_not_supported_chain)
+                SwapError.NotImplemented,
                 SwapError.NotSupportedPair -> stringResource(com.gemwallet.android.localize.R.string.errors_swap_not_supported_pair)
+                SwapError.NetworkError -> "Node not available. Check internet connection."
                 is SwapError.Unknown -> "${stringResource(com.gemwallet.android.localize.R.string.errors_unknown_try_again)}: ${state.error.message}"
             },
             style = MaterialTheme.typography.bodyMedium,

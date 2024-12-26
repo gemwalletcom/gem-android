@@ -13,6 +13,13 @@ data class AptosAccount (
 )
 
 @Serializable
+data class AptosCoinInfo (
+	val decimals: Int,
+	val name: String,
+	val symbol: String
+)
+
+@Serializable
 data class AptosError (
 	val message: String,
 	val error_code: String
@@ -20,6 +27,7 @@ data class AptosError (
 
 @Serializable
 data class AptosGasFee (
+	val deprioritized_gas_estimate: Int,
 	val gas_estimate: Int,
 	val prioritized_gas_estimate: Int
 )
@@ -44,6 +52,11 @@ data class AptosResourceCoin (
 @Serializable
 data class AptosResourceBalance (
 	val coin: AptosResourceCoin
+)
+
+@Serializable
+data class AptosResourceBalanceOptional (
+	val coin: AptosResourceCoin? = null
 )
 
 @Serializable

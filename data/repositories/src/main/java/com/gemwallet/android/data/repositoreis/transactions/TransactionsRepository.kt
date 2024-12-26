@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.transactions
 
 import android.text.format.DateUtils
+import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.cases.transactions.CreateTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionCase
@@ -121,6 +122,7 @@ class TransactionsRepository(
         type: TransactionType,
         metadata: String?,
         direction: TransactionDirection,
+        blockNumber: String,
     ): Transaction = withContext(Dispatchers.IO) {
         val transaction = Transaction(
             id = "${assetId.chain.string}_$hash",
@@ -131,7 +133,7 @@ class TransactionsRepository(
             to = to,
             type = type,
             state = state,
-            blockNumber = "",
+            blockNumber = blockNumber,
             sequence = "", // Nonce
             fee = fee.amount.toString(),
             value = amount.toString(),
@@ -147,7 +149,7 @@ class TransactionsRepository(
         transaction
     }
 
-    private suspend fun observePending() = scope.launch {
+    private fun observePending() = scope.launch {
         val pendingTxs = transactionsDao.getExtendedTransactions().firstOrNull()?.filter {
             it.state == TransactionState.Pending
         } ?: emptyList()
@@ -197,7 +199,14 @@ class TransactionsRepository(
     private suspend fun checkTx(tx: DbTransactionExtended): DbTransactionExtended? {
         val assetId = tx.assetId.toAssetId() ?: return null
         val stateClient = stateClients.firstOrNull { it.supported(assetId.chain) } ?: return null
-        val stateResult = stateClient.getStatus(assetId.chain, tx.owner, tx.hash)
+        val stateResult = stateClient.getStatus(
+            TransactionStateRequest(
+                chain = assetId.chain,
+                sender = tx.owner,
+                hash = tx.hash,
+                block = tx.blockNumber,
+            )
+        )
         val state = stateResult.getOrElse { TransactionChages(tx.state) }
         return if (state.state != tx.state) {
 

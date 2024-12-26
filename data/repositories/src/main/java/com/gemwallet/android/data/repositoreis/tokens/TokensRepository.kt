@@ -40,6 +40,19 @@ class TokensRepository (
             .map { assets -> assets.map(mapper::asEntity) }
     }
 
+    override fun swapSearch(
+        chains: List<Chain>,
+        assetIds: List<AssetId>,
+        query: String
+    ): Flow<List<Asset>> {
+        return tokensDao.swapSearch(
+            chains.mapNotNull { chain -> getTokenType(chain) },
+            assetIds.map { it.toIdentifier() },
+            query
+        )
+        .map { assets -> assets.map(mapper::asEntity) }
+    }
+
     override suspend fun search(query: String): Boolean = withContext(Dispatchers.IO) {
         if (query.isEmpty()) {
             return@withContext false
@@ -84,9 +97,9 @@ class TokensRepository (
         return true
     }
 
-    override suspend fun assembleAssetInfo(assetId: AssetId): AssetInfo? {
-        val dbAssetInfo = tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
-        return AssetInfoMapper().asDomain(dbAssetInfo).firstOrNull()
+    override suspend fun assembleAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
+        return tokensDao.assembleAssetInfo(assetId.chain, assetId.toIdentifier())
+            .map { AssetInfoMapper().asDomain(it).firstOrNull() }
     }
 
     private suspend fun addTokens(tokens: List<AssetFull>) {
@@ -119,12 +132,16 @@ class TokensRepository (
         Chain.Mantle,
         Chain.Celo,
         Chain.World,
+        Chain.Sonic,
         Chain.Ethereum -> AssetType.ERC20
 
         Chain.Solana -> AssetType.SPL
         Chain.Tron -> AssetType.TRC20
+
+        Chain.Aptos,
         Chain.Sui -> AssetType.TOKEN
         Chain.Ton -> AssetType.JETTON
+
         Chain.Cosmos,
         Chain.Osmosis,
         Chain.Celestia,
@@ -135,9 +152,12 @@ class TokensRepository (
 
         Chain.Bitcoin,
         Chain.Litecoin,
+        Chain.BitcoinCash,
         Chain.Doge,
-        Chain.Aptos,
         Chain.Near,
+        Chain.Algorand,
+        Chain.Stellar,
+        Chain.Polkadot,
         Chain.Xrp -> null
     }
 }
