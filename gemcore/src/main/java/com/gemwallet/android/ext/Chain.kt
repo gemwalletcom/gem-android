@@ -4,6 +4,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
+import com.wallet.core.primitives.FeeUnitType
 import uniffi.gemstone.Config
 import java.math.BigInteger
 
@@ -188,6 +189,8 @@ fun Chain.isSwapSupport(): Boolean {
 
 fun Chain.Companion.swapSupport() = Chain.entries.filter { it.isSwapSupport() }
 
-fun Chain.feeUnitType() = Config().getChainConfig(string).feeUnitType
+fun Chain.feeUnitType() = FeeUnitType.entries.firstOrNull {
+    it.string == Config().getChainConfig(string).feeUnitType
+}
 
 fun Chain.isMemoSupport() = Config().getChainConfig(string).isMemoSupported

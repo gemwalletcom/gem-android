@@ -39,7 +39,7 @@ fun cryptoFormat(
     }
 }
 
-private fun fiatFormat(
+fun fiatFormat(
     value: BigDecimal,
     symbol: String,
     decimalPlace: Int,

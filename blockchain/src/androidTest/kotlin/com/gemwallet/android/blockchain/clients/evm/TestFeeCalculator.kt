@@ -2,16 +2,15 @@ package com.gemwallet.android.blockchain.clients.evm
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.gemwallet.android.blockchain.clients.ethereum.EvmFeeCalculator
-import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
 import com.gemwallet.android.blockchain.clients.ethereum.StakeHub
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmFeeService
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
-import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.blockchain.ethereum.models.EthereumFeeHistory
 import com.wallet.core.primitives.Account
@@ -150,11 +149,11 @@ class TestFeeCalculator {
                 BigInteger.ZERO,
             )
         }
-        assertEquals(TxSpeed.Normal, result.speed)
-        assertEquals(BigInteger("37500000450000"), result.amount)
-        assertEquals(BigInteger("1000000000"), (result as GasFee).minerFee)
-        assertEquals(BigInteger("1000000012"), result.maxGasPrice)
-        assertEquals(BigInteger("37500"), result.limit)
+        assertEquals(TxSpeed.Normal, result[1].speed)
+        assertEquals(BigInteger("37500000450000"), result[1].amount)
+        assertEquals(BigInteger("1000000000"), result[1].minerFee)
+        assertEquals(BigInteger("1000000012"), result[1].maxGasPrice)
+        assertEquals(BigInteger("37500"), result[1].limit)
     }
 
     @Test
@@ -189,11 +188,11 @@ class TestFeeCalculator {
                 BigInteger.ZERO,
             )
         }
-        assertEquals(TxSpeed.Normal, result.speed)
-        assertEquals(BigInteger("37500000450000"), result.amount)
-        assertEquals(BigInteger("1000000012"), (result as GasFee).minerFee)
-        assertEquals(BigInteger("1000000012"), result.maxGasPrice)
-        assertEquals(BigInteger("37500"), result.limit)
+        assertEquals(TxSpeed.Normal, result[1].speed)
+        assertEquals(BigInteger("37500000450000"), result[1].amount)
+        assertEquals(BigInteger("1000000012"), result[1].minerFee)
+        assertEquals(BigInteger("1000000012"), result[1].maxGasPrice)
+        assertEquals(BigInteger("37500"), result[1].limit)
     }
 
 
@@ -228,9 +227,9 @@ class TestFeeCalculator {
                 BigInteger.ZERO,
             )
         }
-        assertEquals(TxSpeed.Normal, result.speed)
-        assertEquals(BigInteger("21000000000000"), result.amount)
-        assertEquals(BigInteger.valueOf(21_000), (result as GasFee).limit)
+        assertEquals(TxSpeed.Normal, result[1].speed)
+        assertEquals(BigInteger("21000000000000"), result[1].amount)
+        assertEquals(BigInteger.valueOf(21_000), result[1].limit)
         assertEquals("0x9b1DB81180c31B1b428572Be105E209b5A6222b7", (feeService.gasLimitRequest[0] as Map<*, *>)["from"])
         assertEquals("0xa857a4E4B3f7C0eb7e132A7A4abcA287225dDB2A", (feeService.gasLimitRequest[0] as Map<*, *>)["to"])
         assertEquals("0xa", (feeService.gasLimitRequest[0] as Map<*, *>)["value"])
@@ -268,9 +267,9 @@ class TestFeeCalculator {
                 BigInteger.ZERO,
             )
         }
-        assertEquals(TxSpeed.Normal, result.speed)
-        assertEquals(BigInteger("21000000000001"), result.amount)
-        assertEquals(BigInteger.valueOf(21_000), (result as GasFee).limit)
+        assertEquals(TxSpeed.Normal, result[1].speed)
+        assertEquals(BigInteger("21000000001"), result[1].amount)
+        assertEquals(BigInteger.valueOf(21_000), result[1].limit)
         assertEquals("0x9b1DB81180c31B1b428572Be105E209b5A6222b7", (feeService.gasLimitRequest[0] as Map<*, *>)["from"])
         assertEquals("0xa857a4E4B3f7C0eb7e132A7A4abcA287225dDB2A", (feeService.gasLimitRequest[0] as Map<*, *>)["to"])
         assertEquals("0xa", (feeService.gasLimitRequest[0] as Map<*, *>)["value"])
@@ -308,9 +307,9 @@ class TestFeeCalculator {
                 BigInteger.ZERO,
             )
         }
-        assertEquals(TxSpeed.Normal, result.speed)
-        assertEquals(BigInteger("21000000000000"), result.amount)
-        assertEquals(BigInteger.valueOf(21_000), (result as GasFee).limit)
+        assertEquals(TxSpeed.Normal, result[1].speed)
+        assertEquals(BigInteger("21000000000000"), result[1].amount)
+        assertEquals(BigInteger.valueOf(21_000), result[1].limit)
         assertEquals("0x9b1DB81180c31B1b428572Be105E209b5A6222b7", (feeService.gasLimitRequest[0] as Map<*, *>)["from"])
         assertEquals("0x2170ed0880ac9a755fd29b2688956bd959f933f8", (feeService.gasLimitRequest[0] as Map<*, *>)["to"])
         assertEquals("0x0", (feeService.gasLimitRequest[0] as Map<*, *>)["value"])
@@ -350,9 +349,9 @@ class TestFeeCalculator {
                 BigInteger.ZERO,
             )
         }
-        assertEquals(TxSpeed.Normal, result.speed)
-        assertEquals(BigInteger("21000000000000"), result.amount)
-        assertEquals(BigInteger.valueOf(21_000), (result as GasFee).limit)
+        assertEquals(TxSpeed.Normal, result[1].speed)
+        assertEquals(BigInteger("21000000000000"), result[1].amount)
+        assertEquals(BigInteger.valueOf(21_000), result[1].limit)
         assertEquals("0x9b1DB81180c31B1b428572Be105E209b5A6222b7", (feeService.gasLimitRequest[0] as Map<*, *>)["from"])
         assertEquals("0x0000000000000000000000000000000000002002", (feeService.gasLimitRequest[0] as Map<*, *>)["to"])
         assertEquals("0xa", (feeService.gasLimitRequest[0] as Map<*, *>)["value"])

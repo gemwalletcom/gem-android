@@ -50,7 +50,7 @@ class EvmSignClient(
             is ConfirmParams.Stake.RewardsParams,
             is ConfirmParams.Stake.WithdrawParams -> when (params.input.assetId.chain) {
                 Chain.SmartChain -> {
-                    return stakeSmartchain(params, privateKey)
+                    return stakeSmartchain(params, txSpeed, privateKey)
                 }
                 else -> throw IllegalArgumentException()
             }
@@ -75,7 +75,7 @@ class EvmSignClient(
             },
             amount = amount,
             tokenAmount = params.finalAmount,
-            fee = meta.gasGee(),
+            fee = meta.gasFee(),
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.input.destination()?.address ?: "",
@@ -91,9 +91,9 @@ class EvmSignClient(
             .toByteArray()
     }
 
-    private fun stakeSmartchain(params: SignerParams, privateKey: ByteArray): ByteArray {
+    private fun stakeSmartchain(params: SignerParams, speed: TxSpeed, privateKey: ByteArray): ByteArray {
         val meta = params.chainData as EvmSignerPreloader.EvmChainData
-        val fee = meta.fee as? GasFee ?: throw IllegalArgumentException()
+        val fee = meta.gasFee(speed) ?: throw IllegalArgumentException()
         val valueData = when (params.input) {
             is ConfirmParams.Stake.DelegateParams -> params.finalAmount.toByteArray()
             else -> BigInteger.ZERO.toByteArray()

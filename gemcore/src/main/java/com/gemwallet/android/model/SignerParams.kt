@@ -11,7 +11,7 @@ data class SignerParams(
 interface  ChainSignData {
     fun fee(speed: TxSpeed = TxSpeed.Normal): Fee
 
-    fun gasGee(speed: TxSpeed = TxSpeed.Normal): GasFee = (fee(speed) as? GasFee) ?: throw Exception("Fee error: wait gas fee")
+    fun gasFee(speed: TxSpeed = TxSpeed.Normal): GasFee = (fee(speed) as? GasFee) ?: throw Exception("Fee error: wait gas fee")
 
     fun allFee(): List<Fee> = emptyList()
 

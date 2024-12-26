@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
+import uniffi.gemstone.EvmHistoryRewardPercentiles
 import wallet.core.jni.CoinType
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -43,41 +44,50 @@ class EvmFeeCalculator(
         payload: String?,
         chainId: String,
         nonce: BigInteger,
-    ): Fee = withContext(Dispatchers.IO) {
+    ): List<GasFee> = withContext(Dispatchers.IO) {
         val getGasLimit = async { getGasLimit(assetId, params.from.address, recipient, outputAmount, payload) }
-        val getBasePriorityFee = async { getBasePriorityFee(params.assetId.chain, feeService) }
+        val getBasePriorityFees = async { getBasePriorityFee(params.assetId.chain, feeService) }
         val gasLimit = getGasLimit.await()
-        val (baseFee, priorityFee) = getBasePriorityFee.await()
+        val (baseFee, priorityFees) = getBasePriorityFees.await()
 
         if (params.assetId.chain.toEVM()?.isOpStack() == true) {
-            return@withContext optimismGasOracle.estimate(
-                params = params,
-                chainId = chainId,
-                nonce = nonce,
-                gasLimit = gasLimit,
-                baseFee = baseFee,
-                priorityFee = priorityFee,
-            )
-        }
-
-        val maxGasPrice = baseFee.plus(priorityFee)
-        val minerFee = when (params) {
-            is ConfirmParams.Stake,
-            is ConfirmParams.SwapParams,
-            is ConfirmParams.TokenApprovalParams -> priorityFee
-            is ConfirmParams.TransferParams -> if (params.assetId.type() == AssetSubtype.NATIVE && params.isMax()) {
-                maxGasPrice
-            } else {
-                priorityFee
+            return@withContext priorityFees.map {
+                optimismGasOracle.estimate(
+                    params = params,
+                    chainId = chainId,
+                    nonce = nonce,
+                    gasLimit = gasLimit,
+                    baseFee = baseFee,
+                    priorityFee = it,
+                )
             }
         }
-        GasFee(
-            feeAssetId = AssetId(params.assetId.chain),
-            speed = TxSpeed.Normal,
-            limit = gasLimit,
-            maxGasPrice = maxGasPrice,
-            minerFee = minerFee,
-        )
+
+        priorityFees.mapIndexed { index, priorityFee ->
+            val maxGasPrice = baseFee.plus(priorityFee)
+            val minerFee = when (params) {
+                is ConfirmParams.Stake,
+                is ConfirmParams.SwapParams,
+                is ConfirmParams.TokenApprovalParams -> priorityFee
+                is ConfirmParams.TransferParams -> if (params.assetId.type() == AssetSubtype.NATIVE && params.isMax()) {
+                    maxGasPrice
+                } else {
+                    priorityFee
+                }
+            }
+            GasFee(
+                feeAssetId = AssetId(params.assetId.chain),
+                speed = when (index) {
+                    0 -> TxSpeed.Slow
+                    1 -> TxSpeed.Normal
+                    2 -> TxSpeed.Fast
+                    else -> TxSpeed.Normal
+                },
+                limit = gasLimit,
+                maxGasPrice = maxGasPrice,
+                minerFee = minerFee,
+            )
+        }
     }
 
     private suspend fun getGasLimit(
@@ -104,8 +114,15 @@ class EvmFeeCalculator(
         }
     }
 
-    internal suspend fun getBasePriorityFee(chain: Chain, feeService: EvmFeeService): Pair<BigInteger, BigInteger> {
-        val feeHistory = feeService.getFeeHistory() ?: throw Exception("Unable to calculate base fee")
+    internal suspend fun getBasePriorityFee(chain: Chain, feeService: EvmFeeService): Pair<BigInteger, List<BigInteger>> {
+        val config = Config().getEvmChainConfig(chain.toEVM()?.string ?: throw IllegalArgumentException())
+        val rewardsPercentiles = config.rewardsPercentiles
+        val minPriorityFee = config.minPriorityFee.toString().toBigInteger()
+
+        val feeHistory = feeService.getFeeHistory(
+            listOf(rewardsPercentiles.slow, rewardsPercentiles.normal, rewardsPercentiles.fast)
+                .map { it.toInt() }
+        ) ?: throw Exception("Unable to calculate base fee")
 
         val reward = feeHistory.reward.mapNotNull { it.firstOrNull()?.hexToBigInteger() }.maxOrNull()
             ?: throw Exception("Unable to calculate priority fee")
@@ -113,8 +130,29 @@ class EvmFeeCalculator(
         val baseFee = feeHistory.baseFeePerGas.mapNotNull { it.hexToBigInteger() }.maxOrNull()
             ?: throw Exception("Unable to calculate base fee")
 
-        val defaultPriorityFee = BigInteger(Config().getEvmChainConfig(chain.string).minPriorityFee.toString())
-        val priorityFee = if (reward < defaultPriorityFee) defaultPriorityFee else reward
-        return Pair(baseFee, priorityFee)
+//        val defaultPriorityFee = BigInteger(Config().getEvmChainConfig(chain.string).minPriorityFee.toString())
+//        val priorityFee = if (reward < defaultPriorityFee) defaultPriorityFee else reward
+        val priorityFees = calculatePriorityFees(feeHistory.reward, rewardsPercentiles, minPriorityFee)
+        return Pair(baseFee, priorityFees)
     }
+
+    internal fun calculatePriorityFees(
+        rewards: List<List<String>>,
+        rewardsPercentiles: EvmHistoryRewardPercentiles,
+        minPriorityFee: BigInteger
+    ): List<BigInteger> {
+        return TxSpeed.entries.map { speed ->
+            val prices = when (speed) {
+                TxSpeed.Slow -> rewards.mapNotNull { it.getOrNull(0)?.hexToBigInteger() }
+                TxSpeed.Normal -> rewards.mapNotNull { it.getOrNull(1)?.hexToBigInteger() }
+                TxSpeed.Fast -> rewards.mapNotNull { it.getOrNull(2)?.hexToBigInteger() }
+            }
+            if (prices.isEmpty()) {
+                minPriorityFee
+            } else {
+                minPriorityFee.max(prices.fold(BigInteger.ZERO) { acc, v -> acc + v / prices.size.toBigInteger() })
+            }
+        }
+    }
+
 }
