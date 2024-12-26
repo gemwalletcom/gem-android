@@ -1,8 +1,7 @@
 package com.gemwallet.android.blockchain.clients.algorand.services
 
-import com.gemwallet.android.blockchain.clients.algorand.models.AlgorandTransactionBroadcast
+import com.wallet.core.blockchain.algorand.AlgorandTransactionBroadcast
 import okhttp3.RequestBody
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
 

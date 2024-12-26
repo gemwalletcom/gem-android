@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.stellar
 import com.gemwallet.android.blockchain.Mime
 import com.gemwallet.android.blockchain.clients.BroadcastClient
 import com.gemwallet.android.blockchain.clients.stellar.services.StellarBroadcastService
+import com.gemwallet.android.blockchain.rpc.ServiceError
 import com.gemwallet.android.blockchain.rpc.responseFold
 import com.wallet.core.blockchain.stellar.StellarTransactionBroadcastError
 import com.wallet.core.primitives.Account
@@ -26,13 +27,15 @@ class StellarBroadcastClient(
 
         return resp.responseFold(
             onSuccess = {
-                Result.success(it?.hash ?: throw Exception("Server error: hash is null"))
+                Result.success(it?.hash ?: throw ServiceError.EmptyHash)
             },
             onError = { err: StellarTransactionBroadcastError ->
                 Result.failure(Exception(err.title))
             },
-            onFailure = {
-                Result.failure(Exception(it.message ?: "Server error"))
+            onFailure = { cause ->
+                val error = cause.message?.let { ServiceError.BroadCastError(it) }
+                    ?: ServiceError.ServerError(err = cause)
+                Result.failure(error)
             }
         )
     }

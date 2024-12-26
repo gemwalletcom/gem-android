@@ -3,6 +3,9 @@ package com.gemwallet.android.blockchain.clients.algorand
 import com.gemwallet.android.blockchain.Mime
 import com.gemwallet.android.blockchain.clients.BroadcastClient
 import com.gemwallet.android.blockchain.clients.algorand.services.AlgorandBroadcastService
+import com.gemwallet.android.blockchain.rpc.ServiceError
+import com.gemwallet.android.blockchain.rpc.handleError
+import com.wallet.core.blockchain.algorand.AlgorandTransactionBroadcast
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType
@@ -19,13 +22,11 @@ class AlgorandBroadcastClient(
         type: TransactionType
     ): Result<String> {
         val result =  broadcastService.broadcast(signedMessage.toRequestBody(Mime.Binary.value))
-        val resp = result.getOrNull()
-            ?: return Result.failure(Exception("Broadcast transaction fail"))
-        return if (resp.txId.isNullOrEmpty()) {
-            Result.failure(Exception(resp.message ?: "Broadcast transaction fail"))
-        } else {
-            Result.success(resp.txId)
-        }
+        return result.getOrNull()?.txId?.let { Result.success(it) }
+            ?: Result.failure(
+                result.handleError<AlgorandTransactionBroadcast>()?.message?.let { Exception(it) }
+                    ?: ServiceError.BroadCastError()
+            )
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
