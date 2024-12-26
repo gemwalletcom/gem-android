@@ -40,6 +40,19 @@ class TokensRepository (
             .map { assets -> assets.map(mapper::asEntity) }
     }
 
+    override fun swapSearch(
+        chains: List<Chain>,
+        assetIds: List<AssetId>,
+        query: String
+    ): Flow<List<Asset>> {
+        return tokensDao.swapSearch(
+            chains.mapNotNull { chain -> getTokenType(chain) },
+            assetIds.map { it.toIdentifier() },
+            query
+        )
+        .map { assets -> assets.map(mapper::asEntity) }
+    }
+
     override suspend fun search(query: String): Boolean = withContext(Dispatchers.IO) {
         if (query.isEmpty()) {
             return@withContext false
@@ -119,6 +132,7 @@ class TokensRepository (
         Chain.Mantle,
         Chain.Celo,
         Chain.World,
+        Chain.Sonic,
         Chain.Ethereum -> AssetType.ERC20
 
         Chain.Solana -> AssetType.SPL
@@ -138,9 +152,12 @@ class TokensRepository (
 
         Chain.Bitcoin,
         Chain.Litecoin,
+        Chain.BitcoinCash,
         Chain.Doge,
-        Chain.Aptos,
         Chain.Near,
+        Chain.Algorand,
+        Chain.Stellar,
+        Chain.Polkadot,
         Chain.Xrp -> null
     }
 }

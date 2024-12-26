@@ -14,6 +14,21 @@ data class XRPAccount (
 )
 
 @Serializable
+data class XRPAssetLine (
+	val currency: String
+)
+
+@Serializable
+data class XRPAccountAsset (
+	val LowLimit: XRPAssetLine
+)
+
+@Serializable
+data class XRPAccountObjects<T> (
+	val account_objects: T
+)
+
+@Serializable
 data class XRPAccountResult (
 	val account_data: XRPAccount
 )
@@ -40,14 +55,21 @@ data class XRPResult<T> (
 )
 
 @Serializable
+data class XRPTokenId (
+	val issuer: String,
+	val currency: String
+)
+
+@Serializable
 data class XRPTransaction (
 	val hash: String
 )
 
 @Serializable
 data class XRPTransactionBroadcast (
-	val accepted: Boolean,
+	val accepted: Boolean? = null,
 	val engine_result_message: String? = null,
+	val error_exception: String? = null,
 	val tx_json: XRPTransaction? = null
 )
 

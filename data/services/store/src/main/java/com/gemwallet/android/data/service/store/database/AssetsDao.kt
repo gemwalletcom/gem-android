@@ -8,6 +8,7 @@ import androidx.room.Update
 import com.gemwallet.android.data.service.store.database.entities.DbAsset
 import com.gemwallet.android.data.service.store.database.entities.DbAssetConfig
 import com.gemwallet.android.data.service.store.database.entities.DbAssetInfo
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
@@ -62,6 +63,18 @@ interface AssetsDao {
             ORDER BY balanceFiatTotalAmount DESC
         """)
     fun searchAssetInfoByAllWallets(query: String, exclude: List<String> = emptyList()): Flow<List<DbAssetInfo>>
+
+    @Query("""
+        SELECT * FROM asset_info WHERE
+            sessionId = 1
+            AND id NOT IN (:exclude)
+            AND ( chain IN (:byChains) OR id IN (:byAssets) )
+            AND (id LIKE '%' || :query || '%'
+            OR symbol LIKE '%' || :query || '%'
+            OR name LIKE '%' || :query || '%' COLLATE NOCASE)
+            ORDER BY balanceFiatTotalAmount DESC
+        """)
+    fun searchAssetInfo(query: String, exclude: List<String> = emptyList(), byChains: List<Chain>, byAssets: List<String>): Flow<List<DbAssetInfo>>
 
     @Query("SELECT * FROM asset_info WHERE address IN (:accounts) AND sessionId=1 ")
     fun getAssetsInfoByAccounts(accounts: List<String>): Flow<List<DbAssetInfo>>

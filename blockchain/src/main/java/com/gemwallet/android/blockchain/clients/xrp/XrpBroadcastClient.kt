@@ -12,7 +12,7 @@ class XrpBroadcastClient(
 ) : BroadcastClient {
     override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): Result<String> {
         return rpcClient.broadcast(signedMessage.toHexString("")).mapCatching {
-            if (!it.result.accepted && !it.result.engine_result_message.isNullOrEmpty()) {
+            if (it.result.accepted != true && !it.result.engine_result_message.isNullOrEmpty()) {
                 throw Exception(it.result.engine_result_message)
             }
             if (it.result.tx_json?.hash.isNullOrEmpty()) {

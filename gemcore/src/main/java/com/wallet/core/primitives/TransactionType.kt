@@ -25,5 +25,7 @@ enum class TransactionType(val string: String) {
 	StakeRedelegate("stakeRedelegate"),
 	@SerialName("stakeWithdraw")
 	StakeWithdraw("stakeWithdraw"),
+	@SerialName("assetActivation")
+	AssetActivation("assetActivation"),
 }
 

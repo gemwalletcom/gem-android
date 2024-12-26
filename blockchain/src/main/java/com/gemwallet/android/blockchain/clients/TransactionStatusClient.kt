@@ -5,5 +5,12 @@ import com.wallet.core.primitives.Chain
 
 interface TransactionStatusClient : BlockchainClient {
 
-    suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages>
+    suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages>
 }
+
+class TransactionStateRequest(
+    val chain: Chain,
+    val hash: String,
+    val block: String,
+    val sender: String,
+)

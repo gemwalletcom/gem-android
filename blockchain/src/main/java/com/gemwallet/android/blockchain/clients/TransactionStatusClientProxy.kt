@@ -6,12 +6,8 @@ import com.wallet.core.primitives.Chain
 class TransactionStatusClientProxy(
     private val clients: List<TransactionStatusClient>,
 ) : TransactionStatusClient {
-    override suspend fun getStatus(
-        chain: Chain,
-        owner: String,
-        txId: String
-    ): Result<TransactionChages> {
-        return clients.getClient(chain)?.getStatus(chain, owner, txId) ?: Result.failure(Exception("Chain isn't support"))
+    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
+        return clients.getClient(request.chain)?.getStatus(request) ?: Result.failure(Exception("Chain isn't support"))
     }
 
     override fun supported(chain: Chain): Boolean {

@@ -45,6 +45,9 @@ object TokensModule {
                 ChainType.Bitcoin,
                 ChainType.Cosmos,
                 ChainType.Xrp,
+                ChainType.Algorand,
+                ChainType.Stellar,
+                ChainType.Polkadot,
                 ChainType.Near -> null
             }
         }

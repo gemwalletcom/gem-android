@@ -3,9 +3,11 @@ package com.gemwallet.android.data.repositoreis.swap
 import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
+import com.gemwallet.android.cases.swap.GetSwapSupportedCase
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet
 import uniffi.gemstone.ApprovalType
 import uniffi.gemstone.Config
@@ -16,6 +18,7 @@ import uniffi.gemstone.GemSwapper
 import uniffi.gemstone.Permit2Data
 import uniffi.gemstone.Permit2Detail
 import uniffi.gemstone.PermitSingle
+import uniffi.gemstone.SwapAssetList
 import uniffi.gemstone.SwapQuote
 import uniffi.gemstone.SwapQuoteData
 import uniffi.gemstone.SwapQuoteRequest
@@ -27,7 +30,8 @@ class SwapRepository(
     private val signClient: SignClientProxy,
     private val passwordStore: PasswordStore,
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
-) {
+) : GetSwapSupportedCase
+{
 
     suspend fun getQuote(ownerAddress: String, destination: String, from: AssetId, to: AssetId, amount: String): SwapQuote? {
         val swapRequest = SwapQuoteRequest(
@@ -81,5 +85,9 @@ class SwapRepository(
             spender = spender,
             sigDeadline = (System.currentTimeMillis() / 1000 + 60 * 30).toULong(),
         )
+    }
+
+    override fun getSwapSupportChains(assetId: AssetId): SwapAssetList {
+        return gemSwapper.supportedChainsForFromAsset(assetId.toIdentifier())
     }
 }

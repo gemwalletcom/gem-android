@@ -6,9 +6,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
-import com.gemwallet.android.blockchain.supportMemo
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.ext.chain
+import com.gemwallet.android.ext.isMemoSupport
 import com.gemwallet.android.ext.mutableStateIn
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.recipient.viewmodel.models.QrScanField
@@ -66,7 +66,7 @@ class RecipientViewModel @Inject constructor(
 
     val memoErrorState = MutableStateFlow<RecipientError>(RecipientError.None)
 
-    fun hasMemo(): Boolean = asset.value?.asset?.chain()?.supportMemo() == true
+    fun hasMemo(): Boolean = asset.value?.asset?.chain()?.isMemoSupport() == true
 
     fun onNext(amountAction: AmountTransactionAction) = viewModelScope.launch {
         val assetId = asset.value?.id() ?: return@launch
@@ -97,7 +97,7 @@ class RecipientViewModel @Inject constructor(
         if (
             address.isNotEmpty()
             && amount != null
-            && (assetInfo.asset.chain().supportMemo() || !memo.isNullOrEmpty())
+            && (assetInfo.asset.chain().isMemoSupport() || !memo.isNullOrEmpty())
         ) {
             val assetId = assetInfo.id()
             val params = ConfirmParams.Builder(assetId, assetInfo.owner, amount).transfer(DestinationAddress(address), memo)

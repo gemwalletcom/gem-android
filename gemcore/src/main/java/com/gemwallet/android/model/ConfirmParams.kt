@@ -248,6 +248,7 @@ sealed class ConfirmParams(
                 TransactionType.StakeRewards -> Stake.RewardsParams::class.java
                 TransactionType.StakeRedelegate -> Stake.RedelegateParams::class.java
                 TransactionType.StakeWithdraw -> Stake.WithdrawParams::class.java
+                TransactionType.AssetActivation -> TODO()
             }
 
             val result = getGson().fromJson(json, type)

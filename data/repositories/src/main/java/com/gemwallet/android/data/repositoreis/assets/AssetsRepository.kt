@@ -277,11 +277,42 @@ class AssetsRepository @Inject constructor(
                         isSellEnabled = false,
                         isStakeEnabled = false,
                         isPinned = false,
+                        isActive = false,
                     )
                 )
             }
             .filter { !Chain.exclude().contains(it.asset.id.chain) }
             .distinctBy { it.asset.id.toIdentifier() }
+        }
+    }
+
+    fun swapSearch(wallet: Wallet, query: String, exclude: List<String>, byChains: List<Chain>, byAssets: List<AssetId>): Flow<List<AssetInfo>> {
+        val walletChains = wallet.accounts.map { it.chain }
+        val includeChains = byChains.filter { walletChains.contains(it) }
+        val includeAssetIds = byAssets.filter { walletChains.contains(it.chain) }.map { it.toIdentifier() }
+
+        val assetsFlow = assetsDao.searchAssetInfo(query, exclude, includeChains, includeAssetIds)
+            .map { AssetInfoMapper().asDomain(it) }
+
+        val tokensFlow = getTokensCase.getByChains(includeChains, query)
+        return combine(assetsFlow, tokensFlow) { assets, tokens ->
+            assets + tokens.mapNotNull { asset ->
+                AssetInfo(
+                    asset = asset,
+                    owner = wallet.getAccount(asset.id.chain) ?: return@mapNotNull null,
+                    metadata = AssetMetaData(
+                        isEnabled = false,
+                        isSwapEnabled = asset.id.chain.isSwapSupport(),
+                        isBuyEnabled = false,
+                        isSellEnabled = false,
+                        isStakeEnabled = false,
+                        isPinned = false,
+                        isActive = false,
+                    )
+                )
+            }
+                .filter { !Chain.exclude().contains(it.asset.id.chain) }
+                .distinctBy { it.asset.id.toIdentifier() }
         }
     }
 
@@ -563,6 +594,7 @@ class AssetsRepository @Inject constructor(
                 isStakeEnabled = room.isStakeEnabled,
                 isSellEnabled = false,
                 isPinned = false,
+                isActive = true,
             ),
             links = if (room.links != null) {
                 try {

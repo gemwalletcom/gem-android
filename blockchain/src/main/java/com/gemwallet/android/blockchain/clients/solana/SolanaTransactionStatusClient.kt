@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.solana
 
+import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.model.TransactionChages
@@ -11,11 +12,11 @@ class SolanaTransactionStatusClient(
     private val rpcClient: SolanaRpcClient,
 ) : TransactionStatusClient {
 
-    override suspend fun getStatus(chain: Chain, owner: String, txId: String): Result<TransactionChages> {
+    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
         val request = JSONRpcRequest(
             SolanaMethod.GetTransaction.value,
             listOf(
-                txId,
+                request.hash,
                 mapOf(
                     "encoding" to "jsonParsed",
                     "maxSupportedTransactionVersion" to 0,

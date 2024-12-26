@@ -17,6 +17,8 @@ enum class BannerEvent(val string: String) {
 	EnableNotifications("enableNotifications"),
 	@SerialName("accountBlockedMultiSignature")
 	AccountBlockedMultiSignature("accountBlockedMultiSignature"),
+	@SerialName("activateAsset")
+	ActivateAsset("activateAsset"),
 }
 
 @Serializable

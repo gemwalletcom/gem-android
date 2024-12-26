@@ -46,6 +46,7 @@ class  CosmosFeeCalculator(
             TransactionType.StakeRewards -> BigInteger.valueOf(900_000)
             TransactionType.StakeRedelegate -> BigInteger.valueOf(1_250_000)
             TransactionType.StakeWithdraw,
+            TransactionType.AssetActivation,
             TransactionType.TokenApproval -> throw IllegalArgumentException("Chain not available: no limit fee")
         }
         return GasFee(

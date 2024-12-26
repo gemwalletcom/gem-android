@@ -3,11 +3,9 @@ package com.gemwallet.android.blockchain.clients.solana
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaFeeService
 import com.gemwallet.android.blockchain.clients.solana.services.getPriorityFees
 import com.gemwallet.android.blockchain.clients.solana.services.rentExemption
-import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype

@@ -46,5 +46,7 @@ enum class WallletConnectCAIP2(val string: String) {
 	Solana("solana"),
 	@SerialName("cosmos")
 	Cosmos("cosmos"),
+	@SerialName("algorand")
+	Algorand("algorand"),
 }
 
