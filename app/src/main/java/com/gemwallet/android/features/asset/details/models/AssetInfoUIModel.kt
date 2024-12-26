@@ -3,6 +3,7 @@ package com.gemwallet.android.features.asset.details.models
 import com.gemwallet.android.ui.models.PriceState
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.WalletType
 

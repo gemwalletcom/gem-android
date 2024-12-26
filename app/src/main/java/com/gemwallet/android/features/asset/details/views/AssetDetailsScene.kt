@@ -80,6 +80,7 @@ fun AssetDetailsScene(
     onSwap: (AssetId, AssetId?) -> Unit,
     onTransaction: (txId: String) -> Unit,
     onChart: (AssetId) -> Unit,
+    openNetwork: AssetIdAction,
     onStake: (AssetId) -> Unit,
 ) {
     uniffi.gemstone.AssetWrapper
@@ -109,6 +110,7 @@ fun AssetDetailsScene(
             onReceive = onReceive,
             onTransaction = onTransaction,
             onChart = onChart,
+            openNetwork = openNetwork,
             onStake = onStake,
             onPriceAlert = viewModel::enablePriceAlert,
             onCancel = onCancel,
@@ -132,6 +134,7 @@ private fun Success(
     onSwap: (AssetId, AssetId?) -> Unit,
     onTransaction: (txId: String) -> Unit,
     onChart: (AssetId) -> Unit,
+    openNetwork: AssetIdAction,
     onStake: (AssetId) -> Unit,
     onPriceAlert: (AssetId) -> Unit,
 ) {
@@ -227,7 +230,7 @@ private fun Success(
                     )
                     HorizontalDivider(thickness = 0.dp)
                 }
-                networkInfo(uiState, onChart)
+                networkInfo(uiState, onChart, openNetwork)
                 balanceDetails(uiState, onStake)
                 if (transactions.isEmpty()) {
                     item {
@@ -249,6 +252,7 @@ private fun Success(
 private fun LazyListScope.networkInfo(
     uiState: AssetInfoUIModel,
     onChart: (AssetId) -> Unit,
+    openNetwork: AssetIdAction,
 ) {
     val cells = mutableListOf<CellEntity<Any>>()
     item {
@@ -275,6 +279,7 @@ private fun LazyListScope.networkInfo(
                     label = stringResource(id = R.string.transfer_network),
                     data = uiState.networkTitle,
                     trailing = { AsyncImage(uiState.asset.networkAsset(), trailingIcon20) },
+                    action = { openNetwork(AssetId(uiState.asset.chain())) },
                 )
             )
         }

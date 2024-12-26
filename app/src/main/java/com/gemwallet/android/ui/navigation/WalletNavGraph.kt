@@ -133,6 +133,7 @@ fun WalletNavGraph(
                 onSwap = navController::navigateToSwap,
                 onTransaction = navController::navigateToTransactionScreen,
                 onChart = navController::navigateToAssetChartScreen,
+                openNetwork = navController::navigateToAssetScreen,
                 onStake = navController::navigateToStake,
             )
 
@@ -241,7 +242,7 @@ fun WalletNavGraph(
             )
 
             transactionScreen(
-                onCancel = onCancel
+                onCancel = onCancel,
             )
         }
 
