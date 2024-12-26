@@ -22,7 +22,7 @@ inline fun <R, reified E, T>Result<T>.responseFold(onSuccess: (T) -> R, onError:
     }
 }
 
-inline fun <reified E>Result<Any>.handleError(): E? {
+inline fun <reified E>Result<*>.handleError(): E? {
     val errorDeserializer = Json { ignoreUnknownKeys = true }
     return try {
         exceptionOrNull()?.message?.let { errorDeserializer.decodeFromString(it) }
