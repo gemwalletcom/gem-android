@@ -7,5 +7,7 @@ sealed interface SwapError {
     object NotSupportedChain : SwapError
     object NotSupportedPair : SwapError
     object NotSupportedAsset : SwapError
+    object NotImplemented : SwapError
+    object NetworkError : SwapError
     data class Unknown(val message: String) : SwapError
 }

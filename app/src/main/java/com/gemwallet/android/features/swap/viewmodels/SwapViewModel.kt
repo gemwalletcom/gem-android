@@ -188,7 +188,14 @@ class SwapViewModel @Inject constructor(
                         is SwapperException.NotSupportedAsset -> SwapError.NotSupportedAsset
                         is SwapperException.NotSupportedPair -> SwapError.NotSupportedPair
                         is SwapperException.NotSupportedChain -> SwapError.NotSupportedChain
+                        is SwapperException.ComputeQuoteException,
                         is SwapperException.NoQuoteAvailable -> SwapError.NoQuote
+                        is SwapperException.NotImplemented -> SwapError.NotImplemented
+                        is SwapperException.NetworkException -> SwapError.NetworkError
+                        is SwapperException.AbiException -> SwapError.NetworkError
+                        is SwapperException.InvalidAddress,
+                        is SwapperException.InvalidRoute,
+                        is SwapperException.InvalidAmount  -> SwapError.IncorrectInput
                         else -> SwapError.Unknown(err.localizedMessage ?: err.message ?: "")
                     }
                 )
