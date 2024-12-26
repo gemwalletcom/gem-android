@@ -61,7 +61,12 @@ class ResultCall<T>(val delegate: Call<T>) : Call<Result<T>> {
             }
             Response.success(response.code(), result)
         } else {
-            Response.success(Result.failure(HttpException(response)))
+            val errorBody = response.errorBody()?.string()
+            if (errorBody == null) {
+                Response.success(Result.failure(HttpException(response)))
+            } else {
+                Response.success(Result.failure(Exception(errorBody)))
+            }
         }
     }
 }
