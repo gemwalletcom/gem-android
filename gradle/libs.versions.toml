@@ -45,6 +45,7 @@ material3AdaptiveAndroid = "1.0.0-alpha06"
 turbine = "1.1.0"
 protobuf = "4.27.2"
 reorderable = "2.3.3"
+mockkVersion = "1.13.13"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -102,6 +103,8 @@ androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling", version.ref = "uiTestJunit4" }
 turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 androidx-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiautomator" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockkVersion" }
+mockk-agent =  { module = "io.mockk:mockk-agent", version.ref = "mockkVersion" }
 
 # chart
 vico-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico" }

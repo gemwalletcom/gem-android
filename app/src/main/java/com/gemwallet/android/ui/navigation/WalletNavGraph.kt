@@ -31,7 +31,7 @@ import com.gemwallet.android.features.assets.navigation.assetsScreen
 import com.gemwallet.android.features.bridge.navigation.bridgesScreen
 import com.gemwallet.android.features.bridge.navigation.navigateToBridgeScreen
 import com.gemwallet.android.features.bridge.navigation.navigateToBridgesScreen
-import com.gemwallet.android.features.buy.navigation.buyScreen
+import com.gemwallet.android.features.buy.navigation.fiatScreen
 import com.gemwallet.android.features.buy.navigation.navigateToBuyScreen
 import com.gemwallet.android.features.confirm.navigation.confirm
 import com.gemwallet.android.features.confirm.navigation.navigateToConfirmScreen
@@ -177,8 +177,8 @@ fun WalletNavGraph(
                 )
             }
 
-            buyScreen(
-                onCancel = onCancel,
+            fiatScreen(
+                cancelAction = onCancel,
                 onBuy = navController::navigateToBuyScreen
             )
 
