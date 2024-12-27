@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
+import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosTransactionsService
 import com.wallet.core.blockchain.aptos.models.AptosTransaction
 import com.wallet.core.primitives.Chain
@@ -32,9 +33,12 @@ class TestAptosTransactions {
         )
         val result = runBlocking {
             transactionsClient.getStatus(
-                Chain.Aptos,
-                "some_address",
-                "some_id"
+                TransactionStateRequest(
+                    Chain.Aptos,
+                    "some_id",
+                    "",
+                    "some_address",
+                )
             )
         }.getOrNull()
         assertNotNull(result)
@@ -63,9 +67,12 @@ class TestAptosTransactions {
         )
         val result = runBlocking {
             transactionsClient.getStatus(
-                Chain.Aptos,
-                "some_address",
-                "some_id"
+                TransactionStateRequest(
+                    Chain.Aptos,
+                    "some_id",
+                    "",
+                    "some_address",
+                )
             )
         }.getOrNull()
         assertNotNull(result)

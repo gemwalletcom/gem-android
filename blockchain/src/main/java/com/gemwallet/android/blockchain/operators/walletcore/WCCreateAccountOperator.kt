@@ -22,10 +22,11 @@ class WCCreateAccountOperator : CreateAccountOperator {
     private fun createFromPhrase(data: String, chain: Chain): Account {
         val hdWallet = HDWallet(data, "")
         val coinType = WCChainTypeProxy().invoke(chain = chain)
-        val address = if (chain == Chain.Solana) {
-            hdWallet.getAddressDerivation(coinType, Derivation.SOLANASOLANA)
-        } else {
-            hdWallet.getAddressForCoin(coinType)
+        val address = when (chain) {
+            Chain.Solana -> hdWallet.getAddressDerivation(coinType, Derivation.SOLANASOLANA)
+            Chain.BitcoinCash -> hdWallet.getAddressForCoin(coinType)
+                .replaceFirst("${Chain.BitcoinCash.string}:", "")
+            else -> hdWallet.getAddressForCoin(coinType)
         }
         val extendedPublicKey = if (chain == Chain.Solana) {
             hdWallet.getExtendedPublicKeyDerivation(coinType.purpose(), coinType, Derivation.SOLANASOLANA, coinType.xpubVersion())

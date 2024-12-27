@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.cosmos
 
+import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosTransactionsService
 import com.wallet.core.blockchain.cosmos.models.CosmosTransactionDataResponse
 import com.wallet.core.blockchain.cosmos.models.CosmosTransactionResponse
@@ -24,7 +25,14 @@ class TestCosmosTransactions {
         }
         val transactionsClient = CosmosTransactionStatusClient(Chain.Osmosis, transactionsService)
         val result = runBlocking {
-            transactionsClient.getStatus(Chain.Cosmos, "some_address", "some_id")
+            transactionsClient.getStatus(
+                TransactionStateRequest(
+                    Chain.Cosmos,
+                    "some_id",
+                    "",
+                    "some_address",
+                )
+            )
         }.getOrNull()
         assertNotNull(result)
         assertEquals("some_id", requestId)
@@ -41,7 +49,14 @@ class TestCosmosTransactions {
         }
         val transactionsClient = CosmosTransactionStatusClient(Chain.Osmosis, transactionsService)
         val result = runBlocking {
-            transactionsClient.getStatus(Chain.Cosmos, "some_address", "some_id")
+            transactionsClient.getStatus(
+                TransactionStateRequest(
+                    Chain.Cosmos,
+                    "some_id",
+                    "",
+                    "some_address",
+                )
+            )
         }.getOrNull()
         assertNotNull(result)
         assertEquals(TransactionState.Pending, result!!.state)
@@ -57,7 +72,14 @@ class TestCosmosTransactions {
         }
         val transactionsClient = CosmosTransactionStatusClient(Chain.Osmosis, transactionsService)
         val result = runBlocking {
-            transactionsClient.getStatus(Chain.Cosmos, "some_address", "some_id")
+            transactionsClient.getStatus(
+                TransactionStateRequest(
+                    Chain.Cosmos,
+                    "some_id",
+                    "",
+                    "some_address",
+                )
+            )
         }.getOrNull()
         assertNotNull(result)
         assertEquals(TransactionState.Reverted, result!!.state)

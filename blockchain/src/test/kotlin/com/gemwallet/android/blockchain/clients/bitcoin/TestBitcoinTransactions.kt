@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.bitcoin
 
+import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinTransactionsService
 import com.wallet.core.blockchain.bitcoin.models.BitcoinTransaction
 import com.wallet.core.primitives.Chain
@@ -24,7 +25,14 @@ class TestBitcoinTransactions {
             }
         )
         val result = runBlocking {
-            transactionsClient.getStatus(Chain.Bitcoin, "some_address", "some_id")
+            transactionsClient.getStatus(
+                TransactionStateRequest(
+                    Chain.Bitcoin,
+                    "some_id",
+                    "",
+                    "some_address",
+                )
+            )
         }.getOrNull()
         assertNotNull(result)
         assertEquals("some_id", requestId)
@@ -44,7 +52,14 @@ class TestBitcoinTransactions {
             }
         )
         val result = runBlocking {
-            transactionsClient.getStatus(Chain.Bitcoin, "some_address", "some_id")
+            transactionsClient.getStatus(
+                TransactionStateRequest(
+                    Chain.Bitcoin,
+                    "some_id",
+                    "",
+                    "some_address",
+                )
+            )
         }.getOrNull()
         assertNotNull(result)
         assertEquals(TransactionState.Confirmed, result!!.state)
