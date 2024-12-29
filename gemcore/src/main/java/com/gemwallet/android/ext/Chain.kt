@@ -50,11 +50,11 @@ fun Chain.assetType(): AssetType? {
         Chain.Litecoin,
         Chain.Doge,
         Chain.Thorchain,
-        Chain.Aptos,
         Chain.Xrp,
         Chain.Algorand,
         Chain.Stellar,
         Chain.Polkadot,
+        Chain.Cardano,
         Chain.Near -> null
     }
 }
@@ -103,6 +103,7 @@ fun Chain.eip1559Support() = when (this) {
     Chain.Algorand,
     Chain.Stellar,
     Chain.Polkadot,
+    Chain.Cardano,
     Chain.Xrp -> false
 }
 
@@ -146,6 +147,7 @@ fun Chain.toChainType(): ChainType {
         Chain.Stellar -> ChainType.Stellar
         Chain.Algorand -> ChainType.Algorand
         Chain.Polkadot -> ChainType.Polkadot
+        Chain.Cardano -> ChainType.Cardano
         Chain.Bitcoin,
         Chain.Doge,
         Chain.BitcoinCash,

@@ -10,7 +10,9 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class StellarBalance (
 	val balance: String,
-	val asset_type: String
+	val asset_type: String,
+	val asset_code: String? = null,
+	val asset_issuer: String? = null
 )
 
 @Serializable
@@ -22,6 +24,23 @@ data class StellarAccount (
 @Serializable
 data class StellarAccountEmpty (
 	val status: Int
+)
+
+@Serializable
+data class StellarAsset (
+	val asset_code: String,
+	val asset_issuer: String,
+	val contract_id: String? = null
+)
+
+@Serializable
+data class StellarRecords<T> (
+	val records: List<T>
+)
+
+@Serializable
+data class StellarEmbedded<T> (
+	val _embedded: StellarRecords<T>
 )
 
 @Serializable

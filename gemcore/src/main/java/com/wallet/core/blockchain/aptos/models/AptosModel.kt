@@ -20,12 +20,6 @@ data class AptosCoinInfo (
 )
 
 @Serializable
-data class AptosError (
-	val message: String,
-	val error_code: String
-)
-
-@Serializable
 data class AptosGasFee (
 	val deprioritized_gas_estimate: Int,
 	val gas_estimate: Int,
@@ -70,10 +64,4 @@ data class AptosTransaction (
 data class AptosTransactionBroacast (
 	val hash: String
 )
-
-@Serializable
-enum class AptosErrorCode(val string: String) {
-	@SerialName("account_not_found")
-	account_not_found("account_not_found"),
-}
 

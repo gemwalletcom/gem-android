@@ -45,5 +45,6 @@ class WCChainTypeProxy : ChainTypeProxy<CoinType> {
         Chain.Algorand -> CoinType.ALGORAND
         Chain.Stellar -> CoinType.STELLAR
         Chain.Polkadot -> CoinType.POLKADOT
+        Chain.Cardano -> CoinType.CARDANO
     }
 }

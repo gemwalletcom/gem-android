@@ -30,7 +30,7 @@ data class XRPAccountObjects<T> (
 
 @Serializable
 data class XRPAccountResult (
-	val account_data: XRPAccount
+	val account_data: XRPAccount? = null
 )
 
 @Serializable

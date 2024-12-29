@@ -17,8 +17,12 @@ data class AlgorandAccountAccount (
 
 @Serializable
 data class AlgorandAccount (
+	@SerialName("amount")
 	val amount: Long,
-	val assets: List<AlgorandAccountAccount>
+	@SerialName("assets")
+	val assets: List<AlgorandAccountAccount>,
+	@SerialName("min-balance")
+	val min_balance: Int
 )
 
 @Serializable

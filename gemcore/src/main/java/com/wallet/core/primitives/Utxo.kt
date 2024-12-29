@@ -11,6 +11,7 @@ import kotlinx.serialization.SerialName
 data class UTXO (
 	val transaction_id: String,
 	val vout: Int,
-	val value: String
+	val value: String,
+	val address: String
 )
 

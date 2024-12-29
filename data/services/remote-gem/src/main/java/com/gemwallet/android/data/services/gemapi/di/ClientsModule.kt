@@ -6,6 +6,7 @@ import com.gemwallet.android.blockchain.RpcClientAdapter
 import com.gemwallet.android.blockchain.clients.algorand.services.AlgorandService
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosServices
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinRpcClient
+import com.gemwallet.android.blockchain.clients.cardano.services.CardanoServices
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosRpcClient
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
 import com.gemwallet.android.blockchain.clients.near.NearRpcClient
@@ -203,6 +204,7 @@ object ClientsModule {
                 ChainType.Algorand -> buildClient(url, AlgorandService::class.java, algorandConverter, httpClient)
                 ChainType.Stellar -> buildClient(url, StellarService::class.java, converter, httpClient)
                 ChainType.Polkadot -> buildClient(url, PolkadotServices::class.java, converter, httpClient)
+                ChainType.Cardano -> buildClient(url, CardanoServices::class.java, converter, httpClient)
             }
             adapter.add(it, rpc)
         }
