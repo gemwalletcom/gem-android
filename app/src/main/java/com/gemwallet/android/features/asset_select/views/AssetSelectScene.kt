@@ -45,6 +45,7 @@ import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -87,9 +88,7 @@ internal fun AssetSelectScene(
     Scene(title = title, actions = actions, onClose = onCancel) {
         SearchBar(modifier = Modifier.padding(horizontal = padding16), query = query)
         Spacer16()
-        LazyColumn(
-            state = listState,
-        ) {
+        LazyColumn(state = listState) {
             assets(pinned, true, onSelect, support, titleBadge, itemTrailing)
             assets(unpinned, false, onSelect, support, titleBadge, itemTrailing)
             loading(state)
