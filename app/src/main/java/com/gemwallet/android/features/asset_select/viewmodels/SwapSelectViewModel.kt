@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.asset_select.viewmodels
 
+import androidx.compose.foundation.text.input.clearText
 import com.gemwallet.android.cases.swap.GetSwapSupportedCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
@@ -37,6 +38,7 @@ class SwapSelectViewModel @Inject constructor(
 ) {
     fun setPair(select: SwapPairSelect) {
         (search as? SwapSelectSearch)?.preSetPair?.update { select }
+        queryState.clearText()
     }
 }
 
@@ -57,7 +59,8 @@ class SwapSelectSearch(
                 val (session, query, pair) = it
                 val wallet = session?.wallet ?: return@flatMapLatest emptyFlow()
                 pair ?: return@flatMapLatest flow { emit(emptyList()) }
-                val supported = getSwapSupportedCase.getSwapSupportChains(pair.oppositeId() ?: return@flatMapLatest emptyFlow())
+                val oppositId = pair.oppositeId()
+                val supported = getSwapSupportedCase.getSwapSupportChains(oppositId ?: return@flatMapLatest emptyFlow())
                 assetsRepository.swapSearch(
                     wallet,
                     query,

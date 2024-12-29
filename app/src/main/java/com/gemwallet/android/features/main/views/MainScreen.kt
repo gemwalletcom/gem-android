@@ -115,9 +115,10 @@ fun MainScreen(
                         modifier = Modifier.testTag(item.testTag),
                         selected = item.route == currentTab.value,
                         onClick = {
+                            val prevRoute = currentTab.value
                             currentTab.value = item.route
                             coroutineScope.launch {
-                                when (item.route) {
+                                when (prevRoute) {
                                     assetsRoute -> assetsListState.animateScrollToItem(0)
                                     activitiesRoute -> activitiesListState.animateScrollToItem(0)
                                     settingsRoute -> settingsScrollState.animateScrollTo(0)

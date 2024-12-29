@@ -29,6 +29,7 @@ class CardanoSignClient(
                 this.amount = params.input.amount.toLong()
                 this.useMaxAmount = params.input.isMax()
             }.build()
+            this.ttl = 190000000
             this.addAllUtxos(
                 chainData.utxos.map { utxo ->
                     Cardano.TxInput.newBuilder().apply {

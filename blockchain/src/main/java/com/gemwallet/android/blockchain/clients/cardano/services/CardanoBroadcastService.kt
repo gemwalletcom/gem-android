@@ -17,5 +17,6 @@ suspend fun CardanoBroadcastService.broadcast(data: String): CardanoTransactionB
         variables = hashMapOf("transaction" to data),
         query = "mutation SubmitTransaction(\$transaction: String!) { submitTransaction(transaction: \$transaction) { hash } }"
     )
-    return broadcast(request).getOrNull()?.data
+    val result = broadcast(request)
+    return result.getOrNull()?.data
 }

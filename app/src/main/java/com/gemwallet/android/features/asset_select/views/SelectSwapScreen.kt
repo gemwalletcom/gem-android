@@ -10,6 +10,8 @@ import com.gemwallet.android.R
 import com.gemwallet.android.features.asset_select.viewmodels.SwapSelectViewModel
 import com.gemwallet.android.features.swap.models.SwapPairSelect
 import com.gemwallet.android.ui.components.getBalanceInfo
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 
 @Composable
 fun SelectSwapScreen(
@@ -18,13 +20,15 @@ fun SelectSwapScreen(
     onSelect: ((SwapPairSelect) -> Unit)?,
     viewModel: SwapSelectViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(select.fromId, select.toId) {
-        viewModel.setPair(select)
-    }
-
     val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
     val pinned by viewModel.pinned.collectAsStateWithLifecycle()
     val unpinned by viewModel.unpinned.collectAsStateWithLifecycle()
+
+    LaunchedEffect(select.fromId, select.toId) {
+        coroutineScope {
+            viewModel.setPair(select)
+        }
+    }
 
     AssetSelectScene(
         title = when (select) {

@@ -18,7 +18,7 @@ class CardanoBroadcastClient(
         signedMessage: ByteArray,
         type: TransactionType
     ): Result<String> {
-        val hash = broadcastService.broadcast(signedMessage.toHexString())?.submitTransaction?.hash
+        val hash = broadcastService.broadcast(signedMessage.toHexString(prefix = ""))?.submitTransaction?.hash
             ?: return Result.failure(ServiceError.EmptyHash)
         return Result.success(hash)
     }

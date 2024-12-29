@@ -330,8 +330,8 @@ class SwapViewModel @Inject constructor(
     }
 
     fun changePair(swapItemType: SwapItemType) {
-        val fromId = if (swapItemType == SwapItemType.Pay) swapPairState.value?.fromId else null
-        val toId = if (swapItemType == SwapItemType.Pay) null else swapPairState.value?.fromId
+        val fromId = if (swapItemType == SwapItemType.Pay) null else swapPairState.value?.fromId
+        val toId = if (swapItemType == SwapItemType.Pay) swapPairState.value?.fromId else null
         selectPair.update {
             val select = SwapPairSelect.From(fromId, toId)
             if (swapItemType == SwapItemType.Pay) select else select.opposite()

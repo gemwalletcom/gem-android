@@ -21,7 +21,7 @@ suspend fun CardanoBalanceService.balance(address: String): BigInteger? {
         variables = hashMapOf(
             "address" to address
         ),
-        query = "query GetBalance($address: String!) { utxos: utxos_aggregate(where: { address: { _eq: $address }  } ) { aggregate { sum { value } } } }"
+        query = "query GetBalance(\$address: String!) { utxos: utxos_aggregate(where: { address: { _eq: \$address }  } ) { aggregate { sum { value } } } }"
     )
     return balance(request).getOrNull()?.data?.utxos?.aggregate?.sum?.value?.toBigInteger()
 }

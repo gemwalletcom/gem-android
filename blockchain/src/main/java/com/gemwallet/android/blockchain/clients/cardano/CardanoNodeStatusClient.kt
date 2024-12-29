@@ -27,5 +27,4 @@ class CardanoNodeStatusClient(
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
-
 }
