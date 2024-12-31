@@ -103,6 +103,7 @@ fun InfoBottomSheet(
         sheetState = sheetState,
         shape = RoundedCornerShape(24.dp),
         containerColor = MaterialTheme.colorScheme.background,
+        scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
         onDismissRequest = {
             scope.launch { sheetState.hide() }.invokeOnCompletion { onClose.invoke() }
         },
