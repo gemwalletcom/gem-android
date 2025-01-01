@@ -311,8 +311,8 @@ class AssetsRepository @Inject constructor(
                     )
                 )
             }
-                .filter { !Chain.exclude().contains(it.asset.id.chain) }
-                .distinctBy { it.asset.id.toIdentifier() }
+            .filter { !Chain.exclude().contains(it.asset.id.chain) }
+            .distinctBy { it.asset.id.toIdentifier() }
         }
     }
 

@@ -123,7 +123,7 @@ internal fun SwapItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
             ) {
-                IconWithBadge(item.asset, 36.dp)
+                IconWithBadge(item.asset)
                 Spacer(modifier = Modifier.size(8.dp))
                 Text(
                     text = item.asset.symbol,

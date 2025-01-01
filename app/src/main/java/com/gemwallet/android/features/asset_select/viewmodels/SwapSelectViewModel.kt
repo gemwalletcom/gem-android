@@ -11,6 +11,7 @@ import com.gemwallet.android.features.asset_select.models.SelectSearch
 import com.gemwallet.android.features.swap.models.SwapPairSelect
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -22,6 +23,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import uniffi.gemstone.SwapAssetList
 import javax.inject.Inject
 
 @HiltViewModel
@@ -37,8 +39,8 @@ class SwapSelectViewModel @Inject constructor(
     search = SwapSelectSearch(assetsRepository, getSwapSupportedCase)
 ) {
     fun setPair(select: SwapPairSelect) {
-        (search as? SwapSelectSearch)?.preSetPair?.update { select }
         queryState.clearText()
+        (search as? SwapSelectSearch)?.preSetPair?.update { select }
     }
 }
 
