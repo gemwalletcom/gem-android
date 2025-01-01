@@ -60,7 +60,7 @@ class SwapSelectSearch(
             .flatMapLatest {
                 val (session, query, pair) = it
                 val wallet = session?.wallet ?: return@flatMapLatest emptyFlow()
-                pair ?: return@flatMapLatest flow { emit(emptyList()) }
+                pair ?: return@flatMapLatest emptyFlow()
                 val oppositId = pair.oppositeId()
                 val supported = getSwapSupportedCase.getSwapSupportChains(oppositId ?: return@flatMapLatest emptyFlow())
                 assetsRepository.swapSearch(
