@@ -294,14 +294,16 @@ class ConfirmViewModel @Inject constructor(
                 },
                 blockNumber = signerParams.chainData.blockNumber()
             )
-            state.update { ConfirmState.Result(txHash = txHash) }
             val finishRoute = when (signerParams.input) {
                 is ConfirmParams.Stake -> stakeRoute
                 is ConfirmParams.SwapParams,
                 is ConfirmParams.TokenApprovalParams -> swapRoute
                 is ConfirmParams.TransferParams -> assetRoute
             }
-            viewModelScope.launch(Dispatchers.Main) { finishAction(assetId = assetInfo.id(), hash = txHash, route = finishRoute) }
+            viewModelScope.launch(Dispatchers.Main) {
+                finishAction(assetId = assetInfo.id(), hash = txHash, route = finishRoute)
+            }
+            state.update { ConfirmState.Result(txHash = txHash) }
         }.onFailure { err ->
             state.update { ConfirmState.Error(ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
         }

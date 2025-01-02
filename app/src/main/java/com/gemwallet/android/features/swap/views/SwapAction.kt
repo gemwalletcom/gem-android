@@ -10,12 +10,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -23,9 +26,10 @@ import androidx.compose.ui.unit.sp
 import com.gemwallet.android.R
 import com.gemwallet.android.features.swap.models.SwapPairUIModel
 import com.gemwallet.android.features.swap.models.SwapState
+import com.gemwallet.android.ui.components.buttons.disableButtonColor
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.mainActionHeight
-import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator20
 
 @Composable
 internal fun SwapAction(swapState: SwapState, pair: SwapPairUIModel, onSwap: () -> Unit) {
@@ -43,9 +47,11 @@ internal fun SwapAction(swapState: SwapState, pair: SwapPairUIModel, onSwap: () 
             Spacer16()
         }
         Button(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(mainActionHeight),
+            modifier = Modifier.fillMaxWidth().heightIn(mainActionHeight),
+            colors = ButtonDefaults.buttonColors().copy(
+                disabledContainerColor = disableButtonColor,
+                disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+            ),
             onClick = onSwap,
             enabled = (swapState == SwapState.Ready || swapState == SwapState.RequestApprove)
         ) {
@@ -72,13 +78,10 @@ internal fun SwapAction(swapState: SwapState, pair: SwapPairUIModel, onSwap: () 
                         fontSize = 18.sp,
                     )
                 }
-
                 SwapState.Swapping,
                 SwapState.GetQuote,
                 SwapState.CheckAllowance,
-                SwapState.Approving -> Box(modifier = Modifier.fillMaxWidth()) {
-                    CircularProgressIndicator16(modifier = Modifier.align(Alignment.Center))
-                }
+                SwapState.Approving -> CircularProgressIndicator20(color = Color.White)
 
                 is SwapState.Error -> Text(
                     modifier = Modifier.padding(4.dp),
