@@ -2,7 +2,6 @@ package com.gemwallet.android.features.wallets.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.R
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.interactors.DeleteWalletOperator
@@ -17,6 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.gemwallet.android.R
 
 @HiltViewModel
 class WalletsViewModel @Inject constructor(

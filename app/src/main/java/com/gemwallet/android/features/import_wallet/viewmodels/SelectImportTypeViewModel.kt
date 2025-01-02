@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.chains.ChainInfoRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.filter
+import com.gemwallet.android.features.assets.model.IconUrl
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType

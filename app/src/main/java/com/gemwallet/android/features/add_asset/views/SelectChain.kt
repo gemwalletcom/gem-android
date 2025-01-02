@@ -11,9 +11,9 @@ import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.asset_select.components.SearchBar
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.ChainItem
 import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Chain
 
