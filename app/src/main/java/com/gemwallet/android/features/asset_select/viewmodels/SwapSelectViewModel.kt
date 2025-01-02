@@ -58,12 +58,12 @@ class SwapSelectSearch(
                 val (session, query, pair) = it
                 val wallet = session?.wallet ?: return@flatMapLatest emptyFlow()
                 pair ?: return@flatMapLatest emptyFlow()
-                val oppositId = pair.oppositeId()
-                val supported = getSwapSupportedCase.getSwapSupportChains(oppositId ?: return@flatMapLatest emptyFlow())
+                val oppositeId = pair.oppositeId() ?: return@flatMapLatest emptyFlow()
+                val supported = getSwapSupportedCase.getSwapSupportChains(oppositeId)
                 assetsRepository.swapSearch(
                     wallet,
                     query,
-                    listOf(pair.oppositeId()?.toIdentifier() ?: ""),
+                    listOf(oppositeId.toIdentifier()),
                     supported.chains.mapNotNull { item -> Chain.entries.firstOrNull { it.string == item } },
                     supported.assetIds.mapNotNull { it.toAssetId() }
                 )
