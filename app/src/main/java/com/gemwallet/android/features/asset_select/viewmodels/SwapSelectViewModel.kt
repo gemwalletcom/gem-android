@@ -11,7 +11,6 @@ import com.gemwallet.android.features.asset_select.models.SelectSearch
 import com.gemwallet.android.features.swap.models.SwapPairSelect
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,10 +19,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
-import uniffi.gemstone.SwapAssetList
 import javax.inject.Inject
 
 @HiltViewModel

@@ -9,7 +9,6 @@ import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.isStaked
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.type

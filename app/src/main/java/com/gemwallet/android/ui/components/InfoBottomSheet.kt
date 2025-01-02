@@ -27,13 +27,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.gemwallet.android.R
-import com.gemwallet.android.localize.R as LR
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.wallet.core.primitives.TransactionState
 import kotlinx.coroutines.launch
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl
+import com.gemwallet.android.localize.R as LR
 
 sealed class InfoSheetEntity(
     val icon: Any,

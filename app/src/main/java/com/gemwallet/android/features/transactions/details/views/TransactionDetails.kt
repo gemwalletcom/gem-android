@@ -35,7 +35,6 @@ import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.titles.getTransactionTitle
-import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
