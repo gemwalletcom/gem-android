@@ -58,9 +58,11 @@ fun ListItem(
                         }
                     }
                 }
-                trailing?.let {
-                    Spacer(modifier = Modifier.size(padding16))
-                    it()
+                Box(modifier = Modifier.fillMaxWidth(0.6f)) {
+                    trailing?.let {
+                        Spacer(modifier = Modifier.size(padding16))
+                        it()
+                    }
                 }
             }
             if (dividerShowed) {

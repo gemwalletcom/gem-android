@@ -20,7 +20,7 @@ fun ListItemTitleText(
             modifier = Modifier.weight(1f, false),
             text = text,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
+            overflow = TextOverflow.MiddleEllipsis,
             style = MaterialTheme.typography.titleMedium,
             color = color,
         )

@@ -17,22 +17,13 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.ExpandMore
-import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Tune
-import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -43,12 +34,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -58,9 +45,6 @@ import com.gemwallet.android.features.assets.model.WalletInfoUIState
 import com.gemwallet.android.features.assets.viewmodel.AssetsViewModel
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
-import com.gemwallet.android.ui.components.AssetListItem
-import com.gemwallet.android.ui.components.DropDownContextItem
-import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.pinnedAssetsHeader
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
@@ -213,100 +197,4 @@ private fun LazyListScope.assets(
     if (isPinned) {
         item { Spacer(modifier = Modifier.height(32.dp)) }
     }
-}
-
-@Composable
-private fun AssetItem(
-    item: AssetItemUIModel,
-    longPressState: MutableState<AssetId?>,
-    modifier: Modifier = Modifier,
-    isPinned: Boolean = false,
-    onAssetClick: (AssetId) -> Unit,
-    onAssetHide: (AssetId) -> Unit,
-    onTogglePin: (AssetId) -> Unit,
-) {
-    val clipboardManager = LocalClipboardManager.current
-    DropDownContextItem(
-        modifier = modifier.testTag(item.asset.id.toIdentifier()),
-        isExpanded = longPressState.value == item.asset.id,
-        imeCompensate = false,
-        onDismiss = { longPressState.value = null },
-        content = { AssetListItem(item) },
-        menuItems = {
-            DropdownMenuItem(
-                text = { Text( text = stringResource(id = if (isPinned) R.string.common_unpin else R.string.common_pin)) },
-                trailingIcon = {
-                    if (isPinned) Icon(painterResource(R.drawable.keep_off), "unpin")
-                    else Icon(Icons.Default.PushPin, "pin")
-
-                },
-                onClick = {
-                    onTogglePin(item.asset.id)
-                    longPressState.value = null
-                },
-            )
-            DropdownMenuItem(
-                text = { Text( text = stringResource(id = R.string.wallet_copy_address)) },
-                trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
-                onClick = {
-                    clipboardManager.setText(AnnotatedString(item.owner))
-                    longPressState.value = null
-                },
-            )
-            DropdownMenuItem(
-                text = { Text(stringResource(id = R.string.common_hide)) },
-                trailingIcon = { Icon(Icons.Default.VisibilityOff, "wallet_config") },
-                onClick = {
-                    onAssetHide(item.asset.id)
-                    longPressState.value = null
-                }
-            )
-        },
-        onLongClick = { longPressState.value = item.asset.id }
-    ) { onAssetClick(item.asset.id) }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun AssetsTopBar(
-    walletInfo: WalletInfoUIState,
-    onShowWallets: () -> Unit,
-    onShowAssetManage: () -> Unit,
-) {
-    CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
-        ),
-        title = {
-            Box {
-                TextButton(onClick = onShowWallets) {
-                    Row(verticalAlignment = Alignment.CenterVertically ) {
-                        AsyncImage(model = walletInfo.icon, size = 24.dp)
-                        Spacer(modifier = Modifier.size(8.dp))
-                        Text(
-                            text = walletInfo.name,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            style = MaterialTheme.typography.titleLarge,
-                        )
-                        Icon(
-                            imageVector = Icons.Default.ExpandMore,
-                            tint = MaterialTheme.colorScheme.onSurface,
-                            contentDescription = "select_wallet",
-                        )
-                    }
-                }
-            }
-        },
-        actions = {
-            IconButton(onClick = onShowAssetManage, Modifier.testTag("assetsManageAction")) {
-                Icon(
-                    imageVector = Icons.Default.Tune,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = "asset_manager",
-                )
-            }
-        }
-    )
 }
