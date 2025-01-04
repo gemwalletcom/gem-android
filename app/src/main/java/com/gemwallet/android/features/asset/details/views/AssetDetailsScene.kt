@@ -254,8 +254,8 @@ private fun LazyListScope.networkInfo(
     onChart: (AssetId) -> Unit,
     openNetwork: AssetIdAction,
 ) {
-    val cells = mutableListOf<CellEntity<Any>>()
     item {
+        val cells = mutableListOf<CellEntity<Any>>()
         if (uiState.priceValue.isNotEmpty()) {
             cells.add(
                 CellEntity(
