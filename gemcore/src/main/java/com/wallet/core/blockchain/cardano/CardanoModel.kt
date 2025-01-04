@@ -45,6 +45,21 @@ data class CardanoBlockData (
 )
 
 @Serializable
+data class CardanoGenesisShelley (
+	val networkMagic: Int
+)
+
+@Serializable
+data class CardanoGenesis (
+	val shelley: CardanoGenesisShelley
+)
+
+@Serializable
+data class CardanoGenesisData (
+	val genesis: CardanoGenesis
+)
+
+@Serializable
 data class CardanoSubmitTransactionHash (
 	val hash: String
 )
