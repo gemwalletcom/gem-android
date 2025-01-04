@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
-import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.buy.models.BuyError
 import com.gemwallet.android.features.buy.models.toProviderUIModel
@@ -35,7 +34,6 @@ import kotlin.random.Random
 
 @HiltViewModel
 class FiatViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val buyRepository: BuyRepository,
     savedStateHandle: SavedStateHandle
