@@ -45,20 +45,18 @@ fun ListItem(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(modifier = Modifier.weight(1f)) {
-                    Column(
-                        modifier = Modifier.fillMaxHeight(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.Start,
-                    ) {
-                        title?.invoke()
-                        subtitle?.let {
-                            Spacer(modifier = Modifier.height(2.dp))
-                            it()
-                        }
+                Column(
+                    modifier = Modifier.fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start,
+                ) {
+                    title?.invoke()
+                    subtitle?.let {
+                        Spacer(modifier = Modifier.height(2.dp))
+                        it()
                     }
                 }
-                Box(modifier = Modifier.fillMaxWidth(0.6f)) {
+                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
                     trailing?.let {
                         Spacer(modifier = Modifier.size(padding16))
                         it()
