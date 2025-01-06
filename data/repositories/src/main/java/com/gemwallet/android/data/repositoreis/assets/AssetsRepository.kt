@@ -133,46 +133,49 @@ class AssetsRepository @Inject constructor(
     }
 
     suspend fun syncAssetInfo(assetId: AssetId) = withContext(Dispatchers.IO) {
-        val assetInfo = getAssetInfo(assetId).firstOrNull() ?: return@withContext
-        val currency = assetInfo.price?.currency ?: return@withContext
-
+        val currency = getAssetInfo(assetId).firstOrNull()?.price?.currency ?: return@withContext
         val updatePriceJob = async { updatePrices(currency, assetId) }
         val updateBalancesJob = async { updateBalances(assetId) }
-        val getAssetFull = async {
-            val assetFullJob = async {
-                gemApi.getAsset(assetId.toIdentifier(), currency.string).getOrNull()
-            }
-            val marketInfoJob = async {
-                gemApi.getMarket(assetId.toIdentifier(), currency.string).getOrNull()
-            }
-
-            val assetFull = assetFullJob.await() ?: return@async
-            val marketInfo = marketInfoJob.await()
-            val gson = Gson()
-            val asset = getAssetInfo(assetId).map {
-                DbAsset(
-                    address = it.owner.address,
-                    id = it.id().toIdentifier(),
-                    name = it.asset.name,
-                    symbol = it.asset.symbol,
-                    decimals = it.asset.decimals,
-                    type = it.asset.type,
-                    chain = it.asset.chain(),
-                    isBuyEnabled = assetFull.properties.isBuyable == true,
-                    isStakeEnabled = assetFull.properties.isStakeable == true,
-                    isSwapEnabled = it.id().chain.isSwapSupport(),
-                    stakingApr = assetFull.properties.stakingApr,
-                    links =  assetFull.links.let { gson.toJson(it) },
-                    market = marketInfo?.market?.let { gson.toJson(it) },
-                    rank = assetFull.score.rank,
-                    updatedAt = System.currentTimeMillis(),
-                )
-            }.firstOrNull() ?: return@async
-            assetsDao.update(asset)
-        }
+        val getAssetFull = async { syncMarketInfo(assetId) }
         updatePriceJob.await()
         updateBalancesJob.await()
         getAssetFull.await()
+    }
+
+    suspend fun syncMarketInfo(assetId: AssetId) = withContext(Dispatchers.IO) {
+        val assetInfo = getAssetsInfoByAllWallets(listOf(assetId.toIdentifier()))
+            .map { it.firstOrNull() }
+            .firstOrNull() ?: return@withContext
+        val currency = assetInfo.price?.currency ?: return@withContext
+        val assetIdIdentifier = assetId.toIdentifier()
+        val assetFullJob = async {
+            gemApi.getAsset(assetIdIdentifier, currency.string).getOrNull()
+        }
+        val marketInfoJob = async {
+            gemApi.getMarket(assetIdIdentifier, currency.string).getOrNull()
+        }
+
+        val assetFull = assetFullJob.await() ?: return@withContext
+        val marketInfo = marketInfoJob.await()
+        val gson = Gson()
+        val asset = DbAsset(
+            address = assetInfo.owner.address,
+            id = assetInfo.id().toIdentifier(),
+            name = assetInfo.asset.name,
+            symbol = assetInfo.asset.symbol,
+            decimals = assetInfo.asset.decimals,
+            type = assetInfo.asset.type,
+            chain = assetInfo.asset.chain(),
+            isBuyEnabled = assetFull.properties.isBuyable == true,
+            isStakeEnabled = assetFull.properties.isStakeable == true,
+            isSwapEnabled = assetInfo.id().chain.isSwapSupport(),
+            stakingApr = assetFull.properties.stakingApr,
+            links =  assetFull.links.let { gson.toJson(it) },
+            market = marketInfo?.market?.let { gson.toJson(it) },
+            rank = assetFull.score.rank,
+            updatedAt = System.currentTimeMillis(),
+        )
+        assetsDao.update(asset)
     }
 
     suspend fun getNativeAssets(wallet: Wallet): List<AssetInfo> = withContext(Dispatchers.IO) {

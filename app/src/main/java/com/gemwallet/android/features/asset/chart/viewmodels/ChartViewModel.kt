@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
-import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset.chart.models.ChartUIModel
 import com.gemwallet.android.features.asset.chart.models.PricePoint
@@ -16,20 +15,19 @@ import com.gemwallet.android.model.format
 import com.wallet.core.primitives.ChartPeriod
 import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -39,33 +37,30 @@ class ChartViewModel @Inject constructor(
     private val gemApiClient: GemApiClient,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
-    private var requestChartData: Deferred<ChartUIModel>? = null
     private val assetIdStr = savedStateHandle.getStateFlow<String?>(assetIdArg, null)
-    private val assetInfo = assetIdStr.flatMapLatest {
-        assetsRepository.getAssetInfo(assetId = it?.toAssetId() ?: return@flatMapLatest emptyFlow())
-    }
+    private val assetInfo = assetIdStr
+        .flatMapLatest {
+            val assetId = it ?: return@flatMapLatest emptyFlow()
+            assetsRepository.getAssetsInfoByAllWallets(listOf(assetId))
+                .map { it.firstOrNull() }
+                .filterNotNull()
+        }
     private val chartState = MutableStateFlow(ChartState())
     val chartUIState = chartState.map { ChartUIModel.State(it.loading, it.period) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, ChartUIModel.State())
 
-    val chartUIModel = assetInfo.combine(chartState) { assetInfo, chartState ->
-        if (requestChartData != null && requestChartData?.isActive == true) {
-            requestChartData?.cancel()
-        }
-        withContext(Dispatchers.IO) {
-            requestChartData = async {
-                request(
-                    assetInfo,
-                    chartState.period
-                )
+    val chartUIModel = assetInfo.combine(chartState) { assetInfo, chartState -> Pair(assetInfo, chartState) }
+        .mapLatest { state ->
+            val assetInfo = state.first
+            val chartState = state.second
+            try {
+                request(assetInfo, chartState.period)
+            } catch (_: Throwable) {
+                ChartUIModel()
             }
         }
-        try {
-            requestChartData?.await() ?: throw IllegalStateException()
-        } catch (err: Throwable) {
-            ChartUIModel()
-        }
-    }.flowOn(Dispatchers.IO).stateIn(viewModelScope, SharingStarted.Eagerly, ChartUIModel())
+        .flowOn(Dispatchers.IO)
+    .flowOn(Dispatchers.IO).stateIn(viewModelScope, SharingStarted.Eagerly, ChartUIModel())
 
 
     suspend fun request(assetInfo: AssetInfo, period: ChartPeriod): ChartUIModel {
