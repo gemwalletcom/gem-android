@@ -39,10 +39,18 @@ open class BaseAssetSelectViewModel(
 ) : ViewModel() {
 
     val queryState = TextFieldState()
-    private val searchState = MutableStateFlow<SearchState>(SearchState.Searching)
+    private val searchState = MutableStateFlow<SearchState>(SearchState.Init)
 
     private val queryFlow = snapshotFlow<String> { queryState.text.toString() }
-        .onEach { searchState.update { SearchState.Searching } }
+        .onEach {
+            searchState.update {
+                if (it != SearchState.Init) {
+                    SearchState.Searching
+                } else {
+                    it
+                }
+            }
+        }
         .mapLatest { query ->
             delay(250)
             searchTokensCase.search(query)
@@ -69,7 +77,7 @@ open class BaseAssetSelectViewModel(
 
     val uiState = assets.combine(searchState) { assets, searchState ->
         when {
-            searchState != SearchState.Idle -> UIState.Loading
+            searchState != SearchState.Idle && searchState != SearchState.Init -> UIState.Loading
             assets.isEmpty() && searchState == SearchState.Idle -> UIState.Empty
             else -> UIState.Idle
         }
@@ -87,6 +95,7 @@ open class BaseAssetSelectViewModel(
     }
 
     enum class SearchState {
+        Init,
         Idle,
         Searching,
     }
