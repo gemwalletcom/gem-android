@@ -278,7 +278,7 @@ class MainViewModel @Inject constructor(
 
     fun onAuth(authState: AuthState) {
         when {
-            state.value.initialAuth == AuthState.Required -> state.update { it.copy(initialAuth = authState) }
+            state.value.initialAuth != AuthState.Success -> state.update { it.copy(initialAuth = authState) }
             state.value.authRequest != null -> state.update { it.copy(authState = authState) }
         }
     }
