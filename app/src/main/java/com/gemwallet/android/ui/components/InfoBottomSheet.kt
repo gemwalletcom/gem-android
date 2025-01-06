@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -29,6 +27,7 @@ import coil3.compose.AsyncImage
 import com.gemwallet.android.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.wallet.core.primitives.TransactionState
 import kotlinx.coroutines.launch
 import uniffi.gemstone.Config
@@ -101,81 +100,71 @@ fun InfoBottomSheet(
     val scope = rememberCoroutineScope()
     ModalBottomSheet(
         sheetState = sheetState,
-        shape = RoundedCornerShape(24.dp),
-        containerColor = MaterialTheme.colorScheme.background,
-        scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
         onDismissRequest = {
             scope.launch { sheetState.hide() }.invokeOnCompletion { onClose.invoke() }
-        },
-        content = {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally,
+        }
+    ) {
+        Column(
+            modifier = Modifier .fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Box(
+                modifier = Modifier.size(120.dp),
+                contentAlignment = Alignment.BottomEnd
             ) {
-                Box(
-                    modifier = Modifier.size(120.dp),
-                    contentAlignment = Alignment.BottomEnd
-                ) {
+                AsyncImage(
+                    modifier = Modifier.size(120.dp).clip(CircleShape),
+                    model = item.icon,
+                    contentDescription = ""
+                )
+                if (item.badgeIcon != null) {
                     AsyncImage(
                         modifier = Modifier
-                            .size(120.dp)
+                            .size(48.dp)
+                            .border(
+                                border = BorderStroke(4.dp, color = MaterialTheme.colorScheme.background),
+                                shape = CircleShape,
+                            )
                             .clip(CircleShape),
-                        model = item.icon,
+                        model = item.badgeIcon,
                         contentDescription = ""
-                    )
-                    if (item.badgeIcon != null) {
-                        AsyncImage(
-                            modifier = Modifier
-                                .size(48.dp)
-                                .border(
-                                    border = BorderStroke(
-                                        4.dp,
-                                        color = MaterialTheme.colorScheme.background
-                                    ),
-                                    shape = CircleShape
-                                )
-                                .clip(CircleShape),
-                            model = item.badgeIcon,
-                            contentDescription = ""
-                        )
-                    }
-                }
-
-                Spacer16()
-
-                Text(
-                    text = stringResource(item.title),
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.headlineMedium
-                )
-
-                Text(
-                    modifier = Modifier.padding(vertical = 8.dp, horizontal = 32.dp),
-                    text = if (item.descriptionArgs != null) {
-                        stringResource(item.description, item.descriptionArgs)
-                    } else {
-                        stringResource(item.description)
-                    },
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.bodyMedium,
-                    textAlign = TextAlign.Center
-                )
-
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 16.dp, horizontal = 32.dp),
-                ) {
-                    MainActionButton(
-                        title = stringResource(LR.string.common_learn_more),
-                        onClick = {
-                            item.infoUrl?.let { uriHandler.open(it) }
-                        },
                     )
                 }
             }
+
+            Spacer16()
+
+            Text(
+                text = stringResource(item.title),
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Text(
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = 32.dp),
+                text = if (item.descriptionArgs != null) {
+                    stringResource(item.description, item.descriptionArgs)
+                } else {
+                    stringResource(item.description)
+                },
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodyMedium,
+                textAlign = TextAlign.Center
+            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 16.dp, horizontal = 32.dp),
+            ) {
+                MainActionButton(
+                    title = stringResource(LR.string.common_learn_more),
+                    onClick = {
+                        item.infoUrl?.let { uriHandler.open(it) }
+                    },
+                )
+            }
         }
-    )
+    }
 }

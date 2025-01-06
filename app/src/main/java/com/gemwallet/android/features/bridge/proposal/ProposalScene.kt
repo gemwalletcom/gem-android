@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -26,6 +25,7 @@ import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.reown.walletkit.client.Wallet
 import com.wallet.core.primitives.WalletType
@@ -118,8 +118,6 @@ private fun Proposal(
                 onWalletSelectCancel()
             },
             sheetState = sheetState,
-            dragHandle = { Box {} },
-            containerColor = MaterialTheme.colorScheme.background,
         ) {
             LazyColumn {
                 items(state.wallets) {

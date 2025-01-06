@@ -12,7 +12,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,6 +24,7 @@ import com.gemwallet.android.model.TxSpeed
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIcon16
+import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -34,10 +34,7 @@ fun SelectTxSpeed(
     onSelect: (TxSpeed) -> Unit,
     onCancel: () -> Unit,
 ) {
-    ModalBottomSheet(
-        onDismissRequest = onCancel,
-        containerColor = MaterialTheme.colorScheme.background,
-    ) {
+    ModalBottomSheet(onCancel) {
         Column {
             fee.forEach { item ->
                 TxSpeedView(FeeRateUIModel(item), item.speed == currentSpeed) { onSelect(item.speed) }
