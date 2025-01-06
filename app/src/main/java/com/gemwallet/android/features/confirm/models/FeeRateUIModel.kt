@@ -29,7 +29,7 @@ data class FeeRateUIModel(
         val asset = fee.feeAssetId.chain.asset()
         val feeUnitType = asset.chain().feeUnitType()
         val decimals = when (feeUnitType) {
-            FeeUnitType.SatVb -> 3
+            FeeUnitType.SatVb -> 0
             FeeUnitType.Gwei -> 9
             FeeUnitType.Native -> asset.decimals
             null -> 0
