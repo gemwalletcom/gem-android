@@ -150,7 +150,7 @@ fun getBalanceInfo(uiModel: AssetItemUIModel): @Composable () -> Unit {
             horizontalAlignment = Alignment.End
         ) {
             ListItemTitleText(uiModel.cryptoFormatted, color = color)
-            if (!uiModel.isZeroAmount) {
+            if (!uiModel.isZeroAmount && uiModel.fiatFormatted.isNotEmpty()) {
                 Spacer2()
                 ListItemSupportText(uiModel.fiatFormatted)
             }
