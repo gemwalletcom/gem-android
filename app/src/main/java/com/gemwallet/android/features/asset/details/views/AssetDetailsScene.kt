@@ -31,6 +31,7 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -144,7 +145,7 @@ private fun Success(
     Scene(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = uiState.name, maxLines = 1)
+                Text(text = uiState.name, maxLines = 1, overflow = TextOverflow.MiddleEllipsis)
             }
         },
         actions = {

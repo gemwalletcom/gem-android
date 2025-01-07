@@ -46,7 +46,7 @@ fun ListItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(
-                    modifier = Modifier.fillMaxHeight(),
+                    modifier = Modifier.weight(1.2f).fillMaxHeight(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.Start,
                 ) {

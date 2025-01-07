@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.designsystem.Spacer2
@@ -122,7 +123,10 @@ fun PriceInfo(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
+            modifier = Modifier.weight(1f, false),
             text = price.fiatFormatted,
+            maxLines = 1,
+            overflow = TextOverflow.MiddleEllipsis,
             color = if (isHighlightPercentage) color else MaterialTheme.colorScheme.secondary,
             style = style,
         )

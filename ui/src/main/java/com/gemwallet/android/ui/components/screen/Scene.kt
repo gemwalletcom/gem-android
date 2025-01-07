@@ -25,6 +25,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
@@ -43,7 +44,12 @@ fun Scene(
 ) {
     Scene(
         title = {
-            Text(modifier = Modifier, text = title, maxLines = 1)
+            Text(
+                modifier = Modifier,
+                text = title,
+                maxLines = 1,
+                overflow = TextOverflow.MiddleEllipsis
+            )
         },
         backHandle,
         padding,
