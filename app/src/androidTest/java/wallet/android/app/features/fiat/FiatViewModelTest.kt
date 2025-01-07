@@ -3,7 +3,6 @@ package wallet.android.app.features.fiat
 import app.cash.turbine.test
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
-import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.features.buy.viewmodels.FiatSceneState
 import com.gemwallet.android.features.buy.viewmodels.FiatViewModel
 import io.mockk.mockk
@@ -18,14 +17,12 @@ import org.junit.Test
 class FiatViewModelTest {
 
     private lateinit var viewModel: FiatViewModel
-    private val sessionRepository: SessionRepository = mockk()
     private val assetsRepository: AssetsRepository = mockk()
     private val buyRepository: BuyRepository = mockk()
 
     @Before
     fun setup() {
         viewModel = FiatViewModel(
-            sessionRepository = sessionRepository,
             assetsRepository = assetsRepository,
             buyRepository = buyRepository,
             savedStateHandle = mockk(relaxed = true)
