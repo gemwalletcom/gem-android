@@ -16,6 +16,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.Spacer2
+import com.gemwallet.android.ui.components.designsystem.Stub
 import com.gemwallet.android.ui.components.designsystem.padding12
 import com.gemwallet.android.ui.components.designsystem.padding16
 
@@ -37,7 +40,7 @@ fun ListItem(
             it()
             Spacer(modifier = Modifier.size(padding16))
         }
-        Box(modifier = Modifier.heightIn(72.dp).weight(1f)) {
+        Box(modifier = Modifier.heightIn(72.dp).weight(1f)) { // Used to show correct divider
             Row(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -45,22 +48,26 @@ fun ListItem(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
+                // TODO: On commit time compose correct calculate weight only with >= 3 items in row:
+                // TODO: LEADING | MIDDLE.weight(1) | TRAILING
+                // TODO: weight(1) used to flexible fill middle space
+                // TODO: We add stub item for get 3 items in container
+                // TODO: After change check BuyScreen (random)
+                Stub()
                 Column(
-                    modifier = Modifier.weight(1.2f).fillMaxHeight(),
+                    modifier = Modifier.weight(1f).fillMaxHeight(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.Start,
                 ) {
                     title?.invoke()
                     subtitle?.let {
-                        Spacer(modifier = Modifier.height(2.dp))
+                        Spacer2()
                         it()
                     }
                 }
-                Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
-                    trailing?.let {
-                        Spacer(modifier = Modifier.size(padding16))
-                        it()
-                    }
+                trailing?.let {
+                    Spacer16()
+                    it()
                 }
             }
             if (dividerShowed) {

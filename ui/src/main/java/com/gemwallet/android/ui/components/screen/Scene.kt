@@ -48,7 +48,7 @@ fun Scene(
                 modifier = Modifier,
                 text = title,
                 maxLines = 1,
-                overflow = TextOverflow.MiddleEllipsis
+                overflow = TextOverflow.Ellipsis
             )
         },
         backHandle,
