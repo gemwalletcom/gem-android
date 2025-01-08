@@ -26,7 +26,7 @@ fun cryptoFormat(
         formatter.format(0.00)
     } else {
         formatter.maximumFractionDigits = Int.MAX_VALUE
-        formatter.minimumFractionDigits = 0
+        formatter.minimumFractionDigits = 2
         formatter.format(value.abs())
     }
     val zeroCompare = value.compareTo(BigDecimal.ZERO)
@@ -36,7 +36,7 @@ fun cryptoFormat(
         "$formatted $symbol"
     } else {
         "${if (showSign == SignMode.All) "+" else ""}$formatted $symbol"
-    }
+    }.trimEnd()
 }
 
 fun fiatFormat(
@@ -75,7 +75,7 @@ private fun cutFraction(value: BigDecimal, decimalPlace: Int, dynamicDecimal: Bo
         }
     }
     return if (result <= BigDecimal.ZERO && dynamicDecimal && decimalPlace < fraction.length) {
-        cutFraction(value, decimalPlace + 2, true)
+        cutFraction(value, decimalPlace * 2, true)
     } else {
         Pair(result, decimalPlace)
     }
@@ -138,8 +138,6 @@ class Crypto(atomicValue: BigInteger) : CountingUnit<BigInteger, Fiat>(
 class Fiat(value: BigDecimal) : CountingUnit<BigDecimal, Crypto>(
     atomicValue = value,
 ) {
-    constructor(value: Double) : this(BigDecimal(value))
-
     override fun convert(decimals: Int, price: Double): Crypto {
         val result = atomicValue.divide(price.toBigDecimal(), MathContext.DECIMAL128)
             .multiply(BigDecimal.TEN.pow(decimals))

@@ -26,6 +26,7 @@ interface AssetItemUIModel : CryptoFormattedUIModel, FiatFormattedUIModel {
 @Stable
 class AssetInfoUIModel(
     val assetInfo: AssetInfo,
+    override val fraction: Int = 2,
 ) : AssetItemUIModel {
 
     override val asset: Asset

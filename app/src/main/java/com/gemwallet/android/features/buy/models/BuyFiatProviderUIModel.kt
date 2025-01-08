@@ -16,6 +16,8 @@ data class BuyFiatProviderUIModel(
     val rate: String,
     val redirectUrl: String?,
 ) : CryptoFormattedUIModel {
+    override val fraction: Int = 6
+
     override val cryptoFormatted: String
         get() = "≈ ${super.cryptoFormatted}"
 }
