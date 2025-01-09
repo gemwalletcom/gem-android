@@ -22,11 +22,6 @@ data class StellarAccount (
 )
 
 @Serializable
-data class StellarAccountEmpty (
-	val status: Int
-)
-
-@Serializable
 data class StellarAsset (
 	val asset_code: String,
 	val asset_issuer: String,
@@ -63,12 +58,8 @@ data class StellarNodeStatus (
 
 @Serializable
 data class StellarTransactionBroadcast (
-	val hash: String
-)
-
-@Serializable
-data class StellarTransactionBroadcastError (
-	val title: String
+	val hash: String? = null,
+	val title: String? = null
 )
 
 @Serializable

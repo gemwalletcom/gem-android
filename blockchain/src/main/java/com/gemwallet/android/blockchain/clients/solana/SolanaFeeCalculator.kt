@@ -19,28 +19,28 @@ class SolanaFeeCalculator(
     private val staticBaseFee = 5_000L
     private val tokenAccountSize = 165
 
-    suspend fun calculate(params: ConfirmParams): GasFee = when (params) {
+    suspend fun calculate(params: ConfirmParams): List<GasFee> = when (params) {
         is ConfirmParams.Stake -> calculate(params)
         is ConfirmParams.SwapParams -> calculate(params)
         is ConfirmParams.TokenApprovalParams -> throw IllegalArgumentException("Token approval doesn't support")
         is ConfirmParams.TransferParams -> calculate(params)
     }
 
-    suspend fun calculate(params: ConfirmParams.Stake): GasFee {
+    suspend fun calculate(params: ConfirmParams.Stake): List<GasFee> {
         return calculate(
             gasLimit = 100_000L,
             multipleOf = 10_000L,
         )
     }
 
-    suspend fun calculate(params: ConfirmParams.TransferParams): GasFee {
+    suspend fun calculate(params: ConfirmParams.TransferParams): List<GasFee> {
         return calculate(
             gasLimit = 100_000L,
             multipleOf = if (params.assetId.type() == AssetSubtype.NATIVE) 10_000L else 100_000L,
         )
     }
 
-    suspend fun calculate(params: ConfirmParams.SwapParams): GasFee {
+    suspend fun calculate(params: ConfirmParams.SwapParams): List<GasFee> {
         return calculate(
             gasLimit = 1_400_000L,
             multipleOf = 250_000,
@@ -48,25 +48,35 @@ class SolanaFeeCalculator(
         )
     }
 
-    private suspend fun calculate(gasLimit: Long, multipleOf: Long): GasFee {
+    private suspend fun calculate(gasLimit: Long, multipleOf: Long): List<GasFee> {
         val priorityFees = feeService.getPriorityFees()
-        val minerFee = if (priorityFees.isEmpty()) {
-            multipleOf
-        } else {
-            val averagePriorityFee = priorityFees.map { it.prioritizationFee }.fold(0) { acc, i -> acc + i } / priorityFees.size
-            max(((averagePriorityFee + multipleOf - 1) / multipleOf) * multipleOf, multipleOf)
+
+        return TxSpeed.entries.map { speed ->
+            val speedCoefficient = when (speed) {
+                TxSpeed.Slow -> 0.25f
+                TxSpeed.Normal -> 1f
+                TxSpeed.Fast -> 2f
+            }
+            val minerFee = if (priorityFees.isEmpty()) {
+                multipleOf
+            } else {
+                val averagePriorityFee = priorityFees.map { it.prioritizationFee }
+                    .fold(0) { acc, i -> acc + i } / priorityFees.size
+                max(((averagePriorityFee + multipleOf - 1) / multipleOf) * multipleOf, multipleOf)
+            } * speedCoefficient
+            val tokenAccountCreation = feeService.rentExemption(tokenAccountSize)
+            val totalFee = staticBaseFee + (minerFee * gasLimit / 1_000_000)
+
+            GasFee(
+                feeAssetId = AssetId(Chain.Solana),
+                speed = speed,
+                minerFee = minerFee.toLong().toBigInteger(),
+                maxGasPrice = staticBaseFee.toBigInteger(),
+                limit = gasLimit.toBigInteger(),
+                amount = totalFee.toLong().toBigInteger(),
+                options = mapOf("tokenAccountCreation" to tokenAccountCreation)
+            )
         }
-        val tokenAccountCreation = feeService.rentExemption(tokenAccountSize)
-        val totalFee = staticBaseFee + (minerFee * gasLimit / 1_000_000)
-        return GasFee(
-            feeAssetId = AssetId(Chain.Solana),
-            speed = TxSpeed.Normal,
-            minerFee = minerFee.toBigInteger(),
-            maxGasPrice = staticBaseFee.toBigInteger(),
-            limit = gasLimit.toBigInteger(),
-            amount = totalFee.toBigInteger(),
-            options = mapOf("tokenAccountCreation" to tokenAccountCreation)
-        )
     }
 
 }

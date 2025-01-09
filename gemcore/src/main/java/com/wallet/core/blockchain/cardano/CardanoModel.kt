@@ -72,7 +72,7 @@ data class CardanoTransaction (
 
 @Serializable
 data class CardanoTransactionBroadcast (
-	val submitTransaction: CardanoSubmitTransactionHash
+	val submitTransaction: CardanoSubmitTransactionHash? = null
 )
 
 @Serializable

@@ -2,7 +2,6 @@ package com.gemwallet.android.blockchain.clients.stellar
 
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.stellar.services.StellarAccountService
-import com.gemwallet.android.blockchain.clients.stellar.services.StellarEmptyAccountError
 import com.gemwallet.android.blockchain.clients.stellar.services.StellarFeeService
 import com.gemwallet.android.blockchain.clients.stellar.services.accounts
 import com.gemwallet.android.model.ChainSignData
@@ -30,8 +29,7 @@ class StellarSignPreloadClient(
         val getAccount = async { accountService.accounts(params.from.address) }
         val getIsDestinationAccountExist = async {
             try {
-                accountService.accounts(params.destination.address)
-                true
+                accountService.accounts(params.destination.address) != null
             } catch (_: Throwable) {
                 false
             }

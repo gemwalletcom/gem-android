@@ -5,7 +5,7 @@ import com.gemwallet.android.blockchain.clients.BroadcastClient
 import com.gemwallet.android.blockchain.clients.stellar.services.StellarBroadcastService
 import com.gemwallet.android.blockchain.rpc.ServiceError
 import com.gemwallet.android.blockchain.rpc.responseFold
-import com.wallet.core.blockchain.stellar.StellarTransactionBroadcastError
+import com.wallet.core.blockchain.stellar.StellarTransactionBroadcast
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType
@@ -29,7 +29,7 @@ class StellarBroadcastClient(
             onSuccess = {
                 Result.success(it?.hash ?: throw ServiceError.EmptyHash)
             },
-            onError = { err: StellarTransactionBroadcastError ->
+            onError = { err: StellarTransactionBroadcast ->
                 Result.failure(Exception(err.title))
             },
             onFailure = { cause ->

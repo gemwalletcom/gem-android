@@ -8,13 +8,14 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-data class GraphqlData<T> (
-	val data: T
+data class GraphqlError (
+	val message: String
 )
 
 @Serializable
-data class GraphqlError (
-	val message: String
+data class GraphqlData<T> (
+	val data: T? = null,
+	val errors: List<GraphqlError>? = null
 )
 
 @Serializable
