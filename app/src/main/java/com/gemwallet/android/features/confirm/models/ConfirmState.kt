@@ -11,5 +11,7 @@ sealed interface ConfirmState {
 
     class Error(val message: ConfirmError) : ConfirmState
 
+    class BroadcastError(val message: ConfirmError) : ConfirmState
+
     data object FatalError : ConfirmState
 }

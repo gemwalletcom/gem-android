@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.confirm.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -86,10 +85,7 @@ class ConfirmViewModel @Inject constructor(
     val txSpeed = MutableStateFlow(TxSpeed.Normal)
 
     private val request = savedStateHandle.getStateFlow<String?>(paramsArg, null)
-        .combine(restart) { request, _ ->
-//            Log.d("CONFIRM", "Restart is: $restart")
-            request
-        }
+        .combine(restart) { request, _ -> request }
         .filterNotNull()
         .mapNotNull { paramsPack ->
             val txTypeString = savedStateHandle.get<String?>(txTypeArg)?.urlDecode()
@@ -257,6 +253,7 @@ class ConfirmViewModel @Inject constructor(
         val assetInfo = assetsInfo.value?.getByAssetId(signerParams?.input?.assetId ?: return@launch)
         val feeAssetInfo = feeAssetInfo.value
         val session = sessionRepository.getSession()
+        val txSpeed = txSpeed.value
 
         val broadcastResult = try {
 
@@ -265,15 +262,15 @@ class ConfirmViewModel @Inject constructor(
             }
             validateBalance(
                 signerParams,
-                txSpeed.value,
+                txSpeed,
                 assetInfo,
                 feeAssetInfo,
                 getBalance(assetInfo, signerParams.input),
             )
-            val sign = sign(signerParams, session, assetInfo)
+            val sign = sign(signerParams, session, assetInfo, txSpeed)
             broadcastClientProxy.send(assetInfo.owner, sign, signerParams.input.getTxType())
         } catch (err: ConfirmError) {
-            state.update { ConfirmState.Error(err) }
+            state.update { ConfirmState.BroadcastError(err) }
             return@launch
         }
 
@@ -286,7 +283,7 @@ class ConfirmViewModel @Inject constructor(
                 owner = assetInfo.owner,
                 to = destinationAddress,
                 state = TransactionState.Pending,
-                fee = signerParams.chainData.fee(),
+                fee = signerParams.chainData.fee(txSpeed),
                 amount = signerParams.finalAmount,
                 memo = signerParams.input.memo() ?: "",
                 type = signerParams.input.getTxType(),
@@ -309,15 +306,15 @@ class ConfirmViewModel @Inject constructor(
             }
             state.update { ConfirmState.Result(txHash = txHash) }
         }.onFailure { err ->
-            state.update { ConfirmState.Error(ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
+            state.update { ConfirmState.BroadcastError(ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
         }
     }
 
-    private suspend fun sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo): ByteArray {
+    private suspend fun sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo, txSpeed: TxSpeed): ByteArray {
         val sign = try {
             signClient.signTransfer(
                 params = signerParams,
-                txSpeed = txSpeed.value,
+                txSpeed = txSpeed,
                 privateKey = loadPrivateKeyOperator(
                     session.wallet,
                     assetInfo.id().chain,

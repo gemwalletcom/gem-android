@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -45,6 +47,7 @@ import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
 import com.wallet.core.primitives.TransactionType
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfirmScreen(
     params: ConfirmParams? = null,
@@ -60,6 +63,9 @@ fun ConfirmScreen(
     val allFee by viewModel.allFee.collectAsStateWithLifecycle()
 
     var showSelectTxSpeed by remember { mutableStateOf(false) }
+    var isShowedBroadcastError by remember((state as? ConfirmState.BroadcastError)?.message) {
+        mutableStateOf(state is ConfirmState.BroadcastError)
+    }
 
     DisposableEffect(params.hashCode()) {
         if (params != null) {
@@ -121,6 +127,21 @@ fun ConfirmScreen(
             ) { showSelectTxSpeed = false }
         }
     }
+
+    if (isShowedBroadcastError) {
+        AlertDialog(
+            onDismissRequest = { isShowedBroadcastError = false },
+            confirmButton = {
+                Button({ isShowedBroadcastError = false }) { Text(stringResource(R.string.common_done)) }
+            },
+            title = {
+                Text(stringResource(R.string.errors_transfer_error))
+            },
+            text = {
+                Text((state as? ConfirmState.BroadcastError)?.message?.toLabel() ?: "Unknown error")
+            }
+        )
+    }
 }
 
 @Composable
@@ -155,16 +176,7 @@ private fun ConfirmErrorInfo(state: ConfirmState) {
         }
         Spacer2()
         Text(
-            text = when (state.message) {
-                is ConfirmError.Init,
-                is ConfirmError.TransactionIncorrect,
-                is ConfirmError.PreloadError -> stringResource(R.string.confirm_fee_error)
-                is ConfirmError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_network_fee_balance, state.message.chainTitle)
-                is ConfirmError.InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, state.message.chainTitle)
-                is ConfirmError.BroadcastError ->  "${stringResource(R.string.errors_transfer_error)}: ${state.message.message ?: stringResource(R.string.errors_unknown)}"
-                is ConfirmError.SignFail -> stringResource(R.string.errors_transfer_error)
-                is ConfirmError.None -> stringResource(id = R.string.transfer_confirm)
-            },
+            text = state.message.toLabel(),
             style = MaterialTheme.typography.bodyMedium,
         )
     }
@@ -173,6 +185,7 @@ private fun ConfirmErrorInfo(state: ConfirmState) {
 @Composable
 fun ConfirmState.buttonLabel(): String {
     return when (this) {
+        is ConfirmState.BroadcastError,
         is ConfirmState.Error -> stringResource(R.string.common_try_again)
         ConfirmState.FatalError -> ""
         ConfirmState.Prepare,
@@ -180,4 +193,16 @@ fun ConfirmState.buttonLabel(): String {
         ConfirmState.Sending ->  stringResource(id = R.string.transfer_confirm)
         is ConfirmState.Result -> ""
     }
+}
+
+@Composable
+fun ConfirmError.toLabel() = when (this) {
+    is ConfirmError.Init,
+    is ConfirmError.TransactionIncorrect,
+    is ConfirmError.PreloadError -> stringResource(R.string.confirm_fee_error)
+    is ConfirmError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_network_fee_balance, chainTitle)
+    is ConfirmError.InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, chainTitle)
+    is ConfirmError.BroadcastError ->  "${stringResource(R.string.errors_transfer_error)}: ${message ?: stringResource(R.string.errors_unknown)}"
+    is ConfirmError.SignFail -> stringResource(R.string.errors_transfer_error)
+    is ConfirmError.None -> stringResource(id = R.string.transfer_confirm)
 }
