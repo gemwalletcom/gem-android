@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.confirm.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -85,7 +86,10 @@ class ConfirmViewModel @Inject constructor(
     val txSpeed = MutableStateFlow(TxSpeed.Normal)
 
     private val request = savedStateHandle.getStateFlow<String?>(paramsArg, null)
-        .combine(restart) { request, _ -> request }
+        .combine(restart) { request, _ ->
+//            Log.d("CONFIRM", "Restart is: $restart")
+            request
+        }
         .filterNotNull()
         .mapNotNull { paramsPack ->
             val txTypeString = savedStateHandle.get<String?>(txTypeArg)?.urlDecode()

@@ -75,7 +75,7 @@ class EvmSignClient(
             },
             amount = amount,
             tokenAmount = params.finalAmount,
-            fee = meta.gasFee(),
+            fee = meta.gasFee(txSpeed),
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.input.destination()?.address ?: "",
