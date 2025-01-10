@@ -48,6 +48,7 @@ object TokensModule {
                 ChainType.Algorand,
                 ChainType.Stellar,
                 ChainType.Polkadot,
+                ChainType.Cardano,
                 ChainType.Near -> null
             }
         }

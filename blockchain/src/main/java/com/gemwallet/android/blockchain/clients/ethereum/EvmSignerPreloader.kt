@@ -13,6 +13,7 @@ import com.gemwallet.android.ext.getNetworkId
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
+import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
@@ -69,7 +70,7 @@ class EvmSignerPreloader(
     ) = withContext(Dispatchers.IO) {
         val nonce = feeService.getNonce(from.address)
         val chainId = chain.getNetworkId()
-        val fee = feeCalculator.calculate(
+        val fees = feeCalculator.calculate(
             params = params,
             assetId = assetId,
             recipient = recipient,
@@ -79,7 +80,7 @@ class EvmSignerPreloader(
             nonce = nonce
         )
 
-        SignerParams(params, EvmChainData(chainId, nonce, fee))
+        SignerParams(params, EvmChainData(chainId, nonce, fees))
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
@@ -87,8 +88,10 @@ class EvmSignerPreloader(
     data class EvmChainData(
         val chainId: String,
         val nonce: BigInteger,
-        val fee: Fee,
+        val fees: List<GasFee>,
     ) : ChainSignData {
-        override fun fee(speed: TxSpeed): Fee = fee
+        override fun fee(speed: TxSpeed): Fee = fees.firstOrNull { it.speed == speed } ?: fees.first()
+
+        override fun allFee(): List<Fee> = fees
     }
 }

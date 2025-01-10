@@ -37,8 +37,8 @@ class TestTronBalance {
         val callService = FakeTronCallService()
         val balanceClient = TronBalanceClient(Chain.Tron, accountService, callService, FakeTronStakeService())
         val result = runBlocking { balanceClient.getNativeBalance(Chain.Tron, "TNLmo9j9AuGnnxibQUT13xoMGuUmNwxtkU") }
-        assertEquals("4187b59ec7bb58250533fb8235f9a3f8eec9c1bfe8", accountService.accountRequest?.address)
-        assertTrue(accountService.accountRequest!!.visible)
+        assertEquals("TNLmo9j9AuGnnxibQUT13xoMGuUmNwxtkU", accountService.addressRequest?.address)
+        assertTrue(accountService.addressRequest!!.visible)
         assertNotNull(result)
         assertEquals(AssetId(Chain.Tron), result!!.asset.id)
         assertEquals("1000000", result.balance.available)

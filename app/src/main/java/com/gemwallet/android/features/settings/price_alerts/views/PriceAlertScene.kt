@@ -41,6 +41,7 @@ import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.components.ActionIcon
 import com.gemwallet.android.ui.components.AssetListItem
+import com.gemwallet.android.ui.components.PriceInfo
 import com.gemwallet.android.ui.components.SwipeableItemWithActions
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
@@ -168,7 +169,16 @@ private fun LazyListScope.assets(
                         minActionWidth = with (density) { it.height.toDp() }
                     }
             ) {
-                AssetListItem(item)
+                AssetListItem(
+                    uiModel = item,
+                    support = {
+                        PriceInfo(
+                            price = item.price,
+                            style = MaterialTheme.typography.bodyMedium,
+                            internalPadding = 4.dp
+                        )
+                    }
+                )
             }
         }
     }

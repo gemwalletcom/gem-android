@@ -67,3 +67,15 @@ fun CircularProgressIndicator16(
         color = color,
     )
 }
+
+@Composable
+fun CircularProgressIndicator20(
+    modifier: Modifier = Modifier,
+    color: Color = ProgressIndicatorDefaults.circularColor,
+) {
+    CircularProgressIndicator(
+        modifier = modifier.size(size = 20.dp),
+        strokeWidth = 2.dp,
+        color = color,
+    )
+}

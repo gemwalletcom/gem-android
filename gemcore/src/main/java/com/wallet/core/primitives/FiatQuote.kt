@@ -18,6 +18,12 @@ data class FiatQuote (
 )
 
 @Serializable
+data class FiatQuoteError (
+	val provider: String,
+	val error: String
+)
+
+@Serializable
 data class FiatQuotes (
 	val quotes: List<FiatQuote>
 )

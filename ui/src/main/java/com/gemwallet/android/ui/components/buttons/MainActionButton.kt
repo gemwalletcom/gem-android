@@ -11,23 +11,29 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gemwallet.android.ui.components.designsystem.mainActionHeight
-import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator20
+
+val disableButtonColor = Color(0xFF1742C5)
 
 @Composable
 fun MainActionButton(
     title: String,
     enabled: Boolean = true,
     loading: Boolean = false,
-    colors: ButtonColors = ButtonDefaults.buttonColors(),
+    colors: ButtonColors = ButtonDefaults.buttonColors().copy(
+        disabledContainerColor = disableButtonColor,
+        disabledContentColor = MaterialTheme.colorScheme.onPrimary,
+    ),
     onClick: () -> Unit,
 ) {
     MainActionButton(enabled && !loading, colors, onClick) {
         if (loading) {
-            CircularProgressIndicator16(color = MaterialTheme.colorScheme.onPrimary)
+            CircularProgressIndicator20(color = MaterialTheme.colorScheme.onPrimary)
         } else {
             Text(
                 modifier = Modifier.padding(4.dp),

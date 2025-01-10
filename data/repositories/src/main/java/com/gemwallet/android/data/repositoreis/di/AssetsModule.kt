@@ -4,12 +4,12 @@ import com.gemwallet.android.blockchain.RpcClientAdapter
 import com.gemwallet.android.blockchain.clients.algorand.AlgorandBalanceClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosBalanceClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinBalanceClient
+import com.gemwallet.android.blockchain.clients.cardano.CardanoBalanceClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosBalanceClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmBalanceClient
 import com.gemwallet.android.blockchain.clients.ethereum.SmartchainStakeClient
 import com.gemwallet.android.blockchain.clients.near.NearBalanceClient
 import com.gemwallet.android.blockchain.clients.polkadot.PolkadotBalancesClient
-import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotBalancesService
 import com.gemwallet.android.blockchain.clients.solana.SolanaBalanceClient
 import com.gemwallet.android.blockchain.clients.stellar.StellarBalanceClient
 import com.gemwallet.android.blockchain.clients.sui.SuiBalanceClient
@@ -86,6 +86,7 @@ object AssetsModule {
                 ChainType.Algorand -> AlgorandBalanceClient(it, rpcClients.getClient(it))
                 ChainType.Stellar -> StellarBalanceClient(it, rpcClients.getClient(it))
                 ChainType.Polkadot -> PolkadotBalancesClient(it, rpcClients.getClient(it))
+                ChainType.Cardano -> CardanoBalanceClient(it, rpcClients.getClient(it))
             }
         }
     )

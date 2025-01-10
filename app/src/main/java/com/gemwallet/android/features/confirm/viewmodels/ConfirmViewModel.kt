@@ -253,6 +253,7 @@ class ConfirmViewModel @Inject constructor(
         val assetInfo = assetsInfo.value?.getByAssetId(signerParams?.input?.assetId ?: return@launch)
         val feeAssetInfo = feeAssetInfo.value
         val session = sessionRepository.getSession()
+        val txSpeed = txSpeed.value
 
         val broadcastResult = try {
 
@@ -261,15 +262,15 @@ class ConfirmViewModel @Inject constructor(
             }
             validateBalance(
                 signerParams,
-                txSpeed.value,
+                txSpeed,
                 assetInfo,
                 feeAssetInfo,
                 getBalance(assetInfo, signerParams.input),
             )
-            val sign = sign(signerParams, session, assetInfo)
+            val sign = sign(signerParams, session, assetInfo, txSpeed)
             broadcastClientProxy.send(assetInfo.owner, sign, signerParams.input.getTxType())
         } catch (err: ConfirmError) {
-            state.update { ConfirmState.Error(err) }
+            state.update { ConfirmState.BroadcastError(err) }
             return@launch
         }
 
@@ -282,7 +283,7 @@ class ConfirmViewModel @Inject constructor(
                 owner = assetInfo.owner,
                 to = destinationAddress,
                 state = TransactionState.Pending,
-                fee = signerParams.chainData.fee(),
+                fee = signerParams.chainData.fee(txSpeed),
                 amount = signerParams.finalAmount,
                 memo = signerParams.input.memo() ?: "",
                 type = signerParams.input.getTxType(),
@@ -294,24 +295,26 @@ class ConfirmViewModel @Inject constructor(
                 },
                 blockNumber = signerParams.chainData.blockNumber()
             )
-            state.update { ConfirmState.Result(txHash = txHash) }
             val finishRoute = when (signerParams.input) {
                 is ConfirmParams.Stake -> stakeRoute
                 is ConfirmParams.SwapParams,
                 is ConfirmParams.TokenApprovalParams -> swapRoute
                 is ConfirmParams.TransferParams -> assetRoute
             }
-            viewModelScope.launch(Dispatchers.Main) { finishAction(assetId = assetInfo.id(), hash = txHash, route = finishRoute) }
+            viewModelScope.launch(Dispatchers.Main) {
+                finishAction(assetId = assetInfo.id(), hash = txHash, route = finishRoute)
+            }
+            state.update { ConfirmState.Result(txHash = txHash) }
         }.onFailure { err ->
-            state.update { ConfirmState.Error(ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
+            state.update { ConfirmState.BroadcastError(ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
         }
     }
 
-    private suspend fun sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo): ByteArray {
+    private suspend fun sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo, txSpeed: TxSpeed): ByteArray {
         val sign = try {
             signClient.signTransfer(
                 params = signerParams,
-                txSpeed = txSpeed.value,
+                txSpeed = txSpeed,
                 privateKey = loadPrivateKeyOperator(
                     session.wallet,
                     assetInfo.id().chain,

@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.evm
 
-import com.gemwallet.android.blockchain.clients.TransactionStatusClient
+import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.ethereum.EvmTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmTransactionsService
 import com.gemwallet.android.blockchain.includeLibs
@@ -14,8 +14,6 @@ import junit.framework.TestCase.assertNotNull
 import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import org.junit.experimental.theories.suppliers.TestedOn
-import org.junit.runner.RunWith
 import java.math.BigInteger
 import kotlin.String
 
@@ -49,8 +47,14 @@ class TestEvmTransactionStatusClient {
             }
         )
         val resullt = runBlocking {
-            client.getStatus(Chain.SmartChain, "0x502aECFE253E6AA0e8D2A06E12438FFeD0Fe16a0", "0xe84b29d6f06aeb00ba071a409ff057649f19ebbc209114a6a8135a68af589e22")
-                .getOrNull()
+            client.getStatus(
+                TransactionStateRequest(
+                    Chain.SmartChain,
+                    "0xe84b29d6f06aeb00ba071a409ff057649f19ebbc209114a6a8135a68af589e22",
+                    "",
+                    "0x502aECFE253E6AA0e8D2A06E12438FFeD0Fe16a0",
+                )
+            ).getOrNull()
         }
         assertNotNull(resullt)
         assertEquals(TransactionState.Confirmed, resullt!!.state)
@@ -80,7 +84,15 @@ class TestEvmTransactionStatusClient {
             }
         )
         val resullt = runBlocking {
-            client.getStatus(Chain.SmartChain, "0x502aECFE253E6AA0e8D2A06E12438FFeD0Fe16a0", "0xe84b29d6f06aeb00ba071a409ff057649f19ebbc209114a6a8135a68af589e22")
+            client.getStatus(
+                TransactionStateRequest(
+                    Chain.SmartChain,
+                    "0xe84b29d6f06aeb00ba071a409ff057649f19ebbc209114a6a8135a68af589e22",
+                    "",
+                    "0x502aECFE253E6AA0e8D2A06E12438FFeD0Fe16a0",
+                )
+
+            )
                 .getOrNull()
         }
         assertNotNull(resullt)
@@ -111,7 +123,14 @@ class TestEvmTransactionStatusClient {
             }
         )
         val resullt = runBlocking {
-            client.getStatus(Chain.SmartChain, "0x502aECFE253E6AA0e8D2A06E12438FFeD0Fe16a0", "0xe84b29d6f06aeb00ba071a409ff057649f19ebbc209114a6a8135a68af589e22")
+            client.getStatus(
+                TransactionStateRequest(
+                    Chain.SmartChain,
+                    "0xe84b29d6f06aeb00ba071a409ff057649f19ebbc209114a6a8135a68af589e22",
+                    "",
+                    "0x502aECFE253E6AA0e8D2A06E12438FFeD0Fe16a0",
+                )
+            )
                 .getOrNull()
         }
         assertNotNull(resullt)

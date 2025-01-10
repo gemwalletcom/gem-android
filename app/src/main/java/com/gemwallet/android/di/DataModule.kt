@@ -21,6 +21,10 @@ import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinBroadcastClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinNodeStatusClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinSignClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinSignerPreloader
+import com.gemwallet.android.blockchain.clients.cardano.CardanoBroadcastClient
+import com.gemwallet.android.blockchain.clients.cardano.CardanoNodeStatusClient
+import com.gemwallet.android.blockchain.clients.cardano.CardanoSignClient
+import com.gemwallet.android.blockchain.clients.cardano.CardanoSignerPreloaderClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosBroadcastClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosNodeStatusClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosSignClient
@@ -102,6 +106,7 @@ object DataModule {
                 ChainType.Algorand -> AlgorandBroadcastClient(it, rpcClients.getClient(it))
                 ChainType.Stellar -> StellarBroadcastClient(it, rpcClients.getClient(it))
                 ChainType.Polkadot -> PolkadotBroadcastClient(it, rpcClients.getClient(it))
+                ChainType.Cardano -> CardanoBroadcastClient(it, rpcClients.getClient(it))
             }
         },
     )
@@ -126,6 +131,7 @@ object DataModule {
                 ChainType.Algorand -> AlgorandSignPreloadClient(it, rpcClients.getClient(it))
                 ChainType.Stellar -> StellarSignPreloadClient(it, rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Polkadot -> PolkadotSignerPreloaderClient(it, rpcClients.getClient(it), rpcClients.getClient(it), rpcClients.getClient(it))
+                ChainType.Cardano -> CardanoSignerPreloaderClient(it, rpcClients.getClient(it))
             }
         }
         return SignerPreloaderProxy(
@@ -157,6 +163,7 @@ object DataModule {
                 ChainType.Algorand -> AlgorandSignClient(it)
                 ChainType.Stellar -> StellarSignClient(it)
                 ChainType.Polkadot -> PolkadotSignClient(it)
+                ChainType.Cardano -> CardanoSignClient(it)
             }
         },
     )
@@ -182,6 +189,7 @@ object DataModule {
                     ChainType.Algorand -> AlgorandNodeStatusClient(it, rpcClients.getClient(it))
                     ChainType.Stellar -> StellarNodeStatusClient(it, rpcClients.getClient(it))
                     ChainType.Polkadot -> PolkadotNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.Cardano -> CardanoNodeStatusClient(it, rpcClients.getClient(it))
                 }
             }
         )

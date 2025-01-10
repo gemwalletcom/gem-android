@@ -1,12 +1,12 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
+import com.gemwallet.android.blockchain.clients.aptos.models.aptosErrorCode
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosAccountsService
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosFeeService
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.TxSpeed
-import com.wallet.core.blockchain.aptos.models.AptosErrorCode
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
@@ -27,7 +27,7 @@ internal class AptosFeeCalculator(
             if (result.sequence_number != null) {
                 false
             } else {
-                if (result.error_code == AptosErrorCode.account_not_found.string) {
+                if (result.error_code == aptosErrorCode) {
                     true
                 } else {
                     throw Exception(result.message)

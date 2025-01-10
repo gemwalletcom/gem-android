@@ -34,11 +34,9 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
 import com.gemwallet.android.features.swap.models.SwapItemModel
 import com.gemwallet.android.features.swap.models.SwapItemType
-import com.gemwallet.android.ui.components.image.getIconUrl
-import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding4
-import com.gemwallet.android.ui.components.image.getSupportIconUrl
+import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 
 @Composable
@@ -123,7 +121,7 @@ internal fun SwapItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.End,
             ) {
-                IconWithBadge(item.asset, 36.dp)
+                IconWithBadge(item.asset)
                 Spacer(modifier = Modifier.size(8.dp))
                 Text(
                     text = item.asset.symbol,

@@ -9,6 +9,7 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 data class FiatProvider (
+	val id: String,
 	val name: String,
 	val imageUrl: String
 )

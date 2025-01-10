@@ -8,13 +8,9 @@ interface CryptoFormattedUIModel : CryptoAmountUIModel, AssetUIModel {
         get() = cryptoFormat(
             value = BigDecimal.valueOf(cryptoAmount),
             symbol = asset.symbol,
-            decimalPlace = 6,
+            decimalPlace = fraction,
             dynamicPlace = true
         )
 
-
-//    decimalPlace: Int,
-//    showSign: SignMode = SignMode.NoPLus,
-//    dynamicPlace: Boolean = false,
-//    zeroFraction: Int = 0,
+    val fraction: Int
 }

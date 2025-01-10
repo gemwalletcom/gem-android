@@ -9,7 +9,7 @@ interface PriceUIModel : FiatFormattedUIModel,
         get() {
             val df = DecimalFormat("#.##")
             df.roundingMode = RoundingMode.DOWN
-            val formattedValue = df.format(percentage)
+            val formattedValue = try { df.format(percentage) } catch (_: Throwable) { "0" }
             val afterFormat = df.parse(formattedValue)?.toDouble() ?: 0.0
             return when {
                 afterFormat > 0 -> PriceState.Up

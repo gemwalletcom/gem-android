@@ -113,52 +113,54 @@ fun Chart(
                         }
                     }
                 }
-                CartesianChartHost(
-                    modifier = Modifier.fillMaxWidth().height(200.dp).padding(end = padding4),
-                    diffAnimationSpec = null,
-                    markerVisibilityListener = object : CartesianMarkerVisibilityListener {
-                        override fun onHidden(marker: CartesianMarker) {
-                            price = null
-                        }
-
-                        override fun onShown(
-                            marker: CartesianMarker,
-                            targets: List<CartesianMarker.Target>
-                        ) {
-                            val index = targets.first().x.toInt()
-                            if (index > 0 && index < uiModel.chartPoints.size) {
-                                price = uiModel.chartPoints[index]
+                Box(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+                    CartesianChartHost(
+                        modifier = Modifier.fillMaxWidth().height(200.dp).padding(end = padding4),
+                        diffAnimationSpec = null,
+                        markerVisibilityListener = object : CartesianMarkerVisibilityListener {
+                            override fun onHidden(marker: CartesianMarker) {
+                                price = null
                             }
-                        }
 
-                        override fun onUpdated(
-                            marker: CartesianMarker,
-                            targets: List<CartesianMarker.Target>
-                        ) {
-                            price = uiModel.chartPoints[targets.first().x.toInt()]
-                        }
-                    },
-                    chart = rememberCartesianChart(
-                        rememberLineCartesianLayer(
-                            spacing = 0.1.dp,
-                            lines = listOf(
-                                rememberLineSpec(
-                                    shader = DynamicShader.color(MaterialTheme.colorScheme.primary),
-                                    backgroundShader = null,
+                            override fun onShown(
+                                marker: CartesianMarker,
+                                targets: List<CartesianMarker.Target>
+                            ) {
+                                val index = targets.first().x.toInt()
+                                if (index > 0 && index < uiModel.chartPoints.size) {
+                                    price = uiModel.chartPoints[index]
+                                }
+                            }
+
+                            override fun onUpdated(
+                                marker: CartesianMarker,
+                                targets: List<CartesianMarker.Target>
+                            ) {
+                                price = uiModel.chartPoints[targets.first().x.toInt()]
+                            }
+                        },
+                        chart = rememberCartesianChart(
+                            rememberLineCartesianLayer(
+                                spacing = 0.1.dp,
+                                lines = listOf(
+                                    rememberLineSpec(
+                                        shader = DynamicShader.color(MaterialTheme.colorScheme.primary),
+                                        backgroundShader = null,
+                                    ),
                                 ),
+                                axisValueOverrider = AxisValueOverrider.fixed(minY = min, maxY = max),
                             ),
-                            axisValueOverrider = AxisValueOverrider.fixed(minY = min, maxY = max),
+                            topAxis = rememberTopAxis(
+                                valueFormatter = { value, _, _ -> if (value == maxIndex.toFloat()) uiModel.chartPoints[maxIndex].yLabel ?: "" else "" },
+                            ),
+                            bottomAxis = rememberBottomAxis(
+                                valueFormatter = { value, _, _ -> if (value == minIndex.toFloat()) uiModel.chartPoints[minIndex].yLabel ?: "" else "" }
+                            ),
                         ),
-                        topAxis = rememberTopAxis(
-                            valueFormatter = { value, _, _ -> if (value == maxIndex.toFloat()) uiModel.chartPoints[maxIndex].yLabel ?: "" else "" },
-                        ),
-                        bottomAxis = rememberBottomAxis(
-                            valueFormatter = { value, _, _ -> if (value == minIndex.toFloat()) uiModel.chartPoints[minIndex].yLabel ?: "" else "" }
-                        ),
-                    ),
-                    marker = rememberMarker(labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint),
-                    modelProducer = modelProducer,
-                )
+                        marker = rememberMarker(labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint),
+                        modelProducer = modelProducer,
+                    )
+                }
             }
             Spacer16()
             PeriodsPanel(state.period, viewModel::setPeriod)

@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.stellar.services
 
-import com.gemwallet.android.blockchain.clients.stellar.model.StellarAccount
+import com.gemwallet.android.blockchain.rpc.handleError
+import com.wallet.core.blockchain.stellar.StellarAccount
 import retrofit2.http.GET
 import retrofit2.http.Path
 
@@ -10,5 +11,7 @@ interface StellarAccountService {
 }
 
 suspend fun StellarAccountService.accounts(address: String): StellarAccount? {
-    return loadAccounts(address).getOrNull()
+    val result = loadAccounts(address)
+
+    return result.getOrNull()
 }

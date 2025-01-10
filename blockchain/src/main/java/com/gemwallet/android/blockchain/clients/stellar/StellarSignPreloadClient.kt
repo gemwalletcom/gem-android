@@ -28,8 +28,11 @@ class StellarSignPreloadClient(
     ): SignerParams = withContext(Dispatchers.IO) {
         val getAccount = async { accountService.accounts(params.from.address) }
         val getIsDestinationAccountExist = async {
-            val destAccount = accountService.accounts(params.destination.address)
-            destAccount?.status != 404
+            try {
+                accountService.accounts(params.destination.address) != null
+            } catch (_: Throwable) {
+                false
+            }
         }
         val getDefaultFees = async { feeCalculator.calculate() }
 

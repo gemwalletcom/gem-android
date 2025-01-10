@@ -18,7 +18,7 @@ class AptosSignClient(
     override suspend fun signTransfer(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): ByteArray {
         val coinType = WCChainTypeProxy().invoke(chain)
         val metadata = params.chainData as AptosSignerPreloader.AptosChainData
-        val fee = metadata.gasGee()
+        val fee = metadata.gasFee()
         val signInput = Aptos.SigningInput.newBuilder().apply {
             this.chainId = 1
             when (params.input) {

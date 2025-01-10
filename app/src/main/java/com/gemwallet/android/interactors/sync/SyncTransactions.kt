@@ -27,8 +27,12 @@ class SyncTransactions @Inject constructor(
         val lastSyncTime = getTransactionsCase.getTransactions().firstOrNull()
             ?.maxByOrNull { it.transaction.createdAt }?.transaction?.createdAt ?: 0L
 
-        val txs = gemApiClient.getTransactions(deviceId, wallet.index, lastSyncTime)
-            .getOrNull() ?: return@withContext
+        val txs = try {
+            gemApiClient.getTransactions(deviceId, wallet.index, lastSyncTime)
+                .getOrNull() ?: return@withContext
+        } catch (_: Throwable) {
+            return@withContext
+        }
         prefetchAssets(txs)
 
         putTransactionsCase.putTransactions(walletId = wallet.id, txs.toList())

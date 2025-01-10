@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -16,6 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.Spacer2
+import com.gemwallet.android.ui.components.designsystem.Stub
 import com.gemwallet.android.ui.components.designsystem.padding12
 import com.gemwallet.android.ui.components.designsystem.padding16
 
@@ -37,7 +39,7 @@ fun ListItem(
             it()
             Spacer(modifier = Modifier.size(padding16))
         }
-        Box(modifier = Modifier.heightIn(72.dp).weight(1f)) {
+        Box(modifier = Modifier.heightIn(72.dp).weight(1f)) { // Used to show correct divider
             Row(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -45,21 +47,25 @@ fun ListItem(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Box(modifier = Modifier.weight(1f)) {
-                    Column(
-                        modifier = Modifier.fillMaxHeight(),
-                        verticalArrangement = Arrangement.Center,
-                        horizontalAlignment = Alignment.Start,
-                    ) {
-                        title?.invoke()
-                        subtitle?.let {
-                            Spacer(modifier = Modifier.height(2.dp))
-                            it()
-                        }
+                // TODO: On commit time compose correct calculate weight only with >= 3 items in row:
+                // TODO: LEADING | MIDDLE.weight(1) | TRAILING
+                // TODO: weight(1) used to flexible fill middle space
+                // TODO: We add stub item for get 3 items in container
+                // TODO: After change check BuyScreen (random)
+                Stub()
+                Column(
+                    modifier = Modifier.weight(1f).fillMaxHeight(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.Start,
+                ) {
+                    title?.invoke()
+                    subtitle?.let {
+                        Spacer2()
+                        it()
                     }
                 }
                 trailing?.let {
-                    Spacer(modifier = Modifier.size(padding16))
+                    Spacer16()
                     it()
                 }
             }

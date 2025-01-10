@@ -8,6 +8,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbToken
 import com.gemwallet.android.data.service.store.database.mappers.AssetInfoMapper
 import com.gemwallet.android.data.service.store.database.mappers.TokenMapper
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.ext.assetType
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.Asset
@@ -15,7 +16,6 @@ import com.wallet.core.primitives.AssetFull
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetProperties
 import com.wallet.core.primitives.AssetScore
-import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -36,7 +36,7 @@ class TokensRepository (
     }
 
     override fun getByChains(chains: List<Chain>, query: String): Flow<List<Asset>> {
-        return tokensDao.search(chains.mapNotNull { chain -> getTokenType(chain) }, query)
+        return tokensDao.search(chains.mapNotNull { chain -> chain.assetType() }, query)
             .map { assets -> assets.map(mapper::asEntity) }
     }
 
@@ -46,7 +46,7 @@ class TokensRepository (
         query: String
     ): Flow<List<Asset>> {
         return tokensDao.swapSearch(
-            chains.mapNotNull { chain -> getTokenType(chain) },
+            chains.mapNotNull { chain -> chain.assetType() },
             assetIds.map { it.toIdentifier() },
             query
         )
@@ -113,51 +113,5 @@ class TokensRepository (
                 rank = token.score.rank,
             )
         })
-    }
-
-    private fun getTokenType(chain: Chain) = when (chain) {
-        Chain.SmartChain -> AssetType.BEP20
-        Chain.Base,
-        Chain.AvalancheC,
-        Chain.Polygon,
-        Chain.Arbitrum,
-        Chain.OpBNB,
-        Chain.Manta,
-        Chain.Fantom,
-        Chain.Gnosis,
-        Chain.Optimism,
-        Chain.Blast,
-        Chain.ZkSync,
-        Chain.Linea,
-        Chain.Mantle,
-        Chain.Celo,
-        Chain.World,
-        Chain.Sonic,
-        Chain.Ethereum -> AssetType.ERC20
-
-        Chain.Solana -> AssetType.SPL
-        Chain.Tron -> AssetType.TRC20
-
-        Chain.Aptos,
-        Chain.Sui -> AssetType.TOKEN
-        Chain.Ton -> AssetType.JETTON
-
-        Chain.Cosmos,
-        Chain.Osmosis,
-        Chain.Celestia,
-        Chain.Thorchain,
-        Chain.Injective,
-        Chain.Noble,
-        Chain.Sei -> AssetType.IBC
-
-        Chain.Bitcoin,
-        Chain.Litecoin,
-        Chain.BitcoinCash,
-        Chain.Doge,
-        Chain.Near,
-        Chain.Algorand,
-        Chain.Stellar,
-        Chain.Polkadot,
-        Chain.Xrp -> null
     }
 }

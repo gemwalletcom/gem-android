@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
-import com.gemwallet.android.blockchain.clients.aptos.model.AptosAccount
+import com.gemwallet.android.blockchain.clients.aptos.models.AptosAccount
 import com.wallet.core.blockchain.aptos.models.AptosGasFee
 
 internal val aptosAccountResponse = AptosAccount(

@@ -50,13 +50,15 @@ class TestEthSign {
                     chainData = EvmSignerPreloader.EvmChainData(
                         chainId = "1",
                         nonce = BigInteger.ONE,
-                        fee = GasFee(
-                            maxGasPrice = BigInteger.TEN,
-                            limit = BigInteger("21000"),
-                            minerFee = BigInteger.TEN,
-                            relay = BigInteger.TEN,
-                            speed = TxSpeed.Normal,
-                            feeAssetId = Chain.Ethereum.asset().id,
+                        fees = listOf(
+                            GasFee(
+                                maxGasPrice = BigInteger.TEN,
+                                limit = BigInteger("21000"),
+                                minerFee = BigInteger.TEN,
+                                relay = BigInteger.TEN,
+                                speed = TxSpeed.Normal,
+                                feeAssetId = Chain.Ethereum.asset().id,
+                            )
                         )
                     )
                 ),
@@ -87,13 +89,15 @@ class TestEthSign {
                     chainData = EvmSignerPreloader.EvmChainData(
                         chainId = "1",
                         nonce = BigInteger.ONE,
-                        fee = GasFee(
-                            maxGasPrice = BigInteger.TEN,
-                            limit = BigInteger("91000"),
-                            minerFee = BigInteger.TEN,
-                            relay = BigInteger.TEN,
-                            speed = TxSpeed.Normal,
-                            feeAssetId = Chain.Ethereum.asset().id,
+                        fees = listOf(
+                            GasFee(
+                                maxGasPrice = BigInteger.TEN,
+                                limit = BigInteger("91000"),
+                                minerFee = BigInteger.TEN,
+                                relay = BigInteger.TEN,
+                                speed = TxSpeed.Normal,
+                                feeAssetId = Chain.Ethereum.asset().id,
+                            )
                         )
                     )
                 ),
@@ -131,13 +135,15 @@ class TestEthSign {
                     chainData = EvmSignerPreloader.EvmChainData(
                         chainId = "1",
                         nonce = BigInteger.ONE,
-                        fee = GasFee(
-                            maxGasPrice = BigInteger.TEN,
-                            limit = BigInteger("91000"),
-                            minerFee = BigInteger.TEN,
-                            relay = BigInteger.TEN,
-                            speed = TxSpeed.Normal,
-                            feeAssetId = Chain.Ethereum.asset().id,
+                        fees = listOf(
+                            GasFee(
+                                maxGasPrice = BigInteger.TEN,
+                                limit = BigInteger("91000"),
+                                minerFee = BigInteger.TEN,
+                                relay = BigInteger.TEN,
+                                speed = TxSpeed.Normal,
+                                feeAssetId = Chain.Ethereum.asset().id,
+                            )
                         )
                     )
                 ),
@@ -168,13 +174,15 @@ class TestEthSign {
                     chainData = EvmSignerPreloader.EvmChainData(
                         chainId = "1",
                         nonce = BigInteger.ONE,
-                        fee = GasFee(
-                            maxGasPrice = BigInteger.TEN,
-                            limit = BigInteger("91000"),
-                            minerFee = BigInteger.TEN,
-                            relay = BigInteger.TEN,
-                            speed = TxSpeed.Normal,
-                            feeAssetId = Chain.Ethereum.asset().id,
+                        fees = listOf(
+                            GasFee(
+                                maxGasPrice = BigInteger.TEN,
+                                limit = BigInteger("91000"),
+                                minerFee = BigInteger.TEN,
+                                relay = BigInteger.TEN,
+                                speed = TxSpeed.Normal,
+                                feeAssetId = Chain.Ethereum.asset().id,
+                            )
                         )
                     )
                 ),
@@ -211,13 +219,15 @@ class TestEthSign {
                     chainData = EvmSignerPreloader.EvmChainData(
                         chainId = "1",
                         nonce = BigInteger.ONE,
-                        fee = GasFee(
-                            maxGasPrice = BigInteger.TEN,
-                            limit = BigInteger("91000"),
-                            minerFee = BigInteger.TEN,
-                            relay = BigInteger.TEN,
-                            speed = TxSpeed.Normal,
-                            feeAssetId = Chain.Ethereum.asset().id,
+                        fees = listOf(
+                            GasFee(
+                                maxGasPrice = BigInteger.TEN,
+                                limit = BigInteger("91000"),
+                                minerFee = BigInteger.TEN,
+                                relay = BigInteger.TEN,
+                                speed = TxSpeed.Normal,
+                                feeAssetId = Chain.Ethereum.asset().id,
+                            )
                         )
                     )
                 ),
@@ -253,13 +263,15 @@ class TestEthSign {
                     chainData = EvmSignerPreloader.EvmChainData(
                         chainId = "1",
                         nonce = BigInteger.ONE,
-                        fee = GasFee(
-                            maxGasPrice = BigInteger.TEN,
-                            limit = BigInteger("91000"),
-                            minerFee = BigInteger.TEN,
-                            relay = BigInteger.TEN,
-                            speed = TxSpeed.Normal,
-                            feeAssetId = Chain.SmartChain.asset().id,
+                        fees = listOf(
+                            GasFee(
+                                maxGasPrice = BigInteger.TEN,
+                                limit = BigInteger("91000"),
+                                minerFee = BigInteger.TEN,
+                                relay = BigInteger.TEN,
+                                speed = TxSpeed.Normal,
+                                feeAssetId = Chain.SmartChain.asset().id,
+                            )
                         )
                     )
                 ),

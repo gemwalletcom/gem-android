@@ -88,6 +88,8 @@ android {
             keyPassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
             storeFile = file(System.getenv("ANDROID_KEYSTORE_FILENAME") ?: "release.keystore")
             storePassword = System.getenv("ANDROID_KEYSTORE_PASSWORD")
+            enableV1Signing = true
+            enableV2Signing  = true
         }
     }
 
@@ -130,6 +132,15 @@ android {
         }
 
     }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "/META-INF/LICENSE-notice.md"
+            excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -221,6 +232,8 @@ dependencies {
     testImplementation(libs.androidx.junit.runner)
     testImplementation(libs.androidx.junit.ktx)
     androidTestImplementation(libs.turbine)
+    androidTestImplementation(libs.mockk.android)
+    androidTestImplementation(libs.mockk.agent)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.ui.test.junit4)

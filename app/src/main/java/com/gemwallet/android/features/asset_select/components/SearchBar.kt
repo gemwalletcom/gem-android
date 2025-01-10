@@ -40,7 +40,7 @@ fun SearchBar(
 ) {
     val focusRequester = remember { FocusRequester() }
 
-    Row(modifier = modifier.fillMaxWidth().height(40.dp)) {
+    Row(modifier = modifier.fillMaxWidth().height(42.dp)) {
         Box(modifier = Modifier.fillMaxWidth()) {
             BasicTextField(
                 modifier = Modifier

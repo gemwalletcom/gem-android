@@ -58,6 +58,25 @@ class TestBitcoinBalance {
     }
 
     @Test
+    fun testBitcoincacheBalance() {
+        var requestAddress: String? = null
+        val client = BitcoinBalanceClient(
+            chain = Chain.Bitcoin,
+            balanceService = object : BitcoinBalancesService {
+                override suspend fun balance(address: String): Result<BitcoinAccount> {
+                    requestAddress = address
+                    return Result.success(BitcoinAccount(balance = "100000000"))
+                }
+            }
+        )
+
+        runBlocking {
+            client.getNativeBalance(Chain.BitcoinCash, "qq29xrkkd68alnrca375qlfyhwdqdkevsvmgkq9cmw")
+        }
+        assertEquals("bitcoincash:qq29xrkkd68alnrca375qlfyhwdqdkevsvmgkq9cmw", requestAddress)
+    }
+
+    @Test
     fun testBitcoinBalanceFail() {
         val client = BitcoinBalanceClient(
             chain = Chain.Bitcoin,

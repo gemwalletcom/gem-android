@@ -21,8 +21,8 @@ interface EvmFeeService {
     suspend fun getNonce(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EvmNumber?>>
 }
 
-internal suspend fun EvmFeeService.getFeeHistory(): EthereumFeeHistory? {
-    return getFeeHistory(JSONRpcRequest.create(EvmMethod.GetFeeHistory, listOf("10", "latest", listOf(25))))
+internal suspend fun EvmFeeService.getFeeHistory(rewardPercentiles: List<Int>): EthereumFeeHistory? {
+    return getFeeHistory(JSONRpcRequest.create(EvmMethod.GetFeeHistory, listOf("10", "latest", rewardPercentiles)))
         .getOrNull()?.result
 }
 

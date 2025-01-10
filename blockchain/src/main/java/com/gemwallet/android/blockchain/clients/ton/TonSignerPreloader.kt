@@ -35,7 +35,7 @@ class TonSignerPreloader(
         val getJettonAddress = async { jettonAddress(rpcClient, params.assetId.tokenId!!, params.from.address) }
         val getFee = async { feeCalculator.calculateToken(params.assetId, params.destination().address, params.memo()) }
 
-        val seqno = getWalletInfo.await()?.result?.seqno ?: throw Exception("can't get wallet info. check internet.")
+        val seqno = getWalletInfo.await()?.result?.seqno ?: 0
         val jettonAddress = getJettonAddress.await() ?: throw Exception("can't get jetton address. check internet.")
         val fee = getFee.await()
 

@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.asset_select.viewmodels
 
+import androidx.compose.foundation.text.input.clearText
 import com.gemwallet.android.cases.swap.GetSwapSupportedCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
@@ -18,7 +19,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
@@ -36,6 +36,7 @@ class SwapSelectViewModel @Inject constructor(
     search = SwapSelectSearch(assetsRepository, getSwapSupportedCase)
 ) {
     fun setPair(select: SwapPairSelect) {
+        queryState.clearText()
         (search as? SwapSelectSearch)?.preSetPair?.update { select }
     }
 }
@@ -56,12 +57,13 @@ class SwapSelectSearch(
             .flatMapLatest {
                 val (session, query, pair) = it
                 val wallet = session?.wallet ?: return@flatMapLatest emptyFlow()
-                pair ?: return@flatMapLatest flow { emit(emptyList()) }
-                val supported = getSwapSupportedCase.getSwapSupportChains(pair.oppositeId() ?: return@flatMapLatest emptyFlow())
+                pair ?: return@flatMapLatest emptyFlow()
+                val oppositeId = pair.oppositeId() ?: return@flatMapLatest emptyFlow()
+                val supported = getSwapSupportedCase.getSwapSupportChains(oppositeId)
                 assetsRepository.swapSearch(
                     wallet,
                     query,
-                    listOf(pair.oppositeId()?.toIdentifier() ?: ""),
+                    listOf(oppositeId.toIdentifier()),
                     supported.chains.mapNotNull { item -> Chain.entries.firstOrNull { it.string == item } },
                     supported.assetIds.mapNotNull { it.toAssetId() }
                 )

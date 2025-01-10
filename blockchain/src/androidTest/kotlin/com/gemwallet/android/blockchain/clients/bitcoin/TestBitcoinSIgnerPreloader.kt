@@ -33,21 +33,6 @@ class TestBitcoinSignerPreloader {
     }
 
     @Test
-    fun testBitcoinPriority() {
-        assertEquals(BitcoinFeeCalculator.getFeePriority(Chain.Bitcoin, TxSpeed.Slow), "6")
-        assertEquals(BitcoinFeeCalculator.getFeePriority(Chain.Bitcoin, TxSpeed.Normal), "3")
-        assertEquals(BitcoinFeeCalculator.getFeePriority(Chain.Bitcoin, TxSpeed.Fast), "1")
-
-        assertEquals(BitcoinFeeCalculator.getFeePriority(Chain.Litecoin, TxSpeed.Slow), "6")
-        assertEquals(BitcoinFeeCalculator.getFeePriority(Chain.Litecoin, TxSpeed.Normal), "3")
-        assertEquals(BitcoinFeeCalculator.getFeePriority(Chain.Litecoin, TxSpeed.Fast), "1")
-
-        assertEquals(BitcoinFeeCalculator.getFeePriority(Chain.Doge, TxSpeed.Slow), "8")
-        assertEquals(BitcoinFeeCalculator.getFeePriority(Chain.Doge, TxSpeed.Normal), "4")
-        assertEquals(BitcoinFeeCalculator.getFeePriority(Chain.Doge, TxSpeed.Fast), "2")
-    }
-
-    @Test
     fun testBitcoinPreloader() {
         var requestPubKey = ""
         val preloader = BitcoinSignerPreloader(
@@ -104,19 +89,19 @@ class TestBitcoinSignerPreloader {
         assertEquals("D8UBj4EfNfNWNCdnCSgpY48yZDqPdTZXWW", result.input.destination()?.address)
         assertEquals(null, result.input.memo())
         assertEquals(BigInteger.valueOf(3351936), result.chainData.fee().amount)
-        assertEquals(BigInteger.valueOf(17458), result.chainData.gasGee().maxGasPrice)
-        assertEquals(BigInteger.valueOf(192), result.chainData.gasGee().limit)
+        assertEquals(BigInteger.valueOf(17458), result.chainData.gasFee().maxGasPrice)
+        assertEquals(BigInteger.valueOf(192), result.chainData.gasFee().limit)
         assertEquals(AssetId(Chain.Doge).toIdentifier(), result.chainData.fee().feeAssetId.toIdentifier())
         assertEquals(TxSpeed.Normal, result.chainData.fee().speed)
         assertEquals("9f47e5d5ae3dac0662766f95d0cdda9c242c08d6baac4ce5d82464cf948abd53", (result.chainData as BitcoinSignerPreloader.BitcoinChainData).utxo[0].txid)
         assertEquals(1, (result.chainData as BitcoinSignerPreloader.BitcoinChainData).utxo[0].vout)
         assertEquals("86055170", (result.chainData as BitcoinSignerPreloader.BitcoinChainData).utxo[0].value)
         assertEquals(3, result.chainData.allFee().size)
-        assertEquals(BigInteger.valueOf(192), result.chainData.gasGee(TxSpeed.Fast).limit)
-        assertEquals(BigInteger.valueOf(60357), result.chainData.gasGee(TxSpeed.Fast).maxGasPrice)
-        assertEquals(BigInteger.valueOf(11588544), result.chainData.gasGee(TxSpeed.Fast).amount)
-        assertEquals(BigInteger.valueOf(192), result.chainData.gasGee(TxSpeed.Slow).limit)
-        assertEquals(BigInteger.valueOf(17458), result.chainData.gasGee(TxSpeed.Slow).maxGasPrice)
-        assertEquals(BigInteger.valueOf(3351936), result.chainData.gasGee(TxSpeed.Slow).amount)
+        assertEquals(BigInteger.valueOf(192), result.chainData.gasFee(TxSpeed.Fast).limit)
+        assertEquals(BigInteger.valueOf(60357), result.chainData.gasFee(TxSpeed.Fast).maxGasPrice)
+        assertEquals(BigInteger.valueOf(11588544), result.chainData.gasFee(TxSpeed.Fast).amount)
+        assertEquals(BigInteger.valueOf(192), result.chainData.gasFee(TxSpeed.Slow).limit)
+        assertEquals(BigInteger.valueOf(17458), result.chainData.gasFee(TxSpeed.Slow).maxGasPrice)
+        assertEquals(BigInteger.valueOf(3351936), result.chainData.gasFee(TxSpeed.Slow).amount)
     }
 }

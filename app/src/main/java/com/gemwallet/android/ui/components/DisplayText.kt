@@ -5,6 +5,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 
 @Composable
 fun DisplayText(
@@ -14,6 +15,8 @@ fun DisplayText(
     Text(
         modifier = modifier,
         text = text,
+        overflow = TextOverflow.MiddleEllipsis,
+        maxLines = 1,
         style = MaterialTheme.typography.displaySmall,
         color = MaterialTheme.colorScheme.onSurface,
         textAlign = TextAlign.Center
