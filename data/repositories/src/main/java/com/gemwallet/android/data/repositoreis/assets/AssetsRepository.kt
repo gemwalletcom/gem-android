@@ -292,12 +292,11 @@ class AssetsRepository @Inject constructor(
     fun swapSearch(wallet: Wallet, query: String, exclude: List<String>, byChains: List<Chain>, byAssets: List<AssetId>): Flow<List<AssetInfo>> {
         val walletChains = wallet.accounts.map { it.chain }
         val includeChains = byChains.filter { walletChains.contains(it) }
-        val includeAssetIds = byAssets.filter { walletChains.contains(it.chain) }.map { it.toIdentifier() }
+        val includeAssetIds = byAssets.filter { walletChains.contains(it.chain) }
 
-        val assetsFlow = assetsDao.searchAssetInfo(query, exclude, includeChains, includeAssetIds)
+        val assetsFlow = assetsDao.searchAssetInfo(query, exclude, includeChains, includeAssetIds.map { it.toIdentifier() })
             .map { AssetInfoMapper().asDomain(it) }
-
-        val tokensFlow = getTokensCase.getByChains(includeChains, query)
+        val tokensFlow = getTokensCase.swapSearch(includeChains, includeAssetIds, query)
         return combine(assetsFlow, tokensFlow) { assets, tokens ->
             assets + tokens.mapNotNull { asset ->
                 AssetInfo(

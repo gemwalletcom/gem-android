@@ -46,7 +46,7 @@ class TokensRepository (
         query: String
     ): Flow<List<Asset>> {
         return tokensDao.swapSearch(
-            chains.mapNotNull { chain -> chain.assetType() },
+            chains.map { chain -> chain.string },
             assetIds.map { it.toIdentifier() },
             query
         )
