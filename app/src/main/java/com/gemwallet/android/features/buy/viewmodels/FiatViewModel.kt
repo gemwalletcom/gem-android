@@ -44,7 +44,7 @@ class FiatViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val asset =
-        assetId.flatMapLatest { assetsRepository.getAssetInfo(it) }.map { AssetInfoUIModel(it, 6) }
+        assetId.flatMapLatest { assetsRepository.getAssetInfo(it) }.map { AssetInfoUIModel(it, 6, -1) }
             .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val amountValidator = AmountValidator(

@@ -14,11 +14,12 @@ fun cryptoFormat(
     value: BigDecimal,
     symbol: String,
     decimalPlace: Int,
+    maxDecimals: Int = -1,
     showSign: SignMode = SignMode.NoPLus,
     dynamicPlace: Boolean = false,
     zeroFraction: Int = 0,
 ): String {
-    val (value, _) = cutFraction(value, decimalPlace, dynamicPlace)
+    val (value, _) = cutFraction(value, decimalPlace, maxDecimals, dynamicPlace)
     val formatter = NumberFormat.getInstance(Locale.getDefault()) as DecimalFormat
     val formatted = if (value.compareTo(BigDecimal.ZERO) == 0) {
         formatter.maximumFractionDigits = zeroFraction
@@ -43,16 +44,17 @@ fun fiatFormat(
     value: BigDecimal,
     symbol: String,
     decimalPlace: Int,
+    maxDecimals: Int = -1,
     dynamicPlace: Boolean,
 ): String {
-    val (value, place) = cutFraction(value, decimalPlace, dynamicPlace)
+    val (value, place) = cutFraction(value, decimalPlace, maxDecimals, dynamicPlace)
     val format = NumberFormat.getCurrencyInstance()
     format.maximumFractionDigits = place
     format.currency = Currency.getInstance(symbol)
     return format.format(value)
 }
 
-private fun cutFraction(value: BigDecimal, decimalPlace: Int, dynamicDecimal: Boolean = false): Pair<BigDecimal, Int> {
+private fun cutFraction(value: BigDecimal, decimalPlace: Int, maxDecimals: Int, dynamicDecimal: Boolean = false): Pair<BigDecimal, Int> {
     if (value.compareTo(BigDecimal.ZERO) == 0) {
         return Pair(value, decimalPlace)
     }
@@ -74,8 +76,8 @@ private fun cutFraction(value: BigDecimal, decimalPlace: Int, dynamicDecimal: Bo
             result.multiply(BigDecimal(-1.0))
         }
     }
-    return if (result <= BigDecimal.ZERO && dynamicDecimal && decimalPlace < fraction.length) {
-        cutFraction(value, decimalPlace * 2, true)
+    return if (result <= BigDecimal.ZERO && dynamicDecimal && decimalPlace < fraction.length && (decimalPlace < maxDecimals || maxDecimals == -1)) {
+        cutFraction(value, decimalPlace * 2, maxDecimals, true)
     } else {
         Pair(result, decimalPlace)
     }
@@ -98,6 +100,7 @@ abstract class CountingUnit<T : Number, C>(
         decimals: Int,
         symbol: String,
         decimalPlace: Int,
+        maxDecimals: Int = -1,
         showSign: SignMode = SignMode.NoPLus,
         dynamicPlace: Boolean = false,
         zeroFraction: Int = 0,
@@ -129,10 +132,11 @@ class Crypto(atomicValue: BigInteger) : CountingUnit<BigInteger, Fiat>(
         decimals: Int,
         symbol: String,
         decimalPlace: Int,
+        maxDecimals: Int,
         showSign: SignMode,
         dynamicPlace: Boolean,
         zeroFraction: Int,
-    ): String = cryptoFormat(value(decimals), symbol, decimalPlace, showSign, dynamicPlace, zeroFraction)
+    ): String = cryptoFormat(value(decimals), symbol, decimalPlace, maxDecimals, showSign, dynamicPlace, zeroFraction)
 }
 
 class Fiat(value: BigDecimal) : CountingUnit<BigDecimal, Crypto>(
@@ -151,10 +155,11 @@ class Fiat(value: BigDecimal) : CountingUnit<BigDecimal, Crypto>(
         decimals: Int,
         symbol: String,
         decimalPlace: Int,
+        maxDecimals: Int,
         showSign: SignMode,
         dynamicPlace: Boolean,
         zeroFraction: Int,
-    ): String = fiatFormat(value(0), symbol, decimalPlace, dynamicPlace)
+    ): String = fiatFormat(value(0), symbol, decimalPlace, maxDecimals, dynamicPlace)
 }
 
 fun AssetBalance.format(
@@ -241,6 +246,7 @@ fun AssetBalance.totalStakeFormatted(
 fun Asset.format(
     humanAmount: String,
     decimalPlace: Int = 6,
+    maxDecimals: Int = -1,
     showSign: SignMode = SignMode.NoPLus,
     dynamicPlace: Boolean = false,
     zeroFraction: Int = 0,
@@ -248,6 +254,7 @@ fun Asset.format(
     return format(
         Crypto(humanAmount.toBigDecimal(), decimals),
         decimalPlace,
+        maxDecimals,
         showSign,
         dynamicPlace,
         zeroFraction,
@@ -257,6 +264,7 @@ fun Asset.format(
 fun Asset.format(
     humanAmount: Double,
     decimalPlace: Int = 6,
+    maxDecimals: Int = -1,
     showSign: SignMode = SignMode.NoPLus,
     dynamicPlace: Boolean = false,
     zeroFraction: Int = 0,
@@ -264,6 +272,7 @@ fun Asset.format(
     return format(
         Crypto(humanAmount.toBigDecimal(), decimals),
         decimalPlace,
+        maxDecimals,
         showSign,
         dynamicPlace,
         zeroFraction,
@@ -273,6 +282,7 @@ fun Asset.format(
 fun Asset.format(
     crypto: Crypto,
     decimalPlace: Int = 6,
+    maxDecimals: Int = -1,
     showSign: SignMode = SignMode.NoPLus,
     dynamicPlace: Boolean = false,
     zeroFraction: Int = 0,
@@ -282,6 +292,7 @@ fun Asset.format(
         decimals,
         if (showSymbol) symbol else "",
         decimalPlace,
+        maxDecimals,
         showSign,
         dynamicPlace,
         zeroFraction,
@@ -291,17 +302,20 @@ fun Asset.format(
 fun com.wallet.core.primitives.Currency.format(
     value: Double,
     decimalPlace: Int = 2,
+    maxDecimals: Int = -1,
     dynamicPlace: Boolean = false,
-): String = format(BigDecimal.valueOf(value), decimalPlace, dynamicPlace)
+): String = format(BigDecimal.valueOf(value), decimalPlace, maxDecimals, dynamicPlace)
 
 fun com.wallet.core.primitives.Currency.format(
     value: Float,
     decimalPlace: Int = 2,
+    maxDecimals: Int = -1,
     dynamicPlace: Boolean = false,
-): String = format(BigDecimal.valueOf(value.toDouble()), decimalPlace, dynamicPlace)
+): String = format(BigDecimal.valueOf(value.toDouble()), decimalPlace, maxDecimals, dynamicPlace)
 
 fun com.wallet.core.primitives.Currency.format(
     value: BigDecimal,
     decimalPlace: Int = 2,
+    maxDecimals: Int = -1,
     dynamicPlace: Boolean = false,
-): String = fiatFormat(value, this.string, decimalPlace, dynamicPlace)
+): String = fiatFormat(value, this.string, decimalPlace, maxDecimals, dynamicPlace)

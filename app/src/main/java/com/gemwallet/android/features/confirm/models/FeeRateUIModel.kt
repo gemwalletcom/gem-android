@@ -40,7 +40,7 @@ data class FeeRateUIModel(
             null -> ""
         }
         val value = ((fee as? GasFee)?.maxGasPrice ?: fee.amount)
-        val formattedValue = Crypto(value).format(decimals, symbol, 6, SignMode.NoSign, true)
+        val formattedValue = Crypto(value).format(decimals, symbol, 6, -1, SignMode.NoSign, true)
         return formattedValue
     }
 }
