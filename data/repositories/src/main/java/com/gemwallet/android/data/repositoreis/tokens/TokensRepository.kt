@@ -74,7 +74,7 @@ class TokensRepository (
             }
             .awaitAll()
             .mapNotNull { it }
-            .map { AssetFull(asset = it, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false)) }
+            .map { AssetFull(asset = it, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false, false)) }
             addTokens(assets)
             assets
         } else {
@@ -93,7 +93,7 @@ class TokensRepository (
         if (asset == null) {
             return search(tokenId)
         }
-        addTokens(listOf(AssetFull(asset, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false))))
+        addTokens(listOf(AssetFull(asset, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false, false))))
         return true
     }
 

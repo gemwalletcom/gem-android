@@ -6,6 +6,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import java.math.BigInteger
 
-class PolkadorFeeCalculator {
+class PolkadotFeeCalculator {
     fun calculate(): Fee = Fee(speed = TxSpeed.Normal, feeAssetId = AssetId(Chain.Polkadot), amount = BigInteger.ONE)
 }

@@ -9,6 +9,7 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 data class AssetProperties (
+	val isEnabled: Boolean,
 	val isBuyable: Boolean,
 	val isSellable: Boolean,
 	val isSwapable: Boolean,
@@ -21,37 +22,6 @@ data class AssetBasic (
 	val asset: Asset,
 	val properties: AssetProperties,
 	val score: AssetScore
-)
-
-@Serializable
-data class AssetLinks (
-	val homepage: String? = null,
-	val explorer: String? = null,
-	val twitter: String? = null,
-	val telegram: String? = null,
-	val github: String? = null,
-	val youtube: String? = null,
-	val facebook: String? = null,
-	val reddit: String? = null,
-	val coingecko: String? = null,
-	val coinmarketcap: String? = null,
-	val discord: String? = null
-)
-
-@Serializable
-data class AssetDetails (
-	val links: AssetLinks,
-	val isBuyable: Boolean,
-	val isSellable: Boolean,
-	val isSwapable: Boolean,
-	val isStakeable: Boolean,
-	val stakingApr: Double? = null
-)
-
-@Serializable
-data class AssetDetailsInfo (
-	val details: AssetDetails,
-	val market: AssetMarket
 )
 
 @Serializable
