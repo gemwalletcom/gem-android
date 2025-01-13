@@ -204,7 +204,7 @@ private fun Success(
                             onSwap = if (uiState.isSwapEnabled && uiState.account.walletType != WalletType.view) {
                                 {
                                     val toAssetId = if (uiState.asset.type == AssetType.NATIVE) {
-                                        AssetId(Chain.Ethereum)
+                                        null
                                     } else {
                                         uiState.asset.id.chain.asset().id
                                     }

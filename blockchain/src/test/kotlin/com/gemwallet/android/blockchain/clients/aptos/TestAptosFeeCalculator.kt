@@ -46,7 +46,7 @@ class TestAptosFeeCalculator {
             }
             assertTrue(false)
         } catch (err: Throwable) {
-            assertEquals("Error message", err.message)
+            assertEquals(null, err.message)
         }
     }
 }

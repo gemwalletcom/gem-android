@@ -31,11 +31,11 @@ class TestSolanaFeeCalculation {
                 ).transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh"))
             )
         }
-        assertEquals(BigInteger("105005000"), result.amount)
-        assertEquals(BigInteger("1050000000"), result.minerFee)
-        assertEquals(BigInteger("5000"), result.maxGasPrice)
-        assertEquals(BigInteger("100000"), result.limit)
-        assertEquals(BigInteger("30"), result.options["tokenAccountCreation"])
+        assertEquals(BigInteger("105005000"), result[1].amount)
+        assertEquals(BigInteger("1050000000"), result[1].minerFee)
+        assertEquals(BigInteger("5000"), result[1].maxGasPrice)
+        assertEquals(BigInteger("100000"), result[1].limit)
+        assertEquals(BigInteger("30"), result[1].options["tokenAccountCreation"])
     }
 
     @Test
@@ -51,11 +51,11 @@ class TestSolanaFeeCalculation {
                 ).transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh"))
             )
         }
-        assertEquals(BigInteger("6000"), result.amount)
-        assertEquals(BigInteger("10000"), result.minerFee)
-        assertEquals(BigInteger("5000"), result.maxGasPrice)
-        assertEquals(BigInteger("100000"), result.limit)
-        assertEquals(BigInteger("30"), result.options["tokenAccountCreation"])
+        assertEquals(BigInteger("6000"), result[1].amount)
+        assertEquals(BigInteger("10000"), result[1].minerFee)
+        assertEquals(BigInteger("5000"), result[1].maxGasPrice)
+        assertEquals(BigInteger("100000"), result[1].limit)
+        assertEquals(BigInteger("30"), result[1].options["tokenAccountCreation"])
     }
 
     @Test
@@ -71,11 +71,11 @@ class TestSolanaFeeCalculation {
                 ).transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh"))
             )
         }
-        assertEquals(BigInteger("6000"), result.amount)
-        assertEquals(BigInteger("10000"), result.minerFee)
-        assertEquals(BigInteger("5000"), result.maxGasPrice)
-        assertEquals(BigInteger("100000"), result.limit)
-        assertEquals(BigInteger("0"), result.options["tokenAccountCreation"])
+        assertEquals(BigInteger("6000"), result[1].amount)
+        assertEquals(BigInteger("10000"), result[1].minerFee)
+        assertEquals(BigInteger("5000"), result[1].maxGasPrice)
+        assertEquals(BigInteger("100000"), result[1].limit)
+        assertEquals(BigInteger("0"), result[1].options["tokenAccountCreation"])
     }
 
     @Test
@@ -91,10 +91,10 @@ class TestSolanaFeeCalculation {
                 ).transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh"))
             )
         }
-        assertEquals(BigInteger("15000"), result.amount)
-        assertEquals(BigInteger("100000"), result.minerFee)
-        assertEquals(BigInteger("5000"), result.maxGasPrice)
-        assertEquals(BigInteger("100000"), result.limit)
-        assertEquals(BigInteger("30"), result.options["tokenAccountCreation"])
+        assertEquals(BigInteger("15000"), result[1].amount)
+        assertEquals(BigInteger("100000"), result[1].minerFee)
+        assertEquals(BigInteger("5000"), result[1].maxGasPrice)
+        assertEquals(BigInteger("100000"), result[1].limit)
+        assertEquals(BigInteger("30"), result[1].options["tokenAccountCreation"])
     }
 }
