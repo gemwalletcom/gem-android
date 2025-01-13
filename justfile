@@ -7,11 +7,7 @@ bootstrap: install-rust install-toolchains install-ndk install-wallet-core
 
 install-rust:
     @echo Install Rust
-    @which rustup &>/dev/null || curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
-    @source ~/.cargo/env
-    @rustc --version
-    @which just &>/dev/null || cargo install just
-    @just --version
+    just core install-rust
 
 install-toolchains:
     @echo Install toolchains for uniffi
