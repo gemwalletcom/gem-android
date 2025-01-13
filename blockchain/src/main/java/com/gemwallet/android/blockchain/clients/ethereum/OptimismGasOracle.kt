@@ -32,6 +32,7 @@ class OptimismGasOracle(
         baseFee: BigInteger,
         priorityFee: BigInteger,
         gasLimit: BigInteger,
+        txSpeed: TxSpeed,
     ): GasFee = withContext(Dispatchers.IO) {
         val assetId = params.assetId
         val feeAssetId = AssetId(assetId.chain)
@@ -75,7 +76,7 @@ class OptimismGasOracle(
         val l1Fee = getL1Fee(encoded) ?: throw IllegalStateException("Can't get L1 Fee")
         GasFee(
             feeAssetId = feeAssetId,
-            speed = TxSpeed.Normal,
+            speed = txSpeed,
             maxGasPrice = gasPrice,
             minerFee = minerFee,
             limit = gasLimit,

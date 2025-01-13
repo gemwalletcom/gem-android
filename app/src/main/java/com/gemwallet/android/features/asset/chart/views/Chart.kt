@@ -94,26 +94,27 @@ fun Chart(
                 )
             }
             Spacer16()
-            if (state.loading || state.period != uiModel.period) {
-                Box(modifier = Modifier.fillMaxWidth().height(200.dp)) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center), strokeWidth = 1.dp)
-                }
-            } else if (points.isEmpty()) {
-                Spacer16()
-            } else {
-                LaunchedEffect(uiModel.period) {
-                    withContext(Dispatchers.Default) {
-                        modelProducer.tryRunTransaction {
-                            lineSeries {
-                                series(
-                                    x = List(points.size) { index -> index },
-                                    y = points,
-                                )
+            Box(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+                if (state.loading || state.period != uiModel.period) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        strokeWidth = 1.dp
+                    )
+                } else if (points.isEmpty()) {
+                    Spacer16()
+                } else {
+                    LaunchedEffect(uiModel.period) {
+                        withContext(Dispatchers.Default) {
+                            modelProducer.tryRunTransaction {
+                                lineSeries {
+                                    series(
+                                        x = List(points.size) { index -> index },
+                                        y = points,
+                                    )
+                                }
                             }
                         }
                     }
-                }
-                Box(modifier = Modifier.fillMaxWidth().height(200.dp)) {
                     CartesianChartHost(
                         modifier = Modifier.fillMaxWidth().height(200.dp).padding(end = padding4),
                         diffAnimationSpec = null,
@@ -148,13 +149,22 @@ fun Chart(
                                         backgroundShader = null,
                                     ),
                                 ),
-                                axisValueOverrider = AxisValueOverrider.fixed(minY = min, maxY = max),
+                                axisValueOverrider = AxisValueOverrider.fixed(
+                                    minY = min,
+                                    maxY = max
+                                ),
                             ),
                             topAxis = rememberTopAxis(
-                                valueFormatter = { value, _, _ -> if (value == maxIndex.toFloat()) uiModel.chartPoints[maxIndex].yLabel ?: "" else "" },
+                                valueFormatter = { value, _, _ ->
+                                    if (value == maxIndex.toFloat()) uiModel.chartPoints[maxIndex].yLabel
+                                        ?: "" else ""
+                                },
                             ),
                             bottomAxis = rememberBottomAxis(
-                                valueFormatter = { value, _, _ -> if (value == minIndex.toFloat()) uiModel.chartPoints[minIndex].yLabel ?: "" else "" }
+                                valueFormatter = { value, _, _ ->
+                                    if (value == minIndex.toFloat()) uiModel.chartPoints[minIndex].yLabel
+                                        ?: "" else ""
+                                }
                             ),
                         ),
                         marker = rememberMarker(labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint),

@@ -16,19 +16,18 @@ import com.wallet.core.primitives.FiatQuote
 import com.wallet.core.primitives.FiatTransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.mapNotNull
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -80,19 +79,48 @@ class FiatViewModel @Inject constructor(
     private val _amount = MutableStateFlow("")
     val amount: StateFlow<String> get() = _amount
 
-    init {
-        setDefaultAmount()
-        observeAmountUpdates()
-    }
-
     private val _state = MutableStateFlow<FiatSceneState?>(null)
-    val state: StateFlow<FiatSceneState?> get() = _state
 
+    val state: StateFlow<FiatSceneState?> get() = _state
     private val _selectedQuote = MutableStateFlow<FiatQuote?>(null)
+
     val selectedQuote: StateFlow<FiatQuote?> get() = _selectedQuote
 
-    private val _quotes = MutableStateFlow<List<FiatQuote>>(emptyList())
-    val quotes: StateFlow<List<FiatQuote>> get() = _quotes
+    @OptIn(ExperimentalCoroutinesApi::class)
+    val quotes = asset.combine(amount) { asset, amount -> Pair(asset, amount) }
+        .mapLatest {
+            val asset = it.first ?: return@mapLatest emptyList()
+            val amount = it.second
+            if (!amountValidator.validate(amount)) {
+                _state.value = FiatSceneState.Error(amountValidator.error)
+                return@mapLatest emptyList()
+            } else {
+                _state.value = FiatSceneState.Loading
+            }
+            val result = try {
+                val quotes = buyRepository.getBuyQuotes(
+                    asset.asset,
+                    currency.string,
+                    amount.numberParse().toDouble(),
+                    asset.assetInfo.owner.address
+                ).getOrNull()
+                if (quotes == null) {
+                    _state.value = FiatSceneState.Error(BuyError.QuoteNotAvailable)
+                    return@mapLatest emptyList()
+                }
+                _state.value = null
+                quotes.sortedByDescending { quote -> quote.cryptoAmount }
+            } catch (_: Exception) {
+                _state.value = FiatSceneState.Error(BuyError.QuoteNotAvailable)
+                emptyList()
+            }
+            result
+        }
+        .onEach { quotes ->
+            _selectedQuote.update { quotes.firstOrNull() }
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
 
     val providers = combine(asset.filterNotNull(), quotes) { asset, quotes ->
         quotes.map { quote ->
@@ -106,45 +134,12 @@ class FiatViewModel @Inject constructor(
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    init {
+        setDefaultAmount()
+    }
+
     private fun setDefaultAmount() {
         _amount.value = defaultAmount
-    }
-
-    @OptIn(FlowPreview::class)
-    private fun observeAmountUpdates() = viewModelScope.launch {
-        _amount.debounce(500).map { newAmount ->
-            if (!amountValidator.validate(newAmount)) {
-                FiatSceneState.Error(amountValidator.error)
-            } else {
-                FiatSceneState.Loading
-            }
-        }.collect { state ->
-            _state.value = state
-            if (state is FiatSceneState.Loading) {
-                fetchQuotes()
-            }
-        }
-    }
-
-    private fun fetchQuotes() = viewModelScope.launch {
-        val asset = asset.value ?: return@launch
-        try {
-            buyRepository.getBuyQuotes(
-                asset.asset,
-                currency.string,
-                amount.value.numberParse().toDouble(),
-                asset.assetInfo.owner.address
-            ).onSuccess { result ->
-                val sortedResult = result.sortedByDescending { quote -> quote.cryptoAmount }
-                _selectedQuote.update { sortedResult.firstOrNull() }
-                _quotes.update { sortedResult }
-                _state.value = null
-            }.onFailure {
-                _state.value = FiatSceneState.Error(BuyError.QuoteNotAvailable)
-            }
-        } catch (e: Exception) {
-            _state.value = FiatSceneState.Error(BuyError.QuoteNotAvailable)
-        }
     }
 
     fun updateAmount(newAmount: String) {
@@ -165,7 +160,7 @@ class FiatViewModel @Inject constructor(
     }
 
     fun setProvider(provider: FiatProvider) {
-        _selectedQuote.value = _quotes.value.firstOrNull { it.provider.name == provider.name }
+        _selectedQuote.value = quotes.value.firstOrNull { it.provider.name == provider.name }
     }
 
     private fun randomAmount(maxAmount: Double = 1000.0): Int {

@@ -128,7 +128,6 @@ private fun BuyScene(
                 support = {
                     ListItemSupportText(asset.cryptoFormatted)
                 },
-                badge = if (asset.asset.symbol == asset.asset.name) null else asset.asset.symbol,
                 dividerShowed = false,
                 trailing = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -137,7 +136,6 @@ private fun BuyScene(
                                 FiatSuggestion.RandomAmount -> RandomGradientButton(
                                     onClick = { onLotSelect(FiatSuggestion.RandomAmount) }
                                 )
-
                                 is FiatSuggestion.SuggestionAmount,
                                 is FiatSuggestion.SuggestionPercent -> {
                                     LotButton(

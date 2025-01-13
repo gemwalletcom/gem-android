@@ -97,7 +97,7 @@ class SwapViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val assetsState = swapPairState.flatMapLatest { ids ->
-        if (ids?.fromId == null || ids.toId == null || ids.fromId.toIdentifier() == ids.toId.toIdentifier()) {
+        if (ids?.fromId == null || ids.toId == null) {
             return@flatMapLatest emptyFlow()
         }
         assetsRepository.getAssetsInfo(listOf(ids.fromId, ids.toId))

@@ -90,6 +90,14 @@ object ClientsModule {
         .addInterceptor(HttpLoggingInterceptor().apply {
             setLevel(HttpLoggingInterceptor.Level.BODY)
         })
+        .addNetworkInterceptor { chain ->
+            chain.proceed(
+                chain.request()
+                    .newBuilder()
+                    .header("User-Agent", "Gem/Android")
+                    .build()
+            )
+        }
         .build()
 
     @NodeHttpClient

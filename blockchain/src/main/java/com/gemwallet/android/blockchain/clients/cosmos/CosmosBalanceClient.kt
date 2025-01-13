@@ -29,7 +29,8 @@ class CosmosBalanceClient(
             ?.reduceOrNull { acc, value -> acc + value} ?: BigInteger.ZERO
 
         when (chain) {
-            Chain.Thorchain -> {
+            Chain.Thorchain,
+            Chain.Noble -> {
                 AssetBalance.create(chain.asset(), available =  balance.toString())
             }
             else -> {

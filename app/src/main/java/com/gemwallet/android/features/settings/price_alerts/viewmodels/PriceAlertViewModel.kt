@@ -11,6 +11,7 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PriceAlert
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,8 +29,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PriceAlertViewModel @Inject constructor(
-    assetsRepository: AssetsRepository,
     getPriceAlertsCase: GetPriceAlertsCase,
+    private val assetsRepository: AssetsRepository,
     val sessionRepository: SessionRepository,
     private val enablePriceAlertCase: EnablePriceAlertCase,
     private val putPriceAlertCase: PutPriceAlertCase,
@@ -48,6 +49,10 @@ class PriceAlertViewModel @Inject constructor(
     .map { it.map { AssetInfoUIModel(it) } }
     .combine(forceSync) { items, sync ->
         viewModelScope.launch(Dispatchers.IO) {
+            assetsRepository.updatePrices(
+                sessionRepository.getSession()?.currency ?: Currency.USD,
+                *items.map { it.asset.id }.toTypedArray()
+            )
             delay(300)
             forceSync.update { false }
         }
@@ -76,6 +81,7 @@ class PriceAlertViewModel @Inject constructor(
     }
 
     fun addAsset(assetId: AssetId) = viewModelScope.launch {
+        assetsRepository.updatePrices(sessionRepository.getSession()?.currency ?: return@launch, assetId)
         putPriceAlertCase.putPriceAlert(PriceAlert(assetId.toIdentifier()))
     }
 }

@@ -70,6 +70,8 @@ fun SwapScreen(
 
     var approveParams by rememberSaveable { mutableStateOf<ConfirmParams?>(null) }
     val pair = pairState
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     BackHandler(selectState != null) {
         if (approveParams != null) {
             approveParams = null
@@ -107,7 +109,10 @@ fun SwapScreen(
                 item = pair.from,
                 equivalent = fromEquivalent,
                 state = viewModel.fromValue,
-                onAssetSelect = viewModel::changePair
+                onAssetSelect = {
+                    keyboardController?.hide()
+                    viewModel.changePair(it)
+                }
             )
             IconButton(onClick = viewModel::switchSwap) {
                 Icon(
@@ -121,7 +126,10 @@ fun SwapScreen(
                 equivalent = toEquivalent,
                 state = viewModel.toValue,
                 calculating = swapState == SwapState.GetQuote,
-                onAssetSelect = viewModel::changePair
+                onAssetSelect = {
+                    keyboardController?.hide()
+                    viewModel.changePair(it)
+                }
             )
             Spacer16()
             val tx = approveTx

@@ -61,22 +61,13 @@ class ResultCall<T>(val delegate: Call<T>) : Call<Result<T>> {
             }
             Response.success(response.code(), result)
         } else {
-            when (response.code()) {
-                404 -> Response.success(Result.failure(HttpError.NotFound404()))
-                else -> {
-                    val errorBody = response.errorBody()?.string()
-                    if (errorBody == null) {
-                        Response.success(Result.failure(HttpException(response)))
-                    } else {
-                        Response.success(Result.failure(Exception(errorBody)))
-                    }
-                }
+            val errorBody = response.errorBody()?.string()
+            if (errorBody == null) {
+                Response.success(Result.failure(HttpException(response)))
+            } else {
+                Response.success(Result.failure(Exception(errorBody)))
             }
 
         }
     }
-}
-
-sealed class HttpError(errorBody: String?, cause: Throwable?) : Exception(errorBody, cause) {
-    class NotFound404() : HttpError(null, null)
 }

@@ -51,14 +51,20 @@ class EvmFeeCalculator(
         val (baseFee, priorityFees) = getBasePriorityFees.await()
 
         if (params.assetId.chain.toEVM()?.isOpStack() == true) {
-            return@withContext priorityFees.map {
+            return@withContext priorityFees.mapIndexed { index, priorityFee ->
                 optimismGasOracle.estimate(
                     params = params,
                     chainId = chainId,
                     nonce = nonce,
                     gasLimit = gasLimit,
                     baseFee = baseFee,
-                    priorityFee = it,
+                    priorityFee = priorityFee,
+                    txSpeed = when (index) {
+                        0 -> TxSpeed.Slow
+                        1 -> TxSpeed.Normal
+                        2 -> TxSpeed.Fast
+                        else -> TxSpeed.Normal
+                    }
                 )
             }
         }
