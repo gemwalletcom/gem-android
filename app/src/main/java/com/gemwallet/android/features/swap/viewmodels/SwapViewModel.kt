@@ -151,7 +151,16 @@ class SwapViewModel @Inject constructor(
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    private val quote  = combine(fromValueFlow, assetsState, approveTx) { fromValue, assets, tx ->
+    private val refreshTimer = flow {
+        while (true) {
+            delay(30 * 1000)
+            emit(System.currentTimeMillis())
+        }
+    }
+    .flowOn(Dispatchers.IO)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
+    private val quote  = combine(fromValueFlow, assetsState, approveTx, refreshTimer) { fromValue, assets, tx, _ ->
         Triple(fromValue, assets, tx)
     }.mapLatest { data ->
         val assets = data.second
