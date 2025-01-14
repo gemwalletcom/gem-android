@@ -23,6 +23,9 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import wallet.core.jni.PrivateKey
 
 class PhraseAddressImportWalletOperator(
@@ -37,10 +40,10 @@ class PhraseAddressImportWalletOperator(
     private val addressStatusClients: AddressStatusClientProxy,
     private val addBannerCase: AddBannerCase,
 ) : ImportWalletOperator {
-    override suspend fun invoke(
+    override suspend fun importWallet(
         importType: ImportType,
         walletName: String,
-        data: String,
+        data: String
     ): Result<Wallet> {
         val result = when (importType.walletType) {
             WalletType.multicoin -> handlePhrase(importType, walletName, data)
@@ -52,11 +55,25 @@ class PhraseAddressImportWalletOperator(
             return result
         }
         val wallet = result.getOrNull() ?: return Result.failure(Exception("Unknown error"))
+
         syncSubscriptionCase.syncSubscription(listOf(wallet))
-        assetsRepository.invalidateDefault(wallet, sessionRepository.getSession()?.currency ?: Currency.USD)
+        assetsRepository.createAssets(wallet)
+        assetsRepository.importAssets(wallet, sessionRepository.getSession()?.currency ?: Currency.USD)
         checkAddresses(wallet)
         sessionRepository.setWallet(wallet)
         return Result.success(wallet)
+    }
+
+    override suspend fun createWallet(walletName: String, data: String): Result<Wallet> = withContext(Dispatchers.IO) {
+        val result = handlePhrase(ImportType(WalletType.multicoin), walletName, data)
+        if (result.isFailure) return@withContext result
+
+        val wallet = result.getOrNull() ?: return@withContext Result.failure(Exception("Unknown error"))
+
+        async { syncSubscriptionCase.syncSubscription(listOf(wallet)) }
+        assetsRepository.createAssets(wallet)
+        sessionRepository.setWallet(wallet)
+        Result.success(wallet)
     }
 
     private suspend fun handlePhrase(importType: ImportType, walletName: String, rawData: String): Result<Wallet> {
@@ -115,7 +132,7 @@ class PhraseAddressImportWalletOperator(
 
     private suspend fun checkAddresses(wallet: Wallet) {
         wallet.accounts.forEach {
-            val statuses = addressStatusClients.getAddressStatus(it.chain, it.address) ?: emptyList()
+            val statuses = addressStatusClients.getAddressStatus(it.chain, it.address)
             for (status in statuses) {
                 if (status == AddressStatus.MultiSignature) {
                     addBannerCase.addBanner(

@@ -60,10 +60,10 @@ class ImportViewModel @Inject constructor(
     ) = viewModelScope.launch {
         state.update { it.copy(loading = true) }
         withContext(Dispatchers.IO) {
-            importWalletOperator(
+            importWalletOperator.importWallet(
                 importType = state.value.importType,
                 walletName = name.ifEmpty { generatedName },
-                data = if (nameRecord?.address.isNullOrEmpty()) data.trim() else nameRecord!!.address,
+                data = if (nameRecord?.address.isNullOrEmpty()) data.trim() else nameRecord.address,
             )
         }.onFailure {  err ->
             state.update { it.copy(dataError = (err as? ImportError) ?: ImportError.CreateError("Unknown error"), loading = false) }

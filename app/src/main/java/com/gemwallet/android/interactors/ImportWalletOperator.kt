@@ -4,8 +4,13 @@ import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.wallet.core.primitives.Wallet
 
 interface ImportWalletOperator {
-    suspend operator fun invoke(
+    suspend fun importWallet(
         importType: ImportType,
+        walletName: String,
+        data: String,
+    ): Result<Wallet>
+
+    suspend fun createWallet(
         walletName: String,
         data: String,
     ): Result<Wallet>

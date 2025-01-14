@@ -63,7 +63,7 @@ class CreateWalletViewModel @Inject constructor(
         viewModelScope.launch {
             val newState = withContext(Dispatchers.IO) {
                 val phrase = state.value.data.joinToString(" ")
-                importWalletOperator(ImportType(WalletType.multicoin), state.value.name, phrase)
+                importWalletOperator.createWallet(state.value.name, phrase)
             }.fold(
                 onSuccess = {
                     onCreated()
