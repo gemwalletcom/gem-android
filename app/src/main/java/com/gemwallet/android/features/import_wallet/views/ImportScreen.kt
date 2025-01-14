@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +20,7 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -118,7 +121,7 @@ private fun ImportScene(
     onTypeChange: (WalletType) -> Unit,
     onCancel: () -> Unit
 ) {
-    var inputState by remember {
+    val inputState = remember {
         mutableStateOf(TextFieldValue())
     }
     val chainWalletName = stringResource(id = R.string.wallet_default_name_chain, chainName, generatedNameIndex)
@@ -133,18 +136,8 @@ private fun ImportScene(
     var nameState by remember(walletName + generatedNameIndex) {
         mutableStateOf(walletName.ifEmpty { generatedName })
     }
-    var autoComplete by remember {
-        mutableStateOf("")
-    }
-    var nameRecordState by remember(nameRecord?.address) {
-        mutableStateOf(nameRecord)
-    }
-    val suggestions = remember {
-        mutableStateListOf<String>()
-    }
-    var dataErrorState by remember(dataError) {
-        mutableStateOf(dataError)
-    }
+    val nameRecordState = remember(nameRecord?.address) { mutableStateOf(nameRecord) }
+    var dataErrorState by remember(dataError) { mutableStateOf(dataError) }
 
     Scene(
         title = stringResource(id = R.string.wallet_import_title),
@@ -155,49 +148,50 @@ private fun ImportScene(
             MainActionButton(
                 title = stringResource(id = R.string.wallet_import_action),
                 onClick = {
-                    onImport(nameState, generatedName, inputState.text, nameRecordState)
+                    onImport(nameState, generatedName, inputState.value.text, nameRecordState.value)
                 },
             )
         },
     ) {
-        WalletNameTextField(
-            value = nameState,
-            onValueChange = { newValue -> nameState = newValue },
-            placeholder = stringResource(id = R.string.wallet_name),
-            error = walletNameError,
-        )
-        Spacer16()
-        if (importType.walletType != WalletType.multicoin) {
-            PrimaryTabRow(
-                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)),
-                selectedTabIndex = 0,
-                indicator = { Box {} },
-                containerColor = Color.Transparent,//(0xFFEBEBEB),
-                divider = {}
-            ) {
-                WalletTypeTab(WalletType.single, importType.walletType) {
-                    onTypeChange(it)
-                    inputState = TextFieldValue()
-                }
-                WalletTypeTab(WalletType.private_key, importType.walletType) {
-                    onTypeChange(it)
-                    inputState = TextFieldValue()
-                }
-                WalletTypeTab(WalletType.view, importType.walletType) {
-                    onTypeChange(it)
-                    inputState = TextFieldValue()
-                }
+        LazyColumn {
+            item {
+                WalletNameTextField(
+                    value = nameState,
+                    onValueChange = { newValue -> nameState = newValue },
+                    placeholder = stringResource(id = R.string.wallet_name),
+                    error = walletNameError,
+                )
+                Spacer16()
             }
-            Spacer16()
+            typeSelection(importType) {
+                onTypeChange(it)
+                inputState.value = TextFieldValue()
+            }
+            dataInput(importType, inputState, nameRecordState) {
+                dataErrorState = null
+            }
+            errorMessage(dataErrorState)
         }
+    }
+}
+
+private fun LazyListScope.dataInput(
+    importType: ImportType,
+    inputState: MutableState<TextFieldValue>,
+    nameRecordState: MutableState<NameRecord?>,
+    onChange: () -> Unit,
+) {
+    item {
+        val suggestions = remember { mutableStateListOf<String>() }
 
         ImportInput(
-            inputState = inputState,
+            inputState = inputState.value,
             importType = importType,
             onValueChange = { query ->
-                inputState = query
+                inputState.value = query
                 suggestions.clear()
-                dataErrorState = null
+
+                onChange()
 
                 if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
                     return@ImportInput
@@ -216,19 +210,18 @@ private fun ImportScene(
                 suggestions.addAll(result)
             }
         ) {
-            nameRecordState = it
+            nameRecordState.value = it
         }
-
         if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
             Spacer8()
             LazyRow {
                 items(suggestions) { word ->
                     SuggestionChip(
                         onClick = {
-                            val processed = setSuggestion(inputState, word)
-                            inputState = processed
-                            autoComplete = ""
+                            val processed = setSuggestion(inputState.value, word)
+                            inputState.value = processed
                             suggestions.clear()
+                            onChange()
                         },
                         label = { Text(text = word) }
                     )
@@ -236,22 +229,48 @@ private fun ImportScene(
                 }
             }
         }
+    }
+}
 
-        val error = dataErrorState
-        if (error != null) {
-            Spacer(modifier = Modifier.size(space4))
-            val text = when (error) {
-                is ImportError.CreateError -> stringResource(R.string.errors_create_wallet, error.message ?: "")
-                is ImportError.InvalidWords -> stringResource(
-                    R.string.errors_import_invalid_secret_phrase_word,
-                    error.words.joinToString()
-                )
-                ImportError.InvalidationSecretPhrase -> stringResource(R.string.errors_import_invalid_secret_phrase)
-                ImportError.InvalidAddress -> stringResource(R.string.errors_invalid_address_name)
-                ImportError.InvalidationPrivateKey -> "Invalid private key"
-            }
-            Text(text = text, color = MaterialTheme.colorScheme.error)
+@OptIn(ExperimentalMaterial3Api::class)
+private fun LazyListScope.typeSelection(
+    importType: ImportType,
+    onTypeChange: (WalletType) -> Unit,
+) {
+    if (importType.walletType == WalletType.multicoin) {
+        return
+    }
+    item {
+        PrimaryTabRow(
+            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)),
+            selectedTabIndex = 0,
+            indicator = { Box {} },
+            containerColor = Color.Transparent,//(0xFFEBEBEB),
+            divider = {}
+        ) {
+            WalletTypeTab(WalletType.single, importType.walletType, onTypeChange)
+            WalletTypeTab(WalletType.private_key, importType.walletType, onTypeChange)
+            WalletTypeTab(WalletType.view, importType.walletType, onTypeChange)
         }
+        Spacer16()
+    }
+}
+
+fun LazyListScope.errorMessage(error: ImportError?) {
+    item {
+        Spacer(modifier = Modifier.size(space4))
+        val text = when (error) {
+            is ImportError.CreateError -> stringResource(R.string.errors_create_wallet, error.message ?: "")
+            is ImportError.InvalidWords -> stringResource(
+                R.string.errors_import_invalid_secret_phrase_word,
+                error.words.joinToString()
+            )
+            ImportError.InvalidationSecretPhrase -> stringResource(R.string.errors_import_invalid_secret_phrase)
+            ImportError.InvalidAddress -> stringResource(R.string.errors_invalid_address_name)
+            ImportError.InvalidationPrivateKey -> "Invalid private key"
+            null -> return@item
+        }
+        Text(text = text, color = MaterialTheme.colorScheme.error)
     }
 }
 
