@@ -1,6 +1,7 @@
 package com.gemwallet.android.features.asset_select.views
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
@@ -144,7 +145,10 @@ private fun LazyListScope.notFound(
                 .fillMaxWidth()
                 .padding(padding16)
         ) {
-            Column(modifier = Modifier.align(Alignment.Center)) {
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 Text(text = stringResource(id = R.string.assets_no_assets_found))
                 if (isAddAvailable) {
                     TextButton(onClick = { onAddAsset?.invoke() }) {
