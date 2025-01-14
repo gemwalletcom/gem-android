@@ -3,6 +3,7 @@ package com.gemwallet.android.features.settings.settings.components
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.Text
@@ -18,6 +19,7 @@ fun LinkItem(
     @DrawableRes icon: Int,
     supportingContent: @Composable (() -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
+    onLongClick: (() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     LinkItem(
@@ -25,6 +27,7 @@ fun LinkItem(
         icon = painterResource(id = icon),
         supportingContent,
         trailingContent,
+        onLongClick,
         onClick
     )
 }
@@ -35,10 +38,14 @@ fun LinkItem(
     icon: Painter? = null,
     supportingContent: @Composable (() -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
+    onLongClick: (() -> Unit)? = null,
     onClick: () -> Unit,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().clickable(onClick = onClick),
+        modifier = Modifier.fillMaxWidth().combinedClickable(
+            onClick = onClick,
+            onLongClick = onLongClick,
+        ),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         SettingItem(

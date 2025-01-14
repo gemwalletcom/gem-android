@@ -195,7 +195,8 @@ fun SettingsScene(
             LinkItem(
                 title = stringResource(id = R.string.settings_aboutus),
                 icon = R.drawable.settings_about_us,
-                onClick = onAboutUs
+                onClick = onAboutUs,
+                onLongClick = viewModel::developEnable
             )
 //            LinkItem(
 //                title = stringResource(id = R.string.settings_rate_app),
@@ -209,21 +210,6 @@ fun SettingsScene(
                     onDevelop()
                 }
             }
-            LinkItem(
-                title = stringResource(id = R.string.settings_version),
-                icon = R.drawable.settings_version,
-                trailingContent = {
-                    Text(
-                        modifier = Modifier.combinedClickable(
-                            onClick = {},
-                            onLongClick = viewModel::developEnable
-                        ),
-                        text = "${stringResource(id = R.string.settings_version)}: $version",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-            ) {}
             Spacer16()
         }
     }
