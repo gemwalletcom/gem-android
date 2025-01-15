@@ -48,7 +48,7 @@ class DelegationViewModel @Inject constructor(
                 delegationId = delegationId,
                 validatorId = validatorId
             ).firstOrNull()
-            val assetInfo = assetsRepository.getById(session.wallet, delegation?.base?.assetId ?: return@launch).firstOrNull()
+            val assetInfo = assetsRepository.getAssetInfo(delegation?.base?.assetId ?: return@launch).firstOrNull()
             state.update { it.copy(walletType = session.wallet.type, delegation = delegation, assetInfo = assetInfo) }
         }
     }

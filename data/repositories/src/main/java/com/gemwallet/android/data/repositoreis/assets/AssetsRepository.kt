@@ -188,27 +188,6 @@ class AssetsRepository @Inject constructor(
         .firstOrNull() ?: emptyList()
     }
 
-    suspend fun getStakeApr(assetId: AssetId): Double? = withContext(Dispatchers.IO) {
-        getAssetInfo(assetId).firstOrNull()?.stakeApr
-    }
-
-    @Deprecated("Use the getAssetInfo() method")
-    suspend fun getById(wallet: Wallet, assetId: AssetId): List<AssetInfo> {
-        val assetInfos = getById(wallet.accounts, assetId)
-        val result = if (assetInfos.isEmpty()) {
-            val tokens = getTokensCase.getByIds(listOf(assetId))
-            tokens.mapNotNull { token ->
-                AssetInfo(
-                    owner = wallet.getAccount(token.id.chain) ?: return@mapNotNull null,
-                    asset = token,
-                )
-            }
-        } else {
-            assetInfos
-        }
-        return result
-    }
-
     override suspend fun getAsset(assetId: AssetId): Asset? = withContext(Dispatchers.IO) {
         getAssetInfo(assetId).firstOrNull()?.asset
     }
