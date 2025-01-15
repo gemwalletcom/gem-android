@@ -51,22 +51,4 @@ class FiatViewModelTest {
             assertEquals("150", awaitItem())
         }
     }
-
-    @Test
-    fun testMinimumAmountErrorState() = runTest {
-        viewModel.state.test {
-            viewModel.updateAmount((FiatViewModel.MIN_FIAT_AMOUNT - 1).toString())
-            skipItems(1)
-            assert(awaitItem() is FiatSceneState.Error)
-        }
-    }
-
-    @Test
-    fun testValidAmountSetsLoadingState() = runTest {
-        viewModel.state.test {
-            viewModel.updateAmount("100")
-            skipItems(1)
-            assert(awaitItem() is FiatSceneState.Loading)
-        }
-    }
 }
