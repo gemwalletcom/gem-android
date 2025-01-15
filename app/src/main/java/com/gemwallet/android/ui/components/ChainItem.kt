@@ -20,6 +20,7 @@ fun ChainItem(
     chain: Chain? = null,
     icon: Any? = null,
     dividerShowed: Boolean = true,
+    trailing: @Composable (() -> Unit)? = null,
     onClick: () -> Unit = {},
 ) {
     ListItem(
@@ -37,6 +38,7 @@ fun ChainItem(
                 color = MaterialTheme.colorScheme.onSurface,
             )
         },
+        trailing = trailing,
         dividerShowed = dividerShowed,
     )
 }

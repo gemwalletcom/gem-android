@@ -3,20 +3,29 @@ package com.gemwallet.android.features.add_asset.views
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
 import com.gemwallet.android.R
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
+import com.gemwallet.android.ext.networkAsset
 import com.gemwallet.android.features.add_asset.models.TokenSearchState
 import com.gemwallet.android.ui.components.AddressChainField
 import com.gemwallet.android.ui.components.CellEntity
+import com.gemwallet.android.ui.components.ChainItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.padding16
@@ -48,15 +57,20 @@ fun AddAssetScene(
         },
         onClose = onCancel,
     ) {
-        Table(
-            items = listOf(
-                CellEntity(
-                    label = network.name,
-                    data = "",
-                    icon = network.chain().getIconUrl(),
-                    action = onChainSelect
+        ChainItem(
+            modifier = Modifier.height(64.dp),
+            chain = network.chain(),
+            title = network.name,
+            icon = network.chain().getIconUrl(),
+            onClick = onChainSelect ?: {},
+            dividerShowed = true,
+            trailing = {
+                Icon(
+                    painter = rememberVectorPainter(image = Icons.Default.ChevronRight),
+                    contentDescription = "open_provider_select",
+                    tint = MaterialTheme.colorScheme.secondary,
                 )
-            )
+            }
         )
         Column(
             modifier = Modifier.padding(padding16)
