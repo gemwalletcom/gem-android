@@ -78,7 +78,7 @@ fun DelegationScene(
                                             DelegationState.Inactive -> R.string.stake_inactive
                                             DelegationState.Activating -> R.string.stake_activating
                                             DelegationState.Deactivating -> R.string.stake_deactivating
-                                            DelegationState.AwaitingWithdrawal -> R.string.transfer_withdraw_title
+                                            DelegationState.AwaitingWithdrawal -> com.gemwallet.android.localize.R.string.stake_awaiting_withdrawal
                                         }
 
                                     ),
@@ -170,7 +170,7 @@ private fun LazyListScope.delegationActions(
         }
         DelegationState.AwaitingWithdrawal -> cells.add(
             CellEntity(
-                label = R.string.stake_awaiting_withdrawal,
+                label = com.gemwallet.android.localize.R.string.transfer_withdraw_title,
                 data = "",
                 action = onWithdraw
             )
