@@ -35,13 +35,13 @@ interface TokensDao {
     fun search(types: List<AssetType>, query: String): Flow<List<DbToken>>
 
     @Query("""
-        SELECT * FROM tokens WHERE (id IN (:chains) OR id IN (:assetIds))
-            AND (id LIKE '%' || :query || '%' OR symbol LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%')
+        SELECT * FROM tokens WHERE
+            id LIKE '%' || :query || '%' OR symbol LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%'
             COLLATE NOCASE
         ORDER BY rank DESC
         """
     )
-    fun swapSearch(chains: List<String>, assetIds: List<String>, query: String): Flow<List<DbToken>>
+    fun swapSearch(query: String): Flow<List<DbToken>>
 
     @Query("""
         SELECT

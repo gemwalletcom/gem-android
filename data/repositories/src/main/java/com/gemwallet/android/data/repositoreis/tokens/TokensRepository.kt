@@ -9,6 +9,7 @@ import com.gemwallet.android.data.service.store.database.mappers.AssetInfoMapper
 import com.gemwallet.android.data.service.store.database.mappers.TokenMapper
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.assetType
+import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.Asset
@@ -21,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -45,11 +47,13 @@ class TokensRepository (
         assetIds: List<AssetId>,
         query: String
     ): Flow<List<Asset>> {
-        return tokensDao.swapSearch(
-            chains.map { chain -> chain.string },
-            assetIds.map { it.toIdentifier() },
-            query
-        )
+        return tokensDao.swapSearch(query)
+        .map { items ->
+            items.filter {
+                val assetId = it.id.toAssetId()
+                chains.contains(assetId?.chain) || assetIds.contains(assetId)
+            }
+        }
         .map { assets -> assets.map(mapper::asEntity) }
     }
 
