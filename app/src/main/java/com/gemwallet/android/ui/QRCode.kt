@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffXfermode
+import android.graphics.RectF
 import android.util.TypedValue
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,7 +22,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.BuildConfig
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.qrcode.QRCodeWriter
@@ -90,7 +90,7 @@ private fun generateQr(
             sizePx,
             encodeHints
         )
-    } catch (err: Throwable) {
+    } catch (_: Throwable) {
         null
     }
     val matrixWidth = bitmapMatrix?.width ?: 0
@@ -106,29 +106,45 @@ private fun generateQr(
             newBitmap.setPixel(x, y, pixelColor)
         }
     }
-    if (BuildConfig.DEBUG) {
-        val qrCodeCanvas = Canvas(newBitmap)
-        val logoRaw = BitmapFactory.decodeStream(context.assets.open("brandmark.png"))
-        val logoSize = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            64f,
-            context.resources.displayMetrics
-        ).toInt()
-        val logo = Bitmap.createScaledBitmap(logoRaw, logoSize, logoSize, false)
-        val xLogo = (sizePx - logo.width) / 2f
-        val yLogo = (sizePx - logo.height) / 2f
-        val paint = Paint()
-        paint.isAntiAlias = true
-        paint.color = Color.BLACK
-        qrCodeCanvas.drawCircle(
-            newBitmap.getWidth() / 2f,
-            newBitmap.getHeight() / 2f,
-            logoSize / 2f,
-            paint
-        );
-        paint.setXfermode(PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-
-        qrCodeCanvas.drawBitmap(logo, xLogo, yLogo, null)
-    }
+    drawLogoOnQR(context, newBitmap)
     return newBitmap
+}
+
+private fun drawLogoOnQR(context: Context, qr: Bitmap) {
+    val qrCodeCanvas = Canvas(qr)
+    val logoRaw = BitmapFactory.decodeStream(context.assets.open("brandmark.png"))
+    val logoSize = TypedValue.applyDimension(
+        TypedValue.COMPLEX_UNIT_DIP,
+        48f,
+        context.resources.displayMetrics
+    ).toInt()
+    val logo = Bitmap.createScaledBitmap(logoRaw, logoSize, logoSize, false)
+    val xCenter = (qr.width / 2).toFloat()
+    val yCenter = (qr.height / 2).toFloat()
+    val xLogo = xCenter - logo.width / 2f
+    val yLogo = yCenter - logo.height / 2f
+    val paint = Paint().apply {
+        this.isAntiAlias = true
+        this.color = Color.WHITE
+        this.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
+    }
+
+    paint.color = Color.WHITE
+    val logoBackground = RectF(
+        xCenter - logoSize / 1.5f,
+        yCenter - logoSize / 1.5f,
+        xCenter + logoSize / 1.5f,
+        yCenter + logoSize / 1.5f
+    )
+    qrCodeCanvas.drawRoundRect(logoBackground, 16f, 16f, paint)
+
+    paint.color = Color.BLACK
+    val circularBackground = RectF(
+        xCenter - logoSize / 2f,
+        yCenter - logoSize / 2f,
+        xCenter + logoSize / 2f,
+        yCenter + logoSize / 2f
+    )
+    qrCodeCanvas.drawRoundRect(circularBackground, 16f, 16f, paint)
+    qrCodeCanvas.drawBitmap(logo, xLogo, yLogo, null)
 }
