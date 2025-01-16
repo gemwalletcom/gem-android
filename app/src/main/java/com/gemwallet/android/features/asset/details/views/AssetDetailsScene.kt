@@ -38,6 +38,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
+import com.gemwallet.android.ext.getReserveBalance
+import com.gemwallet.android.ext.getReserveBalanceUrl
 import com.gemwallet.android.ext.networkAsset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIModel
@@ -224,6 +226,9 @@ private fun Success(
                                 BannerEvent.Stake -> onStake(uiState.asset.id)
                                 BannerEvent.AccountBlockedMultiSignature ->
                                     uriHandler.open(Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
+                                BannerEvent.ActivateAsset -> uiState.asset.chain().getReserveBalanceUrl()?.let {
+                                    uriHandler.open(it)
+                                }
                                 else -> {}
                             }
                         },
@@ -330,9 +335,7 @@ private fun LazyListScope.balanceDetails(
                     label = stringResource(R.string.asset_balances_reserved),
                     data = uiState.account.reserved,
                     action = {
-                        if (uiState.asset.id.chain == Chain.Xrp) {
-                            uriHandler.open("https://xrpl.org/docs/concepts/accounts/reserves")
-                        }
+                        uriHandler.open(uiState.asset.id.chain.getReserveBalanceUrl() ?: return@CellEntity)
                     },
                 )
             )

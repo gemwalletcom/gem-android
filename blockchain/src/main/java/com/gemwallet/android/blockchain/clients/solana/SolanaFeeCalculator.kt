@@ -44,7 +44,6 @@ class SolanaFeeCalculator(
         return calculate(
             gasLimit = 1_400_000L,
             multipleOf = 250_000,
-
         )
     }
 

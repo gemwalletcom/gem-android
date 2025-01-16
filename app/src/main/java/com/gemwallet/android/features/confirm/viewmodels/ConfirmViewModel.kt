@@ -440,7 +440,7 @@ class ConfirmViewModel @Inject constructor(
             }
 
             if (assetBalance < totalAmount) {
-                val label = "${assetInfo.id().chain.asset().name} (${assetInfo.asset.symbol})"
+                val label = "${assetInfo.asset.name} (${assetInfo.asset.symbol})"
                 throw ConfirmError.InsufficientBalance(label)
             }
             if (feeAssetInfo.balance.balance.available.toBigInteger() < feeAmount) {

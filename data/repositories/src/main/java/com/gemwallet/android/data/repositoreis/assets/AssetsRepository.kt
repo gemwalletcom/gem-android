@@ -504,8 +504,8 @@ class AssetsRepository @Inject constructor(
                     pendingAmount = it.balanceAmount.pending,
                     rewards = it.balance.rewards,
                     rewardsAmount = it.balanceAmount.rewards,
-                    reserved = "",
-                    reservedAmount = 0.0,
+                    reserved = it.balance.reserved,
+                    reservedAmount = it.balanceAmount.reserved,
                     totalAmount = it.totalAmount,
                     updatedAt = updatedAt,
                 )
