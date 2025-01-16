@@ -22,7 +22,7 @@ class SuiBalanceClient(
         val amountJob = async {
             rpcClient.balance(address).mapCatching {
                 it.result.totalBalance.toBigInteger()
-            }.getOrNull() ?: BigInteger.ZERO
+            }.getOrNull() ?: return@async null
         }
         val delegationsJob = async {
             rpcClient.delegations(JSONRpcRequest.create(SuiMethod.Delegations, listOf(address)))

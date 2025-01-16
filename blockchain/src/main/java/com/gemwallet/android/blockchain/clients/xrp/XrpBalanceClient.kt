@@ -14,11 +14,11 @@ class XrpBalanceClient(
     private val accountsService: XrpAccountsService,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance {
+    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
         val reserved = chain.getReserveBalance()
         val amount = accountsService.account(address).mapCatching {
             it.result.account_data?.Balance?.toBigInteger()?.let { it - reserved }
-        }.getOrNull() ?: BigInteger.ZERO
+        }.getOrNull() ?: return null
         return AssetBalance.create(
             chain.asset(),
             available = amount.toString(),
