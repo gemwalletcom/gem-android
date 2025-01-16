@@ -132,20 +132,22 @@ class AssetsRepository @Inject constructor(
         }
     }
 
-    suspend fun syncAssetInfo(assetId: AssetId) = withContext(Dispatchers.IO) {
+    suspend fun syncAssetInfo(assetId: AssetId, account: Account) = withContext(Dispatchers.IO) {
         val currency = getAssetInfo(assetId).firstOrNull()?.price?.currency ?: return@withContext
         val updatePriceJob = async { updatePrices(currency, assetId) }
         val updateBalancesJob = async { updateBalances(assetId) }
-        val getAssetFull = async { syncMarketInfo(assetId) }
+        val getAssetFull = async { syncMarketInfo(assetId, account) }
         updatePriceJob.await()
         updateBalancesJob.await()
         getAssetFull.await()
     }
 
-    suspend fun syncMarketInfo(assetId: AssetId) = withContext(Dispatchers.IO) {
-        val assetInfo = getAssetsInfoByAllWallets(listOf(assetId.toIdentifier()))
-            .map { it.firstOrNull() }
-            .firstOrNull() ?: return@withContext
+    suspend fun syncMarketInfo(assetId: AssetId, owner: Account?) = withContext(Dispatchers.IO) {
+        val assetInfo = if (owner == null) {
+            getAssetsInfoByAllWallets(listOf(assetId.toIdentifier())).map { it.firstOrNull() }
+        } else {
+            getAssetInfo(assetId)
+        }.firstOrNull() ?: return@withContext
         val currency = assetInfo.price?.currency ?: return@withContext
         val assetIdIdentifier = assetId.toIdentifier()
         val assetFullJob = async {

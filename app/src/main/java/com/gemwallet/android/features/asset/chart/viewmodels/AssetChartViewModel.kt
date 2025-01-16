@@ -77,7 +77,7 @@ class AssetChartViewModel @Inject constructor(
     private val sync = assetIdStr.flatMapLatest { assetId ->
         flow {
             emit(true)
-            assetsRepository.syncMarketInfo(assetId?.toAssetId() ?:  return@flow)
+            assetsRepository.syncMarketInfo(assetId?.toAssetId() ?: return@flow, null)
             emit(false)
         }
     }
