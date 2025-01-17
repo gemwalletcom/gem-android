@@ -40,7 +40,6 @@ android {
 
 dependencies {
     implementation(project(":ui"))
-    implementation(project(":localize"))
     implementation(project(":features:recipient:viewmodels"))
 
     implementation(libs.hilt.android)

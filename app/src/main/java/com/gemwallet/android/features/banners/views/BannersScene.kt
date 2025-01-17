@@ -28,24 +28,20 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.banners.viewmodels.BannersViewModel
-import com.gemwallet.android.model.Crypto
-import com.gemwallet.android.model.format
-import com.gemwallet.android.ui.components.image.getIconUrl
-import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding12
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Banner
 import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.BannerState
-import com.wallet.core.primitives.Chain
-import uniffi.gemstone.Config
 
 @Composable
 fun BannersScene(

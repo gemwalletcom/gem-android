@@ -15,8 +15,8 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.DropDownContextItem
 import com.gemwallet.android.ui.models.AssetItemUIModel

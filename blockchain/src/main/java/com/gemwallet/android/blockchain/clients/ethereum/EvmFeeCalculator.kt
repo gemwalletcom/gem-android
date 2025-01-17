@@ -9,7 +9,6 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId

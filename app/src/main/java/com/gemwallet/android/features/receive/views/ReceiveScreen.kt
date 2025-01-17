@@ -40,9 +40,9 @@ import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.features.receive.viewmodels.ReceiveViewModel
 import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.FieldBottomAction
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.designsystem.Spacer16

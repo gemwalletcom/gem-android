@@ -31,10 +31,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.settings.networks.models.NetworksUIState
 import com.gemwallet.android.model.NodeStatus
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16

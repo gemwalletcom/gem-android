@@ -9,11 +9,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.redelegated
 import com.gemwallet.android.features.stake.delegation.model.DelegationSceneState
 import com.gemwallet.android.features.stake.delegation.viewmodels.DelegationViewModel
 import com.gemwallet.android.features.stake.model.formatApr
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.SubheaderItem
@@ -78,7 +78,7 @@ fun DelegationScene(
                                             DelegationState.Inactive -> R.string.stake_inactive
                                             DelegationState.Activating -> R.string.stake_activating
                                             DelegationState.Deactivating -> R.string.stake_deactivating
-                                            DelegationState.AwaitingWithdrawal -> com.gemwallet.android.localize.R.string.stake_awaiting_withdrawal
+                                            DelegationState.AwaitingWithdrawal -> R.string.stake_awaiting_withdrawal
                                         }
 
                                     ),
@@ -170,7 +170,7 @@ private fun LazyListScope.delegationActions(
         }
         DelegationState.AwaitingWithdrawal -> cells.add(
             CellEntity(
-                label = com.gemwallet.android.localize.R.string.transfer_withdraw_title,
+                label = R.string.transfer_withdraw_title,
                 data = "",
                 action = onWithdraw
             )

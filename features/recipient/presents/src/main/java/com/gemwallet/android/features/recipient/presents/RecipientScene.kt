@@ -21,8 +21,8 @@ import com.gemwallet.android.features.recipient.presents.views.destinationView
 import com.gemwallet.android.features.recipient.viewmodel.RecipientViewModel
 import com.gemwallet.android.features.recipient.viewmodel.models.QrScanField
 import com.gemwallet.android.features.recipient.viewmodel.models.RecipientError
-import com.gemwallet.android.localize.R
 import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.keyboardAsState
 import com.gemwallet.android.ui.components.qrCodeRequest

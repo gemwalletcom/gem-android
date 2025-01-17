@@ -27,11 +27,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.features.confirm.models.ConfirmError
 import com.gemwallet.android.features.confirm.models.ConfirmState
 import com.gemwallet.android.features.confirm.viewmodels.ConfirmViewModel
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
@@ -200,7 +200,7 @@ fun ConfirmError.toLabel() = when (this) {
     is ConfirmError.Init,
     is ConfirmError.TransactionIncorrect,
     is ConfirmError.PreloadError -> stringResource(R.string.confirm_fee_error)
-    is ConfirmError.InsufficientBalance -> stringResource(com.gemwallet.android.localize.R.string.transfer_insufficient_balance, chainTitle)
+    is ConfirmError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_balance, chainTitle)
     is ConfirmError.InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, chainTitle)
     is ConfirmError.BroadcastError ->  "${stringResource(R.string.errors_transfer_error)}: ${message ?: stringResource(R.string.errors_unknown)}"
     is ConfirmError.SignFail -> stringResource(R.string.errors_transfer_error)

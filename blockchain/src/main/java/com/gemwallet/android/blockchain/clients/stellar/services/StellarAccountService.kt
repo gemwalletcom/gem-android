@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.stellar.services
 
-import com.gemwallet.android.blockchain.rpc.handleError
 import com.wallet.core.blockchain.stellar.StellarAccount
 import retrofit2.http.GET
 import retrofit2.http.Path

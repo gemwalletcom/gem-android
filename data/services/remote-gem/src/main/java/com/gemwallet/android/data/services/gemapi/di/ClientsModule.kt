@@ -1,7 +1,6 @@
 package com.gemwallet.android.data.services.gemapi.di
 
 import android.content.Context
-import com.gemwallet.android.blockchain.Mime
 import com.gemwallet.android.blockchain.RpcClientAdapter
 import com.gemwallet.android.blockchain.clients.algorand.services.AlgorandService
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosServices

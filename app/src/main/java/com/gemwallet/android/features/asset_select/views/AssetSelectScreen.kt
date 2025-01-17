@@ -10,7 +10,6 @@ import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
-import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun AssetSelectScreen(

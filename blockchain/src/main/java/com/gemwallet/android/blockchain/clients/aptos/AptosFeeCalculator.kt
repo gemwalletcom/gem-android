@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
-import com.gemwallet.android.blockchain.clients.aptos.models.aptosErrorCode
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosAccountsService
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosFeeService
 import com.gemwallet.android.blockchain.rpc.handleError

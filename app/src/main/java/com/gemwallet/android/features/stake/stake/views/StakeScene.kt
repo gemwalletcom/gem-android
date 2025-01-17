@@ -14,7 +14,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.claimed
 import com.gemwallet.android.features.assets.model.PriceUIState
 import com.gemwallet.android.features.stake.components.DelegationItem
@@ -22,6 +21,7 @@ import com.gemwallet.android.features.stake.model.availableIn
 import com.gemwallet.android.features.stake.stake.model.StakeError
 import com.gemwallet.android.features.stake.stake.model.StakeUIState
 import com.gemwallet.android.model.AmountParams
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.SubheaderItem

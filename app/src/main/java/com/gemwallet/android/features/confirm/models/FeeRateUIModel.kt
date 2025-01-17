@@ -2,7 +2,6 @@ package com.gemwallet.android.features.confirm.models
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.feeUnitType
@@ -11,6 +10,7 @@ import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignMode
 import com.gemwallet.android.model.TxSpeed
+import com.gemwallet.android.ui.R
 import com.wallet.core.primitives.FeeUnitType
 
 data class FeeRateUIModel(

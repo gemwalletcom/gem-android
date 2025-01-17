@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.BuildConfig
-import com.gemwallet.android.localize.R
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl

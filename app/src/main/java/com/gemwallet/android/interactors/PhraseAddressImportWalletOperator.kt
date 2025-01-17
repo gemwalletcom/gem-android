@@ -1,6 +1,5 @@
 package com.gemwallet.android.interactors
 
-import com.gemwallet.android.R
 import com.gemwallet.android.blockchain.clients.AddressStatusClientProxy
 import com.gemwallet.android.blockchain.operators.InvalidPhrase
 import com.gemwallet.android.blockchain.operators.InvalidWords
@@ -17,6 +16,7 @@ import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.model.AddressStatus
+import com.gemwallet.android.ui.R
 import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.BannerState
 import com.wallet.core.primitives.Chain

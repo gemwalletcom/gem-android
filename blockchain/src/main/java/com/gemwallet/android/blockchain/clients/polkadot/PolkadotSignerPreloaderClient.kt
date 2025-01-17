@@ -5,10 +5,8 @@ import com.gemwallet.android.blockchain.clients.polkadot.models.PolkadotSigningD
 import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotBalancesService
 import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotFeeService
 import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotTransactionService
-import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
@@ -18,7 +16,6 @@ import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import java.math.BigDecimal
 
 class PolkadotSignerPreloaderClient(
     private val chain: Chain,

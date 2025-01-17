@@ -2,8 +2,8 @@ package com.gemwallet.android.features.amount.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.gemwallet.android.R
 import com.gemwallet.android.features.amount.models.AmountError
+import com.gemwallet.android.ui.R
 
 @Composable
 fun amountErrorString(error: AmountError): String = when (error) {

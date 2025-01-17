@@ -6,12 +6,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.features.asset_select.viewmodels.SwapSelectViewModel
 import com.gemwallet.android.features.swap.models.SwapPairSelect
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.getBalanceInfo
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
 
 @Composable
 fun SelectSwapScreen(

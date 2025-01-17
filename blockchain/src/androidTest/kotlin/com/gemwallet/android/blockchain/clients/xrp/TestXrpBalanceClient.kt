@@ -1,12 +1,7 @@
 package com.gemwallet.android.blockchain.clients.xrp
 
-import com.gemwallet.android.blockchain.clients.xrp.services.XrpAccountsService
 import com.gemwallet.android.blockchain.includeLibs
-import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.toIdentifier
-import com.wallet.core.blockchain.xrp.models.XRPAccount
-import com.wallet.core.blockchain.xrp.models.XRPAccountResult
-import com.wallet.core.blockchain.xrp.models.XRPResult
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import junit.framework.TestCase.assertEquals
@@ -33,7 +28,7 @@ class TestXrpBalanceClient {
         }
         assertEquals("rwCq6DCHa6HPFyfvabvzcX1y5wABw5KdiN", accountsService.requestAccount)
         assertNotNull(result)
-        assertEquals("1104374", result.balance.available)
+        assertEquals("1104374", result!!.balance.available)
         assertEquals("0", result.balance.frozen)
         assertEquals("0", result.balance.locked)
         assertEquals("0", result.balance.staked)
@@ -63,7 +58,7 @@ class TestXrpBalanceClient {
         }
         assertEquals("rwCq6DCHa6HPFyfvabvzcX1y5wABw5KdiN", accountsService.requestAccount)
         assertNotNull(result)
-        assertEquals("0", result.balance.available)
+        assertEquals("0", result!!.balance.available)
         assertEquals("0", result.balance.frozen)
         assertEquals("0", result.balance.locked)
         assertEquals("0", result.balance.staked)
@@ -93,7 +88,7 @@ class TestXrpBalanceClient {
         }
         assertEquals("rwCq6DCHa6HPFyfvabvzcX1y5wABw5KdiN", accountsService.requestAccount)
         assertNotNull(result)
-        assertEquals("0", result.balance.available)
+        assertEquals("0", result!!.balance.available)
         assertEquals("0", result.balance.frozen)
         assertEquals("0", result.balance.locked)
         assertEquals("0", result.balance.staked)

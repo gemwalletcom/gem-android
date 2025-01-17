@@ -9,8 +9,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import com.gemwallet.android.R
 import com.gemwallet.android.features.settings.settings.components.LinkItem
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.screen.Scene
 import uniffi.gemstone.Config

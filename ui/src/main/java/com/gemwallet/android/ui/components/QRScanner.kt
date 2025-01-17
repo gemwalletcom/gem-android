@@ -53,7 +53,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
-import com.gemwallet.android.localize.R
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.google.accompanist.permissions.ExperimentalPermissionsApi

@@ -1,7 +1,6 @@
 package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.blockchain.clients.tron.services.TronCallService
-import com.wallet.core.blockchain.tron.models.TronSmartContractCall
 import com.wallet.core.blockchain.tron.models.TronSmartContractResult
 
 class TestTronCallService(

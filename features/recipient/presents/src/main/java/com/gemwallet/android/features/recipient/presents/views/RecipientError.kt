@@ -3,7 +3,7 @@ package com.gemwallet.android.features.recipient.presents.views
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.features.recipient.viewmodel.models.RecipientError
-import com.gemwallet.android.localize.R
+import com.gemwallet.android.ui.R
 
 @Composable
 fun recipientErrorString(error: RecipientError): String = when (error) {
