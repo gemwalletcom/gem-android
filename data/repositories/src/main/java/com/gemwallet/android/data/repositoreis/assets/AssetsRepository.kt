@@ -21,6 +21,7 @@ import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.exclude
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAssociatedAssetIds
+import com.gemwallet.android.ext.isStakeSupported
 import com.gemwallet.android.ext.isSwapSupport
 import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.swapSupport
@@ -256,10 +257,10 @@ class AssetsRepository @Inject constructor(
                     owner = wallet.getAccount(asset.id.chain) ?: return@mapNotNull null,
                     metadata = AssetMetaData(
                         isEnabled = false,
-                        isSwapEnabled = asset.id.chain.isSwapSupport(),
+                        isSwapEnabled = asset.chain().isSwapSupport(),
                         isBuyEnabled = false,
                         isSellEnabled = false,
-                        isStakeEnabled = false,
+                        isStakeEnabled = asset.chain().isStakeSupported(),
                         isPinned = false,
                         isActive = false,
                     )
@@ -285,10 +286,10 @@ class AssetsRepository @Inject constructor(
                     owner = wallet.getAccount(asset.id.chain) ?: return@mapNotNull null,
                     metadata = AssetMetaData(
                         isEnabled = false,
-                        isSwapEnabled = asset.id.chain.isSwapSupport(),
+                        isSwapEnabled = asset.chain().isSwapSupport(),
                         isBuyEnabled = false,
                         isSellEnabled = false,
-                        isStakeEnabled = false,
+                        isStakeEnabled = asset.chain().isStakeSupported(),
                         isPinned = false,
                         isActive = false,
                     )
@@ -607,7 +608,7 @@ class AssetsRepository @Inject constructor(
                 isEnabled = true, // TODO: Deprecated
                 isBuyEnabled = room.isBuyEnabled,
                 isSwapEnabled = room.isSwapEnabled,
-                isStakeEnabled = room.isStakeEnabled,
+                isStakeEnabled = room.chain.isStakeSupported(),
                 isSellEnabled = false,
                 isPinned = false,
                 isActive = true,
