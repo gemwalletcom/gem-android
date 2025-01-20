@@ -151,10 +151,15 @@ class SwapViewModel @Inject constructor(
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    private val refreshTimer = flow {
-        while (true) {
-            delay(30 * 1000)
-            emit(System.currentTimeMillis())
+    private val refreshTimer = fromValueFlow.flatMapLatest {
+        if (it.isEmpty() || (it.toDoubleOrNull() ?: 0.0) == 0.0) {
+            return@flatMapLatest emptyFlow<Long>()
+        }
+        flow {
+            while (true) {
+                delay(30 * 1000)
+                emit(System.currentTimeMillis())
+            }
         }
     }
     .flowOn(Dispatchers.IO)

@@ -45,6 +45,7 @@ turbine = "1.1.0"
 protobuf = "4.27.2"
 reorderable = "2.3.3"
 mockkVersion = "1.13.13"
+datastore = "1.1.2"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -140,6 +141,9 @@ lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecycle-viewmo
 androidx-material3-adaptive-android = { group = "androidx.compose.material3", name = "material3-adaptive-android", version.ref = "material3AdaptiveAndroid" }
 
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
+
+datastore = { module ="androidx.datastore:datastore-preferences", version.ref = "datastore" }
+
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}

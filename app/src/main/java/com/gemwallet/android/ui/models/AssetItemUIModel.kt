@@ -26,6 +26,7 @@ interface AssetItemUIModel : CryptoFormattedUIModel, FiatFormattedUIModel {
 @Stable
 class AssetInfoUIModel(
     val assetInfo: AssetInfo,
+    val hideBalances: Boolean = false,
     override val fraction: Int = 2,
     override val maxFraction: Int = 4,
 ) : AssetItemUIModel {
@@ -40,10 +41,16 @@ class AssetInfoUIModel(
     override val cryptoAmount: Double
         get() = assetInfo.balance.totalAmount
 
+    override val cryptoFormatted: String
+        get() = if (hideBalances) "*****" else super.cryptoFormatted
+
     override val fiat: Double? by lazy {
         val price = assetInfo.price?.price?.price ?: 0.0
         if (price == 0.0) null else cryptoAmount * price
     }
+
+    override val fiatFormatted: String
+        get() = if (hideBalances) "*****" else super.fiatFormatted
 
     override val price: PriceUIModel by lazy {
         AssetPriceUIModel(currency, assetInfo.price?.price)
@@ -70,6 +77,7 @@ class AssetInfoUIModel(
                 && other.metadata?.isStakeEnabled == assetInfo.metadata?.isStakeEnabled
                 && other.metadata?.isPinned == assetInfo.metadata?.isPinned
                 && other.metadata?.isSellEnabled == assetInfo.metadata?.isSellEnabled
+                && other.hideBalances == hideBalances
     }
 
     override fun hashCode(): Int {
@@ -85,6 +93,7 @@ class AssetInfoUIModel(
         result = 31 * result + isZeroAmount.hashCode()
         result = 31 * result + position
         result = 31 * result + (metadata?.hashCode() ?: 0)
+        result = 31 * result + hideBalances.hashCode()
         return result
     }
 }

@@ -3,6 +3,7 @@ package com.gemwallet.android.features.assets.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier
@@ -17,6 +18,7 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
+import com.gemwallet.android.ui.models.PriceState
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
@@ -49,6 +51,7 @@ class AssetsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val syncTransactions: SyncTransactions,
+    private val userConfig: UserConfig,
 ) : ViewModel() {
     val refreshingState = MutableStateFlow<RefresingState>(RefresingState.OnOpen)
     val screenState = assetsRepository.syncState.combine(refreshingState) { syncState, refreshingState ->
@@ -70,10 +73,16 @@ class AssetsViewModel @Inject constructor(
 
     private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAssetsInfo()
 
-    private val assets: StateFlow<List<AssetItemUIModel>> = assetsState
-        .map { it.map { AssetInfoUIModel(it) }.distinctBy { it.asset.id.toIdentifier() } }
-        .flowOn(Dispatchers.IO)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    private val isHideBalances = userConfig.isHideBalances()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    private val assets: StateFlow<List<AssetItemUIModel>> = assetsState.combine(isHideBalances) { assets, isHideBalances ->
+        assets.map {
+            AssetInfoUIModel(it, isHideBalances)
+        }.distinctBy { it.asset.id.toIdentifier() }
+    }
+    .flowOn(Dispatchers.IO)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val pinnedAssets = assets
         .map { items -> items.filter { asset -> asset.metadata?.isPinned == true } }
@@ -82,10 +91,10 @@ class AssetsViewModel @Inject constructor(
     val unpinnedAssets = assets.map { it.filter { asset -> asset.metadata?.isPinned != true } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val walletInfo: StateFlow<WalletInfoUIState> = sessionRepository.session().combine(assetsState) {session, assets ->
+    val walletInfo: StateFlow<WalletInfoUIState> = combine(sessionRepository.session(), assetsState, isHideBalances) {session, assets, isHideBalances ->
         val wallet = session?.wallet ?: return@combine null
         val currency = session.currency
-        calcWalletInfo(wallet, currency, assets)
+        calcWalletInfo(wallet, currency, assets, isHideBalances)
     }
     .flowOn(Dispatchers.IO)
     .filterNotNull()
@@ -118,7 +127,12 @@ class AssetsViewModel @Inject constructor(
         }
     }
 
-    private fun calcWalletInfo(wallet: Wallet, currency: Currency, assets: List<AssetInfo>): WalletInfoUIState? {
+    private fun calcWalletInfo(
+        wallet: Wallet,
+        currency: Currency,
+        assets: List<AssetInfo>,
+        isHideBalances: Boolean
+    ): WalletInfoUIState? {
         val (totalValue, changedValue) = assets.map {
             val current = it.balance.fiatTotalAmount.toBigDecimal()
             val changed = current * ((it.price?.price?.priceChangePercentage24h ?: 0.0) / 100).toBigDecimal()
@@ -133,20 +147,38 @@ class AssetsViewModel @Inject constructor(
             WalletType.multicoin -> R.drawable.multicoin_wallet
             else -> wallet.accounts.firstOrNull()?.chain?.getIconUrl()
         }
-        return WalletInfoUIState(
-            name = wallet.name,
-            icon = icon,
-            totalValue = currency.format(totalValue),
-            changedValue = currency.format(changedValue),
-            changedPercentages = PriceUIState.formatPercentage(changedPercentages),
-            priceState = PriceUIState.getState(changedPercentages),
-            type = wallet.type,
-        )
+        return if (isHideBalances) {
+            WalletInfoUIState(
+                name = wallet.name,
+                icon = icon,
+                totalValue = "*****",
+                changedValue = "",
+                changedPercentages = "",
+                priceState = PriceState.None,
+                type = wallet.type,
+            )
+        } else {
+            WalletInfoUIState(
+                name = wallet.name,
+                icon = icon,
+                totalValue = currency.format(totalValue),
+                changedValue = currency.format(changedValue),
+                changedPercentages = PriceUIState.formatPercentage(changedPercentages),
+                priceState = PriceUIState.getState(changedPercentages),
+                type = wallet.type,
+            )
+        }
     }
 
     fun togglePin(assetId: AssetId) = viewModelScope.launch(Dispatchers.IO) {
         val session = sessionRepository.getSession() ?: return@launch
         assetsRepository.togglePin(session.wallet.id, assetId)
+    }
+
+    fun hideBalances() {
+        viewModelScope.launch {
+            userConfig.hideBalances()
+        }
     }
 
     enum class RefresingState {

@@ -2,11 +2,17 @@ package com.gemwallet.android.data.repositoreis.config
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class UserConfig(
     private val context: Context,
 ) {
     private lateinit var store: SharedPreferences
+    private val Context.dataStore by preferencesDataStore(name = "user_config")
 
     fun authRequired(): Boolean {
         return getBoolean(Keys.Auth)
@@ -38,6 +44,15 @@ class UserConfig(
 
     fun increaseLaunchNumber() {
         putInt(Keys.LaunchNumber, getInt(Keys.LaunchNumber) + 1)
+    }
+
+    fun isHideBalances(): Flow<Boolean> = context.dataStore.data
+        .map { preferences -> preferences[Key.IsHideBalances] == true }
+
+    suspend fun hideBalances() {
+        context.dataStore.edit { preferences ->
+            preferences[Key.IsHideBalances] = preferences[Key.IsHideBalances] != true
+        }
     }
 
     private fun getStore(): SharedPreferences {
@@ -75,5 +90,9 @@ class UserConfig(
         ;
 
         fun buildKey(postfix: String = "") = "$string-$postfix"
+    }
+
+    private object Key {
+        val IsHideBalances = booleanPreferencesKey("hide_balances")
     }
 }

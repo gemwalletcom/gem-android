@@ -101,7 +101,7 @@ fun AssetsScreen(
                     .testTag("assets_list"),
                 state = listState
             ) {
-                assetsHead(walletInfo, onSendClick, onReceiveClick, onBuyClick)
+                assetsHead(walletInfo, onSendClick, onReceiveClick, onBuyClick, viewModel::hideBalances)
                 item {
                     BannersScene(
                         asset = null,
@@ -143,10 +143,12 @@ private fun LazyListScope.assetsHead(
     onSendClick: () -> Unit,
     onReceiveClick: () -> Unit,
     onBuyClick: () -> Unit,
+    onHideBalances: () -> Unit,
 ) {
     item {
         AmountListHead(
             amount = walletInfo.totalValue,
+            onHideBalances = onHideBalances,
             actions = {
                 AssetHeadActions(
                     walletType = walletInfo.type,
