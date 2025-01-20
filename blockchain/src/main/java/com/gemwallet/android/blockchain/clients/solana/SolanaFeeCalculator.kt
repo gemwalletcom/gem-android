@@ -11,6 +11,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import kotlin.math.max
+import kotlin.math.min
 
 class SolanaFeeCalculator(
     private val feeService: SolanaFeeService
@@ -29,21 +30,21 @@ class SolanaFeeCalculator(
     suspend fun calculate(params: ConfirmParams.Stake): List<GasFee> {
         return calculate(
             gasLimit = 100_000L,
-            multipleOf = 10_000L,
+            multipleOf = 1_500_000L,
         )
     }
 
     suspend fun calculate(params: ConfirmParams.TransferParams): List<GasFee> {
         return calculate(
             gasLimit = 100_000L,
-            multipleOf = if (params.assetId.type() == AssetSubtype.NATIVE) 10_000L else 100_000L,
+            multipleOf = if (params.assetId.type() == AssetSubtype.NATIVE) 100_000L else 1_000_000L,
         )
     }
 
     suspend fun calculate(params: ConfirmParams.SwapParams): List<GasFee> {
         return calculate(
-            gasLimit = 1_400_000L,
-            multipleOf = 250_000,
+            gasLimit = 420_000L,
+            multipleOf = 2_500_000,
         )
     }
 
@@ -52,14 +53,15 @@ class SolanaFeeCalculator(
 
         return TxSpeed.entries.map { speed ->
             val speedCoefficient = when (speed) {
-                TxSpeed.Slow -> 0.25f
-                TxSpeed.Normal -> 1f
-                TxSpeed.Fast -> 2f
+                TxSpeed.Slow -> 1f
+                TxSpeed.Normal -> 3f
+                TxSpeed.Fast -> 5f
             }
             val minerFee = if (priorityFees.isEmpty()) {
                 multipleOf
             } else {
-                val averagePriorityFee = priorityFees.map { it.prioritizationFee }
+                val averagePriorityFee = priorityFees.map { it.prioritizationFee }.sortedDescending()
+                    .subList(0, min(5, priorityFees.size - 1))
                     .fold(0) { acc, i -> acc + i } / priorityFees.size
                 max(((averagePriorityFee + multipleOf - 1) / multipleOf) * multipleOf, multipleOf)
             } * speedCoefficient
