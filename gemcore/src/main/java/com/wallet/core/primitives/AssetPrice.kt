@@ -10,6 +10,7 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class AssetMarket (
 	val marketCap: Double? = null,
+	val marketCapFdv: Double? = null,
 	val marketCapRank: Int? = null,
 	val totalVolume: Double? = null,
 	val circulatingSupply: Double? = null,
