@@ -30,14 +30,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset_select.components.SearchBar
 import com.gemwallet.android.features.asset_select.viewmodels.BaseAssetSelectViewModel
-import com.gemwallet.android.ui.components.pinnedAssetsHeader
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.pinnedAssetsHeader
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.AssetInfoUIModel
@@ -45,7 +45,6 @@ import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -144,7 +143,10 @@ private fun LazyListScope.notFound(
                 .fillMaxWidth()
                 .padding(padding16)
         ) {
-            Column(modifier = Modifier.align(Alignment.Center)) {
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
                 Text(text = stringResource(id = R.string.assets_no_assets_found))
                 if (isAddAvailable) {
                     TextButton(onClick = { onAddAsset?.invoke() }) {

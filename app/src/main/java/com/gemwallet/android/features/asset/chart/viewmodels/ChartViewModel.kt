@@ -45,13 +45,14 @@ class ChartViewModel @Inject constructor(
                 .map { it.firstOrNull() }
                 .filterNotNull()
         }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
     private val chartState = MutableStateFlow(ChartState())
     val chartUIState = chartState.map { ChartUIModel.State(it.loading, it.period) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, ChartUIModel.State())
 
     val chartUIModel = assetInfo.combine(chartState) { assetInfo, chartState -> Pair(assetInfo, chartState) }
         .mapLatest { state ->
-            val assetInfo = state.first
+            val assetInfo = state.first ?: return@mapLatest ChartUIModel()
             val chartState = state.second
             try {
                 request(assetInfo, chartState.period)

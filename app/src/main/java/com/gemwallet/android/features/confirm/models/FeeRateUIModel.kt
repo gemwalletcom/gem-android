@@ -2,7 +2,6 @@ package com.gemwallet.android.features.confirm.models
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.feeUnitType
@@ -11,6 +10,8 @@ import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignMode
 import com.gemwallet.android.model.TxSpeed
+import com.gemwallet.android.ui.R
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeeUnitType
 
 data class FeeRateUIModel(
@@ -39,8 +40,11 @@ data class FeeRateUIModel(
             FeeUnitType.Native -> asset.symbol
             null -> ""
         }
-        val value = ((fee as? GasFee)?.maxGasPrice ?: fee.amount)
-        val formattedValue = Crypto(value).format(decimals, symbol, 6, SignMode.NoSign, true)
+        val value = when (asset.chain()) {
+            Chain.Solana -> fee.amount
+            else -> (fee as? GasFee)?.maxGasPrice ?: fee.amount
+        }
+        val formattedValue = Crypto(value).format(decimals, symbol, 6, -1, SignMode.NoSign, true)
         return formattedValue
     }
 }

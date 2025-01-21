@@ -54,6 +54,8 @@ dependencies {
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
+    implementation(libs.datastore)
+
     implementation(libs.ktx.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

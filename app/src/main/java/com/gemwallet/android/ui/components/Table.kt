@@ -163,8 +163,7 @@ private fun Cell(
         }
         if (action != null) {
             if (showActionChevron) {
-                actionIcon?.invoke() ?:
-                Icon(
+                actionIcon?.invoke() ?: Icon(
                     painter = rememberVectorPainter(image = Icons.Default.ChevronRight),
                     contentDescription = "open_provider_select",
                     tint = MaterialTheme.colorScheme.secondary,

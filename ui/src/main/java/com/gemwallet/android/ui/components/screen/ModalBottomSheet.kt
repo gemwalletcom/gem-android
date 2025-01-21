@@ -18,6 +18,7 @@ fun ModalBottomSheet(
 ) {
     androidx.compose.material3.ModalBottomSheet(
         onDismissRequest = onDismissRequest,
+        sheetState = sheetState,
         scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
         containerColor = MaterialTheme.colorScheme.background,
         dragHandle = { Box { Spacer16() } },

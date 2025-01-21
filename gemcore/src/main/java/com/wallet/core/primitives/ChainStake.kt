@@ -25,8 +25,6 @@ enum class StakeChain(val string: String) {
 	Sui("sui"),
 	@SerialName("smartchain")
 	SmartChain("smartchain"),
-	@SerialName("ethereum")
-	Ethereum("ethereum"),
 	@SerialName("tron")
 	Tron("tron"),
 }

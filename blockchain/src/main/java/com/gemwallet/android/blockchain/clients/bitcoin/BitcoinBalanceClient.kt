@@ -13,7 +13,11 @@ class BitcoinBalanceClient(
 
     override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
         val address = when (chain) {
-            Chain.BitcoinCash -> "${ Chain.BitcoinCash.string }:" + address
+            Chain.BitcoinCash -> if (address.startsWith(Chain.BitcoinCash.string)) {
+                address
+            } else {
+                "${Chain.BitcoinCash.string}:" + address
+            }
             else -> address
         }
         val result = balanceService.balance(address).getOrNull()

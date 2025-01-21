@@ -6,7 +6,7 @@ import com.wallet.core.primitives.StakeChain
 fun StakeChain.Companion.isStaked(chain: Chain): Boolean = byChain(chain) != null
 
 fun StakeChain.Companion.byChain(chain: Chain): StakeChain?
-    = StakeChain.entries.filter { it != StakeChain.Ethereum }.firstOrNull { it.string == chain.string }
+    = StakeChain.entries.firstOrNull { it.string == chain.string }
 
 fun StakeChain.redelegated(): Boolean = when (this) {
     StakeChain.Cosmos,
@@ -17,8 +17,7 @@ fun StakeChain.redelegated(): Boolean = when (this) {
     StakeChain.Solana,
     StakeChain.Sui,
     StakeChain.SmartChain,
-    StakeChain.Tron,
-    StakeChain.Ethereum -> false
+    StakeChain.Tron -> false
 }
 
 fun StakeChain.withdraw(): Boolean = when (this) {
@@ -28,7 +27,6 @@ fun StakeChain.withdraw(): Boolean = when (this) {
     StakeChain.Celestia,
     StakeChain.Osmosis,
     StakeChain.SmartChain,
-    StakeChain.Ethereum,
     StakeChain.Tron,
     StakeChain.Sui-> false
     StakeChain.Solana -> true
@@ -43,6 +41,5 @@ fun StakeChain.claimed(): Boolean = when (this) {
     StakeChain.Solana,
     StakeChain.Sui,
     StakeChain.SmartChain,
-    StakeChain.Tron,
-    StakeChain.Ethereum -> false
+    StakeChain.Tron -> false
 }

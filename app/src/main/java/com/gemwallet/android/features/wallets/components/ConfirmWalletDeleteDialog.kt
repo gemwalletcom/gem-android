@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import com.gemwallet.android.localize.R
+import com.gemwallet.android.ui.R
 
 @Composable
 fun ConfirmWalletDeleteDialog(

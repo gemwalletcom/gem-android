@@ -1,10 +1,10 @@
 package com.gemwallet.android.blockchain.clients.evm
 
 import com.gemwallet.android.blockchain.clients.ethereum.EvmBalanceClient
-import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
 import com.gemwallet.android.blockchain.clients.ethereum.SmartchainStakeClient
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmBalancesService
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
+import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse

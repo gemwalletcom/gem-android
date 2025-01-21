@@ -1,6 +1,8 @@
 package com.gemwallet.android.data.service.store.database.mappers
 
 import com.gemwallet.android.data.service.store.database.entities.DbAssetInfo
+import com.gemwallet.android.ext.getReserveBalance
+import com.gemwallet.android.ext.isStakeSupported
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetBalance
@@ -15,6 +17,7 @@ import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 
 class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo?>, List<AssetInfo>, Nothing, Nothing> {
@@ -79,7 +82,7 @@ class AssetInfoMapper(private val gson: Gson = Gson()) : Mapper<List<DbAssetInfo
                     isEnabled = entity.visible == true,
                     isBuyEnabled = entity.isBuyEnabled,
                     isSwapEnabled = entity.isSwapEnabled,
-                    isStakeEnabled = entity.isStakeEnabled,
+                    isStakeEnabled = entity.chain.isStakeSupported(),
                     isPinned = entity.pinned == true,
                     isSellEnabled = false,
                     isActive = true,

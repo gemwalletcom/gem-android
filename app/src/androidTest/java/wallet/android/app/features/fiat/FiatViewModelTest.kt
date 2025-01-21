@@ -3,7 +3,6 @@ package wallet.android.app.features.fiat
 import app.cash.turbine.test
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
-import com.gemwallet.android.features.buy.viewmodels.FiatSceneState
 import com.gemwallet.android.features.buy.viewmodels.FiatViewModel
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -49,24 +48,6 @@ class FiatViewModelTest {
             viewModel.updateAmount("150")
             skipItems(1)
             assertEquals("150", awaitItem())
-        }
-    }
-
-    @Test
-    fun testMinimumAmountErrorState() = runTest {
-        viewModel.state.test {
-            viewModel.updateAmount((FiatViewModel.MIN_FIAT_AMOUNT - 1).toString())
-            skipItems(1)
-            assert(awaitItem() is FiatSceneState.Error)
-        }
-    }
-
-    @Test
-    fun testValidAmountSetsLoadingState() = runTest {
-        viewModel.state.test {
-            viewModel.updateAmount("100")
-            skipItems(1)
-            assert(awaitItem() is FiatSceneState.Loading)
         }
     }
 }

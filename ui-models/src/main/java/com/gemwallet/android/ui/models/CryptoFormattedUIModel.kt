@@ -9,8 +9,11 @@ interface CryptoFormattedUIModel : CryptoAmountUIModel, AssetUIModel {
             value = BigDecimal.valueOf(cryptoAmount),
             symbol = asset.symbol,
             decimalPlace = fraction,
+            maxDecimals = maxFraction,
             dynamicPlace = true
         )
 
     val fraction: Int
+
+    val maxFraction: Int
 }

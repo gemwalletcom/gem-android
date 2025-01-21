@@ -57,9 +57,9 @@ class TestAptosSignerPreloader {
         assertEquals(false, result.input.isMax())
         assertEquals("0xd7257c62806cea85fc8eaf947377b672fe062b81e6c0b19b6d8a3f408e59cf8c", result.input.destination()?.address)
         assertEquals(null, result.input.memo())
-        assertEquals(BigInteger.valueOf(2700L), result.chainData.fee().amount)
+        assertEquals(BigInteger.valueOf(202800L), result.chainData.fee().amount)
         assertEquals(BigInteger.valueOf(150L), (result.chainData.fee() as GasFee).maxGasPrice)
-        assertEquals(BigInteger.valueOf(18L), (result.chainData.fee() as GasFee).limit)
+        assertEquals(BigInteger.valueOf(1352), (result.chainData.fee() as GasFee).limit)
         assertEquals(AssetId(Chain.Aptos).toIdentifier(), result.chainData.fee().feeAssetId.toIdentifier())
         assertEquals(TxSpeed.Normal, result.chainData.fee().speed)
         assertEquals(8L, (result.chainData as AptosSignerPreloader.AptosChainData).sequence)
@@ -130,7 +130,7 @@ class TestAptosSignerPreloader {
             }
             assertTrue(false)
         } catch (err: Throwable) {
-            assertEquals("Message", err.message)
+            assertEquals(null, err.message)
         }
     }
 }

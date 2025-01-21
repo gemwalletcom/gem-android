@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.ext.getReserveBalance
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Asset
@@ -13,7 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import uniffi.gemstone.Config
+import java.math.BigInteger
 import javax.inject.Inject
 
 @HiltViewModel
@@ -39,7 +40,8 @@ class BannersViewModel @Inject constructor(
 
     fun getActivationFee(asset: Asset?): String {
         asset ?: return ""
-        val value = Config().getChainConfig(asset.id.chain.string).accountActivationFee?.toString() ?: return ""
+        val value = asset.id.chain.getReserveBalance()
+        if (value == BigInteger.ZERO) return ""
         return asset.format(Crypto(value))
     }
 

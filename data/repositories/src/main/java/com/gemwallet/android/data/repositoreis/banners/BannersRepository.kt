@@ -7,7 +7,6 @@ import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.service.store.database.BannersDao
 import com.gemwallet.android.data.service.store.database.entities.DbBanner
 import com.gemwallet.android.data.service.store.database.mappers.BannerMapper
-import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.isStackable
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Asset
@@ -76,7 +75,7 @@ class BannersRepository(
             state = BannerState.Active,
             event = when {
                 wallet == null && asset == null -> BannerEvent.EnableNotifications
-                asset?.id?.toIdentifier() == Chain.Xrp.asset().id.toIdentifier() -> BannerEvent.AccountActivation
+//                asset?.id?.chain?.getReserveBalance()?.let { it != BigInteger.ZERO } == true -> BannerEvent.AccountActivation
                 asset?.isStackable() == true -> BannerEvent.Stake
                 else -> return null
             }

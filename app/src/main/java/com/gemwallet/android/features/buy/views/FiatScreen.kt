@@ -26,12 +26,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.features.buy.models.BuyError
 import com.gemwallet.android.features.buy.models.BuyFiatProviderUIModel
 import com.gemwallet.android.features.buy.viewmodels.FiatSceneState
 import com.gemwallet.android.features.buy.viewmodels.FiatSuggestion
 import com.gemwallet.android.features.buy.viewmodels.FiatViewModel
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.CellEntity
@@ -128,7 +128,6 @@ private fun BuyScene(
                 support = {
                     ListItemSupportText(asset.cryptoFormatted)
                 },
-                badge = if (asset.asset.symbol == asset.asset.name) null else asset.asset.symbol,
                 dividerShowed = false,
                 trailing = {
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -137,7 +136,6 @@ private fun BuyScene(
                                 FiatSuggestion.RandomAmount -> RandomGradientButton(
                                     onClick = { onLotSelect(FiatSuggestion.RandomAmount) }
                                 )
-
                                 is FiatSuggestion.SuggestionAmount,
                                 is FiatSuggestion.SuggestionPercent -> {
                                     LotButton(

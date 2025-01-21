@@ -29,7 +29,7 @@ class PolkadotSignClient(
         val input = Polkadot.SigningInput.newBuilder().apply {
             this.genesisHash = ByteString.copyFrom(data.genesisHash.decodeHex())
             this.blockHash = ByteString.copyFrom(data.blockHash.decodeHex())
-            this.nonce = nonce
+            this.nonce = chainData.sequence.toLong()
             this.specVersion = data.specVersion.toInt()
             this.network = CoinType.POLKADOT.ss58Prefix()
             this.transactionVersion = data.transactionVersion.toInt()
@@ -41,7 +41,7 @@ class PolkadotSignClient(
             this.balanceCall = Polkadot.Balance.newBuilder().apply {
                 transfer = Polkadot.Balance.Transfer.newBuilder().apply {
                     this.toAddress = params.input.destination()!!.address
-                    this.value = ByteString.copyFrom(value.toByteArray())
+                    this.value = ByteString.copyFrom(params.finalAmount.toByteArray())
                 }.build()
             }.build()
         }.build()

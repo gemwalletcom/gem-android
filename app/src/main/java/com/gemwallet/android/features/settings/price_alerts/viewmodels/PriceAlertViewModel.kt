@@ -8,9 +8,11 @@ import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PriceAlert
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -25,11 +27,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.collections.map
+import kotlin.collections.toTypedArray
 
 @HiltViewModel
 class PriceAlertViewModel @Inject constructor(
-    assetsRepository: AssetsRepository,
     getPriceAlertsCase: GetPriceAlertsCase,
+    private val assetsRepository: AssetsRepository,
     val sessionRepository: SessionRepository,
     private val enablePriceAlertCase: EnablePriceAlertCase,
     private val putPriceAlertCase: PutPriceAlertCase,
@@ -43,6 +47,7 @@ class PriceAlertViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val alertingAssets = getPriceAlertsCase.getPriceAlerts().flatMapLatest { alerts ->
         val ids = alerts.map { it.assetId }
+        refreshPrices(ids.mapNotNull { it.toAssetId() })
         assetsRepository.getAssetsInfoByAllWallets(ids)
     }
     .map { it.map { AssetInfoUIModel(it) } }
@@ -76,6 +81,14 @@ class PriceAlertViewModel @Inject constructor(
     }
 
     fun addAsset(assetId: AssetId) = viewModelScope.launch {
+        assetsRepository.updatePrices(sessionRepository.getSession()?.currency ?: return@launch, assetId)
         putPriceAlertCase.putPriceAlert(PriceAlert(assetId.toIdentifier()))
+    }
+
+    private fun refreshPrices(ids: List<AssetId>) = viewModelScope.launch(Dispatchers.IO) {
+        assetsRepository.updatePrices(
+            sessionRepository.getSession()?.currency ?: Currency.USD,
+            *ids.toTypedArray(),
+        )
     }
 }

@@ -8,7 +8,6 @@ import androidx.room.Update
 import com.gemwallet.android.data.service.store.database.entities.DbAsset
 import com.gemwallet.android.data.service.store.database.entities.DbAssetConfig
 import com.gemwallet.android.data.service.store.database.entities.DbAssetInfo
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow

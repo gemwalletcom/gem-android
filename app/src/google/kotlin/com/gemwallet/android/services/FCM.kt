@@ -10,7 +10,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.gemwallet.android.MainActivity
-import com.gemwallet.android.R
 import com.gemwallet.android.cases.device.GetPushEnabledCase
 import com.gemwallet.android.cases.device.SetPushTokenCase
 import com.gemwallet.android.cases.device.SyncDeviceInfoCase
@@ -18,6 +17,7 @@ import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.ui.R
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint

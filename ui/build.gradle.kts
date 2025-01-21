@@ -45,7 +45,6 @@ android {
 
 dependencies {
     api(project(":ui-models"))
-    implementation(project(":localize"))
 
     // Compose
     api(libs.androidx.material3.adaptive.android)

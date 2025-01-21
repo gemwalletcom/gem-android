@@ -10,10 +10,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetSubtype

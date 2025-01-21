@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.gemwallet.android.data.service.store.database.entities.DbAssetInfo
 import com.gemwallet.android.data.service.store.database.entities.DbToken
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
@@ -36,13 +35,13 @@ interface TokensDao {
     fun search(types: List<AssetType>, query: String): Flow<List<DbToken>>
 
     @Query("""
-        SELECT * FROM tokens WHERE (type IN (:types) OR id IN (:assetIds))
-            AND (id LIKE '%' || :query || '%' OR symbol LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%')
+        SELECT * FROM tokens WHERE
+            id LIKE '%' || :query || '%' OR symbol LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%'
             COLLATE NOCASE
         ORDER BY rank DESC
         """
     )
-    fun swapSearch(types: List<AssetType>, assetIds: List<String>, query: String): Flow<List<DbToken>>
+    fun swapSearch(query: String): Flow<List<DbToken>>
 
     @Query("""
         SELECT
@@ -58,6 +57,9 @@ interface TokensDao {
             accounts.extendedPublicKey AS extendedPublicKey,
             wallets.type AS walletType,
             wallets.name AS walletName,
+            prices.currency AS priceCurrency,
+            prices.value AS priceValue,
+            prices.day_changed AS priceDayChanges,
             0 AS pinned,
             0 AS visible,
             0 AS position,
@@ -68,6 +70,7 @@ interface TokensDao {
             0 AS sessionId
         FROM tokens, accounts
         JOIN wallets ON wallets.id = accounts.wallet_id
+        LEFT JOIN prices ON tokens.id = prices.asset_id AND prices.currency = (SELECT currency FROM session WHERE id = 1)
         WHERE
             accounts.wallet_id = (SELECT wallet_id FROM session WHERE session.id = 1)
             AND accounts.chain = :chain

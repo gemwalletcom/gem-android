@@ -97,7 +97,7 @@ class SwapViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val assetsState = swapPairState.flatMapLatest { ids ->
-        if (ids?.fromId == null || ids.toId == null || ids.fromId.toIdentifier() == ids.toId.toIdentifier()) {
+        if (ids?.fromId == null || ids.toId == null) {
             return@flatMapLatest emptyFlow()
         }
         assetsRepository.getAssetsInfo(listOf(ids.fromId, ids.toId))
@@ -151,7 +151,21 @@ class SwapViewModel @Inject constructor(
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    private val quote  = combine(fromValueFlow, assetsState, approveTx) { fromValue, assets, tx ->
+    private val refreshTimer = fromValueFlow.flatMapLatest {
+        if (it.isEmpty() || (it.toDoubleOrNull() ?: 0.0) == 0.0) {
+            return@flatMapLatest emptyFlow<Long>()
+        }
+        flow {
+            while (true) {
+                delay(30 * 1000)
+                emit(System.currentTimeMillis())
+            }
+        }
+    }
+    .flowOn(Dispatchers.IO)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
+    private val quote  = combine(fromValueFlow, assetsState, approveTx, refreshTimer) { fromValue, assets, tx, _ ->
         Triple(fromValue, assets, tx)
     }.mapLatest { data ->
         val assets = data.second

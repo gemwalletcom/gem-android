@@ -62,20 +62,20 @@ jobs:
         run: cargo install just
 
       - name: Setup NDK
-        run: make install-ndk
+        run: just install-ndk
 
       - name: Install dependencies
         run: |
-          make install-typeshare && make install-toolchains && make install-wallet-core
+          just install-typeshare && just install-toolchains && just install-wallet-core
 
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v3
 
       - name: Build Core
-        run: make generate-stone
+        run: just generate-stone
 
       - name: Build tests
-        run: make build-test
+        run: just build-test
         env:
           GRP_USERNAME: ${{ github.actor }}
           GRP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -85,4 +85,4 @@ jobs:
         with:
           api-level: 29
           arch: x86_64
-          script: make test
+          script: just test

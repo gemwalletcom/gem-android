@@ -53,13 +53,15 @@ class TestSolanaSigner {
             .transfer(destination = DestinationAddress("4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S")) as ConfirmParams.TransferParams.Native,
             chainData = SolanaSignerPreloader.SolanaChainData(
                 blockhash = "kiEPF6aKvEsj5nbi4FBvgRRm9ha36Y3cgDU9qnUKt32",
-                fees = GasFee(
-                    amount = BigInteger("105005000"),
-                    minerFee = BigInteger("1050000000"),
-                    maxGasPrice = BigInteger("5000"),
-                    limit = BigInteger("100000"),
-                    feeAssetId = AssetId(Chain.Solana),
-                    speed = TxSpeed.Normal,
+                fees = listOf(
+                    GasFee(
+                        amount = BigInteger("105005000"),
+                        minerFee = BigInteger("1050000000"),
+                        maxGasPrice = BigInteger("5000"),
+                        limit = BigInteger("100000"),
+                        feeAssetId = AssetId(Chain.Solana),
+                        speed = TxSpeed.Normal,
+                    ),
                 ),
                 recipientTokenAddress = null,
                 senderTokenAddress = "",
@@ -102,13 +104,15 @@ class TestSolanaSigner {
             .transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh")) as ConfirmParams.TransferParams.Token,
             chainData = SolanaSignerPreloader.SolanaChainData(
                 blockhash = "kiEPF6aKvEsj5nbi4FBvgRRm9ha36Y3cgDU9qnUKt32",
-                fees = GasFee(
-                    amount = BigInteger("105005000"),
-                    minerFee = BigInteger("1050000000"),
-                    maxGasPrice = BigInteger("5000"),
-                    limit = BigInteger("100000"),
-                    feeAssetId = AssetId(Chain.Solana),
-                    speed = TxSpeed.Normal,
+                fees = listOf(
+                    GasFee(
+                        amount = BigInteger("105005000"),
+                        minerFee = BigInteger("1050000000"),
+                        maxGasPrice = BigInteger("5000"),
+                        limit = BigInteger("100000"),
+                        feeAssetId = AssetId(Chain.Solana),
+                        speed = TxSpeed.Normal,
+                    )
                 ),
                 recipientTokenAddress = "DVWPV7brSbPDkA7a3qdn6UJsVc3J3DyhQhjNaZeZqwzo",
                 senderTokenAddress = "DVWPV7brSbPDkA7a3qdn6UJsVc3J3DyhQhjNaZeZqwzo",
@@ -152,13 +156,15 @@ class TestSolanaSigner {
             .transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh")) as ConfirmParams.TransferParams.Token,
             chainData = SolanaSignerPreloader.SolanaChainData(
                 blockhash = "kiEPF6aKvEsj5nbi4FBvgRRm9ha36Y3cgDU9qnUKt32",
-                fees = GasFee(
-                    amount = BigInteger("105005000"),
-                    minerFee = BigInteger("1050000000"),
-                    maxGasPrice = BigInteger("5000"),
-                    limit = BigInteger("100000"),
-                    feeAssetId = AssetId(Chain.Solana),
-                    speed = TxSpeed.Normal,
+                fees = listOf(
+                    GasFee(
+                        amount = BigInteger("105005000"),
+                        minerFee = BigInteger("1050000000"),
+                        maxGasPrice = BigInteger("5000"),
+                        limit = BigInteger("100000"),
+                        feeAssetId = AssetId(Chain.Solana),
+                        speed = TxSpeed.Normal,
+                    ),
                 ),
                 recipientTokenAddress = "87vTugUvkkepa84mBRfENnvkPQRj5EZSkiG8XyFAhbQQ",
                 senderTokenAddress = "87vTugUvkkepa84mBRfENnvkPQRj5EZSkiG8XyFAhbQQ",

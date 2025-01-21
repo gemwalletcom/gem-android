@@ -7,8 +7,10 @@ import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isStaked
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.type
@@ -52,6 +54,7 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class AsseDetailsViewModel @Inject constructor(
+    private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val getTransactionsCase: GetTransactionsCase,
     private val stakeRepository: StakeRepository,
@@ -111,7 +114,7 @@ class AsseDetailsViewModel @Inject constructor(
                 }
             )
         }
-        viewModelScope.launch { assetsRepository.syncAssetInfo(assetId) }
+        viewModelScope.launch { assetsRepository.syncAssetInfo(assetId, sessionRepository.getSession()?.wallet?.getAccount(assetId.chain) ?: return@launch) }
         viewModelScope.launch { stakeRepository.sync(assetId.chain, owner.address, apr) }
         viewModelScope.launch {
             delay(300)

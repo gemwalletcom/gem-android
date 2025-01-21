@@ -32,7 +32,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.features.asset_select.views.SelectSwapScreen
 import com.gemwallet.android.features.confirm.views.ConfirmScreen
 import com.gemwallet.android.features.swap.models.SwapError
@@ -42,6 +41,7 @@ import com.gemwallet.android.features.swap.models.SwapPairSelect
 import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.features.swap.viewmodels.SwapViewModel
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.TransactionItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer2
@@ -70,6 +70,8 @@ fun SwapScreen(
 
     var approveParams by rememberSaveable { mutableStateOf<ConfirmParams?>(null) }
     val pair = pairState
+    val keyboardController = LocalSoftwareKeyboardController.current
+
     BackHandler(selectState != null) {
         if (approveParams != null) {
             approveParams = null
@@ -107,7 +109,10 @@ fun SwapScreen(
                 item = pair.from,
                 equivalent = fromEquivalent,
                 state = viewModel.fromValue,
-                onAssetSelect = viewModel::changePair
+                onAssetSelect = {
+                    keyboardController?.hide()
+                    viewModel.changePair(it)
+                }
             )
             IconButton(onClick = viewModel::switchSwap) {
                 Icon(
@@ -121,7 +126,10 @@ fun SwapScreen(
                 equivalent = toEquivalent,
                 state = viewModel.toValue,
                 calculating = swapState == SwapState.GetQuote,
-                onAssetSelect = viewModel::changePair
+                onAssetSelect = {
+                    keyboardController?.hide()
+                    viewModel.changePair(it)
+                }
             )
             Spacer16()
             val tx = approveTx
@@ -208,12 +216,12 @@ private fun SwapError(state: SwapState) {
                 SwapError.None -> ""
                 SwapError.IncorrectInput -> stringResource(R.string.common_required_field, stringResource(R.string.swap_you_pay))
                 SwapError.NoQuote -> stringResource(R.string.errors_swap_no_quote_data)
-                SwapError.NotSupportedAsset -> stringResource(com.gemwallet.android.localize.R.string.errors_swap_not_supported_asset)
-                SwapError.NotSupportedChain -> stringResource(com.gemwallet.android.localize.R.string.errors_swap_not_supported_chain)
+                SwapError.NotSupportedAsset -> stringResource(R.string.errors_swap_not_supported_asset)
+                SwapError.NotSupportedChain -> stringResource(R.string.errors_swap_not_supported_chain)
                 SwapError.NotImplemented,
-                SwapError.NotSupportedPair -> stringResource(com.gemwallet.android.localize.R.string.errors_swap_not_supported_pair)
+                SwapError.NotSupportedPair -> stringResource(R.string.errors_swap_not_supported_pair)
                 SwapError.NetworkError -> "Node not available. Check internet connection."
-                is SwapError.Unknown -> "${stringResource(com.gemwallet.android.localize.R.string.errors_unknown_try_again)}: ${state.error.message}"
+                is SwapError.Unknown -> "${stringResource(R.string.errors_unknown_try_again)}: ${state.error.message}"
             },
             style = MaterialTheme.typography.bodyMedium,
         )

@@ -21,8 +21,9 @@ class StellarBalanceClient(
         val reserved = chain.getReserveBalance()
         val balance = try {
             val result = accountService.accounts(address)?.balances
-                ?.firstOrNull { it.asset_type == "native" }?.balance ?: "0"
-            Crypto(result, chain.asset().decimals).atomicValue.max(reserved)
+                ?.firstOrNull { it.asset_type == "native" }?.balance ?: return null
+            val value = Crypto(result, chain.asset().decimals).atomicValue
+            (value - reserved).max(reserved)
         } catch (_: Throwable) {
             return null
         }

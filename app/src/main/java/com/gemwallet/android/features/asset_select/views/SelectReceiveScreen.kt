@@ -9,8 +9,8 @@ import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.gemwallet.android.R
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
+import com.gemwallet.android.ui.R
 import com.wallet.core.primitives.AssetId
 
 @Composable

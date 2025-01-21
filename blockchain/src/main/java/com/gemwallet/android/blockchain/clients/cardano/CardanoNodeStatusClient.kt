@@ -10,7 +10,6 @@ import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import okhttp3.Dispatcher
 
 class CardanoNodeStatusClient(
     private val chain: Chain,

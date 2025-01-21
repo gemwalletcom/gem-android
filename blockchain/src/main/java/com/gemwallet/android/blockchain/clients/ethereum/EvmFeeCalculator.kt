@@ -9,7 +9,6 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
@@ -51,14 +50,20 @@ class EvmFeeCalculator(
         val (baseFee, priorityFees) = getBasePriorityFees.await()
 
         if (params.assetId.chain.toEVM()?.isOpStack() == true) {
-            return@withContext priorityFees.map {
+            return@withContext priorityFees.mapIndexed { index, priorityFee ->
                 optimismGasOracle.estimate(
                     params = params,
                     chainId = chainId,
                     nonce = nonce,
                     gasLimit = gasLimit,
                     baseFee = baseFee,
-                    priorityFee = it,
+                    priorityFee = priorityFee,
+                    txSpeed = when (index) {
+                        0 -> TxSpeed.Slow
+                        1 -> TxSpeed.Normal
+                        2 -> TxSpeed.Fast
+                        else -> TxSpeed.Normal
+                    }
                 )
             }
         }

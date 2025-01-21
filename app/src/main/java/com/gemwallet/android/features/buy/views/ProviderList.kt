@@ -1,7 +1,6 @@
 package com.gemwallet.android.features.buy.views
 
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import com.gemwallet.android.features.buy.models.BuyFiatProviderUIModel
@@ -17,9 +16,11 @@ fun ProviderList(
     providers: List<BuyFiatProviderUIModel>,
     onProviderSelect: (FiatProvider) -> Unit,
 ) {
+
     if (!isShow.value) {
         return
     }
+
     ModalBottomSheet(
         onDismissRequest = { isShow.value = false },
     ) {

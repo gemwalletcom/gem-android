@@ -59,10 +59,11 @@ fun Chain.assetType(): AssetType? {
     }
 }
 
-fun Chain.getReserveBalance(): BigInteger = when (this) {
-    Chain.Xrp -> Config().getChainConfig(this.string).accountActivationFee?.toBigInteger() ?: BigInteger.ZERO
-    else -> BigInteger.ZERO
-}
+fun Chain.getReserveBalance(): BigInteger = Config().getChainConfig(this.string).accountActivationFee?.toBigInteger() ?: BigInteger.ZERO
+
+fun Chain.getReserveBalanceUrl(): String? = Config().getChainConfig(this.string).accountActivationFeeUrl
+
+fun Chain.isStakeSupported(): Boolean = Config().getChainConfig(this.string).isStakeSupported
 
 fun Chain.eip1559Support() = when (this) {
     Chain.OpBNB,

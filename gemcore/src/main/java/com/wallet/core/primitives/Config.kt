@@ -8,29 +8,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-data class ConfigAppVersion (
-	val production: String,
-	val beta: String,
-	val alpha: String
-)
-
-@Serializable
-data class ConfigAndroidApp (
-	val version: ConfigAppVersion
-)
-
-@Serializable
-data class ConfigIOSApp (
-	val version: ConfigAppVersion
-)
-
-@Serializable
-data class ConfigApp (
-	val ios: ConfigIOSApp,
-	val android: ConfigAndroidApp
-)
-
-@Serializable
 data class Release (
 	val version: String,
 	val store: PlatformStore,

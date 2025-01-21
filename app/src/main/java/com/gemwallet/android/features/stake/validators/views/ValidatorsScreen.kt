@@ -6,9 +6,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.features.stake.validators.model.ValidatorsUIState
 import com.gemwallet.android.features.stake.validators.viewmodels.ValidatorsViewModel
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene
 import com.wallet.core.primitives.Chain

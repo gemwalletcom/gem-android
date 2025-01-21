@@ -36,9 +36,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.ActionIcon
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.PriceInfo

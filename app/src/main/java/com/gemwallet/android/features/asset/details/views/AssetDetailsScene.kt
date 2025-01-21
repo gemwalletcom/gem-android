@@ -35,9 +35,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
+import com.gemwallet.android.ext.getReserveBalanceUrl
 import com.gemwallet.android.ext.networkAsset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIModel
@@ -46,6 +46,7 @@ import com.gemwallet.android.features.asset.details.models.AssetStateError
 import com.gemwallet.android.features.asset.details.viewmodels.AsseDetailsViewModel
 import com.gemwallet.android.features.banners.views.BannersScene
 import com.gemwallet.android.features.transactions.components.transactionsList
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
 import com.gemwallet.android.ui.components.CellEntity
@@ -65,7 +66,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BannerEvent
-import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.WalletType
 import uniffi.gemstone.Config
@@ -224,6 +224,9 @@ private fun Success(
                                 BannerEvent.Stake -> onStake(uiState.asset.id)
                                 BannerEvent.AccountBlockedMultiSignature ->
                                     uriHandler.open(Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
+                                BannerEvent.ActivateAsset -> uiState.asset.chain().getReserveBalanceUrl()?.let {
+                                    uriHandler.open(it)
+                                }
                                 else -> {}
                             }
                         },
@@ -330,9 +333,7 @@ private fun LazyListScope.balanceDetails(
                     label = stringResource(R.string.asset_balances_reserved),
                     data = uiState.account.reserved,
                     action = {
-                        if (uiState.asset.id.chain == Chain.Xrp) {
-                            uriHandler.open("https://xrpl.org/docs/concepts/accounts/reserves")
-                        }
+                        uriHandler.open(uiState.asset.id.chain.getReserveBalanceUrl() ?: return@CellEntity)
                     },
                 )
             )

@@ -7,7 +7,6 @@ import com.gemwallet.android.cases.swap.GetSwapSupportedCase
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet
 import uniffi.gemstone.ApprovalType
 import uniffi.gemstone.Config

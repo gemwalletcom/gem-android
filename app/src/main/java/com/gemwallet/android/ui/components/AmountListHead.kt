@@ -2,6 +2,7 @@ package com.gemwallet.android.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -46,7 +47,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.gemwallet.android.R
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
@@ -60,6 +61,7 @@ import com.wallet.core.primitives.WalletType
 @Composable
 fun AmountListHead(
     amount: String,
+    onHideBalances: (() -> Unit)? = null,
     equivalent: String? = null,
     iconUrl: String? = null,
     supportIconUrl: String? = null,
@@ -84,7 +86,10 @@ fun AmountListHead(
                 )
                 Spacer16()
             }
-            DisplayText(text = amount, modifier = Modifier.fillMaxWidth())
+            DisplayText(text = amount, modifier = Modifier
+                .fillMaxWidth()
+                .clickable(onHideBalances != null, onClick = { onHideBalances?.invoke() })
+            )
             if (!equivalent.isNullOrEmpty()) {
                 Spacer4()
                 Text(

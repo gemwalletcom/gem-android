@@ -9,6 +9,7 @@ import com.gemwallet.android.data.service.store.database.mappers.AssetInfoMapper
 import com.gemwallet.android.data.service.store.database.mappers.TokenMapper
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.assetType
+import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.Asset
@@ -45,11 +46,13 @@ class TokensRepository (
         assetIds: List<AssetId>,
         query: String
     ): Flow<List<Asset>> {
-        return tokensDao.swapSearch(
-            chains.mapNotNull { chain -> chain.assetType() },
-            assetIds.map { it.toIdentifier() },
-            query
-        )
+        return tokensDao.swapSearch(query)
+        .map { items ->
+            items.filter {
+                val assetId = it.id.toAssetId()
+                chains.contains(assetId?.chain) || assetIds.contains(assetId)
+            }
+        }
         .map { assets -> assets.map(mapper::asEntity) }
     }
 
@@ -74,7 +77,7 @@ class TokensRepository (
             }
             .awaitAll()
             .mapNotNull { it }
-            .map { AssetFull(asset = it, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false)) }
+            .map { AssetFull(asset = it, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false, false)) }
             addTokens(assets)
             assets
         } else {
@@ -93,7 +96,7 @@ class TokensRepository (
         if (asset == null) {
             return search(tokenId)
         }
-        addTokens(listOf(AssetFull(asset, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false))))
+        addTokens(listOf(AssetFull(asset, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false, false))))
         return true
     }
 

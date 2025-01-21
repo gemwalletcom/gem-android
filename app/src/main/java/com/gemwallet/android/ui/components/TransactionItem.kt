@@ -16,11 +16,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.same
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.designsystem.Spacer2
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding4

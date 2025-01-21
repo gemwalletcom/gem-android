@@ -13,6 +13,7 @@ import com.wallet.core.primitives.DelegationValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -46,7 +47,8 @@ class ValidatorsViewModel @Inject constructor(
 
     fun sync() = viewModelScope.launch {
         state.update { it.copy(loading = true) }
-        val stakeApr = assetsRepository.getStakeApr(AssetId(state.value.chain!!)) ?: return@launch
+        val assetId = AssetId(state.value.chain!!)
+        val stakeApr = assetsRepository.getAssetInfo(assetId).firstOrNull()?.stakeApr ?: return@launch
         viewModelScope.launch {
             stakeRepository.syncValidators(state.value.chain, stakeApr)
         }

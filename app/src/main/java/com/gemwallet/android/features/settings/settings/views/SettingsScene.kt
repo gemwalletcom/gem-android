@@ -8,7 +8,6 @@ import android.os.Build
 import android.provider.Settings
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +16,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,15 +27,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.features.settings.currency.components.emojiFlags
 import com.gemwallet.android.features.settings.settings.components.LinkItem
 import com.gemwallet.android.features.settings.settings.viewmodels.SettingsViewModel
 import com.gemwallet.android.services.isNotificationsAvailable
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.ReviewManager
 import com.gemwallet.android.ui.components.SubheaderItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
@@ -195,7 +192,8 @@ fun SettingsScene(
             LinkItem(
                 title = stringResource(id = R.string.settings_aboutus),
                 icon = R.drawable.settings_about_us,
-                onClick = onAboutUs
+                onClick = onAboutUs,
+                onLongClick = viewModel::developEnable
             )
 //            LinkItem(
 //                title = stringResource(id = R.string.settings_rate_app),
@@ -209,21 +207,6 @@ fun SettingsScene(
                     onDevelop()
                 }
             }
-            LinkItem(
-                title = stringResource(id = R.string.settings_version),
-                icon = R.drawable.settings_version,
-                trailingContent = {
-                    Text(
-                        modifier = Modifier.combinedClickable(
-                            onClick = {},
-                            onLongClick = viewModel::developEnable
-                        ),
-                        text = "${stringResource(id = R.string.settings_version)}: $version",
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium,
-                    )
-                }
-            ) {}
             Spacer16()
         }
     }

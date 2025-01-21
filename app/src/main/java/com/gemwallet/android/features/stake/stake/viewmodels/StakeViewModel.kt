@@ -24,6 +24,7 @@ import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -47,9 +48,8 @@ class StakeViewModel @Inject constructor(
         val session = sessionRepository.getSession() ?: return
         val account = session.wallet.getAccount(assetId.chain) ?: return
         viewModelScope.launch {
-            val asset = assetsRepository.getById(session.wallet, assetId).firstOrNull() ?: return@launch
-            val apr = assetsRepository.getStakeApr(assetId)
-            state.update { it.copy(apr = apr ?: 0.0) }
+            val asset = assetsRepository.getAssetInfo(assetId).firstOrNull() ?: return@launch
+            state.update { it.copy(apr = asset.stakeApr ?: 0.0) }
             stakeRepository.getDelegations(assetId, account.address).collect { delegations ->
                 state.update { state ->
                     state.copy(
@@ -70,9 +70,8 @@ class StakeViewModel @Inject constructor(
         viewModelScope.launch {
             val assetInfo = state.value.asset ?: return@launch
             val assetId = assetInfo.asset.id
-            val apr = assetsRepository.getStakeApr(assetId) ?: return@launch
             state.update { it.copy(loading = true) }
-            stakeRepository.sync(assetId.chain, assetInfo.owner.address, apr)
+            stakeRepository.sync(assetId.chain, assetInfo.owner.address, assetInfo.stakeApr ?: return@launch)
             state.update { it.copy(loading = false) }
         }
     }

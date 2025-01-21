@@ -24,8 +24,8 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.R
 import com.gemwallet.android.features.create_wallet.components.WordChip
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.PhraseLayout
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16

@@ -18,11 +18,11 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.R
 import com.gemwallet.android.features.amount.components.amountErrorString
 import com.gemwallet.android.features.amount.models.AmountError
 import com.gemwallet.android.features.confirm.models.AmountScreenModel
 import com.gemwallet.android.features.stake.components.ValidatorItem
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.buttons.MainActionButton

@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -34,20 +35,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.R
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.assets.model.WalletInfoUIState
 import com.gemwallet.android.features.assets.viewmodel.AssetsViewModel
+import com.gemwallet.android.features.banners.views.BannersScene
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
+import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.pinnedAssetsHeader
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.BannerEvent
+import uniffi.gemstone.Config
+import uniffi.gemstone.DocsUrl
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +72,8 @@ fun AssetsScreen(
     val unpinnedAssets by viewModel.unpinnedAssets.collectAsStateWithLifecycle()
     val walletInfo by viewModel.walletInfo.collectAsStateWithLifecycle()
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
+
+    val uriHandler = LocalUriHandler.current
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -92,7 +101,21 @@ fun AssetsScreen(
                     .testTag("assets_list"),
                 state = listState
             ) {
-                assetsHead(walletInfo, onSendClick, onReceiveClick, onBuyClick)
+                assetsHead(walletInfo, onSendClick, onReceiveClick, onBuyClick, viewModel::hideBalances)
+                item {
+                    BannersScene(
+                        asset = null,
+                        onClick = {
+                            when (it.event) {
+                                BannerEvent.AccountBlockedMultiSignature ->
+                                    uriHandler.open(Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
+                                else -> {}
+                            }
+                        },
+                        false
+                    )
+                    HorizontalDivider(thickness = 0.dp)
+                }
                 assets(
                     assets = pinnedAssets,
                     longPressState = longPressedAsset,
@@ -120,10 +143,12 @@ private fun LazyListScope.assetsHead(
     onSendClick: () -> Unit,
     onReceiveClick: () -> Unit,
     onBuyClick: () -> Unit,
+    onHideBalances: () -> Unit,
 ) {
     item {
         AmountListHead(
             amount = walletInfo.totalValue,
+            onHideBalances = onHideBalances,
             actions = {
                 AssetHeadActions(
                     walletType = walletInfo.type,

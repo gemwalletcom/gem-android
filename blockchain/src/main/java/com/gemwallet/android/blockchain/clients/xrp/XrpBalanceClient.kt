@@ -7,18 +7,17 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getReserveBalance
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Chain
-import java.math.BigInteger
 
 class XrpBalanceClient(
     private val chain: Chain,
     private val accountsService: XrpAccountsService,
 ) : BalanceClient {
 
-    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance {
+    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
         val reserved = chain.getReserveBalance()
         val amount = accountsService.account(address).mapCatching {
             it.result.account_data?.Balance?.toBigInteger()?.let { it - reserved }
-        }.getOrNull() ?: BigInteger.ZERO
+        }.getOrNull() ?: return null
         return AssetBalance.create(
             chain.asset(),
             available = amount.toString(),

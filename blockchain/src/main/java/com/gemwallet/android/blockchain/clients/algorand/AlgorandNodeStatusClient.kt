@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.algorand
 
-import android.util.Log
 import com.gemwallet.android.blockchain.clients.NodeStatusClient
 import com.gemwallet.android.blockchain.clients.algorand.services.AlgorandNodeStatusService
 import com.gemwallet.android.blockchain.rpc.getLatency
