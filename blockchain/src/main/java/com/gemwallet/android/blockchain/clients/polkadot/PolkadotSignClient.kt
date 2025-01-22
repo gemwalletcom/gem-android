@@ -19,11 +19,11 @@ class PolkadotSignClient(
     private val chain: Chain
 ) : SignClient {
 
-    override suspend fun signTransfer(
+    override suspend fun signTransaction(
         params: SignerParams,
         txSpeed: TxSpeed,
         privateKey: ByteArray
-    ): ByteArray {
+    ): List<ByteArray> {
         val chainData = (params.chainData as? PolkadotSignerPreloaderClient.PolkadotChainData) ?: throw Exception("incomplete data")
         val data = chainData.data
         val input = Polkadot.SigningInput.newBuilder().apply {
@@ -46,7 +46,7 @@ class PolkadotSignClient(
             }.build()
         }.build()
         val output = AnySigner.sign(input, CoinType.POLKADOT, Polkadot.SigningOutput.parser())
-        return output.encoded.toByteArray()
+        return listOf(output.encoded.toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

@@ -56,7 +56,7 @@ class TestCosmosSigner {
             finalAmount = BigInteger.TEN,
         )
         val result = runBlocking {
-            signer.signTransfer(signParams, TxSpeed.Normal, privateKey)
+            signer.signTransaction(signParams, TxSpeed.Normal, privateKey)
         }.toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -97,7 +97,7 @@ class TestCosmosSigner {
             finalAmount = BigInteger.TEN,
         )
         val result = runBlocking {
-            signer.signTransfer(signParams, TxSpeed.Normal, privateKey)
+            signer.signTransaction(signParams, TxSpeed.Normal, privateKey)
         }.toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -160,7 +160,7 @@ class TestCosmosSigner {
             finalAmount = BigInteger.TEN,
         )
         val result = runBlocking {
-            signer.signTransfer(signParams, TxSpeed.Normal, privateKey)
+            signer.signTransaction(signParams, TxSpeed.Normal, privateKey)
         }.toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -225,7 +225,7 @@ class TestCosmosSigner {
             finalAmount = BigInteger.TEN,
         )
         val result = runBlocking {
-            signer.signTransfer(signParams, TxSpeed.Normal, privateKey)
+            signer.signTransaction(signParams, TxSpeed.Normal, privateKey)
         }.toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -274,7 +274,7 @@ class TestCosmosSigner {
             finalAmount = BigInteger.TEN,
         )
         val result = runBlocking {
-            signer.signTransfer(signParams, TxSpeed.Normal, privateKey)
+            signer.signTransaction(signParams, TxSpeed.Normal, privateKey)
         }.toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +

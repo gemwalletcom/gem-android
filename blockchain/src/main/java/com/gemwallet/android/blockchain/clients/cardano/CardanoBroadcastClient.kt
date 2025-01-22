@@ -17,10 +17,9 @@ class CardanoBroadcastClient(
         account: Account,
         signedMessage: ByteArray,
         type: TransactionType
-    ): Result<String> {
-        val hash = broadcastService.broadcast(signedMessage.toHexString(prefix = ""))?.submitTransaction?.hash
-            ?: return Result.failure(ServiceError.EmptyHash)
-        return Result.success(hash)
+    ): String {
+        return broadcastService.broadcast(signedMessage.toHexString(prefix = ""))?.submitTransaction?.hash
+            ?: throw ServiceError.EmptyHash
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

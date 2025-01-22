@@ -13,15 +13,15 @@ class CosmosBroadcastClient(
     private val broadcastService: CosmosBroadcastService,
 ) : BroadcastClient {
 
-    override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): Result<String> {
+    override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): String {
         val requestData = signedMessage.toString(Charsets.UTF_8)
         val requestBody = requestData.toRequestBody(Mime.Json.value)
-        return broadcastService.broadcast(requestBody).mapCatching {
-            if (it.tx_response.code != 0) {
-                throw IllegalStateException(it.tx_response.raw_log)
-            }
-            it.tx_response.txhash
+        val result = broadcastService.broadcast(requestBody)
+        val data = result.getOrNull() ?: throw Exception(result.exceptionOrNull()?.message ?: "Broadcast error")
+        if (data.tx_response.code != 0) {
+            throw Exception(data.tx_response.raw_log)
         }
+        return data.tx_response.txhash
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

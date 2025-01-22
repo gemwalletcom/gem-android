@@ -15,11 +15,11 @@ import java.math.BigInteger
 class TonSignClient(
     private val chain: Chain,
 ) : SignClient {
-    override suspend fun signTransfer(
+    override suspend fun signTransaction(
         params: SignerParams,
         txSpeed: TxSpeed,
         privateKey: ByteArray
-    ): ByteArray {
+    ): List<ByteArray> {
         if (params.input.assetId.type() == AssetSubtype.TOKEN) {
             return signToken(params, privateKey)
         }
@@ -39,12 +39,12 @@ class TonSignClient(
             this.privateKey = ByteString.copyFrom(privateKey)
         }.build()
         val output = AnySigner.sign(signingInput, CoinType.TON, TheOpenNetwork.SigningOutput.parser())
-        return output.encoded.toByteArray()
+        return listOf(output.encoded.toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
-    private fun signToken(params: SignerParams, privateKey: ByteArray): ByteArray {
+    private fun signToken(params: SignerParams, privateKey: ByteArray): List<ByteArray> {
         val meta = params.chainData as TonSignerPreloader.TonChainData
 
         val jettonTransfer = TheOpenNetwork.JettonTransfer.newBuilder().apply {
@@ -72,7 +72,8 @@ class TonSignClient(
             this.privateKey = ByteString.copyFrom(privateKey)
             this.expireAt = (System.currentTimeMillis() / 1000).toInt() + 600
         }.build()
-        return AnySigner.sign(signingInput, CoinType.TON, TheOpenNetwork.SigningOutput.parser())
+        val output = AnySigner.sign(signingInput, CoinType.TON, TheOpenNetwork.SigningOutput.parser())
             .encoded.toByteArray()
+        return listOf(output)
     }
 }

@@ -14,11 +14,11 @@ class StellarSignClient(
     private val chain: Chain
 ) : SignClient {
 
-    override suspend fun signTransfer(
+    override suspend fun signTransaction(
         params: SignerParams,
         txSpeed: TxSpeed,
         privateKey: ByteArray
-    ): ByteArray {
+    ): List<ByteArray> {
         val chainData = (params.chainData as? StellarSignPreloadClient.StellarChainData)
             ?: throw Exception("bad params")
         val input = Stellar.SigningInput.newBuilder().apply {
@@ -48,7 +48,7 @@ class StellarSignClient(
         if (!output.errorMessage.isNullOrEmpty()) {
             throw Exception(output.errorMessage)
         }
-        return output.signature.toByteArray()
+        return listOf(output.signature.toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

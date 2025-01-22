@@ -16,13 +16,13 @@ class PolkadotBroadcastClient(
         account: Account,
         signedMessage: ByteArray,
         type: TransactionType
-    ): Result<String> {
+    ): String {
         val resp = broadcastService.broadcast(PolkadotTransactionPayload(signedMessage.toHexString())).getOrNull()
-            ?: return Result.failure(Exception("Polkadot service unavailable"))
+            ?: throw Exception("Polkadot service unavailable")
         return if (resp.hash.isNullOrEmpty()) {
-            Result.failure(Exception(resp.cause ?: resp.error ?: "Broadcast error"))
+            throw Exception(resp.cause ?: resp.error ?: "Broadcast error")
         } else {
-            Result.success(resp.hash)
+            resp.hash
         }
     }
 

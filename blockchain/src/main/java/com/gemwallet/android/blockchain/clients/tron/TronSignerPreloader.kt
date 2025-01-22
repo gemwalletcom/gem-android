@@ -50,7 +50,8 @@ class TronSignerPreloader(
 
     override suspend fun preloadStake(params: ConfirmParams.Stake): SignerParams = withContext(Dispatchers.IO) {
         preload(
-            params, { account, usage ->
+            params = params,
+            feeCalc = { account, usage ->
                 feeCalculator.calculate(params, account, usage)
             }
         ) { account ->
@@ -78,7 +79,7 @@ class TronSignerPreloader(
         votes: suspend (TronAccount?) -> Map<String, Long>,
     ): SignerParams = withContext(Dispatchers.IO) {
         val getAccountUsage = async { accountsService.getAccountUsage(params.from.address) }
-        val getAccount = async { accountsService.getAccount(params.from.address) }
+        val getAccount = async { accountsService.getAccount(params.from.address, true) }
         val nowBlockJob = async { nodeStatusService.nowBlock() }
 
         val nowBlock = nowBlockJob.await().getOrThrow()

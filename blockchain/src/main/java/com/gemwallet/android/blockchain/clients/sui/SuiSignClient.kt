@@ -12,20 +12,20 @@ import wallet.core.jni.PrivateKey
 class SuiSignClient(
     private val chain: Chain,
 ) : SignClient {
-    override suspend fun signTransfer(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): ByteArray {
+    override suspend fun signTransaction(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): List<ByteArray> {
         val metadata = params.chainData as SuiSignerPreloader.SuiChainData
         return signTxDataDigest(metadata.messageBytes, privateKey)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
-    private fun signTxDataDigest(data: String, privateKey: ByteArray): ByteArray {
+    private fun signTxDataDigest(data: String, privateKey: ByteArray): List<ByteArray> {
         val key = PrivateKey(privateKey)
         val pubKey = key.publicKeyEd25519
         val parts = data.split("_")
         val digest = parts[1].decodeHex()
         val signature = key.sign(digest, Curve.ED25519)
         val sig = byteArrayOf(0x0) + signature + pubKey.data()
-        return "${parts[0]}_${Base64.encode(sig)}".toByteArray()
+        return listOf("${parts[0]}_${Base64.encode(sig)}".toByteArray())
     }
 }

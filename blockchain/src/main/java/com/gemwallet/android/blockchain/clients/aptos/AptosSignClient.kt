@@ -15,7 +15,7 @@ import wallet.core.jni.proto.Aptos.TransferMessage
 class AptosSignClient(
     private val chain: Chain,
 ) : SignClient {
-    override suspend fun signTransfer(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): ByteArray {
+    override suspend fun signTransaction(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): List<ByteArray> {
         val coinType = WCChainTypeProxy().invoke(chain)
         val metadata = params.chainData as AptosSignerPreloader.AptosChainData
         val fee = metadata.gasFee()
@@ -37,7 +37,7 @@ class AptosSignClient(
         }.build()
         val output = AnySigner.sign(signInput, coinType, Aptos.SigningOutput.parser())
         if (output.errorMessage.isNullOrEmpty()) {
-            return output.json.toByteArray()
+            return listOf(output.json.toByteArray())
         } else {
             throw Exception(output.errorMessage)
         }

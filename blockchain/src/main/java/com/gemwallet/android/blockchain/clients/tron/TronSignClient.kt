@@ -4,6 +4,7 @@ import android.text.format.DateUtils
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.decodeHex
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
@@ -20,11 +21,21 @@ class TronSignClient(
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
-    override suspend fun signTransfer(
-        params: SignerParams,
-        txSpeed: TxSpeed,
-        privateKey: ByteArray
-    ): ByteArray {
+    override suspend fun signTransaction(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): List<ByteArray> {
+        return when (params.input) {
+            is ConfirmParams.Stake.DelegateParams -> signDelegate(params, privateKey)
+            is ConfirmParams.Stake.RedelegateParams -> signRedelegate(params, privateKey)
+            is ConfirmParams.Stake.RewardsParams -> signRewards(params, privateKey)
+            is ConfirmParams.Stake.UndelegateParams -> signUndelegate(params, privateKey)
+            is ConfirmParams.Stake.WithdrawParams -> signWithdraw(params, privateKey)
+            is ConfirmParams.TokenApprovalParams,
+            is ConfirmParams.SwapParams -> throw IllegalArgumentException("Not supported")
+            is ConfirmParams.TransferParams.Native,
+            is ConfirmParams.TransferParams.Token -> signTransfer(params, txSpeed, privateKey)
+        }
+    }
+
+    private fun signTransfer(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): List<ByteArray> {
         val blockInfo = params.chainData as TronSignerPreloader.TronChainData
         val transaction = Tron.Transaction.newBuilder().apply {
             this.blockHeader = Tron.BlockHeader.newBuilder().apply {
@@ -54,7 +65,7 @@ class TronSignClient(
             this.privateKey = ByteString.copyFrom(privateKey)
         }.build()
         val signingOutput = AnySigner.sign(signInput, CoinType.TRON, Tron.SigningOutput.parser())
-        return signingOutput.json.toByteArray()
+        return listOf(signingOutput.json.toByteArray())
     }
 
     fun signDelegate(params: SignerParams, privateKey: ByteArray): List<ByteArray> {
@@ -80,7 +91,7 @@ class TronSignClient(
                 this.unfreezeBalance = params.input.amount.toLong()
                 this.resource = "BANDWIDTH"
             }.build(),
-            if (votes.isEmpty())  null else createVoteContract(params),
+            if (votes.isEmpty()) null else createVoteContract(params),
         )
         .filterNotNull()
         .map {
@@ -93,7 +104,7 @@ class TronSignClient(
         return listOf(sign(params, voteContract, privateKey))
     }
 
-    fun rewards(params: SignerParams, privateKey: ByteArray): List<ByteArray> {
+    fun signRewards(params: SignerParams, privateKey: ByteArray): List<ByteArray> {
         val contract = Tron.WithdrawBalanceContract.newBuilder().apply {
             this.ownerAddress = params.input.from.address
         }.build()
@@ -102,7 +113,7 @@ class TronSignClient(
         )
     }
 
-    fun withdraw(params: SignerParams, privateKey: ByteArray): List<ByteArray> {
+    fun signWithdraw(params: SignerParams, privateKey: ByteArray): List<ByteArray> {
         val contract = Tron.WithdrawExpireUnfreezeContract.newBuilder().apply {
             this.ownerAddress = params.input.from.address
         }.build()
@@ -147,6 +158,9 @@ class TronSignClient(
                 is Tron.TransferTRC20Contract -> this.transferTrc20Contract = contract
                 is Tron.FreezeBalanceV2Contract -> this.freezeBalanceV2 = contract
                 is Tron.VoteWitnessContract -> this.voteWitness = contract
+                is Tron.UnfreezeBalanceV2Contract -> this.unfreezeBalanceV2 = contract
+                is Tron.WithdrawExpireUnfreezeContract -> this.withdrawExpireUnfreeze = contract
+                is Tron.WithdrawBalanceContract -> this.withdrawBalance = contract
             }
             this.blockHeader = Tron.BlockHeader.newBuilder().apply {
                 this.number = blockInfo.number

@@ -1,10 +1,13 @@
 package com.gemwallet.android.blockchain.clients.tron.services
 
+import android.util.Log
+import com.gemwallet.android.math.toHexString
 import com.wallet.core.blockchain.tron.models.TronAccount
 import com.wallet.core.blockchain.tron.models.TronAccountRequest
 import com.wallet.core.blockchain.tron.models.TronAccountUsage
 import retrofit2.http.Body
 import retrofit2.http.POST
+import wallet.core.jni.Base58
 
 interface TronAccountsService {
     @POST("/wallet/getaccount")
@@ -16,13 +19,15 @@ interface TronAccountsService {
 
 suspend fun TronAccountsService.getAccount(address: String, visible: Boolean = false): TronAccount? {
     return try {
-        getAccount(
+        val result = getAccount(
             TronAccountRequest(
                 address = address,
                 visible = visible
             )
-        ).getOrThrow()
-    } catch (_: Throwable) {
+        )
+        result.getOrThrow()
+    } catch (err: Throwable) {
+        Log.d("TRON-ACCOUNT", "Error: ", err)
         null
     }
 }

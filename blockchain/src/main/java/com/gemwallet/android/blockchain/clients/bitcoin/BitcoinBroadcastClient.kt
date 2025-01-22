@@ -15,11 +15,10 @@ class BitcoinBroadcastClient(
     private val broadcastService: BitcoinBroadcastService,
 ) : BroadcastClient {
 
-    override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): Result<String> {
+    override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): String {
         val requestBody = signedMessage.toHexString("").toRequestBody(Mime.Plain.value)
-        return broadcastService.broadcast(requestBody).mapCatching {
-            it.result ?: throw RpcError.BroadcastFail(it.error?.message ?: "Unknown error")
-        }
+        return broadcastService.broadcast(requestBody).getOrThrow()?.result
+            ?: throw RpcError.BroadcastFail("Unknown error")
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

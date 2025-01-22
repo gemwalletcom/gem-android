@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.BroadcastClient
+import com.gemwallet.android.blockchain.rpc.ServiceError
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
@@ -11,7 +12,7 @@ class SolanaBroadcastClient(
     private val chain: Chain,
     private val rpcClient: SolanaRpcClient,
 ) : BroadcastClient {
-    override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): Result<String> {
+    override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): String {
         val encodedMessage = signedMessage.toString(StandardCharsets.UTF_8)
         val params = if (type == TransactionType.Swap) {
             listOf(
@@ -28,8 +29,11 @@ class SolanaBroadcastClient(
             )
         }
         val request = JSONRpcRequest.create(SolanaMethod.SendTransaction, params)
-        return rpcClient.broadcast(request).mapCatching {
-            if (it.error == null) it.result else throw Exception(it.error.message)
+        val response = rpcClient.broadcast(request).getOrNull() ?: throw ServiceError.NetworkError
+        return if (response.error == null) {
+            response.result
+        } else {
+            throw Exception(response.error.message)
         }
     }
 

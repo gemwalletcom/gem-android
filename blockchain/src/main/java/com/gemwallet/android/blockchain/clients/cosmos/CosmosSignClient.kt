@@ -27,11 +27,11 @@ class CosmosSignClient(
     private val chain: Chain,
 ) : SignClient {
 
-    override suspend fun signTransfer(
+    override suspend fun signTransaction(
         params: SignerParams,
         txSpeed: TxSpeed,
         privateKey: ByteArray,
-    ): ByteArray {
+    ): List<ByteArray> {
         val from = params.input.from.address
         val coin = WCChainTypeProxy().invoke(chain)
         val input = params.input
@@ -196,7 +196,7 @@ class CosmosSignClient(
         }.build()
     }
 
-    private fun sign(input: SignerParams, privateKey: ByteArray, messages: List<Message>): ByteArray {
+    private fun sign(input: SignerParams, privateKey: ByteArray, messages: List<Message>): List<ByteArray> {
         val meta = input.chainData as CosmosSignerPreloader.CosmosChainData
         val fee = meta.fee() as GasFee
         val feeAmount = fee.amount
@@ -242,7 +242,7 @@ class CosmosSignClient(
             }
         }
         val sign = AnySigner.sign(signInput.build(), coin, Cosmos.SigningOutput.parser())
-        return sign.serialized.toByteArray()
+        return listOf(sign.serialized.toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

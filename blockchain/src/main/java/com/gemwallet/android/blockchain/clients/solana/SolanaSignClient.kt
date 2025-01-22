@@ -42,16 +42,16 @@ class SolanaSignClient(
         return Base64.encode(signed).toByteArray()
     }
 
-    override suspend fun signTransfer(
+    override suspend fun signTransaction(
         params: SignerParams,
         txSpeed: TxSpeed,
         privateKey: ByteArray
-    ): ByteArray {
+    ): List<ByteArray> {
         val fee = params.chainData.fee(txSpeed) as GasFee
         val recentBlockhash = (params.chainData as SolanaSignerPreloader.SolanaChainData).blockhash
 
         return when(params.input.getTxType()) {
-            TransactionType.Swap -> swap(params, txSpeed, privateKey).toByteArray()
+            TransactionType.Swap -> swap(params, txSpeed, privateKey)
             TransactionType.Transfer -> {
                 val signInput = when (params.input.assetId.type()) {
                     AssetSubtype.NATIVE -> signNative(params)
@@ -160,7 +160,7 @@ class SolanaSignClient(
         }
     }
 
-    private fun swap(input: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): String {
+    private fun swap(input: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): List<ByteArray> {
         val fee = input.chainData.fee(txSpeed) as? GasFee ?: throw java.lang.IllegalArgumentException("Incorrect fee data")
         val feePrice = fee.minerFee
         val feeLimit = fee.limit
@@ -185,10 +185,10 @@ class SolanaSignClient(
         if (!output.errorMessage.isNullOrEmpty()) {
             throw Exception(output.errorMessage)
         }
-        return output.encoded
+        return listOf(output.encoded.toByteArray())
     }
 
-    private fun sign(input: Solana.SigningInput.Builder, fee: GasFee): ByteArray {
+    private fun sign(input: Solana.SigningInput.Builder, fee: GasFee): List<ByteArray> {
         input.apply {
             this.priorityFeeLimit = Solana.PriorityFeeLimit.newBuilder().apply {
                 this.limit = fee.limit.toInt()
@@ -203,8 +203,9 @@ class SolanaSignClient(
         val data = Base58.decodeNoCheck(output.encoded) ?: throw IllegalStateException("string is not Base58 encoding!")
         val base64 = Base64.encode(data)
         val offset = base64.length % 4
-        return (if (offset == 0) base64 else base64.padStart(base64.length + 4 - offset, '='))
+        val encodedOutput = (if (offset == 0) base64 else base64.padStart(base64.length + 4 - offset, '='))
             .toByteArray()
+        return listOf(encodedOutput)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

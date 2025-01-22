@@ -4,5 +4,5 @@ import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.TransactionType
 
 interface BroadcastClient : BlockchainClient {
-    suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): Result<String>
+    suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): String
 }
