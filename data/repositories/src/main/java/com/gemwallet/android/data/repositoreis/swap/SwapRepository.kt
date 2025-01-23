@@ -11,12 +11,14 @@ import com.wallet.core.primitives.Wallet
 import uniffi.gemstone.ApprovalType
 import uniffi.gemstone.Config
 import uniffi.gemstone.FetchQuoteData
+import uniffi.gemstone.GemSlippage
 import uniffi.gemstone.GemSwapMode
 import uniffi.gemstone.GemSwapOptions
 import uniffi.gemstone.GemSwapper
 import uniffi.gemstone.Permit2Data
 import uniffi.gemstone.Permit2Detail
 import uniffi.gemstone.PermitSingle
+import uniffi.gemstone.SlippageMode
 import uniffi.gemstone.SwapAssetList
 import uniffi.gemstone.SwapQuote
 import uniffi.gemstone.SwapQuoteData
@@ -41,9 +43,9 @@ class SwapRepository(
             value = amount,
             mode = GemSwapMode.EXACT_IN,
             options = GemSwapOptions(
-                slippageBps = 100u,
+                slippage = GemSlippage(100u, SlippageMode.EXACT),
                 fee = Config().getSwapConfig().referralFee,
-                preferredProviders = emptyList()
+                preferredProviders = emptyList(),
             )
         )
         val quote = gemSwapper.fetchQuote(swapRequest)
