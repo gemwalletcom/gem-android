@@ -23,8 +23,9 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import wallet.core.jni.PrivateKey
 
@@ -39,7 +40,9 @@ class PhraseAddressImportWalletOperator(
     private val syncSubscriptionCase: SyncSubscriptionCase,
     private val addressStatusClients: AddressStatusClientProxy,
     private val addBannerCase: AddBannerCase,
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : ImportWalletOperator {
+
     override suspend fun importWallet(
         importType: ImportType,
         walletName: String,
@@ -56,24 +59,33 @@ class PhraseAddressImportWalletOperator(
         }
         val wallet = result.getOrNull() ?: return Result.failure(Exception("Unknown error"))
 
-        syncSubscriptionCase.syncSubscription(listOf(wallet))
-        assetsRepository.createAssets(wallet)
-        assetsRepository.importAssets(wallet, sessionRepository.getSession()?.currency ?: Currency.USD)
-        checkAddresses(wallet)
-        sessionRepository.setWallet(wallet)
+        setupWallet(wallet)
+
+        scope.launch(Dispatchers.IO) {
+            assetsRepository.importAssets(wallet, sessionRepository.getSession()?.currency ?: Currency.USD)
+            checkAddresses(wallet)
+        }
+
         return Result.success(wallet)
     }
 
     override suspend fun createWallet(walletName: String, data: String): Result<Wallet> = withContext(Dispatchers.IO) {
         val result = handlePhrase(ImportType(WalletType.multicoin), walletName, data)
         if (result.isFailure) return@withContext result
-
         val wallet = result.getOrNull() ?: return@withContext Result.failure(Exception("Unknown error"))
 
-        async { syncSubscriptionCase.syncSubscription(listOf(wallet)) }
+        setupWallet(wallet)
+
+        Result.success(wallet)
+    }
+
+    private suspend fun setupWallet(wallet: Wallet) {
         assetsRepository.createAssets(wallet)
         sessionRepository.setWallet(wallet)
-        Result.success(wallet)
+
+        scope.launch(Dispatchers.IO) {
+            syncSubscriptionCase.syncSubscription(listOf(wallet))
+        }
     }
 
     private suspend fun handlePhrase(importType: ImportType, walletName: String, rawData: String): Result<Wallet> {
