@@ -9,6 +9,7 @@ import com.wallet.core.primitives.ConfigResponse
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.FiatAssets
 import com.wallet.core.primitives.FiatQuotes
+import com.wallet.core.primitives.NFTData
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.PriceData
@@ -96,5 +97,8 @@ interface GemApiClient {
 
     @GET("/v1/price_alerts/{device_id}")
     suspend fun getPriceAlerts(@Path("device_id") deviceId: String): Result<List<PriceAlert>>
+
+    @GET("/v1/nft/assets/device/{device_id}?wallet_index={wallet_index}")
+    suspend fun getNFTs(@Path("device_id") deviceId: String, @Path("wallet_index") walletIndex: Int): Result<NFTData>
 }
 
