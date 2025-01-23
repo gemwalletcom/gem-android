@@ -14,7 +14,7 @@ class NearBroadcastClient(
         account: Account,
         signedMessage: ByteArray,
         type: TransactionType
-    ): Result<String> {
+    ): String {
         return rpcClient.broadcast(
             JSONRpcRequest(
                 NearMethod.Broadcast.value,
@@ -22,9 +22,7 @@ class NearBroadcastClient(
                     "signed_tx_base64" to String(signedMessage)
                 )
             )
-        ).mapCatching {
-            it.result.transaction.hash
-        }
+        ).getOrThrow().result.transaction.hash
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

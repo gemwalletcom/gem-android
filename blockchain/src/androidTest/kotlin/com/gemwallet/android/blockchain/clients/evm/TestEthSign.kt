@@ -38,7 +38,7 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_native() {
         val sign = runBlocking {
-            signClient.signTransfer(
+            signClient.signTransaction(
                 params = SignerParams(
                     input = ConfirmParams.TransferParams.Native(
                         assetId = Chain.Ethereum.asset().id,
@@ -77,7 +77,7 @@ class TestEthSign {
     @Test
     fun test_EvmTokenSign() {
         val sign = runBlocking {
-            signClient.signTransfer(
+            signClient.signTransaction(
                 params = SignerParams(
                     input = ConfirmParams.TransferParams.Token(
                         assetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
@@ -118,7 +118,7 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_swap() {
         val sign = runBlocking {
-            signClient.signTransfer(
+            signClient.signTransaction(
                 params = SignerParams(
                     input = ConfirmParams.SwapParams(
                         fromAssetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
@@ -162,7 +162,7 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_delegate() {
         val sign = runBlocking {
-            signClient.signTransfer(
+            signClient.signTransaction(
                 params = SignerParams(
                     input = ConfirmParams.Stake.DelegateParams(
                         assetId = AssetId(Chain.SmartChain),
@@ -204,7 +204,7 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_undelegate() {
         val sign = runBlocking {
-            signClient.signTransfer(
+            signClient.signTransaction(
                 params = SignerParams(
                     input = ConfirmParams.Stake.UndelegateParams(
                         assetId = AssetId(Chain.SmartChain),
@@ -248,7 +248,7 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_approval() {
         val sign = runBlocking {
-            signClient.signTransfer(
+            signClient.signTransaction(
                 params = SignerParams(
                     input = ConfirmParams.TokenApprovalParams(
                         assetId = AssetId(Chain.SmartChain, "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"),

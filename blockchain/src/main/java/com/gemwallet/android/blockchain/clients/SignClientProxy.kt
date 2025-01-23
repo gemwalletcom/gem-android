@@ -26,13 +26,13 @@ class SignClientProxy(
             ?: throw Exception("Chain isn't support")
     }
 
-    override suspend fun signTransfer(
+    override suspend fun signTransaction(
         params: SignerParams,
         txSpeed: TxSpeed,
         privateKey: ByteArray
-    ): ByteArray {
+    ): List<ByteArray> {
         val chain = params.input.assetId.chain
-        return clients.getClient(chain)?.signTransfer(params, txSpeed, privateKey)
+        return clients.getClient(chain)?.signTransaction(params, txSpeed, privateKey)
             ?: throw Exception("Chain isn't support")
     }
 

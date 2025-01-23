@@ -123,7 +123,7 @@ object DataModule {
                 ChainType.Solana -> SolanaSignerPreloader(it, rpcClients.getClient(Chain.Solana), rpcClients.getClient(Chain.Solana), rpcClients.getClient(Chain.Solana))
                 ChainType.Cosmos -> CosmosSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Ton -> TonSignerPreloader(it, rpcClients.getClient(it))
-                ChainType.Tron -> TronSignerPreloader(it, rpcClients.getClient(Chain.Tron))
+                ChainType.Tron -> TronSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Aptos -> AptosSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Sui -> SuiSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Xrp -> XrpSignerPreloader(it, rpcClients.getClient(it))

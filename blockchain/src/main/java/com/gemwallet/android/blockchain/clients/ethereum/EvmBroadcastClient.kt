@@ -12,11 +12,14 @@ class EvmBroadcastClient(
     private val chain: Chain,
     private val broadcastService: EvmBroadcastService,
 ) : BroadcastClient {
-    override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): Result<String> {
+    override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): String {
         val request = JSONRpcRequest.create(EvmMethod.Broadcast, listOf(signedMessage.toHexString()))
-        return broadcastService.broadcast(request).mapCatching {
-            if (it.error != null) throw Exception(it.error.message) else it.result
+        val result = broadcastService.broadcast(request)
+        val data = result.getOrNull() ?: throw Exception(result.exceptionOrNull()?.message ?: "Network error")
+        if (data.error != null) {
+            throw Exception(data.error.message)
         }
+        return data.result
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

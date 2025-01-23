@@ -22,11 +22,11 @@ class BitcoinSignClient(
     private val chain: Chain,
 ) : SignClient {
 
-    override suspend fun signTransfer(
+    override suspend fun signTransaction(
         params: SignerParams,
         txSpeed: TxSpeed,
         privateKey: ByteArray
-    ): ByteArray {
+    ): List<ByteArray> {
         val metadata = params.chainData as BitcoinSignerPreloader.BitcoinChainData
         val coinType = WCChainTypeProxy().invoke(chain)
         val gasFee = metadata.fee(txSpeed) as GasFee
@@ -66,7 +66,7 @@ class BitcoinSignClient(
         if (output.errorMessage.isNotEmpty()) {
             throw IllegalStateException(output.errorMessage)
         }
-        return output.encoded.toByteArray()
+        return listOf(output.encoded.toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

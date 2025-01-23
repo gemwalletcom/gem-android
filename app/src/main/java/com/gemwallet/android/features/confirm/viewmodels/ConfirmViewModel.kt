@@ -50,6 +50,7 @@ import com.wallet.core.primitives.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -267,52 +268,36 @@ class ConfirmViewModel @Inject constructor(
                 feeAssetInfo,
                 getBalance(assetInfo, signerParams.input),
             )
-            val sign = sign(signerParams, session, assetInfo, txSpeed)
-            broadcastClientProxy.send(assetInfo.owner, sign, signerParams.input.getTxType())
+            val signs = sign(signerParams, session, assetInfo, txSpeed)
+            for (sign in signs) {
+                val txHash = broadcastClientProxy.send(assetInfo.owner, sign, signerParams.input.getTxType())
+                addTransaction(txHash)
+                if (sign != signs.last()) {
+                    delay(500)
+                } else {
+                    val finishRoute = when (signerParams.input) {
+                        is ConfirmParams.Stake -> stakeRoute
+                        is ConfirmParams.SwapParams,
+                        is ConfirmParams.TokenApprovalParams -> swapRoute
+                        is ConfirmParams.TransferParams -> assetRoute
+                    }
+                    viewModelScope.launch(Dispatchers.Main) {
+                        finishAction(assetId = assetInfo.id(), hash = txHash, route = finishRoute)
+                    }
+                    state.update { ConfirmState.Result(txHash = txHash) }
+                }
+            }
         } catch (err: ConfirmError) {
             state.update { ConfirmState.BroadcastError(err) }
             return@launch
-        }
 
-        broadcastResult.onSuccess { txHash ->
-            val destinationAddress =  signerParams.input.destination()?.address ?: ""
-            createTransactionsCase.createTransaction(
-                hash = txHash,
-                walletId = session.wallet.id,
-                assetId = assetInfo.id(),
-                owner = assetInfo.owner,
-                to = destinationAddress,
-                state = TransactionState.Pending,
-                fee = signerParams.chainData.fee(txSpeed),
-                amount = signerParams.finalAmount,
-                memo = signerParams.input.memo() ?: "",
-                type = signerParams.input.getTxType(),
-                metadata = assembleMetadata(signerParams),
-                direction = if (destinationAddress == assetInfo.owner.address) {
-                    TransactionDirection.SelfTransfer
-                } else {
-                    TransactionDirection.Outgoing
-                },
-                blockNumber = signerParams.chainData.blockNumber()
-            )
-            val finishRoute = when (signerParams.input) {
-                is ConfirmParams.Stake -> stakeRoute
-                is ConfirmParams.SwapParams,
-                is ConfirmParams.TokenApprovalParams -> swapRoute
-                is ConfirmParams.TransferParams -> assetRoute
-            }
-            viewModelScope.launch(Dispatchers.Main) {
-                finishAction(assetId = assetInfo.id(), hash = txHash, route = finishRoute)
-            }
-            state.update { ConfirmState.Result(txHash = txHash) }
-        }.onFailure { err ->
-            state.update { ConfirmState.BroadcastError(ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
+//            state.update { ConfirmState.BroadcastError(ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
         }
     }
 
-    private suspend fun sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo, txSpeed: TxSpeed): ByteArray {
+    private suspend fun sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo, txSpeed: TxSpeed): List<ByteArray> {
         val sign = try {
-            signClient.signTransfer(
+            signClient.signTransaction(
                 params = signerParams,
                 txSpeed = txSpeed,
                 privateKey = loadPrivateKeyOperator(
@@ -414,6 +399,34 @@ class ConfirmViewModel @Inject constructor(
             )
         }
         else -> null
+    }
+
+    private suspend fun addTransaction(txHash: String) {
+        val signerParams = signerParams.value
+        val assetInfo = assetsInfo.value?.getByAssetId(signerParams?.input?.assetId ?: return) ?: return
+        val session = sessionRepository.getSession()
+        val destinationAddress =  signerParams.input.destination()?.address ?: ""
+        val txSpeed = txSpeed.value
+
+        createTransactionsCase.createTransaction(
+            hash = txHash,
+            walletId = session?.wallet?.id ?: return,
+            assetId = assetInfo.id(),
+            owner = assetInfo.owner,
+            to = destinationAddress,
+            state = TransactionState.Pending,
+            fee = signerParams.chainData.fee(txSpeed),
+            amount = signerParams.finalAmount,
+            memo = signerParams.input.memo() ?: "",
+            type = signerParams.input.getTxType(),
+            metadata = assembleMetadata(signerParams),
+            direction = if (destinationAddress == assetInfo.owner.address) {
+                TransactionDirection.SelfTransfer
+            } else {
+                TransactionDirection.Outgoing
+            },
+            blockNumber = signerParams.chainData.blockNumber()
+        )
     }
 
     companion object {

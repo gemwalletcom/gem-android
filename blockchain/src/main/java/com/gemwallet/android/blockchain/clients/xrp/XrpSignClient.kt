@@ -12,7 +12,7 @@ import wallet.core.jni.proto.Ripple
 class XrpSignClient(
     private val chain: Chain,
 ) : SignClient {
-    override suspend fun signTransfer(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): ByteArray {
+    override suspend fun signTransaction(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): List<ByteArray> {
         val metadata = params.chainData as XrpSignerPreloader.XrpChainData
         val signInput = Ripple.SigningInput.newBuilder().apply {
             this.fee = metadata.fee().amount.toLong()
@@ -26,7 +26,7 @@ class XrpSignClient(
             }.build()
         }.build()
         val output = AnySigner.sign(signInput, WCChainTypeProxy().invoke(chain), Ripple.SigningOutput.parser())
-        return output.encoded.toByteArray()
+        return listOf(output.encoded.toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

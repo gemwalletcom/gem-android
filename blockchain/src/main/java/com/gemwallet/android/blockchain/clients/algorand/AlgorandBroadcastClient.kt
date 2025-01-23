@@ -20,13 +20,11 @@ class AlgorandBroadcastClient(
         account: Account,
         signedMessage: ByteArray,
         type: TransactionType
-    ): Result<String> {
+    ): String {
         val result =  broadcastService.broadcast(signedMessage.toRequestBody(Mime.Binary.value))
-        return result.getOrNull()?.txId?.let { Result.success(it) }
-            ?: Result.failure(
-                result.handleError<AlgorandTransactionBroadcast>()?.message?.let { Exception(it) }
+        return result.getOrNull()?.txId ?: throw
+            result.handleError<AlgorandTransactionBroadcast>()?.message?.let { Exception(it) }
                     ?: ServiceError.BroadCastError()
-            )
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

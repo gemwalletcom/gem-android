@@ -4,7 +4,7 @@ import com.gemwallet.android.blockchain.clients.tron.services.TronStakeService
 import com.wallet.core.blockchain.tron.models.TronReward
 import com.wallet.core.blockchain.tron.models.WitnessesList
 
-class TestTronStakeService(
+class FakeTronStakeService(
     private val reward: Long? = null
 ) : TronStakeService {
     var addressRequest: String? = null

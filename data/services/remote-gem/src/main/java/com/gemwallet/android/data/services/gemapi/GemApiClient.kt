@@ -40,7 +40,7 @@ interface GemApiClient {
     @GET("/v1/fiat/on_ramp/assets")
     suspend fun getFiatAssets(): Result<FiatAssets>
 
-    @GET("/v1/transactions/by_device_id/{device_id}")
+    @GET("/v1/transactions/device/{device_id}")
     suspend fun getTransactions(
         @Path("device_id") deviceId: String,
         @Query("wallet_index") walletIndex: Int,
@@ -85,7 +85,7 @@ interface GemApiClient {
         @Query("query") query: String,
     ): Result<List<AssetFull>>
 
-    @GET("/v1/assets/by_device_id/{device_id}")
+    @GET("/v1/assets/device/{device_id}")
     suspend fun getAssets(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int, @Query("from_timestamp") fromTimestamp: Int = 0): Result<List<String>>
 
     @POST("/v1/price_alerts/{device_id}")

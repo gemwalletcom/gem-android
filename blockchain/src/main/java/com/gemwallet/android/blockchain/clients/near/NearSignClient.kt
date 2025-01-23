@@ -16,7 +16,7 @@ import java.math.BigInteger
 class NearSignClient(
     private val chain: Chain,
 ) : SignClient {
-    override suspend fun signTransfer(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): ByteArray {
+    override suspend fun signTransaction(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): List<ByteArray> {
         val metadata = params.chainData as NearSignerPreloader.NearChainData
 
         val input = NEAR.SigningInput.newBuilder().apply {
@@ -36,7 +36,8 @@ class NearSignClient(
             this.privateKey = ByteString.copyFrom(privateKey)
         }.build()
         val output = AnySigner.sign(input, WCChainTypeProxy().invoke(chain), NEAR.SigningOutput.parser())
-        return Base64.encode(output.signedTransaction.toByteArray()).toByteArray()
+        val encodedOutput = Base64.encode(output.signedTransaction.toByteArray()).toByteArray()
+        return listOf(encodedOutput)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

@@ -25,17 +25,17 @@ class TestTronBalance {
         }
     }
 
-    val stakeService = TestTronStakeService(0xF4240)
+    val stakeService = FakeTronStakeService(0xF4240)
 
     @Test
     fun testTron_native_balance_success_and_not_empty() {
-        val accountService = TestTronAccountService(
+        val accountService = FakeTronAccountService(
             TronAccount(
                 balance = 1_000_000,
             )
         )
-        val callService = TestTronCallService()
-        val balanceClient = TronBalanceClient(Chain.Tron, accountService, callService, TestTronStakeService())
+        val callService = FakeTronCallService()
+        val balanceClient = TronBalanceClient(Chain.Tron, accountService, callService, FakeTronStakeService())
         val result = runBlocking { balanceClient.getNativeBalance(Chain.Tron, "TNLmo9j9AuGnnxibQUT13xoMGuUmNwxtkU") }
         assertEquals("TNLmo9j9AuGnnxibQUT13xoMGuUmNwxtkU", accountService.addressRequest?.address)
         assertTrue(accountService.addressRequest!!.visible)
@@ -54,19 +54,19 @@ class TestTronBalance {
 
     @Test
     fun testTron_native_balance_success_and_empty() {
-        val accountService = TestTronAccountService(
+        val accountService = FakeTronAccountService(
             TronAccount()
         )
-        val callService = TestTronCallService()
-        val balanceClient = TronBalanceClient(Chain.Tron, accountService, callService, TestTronStakeService())
+        val callService = FakeTronCallService()
+        val balanceClient = TronBalanceClient(Chain.Tron, accountService, callService, FakeTronStakeService())
         val result = runBlocking { balanceClient.getNativeBalance(Chain.Tron, "TNLmo9j9AuGnnxibQUT13xoMGuUmNwxtkU") }
         assertNull(result)
     }
 
     @Test
     fun testTron_native_balance_fail() {
-        val accountService = TestTronAccountService()
-        val callService = TestTronCallService()
+        val accountService = FakeTronAccountService()
+        val callService = FakeTronCallService()
         val balanceClient = TronBalanceClient(Chain.Tron, accountService, callService, stakeService)
         val result = runBlocking { balanceClient.getNativeBalance(Chain.Tron, "") }
         assertNull(result)
@@ -97,8 +97,8 @@ class TestTronBalance {
                 type = AssetType.TRC20,
             ),
         )
-        val accountService = TestTronAccountService(TronAccount(balance = 1_000_000))
-        val callService = TestTronCallService(
+        val accountService = FakeTronAccountService(TronAccount(balance = 1_000_000))
+        val callService = FakeTronCallService(
             mapOf(
                 "41a614f803b6fd780986a42c78ec9c7f77e6ded13c" to TronSmartContractResult(
                     result = TronSmartContractResultMessage(true),
@@ -141,7 +141,7 @@ class TestTronBalance {
 
     @Test
     fun testTron_stake_balance_success() {
-        val accountService = TestTronAccountService(
+        val accountService = FakeTronAccountService(
             TronAccount(
                 balance = 1_000_000,
                 frozenV2 = listOf(
@@ -176,7 +176,7 @@ class TestTronBalance {
                 )
             )
         )
-        val callService = TestTronCallService()
+        val callService = FakeTronCallService()
         val balanceClient = TronBalanceClient(Chain.Tron, accountService, callService, stakeService)
         val result = runBlocking { balanceClient.getNativeBalance(Chain.Tron, "TNLmo9j9AuGnnxibQUT13xoMGuUmNwxtkU") }
         assertNotNull(result)

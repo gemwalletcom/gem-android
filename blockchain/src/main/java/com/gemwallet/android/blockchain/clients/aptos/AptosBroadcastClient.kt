@@ -12,11 +12,10 @@ class AptosBroadcastClient(
     private val chain: Chain,
     private val broadcastService: AptosBroadcastService,
 ) : BroadcastClient {
-    override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): Result<String> = try {
-        val hash = broadcastService.broadcast(String(signedMessage).toRequestBody(Mime.Json.value)).getOrThrow().hash
-        Result.success(hash)
-    } catch (err: Throwable) {
-        Result.failure(err)
+    override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): String {
+        return broadcastService.broadcast(String(signedMessage).toRequestBody(Mime.Json.value))
+            .getOrThrow()
+            .hash
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.blockchain.clients.StakeClient
+import com.gemwallet.android.blockchain.clients.tron.services.TronAccountsService
 import com.gemwallet.android.blockchain.clients.tron.services.TronStakeService
 import com.gemwallet.android.blockchain.clients.tron.services.getAccount
 import com.gemwallet.android.ext.asset
@@ -21,7 +22,7 @@ import kotlin.math.roundToLong
 class TronStakeClient(
     private val chain: Chain,
     private val stakeService: TronStakeService,
-    private val rpcClient: TronRpcClient,
+    private val accountsService: TronAccountsService,
 ) : StakeClient {
     override suspend fun getValidators(
         chain: Chain,
@@ -47,7 +48,7 @@ class TronStakeClient(
         address: String,
         apr: Double
     ): List<DelegationBase> = withContext(Dispatchers.IO) {
-        val getAccount = async { rpcClient.getAccount(address) }
+        val getAccount = async { accountsService.getAccount(address, true) }
         val getValidators = async { getValidators(chain, apr = 0.0) }
         val getReward = async { stakeService.getReward(address).getOrNull()?.reward ?: 0L }
 

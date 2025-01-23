@@ -14,11 +14,11 @@ class CardanoSignClient(
     private val chain: Chain
 ) : SignClient {
 
-    override suspend fun signTransfer(
+    override suspend fun signTransaction(
         params: SignerParams,
         txSpeed: TxSpeed,
         privateKey: ByteArray
-    ): ByteArray {
+    ): List<ByteArray> {
         val chainData = (params.chainData as? CardanoSignerPreloaderClient.CardanoChainData)
             ?: throw IllegalArgumentException()
         val signingInput = Cardano.SigningInput.newBuilder().apply {
@@ -47,7 +47,7 @@ class CardanoSignClient(
         if (!output.errorMessage.isNullOrEmpty()) {
             throw Exception(output.errorMessage)
         }
-        return output.encoded.toByteArray()
+        return listOf(output.encoded.toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

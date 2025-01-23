@@ -14,11 +14,11 @@ class AlgorandSignClient(
     private val chain: Chain
 ) : SignClient {
     
-    override suspend fun signTransfer(
+    override suspend fun signTransaction(
         params: SignerParams,
         txSpeed: TxSpeed,
         privateKey: ByteArray
-    ): ByteArray {
+    ): List<ByteArray> {
         val chainData = (params.chainData as? AlgorandSignPreloadClient.AlgorandChainData)
             ?: throw Exception("bad params")
         val input = Algorand.SigningInput.newBuilder().apply {
@@ -42,7 +42,7 @@ class AlgorandSignClient(
         if (!output.errorMessage.isNullOrEmpty()) {
             throw Exception(output.errorMessage)
         }
-        return output.encoded.toByteArray()
+        return listOf(output.encoded.toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

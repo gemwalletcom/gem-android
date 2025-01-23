@@ -38,11 +38,11 @@ class EvmSignClient(
         return EthereumMessageSigner.signTypedMessage(privateKey, json).decodeHex()
     }
 
-    override suspend fun signTransfer(
+    override suspend fun signTransaction(
         params: SignerParams,
         txSpeed: TxSpeed,
         privateKey: ByteArray,
-    ): ByteArray {
+    ): List<ByteArray> {
         when (params.input) {
             is ConfirmParams.Stake.RedelegateParams,
             is ConfirmParams.Stake.DelegateParams,
@@ -86,12 +86,13 @@ class EvmSignClient(
             },
             privateKey = privateKey,
         )
-        return AnySigner.sign(signInput, coinType, Ethereum.SigningOutput.parser())
+        val output = AnySigner.sign(signInput, coinType, Ethereum.SigningOutput.parser())
             .encoded
             .toByteArray()
+        return listOf(output)
     }
 
-    private fun stakeSmartchain(params: SignerParams, speed: TxSpeed, privateKey: ByteArray): ByteArray {
+    private fun stakeSmartchain(params: SignerParams, speed: TxSpeed, privateKey: ByteArray): List<ByteArray> {
         val meta = params.chainData as EvmSignerPreloader.EvmChainData
         val fee = meta.gasFee(speed) ?: throw IllegalArgumentException()
         val valueData = when (params.input) {
@@ -124,9 +125,10 @@ class EvmSignClient(
             }.build()
         }.build()
         val coinType = WCChainTypeProxy().invoke(chain)
-        return AnySigner.sign(signInput, coinType, Ethereum.SigningOutput.parser())
+        val output = AnySigner.sign(signInput, coinType, Ethereum.SigningOutput.parser())
             .encoded
             .toByteArray()
+        return listOf(output)
     }
 
     internal fun buildSignInput(

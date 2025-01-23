@@ -21,21 +21,21 @@ class StellarBroadcastClient(
         account: Account,
         signedMessage: ByteArray,
         type: TransactionType
-    ): Result<String> {
+    ): String {
         val encoded = "tx=${URLEncoder.encode(String(signedMessage), "utf-8")}"
         val resp = broadcastService.broadcast(encoded.toRequestBody(Mime.Form.value))
 
         return resp.responseFold(
             onSuccess = {
-                Result.success(it?.hash ?: throw ServiceError.EmptyHash)
+                it?.hash ?: throw ServiceError.EmptyHash
             },
             onError = { err: StellarTransactionBroadcast ->
-                Result.failure(Exception(err.title))
+                throw Exception(err.title)
             },
             onFailure = { cause ->
                 val error = cause.message?.let { ServiceError.BroadCastError(it) }
                     ?: ServiceError.ServerError(err = cause)
-                Result.failure(error)
+                throw error
             }
         )
     }
