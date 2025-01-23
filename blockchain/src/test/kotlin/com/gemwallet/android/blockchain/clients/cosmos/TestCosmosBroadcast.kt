@@ -9,6 +9,7 @@ import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
 import okhttp3.RequestBody
 import okio.Buffer
@@ -65,7 +66,7 @@ class TestCosmosBroadcast {
                 "aghmJ6ZtpC9yim7JA8duO8MwOODdJeHEHssH3PQN+4Yl+SVyLtNEW6+IDUKfkG1dfIYOvpRiFlOyg==\"}",
             sendingData
         )
-        assertEquals("some hash", result.getOrNull())
+        assertEquals("some hash", result)
     }
 
     @Test
@@ -86,14 +87,17 @@ class TestCosmosBroadcast {
             }
 
         )
-        val result = runBlocking {
-            broadcastClient.send(
-                Account(Chain.Cosmos, "cosmos1kglemumu8mn658j6g4z9jzn3zef2qdyyydv7tr", ""),
-                sign.decodeHex(),
-                TransactionType.Transfer,
-            )
+        try {
+            val result = runBlocking {
+                broadcastClient.send(
+                    Account(Chain.Cosmos, "cosmos1kglemumu8mn658j6g4z9jzn3zef2qdyyydv7tr", ""),
+                    sign.decodeHex(),
+                    TransactionType.Transfer,
+                )
+            }
+            assertTrue(false)
+        } catch (err: Throwable) {
+            assertEquals("Some error", err.message)
         }
-
-        assertEquals("Some error", result.exceptionOrNull()?.message)
     }
 }

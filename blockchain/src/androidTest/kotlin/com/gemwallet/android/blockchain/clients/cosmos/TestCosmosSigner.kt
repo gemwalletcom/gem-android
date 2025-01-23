@@ -57,7 +57,7 @@ class TestCosmosSigner {
         )
         val result = runBlocking {
             signer.signTransaction(signParams, TxSpeed.Normal, privateKey)
-        }.toHexString()
+        }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
                     "a22436f6f42436f6342436877765932397a6257397a4c6d4a68626d7375646a46695a585268" +
@@ -98,7 +98,7 @@ class TestCosmosSigner {
         )
         val result = runBlocking {
             signer.signTransaction(signParams, TxSpeed.Normal, privateKey)
-        }.toHexString()
+        }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
                     "a22437134424370554243694d765932397a6257397a4c6e4e3059577470626d6375646a4669" +
@@ -161,7 +161,7 @@ class TestCosmosSigner {
         )
         val result = runBlocking {
             signer.signTransaction(signParams, TxSpeed.Normal, privateKey)
-        }.toHexString()
+        }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
                     "a224372414243706342436955765932397a6257397a4c6e4e3059577470626d6375646a4669" +
@@ -226,7 +226,7 @@ class TestCosmosSigner {
         )
         val result = runBlocking {
             signer.signTransaction(signParams, TxSpeed.Normal, privateKey)
-        }.toHexString()
+        }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
                     "a2243756f424374454243696f765932397a6257397a4c6e4e3059577470626d6375646a4669" +
@@ -275,7 +275,7 @@ class TestCosmosSigner {
         )
         val result = runBlocking {
             signer.signTransaction(signParams, TxSpeed.Normal, privateKey)
-        }.toHexString()
+        }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
                     "a224374514343707742436a63765932397a6257397a4c6d52706333527961574a3164476c76" +

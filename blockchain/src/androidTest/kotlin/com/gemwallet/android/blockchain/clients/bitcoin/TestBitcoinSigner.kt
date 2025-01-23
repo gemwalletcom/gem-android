@@ -74,6 +74,6 @@ class TestBitcoinSigner {
             )
         }
 
-        assertEquals(SIGN_RESULT, sign.toHexString())
+        assertEquals(SIGN_RESULT, sign.first().toHexString())
     }
 }

@@ -49,6 +49,6 @@ class TestBitcoinBroadcast {
         }
 
         assertEquals(sign, sendingData)
-        assertEquals("some hash", result.getOrNull())
+        assertEquals("some hash", result)
     }
 }

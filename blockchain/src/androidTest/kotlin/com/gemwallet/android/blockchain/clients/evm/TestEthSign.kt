@@ -70,7 +70,7 @@ class TestEthSign {
             "0x02f86a01010a0a825208949b1db81180c31b1b428572be105e209b5a6222b7880de0b6b3a76400008" +
                     "0c001a04936670cff2d450a1375fb2c42cf9f97130f9f9365197e4e8461a8c43fe24786a041" +
                     "833ce7835a78604c8518ef4dcef4e6dcd2e2d031dce759cd89790b6054fa07",
-            sign.toHexString()
+            sign.first().toHexString()
         )
     }
 
@@ -111,7 +111,7 @@ class TestEthSign {
                     "00000000000000000000000000000000000de0b6b3a7640000c001a02a975d0be8ce97d4518" +
                     "cd22407a21697f0177b8ca7c057b868eaba32aefd6887a00b20f74083ac147b7733c0b72d2f" +
                     "87cc96fc75be610da14b4f6265703421d273",
-            sign.toHexString()
+            sign.first().toHexString()
         )
     }
 
@@ -155,7 +155,7 @@ class TestEthSign {
             "0x02f86401010a0a83016378949b1db81180c31b1b428572be105e209b5a6222b70a81bcc001a084f6c" +
                     "708ff9bb9ef4f898860c38abf2293a9d34cf22e28047f5afa2af65b048ca06d436644b5fac5" +
                     "74f27c0caade1db8ee72a149897fcfe2f00797e78e8f58437a",
-            sign.toHexString()
+            sign.first().toHexString()
         )
     }
 
@@ -196,7 +196,7 @@ class TestEthSign {
                     "d80000000000000000000000000000000000000000000000000000000000000000c001a0708" +
                     "ce0a221cdfccdaa992fab54ebf65f0e6bd2a319b679f16bad820a332e76d5a071a1409772887" +
                     "9ebedcd62fc9bc2b1e5ae82b509d8c9da665123db2df895a280",
-            sign.toHexString()
+            sign.first().toHexString()
         )
     }
 
@@ -241,7 +241,7 @@ class TestEthSign {
                     "00000000000000000000000000000000000dc3088951e56b15c001a0e3fcddc355556d317b4" +
                     "c67b3171a9565ab3973e20c6a468933a0491824b7dce4a00cf2947749cd16b758ae7db408a2" +
                     "43b86b31239a595fbfd283541ad12872c7ac",
-            sign.toHexString()
+            sign.first().toHexString()
         )
     }
 
@@ -285,7 +285,7 @@ class TestEthSign {
                     "ffffffffffffffffffffffffffffffffffffffffffffffffffc080a03a683902daf791be51b" +
                     "7354dbe5cef567c3825ce52808948ad00b195f79fb736a057f151181ea2898b4a6ef42e1f24" +
                     "0f64995e83fa19ade070e4d9ec7b0f66469c",
-            sign.toHexString()
+            sign.first().toHexString()
         )
     }
 }
