@@ -351,9 +351,8 @@ class AssetsRepository @Inject constructor(
     fun importAssets(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
         launch(Dispatchers.IO) {
             delay(2000) // Wait subscription - token processing
-            val availableAssets =
-                gemApi.getAssets(getDeviceIdCase.getDeviceId(), wallet.index).getOrNull()
-                    ?: return@launch
+            val availableAssets = gemApi.getAssets(getDeviceIdCase.getDeviceId(), wallet.index).getOrNull()
+                ?: return@launch
             availableAssets.mapNotNull { it.toAssetId() }.filter { it.tokenId != null }
                 .map { assetId ->
                     async {

@@ -11,6 +11,7 @@ import com.wallet.core.primitives.CosmosDenom
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
+import java.math.BigInteger
 
 class CosmosBalanceClient(
     private val chain: Chain,
@@ -22,10 +23,10 @@ class CosmosBalanceClient(
         val denom = CosmosDenom.from(chain)
 
         val getBalances = async { balancesService.getBalance(address).getOrNull()?.balances }
-        val balance = getBalances.await()
-            ?.filter { it.denom == denom }
+        val response = getBalances.await()
+        val balance = response?.filter { it.denom == denom }
             ?.map { it.amount.toBigDecimal().toBigInteger() }
-            ?.reduceOrNull { acc, value -> acc + value} ?: return@withContext null
+            ?.fold(BigInteger.ZERO) { acc, value -> acc + value} ?: return@withContext null
 
         when (chain) {
             Chain.Thorchain,
@@ -40,17 +41,20 @@ class CosmosBalanceClient(
                 val delegations = getDelegations.await()
                     ?.filter { it.balance.denom == denom }
                     ?.map { it.balance.amount.toBigDecimal().toBigInteger() }
-                    ?.reduceOrNull { acc, value -> acc + value} ?: return@withContext null
+                    ?.fold(BigInteger.ZERO) { acc, value -> acc + value} ?: return@withContext null
                 val undelegations = getUnboundingDelegations.await()
-                    ?.mapNotNull { entry -> entry.entries.map { it.balance.toBigDecimal().toBigInteger() }.reduceOrNull { acc, value -> acc + value } }
-                    ?.reduceOrNull { acc, value -> acc + value } ?: return@withContext null
+                    ?.mapNotNull { entry ->
+                        entry.entries.map { it.balance.toBigDecimal().toBigInteger() }
+                            .reduceOrNull { acc, value -> acc + value }
+                    }
+                    ?.fold(BigInteger.ZERO) { acc, value -> acc + value } ?: return@withContext null
                 val rewards = getRewards.await()
                     ?.mapNotNull { reward ->
                         reward.reward
                             .filter { it.denom == denom }
                             .map { it.amount.toBigDecimal().toBigInteger() }
                             .reduceOrNull { acc, value -> acc + value}
-                    }?.reduceOrNull { acc, value -> acc + value } ?: return@withContext null
+                    }?.fold(BigInteger.ZERO) { acc, value -> acc + value } ?: return@withContext null
                 AssetBalance.create(
                     asset = chain.asset(),
                     available = balance.toString(),
