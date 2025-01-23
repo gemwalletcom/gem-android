@@ -6,6 +6,7 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getReserveBalance
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Chain
+import java.math.BigInteger
 import kotlin.math.max
 
 class AlgorandBalanceClient(
@@ -17,9 +18,19 @@ class AlgorandBalanceClient(
         chain: Chain,
         address: String
     ): AssetBalance? {
-        val amount = accountService.accounts(address).getOrNull()?.amount ?: return null
-        val reserved = chain.getReserveBalance()
-        val available = max(amount, reserved.toLong()).toString()
+        val response = accountService.accounts(address).getOrNull() ?: return null
+        val amount = response.amount
+
+        val available = if (amount > 0L) {
+            max(amount - response.min_balance, 0L).toString()
+        } else {
+            "0"
+        }
+        val reserved = if (response.amount > 0L) {
+            response.min_balance.toString()
+        } else {
+            "0"
+        }
         return AssetBalance.create(chain.asset(), available = available, reserved = reserved.toString())
     }
 
