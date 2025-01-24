@@ -256,8 +256,7 @@ class ConfirmViewModel @Inject constructor(
         val session = sessionRepository.getSession()
         val txSpeed = txSpeed.value
 
-        val broadcastResult = try {
-
+        try {
             if (assetInfo == null || session == null || feeAssetInfo == null) {
                 throw ConfirmError.TransactionIncorrect
             }
@@ -289,9 +288,8 @@ class ConfirmViewModel @Inject constructor(
             }
         } catch (err: ConfirmError) {
             state.update { ConfirmState.BroadcastError(err) }
-            return@launch
-
-//            state.update { ConfirmState.BroadcastError(ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
+        } catch (err: Throwable) {
+            state.update { ConfirmState.BroadcastError(ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
         }
     }
 
