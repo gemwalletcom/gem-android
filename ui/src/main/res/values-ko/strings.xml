@@ -323,4 +323,5 @@
   <string name="nft.collections">컬렉션</string>
   <string name="nft.your_nfts">귀하의 NFT</string>
   <string name="nft.description">설명</string>
+  <string name="nft.collection">수집</string>
 </resources>

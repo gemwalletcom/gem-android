@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Collections
 import androidx.compose.material.icons.filled.ElectricBolt
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Wallet
@@ -59,7 +60,11 @@ import com.gemwallet.android.features.transactions.navigation.navigateToActiviti
 import com.gemwallet.android.features.transactions.navigation.navigateToTransactionScreen
 import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.navigation.routes.navigateToNftAsset
+import com.gemwallet.android.ui.navigation.routes.navigateToNftCollection
 import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
+import com.gemwallet.android.ui.navigation.routes.nftRoute
+import com.gemwallet.features.nft.presents.NftListScene
 import kotlinx.coroutines.launch
 
 @Composable
@@ -76,6 +81,7 @@ fun MainScreen(
     val context = LocalContext.current
     val assetsListState = rememberLazyListState()
     val activitiesListState = rememberLazyListState()
+    val nftListState = rememberLazyListState()
     val settingsScrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -95,6 +101,13 @@ fun MainScreen(
                 badge = pendingCount,
                 testTag = "activitiesTab",
                 navigate = { navigateToActivitiesScreen(navOptions = it) }
+            ),
+            BottomNavItem(
+                label = context.getString(R.string.nft_your_nfts),
+                icon = Icons.Default.Collections,
+                route = nftRoute,
+                testTag = "nftTab",
+                navigate = { navigateToSettingsScreen(it) }
             ),
             BottomNavItem(
                 label = context.getString(R.string.settings_title),
@@ -121,6 +134,7 @@ fun MainScreen(
                                 when (prevRoute) {
                                     assetsRoute -> assetsListState.animateScrollToItem(0)
                                     activitiesRoute -> activitiesListState.animateScrollToItem(0)
+                                    nftRoute -> nftListState.animateScrollToItem(0)
                                     settingsRoute -> settingsScrollState.animateScrollTo(0)
                                     else -> null
                                 }
@@ -182,6 +196,12 @@ fun MainScreen(
                 activitiesRoute -> TransactionsScreen(
                     listState = activitiesListState,
                     onTransaction = navController::navigateToTransactionScreen,
+                )
+                nftRoute -> NftListScene(
+                    listState = nftListState,
+                    cancelAction = null,
+                    collectionAction = navController::navigateToNftCollection,
+                    assetAction = navController::navigateToNftAsset,
                 )
                 else -> SettingsScene(
                     scrollState = settingsScrollState,

@@ -89,37 +89,37 @@ fun PriceAlertScene(
                 )
             }
         ) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            item {
-                Row(
-                    modifier = Modifier.padding(horizontal = padding16),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                item {
+                    Row(
+                        modifier = Modifier.padding(horizontal = padding16),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            modifier = Modifier.weight(1f),
+                            text = stringResource(R.string.settings_enable_value, "")
+                        )
+                        Switch(
+                            checked = enabled,
+                            onCheckedChange = { onEnablePriceAlerts(it) },
+                        )
+                    }
                     Text(
-                        modifier = Modifier.weight(1f),
-                        text = stringResource(R.string.settings_enable_value, "")
-                    )
-                    Switch(
-                        checked = enabled,
-                        onCheckedChange = { onEnablePriceAlerts(it) },
+                        modifier = Modifier.padding(horizontal = padding16),
+                        text = stringResource(R.string.price_alerts_get_notified_explain_message),
+                        style = MaterialTheme.typography.bodySmall,
                     )
                 }
-                Text(
-                    modifier = Modifier.padding(horizontal = padding16),
-                    text = stringResource(R.string.price_alerts_get_notified_explain_message),
-                    style = MaterialTheme.typography.bodySmall,
+                emptyAlertingAssets(alertingPrice.isEmpty())
+                assets(
+                    reveableAssetId = reveableAssetId,
+                    assets = alertingPrice,
+                    onChart = onChart,
+                    onExclude = onExclude,
                 )
             }
-            emptyAlertingAssets(alertingPrice.isEmpty())
-            assets(
-                reveableAssetId = reveableAssetId,
-                assets = alertingPrice,
-                onChart = onChart,
-                onExclude = onExclude,
-            )
         }
     }
-        }
 }
 
 private fun LazyListScope.emptyAlertingAssets(empty: Boolean) {

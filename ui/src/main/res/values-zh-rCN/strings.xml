@@ -323,4 +323,5 @@
   <string name="nft.collections">收藏</string>
   <string name="nft.your_nfts">你的 NFT</string>
   <string name="nft.description">描述</string>
+  <string name="nft.collection">收藏</string>
 </resources>

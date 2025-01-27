@@ -135,8 +135,10 @@ android {
 
     packaging {
         resources {
-            excludes += "/META-INF/LICENSE.md"
+            excludes += "META-INF/*"
+            excludes += "META-INF/DEPENDENCIES"
             excludes += "/META-INF/LICENSE-notice.md"
+            excludes += "/META-INF/LICENSE.md"
             excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
         }
     }
@@ -177,6 +179,7 @@ dependencies {
 
     // Features
     implementation(project(":features:recipient:presents"))
+    implementation(project(":features:nft:presents"))
 
     // version catalog might not work
     //noinspection UseTomlInstead

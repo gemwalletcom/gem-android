@@ -73,6 +73,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_36_37)
         .addMigrations(MIGRATION_37_38)
         .addMigrations(MIGRATION_38_39)
+        .addMigrations(MIGRATION_39_40)
         .build()
 
     @Singleton
@@ -1086,5 +1087,59 @@ val MIGRATION_38_39 = object : Migration(38, 39) {
             |        LEFT JOIN prices ON assets.id = prices.asset_id AND prices.currency = (SELECT currency FROM session WHERE id = 1)
             |        LEFT JOIN asset_config ON assets.id = asset_config.asset_id AND wallets.id = asset_config.wallet_id
             """.trimMargin())
+    }
+}
+
+val MIGRATION_39_40 = object : Migration(39, 40) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""
+            CREATE TABLE nft_collection (
+                id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                description TEXT,
+                chain TEXT NOT NULL,
+                contract_address TEXT NOT NULL,
+                image_url TEXT NOT NULL,
+                preview_image_url TEXT NOT NULL,
+                original_image_url TEXT NOT NULL,
+                is_verified INTEGER DEFAULT 0,
+                PRIMARY KEY (id)
+            )""".trimIndent()
+        )
+        db.execSQL("""
+            CREATE TABLE nft_asset (
+                id TEXT NOT NULL,
+                collection_id TEXT NOT NULL,
+                token_id TEXT NOT NULL,
+                token_type NOT NULL,
+                name TEXT NOT NULL,
+                description TEXT,
+                chain TEXT NOT NULL,
+                contract_address TEXT NOT NULL,
+                image_url TEXT NOT NULL,
+                preview_image_url TEXT NOT NULL,
+                original_image_url TEXT NOT NULL,
+                PRIMARY KEY (id),
+                FOREIGN KEY (collection_id) REFERENCES nft_collection(id) ON DELETE CASCADE
+            )""".trimIndent()
+        )
+        db.execSQL("""
+            CREATE TABLE nft_attributes (
+                nft_asset_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                value TEXT NOT NULL,
+                PRIMARY KEY (id),
+                FOREIGN KEY (nft_asset_id) REFERENCES nft_asset(id) ON DELETE CASCADE
+            )""".trimIndent()
+        )
+        db.execSQL("""
+            CREATE TABLE nft_association (
+                nft_asset_id TEXT NOT NULL,
+                wallet_id TEXT NOT NULL
+                PRIMARY KEY (nft_asset_id, wallet_id),
+                FOREIGN KEY (nft_asset_id) REFERENCES nft_asset(id) ON DELETE CASCADE,
+                FOREIGN KEY (wallet_id) REFERENCES wallet(id) ON DELETE CASCADE
+            )""".trimIndent()
+        )
     }
 }

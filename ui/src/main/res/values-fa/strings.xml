@@ -323,4 +323,5 @@
   <string name="nft.collections">مجموعه ها</string>
   <string name="nft.your_nfts">NFT های شما</string>
   <string name="nft.description">توضیحات</string>
+  <string name="nft.collection">مجموعه</string>
 </resources>

@@ -99,6 +99,6 @@ interface GemApiClient {
     suspend fun getPriceAlerts(@Path("device_id") deviceId: String): Result<List<PriceAlert>>
 
     @GET("/v1/nft/assets/device/{device_id}?wallet_index={wallet_index}")
-    suspend fun getNFTs(@Path("device_id") deviceId: String, @Path("wallet_index") walletIndex: Int): Result<NFTData>
+    suspend fun getNFTs(@Path("device_id") deviceId: String, @Path("wallet_index") walletIndex: Int): Result<List<NFTData>>
 }
 

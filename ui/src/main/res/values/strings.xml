@@ -323,4 +323,5 @@
   <string name="nft.collections">Collections</string>
   <string name="nft.your_nfts">Your NFTs</string>
   <string name="nft.description">Description</string>
+  <string name="nft.collection">Collection</string>
 </resources>
