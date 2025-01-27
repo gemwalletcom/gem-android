@@ -18,26 +18,22 @@ class BuySelectViewModel @Inject constructor(
     sessionRepository: SessionRepository,
     assetsRepository: AssetsRepository,
     searchTokensCase: SearchTokensCase,
-    buyRepository: BuyRepository,
 ) : BaseAssetSelectViewModel(
     sessionRepository,
     assetsRepository,
     searchTokensCase,
-    BuySelectSearch(assetsRepository, buyRepository)
+    BuySelectSearch(assetsRepository)
 )
 
 class BuySelectSearch(
     assetsRepository: AssetsRepository,
-    val buyRepository: BuyRepository,
 ) : BaseSelectSearch(assetsRepository) {
     override fun invoke(
         session: Flow<Session?>,
         query: Flow<String>
     ): Flow<List<AssetInfo>> {
         return super.invoke(session, query).map { list ->
-            val available = buyRepository.getAvailable()
-            list.filter { available.contains(it.asset.id.toIdentifier()) }
+            list.filter { it.metadata?.isBuyEnabled == true }
         }
     }
-
 }

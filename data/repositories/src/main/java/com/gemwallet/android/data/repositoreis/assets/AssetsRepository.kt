@@ -45,6 +45,7 @@ import com.wallet.core.primitives.AssetPricesRequest
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.FiatAssets
 import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
@@ -512,6 +513,11 @@ class AssetsRepository @Inject constructor(
             }
         )
         return balances
+    }
+
+    suspend fun updateBayAvailable(assets: List<String>) {
+        assetsDao.resetBuyAvailable()
+        assetsDao.updateBuyAvailable(assets)
     }
 
     private fun onTransactions(txs: List<TransactionExtended>) = scope.launch {

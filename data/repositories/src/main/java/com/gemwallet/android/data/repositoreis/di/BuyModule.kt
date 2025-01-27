@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import android.content.Context
+import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemApiClient
@@ -19,6 +20,7 @@ object BuyModule {
     fun provideBuyRepository(
         @ApplicationContext context: Context,
         gemFiatQuoteClient: GemApiClient,
+        assetsRepository: AssetsRepository,
     ): BuyRepository =
         BuyRepository(
             ConfigStore(
@@ -27,6 +29,7 @@ object BuyModule {
                     Context.MODE_PRIVATE
                 )
             ),
-            gemFiatQuoteClient
+            gemFiatQuoteClient,
+            assetsRepository,
         )
 }

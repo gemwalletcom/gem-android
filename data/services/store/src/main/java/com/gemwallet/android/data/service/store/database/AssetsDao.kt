@@ -98,4 +98,10 @@ interface AssetsDao {
 
     @Query("UPDATE assets SET is_swap_enabled=0")
     suspend fun resetSwapable()
+
+    @Query("UPDATE assets SET is_buy_enabled=0")
+    suspend fun resetBuyAvailable()
+
+    @Query("UPDATE assets SET is_buy_enabled=1 WHERE id IN (:ids)")
+    suspend fun updateBuyAvailable(ids: List<String>)
 }
