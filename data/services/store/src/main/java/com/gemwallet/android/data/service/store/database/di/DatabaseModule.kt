@@ -10,6 +10,7 @@ import com.gemwallet.android.data.service.store.database.BalancesDao
 import com.gemwallet.android.data.service.store.database.BannersDao
 import com.gemwallet.android.data.service.store.database.ConnectionsDao
 import com.gemwallet.android.data.service.store.database.GemDatabase
+import com.gemwallet.android.data.service.store.database.NftDao
 import com.gemwallet.android.data.service.store.database.NodesDao
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.service.store.database.PricesDao
@@ -127,6 +128,10 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun providePriceAlertsDao(db: GemDatabase): PriceAlertsDao = db.priceAlertsDao()
+
+    @Singleton
+    @Provides
+    fun provideNFTDao(db: GemDatabase): NftDao = db.nftDao()
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -1102,7 +1107,7 @@ val MIGRATION_39_40 = object : Migration(39, 40) {
                 image_url TEXT NOT NULL,
                 preview_image_url TEXT NOT NULL,
                 original_image_url TEXT NOT NULL,
-                is_verified INTEGER DEFAULT 0,
+                is_verified INTEGER NOT NULL DEFAULT 0,
                 PRIMARY KEY (id)
             )""".trimIndent()
         )
@@ -1111,11 +1116,10 @@ val MIGRATION_39_40 = object : Migration(39, 40) {
                 id TEXT NOT NULL,
                 collection_id TEXT NOT NULL,
                 token_id TEXT NOT NULL,
-                token_type NOT NULL,
+                token_type TEXT NOT NULL,
                 name TEXT NOT NULL,
                 description TEXT,
                 chain TEXT NOT NULL,
-                contract_address TEXT NOT NULL,
                 image_url TEXT NOT NULL,
                 preview_image_url TEXT NOT NULL,
                 original_image_url TEXT NOT NULL,
@@ -1125,20 +1129,20 @@ val MIGRATION_39_40 = object : Migration(39, 40) {
         )
         db.execSQL("""
             CREATE TABLE nft_attributes (
-                nft_asset_id TEXT NOT NULL,
+                asset_id TEXT NOT NULL,
                 name TEXT NOT NULL,
                 value TEXT NOT NULL,
-                PRIMARY KEY (id),
-                FOREIGN KEY (nft_asset_id) REFERENCES nft_asset(id) ON DELETE CASCADE
+                PRIMARY KEY (asset_id, name),
+                FOREIGN KEY (asset_id) REFERENCES nft_asset(id) ON DELETE CASCADE
             )""".trimIndent()
         )
         db.execSQL("""
             CREATE TABLE nft_association (
-                nft_asset_id TEXT NOT NULL,
-                wallet_id TEXT NOT NULL
-                PRIMARY KEY (nft_asset_id, wallet_id),
-                FOREIGN KEY (nft_asset_id) REFERENCES nft_asset(id) ON DELETE CASCADE,
-                FOREIGN KEY (wallet_id) REFERENCES wallet(id) ON DELETE CASCADE
+                asset_id TEXT NOT NULL,
+                wallet_id TEXT NOT NULL,
+                PRIMARY KEY (wallet_id, asset_id),
+                FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE CASCADE,
+                FOREIGN KEY (asset_id) REFERENCES nft_asset(id) ON DELETE CASCADE
             )""".trimIndent()
         )
     }

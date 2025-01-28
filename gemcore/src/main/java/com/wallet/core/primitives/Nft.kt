@@ -29,7 +29,8 @@ data class NFTImage (
 @Serializable
 data class NFTAttribute (
 	val name: String,
-	val value: String
+	val value: String,
+	val percentage: Double? = null
 )
 
 @Serializable
@@ -53,7 +54,8 @@ data class NFTCollection (
 	val chain: Chain,
 	val contractAddress: String,
 	val image: NFTImage,
-	val isVerified: Boolean
+	val isVerified: Boolean,
+	val links: List<AssetLink>
 )
 
 @Serializable

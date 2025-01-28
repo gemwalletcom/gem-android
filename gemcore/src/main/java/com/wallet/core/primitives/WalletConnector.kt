@@ -107,5 +107,7 @@ enum class WalletConnectionMethods(val string: String) {
 	solana_sign_message("solana_signMessage"),
 	@SerialName("solana_signTransaction")
 	solana_sign_transaction("solana_signTransaction"),
+	@SerialName("solana_signAndSendTransaction")
+	solana_sign_and_send_transaction("solana_signAndSendTransaction"),
 }
 

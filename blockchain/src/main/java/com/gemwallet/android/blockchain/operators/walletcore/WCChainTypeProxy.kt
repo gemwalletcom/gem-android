@@ -13,6 +13,7 @@ class WCChainTypeProxy : ChainTypeProxy<CoinType> {
         Chain.Ethereum,
         Chain.World,
         Chain.Sonic,
+        Chain.Abstract,
         Chain.Blast -> CoinType.ETHEREUM
         Chain.SmartChain -> CoinType.SMARTCHAIN
         Chain.Solana -> CoinType.SOLANA

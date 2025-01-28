@@ -89,5 +89,7 @@ enum class Chain(val string: String) {
 	Polkadot("polkadot"),
 	@SerialName("cardano")
 	Cardano("cardano"),
+	@SerialName("abstract")
+	Abstract("abstract"),
 }
 

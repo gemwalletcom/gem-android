@@ -146,7 +146,14 @@ object ClientsModule {
         Retrofit.Builder()
             .baseUrl("https://api.gemwallet.com")
             .client(httpClient)
-            .addConverterFactory(converterFactory)
+//            .addConverterFactory(converterFactory)
+            .addConverterFactory(
+                Json {
+                    ignoreUnknownKeys = true
+                    coerceInputValues = true
+                    explicitNulls = false
+                }.asConverterFactory("application/json; charset=UTF8".toMediaType())
+            )
             .addCallAdapterFactory(ResultCallAdapterFactory())
             .build()
             .create(GemApiClient::class.java)

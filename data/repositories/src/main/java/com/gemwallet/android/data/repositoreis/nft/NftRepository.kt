@@ -1,8 +1,10 @@
 package com.gemwallet.android.data.repositoreis.nft
 
 import com.gemwallet.android.cases.device.GetDeviceIdCase
-import com.gemwallet.android.cases.nft.GetNFTCase
+import com.gemwallet.android.cases.nft.GetAssetNftCase
+import com.gemwallet.android.cases.nft.GetListNftCase
 import com.gemwallet.android.cases.nft.LoadNFTCase
+import com.gemwallet.android.cases.nft.NftError
 import com.gemwallet.android.data.service.store.database.NftDao
 import com.gemwallet.android.data.service.store.database.entities.DbNFTAsset
 import com.gemwallet.android.data.service.store.database.entities.DbNFTAssociation
@@ -15,22 +17,24 @@ import com.wallet.core.primitives.NFTCollection
 import com.wallet.core.primitives.NFTData
 import com.wallet.core.primitives.NFTImage
 import com.wallet.core.primitives.Wallet
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlin.collections.map
+import kotlin.jvm.Throws
 
 class NftRepository(
     private val gemApiClient: GemApiClient,
     private val getDeviceId: GetDeviceIdCase,
     private val nftDao: NftDao,
-) : LoadNFTCase, GetNFTCase {
+) : LoadNFTCase, GetListNftCase, GetAssetNftCase {
 
     override suspend fun loadNFT(wallet: Wallet) {
         val deviceId = getDeviceId.getDeviceId()
 
         val response = gemApiClient.getNFTs(deviceId, wallet.index)
-        val data = response.getOrThrow()
+        val data = response.getOrThrow().data
 
         val collections = data.map {
             DbNFTCollection(
@@ -87,7 +91,7 @@ class NftRepository(
         )
     }
 
-    override fun getNft(collectionId: String?): Flow<List<NFTData>> {
+    override fun getListNft(collectionId: String?): Flow<List<NFTData>> {
         return combine(
             nftDao.getCollection(),
             nftDao.getAssets(),
@@ -98,6 +102,26 @@ class NftRepository(
             collections.map { NFTData(it, assets[it.id] ?: emptyList()) }
                 .filter { it.collection.id == (collectionId ?: return@filter true) }
         }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    @Throws(NftError::class)
+    override fun getAssetNft(id: String): Flow<NFTData> = nftDao.getAsset(id).flatMapLatest { assetEntity ->
+        assetEntity ?: throw NftError.NotFoundAsset
+
+        combine(
+            nftDao.getAttributes(assetEntity.id),
+            nftDao.getCollection(assetEntity.collectionId)
+        ) { attrs, collection ->
+
+            collection ?: throw NftError.NotFoundCollection
+
+            NFTData(
+                collection = collection.mapToModel(),
+                assets = listOf(assetEntity.mapToModel(attrs))
+            )
+        }
+
     }
 }
 
@@ -111,17 +135,18 @@ private fun DbNFTCollection.mapToModel() = NFTCollection(
     contractAddress = this.contractAddress,
     image = NFTImage(this.imageUrl, this.previewImageUrl, this.originalSourceUrl),
     isVerified = this.isVerified,
+    links = emptyList(), // TODO: Add links to database
 )
 
 private fun List<DbNFTAsset>.mapToModel(attributes: List<DbNFTAttribute>): List<NFTAsset> {
     val attrIndex = attributes.groupBy { it.assetId }
     return map { entity ->
-        val assetAttributes = attrIndex[entity.id]?.map { NFTAttribute(it.name, it.value) } ?: emptyList()
+        val assetAttributes = attrIndex[entity.id]
         entity.mapToModel(assetAttributes)
     }
 }
 
-private fun DbNFTAsset.mapToModel(attributes: List<NFTAttribute>) = NFTAsset(
+private fun DbNFTAsset.mapToModel(attributes: List<DbNFTAttribute>?) = NFTAsset(
     id = this.id,
     collectionId = this.collectionId,
     tokenId = this.tokenId,
@@ -134,5 +159,5 @@ private fun DbNFTAsset.mapToModel(attributes: List<NFTAttribute>) = NFTAsset(
         previewImageUrl = this.previewImageUrl,
         originalSourceUrl = this.originalSourceUrl,
     ),
-    attributes = attributes,
+    attributes = attributes?.map { NFTAttribute(it.name, it.value) } ?: emptyList(),
 )

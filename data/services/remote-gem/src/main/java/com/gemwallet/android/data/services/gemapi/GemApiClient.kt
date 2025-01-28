@@ -14,6 +14,7 @@ import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.PriceData
 import com.wallet.core.primitives.Subscription
+import kotlinx.serialization.Serializable
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -98,7 +99,11 @@ interface GemApiClient {
     @GET("/v1/price_alerts/{device_id}")
     suspend fun getPriceAlerts(@Path("device_id") deviceId: String): Result<List<PriceAlert>>
 
-    @GET("/v1/nft/assets/device/{device_id}?wallet_index={wallet_index}")
-    suspend fun getNFTs(@Path("device_id") deviceId: String, @Path("wallet_index") walletIndex: Int): Result<List<NFTData>>
+    @GET("/v1/nft/assets/device/{device_id}")
+    suspend fun getNFTs(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int): Result<Data<List<NFTData>>>
 }
 
+@Serializable
+data class Data<T>(
+    val data: T
+)

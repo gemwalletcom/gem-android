@@ -36,6 +36,7 @@ fun Chain.assetType(): AssetType? {
         Chain.Linea,
         Chain.Mantle,
         Chain.Sonic,
+        Chain.Abstract,
         Chain.World -> AssetType.ERC20
 
         Chain.Cosmos,
@@ -82,6 +83,7 @@ fun Chain.eip1559Support() = when (this) {
     Chain.Celo,
     Chain.World,
     Chain.Sonic,
+    Chain.Abstract,
     Chain.Ethereum -> true
     Chain.Bitcoin,
     Chain.Litecoin,
@@ -177,6 +179,7 @@ fun Chain.toChainType(): ChainType {
         Chain.Celo,
         Chain.World,
         Chain.Sonic,
+        Chain.Abstract,
         Chain.Ethereum -> ChainType.Ethereum
     }
 }

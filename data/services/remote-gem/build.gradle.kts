@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin)
     kotlin("kapt")
+    id("kotlinx-serialization")
 }
 
 android {
