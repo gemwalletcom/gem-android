@@ -1,7 +1,9 @@
 package com.gemwallet.features.nft.presents
 
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.Text
@@ -12,6 +14,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
@@ -39,7 +42,7 @@ fun NFTDetailsScene(
                     model.imageUrl,
                     size = null,
                     transformation = null,
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                 )
             }
             nftDescription(model.description)
@@ -54,7 +57,10 @@ private fun LazyListScope.nftDescription(data: String?) {
     }
 
     item {
-        Text(data)
+        Text(
+            modifier = Modifier.padding(padding16),
+            text = data
+        )
     }
 }
 

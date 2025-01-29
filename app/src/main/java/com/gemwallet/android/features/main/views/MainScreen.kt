@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
@@ -81,7 +82,7 @@ fun MainScreen(
     val context = LocalContext.current
     val assetsListState = rememberLazyListState()
     val activitiesListState = rememberLazyListState()
-    val nftListState = rememberLazyListState()
+    val nftListState = rememberLazyGridState()
     val settingsScrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
 
@@ -103,7 +104,7 @@ fun MainScreen(
                 navigate = { navigateToActivitiesScreen(navOptions = it) }
             ),
             BottomNavItem(
-                label = context.getString(R.string.nft_your_nfts),
+                label = context.getString(R.string.nft_collections),
                 icon = Icons.Default.Collections,
                 route = nftRoute,
                 testTag = "nftTab",

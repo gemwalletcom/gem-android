@@ -65,10 +65,10 @@ interface GemApiClient {
     suspend fun getSubscriptions(@Path("device_id") deviceId: String): Response<List<Subscription>>
 
     @HTTP(method = "DELETE", path = "/v1/subscriptions/{device_id}", hasBody = true)
-    suspend fun deleteSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Result<Any>
+    suspend fun deleteSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Result<String>
 
     @POST("/v1/subscriptions/{device_id}")
-    suspend fun addSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Result<Any>
+    suspend fun addSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Result<String>
 
     @GET("/v1/charts/{asset_id}")
     suspend fun getChart(@Path("asset_id") assetId: String, @Query("currency") currency: String, @Query("period") period: String): Result<Charts>

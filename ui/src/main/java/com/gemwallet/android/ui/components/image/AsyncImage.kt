@@ -14,6 +14,7 @@ import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.transformations
+import coil3.size.Scale
 import coil3.transform.CircleCropTransformation
 import coil3.transform.Transformation
 import com.gemwallet.android.ui.components.designsystem.iconSize
@@ -39,7 +40,7 @@ fun AsyncImage(
             circleColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.45f),
             textMeasurer = rememberTextMeasurer(),
             text = placeholderText,
-            circleSize = Size(200f, 200f)
+            circleSize = Size(400f, 400f)
         )
     }
 
