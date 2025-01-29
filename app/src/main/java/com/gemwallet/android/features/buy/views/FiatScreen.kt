@@ -237,18 +237,3 @@ fun BuyError.mapError() = when (this) {
     BuyError.QuoteNotAvailable -> stringResource(id = R.string.buy_no_results)
     BuyError.ValueIncorrect -> stringResource(id = R.string.errors_invalid_amount)
 }
-
-@Composable
-@Preview
-fun PreviewBuyUI() {
-    WalletTheme {
-        //Idle(
-        //    state = BuyUIState.Idle(),
-        //    fiatAmount = "50",
-        //    onCancel = {},
-        //    onLotSelect = {},
-        //    onProviderSelect = {},
-        //    onAmount = {},
-        //)
-    }
-}

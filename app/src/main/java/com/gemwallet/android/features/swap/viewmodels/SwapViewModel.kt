@@ -53,6 +53,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.ApprovalType
+import uniffi.gemstone.SwapProvider
 import uniffi.gemstone.SwapperException
 import uniffi.gemstone.swapProviderNameToString
 import java.math.BigDecimal
@@ -165,9 +166,13 @@ class SwapViewModel @Inject constructor(
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
-    private val quote  = combine(fromValueFlow, assetsState, approveTx, refreshTimer) { fromValue, assets, tx, _ ->
-        Triple(fromValue, assets, tx)
-    }.mapLatest { data ->
+    private val quotes  = combine(
+        fromValueFlow,
+        assetsState,
+        approveTx,
+        refreshTimer
+    ) { fromValue, assets, tx, _ -> Triple(fromValue, assets, tx) }
+    .mapLatest { data ->
         val assets = data.second
         val fromAsset = assets?.from
         val toAsset = assets?.to
@@ -179,7 +184,7 @@ class SwapViewModel @Inject constructor(
         if (fromAsset == null || toAsset == null || fromValue.compareTo(BigDecimal.ZERO) == 0) {
             withContext(Dispatchers.Main) { toValue.edit { replace(0, length, "0") } }
             swapScreenState.update { SwapState.None }
-            return@mapLatest null
+            return@mapLatest emptyList()
         }
         if (data.third?.transaction?.state == TransactionState.Pending) {
             swapScreenState.update { SwapState.Approving }
@@ -187,8 +192,8 @@ class SwapViewModel @Inject constructor(
         }
         swapScreenState.update { SwapState.GetQuote }
         delay(500L) // User input type - doesn't want spam nodes
-        val quote = try {
-            swapRepository.getQuote(
+        val quotes = try {
+            swapRepository.getQuotes(
                 from = fromAsset.asset.id,
                 to = toAsset.asset.id,
                 ownerAddress = fromAsset.owner.address,
@@ -214,22 +219,38 @@ class SwapViewModel @Inject constructor(
                     }
                 )
             }
-            return@mapLatest null
+            return@mapLatest emptyList()
         }
-        val amount = toAsset.asset.format(Crypto(quote?.toValue ?: "0"), 8, showSymbol = false)
+        quotes ?: emptyList()
+    }
+    .flowOn(Dispatchers.IO)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val selectedProvider = MutableStateFlow<SwapProvider?>(null)
+
+    val providers = quotes.mapLatest { it.map { it.data.provider } }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val quote = combine(quotes, assetsState, selectedProvider) { quotes, assets, provider ->
+        val quote = quotes.firstOrNull { it.data.provider == provider } ?: quotes.firstOrNull()
+        Pair(quote, assets)
+    }
+    .mapLatest {
+        val quote = it.first ?: return@mapLatest null
+        val assets = it.second ?: return@mapLatest null
+        val amount = assets.to?.asset?.format(Crypto(quote.toValue), 8, showSymbol = false) ?: ""
         withContext(Dispatchers.Main) { toValue.edit { replace(0, length, amount) } }
-        val requestApprove = quote?.approval is ApprovalType.Approve
+        val requestApprove = quote.approval is ApprovalType.Approve
         swapScreenState.update {
             if (it == SwapState.Approving) return@update it
             if (requestApprove) SwapState.RequestApprove else SwapState.Ready
         }
         quote
     }
-    .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val provider = quote.mapLatest { it?.data?.provider }
-    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val currentProvider = quote.mapLatest { it?.data?.provider }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val toValue: TextFieldState = TextFieldState()
     val toEquivalent = quote.combine(assetsState) { quote, assets ->
@@ -357,6 +378,10 @@ class SwapViewModel @Inject constructor(
 
     fun onTxHash(hash: String) {
         approveTxHash.update { "${assetsState.value?.from?.id()?.chain?.string}_$hash" }
+    }
+
+    fun setProvider(provider: SwapProvider) {
+        this.selectedProvider.update { provider }
     }
 
     private class SwapPairState(

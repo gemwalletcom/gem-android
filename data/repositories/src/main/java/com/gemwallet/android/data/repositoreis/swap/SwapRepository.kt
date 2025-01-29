@@ -34,7 +34,7 @@ class SwapRepository(
 ) : GetSwapSupportedCase
 {
 
-    suspend fun getQuote(ownerAddress: String, destination: String, from: AssetId, to: AssetId, amount: String): SwapQuote? {
+    suspend fun getQuotes(ownerAddress: String, destination: String, from: AssetId, to: AssetId, amount: String): List<SwapQuote>? {
         val swapRequest = SwapQuoteRequest(
             fromAsset = from.toIdentifier(),
             toAsset = to.toIdentifier(),
@@ -50,7 +50,6 @@ class SwapRepository(
         )
         val quote = gemSwapper.fetchQuote(swapRequest)
             .sortedByDescending { BigInteger(it.toValue) }
-            .firstOrNull() ?: return null
         return quote
     }
 

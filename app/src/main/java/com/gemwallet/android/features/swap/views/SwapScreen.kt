@@ -5,6 +5,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,15 +14,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -51,19 +56,20 @@ import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.TransactionItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer2
-import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIcon20
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getSwapProviderIcon
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
+import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
+import uniffi.gemstone.SwapProvider
 
 @Composable
 fun SwapScreen(
@@ -77,8 +83,11 @@ fun SwapScreen(
     val toEquivalent by viewModel.toEquivalent.collectAsStateWithLifecycle()
     val swapState by viewModel.swapScreenState.collectAsStateWithLifecycle()
     val approveTx by viewModel.approveTx.collectAsStateWithLifecycle()
-    val provider by viewModel.provider.collectAsStateWithLifecycle()
+    val selectedProvider by viewModel.selectedProvider.collectAsStateWithLifecycle()
+    val currentProvider by viewModel.currentProvider.collectAsStateWithLifecycle()
+    val providers by viewModel.providers.collectAsStateWithLifecycle()
 
+    val isShowProviderSelect = remember { mutableStateOf(false) }
     var approveParams by rememberSaveable { mutableStateOf<ConfirmParams?>(null) }
     val pair = pairState
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -142,16 +151,28 @@ fun SwapScreen(
                     viewModel.changePair(it)
                 }
             )
-            provider?.let { provider ->
+            currentProvider?.let { provider ->
                 Spacer16()
+                val modifier = if (providers.size > 1) {
+                    Modifier.clickable { isShowProviderSelect.value = true }
+                } else {
+                    Modifier
+                }
                 SubheaderItem(stringResource(R.string.swap_provider))
                 ListItem(
-                    modifier = Modifier.height(72.dp),
+                    modifier = Modifier
+                        .height(72.dp)
+                        .then(modifier),
                     leading = {
                         AsyncImage(provider.getSwapProviderIcon())
                     },
                     title = {
                         ListItemTitleText(provider.name)
+                    },
+                    trailing = if (providers.size > 1) {
+                        { Icon(Icons.Default.ChevronRight, "") }
+                    } else {
+                        null
                     }
                 )
             }
@@ -202,6 +223,7 @@ fun SwapScreen(
             onSelect = {select -> viewModel.onSelect(select) },
         )
     }
+    ProviderList(isShowProviderSelect, providers, viewModel::setProvider)
 }
 
 @Composable
@@ -248,6 +270,35 @@ private fun SwapError(state: SwapState) {
                 is SwapError.Unknown -> "${stringResource(R.string.errors_unknown_try_again)}: ${state.error.message}"
             },
             style = MaterialTheme.typography.bodyMedium,
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun ProviderList(
+    isShow: MutableState<Boolean>,
+    providers: List<SwapProvider>,
+    onProviderSelect: (SwapProvider) -> Unit,
+) {
+    if (!isShow.value) {
+        return
+    }
+
+    ModalBottomSheet(
+        onDismissRequest = { isShow.value = false },
+    ) {
+        Table(
+            items = providers.map {
+                CellEntity(
+                    icon = "file:///android_asset/fiat/${it.name.lowercase()}.png",
+                    label = it.name,
+                    data = ""
+                ) {
+                    onProviderSelect(it)
+                    isShow.value = false
+                }
+            }
         )
     }
 }
