@@ -44,7 +44,7 @@ import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding8
 import com.gemwallet.android.ui.components.designsystem.trailingIcon20
 import com.gemwallet.android.ui.components.image.AsyncImage
-import com.gemwallet.android.ui.components.image.getIcon
+import com.gemwallet.android.ui.components.image.getFiatProviderIcon
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.screen.Scene
@@ -192,7 +192,7 @@ private fun BuyScene(
                             action = { isShowProviders.value = true },
                             trailing = {
                                 AsyncImage(
-                                    model = selectedProvider.provider.getIcon(),
+                                    model = selectedProvider.provider.getFiatProviderIcon(),
                                     size = trailingIcon20,
                                 )
                             }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -30,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.asset_select.views.SelectSwapScreen
@@ -42,12 +44,20 @@ import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.features.swap.viewmodels.SwapViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.CellEntity
+import com.gemwallet.android.ui.components.ListItem
+import com.gemwallet.android.ui.components.SubheaderItem
+import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.TransactionItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer2
+import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIcon20
+import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.components.image.getSwapProviderIcon
+import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
@@ -67,6 +77,7 @@ fun SwapScreen(
     val toEquivalent by viewModel.toEquivalent.collectAsStateWithLifecycle()
     val swapState by viewModel.swapScreenState.collectAsStateWithLifecycle()
     val approveTx by viewModel.approveTx.collectAsStateWithLifecycle()
+    val provider by viewModel.provider.collectAsStateWithLifecycle()
 
     var approveParams by rememberSaveable { mutableStateOf<ConfirmParams?>(null) }
     val pair = pairState
@@ -131,6 +142,19 @@ fun SwapScreen(
                     viewModel.changePair(it)
                 }
             )
+            provider?.let { provider ->
+                Spacer16()
+                SubheaderItem(stringResource(R.string.swap_provider))
+                ListItem(
+                    modifier = Modifier.height(72.dp),
+                    leading = {
+                        AsyncImage(provider.getSwapProviderIcon())
+                    },
+                    title = {
+                        ListItemTitleText(provider.name)
+                    }
+                )
+            }
             Spacer16()
             val tx = approveTx
             if (tx?.transaction?.state == TransactionState.Pending) {

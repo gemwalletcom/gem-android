@@ -228,6 +228,9 @@ class SwapViewModel @Inject constructor(
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    val provider = quote.mapLatest { it?.data?.provider }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     val toValue: TextFieldState = TextFieldState()
     val toEquivalent = quote.combine(assetsState) { quote, assets ->
         if (quote == null || assets?.to == null) {
