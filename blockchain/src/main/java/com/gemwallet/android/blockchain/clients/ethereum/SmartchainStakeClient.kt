@@ -38,8 +38,7 @@ class SmartchainStakeClient(
         delegations + undelegations
     }
 
-    suspend fun getBalance(address: String, availableValue: String?): AssetBalance? = withContext(Dispatchers.IO) {
-        availableValue ?: return@withContext null
+    suspend fun getBalance(address: String): AssetBalance? = withContext(Dispatchers.IO) {
         val limit = getMaxElectedValidators()
         val getDelegationCall = async { getDelegations(address, limit) }
         val getUndelegationsCall = async { getUndelegations(address, limit) }
@@ -52,7 +51,6 @@ class SmartchainStakeClient(
 
         AssetBalance.create(
             asset = Chain.SmartChain.asset(),
-            available = availableValue,
             staked = staked.toString(),
             pending = pending.toString()
         )

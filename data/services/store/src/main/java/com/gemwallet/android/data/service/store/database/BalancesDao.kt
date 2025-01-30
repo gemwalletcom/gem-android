@@ -24,4 +24,7 @@ interface BalancesDao {
 
     @Query("SELECT * FROM balances WHERE owner IN (:addresses) AND asset_id IN (:assetId)")
     fun getByAssetId(addresses: List<String>, assetId: List<String>): List<DbBalance>
+
+    @Query("SELECT * FROM balances WHERE owner = :addresses AND asset_id = :assetId")
+    fun getByAccount(addresses: String, assetId: String): DbBalance?
 }

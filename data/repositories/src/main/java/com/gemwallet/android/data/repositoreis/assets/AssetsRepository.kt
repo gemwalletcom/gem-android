@@ -14,6 +14,10 @@ import com.gemwallet.android.data.service.store.database.entities.DbAsset
 import com.gemwallet.android.data.service.store.database.entities.DbAssetConfig
 import com.gemwallet.android.data.service.store.database.entities.DbBalance
 import com.gemwallet.android.data.service.store.database.entities.DbPrice
+import com.gemwallet.android.data.service.store.database.entities.mergeDelegation
+import com.gemwallet.android.data.service.store.database.entities.mergeNative
+import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.service.store.database.mappers.AssetInfoMapper
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.asset
@@ -45,7 +49,6 @@ import com.wallet.core.primitives.AssetPricesRequest
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
-import com.wallet.core.primitives.FiatAssets
 import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
@@ -352,17 +355,40 @@ class AssetsRepository @Inject constructor(
     fun importAssets(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
         launch(Dispatchers.IO) {
             delay(2000) // Wait subscription - token processing
-            val availableAssets = gemApi.getAssets(getDeviceIdCase.getDeviceId(), wallet.index).getOrNull()
+            val availableAssetsId = gemApi.getAssets(getDeviceIdCase.getDeviceId(), wallet.index).getOrNull()
                 ?: return@launch
-            availableAssets.mapNotNull { it.toAssetId() }.filter { it.tokenId != null }
+            availableAssetsId.mapNotNull { it.toAssetId() }.filter { it.tokenId != null }
                 .map { assetId ->
                     async {
-                        val account = wallet.getAccount(assetId.chain) ?: return@async
+                        val account = wallet.getAccount(assetId.chain) ?: return@async null
                         searchTokensCase.search(assetId.tokenId!!)
-                        switchVisibility(wallet.id, account, assetId, true, currency)
+                        val assetResult = getById(listOf(account), assetId).firstOrNull()
+
+                        if (assetResult == null) {
+                            val assets = getTokensCase.getByIds(listOf(assetId))
+                            assetsDao.insert(assets.map { modelToRoom(account.address, it)})
+                            setVisibility(wallet.id, assetId, true)
+                            assets.firstOrNull()
+                        } else {
+                            assetResult.asset
+                        }
                     }
                 }
                 .awaitAll()
+                .filterNotNull()
+                .groupBy { it.id.chain }
+                .map {
+                    async {
+                        updateBalances(
+                            wallet.getAccount(it.key) ?: return@async,
+                            it.value
+                        )
+                    }
+                }
+                .awaitAll()
+
+            launch { updatePrices(currency) }
+
         }
         assetsDao.getAssetsInfoByAccountsInWallet(wallet.accounts.map { it.address }, wallet.id)
             .map { AssetInfoMapper().asDomain(it) }
@@ -447,12 +473,13 @@ class AssetsRepository @Inject constructor(
         // TODO: java.lang.ClassCastException:
         //  at com.gemwallet.android.data.repositoreis.assets.AssetsRepository$updatePrices$2.invokeSuspend (AssetsRepository.kt:388)
         val prices = try {
-            gemApi.prices(AssetPricesRequest(currency.string, ids))
-                .getOrNull()?.prices ?: emptyList()
-        } catch (_: Throwable) { emptyList() }
+            gemApi.prices(AssetPricesRequest(currency.string, ids)).getOrNull()?.prices ?: emptyList()
+        } catch (_: Throwable) {
+            emptyList()
+        }
         pricesDao.insert(
             prices.map {
-                    price -> DbPrice(price.assetId, price.price, price.priceChangePercentage24h, currency.string)
+                price -> DbPrice(price.assetId, price.price, price.priceChangePercentage24h, currency.string)
             }
         )
     }
@@ -485,34 +512,28 @@ class AssetsRepository @Inject constructor(
         assetsDao.setSwapable(Chain.swapSupport())
     }
 
-    private suspend fun updateBalances(account: Account, tokens: List<Asset>): List<AssetBalance> {
-        val balances = balancesRemoteSource.getBalances(account, tokens)
+    private suspend fun updateBalances(account: Account, tokens: List<Asset>): List<AssetBalance>  = withContext(Dispatchers.IO) {
         val updatedAt = System.currentTimeMillis()
-        balancesDao.insert(
-            balances.map {
-                DbBalance(
-                    assetId = it.asset.id.toIdentifier(),
-                    owner = account.address,
-                    available = it.balance.available,
-                    availableAmount = it.balanceAmount.available,
-                    frozen = it.balance.frozen,
-                    frozenAmount = it.balanceAmount.frozen,
-                    locked = it.balance.locked,
-                    lockedAmount = it.balanceAmount.locked,
-                    staked = it.balance.staked,
-                    stakedAmount = it.balanceAmount.staked,
-                    pending = it.balance.pending,
-                    pendingAmount = it.balanceAmount.pending,
-                    rewards = it.balance.rewards,
-                    rewardsAmount = it.balanceAmount.rewards,
-                    reserved = it.balance.reserved,
-                    reservedAmount = it.balanceAmount.reserved,
-                    totalAmount = it.totalAmount,
-                    updatedAt = updatedAt,
-                )
-            }
-        )
-        return balances
+
+        val getNative = async {
+            val prevBalance = balancesDao.getByAccount(account.address, account.chain.string)
+            val nativeBalance = balancesRemoteSource.getNativeBalances(account)
+            val dbNativeBalance = DbBalance.mergeNative(prevBalance, nativeBalance?.toRecord(account.address, updatedAt))
+            dbNativeBalance?.let { balancesDao.insert(it) }
+
+            val delegationBalances = balancesRemoteSource.getDelegationBalances(account)
+            val dbFullBalance = DbBalance.mergeDelegation(dbNativeBalance, delegationBalances?.toRecord(account.address, updatedAt))
+            dbFullBalance?.let { balancesDao.insert(it) }
+            dbFullBalance?.toModel()
+        }
+
+        val getTokens = async {
+            val balances = balancesRemoteSource.getTokensBalances(account, tokens)
+            balancesDao.insert(balances.map { it.toRecord(account.address, updatedAt) })
+            balances
+        }
+
+        listOf(getNative.await()).filterNotNull() + getTokens.await()
     }
 
     suspend fun updateBayAvailable(assets: List<String>) {

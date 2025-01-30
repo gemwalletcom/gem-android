@@ -66,6 +66,43 @@ class CosmosBalanceClient(
         }
     }
 
+    override suspend fun getDelegationBalances(chain: Chain, address: String): AssetBalance? = withContext(Dispatchers.IO) {
+        when (chain) {
+            Chain.Thorchain,
+            Chain.Noble -> return@withContext null
+            else -> {}
+        }
+        val denom = CosmosDenom.from(chain)
+
+        val getDelegations = async { stakeService.delegations(address).getOrNull()?.delegation_responses }
+        val getUnboundingDelegations = async { stakeService.undelegations(address).getOrNull()?.unbonding_responses }
+        val getRewards = async { stakeService.rewards(address).getOrNull()?.rewards }
+
+        val delegations = getDelegations.await()
+            ?.filter { it.balance.denom == denom }
+            ?.map { it.balance.amount.toBigDecimal().toBigInteger() }
+            ?.fold(BigInteger.ZERO) { acc, value -> acc + value} ?: return@withContext null
+        val undelegations = getUnboundingDelegations.await()
+            ?.mapNotNull { entry ->
+                entry.entries.map { it.balance.toBigDecimal().toBigInteger() }
+                    .reduceOrNull { acc, value -> acc + value }
+            }
+            ?.fold(BigInteger.ZERO) { acc, value -> acc + value } ?: return@withContext null
+        val rewards = getRewards.await()
+            ?.mapNotNull { reward ->
+                reward.reward
+                    .filter { it.denom == denom }
+                    .map { it.amount.toBigDecimal().toBigInteger() }
+                    .reduceOrNull { acc, value -> acc + value}
+            }?.fold(BigInteger.ZERO) { acc, value -> acc + value } ?: return@withContext null
+        AssetBalance.create(
+            asset = chain.asset(),
+            staked = delegations.toString(),
+            pending = undelegations.toString(),
+            rewards = rewards.toString(),
+        )
+    }
+
     override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> {
         val balances = try {
             balancesService.getBalance(address).getOrNull() ?: return emptyList()

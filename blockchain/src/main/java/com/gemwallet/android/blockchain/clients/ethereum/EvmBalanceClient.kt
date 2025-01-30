@@ -20,10 +20,13 @@ class EvmBalanceClient(
     override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
         val availableValue = balancesService.getBalance(address)
             .getOrNull()?.result?.value?.toString()
+        return AssetBalance.create(chain.asset(), available = availableValue ?: return null)
+    }
 
+    override suspend fun getDelegationBalances(chain: Chain, address: String): AssetBalance? {
         return when (chain) {
-            Chain.SmartChain -> smartChainStakeClient.getBalance(address, availableValue)
-            else -> AssetBalance.create(chain.asset(), available = availableValue ?: return null)
+            Chain.SmartChain -> smartChainStakeClient.getBalance(address)
+            else -> null
         }
     }
 

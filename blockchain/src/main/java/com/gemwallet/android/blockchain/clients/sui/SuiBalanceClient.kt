@@ -7,9 +7,6 @@ import com.gemwallet.android.ext.total
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.withContext
 import java.math.BigInteger
 
 class SuiBalanceClient(
@@ -18,22 +15,22 @@ class SuiBalanceClient(
 ) : BalanceClient {
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
-    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance = withContext(Dispatchers.IO) {
-        val amountJob = async {
-            rpcClient.balance(address).mapCatching {
-                it.result.totalBalance.toBigInteger()
-            }.getOrNull() ?: return@async null
-        }
-        val delegationsJob = async {
-            rpcClient.delegations(JSONRpcRequest.create(SuiMethod.Delegations, listOf(address)))
-                .getOrNull()?.result ?: emptyList()
-        }
-        val amount = amountJob.await()
-        val delegations = delegationsJob.await()
+    override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
+        val amount = rpcClient.balance(address)
+            .mapCatching { it.result.totalBalance.toBigInteger() }
+            .getOrNull() ?: return null
+        return AssetBalance.create(chain.asset(), available = amount.toString())
+    }
+
+    override suspend fun getDelegationBalances(chain: Chain, address: String): AssetBalance? {
+        val delegations = rpcClient.delegations(JSONRpcRequest.create(SuiMethod.Delegations, listOf(address)))
+            .getOrNull()?.result ?: emptyList()
+
         val staked = delegations.map {
             it.stakes.map { stake -> stake.total() }.fold(BigInteger.ZERO) { acc, value -> acc + value}
         }.fold(BigInteger.ZERO) {acc, value -> acc + value}
-        AssetBalance.create(chain.asset(), available = amount.toString(), staked = staked.toString())
+
+        return AssetBalance.create(chain.asset(), staked = staked.toString())
     }
 
     override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> {

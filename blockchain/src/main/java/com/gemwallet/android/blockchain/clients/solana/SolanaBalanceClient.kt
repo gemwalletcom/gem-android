@@ -25,14 +25,13 @@ class SolanaBalanceClient(
 ) : BalanceClient {
 
     override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? = withContext(Dispatchers.IO) {
-        val getAvailable = async { balancesService.getBalance(address) }
-        val getStaked = async { stakeService.getDelegationsBalance(address) }
+        val available = balancesService.getBalance(address) ?: return@withContext null
+        AssetBalance.create(chain.asset(), available.toString())
+    }
 
-        val (available, staked) = Pair(getAvailable.await(), getStaked.await())
-
-        available ?: return@withContext null
-
-        AssetBalance.create(chain.asset(), available.toString(), staked = staked.toString())
+    override suspend fun getDelegationBalances(chain: Chain, address: String): AssetBalance? {
+        val staked = stakeService.getDelegationsBalance(address)
+        return AssetBalance.create(chain.asset(), staked = staked.toString())
     }
 
     override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> {

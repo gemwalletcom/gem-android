@@ -7,5 +7,7 @@ import com.wallet.core.primitives.Chain
 interface BalanceClient : BlockchainClient {
     suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance?
 
+    suspend fun getDelegationBalances(chain: Chain, address: String): AssetBalance? = null
+
     suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> = emptyList()
 }

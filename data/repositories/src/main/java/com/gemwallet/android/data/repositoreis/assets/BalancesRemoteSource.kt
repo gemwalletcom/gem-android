@@ -18,26 +18,34 @@ class BalancesRemoteSource @Inject constructor(
     private val balanceClients: List<BalanceClient>,
 ) {
 
-    suspend fun getBalances(account: Account, tokens: List<Asset>): List<AssetBalance> = withContext(Dispatchers.IO) {
-        val client = balanceClients.getClient(account.chain) ?: return@withContext emptyList()
-
-        val nativeBalances = async {
-            try {
-                client.getNativeBalance(account.chain, account.address)
-            } catch (_: Throwable) {
-                null
-            }
+    suspend fun getNativeBalances(account: Account): AssetBalance? {
+        val client = balanceClients.getClient(account.chain) ?: return null
+        return try {
+            client.getNativeBalance(account.chain, account.address)
+        } catch (_: Throwable) {
+            null
         }
+    }
 
-        val tokensBalances = async {
-            val tokens = tokens.filter { it.id.type() == AssetSubtype.TOKEN && account.chain == it.id.chain }
-                .ifEmpty { return@async emptyList() }
-            try {
-                client.getTokenBalances(account.chain, account.address, tokens)
-            } catch (_: Throwable) {
-                emptyList()
-            }
+    suspend fun getDelegationBalances(account: Account): AssetBalance? {
+        val client = balanceClients.getClient(account.chain) ?: return null
+        return try {
+            client.getDelegationBalances(account.chain, account.address)
+        } catch (_: Throwable) {
+            null
         }
-        (tokensBalances.await() + nativeBalances.await()).filterNotNull()
+    }
+
+    suspend fun getTokensBalances(account: Account, tokens: List<Asset>): List<AssetBalance> {
+        val client = balanceClients.getClient(account.chain) ?: return emptyList()
+
+        val tokens = tokens.filter { it.id.type() == AssetSubtype.TOKEN && account.chain == it.id.chain }
+                .ifEmpty { return emptyList() }
+        val tokensBalances = try {
+            client.getTokenBalances(account.chain, account.address, tokens)
+        } catch (_: Throwable) {
+            emptyList()
+        }
+        return tokensBalances
     }
 }
