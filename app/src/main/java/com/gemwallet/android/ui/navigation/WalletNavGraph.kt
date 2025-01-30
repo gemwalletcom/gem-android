@@ -71,7 +71,11 @@ import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
 import com.gemwallet.android.features.wallets.navigation.walletsScreen
 import com.gemwallet.android.ui.navigation.routes.SendSelect
 import com.gemwallet.android.ui.navigation.routes.Transfer
+import com.gemwallet.android.ui.navigation.routes.navigateToNftAsset
+import com.gemwallet.android.ui.navigation.routes.navigateToNftCollection
 import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
+import com.gemwallet.android.ui.navigation.routes.nftCollection
+import com.gemwallet.android.ui.navigation.routes.nftRoute
 import com.gemwallet.android.ui.navigation.routes.recipientInput
 import com.wallet.core.primitives.AssetId
 
@@ -176,6 +180,12 @@ fun WalletNavGraph(
                     cancelAction = onCancel
                 )
             }
+
+            nftCollection(
+                cancelAction = onCancel,
+                collectionIdAction = navController::navigateToNftCollection,
+                assetIdAction = navController::navigateToNftAsset,
+            )
 
             fiatScreen(
                 cancelAction = onCancel,

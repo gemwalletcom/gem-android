@@ -321,6 +321,9 @@
   <string name="banner.activate_asset.description" formatted="false">To use the %s asset, you must first enable it on the %s network by fulfilling the network’s specific requirements.</string>
   <string name="nft.properties">Properties</string>
   <string name="nft.collections">Collections</string>
-  <string name="nft.your_nfts">Your NFTs</string>
   <string name="nft.description">Description</string>
+  <string name="nft.collection">Collection</string>
+  <string name="wallet.receive_collection">Receive Collection</string>
+  <string name="wallet.more">More</string>
+  <string name="common.save">Save</string>
 </resources>

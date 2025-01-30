@@ -1,6 +1,6 @@
 [versions]
-accompanistPermissions = "0.36.0"
-activityCompose = "1.9.3"
+accompanistPermissions = "0.37.0"
+activityCompose = "1.10.0"
 uiautomator = "2.3.0"
 walletconnect = "1.0.2"
 barcodeScanning = "17.3.0"
@@ -14,15 +14,15 @@ espressoCore = "3.6.1"
 firebaseMessaging = "24.1.0"
 gradle = "8.8.0"
 gson = "2.11.0"
-hiltAndroid = "2.52"
+hiltAndroid = "2.55"
 hiltNavigationCompose = "1.2.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 kotlinGradlePlugin = "1.9.24"
 kotlinSerialization = "2.0.21"
-kotlinxSerializationJson = "1.7.3"
+kotlinxSerializationJson = "1.8.0"
 kotlinxCollectionsImmutable = "0.3.8"
-kotlinxCoroutinesAndroid = "1.9.0"
+kotlinxCoroutinesAndroid = "1.10.1"
 lifecycleRuntimeCompose = "2.8.7"
 loggingInterceptor = "4.12.0"
 retrofit = "2.11.0"
@@ -30,9 +30,9 @@ review = "2.0.2"
 room = "2.7.0-alpha07"
 securityCrypto = "1.0.0"
 compose = "1.7.6"
-compose-alpha = "1.8.0-alpha07"
+compose-alpha = "1.8.0-alpha08"
 materialIcons = "1.7.6"
-material3 = "1.4.0-alpha05"
+material3 = "1.4.0-alpha06"
 navigationCompose = "2.8.5"
 uiTestJunit4 = "1.7.6"
 testRunner = "1.6.2"
@@ -41,11 +41,13 @@ android-lib = "8.8.0"
 kotlin = "2.0.21"
 google-services = "4.4.2"
 material3AdaptiveAndroid = "1.0.0-alpha06"
-turbine = "1.1.0"
-protobuf = "4.27.2"
-reorderable = "2.3.3"
-mockkVersion = "1.13.13"
+turbine = "1.2.0"
+protobuf = "4.29.3"
+reorderable = "2.4.2"
+mockkVersion = "1.13.16"
 datastore = "1.1.2"
+appcompat = "1.7.0"
+material = "1.12.0"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -143,6 +145,8 @@ androidx-material3-adaptive-android = { group = "androidx.compose.material3", na
 reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 
 datastore = { module ="androidx.datastore:datastore-preferences", version.ref = "datastore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 
 [plugins]

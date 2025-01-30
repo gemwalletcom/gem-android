@@ -160,7 +160,7 @@ fun InfoBottomSheet(
                 MainActionButton(
                     title = stringResource(R.string.common_learn_more),
                     onClick = {
-                        item.infoUrl?.let { uriHandler.open(it) }
+                        item.infoUrl?.let { uriHandler.openUri(it) }
                     },
                 )
             }

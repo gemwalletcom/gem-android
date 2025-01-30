@@ -10,6 +10,7 @@ import com.gemwallet.android.data.service.store.database.BalancesDao
 import com.gemwallet.android.data.service.store.database.BannersDao
 import com.gemwallet.android.data.service.store.database.ConnectionsDao
 import com.gemwallet.android.data.service.store.database.GemDatabase
+import com.gemwallet.android.data.service.store.database.NftDao
 import com.gemwallet.android.data.service.store.database.NodesDao
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.service.store.database.PricesDao
@@ -73,6 +74,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_36_37)
         .addMigrations(MIGRATION_37_38)
         .addMigrations(MIGRATION_38_39)
+        .addMigrations(MIGRATION_39_40)
         .build()
 
     @Singleton
@@ -126,6 +128,10 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun providePriceAlertsDao(db: GemDatabase): PriceAlertsDao = db.priceAlertsDao()
+
+    @Singleton
+    @Provides
+    fun provideNFTDao(db: GemDatabase): NftDao = db.nftDao()
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -1086,5 +1092,58 @@ val MIGRATION_38_39 = object : Migration(38, 39) {
             |        LEFT JOIN prices ON assets.id = prices.asset_id AND prices.currency = (SELECT currency FROM session WHERE id = 1)
             |        LEFT JOIN asset_config ON assets.id = asset_config.asset_id AND wallets.id = asset_config.wallet_id
             """.trimMargin())
+    }
+}
+
+val MIGRATION_39_40 = object : Migration(39, 40) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""
+            CREATE TABLE nft_collection (
+                id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                description TEXT,
+                chain TEXT NOT NULL,
+                contract_address TEXT NOT NULL,
+                image_url TEXT NOT NULL,
+                preview_image_url TEXT NOT NULL,
+                original_image_url TEXT NOT NULL,
+                is_verified INTEGER NOT NULL DEFAULT 0,
+                PRIMARY KEY (id)
+            )""".trimIndent()
+        )
+        db.execSQL("""
+            CREATE TABLE nft_asset (
+                id TEXT NOT NULL,
+                collection_id TEXT NOT NULL,
+                token_id TEXT NOT NULL,
+                token_type TEXT NOT NULL,
+                name TEXT NOT NULL,
+                description TEXT,
+                chain TEXT NOT NULL,
+                image_url TEXT NOT NULL,
+                preview_image_url TEXT NOT NULL,
+                original_image_url TEXT NOT NULL,
+                PRIMARY KEY (id),
+                FOREIGN KEY (collection_id) REFERENCES nft_collection(id) ON DELETE CASCADE
+            )""".trimIndent()
+        )
+        db.execSQL("""
+            CREATE TABLE nft_attributes (
+                asset_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                value TEXT NOT NULL,
+                PRIMARY KEY (asset_id, name),
+                FOREIGN KEY (asset_id) REFERENCES nft_asset(id) ON DELETE CASCADE
+            )""".trimIndent()
+        )
+        db.execSQL("""
+            CREATE TABLE nft_association (
+                asset_id TEXT NOT NULL,
+                wallet_id TEXT NOT NULL,
+                PRIMARY KEY (wallet_id, asset_id),
+                FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE CASCADE,
+                FOREIGN KEY (asset_id) REFERENCES nft_asset(id) ON DELETE CASCADE
+            )""".trimIndent()
+        )
     }
 }

@@ -288,11 +288,11 @@
   <string name="swap.price_impact">Impact sur les prix</string>
   <string name="wallet.sell">Vendre</string>
   <string name="sell.title">Sell %s</string>
-  <string name="common.learn_more">Learn More</string>
+  <string name="common.learn_more">Apprendre encore plus</string>
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">Un portefeuille auquel vous n\'avez pas accès, mais dont vous pouvez surveiller les transactions et les mouvements.</string>
-  <string name="info.network_fee.description">%s network charges transaction fee, which varies based on network usage. Paid to miners to process your transaction.</string>
+  <string name="info.network_fee.description">Le réseau %s facture des frais de transaction, qui varient en fonction de l\'utilisation du réseau. Payé aux mineurs pour traiter votre transaction.</string>
   <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
   <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
@@ -321,6 +321,9 @@
   <string name="banner.activate_asset.description" formatted="false">Pour utiliser la ressource %s, vous devez d\'abord l\'activer sur le réseau %s en remplissant les exigences spécifiques du réseau.</string>
   <string name="nft.properties">Propriétés</string>
   <string name="nft.collections">Collections</string>
-  <string name="nft.your_nfts">Vos NFT</string>
   <string name="nft.description">Description</string>
+  <string name="nft.collection">Collection</string>
+  <string name="wallet.receive_collection">Recevoir la collection</string>
+  <string name="wallet.more">Plus</string>
+  <string name="common.save">Sauvegarder</string>
 </resources>

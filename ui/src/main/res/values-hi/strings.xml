@@ -288,11 +288,11 @@
   <string name="swap.price_impact">मूल्य प्रभाव</string>
   <string name="wallet.sell">बेचना</string>
   <string name="sell.title">Sell %s</string>
-  <string name="common.learn_more">Learn More</string>
+  <string name="common.learn_more">और अधिक जानें</string>
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">एक वॉलेट जिस तक आपकी पहुंच नहीं है, लेकिन आप इसके लेनदेन और गतिविधियों पर नजर रख सकते हैं।</string>
-  <string name="info.network_fee.description">%s network charges transaction fee, which varies based on network usage. Paid to miners to process your transaction.</string>
+  <string name="info.network_fee.description">%s नेटवर्क लेनदेन शुल्क लेता है, जो नेटवर्क उपयोग के आधार पर अलग-अलग होता है। आपके लेनदेन को संसाधित करने के लिए माइनर्स को भुगतान किया जाता है।</string>
   <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
   <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
@@ -321,6 +321,9 @@
   <string name="banner.activate_asset.description" formatted="false">%s एसेट का उपयोग करने के लिए, आपको पहले नेटवर्क की विशिष्ट आवश्यकताओं को पूरा करके इसे %s नेटवर्क पर सक्षम करना होगा।</string>
   <string name="nft.properties">गुण</string>
   <string name="nft.collections">संग्रह</string>
-  <string name="nft.your_nfts">आपके NFTs</string>
   <string name="nft.description">विवरण</string>
+  <string name="nft.collection">संग्रह</string>
+  <string name="wallet.receive_collection">संग्रह प्राप्त करें</string>
+  <string name="wallet.more">अधिक</string>
+  <string name="common.save">बचाना</string>
 </resources>

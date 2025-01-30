@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin)
     kotlin("kapt")
+    id("kotlinx-serialization")
 }
 
 android {
@@ -33,6 +34,16 @@ android {
     }
     kapt {
         correctErrorTypes = true
+    }
+
+    packaging {
+        resources {
+            excludes += "META-INF/*"
+            excludes += "META-INF/DEPENDENCIES"
+            excludes += "/META-INF/LICENSE-notice.md"
+            excludes += "/META-INF/LICENSE.md"
+            excludes += "META-INF/versions/9/OSGI-INF/MANIFEST.MF"
+        }
     }
 }
 

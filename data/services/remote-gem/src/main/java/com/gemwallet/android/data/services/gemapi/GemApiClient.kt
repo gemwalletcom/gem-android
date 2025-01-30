@@ -14,6 +14,7 @@ import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.PriceData
 import com.wallet.core.primitives.Subscription
+import kotlinx.serialization.Serializable
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -64,10 +65,10 @@ interface GemApiClient {
     suspend fun getSubscriptions(@Path("device_id") deviceId: String): Response<List<Subscription>>
 
     @HTTP(method = "DELETE", path = "/v1/subscriptions/{device_id}", hasBody = true)
-    suspend fun deleteSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Result<Any>
+    suspend fun deleteSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Result<String>
 
     @POST("/v1/subscriptions/{device_id}")
-    suspend fun addSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Result<Any>
+    suspend fun addSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Result<String>
 
     @GET("/v1/charts/{asset_id}")
     suspend fun getChart(@Path("asset_id") assetId: String, @Query("currency") currency: String, @Query("period") period: String): Result<Charts>
@@ -98,7 +99,11 @@ interface GemApiClient {
     @GET("/v1/price_alerts/{device_id}")
     suspend fun getPriceAlerts(@Path("device_id") deviceId: String): Result<List<PriceAlert>>
 
-    @GET("/v1/nft/assets/device/{device_id}?wallet_index={wallet_index}")
-    suspend fun getNFTs(@Path("device_id") deviceId: String, @Path("wallet_index") walletIndex: Int): Result<NFTData>
+    @GET("/v1/nft/assets/device/{device_id}")
+    suspend fun getNFTs(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int): Result<Data<List<NFTData>>>
 }
 
+@Serializable
+data class Data<T>(
+    val data: T
+)

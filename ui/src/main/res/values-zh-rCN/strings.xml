@@ -288,11 +288,11 @@
   <string name="swap.price_impact">价格影响</string>
   <string name="wallet.sell">卖</string>
   <string name="sell.title">Sell %s</string>
-  <string name="common.learn_more">Learn More</string>
+  <string name="common.learn_more">了解更多</string>
   <string name="info.network_fee.title">网络费用</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">您无权访问钱包，但可以查看其交易和动向。</string>
-  <string name="info.network_fee.description">%s network charges transaction fee, which varies based on network usage. Paid to miners to process your transaction.</string>
+  <string name="info.network_fee.description">%s网络收取交易费，具体费用取决于网络使用情况。支付给矿工以处理您的交易。</string>
   <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
   <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
@@ -321,6 +321,9 @@
   <string name="banner.activate_asset.description" formatted="false">要使用%s资产，您必须首先通过满足网络的特定要求在%s网络上启用它。</string>
   <string name="nft.properties">特性</string>
   <string name="nft.collections">收藏</string>
-  <string name="nft.your_nfts">你的 NFT</string>
   <string name="nft.description">描述</string>
+  <string name="nft.collection">收藏</string>
+  <string name="wallet.receive_collection">接收收藏</string>
+  <string name="wallet.more">更多的</string>
+  <string name="common.save">节省</string>
 </resources>

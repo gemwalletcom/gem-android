@@ -288,11 +288,11 @@
   <string name="swap.price_impact">가격 영향</string>
   <string name="wallet.sell">팔다</string>
   <string name="sell.title">Sell %s</string>
-  <string name="common.learn_more">Learn More</string>
+  <string name="common.learn_more">더 알아보기</string>
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">접근할 수는 없지만 거래 및 이동을 볼 수 있는 지갑입니다.</string>
-  <string name="info.network_fee.description">%s network charges transaction fee, which varies based on network usage. Paid to miners to process your transaction.</string>
+  <string name="info.network_fee.description">%s 네트워크는 네트워크 사용에 따라 달라지는 거래 수수료를 부과합니다. 거래를 처리하기 위해 광부에게 지불됩니다.</string>
   <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
   <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
@@ -321,6 +321,9 @@
   <string name="banner.activate_asset.description" formatted="false">%s 자산을 사용하려면 먼저 네트워크의 특정 요구 사항을 충족하여 %s 네트워크에서 해당 자산을 활성화해야 합니다.</string>
   <string name="nft.properties">속성</string>
   <string name="nft.collections">컬렉션</string>
-  <string name="nft.your_nfts">귀하의 NFT</string>
   <string name="nft.description">설명</string>
+  <string name="nft.collection">수집</string>
+  <string name="wallet.receive_collection">컬렉션 수신</string>
+  <string name="wallet.more">더</string>
+  <string name="common.save">구하다</string>
 </resources>

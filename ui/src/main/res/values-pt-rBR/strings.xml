@@ -288,11 +288,11 @@
   <string name="swap.price_impact">Impacto no preço</string>
   <string name="wallet.sell">Vender</string>
   <string name="sell.title">Sell %s</string>
-  <string name="common.learn_more">Learn More</string>
+  <string name="common.learn_more">Saber mais</string>
   <string name="info.network_fee.title">Taxa de rede</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">Uma carteira à qual você não tem acesso, mas pode monitorar suas transações e movimentos.</string>
-  <string name="info.network_fee.description">%s network charges transaction fee, which varies based on network usage. Paid to miners to process your transaction.</string>
+  <string name="info.network_fee.description">A rede %s cobra uma taxa de transação, que varia com base no uso da rede. Pago aos mineradores para processar sua transação.</string>
   <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
   <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
@@ -321,6 +321,9 @@
   <string name="banner.activate_asset.description" formatted="false">Para usar o ativo %s, você deve primeiro habilitá-lo na rede %s atendendo aos requisitos específicos da rede.</string>
   <string name="nft.properties">Propriedades</string>
   <string name="nft.collections">Coleções</string>
-  <string name="nft.your_nfts">Seus NFTs</string>
   <string name="nft.description">Descrição</string>
+  <string name="nft.collection">Coleção</string>
+  <string name="wallet.receive_collection">Receber coleção</string>
+  <string name="wallet.more">Mais</string>
+  <string name="common.save">Salvar</string>
 </resources>

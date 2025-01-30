@@ -34,6 +34,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.designsystem.Spacer4
@@ -83,7 +84,9 @@ fun Table(
                         dataColor = item.dataColor,
                         support = item.support,
                         action = item.action,
-                        longAction = if (item.dropDownActions == null) null else {{ isDropDownShow = item }},
+                        longAction = if (item.dropDownActions == null) null else {
+                            { isDropDownShow = item }
+                        },
                         actionIcon = item.actionIcon,
                         showActionChevron = item.showActionChevron,
                         trailingIcon = item.trailingIcon,
@@ -104,7 +107,10 @@ fun Table(
                     }
                 }
                 if (i < items.size - 1) {
-                    HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp), thickness = 0.4.dp)
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        thickness = 0.4.dp
+                    )
                 }
             }
         }
@@ -204,19 +210,23 @@ private fun Cell(
             info?.let { InfoButton(it) }
         },
         data = {
-            MiddleEllipsisText(
+            Text(
                 modifier = Modifier,
                 text = data,
                 textAlign = TextAlign.End,
+                maxLines = 1,
+                overflow = TextOverflow.MiddleEllipsis,
                 color = dataColor ?: MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.bodyLarge,
             )
         },
         support = if (support != null) {
             {
-                MiddleEllipsisText(
+                Text(
                     text = support,
                     textAlign = TextAlign.End,
+                    maxLines = 1,
+                    overflow = TextOverflow.MiddleEllipsis,
                     color = MaterialTheme.colorScheme.secondary,
                     style = MaterialTheme.typography.bodyMedium,
                 )

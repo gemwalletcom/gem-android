@@ -288,11 +288,11 @@
   <string name="swap.price_impact">価格の影響</string>
   <string name="wallet.sell">売る</string>
   <string name="sell.title">Sell %s</string>
-  <string name="common.learn_more">Learn More</string>
+  <string name="common.learn_more">もっと詳しく知る</string>
   <string name="info.network_fee.title">ネットワーク料金</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">アクセス権はありませんが、取引や動きを監視できるウォレットです。</string>
-  <string name="info.network_fee.description">%s network charges transaction fee, which varies based on network usage. Paid to miners to process your transaction.</string>
+  <string name="info.network_fee.description">%sネットワークは、ネットワークの使用状況に応じて変化する取引手数料を請求します。取引を処理するためにマイナーに支払われます。</string>
   <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
   <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
@@ -321,6 +321,9 @@
   <string name="banner.activate_asset.description" formatted="false">%sアセットを使用するには、まずネットワークの特定の要件を満たして%sネットワーク上でアセットを有効にする必要があります。</string>
   <string name="nft.properties">プロパティ</string>
   <string name="nft.collections">コレクション</string>
-  <string name="nft.your_nfts">あなたのNFT</string>
   <string name="nft.description">説明</string>
+  <string name="nft.collection">コレクション</string>
+  <string name="wallet.receive_collection">コレクションを受け取る</string>
+  <string name="wallet.more">もっと</string>
+  <string name="common.save">保存</string>
 </resources>

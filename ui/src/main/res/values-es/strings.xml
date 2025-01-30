@@ -288,11 +288,11 @@
   <string name="swap.price_impact">Impacto en el precio</string>
   <string name="wallet.sell">Vender</string>
   <string name="sell.title">Sell %s</string>
-  <string name="common.learn_more">Learn More</string>
+  <string name="common.learn_more">Más información</string>
   <string name="info.network_fee.title">Tarifa de red</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">Una billetera a la que no tienes acceso, pero puedes observar sus transacciones y movimientos.</string>
-  <string name="info.network_fee.description">%s network charges transaction fee, which varies based on network usage. Paid to miners to process your transaction.</string>
+  <string name="info.network_fee.description">La red %s cobra una tarifa por transacción que varía según el uso de la red. Se paga a los mineros para que procesen su transacción.</string>
   <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
   <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
@@ -321,6 +321,9 @@
   <string name="banner.activate_asset.description" formatted="false">Para utilizar el activo %s, primero debe habilitarlo en la red %s cumpliendo con los requisitos específicos de la red.</string>
   <string name="nft.properties">Propiedades</string>
   <string name="nft.collections">Colecciones</string>
-  <string name="nft.your_nfts">Tus NFT</string>
   <string name="nft.description">Descripción</string>
+  <string name="nft.collection">Recopilación</string>
+  <string name="wallet.receive_collection">Recibir colección</string>
+  <string name="wallet.more">Más</string>
+  <string name="common.save">Ahorrar</string>
 </resources>

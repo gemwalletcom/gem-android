@@ -288,11 +288,11 @@
   <string name="swap.price_impact">تاثیر قیمت</string>
   <string name="wallet.sell">فروش</string>
   <string name="sell.title">Sell %s</string>
-  <string name="common.learn_more">Learn More</string>
+  <string name="common.learn_more">بیشتر بدانید</string>
   <string name="info.network_fee.title">کارمزد شبکه</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">کیف پولی که به آن دسترسی ندارید اما می توانید تراکنش ها و حرکات آن را تماشا کنید.</string>
-  <string name="info.network_fee.description">%s network charges transaction fee, which varies based on network usage. Paid to miners to process your transaction.</string>
+  <string name="info.network_fee.description">شبکه %s کارمزد تراکنش را دریافت می کند که بر اساس میزان استفاده از شبکه متفاوت است. برای پردازش تراکنش شما به ماینرها پرداخت می شود.</string>
   <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
   <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
@@ -321,6 +321,9 @@
   <string name="banner.activate_asset.description" formatted="false">برای استفاده از دارایی %s ، ابتدا باید آن را در شبکه %s با انجام الزامات خاص شبکه فعال کنید.</string>
   <string name="nft.properties">خواص</string>
   <string name="nft.collections">مجموعه ها</string>
-  <string name="nft.your_nfts">NFT های شما</string>
   <string name="nft.description">توضیحات</string>
+  <string name="nft.collection">مجموعه</string>
+  <string name="wallet.receive_collection">دریافت مجموعه</string>
+  <string name="wallet.more">بیشتر</string>
+  <string name="common.save">ذخیره کنید</string>
 </resources>

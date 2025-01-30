@@ -288,11 +288,11 @@
   <string name="swap.price_impact">השפעת המחיר</string>
   <string name="wallet.sell">מְכִירָה</string>
   <string name="sell.title">Sell %s</string>
-  <string name="common.learn_more">Learn More</string>
+  <string name="common.learn_more">למידע נוסף</string>
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">ארנק שאין לך גישה אליו, אבל אתה יכול לצפות בעסקאות ובתנועות שלו.</string>
-  <string name="info.network_fee.description">%s network charges transaction fee, which varies based on network usage. Paid to miners to process your transaction.</string>
+  <string name="info.network_fee.description">הרשת %s גובה עמלת עסקאות, המשתנות בהתאם לשימוש ברשת. שולם לכורים כדי לעבד את העסקה שלך.</string>
   <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
   <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
@@ -321,6 +321,9 @@
   <string name="banner.activate_asset.description" formatted="false">כדי להשתמש בנכס %s, תחילה עליך להפעיל אותו ברשת %s על ידי מילוי הדרישות הספציפיות של הרשת.</string>
   <string name="nft.properties">נכסים</string>
   <string name="nft.collections">אוספים</string>
-  <string name="nft.your_nfts">ה-NFTs שלך</string>
   <string name="nft.description">תֵאוּר</string>
+  <string name="nft.collection">גְבִיָה</string>
+  <string name="wallet.receive_collection">קבלת אוסף</string>
+  <string name="wallet.more">יוֹתֵר</string>
+  <string name="common.save">לְהַצִיל</string>
 </resources>

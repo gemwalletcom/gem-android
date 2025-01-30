@@ -288,11 +288,11 @@
   <string name="swap.price_impact">Влияние цены</string>
   <string name="wallet.sell">Продавать</string>
   <string name="sell.title">Sell %s</string>
-  <string name="common.learn_more">Learn More</string>
+  <string name="common.learn_more">Узнать больше</string>
   <string name="info.network_fee.title">Сетевая плата</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">Кошелек, к которому у вас нет доступа, но вы можете следить за его транзакциями и движениями.</string>
-  <string name="info.network_fee.description">%s network charges transaction fee, which varies based on network usage. Paid to miners to process your transaction.</string>
+  <string name="info.network_fee.description">%s сеть взимает комиссию за транзакцию, которая варьируется в зависимости от использования сети. Выплачивается майнерам за обработку вашей транзакции.</string>
   <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
   <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
@@ -321,6 +321,9 @@
   <string name="banner.activate_asset.description" formatted="false">Чтобы использовать актив %s, необходимо сначала включить его в сети %s выполнив особые требования сети.</string>
   <string name="nft.properties">Характеристики</string>
   <string name="nft.collections">Коллекции</string>
-  <string name="nft.your_nfts">Ваши NFT</string>
   <string name="nft.description">Описание</string>
+  <string name="nft.collection">Коллекция</string>
+  <string name="wallet.receive_collection">Получить коллекцию</string>
+  <string name="wallet.more">Более</string>
+  <string name="common.save">Сохранить</string>
 </resources>

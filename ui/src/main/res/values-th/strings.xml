@@ -288,11 +288,11 @@
   <string name="swap.price_impact">ผลกระทบต่อราคา</string>
   <string name="wallet.sell">ขาย</string>
   <string name="sell.title">Sell %s</string>
-  <string name="common.learn_more">Learn More</string>
+  <string name="common.learn_more">เรียนรู้เพิ่มเติม</string>
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">กระเป๋าเงินที่คุณไม่สามารถเข้าถึงได้แต่คุณสามารถดูธุรกรรมและการเคลื่อนไหวได้</string>
-  <string name="info.network_fee.description">%s network charges transaction fee, which varies based on network usage. Paid to miners to process your transaction.</string>
+  <string name="info.network_fee.description">%s เครือข่ายจะเรียกเก็บค่าธรรมเนียมการทำธุรกรรม ซึ่งแตกต่างกันไปตามการใช้งานเครือข่าย จ่ายให้กับนักขุดเพื่อดำเนินการธุรกรรมของคุณ</string>
   <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
   <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
@@ -321,6 +321,9 @@
   <string name="banner.activate_asset.description" formatted="false">ในการใช้สินทรัพย์ %s ก่อนอื่นคุณต้องเปิดใช้งานบนเครือข่าย %s โดยปฏิบัติตามข้อกำหนดเฉพาะของเครือข่าย</string>
   <string name="nft.properties">คุณสมบัติ</string>
   <string name="nft.collections">คอลเลคชั่น</string>
-  <string name="nft.your_nfts">NFT ของคุณ</string>
   <string name="nft.description">คำอธิบาย</string>
+  <string name="nft.collection">ของสะสม</string>
+  <string name="wallet.receive_collection">รับการรวบรวม</string>
+  <string name="wallet.more">มากกว่า</string>
+  <string name="common.save">บันทึก</string>
 </resources>

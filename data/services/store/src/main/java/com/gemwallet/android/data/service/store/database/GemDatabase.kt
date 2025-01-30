@@ -11,6 +11,10 @@ import com.gemwallet.android.data.service.store.database.entities.DbBanner
 import com.gemwallet.android.data.service.store.database.entities.DbConnection
 import com.gemwallet.android.data.service.store.database.entities.DbDelegationBase
 import com.gemwallet.android.data.service.store.database.entities.DbDelegationValidator
+import com.gemwallet.android.data.service.store.database.entities.DbNFTAsset
+import com.gemwallet.android.data.service.store.database.entities.DbNFTAssociation
+import com.gemwallet.android.data.service.store.database.entities.DbNFTAttribute
+import com.gemwallet.android.data.service.store.database.entities.DbNFTCollection
 import com.gemwallet.android.data.service.store.database.entities.DbNode
 import com.gemwallet.android.data.service.store.database.entities.DbPrice
 import com.gemwallet.android.data.service.store.database.entities.DbPriceAlert
@@ -22,7 +26,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetada
 import com.gemwallet.android.data.service.store.database.entities.DbWallet
 
 @Database(
-    version = 39,
+    version = 40,
     entities = [
         DbWallet::class,
         DbAccount::class,
@@ -40,6 +44,10 @@ import com.gemwallet.android.data.service.store.database.entities.DbWallet
         DbAssetConfig::class,
         DbBanner::class,
         DbPriceAlert::class,
+        DbNFTCollection::class,
+        DbNFTAsset::class,
+        DbNFTAttribute::class,
+        DbNFTAssociation::class,
     ],
     views = [
         DbAssetInfo::class,
@@ -72,4 +80,6 @@ abstract class GemDatabase : RoomDatabase() {
     abstract fun bannersDao(): BannersDao
 
     abstract fun priceAlertsDao(): PriceAlertsDao
+
+    abstract fun nftDao(): NftDao
 }
