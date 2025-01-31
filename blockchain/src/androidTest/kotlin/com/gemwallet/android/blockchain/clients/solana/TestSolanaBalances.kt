@@ -28,7 +28,6 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import kotlin.collections.Map
 
 class TestSolanaBalances {
 
@@ -123,8 +122,6 @@ class TestSolanaBalances {
             balanceClient.getNativeBalance(Chain.Solana, "AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh")
         }
         assertEquals("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh", balancesService.nativeRequest!!.params[0])
-        assertEquals("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh",
-            ((((stakeService.delegationsRequest!!.params[1] as Map<*, *>)["filters"] as List<*>)[0] as Map<*, *>)["memcmp"] as Map<*, *>)["bytes"])
         assertNotNull(result)
         assertEquals(AssetId(Chain.Solana), result!!.asset.id)
         assertEquals("1000000", result.balance.available)
@@ -214,20 +211,20 @@ class TestSolanaBalances {
             stakeService = stakeService,
         )
         val result = runBlocking {
-            balanceClient.getNativeBalance(Chain.Solana, "AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh")
+            balanceClient.getDelegationBalances(Chain.Solana, "AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh")
         }
         assertNotNull(result)
         assertEquals(AssetId(Chain.Solana), result!!.asset.id)
-        assertEquals("1000000", result.balance.available)
+        assertEquals("0", result.balance.available)
         assertEquals("1000000", result.balance.staked)
         assertEquals("0", result.balance.pending)
         assertEquals("0", result.balance.reserved)
         assertEquals("0", result.balance.locked)
         assertEquals("0", result.balance.frozen)
         assertEquals("0", result.balance.rewards)
-        assertEquals(0.001, result.balanceAmount.available)
+        assertEquals(0.0, result.balanceAmount.available)
         assertEquals(0.001, result.balanceAmount.staked)
-        assertEquals(0.002, result.balanceAmount.getTotalAmount())
+        assertEquals(0.001, result.balanceAmount.getTotalAmount())
     }
 
     @Test
@@ -283,19 +280,19 @@ class TestSolanaBalances {
             stakeService = stakeService,
         )
         val result = runBlocking {
-            balanceClient.getNativeBalance(Chain.Solana, "AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh")
+            balanceClient.getDelegationBalances(Chain.Solana, "AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh")
         }
         assertNotNull(result)
         assertEquals(AssetId(Chain.Solana), result!!.asset.id)
-        assertEquals("1000000", result.balance.available)
+        assertEquals("0", result.balance.available)
         assertEquals("3000000", result.balance.staked)
         assertEquals("0", result.balance.pending)
         assertEquals("0", result.balance.reserved)
         assertEquals("0", result.balance.locked)
         assertEquals("0", result.balance.frozen)
         assertEquals("0", result.balance.rewards)
-        assertEquals(0.001, result.balanceAmount.available)
+        assertEquals(0.0, result.balanceAmount.available)
         assertEquals(0.003, result.balanceAmount.staked)
-        assertEquals(0.004, result.balanceAmount.getTotalAmount())
+        assertEquals(0.003, result.balanceAmount.getTotalAmount())
     }
 }

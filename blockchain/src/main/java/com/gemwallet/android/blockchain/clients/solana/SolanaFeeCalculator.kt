@@ -30,21 +30,21 @@ class SolanaFeeCalculator(
     suspend fun calculate(params: ConfirmParams.Stake): List<GasFee> {
         return calculate(
             gasLimit = 100_000L,
-            multipleOf = 1_500_000L,
+            multipleOf = 50_000,
         )
     }
 
     suspend fun calculate(params: ConfirmParams.TransferParams): List<GasFee> {
         return calculate(
             gasLimit = 100_000L,
-            multipleOf = if (params.assetId.type() == AssetSubtype.NATIVE) 100_000L else 1_000_000L,
+            multipleOf = if (params.assetId.type() == AssetSubtype.NATIVE) 50_000 else 100_000,
         )
     }
 
     suspend fun calculate(params: ConfirmParams.SwapParams): List<GasFee> {
         return calculate(
             gasLimit = 420_000L,
-            multipleOf = 2_500_000,
+            multipleOf = 250_000,
         )
     }
 
@@ -53,9 +53,9 @@ class SolanaFeeCalculator(
 
         return TxSpeed.entries.map { speed ->
             val speedCoefficient = when (speed) {
-                TxSpeed.Slow -> 1f
-                TxSpeed.Normal -> 3f
-                TxSpeed.Fast -> 5f
+                TxSpeed.Slow -> 0.5f
+                TxSpeed.Normal -> 1f
+                TxSpeed.Fast -> 3f
             }
             val minerFee = if (priorityFees.isEmpty()) {
                 multipleOf

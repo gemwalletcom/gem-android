@@ -66,7 +66,7 @@ class TestSolanaSignPreloader {
                 .transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh")) as ConfirmParams.TransferParams.Native
             )
         }
-        assertEquals(BigInteger("300004992"), result.chainData.gasFee().amount)
+        assertEquals(BigInteger("100005000"), result.chainData.gasFee().amount)
         assertEquals("123", (result.chainData as SolanaSignerPreloader.SolanaChainData).blockhash)
         assertEquals(SolanaTokenProgramId.Token, (result.chainData as SolanaSignerPreloader.SolanaChainData).tokenProgram)
         assertEquals(null, (result.chainData as SolanaSignerPreloader.SolanaChainData).recipientTokenAddress)
@@ -92,7 +92,7 @@ class TestSolanaSignPreloader {
                 .transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh")) as ConfirmParams.TransferParams.Token
             )
         }
-        assertEquals(BigInteger("300004992"), result.chainData.gasFee().amount)
+        assertEquals(BigInteger("100005000"), result.chainData.gasFee().amount)
         assertEquals("123", (result.chainData as SolanaSignerPreloader.SolanaChainData).blockhash)
         assertEquals(SolanaTokenProgramId.Token, (result.chainData as SolanaSignerPreloader.SolanaChainData).tokenProgram)
         assertEquals("DVWPV7brSbPDkA7a3qdn6UJsVc3J3DyhQhjNaZeZqwzo", (result.chainData as SolanaSignerPreloader.SolanaChainData).recipientTokenAddress)
@@ -118,7 +118,7 @@ class TestSolanaSignPreloader {
                 .transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh")) as ConfirmParams.TransferParams.Token
             )
         }
-        assertEquals(BigInteger("300004992"), result.chainData.gasFee().amount)
+        assertEquals(BigInteger("100005000"), result.chainData.gasFee().amount)
         assertEquals("123", (result.chainData as SolanaSignerPreloader.SolanaChainData).blockhash)
         assertEquals(SolanaTokenProgramId.Token2022, (result.chainData as SolanaSignerPreloader.SolanaChainData).tokenProgram)
         assertEquals("87vTugUvkkepa84mBRfENnvkPQRj5EZSkiG8XyFAhbQQ", (result.chainData as SolanaSignerPreloader.SolanaChainData).recipientTokenAddress)

@@ -144,17 +144,17 @@ class TestEvmBalance {
         )
 
         val result = runBlocking {
-            balanceClient.getNativeBalance(Chain.SmartChain, "0xEe7E9CcFb529f2c1Cc02C0Aea8aCed7Ec7e98B5e")
+            balanceClient.getDelegationBalances(Chain.SmartChain, "0xEe7E9CcFb529f2c1Cc02C0Aea8aCed7Ec7e98B5e")
         }
         assertNotNull(result)
-        assertEquals("10000000000000000", result!!.balance.available)
+        assertEquals("0", result!!.balance.available)
         assertEquals("0", result.balance.rewards)
         assertEquals("1002837049419308777", result.balance.staked)
         assertEquals("0", result.balance.pending)
         assertEquals("0", result.balance.frozen)
         assertEquals("0", result.balance.locked)
         assertEquals("0", result.balance.reserved)
-        assertEquals(BigInteger.valueOf(1_012_837_049_419_308_777), result.balance.getTotalAmount())
+        assertEquals(BigInteger.valueOf(1002837049419308777), result.balance.getTotalAmount())
     }
 
     @Test
