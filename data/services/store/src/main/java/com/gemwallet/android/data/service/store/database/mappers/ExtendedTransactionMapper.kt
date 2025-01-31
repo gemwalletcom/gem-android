@@ -2,10 +2,10 @@ package com.gemwallet.android.data.service.store.database.mappers
 
 import com.gemwallet.android.data.service.store.database.entities.DbTransactionExtended
 import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.model.Transaction
+import com.gemwallet.android.model.TransactionExtended
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Price
-import com.wallet.core.primitives.Transaction
-import com.wallet.core.primitives.TransactionExtended
 
 class ExtendedTransactionMapper : Mapper<TransactionExtended?, DbTransactionExtended, Nothing, Nothing> {
 

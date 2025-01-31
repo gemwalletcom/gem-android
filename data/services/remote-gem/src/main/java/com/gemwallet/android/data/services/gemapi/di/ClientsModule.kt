@@ -29,8 +29,6 @@ import com.gemwallet.android.data.services.gemapi.models.NodeSerializer
 import com.gemwallet.android.data.services.gemapi.models.ReleaseDeserialize
 import com.gemwallet.android.data.services.gemapi.models.SubscriptionSerializer
 import com.gemwallet.android.data.services.gemapi.models.SwapQuoteDeserializer
-import com.gemwallet.android.data.services.gemapi.models.Transactions
-import com.gemwallet.android.data.services.gemapi.models.TransactionsSerializer
 import com.gemwallet.android.ext.available
 import com.gemwallet.android.ext.toChainType
 import com.gemwallet.android.serializer.AssetIdSerializer
@@ -128,7 +126,7 @@ object ClientsModule {
             .registerTypeAdapter(Node::class.java, NodeSerializer())
             .registerTypeAdapter(Device::class.java, DeviceSerializer())
             .registerTypeAdapter(Subscription::class.java, SubscriptionSerializer())
-            .registerTypeAdapter(Transactions::class.java, TransactionsSerializer())
+//            .registerTypeAdapter(Transactions::class.java, TransactionsSerializer())
             .registerTypeAdapter(NameRecord::class.java, NameRecordDeserialize())
             .registerTypeAdapter(SwapQuote::class.java, SwapQuoteDeserializer())
             .registerTypeAdapter(Release::class.java, ReleaseDeserialize())

@@ -11,8 +11,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.components.TransactionItem
-import com.wallet.core.primitives.TransactionExtended
 import java.text.DateFormat
 import java.util.Date
 

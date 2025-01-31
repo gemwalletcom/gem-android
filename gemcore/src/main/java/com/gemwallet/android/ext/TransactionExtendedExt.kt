@@ -1,8 +1,8 @@
 package com.gemwallet.android.ext
 
+import com.gemwallet.android.model.Transaction
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.Transaction
 import com.wallet.core.primitives.TransactionSwapMetadata
 import com.wallet.core.primitives.TransactionType
 import org.json.JSONObject

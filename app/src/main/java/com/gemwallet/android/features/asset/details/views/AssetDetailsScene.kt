@@ -46,6 +46,7 @@ import com.gemwallet.android.features.asset.details.models.AssetStateError
 import com.gemwallet.android.features.asset.details.viewmodels.AsseDetailsViewModel
 import com.gemwallet.android.features.banners.views.BannersScene
 import com.gemwallet.android.features.transactions.components.transactionsList
+import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
@@ -66,7 +67,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BannerEvent
-import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.WalletType
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl

@@ -36,6 +36,7 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.AssetPriceInfo
 import com.gemwallet.android.model.Balance
 import com.gemwallet.android.model.SyncState
+import com.gemwallet.android.model.TransactionExtended
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.wallet.core.primitives.Account
@@ -49,7 +50,6 @@ import com.wallet.core.primitives.AssetPricesRequest
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
-import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.CoroutineScope

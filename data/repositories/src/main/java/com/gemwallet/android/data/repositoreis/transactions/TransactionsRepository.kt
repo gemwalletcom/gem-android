@@ -20,13 +20,13 @@ import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.Fee
+import com.gemwallet.android.model.Transaction
 import com.gemwallet.android.model.TransactionChages
+import com.gemwallet.android.model.TransactionExtended
 import com.google.gson.Gson
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.Transaction
 import com.wallet.core.primitives.TransactionDirection
-import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
 import com.wallet.core.primitives.TransactionType

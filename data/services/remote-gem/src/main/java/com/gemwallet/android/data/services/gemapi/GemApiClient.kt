@@ -1,7 +1,7 @@
 package com.gemwallet.android.data.services.gemapi
 
 import com.gemwallet.android.data.services.gemapi.models.PricesResponse
-import com.gemwallet.android.data.services.gemapi.models.Transactions
+import com.gemwallet.android.model.Transaction
 import com.wallet.core.primitives.AssetFull
 import com.wallet.core.primitives.AssetPricesRequest
 import com.wallet.core.primitives.Charts
@@ -47,7 +47,7 @@ interface GemApiClient {
         @Path("device_id") deviceId: String,
         @Query("wallet_index") walletIndex: Int,
         @Query("from_timestamp") from: Long
-    ): Result<Transactions>
+    ): Result<List<Transaction>>
 
     @GET("/v1/name/resolve/{domain}")
     suspend fun resolve(@Path("domain") domain: String, @Query("chain") chain: String): Result<NameRecord>

@@ -14,11 +14,11 @@ import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.features.transactions.details.model.TxDetailsScreenModel
 import com.gemwallet.android.features.transactions.navigation.txIdArg
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.getRelativeDate
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.Currency
-import com.wallet.core.primitives.TransactionExtended
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted

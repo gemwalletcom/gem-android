@@ -1,6 +1,7 @@
 package com.gemwallet.android.features.transactions.list.model
 
-import com.wallet.core.primitives.TransactionExtended
+import com.gemwallet.android.model.TransactionExtended
+
 
 class TxListScreenState (
     val loading: Boolean = false,

@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.same
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.designsystem.Spacer2
@@ -41,7 +42,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionDirection
-import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
 import com.wallet.core.primitives.TransactionType

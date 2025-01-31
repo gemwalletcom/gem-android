@@ -1,6 +1,7 @@
 package com.gemwallet.android.cases.transactions
 
-import com.wallet.core.primitives.Transaction
+import com.gemwallet.android.model.Transaction
+
 
 interface PutTransactionsCase {
     suspend fun putTransactions(walletId: String, transactions: List<Transaction>)

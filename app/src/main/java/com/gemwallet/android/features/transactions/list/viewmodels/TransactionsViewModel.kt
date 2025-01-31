@@ -7,8 +7,8 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.mutableStateIn
 import com.gemwallet.android.features.transactions.list.model.TxListScreenState
 import com.gemwallet.android.interactors.sync.SyncTransactions
+import com.gemwallet.android.model.TransactionExtended
 import com.wallet.core.primitives.Currency
-import com.wallet.core.primitives.TransactionExtended
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharingStarted

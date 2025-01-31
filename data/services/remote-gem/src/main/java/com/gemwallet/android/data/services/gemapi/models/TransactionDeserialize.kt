@@ -1,12 +1,12 @@
 package com.gemwallet.android.data.services.gemapi.models
 
 import com.gemwallet.android.ext.findByString
+import com.gemwallet.android.model.Transaction
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.Transaction
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionInput
 import com.wallet.core.primitives.TransactionState

@@ -7,7 +7,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.getAssociatedAssetIds
-import com.wallet.core.primitives.Transaction
+import com.gemwallet.android.model.Transaction
 import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull

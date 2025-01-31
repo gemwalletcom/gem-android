@@ -1,7 +1,7 @@
 package com.gemwallet.android.cases.transactions
 
+import com.gemwallet.android.model.TransactionExtended
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.TransactionExtended
 import com.wallet.core.primitives.TransactionState
 import kotlinx.coroutines.flow.Flow
 

@@ -1,37 +1,41 @@
-package com.gemwallet.android.cases.transactions
+package com.gemwallet.android.model
 
-import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.Transaction
-import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.TransactionDirection
+import com.wallet.core.primitives.TransactionInput
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
 import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.Serializer
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import java.math.BigInteger
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-interface CreateTransactionCase {
-    suspend fun createTransaction(
-        hash: String,
-        walletId: String,
-        assetId: AssetId,
-        owner: Account,
-        to: String,
-        state: TransactionState,
-        fee: Fee,
-        amount: BigInteger,
-        memo: String?,
-        type: TransactionType,
-        metadata: String? = null,
-        direction: TransactionDirection,
-        blockNumber: String,
-    ): Transaction
-}
+@Serializable
+data class Transaction (
+    val id: String,
+    val hash: String,
+    val assetId: AssetId,
+    val from: String,
+    val to: String,
+    val contract: String? = null,
+    val type: TransactionType,
+    val state: TransactionState,
+    val blockNumber: String,
+    val sequence: String,
+    val fee: String,
+    val feeAssetId: AssetId,
+    val value: String,
+    val memo: String? = null,
+    val direction: TransactionDirection,
+    val utxoInputs: List<TransactionInput>,
+    val utxoOutputs: List<TransactionInput>,
+    val metadata: String?? = null,
+    @Serializable(with = DateSerializer::class)
+    val createdAt: Long
+)
 
 @OptIn(ExperimentalSerializationApi::class)
 @Serializer(forClass = Long::class)
@@ -48,3 +52,4 @@ object DateSerializer {
         encoder.encodeString(value.toString())
     }
 }
+
