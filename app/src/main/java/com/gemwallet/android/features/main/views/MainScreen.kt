@@ -9,8 +9,8 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Collections
 import androidx.compose.material.icons.filled.ElectricBolt
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.Badge
@@ -96,19 +96,19 @@ fun MainScreen(
                 navigate = { navigateToAssetsScreen(it) }
             ),
             BottomNavItem(
+                label = context.getString(R.string.nft_collections),
+                icon = Icons.Default.EmojiEvents,
+                route = nftRoute,
+                testTag = "nftTab",
+                navigate = { navigateToSettingsScreen(it) }
+            ),
+            BottomNavItem(
                 label = context.getString(R.string.activity_title),
                 icon = Icons.Default.ElectricBolt,
                 route = activitiesRoute,
                 badge = pendingCount,
                 testTag = "activitiesTab",
                 navigate = { navigateToActivitiesScreen(navOptions = it) }
-            ),
-            BottomNavItem(
-                label = context.getString(R.string.nft_collections),
-                icon = Icons.Default.Collections,
-                route = nftRoute,
-                testTag = "nftTab",
-                navigate = { navigateToSettingsScreen(it) }
             ),
             BottomNavItem(
                 label = context.getString(R.string.settings_title),
