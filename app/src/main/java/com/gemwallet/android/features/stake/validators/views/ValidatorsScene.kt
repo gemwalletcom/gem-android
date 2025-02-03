@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.features.stake.components.ValidatorItem
 import com.gemwallet.android.features.stake.validators.model.ValidatorsUIState
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.SubheaderItem
+import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.wallet.core.primitives.Chain

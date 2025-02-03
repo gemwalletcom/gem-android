@@ -448,6 +448,8 @@ class ConfirmViewModel @Inject constructor(
                 TransactionType.StakeRedelegate,
                 TransactionType.StakeWithdraw -> amount
                 TransactionType.AssetActivation -> TODO()
+                TransactionType.TransferNFT -> TODO()
+                TransactionType.SmartContractCall -> TODO()
             }
 
             if (assetBalance < totalAmount) {

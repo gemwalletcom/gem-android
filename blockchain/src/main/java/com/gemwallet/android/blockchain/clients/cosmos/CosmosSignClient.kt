@@ -225,7 +225,10 @@ class CosmosSignClient(
             TransactionType.Swap -> (input.input as? ConfirmParams.SwapParams)?.swapData ?: throw IllegalArgumentException("No swap data") // TODO: Doesn't for Throchain
             TransactionType.Transfer,
             TransactionType.TokenApproval -> input.input.memo() ?: ""
+            TransactionType.TransferNFT,
+            TransactionType.SmartContractCall,
             TransactionType.AssetActivation -> throw IllegalArgumentException("asset activation doesn't support")
+
         }
 
         val signInput = Cosmos.SigningInput.newBuilder().apply {

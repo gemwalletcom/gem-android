@@ -11,7 +11,7 @@ import com.gemwallet.android.features.asset.chart.models.AssetMarketUIModel
 import com.gemwallet.android.features.asset.chart.viewmodels.AssetChartViewModel
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.LoadingScene
-import com.gemwallet.android.ui.components.SubheaderItem
+import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.screen.Scene

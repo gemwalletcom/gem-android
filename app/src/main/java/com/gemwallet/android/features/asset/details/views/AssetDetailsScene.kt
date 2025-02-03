@@ -53,7 +53,7 @@ import com.gemwallet.android.ui.components.AssetHeadActions
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene
-import com.gemwallet.android.ui.components.SubheaderItem
+import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.designsystem.padding32
 import com.gemwallet.android.ui.components.designsystem.trailingIcon20

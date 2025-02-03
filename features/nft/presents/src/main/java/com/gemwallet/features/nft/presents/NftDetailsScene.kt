@@ -10,14 +10,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.cells.cellNetwork
+import com.gemwallet.android.ui.components.designsystem.listSpacerBig
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
+import com.gemwallet.features.nft.viewmodels.NftAssetDetailsUIModel
 import com.gemwallet.features.nft.viewmodels.NftDetailsViewModel
 import com.wallet.core.primitives.NFTAttribute
 
@@ -33,7 +39,7 @@ fun NFTDetailsScene(
     }
     val model = assetData!!
     Scene(
-        title = model.name,
+        title = model.assetName,
         onClose = { cancelAction() }
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
@@ -45,26 +51,42 @@ fun NFTDetailsScene(
                     modifier = Modifier.fillMaxWidth().aspectRatio(1f),
                 )
             }
-            nftDescription(model.description)
+            listSpacerBig()
+            generalInfo(model)
             nftAttributes(model.attributes)
         }
     }
 }
 
-private fun LazyListScope.nftDescription(data: String?) {
-    if (data.isNullOrEmpty()) {
-        return
-    }
-
+private fun LazyListScope.generalInfo(model: NftAssetDetailsUIModel) {
     item {
-        Text(
-            modifier = Modifier.padding(padding16),
-            text = data
+        Table(
+            listOf(
+                CellEntity(
+                    label = R.string.nft_collection,
+                    data = model.collection.name,
+                ),
+                cellNetwork(model.collection.chain),
+                model.asset.contractAddress?.let {
+                    CellEntity(
+                        label = R.string.asset_contract,
+                        data = it,
+                    )
+                },
+                CellEntity(
+                    label = R.string.asset_token_id,
+                    data = model.asset.tokenId,
+                )
+            )
         )
     }
 }
 
 private fun LazyListScope.nftAttributes(attributes: List<NFTAttribute>) {
+    item {
+        SubheaderItem(stringResource(R.string.nft_properties))
+    }
+
     item {
         Table(
             attributes.map {

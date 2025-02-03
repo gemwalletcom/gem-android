@@ -112,6 +112,8 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeRedelegate,
             TransactionType.StakeWithdraw -> Crypto(BigInteger(delegation?.base?.balance ?: "0"))
             TransactionType.AssetActivation -> TODO()
+            TransactionType.TransferNFT -> TODO()
+            TransactionType.SmartContractCall -> TODO()
             null -> Crypto(BigInteger.ZERO)
         }
     }
@@ -210,9 +212,10 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeRedelegate -> builder.redelegate(validator?.id!!, delegation!!)
             TransactionType.StakeWithdraw -> builder.withdraw(delegation!!)
             TransactionType.Swap,
-            TransactionType.TokenApproval -> throw IllegalArgumentException()
-
             TransactionType.AssetActivation -> TODO()
+            TransactionType.TransferNFT -> TODO()
+            TransactionType.SmartContractCall -> TODO()
+            TransactionType.TokenApproval -> throw IllegalArgumentException()
         }
         onConfirm(nextParams)
     }
@@ -266,6 +269,8 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeRedelegate,
             TransactionType.StakeWithdraw -> Crypto(BigInteger(delegation?.base?.balance ?: "0"))
             TransactionType.AssetActivation -> TODO()
+            TransactionType.TransferNFT -> TODO()
+            TransactionType.SmartContractCall -> TODO()
         }
         if (amount.atomicValue > availableAmount.atomicValue) {
             return AmountError.InsufficientBalance(assetInfo.asset.name)

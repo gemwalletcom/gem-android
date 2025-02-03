@@ -80,6 +80,8 @@ fun TransactionDetails(
                         TransactionType.Transfer -> model.cryptoAmount
                         TransactionType.TokenApproval -> model.assetSymbol
                         TransactionType.AssetActivation -> TODO()
+                        TransactionType.TransferNFT -> TODO()
+                        TransactionType.SmartContractCall -> TODO()
                     },
                     equivalent = when (model.type) {
                         TransactionType.StakeDelegate,
@@ -91,6 +93,8 @@ fun TransactionDetails(
                         TransactionType.Transfer -> model.fiatAmount
                         TransactionType.TokenApproval -> null
                         TransactionType.AssetActivation -> TODO()
+                        TransactionType.TransferNFT -> TODO()
+                        TransactionType.SmartContractCall -> TODO()
                     },
                 )
             }
@@ -183,9 +187,10 @@ fun TransactionDetails(
                 TransactionType.StakeUndelegate,
                 TransactionType.StakeRewards,
                 TransactionType.StakeRedelegate,
+                TransactionType.AssetActivation,
+                TransactionType.TransferNFT,
+                TransactionType.SmartContractCall,
                 TransactionType.StakeWithdraw -> {}
-
-                TransactionType.AssetActivation -> TODO()
             }
             if (!model.memo.isNullOrEmpty()) {
                 CellEntity(

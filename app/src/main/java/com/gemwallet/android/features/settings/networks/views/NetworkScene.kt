@@ -36,7 +36,7 @@ import com.gemwallet.android.features.settings.networks.models.NetworksUIState
 import com.gemwallet.android.model.NodeStatus
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.ListItem
-import com.gemwallet.android.ui.components.SubheaderItem
+import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding8
 import com.gemwallet.android.ui.components.screen.Scene

@@ -37,6 +37,7 @@ data class NFTAttribute (
 data class NFTAsset (
 	val id: String,
 	val collectionId: String,
+	val contractAddress: String? = null,
 	val tokenId: String,
 	val tokenType: NFTType,
 	val name: String,
@@ -56,6 +57,12 @@ data class NFTCollection (
 	val image: NFTImage,
 	val isVerified: Boolean,
 	val links: List<AssetLink>
+)
+
+@Serializable
+data class NFTAssetData (
+	val collection: NFTCollection,
+	val asset: NFTAsset
 )
 
 @Serializable

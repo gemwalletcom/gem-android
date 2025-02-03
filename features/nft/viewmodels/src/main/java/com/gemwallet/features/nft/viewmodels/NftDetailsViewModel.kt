@@ -43,7 +43,8 @@ class NftAssetDetailsUIModel(
     val asset: NFTAsset,
 ) {
     val imageUrl: String get() = asset.image.originalSourceUrl
-    val name: String get() = asset.name
+    val assetName: String get() = asset.name
+    val collectionName: String get() = collection.name
     val description: String? get() = asset.description
     val attributes: List<NFTAttribute> get() = asset.attributes
 }

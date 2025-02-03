@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components
+package com.gemwallet.android.ui.components.list_item
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues

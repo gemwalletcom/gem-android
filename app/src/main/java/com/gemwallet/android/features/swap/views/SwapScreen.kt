@@ -51,7 +51,7 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.ListItem
-import com.gemwallet.android.ui.components.SubheaderItem
+import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.TransactionItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16

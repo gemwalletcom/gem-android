@@ -24,7 +24,7 @@ import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.InfoSheetEntity
-import com.gemwallet.android.ui.components.SubheaderItem
+import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.screen.Scene

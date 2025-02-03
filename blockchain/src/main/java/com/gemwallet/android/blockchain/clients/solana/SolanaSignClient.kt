@@ -95,6 +95,8 @@ class SolanaSignClient(
             TransactionType.TokenApproval,
             TransactionType.StakeRedelegate,
             TransactionType.AssetActivation,
+            TransactionType.TransferNFT,
+            TransactionType.SmartContractCall,
             TransactionType.StakeRewards -> throw IllegalArgumentException()
         }
     }

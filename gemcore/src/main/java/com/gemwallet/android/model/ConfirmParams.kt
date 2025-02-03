@@ -249,6 +249,8 @@ sealed class ConfirmParams(
                 TransactionType.StakeRedelegate -> Stake.RedelegateParams::class.java
                 TransactionType.StakeWithdraw -> Stake.WithdrawParams::class.java
                 TransactionType.AssetActivation -> TODO()
+                TransactionType.TransferNFT -> TODO()
+                TransactionType.SmartContractCall -> TODO()
             }
 
             val result = getGson().fromJson(json, type)

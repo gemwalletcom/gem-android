@@ -47,7 +47,10 @@ class  CosmosFeeCalculator(
             TransactionType.StakeRedelegate -> BigInteger.valueOf(1_250_000)
             TransactionType.StakeWithdraw,
             TransactionType.AssetActivation,
+            TransactionType.TransferNFT,
+            TransactionType.SmartContractCall,
             TransactionType.TokenApproval -> throw IllegalArgumentException("Chain not available: no limit fee")
+
         }
         return GasFee(
             feeAssetId = assetId,

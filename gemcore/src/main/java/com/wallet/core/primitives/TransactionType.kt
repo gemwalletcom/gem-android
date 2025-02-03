@@ -11,6 +11,8 @@ import kotlinx.serialization.SerialName
 enum class TransactionType(val string: String) {
 	@SerialName("transfer")
 	Transfer("transfer"),
+	@SerialName("transferNFT")
+	TransferNFT("transferNFT"),
 	@SerialName("swap")
 	Swap("swap"),
 	@SerialName("tokenApproval")
@@ -27,5 +29,7 @@ enum class TransactionType(val string: String) {
 	StakeWithdraw("stakeWithdraw"),
 	@SerialName("assetActivation")
 	AssetActivation("assetActivation"),
+	@SerialName("smartContractCall")
+	SmartContractCall("smartContractCall"),
 }
 
