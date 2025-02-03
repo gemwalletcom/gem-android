@@ -9,6 +9,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbNFTAsset
 import com.gemwallet.android.data.service.store.database.entities.DbNFTAssociation
 import com.gemwallet.android.data.service.store.database.entities.DbNFTAttribute
 import com.gemwallet.android.data.service.store.database.entities.DbNFTCollection
+import com.gemwallet.android.data.service.store.database.entities.DbNFTCollectionLink
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -25,6 +26,9 @@ interface NftDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun associateWithWallet(relations: List<DbNFTAssociation>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCollectionLinks(links: List<DbNFTCollectionLink>)
+
     @Query("""
         DELETE FROM nft_collection WHERE
             id IN (SELECT nft_asset.id FROM nft_asset
@@ -38,12 +42,14 @@ interface NftDao {
     suspend fun updateNft(
         walletId: String,
         collections: List<DbNFTCollection>,
+        collectionLinks: List<DbNFTCollectionLink>,
         assets: List<DbNFTAsset>,
         attributes: List<DbNFTAttribute>,
         associations: List<DbNFTAssociation>,
     ) {
         clean(walletId)
         insertCollections(collections)
+        insertCollectionLinks(collectionLinks)
         insertAsset(assets)
         insertAssetAttributes(attributes)
         associateWithWallet(associations)
@@ -94,7 +100,13 @@ interface NftDao {
         JOIN nft_asset ON nft_attributes.asset_id = nft_asset.id
         JOIN nft_association ON nft_attributes.asset_id = nft_association.asset_id
             AND nft_association.wallet_id = (SELECT wallet_id FROM session WHERE id = 1)
-        WHERE nft_attributes.asset_id = :assetId
+        WHERE nft_attributes.asset_id = :assetId ORDER BY nft_attributes.name
     """)
     fun getAttributes(assetId: String): Flow<List<DbNFTAttribute>>
+
+    @Query("""
+        SELECT DISTINCT * FROM nft_collection_link
+        WHERE collection_id = :collectionId ORDER BY name
+    """)
+    fun getCollectionLinks(collectionId: String): Flow<List<DbNFTCollectionLink>>
 }

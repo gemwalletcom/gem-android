@@ -65,3 +65,16 @@ data class DbNFTAssociation(
     @ColumnInfo("wallet_id") val walletId: String,
     @ColumnInfo("asset_id") val assetId: String,
 )
+
+@Entity(
+    tableName = "nft_collection_link",
+    primaryKeys = ["collection_id", "name"],
+    foreignKeys = [
+        ForeignKey(entity = DbNFTCollection::class, parentColumns = ["id"], childColumns = ["collection_id"], onDelete = ForeignKey.CASCADE),
+    ],
+)
+data class DbNFTCollectionLink(
+    @ColumnInfo("collection_id") val collectionId: String,
+    val name: String,
+    val url: String,
+)

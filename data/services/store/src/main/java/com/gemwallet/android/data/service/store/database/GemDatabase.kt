@@ -15,6 +15,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbNFTAsset
 import com.gemwallet.android.data.service.store.database.entities.DbNFTAssociation
 import com.gemwallet.android.data.service.store.database.entities.DbNFTAttribute
 import com.gemwallet.android.data.service.store.database.entities.DbNFTCollection
+import com.gemwallet.android.data.service.store.database.entities.DbNFTCollectionLink
 import com.gemwallet.android.data.service.store.database.entities.DbNode
 import com.gemwallet.android.data.service.store.database.entities.DbPrice
 import com.gemwallet.android.data.service.store.database.entities.DbPriceAlert
@@ -26,7 +27,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetada
 import com.gemwallet.android.data.service.store.database.entities.DbWallet
 
 @Database(
-    version = 40,
+    version = 41,
     entities = [
         DbWallet::class,
         DbAccount::class,
@@ -48,6 +49,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbWallet
         DbNFTAsset::class,
         DbNFTAttribute::class,
         DbNFTAssociation::class,
+        DbNFTCollectionLink::class,
     ],
     views = [
         DbAssetInfo::class,

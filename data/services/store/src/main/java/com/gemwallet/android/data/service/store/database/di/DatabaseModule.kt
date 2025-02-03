@@ -75,6 +75,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_37_38)
         .addMigrations(MIGRATION_38_39)
         .addMigrations(MIGRATION_39_40)
+        .addMigrations(MIGRATION_40_41)
         .build()
 
     @Singleton
@@ -1143,6 +1144,20 @@ val MIGRATION_39_40 = object : Migration(39, 40) {
                 PRIMARY KEY (wallet_id, asset_id),
                 FOREIGN KEY (wallet_id) REFERENCES wallets(id) ON DELETE CASCADE,
                 FOREIGN KEY (asset_id) REFERENCES nft_asset(id) ON DELETE CASCADE
+            )""".trimIndent()
+        )
+    }
+}
+
+val MIGRATION_40_41 = object : Migration(40, 41) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("""
+            CREATE TABLE nft_collection_link (
+                collection_id TEXT NOT NULL,
+                name TEXT NOT NULL,
+                url TEXT NOT NULL,
+                PRIMARY KEY (collection_id, name),
+                FOREIGN KEY (collection_id) REFERENCES nft_collection(id) ON DELETE CASCADE
             )""".trimIndent()
         )
     }

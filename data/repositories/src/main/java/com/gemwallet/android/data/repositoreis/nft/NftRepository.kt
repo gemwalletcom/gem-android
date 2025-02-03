@@ -10,7 +10,9 @@ import com.gemwallet.android.data.service.store.database.entities.DbNFTAsset
 import com.gemwallet.android.data.service.store.database.entities.DbNFTAssociation
 import com.gemwallet.android.data.service.store.database.entities.DbNFTAttribute
 import com.gemwallet.android.data.service.store.database.entities.DbNFTCollection
+import com.gemwallet.android.data.service.store.database.entities.DbNFTCollectionLink
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.NFTAttribute
 import com.wallet.core.primitives.NFTCollection
@@ -82,9 +84,13 @@ class NftRepository(
                 it.id
             )
         }
+        val links = data.map { it.collection }
+            .map { it.links.map { link -> DbNFTCollectionLink(it.id, link.name, link.url) } }
+            .flatten()
         nftDao.updateNft(
             wallet.id,
             collections,
+            links,
             assets,
             attributes,
             associations,
@@ -109,15 +115,18 @@ class NftRepository(
     override fun getAssetNft(id: String): Flow<NFTData> = nftDao.getAsset(id).flatMapLatest { assetEntity ->
         assetEntity ?: throw NftError.NotFoundAsset
 
-        combine(
-            nftDao.getAttributes(assetEntity.id),
-            nftDao.getCollection(assetEntity.collectionId)
-        ) { attrs, collection ->
+        val collectionFlow = combine(
+            nftDao.getCollection(assetEntity.collectionId),
+            nftDao.getCollectionLinks(assetEntity.collectionId),
+        ) { collection, links ->
+            collection?.mapToModel(links)
+        }
 
+        combine(nftDao.getAttributes(assetEntity.id), collectionFlow) { attrs, collection ->
             collection ?: throw NftError.NotFoundCollection
 
             NFTData(
-                collection = collection.mapToModel(),
+                collection = collection,
                 assets = listOf(assetEntity.mapToModel(attrs))
             )
         }
@@ -125,9 +134,9 @@ class NftRepository(
     }
 }
 
-private fun List<DbNFTCollection>.mapToModel() = map { it.mapToModel() }
+private fun List<DbNFTCollection>.mapToModel() = map { it.mapToModel(emptyList()) }
 
-private fun DbNFTCollection.mapToModel() = NFTCollection(
+private fun DbNFTCollection.mapToModel(links: List<DbNFTCollectionLink>) = NFTCollection(
     id = this.id,
     name = this.name,
     description = this.description,
@@ -135,7 +144,7 @@ private fun DbNFTCollection.mapToModel() = NFTCollection(
     contractAddress = this.contractAddress,
     image = NFTImage(this.imageUrl, this.previewImageUrl, this.originalSourceUrl),
     isVerified = this.isVerified,
-    links = emptyList(), // TODO: Add links to database
+    links = links.map { AssetLink(it.name, it.url) },
 )
 
 private fun List<DbNFTAsset>.mapToModel(attributes: List<DbNFTAttribute>): List<NFTAsset> {
