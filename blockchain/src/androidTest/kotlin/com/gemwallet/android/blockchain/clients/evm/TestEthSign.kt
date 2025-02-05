@@ -10,7 +10,6 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
@@ -38,30 +37,28 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_native() {
         val sign = runBlocking {
-            signClient.signTransaction(
-                params = SignerParams(
-                    input = ConfirmParams.TransferParams.Native(
-                        assetId = Chain.Ethereum.asset().id,
-                        amount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                        destination = DestinationAddress("0x9b1DB81180c31B1b428572Be105E209b5A6222b7"),
-                        from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
-                    ),
-                    finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                    chainData = EvmSignerPreloader.EvmChainData(
-                        chainId = "1",
-                        nonce = BigInteger.ONE,
-                        fees = listOf(
-                            GasFee(
-                                maxGasPrice = BigInteger.TEN,
-                                limit = BigInteger("21000"),
-                                minerFee = BigInteger.TEN,
-                                relay = BigInteger.TEN,
-                                speed = TxSpeed.Normal,
-                                feeAssetId = Chain.Ethereum.asset().id,
-                            )
+            signClient.sign(
+                params = ConfirmParams.TransferParams.Native(
+                    assetId = Chain.Ethereum.asset().id,
+                    amount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
+                    destination = DestinationAddress("0x9b1DB81180c31B1b428572Be105E209b5A6222b7"),
+                    from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
+                ),
+                chainData = EvmSignerPreloader.EvmChainData(
+                    chainId = "1",
+                    nonce = BigInteger.ONE,
+                    fees = listOf(
+                        GasFee(
+                            maxGasPrice = BigInteger.TEN,
+                            limit = BigInteger("21000"),
+                            minerFee = BigInteger.TEN,
+                            relay = BigInteger.TEN,
+                            speed = TxSpeed.Normal,
+                            feeAssetId = Chain.Ethereum.asset().id,
                         )
                     )
                 ),
+                finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                 txSpeed = TxSpeed.Normal,
                 privateKey,
             )
@@ -77,30 +74,28 @@ class TestEthSign {
     @Test
     fun test_EvmTokenSign() {
         val sign = runBlocking {
-            signClient.signTransaction(
-                params = SignerParams(
-                    input = ConfirmParams.TransferParams.Token(
-                        assetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
-                        amount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                        destination = DestinationAddress("0x9b1DB81180c31B1b428572Be105E209b5A6222b7"),
-                        from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
-                    ),
-                    finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                    chainData = EvmSignerPreloader.EvmChainData(
-                        chainId = "1",
-                        nonce = BigInteger.ONE,
-                        fees = listOf(
-                            GasFee(
-                                maxGasPrice = BigInteger.TEN,
-                                limit = BigInteger("91000"),
-                                minerFee = BigInteger.TEN,
-                                relay = BigInteger.TEN,
-                                speed = TxSpeed.Normal,
-                                feeAssetId = Chain.Ethereum.asset().id,
-                            )
+            signClient.sign(
+                params = ConfirmParams.TransferParams.Token(
+                    assetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+                    amount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
+                    destination = DestinationAddress("0x9b1DB81180c31B1b428572Be105E209b5A6222b7"),
+                    from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
+                ),
+                chainData = EvmSignerPreloader.EvmChainData(
+                    chainId = "1",
+                    nonce = BigInteger.ONE,
+                    fees = listOf(
+                        GasFee(
+                            maxGasPrice = BigInteger.TEN,
+                            limit = BigInteger("91000"),
+                            minerFee = BigInteger.TEN,
+                            relay = BigInteger.TEN,
+                            speed = TxSpeed.Normal,
+                            feeAssetId = Chain.Ethereum.asset().id,
                         )
                     )
                 ),
+                finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                 txSpeed = TxSpeed.Normal,
                 privateKey,
             )
@@ -118,35 +113,33 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_swap() {
         val sign = runBlocking {
-            signClient.signTransaction(
-                params = SignerParams(
-                    input = ConfirmParams.SwapParams(
-                        fromAssetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
-                        toAssetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
-                        fromAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                        toAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                        swapData = "0xbc",
-                        provider = "some_provide",
-                        to = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
-                        value = "10",
-                        from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
-                    ),
-                    finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                    chainData = EvmSignerPreloader.EvmChainData(
-                        chainId = "1",
-                        nonce = BigInteger.ONE,
-                        fees = listOf(
-                            GasFee(
-                                maxGasPrice = BigInteger.TEN,
-                                limit = BigInteger("91000"),
-                                minerFee = BigInteger.TEN,
-                                relay = BigInteger.TEN,
-                                speed = TxSpeed.Normal,
-                                feeAssetId = Chain.Ethereum.asset().id,
-                            )
+            signClient.sign(
+                params = ConfirmParams.SwapParams(
+                    fromAssetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+                    toAssetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+                    fromAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
+                    toAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
+                    swapData = "0xbc",
+                    provider = "some_provide",
+                    to = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
+                    value = "10",
+                    from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
+                ),
+                chainData = EvmSignerPreloader.EvmChainData(
+                    chainId = "1",
+                    nonce = BigInteger.ONE,
+                    fees = listOf(
+                        GasFee(
+                            maxGasPrice = BigInteger.TEN,
+                            limit = BigInteger("91000"),
+                            minerFee = BigInteger.TEN,
+                            relay = BigInteger.TEN,
+                            speed = TxSpeed.Normal,
+                            feeAssetId = Chain.Ethereum.asset().id,
                         )
                     )
                 ),
+                finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                 txSpeed = TxSpeed.Normal,
                 privateKey,
             )
@@ -162,30 +155,28 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_delegate() {
         val sign = runBlocking {
-            signClient.signTransaction(
-                params = SignerParams(
-                    input = ConfirmParams.Stake.DelegateParams(
-                        assetId = AssetId(Chain.SmartChain),
-                        amount = BigInteger.TEN,
-                        from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
-                        validatorId = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8"
-                    ),
-                    finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                    chainData = EvmSignerPreloader.EvmChainData(
-                        chainId = "1",
-                        nonce = BigInteger.ONE,
-                        fees = listOf(
-                            GasFee(
-                                maxGasPrice = BigInteger.TEN,
-                                limit = BigInteger("91000"),
-                                minerFee = BigInteger.TEN,
-                                relay = BigInteger.TEN,
-                                speed = TxSpeed.Normal,
-                                feeAssetId = Chain.Ethereum.asset().id,
-                            )
+            signClient.sign(
+                params = ConfirmParams.Stake.DelegateParams(
+                    assetId = AssetId(Chain.SmartChain),
+                    amount = BigInteger.TEN,
+                    from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
+                    validatorId = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8"
+                ),
+                chainData = EvmSignerPreloader.EvmChainData(
+                    chainId = "1",
+                    nonce = BigInteger.ONE,
+                    fees = listOf(
+                        GasFee(
+                            maxGasPrice = BigInteger.TEN,
+                            limit = BigInteger("91000"),
+                            minerFee = BigInteger.TEN,
+                            relay = BigInteger.TEN,
+                            speed = TxSpeed.Normal,
+                            feeAssetId = Chain.Ethereum.asset().id,
                         )
                     )
                 ),
+                finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                 txSpeed = TxSpeed.Normal,
                 privateKey,
             )
@@ -204,33 +195,31 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_undelegate() {
         val sign = runBlocking {
-            signClient.signTransaction(
-                params = SignerParams(
-                    input = ConfirmParams.Stake.UndelegateParams(
-                        assetId = AssetId(Chain.SmartChain),
-                        amount = BigInteger("1002901689671695193"),
-                        from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
-                        validatorId = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8",
-                        delegationId = "",
-                        share = "991645728829172501",
-                        balance = "1002901689671695193",
-                    ),
-                    finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                    chainData = EvmSignerPreloader.EvmChainData(
-                        chainId = "1",
-                        nonce = BigInteger.ONE,
-                        fees = listOf(
-                            GasFee(
-                                maxGasPrice = BigInteger.TEN,
-                                limit = BigInteger("91000"),
-                                minerFee = BigInteger.TEN,
-                                relay = BigInteger.TEN,
-                                speed = TxSpeed.Normal,
-                                feeAssetId = Chain.Ethereum.asset().id,
-                            )
+            signClient.sign(
+                params = ConfirmParams.Stake.UndelegateParams(
+                    assetId = AssetId(Chain.SmartChain),
+                    amount = BigInteger("1002901689671695193"),
+                    from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
+                    validatorId = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8",
+                    delegationId = "",
+                    share = "991645728829172501",
+                    balance = "1002901689671695193",
+                ),
+                chainData = EvmSignerPreloader.EvmChainData(
+                    chainId = "1",
+                    nonce = BigInteger.ONE,
+                    fees = listOf(
+                        GasFee(
+                            maxGasPrice = BigInteger.TEN,
+                            limit = BigInteger("91000"),
+                            minerFee = BigInteger.TEN,
+                            relay = BigInteger.TEN,
+                            speed = TxSpeed.Normal,
+                            feeAssetId = Chain.Ethereum.asset().id,
                         )
                     )
                 ),
+                finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                 txSpeed = TxSpeed.Normal,
                 privateKey,
             )
@@ -248,33 +237,31 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_approval() {
         val sign = runBlocking {
-            signClient.signTransaction(
-                params = SignerParams(
-                    input = ConfirmParams.TokenApprovalParams(
-                        assetId = AssetId(Chain.SmartChain, "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"),
-                        from = Account(Chain.SmartChain, "0x0Eb3a705fc54725037CC9e008bDede697f62F335", ""),
-                        data = "0x095ea7b300000000000000000000000031c2f6fcff4f8759b3bd5bf0e1084a" +
-                                "055615c7687ffffffffffffffffffffffffffffffffffffffffffffffffffff" +
-                                "fffffffffff",
-                        provider = "Uniswap v3",
-                        contract = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
-                    ),
-                    finalAmount = BigInteger.ZERO,
-                    chainData = EvmSignerPreloader.EvmChainData(
-                        chainId = "1",
-                        nonce = BigInteger.ONE,
-                        fees = listOf(
-                            GasFee(
-                                maxGasPrice = BigInteger.TEN,
-                                limit = BigInteger("91000"),
-                                minerFee = BigInteger.TEN,
-                                relay = BigInteger.TEN,
-                                speed = TxSpeed.Normal,
-                                feeAssetId = Chain.SmartChain.asset().id,
-                            )
+            signClient.sign(
+                params = ConfirmParams.TokenApprovalParams(
+                    assetId = AssetId(Chain.SmartChain, "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"),
+                    from = Account(Chain.SmartChain, "0x0Eb3a705fc54725037CC9e008bDede697f62F335", ""),
+                    data = "0x095ea7b300000000000000000000000031c2f6fcff4f8759b3bd5bf0e1084a" +
+                            "055615c7687ffffffffffffffffffffffffffffffffffffffffffffffffffff" +
+                            "fffffffffff",
+                    provider = "Uniswap v3",
+                    contract = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
+                ),
+                chainData = EvmSignerPreloader.EvmChainData(
+                    chainId = "1",
+                    nonce = BigInteger.ONE,
+                    fees = listOf(
+                        GasFee(
+                            maxGasPrice = BigInteger.TEN,
+                            limit = BigInteger("91000"),
+                            minerFee = BigInteger.TEN,
+                            relay = BigInteger.TEN,
+                            speed = TxSpeed.Normal,
+                            feeAssetId = Chain.SmartChain.asset().id,
                         )
                     )
                 ),
+                finalAmount = BigInteger.ZERO,
                 txSpeed = TxSpeed.Normal,
                 privateKey,
             )
