@@ -74,8 +74,8 @@ jobs:
       - name: Build tests
         run: just build-test
         env:
-          GRP_USERNAME: ${{ github.actor }}
-          GRP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPR_USER: ${{ github.actor }}
+          GPR_KEY: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run tests
         uses: reactivecircus/android-emulator-runner@v2
