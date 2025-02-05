@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients
 
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Chain
@@ -32,8 +33,23 @@ class SignClientProxy(
         privateKey: ByteArray
     ): List<ByteArray> {
         val chain = params.input.assetId.chain
-        return clients.getClient(chain)?.signTransaction(params, txSpeed, privateKey)
-            ?: throw Exception("Chain isn't support")
+        val client = clients.getClient(chain) ?: throw Exception("Chain isn't support")
+        return try {
+            client.signTransaction(params, txSpeed, privateKey)
+        } catch (_: Throwable) {
+            val input = params.input
+            when (input) {
+                is ConfirmParams.Stake.DelegateParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+                is ConfirmParams.Stake.RedelegateParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+                is ConfirmParams.Stake.RewardsParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+                is ConfirmParams.Stake.UndelegateParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+                is ConfirmParams.Stake.WithdrawParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+                is ConfirmParams.SwapParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+                is ConfirmParams.TokenApprovalParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+                is ConfirmParams.TransferParams.Native -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+                is ConfirmParams.TransferParams.Token -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+            }
+        }
     }
 
     override fun supported(chain: Chain): Boolean {

@@ -5,6 +5,7 @@ import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.ext.eip1559Support
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.decodeHex
+import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
@@ -25,6 +26,7 @@ import java.math.BigInteger
 class EvmSignClient(
     private val chain: Chain,
 ) : SignClient {
+    val coinType = WCChainTypeProxy().invoke(chain)
 
     override suspend fun signMessage(chain: Chain, input: ByteArray, privateKey: ByteArray): ByteArray {
         val result = PrivateKey(privateKey).sign(input, CoinType.ETHEREUM.curve())
@@ -38,69 +40,165 @@ class EvmSignClient(
         return EthereumMessageSigner.signTypedMessage(privateKey, json).decodeHex()
     }
 
-    override suspend fun signTransaction(
-        params: SignerParams,
+    override suspend fun sign(
+        params: ConfirmParams.TransferParams.Native,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
         txSpeed: TxSpeed,
-        privateKey: ByteArray,
+        privateKey: ByteArray
     ): List<ByteArray> {
-        when (params.input) {
-            is ConfirmParams.Stake.RedelegateParams,
-            is ConfirmParams.Stake.DelegateParams,
-            is ConfirmParams.Stake.UndelegateParams,
-            is ConfirmParams.Stake.RewardsParams,
-            is ConfirmParams.Stake.WithdrawParams -> when (params.input.assetId.chain) {
-                Chain.SmartChain -> {
-                    return stakeSmartchain(params, txSpeed, privateKey)
-                }
-                else -> throw IllegalArgumentException()
-            }
-            else -> {}
-        }
-        val meta = params.chainData as EvmSignerPreloader.EvmChainData
-        val coinType = WCChainTypeProxy().invoke(chain)
-        val input = params.input
-        val amount = when (input) {
-            is ConfirmParams.SwapParams -> BigInteger(input.value)
-            is ConfirmParams.TokenApprovalParams -> BigInteger.ZERO
-            is ConfirmParams.TransferParams -> when (params.input.assetId.type()) {
-                AssetSubtype.NATIVE -> params.finalAmount
-                AssetSubtype.TOKEN -> BigInteger.ZERO
-            }
-            else -> throw IllegalArgumentException()
-        }
-        val signInput = buildSignInput(
-            assetId = when (input) {
-                is ConfirmParams.SwapParams -> AssetId(input.assetId.chain)
-                else -> params.input.assetId
-            },
-            amount = amount,
-            tokenAmount = params.finalAmount,
+        val meta = chainData as EvmSignerPreloader.EvmChainData
+        val input = buildSignInput(
+            assetId = params.assetId,
+            amount = finalAmount,
+            tokenAmount = finalAmount,
             fee = meta.gasFee(txSpeed),
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
-            destinationAddress = params.input.destination()?.address ?: "",
-            memo = when (input) {
-                is ConfirmParams.SwapParams -> input.swapData
-                is ConfirmParams.TokenApprovalParams -> input.data
-                else -> input.memo()
-            },
+            destinationAddress = params.destination().address,
+            memo = params.memo(),
             privateKey = privateKey,
         )
-        val output = AnySigner.sign(signInput, coinType, Ethereum.SigningOutput.parser())
-            .encoded
-            .toByteArray()
-        return listOf(output)
+        return sign(input, privateKey)
     }
 
-    private fun stakeSmartchain(params: SignerParams, speed: TxSpeed, privateKey: ByteArray): List<ByteArray> {
-        val meta = params.chainData as EvmSignerPreloader.EvmChainData
-        val fee = meta.gasFee(speed) ?: throw IllegalArgumentException()
-        val valueData = when (params.input) {
-            is ConfirmParams.Stake.DelegateParams -> params.finalAmount.toByteArray()
+    override suspend fun sign(
+        params: ConfirmParams.TransferParams.Token,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val meta = chainData as EvmSignerPreloader.EvmChainData
+        val amount = BigInteger.ZERO
+        val input = buildSignInput(
+            assetId = params.assetId,
+            amount = amount,
+            tokenAmount = finalAmount,
+            fee = meta.gasFee(txSpeed),
+            chainId = meta.chainId.toBigInteger(),
+            nonce = meta.nonce,
+            destinationAddress = params.destination().address,
+            memo = params.memo(),
+            privateKey = privateKey,
+        )
+        return sign(input, privateKey)
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.TokenApprovalParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val meta = chainData as EvmSignerPreloader.EvmChainData
+        val amount = BigInteger.ZERO
+        val input = buildSignInput(
+            assetId = params.assetId,
+            amount = amount,
+            tokenAmount = finalAmount,
+            fee = meta.gasFee(txSpeed),
+            chainId = meta.chainId.toBigInteger(),
+            nonce = meta.nonce,
+            destinationAddress = params.destination()?.address ?: "",
+            memo = params.data,
+            privateKey = privateKey,
+        )
+        return sign(input, privateKey)
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.SwapParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val meta = chainData as EvmSignerPreloader.EvmChainData
+        val amount = BigInteger(params.value)
+        val input = buildSignInput(
+            assetId = AssetId(params.assetId.chain),
+            amount = amount,
+            tokenAmount = finalAmount,
+            fee = meta.gasFee(txSpeed),
+            chainId = meta.chainId.toBigInteger(),
+            nonce = meta.nonce,
+            destinationAddress = params.destination().address,
+            memo = params.swapData,
+            privateKey = privateKey,
+        )
+        return sign(input, privateKey)
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.Stake.DelegateParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        return stakeSmartchain(params, chainData, finalAmount, txSpeed, privateKey)
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.Stake.RedelegateParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        return stakeSmartchain(params, chainData, finalAmount, txSpeed, privateKey)
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.Stake.RewardsParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        return stakeSmartchain(params, chainData, finalAmount, txSpeed, privateKey)
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.Stake.UndelegateParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        return stakeSmartchain(params, chainData, finalAmount, txSpeed, privateKey)
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.Stake.WithdrawParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        return stakeSmartchain(params, chainData, finalAmount, txSpeed, privateKey)
+    }
+
+    private fun stakeSmartchain(
+        params: ConfirmParams.Stake,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        if (params.assetId.chain != Chain.SmartChain) {
+            throw Exception("Doesn't support")
+        }
+        val meta = chainData as EvmSignerPreloader.EvmChainData
+        val fee = meta.gasFee(txSpeed)
+        val valueData = when (params) {
+            is ConfirmParams.Stake.DelegateParams -> finalAmount.toByteArray()
             else -> BigInteger.ZERO.toByteArray()
         }
-        val callData = StakeHub.encodeStake(params.input)
-        val signInput = Ethereum.SigningInput.newBuilder().apply {
+        val callData = StakeHub.encodeStake(params)
+        val input = Ethereum.SigningInput.newBuilder().apply {
             when (chain.eip1559Support()) {
                 true -> {
                     this.txMode = Ethereum.TransactionMode.Enveloped
@@ -124,11 +222,8 @@ class EvmSignClient(
                 }.build()
             }.build()
         }.build()
-        val coinType = WCChainTypeProxy().invoke(chain)
-        val output = AnySigner.sign(signInput, coinType, Ethereum.SigningOutput.parser())
-            .encoded
-            .toByteArray()
-        return listOf(output)
+
+        return sign(input = input, privateKey)
     }
 
     internal fun buildSignInput(
@@ -141,7 +236,7 @@ class EvmSignClient(
         destinationAddress: String,
         memo: String?,
         privateKey: ByteArray,
-    ): Ethereum.SigningInput? {
+    ): Ethereum.SigningInput {
         return Ethereum.SigningInput.newBuilder().apply {
             when (chain.eip1559Support()) {
                 true -> {
@@ -169,6 +264,13 @@ class EvmSignClient(
                 }.build()
             }.build()
         }.build()
+    }
+
+    internal fun sign(input: Ethereum.SigningInput, privateKey: ByteArray): List<ByteArray> {
+        val output = AnySigner.sign(input, coinType, Ethereum.SigningOutput.parser())
+            .encoded
+            .toByteArray()
+        return listOf(output)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
