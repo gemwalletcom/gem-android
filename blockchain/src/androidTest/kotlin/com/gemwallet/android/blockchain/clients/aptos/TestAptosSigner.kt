@@ -7,7 +7,6 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
@@ -35,27 +34,25 @@ class TestAptosSigner {
         val signer = AptosSignClient(Chain.Aptos)
 
         val sign = runBlocking {
-            signer.signTransaction(
-                SignerParams(
-                    input = ConfirmParams.TransferParams.Native(
-                        AssetId(Chain.Aptos),
-                        Account(Chain.Aptos, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
-                        BigInteger.valueOf(10_000_000_000),
-                        DestinationAddress("0x82111f2975a0f6080d178236369b7479f6aed1203ef4a23f8205e4b91716b783"),
-                    ),
-                    chainData = AptosSignerPreloader.AptosChainData(
-                        8L,
-                        GasFee(
-                            AssetId(Chain.Aptos),
-                            speed = TxSpeed.Normal,
-                            maxGasPrice = BigInteger.valueOf(150L),
-                            limit = BigInteger.valueOf(18L)
-                        )
-                    ),
-                    finalAmount = BigInteger.valueOf(10_000_000_000)
+            signer.sign(
+                params = ConfirmParams.TransferParams.Native(
+                    AssetId(Chain.Aptos),
+                    Account(Chain.Aptos, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
+                    BigInteger.valueOf(10_000_000_000),
+                    DestinationAddress("0x82111f2975a0f6080d178236369b7479f6aed1203ef4a23f8205e4b91716b783"),
                 ),
+                chainData = AptosSignerPreloader.AptosChainData(
+                    8L,
+                    GasFee(
+                        AssetId(Chain.Aptos),
+                        speed = TxSpeed.Normal,
+                        maxGasPrice = BigInteger.valueOf(150L),
+                        limit = BigInteger.valueOf(18L)
+                    )
+                ),
+                finalAmount = BigInteger.valueOf(10_000_000_000),
                 TxSpeed.Normal,
-                privateKey.data()
+                privateKey.data(),
             )
         }
 
@@ -84,27 +81,25 @@ class TestAptosSigner {
         val signer = AptosSignClient(Chain.Aptos)
 
         val sign = runBlocking {
-            signer.signTransaction(
-                SignerParams(
-                    input = ConfirmParams.TransferParams.Token(
-                        AssetId(Chain.Aptos, "0x53a30a6e5936c0a4c5140daed34de39d17ca7fcae08f947c02e979cef98a3719::coin::LSD"),
-                        Account(Chain.Aptos, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
-                        BigInteger.valueOf(10_000_000_000),
-                        DestinationAddress("0x82111f2975a0f6080d178236369b7479f6aed1203ef4a23f8205e4b91716b783"),
-                    ),
-                    chainData = AptosSignerPreloader.AptosChainData(
-                        8L,
-                        GasFee(
-                            AssetId(Chain.Aptos),
-                            speed = TxSpeed.Normal,
-                            maxGasPrice = BigInteger.valueOf(150L),
-                            limit = BigInteger.valueOf(18L)
-                        )
-                    ),
-                    finalAmount = BigInteger.valueOf(10_000_000_000)
+            signer.sign(
+                params = ConfirmParams.TransferParams.Token(
+                    AssetId(Chain.Aptos, "0x53a30a6e5936c0a4c5140daed34de39d17ca7fcae08f947c02e979cef98a3719::coin::LSD"),
+                    Account(Chain.Aptos, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
+                    BigInteger.valueOf(10_000_000_000),
+                    DestinationAddress("0x82111f2975a0f6080d178236369b7479f6aed1203ef4a23f8205e4b91716b783"),
                 ),
+                chainData = AptosSignerPreloader.AptosChainData(
+                    8L,
+                    GasFee(
+                        AssetId(Chain.Aptos),
+                        speed = TxSpeed.Normal,
+                        maxGasPrice = BigInteger.valueOf(150L),
+                        limit = BigInteger.valueOf(18L)
+                    )
+                ),
+                finalAmount = BigInteger.valueOf(10_000_000_000),
                 TxSpeed.Normal,
-                privateKey.data()
+                privateKey.data(),
             )
         }
 
