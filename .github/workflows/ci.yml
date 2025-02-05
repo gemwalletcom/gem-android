@@ -71,9 +71,6 @@ jobs:
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Build Core
-        run: just generate-stone
-
       - name: Build tests
         run: just build-test
         env:
