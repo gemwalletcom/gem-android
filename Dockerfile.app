@@ -13,7 +13,7 @@ RUN git clone --depth 1 --recursive --branch $TAG https://github.com/gemwalletco
 # Set the working directory
 WORKDIR $HOME/gem-android
 
-# Generated models and kotlin bindgen are commited to the repository, so no need to generate here
+# Generated models and kotlin bindgen are committed to the repository, so no need to generate here
 # gemstone is built by cargo-ndk along with gradle
 
 RUN make install-wallet-core
