@@ -31,7 +31,7 @@ class NftModule {
     fun provideLoadNftCase(nftRepository: NftRepository): LoadNFTCase = nftRepository
 
     @Provides
-    fun provideGetNfCase(nftRepository: NftRepository): GetListNftCase = nftRepository
+    fun provideGetNftCase(nftRepository: NftRepository): GetListNftCase = nftRepository
 
     @Provides
     fun provideGetAssetNftCase(nftRepository: NftRepository): GetAssetNftCase = nftRepository
