@@ -97,12 +97,34 @@ fun DbBalance.Companion.mergeNative(old: DbBalance?, current: DbBalance?): DbBal
     old ?: return current
     current ?: return old
 
-    return old.copy(available = current.available, availableAmount = current.availableAmount)
+    val newBalance = old.copy(
+        available = current.available,
+        availableAmount = current.availableAmount
+    )
+
+    return newBalance.copy(
+        totalAmount = newBalance.availableAmount
+                + newBalance.frozenAmount
+                + newBalance.lockedAmount
+                + newBalance.stakedAmount
+                + newBalance.pendingAmount
+                + newBalance.rewardsAmount
+                + newBalance.reservedAmount
+    )
 }
 
 fun DbBalance.Companion.mergeDelegation(old: DbBalance?, current: DbBalance?): DbBalance? {
     old ?: return current
     current ?: return old
 
-    return current.copy(available = old.available, availableAmount = old.availableAmount)
+    val newBalance = current.copy(available = old.available, availableAmount = old.availableAmount)
+    return newBalance.copy(
+        totalAmount = newBalance.availableAmount
+                + newBalance.frozenAmount
+                + newBalance.lockedAmount
+                + newBalance.stakedAmount
+                + newBalance.pendingAmount
+                + newBalance.rewardsAmount
+                + newBalance.reservedAmount
+    )
 }
