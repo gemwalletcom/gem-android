@@ -48,6 +48,8 @@ mockkVersion = "1.13.16"
 datastore = "1.1.2"
 appcompat = "1.7.0"
 material = "1.12.0"
+wallet-core = "4.2.6"
+gemstone = "v0.2.81"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -116,6 +118,12 @@ protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.
 walletconnect-bom = { module = "com.reown:android-bom", version.ref = "walletconnect" }
 walletconnect-core = { module = "com.reown:android-core" }
 walletconnect-web3wallet = { module = "com.reown:walletkit" }
+
+# Wallet - core
+wallet-core = { module = "com.trustwallet:wallet-core", version.ref = "wallet-core" }
+
+# Gem Stone
+gemstone = { module = "com.gemwallet.gemstone:gemstone", version.ref = "gemstone" }
 
 # qr code scanning
 zxing-core = { module = "com.google.zxing:core", version.ref = "core" }

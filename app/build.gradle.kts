@@ -26,7 +26,7 @@ android {
     defaultConfig {
         applicationId = "com.gemwallet.android"
         minSdk = 28
-        targetSdk = 34
+        targetSdk = 35
         versionCode = Integer.valueOf(System.getenv("BUILD_NUMBER") ?: "1")
         versionName = System.getenv("BUILD_VERSION") ?: "1.0"
 
@@ -180,17 +180,6 @@ dependencies {
     // Features
     implementation(project(":features:recipient:presents"))
     implementation(project(":features:nft:presents"))
-
-    // version catalog might not work
-    //noinspection UseTomlInstead
-    api("net.java.dev.jna:jna:5.15.0@aar")
-    // Local wallet core
-    api(files("../libs/wallet-core-4.1.19-sources.jar"))
-    implementation(project(":wallet-core"))
-    implementation(project(":wallet-core-proto"))
-
-    // Protobuf
-    api(libs.protobuf.javalite)
 
     implementation(libs.ktx.core)
 

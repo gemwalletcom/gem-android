@@ -44,16 +44,9 @@ android {
 
 dependencies {
     api(project(":gemcore"))
-    // version catalog might not work
-    //noinspection UseTomlInstead
-    api("net.java.dev.jna:jna:5.15.0@aar")
-    api("com.gemwallet.gemstone:gemstone:1.0.0@aar")
-    // Local wallet core
-    api(files("../libs/wallet-core-4.1.19-sources.jar"))
-    implementation(project(":wallet-core"))
-    implementation(project(":wallet-core-proto"))
-    // Protobuf
-    api(libs.protobuf.javalite)
+    // WalletCore
+    api(libs.wallet.core)
+
     // Network
     api(libs.retrofit)
     api(libs.retrofit.converter.gson)
