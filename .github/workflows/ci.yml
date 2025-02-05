@@ -66,13 +66,10 @@ jobs:
 
       - name: Install dependencies
         run: |
-          just install-typeshare && just install-toolchains && just install-wallet-core
+          just install-typeshare && just install-toolchains
 
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v3
-
-      - name: Build Core
-        run: just generate-stone
 
       - name: Build tests
         run: just build-test

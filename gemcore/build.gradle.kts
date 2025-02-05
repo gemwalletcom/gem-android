@@ -43,7 +43,7 @@ android {
 
 dependencies {
     //noinspection UseTomlInstead
-    api("com.gemwallet.gemstone:gemstone:1.0.0@aar")
+    api(libs.gemstone)
     // JSON
     api(libs.gson)
     api(libs.kotlinx.serialization.json)

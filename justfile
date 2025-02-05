@@ -42,15 +42,11 @@ release:
 localize:
     @scripts/localize.sh android
 
-generate: generate-models generate-stone
+generate: generate-models
 
 generate-models: install-typeshare
     @echo "==> Generate typeshare for Android"
     @cd core && cargo run --package generate --bin generate android ../gemcore/src/main/java/com/wallet/core
-
-generate-stone:
-	@echo "Generate Gemstone lib, default build mode is {{BUILD_MODE}}"
-	@cd core/gemstone && BUILD_MODE={{BUILD_MODE}} just build-android
 
 build-base-image:
 	docker build -t gem-android-base -f Dockerfile.base . &> build.base.log
