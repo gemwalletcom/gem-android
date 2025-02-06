@@ -2,16 +2,13 @@ package com.gemwallet.android.blockchain.clients.cosmos
 
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
-import com.gemwallet.android.ext.type
+import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
-import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.CosmosDenom
-import com.wallet.core.primitives.TransactionType
 import wallet.core.java.AnySigner
 import wallet.core.jni.AnyAddress
 import wallet.core.jni.CoinType
@@ -27,54 +24,184 @@ class CosmosSignClient(
     private val chain: Chain,
 ) : SignClient {
 
-    override suspend fun signTransaction(
-        params: SignerParams,
+    val coin = WCChainTypeProxy().invoke(chain)
+
+//    override suspend fun signTransaction(
+//        params: SignerParams,
+//        txSpeed: TxSpeed,
+//        privateKey: ByteArray,
+//    ): List<ByteArray> {
+//        val from = params.input.from.address
+//        val coin = WCChainTypeProxy().invoke(chain)
+//        val input = params.input
+//        val denom = if (input.assetId.type() == AssetSubtype.NATIVE) CosmosDenom.from(chain) else input.assetId.tokenId!!
+//        val message = when (input) {
+//            is ConfirmParams.TransferParams -> getTransferMessage(
+//                from = from,
+//                recipient = input.destination().address,
+//                coin = coin,
+//                amount = getAmount(params.finalAmount, denom = denom)
+//            )
+//            is ConfirmParams.Stake.DelegateParams -> getStakeMessage(from, input.validatorId, getAmount(params.finalAmount, denom))
+//            is ConfirmParams.Stake.RedelegateParams -> getRedelegateMessage(
+//                delegatorAddress = from,
+//                validatorSrcAddress = input.srcValidatorId,
+//                validatorDstAddress = input.dstValidatorId,
+//                amount = getAmount(params.input.amount, denom),
+//            )
+//            is ConfirmParams.Stake.RewardsParams -> getRewardsMessage(from, input.validatorsId)
+//            is ConfirmParams.Stake.UndelegateParams -> getUnstakeMessage(from, input.validatorId, getAmount(params.input.amount, denom))
+//            is ConfirmParams.SwapParams -> when (chain) {
+//                Chain.Thorchain -> listOf(getThorChainSwapMessage(params, coin))
+//                else -> getTransferMessage(
+//                    from = from,
+//                    recipient = input.destination().address,
+//                    coin = coin,
+//                    amount = getAmount(params.finalAmount, denom = denom)
+//                )
+//            }
+//            is ConfirmParams.TokenApprovalParams,
+//            is ConfirmParams.Stake.WithdrawParams -> throw IllegalArgumentException()
+//        }
+//        return sign(params, privateKey, message)
+//    }
+
+    override suspend fun sign(
+        params: ConfirmParams.TransferParams.Native,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
         txSpeed: TxSpeed,
-        privateKey: ByteArray,
+        privateKey: ByteArray
     ): List<ByteArray> {
-        val from = params.input.from.address
-        val coin = WCChainTypeProxy().invoke(chain)
-        val input = params.input
-        val denom = if (input.assetId.type() == AssetSubtype.NATIVE) CosmosDenom.from(chain) else input.assetId.tokenId!!
-        val message = when (input) {
-            is ConfirmParams.TransferParams -> getTransferMessage(
-                from = from,
-                recipient = input.destination().address,
-                coin = coin,
-                amount = getAmount(params.finalAmount, denom = denom)
-            )
-            is ConfirmParams.Stake.DelegateParams -> getStakeMessage(from, input.validatorId, getAmount(params.finalAmount, denom))
-            is ConfirmParams.Stake.RedelegateParams -> getRedelegateMessage(
-                delegatorAddress = from,
-                validatorSrcAddress = input.srcValidatorId,
-                validatorDstAddress = input.dstValidatorId,
-                amount = getAmount(params.input.amount, denom),
-            )
-            is ConfirmParams.Stake.RewardsParams -> getRewardsMessage(from, input.validatorsId)
-            is ConfirmParams.Stake.UndelegateParams -> getUnstakeMessage(from, input.validatorId, getAmount(params.input.amount, denom))
-            is ConfirmParams.SwapParams -> when (chain) {
-                Chain.Thorchain -> listOf(getThorChainSwapMessage(params, coin))
-                else -> getTransferMessage(
-                    from = from,
-                    recipient = input.destination().address,
-                    coin = coin,
-                    amount = getAmount(params.finalAmount, denom = denom)
-                )
-            }
-            is ConfirmParams.TokenApprovalParams,
-            is ConfirmParams.Stake.WithdrawParams -> throw IllegalArgumentException()
-        }
-        return sign(params, privateKey, message)
+        val denom = CosmosDenom.from(chain)
+        val message = getTransferMessage(
+            from = params.from.address,
+            recipient = params.destination().address,
+            coin = coin,
+            amount = getAmount(finalAmount, denom = denom)
+        )
+        return sign(chainData, message, params.memo() ?: "", privateKey)
     }
 
-    private fun getThorChainSwapMessage(params: SignerParams, coinType: CoinType): Message {
-        val swapParams = params.input as ConfirmParams.SwapParams
+
+    override suspend fun sign(
+        params: ConfirmParams.TransferParams.Token,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val denom = params.assetId.tokenId!!
+
+        val message = getTransferMessage(
+            from = params.from.address,
+            recipient = params.destination().address,
+            coin = coin,
+            amount = getAmount(finalAmount, denom = denom)
+        )
+        return sign(chainData, message, params.memo() ?: "", privateKey)
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.SwapParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val denom = CosmosDenom.from(chain)
+        val message = when (chain) {
+            Chain.Thorchain -> listOf(getThorChainSwapMessage(params, coin))
+            else -> getTransferMessage(
+                from = params.from.address,
+                recipient = params.destination().address,
+                coin = coin,
+                amount = getAmount(finalAmount, denom = denom)
+            )
+        }
+        val memo = params.swapData ?: throw IllegalArgumentException("No swap data")
+        return sign(chainData, message, memo, privateKey)
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.TokenApprovalParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        throw IllegalArgumentException()
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.Stake.DelegateParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val denom = CosmosDenom.from(chain)
+        val message = getStakeMessage(params.from.address, params.validatorId, getAmount(finalAmount, denom))
+        return sign(chainData, message, "Stake via Gem Wallet", privateKey)
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.Stake.RedelegateParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val denom = CosmosDenom.from(chain)
+        val message = getRedelegateMessage(
+            delegatorAddress = params.from.address,
+            validatorSrcAddress = params.srcValidatorId,
+            validatorDstAddress = params.dstValidatorId,
+            amount = getAmount(params.amount, denom),
+        )
+        return sign(chainData, message, "Stake via Gem Wallet", privateKey)
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.Stake.RewardsParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val message = getRewardsMessage(params.from.address, params.validatorsId)
+        return sign(chainData, message, "Stake via Gem Wallet", privateKey)
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.Stake.UndelegateParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val denom = CosmosDenom.from(chain)
+        val message = getUnstakeMessage(params.from.address, params.validatorId, getAmount(params.amount, denom))
+        return sign(chainData, message, "Stake via Gem Wallet", privateKey)
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.Stake.WithdrawParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        throw IllegalArgumentException()
+    }
+
+    private fun getThorChainSwapMessage(params: ConfirmParams.SwapParams, coinType: CoinType): Message {
         val message = Message.newBuilder().apply {
             this.setThorchainDepositMessage(
                 Message.THORChainDeposit.newBuilder().apply {
                     addCoins(
                         Cosmos.THORChainCoin.newBuilder().apply {
-                            this.amount = params.input.amount.toString()
+                            this.amount = params.amount.toString()
                             this.asset = Cosmos.THORChainAsset.newBuilder().apply {
                                 this.chain = "THOR"
                                 this.symbol = "RUNE"
@@ -82,30 +209,13 @@ class CosmosSignClient(
                             }.build()
                         }
                     )
-                    this.memo = swapParams.swapData
-                    this.signer = ByteString.copyFrom(AnyAddress(params.input.from.address, coinType).data())
+                    this.memo = params.swapData
+                    this.signer = ByteString.copyFrom(AnyAddress(params.from.address, coinType).data())
                 }
             )
         }.build()
         return message
     }
-
-//    return CosmosMessage.with {
-//                $0.thorchainDepositMessage = CosmosMessage.THORChainDeposit.with {
-//                    $0.coins = [
-//                        CosmosTHORChainCoin.with {
-//                            $0.amount = input.value.description
-//                            $0.asset = CosmosTHORChainAsset.with {
-//                                $0.chain = chainName
-//                                $0.symbol = symbol
-//                                $0.ticker = symbol
-//                            }
-//                        }
-//                    ]
-//                    $0.memo = memo
-//                    $0.signer = AnyAddress(string: input.senderAddress, coin: chain.chain.coinType)!.data
-//                }
-//            }
 
     private fun getTransferMessage(
         from: String,
@@ -196,8 +306,14 @@ class CosmosSignClient(
         }.build()
     }
 
-    private fun sign(input: SignerParams, privateKey: ByteArray, messages: List<Message>): List<ByteArray> {
-        val meta = input.chainData as CosmosSignerPreloader.CosmosChainData
+    private fun sign(
+//        params: ConfirmParams,
+        chainData: ChainSignData,
+        messages: List<Message>,
+        memo: String,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val meta = chainData as CosmosSignerPreloader.CosmosChainData
         val fee = meta.fee() as GasFee
         val feeAmount = fee.amount
         val gas = fee.limit.toLong() * messages.size
@@ -216,20 +332,20 @@ class CosmosSignClient(
             }
 
         }.build()
-        val memo = when (input.input.getTxType()) {
-            TransactionType.StakeDelegate,
-            TransactionType.StakeUndelegate,
-            TransactionType.StakeRewards,
-            TransactionType.StakeRedelegate,
-            TransactionType.StakeWithdraw -> "Stake via Gem Wallet"
-            TransactionType.Swap -> (input.input as? ConfirmParams.SwapParams)?.swapData ?: throw IllegalArgumentException("No swap data") // TODO: Doesn't for Throchain
-            TransactionType.Transfer,
-            TransactionType.TokenApproval -> input.input.memo() ?: ""
-            TransactionType.TransferNFT,
-            TransactionType.SmartContractCall,
-            TransactionType.AssetActivation -> throw IllegalArgumentException("asset activation doesn't support")
-
-        }
+//        val memo = when (params.getTxType()) {
+//            TransactionType.StakeDelegate,
+//            TransactionType.StakeUndelegate,
+//            TransactionType.StakeRewards,
+//            TransactionType.StakeRedelegate,
+//            TransactionType.StakeWithdraw -> "Stake via Gem Wallet"
+//            TransactionType.Swap -> (params as? ConfirmParams.SwapParams)?.swapData ?: throw IllegalArgumentException("No swap data") // TODO: Doesn't for Throchain
+//            TransactionType.Transfer,
+//            TransactionType.TokenApproval -> params.memo() ?: ""
+//            TransactionType.TransferNFT,
+//            TransactionType.SmartContractCall,
+//            TransactionType.AssetActivation -> throw IllegalArgumentException("asset activation doesn't support")
+//
+//        }
 
         val signInput = Cosmos.SigningInput.newBuilder().apply {
             this.mode = Cosmos.BroadcastMode.SYNC
