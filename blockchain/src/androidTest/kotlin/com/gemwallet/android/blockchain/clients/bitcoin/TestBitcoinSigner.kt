@@ -42,33 +42,31 @@ class TestBitcoinSigner {
         val signer = BitcoinSignClient(Chain.Doge)
 
         val sign = runBlocking {
-            signer.signTransaction(
-                SignerParams(
-                    input = ConfirmParams.TransferParams.Native(
-                        AssetId(Chain.Doge),
-                        Account(Chain.Doge, "D8UBj4EfNfNWNCdnCSgpY48yZDqPdTZXWW", "", "dgub8rNuTi8ofZu1jVDKpBxW9VFo62kjjx3b6CcameEZnrNNHJ3sKCnWBxQSv6qAP6jrwZEpfT1ZdKsrcBFKGTMV8zgBtjZmvQt29VPnLzbHjjD"),
-                        BigInteger.valueOf(10_000_000_000),
-                        DestinationAddress("D8UBj4EfNfNWNCdnCSgpY48yZDqPdTZXWW"),
-                    ),
-                    chainData = BitcoinSignerPreloader.BitcoinChainData(
-                        listOf(
-                            BitcoinUTXO(
-                                txid = "9f47e5d5ae3dac0662766f95d0cdda9c242c08d6baac4ce5d82464cf948abd53",
-                                vout = 1,
-                                value = "86055170",
-                            )
-                        ),
-                        listOf(
-                            GasFee(
-                                AssetId(Chain.Doge),
-                                speed = TxSpeed.Normal,
-                                maxGasPrice = BigInteger.valueOf(150L),
-                                limit = BigInteger.valueOf(18L)
-                            )
+            signer.sign(
+                params = ConfirmParams.TransferParams.Native(
+                    AssetId(Chain.Doge),
+                    Account(Chain.Doge, "D8UBj4EfNfNWNCdnCSgpY48yZDqPdTZXWW", "", "dgub8rNuTi8ofZu1jVDKpBxW9VFo62kjjx3b6CcameEZnrNNHJ3sKCnWBxQSv6qAP6jrwZEpfT1ZdKsrcBFKGTMV8zgBtjZmvQt29VPnLzbHjjD"),
+                    BigInteger.valueOf(10_000_000_000),
+                    DestinationAddress("D8UBj4EfNfNWNCdnCSgpY48yZDqPdTZXWW"),
+                ),
+                chainData = BitcoinSignerPreloader.BitcoinChainData(
+                    listOf(
+                        BitcoinUTXO(
+                            txid = "9f47e5d5ae3dac0662766f95d0cdda9c242c08d6baac4ce5d82464cf948abd53",
+                            vout = 1,
+                            value = "86055170",
                         )
                     ),
-                    finalAmount = BigInteger.valueOf(10_000_000_000)
+                    listOf(
+                        GasFee(
+                            AssetId(Chain.Doge),
+                            speed = TxSpeed.Normal,
+                            maxGasPrice = BigInteger.valueOf(150L),
+                            limit = BigInteger.valueOf(18L)
+                        )
+                    )
                 ),
+                finalAmount = BigInteger.valueOf(10_000_000_000),
                 TxSpeed.Normal,
                 privateKey.data()
             )

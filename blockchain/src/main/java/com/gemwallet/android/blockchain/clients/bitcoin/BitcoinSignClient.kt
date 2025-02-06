@@ -4,9 +4,9 @@ import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
+import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
@@ -17,36 +17,73 @@ import wallet.core.jni.BitcoinSigHashType
 import wallet.core.jni.CoinType
 import wallet.core.jni.proto.Bitcoin
 import wallet.core.jni.proto.Common
+import java.math.BigInteger
 
 class BitcoinSignClient(
     private val chain: Chain,
 ) : SignClient {
 
-    override suspend fun signTransaction(
-        params: SignerParams,
+    val coinType = WCChainTypeProxy().invoke(chain)
+
+    override suspend fun sign(
+        params: ConfirmParams.TransferParams.Native,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
         txSpeed: TxSpeed,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val metadata = params.chainData as BitcoinSignerPreloader.BitcoinChainData
-        val coinType = WCChainTypeProxy().invoke(chain)
-        val gasFee = metadata.fee(txSpeed) as GasFee
-        val input = params.input
-        val signingInput = Bitcoin.SigningInput.newBuilder().apply {
+        val signingInput = getSigningInput(
+            params,
+            chainData,
+            finalAmount,
+            txSpeed,
+            privateKey
+        )
+        return sign(signingInput.build())
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.SwapParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val signingInput = getSigningInput(
+            params,
+            chainData,
+            finalAmount,
+            txSpeed,
+            privateKey
+        )
+        signingInput.outputOpReturn = ByteString.copyFrom(params.swapData.toByteArray())
+        return sign(signingInput.build())
+    }
+
+    private fun getSigningInput(
+        params: ConfirmParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): Bitcoin.SigningInput.Builder {
+        val chainData = chainData as BitcoinSignerPreloader.BitcoinChainData
+        val gasFee = chainData.fee(txSpeed) as GasFee
+        val coinType = coinType
+
+        return Bitcoin.SigningInput.newBuilder().apply {
             this.coinType = coinType.value()
             this.hashType = BitcoinSigHashType.ALL.value()
-            this.amount = params.finalAmount.toLong()
+            this.amount = finalAmount.toLong()
             this.byteFee = gasFee.maxGasPrice.toLong()
-            this.toAddress = params.input.destination()?.address
-            this.changeAddress = params.input.from.address
-            this.useMaxAmount = params.input.isMax()
-            when (input) {
-                is ConfirmParams.SwapParams -> this.outputOpReturn = ByteString.copyFrom(input.swapData.toByteArray())
-                else -> {}
-            }
+            this.toAddress = params.destination()?.address
+            this.changeAddress = params.from.address
+            this.useMaxAmount = params.isMax()
+
             this.addPrivateKey(ByteString.copyFrom(privateKey))
-            this.addAllUtxo(metadata.utxo.getUtxoTransactions(params.input.from.address, coinType))
-            metadata.utxo.forEach {
-                val redeemScript = BitcoinScript.lockScriptForAddress(params.input.from.address, coinType)
+            this.addAllUtxo(chainData.utxo.getUtxoTransactions(params.from.address, coinType))
+            chainData.utxo.forEach {
+                val redeemScript = BitcoinScript.lockScriptForAddress(params.from.address, coinType)
                 val scriptData = redeemScript.data()
                 if (coinType == CoinType.BITCOIN || scriptData?.isNotEmpty() == true) {
                     return@forEach
@@ -58,7 +95,10 @@ class BitcoinSignClient(
                 }.toHexString()
                 putScripts(keyHash, ByteString.copyFrom(redeemScript.data()))
             }
-        }.build()
+        }
+    }
+
+    private fun sign(signingInput: Bitcoin.SigningInput): List<ByteArray> {
         val output = AnySigner.sign(signingInput, coinType, Bitcoin.SigningOutput.parser())
         if (output.error != Common.SigningError.OK) {
             throw IllegalStateException(output.error.name)
