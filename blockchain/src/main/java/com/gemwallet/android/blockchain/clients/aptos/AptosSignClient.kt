@@ -18,7 +18,7 @@ class AptosSignClient(
 ) : SignClient {
 
     val coinType = WCChainTypeProxy().invoke(chain)
-    
+
     override suspend fun sign(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
