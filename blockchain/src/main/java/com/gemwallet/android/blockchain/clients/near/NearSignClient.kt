@@ -2,7 +2,8 @@ package com.gemwallet.android.blockchain.clients.near
 
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
-import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.ChainSignData
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
@@ -16,18 +17,24 @@ import java.math.BigInteger
 class NearSignClient(
     private val chain: Chain,
 ) : SignClient {
-    override suspend fun signTransaction(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): List<ByteArray> {
-        val metadata = params.chainData as NearSignerPreloader.NearChainData
+    override suspend fun sign(
+        params: ConfirmParams.TransferParams.Native,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val metadata = chainData as NearSignerPreloader.NearChainData
 
         val input = NEAR.SigningInput.newBuilder().apply {
-            this.signerId = params.input.from.address
+            this.signerId = params.from.address
             this.nonce = metadata.sequence
-            this.receiverId = params.input.destination()?.address
+            this.receiverId = params.destination().address
             this.addAllActions(
                 listOf(
                     NEAR.Action.newBuilder().apply {
                         this.transfer = NEAR.Transfer.newBuilder().apply {
-                            this.deposit = ByteString.copyFrom(params.finalAmount.littleIndian()?.reversedArray())
+                            this.deposit = ByteString.copyFrom(finalAmount.littleIndian()?.reversedArray())
                         }.build()
                     }.build()
                 )
