@@ -1,15 +1,11 @@
 package com.gemwallet.android.blockchain.clients.algorand
 
-import com.gemwallet.android.blockchain.clients.aptos.AptosSignClient
-import com.gemwallet.android.blockchain.clients.aptos.AptosSignerPreloader
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
@@ -19,7 +15,6 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import wallet.core.jni.CoinType
 import wallet.core.jni.HDWallet
-import wallet.core.jni.proto.Algorand
 import java.math.BigInteger
 
 class TestAlgorandSigner {

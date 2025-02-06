@@ -2,32 +2,36 @@ package com.gemwallet.android.blockchain.clients.cardano
 
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.math.decodeHex
-import com.gemwallet.android.model.SignerParams
+import com.gemwallet.android.model.ChainSignData
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
 import wallet.core.jni.proto.Cardano
+import java.math.BigInteger
 
 class CardanoSignClient(
     private val chain: Chain
 ) : SignClient {
 
-    override suspend fun signTransaction(
-        params: SignerParams,
+    override suspend fun sign(
+        params: ConfirmParams.TransferParams.Native,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
         txSpeed: TxSpeed,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val chainData = (params.chainData as? CardanoSignerPreloaderClient.CardanoChainData)
+        val chainData = (chainData as? CardanoSignerPreloaderClient.CardanoChainData)
             ?: throw IllegalArgumentException()
         val signingInput = Cardano.SigningInput.newBuilder().apply {
             this.addPrivateKey(ByteString.copyFrom(privateKey))
             this.transferMessage = Cardano.Transfer.newBuilder().apply {
-                this.toAddress = params.input.destination()?.address!!
-                this.changeAddress = params.input.from.address
-                this.amount = params.input.amount.toLong()
-                this.useMaxAmount = params.input.isMax()
+                this.toAddress = params.destination().address
+                this.changeAddress = params.from.address
+                this.amount = params.amount.toLong()
+                this.useMaxAmount = params.isMax()
             }.build()
             this.ttl = 190000000
             this.addAllUtxos(
