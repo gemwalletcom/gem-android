@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.Stellar
 
-import com.gemwallet.android.blockchain.clients.near.NearSignClient
 import com.gemwallet.android.blockchain.clients.stellar.StellarSignClient
 import com.gemwallet.android.blockchain.clients.stellar.StellarSignPreloadClient
 import com.gemwallet.android.blockchain.includeLibs
@@ -28,7 +27,7 @@ class TestStellarSigner {
     }
 
     @Test
-    fun testNearNativeSign() {
+    fun testStellarNativeSign() {
         val hdWallet = HDWallet(testPhrase, "")
         val privateKey = hdWallet.getKeyForCoin(CoinType.STELLAR)
         val from = hdWallet.getAddressForCoin(CoinType.STELLAR)

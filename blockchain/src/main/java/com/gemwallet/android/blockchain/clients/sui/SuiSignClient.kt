@@ -2,18 +2,28 @@ package com.gemwallet.android.blockchain.clients.sui
 
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.math.decodeHex
+import com.gemwallet.android.model.ChainSignData
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Chain
 import wallet.core.jni.Base64
 import wallet.core.jni.Curve
 import wallet.core.jni.PrivateKey
+import java.math.BigInteger
 
 class SuiSignClient(
     private val chain: Chain,
 ) : SignClient {
-    override suspend fun signTransaction(params: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): List<ByteArray> {
-        val metadata = params.chainData as SuiSignerPreloader.SuiChainData
+
+    override suspend fun sign(
+        params: ConfirmParams.TransferParams.Native,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val metadata = chainData as SuiSignerPreloader.SuiChainData
         return signTxDataDigest(metadata.messageBytes, privateKey)
     }
 
