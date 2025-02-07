@@ -51,6 +51,7 @@ class TonSignerPreloader(
         val sequence: Int,
         val fee: Fee,
         val jettonAddress: String? = null,
+        val expireAt: Int? = null
     ) : ChainSignData {
         override fun fee(speed: TxSpeed): Fee = fee
     }
