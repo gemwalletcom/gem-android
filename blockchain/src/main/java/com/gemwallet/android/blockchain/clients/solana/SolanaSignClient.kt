@@ -2,16 +2,13 @@ package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.GetAsset
-import com.gemwallet.android.ext.type
+import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
-import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.SolanaTokenProgramId
-import com.wallet.core.primitives.TransactionType
 import wallet.core.java.AnySigner
 import wallet.core.jni.Base58
 import wallet.core.jni.Base64
@@ -42,93 +39,47 @@ class SolanaSignClient(
         return Base64.encode(signed).toByteArray()
     }
 
-    override suspend fun signTransaction(
-        params: SignerParams,
+    override suspend fun sign(
+        params: ConfirmParams.TransferParams.Native,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
         txSpeed: TxSpeed,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val fee = params.chainData.fee(txSpeed) as GasFee
-        val recentBlockhash = (params.chainData as SolanaSignerPreloader.SolanaChainData).blockhash
-
-        return when(params.input.getTxType()) {
-            TransactionType.Swap -> swap(params, txSpeed, privateKey)
-            TransactionType.Transfer -> {
-                val signInput = when (params.input.assetId.type()) {
-                    AssetSubtype.NATIVE -> signNative(params)
-                    AssetSubtype.TOKEN -> signToken(params)
-                }
-                signInput.privateKey = ByteString.copyFrom(privateKey)
-                sign(input = signInput, fee = fee)
-            }
-            TransactionType.StakeDelegate -> {
-                val signInput = Solana.SigningInput.newBuilder().apply {
-                    this.recentBlockhash = recentBlockhash
-                    this.delegateStakeTransaction = Solana.DelegateStake.newBuilder().apply {
-                        this.validatorPubkey = (params.input as ConfirmParams.Stake.DelegateParams).validatorId
-                        this.value = params.finalAmount.toLong()
-                    }.build()
-                    this.privateKey = ByteString.copyFrom(privateKey)
-                }
-                sign(input = signInput, fee = fee)
-            }
-            TransactionType.StakeUndelegate -> {
-                val signInput = Solana.SigningInput.newBuilder().apply {
-                    this.recentBlockhash = recentBlockhash
-                    this.deactivateStakeTransaction = Solana.DeactivateStake.newBuilder().apply {
-                        this.stakeAccount = (params.input as ConfirmParams.Stake.UndelegateParams).delegationId
-                    }.build()
-                    this.privateKey = ByteString.copyFrom(privateKey)
-                }
-                sign(input = signInput, fee = fee)
-            }
-            TransactionType.StakeWithdraw -> {
-                val signInput = Solana.SigningInput.newBuilder().apply {
-                    this.recentBlockhash = recentBlockhash
-                    this.withdrawTransaction = Solana.WithdrawStake.newBuilder().apply {
-                        stakeAccount = (params.input as ConfirmParams.Stake.WithdrawParams).delegationId
-                        value = params.finalAmount.toLong()
-                    }.build()
-                    this.privateKey = ByteString.copyFrom(privateKey)
-                }
-                sign(input = signInput, fee = fee)
-            }
-            TransactionType.TokenApproval,
-            TransactionType.StakeRedelegate,
-            TransactionType.AssetActivation,
-            TransactionType.TransferNFT,
-            TransactionType.SmartContractCall,
-            TransactionType.StakeRewards -> throw IllegalArgumentException()
-        }
-    }
-
-    private fun signNative(input: SignerParams): Solana.SigningInput.Builder {
-        val blockhash = (input.chainData as SolanaSignerPreloader.SolanaChainData).blockhash
-
-        return Solana.SigningInput.newBuilder().apply {
+        val blockhash = (chainData as SolanaSignerPreloader.SolanaChainData).blockhash
+        val input = Solana.SigningInput.newBuilder().apply {
             this.transferTransaction = Solana.Transfer.newBuilder().apply {
-                this.recipient = input.input.destination()?.address
-                this.value = input.finalAmount.toLong()
-                if (!input.input.memo().isNullOrEmpty()) {
-                    this.memo = input.input.memo()
+                this.recipient = params.destination().address
+                this.value = finalAmount.toLong()
+                if (!params.memo().isNullOrEmpty()) {
+                    this.memo = params.memo()
                 }
             }.build()
             this.recentBlockhash = blockhash
+            this.privateKey = ByteString.copyFrom(privateKey)
         }
+        return sign(input = input, fee = chainData.gasFee())
     }
 
-    private suspend fun signToken(input: SignerParams): Solana.SigningInput.Builder {
-        val decimals = getAsset.getAsset(input.input.assetId)?.decimals ?: throw IllegalArgumentException("Asset not found")
-        val tokenId = input.input.assetId.tokenId
-        val amount = input.finalAmount.toLong()
-        val recipient = input.input.destination()?.address
-        val metadata = input.chainData as SolanaSignerPreloader.SolanaChainData
+    override suspend fun sign(
+        params: ConfirmParams.TransferParams.Token,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val decimals = getAsset.getAsset(params.assetId)?.decimals ?: throw IllegalArgumentException("Asset not found")
+        val tokenId = params.assetId.tokenId
+        val amount = finalAmount.toLong()
+        val recipient = params.destination().address
+        val metadata = chainData as SolanaSignerPreloader.SolanaChainData
         val tokenProgramId = when (metadata.tokenProgram) {
             SolanaTokenProgramId.Token -> Solana.TokenProgramId.TokenProgram
             SolanaTokenProgramId.Token2022 -> Solana.TokenProgramId.Token2022Program
         }
-        return Solana.SigningInput.newBuilder().apply {
+        val input = Solana.SigningInput.newBuilder().apply {
             this.recentBlockhash = metadata.blockhash
-            this.privateKey = privateKey
+            this.privateKey = ByteString.copyFrom(privateKey)
             if (metadata.recipientTokenAddress.isNullOrEmpty()) {
                 this.createAndTransferTokenTransaction = Solana.CreateAndTransferToken.newBuilder().apply {
                     this.amount = amount
@@ -137,7 +88,7 @@ class SolanaSignClient(
                     this.tokenMintAddress = tokenId
                     this.senderTokenAddress = metadata.senderTokenAddress
                     this.recipientTokenAddress = SolanaAddress(recipient).defaultTokenAddress(tokenId)
-                    this.memo = input.input.memo() ?: ""
+                    this.memo = params.memo() ?: ""
                     this.tokenProgramId = tokenProgramId
                 }.build()
             } else {
@@ -155,20 +106,26 @@ class SolanaSignClient(
                     this.tokenMintAddress = tokenId
                     this.senderTokenAddress = metadata.senderTokenAddress
                     this.recipientTokenAddress = recipientTokenAddress
-                    this.memo = input.input.memo() ?: ""
+                    this.memo = params.memo() ?: ""
                     this.tokenProgramId = tokenProgramId
                 }.build()
             }
         }
+        return sign(input, chainData.gasFee())
     }
 
-    private fun swap(input: SignerParams, txSpeed: TxSpeed, privateKey: ByteArray): List<ByteArray> {
-        val fee = input.chainData.fee(txSpeed) as? GasFee ?: throw java.lang.IllegalArgumentException("Incorrect fee data")
+    override suspend fun sign(
+        params: ConfirmParams.SwapParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val fee = chainData.gasFee(txSpeed)
         val feePrice = fee.minerFee
         val feeLimit = fee.limit
-        val swapParams = input.input as ConfirmParams.SwapParams
 
-        val rawTx = SolanaTransaction.setComputeUnitPrice(swapParams.swapData, feePrice.toString()).ifEmpty {
+        val rawTx = SolanaTransaction.setComputeUnitPrice(params.swapData, feePrice.toString()).ifEmpty {
             throw IllegalStateException("Unable to set compute unit price")
         }
         val transaction = SolanaTransaction.setComputeUnitLimit(rawTx, feeLimit.toString()).ifEmpty {
@@ -188,6 +145,62 @@ class SolanaSignClient(
             throw Exception(output.errorMessage)
         }
         return listOf(output.encoded.toByteArray())
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.Stake.DelegateParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val recentBlockhash = (chainData as SolanaSignerPreloader.SolanaChainData).blockhash
+        val signInput = Solana.SigningInput.newBuilder().apply {
+            this.recentBlockhash = recentBlockhash
+            this.delegateStakeTransaction = Solana.DelegateStake.newBuilder().apply {
+                this.validatorPubkey = params.validatorId
+                this.value = finalAmount.toLong()
+            }.build()
+            this.privateKey = ByteString.copyFrom(privateKey)
+        }
+        return sign(input = signInput, fee = chainData.gasFee())
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.Stake.UndelegateParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val recentBlockhash = (chainData as SolanaSignerPreloader.SolanaChainData).blockhash
+        val signInput = Solana.SigningInput.newBuilder().apply {
+            this.recentBlockhash = recentBlockhash
+            this.deactivateStakeTransaction = Solana.DeactivateStake.newBuilder().apply {
+                this.stakeAccount = params.delegationId
+            }.build()
+            this.privateKey = ByteString.copyFrom(privateKey)
+        }
+        return sign(input = signInput, fee = chainData.gasFee())
+    }
+
+    override suspend fun sign(
+        params: ConfirmParams.Stake.WithdrawParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val recentBlockhash = (chainData as SolanaSignerPreloader.SolanaChainData).blockhash
+        val signInput = Solana.SigningInput.newBuilder().apply {
+            this.recentBlockhash = recentBlockhash
+            this.withdrawTransaction = Solana.WithdrawStake.newBuilder().apply {
+                stakeAccount = params.delegationId
+                value = finalAmount.toLong()
+            }.build()
+            this.privateKey = ByteString.copyFrom(privateKey)
+        }
+        return sign(input = signInput, fee = chainData.gasFee())
     }
 
     private fun sign(input: Solana.SigningInput.Builder, fee: GasFee): List<ByteArray> {
