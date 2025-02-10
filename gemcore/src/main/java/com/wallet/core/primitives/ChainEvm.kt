@@ -47,5 +47,11 @@ enum class EVMChain(val string: String) {
 	Sonic("sonic"),
 	@SerialName("abstract")
 	Abstract("abstract"),
+	@SerialName("berachain")
+	Berachain("berachain"),
+	@SerialName("ink")
+	Ink("ink"),
+	@SerialName("unichain")
+	Unichain("unichain"),
 }
 

@@ -39,7 +39,7 @@ data class WCSolanaTransaction (
 )
 
 @Serializable
-enum class WallletConnectCAIP2(val string: String) {
+enum class WalletConnectCAIP2(val string: String) {
 	@SerialName("eip155")
 	Eip155("eip155"),
 	@SerialName("solana")
