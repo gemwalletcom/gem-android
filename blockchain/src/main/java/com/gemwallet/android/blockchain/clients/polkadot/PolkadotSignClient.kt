@@ -5,6 +5,8 @@ import com.gemwallet.android.blockchain.clients.polkadot.models.PolkadotSigningD
 import com.gemwallet.android.math.append0x
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
+import com.gemwallet.android.model.ChainSignData
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
@@ -19,12 +21,14 @@ class PolkadotSignClient(
     private val chain: Chain
 ) : SignClient {
 
-    override suspend fun signTransaction(
-        params: SignerParams,
+    override suspend fun sign(
+        params: ConfirmParams.TransferParams.Native,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
         txSpeed: TxSpeed,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val chainData = (params.chainData as? PolkadotSignerPreloaderClient.PolkadotChainData) ?: throw Exception("incomplete data")
+        val chainData = (chainData as? PolkadotSignerPreloaderClient.PolkadotChainData) ?: throw Exception("incomplete data")
         val data = chainData.data
         val input = Polkadot.SigningInput.newBuilder().apply {
             this.genesisHash = ByteString.copyFrom(data.genesisHash.decodeHex())
@@ -40,8 +44,8 @@ class PolkadotSignClient(
             }.build()
             this.balanceCall = Polkadot.Balance.newBuilder().apply {
                 transfer = Polkadot.Balance.Transfer.newBuilder().apply {
-                    this.toAddress = params.input.destination()!!.address
-                    this.value = ByteString.copyFrom(params.finalAmount.toByteArray())
+                    this.toAddress = params.destination().address
+                    this.value = ByteString.copyFrom(finalAmount.toByteArray())
                 }.build()
             }.build()
         }.build()
