@@ -4,7 +4,6 @@ import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Chain
 import wallet.core.jni.Base64

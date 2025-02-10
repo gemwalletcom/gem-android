@@ -3,10 +3,8 @@ package com.gemwallet.android.blockchain.clients.algorand
 import com.gemwallet.android.blockchain.clients.BalanceClient
 import com.gemwallet.android.blockchain.clients.algorand.services.AlgorandAccountService
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.getReserveBalance
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Chain
-import java.math.BigInteger
 import kotlin.math.max
 
 class AlgorandBalanceClient(

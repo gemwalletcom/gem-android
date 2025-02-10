@@ -3,16 +3,13 @@ package com.gemwallet.android.blockchain.clients.ethereum
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.ext.eip1559Support
-import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain
 import wallet.core.java.AnySigner

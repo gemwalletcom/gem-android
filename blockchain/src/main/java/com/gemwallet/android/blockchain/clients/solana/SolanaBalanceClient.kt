@@ -13,7 +13,6 @@ import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 
