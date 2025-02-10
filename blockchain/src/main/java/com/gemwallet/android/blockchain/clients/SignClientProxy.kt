@@ -7,9 +7,9 @@ import com.wallet.core.primitives.Chain
 
 class SignClientProxy(
     private val clients: List<SignClient>
-) : SignClient {
+) {
 
-    override suspend fun signMessage(
+    suspend fun signMessage(
         chain: Chain,
         input: ByteArray,
         privateKey: ByteArray
@@ -18,7 +18,7 @@ class SignClientProxy(
             ?: throw Exception("Chain isn't support")
     }
 
-    override suspend fun signTypedMessage(
+    suspend fun signTypedMessage(
         chain: Chain,
         input: ByteArray,
         privateKey: ByteArray
@@ -27,33 +27,28 @@ class SignClientProxy(
             ?: throw Exception("Chain isn't support")
     }
 
-    override suspend fun signTransaction(
+    suspend fun signTransaction(
         params: SignerParams,
         txSpeed: TxSpeed,
         privateKey: ByteArray
     ): List<ByteArray> {
         val chain = params.input.assetId.chain
         val client = clients.getClient(chain) ?: throw Exception("Chain isn't support")
-        return try {
-            client.signTransaction(params, txSpeed, privateKey)
-        } catch (_: Throwable) {
-            val input = params.input
-            when (input) {
-                is ConfirmParams.Stake.DelegateParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-                is ConfirmParams.Stake.RedelegateParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-                is ConfirmParams.Stake.RewardsParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-                is ConfirmParams.Stake.UndelegateParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-                is ConfirmParams.Stake.WithdrawParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-                is ConfirmParams.SwapParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-                is ConfirmParams.TokenApprovalParams -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-                is ConfirmParams.TransferParams.Native -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-                is ConfirmParams.TransferParams.Token -> client.sign(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-            }
+        val input = params.input
+        return when (input) {
+            is ConfirmParams.Stake.DelegateParams -> client.signDelegate(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+            is ConfirmParams.Stake.RedelegateParams -> client.signRedelegate(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+            is ConfirmParams.Stake.RewardsParams -> client.signRewards(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+            is ConfirmParams.Stake.UndelegateParams -> client.signUndelegate(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+            is ConfirmParams.Stake.WithdrawParams -> client.signWithdraw(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+            is ConfirmParams.SwapParams -> client.signSwap(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+            is ConfirmParams.TokenApprovalParams -> client.signTokenApproval(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+            is ConfirmParams.TransferParams.Native -> client.signNativeTransfer(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+            is ConfirmParams.TransferParams.Token -> client.signTokenTransfer(input, params.chainData, params.finalAmount, txSpeed, privateKey)
         }
     }
 
-    override fun supported(chain: Chain): Boolean {
+    fun supported(chain: Chain): Boolean {
         return clients.getClient(chain) != null
     }
-
 }

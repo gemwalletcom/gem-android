@@ -37,7 +37,7 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_native() {
         val sign = runBlocking {
-            signClient.sign(
+            signClient.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
                     assetId = Chain.Ethereum.asset().id,
                     amount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
@@ -74,7 +74,7 @@ class TestEthSign {
     @Test
     fun test_EvmTokenSign() {
         val sign = runBlocking {
-            signClient.sign(
+            signClient.signTokenTransfer(
                 params = ConfirmParams.TransferParams.Token(
                     assetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
                     amount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
@@ -113,7 +113,7 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_swap() {
         val sign = runBlocking {
-            signClient.sign(
+            signClient.signSwap(
                 params = ConfirmParams.SwapParams(
                     fromAssetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
                     toAssetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
@@ -155,7 +155,7 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_delegate() {
         val sign = runBlocking {
-            signClient.sign(
+            signClient.signDelegate(
                 params = ConfirmParams.Stake.DelegateParams(
                     assetId = AssetId(Chain.SmartChain),
                     amount = BigInteger.TEN,
@@ -195,7 +195,7 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_undelegate() {
         val sign = runBlocking {
-            signClient.sign(
+            signClient.signUndelegate(
                 params = ConfirmParams.Stake.UndelegateParams(
                     assetId = AssetId(Chain.SmartChain),
                     amount = BigInteger("1002901689671695193"),
@@ -237,7 +237,7 @@ class TestEthSign {
     @Test
     fun test_Evm_sign_approval() {
         val sign = runBlocking {
-            signClient.sign(
+            signClient.signTokenApproval(
                 params = ConfirmParams.TokenApprovalParams(
                     assetId = AssetId(Chain.SmartChain, "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"),
                     from = Account(Chain.SmartChain, "0x0Eb3a705fc54725037CC9e008bDede697f62F335", ""),

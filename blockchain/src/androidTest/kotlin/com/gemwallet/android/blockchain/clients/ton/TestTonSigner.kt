@@ -32,7 +32,7 @@ class TestTonSigner {
         val signer = TonSignClient(Chain.Ton)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
                     AssetId(Chain.Ton),
                     Account(Chain.Ton, from, ""),
@@ -71,7 +71,7 @@ class TestTonSigner {
         val signer = TonSignClient(Chain.Ton)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signTokenTransfer(
                 params = ConfirmParams.TransferParams.Token(
                     AssetId(Chain.Ton, "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs"),
                     Account(Chain.Ton, from, ""),

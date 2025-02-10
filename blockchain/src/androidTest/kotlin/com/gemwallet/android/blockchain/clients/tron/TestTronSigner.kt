@@ -32,7 +32,7 @@ class TestTronSigner {
         val signer = TronSignClient(Chain.Tron)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
                     AssetId(Chain.Tron),
                     Account(Chain.Tron, from, ""),
@@ -86,7 +86,7 @@ class TestTronSigner {
         val signer = TronSignClient(Chain.Tron)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signTokenTransfer(
                 params = ConfirmParams.TransferParams.Token(
                     AssetId(Chain.Tron, "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"),
                     Account(Chain.Tron, from, ""),
@@ -144,7 +144,7 @@ class TestTronSigner {
         val signer = TronSignClient(Chain.Tron)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signDelegate(
                 params = ConfirmParams.Stake.DelegateParams(
                     AssetId(Chain.Tron),
                     Account(Chain.Tron, from, ""),

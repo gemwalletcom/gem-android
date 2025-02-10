@@ -34,7 +34,7 @@ class TestStellarSigner {
         val signer = StellarSignClient(Chain.Stellar)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
                     AssetId(Chain.Stellar),
                     Account(Chain.Stellar, from, ""),

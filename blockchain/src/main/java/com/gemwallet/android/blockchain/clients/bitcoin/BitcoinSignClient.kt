@@ -25,7 +25,7 @@ class BitcoinSignClient(
 
     val coinType = WCChainTypeProxy().invoke(chain)
 
-    override suspend fun sign(
+    override suspend fun signNativeTransfer(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -42,7 +42,7 @@ class BitcoinSignClient(
         return sign(signingInput.build())
     }
 
-    override suspend fun sign(
+    override suspend fun signSwap(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,

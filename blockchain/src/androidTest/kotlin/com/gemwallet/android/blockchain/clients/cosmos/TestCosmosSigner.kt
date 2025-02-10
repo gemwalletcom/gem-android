@@ -52,7 +52,7 @@ class TestCosmosSigner {
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.sign(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
+            signer.signNativeTransfer(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -90,7 +90,7 @@ class TestCosmosSigner {
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.sign(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
+            signer.signDelegate(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -150,7 +150,7 @@ class TestCosmosSigner {
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.sign(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
+            signer.signUndelegate(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -212,7 +212,7 @@ class TestCosmosSigner {
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.sign(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
+            signer.signRedelegate(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -258,7 +258,7 @@ class TestCosmosSigner {
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.sign(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
+            signer.signRewards(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +

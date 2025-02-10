@@ -32,7 +32,7 @@ class TestCardanoSigner {
         val signer = CardanoSignClient(Chain.Cardano)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
                     AssetId(Chain.Cardano),
                     Account(Chain.Cardano, "addr1q9d2dxen8ywvs9yzxxn2w4mvffn797fquauvugt2ug7mfsuqj3lzdq9h0rsketzszrnfm930658swmpe7kpq53c2tmwql4rvtq", ""),

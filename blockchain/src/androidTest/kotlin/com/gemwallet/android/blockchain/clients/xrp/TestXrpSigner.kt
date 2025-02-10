@@ -32,7 +32,7 @@ class TestXrpSigner {
         val signer = XrpSignClient(Chain.Xrp)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
                     AssetId(Chain.Xrp),
                     Account(Chain.Xrp, from, ""),

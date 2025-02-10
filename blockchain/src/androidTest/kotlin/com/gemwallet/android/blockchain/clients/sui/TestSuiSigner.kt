@@ -32,7 +32,7 @@ class TestSuiSigner {
         val signer = SuiSignClient(Chain.Sui)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
                     AssetId(Chain.Sui),
                     Account(Chain.Sui, from, ""),

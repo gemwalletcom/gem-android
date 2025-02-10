@@ -41,7 +41,7 @@ class TestBitcoinSigner {
         val signer = BitcoinSignClient(Chain.Doge)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
                     AssetId(Chain.Doge),
                     Account(Chain.Doge, "D8UBj4EfNfNWNCdnCSgpY48yZDqPdTZXWW", "", "dgub8rNuTi8ofZu1jVDKpBxW9VFo62kjjx3b6CcameEZnrNNHJ3sKCnWBxQSv6qAP6jrwZEpfT1ZdKsrcBFKGTMV8zgBtjZmvQt29VPnLzbHjjD"),

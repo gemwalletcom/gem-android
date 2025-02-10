@@ -26,47 +26,7 @@ class CosmosSignClient(
 
     val coin = WCChainTypeProxy().invoke(chain)
 
-//    override suspend fun signTransaction(
-//        params: SignerParams,
-//        txSpeed: TxSpeed,
-//        privateKey: ByteArray,
-//    ): List<ByteArray> {
-//        val from = params.input.from.address
-//        val coin = WCChainTypeProxy().invoke(chain)
-//        val input = params.input
-//        val denom = if (input.assetId.type() == AssetSubtype.NATIVE) CosmosDenom.from(chain) else input.assetId.tokenId!!
-//        val message = when (input) {
-//            is ConfirmParams.TransferParams -> getTransferMessage(
-//                from = from,
-//                recipient = input.destination().address,
-//                coin = coin,
-//                amount = getAmount(params.finalAmount, denom = denom)
-//            )
-//            is ConfirmParams.Stake.DelegateParams -> getStakeMessage(from, input.validatorId, getAmount(params.finalAmount, denom))
-//            is ConfirmParams.Stake.RedelegateParams -> getRedelegateMessage(
-//                delegatorAddress = from,
-//                validatorSrcAddress = input.srcValidatorId,
-//                validatorDstAddress = input.dstValidatorId,
-//                amount = getAmount(params.input.amount, denom),
-//            )
-//            is ConfirmParams.Stake.RewardsParams -> getRewardsMessage(from, input.validatorsId)
-//            is ConfirmParams.Stake.UndelegateParams -> getUnstakeMessage(from, input.validatorId, getAmount(params.input.amount, denom))
-//            is ConfirmParams.SwapParams -> when (chain) {
-//                Chain.Thorchain -> listOf(getThorChainSwapMessage(params, coin))
-//                else -> getTransferMessage(
-//                    from = from,
-//                    recipient = input.destination().address,
-//                    coin = coin,
-//                    amount = getAmount(params.finalAmount, denom = denom)
-//                )
-//            }
-//            is ConfirmParams.TokenApprovalParams,
-//            is ConfirmParams.Stake.WithdrawParams -> throw IllegalArgumentException()
-//        }
-//        return sign(params, privateKey, message)
-//    }
-
-    override suspend fun sign(
+    override suspend fun signNativeTransfer(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -84,7 +44,7 @@ class CosmosSignClient(
     }
 
 
-    override suspend fun sign(
+    override suspend fun signTokenTransfer(
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -102,7 +62,7 @@ class CosmosSignClient(
         return sign(chainData, message, params.memo() ?: "", privateKey)
     }
 
-    override suspend fun sign(
+    override suspend fun signSwap(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -123,7 +83,7 @@ class CosmosSignClient(
         return sign(chainData, message, memo, privateKey)
     }
 
-    override suspend fun sign(
+    override suspend fun signTokenApproval(
         params: ConfirmParams.TokenApprovalParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -133,7 +93,7 @@ class CosmosSignClient(
         throw IllegalArgumentException()
     }
 
-    override suspend fun sign(
+    override suspend fun signDelegate(
         params: ConfirmParams.Stake.DelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -145,7 +105,7 @@ class CosmosSignClient(
         return sign(chainData, message, "Stake via Gem Wallet", privateKey)
     }
 
-    override suspend fun sign(
+    override suspend fun signRedelegate(
         params: ConfirmParams.Stake.RedelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -162,7 +122,7 @@ class CosmosSignClient(
         return sign(chainData, message, "Stake via Gem Wallet", privateKey)
     }
 
-    override suspend fun sign(
+    override suspend fun signRewards(
         params: ConfirmParams.Stake.RewardsParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -173,7 +133,7 @@ class CosmosSignClient(
         return sign(chainData, message, "Stake via Gem Wallet", privateKey)
     }
 
-    override suspend fun sign(
+    override suspend fun signUndelegate(
         params: ConfirmParams.Stake.UndelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -185,7 +145,7 @@ class CosmosSignClient(
         return sign(chainData, message, "Stake via Gem Wallet", privateKey)
     }
 
-    override suspend fun sign(
+    override suspend fun signWithdraw(
         params: ConfirmParams.Stake.WithdrawParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,

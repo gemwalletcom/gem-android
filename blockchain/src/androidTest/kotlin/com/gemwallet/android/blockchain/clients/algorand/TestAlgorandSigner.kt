@@ -31,7 +31,7 @@ class TestAlgorandSigner {
         val signer = AlgorandSignClient(Chain.Algorand)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
                     AssetId(Chain.Algorand),
                     Account(Chain.Algorand, "GOZOAE6SH6XGGDRBQLZEDRITKMF5OLVJNACVRQBUEGFLBBR5I64A7QN63E", ""),

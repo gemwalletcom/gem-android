@@ -33,7 +33,7 @@ class TestNearSigner {
         val signer = NearSignClient(Chain.Near)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
                     AssetId(Chain.Near),
                     Account(Chain.Near, from, ""),

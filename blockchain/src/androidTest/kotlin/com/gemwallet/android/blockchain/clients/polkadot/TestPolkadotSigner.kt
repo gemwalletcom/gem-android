@@ -33,7 +33,7 @@ class TestPolkadotSigner {
         val signer = PolkadotSignClient(Chain.Polkadot)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
                     AssetId(Chain.Polkadot),
                     Account(Chain.Polkadot, from, ""),

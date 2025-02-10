@@ -2,7 +2,6 @@ package com.gemwallet.android.blockchain.clients
 
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Chain
 import java.math.BigInteger
@@ -17,13 +16,7 @@ interface SignClient : BlockchainClient {
 
     suspend fun signTypedMessage(chain: Chain, input: ByteArray, privateKey: ByteArray): ByteArray = byteArrayOf()
 
-    suspend fun signTransaction(
-        params: SignerParams,
-        txSpeed: TxSpeed = TxSpeed.Normal,
-        privateKey: ByteArray,
-    ): List<ByteArray> = throw IllegalArgumentException("Deprecated")
-
-    suspend fun sign(
+    suspend fun signNativeTransfer(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -31,7 +24,7 @@ interface SignClient : BlockchainClient {
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
-    suspend fun sign(
+    suspend fun signTokenTransfer(
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -39,7 +32,7 @@ interface SignClient : BlockchainClient {
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
-    suspend fun sign(
+    suspend fun signSwap(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -47,7 +40,7 @@ interface SignClient : BlockchainClient {
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
-    suspend fun sign(
+    suspend fun signTokenApproval(
         params: ConfirmParams.TokenApprovalParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -55,7 +48,7 @@ interface SignClient : BlockchainClient {
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
-    suspend fun sign(
+    suspend fun signDelegate(
         params: ConfirmParams.Stake.DelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -63,7 +56,7 @@ interface SignClient : BlockchainClient {
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
-    suspend fun sign(
+    suspend fun signUndelegate(
         params: ConfirmParams.Stake.UndelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -71,7 +64,7 @@ interface SignClient : BlockchainClient {
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
-    suspend fun sign(
+    suspend fun signRedelegate(
         params: ConfirmParams.Stake.RedelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -79,7 +72,7 @@ interface SignClient : BlockchainClient {
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
-    suspend fun sign(
+    suspend fun signRewards(
         params: ConfirmParams.Stake.RewardsParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -87,7 +80,7 @@ interface SignClient : BlockchainClient {
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
-    suspend fun sign(
+    suspend fun signWithdraw(
         params: ConfirmParams.Stake.WithdrawParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,

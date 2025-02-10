@@ -16,7 +16,7 @@ class StellarSignClient(
     private val chain: Chain
 ) : SignClient {
 
-    override suspend fun sign(
+    override suspend fun signNativeTransfer(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,

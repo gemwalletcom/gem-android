@@ -39,7 +39,7 @@ class SolanaSignClient(
         return Base64.encode(signed).toByteArray()
     }
 
-    override suspend fun sign(
+    override suspend fun signNativeTransfer(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -61,7 +61,7 @@ class SolanaSignClient(
         return sign(input = input, fee = chainData.gasFee())
     }
 
-    override suspend fun sign(
+    override suspend fun signTokenTransfer(
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -114,7 +114,7 @@ class SolanaSignClient(
         return sign(input, chainData.gasFee())
     }
 
-    override suspend fun sign(
+    override suspend fun signSwap(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -147,7 +147,7 @@ class SolanaSignClient(
         return listOf(output.encoded.toByteArray())
     }
 
-    override suspend fun sign(
+    override suspend fun signDelegate(
         params: ConfirmParams.Stake.DelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -166,7 +166,7 @@ class SolanaSignClient(
         return sign(input = signInput, fee = chainData.gasFee())
     }
 
-    override suspend fun sign(
+    override suspend fun signUndelegate(
         params: ConfirmParams.Stake.UndelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -184,7 +184,7 @@ class SolanaSignClient(
         return sign(input = signInput, fee = chainData.gasFee())
     }
 
-    override suspend fun sign(
+    override suspend fun signWithdraw(
         params: ConfirmParams.Stake.WithdrawParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,

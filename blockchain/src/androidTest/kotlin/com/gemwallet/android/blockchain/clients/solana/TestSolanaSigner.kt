@@ -65,7 +65,7 @@ class TestSolanaSigner {
             senderTokenAddress = "",
             tokenProgram = SolanaTokenProgramId.Token
         )
-        val result = runBlocking { signer.sign(params, chainData, BigInteger.ZERO, TxSpeed.Normal, privateKey) }
+        val result = runBlocking { signer.signNativeTransfer(params, chainData, BigInteger.ZERO, TxSpeed.Normal, privateKey) }
         assertEquals("0x4159436b734f696556323339774436566c6841614a41464844544a647a632f61577a3331" +
                 "6f693676686e783978676d4c544a5372643165504634454e73734a704867667575424e6e55556b3" +
                 "159304a52784e504a59513442414149455365626b44466a2b415242396b4b486b394f4167745057" +
@@ -114,7 +114,7 @@ class TestSolanaSigner {
             senderTokenAddress = "DVWPV7brSbPDkA7a3qdn6UJsVc3J3DyhQhjNaZeZqwzo",
             tokenProgram = SolanaTokenProgramId.Token
         )
-        val result = runBlocking { signer.sign(params, chainData, BigInteger.ZERO, TxSpeed.Normal, privateKey) }
+        val result = runBlocking { signer.signTokenTransfer(params, chainData, BigInteger.ZERO, TxSpeed.Normal, privateKey) }
         assertEquals("0x416238786c7268464374766e72677357477874416f6b6852423654737057545862643066" +
                 "6e31557835466c736b734b317838714d6668326e313662454d384d6b6a4a4d467450664b7046684" +
                 "25a376576716557713051514241414d465365626b44466a2b415242396b4b486b394f4167745057" +
@@ -164,7 +164,7 @@ class TestSolanaSigner {
             senderTokenAddress = "87vTugUvkkepa84mBRfENnvkPQRj5EZSkiG8XyFAhbQQ",
             tokenProgram = SolanaTokenProgramId.Token2022
         )
-        val result = runBlocking { signer.sign(params, chainData, BigInteger.ZERO, TxSpeed.Normal, privateKey) }
+        val result = runBlocking { signer.signTokenTransfer(params, chainData, BigInteger.ZERO, TxSpeed.Normal, privateKey) }
         assertEquals("0x4152744d346e59365642416d427563754c675a7759623165304764516d6b782b6251764f" +
                 "6241657558466e6a4b5a4744507930653972305249444f384757705056384439453345754b33416" +
                 "e492b354b6b6d72485667414241414d465365626b44466a2b415242396b4b486b394f4167745057" +

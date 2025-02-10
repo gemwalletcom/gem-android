@@ -34,7 +34,7 @@ class TestAptosSigner {
         val signer = AptosSignClient(Chain.Aptos)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
                     AssetId(Chain.Aptos),
                     Account(Chain.Aptos, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
@@ -81,7 +81,7 @@ class TestAptosSigner {
         val signer = AptosSignClient(Chain.Aptos)
 
         val sign = runBlocking {
-            signer.sign(
+            signer.signTokenTransfer(
                 params = ConfirmParams.TransferParams.Token(
                     AssetId(Chain.Aptos, "0x53a30a6e5936c0a4c5140daed34de39d17ca7fcae08f947c02e979cef98a3719::coin::LSD"),
                     Account(Chain.Aptos, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),

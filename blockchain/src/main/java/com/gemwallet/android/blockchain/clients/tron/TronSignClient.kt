@@ -21,7 +21,7 @@ class TronSignClient(
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
-    override suspend fun sign(
+    override suspend fun signNativeTransfer(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -37,7 +37,7 @@ class TronSignClient(
         return signTransfer(chainData, contract, privateKey)
     }
 
-    override suspend fun sign(
+    override suspend fun signTokenTransfer(
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -84,7 +84,7 @@ class TronSignClient(
         return listOf(signingOutput.json.toByteArray())
     }
 
-    override suspend fun sign(
+    override suspend fun signDelegate(
         params: ConfirmParams.Stake.DelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -104,7 +104,7 @@ class TronSignClient(
         )
     }
 
-    override suspend fun sign(
+    override suspend fun signUndelegate(
         params: ConfirmParams.Stake.UndelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -127,7 +127,7 @@ class TronSignClient(
         }
     }
 
-    override suspend fun sign(
+    override suspend fun signRedelegate(
         params: ConfirmParams.Stake.RedelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -139,7 +139,7 @@ class TronSignClient(
         return listOf(sign(chainData, voteContract, privateKey))
     }
 
-    override suspend fun sign(
+    override suspend fun signRewards(
         params: ConfirmParams.Stake.RewardsParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -155,7 +155,7 @@ class TronSignClient(
         )
     }
 
-    override suspend fun sign(
+    override suspend fun signWithdraw(
         params: ConfirmParams.Stake.WithdrawParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
