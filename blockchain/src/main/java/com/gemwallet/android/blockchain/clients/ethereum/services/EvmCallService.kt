@@ -13,6 +13,9 @@ interface EvmCallService {
 
     @POST("/")
     suspend fun callNumber(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<EvmNumber?>>
+
+    @POST("/")
+    suspend fun callBatch(@Body request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<String>>>
 }
 
 suspend fun EvmCallService.callString(contract: String, hexData: String): String? {
@@ -28,4 +31,18 @@ suspend fun EvmCallService.callString(contract: String, hexData: String): String
         )
     )
     return callString(request).getOrNull()?.result
+}
+
+suspend fun EvmCallService.batch(params: List<Any>): List<String> {
+    val request = params.map {
+        JSONRpcRequest.create(
+            method = EvmMethod.Call,
+            params = listOf(
+                it,
+                "latest"
+            )
+        )
+    }
+    val result =  callBatch(request)
+    return result.getOrNull()?.map { it.result } ?: emptyList()
 }
