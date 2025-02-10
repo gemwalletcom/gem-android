@@ -33,8 +33,8 @@ allprojects {
                 }
             }
         }
-        val gprUser = properties["gpr.user"] as? String ?: System.getenv("GPR_USER")
-        val gprKey = properties["gpr.key"] as? String ?: System.getenv("GPR_KEY")
+        val gprUsername = properties["gpr.username"] as? String ?: System.getenv("GPR_USERNAME")
+        val gprToken = properties["gpr.token"] as? String ?: System.getenv("GPR_TOKEN")
 
         google()
         mavenCentral()
@@ -43,15 +43,15 @@ allprojects {
         maven {
             url = uri("https://maven.pkg.github.com/trustwallet/wallet-core")
             credentials {
-                username = gprUser
-                password = gprKey
+                username = gprUsername
+                password = gprToken
             }
         }
         maven {
             url = uri("https://maven.pkg.github.com/gemwalletcom/core")
             credentials {
-                username = gprUser
-                password = gprKey
+                username = gprUsername
+                password = gprToken
             }
         }
     }
