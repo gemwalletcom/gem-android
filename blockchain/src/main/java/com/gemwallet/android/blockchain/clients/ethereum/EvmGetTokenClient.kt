@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.ethereum
 import com.gemwallet.android.blockchain.clients.GetTokenClient
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
 import com.gemwallet.android.blockchain.clients.ethereum.services.batch
+import com.gemwallet.android.blockchain.clients.ethereum.services.createCallRequest
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.has0xPrefix
 import com.gemwallet.android.math.hexToBigInteger
@@ -23,25 +24,16 @@ class EvmGetTokenClient(
 ) : GetTokenClient {
     override suspend fun getTokenData(tokenId: String): Asset? = withContext(Dispatchers.IO) {
         val params = listOf(
-            mapOf(
-                "to" to tokenId,
-                "data" to EthereumAbi.encode(EthereumAbiFunction("decimals")).toHexString(),
-            ),
-            mapOf(
-                "to" to tokenId,
-                "data" to EthereumAbi.encode(EthereumAbiFunction("symbol")).toHexString(),
-            ),
-            mapOf(
-                "to" to tokenId,
-                "data" to EthereumAbi.encode(EthereumAbiFunction("name")).toHexString()
-            ),
+            callService.createCallRequest(tokenId, EthereumAbi.encode(EthereumAbiFunction("name")).toHexString(), "latest"),
+            callService.createCallRequest(tokenId, EthereumAbi.encode(EthereumAbiFunction("symbol")).toHexString(), "latest"),
+            callService.createCallRequest(tokenId, EthereumAbi.encode(EthereumAbiFunction("decimals")).toHexString(), "latest"),
         )
         val result = callService.batch(params)
         Asset(
             id = AssetId(chain, tokenId),
-            name = decodeAbi(result[2]) ?: return@withContext null,
+            name = decodeAbi(result[0]) ?: return@withContext null,
             symbol = decodeAbi(result[1]) ?: return@withContext null,
-            decimals = result[0].hexToBigInteger()?.toInt() ?: return@withContext null,
+            decimals = result[2].hexToBigInteger()?.toInt() ?: return@withContext null,
             type = AssetType.ERC20,
         )
     }

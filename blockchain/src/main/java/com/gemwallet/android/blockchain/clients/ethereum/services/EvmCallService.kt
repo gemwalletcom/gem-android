@@ -33,16 +33,21 @@ suspend fun EvmCallService.callString(contract: String, hexData: String): String
     return callString(request).getOrNull()?.result
 }
 
-suspend fun EvmCallService.batch(params: List<Any>): List<String> {
-    val request = params.map {
-        JSONRpcRequest.create(
-            method = EvmMethod.Call,
-            params = listOf(
-                it,
-                "latest"
-            )
-        )
-    }
-    val result =  callBatch(request)
+suspend fun EvmCallService.batch(requests: List<JSONRpcRequest<List<Any>>>): List<String> {
+    val result =  callBatch(requests)
     return result.getOrNull()?.map { it.result } ?: emptyList()
+}
+
+fun EvmCallService.createCallRequest(to: String, data: String, tag: String? = null): JSONRpcRequest<List<Any>> {
+    val params = mapOf(
+        "to" to to,
+        "data" to data
+    )
+    return JSONRpcRequest.create(
+        EvmMethod.Call,
+        listOf(
+            params,
+            tag
+        ).filterNotNull()
+    )
 }

@@ -2,7 +2,9 @@ package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.StakeClient
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
+import com.gemwallet.android.blockchain.clients.ethereum.services.batch
 import com.gemwallet.android.blockchain.clients.ethereum.services.callString
+import com.gemwallet.android.blockchain.clients.ethereum.services.createCallRequest
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.model.AssetBalance
@@ -11,7 +13,6 @@ import com.wallet.core.primitives.DelegationBase
 import com.wallet.core.primitives.DelegationState
 import com.wallet.core.primitives.DelegationValidator
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import wallet.core.jni.EthereumAbiValue
 import java.math.BigInteger
@@ -30,22 +31,26 @@ class SmartchainStakeClient(
     }
 
     override suspend fun getStakeDelegations(chain: Chain, address: String, apr: Double): List<DelegationBase> = withContext(Dispatchers.IO) {
-        val limit = getMaxElectedValidators()
-        val getDelegationCall = async { getDelegations(address, limit) }
-        val getUndelegationsCall = async { getUndelegations(address, limit) }
-        val delegations = getDelegationCall.await()
-        val undelegations = getUndelegationsCall.await()
+        val limit = 128
+        val delegationDataRequest = StakeHub.encodeDelegationsCall(address, limit)
+        val undelegationDataRequest = StakeHub.encodeUndelegationsCall(address, limit)
+        val requests = listOf(
+            callService.createCallRequest(StakeHub.reader, delegationDataRequest, "latest"),
+            callService.createCallRequest(StakeHub.reader, undelegationDataRequest, "latest"),
+        )
+        val result = callService.batch(requests)
+        val delegations = StakeHub.decodeDelegationsResult(result[0])
+        val undelegations = StakeHub.decodeUnelegationsResult(result[1])
+
         delegations + undelegations
     }
 
     suspend fun getBalance(address: String): AssetBalance? = withContext(Dispatchers.IO) {
-        val limit = getMaxElectedValidators()
-        val getDelegationCall = async { getDelegations(address, limit) }
-        val getUndelegationsCall = async { getUndelegations(address, limit) }
-        val delegations = getDelegationCall.await()
-        val undelegations = getUndelegationsCall.await()
+        val delegations = getStakeDelegations(chain, address, 0.0)
+
         val staked = delegations.filter { it.state == DelegationState.Active }.sumBalances()
-        val pending = undelegations.filter {
+
+        val pending = delegations.filter {
             it.state == DelegationState.Undelegating || it.state == DelegationState.AwaitingWithdrawal
         }.sumBalances()
 
@@ -57,18 +62,6 @@ class SmartchainStakeClient(
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
-
-    private suspend fun getDelegations(address: String, limit: Int): List<DelegationBase> {
-        val dataRequest = StakeHub.encodeDelegationsCall(address, limit)
-        val data = callService.callString(StakeHub.reader, dataRequest) ?: return emptyList()
-        return StakeHub.decodeDelegationsResult(data)
-    }
-
-    private suspend fun getUndelegations(address: String, limit: Int): List<DelegationBase> {
-        val data = callService.callString(StakeHub.reader, StakeHub.encodeUndelegationsCall(address, limit))
-            ?: return emptyList()
-        return StakeHub.decodeUnelegationsResult(data)
-    }
 
     private suspend fun getMaxElectedValidators(): Int {
         val result = callService.callString(StakeHub.address, StakeHub.encodeMaxElectedValidators())
