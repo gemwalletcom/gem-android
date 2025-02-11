@@ -7,6 +7,7 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FiatProvider
 import uniffi.gemstone.SwapProvider
+import uniffi.gemstone.swapProviderNameToString
 
 fun Asset.getIconUrl(): String = id.getIconUrl()
 
@@ -38,4 +39,8 @@ fun SwapProvider.getSwapProviderIcon(): String {
         SwapProvider.ACROSS -> "across"
     }
     return "file:///android_asset/swap/${iconName.lowercase()}.svg"
+}
+
+fun SwapProvider.getSwapProviderName(): String {
+    return swapProviderNameToString(this)
 }

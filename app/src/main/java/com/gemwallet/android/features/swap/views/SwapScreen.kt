@@ -7,7 +7,6 @@ import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -51,7 +50,6 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.ListItem
-import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.TransactionItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
@@ -61,7 +59,9 @@ import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIcon20
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getSwapProviderIcon
+import com.gemwallet.android.ui.components.image.getSwapProviderName
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
+import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Asset
@@ -83,7 +83,6 @@ fun SwapScreen(
     val toEquivalent by viewModel.toEquivalent.collectAsStateWithLifecycle()
     val swapState by viewModel.swapScreenState.collectAsStateWithLifecycle()
     val approveTx by viewModel.approveTx.collectAsStateWithLifecycle()
-    val selectedProvider by viewModel.selectedProvider.collectAsStateWithLifecycle()
     val currentProvider by viewModel.currentProvider.collectAsStateWithLifecycle()
     val providers by viewModel.providers.collectAsStateWithLifecycle()
 
@@ -110,7 +109,6 @@ fun SwapScreen(
     if (pair != null) {
         Scene(
             title = stringResource(id = R.string.wallet_swap),
-            padding = PaddingValues(padding16),
             mainAction = {
                 SwapAction(swapState, pair) {
                     viewModel.swap(
@@ -167,7 +165,7 @@ fun SwapScreen(
                         AsyncImage(provider.getSwapProviderIcon())
                     },
                     title = {
-                        ListItemTitleText(provider.name)
+                        ListItemTitleText(provider.getSwapProviderName())
                     },
                     trailing = if (providers.size > 1) {
                         { Icon(Icons.Default.ChevronRight, "") }
@@ -291,8 +289,8 @@ private fun ProviderList(
         Table(
             items = providers.map {
                 CellEntity(
-                    icon = "file:///android_asset/fiat/${it.name.lowercase()}.png",
-                    label = it.name,
+                    icon = it.getSwapProviderIcon(),
+                    label = it.getSwapProviderName(),
                     data = ""
                 ) {
                     onProviderSelect(it)
