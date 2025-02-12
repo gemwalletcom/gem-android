@@ -37,6 +37,16 @@ class TestEvmBalance {
             return Result.success(JSONRpcResponse(null))
         }
 
+        override suspend fun callBatch(request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<String>>> {
+            return Result.success(
+                listOf(
+                    JSONRpcResponse(
+                        result = "0x00000000000000000000000000000000000000000000000000000000001fdcf1",
+                    )
+                )
+            )
+        }
+
     }
     class BalanceService : EvmBalancesService {
         var nativeBalanceParam: String = ""
@@ -135,6 +145,19 @@ class TestEvmBalance {
             override suspend fun callNumber(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<EvmRpcClient.EvmNumber?>> {
                 TODO("Not yet implemented")
             }
+
+            override suspend fun callBatch(request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<String>>> {
+                return Result.success(
+                    listOf(
+                        JSONRpcResponse(
+                            result = "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000001000000000000000000000000ee7e9ccfb529f2c1cc02c0aea8aced7ec7e98b5e0000000000000000000000009941bce2601fc93478df9f5f6cc83f4ffc1d71d80000000000000000000000000000000000000000000000000deacafbb23d1ee90000000000000000000000000000000000000000000000000dc3088951e56b15",
+                        ),
+                        JSONRpcResponse(
+                            result = "0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000000",
+                        ),
+                    )
+                )
+            }
         }
         val balanceClient = EvmBalanceClient(
             Chain.SmartChain,
@@ -172,6 +195,19 @@ class TestEvmBalance {
                     else -> "0x"
                 }
                 return Result.success(JSONRpcResponse(EvmRpcClient.EvmNumber(BigInteger(result.removePrefix("0x"), 16))))
+            }
+
+            override suspend fun callBatch(request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<String>>> {
+                return Result.success(
+                    listOf(
+                        JSONRpcResponse(
+                            result = "0x00000000000000000000000000000000000000000000000000000002eedef652",
+                        ),
+                        JSONRpcResponse(
+                            result = "0x000000000000000000000000000000000000000000000000006a94d74f430000",
+                        ),
+                    )
+                )
             }
         }
         val balanceClient = EvmBalanceClient(Chain.SmartChain, callService, balanceService, SmartchainStakeClient(Chain.SmartChain, CallService()))

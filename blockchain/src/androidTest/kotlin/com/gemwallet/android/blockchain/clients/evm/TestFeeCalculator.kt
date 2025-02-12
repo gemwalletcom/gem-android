@@ -64,6 +64,10 @@ class TestFeeCalculator {
         override suspend fun callNumber(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<EvmRpcClient.EvmNumber?>> {
             return Result.success(JSONRpcResponse(EvmRpcClient.EvmNumber(BigInteger.ONE)))
         }
+
+        override suspend fun callBatch(request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<String>>> {
+            TODO("Not yet implemented")
+        }
     }
 
     @Test
@@ -87,6 +91,10 @@ class TestFeeCalculator {
             }
 
             override suspend fun callNumber(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<EvmRpcClient.EvmNumber?>> {
+                throw Exception("Call number fail")
+            }
+
+            override suspend fun callBatch(request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<String>>> {
                 throw Exception("Call number fail")
             }
         }

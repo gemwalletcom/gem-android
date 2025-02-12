@@ -3,9 +3,12 @@ package com.gemwallet.android.blockchain.clients.ethereum
 import com.gemwallet.android.blockchain.clients.BalanceClient
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmBalancesService
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
+import com.gemwallet.android.blockchain.clients.ethereum.services.batch
+import com.gemwallet.android.blockchain.clients.ethereum.services.createCallRequest
 import com.gemwallet.android.blockchain.clients.ethereum.services.getBalance
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
@@ -35,15 +38,18 @@ class EvmBalanceClient(
             return emptyList()
         }
         val result = mutableListOf<AssetBalance>()
-        for (token in tokens) {
-            val data = "0x70a08231000000000000000000000000${address.removePrefix("0x")}"
-            val contract = token.id.tokenId ?: continue
-            val params = mapOf(
-                "to" to contract,
-                "data" to data,
+        val tokens = tokens.filter { it.id.tokenId != null }
+        val requests = tokens.map { token ->
+            callService.createCallRequest(
+                to = token.id.tokenId!!,
+                data = "0x70a08231000000000000000000000000${address.removePrefix("0x")}",
+                tag = "latest",
             )
-            val balance = callService.callNumber(JSONRpcRequest.create(EvmMethod.Call, listOf(params, "latest")))
-                .getOrNull()?.result?.value ?: continue
+        }
+        val response = callService.batch(requests)
+        response.mapIndexedNotNull { index, data ->
+            val balance = data.hexToBigInteger() ?: return@mapIndexedNotNull null
+            val token = tokens[index]
             result.add(AssetBalance.create(token, available = balance.toString()))
         }
         return result
