@@ -68,8 +68,8 @@ If you want to contribute, you can use our [developers telegram](https://t.me/ge
 4. Generate a GitHub personal [token](https://github.com/settings/tokens) with `read:packages` permission and add it to your `local.properties` file:
 
 ```properties
-gpr.user=<your-github-username>
-gpr.key=<your-github-personal-token>
+gpr.username=<your-github-username>
+gpr.token=<your-github-personal-token>
 ```
 
 Optionally, you can generate models and kotlin bindgen by running `just generate`, Gem Android consumes wallet core library as a local module, if you need to update it, ping us or create an issue on [here](https://github.com/gemwalletcom/wallet-core-release).
