@@ -7,7 +7,6 @@ data class JSONRpcRequest<T>(
     val jsonrpc: String = "2.0",
 ) {
     companion object {
-
         fun <T>create(method: JSONRpcMethod, params: T): JSONRpcRequest<T> = JSONRpcRequest(
             method = method.value(),
             params = params

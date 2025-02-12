@@ -25,4 +25,8 @@ internal class TestSolanaAccountsService(
             )
         )
     }
+
+    override fun batch(request: List<JSONRpcRequest<List<Any>>>): Result<JSONRpcResponse<String>> {
+
+    }
 }
