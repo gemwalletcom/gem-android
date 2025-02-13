@@ -11,9 +11,6 @@ concurrency:
 
 env:
   UNIT_TESTS: "true"
-  CARGO_INCREMENTAL: 0
-  SCCACHE_GHA_ENABLED: "true"
-  RUSTC_WRAPPER: "sccache"
 
 jobs:
   unit_test:
@@ -49,24 +46,11 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Rust cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: |
-            core/gemstone
-
-      - name: Run sccache-cache
-        uses: mozilla-actions/sccache-action@v0.0.3
-
       - name: Install just
         run: cargo install just
 
       - name: Setup NDK
         run: just install-ndk
-
-      - name: Install dependencies
-        run: |
-          just install-typeshare && just install-toolchains
 
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v3
