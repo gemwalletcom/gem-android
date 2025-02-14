@@ -10,6 +10,7 @@ import com.gemwallet.android.blockchain.clients.ethereum.services.EvmFeeService
 import com.gemwallet.android.blockchain.clients.ethereum.services.getNonce
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.ext.getNetworkId
+import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
@@ -54,8 +55,50 @@ class EvmSignerPreloader(
             params = params,
         )
 
-    override suspend fun preloadSwap(params: ConfirmParams.SwapParams): SignerParams =
-        preload(AssetId(params.assetId.chain), params.from, params.to, params.value.toBigInteger(), params.swapData, params)
+    override suspend fun preloadSwap(params: ConfirmParams.SwapParams): SignerParams {
+        val approval = params.approval
+        val approvalData = if (approval != null) {
+            preloadApproval(
+                params = ConfirmParams.Builder(params.assetId, params.from).approval(
+                    approvalData = encodeApprove(approval.spender).toHexString(),
+                    provider = "",
+                    contract = approval.token,
+                ),
+            )
+        } else {
+            null
+        }
+
+        val data = if (approvalData == null) {
+            preload(
+                assetId = AssetId(params.assetId.chain),
+                from = params.from,
+                recipient = params.to,
+                outputAmount = params.value.toBigInteger(),
+                payload = params.swapData,
+                params = params
+            )
+        } else {
+            // Add approval fee
+            val chainData = (approvalData.chainData as EvmChainData)
+            val fees = chainData.fees.map {
+                GasFee(
+                    feeAssetId = it.feeAssetId,
+                    speed = it.speed,
+                    limit = it.limit,
+                    maxGasPrice = it.maxGasPrice,
+                    minerFee = it.minerFee,
+                    amount = it.limit.multiply(it.maxGasPrice).add(params.gasLimit!!.multiply(it.maxGasPrice))
+                )
+            }
+            SignerParams(
+                input = params,
+                chainData = chainData.copy(fees = fees),
+            )
+        }
+        return data
+    }
+
 
     override suspend fun preloadApproval(params: ConfirmParams.TokenApprovalParams): SignerParams =
         preload(params.assetId, params.from, params.contract, BigInteger.ZERO, params.data, params)

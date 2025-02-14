@@ -6,7 +6,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.blockchain.clients.ethereum.encodeApprove
 import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -14,7 +13,6 @@ import com.gemwallet.android.data.repositoreis.swap.SwapRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.swap.models.SwapError
 import com.gemwallet.android.features.swap.models.SwapItemModel
 import com.gemwallet.android.features.swap.models.SwapItemType
@@ -23,14 +21,12 @@ import com.gemwallet.android.features.swap.models.SwapPairUIModel
 import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.features.swap.navigation.pairArg
 import com.gemwallet.android.math.numberParse
-import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.TransactionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -52,7 +48,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import uniffi.gemstone.ApprovalType
 import uniffi.gemstone.SwapProvider
 import uniffi.gemstone.SwapperException
 import uniffi.gemstone.swapProviderNameToString
@@ -240,11 +235,12 @@ class SwapViewModel @Inject constructor(
         val assets = it.second ?: return@mapLatest null
         val amount = assets.to?.asset?.format(Crypto(quote.toValue), 8, showSymbol = false) ?: ""
         withContext(Dispatchers.Main) { toValue.edit { replace(0, length, amount) } }
-        val requestApprove = quote.approval is ApprovalType.Approve
-        swapScreenState.update {
-            if (it == SwapState.Approving) return@update it
-            if (requestApprove) SwapState.RequestApprove else SwapState.Ready
-        }
+//        val requestApprove = quote.approval is ApprovalType.Approve
+        swapScreenState.update { SwapState.Ready }
+//        swapScreenState.update {
+//            if (it == SwapState.Approving) return@update it
+//            if (requestApprove) SwapState.RequestApprove else SwapState.Ready
+//        }
         quote
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -333,38 +329,21 @@ class SwapViewModel @Inject constructor(
         }
         val wallet = sessionRepository.getSession()?.wallet ?: return@launch
         val swapData = swapRepository.getQuoteData(quote, wallet)
-        val approvalData = quote.approval
-        when (approvalData) {
-            is ApprovalType.Approve -> {
-                swapScreenState.update { SwapState.RequestApprove }
-                onConfirm(
-                    ConfirmParams.TokenApprovalParams(
-                        assetId = if (from.asset.id.type() == AssetSubtype.TOKEN) from.asset.id else to.asset.id,
-                        from = from.owner,
-                        data = encodeApprove(approvalData.v1.spender).toHexString(),
-                        provider = swapProviderNameToString(quote.data.provider),
-                        contract = approvalData.v1.token,
-                    )
-                )
-            }
-            is ApprovalType.Permit2,
-            ApprovalType.None -> {
-                swapScreenState.update { SwapState.Ready }
-                onConfirm(
-                    ConfirmParams.SwapParams(
-                        from = from.owner,
-                        fromAssetId = from.asset.id,
-                        toAssetId = to.asset.id,
-                        fromAmount = Crypto(fromAmount, from.asset.decimals).atomicValue,
-                        toAmount = BigInteger(quote.toValue),
-                        swapData = swapData.data,
-                        provider = swapProviderNameToString(quote.data.provider),
-                        to = swapData.to,
-                        value = swapData.value,
-                    )
-                )
-            }
-        }
+        onConfirm(
+            ConfirmParams.SwapParams(
+                from = from.owner,
+                fromAssetId = from.asset.id,
+                toAssetId = to.asset.id,
+                fromAmount = Crypto(fromAmount, from.asset.decimals).atomicValue,
+                toAmount = BigInteger(quote.toValue),
+                swapData = swapData.data,
+                provider = swapProviderNameToString(quote.data.provider),
+                to = swapData.to,
+                value = swapData.value,
+                approval = swapData.approval,
+                gasLimit = swapData.gasLimit?.toBigIntegerOrNull(),
+            )
+        )
     }
 
     fun changePair(swapItemType: SwapItemType) {

@@ -36,7 +36,7 @@ class EvmFeeCalculator(
     private val nativeGasLimit = BigInteger.valueOf(21_000L)
 
     suspend fun calculate(
-        params: ConfirmParams,
+        params: ConfirmParams, // TODO: Outpack
         assetId: AssetId,
         recipient: String,
         outputAmount: BigInteger,
@@ -44,8 +44,8 @@ class EvmFeeCalculator(
         chainId: String,
         nonce: BigInteger,
     ): List<GasFee> = withContext(Dispatchers.IO) {
-        val getGasLimit = async { getGasLimit(assetId, params.from.address, recipient, outputAmount, payload) }
-        val getBasePriorityFees = async { getBasePriorityFee(params.assetId.chain, feeService) }
+        val getGasLimit = async { getGasLimit(assetId, params.from.address, recipient, outputAmount, payload) } // TODO: params.from.address plain
+        val getBasePriorityFees = async { getBasePriorityFee(params.assetId.chain, feeService) }    // TODO: chain is plain
         val gasLimit = getGasLimit.await()
         val (baseFee, priorityFees) = getBasePriorityFees.await()
 
@@ -74,14 +74,14 @@ class EvmFeeCalculator(
                 is ConfirmParams.Stake,
                 is ConfirmParams.SwapParams,
                 is ConfirmParams.TokenApprovalParams -> priorityFee
-                is ConfirmParams.TransferParams -> if (params.assetId.type() == AssetSubtype.NATIVE && params.isMax()) {
+                is ConfirmParams.TransferParams -> if (params.assetId.type() == AssetSubtype.NATIVE && params.isMax()) { // TODO: params.assetId.type - plain, replace to type
                     maxGasPrice
                 } else {
                     priorityFee
                 }
             }
             GasFee(
-                feeAssetId = AssetId(params.assetId.chain),
+                feeAssetId = AssetId(params.assetId.chain), // TODO: params.assetId.chain
                 speed = when (index) {
                     0 -> TxSpeed.Slow
                     1 -> TxSpeed.Normal
@@ -111,7 +111,11 @@ class EvmFeeCalculator(
             )
         }
 
-        val gasLimit = feeService.getGasLimit(from, to, amount, data)
+        val gasLimit = try {
+            feeService.getGasLimit(from, to, amount, data)
+        } catch (err: Throwable) {
+            throw err
+        }
         return if (gasLimit == nativeGasLimit) {
             gasLimit
         } else {
@@ -135,8 +139,6 @@ class EvmFeeCalculator(
         val baseFee = feeHistory.baseFeePerGas.mapNotNull { it.hexToBigInteger() }.maxOrNull()
             ?: throw Exception("Unable to calculate base fee")
 
-//        val defaultPriorityFee = BigInteger(Config().getEvmChainConfig(chain.string).minPriorityFee.toString())
-//        val priorityFee = if (reward < defaultPriorityFee) defaultPriorityFee else reward
         val priorityFees = calculatePriorityFees(feeHistory.reward, rewardsPercentiles, minPriorityFee)
         return Pair(baseFee, priorityFees)
     }

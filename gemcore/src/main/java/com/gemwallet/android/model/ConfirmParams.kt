@@ -13,6 +13,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.TransactionType
+import uniffi.gemstone.ApprovalData
 import java.math.BigInteger
 import java.util.Base64
 
@@ -48,8 +49,8 @@ sealed class ConfirmParams(
             }
         }
 
-        fun approval(approvalData: String, provider: String): TokenApprovalParams {
-            return TokenApprovalParams(assetId, from, approvalData, provider, contract = "")
+        fun approval(approvalData: String, provider: String, contract: String = ""): TokenApprovalParams {
+            return TokenApprovalParams(assetId, from, approvalData, provider, contract)
         }
 
         fun delegate(validatorId: String) = Stake.DelegateParams(assetId, from, amount, validatorId)
@@ -147,6 +148,8 @@ sealed class ConfirmParams(
         val provider: String,
         val to: String,
         val value: String,
+        val approval: ApprovalData? = null,
+        val gasLimit: BigInteger? = null,
     ) : ConfirmParams(fromAssetId, from, fromAmount) {
 
         override fun destination(): DestinationAddress = DestinationAddress(to)

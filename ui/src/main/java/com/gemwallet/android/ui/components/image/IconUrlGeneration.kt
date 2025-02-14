@@ -30,6 +30,7 @@ fun Int.getDrawableUri() = "android.resource://com.gemwallet.android/drawable/$t
 
 fun SwapProvider.getSwapProviderIcon(): String {
     val iconName = when (this) {
+        SwapProvider.UNISWAP_V4,
         SwapProvider.UNISWAP_V3 -> "uniswap"
         SwapProvider.PANCAKE_SWAP_V3,
         SwapProvider.PANCAKE_SWAP_APTOS_V2 -> "pancakeswap"

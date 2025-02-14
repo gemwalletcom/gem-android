@@ -4,6 +4,7 @@ import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.ext.eip1559Support
 import com.gemwallet.android.math.decodeHex
+import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
@@ -112,20 +113,54 @@ class EvmSignClient(
         txSpeed: TxSpeed,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val meta = chainData as EvmSignerPreloader.EvmChainData
+        val approvalData = params.approval
+        val chainData = chainData as EvmSignerPreloader.EvmChainData
         val amount = BigInteger(params.value)
-        val input = buildSignInput(
+
+        val approvalSign = if (approvalData != null) {
+            signTokenApproval(
+                params = ConfirmParams.Builder(params.assetId, params.from)
+                    .approval(
+                        approvalData = encodeApprove(approvalData.spender).toHexString(),
+                        provider = "",
+                        contract = approvalData.token,
+                    ),
+                chainData = chainData,
+                finalAmount = BigInteger.ZERO,
+                txSpeed = txSpeed,
+                privateKey = privateKey
+            )
+        } else emptyList()
+
+        val fee = chainData.gasFee(txSpeed).let {
+            if (approvalData == null) {
+                it
+            } else {
+                GasFee(
+                    feeAssetId = it.feeAssetId,
+                    speed = it.speed,
+                    limit = params.gasLimit!!,
+                    maxGasPrice = it.maxGasPrice,
+                    minerFee = it.minerFee,
+                    amount = params.gasLimit!!.multiply(it.maxGasPrice)
+                )
+            }
+        }
+
+        val swapInput = buildSignInput(
             assetId = AssetId(params.assetId.chain),
             amount = amount,
             tokenAmount = finalAmount,
-            fee = meta.gasFee(txSpeed),
-            chainId = meta.chainId.toBigInteger(),
-            nonce = meta.nonce,
+            fee = fee,
+            chainId = chainData.chainId.toBigInteger(),
+            nonce = chainData.nonce + if (approvalSign.isEmpty()) BigInteger.ZERO else BigInteger.ONE,
             destinationAddress = params.destination().address,
             memo = params.swapData,
             privateKey = privateKey,
         )
-        return sign(input, privateKey)
+
+        val swapSign = sign(swapInput, privateKey)
+        return approvalSign + swapSign
     }
 
     override suspend fun signDelegate(

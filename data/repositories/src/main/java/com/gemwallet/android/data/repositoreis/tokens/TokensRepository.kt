@@ -60,7 +60,8 @@ class TokensRepository (
         if (query.isEmpty()) {
             return@withContext false
         }
-        val tokens = gemApiClient.search(query).getOrNull()
+        val result = gemApiClient.search(query)
+        val tokens = result.getOrNull()
         val assets = if (tokens.isNullOrEmpty()) {
             val assets = getTokenClients.map {
                 async {

@@ -8,7 +8,6 @@ import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Wallet
-import uniffi.gemstone.ApprovalType
 import uniffi.gemstone.Config
 import uniffi.gemstone.FetchQuoteData
 import uniffi.gemstone.GemSlippage
@@ -31,8 +30,7 @@ class SwapRepository(
     private val signClient: SignClientProxy,
     private val passwordStore: PasswordStore,
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
-) : GetSwapSupportedCase
-{
+) : GetSwapSupportedCase {
 
     suspend fun getQuotes(ownerAddress: String, destination: String, from: AssetId, to: AssetId, amount: String): List<SwapQuote>? {
         val swapRequest = SwapQuoteRequest(
@@ -54,24 +52,31 @@ class SwapRepository(
     }
 
     suspend fun getQuoteData(quote: SwapQuote, wallet: Wallet): SwapQuoteData {
-        val permit2Data = when (quote.approval) {
-            ApprovalType.None, is ApprovalType.Approve -> FetchQuoteData.None
-            is ApprovalType.Permit2 -> FetchQuoteData.Permit2(createPermit2(quote, wallet))
-        }
-        return gemSwapper.fetchQuoteData(quote, permit2Data)
-    }
+        val permit = gemSwapper.fetchPermit2ForQuote(quote = quote)
 
-    private suspend fun createPermit2(quote: SwapQuote, wallet: Wallet): Permit2Data {
-        val approval = quote.approval as ApprovalType.Permit2
-        val chain = quote.request.fromAsset.toAssetId()?.chain ?: throw IllegalArgumentException()
-        val permit2Single = permit2Single(approval.v1.token, approval.v1.spender, approval.v1.value, approval.v1.permit2Nonce)
-        val permit2Json = permit2DataToEip712Json(chain.string, permit2Single, (quote.approval as ApprovalType.Permit2).v1.permit2Contract)
+        if (permit == null) {
+            return gemSwapper.fetchQuoteData(quote, FetchQuoteData.None)
+        }
+
+        val permit2Single = permit2Single(
+            token = permit.token,
+            spender = permit.spender,
+            value = permit.value,
+            nonce = permit.permit2Nonce
+        )
+        val chain = quote.request.fromAsset.toAssetId()?.chain ?: throw Exception()
+        val permit2Json = permit2DataToEip712Json(
+            chain = chain.string,
+            data = permit2Single,
+            contract = permit.permit2Contract
+        )
         val signature = signClient.signTypedMessage(
             chain = chain,
             input = permit2Json.toByteArray(),
             privateKey = loadPrivateKeyOperator.invoke(wallet, chain, passwordStore.getPassword(walletId = wallet.id)),
         )
-        return Permit2Data(permit2Single, signature)
+        val permitData = Permit2Data(permit2Single, signature)
+        return gemSwapper.fetchQuoteData(quote, FetchQuoteData.Permit2(permitData))
     }
 
     private fun permit2Single(token: String, spender: String, value: String, nonce: ULong): PermitSingle {

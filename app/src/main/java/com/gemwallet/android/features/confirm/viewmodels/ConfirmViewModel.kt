@@ -270,10 +270,10 @@ class ConfirmViewModel @Inject constructor(
             val signs = sign(signerParams, session, assetInfo, txSpeed)
             for (sign in signs) {
                 val txHash = broadcastClientProxy.send(assetInfo.owner, sign, signerParams.input.getTxType())
-                addTransaction(txHash)
                 if (sign != signs.last()) {
                     delay(500)
                 } else {
+                    addTransaction(txHash)
                     val finishRoute = when (signerParams.input) {
                         is ConfirmParams.Stake -> stakeRoute
                         is ConfirmParams.SwapParams,

@@ -34,7 +34,8 @@ internal suspend fun EvmFeeService.getGasLimit(from: String, to: String, amount:
         "data" to if (data.isNullOrEmpty()) "0x" else data.append0x(),
     )
     val request = JSONRpcRequest.create(EvmMethod.GetGasLimit, listOf<Any>(transaction))
-    return getGasLimit(request).getOrNull()?.result?.value
+    val result = getGasLimit(request)
+    return result.getOrNull()?.result?.value
         ?: throw Exception("Fail calculate gas limit")
 }
 
