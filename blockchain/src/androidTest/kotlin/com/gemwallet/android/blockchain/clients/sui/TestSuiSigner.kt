@@ -70,4 +70,60 @@ class TestSuiSigner {
                 "5716257363048734c4657623944672f767732542f475153664243524d424a44476f30546d5734543" +
                 "1366b393252684d4d4a69305577782b6b57664e36386f743770513d3d", sign.first().toHexString())
     }
+
+    @Test
+    fun testSuiTokenSign() {
+        val hdWallet = HDWallet(testPhrase, "")
+        val privateKey = hdWallet.getKeyForCoin(CoinType.SUI)
+        val from = hdWallet.getAddressForCoin(CoinType.SUI)
+        val signer = SuiSignClient(Chain.Sui)
+
+        val sign = runBlocking {
+            signer.signTokenTransfer(
+                params = ConfirmParams.TransferParams.Token(
+                    AssetId(Chain.Sui, "0xe4239cd951f6c53d9c41e25270d80d31f925ad1655e5ba5b543843d4a66975ee::SUIP::SUIP"),
+                    Account(Chain.Sui, from, ""),
+                    BigInteger.valueOf(10_000),
+                    DestinationAddress(from),
+                ),
+                chainData = SuiSignerPreloader.SuiChainData(
+                    messageBytes = "AAAEAQA+cu/kqxz/pp3Qmo6eoLJz+so76TaSloB1SmEUVhWCaUYoGhwAAAAAI" +
+                            "BtZ+Y3WbB+PQtHrS7YgMDZGLzVxrT20trS/6hpbAEmBAQC01EdV46fEpnMdgod7BT2jJ" +
+                            "F0uO3bB4vxKQwUM5D5LgUYoGhwAAAAAIG7IzS1+nt9AlH/Ky7M7uvu/hnOkXUjbo13FT" +
+                            "zBuGsExAAgAypo7AAAAAAAgLuHnHoVlKe7YHnpDy6mnmWueg/fpbWoPf2pUAO0bwWgDA" +
+                            "wEAAAEBAQACAQAAAQECAAEBAwEAAAABAwAu4ecehWUp7tgeekPLqaeZa56D9+ltag9/a" +
+                            "lQA7RvBaAEtmx3oHIszqYLnHZYez3TM+HAslfPV7/PqUkB2HVFTNEYoGhwAAAAAIMLTz" +
+                            "+S2gTgAQzNMurZ1aIQOw24OKmyO5LC3mt0mBR+cLuHnHoVlKe7YHnpDy6mnmWueg/fpb" +
+                            "WoPf2pUAO0bwWjuAgAAAAAAAEB4fQEAAAAAAA==_0xd3877ebdd9f50a6d7d919d6e28" +
+                            "a26dd62ec43db0986466a35fa78c84394d3046",
+                    fee = Fee(
+                        speed = TxSpeed.Normal,
+                        feeAssetId = AssetId(Chain.Sui),
+                        amount = BigInteger.TEN
+                    ),
+                ),
+                finalAmount = BigInteger.valueOf(10_000),
+                TxSpeed.Normal,
+                privateKey.data(),
+            )
+        }
+
+        assertEquals("0x414141454151412b63752f6b71787a2f707033516d6f36656f4c4a7a2b736f37365461536" +
+                "c6f4231536d4555566857436155596f47687741414141414942745a2b59335762422b50517448725" +
+                "33759674d445a474c7a5678725432307472532f3668706241456d424151433031456456343666457" +
+                "06e4d64676f64374254326a4a4630754f3362423476784b5177554d3544354c6755596f476877414" +
+                "1414141494737497a53312b6e7439416c482f4b79374d377576752f686e4f6b58556a626f3133465" +
+                "47a4275477345784141674179706f3741414141414141674c75486e486f566c4b653759486e70447" +
+                "9366d6e6d577565672f667062576f5066327055414f3062775767444177454141414542415141434" +
+                "15141414151454341414542417745414141414241774175346563656857557037746765656b504c7" +
+                "161655a61353644392b6c746167392f616c514137527642614145746d78336f4849737a71594c6e4" +
+                "85a59657a33544d2b4841736c665056372f5071556b4232485646544e45596f47687741414141414" +
+                "94d4c547a2b533267546741517a4e4d75725a316149514f7732344f4b6d794f354c43336d74306d4" +
+                "2522b634c75486e486f566c4b653759486e704479366d6e6d577565672f667062576f50663270554" +
+                "14f306277576a75416741414141414141454234665145414141414141413d3d5f4143616e5766545" +
+                "263766530354c3030576f2b757a2f48586365656b622f6a6b303676386d4f41352f797872692f534" +
+                "f466675653430354d573968307a61556c7131676f754e6634624d4f694c6a594e726c39315267716" +
+                "64243524d424a44476f30546d57345431366b393252684d4d4a69305577782b6b57664e36386f743" +
+                "770513d3d", sign.first().toHexString())
+    }
 }

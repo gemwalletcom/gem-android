@@ -26,6 +26,17 @@ class SuiSignClient(
         return signTxDataDigest(metadata.messageBytes, privateKey)
     }
 
+    override suspend fun signTokenTransfer(
+        params: ConfirmParams.TransferParams.Token,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val metadata = chainData as SuiSignerPreloader.SuiChainData
+        return signTxDataDigest(metadata.messageBytes, privateKey)
+    }
+
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
     private fun signTxDataDigest(data: String, privateKey: ByteArray): List<ByteArray> {
