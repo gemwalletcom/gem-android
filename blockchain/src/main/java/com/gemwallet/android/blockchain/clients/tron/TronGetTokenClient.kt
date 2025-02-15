@@ -22,12 +22,14 @@ class TronGetTokenClient(
     private val rpcClient: TronRpcClient,
 ) : GetTokenClient {
     override suspend fun getTokenData(tokenId: String): Asset? = withContext(Dispatchers.IO) {
-        if (!AnyAddress.isValid(tokenId, WCChainTypeProxy().invoke(chain))) {
+        val coinType = WCChainTypeProxy().invoke(chain)
+        if (!AnyAddress.isValid(tokenId, coinType)) {
             return@withContext null
         }
-        val getName = async { getName(tokenId) }
-        val getSymbol = async { getSymbol(tokenId) }
-        val getDecimals = async { getDecimals(tokenId) }
+        val contract = AnyAddress(tokenId, coinType).description()
+        val getName = async { getName(contract) }
+        val getSymbol = async { getSymbol(contract) }
+        val getDecimals = async { getDecimals(contract) }
         val name = getName.await() ?: return@withContext null
         val symbol = getSymbol.await()  ?: return@withContext null
         val decimals = getDecimals.await()  ?: return@withContext null
@@ -65,8 +67,9 @@ class TronGetTokenClient(
     }
 
     private suspend fun smartContractCallFunction(contract: String, function: String): String? {
+        val contract = "41" + Base58.decode(contract).toHexString("").drop(2)
         val result = rpcClient.triggerSmartContract(
-            contractAddress = "41" + Base58.decode(contract).toHexString("").drop(2),
+            contractAddress = contract,
             functionSelector = function,
             parameter = null,
             feeLimit = null,
