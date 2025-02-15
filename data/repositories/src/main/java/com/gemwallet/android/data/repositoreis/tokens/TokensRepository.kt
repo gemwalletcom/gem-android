@@ -13,6 +13,7 @@ import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.Asset
+import com.wallet.core.primitives.AssetBasic
 import com.wallet.core.primitives.AssetFull
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetProperties
@@ -79,11 +80,11 @@ class TokensRepository (
             .awaitAll()
             .mapNotNull { it }
             .map { AssetFull(asset = it, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false, false)) }
-            addTokens(assets)
+            tokensDao.insert(assets.map { it.toEntity() })
             assets
         } else {
             val assets = tokens.filter { it.asset.id != null }
-            addTokens(assets)
+            tokensDao.insert(assets.map { it.toEntity() })
             assets
         }
         assets.isNotEmpty()
@@ -97,7 +98,16 @@ class TokensRepository (
         if (asset == null) {
             return search(tokenId)
         }
-        addTokens(listOf(AssetFull(asset, score = AssetScore(0), links = emptyList(), properties = AssetProperties(false, false, false, false, false))))
+        tokensDao.insert(
+            DbToken(
+                id = asset.id.toIdentifier(),
+                name = asset.name,
+                symbol = asset.symbol,
+                decimals = asset.decimals,
+                type = asset.type,
+                rank = 0,
+            )
+        )
         return true
     }
 
@@ -106,16 +116,21 @@ class TokensRepository (
             .map { AssetInfoMapper().asDomain(it).firstOrNull() }
     }
 
-    private suspend fun addTokens(tokens: List<AssetFull>) {
-        tokensDao.insert(tokens.map { token ->
-            DbToken(
-                id = token.asset.id.toIdentifier(),
-                name = token.asset.name,
-                symbol = token.asset.symbol,
-                decimals = token.asset.decimals,
-                type = token.asset.type,
-                rank = token.score.rank,
-            )
-        })
-    }
+    private fun AssetFull.toEntity() =DbToken(
+        id = asset.id.toIdentifier(),
+        name = asset.name,
+        symbol = asset.symbol,
+        decimals = asset.decimals,
+        type = asset.type,
+        rank = score.rank,
+    )
+
+    private fun AssetBasic.toEntity() =DbToken(
+        id = asset.id.toIdentifier(),
+        name = asset.name,
+        symbol = asset.symbol,
+        decimals = asset.decimals,
+        type = asset.type,
+        rank = score.rank,
+    )
 }
