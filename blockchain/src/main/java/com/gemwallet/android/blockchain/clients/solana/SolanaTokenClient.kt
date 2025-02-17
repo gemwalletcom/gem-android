@@ -1,8 +1,8 @@
 package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.GetTokenClient
-import com.gemwallet.android.blockchain.clients.solana.services.SolanaRpcClient
-import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaAccountsService
+import com.gemwallet.android.blockchain.clients.solana.services.createAccountInfoRequest
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
@@ -11,35 +11,20 @@ import wallet.core.jni.Base58
 
 class SolanaTokenClient(
     private val chain: Chain,
-    private val rpcClient: SolanaRpcClient,
+    private val accountsService: SolanaAccountsService,
 ) : GetTokenClient {
 
     override suspend fun getTokenData(tokenId: String): Asset? {
         val metadataKey = uniffi.gemstone.solanaDeriveMetadataPda(tokenId)
-        val tokenInfo = rpcClient.getAccountInfoSpl(
-            JSONRpcRequest(
-                SolanaMethod.GetAccountInfo.value,
-                params = listOf(
-                    tokenId,
-                    mapOf(
-                        "encoding" to "jsonParsed"
-                    ),
-                )
-            )
-        ).getOrNull()?.result?.value?.data?.parsed?.info ?: return null
 
-        val base64 = rpcClient.getAccountInfoMpl(
-            JSONRpcRequest(
-                SolanaMethod.GetAccountInfo.value,
-                params = listOf(
-                    metadataKey,
-                    mapOf(
-                        "encoding" to "jsonParsed"
-                    ),
-                )
-            )
-        ).getOrNull()?.result?.value?.data?.first() ?: return null
+        val tokenInfo = accountsService.getAccountInfoSpl(accountsService.createAccountInfoRequest(tokenId))
+            .getOrNull()?.result?.value?.data?.parsed?.info ?: return null
+
+        val base64 = accountsService.getAccountInfoMpl(accountsService.createAccountInfoRequest(metadataKey))
+            .getOrNull()?.result?.value?.data?.first() ?: return null
+
         val metadata = uniffi.gemstone.solanaDecodeMetadata(base64)
+
         return Asset(
             id = AssetId(chain = chain, tokenId = tokenId),
             name = metadata.name,

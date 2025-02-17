@@ -42,7 +42,7 @@ class SolanaSignerPreloader(
         val senderTokenAddressJob = async { accountsService.getTokenAccountByOwner(params.from.address, tokenId) }
         val recipientTokenAddressJob = async { accountsService.getTokenAccountByOwner(params.destination.address, tokenId) }
         val tokenProgramJob = async {
-            val owner = networkInfoService.getTokenInfo(tokenId)
+            val owner = accountsService.getTokenInfo(tokenId)
 
             if (owner != null) {
                 SolanaTokenProgramId.entries.firstOrNull {

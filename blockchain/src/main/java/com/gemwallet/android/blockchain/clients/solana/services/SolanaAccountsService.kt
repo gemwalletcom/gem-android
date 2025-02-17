@@ -5,6 +5,7 @@ import com.gemwallet.android.blockchain.clients.solana.models.SolanaArrayData
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaInfo
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaParsedData
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaParsedSplTokenInfo
+import com.gemwallet.android.blockchain.clients.solana.models.SolanaTokenOwner
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.wallet.core.blockchain.solana.models.SolanaBalanceValue
@@ -28,6 +29,9 @@ interface SolanaAccountsService {
 
     @POST("/")
     suspend fun getAccountInfoMpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaArrayData<String>>>>
+
+    @POST("/")
+    suspend fun getTokenInfo(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaTokenOwner>>>
 }
 
 suspend fun SolanaAccountsService.getTokenAccountByOwner(owner: String, tokenId: String): String? {
@@ -40,4 +44,20 @@ suspend fun SolanaAccountsService.getTokenAccountByOwner(owner: String, tokenId:
         )
     )
     return getTokenAccountByOwner(accountRequest).getOrNull()?.result?.value?.firstOrNull()?.pubkey
+}
+
+suspend fun SolanaAccountsService.getTokenInfo(tokenId: String): String? {
+    return getTokenInfo(createAccountInfoRequest(tokenId)).getOrNull()?.result?.value?.owner
+}
+
+fun SolanaAccountsService.createAccountInfoRequest(tokenId: String): JSONRpcRequest<List<Any>> {
+    return JSONRpcRequest.create(
+        SolanaMethod.GetAccountInfo,
+        params = listOf(
+            tokenId,
+            mapOf(
+                "encoding" to "jsonParsed"
+            ),
+        )
+    )
 }
