@@ -10,7 +10,7 @@ import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosRpcClient
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
 import com.gemwallet.android.blockchain.clients.near.NearRpcClient
 import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotServices
-import com.gemwallet.android.blockchain.clients.solana.SolanaRpcClient
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaRpcClient
 import com.gemwallet.android.blockchain.clients.stellar.services.StellarService
 import com.gemwallet.android.blockchain.clients.sui.SuiRpcClient
 import com.gemwallet.android.blockchain.clients.ton.TonRpcClient

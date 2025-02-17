@@ -1,6 +1,10 @@
 package com.gemwallet.android.blockchain.clients.solana.services
 
 import com.gemwallet.android.blockchain.clients.solana.SolanaMethod
+import com.gemwallet.android.blockchain.clients.solana.models.SolanaArrayData
+import com.gemwallet.android.blockchain.clients.solana.models.SolanaInfo
+import com.gemwallet.android.blockchain.clients.solana.models.SolanaParsedData
+import com.gemwallet.android.blockchain.clients.solana.models.SolanaParsedSplTokenInfo
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.wallet.core.blockchain.solana.models.SolanaBalanceValue
@@ -18,6 +22,12 @@ interface SolanaAccountsService {
 
     @POST("/")
     suspend fun batchBalances(@Body request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<SolanaValue<SolanaBalanceValue>>>>
+
+    @POST("/")
+    suspend fun getAccountInfoSpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaParsedData<SolanaInfo<SolanaParsedSplTokenInfo>>>>>
+
+    @POST("/")
+    suspend fun getAccountInfoMpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaArrayData<String>>>>
 }
 
 suspend fun SolanaAccountsService.getTokenAccountByOwner(owner: String, tokenId: String): String? {

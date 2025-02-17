@@ -1,6 +1,10 @@
 package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.NodeStatusClient
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaNodeStatusService
+import com.gemwallet.android.blockchain.clients.solana.services.genesisHash
+import com.gemwallet.android.blockchain.clients.solana.services.health
+import com.gemwallet.android.blockchain.clients.solana.services.slot
 import com.gemwallet.android.blockchain.rpc.getLatency
 import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain
@@ -10,7 +14,7 @@ import kotlinx.coroutines.withContext
 
 class SolanaNodeStatusClient(
     private val chain: Chain,
-    private val rpcClient: SolanaRpcClient,
+    private val rpcClient: SolanaNodeStatusService,
 ) : NodeStatusClient {
 
     override suspend fun getNodeStatus(chain: Chain, url: String): NodeStatus? = withContext(Dispatchers.IO) {

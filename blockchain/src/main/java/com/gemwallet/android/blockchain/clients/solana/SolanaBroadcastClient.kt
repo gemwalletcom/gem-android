@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.BroadcastClient
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaBroadcastService
 import com.gemwallet.android.blockchain.rpc.ServiceError
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.wallet.core.primitives.Account
@@ -10,7 +11,7 @@ import java.nio.charset.StandardCharsets
 
 class SolanaBroadcastClient(
     private val chain: Chain,
-    private val rpcClient: SolanaRpcClient,
+    private val rpcClient: SolanaBroadcastService,
 ) : BroadcastClient {
     override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): String {
         val encodedMessage = signedMessage.toString(StandardCharsets.UTF_8)
