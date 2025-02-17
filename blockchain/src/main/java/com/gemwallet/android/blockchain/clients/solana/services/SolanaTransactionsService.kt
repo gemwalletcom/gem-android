@@ -19,6 +19,7 @@ suspend fun SolanaTransactionsService.transaction(hash: String): Result<JSONRpcR
             hash,
             mapOf(
                 "encoding" to "jsonParsed",
+                SolanaRpcClient.commitmentKey to SolanaRpcClient.commitmentValue,
                 "maxSupportedTransactionVersion" to 0,
             ),
         )

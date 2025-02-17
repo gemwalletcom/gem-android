@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.solana
 import com.gemwallet.android.blockchain.clients.BalanceClient
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaAccountsService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaBalancesService
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaRpcClient
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaStakeService
 import com.gemwallet.android.blockchain.clients.solana.services.getBalance
 import com.gemwallet.android.blockchain.clients.solana.services.getDelegationsBalance
@@ -48,7 +49,13 @@ class SolanaBalanceClient(
             tokens[index]
         }
         val tokenBalanceRequests = accountsResponse.mapNotNull { tokenAccount ->
-            JSONRpcRequest.create(SolanaMethod.GetTokenBalance, listOf<Any>(tokenAccount.result.value.firstOrNull()?.pubkey ?: return@mapNotNull null))
+            JSONRpcRequest.create(
+                SolanaMethod.GetTokenBalance,
+                listOf<Any>(
+                    tokenAccount.result.value.firstOrNull()?.pubkey ?: return@mapNotNull null,
+                    mapOf(SolanaRpcClient.commitmentKey to SolanaRpcClient.commitmentValue)
+                )
+            )
         }
         val balancesResult = accountsService.batchBalances(tokenBalanceRequests)
         val balances = balancesResult.getOrNull() ?: return emptyList()

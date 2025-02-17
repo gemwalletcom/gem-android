@@ -143,7 +143,6 @@ object ClientsModule {
         Retrofit.Builder()
             .baseUrl("https://api.gemwallet.com")
             .client(httpClient)
-//            .addConverterFactory(converterFactory)
             .addConverterFactory(
                 Json {
                     ignoreUnknownKeys = true

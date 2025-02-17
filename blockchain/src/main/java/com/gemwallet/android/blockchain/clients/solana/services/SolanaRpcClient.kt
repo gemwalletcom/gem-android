@@ -8,4 +8,10 @@ interface SolanaRpcClient :
     SolanaNetworkInfoService,
     SolanaBroadcastService,
     SolanaTransactionsService,
-    SolanaNodeStatusService
+    SolanaNodeStatusService {
+
+    companion object {
+        val commitmentKey: String = "commitment"
+        val commitmentValue: String = "confirmed"
+    }
+}

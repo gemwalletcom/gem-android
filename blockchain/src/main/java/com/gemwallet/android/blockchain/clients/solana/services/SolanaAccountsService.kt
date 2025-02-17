@@ -40,7 +40,10 @@ suspend fun SolanaAccountsService.getTokenAccountByOwner(owner: String, tokenId:
         params = listOf(
             owner,
             mapOf("mint" to tokenId),
-            mapOf("encoding" to "jsonParsed"),
+            mapOf(
+                "encoding" to "jsonParsed",
+                SolanaRpcClient.commitmentKey to SolanaRpcClient.commitmentValue,
+            ),
         )
     )
     return getTokenAccountByOwner(accountRequest).getOrNull()?.result?.value?.firstOrNull()?.pubkey
@@ -56,7 +59,8 @@ fun SolanaAccountsService.createAccountInfoRequest(tokenId: String): JSONRpcRequ
         params = listOf(
             tokenId,
             mapOf(
-                "encoding" to "jsonParsed"
+                "encoding" to "jsonParsed",
+                SolanaRpcClient.commitmentKey to SolanaRpcClient.commitmentValue,
             ),
         )
     )

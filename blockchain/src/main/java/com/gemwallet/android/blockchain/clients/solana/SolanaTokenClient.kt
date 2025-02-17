@@ -7,6 +7,9 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import wallet.core.jni.Base58
 
 class SolanaTokenClient(
@@ -14,18 +17,24 @@ class SolanaTokenClient(
     private val accountsService: SolanaAccountsService,
 ) : GetTokenClient {
 
-    override suspend fun getTokenData(tokenId: String): Asset? {
+    override suspend fun getTokenData(tokenId: String): Asset? = withContext(Dispatchers.IO) {
         val metadataKey = uniffi.gemstone.solanaDeriveMetadataPda(tokenId)
 
-        val tokenInfo = accountsService.getAccountInfoSpl(accountsService.createAccountInfoRequest(tokenId))
-            .getOrNull()?.result?.value?.data?.parsed?.info ?: return null
+        val tokenInfoJob = async {
+            accountsService.getAccountInfoSpl(accountsService.createAccountInfoRequest(tokenId))
+                .getOrNull()?.result?.value?.data?.parsed?.info
+        }
 
-        val base64 = accountsService.getAccountInfoMpl(accountsService.createAccountInfoRequest(metadataKey))
-            .getOrNull()?.result?.value?.data?.first() ?: return null
+        val base64Job = async {
+            accountsService.getAccountInfoMpl(accountsService.createAccountInfoRequest(metadataKey))
+                .getOrNull()?.result?.value?.data?.first()
+        }
+        val tokenInfo = tokenInfoJob.await() ?: return@withContext null
+        val base64 = base64Job.await() ?: return@withContext null
 
         val metadata = uniffi.gemstone.solanaDecodeMetadata(base64)
 
-        return Asset(
+        Asset(
             id = AssetId(chain = chain, tokenId = tokenId),
             name = metadata.name,
             symbol = metadata.symbol,

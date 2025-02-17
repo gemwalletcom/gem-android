@@ -31,7 +31,7 @@ suspend fun SolanaStakeService.delegations(
             "Stake11111111111111111111111111111111111111",
             mapOf(
                 "encoding" to "jsonParsed",
-                "commitment" to "finalized",
+                SolanaRpcClient.commitmentKey to SolanaRpcClient.commitmentValue,
                 "filters" to listOf(
                     mapOf(
                         "memcmp" to mapOf(
@@ -55,7 +55,7 @@ suspend fun SolanaStakeService.validators(): List<SolanaValidator>? {
         SolanaMethod.GetValidators,
         listOf<Any>(
             mapOf(
-                "commitment" to "finalized",
+                SolanaRpcClient.commitmentKey to SolanaRpcClient.commitmentValue,
                 "keepUnstakedDelinquents" to false
             )
         )

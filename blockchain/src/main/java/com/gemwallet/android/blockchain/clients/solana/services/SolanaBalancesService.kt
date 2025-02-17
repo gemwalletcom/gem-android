@@ -12,15 +12,23 @@ import java.math.BigInteger
 
 interface SolanaBalancesService {
     @POST("/")
-    suspend fun getBalance(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SolanaBalance>>
+    suspend fun getBalance(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaBalance>>
 
     @POST("/")
     suspend fun getTokenBalance(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SolanaValue<SolanaBalanceValue>>>
 }
 
 suspend fun SolanaBalancesService.getBalance(address: String): Long? {
-    return getBalance(JSONRpcRequest.create(SolanaMethod.GetBalance, listOf(address)))
-        .getOrNull()?.result?.value
+    return getBalance(
+        JSONRpcRequest.create(
+            SolanaMethod.GetBalance,
+            listOf(
+                address,
+                mapOf(SolanaRpcClient.commitmentValue to SolanaRpcClient.commitmentValue)
+            )
+        )
+    )
+    .getOrNull()?.result?.value
 }
 
 suspend fun SolanaBalancesService.getTokenBalance(tokenAccount: String): BigInteger? {
