@@ -2,7 +2,8 @@ package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
-import com.gemwallet.android.blockchain.clients.solana.services.SolanaRpcClient
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaNetworkInfoService
+import com.gemwallet.android.blockchain.clients.solana.services.SolanaTransactionsService
 import com.gemwallet.android.blockchain.clients.solana.services.transaction
 import com.gemwallet.android.model.TransactionChages
 import com.wallet.core.primitives.Chain
@@ -10,12 +11,12 @@ import com.wallet.core.primitives.TransactionState
 
 class SolanaTransactionStatusClient(
     private val chain: Chain,
-    private val rpcClient: SolanaRpcClient,
+    private val transactionService: SolanaTransactionsService,
 ) : TransactionStatusClient {
 
     override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
 
-        return rpcClient.transaction(request.hash).mapCatching {
+        return transactionService.transaction(request.hash).mapCatching {
             if (it.error != null) return@mapCatching TransactionChages(TransactionState.Failed)
             val state = if (it.result.slot > 0) {
                 if (it.result.meta.err != null) {

@@ -126,7 +126,6 @@ object ClientsModule {
             .registerTypeAdapter(Node::class.java, NodeSerializer())
             .registerTypeAdapter(Device::class.java, DeviceSerializer())
             .registerTypeAdapter(Subscription::class.java, SubscriptionSerializer())
-//            .registerTypeAdapter(Transactions::class.java, TransactionsSerializer())
             .registerTypeAdapter(NameRecord::class.java, NameRecordDeserialize())
             .registerTypeAdapter(SwapQuote::class.java, SwapQuoteDeserializer())
             .registerTypeAdapter(Release::class.java, ReleaseDeserialize())
