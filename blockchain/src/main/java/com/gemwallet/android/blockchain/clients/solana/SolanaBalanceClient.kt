@@ -3,7 +3,6 @@ package com.gemwallet.android.blockchain.clients.solana
 import com.gemwallet.android.blockchain.clients.BalanceClient
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaAccountsService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaBalancesService
-import com.gemwallet.android.blockchain.clients.solana.services.SolanaRpcClient
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaStakeService
 import com.gemwallet.android.blockchain.clients.solana.services.getBalance
 import com.gemwallet.android.blockchain.clients.solana.services.getDelegationsBalance
@@ -14,6 +13,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.math.BigInteger
 
 class SolanaBalanceClient(
     val chain: Chain,
@@ -43,25 +43,15 @@ class SolanaBalanceClient(
                 )
             )
         }
-        val accountsResponse = accountsService.batchAccount(accountsRequests).getOrNull() ?: return emptyList()
-        val availableTokens = accountsResponse.mapIndexedNotNull { index, info ->
-            info.result.value.firstOrNull()?.pubkey ?: return@mapIndexedNotNull null
-            tokens[index]
-        }
-        val tokenBalanceRequests = accountsResponse.mapNotNull { tokenAccount ->
-            JSONRpcRequest.create(
-                SolanaMethod.GetTokenBalance,
-                listOf<Any>(
-                    tokenAccount.result.value.firstOrNull()?.pubkey ?: return@mapNotNull null,
-                    mapOf(SolanaRpcClient.commitmentKey to SolanaRpcClient.commitmentValue)
-                )
-            )
-        }
-        val balancesResult = accountsService.batchBalances(tokenBalanceRequests)
-        val balances = balancesResult.getOrNull() ?: return emptyList()
-        return balances.mapIndexed { index, balance ->
-            AssetBalance.create(availableTokens[index], available = balance.toString())
-        }
+
+        val responseAccountOwner = accountsService.batchAccount(accountsRequests)
+        val balances = responseAccountOwner.getOrNull()?.mapIndexed { index, value ->
+            val balance = value.result.value.firstOrNull()?.let { account ->
+                account.account.data.parsed.info.tokenAmount.amount.toBigIntegerOrNull()
+            } ?: BigInteger.ZERO
+            AssetBalance.create(tokens[index], available = balance.toString())
+        } ?: emptyList()
+        return balances
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

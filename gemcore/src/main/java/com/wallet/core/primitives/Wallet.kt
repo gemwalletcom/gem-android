@@ -27,7 +27,8 @@ data class Wallet (
 	val type: WalletType,
 	val accounts: List<Account>,
 	val order: Int,
-	val isPinned: Boolean
+	val isPinned: Boolean,
+	val imageUrl: String? = null
 )
 
 @Serializable

@@ -5,7 +5,6 @@ import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.wallet.core.blockchain.solana.models.SolanaEpoch
 import com.wallet.core.blockchain.solana.models.SolanaStakeAccount
-import com.wallet.core.blockchain.solana.models.SolanaTokenAccountResult
 import com.wallet.core.blockchain.solana.models.SolanaValidator
 import com.wallet.core.blockchain.solana.models.SolanaValidators
 import retrofit2.http.Body
@@ -16,7 +15,7 @@ interface SolanaStakeService {
     suspend fun validators(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValidators>>
 
     @POST("/")
-    suspend fun delegations(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<List<SolanaTokenAccountResult<SolanaStakeAccount>>>>
+    suspend fun delegations(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<List<SolanaStakeAccount>>>
 
     @POST("/")
     suspend fun epoch(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SolanaEpoch>>
@@ -24,7 +23,7 @@ interface SolanaStakeService {
 
 suspend fun SolanaStakeService.delegations(
     owner: String,
-): List<SolanaTokenAccountResult<SolanaStakeAccount>>? {
+): List<SolanaStakeAccount>? {
     val request = JSONRpcRequest.create(
         SolanaMethod.GetDelegations,
         listOf(

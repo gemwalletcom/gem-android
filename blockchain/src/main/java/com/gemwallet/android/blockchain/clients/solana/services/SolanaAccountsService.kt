@@ -8,7 +8,6 @@ import com.gemwallet.android.blockchain.clients.solana.models.SolanaParsedSplTok
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaTokenOwner
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
-import com.wallet.core.blockchain.solana.models.SolanaBalanceValue
 import com.wallet.core.blockchain.solana.models.SolanaTokenAccount
 import com.wallet.core.blockchain.solana.models.SolanaValue
 import retrofit2.http.Body
@@ -21,8 +20,8 @@ interface SolanaAccountsService {
     @POST("/")
     suspend fun batchAccount(@Body request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<SolanaValue<List<SolanaTokenAccount>>>>>
 
-    @POST("/")
-    suspend fun batchBalances(@Body request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<SolanaValue<SolanaBalanceValue>>>>
+//    @POST("/")
+//    suspend fun batchBalances(@Body request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<SolanaValue<SolanaBalanceValue>>>>
 
     @POST("/")
     suspend fun getAccountInfoSpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaParsedData<SolanaInfo<SolanaParsedSplTokenInfo>>>>>
@@ -63,5 +62,19 @@ fun SolanaAccountsService.createAccountInfoRequest(tokenId: String): JSONRpcRequ
                 SolanaRpcClient.commitmentKey to SolanaRpcClient.commitmentValue,
             ),
         )
+    )
+}
+
+fun SolanaAccountsService.createAccountByOwnerRequest(owner: String, tokenId: String): JSONRpcRequest<List<Any>> {
+    return JSONRpcRequest.create(
+        method = SolanaMethod.GetTokenAccountByOwner,
+        params = listOf(
+            owner,
+            mapOf("mint" to tokenId),
+            mapOf(
+                "encoding" to "jsonParsed",
+                SolanaRpcClient.commitmentKey to SolanaRpcClient.commitmentValue,
+            ),
+        ),
     )
 }

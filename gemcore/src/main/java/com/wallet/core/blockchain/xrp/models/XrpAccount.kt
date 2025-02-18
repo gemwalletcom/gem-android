@@ -24,13 +24,26 @@ data class XRPAccountAsset (
 )
 
 @Serializable
+data class XRPAccountLine (
+	val account: String,
+	val balance: String,
+	val currency: String
+)
+
+@Serializable
+data class XRPAccountLinesResult (
+	val lines: List<XRPAccountLine>? = null
+)
+
+@Serializable
 data class XRPAccountObjects<T> (
 	val account_objects: T
 )
 
 @Serializable
 data class XRPAccountResult (
-	val account_data: XRPAccount? = null
+	val account_data: XRPAccount? = null,
+	val ledger_current_index: Int
 )
 
 @Serializable

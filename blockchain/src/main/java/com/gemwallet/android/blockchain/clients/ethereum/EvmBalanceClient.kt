@@ -6,7 +6,6 @@ import com.gemwallet.android.blockchain.clients.ethereum.services.EvmCallService
 import com.gemwallet.android.blockchain.clients.ethereum.services.batch
 import com.gemwallet.android.blockchain.clients.ethereum.services.createCallRequest
 import com.gemwallet.android.blockchain.clients.ethereum.services.getBalance
-import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.model.AssetBalance

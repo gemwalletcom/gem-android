@@ -2,7 +2,6 @@ package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
-import com.gemwallet.android.blockchain.clients.solana.services.SolanaNetworkInfoService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaTransactionsService
 import com.gemwallet.android.blockchain.clients.solana.services.transaction
 import com.gemwallet.android.model.TransactionChages

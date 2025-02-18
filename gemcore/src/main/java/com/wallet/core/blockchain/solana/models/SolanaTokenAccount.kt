@@ -8,7 +8,30 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-data class SolanaStakeAccountDataParsedInfoStakeDelegation (
+data class SolanaAccount<T> (
+	val lamports: Long,
+	val space: Int,
+	val owner: String,
+	val data: T
+)
+
+@Serializable
+data class SolanaAccountParsed<T> (
+	val parsed: T
+)
+
+@Serializable
+data class SolanaAccountParsedInfo<T> (
+	val info: T
+)
+
+@Serializable
+data class SolanaRentExemptReserve (
+	val rentExemptReserve: String
+)
+
+@Serializable
+data class SolanaStakeDelegation (
 	val voter: String,
 	val stake: String,
 	val activationEpoch: String,
@@ -16,46 +39,40 @@ data class SolanaStakeAccountDataParsedInfoStakeDelegation (
 )
 
 @Serializable
-data class SolanaStakeAccountDataParsedInfoStake (
-	val delegation: SolanaStakeAccountDataParsedInfoStakeDelegation
-)
-
-@Serializable
-data class SolanaStakeAccountDataParsedInfoMeta (
-	val rentExemptReserve: String
-)
-
-@Serializable
-data class SolanaStakeAccountDataParsedInfo (
-	val stake: SolanaStakeAccountDataParsedInfoStake,
-	val meta: SolanaStakeAccountDataParsedInfoMeta
-)
-
-@Serializable
-data class SolanaStakeAccountDataParsed (
-	val info: SolanaStakeAccountDataParsedInfo
-)
-
-@Serializable
-data class SolanaStakeAccountData (
-	val parsed: SolanaStakeAccountDataParsed
+data class SolanaStake (
+	val delegation: SolanaStakeDelegation
 )
 
 @Serializable
 data class SolanaStakeAccount (
-	val lamports: Long,
-	val space: Int,
-	val data: SolanaStakeAccountData
+	val account: SolanaAccount<SolanaAccountParsed<SolanaAccountParsedInfo<SolanaStakeInfo>>>,
+	val pubkey: String
+)
+
+@Serializable
+data class SolanaStakeInfo (
+	val stake: SolanaStake,
+	val meta: SolanaRentExemptReserve
 )
 
 @Serializable
 data class SolanaTokenAccount (
+	val account: SolanaAccount<SolanaAccountParsed<SolanaAccountParsedInfo<SolanaTokenInfo>>>,
 	val pubkey: String
 )
 
 @Serializable
-data class SolanaTokenAccountResult<T> (
-	val account: T,
+data class SolanaTokenAccountPubkey (
 	val pubkey: String
+)
+
+@Serializable
+data class SolanaTokenAmount (
+	val amount: String
+)
+
+@Serializable
+data class SolanaTokenInfo (
+	val tokenAmount: SolanaTokenAmount
 )
 

@@ -64,8 +64,8 @@ data class WalletConnection (
 
 @Serializable
 data class WalletConnectionSessionProposal (
-	val wallet: Wallet,
-	val accounts: List<Account>,
+	val defaultWallet: Wallet,
+	val wallets: List<Wallet>,
 	val metadata: WalletConnectionSessionAppMetadata
 )
 

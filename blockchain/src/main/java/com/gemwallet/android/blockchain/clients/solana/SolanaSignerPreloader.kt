@@ -8,9 +8,8 @@ import com.gemwallet.android.blockchain.clients.solana.SolanaSignerPreloader.Sol
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaAccountsService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaFeeService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaNetworkInfoService
+import com.gemwallet.android.blockchain.clients.solana.services.createAccountByOwnerRequest
 import com.gemwallet.android.blockchain.clients.solana.services.getBlockhash
-import com.gemwallet.android.blockchain.clients.solana.services.getTokenAccountByOwner
-import com.gemwallet.android.blockchain.clients.solana.services.getTokenInfo
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
@@ -39,29 +38,25 @@ class SolanaSignerPreloader(
 
     override suspend fun preloadTokenTransfer(params: ConfirmParams.TransferParams.Token): SignerParams  = withContext(Dispatchers.IO) {
         val tokenId = params.assetId.tokenId!!
-        val senderTokenAddressJob = async { accountsService.getTokenAccountByOwner(params.from.address, tokenId) }
-        val recipientTokenAddressJob = async { accountsService.getTokenAccountByOwner(params.destination.address, tokenId) }
-        val tokenProgramJob = async {
-            val owner = accountsService.getTokenInfo(tokenId)
+        val owner = params.from.address
 
-            if (owner != null) {
-                SolanaTokenProgramId.entries.firstOrNull {
-                    it.string == Config().getSolanaTokenProgramId(owner)
-                } ?: SolanaTokenProgramId.Token
-            } else {
-                SolanaTokenProgramId.Token
+        val requests = listOf(
+            accountsService.createAccountByOwnerRequest(owner, tokenId),
+            accountsService.createAccountByOwnerRequest(params.destination.address, tokenId),
+        )
+        val accountsResponse = accountsService.batchAccount(requests)
+        val accounts = accountsResponse.getOrNull() ?: throw Exception("Can't load account info")
+        val senderToken =  accounts.getOrNull(0)?.result?.value?.firstOrNull() ?: throw Exception("Sender token address is empty")
+        val recipientTokenAccounts = accounts.getOrNull(1)?.result?.value?.firstOrNull()?.pubkey
+        val senderTokenAddress = senderToken.pubkey
+        val tokenProgram = Config().getSolanaTokenProgramId(senderToken.account.owner)?.let {
+            when (it) {
+                SolanaTokenProgramId.Token.string -> SolanaTokenProgramId.Token
+                SolanaTokenProgramId.Token2022.string -> SolanaTokenProgramId.Token2022
+                else -> null
             }
-        }
-
-        val senderTokenAddress  = senderTokenAddressJob.await()
-        val recipientTokenAddress = recipientTokenAddressJob.await()
-        val tokenProgram = tokenProgramJob.await()
-
-        if (senderTokenAddress.isNullOrEmpty()) {
-            throw Exception("Sender token address is empty")
-        }
-
-        preload(params, senderTokenAddress, recipientTokenAddress, tokenProgram)
+        } ?: throw Exception("Unknow token program id")
+        preload(params, senderTokenAddress, recipientTokenAccounts, tokenProgram)
     }
 
     override suspend fun preloadSwap(params: ConfirmParams.SwapParams): SignerParams {
