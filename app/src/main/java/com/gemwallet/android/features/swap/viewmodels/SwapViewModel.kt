@@ -26,8 +26,8 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
+import com.gemwallet.android.ui.models.PercentageFormattedUIModel
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.TransactionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -133,7 +133,8 @@ class SwapViewModel @Inject constructor(
 
     val fromValue: TextFieldState = TextFieldState()
     private val fromValueFlow = snapshotFlow { fromValue.text }.map { it.toString() }
-    val fromEquivalent = fromValueFlow.combine(assetsState) { value, assets ->
+
+    private val fromEquivalent = fromValueFlow.combine(assetsState) { value, assets ->
         swapScreenState.update { SwapState.GetQuote }
         val price = assets?.from?.price ?: return@combine null
         val valueNum = try {
@@ -141,10 +142,18 @@ class SwapViewModel @Inject constructor(
         } catch (_: Throwable) {
             BigDecimal.ZERO
         }
-        val fiat = valueNum.toDouble() * price.price.price
-        price.currency.format(fiat)
+        valueNum.toDouble() * price.price.price
     }
     .filterNotNull()
+    .stateIn(viewModelScope, SharingStarted.Eagerly, 0.0)
+
+    val fromEquivalentFormatted = fromEquivalent.combine(assetsState) { value, assets ->
+        if (value <= 0.0) {
+            return@combine ""
+        }
+        val price = assets?.from?.price ?: return@combine ""
+        price.currency.format(value)
+    }
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     private val refreshTimer = fromValueFlow.flatMapLatest {
@@ -161,7 +170,7 @@ class SwapViewModel @Inject constructor(
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
-    private val quotes  = combine(
+    private val quotes = combine(
         fromValueFlow,
         assetsState,
         approveTx,
@@ -180,10 +189,6 @@ class SwapViewModel @Inject constructor(
             withContext(Dispatchers.Main) { toValue.edit { replace(0, length, "0") } }
             swapScreenState.update { SwapState.None }
             return@mapLatest emptyList()
-        }
-        if (data.third?.transaction?.state == TransactionState.Pending) {
-            swapScreenState.update { SwapState.Approving }
-            delay(1000L) // Wait transactions and don't spam servers, it'll cancel on next values. Return null isn't correct
         }
         swapScreenState.update { SwapState.GetQuote }
         delay(500L) // User input type - doesn't want spam nodes
@@ -245,7 +250,7 @@ class SwapViewModel @Inject constructor(
 
     val toValue: TextFieldState = TextFieldState()
 
-    val toEquivalent = quote.combine(assetsState) { quote, assets ->
+    private val toEquivalent = quote.combine(assetsState) { quote, assets ->
         if (quote == null || assets?.to == null) {
             return@combine BigDecimal.ZERO
         }
@@ -260,7 +265,7 @@ class SwapViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.Eagerly, BigDecimal.ZERO)
 
     val toEquivalentFormatted = toEquivalent.combine(assetsState) { value, assets ->
-        if (BigDecimal.ZERO > value || assets?.to == null) {
+        if (value <= BigDecimal.ZERO  || assets?.to == null) {
             return@combine ""
         }
         val price = assets.to.price
@@ -271,6 +276,32 @@ class SwapViewModel @Inject constructor(
         }
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
+
+    val priceImpact = combine(fromEquivalent, toEquivalent, swapScreenState) { from, to, state ->
+        if (from <= 0.0 || to <= BigDecimal.ZERO || state != SwapState.Ready) {
+            return@combine null
+        }
+        val impact = (((to.toDouble() / from) - 1.0) * 100)
+        when {
+            impact > 0 -> PriceImpact(impact, PriceImpactType.Positive)
+            impact > -1 -> null
+            impact > -5 -> PriceImpact(impact, PriceImpactType.Medium)
+            else -> PriceImpact(impact, PriceImpactType.High)
+        }
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    data class PriceImpact(
+        override val percentage: Double?,
+        val type: PriceImpactType,
+    ) : PercentageFormattedUIModel
+
+    enum class PriceImpactType {
+        Low,
+        Medium,
+        High,
+        Positive,
+    }
 
     private val sync = swapPairState.flatMapLatest {
         flow {

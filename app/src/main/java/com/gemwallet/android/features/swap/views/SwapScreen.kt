@@ -64,6 +64,7 @@ import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
@@ -79,12 +80,13 @@ fun SwapScreen(
 ) {
     val selectState by viewModel.selectPair.collectAsStateWithLifecycle()
     val pairState by viewModel.swapPairUIModel.collectAsStateWithLifecycle()
-    val fromEquivalent by viewModel.fromEquivalent.collectAsStateWithLifecycle()
+    val fromEquivalent by viewModel.fromEquivalentFormatted.collectAsStateWithLifecycle()
     val toEquivalent by viewModel.toEquivalentFormatted.collectAsStateWithLifecycle()
     val swapState by viewModel.swapScreenState.collectAsStateWithLifecycle()
     val approveTx by viewModel.approveTx.collectAsStateWithLifecycle()
     val currentProvider by viewModel.currentProvider.collectAsStateWithLifecycle()
     val providers by viewModel.providers.collectAsStateWithLifecycle()
+    val priceImpact by viewModel.priceImpact.collectAsStateWithLifecycle()
 
     val isShowProviderSelect = remember { mutableStateOf(false) }
     var approveParams by rememberSaveable { mutableStateOf<ConfirmParams?>(null) }
@@ -174,6 +176,25 @@ fun SwapScreen(
                     }
                 )
             }
+            priceImpact?.let {
+                ListItem(
+                    modifier = Modifier.height(72.dp),
+                    title = {
+                        ListItemTitleText(stringResource(R.string.swap_price_impact))
+                    },
+                    trailing = {
+                        ListItemTitleText(
+                            it.percentageFormatted,
+                            color = when (it.type) {
+                                SwapViewModel.PriceImpactType.Positive,
+                                SwapViewModel.PriceImpactType.Low -> MaterialTheme.colorScheme.tertiary
+                                SwapViewModel.PriceImpactType.Medium -> pendingColor
+                                SwapViewModel.PriceImpactType.High -> MaterialTheme.colorScheme.error
+                            }
+                        )
+                    }
+                )
+            }
             Spacer16()
             val tx = approveTx
             if (tx?.transaction?.state == TransactionState.Pending) {
@@ -259,7 +280,7 @@ private fun SwapError(state: SwapState) {
             text = when (state.error) {
                 SwapError.None -> ""
                 SwapError.IncorrectInput -> stringResource(R.string.common_required_field, stringResource(R.string.swap_you_pay))
-                SwapError.NoQuote -> stringResource(R.string.errors_swap_no_quote_data)
+                SwapError.NoQuote -> stringResource(R.string.errors_swap_no_quote_available)
                 SwapError.NotSupportedAsset -> stringResource(R.string.errors_swap_not_supported_asset)
                 SwapError.NotSupportedChain -> stringResource(R.string.errors_swap_not_supported_chain)
                 SwapError.NotImplemented,
