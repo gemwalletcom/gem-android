@@ -7,6 +7,7 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -18,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
-import com.gemwallet.android.BuildConfig
 import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateWalletScreen
 import com.gemwallet.android.features.import_wallet.navigation.navigateToImportWalletScreen
 import com.gemwallet.android.features.onboarding.OnboardScreen
@@ -51,17 +51,42 @@ fun WalletApp() {
             )
         },
     )
-    if (state.intent == AppIntent.ShowUpdate) {
-        ShowUpdateDialog(
-            version = state.version,
-            onSkip = viewModel::onSkip,
-            onCancel = viewModel::onCancelUpdate
-        )
+
+    val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
+    var showUpdate by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        viewModel.appIntent.collect { intent ->
+            when (intent) {
+                is AppIntent.OpenUrl -> {
+                    uriHandler.open(intent.url)
+                }
+                AppIntent.ShowReview -> {
+                    ReviewManager(context).open()
+                }
+                AppIntent.ShowUpdate -> {
+                    showUpdate = !fromGooglePlay(context)
+                }
+            }
+        }
     }
 
-    if (state.intent == AppIntent.ShowReview) {
-        viewModel.onReviewOpen()
-        ReviewManager(LocalContext.current).open()
+    if (showUpdate) {
+        ShowUpdateDialog(
+            version = state.version,
+            onSkip = {
+                viewModel.onSkip(it)
+                showUpdate = false
+            },
+            onCancel = {
+                showUpdate = false
+            },
+            onConfirm = {
+                viewModel.onConfirmUpdate()
+                showUpdate = false
+            }
+        )
     }
 }
 
@@ -70,18 +95,12 @@ private fun ShowUpdateDialog(
     version: String,
     onSkip: (String) -> Unit,
     onCancel: () -> Unit,
+    onConfirm: () -> Unit
 ) {
-    if (fromGooglePlay(LocalContext.current)) {
-        return
-    }
-    val uriHandler = LocalUriHandler.current
     AlertDialog(
         onDismissRequest = onCancel,
         confirmButton = {
-            TextButton(onClick = {
-                onCancel()
-                uriHandler.open(BuildConfig.UPDATE_URL)
-            }) {
+            TextButton(onClick = onConfirm) {
                 Text(text = stringResource(id = R.string.update_app_action))
             }
         },

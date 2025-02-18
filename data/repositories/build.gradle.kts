@@ -52,6 +52,7 @@ android {
 dependencies {
     implementation(project(":gemcore"))
     implementation(project(":data:services:store"))
+    implementation(project(":data:services:files"))
     api(project(":data:services:remote-gem"))
 
     // Wallet Connect

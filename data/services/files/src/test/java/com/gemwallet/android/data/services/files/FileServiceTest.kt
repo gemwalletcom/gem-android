@@ -105,4 +105,20 @@ class FileServiceTest {
 
         assertFalse(result)
     }
+
+    @Test
+    fun `isFileExists should return true when file exists`() {
+        tempFolder.newFile("test.apk")
+
+        val result = fileService.isFileExists(tempFolder.root.absolutePath, "test.apk")
+
+        assertTrue(result)
+    }
+
+    @Test
+    fun `isFileExists should return false when file does not exist`() {
+        val result = fileService.isFileExists(tempFolder.root.absolutePath, "non_existing.apk")
+
+        assertFalse(result)
+    }
 }

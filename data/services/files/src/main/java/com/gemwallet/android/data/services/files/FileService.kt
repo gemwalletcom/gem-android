@@ -68,8 +68,8 @@ class FileService(
             }
             .flowOn(Dispatchers.IO)
 
-    suspend fun deleteFile(directory: String, fileName: String): Boolean =
-        withContext(Dispatchers.IO) {
+    suspend fun deleteFile(directory: String, fileName: String): Boolean {
+        return withContext(Dispatchers.IO) {
             val file = File(directory, fileName)
             if (file.exists()) {
                 file.delete()
@@ -77,5 +77,10 @@ class FileService(
                 false
             }
         }
+    }
+
+    fun isFileExists(directory: String, fileName: String): Boolean {
+        return  File(directory, fileName).exists()
+    }
 }
 
