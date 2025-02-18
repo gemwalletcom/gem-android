@@ -1,4 +1,5 @@
-package com.example.files
+package com.gemwallet.android.data.services.files
+
 import app.cash.turbine.test
 import com.gemwallet.android.model.DownloadStatus
 import io.mockk.every

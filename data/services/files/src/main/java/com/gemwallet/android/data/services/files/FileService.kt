@@ -1,4 +1,4 @@
-package com.example.files
+package com.gemwallet.android.data.services.files
 
 import com.gemwallet.android.model.DownloadStatus
 import kotlinx.coroutines.Dispatchers

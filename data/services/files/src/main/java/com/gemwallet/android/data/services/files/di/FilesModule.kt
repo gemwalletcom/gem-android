@@ -1,6 +1,6 @@
-package com.example.files.di
+package com.gemwallet.android.data.services.files.di
 
-import com.example.files.FileService
+import com.gemwallet.android.data.services.files.FileService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
