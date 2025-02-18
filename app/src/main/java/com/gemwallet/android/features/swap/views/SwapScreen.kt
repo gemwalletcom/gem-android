@@ -80,7 +80,7 @@ fun SwapScreen(
     val selectState by viewModel.selectPair.collectAsStateWithLifecycle()
     val pairState by viewModel.swapPairUIModel.collectAsStateWithLifecycle()
     val fromEquivalent by viewModel.fromEquivalent.collectAsStateWithLifecycle()
-    val toEquivalent by viewModel.toEquivalent.collectAsStateWithLifecycle()
+    val toEquivalent by viewModel.toEquivalentFormatted.collectAsStateWithLifecycle()
     val swapState by viewModel.swapScreenState.collectAsStateWithLifecycle()
     val approveTx by viewModel.approveTx.collectAsStateWithLifecycle()
     val currentProvider by viewModel.currentProvider.collectAsStateWithLifecycle()

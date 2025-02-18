@@ -235,12 +235,7 @@ class SwapViewModel @Inject constructor(
         val assets = it.second ?: return@mapLatest null
         val amount = assets.to?.asset?.format(Crypto(quote.toValue), 8, showSymbol = false) ?: ""
         withContext(Dispatchers.Main) { toValue.edit { replace(0, length, amount) } }
-//        val requestApprove = quote.approval is ApprovalType.Approve
         swapScreenState.update { SwapState.Ready }
-//        swapScreenState.update {
-//            if (it == SwapState.Approving) return@update it
-//            if (requestApprove) SwapState.RequestApprove else SwapState.Ready
-//        }
         quote
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -249,18 +244,32 @@ class SwapViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val toValue: TextFieldState = TextFieldState()
+
     val toEquivalent = quote.combine(assetsState) { quote, assets ->
         if (quote == null || assets?.to == null) {
+            return@combine BigDecimal.ZERO
+        }
+        val price = assets.to.price
+        if (price?.currency != null && price.price.price > 0) {
+            Crypto(quote.toValue).convert(assets.to.asset.decimals, price.price.price).value(0)
+        } else {
+            BigDecimal.ZERO
+        }
+    }
+    .filterNotNull()
+    .stateIn(viewModelScope, SharingStarted.Eagerly, BigDecimal.ZERO)
+
+    val toEquivalentFormatted = toEquivalent.combine(assetsState) { value, assets ->
+        if (BigDecimal.ZERO > value || assets?.to == null) {
             return@combine ""
         }
         val price = assets.to.price
         if (price?.currency != null && price.price.price > 0) {
-            assets.to.price!!.currency.format(Crypto(quote.toValue).convert(assets.to.asset.decimals, price.price.price).atomicValue)
+            assets.to.price!!.currency.format(value)
         } else {
             ""
         }
     }
-    .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     private val sync = swapPairState.flatMapLatest {
