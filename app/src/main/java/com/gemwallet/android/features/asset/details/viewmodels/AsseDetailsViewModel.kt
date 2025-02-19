@@ -115,7 +115,6 @@ class AsseDetailsViewModel @Inject constructor(
             )
         }
         viewModelScope.launch { assetsRepository.syncAssetInfo(assetId, sessionRepository.getSession()?.wallet?.getAccount(assetId.chain) ?: return@launch) }
-        viewModelScope.launch { stakeRepository.sync(assetId.chain, owner.address, apr) }
         viewModelScope.launch {
             delay(300)
             uiState.update { AssetInfoUIState.Idle() }

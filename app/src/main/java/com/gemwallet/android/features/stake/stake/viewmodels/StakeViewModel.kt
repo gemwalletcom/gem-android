@@ -22,6 +22,7 @@ import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.firstOrNull
@@ -50,6 +51,7 @@ class StakeViewModel @Inject constructor(
         viewModelScope.launch {
             val asset = assetsRepository.getAssetInfo(assetId).firstOrNull() ?: return@launch
             state.update { it.copy(apr = asset.stakeApr ?: 0.0) }
+            onRefresh(assetId)
             stakeRepository.getDelegations(assetId, account.address).collect { delegations ->
                 state.update { state ->
                     state.copy(
@@ -67,11 +69,15 @@ class StakeViewModel @Inject constructor(
     }
 
     fun onRefresh() {
-        viewModelScope.launch {
-            val assetInfo = state.value.asset ?: return@launch
-            val assetId = assetInfo.asset.id
+        onRefresh(state.value.asset?.id() ?: return)
+    }
+
+    fun onRefresh(assetId: AssetId) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val asset = assetsRepository.getAssetInfo(assetId).firstOrNull() ?: return@launch
+            val assetId = asset.id()
             state.update { it.copy(loading = true) }
-            stakeRepository.sync(assetId.chain, assetInfo.owner.address, assetInfo.stakeApr ?: return@launch)
+            stakeRepository.sync(assetId.chain, asset.owner.address, asset.stakeApr ?: return@launch)
             state.update { it.copy(loading = false) }
         }
     }
@@ -118,7 +124,7 @@ class StakeViewModel @Inject constructor(
                         ownerAddress = account.address,
                         title = "${asset.asset.id.chain.asset().name} (${asset.asset.symbol})",
                         apr = apr,
-                        lockTime = (Config() .getStakeConfig(account.chain.string).timeLock / (DateUtils.DAY_IN_MILLIS / 1000).toULong()).toInt(),
+                        lockTime = (Config().getStakeConfig(account.chain.string).timeLock / (DateUtils.DAY_IN_MILLIS / 1000).toULong()).toInt(),
                         hasRewards = rewardsAmount > BigInteger.ZERO,
                         rewardsAmount = asset.asset.format(Crypto(rewardsAmount)),
                         delegations = delegations,
