@@ -97,5 +97,7 @@ enum class Chain(val string: String) {
 	Ink("ink"),
 	@SerialName("unichain")
 	Unichain("unichain"),
+	@SerialName("hyperliquid")
+	Hyperliquid("hyperliquid"),
 }
 

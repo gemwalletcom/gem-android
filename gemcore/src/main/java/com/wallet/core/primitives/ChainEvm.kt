@@ -53,5 +53,7 @@ enum class EVMChain(val string: String) {
 	Ink("ink"),
 	@SerialName("unichain")
 	Unichain("unichain"),
+	@SerialName("hyperliquid")
+	Hyperliquid("hyperliquid"),
 }
 
