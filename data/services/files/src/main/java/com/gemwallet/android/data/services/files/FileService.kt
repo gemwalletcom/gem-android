@@ -60,7 +60,7 @@ class FileService(
             inputStream.close()
             outputStream.close()
 
-            emit(DownloadStatus.Completed)
+            emit(DownloadStatus.Completed(outputFile))
         }
             .catch {
                 emit(DownloadStatus.Error(it))

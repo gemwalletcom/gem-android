@@ -62,7 +62,7 @@ class AppViewModel @Inject constructor(
         val newVersion = checkForUpdateCase.checkForUpdate()
         if (newVersion != null) {
             viewModelScope.launch {
-                _appIntent.emit(AppIntent.ShowUpdate)
+                _appIntent.emit(AppIntent.ShowUpdate(newVersion))
             }
         }
     }
@@ -99,21 +99,18 @@ class AppViewModel @Inject constructor(
 
 data class AppState(
     val session: Session? = null,
-    val version: String = "",
 ) {
     fun toUIState() = AppUIState(
         session = session,
-        version = version,
     )
 }
 
 data class AppUIState(
     val session: Session? = null,
-    val version: String = "",
 )
 
 sealed class AppIntent {
-    object ShowUpdate : AppIntent()
+    class ShowUpdate(val version: String) : AppIntent()
     object ShowReview : AppIntent()
     class OpenUrl(val url: String) : AppIntent()
 }

@@ -1,9 +1,7 @@
 package com.gemwallet.android.data.repositoreis.update
 
 import com.gemwallet.android.cases.update.CheckForUpdateCase
-import com.gemwallet.android.cases.update.DeleteLatestApkCase
 import com.gemwallet.android.cases.update.DownloadLatestApkCase
-import com.gemwallet.android.cases.update.LatestApkDownloadedCase
 import com.gemwallet.android.cases.update.ObserveUpdateDownloadCase
 import com.gemwallet.android.cases.update.SkipVersionCase
 import com.gemwallet.android.data.repositoreis.BuildConfig
@@ -19,6 +17,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
+import java.io.File
 import java.net.URL
 
 class AppUpdateRepository(
@@ -28,7 +27,7 @@ class AppUpdateRepository(
     private val userConfig: UserConfig,
     private val gemApiClient: GemApiClient,
     private val fileService: FileService,
-) : CheckForUpdateCase, DeleteLatestApkCase, DownloadLatestApkCase, LatestApkDownloadedCase,
+) : CheckForUpdateCase, DownloadLatestApkCase,
     ObserveUpdateDownloadCase, SkipVersionCase {
 
     private val apkDownloadStatus: MutableStateFlow<DownloadStatus?> = MutableStateFlow(null)
@@ -47,7 +46,7 @@ class AppUpdateRepository(
                     PlatformStore.Huawei -> "huawei"
                     PlatformStore.SolanaStore -> "solana"
                     PlatformStore.SamsungStore -> "sumsung"
-                    PlatformStore.ApkUniversal -> "universal"
+                    PlatformStore.ApkUniversal -> "apkUniversal"
                     PlatformStore.AppStore -> it.store.string
                     PlatformStore.Local -> "local"
                 }
@@ -55,16 +54,36 @@ class AppUpdateRepository(
                 buildInfo.platformStore.string == versionFlavor
             }?.version ?: return@withContext null
 
-            val skipVersion = userConfig.getAppVersionSkip()
-            if (current.compareTo(buildInfo.versionName) > 0 && skipVersion != current) {
-                current
-            } else {
-                null
+            val skipCurrentVersion = userConfig.getAppVersionSkip() == current
+
+            if (skipCurrentVersion) {
+                return@withContext null
             }
+
+            val shouldUpdate = current.compareTo(buildInfo.versionName) > 0
+            val shouldUseInAppUpdate = buildInfo.platformStore == PlatformStore.ApkUniversal
+
+            if (shouldUseInAppUpdate && shouldUpdate) {
+                if (isLatestApkDownloaded()) {
+                    apkDownloadStatus.update {
+                        DownloadStatus.Completed(
+                            File(apkDirectory, getApkName(appUpdateConfig.updateUrl))
+                        )
+                    }
+                    return@withContext null
+                }
+            }
+
+            if (shouldUseInAppUpdate && !shouldUpdate && isLatestApkDownloaded()) {
+                deleteLatestApk()
+                apkDownloadStatus.update { null }
+            }
+
+            current.takeIf { shouldUpdate }
         }
     }
 
-    override suspend fun deleteLatestApk() {
+    private suspend fun deleteLatestApk() {
         fileService.deleteFile(apkDirectory, getApkName(appUpdateConfig.updateUrl))
     }
 
@@ -80,16 +99,17 @@ class AppUpdateRepository(
         }
     }
 
-    override suspend fun isLatestApkDownloaded(): Boolean {
+    private fun isLatestApkDownloaded(): Boolean {
         return fileService.isFileExists(apkDirectory, getApkName(appUpdateConfig.updateUrl))
     }
 
     private fun getApkName(updateUrl: String): String {
         return try {
-            URL(updateUrl).path.substringAfterLast("/").takeIf { it.isNotEmpty() }
-                ?: throw IllegalArgumentException("Invalid APK URL: $updateUrl")
+            URL(updateUrl).path.substringAfterLast("/")
+                .takeIf { it.isNotEmpty() }
+                ?: "gem_latest.apk"
         } catch (e: Exception) {
-            throw IllegalArgumentException("Invalid URL format: $updateUrl", e)
+            return "gem_latest.apk"
         }
     }
 

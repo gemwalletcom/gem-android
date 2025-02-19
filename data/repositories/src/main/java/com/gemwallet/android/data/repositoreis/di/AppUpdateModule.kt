@@ -3,9 +3,7 @@ package com.gemwallet.android.data.repositoreis.di
 import android.content.Context
 import android.os.Environment
 import com.gemwallet.android.cases.update.CheckForUpdateCase
-import com.gemwallet.android.cases.update.DeleteLatestApkCase
 import com.gemwallet.android.cases.update.DownloadLatestApkCase
-import com.gemwallet.android.cases.update.LatestApkDownloadedCase
 import com.gemwallet.android.cases.update.ObserveUpdateDownloadCase
 import com.gemwallet.android.cases.update.SkipVersionCase
 import com.gemwallet.android.data.repositoreis.config.UserConfig
@@ -56,19 +54,7 @@ object AppUpdateModule {
 
     @Singleton
     @Provides
-    fun provideDeleteLatestApkCase(appUpdateRepository: AppUpdateRepository): DeleteLatestApkCase {
-        return appUpdateRepository
-    }
-
-    @Singleton
-    @Provides
     fun provideDownloadLatestApkCase(appUpdateRepository: AppUpdateRepository): DownloadLatestApkCase {
-        return appUpdateRepository
-    }
-
-    @Singleton
-    @Provides
-    fun provideLatestApkDownloadedCase(appUpdateRepository: AppUpdateRepository): LatestApkDownloadedCase {
         return appUpdateRepository
     }
 

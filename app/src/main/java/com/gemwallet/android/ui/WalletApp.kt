@@ -54,7 +54,7 @@ fun WalletApp() {
 
     val uriHandler = LocalUriHandler.current
     val context = LocalContext.current
-    var showUpdate by remember { mutableStateOf(false) }
+    var showUpdate by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         viewModel.appIntent.collect { intent ->
@@ -65,26 +65,26 @@ fun WalletApp() {
                 AppIntent.ShowReview -> {
                     ReviewManager(context).open()
                 }
-                AppIntent.ShowUpdate -> {
-                    showUpdate = !fromGooglePlay(context)
+                is AppIntent.ShowUpdate -> {
+                    showUpdate = intent.version.takeIf { !fromGooglePlay(context) }
                 }
             }
         }
     }
 
-    if (showUpdate) {
+    if (showUpdate != null) {
         ShowUpdateDialog(
-            version = state.version,
+            version = showUpdate!!,
             onSkip = {
                 viewModel.onSkip(it)
-                showUpdate = false
+                showUpdate = null
             },
             onCancel = {
-                showUpdate = false
+                showUpdate = null
             },
             onConfirm = {
                 viewModel.onConfirmUpdate()
-                showUpdate = false
+                showUpdate = null
             }
         )
     }
