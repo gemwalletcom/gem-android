@@ -21,19 +21,29 @@ class XrpSignerPreloader(
 
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams = withContext(Dispatchers.IO) {
         val (getSequence, getFee) = Pair (
-            async { rpcClient.account(params.from.address).getOrNull()?.result?.account_data?.Sequence },
+            async {
+                rpcClient.account(params.from.address).getOrNull()?.result
+            },
             async { feeCalculator.calculate() }
         )
-        val sequence = getSequence.await() ?: throw Exception("Sequence doesn't available")
+        val account = getSequence.await() ?: throw Exception("No account found")
         val fee = getFee.await()
 
-        SignerParams(params, XrpChainData(sequence, fee))
+        SignerParams(
+            params,
+            XrpChainData(
+                account.account_data?.Sequence ?: 0,
+                account.ledger_current_index,
+                fee,
+            )
+        )
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
     data class XrpChainData(
         val sequence: Int,
+        val bockNumber: Int,
         val fee: Fee,
     ) : ChainSignData {
         override fun fee(speed: TxSpeed): Fee = fee

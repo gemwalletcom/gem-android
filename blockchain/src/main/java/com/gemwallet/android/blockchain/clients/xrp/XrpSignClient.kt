@@ -27,6 +27,7 @@ class XrpSignClient(
             this.sequence = metadata.sequence
             this.account = params.from.address
             this.privateKey = ByteString.copyFrom(privateKey)
+            this.lastLedgerSequence = (metadata.blockNumber().toInt() + 10)
             this.opPayment = Ripple.OperationPayment.newBuilder().apply {
                 this.destination = params.destination().address
                 this.amount = finalAmount.toLong()
