@@ -64,7 +64,7 @@ If you want to contribute, you can use our [developers telegram](https://t.me/ge
 1. Download and install latest [Android Studio](https://developer.android.com/studio)
 2. Install JDK 17, preferably using [SDKMAN](https://sdkman.io/)
 3. Install `just` by running `brew install just` if you don't have it already.
-3. Run `just boostrap` to install all nessesary tools (Rust / NDK).
+3. Run `just bootstrap` to install all nessesary tools (Rust / NDK).
 4. Generate a GitHub personal [token](https://github.com/settings/tokens) with `read:packages` permission and add it to your `local.properties` file:
 
 ```properties
