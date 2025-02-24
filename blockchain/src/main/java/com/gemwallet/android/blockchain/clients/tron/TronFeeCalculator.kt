@@ -63,7 +63,7 @@ class TronFeeCalculator(
 
         val fee = when (inParams.assetId.type()) {
             AssetSubtype.NATIVE -> {
-                val availableBandwidth = accountUsage?.freeNetLimit ?: (0 - (accountUsage?.freeNetUsed ?: 0))
+                val availableBandwidth = (accountUsage?.freeNetLimit ?: 0) - (accountUsage?.freeNetUsed ?: 0)
                 val coinTransferFee = if (availableBandwidth >= 300) BigInteger.ZERO else baseFee
                 if (isNewAccount) coinTransferFee + BigInteger.valueOf(newAccountFee) else coinTransferFee
             }
