@@ -7,10 +7,9 @@ import com.gemwallet.android.blockchain.clients.solana.SolanaTokenClient
 import com.gemwallet.android.blockchain.clients.sui.SuiGetTokenClient
 import com.gemwallet.android.blockchain.clients.ton.TonGetTokenClient
 import com.gemwallet.android.blockchain.clients.tron.TronGetTokenClient
-import com.gemwallet.android.cases.tokens.GetTokensCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.tokens.TokensRepository
-import com.gemwallet.android.data.service.store.database.TokensDao
+import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.available
 import com.gemwallet.android.ext.toChainType
@@ -28,11 +27,11 @@ object TokensModule {
     @Provides
     @Singleton
     fun provideTokensRepository(
-        tokensDao: TokensDao,
+        assetsDao: AssetsDao,
         gemApiClient: GemApiClient,
         rpcClients: RpcClientAdapter,
 ): TokensRepository = TokensRepository(
-        tokensDao = tokensDao,
+        assetsDao = assetsDao,
         gemApiClient = gemApiClient,
         getTokenClients = Chain.available().mapNotNull { chain ->
             when (chain.toChainType()) {
@@ -53,10 +52,6 @@ object TokensModule {
             }
         }
     )
-
-    @Provides
-    @Singleton
-    fun provideGetTokensCase(tokensRepository: TokensRepository): GetTokensCase = tokensRepository
 
     @Provides
     @Singleton

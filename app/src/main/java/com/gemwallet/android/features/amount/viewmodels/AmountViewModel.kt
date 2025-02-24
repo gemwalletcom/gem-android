@@ -59,7 +59,7 @@ class AmountViewModel @Inject constructor(
         .mapNotNull { AmountParams.unpack(it) }
 
     private val asset: Flow<AssetInfo> = params.flatMapLatest {
-        assetsRepository.getAssetInfo(it.assetId)
+        assetsRepository.getAssetInfo(it.assetId).mapNotNull { it }
     }
 
     private val delegation: StateFlow<Delegation?> = params.flatMapMerge {

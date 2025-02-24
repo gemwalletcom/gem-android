@@ -33,10 +33,10 @@ const val CURRENT_WALLET_REQUEST = """SELECT wallet_id FROM session WHERE sessio
             tx.createdAt,
             tx.updatedAt,
             tx.walletId,
-            assets.decimals as assetDecimals,
-            assets.name as assetName,
-            assets.type as assetType,
-            assets.symbol as assetSymbol,
+            asset.decimals as assetDecimals,
+            asset.name as assetName,
+            asset.type as assetType,
+            asset.symbol as assetSymbol,
             feeAsset.decimals as feeDecimals,
             feeAsset.name as feeName,
             feeAsset.type as feeType,
@@ -46,8 +46,8 @@ const val CURRENT_WALLET_REQUEST = """SELECT wallet_id FROM session WHERE sessio
             feePrices.value as feePrice,
             feePrices.day_changed as feePriceChanged
         FROM transactions as tx 
-            INNER JOIN assets ON tx.assetId = assets.id 
-            INNER JOIN assets as feeAsset ON tx.feeAssetId = feeAsset.id 
+            INNER JOIN asset ON tx.assetId = asset.id 
+            INNER JOIN asset as feeAsset ON tx.feeAssetId = feeAsset.id 
             LEFT JOIN prices ON tx.assetId = prices.asset_id
             LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.asset_id 
             WHERE tx.owner IN ($SESSION_REQUEST) OR tx.recipient in ($SESSION_REQUEST)

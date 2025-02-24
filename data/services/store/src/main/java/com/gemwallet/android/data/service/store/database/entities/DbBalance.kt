@@ -2,16 +2,25 @@ package com.gemwallet.android.data.service.store.database.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetBalance
 import com.gemwallet.android.model.Balance
 
-@Entity(tableName = "balances", primaryKeys = ["asset_id", "owner"])
+@Entity(
+    tableName = "balances",
+    primaryKeys = ["asset_id", "wallet_id", "account_address"],
+    foreignKeys = [
+        ForeignKey(DbAsset::class, ["id"], ["asset_id"], onDelete = ForeignKey.Companion.CASCADE),
+        ForeignKey(DbWallet::class, ["id"], ["wallet_id"], onDelete = ForeignKey.Companion.CASCADE),
+    ],
+)
 data class DbBalance(
     @ColumnInfo("asset_id") val assetId: String,
-    val owner: String,
+    @ColumnInfo("wallet_id") val walletId: String,
+    @ColumnInfo("account_address") val accountAddress: String,
 
     var available: String = "0",
     @ColumnInfo("available_amount") var availableAmount: Double = 0.0,
@@ -35,20 +44,17 @@ data class DbBalance(
     @ColumnInfo("reserved_amount") var reservedAmount: Double = 0.0,
 
     @ColumnInfo("total_amount") var totalAmount: Double = 0.0,
-
-    var enabled: Boolean = true,
-    var hidden: Boolean = false,
-    var pinned: Boolean = false,
-
+    @ColumnInfo("is_active") var isActive: Boolean = true,
     @ColumnInfo("updated_at") var updatedAt: Long?
 ) {
     companion object
 }
 
-fun AssetBalance.toRecord(account: String, updateAt: Long): DbBalance {
+fun AssetBalance.toRecord(walletId: String, accountAddress: String, updateAt: Long): DbBalance {
     return DbBalance(
         assetId = this.asset.id.toIdentifier(),
-        owner = account,
+        walletId = walletId,
+        accountAddress = accountAddress,
         available = this.balance.available,
         availableAmount = this.balanceAmount.available,
         frozen = this.balance.frozen,

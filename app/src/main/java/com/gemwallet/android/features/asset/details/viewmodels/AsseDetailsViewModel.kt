@@ -44,6 +44,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -70,7 +71,7 @@ class AsseDetailsViewModel @Inject constructor(
     private val model = assetId
         .onEach { uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process) } }
         .flatMapLatest {
-            assetsRepository.getAssetInfo(it ?: return@flatMapLatest emptyFlow())
+            assetsRepository.getAssetInfo(it ?: return@flatMapLatest emptyFlow()).mapNotNull { it } // TODO: Could return null assetInfo. Add checking.
         }
         .map { Model(it, System.currentTimeMillis()) }
         .flowOn(Dispatchers.IO)
