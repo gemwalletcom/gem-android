@@ -41,9 +41,6 @@ interface AssetsDao {
     @Query("SELECT * FROM asset")
     suspend fun getAll(): List<DbAsset>
 
-//    @Query("SELECT DISTINCT * FROM asset WHERE owner_address IN (:addresses) AND id IN (:assetId)")
-//    suspend fun getById(addresses: List<String>, assetId: List<String>): List<DbAsset>
-
     @Query("SELECT * FROM asset_info WHERE chain = :chain AND id = :assetId AND sessionId = 1")
     fun getAssetInfo(assetId: String, chain: Chain): Flow<DbAssetInfo?>
 
