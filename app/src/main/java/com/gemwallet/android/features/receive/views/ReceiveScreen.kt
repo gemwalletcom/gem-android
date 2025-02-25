@@ -75,12 +75,12 @@ private fun ReceiveScene(
 
     val onShare = fun () {
         val type = "text/plain"
-        val subject = "${assetInfo.owner.chain}\n${assetInfo.asset.symbol}"
+        val subject = "${assetInfo.owner?.chain}\n${assetInfo.asset.symbol}"
 
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = type
         intent.putExtra(Intent.EXTRA_SUBJECT, subject)
-        intent.putExtra(Intent.EXTRA_TEXT, assetInfo.owner.address)
+        intent.putExtra(Intent.EXTRA_TEXT, assetInfo.owner?.address)
 
         ContextCompat.startActivity(
             context,
@@ -91,7 +91,7 @@ private fun ReceiveScene(
 
     val onCopyClick = fun () {
         onCopy()
-        clipboardManager.setText(AnnotatedString(assetInfo.owner.address))
+        clipboardManager.setText(AnnotatedString(assetInfo.owner?.address ?: ""))
     }
 
     Scene(
@@ -103,7 +103,7 @@ private fun ReceiveScene(
             }
         }
     ) {
-        if (assetInfo.owner.address.isEmpty()) {
+        if (assetInfo.owner?.address.isNullOrEmpty()) {
             return@Scene
         }
         Column(
@@ -135,8 +135,8 @@ private fun ReceiveScene(
                                 .heightIn(100.dp, 400.dp)
                                 .padding(12.dp),
                             painter = rememberQRCodePainter(
-                                content = assetInfo.owner.address,
-                                cacheName = "${assetInfo.owner.chain.string}_${assetInfo.owner.address}",
+                                content = assetInfo.owner?.address ?: "",
+                                cacheName = "${assetInfo.owner?.chain?.string}_${assetInfo.owner?.address}",
                                 size = 300.dp
                             ),
                             contentDescription = "Receive QR",
@@ -152,7 +152,7 @@ private fun ReceiveScene(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = assetInfo.owner.address,
+                        text = assetInfo.owner?.address ?: "",
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.secondary,
                         style = MaterialTheme.typography.bodyLarge,

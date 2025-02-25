@@ -76,6 +76,8 @@ object DatabaseModule {
         .addMigrations(MIGRATION_39_40)
         .addMigrations(MIGRATION_40_41)
         .addMigrations(Migration_41_42)
+        .addMigrations(Migration_42_43)
+        .addMigrations(Migration_43_44)
         .build()
 
     @Singleton

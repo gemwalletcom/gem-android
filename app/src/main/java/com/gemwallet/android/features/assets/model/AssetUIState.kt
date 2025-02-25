@@ -1,48 +1,12 @@
 package com.gemwallet.android.features.assets.model
 
-import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.models.PriceState
-import com.wallet.core.primitives.Asset
-import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.Currency
 import java.math.RoundingMode
 import java.text.DecimalFormat
 import kotlin.math.absoluteValue
-
-typealias IconUrl = String
-
-data class AssetUIState(
-    val asset: Asset,
-    val value: String,
-    val isZeroValue: Boolean,
-    val price: PriceUIState? = null,
-    val fiat: String = "",
-    val owner: String = "",
-    val metadata: AssetMetaData? = null,
-    val position: Int = 0,
-)
-
-fun AssetInfo.toUIModel(): AssetUIState {
-    val balances = this.balance.totalAmount
-    val currency = price?.currency ?: Currency.USD
-
-    return AssetUIState(
-        asset = asset,
-        isZeroValue = balances == 0.0,
-        value = asset.format(balances, 4),
-        price = PriceUIState.create(price?.price, currency),
-        fiat = if (price?.price == null || price!!.price.price == 0.0) {
-            ""
-        } else {
-            currency.format(balance.fiatTotalAmount)
-        },
-        owner = owner.address,
-        metadata = metadata,
-        position = position,
-    )
-}
 
 data class PriceUIState(
     val value: String,

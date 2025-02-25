@@ -77,7 +77,7 @@ class StakeViewModel @Inject constructor(
             val asset = assetsRepository.getAssetInfo(assetId).firstOrNull() ?: return@launch
             val assetId = asset.id()
             state.update { it.copy(loading = true) }
-            stakeRepository.sync(assetId.chain, asset.owner.address, asset.stakeApr ?: return@launch)
+            stakeRepository.sync(assetId.chain, asset.owner?.address ?: return@launch, asset.stakeApr ?: return@launch)
             state.update { it.copy(loading = false) }
         }
     }
@@ -87,7 +87,7 @@ class StakeViewModel @Inject constructor(
         onConfirm(
             ConfirmParams.Stake.RewardsParams(
                 assetId = currentState.asset?.asset?.id!!,
-                from = currentState.asset.owner,
+                from = currentState.asset.owner!!,
                 validatorsId = currentState.delegations
                     .filter { BigInteger(it.base.rewards) > BigInteger.ZERO }
                     .map { it.base.validatorId }

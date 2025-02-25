@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.service.store.database.entities
 
 import androidx.room.DatabaseView
+import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.isStakeSupported
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
@@ -33,9 +34,9 @@ import kotlinx.coroutines.flow.map
             asset.is_stake_enabled as isStakeEnabled,
             asset.staking_apr as stakingApr,
             asset.rank as assetRank,
+            asset.chain as chain,
             accounts.address as address,
             accounts.derivation_path as derivationPath,
-            accounts.chain as chain,
             accounts.extendedPublicKey as extendedPublicKey,
             asset_config.is_pinned AS pinned,
             asset_config.is_visible AS visible,
@@ -69,13 +70,12 @@ import kotlinx.coroutines.flow.map
         LEFT JOIN accounts ON asset_wallet.account_address = accounts.address AND asset_wallet.wallet_id = accounts.wallet_id AND asset."chain" = accounts."chain"
         LEFT JOIN wallets ON asset_wallet.wallet_id = wallets.id
         LEFT JOIN session ON asset_wallet.wallet_id = session.wallet_id
-        LEFT JOIN balances ON asset_wallet.account_address = balances.account_address AND asset_wallet.asset_id = balances.asset_id AND asset_wallet.asset_id = balances.wallet_id
+        LEFT JOIN balances ON asset_wallet.account_address = balances.account_address AND asset_wallet.asset_id = balances.asset_id AND asset_wallet.wallet_id = balances.wallet_id
         LEFT JOIN prices ON asset.id = prices.asset_id AND prices.currency = (SELECT currency FROM session WHERE id = 1)
         LEFT JOIN asset_config ON asset_wallet.asset_id = asset_config.asset_id AND asset_wallet.wallet_id = asset_config.wallet_id
     """
 )
 data class DbAssetInfo(
-    val address: String,
     val id: String,
     val name: String,
     val symbol: String,
@@ -90,14 +90,15 @@ data class DbAssetInfo(
     val stakingApr: Double?,
     val assetRank: Int,
     // account
-    val walletId: String,
-    val derivationPath: String,
+    val address: String?,
+    val walletId: String?,
+    val derivationPath: String?,
     val chain: Chain,
     val extendedPublicKey: String?,
     // wallet
     val sessionId: Int?,
-    val walletName: String,
-    val walletType: WalletType,
+    val walletName: String?,
+    val walletType: WalletType?,
     // price
     val priceValue: Double?,
     val priceDayChanges: Double?,
@@ -162,14 +163,15 @@ fun DbAssetInfo.toModel(): AssetInfo? {
     )
 
     val currency = Currency.entries.firstOrNull { it.string == entity.priceCurrency }
+    val account = if (entity.address.isNullOrEmpty()) null else Account(
+        chain = entity.chain,
+        address = entity.address,
+        derivationPath = entity.derivationPath ?: "",
+        extendedPublicKey = entity.extendedPublicKey,
+    )
 
     return AssetInfo(
-        owner = Account(
-            chain = entity.chain,
-            address = entity.address,
-            derivationPath = entity.derivationPath,
-            extendedPublicKey = entity.extendedPublicKey,
-        ),
+        owner = account,
         asset = asset,
         balance = balances,
         price = if (entity.priceValue != null && currency != null) {
@@ -186,14 +188,14 @@ fun DbAssetInfo.toModel(): AssetInfo? {
             isEnabled = entity.visible == true,
             isBuyEnabled = entity.isBuyEnabled,
             isSwapEnabled = entity.isSwapEnabled,
-            isStakeEnabled = entity.chain.isStakeSupported(),
+            isStakeEnabled = asset.chain().isStakeSupported(),
             isPinned = entity.pinned == true,
             isSellEnabled = false,
             isActive = true,
         ),
         rank = entity.assetRank,
-        walletName = entity.walletName,
-        walletType = entity.walletType,
+        walletName = entity.walletName ?: "",
+        walletType = entity.walletType ?: WalletType.multicoin,
         stakeApr = entity.stakingApr,
         position = entity.listPosition ?: 0,
         walletId = walletId,

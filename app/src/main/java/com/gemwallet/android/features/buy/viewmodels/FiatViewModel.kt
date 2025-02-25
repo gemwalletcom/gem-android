@@ -102,7 +102,7 @@ class FiatViewModel @Inject constructor(
                     asset.asset,
                     currency.string,
                     amount.numberParse().toDouble(),
-                    asset.assetInfo.owner.address
+                    asset.assetInfo.owner?.address ?: ""
                 ).getOrNull()
                 if (quotes == null) {
                     _state.value = FiatSceneState.Error(BuyError.QuoteNotAvailable)

@@ -58,8 +58,8 @@ interface AssetsDao {
 
     @Query("""
         SELECT * FROM asset_info WHERE
-            sessionId = 1
-            AND id NOT IN (:exclude)
+            id NOT IN (:exclude)
+            AND (chain IN (SELECT chain FROM accounts JOIN session ON accounts.wallet_id = session.wallet_id AND session.id = 1))
             AND (id LIKE '%' || :query || '%'
             OR symbol LIKE '%' || :query || '%'
             OR name LIKE '%' || :query || '%' COLLATE NOCASE)
@@ -79,9 +79,9 @@ interface AssetsDao {
 
     @Query("""
         SELECT * FROM asset_info WHERE
-            sessionId = 1
+            (chain IN (SELECT chain FROM accounts JOIN session ON accounts.wallet_id = session.wallet_id AND session.id = 1))
             AND id NOT IN (:exclude)
-            AND ( chain IN (:byChains) OR id IN (:byAssets) )
+            AND (chain IN (:byChains) OR id IN (:byAssets) )
             AND (id LIKE '%' || :query || '%'
             OR symbol LIKE '%' || :query || '%'
             OR name LIKE '%' || :query || '%' COLLATE NOCASE)
@@ -119,7 +119,7 @@ interface AssetsDao {
     @Query("UPDATE asset SET is_buy_enabled=1 WHERE id IN (:ids)")
     suspend fun updateBuyAvailable(ids: List<String>)
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
     fun linkAssetToWallet(link: DbAssetWallet)
 
     @Query("SELECT * FROM asset WHERE id = :id")

@@ -304,9 +304,10 @@ class AssetsRepository @Inject constructor(
         assetsDao.getAssetsInfoByAccountsInWallet(wallet.accounts.map { it.address }, wallet.id)
             .toAssetInfoModel()
             .firstOrNull()
-            ?.map {
+            ?.mapNotNull {
+                val accountAddress = it.owner ?: return@mapNotNull null
                 async {
-                    val balances = updateBalances(wallet.id, it.owner, emptyList()).firstOrNull()
+                    val balances = updateBalances(wallet.id, accountAddress, emptyList()).firstOrNull()
                     if ((balances?.totalAmount ?: 0.0) > 0.0) {
                         setVisibility(wallet.id, it.id(), true)
                     }
@@ -352,7 +353,13 @@ class AssetsRepository @Inject constructor(
         visibility: Boolean,
         currency: Currency,
     ) = withContext(Dispatchers.IO) {
-        assetsDao.linkAssetToWallet(DbAssetWallet(walletId, owner.address, assetId.toIdentifier()))
+        assetsDao.linkAssetToWallet(
+            DbAssetWallet(
+            walletId = walletId,
+            assetId = assetId.toIdentifier(),
+            accountAddress = owner.address
+            )
+        )
         setVisibility(walletId, assetId, visibility)
         if (visibility) {
             launch { updateBalances(assetId) }
@@ -463,16 +470,17 @@ class AssetsRepository @Inject constructor(
     private suspend fun List<AssetInfo>.updateBalances(): List<Deferred<List<AssetBalance>>> = withContext(Dispatchers.IO) {
         groupBy { it.walletId }
             .mapValues { wallet ->
-                wallet.value.groupBy { it.owner.chain }
+                val walletId = wallet.key ?: return@mapValues null
+                wallet.value.groupBy { it.asset.chain() }
                     .mapKeys { it.value.firstOrNull()?.owner }
                     .mapValues { entry -> entry.value.filter { it.metadata?.isEnabled == true }.map { it.asset } }
                     .mapNotNull { entry ->
-                        val account = entry.key ?: return@mapNotNull null
+                        val account: Account = entry.key ?: return@mapNotNull null
                         if (entry.value.isEmpty()) {
                             return@mapNotNull null
                         }
                         async {
-                            updateBalances(wallet.key, account, entry.value)
+                            updateBalances(walletId, account, entry.value)
                         }
                     }
             }

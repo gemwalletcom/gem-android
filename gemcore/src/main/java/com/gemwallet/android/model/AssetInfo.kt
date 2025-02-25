@@ -7,10 +7,10 @@ import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.WalletType
 
 data class AssetInfo(
-    val owner: Account,
+    val owner: Account?,
     val asset: Asset,
     val balance: AssetBalance = AssetBalance(asset),
-    val walletId: String,
+    val walletId: String?,
     val walletType: WalletType = WalletType.view,
     val walletName: String = "",
     val price: AssetPriceInfo? = null,

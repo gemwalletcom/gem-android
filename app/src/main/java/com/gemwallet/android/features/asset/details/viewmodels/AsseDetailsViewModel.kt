@@ -8,7 +8,6 @@ import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isStaked
@@ -26,7 +25,6 @@ import com.gemwallet.android.model.reservedFormatted
 import com.gemwallet.android.model.stakedFormatted
 import com.gemwallet.android.model.totalFormatted
 import com.gemwallet.android.ui.components.image.getIconUrl
-import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
@@ -58,7 +56,6 @@ class AsseDetailsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val getTransactionsCase: GetTransactionsCase,
-    private val stakeRepository: StakeRepository,
     private val getPriceAlertsCase: GetPriceAlertsCase,
     private val enablePriceAlertCase: EnablePriceAlertCase,
     savedStateHandle: SavedStateHandle,
@@ -92,7 +89,7 @@ class AsseDetailsViewModel @Inject constructor(
                 && (uiState.sync == AssetInfoUIState.SyncState.Wait || uiState.sync == AssetInfoUIState.SyncState.Process)
         ) {
             model ?: return@combine
-            syncAssetInfo(model.assetInfo.asset.id, model.assetInfo.owner, model.assetInfo.stakeApr ?: 0.0)
+            syncAssetInfo(model.assetInfo.asset.id)
         }
     }
     .flowOn(Dispatchers.IO)
@@ -105,7 +102,7 @@ class AsseDetailsViewModel @Inject constructor(
         uiState.update { AssetInfoUIState.Idle(state) }
     }
 
-    private fun syncAssetInfo(assetId: AssetId, owner: Account, apr: Double) {
+    private fun syncAssetInfo(assetId: AssetId) {
         uiState.update {
             AssetInfoUIState.Idle(
                 if ((it as? AssetInfoUIState.Idle)?.sync != AssetInfoUIState.SyncState.Process) {
@@ -162,7 +159,7 @@ class AsseDetailsViewModel @Inject constructor(
                     walletType = assetInfo.walletType,
                     totalBalance = balances.totalFormatted(),
                     totalFiat = fiatTotal,
-                    owner = assetInfo.owner.address,
+                    owner = assetInfo.owner?.address ?: "",
                     hasBalanceDetails = StakeChain.isStaked(asset.id.chain) || balances.balanceAmount.reserved != 0.0,
                     available = if (balances.balanceAmount.available != total) {
                         balances.availableFormatted()

@@ -196,8 +196,8 @@ class SwapViewModel @Inject constructor(
             swapRepository.getQuotes(
                 from = fromAsset.asset.id,
                 to = toAsset.asset.id,
-                ownerAddress = fromAsset.owner.address,
-                destination = toAsset.owner.address,
+                ownerAddress = fromAsset.owner!!.address,
+                destination = toAsset.owner!!.address,
                 amount = Crypto(fromValue, fromAsset.asset.decimals).atomicValue.toString(),
             )
         } catch (err: Throwable) {
@@ -336,12 +336,13 @@ class SwapViewModel @Inject constructor(
 
     private fun updateBalances(fromId: AssetId, toId: AssetId) {
         val session = sessionRepository.getSession() ?: return
-        val account = session.wallet.getAccount(fromId.chain) ?: return
+        val fromAccount = session.wallet.getAccount(fromId.chain) ?: return
+        val toAccount = session.wallet.getAccount(toId.chain) ?: return
         viewModelScope.launch(Dispatchers.IO) {
-            assetsRepository.switchVisibility(session.wallet.id, account, fromId, true, session.currency)
+            assetsRepository.switchVisibility(session.wallet.id, fromAccount, fromId, true, session.currency)
         }
         viewModelScope.launch(Dispatchers.IO) {
-            assetsRepository.switchVisibility(session.wallet.id, account, toId, true, session.currency)
+            assetsRepository.switchVisibility(session.wallet.id, toAccount, toId, true, session.currency)
         }
     }
 
@@ -371,7 +372,7 @@ class SwapViewModel @Inject constructor(
         val swapData = swapRepository.getQuoteData(quote, wallet)
         onConfirm(
             ConfirmParams.SwapParams(
-                from = from.owner,
+                from = from.owner!!,
                 fromAssetId = from.asset.id,
                 toAssetId = to.asset.id,
                 fromAmount = Crypto(fromAmount, from.asset.decimals).atomicValue,

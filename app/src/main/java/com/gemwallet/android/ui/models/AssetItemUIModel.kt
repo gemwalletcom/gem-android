@@ -59,7 +59,7 @@ class AssetInfoUIModel(
     override val currency: Currency
         get() = assetInfo.price?.currency ?: Currency.USD
 
-    override val owner: String by lazy { assetInfo.owner.address }
+    override val owner: String by lazy { assetInfo.owner!!.address }
 
     override val isZeroAmount: Boolean by lazy { cryptoAmount == 0.0 }
 
