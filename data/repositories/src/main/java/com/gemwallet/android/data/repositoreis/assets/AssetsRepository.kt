@@ -1,6 +1,5 @@
 package com.gemwallet.android.data.repositoreis.assets
 
-import android.util.Log
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
@@ -36,7 +35,6 @@ import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetBalance
 import com.gemwallet.android.model.AssetInfo
-import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.model.TransactionExtended
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
@@ -56,7 +54,6 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
@@ -82,12 +79,6 @@ class AssetsRepository @Inject constructor(
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetAsset {
     private val visibleByDefault = listOf(Chain.Ethereum, Chain.Bitcoin, Chain.SmartChain, Chain.Solana)
-
-    private var syncJob: Deferred<Unit>? = null
-
-    private val _syncState = MutableStateFlow(SyncState.Idle)
-    val syncState: Flow<SyncState> = _syncState
-
     init {
         scope.launch(Dispatchers.IO) {
             getTransactionsCase.getChangedTransactions().collect {
@@ -106,29 +97,10 @@ class AssetsRepository @Inject constructor(
     }
 
     suspend fun sync(currency: Currency) = withContext(Dispatchers.IO) {
-        val syncJob = syncJob
-        if (syncJob?.isActive == true) {
-            try {
-                syncJob.cancel()
-            } catch (err: Throwable) {
-                Log.d("ASSETS_REPOSITORY", "Error on cancel job", err)
-            }
-            finally {
-                _syncState.tryEmit(SyncState.Idle)
-            }
-        }
-        this@AssetsRepository.syncJob = async {
-            _syncState.tryEmit(SyncState.InSync)
-            val balancesJob = async(Dispatchers.IO) {
-                getAssetsInfo().firstOrNull()?.updateBalances()?.awaitAll()
-            }
-            val pricesJob = async(Dispatchers.IO) {
-                updatePrices(currency)
-            }
-            balancesJob.await()
-            pricesJob.await()
-            _syncState.tryEmit(SyncState.Idle)
-        }
+        val balancesJob = getAssetsInfo().firstOrNull()?.updateBalances()
+        val pricesJob = async(Dispatchers.IO) { updatePrices(currency) }
+        balancesJob?.awaitAll()
+        pricesJob.await()
     }
 
     suspend fun syncAssetInfo(assetId: AssetId, account: Account) = withContext(Dispatchers.IO) {
@@ -432,10 +404,12 @@ class AssetsRepository @Inject constructor(
         val updatedAt = System.currentTimeMillis()
 
         val getNative = async {
-            val prevBalance = balancesDao.getByAccount(account.address, account.chain.string)
+            val prevBalance = balancesDao.getByAccount(walletId, account.address, account.chain.string)
             val nativeBalance = balancesRemoteSource.getNativeBalances(account)
-            val dbNativeBalance = DbBalance.mergeNative(prevBalance, nativeBalance
-                ?.toRecord(walletId, account.address, updatedAt))
+            val dbNativeBalance = DbBalance.mergeNative(
+                prevBalance,
+                nativeBalance?.toRecord(walletId, account.address, updatedAt),
+            )
             dbNativeBalance?.let { balancesDao.insert(it) }
 
             val delegationBalances = balancesRemoteSource.getDelegationBalances(account)
@@ -450,7 +424,6 @@ class AssetsRepository @Inject constructor(
             balancesDao.insert(balances.map { it.toRecord(walletId, account.address, updatedAt) })
             balances
         }
-
         listOf(getNative.await()).filterNotNull() + getTokens.await()
     }
 

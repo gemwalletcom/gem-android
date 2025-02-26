@@ -14,7 +14,6 @@ import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import coil3.request.transformations
-import coil3.size.Scale
 import coil3.transform.CircleCropTransformation
 import coil3.transform.Transformation
 import com.gemwallet.android.ui.components.designsystem.iconSize

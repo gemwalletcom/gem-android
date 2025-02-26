@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.gemwallet.android.data.service.store.database.entities.DbBalance
-import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BalancesDao {
@@ -19,6 +18,6 @@ interface BalancesDao {
     @Update
     fun update(balance: DbBalance)
 
-    @Query("SELECT * FROM balances WHERE account_address = :addresses AND asset_id = :assetId")
-    fun getByAccount(addresses: String, assetId: String): DbBalance?
+    @Query("SELECT * FROM balances WHERE wallet_id = :walletId AND account_address = :accountAddresses AND asset_id = :assetId")
+    fun getByAccount(walletId: String, accountAddresses: String, assetId: String): DbBalance?
 }

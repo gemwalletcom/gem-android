@@ -5,22 +5,13 @@ import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.services.gemapi.GemApiClient
-import com.gemwallet.android.ext.assetType
-import com.gemwallet.android.ext.toAssetId
-import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.model.AssetInfo
-import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetBasic
-import com.wallet.core.primitives.AssetFull
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetProperties
 import com.wallet.core.primitives.AssetScore
-import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 class TokensRepository (
