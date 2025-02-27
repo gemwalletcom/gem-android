@@ -14,6 +14,8 @@ import com.wallet.core.primitives.NFTData
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.PriceData
+import com.wallet.core.primitives.ScanTransaction
+import com.wallet.core.primitives.ScanTransactionPayload
 import com.wallet.core.primitives.Subscription
 import kotlinx.serialization.Serializable
 import retrofit2.Response
@@ -102,6 +104,9 @@ interface GemApiClient {
 
     @GET("/v1/nft/assets/device/{device_id}")
     suspend fun getNFTs(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int): Result<Data<List<NFTData>>>
+
+    @POST("/v1/scan/transaction")
+    suspend fun getScanTransaction(@Body payload: ScanTransactionPayload): Result<Data<ScanTransaction>>
 }
 
 @Serializable

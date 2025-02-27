@@ -16,6 +16,7 @@ import org.junit.Test
 import wallet.core.jni.CoinType
 import wallet.core.jni.HDWallet
 import java.math.BigInteger
+import kotlin.Int
 
 class TestXrpSigner {
     companion object {
@@ -41,10 +42,11 @@ class TestXrpSigner {
                 ),
                 chainData = XrpSignerPreloader.XrpChainData(
                     sequence = 1,
+                    bockNumber = 1,
                     fee = Fee(
                         speed = TxSpeed.Normal,
                         feeAssetId = AssetId(Chain.Xrp),
-                        amount = BigInteger.TEN
+                        amount = BigInteger.TEN,
                     ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),

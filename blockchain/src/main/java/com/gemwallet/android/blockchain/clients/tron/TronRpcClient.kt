@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.blockchain.clients.tron.services.TronAccountsService
+import com.gemwallet.android.blockchain.clients.tron.services.TronBroadcastService
 import com.gemwallet.android.blockchain.clients.tron.services.TronCallService
 import com.gemwallet.android.blockchain.clients.tron.services.TronNodeStatusService
 import com.gemwallet.android.blockchain.clients.tron.services.TronStakeService
@@ -14,10 +15,9 @@ interface TronRpcClient :
     TronAccountsService,
     TronCallService,
     TronStakeService,
-    TronNodeStatusService
+    TronNodeStatusService,
+    TronBroadcastService
 {
-    @POST("/wallet/broadcasttransaction")
-    suspend fun broadcast(@Body body: RequestBody): Result<TronTransactionBroadcast>
 
     @POST("/wallet/gettransactioninfobyid")
     suspend fun transaction(@Body value: TronValue): Result<TronTransactionReceipt>

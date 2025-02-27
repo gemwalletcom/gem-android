@@ -33,13 +33,13 @@ class TestSolanaSignPreloader {
     ) : SolanaNetworkInfoService {
         var tokenIdRequest: String = ""
 
-        override suspend fun getTokenInfo(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaTokenOwner>>> {
-            tokenIdRequest = request.params[0].toString()
-
-            return Result.success(
-                JSONRpcResponse(SolanaValue(SolanaTokenOwner(tokenOwner)))
-            )
-        }
+//        override suspend fun getTokenInfo(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaTokenOwner>>> {
+//            tokenIdRequest = request.params[0].toString()
+//
+//            return Result.success(
+//                JSONRpcResponse(SolanaValue(SolanaTokenOwner(tokenOwner)))
+//            )
+//        }
 
         override suspend fun getBlockhash(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SolanaBlockhashResult>> {
             return Result.success(JSONRpcResponse(SolanaBlockhashResult(SolanaBlockhash(blockhash))))

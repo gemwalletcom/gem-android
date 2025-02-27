@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.repositoreis.session
 
+import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.data.service.store.database.SessionDao
 import com.gemwallet.android.data.service.store.database.mappers.SessionMapper
 import com.gemwallet.android.model.Session
@@ -14,7 +15,7 @@ import kotlinx.coroutines.withContext
 
 class SessionRepositoryImpl(
     private val sessionDao: SessionDao,
-    private val walletsRepository: com.gemwallet.android.data.repositoreis.wallets.WalletsRepository,
+    private val walletsRepository: WalletsRepository,
 ) : SessionRepository {
 
     private val sessionMapper = SessionMapper()

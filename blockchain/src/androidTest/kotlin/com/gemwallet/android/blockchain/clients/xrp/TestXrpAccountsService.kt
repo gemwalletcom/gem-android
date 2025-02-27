@@ -19,7 +19,8 @@ internal class TestXrpAccountsService(
                     XRPAccount(
                         Balance = balance,
                         Sequence = 92788459,
-                    )
+                    ),
+                    ledger_current_index = 1
                 )
             )
         )
