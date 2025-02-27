@@ -112,7 +112,10 @@ class SignerPreloaderProxy(
                 params.toAssetId.chain,
                 address = wallet.getAccount(params.toAssetId.chain)?.address ?: throw IllegalArgumentException("Account isn't available")
             )
-            else -> ScanAddressTarget(chain, params.destination()?.address ?: throw IllegalArgumentException("Destination isn't available"))
+            is ConfirmParams.Stake -> ScanAddressTarget(chain, params.validatorId)
+            is ConfirmParams.TokenApprovalParams -> ScanAddressTarget(chain, params.contract)
+            is ConfirmParams.TransferParams.Native,
+            is ConfirmParams.TransferParams.Token -> ScanAddressTarget(chain, params.destination().address)
         }
 
         return ScanTransactionPayload(
