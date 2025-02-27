@@ -33,5 +33,9 @@ enum class LinkType(val string: String) {
 	Instagram("instagram"),
 	@SerialName("magiceden")
 	MagicEden("magiceden"),
+	@SerialName("coinmarketcap")
+	CoinMarketCap("coinmarketcap"),
+	@SerialName("tiktok")
+	TikTok("tiktok"),
 }
 

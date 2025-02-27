@@ -5,7 +5,7 @@ import com.gemwallet.android.blockchain.clients.ApprovalTransactionPreloader
 import com.gemwallet.android.blockchain.clients.BroadcastClientProxy
 import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
 import com.gemwallet.android.blockchain.clients.SignClientProxy
-import com.gemwallet.android.blockchain.clients.SignerPreloaderProxy
+import com.gemwallet.android.services.SignerPreloaderProxy
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
@@ -65,11 +65,13 @@ import com.gemwallet.android.blockchain.clients.xrp.XrpBroadcastClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpNodeStatusClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignerPreloader
+import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.device.SyncSubscriptionCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
+import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.available
 import com.gemwallet.android.ext.toChainType
 import com.gemwallet.android.interactors.sync.SyncTransactions
@@ -115,6 +117,9 @@ object DataModule {
     @Singleton
     fun provideSignerPreloader(
         rpcClients: RpcClientAdapter,
+        gemApiClient: GemApiClient,
+        sessionRepository: SessionRepository,
+        getDeviceIdCase: GetDeviceIdCase,
     ): SignerPreloaderProxy {
         val preloaders = Chain.available().map {
             when (it.toChainType()) {
@@ -135,6 +140,9 @@ object DataModule {
             }
         }
         return SignerPreloaderProxy(
+            gemApiClient = gemApiClient,
+            sessionRepository = sessionRepository,
+            getDeviceIdCase = getDeviceIdCase,
             nativeTransferClients = preloaders,
             tokenTransferClients = preloaders.mapNotNull { it as? TokenTransferPreloader },
             stakeTransactionClients = preloaders.mapNotNull { it as? StakeTransactionPreloader },

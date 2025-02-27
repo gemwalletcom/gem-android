@@ -6,17 +6,17 @@ import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.gemwallet.android.model.getTotalAmount
+import com.wallet.core.blockchain.solana.models.SolanaAccount
+import com.wallet.core.blockchain.solana.models.SolanaAccountParsed
+import com.wallet.core.blockchain.solana.models.SolanaAccountParsedInfo
 import com.wallet.core.blockchain.solana.models.SolanaBalance
 import com.wallet.core.blockchain.solana.models.SolanaBalanceValue
 import com.wallet.core.blockchain.solana.models.SolanaEpoch
+import com.wallet.core.blockchain.solana.models.SolanaRentExemptReserve
+import com.wallet.core.blockchain.solana.models.SolanaStake
 import com.wallet.core.blockchain.solana.models.SolanaStakeAccount
-import com.wallet.core.blockchain.solana.models.SolanaStakeAccountData
-import com.wallet.core.blockchain.solana.models.SolanaStakeAccountDataParsed
-import com.wallet.core.blockchain.solana.models.SolanaStakeAccountDataParsedInfo
-import com.wallet.core.blockchain.solana.models.SolanaStakeAccountDataParsedInfoMeta
-import com.wallet.core.blockchain.solana.models.SolanaStakeAccountDataParsedInfoStake
-import com.wallet.core.blockchain.solana.models.SolanaStakeAccountDataParsedInfoStakeDelegation
-import com.wallet.core.blockchain.solana.models.SolanaTokenAccountResult
+import com.wallet.core.blockchain.solana.models.SolanaStakeDelegation
+import com.wallet.core.blockchain.solana.models.SolanaStakeInfo
 import com.wallet.core.blockchain.solana.models.SolanaValidator
 import com.wallet.core.blockchain.solana.models.SolanaValidators
 import com.wallet.core.blockchain.solana.models.SolanaValue
@@ -28,6 +28,7 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import kotlin.String
 
 class TestSolanaBalances {
 
@@ -38,10 +39,10 @@ class TestSolanaBalances {
     }
 
     private class TestBalancesService : SolanaBalancesService {
-        var nativeRequest: JSONRpcRequest<List<String>>? = null
+        var nativeRequest: JSONRpcRequest<List<Any>>? = null
         var tokenRequest: JSONRpcRequest<List<String>>? = null
 
-        override suspend fun getBalance(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<SolanaBalance>> {
+        override suspend fun getBalance(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaBalance>> {
             nativeRequest = request
             return Result.success(
                 JSONRpcResponse(
@@ -68,7 +69,7 @@ class TestSolanaBalances {
     }
 
     private class TestStakeService(
-        private val delegationsResponse: JSONRpcResponse<List<SolanaTokenAccountResult<SolanaStakeAccount>>> = JSONRpcResponse(emptyList())
+        private val delegationsResponse: JSONRpcResponse<List<SolanaStakeAccount>> = JSONRpcResponse(emptyList())
     ) : SolanaStakeService {
         var validatorsRequest: JSONRpcRequest<List<Any>>? = null
         var delegationsRequest: JSONRpcRequest<List<Any>>? = null
@@ -86,7 +87,7 @@ class TestSolanaBalances {
             )
         }
 
-        override suspend fun delegations(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<List<SolanaTokenAccountResult<SolanaStakeAccount>>>> {
+        override suspend fun delegations(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<List<SolanaStakeAccount>>> {
             delegationsRequest = request
 
             return Result.success(delegationsResponse)
@@ -182,22 +183,23 @@ class TestSolanaBalances {
         val stakeService = TestStakeService(
             delegationsResponse = JSONRpcResponse(
                 listOf(
-                    SolanaTokenAccountResult(
-                        SolanaStakeAccount(
-                            1000000,
-                            10,
-                            SolanaStakeAccountData(
-                                SolanaStakeAccountDataParsed(
-                                    SolanaStakeAccountDataParsedInfo(
-                                        SolanaStakeAccountDataParsedInfoStake(
-                                            SolanaStakeAccountDataParsedInfoStakeDelegation("", "", "", ""),
+                    SolanaStakeAccount(
+                        pubkey = "",
+                        account = SolanaAccount(
+                            lamports = 1000000L,
+                            space = 10,
+                            owner = "",
+                            data = SolanaAccountParsed(
+                                SolanaAccountParsedInfo(
+                                    SolanaStakeInfo(
+                                        SolanaStake(
+                                            SolanaStakeDelegation("", "", "", ""),
                                         ),
-                                        SolanaStakeAccountDataParsedInfoMeta("")
+                                        SolanaRentExemptReserve("")
                                     )
                                 )
                             )
-                        ),
-                        pubkey = "",
+                        )
                     )
                 )
 
@@ -234,42 +236,43 @@ class TestSolanaBalances {
         val stakeService = TestStakeService(
             delegationsResponse = JSONRpcResponse(
                 listOf(
-                    SolanaTokenAccountResult(
-                        SolanaStakeAccount(
-                            1000000,
-                            10,
-                            SolanaStakeAccountData(
-                                SolanaStakeAccountDataParsed(
-                                    SolanaStakeAccountDataParsedInfo(
-                                        SolanaStakeAccountDataParsedInfoStake(
-                                            SolanaStakeAccountDataParsedInfoStakeDelegation("", "", "", ""),
+                    SolanaStakeAccount(
+                        pubkey = "",
+                        account = SolanaAccount(
+                            lamports = 1000000L,
+                            space = 10,
+                            owner = "",
+                            data = SolanaAccountParsed(
+                                SolanaAccountParsedInfo(
+                                    SolanaStakeInfo(
+                                        SolanaStake(
+                                            SolanaStakeDelegation("", "", "", ""),
                                         ),
-                                        SolanaStakeAccountDataParsedInfoMeta("")
+                                        SolanaRentExemptReserve("")
                                     )
                                 )
                             )
-                        ),
-                        pubkey = "",
+                        )
                     ),
-                    SolanaTokenAccountResult(
-                        SolanaStakeAccount(
-                            2000000,
-                            20,
-                            SolanaStakeAccountData(
-                                SolanaStakeAccountDataParsed(
-                                    SolanaStakeAccountDataParsedInfo(
-                                        SolanaStakeAccountDataParsedInfoStake(
-                                            SolanaStakeAccountDataParsedInfoStakeDelegation("", "", "", ""),
+                    SolanaStakeAccount(
+                        pubkey = "",
+                        account = SolanaAccount(
+                            lamports = 2000000,
+                            space = 20,
+                            owner = "",
+                            data = SolanaAccountParsed(
+                                SolanaAccountParsedInfo(
+                                    SolanaStakeInfo(
+                                        SolanaStake(
+                                            SolanaStakeDelegation("", "", "", ""),
                                         ),
-                                        SolanaStakeAccountDataParsedInfoMeta("")
+                                        SolanaRentExemptReserve("")
                                     )
                                 )
                             )
-                        ),
-                        pubkey = "",
+                        )
                     )
                 )
-
             )
         )
 

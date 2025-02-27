@@ -38,7 +38,8 @@ fun SwapProvider.getSwapProviderIcon(): String {
         SwapProvider.ORCA -> "orca"
         SwapProvider.JUPITER -> "jupiter"
         SwapProvider.ACROSS -> "across"
-        SwapProvider.OKU_TRADE -> "oku_logo"
+        SwapProvider.OKU_TRADE -> "oku"
+        SwapProvider.WAGMI -> "wagmi"
     }
     return "file:///android_asset/swap/${iconName.lowercase()}.svg"
 }
