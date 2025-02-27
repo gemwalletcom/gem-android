@@ -56,6 +56,7 @@ interface AssetsDao {
         SELECT * FROM asset_info WHERE
             id NOT IN (:exclude)
             AND (chain IN (SELECT chain FROM accounts JOIN session ON accounts.wallet_id = session.wallet_id AND session.id = 1))
+            AND (walletId = (SELECT wallet_id FROM session WHERE session.id = 1) OR walletId IS NULL)
             AND (id LIKE '%' || :query || '%'
             OR symbol LIKE '%' || :query || '%'
             OR name LIKE '%' || :query || '%' COLLATE NOCASE)
