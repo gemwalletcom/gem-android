@@ -43,17 +43,13 @@ open class BaseAssetSelectViewModel(
 
     private val queryFlow = snapshotFlow<String> { queryState.text.toString() }
         .onEach {
-            searchState.update {
-                if (it != SearchState.Init) {
-                    SearchState.Searching
-                } else {
-                    it
-                }
+            searchState.update { if (it != SearchState.Init) SearchState.Searching else it }
+            viewModelScope.launch(Dispatchers.IO) {
+                delay(250)
+                searchTokensCase.search(it)
             }
         }
         .mapLatest { query ->
-            delay(250)
-            searchTokensCase.search(query)
             query
         }
         .flowOn(Dispatchers.IO)
