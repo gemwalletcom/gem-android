@@ -121,12 +121,8 @@ class AssetsRepository @Inject constructor(
         }.firstOrNull() ?: return@withContext
         val currency = assetInfo.price?.currency ?: return@withContext
         val assetIdIdentifier = assetId.toIdentifier()
-        val assetFullJob = async {
-            gemApi.getAsset(assetIdIdentifier, currency.string).getOrNull()
-        }
-        val marketInfoJob = async {
-            gemApi.getMarket(assetIdIdentifier, currency.string).getOrNull()
-        }
+        val assetFullJob = async { gemApi.getAsset(assetIdIdentifier, currency.string).getOrNull() }
+        val marketInfoJob = async { gemApi.getMarket(assetIdIdentifier, currency.string).getOrNull() }
 
         val assetFull = assetFullJob.await() ?: return@withContext
         val marketInfo = marketInfoJob.await()

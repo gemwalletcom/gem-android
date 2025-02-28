@@ -2,16 +2,17 @@ package com.gemwallet.android.features.asset.chart.models
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import com.gemwallet.android.ui.components.CellEntity
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.Currency
 
 class AssetMarketUIModel(
-    val assetId: AssetId,
+    val asset: Asset,
     val assetTitle: String,
     val assetLinks: List<Link> = emptyList(),
     val currency: Currency = Currency.USD,
-    val marketCells: List<CellEntity<Int>> = emptyList(),
+    val marketInfo: AssetMarket? = null,
 ) {
     class Link(
         val type: String,

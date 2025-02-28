@@ -7,10 +7,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.asset.chart.models.AssetMarketUIModel
 import com.gemwallet.android.features.asset.navigation.assetIdArg
-import com.gemwallet.android.model.Crypto
-import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.CellEntity
 import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +22,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
-import java.math.BigInteger
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -42,8 +38,10 @@ class AssetChartViewModel @Inject constructor(
                 .map { it.firstOrNull() }
                 .filterNotNull()
         }
+
     private val links = assetIdStr.filterNotNull()
         .flatMapLatest { assetsRepository.getAssetLinks(it.toAssetId() ?: return@flatMapLatest emptyFlow()) }
+
     private val market = assetIdStr.filterNotNull()
         .flatMapLatest { assetsRepository.getAssetMarket(it.toAssetId() ?: return@flatMapLatest emptyFlow()) }
 
@@ -51,30 +49,11 @@ class AssetChartViewModel @Inject constructor(
         val asset = assetInfo.asset
         val currency = assetInfo.price?.currency ?: Currency.USD
         AssetMarketUIModel(
-            assetId = asset.id,
+            asset = asset,
             assetTitle = asset.name,
             assetLinks = links.toModel(),
             currency = assetInfo.price?.currency ?: Currency.USD,
-            marketCells = mapOf(
-                R.string.asset_market_cap to (market?.marketCap ?: 0.0),
-                R.string.asset_circulating_supply to (market?.circulatingSupply ?: 0.0),
-                R.string.asset_total_supply to (market?.totalSupply ?: 0.0)
-            ).filterValues { it > 0.0 }
-                .map { (label, value) ->
-                    CellEntity(
-                        label = label,
-                        data = when (label) {
-                            R.string.asset_market_cap -> currency.format(value, 0)
-                            R.string.asset_circulating_supply -> Crypto(BigInteger.valueOf(value.toLong()))
-                                .format(0, asset.symbol, 0)
-
-                            R.string.asset_total_supply -> Crypto(BigInteger.valueOf(value.toLong()))
-                                .format(0, asset.symbol, 0)
-
-                            else -> ""
-                        }
-                    )
-                }
+            marketInfo = market,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

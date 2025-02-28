@@ -84,7 +84,6 @@ fun AssetDetailsScene(
     openNetwork: AssetIdAction,
     onStake: (AssetId) -> Unit,
 ) {
-    uniffi.gemstone.AssetWrapper
     val viewModel: AsseDetailsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val transactions by viewModel.transactions.collectAsStateWithLifecycle()

@@ -28,7 +28,6 @@ import com.gemwallet.android.data.services.gemapi.models.NameRecordDeserialize
 import com.gemwallet.android.data.services.gemapi.models.NodeSerializer
 import com.gemwallet.android.data.services.gemapi.models.ReleaseDeserialize
 import com.gemwallet.android.data.services.gemapi.models.SubscriptionSerializer
-import com.gemwallet.android.data.services.gemapi.models.SwapQuoteDeserializer
 import com.gemwallet.android.ext.available
 import com.gemwallet.android.ext.toChainType
 import com.gemwallet.android.serializer.AssetIdSerializer
@@ -41,7 +40,6 @@ import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.Release
 import com.wallet.core.primitives.Subscription
-import com.wallet.core.primitives.SwapQuote
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -57,6 +55,7 @@ import retrofit2.Converter.Factory
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import uniffi.gemstone.SwapQuote
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -127,7 +126,6 @@ object ClientsModule {
             .registerTypeAdapter(Device::class.java, DeviceSerializer())
             .registerTypeAdapter(Subscription::class.java, SubscriptionSerializer())
             .registerTypeAdapter(NameRecord::class.java, NameRecordDeserialize())
-            .registerTypeAdapter(SwapQuote::class.java, SwapQuoteDeserializer())
             .registerTypeAdapter(Release::class.java, ReleaseDeserialize())
             .registerTypeAdapter(AssetId::class.java, AssetIdSerializer())
             .create()
@@ -139,7 +137,7 @@ object ClientsModule {
 
     @Provides
     @Singleton
-    fun provideGemApiClient(@GemHttpClient httpClient: OkHttpClient, converterFactory: Factory): GemApiClient =
+    fun provideGemApiClient(@GemHttpClient httpClient: OkHttpClient): GemApiClient =
         Retrofit.Builder()
             .baseUrl("https://api.gemwallet.com")
             .client(httpClient)

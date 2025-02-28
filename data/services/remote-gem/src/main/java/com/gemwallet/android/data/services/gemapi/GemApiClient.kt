@@ -4,6 +4,7 @@ import com.gemwallet.android.data.services.gemapi.models.PricesResponse
 import com.gemwallet.android.model.Transaction
 import com.wallet.core.primitives.AssetBasic
 import com.wallet.core.primitives.AssetFull
+import com.wallet.core.primitives.AssetMarketPrice
 import com.wallet.core.primitives.AssetPricesRequest
 import com.wallet.core.primitives.Charts
 import com.wallet.core.primitives.ConfigResponse
@@ -13,7 +14,6 @@ import com.wallet.core.primitives.FiatQuotes
 import com.wallet.core.primitives.NFTData
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.PriceAlert
-import com.wallet.core.primitives.PriceData
 import com.wallet.core.primitives.ScanTransaction
 import com.wallet.core.primitives.ScanTransactionPayload
 import com.wallet.core.primitives.Subscription
@@ -80,7 +80,7 @@ interface GemApiClient {
     suspend fun getAsset(@Path("asset_id") assetId: String, @Query("currency") currency: String): Result<AssetFull>
 
     @GET("/v1/prices/{asset_id}")
-    suspend fun getMarket(@Path("asset_id") assetId: String, @Query("currency") currency: String): Result<PriceData>
+    suspend fun getMarket(@Path("asset_id") assetId: String, @Query("currency") currency: String): Result<AssetMarketPrice>
 
     @POST("/v1/assets")
     suspend fun getAssets(@Body ids: List<String>): Result<List<AssetFull>>
