@@ -3,6 +3,7 @@ package com.gemwallet.android.data.repositoreis.di
 import com.gemwallet.android.cases.banners.AddBannerCase
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
+import com.gemwallet.android.cases.update.ObserveUpdateDownloadCase
 import com.gemwallet.android.data.repositoreis.banners.BannersRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.service.store.database.BannersDao
@@ -23,7 +24,7 @@ object BannersModule {
     ): BannersRepository {
         return BannersRepository(
             bannersDao,
-            configRepository
+            configRepository,
         )
     }
 
