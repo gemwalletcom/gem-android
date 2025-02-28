@@ -5,7 +5,6 @@
 package com.wallet.core.blockchain.solana.models
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 object SolanaTransactionError

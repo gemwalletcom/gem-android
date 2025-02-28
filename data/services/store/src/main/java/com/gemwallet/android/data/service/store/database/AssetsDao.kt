@@ -8,6 +8,9 @@ import androidx.room.Update
 import com.gemwallet.android.data.service.store.database.entities.DbAsset
 import com.gemwallet.android.data.service.store.database.entities.DbAssetConfig
 import com.gemwallet.android.data.service.store.database.entities.DbAssetInfo
+import com.gemwallet.android.data.service.store.database.entities.DbAssetLink
+import com.gemwallet.android.data.service.store.database.entities.DbAssetMarket
+import com.gemwallet.android.data.service.store.database.entities.DbAssetWallet
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
@@ -18,17 +21,24 @@ interface AssetsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(asset: DbAsset)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(asset: List<DbAsset>)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(asset: DbAsset, walletLink: DbAssetWallet, config: DbAssetConfig)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insert(asset: List<DbAsset>, links: List<DbAssetLink>)
 
     @Update
     fun update(asset: DbAsset)
 
-    @Query("SELECT * FROM assets")
-    suspend fun getAll(): List<DbAsset>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insert(links: List<DbAssetLink>, market: DbAssetMarket)
 
-    @Query("SELECT DISTINCT * FROM assets WHERE owner_address IN (:addresses) AND id IN (:assetId)")
-    suspend fun getById(addresses: List<String>, assetId: List<String>): List<DbAsset>
+
+    @Query("SELECT * FROM asset")
+    suspend fun getAll(): List<DbAsset>
 
     @Query("SELECT * FROM asset_info WHERE chain = :chain AND id = :assetId AND sessionId = 1")
     fun getAssetInfo(assetId: String, chain: Chain): Flow<DbAssetInfo?>
@@ -44,8 +54,9 @@ interface AssetsDao {
 
     @Query("""
         SELECT * FROM asset_info WHERE
-            sessionId = 1
-            AND id NOT IN (:exclude)
+            id NOT IN (:exclude)
+            AND (chain IN (SELECT chain FROM accounts JOIN session ON accounts.wallet_id = session.wallet_id AND session.id = 1))
+            AND (walletId = (SELECT wallet_id FROM session WHERE session.id = 1) OR walletId IS NULL)
             AND (id LIKE '%' || :query || '%'
             OR symbol LIKE '%' || :query || '%'
             OR name LIKE '%' || :query || '%' COLLATE NOCASE)
@@ -65,9 +76,9 @@ interface AssetsDao {
 
     @Query("""
         SELECT * FROM asset_info WHERE
-            sessionId = 1
+            (chain IN (SELECT chain FROM accounts JOIN session ON accounts.wallet_id = session.wallet_id AND session.id = 1))
             AND id NOT IN (:exclude)
-            AND ( chain IN (:byChains) OR id IN (:byAssets) )
+            AND (chain IN (:byChains) OR id IN (:byAssets) )
             AND (id LIKE '%' || :query || '%'
             OR symbol LIKE '%' || :query || '%'
             OR name LIKE '%' || :query || '%' COLLATE NOCASE)
@@ -93,15 +104,27 @@ interface AssetsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun setConfig(config: List<DbAssetConfig>)
 
-    @Query("UPDATE assets SET is_swap_enabled=1 WHERE chain IN (:chains)")
+    @Query("UPDATE asset SET is_swap_enabled=1 WHERE chain IN (:chains)")
     suspend fun setSwapable(chains: List<Chain>)
 
-    @Query("UPDATE assets SET is_swap_enabled=0")
+    @Query("UPDATE asset SET is_swap_enabled=0")
     suspend fun resetSwapable()
 
-    @Query("UPDATE assets SET is_buy_enabled=0")
+    @Query("UPDATE asset SET is_buy_enabled=0")
     suspend fun resetBuyAvailable()
 
-    @Query("UPDATE assets SET is_buy_enabled=1 WHERE id IN (:ids)")
+    @Query("UPDATE asset SET is_buy_enabled=1 WHERE id IN (:ids)")
     suspend fun updateBuyAvailable(ids: List<String>)
+
+    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    fun linkAssetToWallet(link: DbAssetWallet)
+
+    @Query("SELECT * FROM asset WHERE id = :id")
+    fun getAsset(id: String): DbAsset?
+
+    @Query("SELECT * FROM asset_links WHERE asset_id = :assetId")
+    fun getAssetLinks(assetId: String): Flow<List<DbAssetLink>>
+
+    @Query("SELECT * FROM asset_market WHERE asset_id = :assetId")
+    fun getAssetMarket(assetId: String): Flow<DbAssetMarket?>
 }

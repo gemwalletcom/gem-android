@@ -100,7 +100,7 @@ class RecipientViewModel @Inject constructor(
             && (assetInfo.asset.chain().isMemoSupport() || !memo.isNullOrEmpty())
         ) {
             val assetId = assetInfo.id()
-            val params = ConfirmParams.Builder(assetId, assetInfo.owner, amount).transfer(DestinationAddress(address), memo)
+            val params = ConfirmParams.Builder(assetId, assetInfo.owner!!, amount).transfer(DestinationAddress(address), memo)
             confirmAction(params)
             return
         }

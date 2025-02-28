@@ -259,12 +259,13 @@ class ConfirmViewModel @Inject constructor(
 
         val signerParams = signerParams.value
         val assetInfo = assetsInfo.value?.getByAssetId(signerParams?.input?.assetId ?: return@launch)
+        val account = assetInfo?.owner
         val feeAssetInfo = feeAssetInfo.value
         val session = sessionRepository.getSession()
         val txSpeed = txSpeed.value
 
         try {
-            if (assetInfo == null || session == null || feeAssetInfo == null) {
+            if (assetInfo == null || account == null || session == null || feeAssetInfo == null) {
                 throw ConfirmError.TransactionIncorrect
             }
             validateBalance(
@@ -276,7 +277,7 @@ class ConfirmViewModel @Inject constructor(
             )
             val signs = sign(signerParams, session, assetInfo, txSpeed)
             for (sign in signs) {
-                val txHash = broadcastClientProxy.send(assetInfo.owner, sign, signerParams.input.getTxType())
+                val txHash = broadcastClientProxy.send(account, sign, signerParams.input.getTxType())
                 if (sign != signs.last()) {
                     delay(500)
                 } else {
@@ -326,7 +327,7 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.Stake.RedelegateParams -> BigInteger(stakeRepository.getDelegation(params.srcValidatorId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.Stake.UndelegateParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.Stake.WithdrawParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
-            is ConfirmParams.Stake.RewardsParams -> stakeRepository.getRewards(assetInfo.asset.id, assetInfo.owner.address)
+            is ConfirmParams.Stake.RewardsParams -> stakeRepository.getRewards(assetInfo.asset.id, assetInfo.owner?.address ?: "")
                 .fold(BigInteger.ZERO) { acc, delegation -> acc + BigInteger(delegation.base.balance) }
         }
     }
@@ -369,7 +370,7 @@ class ConfirmViewModel @Inject constructor(
     }
 
     private fun AssetInfo.getFromCell(): CellEntity<Int> {
-        return CellEntity(label = R.string.transfer_from, data = "$walletName (${owner.address.getAddressEllipsisText()})")
+        return CellEntity(label = R.string.transfer_from, data = "$walletName (${owner?.address?.getAddressEllipsisText() ?: ""})")
     }
 
     private fun ConfirmParams.getMemoCell(): CellEntity<Int>? {
@@ -387,8 +388,8 @@ class ConfirmViewModel @Inject constructor(
     private fun AssetInfo.getNetworkCell(): CellEntity<Int> {
         return CellEntity(
             label = R.string.transfer_network,
-            data = owner.chain.asset().name,
-            trailingIcon = owner.chain.getIconUrl(),
+            data = owner?.chain?.asset()?.name ?: "",
+            trailingIcon = owner?.chain?.getIconUrl() ?: "",
         )
     }
 
@@ -417,7 +418,7 @@ class ConfirmViewModel @Inject constructor(
             hash = txHash,
             walletId = session?.wallet?.id ?: return,
             assetId = assetInfo.id(),
-            owner = assetInfo.owner,
+            owner = assetInfo.owner!!,
             to = destinationAddress,
             state = TransactionState.Pending,
             fee = signerParams.chainData.fee(txSpeed),
@@ -425,7 +426,7 @@ class ConfirmViewModel @Inject constructor(
             memo = signerParams.input.memo() ?: "",
             type = signerParams.input.getTxType(),
             metadata = assembleMetadata(signerParams),
-            direction = if (destinationAddress == assetInfo.owner.address) {
+            direction = if (destinationAddress == assetInfo.owner!!.address) {
                 TransactionDirection.SelfTransfer
             } else {
                 TransactionDirection.Outgoing

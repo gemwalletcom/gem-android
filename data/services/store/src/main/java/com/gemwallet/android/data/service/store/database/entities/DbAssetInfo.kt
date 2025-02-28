@@ -1,68 +1,81 @@
 package com.gemwallet.android.data.service.store.database.entities
 
 import androidx.room.DatabaseView
+import com.gemwallet.android.ext.chain
+import com.gemwallet.android.ext.isStakeSupported
+import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.model.AssetBalance
+import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.model.AssetPriceInfo
+import com.gemwallet.android.model.Balance
+import com.wallet.core.primitives.Account
+import com.wallet.core.primitives.Asset
+import com.wallet.core.primitives.AssetMetaData
+import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.WalletType
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 @DatabaseView(
     viewName = "asset_info",
     value = """
         SELECT
-        assets.owner_address as address,
-        assets.id as id,
-        assets.name as name,
-        assets.symbol as symbol,
-        assets.decimals as decimals,
-        assets.type as type,
-        assets.is_buy_enabled as isBuyEnabled,
-        assets.is_swap_enabled as isSwapEnabled,
-        assets.is_stake_enabled as isStakeEnabled,
-        assets.staking_apr as stakingApr,
-        assets.links as links,
-        assets.market as market,
-        assets.rank as assetRank,
-        accounts.derivation_path as derivationPath,
-        accounts.chain as chain,
-        accounts.wallet_id as walletId,
-        accounts.extendedPublicKey as extendedPublicKey,
-        asset_config.is_pinned AS pinned,
-        asset_config.is_visible AS visible,
-        asset_config.list_position AS listPosition,
-        session.id AS sessionId,
-        prices.currency AS priceCurrency,
-        wallets.type AS walletType,
-        wallets.name AS walletName,
-        prices.value AS priceValue,
-        prices.day_changed AS priceDayChanges,
-        balances.available AS balanceAvailable,
-        balances.available_amount AS balanceAvailableAmount,
-        balances.frozen AS balanceFrozen,
-        balances.frozen_amount AS balanceFrozenAmount,
-        balances.locked AS balanceLocked,
-        balances.locked_amount AS balanceLockedAmount,
-        balances.staked AS balanceStaked,
-        balances.staked_amount AS balanceStakedAmount,
-        balances.pending AS balancePending,
-        balances.pending_amount AS balancePendingAmount,
-        balances.rewards AS balanceRewards,
-        balances.rewards_amount AS balanceRewardsAmount,
-        balances.reserved AS balanceReserved,
-        balances.reserved_amount AS balanceReservedAmount,
-        balances.total_amount AS balanceTotalAmount,
-        (balances.total_amount * prices.value) AS balanceFiatTotalAmount,
-        balances.updated_at AS balanceUpdatedAt
-        FROM assets
-        JOIN accounts ON accounts.address = assets.owner_address AND assets.id LIKE accounts.chain || '%'
-        JOIN wallets ON wallets.id = accounts.wallet_id
-        LEFT JOIN session ON accounts.wallet_id = session.wallet_id
-        LEFT JOIN balances ON assets.owner_address = balances.owner AND assets.id = balances.asset_id
-        LEFT JOIN prices ON assets.id = prices.asset_id AND prices.currency = (SELECT currency FROM session WHERE id = 1)
-        LEFT JOIN asset_config ON assets.id = asset_config.asset_id AND wallets.id = asset_config.wallet_id
+            asset.id as id,
+            asset.name as name,
+            asset.symbol as symbol,
+            asset.decimals as decimals,
+            asset.type as type,
+            asset.is_buy_enabled as isBuyEnabled,
+            asset.is_swap_enabled as isSwapEnabled,
+            asset.is_stake_enabled as isStakeEnabled,
+            asset.staking_apr as stakingApr,
+            asset.rank as assetRank,
+            asset.chain as chain,
+            accounts.address as address,
+            accounts.derivation_path as derivationPath,
+            accounts.extendedPublicKey as extendedPublicKey,
+            asset_config.is_pinned AS pinned,
+            asset_config.is_visible AS visible,
+            asset_config.list_position AS listPosition,
+            session.id AS sessionId,
+            prices.currency AS priceCurrency,
+            wallets.id as walletId,
+            wallets.type AS walletType,
+            wallets.name AS walletName,
+            prices.value AS priceValue,
+            prices.day_changed AS priceDayChanges,
+            balances.available AS balanceAvailable,
+            balances.available_amount AS balanceAvailableAmount,
+            balances.frozen AS balanceFrozen,
+            balances.frozen_amount AS balanceFrozenAmount,
+            balances.locked AS balanceLocked,
+            balances.locked_amount AS balanceLockedAmount,
+            balances.staked AS balanceStaked,
+            balances.staked_amount AS balanceStakedAmount,
+            balances.pending AS balancePending,
+            balances.pending_amount AS balancePendingAmount,
+            balances.rewards AS balanceRewards,
+            balances.rewards_amount AS balanceRewardsAmount,
+            balances.reserved AS balanceReserved,
+            balances.reserved_amount AS balanceReservedAmount,
+            balances.total_amount AS balanceTotalAmount,
+            (balances.total_amount * prices.value) AS balanceFiatTotalAmount,
+            balances.updated_at AS balanceUpdatedAt
+        FROM asset
+        LEFT JOIN asset_wallet ON asset.id = asset_wallet.asset_id
+        LEFT JOIN accounts ON asset_wallet.account_address = accounts.address AND asset_wallet.wallet_id = accounts.wallet_id AND asset."chain" = accounts."chain"
+        LEFT JOIN wallets ON asset_wallet.wallet_id = wallets.id
+        LEFT JOIN session ON asset_wallet.wallet_id = session.wallet_id
+        LEFT JOIN balances ON asset_wallet.account_address = balances.account_address AND asset_wallet.asset_id = balances.asset_id AND asset_wallet.wallet_id = balances.wallet_id
+        LEFT JOIN prices ON asset.id = prices.asset_id AND prices.currency = (SELECT currency FROM session WHERE id = 1)
+        LEFT JOIN asset_config ON asset_wallet.asset_id = asset_config.asset_id AND asset_wallet.wallet_id = asset_config.wallet_id
     """
 )
 data class DbAssetInfo(
-    val address: String,
     val id: String,
     val name: String,
     val symbol: String,
@@ -75,18 +88,17 @@ data class DbAssetInfo(
     val isSwapEnabled: Boolean,
     val isStakeEnabled: Boolean,
     val stakingApr: Double?,
-    val links: String?,
-    val market: String?,
     val assetRank: Int,
     // account
-    val walletId: String,
-    val derivationPath: String,
+    val address: String?,
+    val walletId: String?,
+    val derivationPath: String?,
     val chain: Chain,
     val extendedPublicKey: String?,
     // wallet
     val sessionId: Int?,
-    val walletName: String,
-    val walletType: WalletType,
+    val walletName: String?,
+    val walletType: WalletType?,
     // price
     val priceValue: Double?,
     val priceDayChanges: Double?,
@@ -111,3 +123,81 @@ data class DbAssetInfo(
 
     val balanceUpdatedAt: Long?,
 )
+
+fun Flow<List<DbAssetInfo>>.toAssetInfoModel() = map { it.toAssetInfoModels() }
+
+fun List<DbAssetInfo>.toAssetInfoModels() = mapNotNull { it.toModel() }
+
+fun DbAssetInfo.toModel(): AssetInfo? {
+    val entity = this
+    val assetId = entity.id.toAssetId() ?: return null
+    val asset = Asset(
+        id = assetId,
+        name = entity.name,
+        symbol = entity.symbol,
+        decimals = entity.decimals,
+        type = entity.type,
+    )
+    val balances = AssetBalance(
+        asset = asset,
+        balance = Balance(
+            available = entity.balanceAvailable ?: "0",
+            frozen = entity.balanceFrozen ?: "0",
+            locked = entity.balanceLocked ?: "0",
+            staked = entity.balanceStaked ?: "0",
+            pending = entity.balancePending ?: "0",
+            rewards = entity.balanceRewards ?: "0",
+            reserved = entity.balanceReserved ?: "0"
+        ),
+        balanceAmount = Balance(
+            available = entity.balanceAvailableAmount ?: 0.0,
+            frozen = entity.balanceFrozenAmount ?: 0.0,
+            locked = entity.balanceLockedAmount ?: 0.0,
+            staked = entity.balanceStakedAmount ?: 0.0,
+            pending = entity.balancePendingAmount ?: 0.0,
+            rewards = entity.balanceRewardsAmount ?: 0.0,
+            reserved = entity.balanceReservedAmount ?: 0.0,
+        ),
+        totalAmount = entity.balanceTotalAmount ?: 0.0,
+        fiatTotalAmount = entity.balanceFiatTotalAmount ?: 0.0,
+    )
+
+    val currency = Currency.entries.firstOrNull { it.string == entity.priceCurrency }
+    val account = if (entity.address.isNullOrEmpty()) null else Account(
+        chain = entity.chain,
+        address = entity.address,
+        derivationPath = entity.derivationPath ?: "",
+        extendedPublicKey = entity.extendedPublicKey,
+    )
+
+    return AssetInfo(
+        owner = account,
+        asset = asset,
+        balance = balances,
+        price = if (entity.priceValue != null && currency != null) {
+            AssetPriceInfo(
+                currency = currency,
+                price = AssetPrice(
+                    assetId = assetId.toIdentifier(),
+                    price = entity.priceValue,
+                    priceChangePercentage24h = entity.priceDayChanges ?: 0.0,
+                )
+            )
+        } else null,
+        metadata = AssetMetaData(
+            isEnabled = entity.visible == true,
+            isBuyEnabled = entity.isBuyEnabled,
+            isSwapEnabled = entity.isSwapEnabled,
+            isStakeEnabled = asset.chain().isStakeSupported(),
+            isPinned = entity.pinned == true,
+            isSellEnabled = false,
+            isActive = true,
+        ),
+        rank = entity.assetRank,
+        walletName = entity.walletName ?: "",
+        walletType = entity.walletType ?: WalletType.multicoin,
+        stakeApr = entity.stakingApr,
+        position = entity.listPosition ?: 0,
+        walletId = walletId,
+    )
+}

@@ -43,7 +43,7 @@ class FiatViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val asset =
-        assetId.flatMapLatest { assetsRepository.getAssetInfo(it) }.map { AssetInfoUIModel(it, false, 6, -1) }
+        assetId.flatMapLatest { assetsRepository.getAssetInfo(it).mapNotNull { it } }.map { AssetInfoUIModel(it, false, 6, -1) }
             .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val amountValidator = AmountValidator(
@@ -102,7 +102,7 @@ class FiatViewModel @Inject constructor(
                     asset.asset,
                     currency.string,
                     amount.numberParse().toDouble(),
-                    asset.assetInfo.owner.address
+                    asset.assetInfo.owner?.address ?: ""
                 ).getOrNull()
                 if (quotes == null) {
                     _state.value = FiatSceneState.Error(BuyError.QuoteNotAvailable)

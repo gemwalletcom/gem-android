@@ -6,7 +6,6 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NFTType
-import kotlinx.serialization.Serializable
 
 @Entity(tableName = "nft_collection")
 data class DbNFTCollection(

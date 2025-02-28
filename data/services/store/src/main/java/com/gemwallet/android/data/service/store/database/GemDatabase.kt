@@ -6,6 +6,9 @@ import com.gemwallet.android.data.service.store.database.entities.DbAccount
 import com.gemwallet.android.data.service.store.database.entities.DbAsset
 import com.gemwallet.android.data.service.store.database.entities.DbAssetConfig
 import com.gemwallet.android.data.service.store.database.entities.DbAssetInfo
+import com.gemwallet.android.data.service.store.database.entities.DbAssetLink
+import com.gemwallet.android.data.service.store.database.entities.DbAssetMarket
+import com.gemwallet.android.data.service.store.database.entities.DbAssetWallet
 import com.gemwallet.android.data.service.store.database.entities.DbBalance
 import com.gemwallet.android.data.service.store.database.entities.DbBanner
 import com.gemwallet.android.data.service.store.database.entities.DbConnection
@@ -20,21 +23,19 @@ import com.gemwallet.android.data.service.store.database.entities.DbNode
 import com.gemwallet.android.data.service.store.database.entities.DbPrice
 import com.gemwallet.android.data.service.store.database.entities.DbPriceAlert
 import com.gemwallet.android.data.service.store.database.entities.DbSession
-import com.gemwallet.android.data.service.store.database.entities.DbToken
 import com.gemwallet.android.data.service.store.database.entities.DbTransaction
 import com.gemwallet.android.data.service.store.database.entities.DbTransactionExtended
 import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetadata
 import com.gemwallet.android.data.service.store.database.entities.DbWallet
 
 @Database(
-    version = 41,
+    version = 44,
     entities = [
         DbWallet::class,
         DbAccount::class,
         DbAsset::class,
         DbBalance::class,
         DbPrice::class,
-        DbToken::class,
         DbTransaction::class,
         DbTxSwapMetadata::class,
         DbConnection::class,
@@ -50,6 +51,9 @@ import com.gemwallet.android.data.service.store.database.entities.DbWallet
         DbNFTAttribute::class,
         DbNFTAssociation::class,
         DbNFTCollectionLink::class,
+        DbAssetLink::class,
+        DbAssetWallet::class,
+        DbAssetMarket::class
     ],
     views = [
         DbAssetInfo::class,
@@ -66,8 +70,6 @@ abstract class GemDatabase : RoomDatabase() {
     abstract fun balancesDao(): BalancesDao
 
     abstract fun pricesDao(): PricesDao
-
-    abstract fun tokensDao(): TokensDao
 
     abstract fun transactionsDao(): TransactionsDao
 

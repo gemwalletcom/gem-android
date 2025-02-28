@@ -75,7 +75,6 @@ import com.gemwallet.android.ui.navigation.routes.navigateToNftAsset
 import com.gemwallet.android.ui.navigation.routes.navigateToNftCollection
 import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
 import com.gemwallet.android.ui.navigation.routes.nftCollection
-import com.gemwallet.android.ui.navigation.routes.nftRoute
 import com.gemwallet.android.ui.navigation.routes.recipientInput
 import com.wallet.core.primitives.AssetId
 

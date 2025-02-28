@@ -17,6 +17,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -41,19 +42,23 @@ class AssetChartViewModel @Inject constructor(
                 .map { it.firstOrNull() }
                 .filterNotNull()
         }
+    private val links = assetIdStr.filterNotNull()
+        .flatMapLatest { assetsRepository.getAssetLinks(it.toAssetId() ?: return@flatMapLatest emptyFlow()) }
+    private val market = assetIdStr.filterNotNull()
+        .flatMapLatest { assetsRepository.getAssetMarket(it.toAssetId() ?: return@flatMapLatest emptyFlow()) }
 
-    val marketUIModel = assetInfo.map { assetInfo ->
+    val marketUIModel = combine(assetInfo, links, market) { assetInfo, links, market ->
         val asset = assetInfo.asset
         val currency = assetInfo.price?.currency ?: Currency.USD
         AssetMarketUIModel(
             assetId = asset.id,
             assetTitle = asset.name,
-            assetLinks = assetInfo.links.toModel(),
+            assetLinks = links.toModel(),
             currency = assetInfo.price?.currency ?: Currency.USD,
             marketCells = mapOf(
-                R.string.asset_market_cap to (assetInfo.market?.marketCap ?: 0.0),
-                R.string.asset_circulating_supply to (assetInfo.market?.circulatingSupply ?: 0.0),
-                R.string.asset_total_supply to (assetInfo.market?.totalSupply ?: 0.0)
+                R.string.asset_market_cap to (market?.marketCap ?: 0.0),
+                R.string.asset_circulating_supply to (market?.circulatingSupply ?: 0.0),
+                R.string.asset_total_supply to (market?.totalSupply ?: 0.0)
             ).filterValues { it > 0.0 }
                 .map { (label, value) ->
                     CellEntity(

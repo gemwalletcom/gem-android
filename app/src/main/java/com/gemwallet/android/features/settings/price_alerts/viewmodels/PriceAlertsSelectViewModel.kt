@@ -14,7 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -46,11 +45,10 @@ open class PriceAlertSelectSearch(
         session: Flow<Session?>,
         query: Flow<String>
     ): Flow<List<AssetInfo>> {
-        return combine(session, query, addedPriceAlerts) { session, query, alerts -> Triple(session, query, alerts) }
+        return combine(query, addedPriceAlerts) { query, alerts -> Pair(query, alerts) }
             .flatMapLatest {
-                val (session, query, alerts) = it
-                val wallet = session?.wallet ?: return@flatMapLatest emptyFlow()
-                assetsRepository.search(wallet, query, true, alerts)
+                val (query, alerts) = it
+                assetsRepository.search(query, true, alerts)
             }
             .map { it.distinctBy { it.asset.id.toIdentifier() } }
             .flowOn(Dispatchers.IO)

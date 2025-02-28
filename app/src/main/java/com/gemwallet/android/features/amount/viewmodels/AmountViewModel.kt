@@ -59,7 +59,7 @@ class AmountViewModel @Inject constructor(
         .mapNotNull { AmountParams.unpack(it) }
 
     private val asset: Flow<AssetInfo> = params.flatMapLatest {
-        assetsRepository.getAssetInfo(it.assetId)
+        assetsRepository.getAssetInfo(it.assetId).mapNotNull { it }
     }
 
     private val delegation: StateFlow<Delegation?> = params.flatMapMerge {
@@ -197,7 +197,7 @@ class AmountViewModel @Inject constructor(
         val memo = params.memo
         inputErrorState.update { AmountError.None }
         nextErrorState.update { AmountError.None }
-        val builder = ConfirmParams.Builder(asset.id, state.assetInfo.owner, amount.atomicValue)
+        val builder = ConfirmParams.Builder(asset.id, state.assetInfo.owner!!, amount.atomicValue)
         val nextParams = when (params.txType) {
             TransactionType.Transfer -> builder.transfer(
                 destination = destination!!,
@@ -207,7 +207,7 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeDelegate -> builder.delegate(validator?.id ?: return@launch) // TODO: Add error showing
             TransactionType.StakeUndelegate -> builder.undelegate(delegation ?: return@launch)  // TODO: Add error showing
             TransactionType.StakeRewards -> builder.rewards(
-                stakeRepository.getRewards(asset.id, state.assetInfo.owner.address).map { it.validator.id }
+                stakeRepository.getRewards(asset.id, state.assetInfo.owner!!.address).map { it.validator.id }
             )
             TransactionType.StakeRedelegate -> builder.redelegate(validator?.id!!, delegation!!)
             TransactionType.StakeWithdraw -> builder.withdraw(delegation!!)

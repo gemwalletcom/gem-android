@@ -54,10 +54,10 @@ class AssetsViewModel @Inject constructor(
     private val userConfig: UserConfig,
 ) : ViewModel() {
     val refreshingState = MutableStateFlow<RefresingState>(RefresingState.OnOpen)
-    val screenState = assetsRepository.syncState.combine(refreshingState) { syncState, refreshingState ->
+    val screenState = refreshingState.map { refreshingState ->
             when (refreshingState) {
                 RefresingState.OnOpen -> SyncState.Idle
-                RefresingState.OnForce -> syncState
+                RefresingState.OnForce -> SyncState.InSync
             }
         }
         .flatMapLatest { state ->
@@ -77,9 +77,7 @@ class AssetsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     private val assets: StateFlow<List<AssetItemUIModel>> = assetsState.combine(isHideBalances) { assets, isHideBalances ->
-        assets.map {
-            AssetInfoUIModel(it, isHideBalances)
-        }.distinctBy { it.asset.id.toIdentifier() }
+        assets.map { AssetInfoUIModel(it, isHideBalances) }.distinctBy { it.asset.id.toIdentifier() }
     }
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())

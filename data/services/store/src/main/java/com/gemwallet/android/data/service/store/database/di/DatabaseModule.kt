@@ -16,7 +16,6 @@ import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.service.store.database.PricesDao
 import com.gemwallet.android.data.service.store.database.SessionDao
 import com.gemwallet.android.data.service.store.database.StakeDao
-import com.gemwallet.android.data.service.store.database.TokensDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
 import com.gemwallet.android.data.service.store.database.WalletsDao
 import com.gemwallet.android.data.service.store.database.entities.SESSION_REQUEST
@@ -76,6 +75,9 @@ object DatabaseModule {
         .addMigrations(MIGRATION_38_39)
         .addMigrations(MIGRATION_39_40)
         .addMigrations(MIGRATION_40_41)
+        .addMigrations(Migration_41_42)
+        .addMigrations(Migration_42_43)
+        .addMigrations(Migration_43_44)
         .build()
 
     @Singleton
@@ -97,10 +99,6 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun providePricesDao(db: GemDatabase): PricesDao = db.pricesDao()
-
-    @Singleton
-    @Provides
-    fun provideTokensDao(db: GemDatabase): TokensDao = db.tokensDao()
 
     @Singleton
     @Provides
