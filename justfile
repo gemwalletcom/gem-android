@@ -3,7 +3,7 @@ export WALLET_CORE_VERSION := "4.1.19"
 list:
     just --list
 
-bootstrap: install-rust install-toolchains install-ndk install-wallet-core
+bootstrap: install-rust install-toolchains install-ndk
 
 install-rust:
     @echo Install Rust
@@ -19,10 +19,6 @@ install-typeshare:
 
 install-ndk:
     just core gemstone install-ndk
-
-install-wallet-core:
-    @echo "==> Download wallet-core"
-    @./scripts/download-wallet-core.sh {{WALLET_CORE_VERSION}}
 
 build-test:
     @./gradlew assembleGoogleDebugAndroidTest --build-cache
