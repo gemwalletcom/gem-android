@@ -44,6 +44,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
 import java.math.BigInteger
+import java.net.InetAddress
+import java.net.UnknownHostException
 
 class TransactionsRepository(
     private val transactionsDao: TransactionsDao,
@@ -169,10 +171,9 @@ class TransactionsRepository(
 
             updateTransaction(updatedTxs)
         }
+        if (!isInternetAvailable()) return@launch
         val failedByTimeOut = (transactionsDao.getExtendedTransactions().firstOrNull() ?: emptyList())
-            .filter {
-                it.state == TransactionState.Pending
-            }
+            .filter { it.state == TransactionState.Pending }
             .mapNotNull {
                 val assetId = it.assetId.toAssetId() ?: return@mapNotNull null
                 val timeOut =
@@ -240,5 +241,13 @@ class TransactionsRepository(
             )
         }
         transactionsDao.addSwapMetadata(room)
+    }
+
+    fun isInternetAvailable(): Boolean {
+        try {
+            val address = InetAddress.getByName("www.google.com");
+            return !address.equals("");
+        } catch (_: Throwable) { }
+        return false;
     }
 }
