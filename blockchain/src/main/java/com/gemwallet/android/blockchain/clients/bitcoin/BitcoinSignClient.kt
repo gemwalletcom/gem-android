@@ -79,7 +79,11 @@ class BitcoinSignClient(
             this.toAddress = params.destination()?.address
             this.changeAddress = params.from.address
             this.useMaxAmount = params.isMax()
-
+            this.hashType = if (chain == Chain.BitcoinCash) {
+                BitcoinSigHashType.FORK.value() or BitcoinSigHashType.ALL.value()
+            } else {
+                BitcoinSigHashType.ALL.value()
+            }
             this.addPrivateKey(ByteString.copyFrom(privateKey))
             this.addAllUtxo(chainData.utxo.getUtxoTransactions(params.from.address, coinType))
             chainData.utxo.forEach {

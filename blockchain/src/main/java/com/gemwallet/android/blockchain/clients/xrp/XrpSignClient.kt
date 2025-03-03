@@ -31,7 +31,7 @@ class XrpSignClient(
             this.opPayment = Ripple.OperationPayment.newBuilder().apply {
                 this.destination = params.destination().address
                 this.amount = finalAmount.toLong()
-                this.destinationTag = try { params.memo()?.toLong() ?: 0L } catch (_: Throwable) { 0L }
+                this.destinationTag = try { params.memo()?.toInt() ?: 0 } catch (_: Throwable) { 0 }
             }.build()
         }.build()
         val output = AnySigner.sign(signInput, WCChainTypeProxy().invoke(chain), Ripple.SigningOutput.parser())

@@ -3,7 +3,10 @@ package com.gemwallet.android.blockchain.clients.bitcoin
 import com.gemwallet.android.blockchain.clients.BalanceClient
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinBalancesService
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.fullAddress
+import com.gemwallet.android.ext.toBitcoinChain
 import com.gemwallet.android.model.AssetBalance
+import com.wallet.core.primitives.BitcoinChain
 import com.wallet.core.primitives.Chain
 
 class BitcoinBalanceClient(
@@ -12,14 +15,7 @@ class BitcoinBalanceClient(
 ) : BalanceClient {
 
     override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
-        val address = when (chain) {
-            Chain.BitcoinCash -> if (address.startsWith(Chain.BitcoinCash.string)) {
-                address
-            } else {
-                "${Chain.BitcoinCash.string}:" + address
-            }
-            else -> address
-        }
+        val address = chain.toBitcoinChain().fullAddress(address)
         val result = balanceService.balance(address).getOrNull()
         return try {
             AssetBalance.create(chain.asset(), available = result?.balance ?: return null)

@@ -2,6 +2,7 @@ package com.gemwallet.android.ext
 
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
+import com.wallet.core.primitives.BitcoinChain
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
 import com.wallet.core.primitives.FeeUnitType
@@ -212,3 +213,12 @@ fun Chain.feeUnitType() = FeeUnitType.entries.firstOrNull {
 }
 
 fun Chain.isMemoSupport() = Config().getChainConfig(string).isMemoSupported
+
+fun BitcoinChain.fullAddress(address: String) = when (this) {
+    BitcoinChain.BitcoinCash -> if (address.startsWith(Chain.BitcoinCash.string)) {
+        address
+    } else {
+        "${Chain.BitcoinCash.string}:" + address
+    }
+    else -> address
+}

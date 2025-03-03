@@ -7,5 +7,6 @@ fun Chain.toBitcoinChain() = when (this) {
     Chain.Bitcoin -> BitcoinChain.Bitcoin
     Chain.Doge -> BitcoinChain.Doge
     Chain.Litecoin -> BitcoinChain.Litecoin
+    Chain.BitcoinCash -> BitcoinChain.BitcoinCash
     else -> throw IllegalArgumentException("Not bitcoin chain")
 }

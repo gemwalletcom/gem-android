@@ -17,7 +17,7 @@ class BitcoinBroadcastClient(
 
     override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): String {
         val requestBody = signedMessage.toHexString("").toRequestBody(Mime.Plain.value)
-        return broadcastService.broadcast(requestBody).getOrThrow()?.result
+        return broadcastService.broadcast(requestBody).getOrThrow().result
             ?: throw RpcError.BroadcastFail("Unknown error")
     }
 
