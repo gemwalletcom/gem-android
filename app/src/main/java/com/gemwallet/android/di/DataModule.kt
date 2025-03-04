@@ -5,7 +5,6 @@ import com.gemwallet.android.blockchain.clients.ApprovalTransactionPreloader
 import com.gemwallet.android.blockchain.clients.BroadcastClientProxy
 import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
 import com.gemwallet.android.blockchain.clients.SignClientProxy
-import com.gemwallet.android.services.SignerPreloaderProxy
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
@@ -75,6 +74,7 @@ import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.available
 import com.gemwallet.android.ext.toChainType
 import com.gemwallet.android.interactors.sync.SyncTransactions
+import com.gemwallet.android.services.SignerPreloaderProxy
 import com.gemwallet.android.services.SyncService
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType

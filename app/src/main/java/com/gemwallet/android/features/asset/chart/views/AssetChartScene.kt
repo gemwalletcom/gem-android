@@ -1,14 +1,23 @@
 package com.gemwallet.android.features.asset.chart.views
 
+import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.ext.chain
 import com.gemwallet.android.features.asset.chart.models.AssetMarketUIModel
 import com.gemwallet.android.features.asset.chart.viewmodels.AssetChartViewModel
 import com.gemwallet.android.model.Crypto
@@ -19,6 +28,8 @@ import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.clipboard.setPlainText
+import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.open
@@ -27,6 +38,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.Currency
+import uniffi.gemstone.Explorer
 import java.math.BigInteger
 
 @Composable
@@ -51,7 +63,7 @@ fun AssetChartScene(
     ) {
         LazyColumn {
             item { Chart() }
-            assetMarket(marketModel.currency, marketModel.asset, marketModel.marketInfo)
+            assetMarket(marketModel.currency, marketModel.asset, marketModel.marketInfo, marketModel.explorerName)
 
             if (marketModel.assetLinks.isNotEmpty()) {
                 item {
@@ -63,7 +75,7 @@ fun AssetChartScene(
     }
 }
 
-private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketInfo: AssetMarket?) {
+private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketInfo: AssetMarket?, explorerName: String) {
     marketInfo ?: return
     marketInfo.marketCap?.let {
         item {
@@ -71,10 +83,12 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
                 title = {
                     ListItemTitleText(
                         stringResource(R.string.asset_market_cap),
-                        titleBadge = marketInfo.marketCapRank?.let { { Badge("#$it") } },
+                        titleBadge = if ((marketInfo.marketCapRank ?: 0) > 0) {
+                            { Badge("#${marketInfo.marketCapRank}") }
+                        } else null,
                     )
                 },
-                trailing = { ListItemTitleText(currency.format(it)) }
+                trailing = { ListItemSupportText(currency.format(it)) }
             )
         }
     }
@@ -82,7 +96,7 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
         item {
             ListItem(
                 title = { ListItemTitleText(stringResource(R.string.asset_circulating_supply)) },
-                trailing = { ListItemTitleText(Crypto(BigInteger.valueOf(it.toLong())).format(0, asset.symbol, 0)) }
+                trailing = { ListItemSupportText(Crypto(BigInteger.valueOf(it.toLong())).format(0, asset.symbol, 0)) }
             )
         }
     }
@@ -90,7 +104,36 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
         item {
             ListItem(
                 title = { ListItemTitleText(stringResource(R.string.asset_total_supply)) },
-                trailing = { ListItemTitleText(Crypto(BigInteger.valueOf(it.toLong())).format(0, asset.symbol, 0)) }
+                trailing = { ListItemSupportText(Crypto(BigInteger.valueOf(it.toLong())).format(0, asset.symbol, 0)) }
+            )
+        }
+    }
+    asset.id.tokenId?.let {
+        item {
+            val clipboardManager = LocalClipboard.current.nativeClipboard
+            val uriHandler = LocalUriHandler.current
+            ListItem(
+                modifier = Modifier.combinedClickable(
+                    onLongClick = {
+                        clipboardManager.setPlainText(it)
+                    },
+                    onClick = {
+                        uriHandler.open(Explorer(asset.chain().string).getTokenUrl(explorerName, it) ?: return@combinedClickable)
+                    }
+                ),
+                title = { ListItemTitleText(stringResource(R.string.asset_contract)) },
+                trailing = {
+                    Text(
+                        modifier = Modifier
+                            .weight(0.7f)
+                            .padding(top = 0.dp, bottom = 2.dp),
+                        text = it,
+                        maxLines = 1,
+                        overflow = TextOverflow.MiddleEllipsis,
+                        color = MaterialTheme.colorScheme.secondary,
+                        style = MaterialTheme.typography.bodyMedium,
+                    )
+                }
             )
         }
     }

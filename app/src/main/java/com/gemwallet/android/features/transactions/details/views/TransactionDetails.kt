@@ -12,10 +12,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -28,6 +27,7 @@ import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.trailingIcon20
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getSupportIconUrl
@@ -48,7 +48,7 @@ fun TransactionDetails(
     val uiState by viewModel.screenModel.collectAsStateWithLifecycle()
 
     val uriHandler = LocalUriHandler.current
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
 
     val model = uiState
 
@@ -155,7 +155,7 @@ fun TransactionDetails(
                         CellEntity(
                             label = stringResource(id = R.string.transaction_recipient),
                             data = model.to,
-                            action = { clipboardManager.setText(AnnotatedString(model.to)) },
+                            action = { clipboardManager.setPlainText(model.to) },
                             actionIcon = {
                                 Icon(
                                     modifier = Modifier.padding(horizontal = 8.dp),
@@ -170,7 +170,7 @@ fun TransactionDetails(
                         CellEntity(
                             label = stringResource(id = R.string.transaction_sender),
                             data = model.from,
-                            action = { clipboardManager.setText(AnnotatedString(model.from)) },
+                            action = { clipboardManager.setPlainText(model.from) },
                             actionIcon = {
                                 Icon(
                                     modifier = Modifier.padding(horizontal = 8.dp),

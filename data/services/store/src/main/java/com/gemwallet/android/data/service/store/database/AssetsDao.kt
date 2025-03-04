@@ -60,7 +60,7 @@ interface AssetsDao {
             AND (id LIKE '%' || :query || '%'
             OR symbol LIKE '%' || :query || '%'
             OR name LIKE '%' || :query || '%' COLLATE NOCASE)
-            ORDER BY balanceFiatTotalAmount DESC
+            ORDER BY balanceFiatTotalAmount, assetRank DESC
         """)
     fun searchAssetInfo(query: String, exclude: List<String> = emptyList()): Flow<List<DbAssetInfo>>
 
@@ -70,7 +70,7 @@ interface AssetsDao {
             AND (id LIKE '%' || :query || '%'
             OR symbol LIKE '%' || :query || '%'
             OR name LIKE '%' || :query || '%' COLLATE NOCASE)
-            ORDER BY balanceFiatTotalAmount DESC
+            ORDER BY balanceFiatTotalAmount, assetRank DESC
         """)
     fun searchAssetInfoByAllWallets(query: String, exclude: List<String> = emptyList()): Flow<List<DbAssetInfo>>
 

@@ -26,7 +26,7 @@ class AptosGetTokenClient(
         )
     }
 
-    override suspend fun isTokenQuery(query: String): Boolean = isTokenQuery(query)
+    override suspend fun isTokenQuery(query: String): Boolean = isTokenAddress(query)
 
     override fun supported(chain: Chain): Boolean = chain == this.chain
 

@@ -3,7 +3,9 @@ package com.gemwallet.android.features.asset.chart.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorerCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.asset.chart.models.AssetMarketUIModel
 import com.gemwallet.android.features.asset.navigation.assetIdArg
@@ -28,6 +30,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AssetChartViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
+    private val getCurrentBlockExplorerCase: GetCurrentBlockExplorerCase,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -54,6 +57,7 @@ class AssetChartViewModel @Inject constructor(
             assetLinks = links.toModel(),
             currency = assetInfo.price?.currency ?: Currency.USD,
             marketInfo = market,
+            explorerName = getCurrentBlockExplorerCase.getCurrentBlockExplorer(asset.chain())
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

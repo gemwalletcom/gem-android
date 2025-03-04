@@ -10,15 +10,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.DropDownContextItem
+import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
 
@@ -32,7 +32,7 @@ internal fun AssetItem(
     onAssetHide: (AssetId) -> Unit,
     onTogglePin: (AssetId) -> Unit,
 ) {
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
     DropDownContextItem(
         modifier = modifier.testTag(item.asset.id.toIdentifier()),
         isExpanded = longPressState.value == item.asset.id,
@@ -56,7 +56,7 @@ internal fun AssetItem(
                 text = { Text(text = stringResource(id = R.string.wallet_copy_address)) },
                 trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
                 onClick = {
-                    clipboardManager.setText(AnnotatedString(item.owner))
+                    clipboardManager.setPlainText(item.owner)
                     longPressState.value = null
                 },
             )

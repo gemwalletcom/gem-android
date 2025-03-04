@@ -27,10 +27,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,6 +53,7 @@ import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.padding32
 import com.gemwallet.android.ui.components.designsystem.trailingIcon20
 import com.gemwallet.android.ui.components.image.AsyncImage
@@ -139,7 +139,7 @@ private fun Success(
     onPriceAlert: (AssetId) -> Unit,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
     val uriHandler = LocalUriHandler.current
     Scene(
         title = {
@@ -158,7 +158,7 @@ private fun Success(
                 }
             }
             IconButton(
-                onClick = { clipboardManager.setText(AnnotatedString(uiState.account.owner)) }
+                onClick = { clipboardManager.setPlainText(uiState.account.owner) }
             ) {
                 Icon(Icons.Default.ContentCopy, "")
             }

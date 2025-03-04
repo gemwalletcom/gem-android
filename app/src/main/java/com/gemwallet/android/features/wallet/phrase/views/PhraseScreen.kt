@@ -12,9 +12,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -24,6 +23,7 @@ import com.gemwallet.android.features.wallet.WalletViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.PhraseLayout
+import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
@@ -42,7 +42,7 @@ fun PhraseScreen(
         viewModel.init(walletId, isPhrase = true)
         onDispose {  }
     }
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
     val words = (state as? WalletUIState.Phrase)?.words
     val walletType = (state as? WalletUIState.Phrase)?.walletType
 
@@ -95,7 +95,7 @@ fun PhraseScreen(
 
         Spacer16()
         TextButton(
-            onClick = { clipboardManager.setText(AnnotatedString(words.joinToString(" "))) }
+            onClick = { clipboardManager.setPlainText(words.joinToString(" ")) }
         ) {
             Text(text = stringResource(id = R.string.common_copy))
         }

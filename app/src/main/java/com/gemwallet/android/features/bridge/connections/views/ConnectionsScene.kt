@@ -23,7 +23,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -32,6 +32,7 @@ import com.gemwallet.android.features.bridge.connections.viewmodels.ConnectionsV
 import com.gemwallet.android.features.bridge.model.ConnectionUI
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.ListItem
+import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
@@ -45,7 +46,7 @@ fun ConnectionsScene(
     onCancel: () -> Unit,
     viewModel: ConnectionsViewModel = hiltViewModel()
 ) {
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
     var scannerShowed by remember {
         mutableStateOf(false)
     }
@@ -65,7 +66,7 @@ fun ConnectionsScene(
         actions = {
             IconButton(
                 onClick = {
-                    viewModel.addPairing(clipboardManager.getText()?.text ?: return@IconButton) {
+                    viewModel.addPairing(clipboardManager.getPlainText() ?: return@IconButton) {
                         scope.launch {
                             snackbar.showSnackbar(
                                 message = connectionToastText

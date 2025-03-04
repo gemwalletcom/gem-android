@@ -24,21 +24,25 @@ fun ChainItem(
     onClick: () -> Unit = {},
 ) {
     ListItem(
-        modifier = modifier.clickable { onClick() }.heightIn(64.dp),
-        leading = {
+        modifier = modifier
+            .clickable { onClick() }
+            .heightIn(64.dp),
+        leading = @Composable {
             IconWithBadge(
                 icon = icon,
                 placeholder = chain?.string?.get(0).toString(),
             )
         },
-        title = {
+        title = @Composable {
             Text(
                 modifier = Modifier,
                 text = title.capitalize(Locale.current),
                 color = MaterialTheme.colorScheme.onSurface,
             )
         },
-        trailing = trailing,
+        trailing = if (trailing != null) {
+            @Composable { trailing.invoke() }
+        } else null,
         dividerShowed = dividerShowed,
     )
 }

@@ -35,8 +35,8 @@ fun AssetListItem(
 ) {
     ListItem(
         modifier = modifier,
-        leading = { IconWithBadge(uiModel.asset) },
-        title = { ListItemTitleText(uiModel.name) },
+        leading = @Composable { IconWithBadge(uiModel.asset) },
+        title = @Composable { ListItemTitleText(uiModel.name) },
         subtitle = if (uiModel.price.fiatFormatted.isEmpty()) {
             null
         } else {
@@ -48,7 +48,7 @@ fun AssetListItem(
                 )
             }
         },
-        trailing = getBalanceInfo(uiModel),
+        trailing = { getBalanceInfo(uiModel).invoke() },
     )
 }
 
@@ -63,11 +63,13 @@ fun AssetListItem(
 ) {
     ListItem(
         modifier = modifier,
-        leading = { IconWithBadge(uiModel.asset) },
-        title = { ListItemTitleText(uiModel.name, { Badge(text = badge) }) },
+        leading = @Composable { IconWithBadge(uiModel.asset) },
+        title = @Composable { ListItemTitleText(uiModel.name, { Badge(text = badge) }) },
         subtitle = support,
         dividerShowed = dividerShowed,
-        trailing = trailing
+        trailing = if (trailing == null) null else {
+            { trailing.invoke() }
+        }
     )
 }
 
@@ -82,15 +84,15 @@ fun AssetListItem(
 ) {
     ListItem(
         modifier = modifier,
-        leading = {
-            IconWithBadge(asset)
-        },
-        title = { ListItemTitleText(asset.name, { Badge(text = badge) }) },
+        leading = @Composable { IconWithBadge(asset) },
+        title = @Composable { ListItemTitleText(asset.name, { Badge(text = badge) }) },
         subtitle = if (support.isNullOrEmpty()) null else {
             { ListItemSupportText(support) }
         },
         dividerShowed = dividerShowed,
-        trailing = trailing
+        trailing = if (trailing == null) null else {
+            { trailing.invoke() }
+        }
     )
 }
 

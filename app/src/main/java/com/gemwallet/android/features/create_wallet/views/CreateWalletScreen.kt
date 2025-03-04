@@ -21,9 +21,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +35,7 @@ import com.gemwallet.android.features.create_wallet.viewmodels.CreateWalletViewM
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.PhraseLayout
 import com.gemwallet.android.ui.components.buttons.MainActionButton
+import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.screen.Scene
@@ -119,7 +119,7 @@ fun UI(
     onCreate: (String) -> Unit,
     onCancel: () -> Unit,
 ) {
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
     val name = stringResource(id = R.string.wallet_default_name, generatedNameIndex)
     Scene(
         title = stringResource(id = R.string.wallet_new_title),
@@ -149,7 +149,7 @@ fun UI(
         Spacer16()
         TextButton(
             onClick = {
-                clipboardManager.setText(AnnotatedString(data.joinToString(" ")))
+                clipboardManager.setPlainText(data.joinToString(" "))
             }
         ) {
             Text(text = stringResource(id = R.string.common_copy))

@@ -24,10 +24,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,6 +38,7 @@ import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.screen.Scene
@@ -89,7 +89,7 @@ private fun Wallet(
     onCancel: () -> Unit,
 ) {
     var isShowDelete by remember { mutableStateOf(false) }
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
     var walletName by remember(state.walletName) {
         mutableStateOf(state.walletName)
     }
@@ -155,7 +155,7 @@ private fun Wallet(
                                 trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
                                 onClick = {
                                     callback()
-                                    clipboardManager.setText(AnnotatedString(state.walletAddress))
+                                    clipboardManager.setPlainText(state.walletAddress)
                                 },
                             )
                         },

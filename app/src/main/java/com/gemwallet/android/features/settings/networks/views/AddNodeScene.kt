@@ -22,7 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -36,6 +36,7 @@ import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.TransferTextFieldActions
 import com.gemwallet.android.ui.components.buttons.MainActionButton
+import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.qrCodeRequest
 import com.gemwallet.android.ui.components.screen.Scene
@@ -145,7 +146,7 @@ private fun UrlField(
     onQRScan: () -> Unit,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
     OutlinedTextField(
         modifier = Modifier
             .padding(16.dp)
@@ -167,7 +168,7 @@ private fun UrlField(
                 TransferTextFieldActions(
                     value = value.value,
                     paste = {
-                        value.value = clipboardManager.getText()?.text ?: ""
+                        value.value = clipboardManager.getPlainText() ?: ""
                         onValueChange()
                     },
                     onClean = { value.value = "" },

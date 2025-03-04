@@ -36,7 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
@@ -55,6 +55,7 @@ import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AddressChainViewModel
 import com.gemwallet.android.ui.components.FieldBottomAction
+import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
@@ -78,7 +79,7 @@ internal fun ImportInput(
     }
 
     val errorColor =  MaterialTheme.colorScheme.error
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
     val interactionSource = remember { MutableInteractionSource() }
 
     val indicatorColor = OutlinedTextFieldDefaults.colors().indicatorColor(
@@ -186,7 +187,7 @@ internal fun ImportInput(
                 contentDescription = "paste",
                 text = stringResource(id = R.string.common_paste),
             ) {
-                val newValue = clipboardManager.getText()?.text ?: ""
+                val newValue = clipboardManager.getPlainText() ?: ""
                 onValueChange(
                     TextFieldValue("$newValue ", TextRange(newValue.length + 1))
                 )

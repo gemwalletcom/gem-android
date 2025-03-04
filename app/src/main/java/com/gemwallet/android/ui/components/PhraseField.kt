@@ -18,7 +18,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 
@@ -38,7 +39,7 @@ private fun PhraseTextField(
     minLines: Int = 1,
     decorationBox: @Composable (innerTextField: @Composable () -> Unit) -> Unit,
 ) {
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
     val textStyle = LocalTextStyle.current
     val mergedTextStyle = textStyle.merge(TextStyle(color = MaterialTheme.colorScheme.onSurface))
     decorationBox {
@@ -64,7 +65,7 @@ private fun PhraseTextField(
                     contentDescription = "paste",
                     text = stringResource(id = R.string.common_paste),
                 ) {
-                    onValueChange(clipboardManager.getText()?.text ?: "")
+                    onValueChange(clipboardManager.getPlainText() ?: "")
                 }
             }
         }
@@ -110,7 +111,7 @@ fun PhraseField(
             },
             colors = OutlinedTextFieldDefaults.colors(),
             container = {
-                OutlinedTextFieldDefaults.ContainerBox(
+                OutlinedTextFieldDefaults.Container(
                     enabled = true,
                     isError = false,
                     interactionSource = interactionSource,
