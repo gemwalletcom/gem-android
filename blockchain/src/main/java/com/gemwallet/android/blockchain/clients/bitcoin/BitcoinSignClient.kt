@@ -13,7 +13,6 @@ import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
 import com.wallet.core.primitives.Chain
 import wallet.core.java.AnySigner
 import wallet.core.jni.BitcoinScript
-import wallet.core.jni.BitcoinSigHashType
 import wallet.core.jni.CoinType
 import wallet.core.jni.proto.Bitcoin
 import wallet.core.jni.proto.Common
@@ -73,17 +72,12 @@ class BitcoinSignClient(
 
         return Bitcoin.SigningInput.newBuilder().apply {
             this.coinType = coinType.value()
-            this.hashType = BitcoinSigHashType.ALL.value()
+            this.hashType = BitcoinScript.hashTypeForCoin(coinType)
             this.amount = finalAmount.toLong()
             this.byteFee = gasFee.maxGasPrice.toLong()
             this.toAddress = params.destination()?.address
             this.changeAddress = params.from.address
             this.useMaxAmount = params.isMax()
-            this.hashType = if (chain == Chain.BitcoinCash) {
-                BitcoinSigHashType.FORK.value() or BitcoinSigHashType.ALL.value()
-            } else {
-                BitcoinSigHashType.ALL.value()
-            }
             this.addPrivateKey(ByteString.copyFrom(privateKey))
             this.addAllUtxo(chainData.utxo.getUtxoTransactions(params.from.address, coinType))
             chainData.utxo.forEach {
