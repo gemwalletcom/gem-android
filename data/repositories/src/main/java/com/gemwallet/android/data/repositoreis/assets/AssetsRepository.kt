@@ -173,7 +173,7 @@ class AssetsRepository @Inject constructor(
     }
 
     suspend fun getToken(assetId: AssetId): Flow<Asset?> = withContext(Dispatchers.IO) {
-        assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel()?.asset }
+        assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel()?.asset }
     }
 
     fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> =
