@@ -24,7 +24,7 @@
   <string name="wallet.new.backup_warning">Write down your unique Secret Recovery Phrase and store it securely; it\'s essential for wallet access and recovery.</string>
   <string name="common.continue">Continue</string>
   <string name="common.secret_phrase">Secret Recovery Phrase</string>
-  <string name="app.name">Gem</string>
+  <string name="application.name">Gem</string>
   <string name="common.provider">Provider</string>
   <string name="wallet.new.backup_confirm_warning">Confirm that you\'ve written down and stored your Secret Recovery Phrase securely before proceeding, as it is crucial for future wallet access and recovery.</string>
   <string name="common.loading">Loading</string>
@@ -308,7 +308,7 @@
   <string name="rootcheck.exit">Exit</string>
   <string name="errors.swap.no_quote_available">No quote available.</string>
   <string name="errors.swap.not_supported_chain">Not supported chain.</string>
-  <string name="errors.swap.not_supported_asset">Not supported asset.</string>
+  <string name="errors.swap.not_supported_asset">Actif non pris en charge.</string>
   <string name="errors.swap.not_supported_pair">Not supported pair.</string>
   <string name="social.website">Site web</string>
   <string name="asset.contract">Contracter</string>
@@ -325,5 +325,25 @@
   <string name="nft.collection">Collection</string>
   <string name="wallet.receive_collection">Recevoir la collection</string>
   <string name="wallet.more">Plus</string>
-  <string name="common.save">Sauvegarder</string>
+  <string name="nft.save_to_photos">Enregistrer dans Photos</string>
+  <string name="permissions.access_denied">Accès refusé</string>
+  <string name="permissions.image.photo_access.denied.description">Cette application n\'a pas l\'autorisation d\'accéder à votre photothèque. Veuillez autoriser l\'accès dans les paramètres de votre appareil.</string>
+  <string name="common.magic_button">Bouton magique</string>
+  <string name="common.emoji">Émoji</string>
+  <string name="common.style">Style</string>
+  <string name="common.avatar">Avatar</string>
+  <string name="common.photo">Photo</string>
+  <string name="info.price_impact.title">Impact sur les prix</string>
+  <string name="info.price_impact.description">L\'impact sur le prix est la variation du prix du jeton causée par la taille de votre transaction. Un impact sur le prix plus élevé signifie que vous recevez moins de jetons en raison d\'une faible liquidité ou d\'une taille de commande importante. </string>
+  <string name="social.opensea">OpenSea</string>
+  <string name="social.magiceden">MagicEden</string>
+  <string name="social.instagram">Instagram</string>
+  <string name="social.tiktok">TikTok</string>
+  <string name="social.coinmarketcap">CoinMarketCap</string>
+  <string name="nft.set_as_avatar">Définir comme avatar</string>
+  <string name="errors.connections.invalid_send_parameters">Paramètres non valides fournis pour l\'envoi d\'une transaction.</string>
+  <string name="errors.connections.invalid_sign_parameters">Paramètres non valides fournis pour la signature.</string>
+  <string name="errors.connections.no_supported_wallets">Aucun portefeuille pris en charge n\'est disponible.</string>
+  <string name="errors.connections.unsupported_chain">The provided chain is not supported.</string>
+  <string name="errors.connections.unsupported_method">La méthode demandée n\'est pas prise en charge.</string>
 </resources>

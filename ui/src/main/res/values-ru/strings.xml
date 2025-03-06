@@ -24,7 +24,7 @@
   <string name="wallet.new.backup_warning">Запишите свой уникальный Секретная фраза восстановления и надежно сохраните его; это необходимо для доступа к кошельку и восстановления.</string>
   <string name="common.continue">Продолжить</string>
   <string name="common.secret_phrase">Секретная фраза восстановления</string>
-  <string name="app.name">Gem</string>
+  <string name="application.name">Gem</string>
   <string name="common.provider">Поставщик</string>
   <string name="wallet.new.backup_confirm_warning">Прежде чем продолжить, подтвердите, что вы записали и сохранили свой Секретная фраза восстановления в безопасном месте, так как это имеет решающее значение для будущего доступа к кошельку и его восстановления.</string>
   <string name="common.loading">Загрузка</string>
@@ -280,7 +280,7 @@
   <string name="price_alerts.empty_state.message">Пока не добавлено ни одного ценового оповещения.</string>
   <string name="assets.select_asset">Выберите актив</string>
   <string name="lock.privacy_lock">Блокировка конфиденциальности</string>
-  <string name="receive.your_address">Ваш адрес для получения</string>
+  <string name="receive.your_address">Адрес для получения</string>
   <string name="verify_phrase.title">Подтвердите</string>
   <string name="common.skip">Пропустить</string>
   <string name="common.warning">Внимание</string>
@@ -308,7 +308,7 @@
   <string name="rootcheck.exit">Exit</string>
   <string name="errors.swap.no_quote_available">No quote available.</string>
   <string name="errors.swap.not_supported_chain">Not supported chain.</string>
-  <string name="errors.swap.not_supported_asset">Not supported asset.</string>
+  <string name="errors.swap.not_supported_asset">Неподдерживаемый актив.</string>
   <string name="errors.swap.not_supported_pair">Not supported pair.</string>
   <string name="social.website">Веб-сайт</string>
   <string name="asset.contract">Договор</string>
@@ -325,5 +325,25 @@
   <string name="nft.collection">Коллекция</string>
   <string name="wallet.receive_collection">Получить коллекцию</string>
   <string name="wallet.more">Более</string>
-  <string name="common.save">Сохранить</string>
+  <string name="nft.save_to_photos">Сохранить в фото</string>
+  <string name="permissions.access_denied">Доступ запрещен</string>
+  <string name="permissions.image.photo_access.denied.description">У этого приложения нет разрешения на доступ к вашей библиотеке фотографий. Пожалуйста, включите доступ в настройках вашего устройства.</string>
+  <string name="common.magic_button">Волшебная кнопка</string>
+  <string name="common.emoji">Эмодзи</string>
+  <string name="common.style">Стиль</string>
+  <string name="common.avatar">Аватар</string>
+  <string name="common.photo">Фото</string>
+  <string name="info.price_impact.title">Влияние цены</string>
+  <string name="info.price_impact.description">Влияние цены — это изменение цены токена, вызванное размером вашей сделки. Более высокое влияние цены означает, что вы получаете меньше токенов из-за низкой ликвидности или большого размера заказа. </string>
+  <string name="social.opensea">OpenSea</string>
+  <string name="social.magiceden">MagicEden</string>
+  <string name="social.instagram">Instagram</string>
+  <string name="social.tiktok">TikTok</string>
+  <string name="social.coinmarketcap">CoinMarketCap</string>
+  <string name="nft.set_as_avatar">Установить как аватар</string>
+  <string name="errors.connections.invalid_send_parameters">Для отправки транзакции указаны неверные параметры.</string>
+  <string name="errors.connections.invalid_sign_parameters">Для подписи предоставлены неверные параметры.</string>
+  <string name="errors.connections.no_supported_wallets">Поддерживаемые кошельки отсутствуют.</string>
+  <string name="errors.connections.unsupported_chain">The provided chain is not supported.</string>
+  <string name="errors.connections.unsupported_method">Запрошенный метод не поддерживается.</string>
 </resources>

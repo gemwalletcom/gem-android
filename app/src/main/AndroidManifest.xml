@@ -15,7 +15,7 @@
         android:fullBackupContent="@xml/backup_rules"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app.name"
+        android:label="@string/application.name"
         android:supportsRtl="true"
         android:theme="@style/Theme.Wallet"
         tools:targetApi="31"

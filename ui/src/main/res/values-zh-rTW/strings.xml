@@ -24,7 +24,7 @@
   <string name="wallet.new.backup_warning">請寫下並安全保存您獨特的[%key_id：317595596%]；它對錢包訪問和恢復至關重要。</string>
   <string name="common.continue">繼續</string>
   <string name="common.secret_phrase">秘密助記詞</string>
-  <string name="app.name">Gem</string>
+  <string name="application.name">Gem</string>
   <string name="common.provider">供應商</string>
   <string name="wallet.new.backup_confirm_warning">繼續之前，請確認您已安全地記下並保存了[%key_id：317595596%]，因為它對將來訪問和恢復錢包至關重要。</string>
   <string name="common.loading">装载中</string>
@@ -308,7 +308,7 @@
   <string name="rootcheck.exit">Exit</string>
   <string name="errors.swap.no_quote_available">No quote available.</string>
   <string name="errors.swap.not_supported_chain">Not supported chain.</string>
-  <string name="errors.swap.not_supported_asset">Not supported asset.</string>
+  <string name="errors.swap.not_supported_asset">不支持的資產。</string>
   <string name="errors.swap.not_supported_pair">Not supported pair.</string>
   <string name="social.website">網站</string>
   <string name="asset.contract">合約</string>
@@ -325,5 +325,25 @@
   <string name="nft.collection">收藏</string>
   <string name="wallet.receive_collection">接收收藏</string>
   <string name="wallet.more">更多的</string>
-  <string name="common.save">節省</string>
+  <string name="nft.save_to_photos">儲存到照片</string>
+  <string name="permissions.access_denied">拒絕訪問</string>
+  <string name="permissions.image.photo_access.denied.description">此應用程式無權存取您的照片庫。請在您的裝置設定中啟用存取。</string>
+  <string name="common.magic_button">魔術按鈕</string>
+  <string name="common.emoji">表情符號</string>
+  <string name="common.style">風格</string>
+  <string name="common.avatar">阿凡達</string>
+  <string name="common.photo">照片</string>
+  <string name="info.price_impact.title">價格影響</string>
+  <string name="info.price_impact.description">價格影響是由於您的交易規模而導致的代幣價格的變化。價格影響越大意味著由於流動性低或訂單規模大，您收到的代幣就越少。 </string>
+  <string name="social.opensea">OpenSea</string>
+  <string name="social.magiceden">MagicEden</string>
+  <string name="social.instagram">Instagram</string>
+  <string name="social.tiktok">TikTok</string>
+  <string name="social.coinmarketcap">CoinMarketCap</string>
+  <string name="nft.set_as_avatar">設為頭像</string>
+  <string name="errors.connections.invalid_send_parameters">發送交易時提供的參數無效。</string>
+  <string name="errors.connections.invalid_sign_parameters">提供的簽名參數無效。</string>
+  <string name="errors.connections.no_supported_wallets">沒有可用的受支援的錢包。</string>
+  <string name="errors.connections.unsupported_chain">The provided chain is not supported.</string>
+  <string name="errors.connections.unsupported_method">不支援請求的方法。</string>
 </resources>

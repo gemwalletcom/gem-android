@@ -24,7 +24,7 @@
   <string name="wallet.new.backup_warning">Write down your unique Secret Recovery Phrase and store it securely; it\'s essential for wallet access and recovery.</string>
   <string name="common.continue">Continue</string>
   <string name="common.secret_phrase">Secret Recovery Phrase</string>
-  <string name="app.name">Gem</string>
+  <string name="application.name">Gem</string>
   <string name="common.provider">Provider</string>
   <string name="wallet.new.backup_confirm_warning">Confirm that you\'ve written down and stored your Secret Recovery Phrase securely before proceeding, as it is crucial for future wallet access and recovery.</string>
   <string name="common.loading">Loading</string>
@@ -308,7 +308,7 @@
   <string name="rootcheck.exit">Exit</string>
   <string name="errors.swap.no_quote_available">No quote available.</string>
   <string name="errors.swap.not_supported_chain">Not supported chain.</string>
-  <string name="errors.swap.not_supported_asset">Not supported asset.</string>
+  <string name="errors.swap.not_supported_asset">สินทรัพย์ที่ไม่สนับสนุน</string>
   <string name="errors.swap.not_supported_pair">Not supported pair.</string>
   <string name="social.website">เว็บไซต์</string>
   <string name="asset.contract">สัญญา</string>
@@ -325,5 +325,25 @@
   <string name="nft.collection">ของสะสม</string>
   <string name="wallet.receive_collection">รับการรวบรวม</string>
   <string name="wallet.more">มากกว่า</string>
-  <string name="common.save">บันทึก</string>
+  <string name="nft.save_to_photos">บันทึกลงในภาพถ่าย</string>
+  <string name="permissions.access_denied">การเข้าถึงถูกปฏิเสธ</string>
+  <string name="permissions.image.photo_access.denied.description">แอพนี้ไม่มีสิทธิ์ในการเข้าถึงคลังภาพของคุณ โปรดเปิดใช้งานสิทธิ์ในการตั้งค่าอุปกรณ์ของคุณ</string>
+  <string name="common.magic_button">ปุ่มมหัศจรรย์</string>
+  <string name="common.emoji">อิโมจิ</string>
+  <string name="common.style">สไตล์</string>
+  <string name="common.avatar">อวตาร</string>
+  <string name="common.photo">รูปถ่าย</string>
+  <string name="info.price_impact.title">ผลกระทบต่อราคา</string>
+  <string name="info.price_impact.description">ผลกระทบต่อราคาคือการเปลี่ยนแปลงของราคาโทเค็นที่เกิดจากขนาดการซื้อขายของคุณ ผลกระทบต่อราคาที่สูงขึ้นหมายความว่าคุณได้รับโทเค็นน้อยลงเนื่องจากสภาพคล่องต่ำหรือขนาดคำสั่งซื้อที่ใหญ่ </string>
+  <string name="social.opensea">OpenSea</string>
+  <string name="social.magiceden">MagicEden</string>
+  <string name="social.instagram">Instagram</string>
+  <string name="social.tiktok">TikTok</string>
+  <string name="social.coinmarketcap">CoinMarketCap</string>
+  <string name="nft.set_as_avatar">ตั้งเป็นอวาตาร์</string>
+  <string name="errors.connections.invalid_send_parameters">มีการระบุพารามิเตอร์ที่ไม่ถูกต้องสำหรับการส่งธุรกรรม</string>
+  <string name="errors.connections.invalid_sign_parameters">มีการระบุพารามิเตอร์ที่ไม่ถูกต้องสำหรับการลงนาม</string>
+  <string name="errors.connections.no_supported_wallets">ไม่มีกระเป๋าเงินที่รองรับ</string>
+  <string name="errors.connections.unsupported_chain">The provided chain is not supported.</string>
+  <string name="errors.connections.unsupported_method">วิธีการที่ร้องขอไม่ได้รับการรองรับ</string>
 </resources>

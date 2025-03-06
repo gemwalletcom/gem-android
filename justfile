@@ -36,7 +36,7 @@ release:
     @./gradlew clean :app:bundleGoogleRelease assembleUniversalRelease assembleHuaweiRelease assembleSolanaRelease
 
 localize:
-    @scripts/localize.sh android
+    @sh core/scripts/localize.sh android ui/src/main/res
 
 generate: generate-models
 

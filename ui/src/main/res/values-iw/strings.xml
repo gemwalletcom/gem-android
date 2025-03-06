@@ -24,7 +24,7 @@
   <string name="wallet.new.backup_warning">Write down your unique Secret Recovery Phrase and store it securely; it\'s essential for wallet access and recovery.</string>
   <string name="common.continue">Continue</string>
   <string name="common.secret_phrase">Secret Recovery Phrase</string>
-  <string name="app.name">Gem</string>
+  <string name="application.name">Gem</string>
   <string name="common.provider">Provider</string>
   <string name="wallet.new.backup_confirm_warning">Confirm that you\'ve written down and stored your Secret Recovery Phrase securely before proceeding, as it is crucial for future wallet access and recovery.</string>
   <string name="common.loading">Loading</string>
@@ -308,7 +308,7 @@
   <string name="rootcheck.exit">Exit</string>
   <string name="errors.swap.no_quote_available">No quote available.</string>
   <string name="errors.swap.not_supported_chain">Not supported chain.</string>
-  <string name="errors.swap.not_supported_asset">Not supported asset.</string>
+  <string name="errors.swap.not_supported_asset">נכס לא נתמך.</string>
   <string name="errors.swap.not_supported_pair">Not supported pair.</string>
   <string name="social.website">אֲתַר אִינטֶרנֶט</string>
   <string name="asset.contract">חוֹזֶה</string>
@@ -325,5 +325,25 @@
   <string name="nft.collection">גְבִיָה</string>
   <string name="wallet.receive_collection">קבלת אוסף</string>
   <string name="wallet.more">יוֹתֵר</string>
-  <string name="common.save">לְהַצִיל</string>
+  <string name="nft.save_to_photos">שמור בתמונות</string>
+  <string name="permissions.access_denied">הגִישָׁה נִדחֲתָה</string>
+  <string name="permissions.image.photo_access.denied.description">לאפליקציה הזו אין הרשאה לגשת לספריית התמונות שלך. אפשר גישה בהגדרות המכשיר שלך.</string>
+  <string name="common.magic_button">כפתור קסם</string>
+  <string name="common.emoji">אימוג\'י</string>
+  <string name="common.style">סִגְנוֹן</string>
+  <string name="common.avatar">גִלגוּל</string>
+  <string name="common.photo">תַצלוּם</string>
+  <string name="info.price_impact.title">השפעת המחיר</string>
+  <string name="info.price_impact.description">השפעת המחיר היא השינוי במחיר האסימון שנגרם על ידי גודל המסחר שלך. השפעה גבוהה יותר על המחיר פירושה שאתה מקבל פחות אסימונים עקב נזילות נמוכה או גודל הזמנה גדול. </string>
+  <string name="social.opensea">OpenSea</string>
+  <string name="social.magiceden">MagicEden</string>
+  <string name="social.instagram">Instagram</string>
+  <string name="social.tiktok">TikTok</string>
+  <string name="social.coinmarketcap">CoinMarketCap</string>
+  <string name="nft.set_as_avatar">הגדר כאווטר</string>
+  <string name="errors.connections.invalid_send_parameters">פרמטרים לא חוקיים סופקו לשליחת עסקה.</string>
+  <string name="errors.connections.invalid_sign_parameters">פרמטרים לא חוקיים סופקו לחתימה.</string>
+  <string name="errors.connections.no_supported_wallets">אין ארנקים נתמכים זמינים.</string>
+  <string name="errors.connections.unsupported_chain">The provided chain is not supported.</string>
+  <string name="errors.connections.unsupported_method">השיטה המבוקשת אינה נתמכת.</string>
 </resources>
