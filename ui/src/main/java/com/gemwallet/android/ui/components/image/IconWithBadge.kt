@@ -43,7 +43,7 @@ fun IconWithBadge(
         )
         supportIcon?.let {
             AsyncImage(
-                modifier = Modifier.Companion
+                modifier = Modifier
                     .size(18.dp)
                     .align(Alignment.Companion.BottomEnd)
                     .border(0.5.dp, MaterialTheme.colorScheme.surface, CircleShape),

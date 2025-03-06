@@ -13,11 +13,14 @@ import com.gemwallet.android.data.repositoreis.swap.SwapRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.features.swap.models.PriceImpact
+import com.gemwallet.android.features.swap.models.PriceImpactType
 import com.gemwallet.android.features.swap.models.SwapError
 import com.gemwallet.android.features.swap.models.SwapItemModel
 import com.gemwallet.android.features.swap.models.SwapItemType
 import com.gemwallet.android.features.swap.models.SwapPairSelect
 import com.gemwallet.android.features.swap.models.SwapPairUIModel
+import com.gemwallet.android.features.swap.models.SwapProviderItem
 import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.features.swap.navigation.pairArg
 import com.gemwallet.android.math.numberParse
@@ -26,7 +29,6 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
-import com.gemwallet.android.ui.models.PercentageFormattedUIModel
 import com.wallet.core.primitives.AssetId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -50,7 +52,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.SwapProvider
 import uniffi.gemstone.SwapperException
-import uniffi.gemstone.swapProviderNameToString
 import java.math.BigDecimal
 import java.math.BigInteger
 import javax.inject.Inject
@@ -228,11 +229,26 @@ class SwapViewModel @Inject constructor(
 
     val selectedProvider = MutableStateFlow<SwapProvider?>(null)
 
-    val providers = quotes.mapLatest { it.map { it.data.provider } }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    val providers = quotes.combine(assetsState) { quotes, assets ->
+        val price = assets?.to?.price
+        quotes.map { quote ->
+            val toValue = Crypto(quote.toValue)
+            val fiat = if (price?.currency != null && price.price.price > 0) {
+                price.currency.format(toValue.convert(assets.to.asset.decimals, price.price.price).value(0))
+            } else {
+                null
+            }
+            SwapProviderItem(
+                swapProvider = quote.data.provider,
+                price = assets?.to?.asset?.format(toValue, 2, dynamicPlace = true),
+                fiat = fiat,
+            )
+        }
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val quote = combine(quotes, assetsState, selectedProvider) { quotes, assets, provider ->
-        val quote = quotes.firstOrNull { it.data.provider == provider } ?: quotes.firstOrNull()
+        val quote = quotes.firstOrNull { it.data.provider.id == provider } ?: quotes.firstOrNull()
         Pair(quote, assets)
     }
     .mapLatest {
@@ -245,7 +261,7 @@ class SwapViewModel @Inject constructor(
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val currentProvider = quote.mapLatest { it?.data?.provider }
+    val currentProvider = quote.mapLatest { SwapProviderItem(it?.data?.provider ?: return@mapLatest null) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val toValue: TextFieldState = TextFieldState()
@@ -290,18 +306,6 @@ class SwapViewModel @Inject constructor(
         }
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    data class PriceImpact(
-        override val percentage: Double?,
-        val type: PriceImpactType,
-    ) : PercentageFormattedUIModel
-
-    enum class PriceImpactType {
-        Low,
-        Medium,
-        High,
-        Positive,
-    }
 
     private val sync = swapPairState.flatMapLatest {
         flow {
@@ -378,7 +382,7 @@ class SwapViewModel @Inject constructor(
                 fromAmount = Crypto(fromAmount, from.asset.decimals).atomicValue,
                 toAmount = BigInteger(quote.toValue),
                 swapData = swapData.data,
-                provider = swapProviderNameToString(quote.data.provider),
+                provider = quote.data.provider.protocol,
                 to = swapData.to,
                 value = swapData.value,
                 approval = swapData.approval,

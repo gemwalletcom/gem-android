@@ -16,13 +16,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,29 +40,27 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.asset_select.views.SelectSwapScreen
 import com.gemwallet.android.features.confirm.views.ConfirmScreen
+import com.gemwallet.android.features.swap.models.PriceImpactType
 import com.gemwallet.android.features.swap.models.SwapError
 import com.gemwallet.android.features.swap.models.SwapItemModel
 import com.gemwallet.android.features.swap.models.SwapItemType
 import com.gemwallet.android.features.swap.models.SwapPairSelect
+import com.gemwallet.android.features.swap.models.SwapProviderItem
 import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.features.swap.viewmodels.SwapViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.ListItem
-import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.TransactionItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer2
+import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIcon20
 import com.gemwallet.android.ui.components.image.AsyncImage
-import com.gemwallet.android.ui.components.image.getSwapProviderIcon
-import com.gemwallet.android.ui.components.image.getSwapProviderName
+import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
-import com.gemwallet.android.ui.components.list_item.SubheaderItem
-import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Asset
@@ -70,7 +68,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
-import uniffi.gemstone.SwapProvider
 
 @Composable
 fun SwapScreen(
@@ -152,29 +149,7 @@ fun SwapScreen(
                 }
             )
             currentProvider?.let { provider ->
-                Spacer16()
-                val modifier = if (providers.size > 1) {
-                    Modifier.clickable { isShowProviderSelect.value = true }
-                } else {
-                    Modifier
-                }
-                SubheaderItem(stringResource(R.string.swap_provider))
-                ListItem(
-                    modifier = Modifier
-                        .height(72.dp)
-                        .then(modifier),
-                    leading = {
-                        AsyncImage(provider.getSwapProviderIcon())
-                    },
-                    title = {
-                        ListItemTitleText(provider.getSwapProviderName())
-                    },
-                    trailing = if (providers.size > 1) {
-                        { Icon(Icons.Default.ChevronRight, "") }
-                    } else {
-                        null
-                    }
-                )
+                CurrentSwapProvider(provider, providers.size > 1, isShowProviderSelect)
             }
             priceImpact?.let {
                 ListItem(
@@ -186,10 +161,10 @@ fun SwapScreen(
                         ListItemTitleText(
                             it.percentageFormatted,
                             color = when (it.type) {
-                                SwapViewModel.PriceImpactType.Positive,
-                                SwapViewModel.PriceImpactType.Low -> MaterialTheme.colorScheme.tertiary
-                                SwapViewModel.PriceImpactType.Medium -> pendingColor
-                                SwapViewModel.PriceImpactType.High -> MaterialTheme.colorScheme.error
+                                PriceImpactType.Positive,
+                                PriceImpactType.Low -> MaterialTheme.colorScheme.tertiary
+                                PriceImpactType.Medium -> pendingColor
+                                PriceImpactType.High -> MaterialTheme.colorScheme.error
                             }
                         )
                     }
@@ -242,7 +217,41 @@ fun SwapScreen(
             onSelect = {select -> viewModel.onSelect(select) },
         )
     }
-    ProviderList(isShowProviderSelect, providers, viewModel::setProvider)
+    ProviderList(isShowProviderSelect, currentProvider?.swapProvider?.id, providers, viewModel::setProvider)
+}
+
+@Composable
+private fun CurrentSwapProvider(
+    provider: SwapProviderItem,
+    isAvailableChoose: Boolean,
+    isShowProviderSelect: MutableState<Boolean>,
+) {
+    Spacer16()
+    val modifier = if (isAvailableChoose) {
+        Modifier.clickable { isShowProviderSelect.value = true }
+    } else {
+        Modifier
+    }
+    ListItem(
+        modifier = Modifier
+            .height(72.dp)
+            .then(modifier),
+        title = {
+            ListItemTitleText(stringResource(R.string.swap_provider))
+        },
+        trailing = {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                ListItemSupportText(provider.swapProvider.name)
+                Spacer4()
+                AsyncImage(provider.icon, size = trailingIcon20)
+                if (isAvailableChoose) {
+                    Icon(Icons.Default.ChevronRight, "")
+                }
+            }
+        }
+    )
 }
 
 @Composable
@@ -289,35 +298,6 @@ private fun SwapError(state: SwapState) {
                 is SwapError.Unknown -> "${stringResource(R.string.errors_unknown_try_again)}: ${state.error.message}"
             },
             style = MaterialTheme.typography.bodyMedium,
-        )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-private fun ProviderList(
-    isShow: MutableState<Boolean>,
-    providers: List<SwapProvider>,
-    onProviderSelect: (SwapProvider) -> Unit,
-) {
-    if (!isShow.value) {
-        return
-    }
-
-    ModalBottomSheet(
-        onDismissRequest = { isShow.value = false },
-    ) {
-        Table(
-            items = providers.map {
-                CellEntity(
-                    icon = it.getSwapProviderIcon(),
-                    label = it.getSwapProviderName(),
-                    data = ""
-                ) {
-                    onProviderSelect(it)
-                    isShow.value = false
-                }
-            }
         )
     }
 }

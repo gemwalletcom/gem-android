@@ -14,6 +14,7 @@ import com.gemwallet.android.ui.components.designsystem.Spacer16
 fun ModalBottomSheet(
     onDismissRequest: () -> Unit,
     sheetState: SheetState = rememberModalBottomSheetState(),
+    dragHandle: @Composable () -> Unit = { Box { Spacer16() } },
     content: @Composable ColumnScope.() -> Unit,
 ) {
     androidx.compose.material3.ModalBottomSheet(
@@ -21,7 +22,7 @@ fun ModalBottomSheet(
         sheetState = sheetState,
         scrimColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f),
         containerColor = MaterialTheme.colorScheme.background,
-        dragHandle = { Box { Spacer16() } },
+        dragHandle = dragHandle,
         content = content
     )
 }
