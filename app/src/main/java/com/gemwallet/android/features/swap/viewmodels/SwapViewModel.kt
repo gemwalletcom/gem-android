@@ -6,7 +6,6 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.swap.SwapRepository
@@ -64,7 +63,6 @@ class SwapViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val swapRepository: SwapRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val getTransactionCase: GetTransactionCase,
 ) : ViewModel() {
 
     val swapScreenState = MutableStateFlow<SwapState>(SwapState.None)
@@ -72,8 +70,6 @@ class SwapViewModel @Inject constructor(
     val selectPair = MutableStateFlow<SwapPairSelect?>(null)
 
     private val approveTxHash = MutableStateFlow<String?>(null)
-    val approveTx = approveTxHash.flatMapLatest { getTransactionCase.getTransaction(it ?: return@flatMapLatest emptyFlow()) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val swapPairState: StateFlow<SwapPairState?> = savedStateHandle.getStateFlow<String?>(pairArg, null)
         .mapNotNull {
@@ -174,19 +170,19 @@ class SwapViewModel @Inject constructor(
     private val quotes = combine(
         fromValueFlow,
         assetsState,
-        approveTx,
         refreshTimer
-    ) { fromValue, assets, tx, _ -> Triple(fromValue, assets, tx) }
+    ) { fromValue, assets, _ -> Pair(fromValue, assets) }
     .mapLatest { data ->
         val assets = data.second
         val fromAsset = assets?.from
         val toAsset = assets?.to
+
         val fromValue = try {
             data.first.numberParse()
         } catch (_: Throwable) {
             BigDecimal.ZERO
         }
-        if (fromAsset == null || toAsset == null || fromValue.compareTo(BigDecimal.ZERO) == 0) {
+        if (fromAsset == null || toAsset == null || fromAsset.id() == toAsset.id() || fromValue.compareTo(BigDecimal.ZERO) == 0) {
             withContext(Dispatchers.Main) { toValue.edit { replace(0, length, "0") } }
             swapScreenState.update { SwapState.None }
             return@mapLatest emptyList()

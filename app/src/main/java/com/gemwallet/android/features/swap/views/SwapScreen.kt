@@ -22,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -51,7 +50,6 @@ import com.gemwallet.android.features.swap.viewmodels.SwapViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.ListItem
-import com.gemwallet.android.ui.components.TransactionItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer2
 import com.gemwallet.android.ui.components.designsystem.Spacer4
@@ -67,7 +65,6 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.TransactionState
 
 @Composable
 fun SwapScreen(
@@ -80,7 +77,6 @@ fun SwapScreen(
     val fromEquivalent by viewModel.fromEquivalentFormatted.collectAsStateWithLifecycle()
     val toEquivalent by viewModel.toEquivalentFormatted.collectAsStateWithLifecycle()
     val swapState by viewModel.swapScreenState.collectAsStateWithLifecycle()
-    val approveTx by viewModel.approveTx.collectAsStateWithLifecycle()
     val currentProvider by viewModel.currentProvider.collectAsStateWithLifecycle()
     val providers by viewModel.providers.collectAsStateWithLifecycle()
     val priceImpact by viewModel.priceImpact.collectAsStateWithLifecycle()
@@ -169,11 +165,6 @@ fun SwapScreen(
                         )
                     }
                 )
-            }
-            Spacer16()
-            val tx = approveTx
-            if (tx?.transaction?.state == TransactionState.Pending) {
-                TransactionItem(tx, true) { }
             }
             Spacer16()
             SwapError(swapState)

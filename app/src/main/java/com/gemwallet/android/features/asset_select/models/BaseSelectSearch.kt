@@ -19,7 +19,7 @@ open class BaseSelectSearch(
         session: Flow<Session?>,
         query: Flow<String>
     ): Flow<List<AssetInfo>> {
-        return query.flatMapLatest { assetsRepository.search(it, false, emptyList()) }
+        return query.flatMapLatest { assetsRepository.search(it, false) }
             .map { it.distinctBy { it.asset.id.toIdentifier() } }
             .flowOn(Dispatchers.IO)
     }

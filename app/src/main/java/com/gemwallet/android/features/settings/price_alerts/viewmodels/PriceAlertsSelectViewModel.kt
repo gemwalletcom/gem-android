@@ -48,7 +48,7 @@ open class PriceAlertSelectSearch(
         return combine(query, addedPriceAlerts) { query, alerts -> Pair(query, alerts) }
             .flatMapLatest {
                 val (query, alerts) = it
-                assetsRepository.search(query, true, alerts)
+                assetsRepository.search(query, true)
             }
             .map { it.distinctBy { it.asset.id.toIdentifier() } }
             .flowOn(Dispatchers.IO)

@@ -23,7 +23,7 @@ import kotlinx.coroutines.flow.map
 @DatabaseView(
     viewName = "asset_info",
     value = """
-        SELECT
+        SELECT DISTINCT
             asset.id as id,
             asset.name as name,
             asset.symbol as symbol,
@@ -67,12 +67,12 @@ import kotlinx.coroutines.flow.map
             balances.updated_at AS balanceUpdatedAt
         FROM asset
         LEFT JOIN asset_wallet ON asset.id = asset_wallet.asset_id
-        LEFT JOIN accounts ON asset_wallet.account_address = accounts.address AND asset_wallet.wallet_id = accounts.wallet_id AND asset."chain" = accounts."chain"
-        LEFT JOIN wallets ON asset_wallet.wallet_id = wallets.id
         LEFT JOIN session ON asset_wallet.wallet_id = session.wallet_id
-        LEFT JOIN balances ON asset_wallet.account_address = balances.account_address AND asset_wallet.asset_id = balances.asset_id AND asset_wallet.wallet_id = balances.wallet_id
+        LEFT JOIN wallets ON wallets.id = "session".wallet_id
+        LEFT JOIN accounts ON asset_wallet.account_address = accounts.address AND wallets.id = accounts.wallet_id AND asset."chain" = accounts."chain"
+        LEFT JOIN balances ON asset_wallet.account_address = balances.account_address AND asset_wallet.asset_id = balances.asset_id AND wallets.id = balances.wallet_id
         LEFT JOIN prices ON asset.id = prices.asset_id AND prices.currency = (SELECT currency FROM session WHERE id = 1)
-        LEFT JOIN asset_config ON asset_wallet.asset_id = asset_config.asset_id AND asset_wallet.wallet_id = asset_config.wallet_id
+        LEFT JOIN asset_config ON asset_wallet.asset_id = asset_config.asset_id AND wallets.id = asset_config.wallet_id
     """
 )
 data class DbAssetInfo(

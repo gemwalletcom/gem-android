@@ -56,38 +56,46 @@ interface AssetsDao {
     fun getAssetsInfoByAllWallets(ids: List<String>): Flow<List<DbAssetInfo>>
 
     @Query("""
-        SELECT * FROM asset_info WHERE
+        SELECT
+            *,
+            MAX(address)
+        FROM asset_info WHERE
             id NOT IN (:exclude)
             AND (chain IN (SELECT chain FROM accounts JOIN session ON accounts.wallet_id = session.wallet_id AND session.id = 1))
             AND (walletId = (SELECT wallet_id FROM session WHERE session.id = 1) OR walletId IS NULL)
             AND (id LIKE '%' || :query || '%'
             OR symbol LIKE '%' || :query || '%'
             OR name LIKE '%' || :query || '%' COLLATE NOCASE)
-            ORDER BY balanceFiatTotalAmount, assetRank DESC
+            GROUP BY id
+            ORDER BY balanceFiatTotalAmount DESC, assetRank DESC
         """)
-    fun searchAssetInfo(query: String, exclude: List<String> = emptyList()): Flow<List<DbAssetInfo>>
+    fun search(query: String, exclude: List<String> = emptyList()): Flow<List<DbAssetInfo>>
 
     @Query("""
-        SELECT * FROM asset_info WHERE
-            id NOT IN (:exclude)
+        SELECT
+            *,
+            MAX(address)
+        FROM asset_info WHERE
+            (symbol LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%' COLLATE NOCASE)
+            GROUP BY id
+            ORDER BY balanceFiatTotalAmount DESC, assetRank DESC
+            
+        """)
+    fun searchByAllWallets(query: String): Flow<List<DbAssetInfo>>
+
+    @Query("""
+        SELECT
+            *,
+            MAX(address)
+        FROM asset_info WHERE
+            (chain IN (:byChains) OR id IN (:byAssets) )
             AND (id LIKE '%' || :query || '%'
             OR symbol LIKE '%' || :query || '%'
             OR name LIKE '%' || :query || '%' COLLATE NOCASE)
-            ORDER BY balanceFiatTotalAmount, assetRank DESC
+            GROUP BY id
+            ORDER BY balanceFiatTotalAmount DESC, assetRank DESC
         """)
-    fun searchAssetInfoByAllWallets(query: String, exclude: List<String> = emptyList()): Flow<List<DbAssetInfo>>
-
-    @Query("""
-        SELECT * FROM asset_info WHERE
-            (chain IN (SELECT chain FROM accounts JOIN session ON accounts.wallet_id = session.wallet_id AND session.id = 1))
-            AND id NOT IN (:exclude)
-            AND (chain IN (:byChains) OR id IN (:byAssets) )
-            AND (id LIKE '%' || :query || '%'
-            OR symbol LIKE '%' || :query || '%'
-            OR name LIKE '%' || :query || '%' COLLATE NOCASE)
-            ORDER BY balanceFiatTotalAmount DESC
-        """)
-    fun searchAssetInfo(query: String, exclude: List<String> = emptyList(), byChains: List<Chain>, byAssets: List<String>): Flow<List<DbAssetInfo>>
+    fun swapSearch(query: String, byChains: List<Chain>, byAssets: List<String>): Flow<List<DbAssetInfo>>
 
     @Query("SELECT * FROM asset_info WHERE address IN (:accounts) AND sessionId=1 ")
     fun getAssetsInfoByAccounts(accounts: List<String>): Flow<List<DbAssetInfo>>

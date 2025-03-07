@@ -29,7 +29,6 @@ import com.gemwallet.android.ext.exclude
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAssociatedAssetIds
 import com.gemwallet.android.ext.isSwapSupport
-import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.swapSupport
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
@@ -61,9 +60,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
-import kotlin.Boolean
-import kotlin.collections.map
-import kotlin.collections.mapNotNull
 
 @Singleton
 class AssetsRepository @Inject constructor(
@@ -128,7 +124,7 @@ class AssetsRepository @Inject constructor(
         val marketInfo = marketInfoJob.await()
         val record = DbAsset(
             id = assetInfo.id().toIdentifier(),
-            name = assetInfo.asset.name,
+            name = assetFull.asset.name,
             symbol = assetInfo.asset.symbol,
             decimals = assetInfo.asset.decimals,
             type = assetInfo.asset.type,
@@ -165,7 +161,6 @@ class AssetsRepository @Inject constructor(
     fun getAssetsInfo(assetsId: List<AssetId>): Flow<List<AssetInfo>> = assetsDao
         .getAssetsInfo(assetsId.map { it.toIdentifier() })
         .toAssetInfoModel()
-        .map { assets -> assetsId.map { id -> assets.firstOrNull { it.asset.id.same(id) } }.filterNotNull() } // TODO: Could remove?
 
 
     suspend fun searchToken(assetId: AssetId): Boolean {
@@ -183,11 +178,11 @@ class AssetsRepository @Inject constructor(
         return assetsDao.getAssetsInfoByAllWallets(assetsId).toAssetInfoModel()
     }
 
-    fun search(query: String, byAllWallets: Boolean, exclude: List<String>): Flow<List<AssetInfo>> {
+    fun search(query: String, byAllWallets: Boolean): Flow<List<AssetInfo>> {
         return if (byAllWallets) {
-            assetsDao.searchAssetInfoByAllWallets(query, exclude)
+            assetsDao.searchByAllWallets(query)
         } else {
-            assetsDao.searchAssetInfo(query, exclude)
+            assetsDao.search(query)
         }
         .toAssetInfoModel()
         .map {
@@ -196,12 +191,12 @@ class AssetsRepository @Inject constructor(
         }
     }
 
-    fun swapSearch(wallet: Wallet, query: String, exclude: List<String>, byChains: List<Chain>, byAssets: List<AssetId>): Flow<List<AssetInfo>> {
+    fun swapSearch(wallet: Wallet, query: String, byChains: List<Chain>, byAssets: List<AssetId>): Flow<List<AssetInfo>> {
         val walletChains = wallet.accounts.map { it.chain }
         val includeChains = byChains.filter { walletChains.contains(it) }
         val includeAssetIds = byAssets.filter { walletChains.contains(it.chain) }
 
-        return assetsDao.searchAssetInfo(query, exclude, includeChains, includeAssetIds.map { it.toIdentifier() })
+        return assetsDao.swapSearch(query, includeChains, includeAssetIds.map { it.toIdentifier() })
             .toAssetInfoModel()
             .map {
                 it.filter { !Chain.exclude().contains(it.asset.id.chain) }
@@ -420,7 +415,7 @@ class AssetsRepository @Inject constructor(
             balancesDao.insert(balances.map { it.toRecord(walletId, account.address, updatedAt) })
             balances
         }
-        listOf(getNative.await()).filterNotNull() + getTokens.await()
+        listOfNotNull(getNative.await()) + getTokens.await()
     }
 
     suspend fun updateBayAvailable(assets: List<String>) {

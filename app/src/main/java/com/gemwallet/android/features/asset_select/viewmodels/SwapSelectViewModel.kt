@@ -63,7 +63,6 @@ class SwapSelectSearch(
                 assetsRepository.swapSearch(
                     wallet,
                     query,
-                    listOf(oppositeId.toIdentifier()),
                     supported.chains.mapNotNull { item -> Chain.entries.firstOrNull { it.string == item } },
                     supported.assetIds.mapNotNull { it.toAssetId() }
                 )
