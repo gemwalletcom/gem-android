@@ -104,7 +104,6 @@ class TestSolanaBalances {
                 )
             )
         }
-
     }
 
     @Test
@@ -172,8 +171,8 @@ class TestSolanaBalances {
         assertEquals(2, result.size)
         assertEquals(AssetId(Chain.Solana, "JUPyiwrYJFskUPiHa7hkeR8VUtAeFoSYbKedZNsDvCN"), result[0].asset.id)
         assertEquals(AssetId(Chain.Solana, "HZ1JovNiVvGrGNiiYvEozEVgZ58xaU3RKwX8eACQBCt3"), result[1].asset.id)
-        assertEquals("300000", result[0].balance.available)
-        assertEquals("5000000", result[1].balance.available)
+        assertEquals("10000000", result[0].balance.available)
+        assertEquals("20000000", result[1].balance.available)
     }
 
     @Test

@@ -20,9 +20,6 @@ interface SolanaAccountsService {
     @POST("/")
     suspend fun batchAccount(@Body request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<SolanaValue<List<SolanaTokenAccount>>>>>
 
-//    @POST("/")
-//    suspend fun batchBalances(@Body request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<SolanaValue<SolanaBalanceValue>>>>
-
     @POST("/")
     suspend fun getAccountInfoSpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaParsedData<SolanaInfo<SolanaParsedSplTokenInfo>>>>>
 
@@ -31,25 +28,6 @@ interface SolanaAccountsService {
 
     @POST("/")
     suspend fun getTokenInfo(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaTokenOwner>>>
-}
-
-suspend fun SolanaAccountsService.getTokenAccountByOwner(owner: String, tokenId: String): String? {
-    val accountRequest = JSONRpcRequest.create(
-        method = SolanaMethod.GetTokenAccountByOwner,
-        params = listOf(
-            owner,
-            mapOf("mint" to tokenId),
-            mapOf(
-                "encoding" to "jsonParsed",
-                SolanaRpcClient.commitmentKey to SolanaRpcClient.commitmentValue,
-            ),
-        )
-    )
-    return getTokenAccountByOwner(accountRequest).getOrNull()?.result?.value?.firstOrNull()?.pubkey
-}
-
-suspend fun SolanaAccountsService.getTokenInfo(tokenId: String): String? {
-    return getTokenInfo(createAccountInfoRequest(tokenId)).getOrNull()?.result?.value?.owner
 }
 
 fun SolanaAccountsService.createAccountInfoRequest(tokenId: String): JSONRpcRequest<List<Any>> {

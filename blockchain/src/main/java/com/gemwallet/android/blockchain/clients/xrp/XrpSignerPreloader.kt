@@ -43,7 +43,7 @@ class XrpSignerPreloader(
 
     data class XrpChainData(
         val sequence: Int,
-        val bockNumber: Int,
+        val blockNumber: Int,
         val fee: Fee,
     ) : ChainSignData {
         override fun fee(speed: TxSpeed): Fee = fee

@@ -34,12 +34,12 @@ class TestBitcoinSignerPreloader {
 
     @Test
     fun testBitcoinPreloader() {
-        var requestPubKey = ""
+        var requestAddress = ""
         val preloader = BitcoinSignerPreloader(
             Chain.Bitcoin,
             object : BitcoinUTXOService {
                 override suspend fun getUTXO(address: String): Result<List<BitcoinUTXO>> {
-                    requestPubKey = address
+                    requestAddress = address
 
                     return Result.success(
                         listOf(
@@ -81,7 +81,7 @@ class TestBitcoinSignerPreloader {
                 )
             )
         }
-        assertEquals("dgub8rNuTi8ofZu1jVDKpBxW9VFo62kjjx3b6CcameEZnrNNHJ3sKCnWBxQSv6qAP6jrwZEpfT1ZdKsrcBFKGTMV8zgBtjZmvQt29VPnLzbHjjD", requestPubKey)
+        assertEquals("DDyZeg24eU3csLa7LMWrZEoqnHXccz6c94", requestAddress)
         assertEquals(BigInteger.valueOf(10_000_000_000), result.input.amount)
         assertEquals("DDyZeg24eU3csLa7LMWrZEoqnHXccz6c94", result.input.from.address)
         assertEquals(AssetId(Chain.Bitcoin).toIdentifier(), result.input.assetId.toIdentifier())

@@ -42,7 +42,7 @@ class TestXrpSigner {
                 ),
                 chainData = XrpSignerPreloader.XrpChainData(
                     sequence = 1,
-                    bockNumber = 1,
+                    blockNumber = 1,
                     fee = Fee(
                         speed = TxSpeed.Normal,
                         feeAssetId = AssetId(Chain.Xrp),
@@ -55,10 +55,13 @@ class TestXrpSigner {
             )
         }
 
-        assertEquals("0x1200002200000000240000000161400000000000271068400000000000000a7321020927c" +
-                "c15435c44dd3b74189e950d941939425f2864876e06747f093dc68b83e97446304402207f219106a" +
-                "8220669fb310c43974629e83925779f990e516dca87987624ee88480220557d0efc012c22948cd28" +
-                "25aa64010e99ebe4255571472982aaa50ab8452d1ed8114dd10693e412bff789ebf6baa9714036c9" +
-                "ae214bb8314dd10693e412bff789ebf6baa9714036c9ae214bb", sign.first().toHexString())
+        assertEquals(
+            "0x12000022000000002400000001201b0000000b61400000000000271068400000000000000" +
+                "a7321020927cc15435c44dd3b74189e950d941939425f2864876e06747f093dc68b83e9744630440" +
+                "2205db7de344e8aabb5887f1e612aa32faa16ada58c177ee25150758bb8772a320402201140778e8" +
+                "b58fa7884c0fffe632cbca99f3a7396ed8ff57213232f18ef65fcb38114dd10693e412bff789ebf6" +
+                "baa9714036c9ae214bb8314dd10693e412bff789ebf6baa9714036c9ae214bb",
+            sign.first().toHexString()
+        )
     }
 }
