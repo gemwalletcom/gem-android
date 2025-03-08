@@ -404,12 +404,12 @@ class SwapViewModel @Inject constructor(
         this.selectedProvider.update { provider }
     }
 
-    private class SwapPairState(
+    private data class SwapPairState(
         val fromId: AssetId? = null,
         val toId: AssetId? = null,
     )
 
-    private class SwapAssetsState(
+    private data class SwapAssetsState(
         val from: AssetInfo? = null,
         val to: AssetInfo? = null,
     )
