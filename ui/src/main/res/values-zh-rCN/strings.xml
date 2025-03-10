@@ -346,4 +346,6 @@
   <string name="errors.connections.no_supported_wallets">没有可用的受支持的钱包。</string>
   <string name="errors.connections.unsupported_chain">The provided chain is not supported.</string>
   <string name="errors.connections.unsupported_method">不支持请求的方法。</string>
+  <string name="errors.swap.amount_too_small">Amount too small</string>
+  <string name="markets.title">Markets</string>
 </resources>

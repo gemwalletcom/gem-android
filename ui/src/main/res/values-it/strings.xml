@@ -346,4 +346,6 @@
   <string name="errors.connections.no_supported_wallets">Non sono disponibili portafogli supportati.</string>
   <string name="errors.connections.unsupported_chain">The provided chain is not supported.</string>
   <string name="errors.connections.unsupported_method">Il metodo richiesto non è supportato.</string>
+  <string name="errors.swap.amount_too_small">Amount too small</string>
+  <string name="markets.title">Markets</string>
 </resources>

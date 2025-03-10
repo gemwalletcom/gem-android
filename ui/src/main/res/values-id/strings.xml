@@ -346,4 +346,6 @@
   <string name="errors.connections.no_supported_wallets">Tidak ada dompet yang didukung tersedia.</string>
   <string name="errors.connections.unsupported_chain">The provided chain is not supported.</string>
   <string name="errors.connections.unsupported_method">Metode yang diminta tidak didukung.</string>
+  <string name="errors.swap.amount_too_small">Amount too small</string>
+  <string name="markets.title">Markets</string>
 </resources>

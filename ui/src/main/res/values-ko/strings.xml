@@ -346,4 +346,6 @@
   <string name="errors.connections.no_supported_wallets">지원되는 지갑이 없습니다.</string>
   <string name="errors.connections.unsupported_chain">The provided chain is not supported.</string>
   <string name="errors.connections.unsupported_method">요청하신 방법은 지원되지 않습니다.</string>
+  <string name="errors.swap.amount_too_small">Amount too small</string>
+  <string name="markets.title">Markets</string>
 </resources>

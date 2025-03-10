@@ -346,4 +346,6 @@
   <string name="errors.connections.no_supported_wallets">कोई समर्थित वॉलेट उपलब्ध नहीं है.</string>
   <string name="errors.connections.unsupported_chain">The provided chain is not supported.</string>
   <string name="errors.connections.unsupported_method">अनुरोधित विधि समर्थित नहीं है.</string>
+  <string name="errors.swap.amount_too_small">Amount too small</string>
+  <string name="markets.title">Markets</string>
 </resources>

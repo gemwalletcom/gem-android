@@ -346,4 +346,6 @@
   <string name="errors.connections.no_supported_wallets">Không có ví nào được hỗ trợ.</string>
   <string name="errors.connections.unsupported_chain">The provided chain is not supported.</string>
   <string name="errors.connections.unsupported_method">Phương pháp yêu cầu không được hỗ trợ.</string>
+  <string name="errors.swap.amount_too_small">Amount too small</string>
+  <string name="markets.title">Markets</string>
 </resources>
