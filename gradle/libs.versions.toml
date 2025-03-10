@@ -109,6 +109,7 @@ turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 androidx-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiautomator" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockkVersion" }
 mockk-agent =  { module = "io.mockk:mockk-agent", version.ref = "mockkVersion" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesAndroid" }
 
 # chart
 vico-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico" }
