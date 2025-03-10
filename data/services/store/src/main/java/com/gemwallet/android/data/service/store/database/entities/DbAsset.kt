@@ -70,7 +70,7 @@ data class DbAssetLink(
 @Entity(
     tableName = "asset_market",
     primaryKeys = ["asset_id"],
-    foreignKeys = [ForeignKey(DbAsset::class, ["id"], ["asset_id"], onDelete = ForeignKey.Companion.CASCADE)],
+    foreignKeys = [ForeignKey(DbAsset::class, ["id"], ["asset_id"], onDelete = ForeignKey.CASCADE)],
 )
 data class DbAssetMarket(
     @ColumnInfo("asset_id") val assetId: String,
@@ -96,6 +96,8 @@ data class DbAssetWallet(
     @ColumnInfo("wallet_id") val walletId: String,
     @ColumnInfo("account_address") val accountAddress: String,
 )
+
+fun List<DbAsset>.toModel() = mapNotNull { it.toModel() }
 
 fun DbAsset.toModel(): Asset? {
     return Asset(

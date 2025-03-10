@@ -38,7 +38,7 @@ class CheckAccounts @Inject constructor(
                 return@forEach
             }
 
-            val availableChains = nativeAssets.map { it.id().chain }.toSet()
+            val availableChains = nativeAssets.map { it.id.chain }.toSet()
             val newChains = getChainsToAdd(availableChains)
 
             if (newChains.isNotEmpty()) {

@@ -108,7 +108,7 @@ class ConfirmViewModel @Inject constructor(
     .flatMapLatest { assetsRepository.getAssetsInfo(it) }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val signerParams = request.filterNotNull().map { request ->
+    private val preloadData = request.filterNotNull().map { request ->
         val owner = sessionRepository.getSession()?.wallet?.getAccount(request.assetId.chain)
         if (owner == null) {
             state.update { ConfirmState.FatalError }
@@ -143,12 +143,12 @@ class ConfirmViewModel @Inject constructor(
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val feeAssetInfo = signerParams.filterNotNull().flatMapLatest { signerParams ->
+    private val feeAssetInfo = preloadData.filterNotNull().flatMapLatest { signerParams ->
         assetsRepository.getAssetInfo(signerParams.chainData.fee().feeAssetId)
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val amountUIModel = combine(request, assetsInfo, signerParams) { request, assetsInfo, signerParams ->
+    val amountUIModel = combine(request, assetsInfo, preloadData) { request, assetsInfo, signerParams ->
         val fromAssetId = request?.assetId ?: return@combine null
         val assetInfo = assetsInfo?.getByAssetId(fromAssetId) ?: return@combine null
         val toAssetInfo = if (request is ConfirmParams.SwapParams) {
@@ -186,7 +186,7 @@ class ConfirmViewModel @Inject constructor(
         ).mapNotNull { it }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val feeUIModel = combine(signerParams, feeAssetInfo, state, txSpeed) { signerParams, feeAssetInfo, state, speed ->
+    val feeUIModel = combine(preloadData, feeAssetInfo, state, txSpeed) { signerParams, feeAssetInfo, state, speed ->
         val amount = signerParams?.chainData?.fee(speed)?.amount
         val result = if (amount == null || feeAssetInfo == null) {
             CellEntity(
@@ -235,7 +235,7 @@ class ConfirmViewModel @Inject constructor(
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val allFee = signerParams.filterNotNull().map { it.chainData.allFee() }
+    val allFee = preloadData.filterNotNull().map { it.chainData.allFee() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     fun init(params: ConfirmParams) {
@@ -257,7 +257,7 @@ class ConfirmViewModel @Inject constructor(
         }
         state.update { ConfirmState.Sending }
 
-        val signerParams = signerParams.value
+        val signerParams = preloadData.value
         val assetInfo = assetsInfo.value?.getByAssetId(signerParams?.input?.assetId ?: return@launch)
         val account = assetInfo?.owner
         val feeAssetInfo = feeAssetInfo.value
@@ -408,7 +408,7 @@ class ConfirmViewModel @Inject constructor(
     }
 
     private suspend fun addTransaction(txHash: String) {
-        val signerParams = signerParams.value
+        val signerParams = preloadData.value
         val assetInfo = assetsInfo.value?.getByAssetId(signerParams?.input?.assetId ?: return) ?: return
         val session = sessionRepository.getSession()
         val destinationAddress =  signerParams.input.destination()?.address ?: ""

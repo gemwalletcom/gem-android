@@ -16,7 +16,6 @@ import com.gemwallet.android.data.service.store.database.entities.DbBalance
 import com.gemwallet.android.data.service.store.database.entities.DbPrice
 import com.gemwallet.android.data.service.store.database.entities.mergeDelegation
 import com.gemwallet.android.data.service.store.database.entities.mergeNative
-import com.gemwallet.android.data.service.store.database.entities.toAssetFullRecord
 import com.gemwallet.android.data.service.store.database.entities.toAssetInfoModel
 import com.gemwallet.android.data.service.store.database.entities.toAssetLinkRecord
 import com.gemwallet.android.data.service.store.database.entities.toAssetLinksModel
@@ -41,7 +40,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.AssetPricesRequest
-import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
@@ -142,14 +140,11 @@ class AssetsRepository @Inject constructor(
         assetsDao.insert(linkRecords, marketRecord)
     }
 
-    suspend fun getNativeAssets(wallet: Wallet): List<AssetInfo> = withContext(Dispatchers.IO) {
-        assetsDao.getAssetsInfoByAccountsInWallet(
-            accounts = wallet.accounts.map { it.address },
-            walletId = wallet.id,
-            type = AssetType.NATIVE,
-        )
-        .toAssetInfoModel()
-        .firstOrNull() ?: emptyList()
+    suspend fun getNativeAssets(wallet: Wallet): List<Asset> = withContext(Dispatchers.IO) {
+        assetsDao.getNativeWalletAssets(wallet.id)
+            .firstOrNull()
+            ?.toModel()
+            ?: emptyList()
     }
 
     override suspend fun getAsset(assetId: AssetId): Asset? = withContext(Dispatchers.IO) {
@@ -207,10 +202,11 @@ class AssetsRepository @Inject constructor(
     suspend fun resolve(currency: Currency, wallet: Wallet, assetsId: List<AssetId>) = withContext(Dispatchers.IO) {
         if (assetsId.isEmpty()) return@withContext
         val assetsFull = gemApi.getAssets(assetsId.map { it.toIdentifier() }).getOrNull() ?: return@withContext
-        val assets = assetsFull.toAssetFullRecord()
-        val links = assetsFull.map { full -> full.links.toAssetLinkRecord(full.asset.id) }.flatten()
-        assetsDao.insert(assets, links)
-        assetsId.forEach { setVisibility(wallet.id, it, true) }
+        assetsFull.forEach {
+            val asset = it.asset
+            add(wallet.id, wallet.getAccount(asset.chain())?.address ?: return@forEach, asset, true)
+            assetsDao.addLinks(it.links.toAssetLinkRecord(asset.id))
+        }
 
         val balancesJob = async(Dispatchers.IO) {
             getAssetsInfo(assetsId).firstOrNull()?.updateBalances()
@@ -243,8 +239,14 @@ class AssetsRepository @Inject constructor(
                 .map { assetId ->
                     async {
                         searchTokensCase.search(assetId.tokenId!!)
-                        setVisibility(wallet.id, assetId, true)
-                        assetsDao.getAsset(assetId.toIdentifier())?.toModel()
+                        val asset = assetsDao.getAsset(assetId.toIdentifier())?.toModel() ?: return@async null
+                        add(
+                            walletId = wallet.id,
+                            accountAddress = wallet.getAccount(assetId.chain)?.address ?: return@async null,
+                            asset = asset,
+                            visible = true
+                        )
+                        asset
                     }
                 }
                 .awaitAll()
@@ -264,30 +266,21 @@ class AssetsRepository @Inject constructor(
             launch { updatePrices(currency) }
 
         }
-        assetsDao.getAssetsInfoByAccountsInWallet(wallet.accounts.map { it.address }, wallet.id)
-            .toAssetInfoModel()
-            .firstOrNull()
-            ?.mapNotNull {
-                val accountAddress = it.owner ?: return@mapNotNull null
-                async {
-                    val balances = updateBalances(wallet.id, accountAddress, emptyList()).firstOrNull()
-                    if ((balances?.totalAmount ?: 0.0) > 0.0) {
-                        setVisibility(wallet.id, it.id(), true)
-                    }
+        wallet.accounts.map {
+            async {
+                val balances = updateBalances(wallet.id, it, emptyList()).firstOrNull()
+                if ((balances?.totalAmount ?: 0.0) > 0.0) {
+                    setVisibility(wallet.id, it.chain.asset().id, true)
                 }
             }
-            ?.awaitAll()
+        }.awaitAll()
     }
 
     /**
      * Check and add new coins and active tokens
      * */
     fun invalidateDefault(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
-        val assets = assetsDao.getAssetsInfoByAccountsInWallet(wallet.accounts.map { it.address }, wallet.id)
-            .toAssetInfoModel()
-            .map { it.filter { it.asset.type == AssetType.NATIVE } }
-            .firstOrNull()
-            ?.associateBy( { it.asset.id.toIdentifier() }, { it } )?: emptyMap()
+        val assets = getNativeAssets(wallet).associateBy( { it.id.toIdentifier() }, { it })
 
         wallet.accounts.filter { !Chain.exclude().contains(it.chain) }
             .map { account ->
@@ -432,6 +425,7 @@ class AssetsRepository @Inject constructor(
     }
 
     private suspend fun List<AssetInfo>.updateBalances(): List<Deferred<List<AssetBalance>>> = withContext(Dispatchers.IO) {
+        println()
         groupBy { it.walletId }
             .mapValues { wallet ->
                 val walletId = wallet.key ?: return@mapValues null

@@ -44,23 +44,7 @@ fun NavGraphBuilder.confirm(
             },
         )
     ) { entry ->
-        val paramsPack = entry.arguments?.getString(paramsArg)
-        val txTypeString = entry.arguments?.getString(txTypeArg)?.urlDecode()
-        val txType = TransactionType.entries.firstOrNull { it.string == txTypeString }
-
-        if (txType == null || paramsPack == null) {
-            cancelAction()
-            return@composable
-        }
-        val params = ConfirmParams.unpack(txType, paramsPack)
-
-        if (params == null) {
-            cancelAction()
-            return@composable
-        }
-
         ConfirmScreen(
-            params = params,
             cancelAction = cancelAction,
             finishAction = finishAction,
         )
