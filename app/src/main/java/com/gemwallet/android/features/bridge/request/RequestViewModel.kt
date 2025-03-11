@@ -185,7 +185,7 @@ private data class RequestViewModelState(
             WalletConnectionMethods.eth_sign_typed_data_v4.string,
             WalletConnectionMethods.eth_sign_typed_data.string -> RequestSceneState.SignMessage(
                 account = account,
-                walletName = wallet?.name ?: "",
+                walletName = wallet.name,
                 peer = PeerUI(
                     peerName = sessionRequest.peerMetaData?.name ?: "",
                     peerIcon = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
