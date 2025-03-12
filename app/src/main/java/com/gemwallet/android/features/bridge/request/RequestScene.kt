@@ -37,7 +37,7 @@ fun RequestScene(
     val viewModel: RequestViewModel = hiltViewModel()
 
     DisposableEffect(request.request.id.toString()) {
-        viewModel.onRequest(request)
+        viewModel.onRequest(request, onCancel)
 
         onDispose { viewModel.reset() }
     }

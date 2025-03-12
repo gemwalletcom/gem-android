@@ -41,10 +41,13 @@ class RequestViewModel @Inject constructor(
     private val state = MutableStateFlow(RequestViewModelState())
     val sceneState = state.map { it.toSceneState() }.stateIn(viewModelScope, SharingStarted.Eagerly, RequestSceneState.Loading)
 
-    fun onRequest(request: Wallet.Model.SessionRequest) {
+    fun onRequest(request: Wallet.Model.SessionRequest, onCancel: () -> Unit) {
         val wallet = sessionRepository.getSession()?.wallet
-        val chainId = request.chainId?.split(":") ?: return // TODO: Cancel
-        val chain = Chain.findByNamespace(chainId[0], chainId[1]) ?: return
+        val chain = Chain.findByNamespace(request.chainId)
+        if (chain == null) {
+            onCancel()
+            return
+        }
         val params = when (request.request.method) {
             WalletConnectionMethods.solana_sign_message.string,
             WalletConnectionMethods.eth_sign.string -> {

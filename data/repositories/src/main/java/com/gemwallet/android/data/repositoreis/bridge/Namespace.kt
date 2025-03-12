@@ -2,6 +2,7 @@ package com.gemwallet.android.data.repositoreis.bridge
 
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletConnectionMethods
+import uniffi.gemstone.WalletConnectNamespace
 
 enum class ChainNamespace(val string: String, val methods: List<WalletConnectionMethods>) {
     Eip155(
@@ -28,7 +29,12 @@ enum class ChainNamespace(val string: String, val methods: List<WalletConnection
     )
 }
 
+fun Chain.getChainNameSpace(): String? {
+    return WalletConnectNamespace().getNamespace(string)
+}
+
 fun Chain.getNameSpace(): ChainNamespace? {
+
     return when (this) {
         Chain.Ethereum,
         Chain.SmartChain,
@@ -47,21 +53,15 @@ fun Chain.getNameSpace(): ChainNamespace? {
 }
 
 fun Chain.getReference(): String? {
-    return when (this) {
-        Chain.Ethereum -> "1"
-        Chain.SmartChain -> "56"
-        Chain.Base -> "8453"
-        Chain.AvalancheC -> "43114"
-        Chain.Polygon -> "137"
-        Chain.Arbitrum -> "42161"
-        Chain.Optimism -> "10"
-        Chain.OpBNB -> "204"
-        Chain.Fantom -> "250"
-        Chain.Gnosis -> "100"
-        Chain.Manta -> "169"
-        Chain.Blast -> "81457"
-        Chain.Solana -> "4sGjMW1sUnHzSxGspuhpqLDx6wiyjNtZ"
-        else -> return null
+    return WalletConnectNamespace().getReference(string)
+}
+
+fun Chain.Companion.findByNamespace(walletConnectChainId: String?): Chain? {
+    val chainId = walletConnectChainId?.split(":")
+    return if (!chainId.isNullOrEmpty() && chainId.size >= 2) {
+        Chain.findByNamespace(chainId[0], chainId[1])
+    } else {
+        null
     }
 }
 
