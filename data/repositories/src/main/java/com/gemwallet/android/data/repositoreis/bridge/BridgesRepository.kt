@@ -4,19 +4,22 @@ import androidx.core.net.toUri
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.data.service.store.database.ConnectionsDao
 import com.gemwallet.android.data.service.store.database.entities.DbConnection
+import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.reown.android.Core
 import com.reown.walletkit.client.Wallet
 import com.reown.walletkit.client.WalletKit
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletConnection
 import com.wallet.core.primitives.WalletConnectionEvents
-import com.wallet.core.primitives.WalletConnectionSession
-import com.wallet.core.primitives.WalletConnectionSessionAppMetadata
 import com.wallet.core.primitives.WalletConnectionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -26,16 +29,16 @@ class BridgesRepository(
     private val connectionsDao: ConnectionsDao,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
-
     init {
-        scope.launch {
+        scope.launch(Dispatchers.IO) {
             sync()
             WalletConnectDelegate.walletEvents.collectLatest { event ->
-                when (event) {
-                    is Wallet.Model.Session -> withContext(Dispatchers.IO) {
-                        updateSession(event)
+                withContext(Dispatchers.IO) {
+                    when (event) {
+                        is Wallet.Model.Session -> updateSession(event)
+                        is Wallet.Model.SessionDelete -> sync()
+                        else -> Unit
                     }
-                    else -> Unit
                 }
             }
         }
@@ -43,46 +46,32 @@ class BridgesRepository(
 
     suspend fun getConnections(): List<WalletConnection> {
         val wallets = walletsRepository.getAll()
-        return connectionsDao.getAll().mapNotNull { room ->
-            val wallet = wallets.firstOrNull { it.id ==  room.walletId } ?: return@mapNotNull null
-            WalletConnection(
-                wallet = wallet,
-                session = WalletConnectionSession(
-                    id = room.id,
-                    sessionId = room.sessionId,
-                    state = room.state,
-                    createdAt = room.createdAt,
-                    expireAt = room.expireAt,
-                    chains = emptyList(),
-                    metadata = WalletConnectionSessionAppMetadata(
-                        name = room.appName,
-                        description = room.appDescription,
-                        icon = room.appIcon,
-                        url = room.appUrl,
-                        redirectNative = room.redirectNative,
-                        redirectUniversal = room.redirectUniversal,
-                    ),
-                )
-            )
+        return connectionsDao.getAll().map { items ->
+            items.mapNotNull { room ->
+                val wallet = wallets.firstOrNull { it.id == room.walletId } ?: return@mapNotNull null
+                room.toModel(wallet)
+            }
+        }.firstOrNull() ?: emptyList()
+    }
+
+    suspend fun getConnections(connectionId: String): Flow<WalletConnection?> {
+        val wallets = walletsRepository.getAll()
+        return connectionsDao.getConnection(connectionId).map { room ->
+            val wallet = wallets.firstOrNull { it.id == room?.walletId } ?: return@map null
+            room?.toModel(wallet)
         }
     }
 
-    private suspend fun sync(): List<WalletConnection> {
+    private suspend fun sync() {
         val local = getConnections()
-        val sessions = try {
-            WalletKit.getListOfActiveSessions().filter { wcSession -> wcSession.metaData != null }
-        } catch (_: Throwable) {
-            return local
-        }
-        val unknownSessions = sessions.filter { session ->
-            local.firstOrNull { it.session.sessionId == session.topic } == null
-        }
-        return if (unknownSessions.isNotEmpty()) {
-            sessions.forEach { disconnect(it.topic) }
-            connectionsDao.deleteAll()
-            emptyList()
-        } else {
-            local
+        val sessions = runCatching { WalletKit.getListOfActiveSessions().filter { wcSession -> wcSession.metaData != null } }
+            .getOrNull() ?: return
+
+        val unknownSessions = local.filter { local -> !sessions.any { local.session.sessionId == it.pairingTopic } }
+
+        if (unknownSessions.isNotEmpty()) {
+            sessions.forEach { disconnect(it.pairingTopic) }
+            connectionsDao.deleteAll(unknownSessions.map { it.toRecord() })
         }
     }
 
@@ -90,9 +79,10 @@ class BridgesRepository(
         val connection = getConnections().firstOrNull { it.session.id == id } ?: return
         val session = try {
             WalletKit.getListOfActiveSessions()
-                .firstOrNull { wcSession -> connection.session.sessionId == wcSession.topic }
-                ?: throw IllegalStateException("Active sessions is null")
-        } catch (_: Throwable) {
+                .firstOrNull { wcSession -> connection.session.sessionId == wcSession.pairingTopic }
+                    ?: throw IllegalStateException("Active sessions is null")
+        } catch (err: Throwable) {
+            onError(err.message ?: "Disconnect error")
             return
         }
         WalletKit.disconnectSession(
@@ -140,6 +130,7 @@ class BridgesRepository(
             params = approveProposal,
             onError = { error -> onError(error.throwable.message ?: "Unknown error") },
             onSuccess = {
+                it.proposerPublicKey
                 scope.launch(Dispatchers.IO) { addConnection(wallet, proposal) }
                 onSuccess()
             }
@@ -194,31 +185,15 @@ class BridgesRepository(
     }
 
     private suspend fun updateSession(session: Wallet.Model.Session) {
-        val session = WalletConnectionSession(
-            id = "",
-            sessionId = session.topic,
-            state = WalletConnectionState.Active,
-            createdAt = System.currentTimeMillis(),
-            expireAt = System.currentTimeMillis() + session.expiry,
-            chains = emptyList(),
-            metadata = WalletConnectionSessionAppMetadata(
-                name = session.metaData?.name ?: "DApp",
-                description = session.metaData?.description ?: "",
-                url = session.metaData?.url ?: "",
-                icon = session.metaData?.getIcon() ?: "",
-                redirectNative = session.redirect,
-            )
-        )
-        val room = connectionsDao.getBySessionId(session.sessionId)
+        val room = connectionsDao.getBySessionId(session.pairingTopic)
         connectionsDao.update(
             room.copy(
-                expireAt = session.expireAt,
-                appName = session.metadata.name,
-                appDescription = session.metadata.description,
-                appUrl = session.metadata.url,
-                appIcon = session.metadata.icon,
-                redirectNative = session.metadata.redirectNative,
-                redirectUniversal = session.metadata.redirectUniversal,
+                expireAt = System.currentTimeMillis() + session.expiry,
+                appName = session.metaData?.name ?: "DApp",
+                appDescription = session.metaData?.description ?: "",
+                appUrl = session.metaData?.url ?: "",
+                appIcon = session.metaData?.getIcon() ?: "",
+                redirectNative = session.redirect,
             )
         )
     }

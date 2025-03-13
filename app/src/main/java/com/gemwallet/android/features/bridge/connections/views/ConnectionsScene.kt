@@ -38,7 +38,10 @@ import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.qrCodeRequest
 import com.gemwallet.android.ui.components.screen.Scene
+import com.wallet.core.primitives.WalletConnection
 import kotlinx.coroutines.launch
+import java.text.DateFormat
+import java.util.Date
 
 @Composable
 fun ConnectionsScene(
@@ -114,6 +117,23 @@ fun ConnectionsScene(
             text = { Text(text = state.pairError!!) }
         )
     }
+}
+
+@Composable
+fun ConnectionItem(
+    connection: WalletConnection,
+    onClick: ((String) -> Unit)? = null,
+) {
+    ConnectionItem(
+        ConnectionUI(
+            icon = connection.session.metadata.icon,
+            name = connection.session.metadata.name,
+            uri = connection.session.metadata.url,
+            id = connection.session.id,
+            expire = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(connection.session.expireAt)),
+        ),
+        onClick,
+    )
 }
 
 @Composable

@@ -1,11 +1,13 @@
 package com.gemwallet.android.data.service.store.database
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.gemwallet.android.data.service.store.database.entities.DbConnection
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ConnectionsDao {
@@ -19,7 +21,10 @@ interface ConnectionsDao {
     suspend fun update(connection: DbConnection)
 
     @Query("SELECT * FROM room_connection")
-    suspend fun getAll(): List<DbConnection>
+    fun getAll(): Flow<List<DbConnection>>
+
+    @Query("SELECT * FROM room_connection WHERE id = :connectionId")
+    fun getConnection(connectionId: String): Flow<DbConnection?>
 
     @Query("SELECT * FROM room_connection WHERE session_id = :sessionId")
     suspend fun getBySessionId(sessionId: String): DbConnection
@@ -29,4 +34,7 @@ interface ConnectionsDao {
 
     @Query("DELETE FROM room_connection")
     suspend fun deleteAll()
+
+    @Delete
+    suspend fun deleteAll(sessions: List<DbConnection>)
 }

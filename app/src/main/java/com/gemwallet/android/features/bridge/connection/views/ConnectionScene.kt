@@ -2,12 +2,12 @@ package com.gemwallet.android.features.bridge.connection.views
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,25 +19,20 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.bridge.connection.viewmodels.ConnectionViewModel
 import com.gemwallet.android.features.bridge.connections.views.ConnectionItem
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.Container
-import com.gemwallet.android.ui.components.Table
-import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.ListItem
+import com.gemwallet.android.ui.components.list_item.ListItemSupportText
+import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.screen.Scene
+import java.text.DateFormat
+import java.util.Date
 
 @Composable
 fun ConnectionScene(
-    connectionId: String,
     onCancel: () -> Unit,
     viewModel: ConnectionViewModel = hiltViewModel(),
 ) {
-    val state by viewModel.sceneState.collectAsStateWithLifecycle()
+    val connection by viewModel.connection.collectAsStateWithLifecycle()
 
-    DisposableEffect(connectionId) {
-        viewModel.refresh(connectionId)
-
-        onDispose {  }
-    }
     Scene(
         title = stringResource(id = R.string.wallet_connect_title),
         backHandle = true,
@@ -57,15 +52,25 @@ fun ConnectionScene(
         },
         onClose = onCancel,
     ) {
-        Container {
-            ConnectionItem(state.connection)
+        LazyColumn {
+            connection?.let {
+                item { ConnectionItem(it) }
+                item {
+                    ListItem(
+                        title = { ListItemTitleText(stringResource(id = R.string.common_wallet)) },
+                        trailing = { ListItemSupportText(it.wallet.name) },
+                    )
+                }
+                item {
+                    ListItem(
+                        title = { ListItemTitleText(stringResource(id = R.string.transaction_date)) },
+                        trailing = {
+                            val expire = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(it.session.expireAt))
+                            ListItemSupportText(expire)
+                        },
+                    )
+                }
+            }
         }
-        Spacer16()
-        Table(
-            items = listOf(
-                CellEntity(stringResource(id = R.string.common_wallet), state.walletName),
-                CellEntity("Expire", state.connection.expire)
-            ),
-        )
     }
 }

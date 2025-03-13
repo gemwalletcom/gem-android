@@ -12,7 +12,7 @@ import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.bridge.connection.views.ConnectionScene
 import com.gemwallet.android.features.bridge.connections.views.ConnectionsScene
 
-internal val connectionIdArg = "connection_id"
+internal const val connectionIdArg = "connection_id"
 
 const val bridgeRoute = "bridge"
 const val bridgesRoute = "bridges"
@@ -50,6 +50,6 @@ fun NavGraphBuilder.bridgesScreen(
             onCancel()
             return@composable
         }
-        ConnectionScene(connectionId = connectionId, onCancel = onCancel)
+        ConnectionScene(/*connectionId = connectionId, */onCancel = onCancel)
     }
 }
