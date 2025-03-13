@@ -50,17 +50,13 @@ fun ConnectionsScene(
     viewModel: ConnectionsViewModel = hiltViewModel()
 ) {
     val clipboardManager = LocalClipboard.current.nativeClipboard
-    var scannerShowed by remember {
-        mutableStateOf(false)
-    }
+    var scannerShowed by remember { mutableStateOf(false) }
 
     val state by viewModel.sceneState.collectAsStateWithLifecycle()
 
     val connectionToastText = stringResource(id = R.string.wallet_connect_connection_title)
     val scope = rememberCoroutineScope()
-    val snackbar = remember {
-        SnackbarHostState()
-    }
+    val snackbar = remember { SnackbarHostState() }
 
     Scene(
         title = stringResource(id = R.string.wallet_connect_title),
