@@ -1,6 +1,6 @@
 package com.gemwallet.android.data.repositoreis.bridge
 
-import android.net.Uri
+import androidx.core.net.toUri
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.data.service.store.database.ConnectionsDao
 import com.gemwallet.android.data.service.store.database.entities.DbConnection
@@ -112,7 +112,7 @@ class BridgesRepository(
             params = Wallet.Params.Pair(uri),
             onSuccess = {  onSuccess() },
             onError = {
-                onError(it.throwable.message ?: "Pair to ${Uri.parse(uri).host} fail")
+                onError(it.throwable.message ?: "Pair to ${uri.toUri().host} fail")
             }
         )
     }
@@ -138,34 +138,9 @@ class BridgesRepository(
 
         WalletKit.approveSession(
             params = approveProposal,
-            onError = { error ->
-                onError(error.throwable.message ?: "Unknown error")
-            },
+            onError = { error -> onError(error.throwable.message ?: "Unknown error") },
             onSuccess = {
-                val connection = WalletConnection(
-                    wallet = wallet,
-                    session = WalletConnectionSession(
-                        id = UUID.randomUUID().toString(),
-                        sessionId = proposal.pairingTopic,
-                        state = WalletConnectionState.Active,
-                        createdAt = System.currentTimeMillis(),
-                        expireAt = System.currentTimeMillis() + (30L * 24 * 60 * 60 * 1000),
-                        chains = emptyList(),
-                        metadata = WalletConnectionSessionAppMetadata(
-                            name = proposal.name,
-                            description = proposal.description,
-                            url = proposal.url,
-                            icon = proposal.icons.map { it.toString() }.firstOrNull{ it.endsWith("png", ignoreCase = true) || it.endsWith("jpg", ignoreCase = true) }
-                                ?: proposal.icons.map { it.toString() }.firstOrNull() ?: "",
-                            redirectNative = proposal.redirect,
-                        )
-
-                    )
-                )
-                scope.launch {
-                    addConnection(connection)
-                }
-
+                scope.launch(Dispatchers.IO) { addConnection(wallet, proposal) }
                 onSuccess()
             }
         )
@@ -197,25 +172,25 @@ class BridgesRepository(
         )
     }
 
-    private suspend fun addConnection(connection: WalletConnection): Result<Boolean> {
-        val session = connection.session
+    private suspend fun addConnection(wallet: com.wallet.core.primitives.Wallet, proposal: Wallet.Model.SessionProposal): Boolean {
         connectionsDao.insert(
             DbConnection(
-                id = session.id,
-                walletId = connection.wallet.id,
-                sessionId = session.sessionId,
-                state = session.state,
-                createdAt = session.createdAt,
-                expireAt = session.expireAt,
-                appName = session.metadata.name,
-                appDescription = session.metadata.description,
-                appUrl = session.metadata.url,
-                appIcon = session.metadata.icon,
-                redirectNative = session.metadata.redirectNative,
-                redirectUniversal = session.metadata.redirectUniversal,
+                id = UUID.randomUUID().toString(),
+                walletId = wallet.id,
+                sessionId = proposal.pairingTopic,
+                state = WalletConnectionState.Active,
+                createdAt = System.currentTimeMillis(),
+                expireAt = System.currentTimeMillis() + (30L * 24 * 60 * 60 * 1000),
+                appName = proposal.name,
+                appDescription = proposal.description,
+                appUrl = proposal.url,
+                appIcon = proposal.icons.map { it.toString() }.firstOrNull{ it.endsWith("png", ignoreCase = true) || it.endsWith("jpg", ignoreCase = true) }
+                    ?: proposal.icons.map { it.toString() }.firstOrNull() ?: "",
+                redirectNative = proposal.redirect,
+                redirectUniversal = proposal.redirect,
             )
         )
-        return Result.success(true)
+        return true
     }
 
     private suspend fun updateSession(session: Wallet.Model.Session) {

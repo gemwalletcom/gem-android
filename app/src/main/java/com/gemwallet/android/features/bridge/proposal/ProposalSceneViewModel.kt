@@ -24,7 +24,6 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -54,18 +53,12 @@ class ProposalSceneViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val availableWallets = _proposal.filterNotNull().mapLatest { proposal ->
-        val requiredChains = proposal.requiredNamespaces.mapNotNull { entry ->
-            entry.value.chains
-        }.flatten()
-        val optionalChains = proposal.optionalNamespaces.mapNotNull { entry ->
-            entry.value.chains
-        }.flatten()
-        val availableChains = (requiredChains + optionalChains).toSet()
+        val availableChains = (proposal.requiredNamespaces.values.flatMap { it.chains.orEmpty() } +
+                proposal.optionalNamespaces.values.flatMap { it.chains.orEmpty() }).toSet()
         val availableWallets = walletsRepository.getAll()
-            .filter { it.type != WalletType.view }
-            .filter {
-                val namespaces = it.accounts.map { "${it.chain.getChainNameSpace()}:${it.chain.getReference()}" }
-                availableChains.firstOrNull { namespaces.contains(it) } != null
+            .filter { wallet ->
+                wallet.type != WalletType.view &&
+                    wallet.accounts.any { "${it.chain.getChainNameSpace()}:${it.chain.getReference()}" in availableChains }
             }
             .sortedBy { it.type }
         availableWallets
@@ -79,8 +72,7 @@ class ProposalSceneViewModel @Inject constructor(
         sessionRepository.session(),
         availableWallets,
     ) { wallet, session, availableWallets ->
-        if (wallet != null) return@combine wallet
-        session?.wallet?.takeIf { availableWallets.contains(it) } ?: availableWallets.firstOrNull()
+        wallet ?: session?.wallet?.takeIf { it in availableWallets } ?: availableWallets.firstOrNull()
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -97,19 +89,16 @@ class ProposalSceneViewModel @Inject constructor(
             state.update { ProposalSceneState.Canceled }
             return
         }
-        viewModelScope.launch {
-            withContext(Dispatchers.IO) {
-                try {
-                    bridgesRepository.approveConnection(
-                        wallet = wallet,
-                        proposal = proposal,
-                        onSuccess = { state.update { ProposalSceneState.Canceled } },
-                        onError = { message -> state.update { ProposalSceneState.Fail(message) } }
-                    )
-                } catch (err: Throwable) {
-                    state.update { ProposalSceneState.Fail(err.message ?: "Wallet connect error") }
-                }
+        viewModelScope.launch(Dispatchers.IO) {
+            val result = runCatching {
+                bridgesRepository.approveConnection(
+                    wallet = wallet,
+                    proposal = proposal,
+                    onSuccess = { state.update { ProposalSceneState.Canceled } },
+                    onError = { message -> state.update { ProposalSceneState.Fail(message) } }
+                )
             }
+            result.onFailure { err -> state.update { ProposalSceneState.Fail(err.message ?: "Wallet connect error") } }
         }
     }
 
