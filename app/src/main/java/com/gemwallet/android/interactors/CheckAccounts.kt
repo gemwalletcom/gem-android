@@ -11,6 +11,7 @@ import com.gemwallet.android.ext.available
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.WalletType
+import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,7 +26,7 @@ class CheckAccounts @Inject constructor(
     private val syncSubscriptionCase: SyncSubscriptionCase,
 ) {
     suspend operator fun invoke() {
-        val wallets = walletsRepository.getAll()
+        val wallets = walletsRepository.getAll().firstOrNull() ?: emptyList()
         val currency = sessionRepository.getSession()?.currency ?: Currency.USD
 
         wallets.forEach { wallet ->
@@ -49,7 +50,7 @@ class CheckAccounts @Inject constructor(
                 if (newAccounts.isNotEmpty()) {
                     assetsRepository.invalidateDefault(newWallet, currency)
                 }
-                syncSubscriptionCase.syncSubscription(walletsRepository.getAll())
+                syncSubscriptionCase.syncSubscription(walletsRepository.getAll().firstOrNull() ?: emptyList())
             }
         }
     }

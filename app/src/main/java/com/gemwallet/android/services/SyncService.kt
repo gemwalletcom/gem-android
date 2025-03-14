@@ -8,6 +8,7 @@ import com.gemwallet.android.interactors.sync.SyncTransactions
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -25,7 +26,7 @@ class SyncService @Inject constructor(
                 async { syncTransactions(sessionRepository.getSession()?.wallet ?: return@async) },
                 async { buyRepository.sync() }
             ).awaitAll()
-            syncSubscriptionCase.syncSubscription(walletsRepository.getAll())
+            syncSubscriptionCase.syncSubscription(walletsRepository.getAll().firstOrNull() ?: emptyList())
         }
     }
 }

@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
@@ -55,7 +56,7 @@ class ProposalSceneViewModel @Inject constructor(
     val availableWallets = _proposal.filterNotNull().mapLatest { proposal ->
         val availableChains = (proposal.requiredNamespaces.values.flatMap { it.chains.orEmpty() } +
                 proposal.optionalNamespaces.values.flatMap { it.chains.orEmpty() }).toSet()
-        val availableWallets = walletsRepository.getAll()
+        val availableWallets = (walletsRepository.getAll().firstOrNull() ?: emptyList())
             .filter { wallet ->
                 wallet.type != WalletType.view &&
                     wallet.accounts.any { "${it.chain.getChainNameSpace()}:${it.chain.getReference()}" in availableChains }

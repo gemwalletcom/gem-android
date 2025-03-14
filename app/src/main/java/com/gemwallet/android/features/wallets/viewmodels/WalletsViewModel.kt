@@ -12,6 +12,7 @@ import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -34,7 +35,7 @@ class WalletsViewModel @Inject constructor(
 
     fun refresh() {
         viewModelScope.launch {
-            val wallets = walletsRepository.getAll()
+            val wallets = walletsRepository.getAll().firstOrNull() ?: emptyList()
             val currentWallet = sessionRepository.getSession()?.wallet ?: return@launch
             val watch = wallets.filter { it.type == WalletType.view }
             val single = wallets.filter { it.type == WalletType.single }

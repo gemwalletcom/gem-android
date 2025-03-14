@@ -52,7 +52,9 @@ fun ConnectionsScene(
     val clipboardManager = LocalClipboard.current.nativeClipboard
     var scannerShowed by remember { mutableStateOf(false) }
 
-    val state by viewModel.sceneState.collectAsStateWithLifecycle()
+    val connections by viewModel.connections.collectAsStateWithLifecycle()
+
+    var pairError by remember { mutableStateOf("") }
 
     val connectionToastText = stringResource(id = R.string.wallet_connect_connection_title)
     val scope = rememberCoroutineScope()
@@ -65,13 +67,11 @@ fun ConnectionsScene(
         actions = {
             IconButton(
                 onClick = {
-                    viewModel.addPairing(clipboardManager.getPlainText() ?: return@IconButton) {
-                        scope.launch {
-                            snackbar.showSnackbar(
-                                message = connectionToastText
-                            )
-                        }
-                    }
+                    viewModel.addPairing(
+                        clipboardManager.getPlainText() ?: return@IconButton,
+                        { scope.launch { snackbar.showSnackbar(message = connectionToastText) } },
+                        { pairError = it }
+                    )
                 }
             ) {
                 Icon(imageVector = Icons.Default.ContentPaste, contentDescription = "paste_uri")
@@ -82,13 +82,13 @@ fun ConnectionsScene(
         },
         onClose = onCancel,
     ) {
-        if (state.connections.isEmpty()) {
+        if (connections.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Text(modifier = Modifier.align(Alignment.Center), text = stringResource(id = R.string.wallet_connect_no_active_connections))
             }
         } else {
             LazyColumn {
-                items(state.connections) { connection ->
+                items(connections) { connection ->
                     ConnectionItem(connection, onConnection)
                 }
             }
@@ -97,20 +97,18 @@ fun ConnectionsScene(
 
     if (scannerShowed) {
         qrCodeRequest(onCancel = { scannerShowed = false }) {
-            viewModel.addPairing(it, onSuccess = {})
+            viewModel.addPairing(it, onSuccess = {}, onError = {})
             scannerShowed = false
         }
     }
 
-    if (!state.pairError.isNullOrEmpty()) {
+    if (pairError.isNotEmpty()) {
         AlertDialog(
-            onDismissRequest = viewModel::resetErrors,
+            onDismissRequest = {  pairError = "" },
             confirmButton = {
-                Button(onClick = viewModel::resetErrors) {
-                    Text(text = stringResource(id = R.string.common_done))
-                }
+                Button(onClick = { pairError = "" }) { Text(text = stringResource(id = R.string.common_done)) }
             },
-            text = { Text(text = state.pairError!!) }
+            text = { Text(text = pairError) }
         )
     }
 }

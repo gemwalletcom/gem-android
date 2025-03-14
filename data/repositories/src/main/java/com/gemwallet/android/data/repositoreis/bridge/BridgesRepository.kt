@@ -15,15 +15,18 @@ import com.wallet.core.primitives.WalletConnectionEvents
 import com.wallet.core.primitives.WalletConnectionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class BridgesRepository(
     private val walletsRepository: WalletsRepository,
     private val connectionsDao: ConnectionsDao,
@@ -44,26 +47,28 @@ class BridgesRepository(
         }
     }
 
-    suspend fun getConnections(): List<WalletConnection> {
-        val wallets = walletsRepository.getAll()
-        return connectionsDao.getAll().map { items ->
-            items.mapNotNull { room ->
-                val wallet = wallets.firstOrNull { it.id == room.walletId } ?: return@mapNotNull null
-                room.toModel(wallet)
+    fun getConnections(): Flow<List<WalletConnection>> {
+        return walletsRepository.getAll().flatMapLatest { wallets ->
+            connectionsDao.getAll().map { items ->
+                items.mapNotNull { room ->
+                    val wallet = wallets.firstOrNull { it.id == room.walletId } ?: return@mapNotNull null
+                    room.toModel(wallet)
+                }
             }
-        }.firstOrNull() ?: emptyList()
+        }
     }
 
     suspend fun getConnections(connectionId: String): Flow<WalletConnection?> {
-        val wallets = walletsRepository.getAll()
-        return connectionsDao.getConnection(connectionId).map { room ->
-            val wallet = wallets.firstOrNull { it.id == room?.walletId } ?: return@map null
-            room?.toModel(wallet)
+        return walletsRepository.getAll().flatMapLatest { wallets ->
+            connectionsDao.getConnection(connectionId).map { room ->
+                val wallet = wallets.firstOrNull { it.id == room?.walletId } ?: return@map null
+                room?.toModel(wallet)
+            }
         }
     }
 
     private suspend fun sync() {
-        val local = getConnections()
+        val local = getConnections().firstOrNull() ?: emptyList()
         val sessions = runCatching { WalletKit.getListOfActiveSessions().filter { wcSession -> wcSession.metaData != null } }
             .getOrNull() ?: return
 
@@ -76,7 +81,7 @@ class BridgesRepository(
     }
 
     suspend fun disconnect(id: String, onSuccess: () -> Unit = {}, onError: (String) -> Unit = {}) {
-        val connection = getConnections().firstOrNull { it.session.id == id } ?: return
+        val connection = getConnections().firstOrNull()?.firstOrNull { it.session.id == id } ?: return
         val session = try {
             WalletKit.getListOfActiveSessions()
                 .firstOrNull { wcSession -> connection.session.sessionId == wcSession.pairingTopic }

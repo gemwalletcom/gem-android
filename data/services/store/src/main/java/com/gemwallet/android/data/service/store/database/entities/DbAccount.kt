@@ -2,6 +2,7 @@ package com.gemwallet.android.data.service.store.database.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 
 @Entity(tableName = "accounts", primaryKeys = ["wallet_id", "address", "chain", "derivation_path"])
@@ -12,3 +13,14 @@ data class DbAccount(
     val chain: Chain,
     val extendedPublicKey: String?,
 )
+
+fun DbAccount.toModel(): Account {
+    return Account(
+        chain = chain,
+        address = address,
+        extendedPublicKey = extendedPublicKey,
+        derivationPath = derivationPath,
+    )
+}
+
+fun List<DbAccount>.toModel() = map { it.toModel() }

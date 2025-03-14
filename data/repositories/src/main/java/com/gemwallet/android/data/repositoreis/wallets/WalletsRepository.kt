@@ -3,13 +3,16 @@ package com.gemwallet.android.data.repositoreis.wallets
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.data.service.store.database.AccountsDao
 import com.gemwallet.android.data.service.store.database.WalletsDao
+import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.service.store.database.mappers.AccountMapper
-import com.gemwallet.android.data.service.store.database.mappers.WalletMapper
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.util.UUID
 import javax.inject.Inject
@@ -22,16 +25,15 @@ class WalletsRepository @Inject constructor(
     private val createAccount: CreateAccountOperator,
 ) {
     private val accountMapper = AccountMapper()
-    private val walletMapper = WalletMapper(accountMapper)
+//    private val walletMapper = WalletMapper(accountMapper)
 
     suspend fun getNextWalletNumber(): Int {
-        return getAll().size + 1
+        return getAll().map { it.size + 1 }.firstOrNull() ?: 0
     }
 
-    suspend fun getAll() = withContext(Dispatchers.IO) {
-        walletsDao.getAll().map {  entity ->
-            walletMapper.asDomain(entity) { accountsDao.getByWalletId(entity.id) }
-        }
+    fun getAll() = walletsDao.getAll().map { items ->
+        items.map { entry -> entry.key.toModel(entry.value) }
+//        items.map { walletMapper.asDomain(it) { accountsDao.getByWalletId(it.id) } }
     }
 
     suspend fun addWatch(walletName: String, address: String, chain: Chain): Wallet =
@@ -76,28 +78,27 @@ class WalletsRepository @Inject constructor(
     }
 
     suspend fun removeWallet(walletId: String) = withContext(Dispatchers.IO) {
-        val wallet = walletsDao.getById(walletId) ?: return@withContext false
+        val wallet = walletsDao.getById(walletId).firstOrNull() ?: return@withContext false
         accountsDao.deleteByWalletId(wallet.id)
         walletsDao.delete(wallet)
         true
     }
 
     suspend fun getWallet(walletId: String): Wallet? = withContext(Dispatchers.IO) {
-        val room = walletsDao.getById(walletId) ?: return@withContext null
-        val accounts = accountsDao.getByWalletId(walletId)
-        if (accounts.isEmpty()) {
-            return@withContext null
-        }
-        walletMapper.asDomain(room) { accounts }
+        walletsDao.getById(walletId).map { walletRecord ->
+            val accounts = accountsDao.getByWalletId(walletId)
+            if (accounts.isEmpty()) return@map null
+            walletRecord?.toModel(accounts)
+        }.firstOrNull()
     }
 
     suspend fun togglePin(walletId: String) = withContext(Dispatchers.IO) {
-        val room = walletsDao.getById(walletId) ?: return@withContext
+        val room = walletsDao.getById(walletId).firstOrNull() ?: return@withContext
         walletsDao.insert(room.copy(pinned = !room.pinned))
     }
 
     suspend fun putWallet(wallet: Wallet): Wallet = withContext(Dispatchers.IO) {
-        walletsDao.insert(walletMapper.asEntity(wallet))
+        walletsDao.insert(wallet.toRecord())
         wallet.accounts.forEach {
             accountsDao.insert(accountMapper.asEntity(it) { wallet })
         }

@@ -5,6 +5,7 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -28,7 +29,7 @@ class DeleteWalletOperator @Inject constructor(
             }
         }
         if (session.wallet.id == walletId) {
-            val wallets = walletsRepository.getAll()
+            val wallets = walletsRepository.getAll().firstOrNull() ?: emptyList()
             if (wallets.isEmpty()) {
                 sessionRepository.reset()
                 withContext(Dispatchers.Main) {
