@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.bridge.connections.viewmodels.ConnectionsViewModel
-import com.gemwallet.android.features.bridge.model.ConnectionUI
+import com.gemwallet.android.features.bridge.model.SessionUI
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.clipboard.getPlainText
@@ -119,7 +119,7 @@ fun ConnectionItem(
     onClick: ((String) -> Unit)? = null,
 ) {
     ConnectionItem(
-        ConnectionUI(
+        SessionUI(
             icon = connection.session.metadata.icon,
             name = connection.session.metadata.name,
             uri = connection.session.metadata.url,
@@ -132,7 +132,7 @@ fun ConnectionItem(
 
 @Composable
 fun ConnectionItem(
-    connection: ConnectionUI,
+    connection: SessionUI,
     onClick: ((String) -> Unit)? = null,
 ) {
     ListItem(

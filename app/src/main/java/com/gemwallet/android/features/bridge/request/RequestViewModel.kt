@@ -8,7 +8,7 @@ import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.data.repositoreis.bridge.findByNamespace
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
-import com.gemwallet.android.features.bridge.model.PeerUI
+import com.gemwallet.android.features.bridge.model.SessionUI
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.toHexString
@@ -189,11 +189,12 @@ private data class RequestViewModelState(
             WalletConnectionMethods.eth_sign_typed_data.string -> RequestSceneState.SignMessage(
                 account = account,
                 walletName = wallet.name,
-                peer = PeerUI(
-                    peerName = sessionRequest.peerMetaData?.name ?: "",
-                    peerIcon = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
-                    peerDescription = sessionRequest.peerMetaData?.description ?: "",
-                    peerUri = sessionRequest.peerMetaData?.description ?: "",
+                session = SessionUI(
+                    id = "",
+                    name = sessionRequest.peerMetaData?.name ?: "",
+                    icon = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
+                    description = sessionRequest.peerMetaData?.description ?: "",
+                    uri = sessionRequest.peerMetaData?.description ?: "",
                 ),
                 params = params,
 
@@ -230,7 +231,7 @@ sealed interface RequestSceneState {
     class SignMessage(
         val walletName: String,
         val account: Account,
-        val peer: PeerUI,
+        val session: SessionUI,
         val params: String,
     ) : RequestSceneState
 

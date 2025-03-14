@@ -18,7 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.features.bridge.model.PeerUI
+import com.gemwallet.android.features.bridge.model.SessionUI
 import com.gemwallet.android.features.wallets.components.WalletItem
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
@@ -70,7 +70,7 @@ fun ProposalScene(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun Proposal(
-    peer: PeerUI,
+    peer: SessionUI,
     selectedWallet: com.wallet.core.primitives.Wallet?,
     availableWallets: List<com.wallet.core.primitives.Wallet>,
     onReject: () -> Unit,
@@ -91,9 +91,9 @@ private fun Proposal(
         onClose = onReject,
     ) {
         AsyncImage(
-            model = peer.peerIcon,
+            model = peer.icon,
             size = 74.dp,
-            placeholderText = peer.peerName.substring(0..1),
+            placeholderText = peer.name.substring(0..1),
             contentDescription = "peer_icon"
         )
         Spacer(modifier = Modifier.size(20.dp))
@@ -106,11 +106,11 @@ private fun Proposal(
                 ),
                 CellEntity(
                     label = stringResource(id = R.string.wallet_connect_app),
-                    data = peer.peerName,
+                    data = peer.name,
                 ),
                 CellEntity(
                     label = stringResource(id = R.string.wallet_connect_website),
-                    data = peer.peerUri,
+                    data = peer.uri,
                 ),
             ),
         )

@@ -8,7 +8,7 @@ import com.gemwallet.android.data.repositoreis.bridge.getChainNameSpace
 import com.gemwallet.android.data.repositoreis.bridge.getReference
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.features.bridge.model.PeerUI
+import com.gemwallet.android.features.bridge.model.SessionUI
 import com.reown.walletkit.client.Wallet
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,14 +41,15 @@ class ProposalSceneViewModel @Inject constructor(
     val proposal = _proposal.map {
         it ?: return@map null
         val icons = it.icons.map { it.toString() }
-        PeerUI(
-            peerIcon = icons
+        SessionUI(
+            id = "",
+            icon = icons
                 .firstOrNull{ it.endsWith("png", ignoreCase = true) || it.endsWith("jpg", ignoreCase = true) }
                 ?: icons.firstOrNull()
                 ?: "",
-            peerName = it.name,
-            peerDescription = it.description,
-            peerUri = it.url.toUri().host ?: "",
+            name = it.name,
+            description = it.description,
+            uri = it.url.toUri().host ?: "",
         )
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)

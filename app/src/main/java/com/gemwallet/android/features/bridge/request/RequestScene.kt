@@ -91,15 +91,15 @@ private fun RequestSceneState.SignMessage.Render(
                     items = listOf(
                         CellEntity(
                             label = stringResource(id = R.string.asset_market_cap),
-                            data = peer.peerName,
+                            data = session.name,
                         ),
                         CellEntity(
                             label = stringResource(id = R.string.asset_circulating_supply),
-                            data = peer.peerDescription,
+                            data = session.description,
                         ),
                         CellEntity(
                             label = stringResource(id = R.string.asset_total_supply),
-                            data = peer.peerUri,
+                            data = session.uri,
                         ),
                     ),
                 )
