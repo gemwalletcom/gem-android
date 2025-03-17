@@ -88,7 +88,7 @@ fun RecipientScene(
     val isSmallScreen = LocalConfiguration.current.screenHeightDp.dp < 680.dp
 
     Scene(
-        title = stringResource(id = R.string.transfer_send_title),
+        title = stringResource(id = R.string.transfer_recipient_title),
         onClose = { onCancel() },
         mainAction = {
             if (!isKeyBoardOpen || !isSmallScreen) {

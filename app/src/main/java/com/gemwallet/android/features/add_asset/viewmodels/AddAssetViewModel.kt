@@ -170,7 +170,7 @@ class AddAssetViewModel @Inject constructor(
                     isSelectChain -> AddAssetUIState.Scene.SelectChain
                     else -> AddAssetUIState.Scene.Form
                 },
-                onSelectChain = onSelectChain,
+                onSelectChain = if (isSelectChainAvailable) onSelectChain else null,
             )
         }
     }

@@ -21,12 +21,11 @@ fun ChainItem(
     icon: Any? = null,
     dividerShowed: Boolean = true,
     trailing: @Composable (() -> Unit)? = null,
-    onClick: () -> Unit = {},
+    onClick: (() -> Unit)? = {},
 ) {
+    val modifier = onClick?.let { modifier.clickable(onClick = it) } ?: modifier
     ListItem(
-        modifier = modifier
-            .clickable { onClick() }
-            .heightIn(64.dp),
+        modifier = modifier.heightIn(64.dp),
         leading = @Composable {
             IconWithBadge(
                 icon = icon,

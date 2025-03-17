@@ -60,15 +60,17 @@ fun AddAssetScene(
             chain = network.chain(),
             title = network.name,
             icon = network.chain().getIconUrl(),
-            onClick = onChainSelect ?: {},
+            onClick = onChainSelect,
             dividerShowed = true,
-            trailing = {
-                Icon(
-                    painter = rememberVectorPainter(image = Icons.Default.ChevronRight),
-                    contentDescription = "open_provider_select",
-                    tint = MaterialTheme.colorScheme.secondary,
-                )
-            }
+            trailing = if (onChainSelect != null) {
+                {
+                    Icon(
+                        painter = rememberVectorPainter(image = Icons.Default.ChevronRight),
+                        contentDescription = "open_provider_select",
+                        tint = MaterialTheme.colorScheme.secondary,
+                    )
+                }
+            } else null
         )
         Column(
             modifier = Modifier.padding(padding16)
