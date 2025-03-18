@@ -76,7 +76,7 @@ fun NftListScene(
         ) {
             if (error != null) {
                 Box(modifier = Modifier.fillMaxSize()) {
-                    Column(modifier = Modifier.align(Alignment.Center)) {
+                    Column(modifier = Modifier.align(Alignment.Center), horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
                             textAlign = TextAlign.Center,
                             text = when (error) {
