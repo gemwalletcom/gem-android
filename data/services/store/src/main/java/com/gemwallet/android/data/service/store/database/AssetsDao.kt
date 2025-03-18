@@ -11,8 +11,6 @@ import com.gemwallet.android.data.service.store.database.entities.DbAssetInfo
 import com.gemwallet.android.data.service.store.database.entities.DbAssetLink
 import com.gemwallet.android.data.service.store.database.entities.DbAssetMarket
 import com.gemwallet.android.data.service.store.database.entities.DbAssetWallet
-import com.gemwallet.android.model.AssetInfo
-import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
 
@@ -84,8 +82,7 @@ interface AssetsDao {
             id NOT IN (:exclude)
             AND (chain IN (SELECT chain FROM accounts JOIN session ON accounts.wallet_id = session.wallet_id AND session.id = 1))
             AND (walletId = (SELECT wallet_id FROM session WHERE session.id = 1) OR walletId IS NULL)
-            --AND (id LIKE '%' || :query || '%'
-            OR symbol LIKE '%' || :query || '%'
+            AND (symbol LIKE '%' || :query || '%'
             OR name LIKE '%' || :query || '%' COLLATE NOCASE)
             GROUP BY id
             ORDER BY balanceFiatTotalAmount DESC, assetRank DESC
@@ -110,8 +107,7 @@ interface AssetsDao {
             MAX(address)
         FROM asset_info WHERE
             (chain IN (:byChains) OR id IN (:byAssets) )
-            AND (id LIKE '%' || :query || '%'
-            OR symbol LIKE '%' || :query || '%'
+            AND (symbol LIKE '%' || :query || '%'
             OR name LIKE '%' || :query || '%' COLLATE NOCASE)
             GROUP BY id
             ORDER BY balanceFiatTotalAmount DESC, assetRank DESC
