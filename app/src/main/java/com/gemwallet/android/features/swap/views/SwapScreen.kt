@@ -50,16 +50,16 @@ import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.features.swap.viewmodels.SwapViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer2
 import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.designsystem.trailingIcon20
+import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
-import com.gemwallet.android.ui.components.list_item.ListItemSupportText
-import com.gemwallet.android.ui.components.list_item.ListItemTitleText
+import com.gemwallet.android.ui.components.list_item.PropertyDataText
+import com.gemwallet.android.ui.components.list_item.PropertyItem
+import com.gemwallet.android.ui.components.list_item.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Asset
@@ -149,14 +149,12 @@ fun SwapScreen(
                 CurrentSwapProvider(provider, providers.size > 1, isShowProviderSelect)
             }
             priceImpact?.let {
-                ListItem(
+                PropertyItem(
                     modifier = Modifier.height(72.dp),
-                    title = {
-                        ListItemTitleText(stringResource(R.string.swap_price_impact))
-                    },
-                    trailing = {
-                        ListItemTitleText(
-                            it.percentageFormatted,
+                    title = { PropertyTitleText(R.string.swap_price_impact) },
+                    data = {
+                        PropertyDataText(
+                            text = it.percentageFormatted,
                             color = when (it.type) {
                                 PriceImpactType.Positive,
                                 PriceImpactType.Low -> MaterialTheme.colorScheme.tertiary
@@ -224,25 +222,25 @@ private fun CurrentSwapProvider(
     } else {
         Modifier
     }
-    ListItem(
-        modifier = Modifier
-            .height(72.dp)
-            .then(modifier),
-        title = {
-            ListItemTitleText(stringResource(R.string.swap_provider))
-        },
-        trailing = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.End,
-            ) {
-                ListItemSupportText(provider.swapProvider.name)
-                Spacer4()
-                AsyncImage(provider.icon, size = trailingIcon20)
-                if (isAvailableChoose) {
-                    Icon(Icons.Default.ChevronRight, "")
+    PropertyItem(
+        modifier = modifier.height(72.dp),
+        title = { PropertyTitleText(R.string.swap_provider) },
+        data = {
+            PropertyDataText(
+                text = provider.swapProvider.name,
+                badge = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.End,
+                    ) {
+                        Spacer4()
+                        AsyncImage(provider.icon, size = trailingIconMedium)
+                        if (isAvailableChoose) {
+                            Icon(Icons.Default.ChevronRight, "", tint = MaterialTheme.colorScheme.secondary)
+                        }
+                    }
                 }
-            }
+            )
         }
     )
 }
@@ -266,7 +264,7 @@ private fun SwapError(state: SwapState) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                modifier = Modifier.size(trailingIcon20),
+                modifier = Modifier.size(trailingIconMedium),
                 imageVector = Icons.Outlined.Warning,
                 tint = MaterialTheme.colorScheme.error,
                 contentDescription = ""

@@ -28,6 +28,7 @@ import com.gemwallet.android.ui.components.designsystem.padding4
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.image.getSupportIconUrl
+import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator10
@@ -146,7 +147,7 @@ fun TransactionItem(
                 }
             )
         },
-        subtitle = type.getAddress(direction, from, to).let{
+        subtitle = type.getAddress(direction, from, to).let {
             if (it.isNotEmpty()) {
                 { ListItemSupportText(it) }
             } else null
@@ -163,9 +164,15 @@ fun TransactionItem(
                             if (swapMetadata == null || asset == null) {
                                 ""
                             } else {
-                                "+${asset.format(Crypto(swapMetadata.toValue), dynamicPlace = true)}"
+                                "+${
+                                    asset.format(
+                                        Crypto(swapMetadata.toValue),
+                                        dynamicPlace = true
+                                    )
+                                }"
                             }
                         }
+
                         else -> type.getValue(direction, value)
                     },
                     color = when (type) {

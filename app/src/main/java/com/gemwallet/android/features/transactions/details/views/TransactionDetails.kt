@@ -1,12 +1,8 @@
 package com.gemwallet.android.features.transactions.details.views
 
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Undo
 import androidx.compose.material.icons.filled.ContentCopy
-import androidx.compose.material.icons.filled.Done
-import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -28,7 +24,7 @@ import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.clipboard.setPlainText
-import com.gemwallet.android.ui.components.designsystem.trailingIcon20
+import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getSupportIconUrl
 import com.gemwallet.android.ui.components.open
@@ -117,25 +113,7 @@ fun TransactionDetails(
                     trailing = {
                         when (model.state) {
                             TransactionState.Pending -> CircularProgressIndicator16(color = pendingColor)
-                            TransactionState.Confirmed -> Icon(
-                                modifier = Modifier.size(16.dp),
-                                imageVector = Icons.Default.Done,
-                                contentDescription = "",
-                                tint = dataColor,
-                            )
-                            TransactionState.Failed -> Icon(
-                                modifier = Modifier.size(16.dp),
-                                imageVector = Icons.Default.ErrorOutline,
-                                contentDescription = "",
-                                tint = dataColor,
-                            )
-                            TransactionState.Reverted -> Icon(
-                                modifier = Modifier.size(16.dp),
-                                imageVector = Icons.AutoMirrored.Default.Undo,
-                                contentDescription = "",
-                                tint = dataColor,
-                            )
-                            else -> {}
+                            else -> null
                         }
                     },
                     data = when (model.state) {
@@ -205,7 +183,7 @@ fun TransactionDetails(
                     trailing = {
                         AsyncImage(
                             model = model.assetId.chain.asset(),
-                            size = trailingIcon20,
+                            size = trailingIconMedium,
                             placeholderText = model.assetType.string,
                         )
                     }

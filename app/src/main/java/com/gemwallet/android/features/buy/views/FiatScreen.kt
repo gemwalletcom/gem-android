@@ -41,7 +41,7 @@ import com.gemwallet.android.ui.components.buttons.RandomGradientButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding8
-import com.gemwallet.android.ui.components.designsystem.trailingIcon20
+import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getFiatProviderIcon
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
@@ -191,7 +191,7 @@ private fun BuyScene(
                             trailing = {
                                 AsyncImage(
                                     model = selectedProvider.provider.getFiatProviderIcon(),
-                                    size = trailingIcon20,
+                                    size = trailingIconMedium,
                                 )
                             }
                         ),

@@ -20,17 +20,18 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.features.asset.chart.models.AssetMarketUIModel
 import com.gemwallet.android.features.asset.chart.viewmodels.AssetChartViewModel
-import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Badge
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.ListItem
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.clipboard.setPlainText
-import com.gemwallet.android.ui.components.list_item.ListItemSupportText
+import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
+import com.gemwallet.android.ui.components.list_item.PropertyDataText
+import com.gemwallet.android.ui.components.list_item.PropertyItem
+import com.gemwallet.android.ui.components.list_item.PropertyTitleText
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.screen.Scene
@@ -39,7 +40,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.Currency
 import uniffi.gemstone.Explorer
-import java.math.BigInteger
 
 @Composable
 fun AssetChartScene(
@@ -79,40 +79,29 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
     marketInfo ?: return
     marketInfo.marketCap?.let {
         item {
-            ListItem(
+            PropertyItem(
                 title = {
-                    ListItemTitleText(
-                        stringResource(R.string.asset_market_cap),
-                        titleBadge = if ((marketInfo.marketCapRank ?: 0) > 0) {
-                            { Badge("#${marketInfo.marketCapRank}") }
-                        } else null,
+                    PropertyTitleText(
+                        text = R.string.asset_market_cap,
+                        badge = marketInfo.marketCapRank?.takeIf { it > 0 }
+                            .let { { Badge("#${marketInfo.marketCapRank}") } }
                     )
                 },
-                trailing = { ListItemSupportText(currency.format(it)) }
+                data = { PropertyDataText(currency.format(it)) }
             )
         }
     }
     marketInfo.circulatingSupply?.let {
-        item {
-            ListItem(
-                title = { ListItemTitleText(stringResource(R.string.asset_circulating_supply)) },
-                trailing = { ListItemSupportText(Crypto(BigInteger.valueOf(it.toLong())).format(0, asset.symbol, 0)) }
-            )
-        }
+        item { PropertyItem(R.string.asset_circulating_supply, asset.format(it, 0)) }
     }
     marketInfo.totalSupply?.let {
-        item {
-            ListItem(
-                title = { ListItemTitleText(stringResource(R.string.asset_total_supply)) },
-                trailing = { ListItemSupportText(Crypto(BigInteger.valueOf(it.toLong())).format(0, asset.symbol, 0)) }
-            )
-        }
+        item { PropertyItem(R.string.asset_total_supply, asset.format(it, 0)) }
     }
     asset.id.tokenId?.let {
         item {
             val clipboardManager = LocalClipboard.current.nativeClipboard
             val uriHandler = LocalUriHandler.current
-            ListItem(
+            PropertyItem(
                 modifier = Modifier.combinedClickable(
                     onLongClick = {
                         clipboardManager.setPlainText(it)
@@ -121,17 +110,11 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
                         uriHandler.open(Explorer(asset.chain().string).getTokenUrl(explorerName, it) ?: return@combinedClickable)
                     }
                 ),
-                title = { ListItemTitleText(stringResource(R.string.asset_contract)) },
-                trailing = {
-                    Text(
-                        modifier = Modifier
-                            .weight(0.7f)
-                            .padding(top = 0.dp, bottom = 2.dp),
+                title = { PropertyTitleText(text = R.string.asset_contract) },
+                data = {
+                    PropertyDataText(
+                        modifier = Modifier.weight(1f).padding(top = 0.dp, bottom = 2.dp),
                         text = it,
-                        maxLines = 1,
-                        overflow = TextOverflow.MiddleEllipsis,
-                        color = MaterialTheme.colorScheme.secondary,
-                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             )

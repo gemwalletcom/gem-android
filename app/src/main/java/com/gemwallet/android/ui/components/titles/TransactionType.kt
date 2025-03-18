@@ -44,7 +44,7 @@ fun TransactionType.getTransactionTitle(direction: TransactionDirection, state: 
         TransactionType.StakeWithdraw,
         TransactionType.Transfer,
         TransactionType.Swap -> stringResource(getTitle(direction, state))
-        TransactionType.TokenApproval -> "${stringResource(id = R.string.transfer_approve_title)} $assetSymbol"
+        TransactionType.TokenApproval -> stringResource(id = R.string.transfer_approve_title)
         TransactionType.AssetActivation -> TODO()
         TransactionType.TransferNFT -> TODO()
         TransactionType.SmartContractCall -> TODO()

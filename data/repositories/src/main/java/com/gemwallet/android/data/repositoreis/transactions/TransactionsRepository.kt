@@ -45,7 +45,6 @@ import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
 import java.math.BigInteger
 import java.net.InetAddress
-import java.net.UnknownHostException
 
 class TransactionsRepository(
     private val transactionsDao: TransactionsDao,
@@ -152,6 +151,7 @@ class TransactionsRepository(
     }
 
     private fun observePending() = scope.launch {
+        // TODO: Update stake state
         val pendingTxs = transactionsDao.getExtendedTransactions().firstOrNull()?.filter {
             it.state == TransactionState.Pending
         } ?: emptyList()
@@ -172,20 +172,19 @@ class TransactionsRepository(
             updateTransaction(updatedTxs)
         }
         if (!isInternetAvailable()) return@launch
-        val failedByTimeOut = (transactionsDao.getExtendedTransactions().firstOrNull() ?: emptyList())
+        val failedByTimeout = (transactionsDao.getExtendedTransactions().firstOrNull() ?: emptyList())
             .filter { it.state == TransactionState.Pending }
             .mapNotNull {
                 val assetId = it.assetId.toAssetId() ?: return@mapNotNull null
-                val timeOut =
-                    Config().getChainConfig(assetId.chain.string).transactionTimeout * 1000
-                if (it.createdAt < System.currentTimeMillis() - timeOut) {
+                val timeout = Config().getChainConfig(assetId.chain.string).transactionTimeout * 1000
+                if (it.createdAt < System.currentTimeMillis() - timeout) {
                     it.copy(state = TransactionState.Failed)
                 } else {
                     null
                 }
             }
-        updateTransaction(failedByTimeOut)
-        changedTransactions.tryEmit(failedByTimeOut.mapNotNull(extTxMapper::asEntity))
+        updateTransaction(failedByTimeout)
+        changedTransactions.tryEmit(failedByTimeout.mapNotNull(extTxMapper::asEntity))
     }
 
     private suspend fun updateTransaction(txs: List<DbTransactionExtended>) = withContext(Dispatchers.IO) {

@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components
+package com.gemwallet.android.ui.components.list_item
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

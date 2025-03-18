@@ -74,7 +74,7 @@ internal fun SwapItem(
         Spacer8()
         Row(
             modifier = Modifier
-                .height(40.dp)
+                .height(44.dp) // TODO: Out to constant
                 .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
         ) {

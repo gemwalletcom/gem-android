@@ -55,7 +55,7 @@ import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.padding32
-import com.gemwallet.android.ui.components.designsystem.trailingIcon20
+import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
@@ -281,7 +281,7 @@ private fun LazyListScope.networkInfo(
                 CellEntity(
                     label = stringResource(id = R.string.transfer_network),
                     data = uiState.networkTitle,
-                    trailing = { AsyncImage(uiState.asset.networkAsset(), trailingIcon20) },
+                    trailing = { AsyncImage(uiState.asset.networkAsset(), trailingIconMedium) },
                     action = { openNetwork(AssetId(uiState.asset.chain())) },
                 )
             )

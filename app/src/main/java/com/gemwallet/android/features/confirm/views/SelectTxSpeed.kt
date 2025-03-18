@@ -23,7 +23,7 @@ import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.TxSpeed
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.designsystem.trailingIcon16
+import com.gemwallet.android.ui.components.designsystem.trailingIconSmall
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -52,12 +52,12 @@ private fun TxSpeedView(fee: FeeRateUIModel, isSelected: Boolean, onClick: () ->
         ) {
             if (isSelected) {
                 Icon(
-                    modifier = Modifier.size(trailingIcon16),
+                    modifier = Modifier.size(trailingIconSmall),
                     imageVector = Icons.Outlined.Done,
                     contentDescription = ""
                 )
             } else {
-                Box(modifier = Modifier.size(trailingIcon16))
+                Box(modifier = Modifier.size(trailingIconSmall))
             }
             Spacer8()
             Text(

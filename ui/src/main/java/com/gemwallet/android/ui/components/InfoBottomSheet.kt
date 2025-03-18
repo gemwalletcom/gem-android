@@ -108,7 +108,7 @@ fun InfoBottomSheet(
             modifier = Modifier .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer8()
+            Spacer16()
             Box(
                 modifier = Modifier.size(120.dp),
                 contentAlignment = Alignment.BottomEnd
@@ -132,9 +132,7 @@ fun InfoBottomSheet(
                     )
                 }
             }
-
             Spacer16()
-
             Text(
                 text = stringResource(item.title),
                 fontWeight = FontWeight.Bold,
@@ -150,7 +148,7 @@ fun InfoBottomSheet(
                     stringResource(item.description)
                 },
                 color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center
             )
 

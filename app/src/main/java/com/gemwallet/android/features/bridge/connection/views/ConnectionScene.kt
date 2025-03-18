@@ -19,7 +19,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.bridge.connection.viewmodels.ConnectionViewModel
 import com.gemwallet.android.features.bridge.connections.views.ConnectionItem
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.ListItem
+import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.screen.Scene

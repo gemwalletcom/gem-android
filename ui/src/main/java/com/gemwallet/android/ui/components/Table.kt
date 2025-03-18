@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.padding8
-import com.gemwallet.android.ui.components.designsystem.trailingIcon20
+import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
 
 data class CellEntity<T>(
@@ -165,7 +165,7 @@ private fun Cell(
         }
         if (!trailingIcon.isNullOrEmpty()) {
             Spacer(modifier = Modifier.size(8.dp))
-            AsyncImage(trailingIcon, trailingIcon20)
+            AsyncImage(trailingIcon, trailingIconMedium)
         }
         if (action != null) {
             if (showActionChevron) {
@@ -251,7 +251,7 @@ private fun InfoButton(entity: InfoSheetEntity) {
     Icon(
         modifier = Modifier
             .clip(RoundedCornerShape(percent = 50))
-            .size(trailingIcon20)
+            .size(trailingIconMedium)
             .clickable(onClick = { showBottomSheet = true }),
         imageVector = Icons.Outlined.Info,
         contentDescription = "",

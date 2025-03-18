@@ -8,10 +8,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 val headerIconSize = 64.dp
-val listItemIconSize = 40.dp
+val listItemIconSize = 44.dp
 val iconSize = 32.dp
-val trailingIcon20 = 20.dp
-val trailingIcon16 = 16.dp
+val trailingIconMedium = 24.dp
+val trailingIconSmall = 16.dp
 
 private val space2 = 2.dp
 private val space6 = 6.dp

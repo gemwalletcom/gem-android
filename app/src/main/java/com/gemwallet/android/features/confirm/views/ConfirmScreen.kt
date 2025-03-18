@@ -40,7 +40,7 @@ import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer2
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.designsystem.trailingIcon20
+import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.titles.getTitle
 import com.gemwallet.android.ui.models.actions.CancelAction
@@ -163,7 +163,7 @@ private fun ConfirmErrorInfo(state: ConfirmState) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                modifier = Modifier.size(trailingIcon20),
+                modifier = Modifier.size(trailingIconMedium),
                 imageVector = Icons.Outlined.Warning,
                 tint = MaterialTheme.colorScheme.error,
                 contentDescription = ""

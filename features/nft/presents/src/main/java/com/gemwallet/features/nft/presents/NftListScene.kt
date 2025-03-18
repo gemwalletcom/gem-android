@@ -106,7 +106,7 @@ fun NftListScene(
                     Text(
                         modifier = Modifier.align(Alignment.Center),
                         textAlign = TextAlign.Center,
-                        text = "Collection is empty"
+                        text = stringResource(R.string.activity_empty_state_message)
                     )
                 }
                 return@PullToRefreshBox
