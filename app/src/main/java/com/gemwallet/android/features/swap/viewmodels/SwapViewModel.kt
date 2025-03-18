@@ -166,12 +166,14 @@ class SwapViewModel @Inject constructor(
     }
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+    private val refresh = MutableStateFlow(0L)
 
     private val quotes = combine(
         fromValueFlow,
         assetsState,
-        refreshTimer
-    ) { fromValue, assets, _ -> Pair(fromValue, assets) }
+        refreshTimer,
+        refresh,
+    ) { fromValue, assets, _, _ -> Pair(fromValue, assets) }
     .mapLatest { data ->
         val assets = data.second
         val fromAsset = assets?.from
@@ -385,6 +387,7 @@ class SwapViewModel @Inject constructor(
                 gasLimit = swapData.gasLimit?.toBigIntegerOrNull(),
             )
         )
+        swapScreenState.update { SwapState.Ready }
     }
 
     fun changePair(swapItemType: SwapItemType) {
@@ -402,6 +405,10 @@ class SwapViewModel @Inject constructor(
 
     fun setProvider(provider: SwapProvider) {
         this.selectedProvider.update { provider }
+    }
+
+    fun refresh() {
+        refresh.update { System.currentTimeMillis() }
     }
 
     private data class SwapPairState(

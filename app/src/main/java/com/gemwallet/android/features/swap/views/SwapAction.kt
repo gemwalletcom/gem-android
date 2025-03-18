@@ -50,7 +50,7 @@ internal fun SwapAction(swapState: SwapState, pair: SwapPairUIModel, onSwap: () 
                 disabledContentColor = MaterialTheme.colorScheme.onPrimary,
             ),
             onClick = onSwap,
-            enabled = (swapState == SwapState.Ready || swapState == SwapState.RequestApprove)
+            enabled = (swapState == SwapState.Ready || swapState == SwapState.RequestApprove || swapState is SwapState.Error)
         ) {
             when (swapState) {
                 SwapState.None,
@@ -82,7 +82,7 @@ internal fun SwapAction(swapState: SwapState, pair: SwapPairUIModel, onSwap: () 
 
                 is SwapState.Error -> Text(
                     modifier = Modifier.padding(4.dp),
-                    text = "Quote error",
+                    text = stringResource(R.string.common_try_again),
                     fontSize = 18.sp,
                 )
             }

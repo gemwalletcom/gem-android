@@ -107,13 +107,12 @@ fun SwapScreen(
             title = stringResource(id = R.string.wallet_swap),
             mainAction = {
                 SwapAction(swapState, pair) {
-                    viewModel.swap(
-                        when (swapState) {
-                            SwapState.Ready -> onConfirm
-                            SwapState.RequestApprove -> { { approveParams = it } }
-                            else -> { {} }
-                        }
-                    )
+                    when (swapState) {
+                        SwapState.Ready -> viewModel.swap(onConfirm)
+                        SwapState.RequestApprove -> viewModel.swap({ approveParams = it })
+                        is SwapState.Error -> viewModel.refresh()
+                        else -> {}
+                    }
                 }
             },
             onClose = onCancel,
