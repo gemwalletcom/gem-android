@@ -174,6 +174,7 @@ class AssetsRepository @Inject constructor(
     }
 
     fun search(query: String, byAllWallets: Boolean): Flow<List<AssetInfo>> {
+        val query = query.trim()
         return if (byAllWallets) {
             assetsDao.searchByAllWallets(query)
         } else {
@@ -187,6 +188,7 @@ class AssetsRepository @Inject constructor(
     }
 
     fun swapSearch(wallet: Wallet, query: String, byChains: List<Chain>, byAssets: List<AssetId>): Flow<List<AssetInfo>> {
+        val query = query.trim()
         val walletChains = wallet.accounts.map { it.chain }
         val includeChains = byChains.filter { walletChains.contains(it) }
         val includeAssetIds = byAssets.filter { walletChains.contains(it.chain) }
