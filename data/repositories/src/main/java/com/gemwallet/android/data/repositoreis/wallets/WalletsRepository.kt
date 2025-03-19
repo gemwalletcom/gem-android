@@ -25,16 +25,12 @@ class WalletsRepository @Inject constructor(
     private val createAccount: CreateAccountOperator,
 ) {
     private val accountMapper = AccountMapper()
-//    private val walletMapper = WalletMapper(accountMapper)
 
     suspend fun getNextWalletNumber(): Int {
         return getAll().map { it.size + 1 }.firstOrNull() ?: 0
     }
 
-    fun getAll() = walletsDao.getAll().map { items ->
-        items.map { entry -> entry.key.toModel(entry.value) }
-//        items.map { walletMapper.asDomain(it) { accountsDao.getByWalletId(it.id) } }
-    }
+    fun getAll() = walletsDao.getAll().toModel()
 
     suspend fun addWatch(walletName: String, address: String, chain: Chain): Wallet =
         putWallet(

@@ -5,6 +5,8 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 @Entity(tableName = "wallets")
 data class DbWallet(
@@ -40,3 +42,7 @@ fun Wallet.toRecord(): DbWallet {
         index = index,
     )
 }
+
+fun Map<DbWallet, List<DbAccount>>.toModel() = map { entry -> entry.key.toModel(entry.value) }
+
+fun Flow<Map<DbWallet, List<DbAccount>>>.toModel() = map { entry -> entry.toModel() }

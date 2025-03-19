@@ -6,7 +6,8 @@ import com.gemwallet.android.cases.banners.GetBannersCase
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.service.store.database.BannersDao
 import com.gemwallet.android.data.service.store.database.entities.DbBanner
-import com.gemwallet.android.data.service.store.database.mappers.BannerMapper
+import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.ext.isStackable
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Asset
@@ -23,8 +24,6 @@ class BannersRepository(
     private val userConfig: UserConfig
 ) : GetBannersCase, CancelBannerCase, AddBannerCase {
 
-    val mapper = BannerMapper()
-
     override suspend fun getActiveBanners(wallet: Wallet?, asset: Asset?): List<Banner> = withContext(Dispatchers.IO) {
         val generatedBanner = generateBanners(wallet, asset)
 
@@ -32,22 +31,14 @@ class BannersRepository(
             walletId = wallet?.id ?: "",
             assetId = asset?.id?.toIdentifier() ?: "",
             chain = asset?.id?.chain,
-        ).map { mapper.asDomain(it) { Pair(wallet, asset) } } + generatedBanner
+        ).map { it.toModel(wallet, asset) } + generatedBanner
         banners.filterNotNull().mapNotNull { banner ->
             if (isBannerAvailable(wallet, asset, banner.event)) banner else null
         }
     }
 
     override suspend fun cancelBanner(banner: Banner) = withContext(Dispatchers.IO) {
-        bannersDao.saveBanner(
-            DbBanner(
-                walletId = banner.wallet?.id ?: "",
-                assetId = banner.asset?.id?.toIdentifier() ?: "",
-                event = banner.event,
-                chain = banner.chain,
-                state = BannerState.Cancelled,
-            )
-        )
+        bannersDao.saveBanner(banner.toRecord(BannerState.Cancelled))
     }
 
     override suspend fun addBanner(

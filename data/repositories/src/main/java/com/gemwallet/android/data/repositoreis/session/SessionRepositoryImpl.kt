@@ -2,7 +2,8 @@ package com.gemwallet.android.data.repositoreis.session
 
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.data.service.store.database.SessionDao
-import com.gemwallet.android.data.service.store.database.mappers.SessionMapper
+import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.model.Session
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
@@ -18,13 +19,12 @@ class SessionRepositoryImpl(
     private val walletsRepository: WalletsRepository,
 ) : SessionRepository {
 
-    private val sessionMapper = SessionMapper()
+//    private val sessionMapper = SessionMapper()
 
-    override fun session(): Flow<Session?> = sessionDao.session().mapNotNull { entity ->
-        val wallet = walletsRepository.getWallet(
-            entity?.walletId ?: return@mapNotNull null
-        ) ?: return@mapNotNull null
-        sessionMapper.asDomain(entity, { wallet })
+    override fun session(): Flow<Session?> = sessionDao.session().mapNotNull { record ->
+        // TODO: dao map
+        val wallet = record?.walletId?.let { walletsRepository.getWallet(it) } ?: return@mapNotNull null
+        record.toModel(wallet)
     }
 
     override fun getSession(): Session? {
@@ -32,7 +32,7 @@ class SessionRepositoryImpl(
         val wallet = runBlocking(Dispatchers.IO) {
             walletsRepository.getWallet(entity.walletId)
         } ?: return null
-        return sessionMapper.asDomain(entity, { wallet })
+        return entity.toModel(wallet)
     }
 
     override fun hasSession(): Boolean = getSession() != null
@@ -42,12 +42,12 @@ class SessionRepositoryImpl(
             wallet = wallet,
             currency = Currency.USD,
         )
-        sessionDao.update(sessionMapper.asEntity(session))
+        sessionDao.update(session.toRecord())
     }
 
     override suspend fun setCurrency(currency: Currency) = withContext(Dispatchers.IO) {
         val session = getSession() ?: return@withContext
-        sessionDao.update(sessionMapper.asEntity((session.copy(currency = currency))))
+        sessionDao.update(session.copy(currency = currency).toRecord())
     }
 
     override suspend fun reset() = withContext(Dispatchers.IO) {
