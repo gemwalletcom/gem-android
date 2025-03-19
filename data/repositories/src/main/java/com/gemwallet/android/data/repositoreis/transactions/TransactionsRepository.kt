@@ -12,8 +12,8 @@ import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
 import com.gemwallet.android.data.service.store.database.entities.DbTransactionExtended
 import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetadata
+import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.service.store.database.mappers.ExtendedTransactionMapper
-import com.gemwallet.android.data.service.store.database.mappers.TransactionMapper
 import com.gemwallet.android.ext.eip1559Support
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.same
@@ -56,7 +56,7 @@ class TransactionsRepository(
     private val assetsRoomSource = GetAssetByIdCase(assetsDao)
     private val changedTransactions = MutableStateFlow<List<TransactionExtended>>(emptyList()) // TODO: Update balances.
 
-    private val txMapper = TransactionMapper()
+//    private val txMapper = TransactionMapper()
     private val extTxMapper = ExtendedTransactionMapper()
 
     init {
@@ -105,7 +105,7 @@ class TransactionsRepository(
     }
 
     override suspend fun putTransactions(walletId: String, transactions: List<Transaction>) = withContext(Dispatchers.IO) {
-        transactionsDao.insert(transactions.map { txMapper.asDomain(it, { walletId }) })
+        transactionsDao.insert(transactions.toRecord(walletId))
         addSwapMetadata(transactions.filter { it.type == TransactionType.Swap })
     }
 
@@ -144,7 +144,7 @@ class TransactionsRepository(
             utxoOutputs = emptyList(),
             createdAt = System.currentTimeMillis(),
         )
-        transactionsDao.insert(listOf(txMapper.asDomain(transaction, { walletId })))
+        transactionsDao.insert(listOf(transaction.toRecord(walletId)))
         addSwapMetadata(listOf(transaction))
         transaction
     }
@@ -188,9 +188,7 @@ class TransactionsRepository(
 
     private suspend fun updateTransaction(txs: List<DbTransactionExtended>) = withContext(Dispatchers.IO) {
         val data = txs.mapNotNull { tx ->
-            extTxMapper.asEntity(tx)?.transaction?.let {
-                txMapper.asDomain(it, { tx.walletId })
-            }
+            extTxMapper.asEntity(tx)?.transaction?.toRecord(tx.walletId)
         }
         transactionsDao.insert(data)
     }
