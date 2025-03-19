@@ -33,6 +33,7 @@ fun ColumnScope.AmountField(
     amount: String,
     assetSymbol: String,
     equivalent: String,
+    readOnly: Boolean = false,
     error: String,
     onValueChange: (String) -> Unit,
     onNext: () -> Unit,
@@ -61,6 +62,7 @@ fun ColumnScope.AmountField(
         ),
         interactionSource = interactionSource,
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+        readOnly = readOnly,
     )
     Spacer(modifier = Modifier.height(4.dp))
     if (equivalent.isNotEmpty()) {

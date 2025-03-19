@@ -120,6 +120,24 @@ class AmountViewModel @Inject constructor(
     .map { state.value?.assetInfo?.asset?.format(it, 8) ?: "" }
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
+    var prefillAmount = combine(
+        state,
+        delegation
+    ) { state, delegation ->
+        when (state?.params?.txType) {
+            TransactionType.StakeUndelegate,
+            TransactionType.StakeRedelegate,
+            TransactionType.StakeWithdraw -> {
+                val balance = Crypto(delegation?.base?.balance?.toBigIntegerOrNull() ?: BigInteger.ZERO)
+                val value = balance.value(state.assetInfo.asset.decimals).stripTrailingZeros().toPlainString()
+                amount = value
+                value
+            }
+            else -> null
+        }
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     var amount by mutableStateOf("")
         private set
 

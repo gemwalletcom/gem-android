@@ -35,6 +35,7 @@ import com.wallet.core.primitives.TransactionType
 @Composable
 fun AmountScene(
     amount: String,
+    amountPrefill: String?,
     uiModel: AmountScreenModel,
     validatorState: DelegationValidator?,
     inputError: AmountError,
@@ -90,12 +91,11 @@ fun AmountScene(
             item {
                 Spacer16()
                 AmountField(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    amount = amount,
+                    modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                    amount = amountPrefill ?: amount,
                     assetSymbol = uiModel.asset.symbol,
                     equivalent = equivalent,
+                    readOnly = !amountPrefill.isNullOrEmpty(),
                     error = amountErrorString(error = if (AmountError.None == inputError) amountError else inputError),
                     onValueChange = onAmount,
                     onNext = onNext

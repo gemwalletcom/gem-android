@@ -31,6 +31,7 @@ fun AmountScreen(
     val amountError by viewModel.nextErrorState.collectAsStateWithLifecycle()
     val equivalent by viewModel.equivalentState.collectAsStateWithLifecycle()
     val availableBalance by viewModel.availableBalance.collectAsStateWithLifecycle()
+    val amountPrefill by viewModel.prefillAmount.collectAsStateWithLifecycle()
 
     var isSelectValidator by remember {
         mutableStateOf(false)
@@ -80,6 +81,7 @@ fun AmountScreen(
             )
             false -> AmountScene(
                 amount = viewModel.amount,
+                amountPrefill = amountPrefill,
                 uiModel = uiModel ?: return@AnimatedContent,
                 validatorState = validatorState,
                 inputError = inputError,

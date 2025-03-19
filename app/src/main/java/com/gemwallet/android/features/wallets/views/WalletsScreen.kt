@@ -111,7 +111,7 @@ fun WalletsScreen(
 
     if (deleteWalletId.isNotEmpty()) {
         ConfirmWalletDeleteDialog(
-            walletName = uiState.wallets.firstOrNull{ it.id == deleteWalletId}?.name ?: "",
+            walletName = (uiState.wallets + uiState.pinnedWallets).firstOrNull{ it.id == deleteWalletId}?.name ?: "",
             onConfirm = {
                 val walletId = deleteWalletId
                 deleteWalletId = ""
