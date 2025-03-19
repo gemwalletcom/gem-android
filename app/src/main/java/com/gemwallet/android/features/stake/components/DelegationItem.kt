@@ -79,7 +79,7 @@ fun DelegationItem(
                 when (delegation.base.state) {
                     Pending,
                     Activating,
-                    Deactivating -> {
+                    Deactivating -> completedAt.takeIf { it.isNotEmpty() && it != "0"}?.let {
                         Spacer2()
                         ListItemSupportText(completedAt)
                     }

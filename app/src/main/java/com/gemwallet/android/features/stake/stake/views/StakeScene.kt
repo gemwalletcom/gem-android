@@ -56,7 +56,7 @@ fun StakeScene(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
                     SubheaderItem(title = uiState.title)
-                    Table(
+                    Table( // TODO: Replace to Property item
                         items = listOf(
                             CellEntity(
                                 stringResource(id = R.string.stake_apr, ""),
