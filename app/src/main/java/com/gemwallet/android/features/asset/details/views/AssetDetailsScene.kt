@@ -19,12 +19,15 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
@@ -68,6 +71,7 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.WalletType
+import kotlinx.coroutines.launch
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl
 
@@ -138,9 +142,16 @@ private fun Success(
     onStake: (AssetId) -> Unit,
     onPriceAlert: (AssetId) -> Unit,
 ) {
+    val scope = rememberCoroutineScope()
+
     val pullToRefreshState = rememberPullToRefreshState()
     val clipboardManager = LocalClipboard.current.nativeClipboard
     val uriHandler = LocalUriHandler.current
+
+    val snackbar = remember { SnackbarHostState() }
+    val priceAlertToastRes = if (priceAlertEnabled) R.string.price_alerts_disabled_for else R.string.price_alerts_enabled_for
+    val priceAlertToastMessage = stringResource(priceAlertToastRes, uiState.asset.name)
+
     Scene(
         title = {
             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -149,7 +160,10 @@ private fun Success(
         },
         actions = {
             IconButton(
-                onClick = { onPriceAlert(uiState.asset.id) }
+                onClick = {
+                    onPriceAlert(uiState.asset.id)
+                    scope.launch { snackbar.showSnackbar(message = priceAlertToastMessage) }
+                }
             ) {
                 if (priceAlertEnabled) {
                     Icon(Icons.Default.Notifications, "")
@@ -164,7 +178,8 @@ private fun Success(
             }
         },
         onClose = onCancel,
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(0.dp),
+        snackbar = snackbar,
     ) {
         val isRefreshing = syncState == AssetInfoUIState.SyncState.Loading
         PullToRefreshBox(
