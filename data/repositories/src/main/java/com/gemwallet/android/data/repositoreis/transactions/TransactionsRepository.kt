@@ -1,12 +1,8 @@
 package com.gemwallet.android.data.repositoreis.transactions
 
 import android.text.format.DateUtils
-import android.util.Log
-import androidx.core.net.toUri
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
-import com.gemwallet.android.cases.nodes.getGemNode
-import com.gemwallet.android.cases.nodes.getGemNodeUrl
 import com.gemwallet.android.cases.transactions.CreateTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionCase
 import com.gemwallet.android.cases.transactions.GetTransactionsCase
@@ -30,7 +26,6 @@ import com.gemwallet.android.model.TransactionExtended
 import com.google.gson.Gson
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
@@ -49,7 +44,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
 import java.math.BigInteger
-import java.net.InetAddress
 
 class TransactionsRepository(
     private val transactionsDao: TransactionsDao,
@@ -181,9 +175,8 @@ class TransactionsRepository(
             .mapNotNull {
                 val assetId = it.assetId.toAssetId() ?: return@mapNotNull null
                 val timeout = Config().getChainConfig(assetId.chain.string).transactionTimeout * 1000
-                val isNodeAvailable = isNodeAvailable(assetId.chain)
 
-                if (it.createdAt < System.currentTimeMillis() - timeout && isNodeAvailable) {
+                if (it.createdAt < System.currentTimeMillis() - timeout) {
                     it.copy(state = TransactionState.Failed)
                 } else {
                     null
@@ -246,13 +239,5 @@ class TransactionsRepository(
             )
         }
         transactionsDao.addSwapMetadata(room)
-    }
-
-    fun isNodeAvailable(chain: Chain): Boolean {
-        try {
-            val address = InetAddress.getByName(getGemNodeUrl(chain).toUri().host);
-            return !address.equals("");
-        } catch (_: Throwable) { }
-        return false;
     }
 }
