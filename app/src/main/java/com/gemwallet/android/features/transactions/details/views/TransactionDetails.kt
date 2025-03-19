@@ -61,6 +61,7 @@ fun TransactionDetails(
                     fromValue = model.fromValue!!,
                     toAsset = model.toAsset,
                     toValue = model.toValue!!,
+                    currency = model.currency
                 )
                 else -> AmountListHead(
                     iconUrl = model.assetIcon,

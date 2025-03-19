@@ -94,7 +94,8 @@ class TransactionDetailsViewModel @Inject constructor(
             fromAsset = assets.firstOrNull { it.id() == fromId },
             toAsset = assets.firstOrNull { it.id() == toId },
             fromValue = swapMetadata?.fromValue,
-            toValue = swapMetadata?.toValue
+            toValue = swapMetadata?.toValue,
+            currency = currency,
         )
     }
     .stateIn(viewModelScope, started = SharingStarted.Eagerly, null)
