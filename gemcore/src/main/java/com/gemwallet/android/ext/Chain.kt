@@ -42,6 +42,7 @@ fun Chain.assetType(): AssetType? {
         Chain.Berachain,
         Chain.Unichain,
         Chain.Hyperliquid,
+        Chain.Monad,
         Chain.World -> AssetType.ERC20
 
         Chain.Cosmos,
@@ -93,6 +94,7 @@ fun Chain.eip1559Support() = when (this) {
     Chain.Berachain,
     Chain.Unichain,
     Chain.Hyperliquid,
+    Chain.Monad,
     Chain.Ethereum -> true
     Chain.Bitcoin,
     Chain.Litecoin,
@@ -193,6 +195,7 @@ fun Chain.toChainType(): ChainType {
         Chain.Unichain,
         Chain.Ink,
         Chain.Hyperliquid,
+        Chain.Monad,
         Chain.Ethereum -> ChainType.Ethereum
     }
 }
@@ -203,7 +206,11 @@ fun Chain.getNetworkId(): String {
 }
 
 fun Chain.isSwapSupport(): Boolean {
-    return Config().getChainConfig(string).isSwapSupported
+    return try {
+        Config().getChainConfig(string).isSwapSupported
+    } catch (_: Throwable) {
+        false
+    }
 }
 
 fun Chain.Companion.swapSupport() = Chain.entries.filter { it.isSwapSupport() }

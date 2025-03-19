@@ -76,8 +76,7 @@ fun AssetChartScene(
 }
 
 private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketInfo: AssetMarket?, explorerName: String) {
-    marketInfo ?: return
-    marketInfo.marketCap?.let {
+    marketInfo?.marketCap?.let {
         item {
             PropertyItem(
                 title = {
@@ -91,10 +90,10 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
             )
         }
     }
-    marketInfo.circulatingSupply?.let {
+    marketInfo?.circulatingSupply?.let {
         item { PropertyItem(R.string.asset_circulating_supply, asset.format(it, 0)) }
     }
-    marketInfo.totalSupply?.let {
+    marketInfo?.totalSupply?.let {
         item { PropertyItem(R.string.asset_total_supply, asset.format(it, 0)) }
     }
     asset.id.tokenId?.let {

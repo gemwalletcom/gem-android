@@ -259,23 +259,21 @@ private fun LazyListScope.networkInfo(
 ) {
     item {
         val cells = mutableListOf<CellEntity<Any>>()
-        if (uiState.priceValue.isNotEmpty()) {
-            cells.add(
-                CellEntity(
-                    label = stringResource(id = R.string.asset_price),
-                    data = uiState.priceValue,
-                    trailing = {
-                        Text(
-                            text = uiState.priceDayChanges,
-                            color = priceColor(uiState.priceChangedType),
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                    },
-                    action = { onChart(uiState.asset.id) },
-                    testTag = "assetChart"
-                )
+        cells.add(
+            CellEntity(
+                label = stringResource(id = R.string.asset_price),
+                data = uiState.priceValue,
+                trailing = {
+                    Text(
+                        text = uiState.priceDayChanges,
+                        color = priceColor(uiState.priceChangedType),
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                },
+                action = { onChart(uiState.asset.id) },
+                testTag = "assetChart"
             )
-        }
+        )
         if (uiState.tokenType != AssetType.NATIVE) {
             cells.add(
                 CellEntity(

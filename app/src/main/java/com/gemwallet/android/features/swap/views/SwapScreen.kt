@@ -149,7 +149,6 @@ fun SwapScreen(
             }
             priceImpact?.let {
                 PropertyItem(
-                    modifier = Modifier.height(72.dp),
                     title = { PropertyTitleText(R.string.swap_price_impact) },
                     data = {
                         PropertyDataText(
@@ -222,7 +221,7 @@ private fun CurrentSwapProvider(
         Modifier
     }
     PropertyItem(
-        modifier = modifier.height(72.dp),
+        modifier = modifier,
         title = { PropertyTitleText(R.string.swap_provider) },
         data = {
             PropertyDataText(

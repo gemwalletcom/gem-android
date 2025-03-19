@@ -1,9 +1,9 @@
 package com.gemwallet.android.ui.components.list_item
 
-import android.util.Property
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.height
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 
 
 @Composable
@@ -25,9 +26,9 @@ fun PropertyItem(
     title: String,
     data: String? = null,
 ) {
-    ListItem(
+    PropertyItem(
         title = { PropertyTitleText(title) },
-        trailing = data?.let{ { PropertyDataText(data) } },
+        data = data?.let{ { PropertyDataText(data) } },
     )
 }
 
@@ -38,7 +39,7 @@ fun PropertyItem(
     modifier: Modifier = Modifier,
 ) {
     ListItem(
-        modifier = modifier,
+        modifier = modifier.height(56.dp),
         title = title,
         trailing = data,
     )
