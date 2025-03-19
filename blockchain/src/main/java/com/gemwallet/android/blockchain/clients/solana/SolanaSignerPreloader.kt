@@ -4,7 +4,6 @@ import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
-import com.gemwallet.android.blockchain.clients.solana.SolanaSignerPreloader.SolanaChainData
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaAccountsService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaFeeService
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaNetworkInfoService

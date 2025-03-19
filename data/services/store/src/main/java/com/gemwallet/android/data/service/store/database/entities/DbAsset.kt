@@ -17,7 +17,6 @@ import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import kotlin.String
 
 @Entity(tableName = "assets", primaryKeys = ["owner_address", "id"])
 data class DbAssetOld(

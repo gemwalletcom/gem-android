@@ -6,7 +6,6 @@ import com.gemwallet.android.blockchain.clients.aptos.services.AptosTransactions
 import com.gemwallet.android.model.TransactionChages
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
-import java.lang.Exception
 import java.math.BigInteger
 
 class AptosTransactionStatusClient(

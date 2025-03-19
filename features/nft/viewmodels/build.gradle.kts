@@ -1,5 +1,3 @@
-import org.gradle.kotlin.dsl.android
-
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin)

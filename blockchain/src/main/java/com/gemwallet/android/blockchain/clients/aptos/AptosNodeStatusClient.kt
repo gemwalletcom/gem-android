@@ -8,7 +8,6 @@ import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.String
 
 class AptosNodeStatusClient(
     private val chain: Chain,

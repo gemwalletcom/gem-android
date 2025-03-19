@@ -31,9 +31,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.bridge.connections.viewmodels.ConnectionsViewModel
 import com.gemwallet.android.features.bridge.model.SessionUI
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.qrCodeRequest

@@ -6,7 +6,6 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.fullAddress
 import com.gemwallet.android.ext.toBitcoinChain
 import com.gemwallet.android.model.AssetBalance
-import com.wallet.core.primitives.BitcoinChain
 import com.wallet.core.primitives.Chain
 
 class BitcoinBalanceClient(

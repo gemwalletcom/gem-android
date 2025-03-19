@@ -47,7 +47,6 @@ import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
 import com.wallet.core.primitives.TransactionType
 import java.math.BigDecimal
-import kotlin.String
 
 @Composable
 fun TransactionItem(item: TransactionExtended, isLast: Boolean, onTransaction: (String) -> Unit) {

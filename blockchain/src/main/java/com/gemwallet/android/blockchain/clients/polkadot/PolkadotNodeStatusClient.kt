@@ -8,7 +8,6 @@ import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import kotlin.String
 
 class PolkadotNodeStatusClient(
     private val chain: Chain,

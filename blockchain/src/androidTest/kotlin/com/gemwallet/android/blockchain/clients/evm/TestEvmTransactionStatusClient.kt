@@ -15,7 +15,6 @@ import junit.framework.TestCase.assertNull
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import java.math.BigInteger
-import kotlin.String
 
 class TestEvmTransactionStatusClient {
     companion object {

@@ -15,7 +15,6 @@ import com.reown.android.relay.ConnectionType
 import com.reown.walletkit.client.Wallet
 import com.reown.walletkit.client.WalletKit
 import dagger.hilt.android.HiltAndroidApp
-import java.lang.System
 
 
 @HiltAndroidApp

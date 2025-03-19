@@ -12,7 +12,6 @@ import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
 import com.wallet.core.primitives.Chain
-import java.lang.Exception
 
 class BitcoinSignerPreloader(
     private val chain: Chain,

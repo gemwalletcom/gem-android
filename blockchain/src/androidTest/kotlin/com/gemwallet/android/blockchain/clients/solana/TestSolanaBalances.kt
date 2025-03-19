@@ -28,7 +28,6 @@ import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertNotNull
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import kotlin.String
 
 class TestSolanaBalances {
 

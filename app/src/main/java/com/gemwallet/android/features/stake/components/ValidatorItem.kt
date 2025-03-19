@@ -13,9 +13,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.gemwallet.android.features.stake.model.formatApr
 import com.gemwallet.android.features.stake.model.getIconUrl
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.designsystem.space4
 import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.theme.WalletTheme

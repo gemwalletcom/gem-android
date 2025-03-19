@@ -16,7 +16,6 @@ import org.junit.Test
 import wallet.core.jni.CoinType
 import wallet.core.jni.HDWallet
 import java.math.BigInteger
-import kotlin.Int
 
 class TestXrpSigner {
     companion object {

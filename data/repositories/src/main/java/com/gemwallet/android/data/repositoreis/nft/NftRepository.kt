@@ -23,8 +23,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
-import kotlin.collections.map
-import kotlin.jvm.Throws
 
 class NftRepository(
     private val gemApiClient: GemApiClient,

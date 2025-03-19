@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.ethereum.services
 
-import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient.EvmNumber
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.hexToBigInteger
 import com.google.gson.JsonDeserializationContext

@@ -7,7 +7,9 @@ import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.service.store.database.entities.DbPriceAlert
-import com.gemwallet.android.data.service.store.database.mappers.PriceAlertMapper
+import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toModels
+import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.AssetId
@@ -19,7 +21,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.collections.map
 
 class PriceAlertRepository(
     private val gemClient: GemApiClient,
@@ -28,14 +29,12 @@ class PriceAlertRepository(
     private val configStore: ConfigStore,
 ) : GetPriceAlertsCase, PutPriceAlertCase, EnablePriceAlertCase {
 
-    private val mapper = PriceAlertMapper()
-
     override fun getPriceAlerts(): Flow<List<PriceAlert>> {
-        return priceAlertsDao.getAlerts().map { items -> items.map(mapper::asEntity) }
+        return priceAlertsDao.getAlerts().toModels()
     }
 
     override fun getPriceAlert(assetId: AssetId): Flow<PriceAlert?> {
-        return priceAlertsDao.getAlert(assetId.toIdentifier()).filterNotNull().map(mapper::asEntity)
+        return priceAlertsDao.getAlert(assetId.toIdentifier()).filterNotNull().toModel()
     }
 
     override suspend fun setAssetPriceAlertEnabled(assetId: AssetId, enabled: Boolean): Unit = withContext(Dispatchers.IO) {
@@ -45,7 +44,7 @@ class PriceAlertRepository(
                 priceAlertsDao.put(listOf(DbPriceAlert(assetIdentifier, enabled = true)))
                 listOf(PriceAlert(assetIdentifier))
             } else {
-                listOf(mapper.asEntity(it))
+                listOf(it.toModel())
             }
         }
         priceAlertsDao.enabled(assetIdentifier, enabled)
@@ -61,7 +60,7 @@ class PriceAlertRepository(
     }
 
     override suspend fun putPriceAlert(alert: PriceAlert) = withContext(Dispatchers.IO) {
-        priceAlertsDao.put(listOf(mapper.asDomain(alert)))
+        priceAlertsDao.put(listOf(alert.toRecord()))
         launch(Dispatchers.IO) {
             gemClient.includePriceAlert(getDeviceId(), listOf(alert))
         }

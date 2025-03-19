@@ -5,7 +5,6 @@ import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
-import java.lang.Exception
 import java.math.BigInteger
 
 class StellarFeeCalculator(

@@ -27,7 +27,6 @@ import coil3.compose.AsyncImage
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.wallet.core.primitives.TransactionState
 import kotlinx.coroutines.launch

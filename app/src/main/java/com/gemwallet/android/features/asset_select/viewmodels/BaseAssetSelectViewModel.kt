@@ -10,7 +10,6 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.assetType
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.asset_select.models.SelectSearch
-import com.gemwallet.android.features.asset_select.viewmodels.BaseAssetSelectViewModel.SearchState
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
@@ -28,7 +27,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.collections.map
 
 @OptIn(ExperimentalCoroutinesApi::class)
 open class BaseAssetSelectViewModel(

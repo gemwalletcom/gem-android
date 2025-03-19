@@ -1,6 +1,6 @@
 package com.gemwallet.features.nft.presents
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /**

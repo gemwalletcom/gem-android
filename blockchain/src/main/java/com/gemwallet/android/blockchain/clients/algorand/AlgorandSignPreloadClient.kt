@@ -9,7 +9,6 @@ import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
-import java.lang.Exception
 
 class AlgorandSignPreloadClient(
     private val chain: Chain,

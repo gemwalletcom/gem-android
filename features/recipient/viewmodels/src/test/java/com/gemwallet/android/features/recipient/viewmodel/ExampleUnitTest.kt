@@ -1,6 +1,6 @@
 package com.gemwallet.android.features.recipient.viewmodel
 
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /**
