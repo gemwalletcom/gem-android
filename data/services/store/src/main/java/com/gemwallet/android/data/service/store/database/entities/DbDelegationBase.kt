@@ -3,7 +3,10 @@ package com.gemwallet.android.data.service.store.database.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.gemwallet.android.ext.toIdentifier
+import com.wallet.core.primitives.DelegationBase
 import com.wallet.core.primitives.DelegationState
+import java.util.UUID
 
 @Entity(tableName = "stake_delegation_base")
 data class DbDelegationBase(
@@ -20,3 +23,21 @@ data class DbDelegationBase(
     @ColumnInfo("price_change") val priceChange: Double? = null,
     val shares: String? = null,
 )
+
+fun DelegationBase.toRecord(address: String): DbDelegationBase {
+    return DbDelegationBase(
+        id = UUID.randomUUID().toString(),
+        address = address,
+        delegationId = delegationId,
+        validatorId = validatorId,
+        assetId = assetId.toIdentifier(),
+        state = state,
+        balance = balance,
+        completionDate = completionDate,
+        rewards = rewards,
+        shares = shares,
+    )
+    
+}
+
+fun List<DelegationBase>.toRecord(address: String) = map { it.toRecord(address) }

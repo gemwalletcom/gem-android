@@ -2,8 +2,8 @@ package com.gemwallet.android.data.repositoreis.stake
 
 import com.gemwallet.android.blockchain.clients.StakeClient
 import com.gemwallet.android.data.service.store.database.StakeDao
-import com.gemwallet.android.data.service.store.database.mappers.DelegationBaseMapper
-import com.gemwallet.android.data.service.store.database.mappers.DelegationValidatorMapper
+import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.services.gemapi.GemApiStaticClient
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.AssetId
@@ -28,9 +28,6 @@ class StakeRepository(
     private val stakeClients: List<StakeClient>,
     private val stakeDao: StakeDao,
 ) {
-
-    private val validatorMapper = DelegationValidatorMapper()
-    private val delegationMapper = DelegationBaseMapper()
     private val recommendedValidators = Config().getValidators()
 
     suspend fun sync(chain: Chain, address: String, apr: Double) = withContext(Dispatchers.IO) {
@@ -89,9 +86,7 @@ class StakeRepository(
 
     fun getValidators(chain: Chain): Flow<List<DelegationValidator>> {
         return stakeDao.getValidators(chain)
-            .map { items ->
-                items.map(validatorMapper::asDomain).filter { it.isActive }.sortedByDescending { it.apr }
-            }
+            .map { items -> items.toModel().filter { it.isActive }.sortedByDescending { it.apr } }
     }
 
     fun getDelegations(assetId: AssetId, owner: String): Flow<List<Delegation>> {
@@ -110,16 +105,16 @@ class StakeRepository(
     }
 
     suspend fun getStakeValidator(assetId: AssetId, validatorId: String): DelegationValidator? = withContext(Dispatchers.IO) {
-        stakeDao.getStakeValidator(assetId.chain, validatorId)?.let { validatorMapper.asDomain(it) }
+        stakeDao.getStakeValidator(assetId.chain, validatorId)?.toModel()
     }
 
-    suspend fun getUnstakeValidator(assetId: AssetId, address: String): DelegationValidator? = withContext(Dispatchers.IO) {
-        getDelegations(assetId, address).toList().firstOrNull()?.firstOrNull()?.validator
-    }
+//    suspend fun getUnstakeValidator(assetId: AssetId, address: String): DelegationValidator? = withContext(Dispatchers.IO) {
+//        getDelegations(assetId, address).toList().firstOrNull()?.firstOrNull()?.validator
+//    }
 
     private suspend fun update(address: String, delegations: List<DelegationBase>) {
         if (delegations.isNotEmpty()) {
-            val baseDelegations = delegations.map { delegationMapper.asEntity(it, { address }) }
+            val baseDelegations = delegations.toRecord(address)
             stakeDao.update(baseDelegations)
         } else {
             stakeDao.deleteBaseDelegation(address)
@@ -127,6 +122,6 @@ class StakeRepository(
     }
 
     suspend fun update(validators: List<DelegationValidator>) {
-        stakeDao.updateValidators(validators.map(validatorMapper::asEntity))
+        stakeDao.updateValidators(validators.toRecord())
     }
 }

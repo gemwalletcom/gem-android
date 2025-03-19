@@ -23,4 +23,14 @@ fun DbAccount.toModel(): Account {
     )
 }
 
+fun Account.toRecord(walletId: String): DbAccount {
+    return DbAccount(
+        walletId = walletId,
+        derivationPath = derivationPath,
+        chain = chain,
+        address = address,
+        extendedPublicKey = extendedPublicKey,
+    )
+}
+
 fun List<DbAccount>.toModel() = map { it.toModel() }

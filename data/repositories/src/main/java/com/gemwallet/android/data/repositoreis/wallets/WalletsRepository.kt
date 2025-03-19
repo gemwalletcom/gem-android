@@ -5,7 +5,6 @@ import com.gemwallet.android.data.service.store.database.AccountsDao
 import com.gemwallet.android.data.service.store.database.WalletsDao
 import com.gemwallet.android.data.service.store.database.entities.toModel
 import com.gemwallet.android.data.service.store.database.entities.toRecord
-import com.gemwallet.android.data.service.store.database.mappers.AccountMapper
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet
@@ -24,7 +23,6 @@ class WalletsRepository @Inject constructor(
     private val accountsDao: AccountsDao,
     private val createAccount: CreateAccountOperator,
 ) {
-    private val accountMapper = AccountMapper()
 
     suspend fun getNextWalletNumber(): Int {
         return getAll().map { it.size + 1 }.firstOrNull() ?: 0
@@ -95,9 +93,7 @@ class WalletsRepository @Inject constructor(
 
     suspend fun putWallet(wallet: Wallet): Wallet = withContext(Dispatchers.IO) {
         walletsDao.insert(wallet.toRecord())
-        wallet.accounts.forEach {
-            accountsDao.insert(accountMapper.asEntity(it) { wallet })
-        }
+        accountsDao.insert(wallet.accounts.map { it.toRecord(wallet.id) })
         wallet
     }
 
