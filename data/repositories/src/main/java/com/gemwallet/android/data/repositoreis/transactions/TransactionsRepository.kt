@@ -12,8 +12,8 @@ import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
 import com.gemwallet.android.data.service.store.database.entities.DbTransactionExtended
 import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetadata
+import com.gemwallet.android.data.service.store.database.entities.toModel
 import com.gemwallet.android.data.service.store.database.entities.toRecord
-import com.gemwallet.android.data.service.store.database.mappers.ExtendedTransactionMapper
 import com.gemwallet.android.ext.eip1559Support
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.same
@@ -56,9 +56,6 @@ class TransactionsRepository(
     private val assetsRoomSource = GetAssetByIdCase(assetsDao)
     private val changedTransactions = MutableStateFlow<List<TransactionExtended>>(emptyList()) // TODO: Update balances.
 
-//    private val txMapper = TransactionMapper()
-    private val extTxMapper = ExtendedTransactionMapper()
-
     init {
         scope.launch {
             while (true) {
@@ -75,7 +72,7 @@ class TransactionsRepository(
     override fun getTransactions(assetId: AssetId?, state: TransactionState?): Flow<List<TransactionExtended>> {
         return transactionsDao.getExtendedTransactions()
             .map { txs -> txs.filter { state == null || it.state == state } }
-            .mapNotNull { it.mapNotNull { tx -> extTxMapper.asEntity(tx) } }
+            .mapNotNull { it.toModel() }
             .map { list ->
                 list.filter {
                     (assetId == null
@@ -101,7 +98,7 @@ class TransactionsRepository(
 
     override fun getTransaction(txId: String): Flow<TransactionExtended?> {
         return transactionsDao.getExtendedTransaction(txId)
-            .mapNotNull { extTxMapper.asEntity(it ?: return@mapNotNull null) }
+            .mapNotNull { it?.toModel() }
     }
 
     override suspend fun putTransactions(walletId: String, transactions: List<Transaction>) = withContext(Dispatchers.IO) {
@@ -166,7 +163,7 @@ class TransactionsRepository(
         .awaitAll()
         .filterNotNull()
         if (updatedTxs.isNotEmpty()) {
-            changedTransactions.tryEmit(updatedTxs.mapNotNull(extTxMapper::asEntity))
+            changedTransactions.tryEmit(updatedTxs.toModel())
 
             updateTransaction(updatedTxs)
         }
@@ -183,13 +180,11 @@ class TransactionsRepository(
                 }
             }
         updateTransaction(failedByTimeout)
-        changedTransactions.tryEmit(failedByTimeout.mapNotNull(extTxMapper::asEntity))
+        changedTransactions.tryEmit(failedByTimeout.toModel())
     }
 
     private suspend fun updateTransaction(txs: List<DbTransactionExtended>) = withContext(Dispatchers.IO) {
-        val data = txs.mapNotNull { tx ->
-            extTxMapper.asEntity(tx)?.transaction?.toRecord(tx.walletId)
-        }
+        val data = txs.mapNotNull { it.toModel()?.transaction?.toRecord(it.walletId) }
         transactionsDao.insert(data)
     }
 
