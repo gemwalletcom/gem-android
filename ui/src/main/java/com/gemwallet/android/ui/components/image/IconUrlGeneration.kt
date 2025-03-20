@@ -39,7 +39,7 @@ fun SwapProvider.getSwapProviderIcon(): String {
         SwapProvider.ACROSS -> "across"
         SwapProvider.OKU_TRADE -> "oku"
         SwapProvider.WAGMI -> "wagmi"
-        SwapProvider.CETUS -> ""
+        SwapProvider.CETUS -> "cetus"
     }
     return "file:///android_asset/swap/${iconName.lowercase()}.svg"
 }
