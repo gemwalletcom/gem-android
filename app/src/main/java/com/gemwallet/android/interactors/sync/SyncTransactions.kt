@@ -23,7 +23,7 @@ class SyncTransactions @Inject constructor(
 ) {
     suspend operator fun invoke(wallet: Wallet) = withContext(Dispatchers.IO) {
         val deviceId = getDeviceIdCase.getDeviceId()
-        val lastSyncTime = getTransactionUpdateTime.getTransactionUpdateTime(wallet.id)
+        val lastSyncTime = getTransactionUpdateTime.getTransactionUpdateTime(wallet.id) / 1000
 
         val txs = runCatching { gemApiClient.getTransactions(deviceId, wallet.index, lastSyncTime).getOrNull() }
             .getOrNull() ?: return@withContext
