@@ -2,8 +2,11 @@ package com.gemwallet.android.features.swap.views
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -21,10 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.features.swap.models.SwapProviderItem
 import com.gemwallet.android.ui.components.designsystem.Spacer4
+import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator20
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import uniffi.gemstone.SwapProvider
 
@@ -32,6 +37,7 @@ import uniffi.gemstone.SwapProvider
 @Composable
 internal fun ProviderList(
     isShow: MutableState<Boolean>,
+    isUpdated: Boolean,
     currentProvider: SwapProvider?,
     providers: List<SwapProviderItem>,
     onProviderSelect: (SwapProvider) -> Unit,
@@ -41,6 +47,12 @@ internal fun ProviderList(
     }
 
     ModalBottomSheet(onDismissRequest = { isShow.value = false }, dragHandle = { BottomSheetDefaults.DragHandle() }) {
+        if (isUpdated) {
+            Box(modifier = Modifier.fillMaxWidth().padding(padding16)) {
+                CircularProgressIndicator20(modifier = Modifier.align(Alignment.Center))
+            }
+            return@ModalBottomSheet
+        }
         LazyColumn {
             items(providers) { provider ->
                 SwapProviderItemView(

@@ -203,7 +203,13 @@ fun SwapScreen(
             onSelect = {select -> viewModel.onSelect(select) },
         )
     }
-    ProviderList(isShowProviderSelect, currentProvider?.swapProvider?.id, providers, viewModel::setProvider)
+    ProviderList(
+        isShow = isShowProviderSelect,
+        isUpdated = swapState == SwapState.GetQuote,
+        currentProvider = currentProvider?.swapProvider?.id,
+        providers = providers,
+        onProviderSelect = viewModel::setProvider
+    )
 }
 
 @Composable
