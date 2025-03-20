@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.gemwallet.android.data.repositoreis"
+    namespace = "com.gemwallet.android.data.services.files"
     compileSdk = 35
 
     defaultConfig {
@@ -25,17 +25,11 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
-    }
-    buildFeatures {
-        buildConfig = true
-    }
-    kapt {
-        correctErrorTypes = true
+        jvmTarget = "17"
     }
 
     packaging {
@@ -51,24 +45,20 @@ android {
 
 dependencies {
     implementation(project(":gemcore"))
-    implementation(project(":data:services:store"))
-    implementation(project(":data:services:files"))
-    api(project(":data:services:remote-gem"))
-
-    // Wallet Connect
-    api(platform(libs.walletconnect.bom))
-    api(libs.walletconnect.core) {
-        exclude(group = "com.jakewharton.timber", module = "timber")
-    }
-    api(libs.walletconnect.web3wallet)
-
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 
-    implementation(libs.datastore)
-
     implementation(libs.ktx.core)
+    implementation(libs.kotlinx.coroutines.android)
+
+    api(libs.retrofit)
+
     testImplementation(libs.junit)
+    testImplementation(libs.androidx.junit)
+    testImplementation(libs.turbine)
+    testImplementation(libs.mockk.android)
+    testImplementation(libs.mockk.agent)
+    testImplementation(libs.kotlinx.coroutines.test)
+
     androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 }
