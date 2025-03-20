@@ -15,7 +15,7 @@ import java.math.BigInteger
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
-interface CreateTransactionCase {
+interface CreateTransaction {
     suspend fun createTransaction(
         hash: String,
         walletId: String,

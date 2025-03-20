@@ -13,6 +13,7 @@ import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PriceAlert
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -42,7 +43,7 @@ class PriceAlertRepository(
         val priceAlert = priceAlertsDao.getAlert(assetIdentifier).firstOrNull().let {
             if (it == null) {
                 priceAlertsDao.put(listOf(DbPriceAlert(assetIdentifier, enabled = true)))
-                listOf(PriceAlert(assetIdentifier))
+                listOf(PriceAlert(assetIdentifier, Currency.USD.string)) // TODO: Add user currency select
             } else {
                 listOf(it.toModel())
             }

@@ -13,6 +13,8 @@ import com.wallet.core.primitives.TransactionType
 
 const val SESSION_REQUEST = """SELECT accounts.address FROM accounts, session
     WHERE accounts.wallet_id = session.wallet_id AND session.id = 1"""
+const val SESSION_CHAINS_REQUEST = """SELECT UPPER(accounts.chain) FROM accounts, session
+    WHERE accounts.wallet_id = session.wallet_id AND session.id = 1"""
 const val CURRENT_WALLET_REQUEST = """SELECT wallet_id FROM session WHERE session.id = 1"""
 
 @DatabaseView(
@@ -50,13 +52,14 @@ const val CURRENT_WALLET_REQUEST = """SELECT wallet_id FROM session WHERE sessio
             prices.day_changed as assetPriceChanged,
             feePrices.value as feePrice,
             feePrices.day_changed as feePriceChanged
-        FROM transactions as tx 
+        FROM transactions as tx
             INNER JOIN asset ON tx.assetId = asset.id 
-            INNER JOIN asset as feeAsset ON tx.feeAssetId = feeAsset.id 
+            INNER JOIN asset as feeAsset ON tx.feeAssetId = feeAsset.id
             LEFT JOIN prices ON tx.assetId = prices.asset_id
-            LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.asset_id 
-            WHERE tx.owner IN ($SESSION_REQUEST) OR tx.recipient in ($SESSION_REQUEST)
+            LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.asset_id
+            WHERE (tx.owner IN ($SESSION_REQUEST) OR tx.recipient in ($SESSION_REQUEST))
                 AND tx.walletId in ($CURRENT_WALLET_REQUEST)
+                AND UPPER(tx.feeAssetId) IN ($SESSION_CHAINS_REQUEST)
             GROUP BY tx.id
     """
 )

@@ -15,10 +15,11 @@ import com.gemwallet.android.blockchain.clients.sui.SuiTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.ton.TonTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.tron.TronTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpTransactionStatusClient
-import com.gemwallet.android.cases.transactions.CreateTransactionCase
-import com.gemwallet.android.cases.transactions.GetTransactionCase
-import com.gemwallet.android.cases.transactions.GetTransactionsCase
-import com.gemwallet.android.cases.transactions.PutTransactionsCase
+import com.gemwallet.android.cases.transactions.CreateTransaction
+import com.gemwallet.android.cases.transactions.GetTransaction
+import com.gemwallet.android.cases.transactions.GetTransactionUpdateTime
+import com.gemwallet.android.cases.transactions.GetTransactions
+import com.gemwallet.android.cases.transactions.PutTransactions
 import com.gemwallet.android.data.repositoreis.transactions.TransactionsRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
@@ -71,27 +72,33 @@ object TransactionsModule {
 
     @Singleton
     @Provides
-    fun provideGetTransactionsCase(transactionsRepository: TransactionsRepository): GetTransactionsCase {
+    fun provideGetTransactionsCase(transactionsRepository: TransactionsRepository): GetTransactions {
         return transactionsRepository
     }
 
     @Singleton
     @Provides
-    fun provideGetTransactionCase(transactionsRepository: TransactionsRepository): GetTransactionCase {
+    fun provideGetTransactionCase(transactionsRepository: TransactionsRepository): GetTransaction {
         return transactionsRepository
     }
 
     @Singleton
     @Provides
-    fun providePutTransactionsCase(transactionsRepository: TransactionsRepository): PutTransactionsCase {
+    fun providePutTransactionsCase(transactionsRepository: TransactionsRepository): PutTransactions {
         return transactionsRepository
     }
 
     @Singleton
     @Provides
-    fun provideCreateTransactionsCase(transactionsRepository: TransactionsRepository): CreateTransactionCase {
+    fun provideCreateTransactionsCase(transactionsRepository: TransactionsRepository): CreateTransaction {
         return transactionsRepository
     }
 
+
+    @Singleton
+    @Provides
+    fun provideUpdateTime(transactionsRepository: TransactionsRepository): GetTransactionUpdateTime {
+        return transactionsRepository
+    }
 }
 

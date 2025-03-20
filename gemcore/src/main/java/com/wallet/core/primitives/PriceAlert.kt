@@ -18,6 +18,7 @@ enum class PriceAlertDirection(val string: String) {
 @Serializable
 data class PriceAlert (
 	val assetId: String,
+	val currency: String,
 	val price: Double? = null,
 	val pricePercentChange: Double? = null,
 	val priceDirection: PriceAlertDirection? = null,

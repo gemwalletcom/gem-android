@@ -7,7 +7,7 @@ import com.gemwallet.android.blockchain.clients.BroadcastClientProxy
 import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
-import com.gemwallet.android.cases.transactions.CreateTransactionCase
+import com.gemwallet.android.cases.transactions.CreateTransaction
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
@@ -75,7 +75,7 @@ class ConfirmViewModel @Inject constructor(
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
     private val signClient: SignClientProxy,
     private val broadcastClientProxy: BroadcastClientProxy,
-    private val createTransactionsCase: CreateTransactionCase,
+    private val createTransactionsCase: CreateTransaction,
     private val stakeRepository: StakeRepository,
     @GemJson private val gson: Gson, // TODO: Clean it
     private val savedStateHandle: SavedStateHandle,

@@ -18,7 +18,7 @@ import com.gemwallet.android.blockchain.clients.tron.TronBalanceClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpBalanceClient
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
-import com.gemwallet.android.cases.transactions.GetTransactionsCase
+import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.assets.BalancesRemoteSource
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -48,7 +48,7 @@ object AssetsModule {
         pricesDao: PricesDao,
         sessionRepository: SessionRepository,
         balancesRemoteSource: BalancesRemoteSource,
-        getTransactionsCase: GetTransactionsCase,
+        getTransactions: GetTransactions,
         searchTokensCase: SearchTokensCase,
         getDeviceIdCase: GetDeviceIdCase,
     ): AssetsRepository = AssetsRepository(
@@ -57,7 +57,7 @@ object AssetsModule {
         balancesDao = balancesDao,
         pricesDao = pricesDao,
         sessionRepository = sessionRepository,
-        getTransactionsCase = getTransactionsCase,
+        getTransactions = getTransactions,
         balancesRemoteSource = balancesRemoteSource,
         searchTokensCase = searchTokensCase,
         getDeviceIdCase = getDeviceIdCase,

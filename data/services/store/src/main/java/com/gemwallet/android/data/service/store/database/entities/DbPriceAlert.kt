@@ -3,6 +3,7 @@ package com.gemwallet.android.data.service.store.database.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.PriceAlertDirection
 import kotlinx.coroutines.flow.Flow
@@ -25,6 +26,7 @@ fun DbPriceAlert.toModel(): PriceAlert {
         price = price,
         priceDirection = priceDirection,
         pricePercentChange = pricePercentChange,
+        currency = Currency.USD.string, // TODO: Add user selected
     )
 }
 

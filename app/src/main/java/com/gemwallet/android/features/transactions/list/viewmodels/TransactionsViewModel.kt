@@ -2,7 +2,7 @@ package com.gemwallet.android.features.transactions.list.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.transactions.GetTransactionsCase
+import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.mutableStateIn
 import com.gemwallet.android.features.transactions.list.model.TxListScreenState
@@ -23,11 +23,11 @@ import javax.inject.Inject
 @HiltViewModel
 class TransactionsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
-    getTransactionsCase: GetTransactionsCase,
+    getTransactions: GetTransactions,
     private val syncTransactions: SyncTransactions,
 ) : ViewModel() {
 
-    private val txState = getTransactionsCase.getTransactions().map {
+    private val txState = getTransactions.getTransactions().map {
             State(
                 loading = false,
                 transactions = it,

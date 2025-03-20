@@ -3,7 +3,7 @@ package com.gemwallet.android.data.repositoreis.assets
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
-import com.gemwallet.android.cases.transactions.GetTransactionsCase
+import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.BalancesDao
@@ -67,15 +67,16 @@ class AssetsRepository @Inject constructor(
     private val gemApi: GemApiClient,
     private val sessionRepository: SessionRepository,
     private val balancesRemoteSource: BalancesRemoteSource,
-    getTransactionsCase: GetTransactionsCase,
+    getTransactions: GetTransactions,
     private val searchTokensCase: SearchTokensCase,
     private val getDeviceIdCase: GetDeviceIdCase,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetAsset {
     private val visibleByDefault = listOf(Chain.Ethereum, Chain.Bitcoin, Chain.SmartChain, Chain.Solana)
+
     init {
         scope.launch(Dispatchers.IO) {
-            getTransactionsCase.getChangedTransactions().collect {
+            getTransactions.getChangedTransactions().collect {
                 onTransactions(it)
             }
         }

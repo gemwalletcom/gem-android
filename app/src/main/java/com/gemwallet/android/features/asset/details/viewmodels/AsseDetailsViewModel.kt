@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
-import com.gemwallet.android.cases.transactions.GetTransactionsCase
+import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.asset
@@ -55,7 +55,7 @@ import javax.inject.Inject
 class AsseDetailsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
-    private val getTransactionsCase: GetTransactionsCase,
+    private val getTransactions: GetTransactions,
     private val getPriceAlertsCase: GetPriceAlertsCase,
     private val enablePriceAlertCase: EnablePriceAlertCase,
     savedStateHandle: SavedStateHandle,
@@ -79,7 +79,7 @@ class AsseDetailsViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-    val transactions = assetId.flatMapLatest { getTransactionsCase.getTransactions(it) }
+    val transactions = assetId.flatMapLatest { getTransactions.getTransactions(it) }
         .map { it.toImmutableList() }
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())

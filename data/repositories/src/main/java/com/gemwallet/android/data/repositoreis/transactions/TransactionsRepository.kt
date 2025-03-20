@@ -3,10 +3,11 @@ package com.gemwallet.android.data.repositoreis.transactions
 import android.text.format.DateUtils
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
-import com.gemwallet.android.cases.transactions.CreateTransactionCase
-import com.gemwallet.android.cases.transactions.GetTransactionCase
-import com.gemwallet.android.cases.transactions.GetTransactionsCase
-import com.gemwallet.android.cases.transactions.PutTransactionsCase
+import com.gemwallet.android.cases.transactions.CreateTransaction
+import com.gemwallet.android.cases.transactions.GetTransaction
+import com.gemwallet.android.cases.transactions.GetTransactionUpdateTime
+import com.gemwallet.android.cases.transactions.GetTransactions
+import com.gemwallet.android.cases.transactions.PutTransactions
 import com.gemwallet.android.data.repositoreis.assets.GetAssetByIdCase
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
@@ -51,7 +52,7 @@ class TransactionsRepository(
     private val stateClients: List<TransactionStatusClient>,
     private val gson: Gson,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-) : GetTransactionsCase, GetTransactionCase, CreateTransactionCase, PutTransactionsCase {
+) : GetTransactions, GetTransaction, CreateTransaction, PutTransactions, GetTransactionUpdateTime {
 
     private val assetsRoomSource = GetAssetByIdCase(assetsDao)
     private val changedTransactions = MutableStateFlow<List<TransactionExtended>>(emptyList()) // TODO: Update balances.
@@ -69,12 +70,20 @@ class TransactionsRepository(
         return changedTransactions
     }
 
+    override fun getTransactionUpdateTime(walletId: String): Long {
+        return transactionsDao.getUpdateTime(walletId)
+    }
+
+    override fun getPendingTransactions(): Flow<Int?> {
+        return transactionsDao.getPendingCount()
+    }
+
     override fun getTransactions(assetId: AssetId?, state: TransactionState?): Flow<List<TransactionExtended>> {
         return transactionsDao.getExtendedTransactions()
             .map { txs -> txs.filter { state == null || it.state == state } }
             .mapNotNull { it.toModel() }
-            .map { list ->
-                list.filter {
+            .map { items ->
+                items.filter {
                     (assetId == null
                         || it.asset.id.same(assetId)
                         || it.transaction.getSwapMetadata()?.toAsset?.same(assetId) == true

@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorerCase
-import com.gemwallet.android.cases.transactions.GetTransactionCase
+import com.gemwallet.android.cases.transactions.GetTransaction
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.asset
@@ -35,7 +35,7 @@ import javax.inject.Inject
 @HiltViewModel
 class TransactionDetailsViewModel @Inject constructor(
     sessionRepository: SessionRepository,
-    private val getTransactionCase: GetTransactionCase,
+    private val getTransaction: GetTransaction,
     private val getCurrentBlockExplorerCase: GetCurrentBlockExplorerCase,
     private val assetsRepository: AssetsRepository,
     savedStateHandle: SavedStateHandle
@@ -43,7 +43,7 @@ class TransactionDetailsViewModel @Inject constructor(
 
     private val tx: StateFlow<TransactionExtended?> = savedStateHandle.getStateFlow<String?>(txIdArg, null)
     .filterNotNull()
-    .flatMapLatest { getTransactionCase.getTransaction(it) }
+    .flatMapLatest { getTransaction.getTransaction(it) }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val assets = tx.flatMapLatest { tx ->
