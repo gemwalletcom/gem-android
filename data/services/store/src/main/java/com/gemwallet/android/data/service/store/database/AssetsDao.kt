@@ -75,6 +75,13 @@ interface AssetsDao {
     fun getAssetsInfoByAllWallets(ids: List<String>): Flow<List<DbAssetInfo>>
 
     @Query("""
+        SELECT DISTINCT asset.id FROM asset
+        JOIN asset_config ON asset_config.asset_id = asset.id
+        WHERE asset_config.is_visible = 1
+    """)
+    suspend fun getAssetsPriceUpdate(): List<String>
+
+    @Query("""
         SELECT
             *,
             MAX(address)
