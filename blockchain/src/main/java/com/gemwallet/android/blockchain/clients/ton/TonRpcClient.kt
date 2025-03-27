@@ -8,6 +8,7 @@ import com.wallet.core.blockchain.ton.models.TonBroadcastTransaction
 import com.wallet.core.blockchain.ton.models.TonJettonBalance
 import com.wallet.core.blockchain.ton.models.TonJettonToken
 import com.wallet.core.blockchain.ton.models.TonMasterchainInfo
+import com.wallet.core.blockchain.ton.models.TonMessageTransactions
 import com.wallet.core.blockchain.ton.models.TonResult
 import com.wallet.core.blockchain.ton.models.TonTransactionMessage
 import com.wallet.core.blockchain.ton.models.TonWalletInfo
@@ -30,8 +31,11 @@ interface TonRpcClient {
     @POST("/api/v2/sendBocReturnHash")
     suspend fun broadcast(@Body boc: Boc): Result<TonResult<TonBroadcastTransaction>>
 
-    @GET("/api/index/v1/getTransactionsByInMessageHash")
-    suspend fun transaction(@Query("msg_hash") hash: String): Result<List<TonTransactionMessage>>
+//    @GET("/api/index/v1/getTransactionsByInMessageHash")
+//    suspend fun transaction(@Query("msg_hash") hash: String): Result<List<TonTransactionMessage>>
+
+    @GET("/api/v3/transactionsByMessage")
+    suspend fun transaction(@Query("msg_hash") hash: String): Result<TonMessageTransactions>
 
     @GET("/api/v2/getTokenData")
     suspend fun tokenData(@Query("address") address: String): Result<TonResult<TonJettonToken>>

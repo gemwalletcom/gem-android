@@ -31,6 +31,24 @@ data class TonJettonToken (
 )
 
 @Serializable
+data class TonTransactionOutMessage (
+	val hash: String,
+	val bounce: Boolean,
+	val bounced: Boolean
+)
+
+@Serializable
+data class TonTransactionMessage (
+	val hash: String,
+	val out_msgs: List<TonTransactionOutMessage>
+)
+
+@Serializable
+data class TonMessageTransactions (
+	val transactions: List<TonTransactionMessage>
+)
+
+@Serializable
 data class TonTransactionId (
 	val hash: String
 )
@@ -38,10 +56,5 @@ data class TonTransactionId (
 @Serializable
 data class TonTransaction (
 	val transaction_id: TonTransactionId
-)
-
-@Serializable
-data class TonTransactionMessage (
-	val hash: String
 )
 

@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-enum class FiatTransactionType(val string: String) {
+enum class FiatQuoteType(val string: String) {
 	@SerialName("buy")
 	Buy("buy"),
 	@SerialName("sell")

@@ -13,14 +13,23 @@ class TonTransactionStatusClient(
     private val chain: Chain,
     private val rpcClient: TonRpcClient,
 ) : TransactionStatusClient {
+
     override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
         val txHashData = Base64.decode(request.hash)
         return rpcClient.transaction(txHashData.toHexString(""))
             .mapCatching {
-                val rawHash = it.firstOrNull()?.hash
-                    ?: return@mapCatching TransactionChages(TransactionState.Pending)
-                val newId = Base64.decode(rawHash).toHexString("")
-                TransactionChages(TransactionState.Confirmed, hashChanges = HashChanges(old = request.hash, new = newId))
+                val transaction = it.transactions.firstOrNull()
+                    ?: throw IllegalStateException("transaction not found")
+                val newId = runCatching { Base64.decode(transaction.hash).toHexString("") }
+                    .getOrNull() ?: throw IllegalStateException("transaction not found")
+                val transactionState = when {
+                    transaction.out_msgs.firstOrNull()?.let { it.bounce && it.bounced } != false -> TransactionState.Failed
+                    else -> TransactionState.Confirmed
+                }
+                TransactionChages(
+                    state = transactionState,
+                    hashChanges = HashChanges(old = request.hash, new = newId)
+                )
             }
     }
 

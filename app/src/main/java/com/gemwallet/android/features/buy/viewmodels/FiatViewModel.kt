@@ -13,7 +13,7 @@ import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.FiatProvider
 import com.wallet.core.primitives.FiatQuote
-import com.wallet.core.primitives.FiatTransactionType
+import com.wallet.core.primitives.FiatQuoteType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +38,7 @@ class FiatViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val type: FiatTransactionType = FiatTransactionType.Buy // now always buy
+    val type = FiatQuoteType.Buy // now always buy
     val assetId = savedStateHandle.getStateFlow("assetId", "").mapNotNull { it.toAssetId() }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -48,8 +48,8 @@ class FiatViewModel @Inject constructor(
 
     private val amountValidator = AmountValidator(
         when (type) {
-            FiatTransactionType.Buy -> MIN_FIAT_AMOUNT
-            FiatTransactionType.Sell -> 0.0
+            FiatQuoteType.Buy -> MIN_FIAT_AMOUNT
+            FiatQuoteType.Sell -> 0.0
         }
     )
     private val currency = Currency.USD
@@ -57,13 +57,13 @@ class FiatViewModel @Inject constructor(
 
     val suggestedAmounts: List<FiatSuggestion>
         get() = when (type) {
-            FiatTransactionType.Buy -> listOf(
+            FiatQuoteType.Buy -> listOf(
                 FiatSuggestion.SuggestionAmount("${currencySymbol}100", 100.0),
                 FiatSuggestion.SuggestionAmount("${currencySymbol}250", 250.0),
                 FiatSuggestion.RandomAmount,
             )
 
-            FiatTransactionType.Sell -> listOf(
+            FiatQuoteType.Sell -> listOf(
                 FiatSuggestion.SuggestionPercent("25%", 25.0),
                 FiatSuggestion.SuggestionPercent("50%", 50.0),
                 FiatSuggestion.MaxAmount
@@ -72,8 +72,8 @@ class FiatViewModel @Inject constructor(
 
     val defaultAmount: String
         get() = when (type) {
-            FiatTransactionType.Buy -> "50"
-            FiatTransactionType.Sell -> "0"
+            FiatQuoteType.Buy -> "50"
+            FiatQuoteType.Sell -> "0"
         }
 
     private val _amount = MutableStateFlow("")
@@ -165,8 +165,8 @@ class FiatViewModel @Inject constructor(
 
     private fun randomAmount(maxAmount: Double = 1000.0): Int {
         return when (type) {
-            FiatTransactionType.Buy -> Random.nextInt(defaultAmount.toInt(), maxAmount.toInt())
-            FiatTransactionType.Sell -> return 0
+            FiatQuoteType.Buy -> Random.nextInt(defaultAmount.toInt(), maxAmount.toInt())
+            FiatQuoteType.Sell -> return 0
         }
     }
 
