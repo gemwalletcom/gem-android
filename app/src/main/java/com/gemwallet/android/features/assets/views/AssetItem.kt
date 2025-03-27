@@ -56,7 +56,7 @@ internal fun AssetItem(
                 text = { Text(text = stringResource(id = R.string.wallet_copy_address)) },
                 trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
                 onClick = {
-                    clipboardManager.setPlainText(item.owner)
+                    clipboardManager.setPlainText(item.owner ?: "")
                     longPressState.value = null
                 },
             )

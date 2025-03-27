@@ -26,7 +26,7 @@ fun SelectReceiveScreen(
         itemTrailing = {
             IconButton(onClick = {
                 viewModel.onChangeVisibility(it.asset.id, true)
-                clipboardManager.setPlainText(it.owner)
+                clipboardManager.setPlainText(it.owner ?: "") //TODO: Get account address from wallet.accounts
             }) {
                 Icon(imageVector = Icons.Default.ContentCopy, contentDescription = "")
             }
