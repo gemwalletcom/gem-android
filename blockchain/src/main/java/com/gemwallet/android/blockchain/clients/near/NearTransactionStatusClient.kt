@@ -1,5 +1,7 @@
 package com.gemwallet.android.blockchain.clients.near
 
+import com.gemwallet.android.blockchain.clients.ServiceUnavailable
+import com.gemwallet.android.blockchain.clients.TransactionError
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
@@ -11,8 +13,8 @@ class NearTransactionStatusClient(
     private val chain: Chain,
     private val rpcClient: NearRpcClient,
 ) : TransactionStatusClient {
-    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
-        return rpcClient.transaction(
+    override suspend fun getStatus(request: TransactionStateRequest): TransactionChages {
+        val resp =  rpcClient.transaction(
             JSONRpcRequest(
                 method = NearMethod.Transaction.value,
                 params = mapOf(
@@ -21,14 +23,13 @@ class NearTransactionStatusClient(
                     "wait_until" to  "EXECUTED",
                 ),
             )
-        ).mapCatching {
-            if (it.error != null) {
-                throw IllegalStateException(it.error.message)
-            }
-            when (it.result.final_execution_status) {
-                "FINAL" -> TransactionChages(state = TransactionState.Confirmed)
-                else -> TransactionChages(state = TransactionState.Confirmed)
-            }
+        ).getOrNull() ?: throw ServiceUnavailable
+        if (resp.error != null) {
+            throw TransactionError(resp.error.message)
+        }
+        return when (resp.result.final_execution_status) {
+            "FINAL" -> TransactionChages(state = TransactionState.Confirmed)
+            else -> TransactionChages(state = TransactionState.Pending)
         }
     }
 

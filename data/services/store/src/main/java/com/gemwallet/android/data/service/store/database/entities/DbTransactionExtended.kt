@@ -118,6 +118,7 @@ fun DbTransactionExtended.toModel(): TransactionExtended? {
             utxoInputs = emptyList(),
             utxoOutputs = emptyList(),
             createdAt = this.createdAt,
+            updatedAt = this.updatedAt,
             metadata = this.metadata,
         ),
         asset = Asset(

@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.cosmos
 
+import com.gemwallet.android.blockchain.clients.ServiceUnavailable
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosTransactionsService
@@ -11,18 +12,14 @@ class CosmosTransactionStatusClient(
     private val chain: Chain,
     private val transactionsService: CosmosTransactionsService,
 ) : TransactionStatusClient {
-    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
-        return transactionsService.transaction(request.hash).mapCatching {
-            TransactionChages(
-                if (it.tx_response == null || it.tx_response.txhash.isEmpty()) {
-                    TransactionState.Pending
-                } else if (it.tx_response.code == 0) {
-                    TransactionState.Confirmed
-                } else {
-                    TransactionState.Reverted
-                }
-            )
+    override suspend fun getStatus(request: TransactionStateRequest): TransactionChages {
+        val tx = transactionsService.transaction(request.hash).getOrNull() ?: throw ServiceUnavailable
+        val state = when {
+            tx.tx_response == null || tx.tx_response.txhash.isEmpty() -> TransactionState.Pending
+            tx.tx_response.code == 0 -> TransactionState.Confirmed
+            else -> TransactionState.Reverted
         }
+        return TransactionChages(state)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

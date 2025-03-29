@@ -5,7 +5,7 @@ import com.wallet.core.primitives.Chain
 
 interface TransactionStatusClient : BlockchainClient {
 
-    suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages>
+    suspend fun getStatus(request: TransactionStateRequest): TransactionChages
 }
 
 class TransactionStateRequest(
@@ -14,3 +14,11 @@ class TransactionStateRequest(
     val block: String,
     val sender: String,
 )
+
+sealed class TransactionStatusError(message: String? = null) : Exception(message)
+
+data object ServiceUnavailable : TransactionStatusError()
+
+class TransactionError(message: String) : TransactionStatusError(message)
+
+class TransactionNotFound(message: String? = null) : TransactionStatusError(message)

@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
+import com.gemwallet.android.blockchain.clients.ServiceUnavailable
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmTransactionsService
@@ -16,34 +17,32 @@ class EvmTransactionStatusClient(
     private val transactionsService: EvmTransactionsService,
 ) : TransactionStatusClient {
 
-    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
-        return Result.success(getStatus(request.hash))
+    override suspend fun getStatus(request: TransactionStateRequest): TransactionChages {
+        return getStatus(request.hash)
     }
 
     private suspend fun getStatus(txId: String): TransactionChages {
-        return transactionsService.transaction(JSONRpcRequest.create(EvmMethod.GetTransaction, listOf(txId)))
-            .fold(
-                {
-                    if (it.result?.status != "0x0" && it.result?.status != "0x1") {
-                        return@fold TransactionChages(TransactionState.Pending)
-                    }
-                    val state = when (it.result.status) {
-                        "0x0" -> TransactionState.Reverted
-                        "0x1" -> TransactionState.Confirmed
-                        else -> TransactionState.Confirmed
-                    }
-                    val fee = if (chain.eip1559Support()) {
-                        val gasUsed = it.result.gasUsed.hexToBigInteger() ?: return@fold TransactionChages(TransactionState.Pending)
-                        val effectiveGas = it.result.effectiveGasPrice.hexToBigInteger() ?: return@fold TransactionChages(TransactionState.Pending)
-                        val l1Fee = it.result.l1Fee?.hexToBigInteger() ?: BigInteger.ZERO
-                        gasUsed.multiply(effectiveGas) + l1Fee
-                    } else {
-                        null
-                    }
+        val request = JSONRpcRequest.create(EvmMethod.GetTransaction, listOf(txId))
+        val resp = transactionsService.transaction(request).getOrNull()?.result ?: throw ServiceUnavailable
 
-                    TransactionChages(state, fee)
-                }
-            ) { TransactionChages(TransactionState.Pending) }
+        if (resp.status != "0x0" && resp.status != "0x1") {
+            return TransactionChages(TransactionState.Pending)
+        }
+        val state = when (resp.status) {
+            "0x0" -> TransactionState.Reverted
+            "0x1" -> TransactionState.Confirmed
+            else -> TransactionState.Confirmed
+        }
+        val fee = if (chain.eip1559Support()) {
+            val gasUsed = resp.gasUsed.hexToBigInteger() ?: return TransactionChages(TransactionState.Pending)
+            val effectiveGas = resp.effectiveGasPrice.hexToBigInteger() ?: return TransactionChages(TransactionState.Pending)
+            val l1Fee = resp.l1Fee?.hexToBigInteger() ?: BigInteger.ZERO
+            gasUsed.multiply(effectiveGas) + l1Fee
+        } else {
+            null
+        }
+
+        return TransactionChages(state, fee)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

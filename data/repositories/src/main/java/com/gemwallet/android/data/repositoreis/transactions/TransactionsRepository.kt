@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.transactions
 
 import android.text.format.DateUtils
+import com.gemwallet.android.blockchain.clients.ServiceUnavailable
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.cases.transactions.CreateTransaction
@@ -15,7 +16,6 @@ import com.gemwallet.android.data.service.store.database.entities.DbTransactionE
 import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetadata
 import com.gemwallet.android.data.service.store.database.entities.toModel
 import com.gemwallet.android.data.service.store.database.entities.toRecord
-import com.gemwallet.android.ext.eip1559Support
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.toAssetId
@@ -149,6 +149,7 @@ class TransactionsRepository(
             utxoInputs = emptyList(),
             utxoOutputs = emptyList(),
             createdAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis(),
         )
         transactionsDao.insert(listOf(transaction.toRecord(walletId)))
         addSwapMetadata(listOf(transaction))
@@ -182,7 +183,7 @@ class TransactionsRepository(
                 val assetId = it.assetId.toAssetId() ?: return@mapNotNull null
                 val timeout = Config().getChainConfig(assetId.chain.string).transactionTimeout * 1000
 
-                if (it.createdAt < System.currentTimeMillis() - timeout) {
+                if (it.createdAt < System.currentTimeMillis() - timeout) { //TODO: Change to update time
                     it.copy(state = TransactionState.Failed)
                 } else {
                     null
@@ -200,17 +201,21 @@ class TransactionsRepository(
     private suspend fun checkTx(tx: DbTransactionExtended): DbTransactionExtended? {
         val assetId = tx.assetId.toAssetId() ?: return null
         val stateClient = stateClients.firstOrNull { it.supported(assetId.chain) } ?: return null
-        val stateResult = stateClient.getStatus(
-            TransactionStateRequest(
-                chain = assetId.chain,
-                sender = tx.owner,
-                hash = tx.hash,
-                block = tx.blockNumber,
+        val state = try {
+            stateClient.getStatus(
+                TransactionStateRequest(
+                    chain = assetId.chain,
+                    sender = tx.owner,
+                    hash = tx.hash,
+                    block = tx.blockNumber,
+                )
             )
-        )
-        val state = stateResult.getOrElse { TransactionChages(tx.state) }
+        } catch (err: ServiceUnavailable) {
+            return tx.copy(updatedAt = System.currentTimeMillis())
+        } catch (err: Throwable) {
+            TransactionChages(tx.state)
+        }
         return if (state.state != tx.state) {
-
             val newTx = tx.copy(
                 id = if (state.hashChanges != null) {
                     "${assetId.chain.string}_${state.hashChanges!!.new}"
@@ -221,7 +226,7 @@ class TransactionsRepository(
                 hash = if (state.hashChanges != null) state.hashChanges!!.new else tx.hash,
             )
             when {
-                assetId.chain.eip1559Support() && state.fee != null -> newTx.copy(fee = state.fee.toString())
+                state.fee != null -> newTx.copy(fee = state.fee.toString())
                 else -> newTx
             }
         } else {

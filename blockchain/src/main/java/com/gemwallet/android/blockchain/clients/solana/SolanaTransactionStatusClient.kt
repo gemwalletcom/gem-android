@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.solana
 
+import com.gemwallet.android.blockchain.clients.ServiceUnavailable
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaTransactionsService
@@ -13,21 +14,19 @@ class SolanaTransactionStatusClient(
     private val transactionService: SolanaTransactionsService,
 ) : TransactionStatusClient {
 
-    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
-
-        return transactionService.transaction(request.hash).mapCatching {
-            if (it.error != null) return@mapCatching TransactionChages(TransactionState.Failed)
-            val state = if (it.result.slot > 0) {
-                if (it.result.meta.err != null) {
-                    TransactionState.Failed
-                } else {
-                    TransactionState.Confirmed
-                }
+    override suspend fun getStatus(request: TransactionStateRequest): TransactionChages {
+        val resp = transactionService.transaction(request.hash).getOrNull() ?: throw ServiceUnavailable
+        if (resp.error != null) return TransactionChages(TransactionState.Failed)
+        val state = if (resp.result.slot > 0) {
+            if (resp.result.meta.err != null) {
+                TransactionState.Failed
             } else {
-                TransactionState.Pending
+                TransactionState.Confirmed
             }
-            TransactionChages(state)
+        } else {
+            TransactionState.Pending
         }
+        return TransactionChages(state)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
