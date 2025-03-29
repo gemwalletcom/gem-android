@@ -14,20 +14,27 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.ui.components.InfoButton
+import com.gemwallet.android.ui.components.InfoSheetEntity
 
 
 @Composable
-fun PropertyItem(@StringRes title: Int, data: String? = null) {
-    PropertyItem(stringResource(title), data)
+fun PropertyItem(
+    @StringRes title: Int,
+    data: String? = null,
+    info: InfoSheetEntity? = null,
+) {
+    PropertyItem(stringResource(title), data, info)
 }
 
 @Composable
 fun PropertyItem(
     title: String,
     data: String? = null,
+    info: InfoSheetEntity? = null,
 ) {
     PropertyItem(
-        title = { PropertyTitleText(title) },
+        title = { PropertyTitleText(title, info = info) },
         data = data?.let{ { PropertyDataText(data) } },
     )
 }
@@ -50,6 +57,7 @@ fun PropertyTitleText(
     @StringRes text: Int,
     badge: (@Composable () -> Unit)? = null,
     color: Color = MaterialTheme.colorScheme.onSurface,
+    info: InfoSheetEntity? = null,
 ) {
     PropertyTitleText(stringResource(text), badge, color)
 }
@@ -59,6 +67,7 @@ fun PropertyTitleText(
     text: String,
     badge: (@Composable () -> Unit)? = null,
     color: Color = MaterialTheme.colorScheme.onSurface,
+    info: InfoSheetEntity? = null,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
@@ -70,6 +79,7 @@ fun PropertyTitleText(
             color = color,
         )
         badge?.invoke()
+        info?.let { InfoButton(it) }
     }
 }
 

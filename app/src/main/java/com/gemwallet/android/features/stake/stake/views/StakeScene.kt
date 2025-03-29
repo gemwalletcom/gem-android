@@ -26,6 +26,7 @@ import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.list_item.PropertyItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
@@ -56,18 +57,16 @@ fun StakeScene(
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
                     SubheaderItem(title = uiState.title)
-                    Table( // TODO: Replace to Property item
-                        items = listOf(
-                            CellEntity(
-                                stringResource(id = R.string.stake_apr, ""),
-                                data = PriceUIState.formatPercentage(uiState.apr, false)
-                            ),
-                            CellEntity(
-                                label = stringResource(id = R.string.stake_lock_time),
-                                data = "${uiState.lockTime} days",
-                                info = InfoSheetEntity.StakeLockTimeInfo(icon = uiState.assetIcon ?: "")
-                            ),
-                        ),
+                    PropertyItem(
+                        title = stringResource(id = R.string.stake_apr, ""),
+                        data = PriceUIState.formatPercentage(uiState.apr, false)
+                    )
+                }
+                item {
+                    PropertyItem(
+                        title = stringResource(id = R.string.stake_lock_time),
+                        data = "${uiState.lockTime} days",
+                        info = InfoSheetEntity.StakeLockTimeInfo(icon = uiState.assetIcon ?: "")
                     )
                 }
 
