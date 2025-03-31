@@ -1,5 +1,6 @@
 package com.gemwallet.android.model
 
+import android.icu.text.CompactDecimalFormat
 import com.wallet.core.primitives.Asset
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -319,3 +320,13 @@ fun com.wallet.core.primitives.Currency.format(
     maxDecimals: Int = -1,
     dynamicPlace: Boolean = false,
 ): String = fiatFormat(value, this.string, decimalPlace, maxDecimals, dynamicPlace)
+
+fun com.wallet.core.primitives.Currency.compactFormatter(
+    value: Double,
+    locale: Locale = Locale.getDefault()
+): String {
+    val formatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT)
+    formatter.currency = android.icu.util.Currency.getInstance(string)
+//    formatter.maximumFractionDigits = 0
+    return formatter.format(value)
+}
