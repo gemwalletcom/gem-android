@@ -42,7 +42,7 @@ class NftAssetDetailsUIModel(
     val collection: NFTCollection,
     val asset: NFTAsset,
 ) {
-    val imageUrl: String get() = asset.image.originalSourceUrl
+    val imageUrl: String get() = asset.images.preview.url
     val assetName: String get() = asset.name
     val collectionName: String get() = collection.name
     val description: String? get() = asset.description

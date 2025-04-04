@@ -181,7 +181,7 @@ class TransactionsRepository(
             .filter { it.state == TransactionState.Pending }
             .mapNotNull {
                 val assetId = it.assetId.toAssetId() ?: return@mapNotNull null
-                val timeout = Config().getChainConfig(assetId.chain.string).transactionTimeout * 1000
+                val timeout = Config().getChainConfig(assetId.chain.string).transactionTimeout.toLong() * 1000L
 
                 if (it.createdAt < System.currentTimeMillis() - timeout) { //TODO: Change to update time
                     it.copy(state = TransactionState.Failed)

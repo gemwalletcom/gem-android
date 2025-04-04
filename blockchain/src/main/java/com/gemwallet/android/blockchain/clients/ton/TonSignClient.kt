@@ -81,5 +81,34 @@ class TonSignClient(
         return listOf(output)
     }
 
+    override suspend fun signSwap(
+        params: ConfirmParams.SwapParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        txSpeed: TxSpeed,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val data = params.swapData
+        val chainData = (chainData as TonSignerPreloader.TonChainData)
+        val signingInput = TheOpenNetwork.SigningInput.newBuilder().apply {
+            sequenceNumber = chainData.sequence
+            expireAt = chainData.expireAt ?: ((System.currentTimeMillis() / 1000).toInt() + 600)
+            this.addMessages(
+                TheOpenNetwork.Transfer.newBuilder().apply {
+                    this.dest = params.destination().address
+                    this.amount = params.fromAmount.toLong()
+                    this.comment = params.memo() ?: ""
+                    this.mode = TheOpenNetwork.SendMode.PAY_FEES_SEPARATELY_VALUE or TheOpenNetwork.SendMode.IGNORE_ACTION_PHASE_ERRORS_VALUE
+                    this.bounceable = true
+                    this.customPayload = data
+                }.build()
+            )
+            this.walletVersion = TheOpenNetwork.WalletVersion.WALLET_V4_R2
+            this.privateKey = ByteString.copyFrom(privateKey)
+        }.build()
+        val output = AnySigner.sign(signingInput, CoinType.TON, TheOpenNetwork.SigningOutput.parser())
+        return listOf(output.encoded.toByteArray())
+    }
+
     override fun supported(chain: Chain): Boolean = this.chain == chain
 }

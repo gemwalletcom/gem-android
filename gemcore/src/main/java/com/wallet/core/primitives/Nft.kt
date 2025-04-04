@@ -20,10 +20,14 @@ enum class NFTType(val string: String) {
 }
 
 @Serializable
-data class NFTImage (
-	val imageUrl: String,
-	val previewImageUrl: String,
-	val originalSourceUrl: String
+data class NFTResource (
+	val url: String,
+	val mimeType: String
+)
+
+@Serializable
+data class NFTImages (
+	val preview: NFTResource
 )
 
 @Serializable
@@ -43,7 +47,8 @@ data class NFTAsset (
 	val name: String,
 	val description: String? = null,
 	val chain: Chain,
-	val image: NFTImage,
+	val resource: NFTResource,
+	val images: NFTImages,
 	val attributes: List<NFTAttribute>
 )
 
@@ -54,7 +59,7 @@ data class NFTCollection (
 	val description: String? = null,
 	val chain: Chain,
 	val contractAddress: String,
-	val image: NFTImage,
+	val images: NFTImages,
 	val isVerified: Boolean,
 	val links: List<AssetLink>
 )
@@ -76,5 +81,12 @@ data class NFTAssetId (
 data class NFTData (
 	val collection: NFTCollection,
 	val assets: List<NFTAsset>
+)
+
+@Serializable
+data class NFTImageOld (
+	val imageUrl: String,
+	val previewImageUrl: String,
+	val originalSourceUrl: String
 )
 
