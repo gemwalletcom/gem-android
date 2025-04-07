@@ -34,14 +34,26 @@ class BuyRepository @Inject constructor(
         fiatCurrency: String,
         fiatAmount: Double,
         owner: String,
-    ): Result<List<FiatQuote>> {
-        return withContext(defaultDispatcher) {
-            gemApi.getQuote(asset.id.toIdentifier(), fiatAmount, fiatCurrency, owner).mapCatching {
-                if (it.quotes.isEmpty()) {
-                    throw Exception("Quotes not found")
-                }
-                it.quotes
+    ): Result<List<FiatQuote>> = withContext(defaultDispatcher) {
+        gemApi.getOnRampQuote(asset.id.toIdentifier(), fiatAmount, fiatCurrency, owner).mapCatching {
+            if (it.quotes.isEmpty()) {
+                throw Exception("Quotes not found")
             }
+            it.quotes
+        }
+    }
+
+    suspend fun getSellQuotes(
+        asset: Asset,
+        fiatCurrency: String,
+        fiatAmount: Double,
+        owner: String,
+    ): Result<List<FiatQuote>> = withContext(defaultDispatcher) {
+        gemApi.getOffRampQuote(asset.id.toIdentifier(), fiatAmount, fiatCurrency, owner).mapCatching {
+            if (it.quotes.isEmpty()) {
+                throw Exception("Quotes not found")
+            }
+            it.quotes
         }
     }
 
