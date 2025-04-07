@@ -12,6 +12,7 @@ import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.asset_select.models.SelectSearch
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
+import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
@@ -86,6 +87,10 @@ open class BaseAssetSelectViewModel(
         val session = sessionRepository.getSession() ?: return@launch
         val account = session.wallet.getAccount(assetId.chain) ?: return@launch
         assetsRepository.switchVisibility(session.wallet.id, account, assetId, visible, session.currency)
+    }
+
+    fun getAccount(assetId: AssetId): Account? {
+        return sessionRepository.getSession()?.wallet?.getAccount(assetId)
     }
 
     enum class SearchState {

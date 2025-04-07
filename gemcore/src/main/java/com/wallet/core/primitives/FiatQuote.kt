@@ -10,10 +10,11 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class FiatQuote (
 	val provider: FiatProvider,
-	val type: FiatTransactionType,
+	val type: FiatQuoteType,
 	val fiatAmount: Double,
 	val fiatCurrency: String,
 	val cryptoAmount: Double,
+	val cryptoValue: String,
 	val redirectUrl: String
 )
 

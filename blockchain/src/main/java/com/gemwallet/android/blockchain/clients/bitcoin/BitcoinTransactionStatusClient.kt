@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.bitcoin
 
+import com.gemwallet.android.blockchain.clients.ServiceUnavailable
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinTransactionsService
@@ -12,12 +13,9 @@ class BitcoinTransactionStatusClient(
     private val rpcClient: BitcoinTransactionsService
 ) : TransactionStatusClient {
 
-    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
-        return rpcClient.transaction(request.hash).mapCatching {
-            TransactionChages(
-                if (it.blockHeight > 0) TransactionState.Confirmed else TransactionState.Pending
-            )
-        }
+    override suspend fun getStatus(request: TransactionStateRequest): TransactionChages {
+        val tx = rpcClient.transaction(request.hash).getOrNull() ?: throw ServiceUnavailable
+        return TransactionChages(if (tx.blockHeight > 0) TransactionState.Confirmed else TransactionState.Pending)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

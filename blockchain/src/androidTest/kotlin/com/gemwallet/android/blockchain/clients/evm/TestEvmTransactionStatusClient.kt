@@ -25,12 +25,10 @@ class TestEvmTransactionStatusClient {
 
     @Test
     fun testEvm_transaction_tastus_confirm() {
-        var requestAddress = ""
         val  client = EvmTransactionStatusClient(
             chain = Chain.SmartChain,
             transactionsService = object : EvmTransactionsService {
-                override suspend fun transaction(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept>> {
-                    requestAddress = request.params[0]
+                override suspend fun transaction(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept?>> {
                     return Result.success(
                         JSONRpcResponse(
                             EthereumTransactionReciept(
@@ -53,21 +51,19 @@ class TestEvmTransactionStatusClient {
                     "",
                     "0x502aECFE253E6AA0e8D2A06E12438FFeD0Fe16a0",
                 )
-            ).getOrNull()
+            )
         }
         assertNotNull(resullt)
-        assertEquals(TransactionState.Confirmed, resullt!!.state)
+        assertEquals(TransactionState.Confirmed, resullt.state)
         assertEquals(BigInteger("21"), resullt.fee)
     }
 
     @Test
     fun testEvm_transaction_tastus_fail() {
-        var requestAddress = ""
         val  client = EvmTransactionStatusClient(
             chain = Chain.SmartChain,
             transactionsService = object : EvmTransactionsService {
-                override suspend fun transaction(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept>> {
-                    requestAddress = request.params[0]
+                override suspend fun transaction(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept?>> {
                     return Result.success(
                         JSONRpcResponse(
                             EthereumTransactionReciept(
@@ -92,21 +88,18 @@ class TestEvmTransactionStatusClient {
                 )
 
             )
-                .getOrNull()
         }
         assertNotNull(resullt)
-        assertEquals(TransactionState.Reverted, resullt!!.state)
+        assertEquals(TransactionState.Reverted, resullt.state)
         assertEquals(BigInteger("21"), resullt.fee)
     }
 
     @Test
     fun testEvm_transaction_tastus_pending() {
-        var requestAddress = ""
         val  client = EvmTransactionStatusClient(
             chain = Chain.SmartChain,
             transactionsService = object : EvmTransactionsService {
-                override suspend fun transaction(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept>> {
-                    requestAddress = request.params[0]
+                override suspend fun transaction(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept?>> {
                     return Result.success(
                         JSONRpcResponse(
                             EthereumTransactionReciept(
@@ -130,10 +123,9 @@ class TestEvmTransactionStatusClient {
                     "0x502aECFE253E6AA0e8D2A06E12438FFeD0Fe16a0",
                 )
             )
-                .getOrNull()
         }
         assertNotNull(resullt)
-        assertEquals(TransactionState.Pending, resullt!!.state)
+        assertEquals(TransactionState.Pending, resullt.state)
         assertNull(resullt.fee)
     }
 }

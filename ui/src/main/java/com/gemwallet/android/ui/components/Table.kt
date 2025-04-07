@@ -1,7 +1,6 @@
 package com.gemwallet.android.ui.components
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,10 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -28,7 +25,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.testTag
@@ -37,7 +33,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.padding8
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
@@ -242,24 +237,4 @@ private fun Cell(
         actionIcon = actionIcon,
         testTag = testTag,
     )
-}
-
-@Composable
-private fun InfoButton(entity: InfoSheetEntity) {
-    var showBottomSheet by remember { mutableStateOf(false) }
-    Spacer4()
-    Icon(
-        modifier = Modifier
-            .clip(RoundedCornerShape(percent = 50))
-            .size(trailingIconMedium)
-            .clickable(onClick = { showBottomSheet = true }),
-        imageVector = Icons.Outlined.Info,
-        contentDescription = "",
-        tint = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
-    )
-    if (showBottomSheet) {
-        InfoBottomSheet(entity) {
-            showBottomSheet = false
-        }
-    }
 }

@@ -17,7 +17,8 @@ import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.NFTAttribute
 import com.wallet.core.primitives.NFTCollection
 import com.wallet.core.primitives.NFTData
-import com.wallet.core.primitives.NFTImage
+import com.wallet.core.primitives.NFTImages
+import com.wallet.core.primitives.NFTResource
 import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -43,9 +44,9 @@ class NftRepository(
                 description = it.collection.description,
                 chain = it.collection.chain,
                 contractAddress = it.collection.contractAddress,
-                imageUrl = it.collection.image.imageUrl,
-                previewImageUrl = it.collection.image.previewImageUrl,
-                originalSourceUrl = it.collection.image.previewImageUrl,
+                imageUrl = it.collection.images.preview.url,
+                previewImageUrl = it.collection.images.preview.url,
+                originalSourceUrl = it.collection.images.preview.url,
                 isVerified = it.collection.isVerified,
             )
         }
@@ -60,9 +61,9 @@ class NftRepository(
                         tokenType = asset.tokenType,
                         chain = asset.chain,
                         description = asset.description,
-                        imageUrl = asset.image.imageUrl,
-                        previewImageUrl = asset.image.previewImageUrl,
-                        originalSourceUrl = asset.image.previewImageUrl,
+                        imageUrl = asset.images.preview.url,
+                        previewImageUrl = asset.images.preview.url,
+                        originalSourceUrl = asset.images.preview.url, // Add mimetype
                     ),
                     asset.attributes.map {
                         DbNFTAttribute(
@@ -140,7 +141,7 @@ private fun DbNFTCollection.mapToModel(links: List<DbNFTCollectionLink>) = NFTCo
     description = this.description,
     chain = this.chain,
     contractAddress = this.contractAddress,
-    image = NFTImage(this.imageUrl, this.previewImageUrl, this.originalSourceUrl),
+    images = NFTImages(NFTResource(this.imageUrl, "")),
     isVerified = this.isVerified,
     links = links.map { AssetLink(it.name, it.url) },
 )
@@ -161,10 +162,7 @@ private fun DbNFTAsset.mapToModel(attributes: List<DbNFTAttribute>?) = NFTAsset(
     name = this.name,
     description = this.description,
     chain = this.chain,
-    image = NFTImage(
-        imageUrl = this.imageUrl,
-        previewImageUrl = this.previewImageUrl,
-        originalSourceUrl = this.originalSourceUrl,
-    ),
+    resource = NFTResource("", ""), // TODO: Handle resources
+    images = NFTImages(NFTResource(this.imageUrl, "")),
     attributes = attributes?.map { NFTAttribute(it.name, it.value) } ?: emptyList(),
 )

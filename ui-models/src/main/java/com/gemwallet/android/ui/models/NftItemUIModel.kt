@@ -10,7 +10,7 @@ data class NftItemUIModel(
     val asset: NFTAsset? = null,
     val collectionSize: Int? = null,
 ) {
-    val imageUrl: String get() = asset?.image?.imageUrl ?: collection.image.imageUrl
+    val imageUrl: String get() = asset?.images?.preview?.url ?: collection.images.preview.url
     val name: String get() = asset?.name ?: collection.name
 
     fun onClick(collectionAction: NftCollectionIdAction, assetAction: NftAssetIdAction) {

@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
+import com.gemwallet.android.blockchain.clients.ServiceUnavailable
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosTransactionsService
@@ -13,15 +14,12 @@ class AptosTransactionStatusClient(
     private val rpcClient: AptosTransactionsService,
 ) : TransactionStatusClient {
 
-    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
-        val transaction = rpcClient.transactions(request.hash).getOrNull() ?: return Result.failure(Exception())
-        val status = if (transaction.success == true) {
-            TransactionState.Confirmed
-        } else {
-            TransactionState.Reverted
-        }
+    override suspend fun getStatus(request: TransactionStateRequest): TransactionChages {
+        val transaction = rpcClient.transactions(request.hash).getOrNull() ?: throw ServiceUnavailable
+
+        val status = if (transaction.success) TransactionState.Confirmed else TransactionState.Reverted
         val fee = BigInteger(transaction.gas_used) * BigInteger(transaction.gas_unit_price)
-        return Result.success(TransactionChages(status, fee))
+        return TransactionChages(status, fee)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

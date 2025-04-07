@@ -29,13 +29,21 @@ class EvmGetTokenClient(
             callService.createCallRequest(tokenId, EthereumAbi.encode(EthereumAbiFunction("decimals")).toHexString(), "latest"),
         )
         val result = callService.batch(params)
-        Asset(
-            id = AssetId(chain, tokenId),
-            name = decodeAbi(result[0]) ?: return@withContext null,
-            symbol = decodeAbi(result[1]) ?: return@withContext null,
-            decimals = result[2].hexToBigInteger()?.toInt() ?: return@withContext null,
-            type = AssetType.ERC20,
-        )
+        val name = result.getOrNull(0)?.let { decodeAbi(it) }
+        val symbol = result.getOrNull(1)?.let { decodeAbi(it) }
+        val decimals = result.getOrNull(2)?.let { it.hexToBigInteger()?.toInt() }
+
+        if (name.isNullOrEmpty() || symbol.isNullOrEmpty() || decimals == null) {
+            null
+        } else {
+            Asset(
+                id = AssetId(chain, tokenId),
+                name = name,
+                symbol = symbol,
+                decimals = decimals,
+                type = AssetType.ERC20,
+            )
+        }
     }
 
     override suspend fun isTokenQuery(query: String): Boolean = isTokenAddress(query)

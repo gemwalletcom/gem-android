@@ -11,6 +11,8 @@ import kotlinx.serialization.SerialName
 enum class AssetTag(val string: String) {
 	@SerialName("trending")
 	Trending("trending"),
+	@SerialName("trending_fiat_purchase")
+	TrendingFiatPurchase("trending_fiat_purchase"),
 	@SerialName("gainers")
 	Gainers("gainers"),
 	@SerialName("losers")

@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.ton
 
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
+import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
@@ -17,7 +18,7 @@ internal const val tokenAccountCreationKey: String = "tokenAccountCreation"
 class TonSignerPreloader(
     private val chain: Chain,
     private val rpcClient: TonRpcClient,
-) : NativeTransferPreloader, TokenTransferPreloader {
+) : NativeTransferPreloader, TokenTransferPreloader, SwapTransactionPreloader {
 
     private val feeCalculator = TonFeeCalculator(chain, rpcClient)
 
@@ -42,6 +43,15 @@ class TonSignerPreloader(
         SignerParams(
             input = params,
             chainData = TonChainData(seqno, fee, jettonAddress)
+        )
+    }
+
+    override suspend fun preloadSwap(params: ConfirmParams.SwapParams): SignerParams {
+        val fee = feeCalculator.calculateSwap()
+        val seqno = rpcClient.walletInfo(params.from.address).getOrNull()?.result?.seqno ?: 0
+        return SignerParams(
+            input = params,
+            chainData = TonChainData(seqno, fee)
         )
     }
 

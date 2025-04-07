@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.tron
 
+import com.gemwallet.android.blockchain.clients.ServiceUnavailable
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.model.TransactionChages
@@ -11,19 +12,16 @@ class TronTransactionStatusClient(
     private val chain: Chain,
     private val rpcClient: TronRpcClient
 ) : TransactionStatusClient {
-    override suspend fun getStatus(request: TransactionStateRequest): Result<TransactionChages> {
-        return rpcClient.transaction(TronRpcClient.TronValue(request.hash)).mapCatching {
-            if (it.receipt != null && it.receipt?.result == "OUT_OF_ENERGY") {
-                return@mapCatching TransactionChages(TransactionState.Reverted)
+    override suspend fun getStatus(request: TransactionStateRequest): TransactionChages {
+        val resp = rpcClient.transaction(TronRpcClient.TronValue(request.hash)).getOrNull() ?: throw ServiceUnavailable
+        return when {
+            resp.receipt != null && resp.receipt?.result == "OUT_OF_ENERGY" -> TransactionChages(TransactionState.Reverted)
+            resp.result == "FAILED" -> TransactionChages(TransactionState.Reverted)
+            resp.blockNumber > 0 -> {
+                val fee = resp.fee ?: 0
+                return TransactionChages(TransactionState.Confirmed, BigInteger.valueOf(fee.toLong()))
             }
-            if (it.result == "FAILED") {
-                return@mapCatching TransactionChages(TransactionState.Reverted)
-            }
-            if (it.blockNumber > 0) {
-                val fee = it.fee ?: 0
-                return@mapCatching TransactionChages(TransactionState.Confirmed, BigInteger.valueOf(fee.toLong()))
-            }
-            TransactionChages(TransactionState.Pending)
+            else -> TransactionChages(TransactionState.Pending)
         }
     }
 
