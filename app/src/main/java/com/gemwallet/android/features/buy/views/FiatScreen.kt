@@ -18,6 +18,7 @@ import com.gemwallet.android.features.buy.viewmodels.FiatViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.designsystem.padding8
 import com.gemwallet.android.ui.models.actions.CancelAction
+import com.wallet.core.primitives.FiatQuoteType
 
 @Composable
 fun FiatScreen(
@@ -67,12 +68,14 @@ fun LotButton(fiatSuggestion: FiatSuggestion, onLotClick: (FiatSuggestion) -> Un
 }
 
 @Composable
-fun BuyError.mapError() = when (this) {
-    BuyError.MinimumAmount -> stringResource(
-        id = R.string.transfer_minimum_amount,
-        "${FiatViewModel.MIN_FIAT_AMOUNT}$"
-    )
-
+fun BuyError.mapError(type: FiatQuoteType) = when (this) {
+    BuyError.MinimumAmount -> stringResource(id = R.string.transfer_minimum_amount, "${FiatViewModel.MIN_FIAT_AMOUNT}$")
     BuyError.QuoteNotAvailable -> stringResource(id = R.string.buy_no_results)
     BuyError.ValueIncorrect -> stringResource(id = R.string.errors_invalid_amount)
+    BuyError.EmptyAmount -> stringResource(
+        R.string.input_enter_amount_to, when (type) {
+            FiatQuoteType.Buy -> stringResource(R.string.buy_title, "")
+            FiatQuoteType.Sell -> stringResource(R.string.sell_title, "")
+        }
+    )
 }

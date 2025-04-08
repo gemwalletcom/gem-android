@@ -1,6 +1,8 @@
 package com.gemwallet.android.features.buy.models
 
 sealed interface BuyError {
+    data object EmptyAmount : BuyError
+
     data object MinimumAmount : BuyError
 
     data object QuoteNotAvailable : BuyError

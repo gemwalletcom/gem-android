@@ -11,11 +11,15 @@ internal class AmountValidator(private val minValue: Double) {
         val value = try {
             input.ifEmpty { "0.0" }.numberParse().toDouble()
         } catch (_: Throwable) {
-            BuyError.ValueIncorrect.also { error = it }
+            error = BuyError.ValueIncorrect
             return false
         }
         if (value < minValue) {
-            BuyError.MinimumAmount.also { error = it }
+            error = BuyError.MinimumAmount
+            return false
+        }
+        if (value == 0.0) {
+            error = BuyError.EmptyAmount
             return false
         }
         return true

@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.features.buy.models.BuyFiatProviderUIModel
 import com.gemwallet.android.features.buy.models.FiatSceneState
@@ -43,13 +44,13 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.wallet.core.primitives.FiatProvider
-import com.wallet.core.primitives.FiatTransactionType
+import com.wallet.core.primitives.FiatQuoteType
 
 @Composable
 fun BuyScene(
     asset: AssetInfoUIModel?,
     state: FiatSceneState?,
-    type: FiatTransactionType,
+    type: FiatQuoteType,
     providers: List<BuyFiatProviderUIModel>,
     selectedProvider: BuyFiatProviderUIModel?,
     fiatAmount: String,
@@ -58,7 +59,7 @@ fun BuyScene(
     onLotSelect: (FiatSuggestion) -> Unit,
     onAmount: (String) -> Unit,
     onProviderSelect: (FiatProvider) -> Unit,
-    onTypeClick: (FiatTransactionType) -> Unit,
+    onTypeClick: (FiatQuoteType) -> Unit,
 ) {
     asset ?: return
     val uriHandler = LocalUriHandler.current
@@ -66,27 +67,41 @@ fun BuyScene(
 
     Scene(
         title = {
-            SingleChoiceSegmentedButtonRow {
-                FiatTransactionType.entries.forEachIndexed { index, entry ->
-                    SegmentedButton(
-                        shape = SegmentedButtonDefaults.itemShape(
-                            index = index,
-                            count = FiatTransactionType.entries.size
-                        ),
-                        onClick = { onTypeClick(entry) },
-                        selected = entry == type,
-                        label = {
-                            Text(
-                                stringResource(
-                                    when (entry) {
-                                        FiatTransactionType.Buy -> R.string.buy_title
-                                        FiatTransactionType.Sell -> R.string.sell_title
-                                    }, ""
+            if (asset.assetInfo.metadata?.isSellEnabled == true) {
+                SingleChoiceSegmentedButtonRow {
+                    FiatQuoteType.entries.forEachIndexed { index, entry ->
+                        SegmentedButton(
+                            shape = SegmentedButtonDefaults.itemShape(
+                                index = index,
+                                count = FiatQuoteType.entries.size
+                            ),
+                            colors = SegmentedButtonDefaults.colors(
+                                activeContainerColor = MaterialTheme.colorScheme.primary,
+                                activeContentColor = MaterialTheme.colorScheme.onPrimary,
+                            ),
+                            icon = {},
+                            onClick = { onTypeClick(entry) },
+                            selected = entry == type,
+                            label = {
+                                Text(
+                                    stringResource(
+                                        when (entry) {
+                                            FiatQuoteType.Buy -> R.string.buy_title
+                                            FiatQuoteType.Sell -> R.string.sell_title
+                                        }, ""
+                                    )
                                 )
-                            )
-                        }
-                    )
+                            }
+                        )
+                    }
                 }
+            } else {
+                Text(
+                    modifier = Modifier,
+                    text = stringResource(id = R.string.buy_title, asset.asset.name),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         },
         onClose = { cancelAction() },
@@ -101,8 +116,8 @@ fun BuyScene(
         Spacer16()
         AmountField(
             amount = fiatAmount,
-            assetSymbol = if (type == FiatTransactionType.Buy) "$" else asset.symbol,
-            equivalent = if (state == null) selectedProvider?.cryptoFormatted ?: " " else " ",
+            assetSymbol = if (type == FiatQuoteType.Buy) "$" else asset.symbol,
+            equivalent = if (state == null && type == FiatQuoteType.Buy) selectedProvider?.cryptoFormatted ?: " " else " ",
             error = "",
             onValueChange = onAmount,
             textStyle = MaterialTheme.typography.displayMedium,
@@ -143,7 +158,7 @@ fun BuyScene(
                         .fillMaxWidth()
                         .padding(20.dp),
                     textAlign = TextAlign.Companion.Center,
-                    text = state.error?.mapError() ?: "",
+                    text = state.error?.mapError(type) ?: "",
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
