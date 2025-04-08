@@ -6,10 +6,10 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -42,14 +42,14 @@ class TestTonSigner {
                 chainData = TonSignerPreloader.TonChainData(
                     sequence = 1,
                     fee = Fee(
-                        speed = TxSpeed.Normal,
+                        priority = FeePriority.Normal,
                         feeAssetId = AssetId(Chain.Ton),
                         amount = BigInteger.TEN
                     ),
                     expireAt = 1000000000,
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                TxSpeed.Normal,
+                FeePriority.Normal,
                 privateKey.data(),
             )
         }
@@ -83,13 +83,13 @@ class TestTonSigner {
                     jettonAddress = "EQAlgB03OjJKdXrlwZiGJD5snSzPKF2VL5bErJn_cqJANGH9",
                     expireAt = 1000000000,
                     fee = Fee(
-                        speed = TxSpeed.Normal,
+                        priority = FeePriority.Normal,
                         feeAssetId = AssetId(Chain.Ton),
                         amount = BigInteger.TEN
                     ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                TxSpeed.Normal,
+                FeePriority.Normal,
                 privateKey.data(),
             )
         }

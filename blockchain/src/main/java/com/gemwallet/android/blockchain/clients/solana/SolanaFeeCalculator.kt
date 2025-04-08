@@ -6,10 +6,10 @@ import com.gemwallet.android.blockchain.clients.solana.services.rentExemption
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import kotlin.math.max
 import kotlin.math.min
 
@@ -51,11 +51,11 @@ class SolanaFeeCalculator(
     private suspend fun calculate(gasLimit: Long, multipleOf: Long): List<GasFee> {
         val priorityFees = feeService.getPriorityFees()
 
-        return TxSpeed.entries.map { speed ->
+        return FeePriority.entries.map { speed ->
             val speedCoefficient = when (speed) {
-                TxSpeed.Slow -> 0.5f
-                TxSpeed.Normal -> 1f
-                TxSpeed.Fast -> 3f
+                FeePriority.Slow -> 0.5f
+                FeePriority.Normal -> 1f
+                FeePriority.Fast -> 3f
             }
             val minerFee = if (priorityFees.isEmpty()) {
                 multipleOf
@@ -70,7 +70,7 @@ class SolanaFeeCalculator(
 
             GasFee(
                 feeAssetId = AssetId(Chain.Solana),
-                speed = speed,
+                priority = speed,
                 minerFee = minerFee.toLong().toBigInteger(),
                 maxGasPrice = staticBaseFee.toBigInteger(),
                 limit = gasLimit.toBigInteger(),

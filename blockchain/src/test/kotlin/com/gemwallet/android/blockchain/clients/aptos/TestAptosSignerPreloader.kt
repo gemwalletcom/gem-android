@@ -7,11 +7,13 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.blockchain.aptos.models.AptosGasFee
+import com.wallet.core.blockchain.aptos.models.AptosTransaction
+import com.wallet.core.blockchain.aptos.models.AptosTransactionSimulation
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
@@ -36,6 +38,10 @@ class TestAptosSignerPreloader {
                 override suspend fun feePrice(): Result<AptosGasFee> {
                     return Result.success(aptosFeeResponse)
                 }
+
+                override suspend fun simulate(data: AptosTransactionSimulation): Result<List<AptosTransaction>> {
+                    return Result.success(listOf(AptosTransaction(true, "9", "0")))
+                }
             }
         )
         val result = runBlocking {
@@ -50,18 +56,18 @@ class TestAptosSignerPreloader {
             )
         }
         assertEquals("0x80c3cca35602e4568a7ac88d4d91110f8efa6c45c659439c2b4ed04033059c6f", serviceAddressParam[0])
-        assertEquals("0xd7257c62806cea85fc8eaf947377b672fe062b81e6c0b19b6d8a3f408e59cf8c", serviceAddressParam[1])
+//        assertEquals("0xd7257c62806cea85fc8eaf947377b672fe062b81e6c0b19b6d8a3f408e59cf8c", serviceAddressParam[1])
         assertEquals(BigInteger.valueOf(10_000_000_000), result.input.amount)
         assertEquals("0x80c3cca35602e4568a7ac88d4d91110f8efa6c45c659439c2b4ed04033059c6f", result.input.from.address)
         assertEquals(AssetId(Chain.Aptos).toIdentifier(), result.input.assetId.toIdentifier())
         assertEquals(false, result.input.isMax())
         assertEquals("0xd7257c62806cea85fc8eaf947377b672fe062b81e6c0b19b6d8a3f408e59cf8c", result.input.destination()?.address)
         assertEquals(null, result.input.memo())
-        assertEquals(BigInteger.valueOf(202800L), result.chainData.fee().amount)
+        assertEquals(BigInteger.valueOf(1350L), result.chainData.fee().amount)
         assertEquals(BigInteger.valueOf(150L), (result.chainData.fee() as GasFee).maxGasPrice)
-        assertEquals(BigInteger.valueOf(1352), (result.chainData.fee() as GasFee).limit)
+        assertEquals(BigInteger.valueOf(9), (result.chainData.fee() as GasFee).limit)
         assertEquals(AssetId(Chain.Aptos).toIdentifier(), result.chainData.fee().feeAssetId.toIdentifier())
-        assertEquals(TxSpeed.Normal, result.chainData.fee().speed)
+        assertEquals(FeePriority.Normal, result.chainData.fee().priority)
         assertEquals(8L, (result.chainData as AptosSignerPreloader.AptosChainData).sequence)
     }
 
@@ -79,6 +85,10 @@ class TestAptosSignerPreloader {
                 override suspend fun feePrice(): Result<AptosGasFee> {
                     return Result.success(aptosFeeResponse)
                 }
+
+                override suspend fun simulate(data: AptosTransactionSimulation): Result<List<AptosTransaction>> {
+                    return Result.success(listOf(AptosTransaction(true, "9", "0")))
+                }
             }
         )
         val result = runBlocking {
@@ -92,11 +102,11 @@ class TestAptosSignerPreloader {
                 )
             )
         }
-        assertEquals(BigInteger.valueOf(202800L), result.chainData.fee().amount)
+        assertEquals(BigInteger.valueOf(1350L), result.chainData.fee().amount)
         assertEquals(BigInteger.valueOf(150L), (result.chainData.fee() as GasFee).maxGasPrice)
-        assertEquals(BigInteger.valueOf(1352L), (result.chainData.fee() as GasFee).limit)
+        assertEquals(BigInteger.valueOf(9L), (result.chainData.fee() as GasFee).limit)
         assertEquals(AssetId(Chain.Aptos).toIdentifier(), result.chainData.fee().feeAssetId.toIdentifier())
-        assertEquals(TxSpeed.Normal, result.chainData.fee().speed)
+        assertEquals(FeePriority.Normal, result.chainData.fee().priority)
         assertEquals(0L, (result.chainData as AptosSignerPreloader.AptosChainData).sequence)
     }
 
@@ -113,6 +123,10 @@ class TestAptosSignerPreloader {
             feeService = object : AptosFeeService {
                 override suspend fun feePrice(): Result<AptosGasFee> {
                     return Result.success(aptosFeeResponse)
+                }
+
+                override suspend fun simulate(data: AptosTransactionSimulation): Result<List<AptosTransaction>> {
+                    return Result.success(listOf(AptosTransaction(true, "0", "69")))
                 }
             }
         )

@@ -2,9 +2,9 @@ package com.gemwallet.android.blockchain.clients.stellar
 
 import com.gemwallet.android.blockchain.clients.stellar.services.StellarFeeService
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import java.math.BigInteger
 
 class StellarFeeCalculator(
@@ -17,17 +17,17 @@ class StellarFeeCalculator(
         val assetId = AssetId(chain)
         return listOf(
             Fee(
-                speed = TxSpeed.Slow,
+                priority = FeePriority.Slow,
                 feeAssetId = assetId,
                 amount = min,
             ),
             Fee(
-                speed = TxSpeed.Normal,
+                priority = FeePriority.Normal,
                 feeAssetId = assetId,
                 amount = min,
             ),
             Fee(
-                speed = TxSpeed.Fast,
+                priority = FeePriority.Fast,
                 feeAssetId = assetId,
                 amount = BigInteger(fees.fee_charged.p95) * BigInteger("2"),
             ),

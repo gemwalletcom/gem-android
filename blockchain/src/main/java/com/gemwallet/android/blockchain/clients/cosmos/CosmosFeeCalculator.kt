@@ -2,9 +2,9 @@ package com.gemwallet.android.blockchain.clients.cosmos
 
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.TransactionType
 import java.math.BigInteger
 
@@ -54,7 +54,7 @@ class  CosmosFeeCalculator(
         }
         return GasFee(
             feeAssetId = assetId,
-            speed = TxSpeed.Normal,
+            priority = FeePriority.Normal,
             maxGasPrice = maxGasFee,
             amount = maxGasFee,
             limit = limit,

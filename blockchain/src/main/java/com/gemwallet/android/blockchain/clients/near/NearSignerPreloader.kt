@@ -5,9 +5,9 @@ import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -34,7 +34,7 @@ class NearSignerPreloader(
                 block = block.header.hash,
                 fee = Fee(
                     feeAssetId = AssetId(chain),
-                    speed = TxSpeed.Normal,
+                    priority = FeePriority.Normal,
                     amount = fee,
                 )
             )
@@ -48,6 +48,6 @@ class NearSignerPreloader(
         val sequence: Long,
         val fee: Fee,
     ) : ChainSignData {
-        override fun fee(speed: TxSpeed): Fee = fee
+        override fun fee(speed: FeePriority): Fee = fee
     }
 }

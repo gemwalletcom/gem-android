@@ -6,7 +6,6 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -14,6 +13,7 @@ import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.DelegationBase
 import com.wallet.core.primitives.DelegationState
 import com.wallet.core.primitives.DelegationValidator
+import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -47,12 +47,12 @@ class TestCosmosSigner {
                 maxGasPrice = BigInteger.valueOf(10000L),
                 limit = BigInteger.valueOf(200000L),
                 amount = BigInteger.valueOf(10000L),
-                speed = TxSpeed.Normal,
+                priority = FeePriority.Normal,
             )
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.signNativeTransfer(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
+            signer.signNativeTransfer(transfer, chainData, finalAmount, FeePriority.Normal, privateKey)
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -85,12 +85,12 @@ class TestCosmosSigner {
                 maxGasPrice = BigInteger.valueOf(10000L),
                 limit = BigInteger.valueOf(200000L),
                 amount = BigInteger.valueOf(10000L),
-                speed = TxSpeed.Normal,
+                priority = FeePriority.Normal,
             )
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.signDelegate(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
+            signer.signDelegate(transfer, chainData, finalAmount, FeePriority.Normal, privateKey)
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -145,12 +145,12 @@ class TestCosmosSigner {
                 maxGasPrice = BigInteger.valueOf(10000L),
                 limit = BigInteger.valueOf(200000L),
                 amount = BigInteger.valueOf(10000L),
-                speed = TxSpeed.Normal,
+                priority = FeePriority.Normal,
             )
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.signUndelegate(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
+            signer.signUndelegate(transfer, chainData, finalAmount, FeePriority.Normal, privateKey)
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -207,12 +207,12 @@ class TestCosmosSigner {
                 maxGasPrice = BigInteger.valueOf(10000L),
                 limit = BigInteger.valueOf(200000L),
                 amount = BigInteger.valueOf(10000L),
-                speed = TxSpeed.Normal,
+                priority = FeePriority.Normal,
             )
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.signRedelegate(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
+            signer.signRedelegate(transfer, chainData, finalAmount, FeePriority.Normal, privateKey)
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -253,12 +253,12 @@ class TestCosmosSigner {
                 maxGasPrice = BigInteger.valueOf(10000L),
                 limit = BigInteger.valueOf(200000L),
                 amount = BigInteger.valueOf(10000L),
-                speed = TxSpeed.Normal,
+                priority = FeePriority.Normal,
             )
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.signRewards(transfer, chainData, finalAmount, TxSpeed.Normal, privateKey)
+            signer.signRewards(transfer, chainData, finalAmount, FeePriority.Normal, privateKey)
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +

@@ -7,10 +7,10 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import wallet.core.java.AnySigner
 import wallet.core.jni.BitcoinScript
 import wallet.core.jni.CoinType
@@ -28,14 +28,14 @@ class BitcoinSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val signingInput = getSigningInput(
             params,
             chainData,
             finalAmount,
-            txSpeed,
+            feePriority,
             privateKey
         )
         return sign(signingInput.build())
@@ -45,14 +45,14 @@ class BitcoinSignClient(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val signingInput = getSigningInput(
             params,
             chainData,
             finalAmount,
-            txSpeed,
+            feePriority,
             privateKey
         )
         signingInput.outputOpReturn = ByteString.copyFrom(params.swapData.toByteArray())
@@ -63,11 +63,11 @@ class BitcoinSignClient(
         params: ConfirmParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): Bitcoin.SigningInput.Builder {
         val chainData = chainData as BitcoinSignerPreloader.BitcoinChainData
-        val gasFee = chainData.fee(txSpeed) as GasFee
+        val gasFee = chainData.fee(feePriority) as GasFee
         val coinType = coinType
 
         return Bitcoin.SigningInput.newBuilder().apply {

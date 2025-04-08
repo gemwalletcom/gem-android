@@ -5,10 +5,10 @@ import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.CosmosDenom
+import com.wallet.core.primitives.FeePriority
 import wallet.core.java.AnySigner
 import wallet.core.jni.AnyAddress
 import wallet.core.jni.CoinType
@@ -30,7 +30,7 @@ class CosmosSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        priority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = CosmosDenom.from(chain)
@@ -48,7 +48,7 @@ class CosmosSignClient(
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        priority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = params.assetId.tokenId!!
@@ -66,7 +66,7 @@ class CosmosSignClient(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        priority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = CosmosDenom.from(chain)
@@ -87,7 +87,7 @@ class CosmosSignClient(
         params: ConfirmParams.TokenApprovalParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        priority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         throw IllegalArgumentException()
@@ -97,7 +97,7 @@ class CosmosSignClient(
         params: ConfirmParams.Stake.DelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        priority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = CosmosDenom.from(chain)
@@ -109,7 +109,7 @@ class CosmosSignClient(
         params: ConfirmParams.Stake.RedelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = CosmosDenom.from(chain)
@@ -126,7 +126,7 @@ class CosmosSignClient(
         params: ConfirmParams.Stake.RewardsParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        priority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val message = getRewardsMessage(params.from.address, params.validatorsId)
@@ -137,7 +137,7 @@ class CosmosSignClient(
         params: ConfirmParams.Stake.UndelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        priority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = CosmosDenom.from(chain)
@@ -149,7 +149,7 @@ class CosmosSignClient(
         params: ConfirmParams.Stake.WithdrawParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        priority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         throw IllegalArgumentException()

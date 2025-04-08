@@ -14,7 +14,7 @@ class TestBitcoinTransactions {
 
     @Test
     fun testBitcoinTransaction() {
-        var requestId: String = ""
+        var requestId = ""
         val transactionsClient = BitcoinTransactionStatusClient(
             Chain.Bitcoin,
             object : BitcoinTransactionsService {
@@ -33,15 +33,15 @@ class TestBitcoinTransactions {
                     "some_address",
                 )
             )
-        }.getOrNull()
+        }
         assertNotNull(result)
         assertEquals("some_id", requestId)
-        assertEquals(TransactionState.Pending, result!!.state)
+        assertEquals(TransactionState.Pending, result.state)
     }
 
     @Test
     fun testBitcoinTransactionConfirm() {
-        var requestId: String = ""
+        var requestId = ""
         val transactionsClient = BitcoinTransactionStatusClient(
             Chain.Bitcoin,
             object : BitcoinTransactionsService {
@@ -60,8 +60,8 @@ class TestBitcoinTransactions {
                     "some_address",
                 )
             )
-        }.getOrNull()
+        }
         assertNotNull(result)
-        assertEquals(TransactionState.Confirmed, result!!.state)
+        assertEquals(TransactionState.Confirmed, result.state)
     }
 }

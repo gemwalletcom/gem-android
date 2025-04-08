@@ -15,7 +15,7 @@ class TestCosmosTransactions {
 
     @Test
     fun testCosmosTransaction() {
-        var requestId: String = ""
+        var requestId = ""
         val transactionsService = object : CosmosTransactionsService {
             override suspend fun transaction(txId: String): Result<CosmosTransactionResponse> {
                 requestId = txId
@@ -33,10 +33,10 @@ class TestCosmosTransactions {
                     "some_address",
                 )
             )
-        }.getOrNull()
+        }
         assertNotNull(result)
         assertEquals("some_id", requestId)
-        assertEquals(TransactionState.Confirmed, result!!.state)
+        assertEquals(TransactionState.Confirmed, result.state)
     }
 
     @Test
@@ -57,9 +57,9 @@ class TestCosmosTransactions {
                     "some_address",
                 )
             )
-        }.getOrNull()
+        }
         assertNotNull(result)
-        assertEquals(TransactionState.Pending, result!!.state)
+        assertEquals(TransactionState.Pending, result.state)
     }
 
     @Test
@@ -80,8 +80,8 @@ class TestCosmosTransactions {
                     "some_address",
                 )
             )
-        }.getOrNull()
+        }
         assertNotNull(result)
-        assertEquals(TransactionState.Reverted, result!!.state)
+        assertEquals(TransactionState.Reverted, result.state)
     }
 }

@@ -5,7 +5,6 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.blockchain.cosmos.models.CosmosAccount
 import com.wallet.core.blockchain.cosmos.models.CosmosAccountResponse
 import com.wallet.core.blockchain.cosmos.models.CosmosBlock
@@ -15,6 +14,7 @@ import com.wallet.core.blockchain.cosmos.models.CosmosInjectiveAccount
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -67,7 +67,7 @@ class TestCosmosPreload {
         assertEquals(BigInteger.valueOf(10000L), (result.chainData.fee() as GasFee).maxGasPrice)
         assertEquals(BigInteger.valueOf(200000L), (result.chainData.fee() as GasFee).limit)
         assertEquals(AssetId(Chain.Osmosis).toIdentifier(), result.chainData.fee().feeAssetId.toIdentifier())
-        assertEquals(TxSpeed.Normal, result.chainData.fee().speed)
+        assertEquals(FeePriority.Normal, result.chainData.fee().priority)
         assertEquals(10L, (result.chainData as CosmosSignerPreloader.CosmosChainData).sequence)
         assertEquals(2913388L, (result.chainData as CosmosSignerPreloader.CosmosChainData).accountNumber)
         assertEquals("osmosis-1", (result.chainData as CosmosSignerPreloader.CosmosChainData).chainId)
@@ -92,7 +92,7 @@ class TestCosmosPreload {
         assertEquals(BigInteger.valueOf(100000L), (result.chainData.fee() as GasFee).maxGasPrice)
         assertEquals(BigInteger.valueOf(1000000L), (result.chainData.fee() as GasFee).limit)
         assertEquals(AssetId(Chain.Osmosis).toIdentifier(), result.chainData.fee().feeAssetId.toIdentifier())
-        assertEquals(TxSpeed.Normal, result.chainData.fee().speed)
+        assertEquals(FeePriority.Normal, result.chainData.fee().priority)
         assertEquals(10L, (result.chainData as CosmosSignerPreloader.CosmosChainData).sequence)
         assertEquals(2913388L, (result.chainData as CosmosSignerPreloader.CosmosChainData).accountNumber)
         assertEquals("osmosis-1", (result.chainData as CosmosSignerPreloader.CosmosChainData).chainId)
@@ -119,7 +119,7 @@ class TestCosmosPreload {
         assertEquals(BigInteger.valueOf(100000L), (result.chainData.fee() as GasFee).maxGasPrice)
         assertEquals(BigInteger.valueOf(1000000L), (result.chainData.fee() as GasFee).limit)
         assertEquals(AssetId(Chain.Osmosis).toIdentifier(), result.chainData.fee().feeAssetId.toIdentifier())
-        assertEquals(TxSpeed.Normal, result.chainData.fee().speed)
+        assertEquals(FeePriority.Normal, result.chainData.fee().priority)
         assertEquals(10L, (result.chainData as CosmosSignerPreloader.CosmosChainData).sequence)
         assertEquals(2913388L, (result.chainData as CosmosSignerPreloader.CosmosChainData).accountNumber)
         assertEquals("osmosis-1", (result.chainData as CosmosSignerPreloader.CosmosChainData).chainId)
@@ -146,7 +146,7 @@ class TestCosmosPreload {
         assertEquals(BigInteger.valueOf(100000L), (result.chainData.fee() as GasFee).maxGasPrice)
         assertEquals(BigInteger.valueOf(1250000L), (result.chainData.fee() as GasFee).limit)
         assertEquals(AssetId(Chain.Osmosis).toIdentifier(), result.chainData.fee().feeAssetId.toIdentifier())
-        assertEquals(TxSpeed.Normal, result.chainData.fee().speed)
+        assertEquals(FeePriority.Normal, result.chainData.fee().priority)
         assertEquals(10L, (result.chainData as CosmosSignerPreloader.CosmosChainData).sequence)
         assertEquals(2913388L, (result.chainData as CosmosSignerPreloader.CosmosChainData).accountNumber)
         assertEquals("osmosis-1", (result.chainData as CosmosSignerPreloader.CosmosChainData).chainId)
@@ -173,7 +173,7 @@ class TestCosmosPreload {
         assertEquals(BigInteger.valueOf(100000L), (result.chainData.fee() as GasFee).maxGasPrice)
         assertEquals(BigInteger.valueOf(900000L), (result.chainData.fee() as GasFee).limit)
         assertEquals(AssetId(Chain.Osmosis).toIdentifier(), result.chainData.fee().feeAssetId.toIdentifier())
-        assertEquals(TxSpeed.Normal, result.chainData.fee().speed)
+        assertEquals(FeePriority.Normal, result.chainData.fee().priority)
         assertEquals(10L, (result.chainData as CosmosSignerPreloader.CosmosChainData).sequence)
         assertEquals(2913388L, (result.chainData as CosmosSignerPreloader.CosmosChainData).accountNumber)
         assertEquals("osmosis-1", (result.chainData as CosmosSignerPreloader.CosmosChainData).chainId)

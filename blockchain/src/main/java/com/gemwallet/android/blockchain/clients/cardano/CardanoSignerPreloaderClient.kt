@@ -8,10 +8,10 @@ import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
-import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.UTXO
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
@@ -31,7 +31,7 @@ class CardanoSignerPreloaderClient(
             chainData = CardanoChainData(
                 fee = Fee(
                     feeAssetId = AssetId(chain),
-                    speed = TxSpeed.Normal,
+                    priority = FeePriority.Normal,
                     amount = fee.toBigInteger(),
                 ),
                 utxos = utxos,
@@ -72,7 +72,7 @@ class CardanoSignerPreloaderClient(
         val utxos: List<UTXO>,
     ) : ChainSignData {
 
-        override fun fee(speed: TxSpeed): Fee = fee
+        override fun fee(speed: FeePriority): Fee = fee
 
     }
 }

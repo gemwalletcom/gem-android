@@ -8,8 +8,8 @@ import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -48,7 +48,7 @@ class StellarSignPreloadClient(
         } else {
             defaultFees.map {
                 Fee(
-                    speed = it.speed,
+                    priority = it.priority,
                     feeAssetId = it.feeAssetId,
                     amount = it.amount,
                     options = mapOf(StellarChainData.tokenAccountCreation to BigInteger.ZERO)
@@ -70,7 +70,7 @@ class StellarSignPreloadClient(
         val fees: List<Fee>,
         val sequence: Long,
     ) : ChainSignData {
-        override fun fee(speed: TxSpeed): Fee = fees.firstOrNull { it.speed == speed } ?: fees.first()
+        override fun fee(feePriority: FeePriority): Fee = fees.firstOrNull { it.priority == feePriority } ?: fees.first()
 
         override fun allFee(): List<Fee> = fees
 

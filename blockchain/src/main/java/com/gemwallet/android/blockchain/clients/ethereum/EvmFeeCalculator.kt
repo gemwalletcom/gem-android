@@ -10,11 +10,11 @@ import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain
+import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -59,10 +59,10 @@ class EvmFeeCalculator(
                     baseFee = baseFee,
                     priorityFee = priorityFee,
                     txSpeed = when (index) {
-                        0 -> TxSpeed.Slow
-                        1 -> TxSpeed.Normal
-                        2 -> TxSpeed.Fast
-                        else -> TxSpeed.Normal
+                        0 -> FeePriority.Slow
+                        1 -> FeePriority.Normal
+                        2 -> FeePriority.Fast
+                        else -> FeePriority.Normal
                     }
                 )
             }
@@ -82,11 +82,11 @@ class EvmFeeCalculator(
             }
             GasFee(
                 feeAssetId = AssetId(params.assetId.chain), // TODO: params.assetId.chain
-                speed = when (index) {
-                    0 -> TxSpeed.Slow
-                    1 -> TxSpeed.Normal
-                    2 -> TxSpeed.Fast
-                    else -> TxSpeed.Normal
+                priority = when (index) {
+                    0 -> FeePriority.Slow
+                    1 -> FeePriority.Normal
+                    2 -> FeePriority.Fast
+                    else -> FeePriority.Normal
                 },
                 limit = gasLimit,
                 maxGasPrice = maxGasPrice,
@@ -148,11 +148,11 @@ class EvmFeeCalculator(
         rewardsPercentiles: EvmHistoryRewardPercentiles,
         minPriorityFee: BigInteger
     ): List<BigInteger> {
-        return TxSpeed.entries.map { speed ->
+        return FeePriority.entries.map { speed ->
             val prices = when (speed) {
-                TxSpeed.Slow -> rewards.mapNotNull { it.getOrNull(0)?.hexToBigInteger() }
-                TxSpeed.Normal -> rewards.mapNotNull { it.getOrNull(1)?.hexToBigInteger() }
-                TxSpeed.Fast -> rewards.mapNotNull { it.getOrNull(2)?.hexToBigInteger() }
+                FeePriority.Slow -> rewards.mapNotNull { it.getOrNull(0)?.hexToBigInteger() }
+                FeePriority.Normal -> rewards.mapNotNull { it.getOrNull(1)?.hexToBigInteger() }
+                FeePriority.Fast -> rewards.mapNotNull { it.getOrNull(2)?.hexToBigInteger() }
             }
             if (prices.isEmpty()) {
                 minPriorityFee

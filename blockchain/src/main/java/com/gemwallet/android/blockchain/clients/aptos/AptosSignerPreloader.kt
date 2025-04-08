@@ -8,8 +8,8 @@ import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 
 class AptosSignerPreloader(
     private val chain: Chain,
@@ -17,7 +17,7 @@ class AptosSignerPreloader(
     feeService: AptosFeeService,
 ) : NativeTransferPreloader, TokenTransferPreloader {
 
-    private val feeCalculator = AptosFeeCalculator(chain, feeService, accountsService)
+    private val feeCalculator = AptosFeeCalculator(chain, feeService)
 
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
         return preloadTransfer(params)
@@ -34,7 +34,7 @@ class AptosSignerPreloader(
         } catch (_: Throwable) {
             0L
         }
-        val fee = feeCalculator.calculate(params.assetId, params.destination().address)
+        val fee = feeCalculator.calculate(params, sequence)
         val input = SignerParams(params, AptosChainData(sequence, fee))
         return input
     }
@@ -43,8 +43,10 @@ class AptosSignerPreloader(
 
     data class AptosChainData(
         val sequence: Long,
-        val fee: Fee,
+        val fees: List<Fee>,
     ) : ChainSignData {
-        override fun fee(speed: TxSpeed): Fee = fee
+        override fun fee(speed: FeePriority): Fee = fees.firstOrNull { it.priority == speed } ?: fees.first()
+
+        override fun allFee(): List<Fee> = fees
     }
 }

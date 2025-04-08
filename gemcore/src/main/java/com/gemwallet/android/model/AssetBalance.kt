@@ -3,7 +3,6 @@ package com.gemwallet.android.model
 import com.gemwallet.android.ext.same
 import com.wallet.core.primitives.Asset
 import java.math.BigInteger
-import kotlin.String
 
 data class AssetBalance(
     val asset: Asset,

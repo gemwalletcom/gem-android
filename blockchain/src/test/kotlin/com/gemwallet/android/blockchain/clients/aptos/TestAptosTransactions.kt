@@ -40,10 +40,10 @@ class TestAptosTransactions {
                     "some_address",
                 )
             )
-        }.getOrNull()
+        }
         assertNotNull(result)
         assertEquals("some_id", requestId)
-        assertEquals(TransactionState.Confirmed, result!!.state)
+        assertEquals(TransactionState.Confirmed, result.state)
         assertEquals(BigInteger("1000"), result.fee)
     }
 
@@ -74,8 +74,8 @@ class TestAptosTransactions {
                     "some_address",
                 )
             )
-        }.getOrNull()
+        }
         assertNotNull(result)
-        assertEquals(TransactionState.Reverted, result!!.state)
+        assertEquals(TransactionState.Reverted, result.state)
     }
 }

@@ -5,7 +5,6 @@
 package com.wallet.core.blockchain.stellar
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class StellarBalance (

@@ -6,10 +6,10 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -48,13 +48,13 @@ class TestTronSigner {
                     timestamp = 1739156280000,
                     votes = emptyMap(),
                     fee = Fee(
-                        speed = TxSpeed.Normal,
+                        priority = FeePriority.Normal,
                         feeAssetId = AssetId(Chain.Tron),
                         amount = BigInteger.TEN
                     ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                TxSpeed.Normal,
+                FeePriority.Normal,
                 privateKey.data(),
             )
         }
@@ -102,13 +102,13 @@ class TestTronSigner {
                     timestamp = 1739156280000,
                     votes = emptyMap(),
                     fee = Fee(
-                        speed = TxSpeed.Normal,
+                        priority = FeePriority.Normal,
                         feeAssetId = AssetId(Chain.Tron),
                         amount = BigInteger.TEN
                     ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                TxSpeed.Normal,
+                FeePriority.Normal,
                 privateKey.data(),
             )
         }
@@ -163,13 +163,13 @@ class TestTronSigner {
                         "TCEo1hMAdaJrQmvnGTCcGT2LqrGU4N7Jqf" to 1,
                     ),
                     fee = Fee(
-                        speed = TxSpeed.Normal,
+                        priority = FeePriority.Normal,
                         feeAssetId = AssetId(Chain.Tron),
                         amount = BigInteger.TEN
                     ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                TxSpeed.Normal,
+                FeePriority.Normal,
                 privateKey.data(),
             )
         }

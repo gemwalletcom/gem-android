@@ -16,10 +16,10 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
@@ -84,7 +84,7 @@ class EvmSignerPreloader(
             val fees = chainData.fees.map {
                 GasFee(
                     feeAssetId = it.feeAssetId,
-                    speed = it.speed,
+                    priority = it.priority,
                     limit = it.limit,
                     maxGasPrice = it.maxGasPrice,
                     minerFee = it.minerFee,
@@ -133,7 +133,7 @@ class EvmSignerPreloader(
         val nonce: BigInteger,
         val fees: List<GasFee>,
     ) : ChainSignData {
-        override fun fee(speed: TxSpeed): Fee = fees.firstOrNull { it.speed == speed } ?: fees.first()
+        override fun fee(speed: FeePriority): Fee = fees.firstOrNull { it.priority == speed } ?: fees.first()
 
         override fun allFee(): List<Fee> = fees
     }

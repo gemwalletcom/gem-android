@@ -6,8 +6,8 @@ import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -46,6 +46,6 @@ class XrpSignerPreloader(
         val blockNumber: Int,
         val fee: Fee,
     ) : ChainSignData {
-        override fun fee(speed: TxSpeed): Fee = fee
+        override fun fee(feePriority: FeePriority): Fee = fee
     }
 }

@@ -7,11 +7,11 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -59,14 +59,14 @@ class TestBitcoinSigner {
                     listOf(
                         GasFee(
                             AssetId(Chain.Doge),
-                            speed = TxSpeed.Normal,
+                            priority = FeePriority.Normal,
                             maxGasPrice = BigInteger.valueOf(150L),
                             limit = BigInteger.valueOf(18L)
                         )
                     )
                 ),
                 finalAmount = BigInteger.valueOf(10_000_000_000),
-                TxSpeed.Normal,
+                FeePriority.Normal,
                 privateKey.data()
             )
         }

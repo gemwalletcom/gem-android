@@ -6,6 +6,8 @@ import com.gemwallet.android.blockchain.clients.aptos.services.AptosFeeService
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.wallet.core.blockchain.aptos.models.AptosGasFee
+import com.wallet.core.blockchain.aptos.models.AptosTransaction
+import com.wallet.core.blockchain.aptos.models.AptosTransactionSimulation
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -29,6 +31,10 @@ class TestAptosFeeCalculator {
             feeService = object : AptosFeeService {
                 override suspend fun feePrice(): Result<AptosGasFee> {
                     return Result.success(aptosFeeResponse)
+                }
+
+                override suspend fun simulate(data: AptosTransactionSimulation): Result<List<AptosTransaction>> {
+                    return Result.success(listOf(AptosTransaction(true, "69", "0")))
                 }
             }
         )

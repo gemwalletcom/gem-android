@@ -2,8 +2,8 @@ package com.gemwallet.android.blockchain.clients
 
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import java.math.BigInteger
 
 interface SignClient : BlockchainClient {
@@ -20,7 +20,7 @@ interface SignClient : BlockchainClient {
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
@@ -28,7 +28,7 @@ interface SignClient : BlockchainClient {
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
@@ -36,7 +36,7 @@ interface SignClient : BlockchainClient {
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
@@ -44,7 +44,7 @@ interface SignClient : BlockchainClient {
         params: ConfirmParams.TokenApprovalParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
@@ -52,7 +52,7 @@ interface SignClient : BlockchainClient {
         params: ConfirmParams.Stake.DelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
@@ -60,7 +60,7 @@ interface SignClient : BlockchainClient {
         params: ConfirmParams.Stake.UndelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
@@ -68,7 +68,7 @@ interface SignClient : BlockchainClient {
         params: ConfirmParams.Stake.RedelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
@@ -76,7 +76,7 @@ interface SignClient : BlockchainClient {
         params: ConfirmParams.Stake.RewardsParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 
@@ -84,7 +84,7 @@ interface SignClient : BlockchainClient {
         params: ConfirmParams.Stake.WithdrawParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
 }

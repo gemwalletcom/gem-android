@@ -20,31 +20,31 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.features.confirm.models.FeeRateUIModel
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.TxSpeed
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIconSmall
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
+import com.wallet.core.primitives.FeePriority
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectTxSpeed(
-    currentSpeed: TxSpeed,
+fun SelectFeePriority(
+    currentPriority: FeePriority,
     fee: List<Fee>,
-    onSelect: (TxSpeed) -> Unit,
+    onSelect: (FeePriority) -> Unit,
     onCancel: () -> Unit,
 ) {
     ModalBottomSheet(onCancel) {
         Column {
             fee.forEach { item ->
-                TxSpeedView(FeeRateUIModel(item), item.speed == currentSpeed) { onSelect(item.speed) }
+                FeePriorityView(FeeRateUIModel(item), item.priority == currentPriority) { onSelect(item.priority) }
             }
         }
     }
 }
 
 @Composable
-private fun TxSpeedView(fee: FeeRateUIModel, isSelected: Boolean, onClick: () -> Unit) {
+private fun FeePriorityView(fee: FeeRateUIModel, isSelected: Boolean, onClick: () -> Unit) {
     Column(modifier = Modifier.clickable(onClick = onClick)) {
         Row(
             modifier = Modifier.padding(padding16),

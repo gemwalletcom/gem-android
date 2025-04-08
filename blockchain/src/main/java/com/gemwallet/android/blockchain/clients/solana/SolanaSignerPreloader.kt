@@ -14,8 +14,8 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.SolanaTokenProgramId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -90,7 +90,7 @@ class SolanaSignerPreloader(
         val tokenProgram: SolanaTokenProgramId,
         val fees: List<GasFee>,
     ) : ChainSignData {
-        override fun fee(speed: TxSpeed): Fee = fees.firstOrNull { it.speed == speed } ?: fees.first()
+        override fun fee(feePriority: FeePriority): Fee = fees.firstOrNull { it.priority == feePriority } ?: fees.first()
 
         override fun allFee(): List<Fee> = fees
     }

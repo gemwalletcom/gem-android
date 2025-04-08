@@ -1,12 +1,13 @@
 package com.gemwallet.android.model
 
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.FeePriority
 import java.math.BigInteger
 
-open class Fee(val speed: TxSpeed, val feeAssetId: AssetId, val amount: BigInteger, val options: Map<String, BigInteger> = emptyMap()) {
+open class Fee(val priority: FeePriority, val feeAssetId: AssetId, val amount: BigInteger, val options: Map<String, BigInteger> = emptyMap()) {
     open fun withOptions(key: String) = Fee(
         feeAssetId = feeAssetId,
-        speed = speed,
+        priority = priority,
         amount = amount + options
             .filterKeys { it.contains(key) }
             .values.fold(BigInteger.ZERO) { acc, i -> acc + i },
@@ -16,17 +17,17 @@ open class Fee(val speed: TxSpeed, val feeAssetId: AssetId, val amount: BigInteg
 
 class GasFee(
     feeAssetId: AssetId,
-    speed: TxSpeed,
+    priority: FeePriority,
     val maxGasPrice: BigInteger,
     val limit: BigInteger,
     val minerFee: BigInteger = BigInteger.ZERO,
     val relay: BigInteger = BigInteger.ZERO,
     amount: BigInteger = limit.multiply(maxGasPrice).add(relay),
     options: Map<String, BigInteger> = emptyMap()
-) : Fee(feeAssetId = feeAssetId, speed = speed, amount = amount, options = options) {
+) : Fee(feeAssetId = feeAssetId, priority = priority, amount = amount, options = options) {
     override fun withOptions(key: String) = GasFee(
         feeAssetId = feeAssetId,
-        speed = speed,
+        priority = priority,
         maxGasPrice = maxGasPrice,
         limit = limit,
         minerFee = minerFee,

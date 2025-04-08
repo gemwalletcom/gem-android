@@ -6,9 +6,9 @@ import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 
 class AlgorandSignPreloadClient(
     private val chain: Chain,
@@ -18,7 +18,7 @@ class AlgorandSignPreloadClient(
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
         val txParams = feeService.transactionsParams().getOrNull() ?: throw Exception("fee load error")
         val fee = Fee(
-            speed = TxSpeed.Normal,
+            priority = FeePriority.Normal,
             feeAssetId = AssetId(chain),
             amount = txParams.min_fee.toBigInteger(),
         )
@@ -41,6 +41,6 @@ class AlgorandSignPreloadClient(
         val chainId: String,
         val fee: Fee,
     ) : ChainSignData {
-        override fun fee(speed: TxSpeed): Fee = fee
+        override fun fee(speed: FeePriority): Fee = fee
     }
 }

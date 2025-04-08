@@ -1,8 +1,5 @@
 package com.gemwallet.android.features.asset.chart.views
 
-import android.icu.text.CompactDecimalFormat
-import android.icu.util.CurrencyAmount
-import android.util.Log
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -20,7 +17,6 @@ import com.gemwallet.android.ext.chain
 import com.gemwallet.android.features.asset.chart.models.AssetMarketUIModel
 import com.gemwallet.android.features.asset.chart.viewmodels.AssetChartViewModel
 import com.gemwallet.android.model.compactFormatter
-import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Badge
 import com.gemwallet.android.ui.components.CellEntity
@@ -38,8 +34,6 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetMarket
 import com.wallet.core.primitives.Currency
 import uniffi.gemstone.Explorer
-import java.text.NumberFormat
-import java.util.Locale
 
 @Composable
 fun AssetChartScene(

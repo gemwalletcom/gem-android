@@ -6,10 +6,10 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -47,13 +47,13 @@ class TestSuiSigner {
                             "lQA7RvBaO4CAAAAAAAAQHh9AQAAAAAA_0xc6af5cd37f2bab89411aff2a642522f88" +
                             "6e3a8bdfea1d0549729e99f3a241bd5",
                     fee = Fee(
-                        speed = TxSpeed.Normal,
+                        priority = FeePriority.Normal,
                         feeAssetId = AssetId(Chain.Sui),
                         amount = BigInteger.TEN
                     ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                TxSpeed.Normal,
+                FeePriority.Normal,
                 privateKey.data(),
             )
         }
@@ -97,13 +97,13 @@ class TestSuiSigner {
                             "WoPf2pUAO0bwWjuAgAAAAAAAEB4fQEAAAAAAA==_0xd3877ebdd9f50a6d7d919d6e28" +
                             "a26dd62ec43db0986466a35fa78c84394d3046",
                     fee = Fee(
-                        speed = TxSpeed.Normal,
+                        priority = FeePriority.Normal,
                         feeAssetId = AssetId(Chain.Sui),
                         amount = BigInteger.TEN
                     ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                TxSpeed.Normal,
+                FeePriority.Normal,
                 privateKey.data(),
             )
         }

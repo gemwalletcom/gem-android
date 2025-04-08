@@ -7,10 +7,10 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.UTXO
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
@@ -41,7 +41,7 @@ class TestCardanoSigner {
                 ),
                 chainData = CardanoChainData(
                     fee = Fee(
-                        speed = TxSpeed.Normal,
+                        priority = FeePriority.Normal,
                         feeAssetId = AssetId(Chain.Cardano),
                         amount = BigInteger.TEN
                     ),
@@ -55,7 +55,7 @@ class TestCardanoSigner {
                     )
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                TxSpeed.Normal,
+                FeePriority.Normal,
                 privateKey.data(),
             )
         }

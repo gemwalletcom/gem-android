@@ -59,7 +59,7 @@ fun ConfirmScreen(
     val txInfoUIModel by viewModel.txInfoUIModel.collectAsStateWithLifecycle()
     val feeModel by viewModel.feeUIModel.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val txSpeed by viewModel.txSpeed.collectAsStateWithLifecycle()
+    val feePriority by viewModel.feePriority.collectAsStateWithLifecycle()
     val allFee by viewModel.allFee.collectAsStateWithLifecycle()
 
     var showSelectTxSpeed by remember { mutableStateOf(false) }
@@ -117,13 +117,13 @@ fun ConfirmScreen(
         ConfirmErrorInfo(state)
 
         if (showSelectTxSpeed) {
-            SelectTxSpeed(
-                currentSpeed = txSpeed,
+            SelectFeePriority(
+                currentPriority = feePriority,
                 fee = allFee,
                 onSelect = {
                     showSelectTxSpeed = false
-                    viewModel.changeTxSpeed(it)
-                }
+                    viewModel.changeFeePriority(it)
+                },
             ) { showSelectTxSpeed = false }
         }
     }

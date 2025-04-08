@@ -1,5 +1,6 @@
 package com.gemwallet.android.model
 
+import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.ScanTransaction
 import java.math.BigInteger
 
@@ -11,17 +12,11 @@ data class SignerParams(
 )
 
 interface  ChainSignData {
-    fun fee(speed: TxSpeed = TxSpeed.Normal): Fee
+    fun fee(speed: FeePriority = FeePriority.Normal): Fee
 
-    fun gasFee(speed: TxSpeed = TxSpeed.Normal): GasFee = (fee(speed) as? GasFee) ?: throw Exception("Fee error: wait gas fee")
+    fun gasFee(feePriority: FeePriority = FeePriority.Normal): GasFee = (fee(feePriority) as? GasFee) ?: throw Exception("Fee error: wait gas fee")
 
     fun allFee(): List<Fee> = emptyList()
 
     fun blockNumber(): String = ""
-}
-
-enum class TxSpeed {
-    Slow,
-    Normal,
-    Fast,
 }

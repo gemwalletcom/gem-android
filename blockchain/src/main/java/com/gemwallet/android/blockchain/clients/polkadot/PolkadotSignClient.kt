@@ -7,9 +7,9 @@ import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
 import wallet.core.jni.PrivateKey
@@ -24,7 +24,7 @@ class PolkadotSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = (chainData as? PolkadotSignerPreloaderClient.PolkadotChainData) ?: throw Exception("incomplete data")

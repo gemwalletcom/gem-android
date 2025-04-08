@@ -8,12 +8,12 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.blockchain.tron.models.TronAccount
 import com.wallet.core.blockchain.tron.models.TronAccountUsage
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -45,7 +45,7 @@ class TronFeeCalculator(
             is ConfirmParams.Stake.RewardsParams,
             is ConfirmParams.Stake.WithdrawParams -> if (availableBandwidth >= 300) BigInteger.ZERO else baseFee
         }
-        Fee(TxSpeed.Normal, AssetId(chain), fee)
+        Fee(FeePriority.Normal, AssetId(chain), fee)
     }
 
     suspend fun calculate(inParams: ConfirmParams.TransferParams, account: TronAccount?, accountUsage: TronAccountUsage?) = withContext(Dispatchers.IO) {
@@ -79,7 +79,7 @@ class TronFeeCalculator(
                 if (isNewAccount) tokenTransfer + BigInteger.valueOf(newAccountFeeInSmartContract) else tokenTransfer
             }
         }
-        Fee(TxSpeed.Normal, AssetId(chain), fee)
+        Fee(FeePriority.Normal, AssetId(chain), fee)
     }
 
     // https://developers.tron.network/docs/set-feelimit#how-to-estimate-energy-consumption

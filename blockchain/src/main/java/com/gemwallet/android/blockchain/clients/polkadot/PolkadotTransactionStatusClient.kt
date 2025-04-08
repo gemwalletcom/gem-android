@@ -4,7 +4,6 @@ import com.gemwallet.android.blockchain.clients.ServiceUnavailable
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotTransactionService
-import com.gemwallet.android.blockchain.rpc.ServiceError
 import com.gemwallet.android.model.TransactionChages
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState

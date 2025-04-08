@@ -5,9 +5,9 @@ import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
 import wallet.core.jni.proto.Tron
@@ -25,7 +25,7 @@ class TronSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronSignerPreloader.TronChainData
@@ -41,7 +41,7 @@ class TronSignClient(
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronSignerPreloader.TronChainData
@@ -88,7 +88,7 @@ class TronSignClient(
         params: ConfirmParams.Stake.DelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronSignerPreloader.TronChainData
@@ -108,7 +108,7 @@ class TronSignClient(
         params: ConfirmParams.Stake.UndelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronSignerPreloader.TronChainData
@@ -131,7 +131,7 @@ class TronSignClient(
         params: ConfirmParams.Stake.RedelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronSignerPreloader.TronChainData
@@ -143,7 +143,7 @@ class TronSignClient(
         params: ConfirmParams.Stake.RewardsParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronSignerPreloader.TronChainData
@@ -159,7 +159,7 @@ class TronSignClient(
         params: ConfirmParams.Stake.WithdrawParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronSignerPreloader.TronChainData

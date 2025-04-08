@@ -2,8 +2,8 @@ package com.gemwallet.android.blockchain.clients
 
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.SignerParams
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 
 class SignClientProxy(
     private val clients: List<SignClient>
@@ -29,22 +29,22 @@ class SignClientProxy(
 
     suspend fun signTransaction(
         params: SignerParams,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val chain = params.input.assetId.chain
         val client = clients.getClient(chain) ?: throw Exception("Chain isn't support")
         val input = params.input
         return when (input) {
-            is ConfirmParams.Stake.DelegateParams -> client.signDelegate(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-            is ConfirmParams.Stake.RedelegateParams -> client.signRedelegate(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-            is ConfirmParams.Stake.RewardsParams -> client.signRewards(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-            is ConfirmParams.Stake.UndelegateParams -> client.signUndelegate(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-            is ConfirmParams.Stake.WithdrawParams -> client.signWithdraw(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-            is ConfirmParams.SwapParams -> client.signSwap(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-            is ConfirmParams.TokenApprovalParams -> client.signTokenApproval(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-            is ConfirmParams.TransferParams.Native -> client.signNativeTransfer(input, params.chainData, params.finalAmount, txSpeed, privateKey)
-            is ConfirmParams.TransferParams.Token -> client.signTokenTransfer(input, params.chainData, params.finalAmount, txSpeed, privateKey)
+            is ConfirmParams.Stake.DelegateParams -> client.signDelegate(input, params.chainData, params.finalAmount, feePriority, privateKey)
+            is ConfirmParams.Stake.RedelegateParams -> client.signRedelegate(input, params.chainData, params.finalAmount, feePriority, privateKey)
+            is ConfirmParams.Stake.RewardsParams -> client.signRewards(input, params.chainData, params.finalAmount, feePriority, privateKey)
+            is ConfirmParams.Stake.UndelegateParams -> client.signUndelegate(input, params.chainData, params.finalAmount, feePriority, privateKey)
+            is ConfirmParams.Stake.WithdrawParams -> client.signWithdraw(input, params.chainData, params.finalAmount, feePriority, privateKey)
+            is ConfirmParams.SwapParams -> client.signSwap(input, params.chainData, params.finalAmount, feePriority, privateKey)
+            is ConfirmParams.TokenApprovalParams -> client.signTokenApproval(input, params.chainData, params.finalAmount, feePriority, privateKey)
+            is ConfirmParams.TransferParams.Native -> client.signNativeTransfer(input, params.chainData, params.finalAmount, feePriority, privateKey)
+            is ConfirmParams.TransferParams.Token -> client.signTokenTransfer(input, params.chainData, params.finalAmount, feePriority, privateKey)
         }
     }
 

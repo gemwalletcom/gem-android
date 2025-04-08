@@ -10,7 +10,6 @@ import com.wallet.core.blockchain.ton.models.TonJettonToken
 import com.wallet.core.blockchain.ton.models.TonMasterchainInfo
 import com.wallet.core.blockchain.ton.models.TonMessageTransactions
 import com.wallet.core.blockchain.ton.models.TonResult
-import com.wallet.core.blockchain.ton.models.TonTransactionMessage
 import com.wallet.core.blockchain.ton.models.TonWalletInfo
 import retrofit2.Response
 import retrofit2.http.Body

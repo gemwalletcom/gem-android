@@ -4,12 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.gemwallet.android.data.service.store.database.entities.CURRENT_WALLET_REQUEST
 import com.gemwallet.android.data.service.store.database.entities.DbTransaction
 import com.gemwallet.android.data.service.store.database.entities.DbTransactionExtended
 import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetadata
-import com.gemwallet.android.data.service.store.database.entities.SESSION_CHAINS_REQUEST
-import com.gemwallet.android.data.service.store.database.entities.SESSION_REQUEST
 import com.wallet.core.primitives.TransactionState
 import kotlinx.coroutines.flow.Flow
 

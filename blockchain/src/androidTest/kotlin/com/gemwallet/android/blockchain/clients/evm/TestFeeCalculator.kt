@@ -11,11 +11,11 @@ import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.blockchain.ethereum.models.EthereumFeeHistory
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
 import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.runBlocking
@@ -157,7 +157,7 @@ class TestFeeCalculator {
                 BigInteger.ZERO,
             )
         }
-        assertEquals(TxSpeed.Normal, result[1].speed)
+        assertEquals(FeePriority.Normal, result[1].priority)
         assertEquals(BigInteger("37500000450000"), result[1].amount)
         assertEquals(BigInteger("1000000000"), result[1].minerFee)
         assertEquals(BigInteger("1000000012"), result[1].maxGasPrice)
@@ -196,7 +196,7 @@ class TestFeeCalculator {
                 BigInteger.ZERO,
             )
         }
-        assertEquals(TxSpeed.Normal, result[1].speed)
+        assertEquals(FeePriority.Normal, result[1].priority)
         assertEquals(BigInteger("37500000450000"), result[1].amount)
         assertEquals(BigInteger("1000000012"), result[1].minerFee)
         assertEquals(BigInteger("1000000012"), result[1].maxGasPrice)
@@ -235,7 +235,7 @@ class TestFeeCalculator {
                 BigInteger.ZERO,
             )
         }
-        assertEquals(TxSpeed.Normal, result[1].speed)
+        assertEquals(FeePriority.Normal, result[1].priority)
         assertEquals(BigInteger("21000000000000"), result[1].amount)
         assertEquals(BigInteger.valueOf(21_000), result[1].limit)
         assertEquals("0x9b1DB81180c31B1b428572Be105E209b5A6222b7", (feeService.gasLimitRequest[0] as Map<*, *>)["from"])
@@ -275,7 +275,7 @@ class TestFeeCalculator {
                 BigInteger.ZERO,
             )
         }
-        assertEquals(TxSpeed.Normal, result[1].speed)
+        assertEquals(FeePriority.Normal, result[1].priority)
         assertEquals(BigInteger("21000000001"), result[1].amount)
         assertEquals(BigInteger.valueOf(21_000), result[1].limit)
         assertEquals("0x9b1DB81180c31B1b428572Be105E209b5A6222b7", (feeService.gasLimitRequest[0] as Map<*, *>)["from"])
@@ -315,7 +315,7 @@ class TestFeeCalculator {
                 BigInteger.ZERO,
             )
         }
-        assertEquals(TxSpeed.Normal, result[1].speed)
+        assertEquals(FeePriority.Normal, result[1].priority)
         assertEquals(BigInteger("21000000000000"), result[1].amount)
         assertEquals(BigInteger.valueOf(21_000), result[1].limit)
         assertEquals("0x9b1DB81180c31B1b428572Be105E209b5A6222b7", (feeService.gasLimitRequest[0] as Map<*, *>)["from"])
@@ -357,7 +357,7 @@ class TestFeeCalculator {
                 BigInteger.ZERO,
             )
         }
-        assertEquals(TxSpeed.Normal, result[1].speed)
+        assertEquals(FeePriority.Normal, result[1].priority)
         assertEquals(BigInteger("21000000000000"), result[1].amount)
         assertEquals(BigInteger.valueOf(21_000), result[1].limit)
         assertEquals("0x9b1DB81180c31B1b428572Be105E209b5A6222b7", (feeService.gasLimitRequest[0] as Map<*, *>)["from"])

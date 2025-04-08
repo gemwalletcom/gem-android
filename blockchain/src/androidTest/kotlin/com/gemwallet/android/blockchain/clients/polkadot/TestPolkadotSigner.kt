@@ -7,10 +7,10 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -52,13 +52,13 @@ class TestPolkadotSigner {
                     ),
                     blockNumber = 24666537,
                     fee = Fee(
-                        speed = TxSpeed.Normal,
+                        priority = FeePriority.Normal,
                         feeAssetId = AssetId(Chain.Polkadot),
                         amount = BigInteger.TEN
                     ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                TxSpeed.Normal,
+                FeePriority.Normal,
                 privateKey.data(),
             )
         }

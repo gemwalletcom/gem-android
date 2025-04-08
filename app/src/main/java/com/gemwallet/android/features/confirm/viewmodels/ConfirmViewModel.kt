@@ -30,7 +30,6 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SignerParams
-import com.gemwallet.android.model.TxSpeed
 import com.gemwallet.android.model.format
 import com.gemwallet.android.services.SignerPreloaderProxy
 import com.gemwallet.android.ui.R
@@ -43,6 +42,7 @@ import com.google.gson.Gson
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.DelegationValidator
+import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
@@ -83,7 +83,7 @@ class ConfirmViewModel @Inject constructor(
 
     private val restart = MutableStateFlow(false)
     val state = MutableStateFlow<ConfirmState>(ConfirmState.Prepare)
-    val txSpeed = MutableStateFlow(TxSpeed.Normal)
+    val feePriority = MutableStateFlow(FeePriority.Normal)
 
     private val request = savedStateHandle.getStateFlow<String?>(paramsArg, null)
         .combine(restart) { request, _ -> request }
@@ -129,13 +129,13 @@ class ConfirmViewModel @Inject constructor(
             return@map null
         }
         preload
-    }.filterNotNull().combine(txSpeed) { params, txSpeed ->
+    }.filterNotNull().combine(feePriority) { params, feePriority ->
         val finalAmount = when {
             params.input is ConfirmParams.Stake.RewardsParams -> stakeRepository.getRewards(params.input.assetId, params.input.from.address)
                 .map { BigInteger(it.base.rewards) }
                 .fold(BigInteger.ZERO) { acc, value -> acc + value }
-            params.input.isMax() && params.input.assetId == params.chainData.fee(txSpeed).feeAssetId ->
-                params.input.amount - params.chainData.fee(txSpeed).amount
+            params.input.isMax() && params.input.assetId == params.chainData.fee(feePriority).feeAssetId ->
+                params.input.amount - params.chainData.fee(feePriority).amount
             else -> params.input.amount
         }
         state.update { ConfirmState.Ready }
@@ -186,7 +186,7 @@ class ConfirmViewModel @Inject constructor(
         ).mapNotNull { it }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val feeUIModel = combine(preloadData, feeAssetInfo, state, txSpeed) { signerParams, feeAssetInfo, state, speed ->
+    val feeUIModel = combine(preloadData, feeAssetInfo, state, feePriority) { signerParams, feeAssetInfo, state, speed ->
         val amount = signerParams?.chainData?.fee(speed)?.amount
         val result = if (amount == null || feeAssetInfo == null) {
             CellEntity(
@@ -213,7 +213,7 @@ class ConfirmViewModel @Inject constructor(
                 if (sendAssetInfo != null) {
                     validateBalance(
                         signerParams,
-                        txSpeed.value,
+                        feePriority.value,
                         sendAssetInfo,
                         feeAssetInfo,
                         getBalance(sendAssetInfo, signerParams.input)
@@ -245,9 +245,9 @@ class ConfirmViewModel @Inject constructor(
         }
     }
 
-    fun changeTxSpeed(speed: TxSpeed) {
+    fun changeFeePriority(feePriority: FeePriority) {
         state.update { ConfirmState.Prepare }
-        txSpeed.update { speed }
+        this.feePriority.update { feePriority }
     }
 
     fun send(finishAction: FinishConfirmAction) = viewModelScope.launch(Dispatchers.IO) {
@@ -262,7 +262,7 @@ class ConfirmViewModel @Inject constructor(
         val account = assetInfo?.owner
         val feeAssetInfo = feeAssetInfo.value
         val session = sessionRepository.getSession()
-        val txSpeed = txSpeed.value
+        val txSpeed = feePriority.value
 
         try {
             if (assetInfo == null || account == null || session == null || feeAssetInfo == null) {
@@ -301,11 +301,11 @@ class ConfirmViewModel @Inject constructor(
         }
     }
 
-    private suspend fun sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo, txSpeed: TxSpeed): List<ByteArray> {
+    private suspend fun sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo, feePriority: FeePriority): List<ByteArray> {
         val sign = try {
             signClient.signTransaction(
                 params = signerParams,
-                txSpeed = txSpeed,
+                feePriority = feePriority,
                 privateKey = loadPrivateKeyOperator(
                     session.wallet,
                     assetInfo.id().chain,
@@ -412,7 +412,7 @@ class ConfirmViewModel @Inject constructor(
         val assetInfo = assetsInfo.value?.getByAssetId(signerParams?.input?.assetId ?: return) ?: return
         val session = sessionRepository.getSession()
         val destinationAddress =  signerParams.input.destination()?.address ?: ""
-        val txSpeed = txSpeed.value
+        val txSpeed = feePriority.value
 
         createTransactionsCase.createTransaction(
             hash = txHash,
@@ -438,13 +438,13 @@ class ConfirmViewModel @Inject constructor(
     companion object {
         fun validateBalance(
             signerParams: SignerParams,
-            txSpeed: TxSpeed,
+            feePriority: FeePriority,
             assetInfo: AssetInfo,
             feeAssetInfo: AssetInfo,
             assetBalance: BigInteger,
         ) {
             val amount = signerParams.finalAmount
-            val feeAmount = signerParams.chainData.fee(txSpeed).amount
+            val feeAmount = signerParams.chainData.fee(feePriority).amount
 
             val totalAmount = when (signerParams.input.getTxType()) {
                 TransactionType.Transfer,

@@ -6,15 +6,12 @@ import com.gemwallet.android.ext.toBitcoinChain
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.TxSpeed
-import com.gemwallet.android.model.TxSpeed.Fast
-import com.gemwallet.android.model.TxSpeed.Normal
-import com.gemwallet.android.model.TxSpeed.Slow
 import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.BitcoinChain
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -40,14 +37,14 @@ class BitcoinFeeCalculator(
     ): List<Fee> = withContext(Dispatchers.IO) {
         val ownerAddress = account.address
         val chain = account.chain
-        TxSpeed.entries.map {
+        FeePriority.entries.map {
             async {
                 val price = estimateFeePrice(chain, it)
                 val limit =
                     calcFee(chain, ownerAddress, recipient, amount.toLong(), price.toLong(), utxos)
                 GasFee(
                     feeAssetId = AssetId(chain),
-                    speed = it,
+                    priority = it,
                     maxGasPrice = price,
                     limit = limit
                 )
@@ -55,14 +52,14 @@ class BitcoinFeeCalculator(
         }.awaitAll()
     }
 
-    private suspend fun estimateFeePrice(chain: Chain, speed: TxSpeed): BigInteger {
+    private suspend fun estimateFeePrice(chain: Chain, speed: FeePriority): BigInteger {
         val decimals = CoinTypeConfiguration.getDecimals(WCChainTypeProxy().invoke(chain))
         val minimumByteFee = getMinimumByteFee(chain)
         val priority = Config().getBitcoinChainConfig(chain.toBitcoinChain().string).blocksFeePriority.let {
             when (speed) {
-                Slow -> it.slow
-                Normal -> it.normal
-                Fast -> it.fast
+                FeePriority.Slow -> it.slow
+                FeePriority.Normal -> it.normal
+                FeePriority.Fast -> it.fast
             }
         }.toString()
         return feeService.estimateFee(priority).fold(

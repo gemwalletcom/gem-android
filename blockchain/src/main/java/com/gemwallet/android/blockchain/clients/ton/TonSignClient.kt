@@ -3,9 +3,9 @@ package com.gemwallet.android.blockchain.clients.ton
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
 import wallet.core.jni.proto.TheOpenNetwork
@@ -19,7 +19,7 @@ class TonSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = (chainData as TonSignerPreloader.TonChainData)
@@ -46,7 +46,7 @@ class TonSignClient(
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val meta = chainData as TonSignerPreloader.TonChainData
@@ -85,7 +85,7 @@ class TonSignClient(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val data = params.swapData

@@ -6,12 +6,12 @@ import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.blockchain.bitcoin.models.BitcoinFeeResult
 import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
@@ -92,16 +92,16 @@ class TestBitcoinSignerPreloader {
         assertEquals(BigInteger.valueOf(17458), result.chainData.gasFee().maxGasPrice)
         assertEquals(BigInteger.valueOf(192), result.chainData.gasFee().limit)
         assertEquals(AssetId(Chain.Doge).toIdentifier(), result.chainData.fee().feeAssetId.toIdentifier())
-        assertEquals(TxSpeed.Normal, result.chainData.fee().speed)
+        assertEquals(FeePriority.Normal, result.chainData.fee().priority)
         assertEquals("9f47e5d5ae3dac0662766f95d0cdda9c242c08d6baac4ce5d82464cf948abd53", (result.chainData as BitcoinSignerPreloader.BitcoinChainData).utxo[0].txid)
         assertEquals(1, (result.chainData as BitcoinSignerPreloader.BitcoinChainData).utxo[0].vout)
         assertEquals("86055170", (result.chainData as BitcoinSignerPreloader.BitcoinChainData).utxo[0].value)
         assertEquals(3, result.chainData.allFee().size)
-        assertEquals(BigInteger.valueOf(192), result.chainData.gasFee(TxSpeed.Fast).limit)
-        assertEquals(BigInteger.valueOf(60357), result.chainData.gasFee(TxSpeed.Fast).maxGasPrice)
-        assertEquals(BigInteger.valueOf(11588544), result.chainData.gasFee(TxSpeed.Fast).amount)
-        assertEquals(BigInteger.valueOf(192), result.chainData.gasFee(TxSpeed.Slow).limit)
-        assertEquals(BigInteger.valueOf(17458), result.chainData.gasFee(TxSpeed.Slow).maxGasPrice)
-        assertEquals(BigInteger.valueOf(3351936), result.chainData.gasFee(TxSpeed.Slow).amount)
+        assertEquals(BigInteger.valueOf(192), result.chainData.gasFee(FeePriority.Fast).limit)
+        assertEquals(BigInteger.valueOf(60357), result.chainData.gasFee(FeePriority.Fast).maxGasPrice)
+        assertEquals(BigInteger.valueOf(11588544), result.chainData.gasFee(FeePriority.Fast).amount)
+        assertEquals(BigInteger.valueOf(192), result.chainData.gasFee(FeePriority.Slow).limit)
+        assertEquals(BigInteger.valueOf(17458), result.chainData.gasFee(FeePriority.Slow).maxGasPrice)
+        assertEquals(BigInteger.valueOf(3351936), result.chainData.gasFee(FeePriority.Slow).amount)
     }
 }

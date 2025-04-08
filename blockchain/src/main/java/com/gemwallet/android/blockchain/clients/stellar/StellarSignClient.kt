@@ -4,9 +4,9 @@ import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.TxSpeed
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import wallet.core.java.AnySigner
 import wallet.core.jni.StellarPassphrase
 import wallet.core.jni.proto.Stellar
@@ -20,14 +20,14 @@ class StellarSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: TxSpeed,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = (chainData as? StellarSignPreloadClient.StellarChainData)
             ?: throw Exception("bad params")
         val input = Stellar.SigningInput.newBuilder().apply {
             this.passphrase = StellarPassphrase.STELLAR.toString()
-            this.fee = chainData.fee(txSpeed).amount.toInt()
+            this.fee = chainData.fee(feePriority).amount.toInt()
             this.sequence = chainData.sequence
             this.account = params.from.address
             if (!params.memo().isNullOrEmpty()) {
@@ -35,7 +35,7 @@ class StellarSignClient(
                     this.text = params.memo()!!
                 }.build()
             }
-            if (chainData.fee(txSpeed).options.contains(StellarSignPreloadClient.StellarChainData.tokenAccountCreation)) {
+            if (chainData.fee(feePriority).options.contains(StellarSignPreloadClient.StellarChainData.tokenAccountCreation)) {
                 this.opCreateAccount = Stellar.OperationCreateAccount.newBuilder().apply {
                     this.destination = params.destination().address
                     this.amount = finalAmount.toLong()

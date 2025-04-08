@@ -10,10 +10,10 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -53,13 +53,13 @@ class TestEthSign {
                             limit = BigInteger("21000"),
                             minerFee = BigInteger.TEN,
                             relay = BigInteger.TEN,
-                            speed = TxSpeed.Normal,
+                            priority = FeePriority.Normal,
                             feeAssetId = Chain.Ethereum.asset().id,
                         )
                     )
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                txSpeed = TxSpeed.Normal,
+                feePriority = FeePriority.Normal,
                 privateKey,
             )
         }
@@ -90,13 +90,13 @@ class TestEthSign {
                             limit = BigInteger("91000"),
                             minerFee = BigInteger.TEN,
                             relay = BigInteger.TEN,
-                            speed = TxSpeed.Normal,
+                            priority = FeePriority.Normal,
                             feeAssetId = Chain.Ethereum.asset().id,
                         )
                     )
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                txSpeed = TxSpeed.Normal,
+                feePriority = FeePriority.Normal,
                 privateKey,
             )
         }
@@ -134,13 +134,13 @@ class TestEthSign {
                             limit = BigInteger("91000"),
                             minerFee = BigInteger.TEN,
                             relay = BigInteger.TEN,
-                            speed = TxSpeed.Normal,
+                            priority = FeePriority.Normal,
                             feeAssetId = Chain.Ethereum.asset().id,
                         )
                     )
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                txSpeed = TxSpeed.Normal,
+                feePriority = FeePriority.Normal,
                 privateKey,
             )
         }
@@ -171,13 +171,13 @@ class TestEthSign {
                             limit = BigInteger("91000"),
                             minerFee = BigInteger.TEN,
                             relay = BigInteger.TEN,
-                            speed = TxSpeed.Normal,
+                            priority = FeePriority.Normal,
                             feeAssetId = Chain.Ethereum.asset().id,
                         )
                     )
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                txSpeed = TxSpeed.Normal,
+                feePriority = FeePriority.Normal,
                 privateKey,
             )
         }
@@ -214,13 +214,13 @@ class TestEthSign {
                             limit = BigInteger("91000"),
                             minerFee = BigInteger.TEN,
                             relay = BigInteger.TEN,
-                            speed = TxSpeed.Normal,
+                            priority = FeePriority.Normal,
                             feeAssetId = Chain.Ethereum.asset().id,
                         )
                     )
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                txSpeed = TxSpeed.Normal,
+                feePriority = FeePriority.Normal,
                 privateKey,
             )
         }
@@ -256,13 +256,13 @@ class TestEthSign {
                             limit = BigInteger("91000"),
                             minerFee = BigInteger.TEN,
                             relay = BigInteger.TEN,
-                            speed = TxSpeed.Normal,
+                            priority = FeePriority.Normal,
                             feeAssetId = Chain.SmartChain.asset().id,
                         )
                     )
                 ),
                 finalAmount = BigInteger.ZERO,
-                txSpeed = TxSpeed.Normal,
+                priority = FeePriority.Normal,
                 privateKey,
             )
         }

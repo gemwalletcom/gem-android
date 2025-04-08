@@ -6,9 +6,9 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
-import com.gemwallet.android.model.TxSpeed
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
+import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.TransactionType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -32,7 +32,7 @@ class OptimismGasOracle(
         baseFee: BigInteger,
         priorityFee: BigInteger,
         gasLimit: BigInteger,
-        txSpeed: TxSpeed,
+        txSpeed: FeePriority,
     ): GasFee = withContext(Dispatchers.IO) {
         val assetId = params.assetId
         val feeAssetId = AssetId(assetId.chain)
@@ -66,7 +66,7 @@ class OptimismGasOracle(
             nonce = nonce,
             gasFee = GasFee(
                 feeAssetId = feeAssetId,
-                speed = TxSpeed.Normal,
+                priority = FeePriority.Normal,
                 limit = gasLimit,
                 maxGasPrice = gasPrice,
                 minerFee = minerFee,
@@ -76,7 +76,7 @@ class OptimismGasOracle(
         val l1Fee = getL1Fee(encoded) ?: throw IllegalStateException("Can't get L1 Fee")
         GasFee(
             feeAssetId = feeAssetId,
-            speed = txSpeed,
+            priority = txSpeed,
             maxGasPrice = gasPrice,
             minerFee = minerFee,
             limit = gasLimit,

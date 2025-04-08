@@ -9,9 +9,9 @@ import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignMode
-import com.gemwallet.android.model.TxSpeed
 import com.gemwallet.android.ui.R
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.FeeUnitType
 
 data class FeeRateUIModel(
@@ -19,10 +19,10 @@ data class FeeRateUIModel(
 ) {
 
     val speedLabel: String @Composable get() {
-        return when (fee.speed) {
-            TxSpeed.Fast -> "\uD83D\uDE80  ${stringResource(R.string.fee_rates_fast)}"
-            TxSpeed.Normal -> "\uD83D\uDC8E  ${stringResource(R.string.fee_rates_normal)}"
-            TxSpeed.Slow -> "\uD83D\uDC22  ${stringResource(R.string.fee_rates_slow)}"
+        return when (fee.priority) {
+            FeePriority.Fast -> "\uD83D\uDE80  ${stringResource(R.string.fee_rates_fast)}"
+            FeePriority.Normal -> "\uD83D\uDC8E  ${stringResource(R.string.fee_rates_normal)}"
+            FeePriority.Slow -> "\uD83D\uDC22  ${stringResource(R.string.fee_rates_slow)}"
         }
     }
 
