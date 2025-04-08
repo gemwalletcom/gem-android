@@ -91,10 +91,10 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
         }
     }
     marketInfo?.circulatingSupply?.let {
-        item { PropertyItem(R.string.asset_circulating_supply, asset.format(it, 0)) }
+        item { PropertyItem(R.string.asset_circulating_supply, asset.compactFormatter(it)) }
     }
     marketInfo?.totalSupply?.let {
-        item { PropertyItem(R.string.asset_total_supply, asset.format(it, 0)) }
+        item { PropertyItem(R.string.asset_total_supply, asset.compactFormatter(it)) }
     }
     asset.id.tokenId?.let {
         item {
