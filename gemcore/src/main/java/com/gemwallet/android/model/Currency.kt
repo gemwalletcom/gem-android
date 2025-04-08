@@ -281,6 +281,24 @@ fun Asset.format(
 }
 
 fun Asset.format(
+    humanAmount: BigDecimal,
+    decimalPlace: Int = 6,
+    maxDecimals: Int = -1,
+    showSign: SignMode = SignMode.NoPLus,
+    dynamicPlace: Boolean = false,
+    zeroFraction: Int = 0,
+): String {
+    return format(
+        Crypto(humanAmount, decimals),
+        decimalPlace,
+        maxDecimals,
+        showSign,
+        dynamicPlace,
+        zeroFraction,
+    )
+}
+
+fun Asset.format(
     crypto: Crypto,
     decimalPlace: Int = 6,
     maxDecimals: Int = -1,

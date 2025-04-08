@@ -106,8 +106,9 @@ fun NftListScene(
                     Text(
                         modifier = Modifier.align(Alignment.Center),
                         textAlign = TextAlign.Center,
-                        text = stringResource(R.string.activity_empty_state_message)
+                        text = stringResource(R.string.nft_state_empty_title)
                     )
+                    // TODO: Add empty description
                 }
                 return@PullToRefreshBox
             }

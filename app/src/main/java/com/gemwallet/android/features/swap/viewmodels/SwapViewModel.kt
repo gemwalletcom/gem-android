@@ -259,6 +259,19 @@ class SwapViewModel @Inject constructor(
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    val rate = quote.combine(assetsState) { quote, assets ->
+        val fromAsset = assets?.from?.asset
+        val toAsset = assets?.to?.asset
+        if (fromAsset == null || toAsset == null || quote == null) {
+            return@combine null
+        }
+        val fromAmount = Crypto(quote.fromValue).value(fromAsset.decimals)
+        val toAmount = Crypto(quote.toValue).value(toAsset.decimals)
+        val rate = toAsset.format(toAmount / fromAmount, 2, dynamicPlace = true)
+        "1 ${fromAsset.symbol} \u2248 $rate"
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     val currentProvider = quote.mapLatest { SwapProviderItem(it?.data?.provider ?: return@mapLatest null) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

@@ -131,9 +131,10 @@ private fun LazyListScope.emptyAlertingAssets(empty: Boolean) {
         Spacer16()
         Text(
             modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.price_alerts_empty_state_message),
+            text = stringResource(R.string.price_alerts_state_empty_title),
             textAlign = TextAlign.Center,
         )
+        // TODO: Add empty description
         Spacer16()
     }
 }

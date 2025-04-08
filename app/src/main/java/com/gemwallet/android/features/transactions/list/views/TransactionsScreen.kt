@@ -71,9 +71,10 @@ private fun List(
                                 .fillMaxWidth()
                                 .weight(1f)
                                 .wrapContentHeight(align = Alignment.CenterVertically),
-                            text = stringResource(id = R.string.activity_empty_state_message),
+                            text = stringResource(id = R.string.activity_state_empty_title),
                             textAlign = TextAlign.Center,
                         )
+                        // TODO: Add empty description
                     }
                 }
                 else -> {

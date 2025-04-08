@@ -78,12 +78,19 @@ sealed class InfoSheetEntity(
         infoUrl = Config().getDocsUrl(DocsUrl.TRANSACTION_STATUS),
     )
 
-    class WatchWalletInfo : InfoSheetEntity(
+    object WatchWalletInfo : InfoSheetEntity(
         icon = R.drawable.ic_splash,
         badgeIcon = R.drawable.watch_badge,
         title = R.string.info_watch_wallet_title,
         description = R.string.info_watch_wallet_description,
         infoUrl = Config().getDocsUrl(DocsUrl.WHAT_IS_WATCH_WALLET),
+    )
+
+    object PriceImpactInfo : InfoSheetEntity(
+        icon = R.drawable.ic_splash,
+        title = R.string.info_price_impact_title,
+        description = R.string.info_price_impact_description,
+        infoUrl = Config().getDocsUrl(DocsUrl.PRICE_IMPACT),
     )
 }
 
