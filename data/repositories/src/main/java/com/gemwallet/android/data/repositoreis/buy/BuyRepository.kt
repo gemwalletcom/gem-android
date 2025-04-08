@@ -3,11 +3,12 @@ package com.gemwallet.android.data.repositoreis.buy
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.model.Crypto
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.FiatQuote
+import com.wallet.core.primitives.FiatQuoteType
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,26 +24,29 @@ class BuyRepository @Inject constructor(
         val fiatVersion = gemApi.getConfig().getOrNull()?.versions?.fiatOnRampAssets ?: return
         val currentVersion = configStore.getInt(ConfigKey.FiatAssetsVersion.string)
         if (currentVersion > 0 && currentVersion >= fiatVersion) return
-        val availableIds = gemApi.getFiatAssets().getOrNull() ?: return
-        val latestVersion = availableIds.version.toInt()
-        assetsRepository.updateBayAvailable(availableIds.assetIds)
+        val availableToBuyIds = gemApi.getOnRampAssets().getOrNull() ?: return
+        val availableToSellIds = gemApi.getOffRampAssets().getOrNull() ?: return
+        val latestVersion = availableToBuyIds.version.toInt()
+        assetsRepository.updateBuyAvailable(availableToBuyIds.assetIds)
+        assetsRepository.updateSellAvailable(availableToSellIds.assetIds)
         configStore.putInt(ConfigKey.FiatAssetsVersion.string, latestVersion)
     }
 
-    suspend fun getBuyQuotes(
+    suspend fun getQuotes(
         asset: Asset,
+        type: FiatQuoteType,
         fiatCurrency: String,
-        fiatAmount: Double,
+        amount: Double,
         owner: String,
-    ): Result<List<FiatQuote>> {
-        return withContext(defaultDispatcher) {
-            gemApi.getQuote(asset.id.toIdentifier(), fiatAmount, fiatCurrency, owner).mapCatching {
-                if (it.quotes.isEmpty()) {
-                    throw Exception("Quotes not found")
-                }
-                it.quotes
-            }
-        }
+    ): List<FiatQuote> {
+        return gemApi.getFiatQuotes(
+            assetId = asset.id.toIdentifier(),
+            type = type.string,
+            fiatAmount = if (type == FiatQuoteType.Buy) amount else null,
+            cryptoAmount = if (type == FiatQuoteType.Sell) Crypto(amount.toBigDecimal(), asset.decimals).atomicValue.toString() else null,
+            currency = fiatCurrency,
+            walletAddress = owner
+        ).getOrNull()?.quotes ?: throw Exception("Quotes not found")
     }
 
     private enum class ConfigKey(val string: String) {

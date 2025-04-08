@@ -29,7 +29,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetada
 import com.gemwallet.android.data.service.store.database.entities.DbWallet
 
 @Database(
-    version = 46,
+    version = 47,
     entities = [
         DbWallet::class,
         DbAccount::class,

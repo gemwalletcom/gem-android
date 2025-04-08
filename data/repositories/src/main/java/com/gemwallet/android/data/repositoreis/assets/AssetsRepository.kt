@@ -13,7 +13,6 @@ import com.gemwallet.android.data.service.store.database.entities.DbAssetConfig
 import com.gemwallet.android.data.service.store.database.entities.DbAssetMarket
 import com.gemwallet.android.data.service.store.database.entities.DbAssetWallet
 import com.gemwallet.android.data.service.store.database.entities.DbBalance
-import com.gemwallet.android.data.service.store.database.entities.DbPrice
 import com.gemwallet.android.data.service.store.database.entities.mergeDelegation
 import com.gemwallet.android.data.service.store.database.entities.mergeNative
 import com.gemwallet.android.data.service.store.database.entities.toAssetInfoModel
@@ -129,6 +128,7 @@ class AssetsRepository @Inject constructor(
             type = assetInfo.asset.type,
             chain = assetInfo.asset.chain(),
             isBuyEnabled = assetFull.properties.isBuyable == true,
+            isSellEnabled = assetFull.properties.isSellable == true,
             isStakeEnabled = assetFull.properties.isStakeable == true,
             isSwapEnabled = assetInfo.id().chain.isSwapSupport(),
             stakingApr = assetFull.properties.stakingApr,
@@ -407,9 +407,14 @@ class AssetsRepository @Inject constructor(
         listOfNotNull(getNative.await()) + getTokens.await()
     }
 
-    suspend fun updateBayAvailable(assets: List<String>) {
+    suspend fun updateBuyAvailable(assets: List<String>) {
         assetsDao.resetBuyAvailable()
         assetsDao.updateBuyAvailable(assets)
+    }
+
+    suspend fun updateSellAvailable(assets: List<String>) {
+        assetsDao.resetSellAvailable()
+        assetsDao.updateSellAvailable(assets)
     }
 
     private fun onTransactions(txs: List<TransactionExtended>) = scope.launch {

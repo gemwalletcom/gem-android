@@ -6,7 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.features.buy.models.AmountValidator
 import com.gemwallet.android.features.buy.models.BuyError
+import com.gemwallet.android.features.buy.models.FiatSceneState
+import com.gemwallet.android.features.buy.models.FiatSuggestion
 import com.gemwallet.android.features.buy.models.toProviderUIModel
 import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.ui.models.AssetInfoUIModel
@@ -31,6 +34,7 @@ import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 import kotlin.random.Random
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class FiatViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
@@ -38,25 +42,30 @@ class FiatViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val type = FiatQuoteType.Buy // now always buy
-    val assetId = savedStateHandle.getStateFlow("assetId", "").mapNotNull { it.toAssetId() }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val asset =
-        assetId.flatMapLatest { assetsRepository.getAssetInfo(it).mapNotNull { it } }.map { AssetInfoUIModel(it, false, 6, -1) }
-            .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    private val amountValidator = AmountValidator(
-        when (type) {
-            FiatQuoteType.Buy -> MIN_FIAT_AMOUNT
-            FiatQuoteType.Sell -> 0.0
-        }
-    )
     private val currency = Currency.USD
     private val currencySymbol = java.util.Currency.getInstance(currency.name).symbol
 
-    val suggestedAmounts: List<FiatSuggestion>
-        get() = when (type) {
+    val type = MutableStateFlow(FiatQuoteType.Buy)
+    val assetId = savedStateHandle.getStateFlow("assetId", "").mapNotNull { it.toAssetId() }
+
+    private val _amount = MutableStateFlow("")
+    val amount: StateFlow<String> get() = _amount
+
+    val asset = assetId.flatMapLatest { assetsRepository.getAssetInfo(it).mapNotNull { it } }
+        .map { AssetInfoUIModel(it, false, 6, -1) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val amountValidator = type.mapLatest {
+        AmountValidator(
+            when (it) {
+                FiatQuoteType.Buy -> MIN_FIAT_AMOUNT
+                FiatQuoteType.Sell -> 0.0
+            }
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, AmountValidator(MIN_FIAT_AMOUNT))
+
+    val suggestedAmounts = type.mapLatest {
+        when (it) {
             FiatQuoteType.Buy -> listOf(
                 FiatSuggestion.SuggestionAmount("${currencySymbol}100", 100.0),
                 FiatSuggestion.SuggestionAmount("${currencySymbol}250", 250.0),
@@ -69,57 +78,51 @@ class FiatViewModel @Inject constructor(
                 FiatSuggestion.MaxAmount
             )
         }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val defaultAmount: String
-        get() = when (type) {
+    val defaultAmount = type.mapLatest {
+        val value = when (it) {
             FiatQuoteType.Buy -> "50"
             FiatQuoteType.Sell -> "0"
         }
-
-    private val _amount = MutableStateFlow("")
-    val amount: StateFlow<String> get() = _amount
+        _amount.update { value }
+        value
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, "50")
 
     private val _state = MutableStateFlow<FiatSceneState?>(null)
 
     val state: StateFlow<FiatSceneState?> get() = _state
     private val _selectedQuote = MutableStateFlow<FiatQuote?>(null)
 
-    val selectedQuote: StateFlow<FiatQuote?> get() = _selectedQuote
-
     @OptIn(ExperimentalCoroutinesApi::class)
-    val quotes = asset.combine(amount) { asset, amount -> Pair(asset, amount) }
-        .mapLatest {
-            val asset = it.first ?: return@mapLatest emptyList()
-            val amount = it.second
-            if (!amountValidator.validate(amount)) {
-                _state.value = FiatSceneState.Error(amountValidator.error)
-                return@mapLatest emptyList()
-            } else {
-                _state.value = FiatSceneState.Loading
-            }
-            val result = try {
-                val quotes = buyRepository.getBuyQuotes(
-                    asset.asset,
-                    currency.string,
-                    amount.numberParse().toDouble(),
-                    asset.assetInfo.owner?.address ?: ""
-                ).getOrNull()
-                if (quotes == null) {
-                    _state.value = FiatSceneState.Error(BuyError.QuoteNotAvailable)
-                    return@mapLatest emptyList()
-                }
-                _state.value = null
-                quotes.sortedByDescending { quote -> quote.cryptoAmount }
-            } catch (_: Exception) {
-                _state.value = FiatSceneState.Error(BuyError.QuoteNotAvailable)
-                emptyList()
-            }
-            result
+    val quotes = combine(asset, type, amount, amountValidator) { asset, type, amount, validator ->
+        asset ?: return@combine emptyList()
+        if (!validator.validate(amount)) {
+            _state.value = FiatSceneState.Error(validator.error)
+            return@combine emptyList()
+        } else {
+            _state.value = FiatSceneState.Loading
         }
-        .onEach { quotes ->
-            _selectedQuote.update { quotes.firstOrNull() }
+        val result = try {
+            val quotes = buyRepository.getQuotes(
+                asset.asset,
+                type = type,
+                currency.string,
+                amount.numberParse().toDouble(),
+                asset.assetInfo.owner?.address ?: ""
+            )
+            _state.value = null
+            quotes.sortedByDescending { quote -> quote.cryptoAmount }
+        } catch (_: Exception) {
+            _state.value = FiatSceneState.Error(BuyError.QuoteNotAvailable)
+            emptyList()
         }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+        result
+    }
+    .onEach { quotes ->
+        _selectedQuote.update { quotes.firstOrNull() }
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
 
     val providers = combine(asset.filterNotNull(), quotes) { asset, quotes ->
@@ -129,18 +132,8 @@ class FiatViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val selectedProvider = combine(asset, _selectedQuote) { asset, quote ->
-        return@combine asset?.let {
-            quote?.toProviderUIModel(asset.asset, currency)
-        }
+        return@combine asset?.let { quote?.toProviderUIModel(asset.asset, currency) }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-    init {
-        setDefaultAmount()
-    }
-
-    private fun setDefaultAmount() {
-        _amount.value = defaultAmount
-    }
 
     fun updateAmount(newAmount: String) {
         _amount.value = newAmount
@@ -155,7 +148,7 @@ class FiatViewModel @Inject constructor(
                 (amount * (suggestion.value / 100.0)).toString()
             }
 
-            is FiatSuggestion.MaxAmount -> asset.value?.cryptoFormatted ?: ""
+            is FiatSuggestion.MaxAmount -> asset.value?.cryptoAmount?.toString() ?: ""
         }
     }
 
@@ -163,51 +156,19 @@ class FiatViewModel @Inject constructor(
         _selectedQuote.value = quotes.value.firstOrNull { it.provider.name == provider.name }
     }
 
+    fun setType(type: FiatQuoteType) {
+        _amount.update { "0" }
+        this.type.update { type }
+    }
+
     private fun randomAmount(maxAmount: Double = 1000.0): Int {
-        return when (type) {
-            FiatQuoteType.Buy -> Random.nextInt(defaultAmount.toInt(), maxAmount.toInt())
+        return when (type.value) {
+            FiatQuoteType.Buy -> Random.nextInt(defaultAmount.value.toInt(), maxAmount.toInt())
             FiatQuoteType.Sell -> return 0
         }
     }
 
     companion object {
         const val MIN_FIAT_AMOUNT = 20.0
-    }
-}
-
-sealed interface FiatSceneState {
-    data object Loading : FiatSceneState
-    data class Error(val error: BuyError?) : FiatSceneState
-}
-
-sealed class FiatSuggestion(open val text: String, open val value: Double) {
-    class SuggestionAmount(override val text: String, override val value: Double) :
-        FiatSuggestion(text, value)
-
-    data class SuggestionPercent(override val text: String, override val value: Double) :
-        FiatSuggestion(text, value)
-
-    data object RandomAmount : FiatSuggestion("Random", 0.0)
-
-    data object MaxAmount : FiatSuggestion("Max", 100.0)
-}
-
-private class AmountValidator(private val minValue: Double) {
-    var error: BuyError? = null
-        private set
-
-    fun validate(input: String): Boolean {
-        error = null
-        val value = try {
-            input.ifEmpty { "0.0" }.numberParse().toDouble()
-        } catch (_: Throwable) {
-            BuyError.ValueIncorrect.also { error = it }
-            return false
-        }
-        if (value < minValue) {
-            BuyError.MinimumAmount.also { error = it }
-            return false
-        }
-        return true
     }
 }

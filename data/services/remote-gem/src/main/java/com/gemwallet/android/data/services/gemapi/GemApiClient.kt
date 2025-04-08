@@ -34,16 +34,21 @@ interface GemApiClient {
     @POST("/v1/prices")
     suspend fun prices(@Body request: AssetPricesRequest): Result<PricesResponse>
 
-    @GET("/v1/fiat/on_ramp/quotes/{asset_id}")
-    suspend fun getQuote(
+    @GET("/v1/fiat/quotes/{asset_id}")
+    suspend fun getFiatQuotes(
         @Path("asset_id") assetId: String,
-        @Query("amount") amount: Double,
+        @Query("type") type: String,
+        @Query("fiat_amount") fiatAmount: Double?,
+        @Query("crypto_value") cryptoAmount: String?,
         @Query("currency") currency: String,
-        @Query("wallet_address") owner: String,
+        @Query("wallet_address") walletAddress: String
     ): Result<FiatQuotes>
 
     @GET("/v1/fiat/on_ramp/assets")
-    suspend fun getFiatAssets(): Result<FiatAssets>
+    suspend fun getOnRampAssets(): Result<FiatAssets>
+
+    @GET("/v1/fiat/off_ramp/assets")
+    suspend fun getOffRampAssets(): Result<FiatAssets>
 
     @GET("/v1/transactions/device/{device_id}")
     suspend fun getTransactions(

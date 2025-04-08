@@ -48,6 +48,7 @@ data class DbAsset(
     val chain: Chain,
     @ColumnInfo("is_enabled") val isEnabled: Boolean = true, // System flag
     @ColumnInfo("is_buy_enabled") val isBuyEnabled: Boolean = false,
+    @ColumnInfo("is_sell_enabled") val isSellEnabled: Boolean = false,
     @ColumnInfo("is_swap_enabled") val isSwapEnabled: Boolean = false,
     @ColumnInfo("is_stake_enabled") val isStakeEnabled: Boolean = false,
     @ColumnInfo("staking_apr") val stakingApr: Double? = null,
@@ -127,6 +128,7 @@ fun AssetFull.toRecord() = DbAsset(
     decimals = asset.decimals,
     type = asset.type,
     isBuyEnabled = properties.isBuyable == true,
+    isSellEnabled = properties.isSellable == true,
     isStakeEnabled = properties.isStakeable == true,
     isSwapEnabled = asset.chain().isSwapSupport(),
     stakingApr = properties.stakingApr,
@@ -141,6 +143,7 @@ fun AssetBasic.toRecord() = DbAsset(
     decimals = asset.decimals,
     type = asset.type,
     isBuyEnabled = properties.isBuyable == true,
+    isSellEnabled = properties.isSellable == true,
     isStakeEnabled = properties.isStakeable == true,
     isSwapEnabled = asset.chain().isSwapSupport(),
     stakingApr = properties.stakingApr,
