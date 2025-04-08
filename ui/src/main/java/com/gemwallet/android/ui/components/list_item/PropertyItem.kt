@@ -59,7 +59,7 @@ fun PropertyTitleText(
     color: Color = MaterialTheme.colorScheme.onSurface,
     info: InfoSheetEntity? = null,
 ) {
-    PropertyTitleText(stringResource(text), badge, color)
+    PropertyTitleText(stringResource(text), badge, color, info)
 }
 
 @Composable

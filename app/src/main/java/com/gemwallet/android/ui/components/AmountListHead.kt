@@ -237,9 +237,7 @@ private fun AssetWatchOnly() {
             Spacer8()
             IconButton(
                 modifier = Modifier.size(24.dp),
-                onClick = {
-                    showInfoSheet = InfoSheetEntity.WatchWalletInfo()
-                }
+                onClick = { showInfoSheet = InfoSheetEntity.WatchWalletInfo }
             ) {
                 Icon(
                     imageVector = Icons.Default.Info,

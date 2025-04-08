@@ -48,6 +48,7 @@ import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.features.swap.viewmodels.SwapViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer2
 import com.gemwallet.android.ui.components.designsystem.Spacer4
@@ -79,6 +80,7 @@ fun SwapScreen(
     val currentProvider by viewModel.currentProvider.collectAsStateWithLifecycle()
     val providers by viewModel.providers.collectAsStateWithLifecycle()
     val priceImpact by viewModel.priceImpact.collectAsStateWithLifecycle()
+    val rate by viewModel.rate.collectAsStateWithLifecycle()
 
     val isShowProviderSelect = remember { mutableStateOf(false) }
     var approveParams by rememberSaveable { mutableStateOf<ConfirmParams?>(null) }
@@ -145,9 +147,20 @@ fun SwapScreen(
             currentProvider?.let { provider ->
                 CurrentSwapProvider(provider, providers.size > 1, isShowProviderSelect)
             }
+            rate?.let {
+                PropertyItem(
+                    title = { PropertyTitleText(R.string.buy_rate) },
+                    data = { PropertyDataText(it) }
+                )
+            }
             priceImpact?.let {
                 PropertyItem(
-                    title = { PropertyTitleText(R.string.swap_price_impact) },
+                    title = {
+                        PropertyTitleText(
+                            R.string.swap_price_impact,
+                            info = InfoSheetEntity.PriceImpactInfo,
+                        )
+                    },
                     data = {
                         PropertyDataText(
                             text = it.percentageFormatted,
