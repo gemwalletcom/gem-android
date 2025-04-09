@@ -25,8 +25,7 @@ internal class AptosFeeCalculator(
 ) {
     private val maxGasAmount = BigInteger.valueOf(1_500)
 
-    suspend fun calculate(params: ConfirmParams.TransferParams, sequence: Long): List<Fee> = withContext(Dispatchers.IO) {
-        val recipient = params.destination().address
+    suspend fun calculate(params: ConfirmParams, sequence: Long): List<Fee> = withContext(Dispatchers.IO) {
         val feePrice = feeRpcClient.feePrice().getOrThrow()
 
         FeePriority.entries.map {
@@ -37,18 +36,26 @@ internal class AptosFeeCalculator(
                     FeePriority.Fast -> feePrice.prioritized_gas_estimate * 2
                 }.toBigInteger()
 
-                val gasLimit = when (params.assetId.type()) {
-                    AssetSubtype.NATIVE -> simulateTransactions(
-                        sender = params.from.address,
-                        recipient = recipient,
-                        sequence = sequence,
-                        value = params.amount,
-                        gasPrice = price,
-                        maxGasAmount = maxGasAmount
-                    ).gas_used.toBigInteger()
+                val gasLimit = when (params) {
+                    is ConfirmParams.TransferParams -> {
+                        val recipient = params.destination().address
+                        when (params.assetId.type()) {
+                            AssetSubtype.NATIVE -> simulateTransactions(
+                                sender = params.from.address,
+                                recipient = recipient,
+                                sequence = sequence,
+                                value = params.amount,
+                                gasPrice = price,
+                                maxGasAmount = maxGasAmount
+                            ).gas_used.toBigInteger()
 
-                    AssetSubtype.TOKEN -> maxGasAmount
+                            AssetSubtype.TOKEN -> maxGasAmount
+                        }
+                    }
+                    is ConfirmParams.SwapParams -> maxGasAmount
+                    else -> throw IllegalArgumentException("not supported operation")
                 }
+
                 GasFee(
                     feeAssetId = AssetId(chain),
                     priority = it,

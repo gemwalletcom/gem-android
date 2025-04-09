@@ -39,6 +39,16 @@ class AptosSignClient(
         return sign(params, chainData, privateKey, buildTokenCoinMessage(params, finalAmount))
     }
 
+    override suspend fun signSwap(
+        params: ConfirmParams.SwapParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        feePriority: FeePriority,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        return sign(params, chainData, privateKey, params.swapData)
+    }
+
     private fun sign(params: ConfirmParams, chainData: ChainSignData, privateKey: ByteArray, message: Any): List<ByteArray> {
         val metadata = chainData as AptosSignerPreloader.AptosChainData
         val fee = metadata.gasFee()
@@ -47,6 +57,7 @@ class AptosSignClient(
             when (message) {
                 is TransferMessage -> this.transfer = message
                 is TokenTransferCoinsMessage -> this.tokenTransferCoins = message
+                is String -> this.anyEncoded = message
                 else -> IllegalArgumentException()
             }
             this.expirationTimestampSecs = 3664390082
