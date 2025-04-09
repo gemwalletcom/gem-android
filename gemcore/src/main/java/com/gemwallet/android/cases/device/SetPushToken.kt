@@ -1,5 +1,5 @@
 package com.gemwallet.android.cases.device
 
-interface SetPushTokenCase {
+interface SetPushToken {
     fun setPushToken(token: String)
 }

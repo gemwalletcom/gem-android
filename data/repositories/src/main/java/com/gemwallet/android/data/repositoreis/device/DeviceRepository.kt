@@ -2,13 +2,13 @@ package com.gemwallet.android.data.repositoreis.device
 
 import android.util.Log
 import com.gemwallet.android.cases.device.GetDeviceIdCase
-import com.gemwallet.android.cases.device.GetPushEnabledCase
-import com.gemwallet.android.cases.device.GetPushTokenCase
+import com.gemwallet.android.cases.device.GetPushEnabled
+import com.gemwallet.android.cases.device.GetPushToken
 import com.gemwallet.android.cases.device.RequestPushToken
-import com.gemwallet.android.cases.device.SetPushTokenCase
-import com.gemwallet.android.cases.device.SwitchPushEnabledCase
-import com.gemwallet.android.cases.device.SyncDeviceInfoCase
-import com.gemwallet.android.cases.device.SyncSubscriptionCase
+import com.gemwallet.android.cases.device.SetPushToken
+import com.gemwallet.android.cases.device.SwitchPushEnabled
+import com.gemwallet.android.cases.device.SyncDeviceInfo
+import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.session.GetCurrentCurrencyCase
 import com.gemwallet.android.data.repositoreis.config.UserConfig.Keys
@@ -39,12 +39,12 @@ class DeviceRepository(
     private val coroutineScope: CoroutineScope = CoroutineScope(
         SupervisorJob() + CoroutineExceptionHandler { _, err -> Log.e("DEVICE", "Err:", err) } + Dispatchers.IO
     ),
-) : SyncDeviceInfoCase,
-    SwitchPushEnabledCase,
-    GetPushEnabledCase,
-    GetPushTokenCase,
-    SetPushTokenCase,
-    SyncSubscriptionCase
+) : SyncDeviceInfo,
+    SwitchPushEnabled,
+    GetPushEnabled,
+    GetPushToken,
+    SetPushToken,
+    SyncSubscription
 {
     init {
         coroutineScope.launch { syncDeviceInfo() }

@@ -22,7 +22,7 @@ import com.gemwallet.android.blockchain.operators.walletcore.WCStorePhraseOperat
 import com.gemwallet.android.blockchain.operators.walletcore.WCValidateAddressOperator
 import com.gemwallet.android.blockchain.operators.walletcore.WCValidatePhraseOperator
 import com.gemwallet.android.cases.banners.AddBannerCase
-import com.gemwallet.android.cases.device.SyncSubscriptionCase
+import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.data.password.PreferencePasswordStore
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -102,7 +102,7 @@ object InteractsModule {
         passwordStore: PasswordStore,
         rpcClients: RpcClientAdapter,
         addBannerCase: AddBannerCase,
-        syncSubscriptionCase: SyncSubscriptionCase,
+        syncSubscription: SyncSubscription,
     ): ImportWalletOperator = PhraseAddressImportWalletOperator(
         walletsRepository = walletsRepository,
         assetsRepository = assetsRepository,
@@ -112,7 +112,7 @@ object InteractsModule {
         addressValidate = addressValidate,
         passwordStore = passwordStore,
         addBannerCase = addBannerCase,
-        syncSubscriptionCase = syncSubscriptionCase,
+        syncSubscription = syncSubscription,
         addressStatusClients = AddressStatusClientProxy(
             clients = Chain.available().mapNotNull {
                 when (it) {
