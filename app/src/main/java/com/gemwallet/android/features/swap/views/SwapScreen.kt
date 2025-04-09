@@ -301,6 +301,7 @@ private fun SwapError(state: SwapState) {
                 SwapError.NotImplemented,
                 SwapError.NotSupportedPair -> stringResource(R.string.errors_swap_not_supported_pair)
                 SwapError.NetworkError -> "Node not available. Check internet connection."
+                is SwapError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_balance, state.error.amount)
                 is SwapError.Unknown -> "${stringResource(R.string.errors_unknown_try_again)}: ${state.error.message}"
             },
             style = MaterialTheme.typography.bodyMedium,

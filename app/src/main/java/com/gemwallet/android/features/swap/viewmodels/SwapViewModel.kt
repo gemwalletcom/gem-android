@@ -189,6 +189,10 @@ class SwapViewModel @Inject constructor(
             swapScreenState.update { SwapState.None }
             return@mapLatest emptyList()
         }
+        if (fromAsset.balance.balanceAmount.available < fromValue.toDouble()) {
+            swapScreenState.update { SwapState.Error(SwapError.InsufficientBalance(data.first)) }
+            return@mapLatest emptyList()
+        }
         swapScreenState.update { SwapState.GetQuote }
         delay(500L) // User input type - doesn't want spam nodes
         val quotes = try {
