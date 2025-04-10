@@ -12,7 +12,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.add_asset.models.AddAssetUIState
 import com.gemwallet.android.features.add_asset.viewmodels.AddAssetViewModel
-import com.gemwallet.android.ui.components.qrCodeRequest
+import com.gemwallet.android.ui.components.QrCodeRequest
 
 @Composable
 fun AddAssetScree(
@@ -68,7 +68,7 @@ fun AddAssetScree(
                 )
             }
             AddAssetUIState.Scene.QrScanner -> {
-                qrCodeRequest(
+                QrCodeRequest(
                     onResult = viewModel::setQrData,
                     onCancel = viewModel::cancelScan
                 )
