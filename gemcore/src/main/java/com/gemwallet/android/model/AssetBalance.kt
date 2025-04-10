@@ -10,6 +10,7 @@ data class AssetBalance(
     val balanceAmount: Balance<Double> = Balance<Double>(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
     val totalAmount: Double = 0.0,
     val fiatTotalAmount: Double = 0.0,
+    val isActive: Boolean = true,
 ) {
 
     override fun equals(other: Any?): Boolean {
@@ -18,6 +19,18 @@ data class AssetBalance(
                 && balance == other.balance
                 && totalAmount == other.totalAmount
     }
+
+    override fun hashCode(): Int {
+        var result = super.hashCode()
+        result = 31 * result + asset.hashCode()
+        result = 31 * result + balance.hashCode()
+        result = 31 * result + balanceAmount.hashCode()
+        result = 31 * result + totalAmount.hashCode()
+        result = 31 * result + fiatTotalAmount.hashCode()
+        result = 31 * result + isActive.hashCode()
+        return result
+    }
+
     companion object {
         fun create(
             asset: Asset,
@@ -28,6 +41,7 @@ data class AssetBalance(
             pending: String = "0",
             rewards: String = "0",
             reserved: String = "0",
+            isActive: Boolean = true,
         ): AssetBalance {
             val balance = Balance(
                 available = available,
@@ -45,18 +59,9 @@ data class AssetBalance(
                 balanceAmount = balanceAmount,
                 totalAmount = balanceAmount.getTotalAmount(),
                 fiatTotalAmount = 0.0,
+                isActive = isActive,
             )
         }
-    }
-
-    override fun hashCode(): Int {
-        var result = super.hashCode()
-        result = 31 * result + asset.hashCode()
-        result = 31 * result + balance.hashCode()
-        result = 31 * result + balanceAmount.hashCode()
-        result = 31 * result + totalAmount.hashCode()
-        result = 31 * result + fiatTotalAmount.hashCode()
-        return result
     }
 }
 

@@ -100,7 +100,7 @@ class ConfirmViewModel @Inject constructor(
 
     private val assetsInfo = request.filterNotNull().mapNotNull {
         if (it is ConfirmParams.SwapParams) {
-            listOf(it.fromAssetId, it.toAssetId)
+            listOf(it.fromAsset.id, it.toAssetId)
         } else {
             listOf(it.assetId)
         }
@@ -287,6 +287,7 @@ class ConfirmViewModel @Inject constructor(
                         is ConfirmParams.SwapParams,
                         is ConfirmParams.TokenApprovalParams -> swapRoute
                         is ConfirmParams.TransferParams -> assetRoute
+                        is ConfirmParams.Activate -> assetRoute
                     }
                     viewModelScope.launch(Dispatchers.Main) {
                         finishAction(assetId = assetInfo.id(), hash = txHash, route = finishRoute)
@@ -323,6 +324,7 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.TransferParams,
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams,
+            is ConfirmParams.Activate,
             is ConfirmParams.Stake.DelegateParams -> assetInfo.balance.balance.available.toBigInteger()
             is ConfirmParams.Stake.RedelegateParams -> BigInteger(stakeRepository.getDelegation(params.srcValidatorId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.Stake.UndelegateParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
@@ -338,6 +340,7 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.Stake.RedelegateParams -> params.dstValidatorId
             is ConfirmParams.Stake.UndelegateParams -> params.validatorId
             is ConfirmParams.Stake.WithdrawParams -> params.validatorId
+            is ConfirmParams.Activate,
             is ConfirmParams.Stake.RewardsParams,
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams,
@@ -353,6 +356,7 @@ class ConfirmViewModel @Inject constructor(
 
     private fun ConfirmParams.getRecipientCell(validator: DelegationValidator?): CellEntity<Int>? {
         return when (this) {
+            is ConfirmParams.Activate,
             is ConfirmParams.Stake.RewardsParams -> null
             is ConfirmParams.Stake.DelegateParams,
             is ConfirmParams.Stake.RedelegateParams,
@@ -397,7 +401,7 @@ class ConfirmViewModel @Inject constructor(
         is ConfirmParams.SwapParams -> {
             gson.toJson(
                 TransactionSwapMetadata(
-                    fromAsset = input.fromAssetId,
+                    fromAsset = input.fromAsset.id,
                     toAsset = input.toAssetId,
                     fromValue = input.fromAmount.toString(),
                     toValue = input.toAmount.toString(),
@@ -450,12 +454,12 @@ class ConfirmViewModel @Inject constructor(
                 TransactionType.Transfer,
                 TransactionType.Swap,
                 TransactionType.TokenApproval,
+                TransactionType.AssetActivation,
                 TransactionType.StakeDelegate -> amount + if (assetInfo == feeAssetInfo) feeAmount else BigInteger.ZERO
                 TransactionType.StakeUndelegate,
                 TransactionType.StakeRewards,
                 TransactionType.StakeRedelegate,
                 TransactionType.StakeWithdraw -> amount
-                TransactionType.AssetActivation -> TODO()
                 TransactionType.TransferNFT -> TODO()
                 TransactionType.SmartContractCall -> TODO()
             }

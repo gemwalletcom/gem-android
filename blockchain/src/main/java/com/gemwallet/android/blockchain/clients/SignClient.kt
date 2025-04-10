@@ -87,4 +87,12 @@ interface SignClient : BlockchainClient {
         feePriority: FeePriority,
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
+
+    suspend fun signActivate(
+        params: ConfirmParams.Activate,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        feePriority: FeePriority,
+        privateKey: ByteArray,
+    ): List<ByteArray> = emptyList()
 }

@@ -75,8 +75,8 @@ fun TransactionDetails(
                         TransactionType.StakeWithdraw,
                         TransactionType.Swap,
                         TransactionType.Transfer -> model.cryptoAmount
+                        TransactionType.AssetActivation,
                         TransactionType.TokenApproval -> model.assetSymbol
-                        TransactionType.AssetActivation -> TODO()
                         TransactionType.TransferNFT -> TODO()
                         TransactionType.SmartContractCall -> TODO()
                     },
@@ -88,8 +88,8 @@ fun TransactionDetails(
                         TransactionType.StakeWithdraw,
                         TransactionType.Swap,
                         TransactionType.Transfer -> model.fiatAmount
+                        TransactionType.AssetActivation,
                         TransactionType.TokenApproval -> null
-                        TransactionType.AssetActivation -> TODO()
                         TransactionType.TransferNFT -> TODO()
                         TransactionType.SmartContractCall -> TODO()
                     },

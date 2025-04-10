@@ -392,7 +392,7 @@ class SwapViewModel @Inject constructor(
         onConfirm(
             ConfirmParams.SwapParams(
                 from = from.owner!!,
-                fromAssetId = from.asset.id,
+                fromAsset = from.asset,
                 toAssetId = to.asset.id,
                 fromAmount = Crypto(fromAmount, from.asset.decimals).atomicValue,
                 toAmount = BigInteger(quote.toValue),

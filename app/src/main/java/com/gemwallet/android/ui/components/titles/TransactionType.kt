@@ -28,7 +28,7 @@ fun TransactionType.getTitle(direction: TransactionDirection? = null, state: Tra
         TransactionType.Swap -> R.string.wallet_swap
         TransactionType.TokenApproval -> R.string.transfer_approve_title
         TransactionType.StakeWithdraw -> R.string.transfer_withdraw_title
-        TransactionType.AssetActivation -> TODO()
+        TransactionType.AssetActivation -> R.string.transfer_activate_asset_title
         TransactionType.TransferNFT -> TODO()
         TransactionType.SmartContractCall -> TODO()
     }
@@ -45,8 +45,8 @@ fun TransactionType.getTransactionTitle(direction: TransactionDirection, state: 
         TransactionType.Transfer,
         TransactionType.Swap -> stringResource(getTitle(direction, state))
         TransactionType.TokenApproval -> stringResource(id = R.string.transfer_approve_title)
-        TransactionType.AssetActivation -> TODO()
-        TransactionType.TransferNFT -> TODO()
+        TransactionType.AssetActivation -> stringResource(R.string.transfer_activate_asset_title)
+        TransactionType.TransferNFT -> stringResource(R.string.transfer_title)
         TransactionType.SmartContractCall -> TODO()
     }
 }
@@ -64,8 +64,8 @@ fun TransactionType.getValue(direction: TransactionDirection, value: String): St
             TransactionDirection.Outgoing -> "-${value}"
             TransactionDirection.Incoming -> "+${value}"
         }
-        TransactionType.TokenApproval -> ""
-        TransactionType.AssetActivation -> TODO()
+        TransactionType.TokenApproval,
+        TransactionType.AssetActivation -> ""
         TransactionType.TransferNFT -> TODO()
         TransactionType.SmartContractCall -> TODO()
     }
@@ -85,9 +85,8 @@ fun TransactionType.getAddress(direction: TransactionDirection, from: String, to
         TransactionType.StakeUndelegate,
         TransactionType.StakeRedelegate,
         TransactionType.StakeWithdraw,
+        TransactionType.AssetActivation,
         TransactionType.StakeRewards -> ""
-
-        TransactionType.AssetActivation -> TODO()
         TransactionType.TransferNFT -> TODO()
         TransactionType.SmartContractCall -> TODO()
     }

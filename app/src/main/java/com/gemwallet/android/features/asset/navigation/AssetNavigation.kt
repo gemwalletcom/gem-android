@@ -10,6 +10,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.asset.details.views.AssetDetailsScene
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.wallet.core.primitives.AssetId
 
@@ -35,6 +36,7 @@ fun NavGraphBuilder.assetScreen(
     onChart: (AssetId) -> Unit,
     openNetwork: AssetIdAction,
     onStake: (AssetId) -> Unit,
+    onConfirm: (ConfirmParams) -> Unit,
 ) {
     composable(
         "$assetRoute/{$assetIdArg}",
@@ -57,6 +59,7 @@ fun NavGraphBuilder.assetScreen(
                 onChart = onChart,
                 openNetwork = openNetwork,
                 onStake = onStake,
+                onConfirm = onConfirm,
             )
         }
     }

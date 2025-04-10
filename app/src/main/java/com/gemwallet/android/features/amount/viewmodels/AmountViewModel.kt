@@ -215,7 +215,7 @@ class AmountViewModel @Inject constructor(
         val memo = params.memo
         inputErrorState.update { AmountError.None }
         nextErrorState.update { AmountError.None }
-        val builder = ConfirmParams.Builder(asset.id, state.assetInfo.owner!!, amount.atomicValue)
+        val builder = ConfirmParams.Builder(asset, state.assetInfo.owner!!, amount.atomicValue)
         val nextParams = when (params.txType) {
             TransactionType.Transfer -> builder.transfer(
                 destination = destination!!,
@@ -230,7 +230,7 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeRedelegate -> builder.redelegate(validator?.id!!, delegation!!)
             TransactionType.StakeWithdraw -> builder.withdraw(delegation!!)
             TransactionType.Swap,
-            TransactionType.AssetActivation -> TODO()
+            TransactionType.AssetActivation -> builder.activate()
             TransactionType.TransferNFT -> TODO()
             TransactionType.SmartContractCall -> TODO()
             TransactionType.TokenApproval -> throw IllegalArgumentException()

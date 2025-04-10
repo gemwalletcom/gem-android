@@ -45,7 +45,7 @@ class EvmFeeCalculator(
         nonce: BigInteger,
     ): List<GasFee> = withContext(Dispatchers.IO) {
         val getGasLimit = async { getGasLimit(assetId, params.from.address, recipient, outputAmount, payload) } // TODO: params.from.address plain
-        val getBasePriorityFees = async { getBasePriorityFee(params.assetId.chain, feeService) }    // TODO: chain is plain
+        val getBasePriorityFees = async { getBasePriorityFee(params.asset.id.chain, feeService) }    // TODO: chain is plain
         val gasLimit = getGasLimit.await()
         val (baseFee, priorityFees) = getBasePriorityFees.await()
 
@@ -79,6 +79,8 @@ class EvmFeeCalculator(
                 } else {
                     priorityFee
                 }
+
+                is ConfirmParams.Activate -> throw IllegalArgumentException()
             }
             GasFee(
                 feeAssetId = AssetId(params.assetId.chain), // TODO: params.assetId.chain

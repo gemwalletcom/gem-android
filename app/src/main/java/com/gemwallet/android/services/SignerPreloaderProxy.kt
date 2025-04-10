@@ -1,5 +1,6 @@
 package com.gemwallet.android.services
 
+import com.gemwallet.android.blockchain.clients.ActivationTransactionPreloader
 import com.gemwallet.android.blockchain.clients.ApprovalTransactionPreloader
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
@@ -30,8 +31,9 @@ class SignerPreloaderProxy(
     private val stakeTransactionClients: List<StakeTransactionPreloader>,
     private val swapTransactionClients: List<SwapTransactionPreloader>,
     private val approvalTransactionClients: List<ApprovalTransactionPreloader>,
+    private val activatePreloaderClients: List<ActivationTransactionPreloader>,
 ) : NativeTransferPreloader, TokenTransferPreloader, StakeTransactionPreloader,
-    SwapTransactionPreloader, ApprovalTransactionPreloader {
+    SwapTransactionPreloader, ApprovalTransactionPreloader, ActivationTransactionPreloader {
 
     suspend fun preload(params: ConfirmParams): SignerParams = withContext(Dispatchers.IO) {
 
@@ -52,6 +54,7 @@ class SignerPreloaderProxy(
                 is ConfirmParams.TokenApprovalParams -> preloadApproval(params)
                 is ConfirmParams.TransferParams.Native -> preloadNativeTransfer(params)
                 is ConfirmParams.TransferParams.Token -> preloadTokenTransfer(params)
+                is ConfirmParams.Activate -> preloadActivate(params)
             }
         }
 
@@ -93,6 +96,11 @@ class SignerPreloaderProxy(
             ?: throw IllegalArgumentException("Chain isn't support")
     }
 
+    override suspend fun preloadActivate(params: ConfirmParams.Activate): SignerParams {
+        return activatePreloaderClients.getClient(params.from.chain)?.preloadActivate(params = params)
+            ?: throw IllegalArgumentException("Chain isn't support")
+    }
+
     private suspend fun isValidTransaction(payload: ScanTransactionPayload): ScanTransaction? {
         return try {
             gemApiClient.getScanTransaction(payload).getOrNull()?.data
@@ -116,6 +124,7 @@ class SignerPreloaderProxy(
             is ConfirmParams.TokenApprovalParams -> ScanAddressTarget(chain, params.contract)
             is ConfirmParams.TransferParams.Native,
             is ConfirmParams.TransferParams.Token -> ScanAddressTarget(chain, params.destination().address)
+            is ConfirmParams.Activate -> ScanAddressTarget(chain, params.from.address)
         }
 
         return ScanTransactionPayload(

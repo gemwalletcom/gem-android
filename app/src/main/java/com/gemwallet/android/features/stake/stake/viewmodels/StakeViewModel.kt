@@ -86,7 +86,7 @@ class StakeViewModel @Inject constructor(
         val currentState = state.value
         onConfirm(
             ConfirmParams.Stake.RewardsParams(
-                assetId = currentState.asset?.asset?.id!!,
+                asset = currentState.asset?.asset!!,
                 from = currentState.asset.owner!!,
                 validatorsId = currentState.delegations
                     .filter { BigInteger(it.base.rewards) > BigInteger.ZERO }

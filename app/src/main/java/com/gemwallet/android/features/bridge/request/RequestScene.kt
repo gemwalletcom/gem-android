@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.confirm.views.ConfirmScreen
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
@@ -27,7 +28,6 @@ import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.screen.Scene
 import com.reown.walletkit.client.Wallet
-import com.wallet.core.primitives.AssetId
 
 @Composable
 fun RequestScene(
@@ -59,7 +59,7 @@ fun RequestScene(
             ConfirmScreen(
                 params = ConfirmParams.TransferParams.Native(
                     from = (sceneState as RequestSceneState.SendTransaction).account,
-                    assetId = AssetId((sceneState as RequestSceneState.SendTransaction).account.chain),
+                    asset = (sceneState as RequestSceneState.SendTransaction).account.chain.asset(),
                     amount = (sceneState as RequestSceneState.SendTransaction).value,
                     destination = DestinationAddress(address = (sceneState as RequestSceneState.SendTransaction).to),
                     memo = (sceneState as RequestSceneState.SendTransaction).data,

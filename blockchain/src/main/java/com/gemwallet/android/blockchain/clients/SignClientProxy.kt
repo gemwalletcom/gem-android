@@ -32,7 +32,7 @@ class SignClientProxy(
         feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val chain = params.input.assetId.chain
+        val chain = params.input.asset.id.chain
         val client = clients.getClient(chain) ?: throw Exception("Chain isn't support")
         val input = params.input
         return when (input) {
@@ -45,6 +45,7 @@ class SignClientProxy(
             is ConfirmParams.TokenApprovalParams -> client.signTokenApproval(input, params.chainData, params.finalAmount, feePriority, privateKey)
             is ConfirmParams.TransferParams.Native -> client.signNativeTransfer(input, params.chainData, params.finalAmount, feePriority, privateKey)
             is ConfirmParams.TransferParams.Token -> client.signTokenTransfer(input, params.chainData, params.finalAmount, feePriority, privateKey)
+            is ConfirmParams.Activate -> client.signActivate(input, params.chainData, params.finalAmount, feePriority, privateKey)
         }
     }
 

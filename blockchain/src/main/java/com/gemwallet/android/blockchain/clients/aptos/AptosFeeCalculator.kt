@@ -39,7 +39,7 @@ internal class AptosFeeCalculator(
                 val gasLimit = when (params) {
                     is ConfirmParams.TransferParams -> {
                         val recipient = params.destination().address
-                        when (params.assetId.type()) {
+                        when (params.asset.id.type()) {
                             AssetSubtype.NATIVE -> simulateTransactions(
                                 sender = params.from.address,
                                 recipient = recipient,

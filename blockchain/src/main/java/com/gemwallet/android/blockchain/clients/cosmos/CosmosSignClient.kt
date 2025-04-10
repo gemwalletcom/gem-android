@@ -51,7 +51,7 @@ class CosmosSignClient(
         priority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val denom = params.assetId.tokenId!!
+        val denom = params.asset.id.tokenId!!
 
         val message = getTransferMessage(
             from = params.from.address,
@@ -267,7 +267,6 @@ class CosmosSignClient(
     }
 
     private fun sign(
-//        params: ConfirmParams,
         chainData: ChainSignData,
         messages: List<Message>,
         memo: String,
@@ -292,21 +291,6 @@ class CosmosSignClient(
             }
 
         }.build()
-//        val memo = when (params.getTxType()) {
-//            TransactionType.StakeDelegate,
-//            TransactionType.StakeUndelegate,
-//            TransactionType.StakeRewards,
-//            TransactionType.StakeRedelegate,
-//            TransactionType.StakeWithdraw -> "Stake via Gem Wallet"
-//            TransactionType.Swap -> (params as? ConfirmParams.SwapParams)?.swapData ?: throw IllegalArgumentException("No swap data") // TODO: Doesn't for Throchain
-//            TransactionType.Transfer,
-//            TransactionType.TokenApproval -> params.memo() ?: ""
-//            TransactionType.TransferNFT,
-//            TransactionType.SmartContractCall,
-//            TransactionType.AssetActivation -> throw IllegalArgumentException("asset activation doesn't support")
-//
-//        }
-
         val signInput = Cosmos.SigningInput.newBuilder().apply {
             this.mode = Cosmos.BroadcastMode.SYNC
             this.signingMode = Cosmos.SigningMode.Protobuf

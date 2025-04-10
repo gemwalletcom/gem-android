@@ -1,6 +1,8 @@
 package com.gemwallet.android.blockchain.clients.xrp
 
+import com.gemwallet.android.blockchain.clients.ActivationTransactionPreloader
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
+import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.clients.xrp.services.account
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
@@ -15,15 +17,25 @@ import kotlinx.coroutines.withContext
 class XrpSignerPreloader(
     private val chain: Chain,
     private val rpcClient: XrpRpcClient,
-) : NativeTransferPreloader {
+) : NativeTransferPreloader, TokenTransferPreloader, ActivationTransactionPreloader {
 
     private val feeCalculator = XrpFeeCalculator(chain, rpcClient)
 
-    override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams = withContext(Dispatchers.IO) {
+    override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
+        return preload(params)
+    }
+
+    override suspend fun preloadTokenTransfer(params: ConfirmParams.TransferParams.Token): SignerParams {
+        return preload(params)
+    }
+
+    override suspend fun preloadActivate(params: ConfirmParams.Activate): SignerParams {
+        return preload(params)
+    }
+
+    private suspend fun preload(params: ConfirmParams) = withContext(Dispatchers.IO) {
         val (getSequence, getFee) = Pair (
-            async {
-                rpcClient.account(params.from.address).getOrNull()?.result
-            },
+            async { rpcClient.account(params.from.address).getOrNull()?.result },
             async { feeCalculator.calculate() }
         )
         val account = getSequence.await() ?: throw Exception("No account found")
@@ -44,8 +56,10 @@ class XrpSignerPreloader(
     data class XrpChainData(
         val sequence: Int,
         val blockNumber: Int,
-        val fee: Fee,
+        val fees: List<Fee>,
     ) : ChainSignData {
-        override fun fee(feePriority: FeePriority): Fee = fee
+        override fun fee(speed: FeePriority): Fee = fees.firstOrNull { it.priority == speed } ?: fees.first()
+
+        override fun allFee(): List<Fee> = fees
     }
 }

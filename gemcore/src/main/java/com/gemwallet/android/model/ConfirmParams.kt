@@ -9,6 +9,7 @@ import com.gemwallet.android.serializer.AssetIdSerializer
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.wallet.core.primitives.Account
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Delegation
@@ -18,20 +19,22 @@ import java.math.BigInteger
 import java.util.Base64
 
 sealed class ConfirmParams(
-    val assetId: AssetId,
+    val asset: Asset,
     val from: Account,
     val amount: BigInteger = BigInteger.ZERO,
 ) {
 
+    val assetId: AssetId get() = asset.id
+
     class Builder(
-        val assetId: AssetId,
+        val asset: Asset,
         val from: Account,
         val amount: BigInteger = BigInteger.ZERO,
     ) {
         fun transfer(destination: DestinationAddress, memo: String? = null, isMax: Boolean = false): TransferParams {
-            return when (assetId.type()) {
+            return when (asset.id.type()) {
                 AssetSubtype.NATIVE -> TransferParams.Native(
-                    assetId = assetId,
+                    asset = asset,
                     from = from,
                     amount = amount,
                     destination = destination,
@@ -39,7 +42,7 @@ sealed class ConfirmParams(
                     isMaxAmount = isMax
                 )
                 AssetSubtype.TOKEN -> TransferParams.Token(
-                    assetId = assetId,
+                    asset = asset,
                     from = from,
                     amount = amount,
                     destination = destination,
@@ -50,15 +53,15 @@ sealed class ConfirmParams(
         }
 
         fun approval(approvalData: String, provider: String, contract: String = ""): TokenApprovalParams {
-            return TokenApprovalParams(assetId, from, approvalData, provider, contract)
+            return TokenApprovalParams(asset, from, approvalData, provider, contract)
         }
 
-        fun delegate(validatorId: String) = Stake.DelegateParams(assetId, from, amount, validatorId)
+        fun delegate(validatorId: String) = Stake.DelegateParams(asset, from, amount, validatorId)
 
-        fun rewards(validatorsId: List<String>) = Stake.RewardsParams(assetId, from, validatorsId, amount)
+        fun rewards(validatorsId: List<String>) = Stake.RewardsParams(asset, from, validatorsId, amount)
 
         fun withdraw(delegation: Delegation) = Stake.WithdrawParams(
-            assetId = assetId,
+            asset = asset,
             from = from,
             amount = amount,
             validatorId = delegation.validator.id,
@@ -67,7 +70,7 @@ sealed class ConfirmParams(
 
         fun undelegate(delegation: Delegation): Stake.UndelegateParams {
             return Stake.UndelegateParams(
-                assetId,
+                asset,
                 from,
                 amount,
                 delegation.validator.id,
@@ -79,7 +82,7 @@ sealed class ConfirmParams(
 
         fun redelegate(dstValidatorId: String, delegation: Delegation): Stake.RedelegateParams {
             return Stake.RedelegateParams(
-                assetId,
+                asset,
                 from = from,
                 amount,
                 delegation.validator.id,
@@ -88,16 +91,20 @@ sealed class ConfirmParams(
                 delegation.base.balance,
             )
         }
+
+        fun activate(): Activate {
+            return Activate(asset, from)
+        }
     }
 
     sealed class TransferParams(
-        assetId: AssetId,
+        asset: Asset,
         from: Account,
         amount: BigInteger,
         val destination: DestinationAddress,
         val memo: String? = null,
         val isMaxAmount: Boolean = false,
-    ) : ConfirmParams(assetId, from, amount) {
+    ) : ConfirmParams(asset, from, amount) {
 
         override fun isMax(): Boolean {
             return isMaxAmount
@@ -112,35 +119,35 @@ sealed class ConfirmParams(
         }
 
         class Native(
-            assetId: AssetId,
+            asset: Asset,
             from: Account,
             amount: BigInteger,
             destination: DestinationAddress,
             memo: String? = null,
             isMaxAmount: Boolean = false,
-        ) : TransferParams(assetId, from, amount, destination, memo, isMaxAmount)
+        ) : TransferParams(asset, from, amount, destination, memo, isMaxAmount)
 
         class Token(
-            assetId: AssetId,
+            asset: Asset,
             from: Account,
             amount: BigInteger,
             destination: DestinationAddress,
             memo: String? = null,
             isMaxAmount: Boolean = false,
-        ) : TransferParams(assetId, from, amount, destination, memo, isMaxAmount)
+        ) : TransferParams(asset, from, amount, destination, memo, isMaxAmount)
     }
 
     class TokenApprovalParams(
-        assetId: AssetId,
+        asset: Asset,
         from: Account,
         val data: String,
         val provider: String,
         val contract: String
-    ) : ConfirmParams(assetId, from)
+    ) : ConfirmParams(asset, from)
 
     class SwapParams(
         from: Account,
-        val fromAssetId: AssetId,
+        val fromAsset: Asset,
         val fromAmount: BigInteger,
         val toAssetId: AssetId,
         val toAmount: BigInteger,
@@ -150,60 +157,65 @@ sealed class ConfirmParams(
         val value: String,
         val approval: ApprovalData? = null,
         val gasLimit: BigInteger? = null,
-    ) : ConfirmParams(fromAssetId, from, fromAmount) {
+    ) : ConfirmParams(fromAsset, from, fromAmount) {
 
         override fun destination(): DestinationAddress = DestinationAddress(to)
 
     }
 
+    class Activate(
+        asset: Asset,
+        from: Account,
+    ) : ConfirmParams(asset = asset, from = from)
+
     sealed class Stake(
-        assetId: AssetId,
+        asset: Asset,
         from: Account,
         amount: BigInteger,
         val validatorId: String,
-    ) : ConfirmParams(assetId, from, amount) {
+    ) : ConfirmParams(asset, from, amount) {
 
         class DelegateParams(
-            assetId: AssetId,
+            asset: Asset,
             from: Account,
             amount: BigInteger,
             validatorId: String,
-        ) : Stake(assetId, from, amount, validatorId)
+        ) : Stake(asset, from, amount, validatorId)
 
         class WithdrawParams(
-            assetId: AssetId,
+            asset: Asset,
             from: Account,
             amount: BigInteger,
             validatorId: String,
             val delegationId: String,
-        ) : Stake(assetId, from, amount, validatorId)
+        ) : Stake(asset, from, amount, validatorId)
 
         class UndelegateParams(
-            assetId: AssetId,
+            asset: Asset,
             from: Account,
             amount: BigInteger,
             validatorId: String,
             val delegationId: String,
             val share: String?,
             val balance: String?
-        ) : Stake(assetId, from, amount, validatorId)
+        ) : Stake(asset, from, amount, validatorId)
 
         class RedelegateParams(
-            assetId: AssetId,
+            asset: Asset,
             from: Account,
             amount: BigInteger,
             val srcValidatorId: String,
             val dstValidatorId: String,
             val share: String?,
             val balance: String?
-        ) : Stake(assetId, from, amount, srcValidatorId)
+        ) : Stake(asset, from, amount, srcValidatorId)
 
         class RewardsParams(
-            assetId: AssetId,
+            asset: Asset,
             from: Account,
             val validatorsId: List<String>,
             amount: BigInteger
-        ) : Stake(assetId, from, amount, "")
+        ) : Stake(asset, from, amount, "")
     }
 
     fun pack(): String? {
@@ -216,6 +228,7 @@ sealed class ConfirmParams(
             is TransferParams  -> TransactionType.Transfer
             is TokenApprovalParams  -> TransactionType.TokenApproval
             is SwapParams  -> TransactionType.Swap
+            is Activate  -> TransactionType.AssetActivation
             is Stake.DelegateParams  -> TransactionType.StakeDelegate
             is Stake.RewardsParams -> TransactionType.StakeRewards
             is Stake.RedelegateParams  -> TransactionType.StakeRedelegate
@@ -232,7 +245,7 @@ sealed class ConfirmParams(
     open fun isMax(): Boolean = false
 
     override fun hashCode(): Int {
-        return assetId.toIdentifier().hashCode() +
+        return asset.id.toIdentifier().hashCode() +
                 destination().hashCode() +
                 memo().hashCode() +
                 amount.hashCode() +
@@ -251,16 +264,16 @@ sealed class ConfirmParams(
                 TransactionType.StakeRewards -> Stake.RewardsParams::class.java
                 TransactionType.StakeRedelegate -> Stake.RedelegateParams::class.java
                 TransactionType.StakeWithdraw -> Stake.WithdrawParams::class.java
-                TransactionType.AssetActivation -> TODO()
+                TransactionType.AssetActivation -> Activate::class.java
                 TransactionType.TransferNFT -> TODO()
                 TransactionType.SmartContractCall -> TODO()
             }
 
             val result = getGson().fromJson(json, type)
 
-            return if (result.assetId.type() == AssetSubtype.TOKEN && result is TransferParams.Native) {
+            return if (result.asset.id.type() == AssetSubtype.TOKEN && result is TransferParams.Native) {
                 TransferParams.Token(
-                    result.assetId,
+                    result.asset,
                     result.from,
                     result.amount,
                     result.destination,

@@ -22,3 +22,7 @@ interface ApprovalTransactionPreloader : BlockchainClient {
 interface StakeTransactionPreloader : BlockchainClient {
     suspend fun preloadStake(params: ConfirmParams.Stake): SignerParams
 }
+
+interface ActivationTransactionPreloader : BlockchainClient {
+    suspend fun preloadActivate(params: ConfirmParams.Activate): SignerParams
+}
