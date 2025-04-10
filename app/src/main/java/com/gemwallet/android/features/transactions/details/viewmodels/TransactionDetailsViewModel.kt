@@ -70,7 +70,8 @@ class TransactionDetailsViewModel @Inject constructor(
             currency.format(fee.convert(feeAsset.decimals, it).atomicValue)
         } ?: ""
         val blockExplorerName = getCurrentBlockExplorerCase.getCurrentBlockExplorer(transaction.asset.chain())
-        val explorerUrl = Explorer(asset.chain().string).getTransactionUrl(blockExplorerName, tx.hash)
+        val explorer = Explorer(asset.chain().string)
+        val explorerUrl = explorer.getTransactionUrl(blockExplorerName, tx.hash)
 
         TxDetailsScreenModel(
             assetId = asset.id,
