@@ -405,6 +405,7 @@ class ConfirmViewModel @Inject constructor(
                     toAsset = input.toAssetId,
                     fromValue = input.fromAmount.toString(),
                     toValue = input.toAmount.toString(),
+                    provider = input.protocolId,
                 )
             )
         }

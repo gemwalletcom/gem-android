@@ -153,6 +153,7 @@ sealed class ConfirmParams(
         val toAmount: BigInteger,
         val swapData: String,
         val provider: String,
+        val protocolId: String,
         val to: String,
         val value: String,
         val approval: ApprovalData? = null,

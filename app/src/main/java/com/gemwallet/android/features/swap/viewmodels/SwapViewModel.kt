@@ -398,6 +398,7 @@ class SwapViewModel @Inject constructor(
                 toAmount = BigInteger(quote.toValue),
                 swapData = swapData.data,
                 provider = quote.data.provider.protocol,
+                protocolId = quote.data.provider.protocolId,
                 to = swapData.to,
                 value = swapData.value,
                 approval = swapData.approval,
