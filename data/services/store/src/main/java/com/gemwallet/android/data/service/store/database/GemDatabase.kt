@@ -8,6 +8,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbAssetConfig
 import com.gemwallet.android.data.service.store.database.entities.DbAssetInfo
 import com.gemwallet.android.data.service.store.database.entities.DbAssetLink
 import com.gemwallet.android.data.service.store.database.entities.DbAssetMarket
+import com.gemwallet.android.data.service.store.database.entities.DbAssetPriority
 import com.gemwallet.android.data.service.store.database.entities.DbAssetWallet
 import com.gemwallet.android.data.service.store.database.entities.DbBalance
 import com.gemwallet.android.data.service.store.database.entities.DbBanner
@@ -29,7 +30,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetada
 import com.gemwallet.android.data.service.store.database.entities.DbWallet
 
 @Database(
-    version = 48,
+    version = 49,
     entities = [
         DbWallet::class,
         DbAccount::class,
@@ -53,7 +54,8 @@ import com.gemwallet.android.data.service.store.database.entities.DbWallet
         DbNFTCollectionLink::class,
         DbAssetLink::class,
         DbAssetWallet::class,
-        DbAssetMarket::class
+        DbAssetMarket::class,
+        DbAssetPriority::class
     ],
     views = [
         DbAssetInfo::class,
@@ -86,4 +88,6 @@ abstract class GemDatabase : RoomDatabase() {
     abstract fun priceAlertsDao(): PriceAlertsDao
 
     abstract fun nftDao(): NftDao
+
+    abstract fun assetsPriorityDao(): AssetsPriorityDao
 }

@@ -6,6 +6,7 @@ import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
+import com.gemwallet.android.data.service.store.database.AssetsPriorityDao
 import com.gemwallet.android.data.service.store.database.BalancesDao
 import com.gemwallet.android.data.service.store.database.PricesDao
 import com.gemwallet.android.data.service.store.database.entities.DbAsset
@@ -46,21 +47,25 @@ import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @Singleton
 class AssetsRepository @Inject constructor(
     private val assetsDao: AssetsDao,
+    private val assetsPriorityDao: AssetsPriorityDao,
     private val balancesDao: BalancesDao,
     private val pricesDao: PricesDao,
     private val gemApi: GemApiClient,
@@ -177,9 +182,22 @@ class AssetsRepository @Inject constructor(
     fun search(query: String, byAllWallets: Boolean): Flow<List<AssetInfo>> {
         val query = query.trim()
         return if (byAllWallets) {
-            assetsDao.searchByAllWallets(query)
+            assetsPriorityDao.hasPriorities(query).map { it > 0 }.flatMapLatest {
+                if (it) {
+                    assetsDao.searchByAllWalletsWithPriority(query)
+                } else {
+                    assetsDao.searchByAllWallets(query)
+                }
+            }
+
         } else {
-            assetsDao.search(query)
+            assetsPriorityDao.hasPriorities(query).map { it > 0 }.flatMapLatest {
+                if (it) {
+                    assetsDao.searchWithPriority(query)
+                } else {
+                    assetsDao.search(query)
+                }
+            }
         }
         .toAssetInfoModel()
         .map {

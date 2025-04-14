@@ -10,6 +10,7 @@ import com.gemwallet.android.blockchain.clients.tron.TronGetTokenClient
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.tokens.TokensRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
+import com.gemwallet.android.data.service.store.database.AssetsPriorityDao
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.available
 import com.gemwallet.android.ext.toChainType
@@ -28,10 +29,12 @@ object TokensModule {
     @Singleton
     fun provideTokensRepository(
         assetsDao: AssetsDao,
+        assetsPriorityDao: AssetsPriorityDao,
         gemApiClient: GemApiClient,
         rpcClients: RpcClientAdapter,
 ): TokensRepository = TokensRepository(
         assetsDao = assetsDao,
+        assetsPriorityDao = assetsPriorityDao,
         gemApiClient = gemApiClient,
         getTokenClients = Chain.available().mapNotNull { chain ->
             when (chain.toChainType()) {

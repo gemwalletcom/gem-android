@@ -6,6 +6,7 @@ import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.gemwallet.android.data.service.store.database.AccountsDao
 import com.gemwallet.android.data.service.store.database.AssetsDao
+import com.gemwallet.android.data.service.store.database.AssetsPriorityDao
 import com.gemwallet.android.data.service.store.database.BalancesDao
 import com.gemwallet.android.data.service.store.database.BannersDao
 import com.gemwallet.android.data.service.store.database.ConnectionsDao
@@ -48,7 +49,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_9_10)
         .addMigrations(MIGRATION_10_11)
         .addMigrations(MIGRATION_11_12)
-        .addMigrations(MIGRATION_12_14(context))
+        .addMigrations(MIGRATION_12_14)
         .addMigrations(MIGRATION_14_15)
         .addMigrations(MIGRATION_15_16)
         .addMigrations(MIGRATION_16_17)
@@ -60,7 +61,7 @@ object DatabaseModule {
         .addMigrations(MIGRATION_23_24)
         .addMigrations(MIGRATION_24_25)
         .addMigrations(MIGRATION_25_26)
-        .addMigrations(MIGRATION_26_27(context))
+        .addMigrations(MIGRATION_26_27)
         .addMigrations(MIGRATION_27_28)
         .addMigrations(MIGRATION_28_29)
         .addMigrations(MIGRATION_29_30)
@@ -82,6 +83,7 @@ object DatabaseModule {
         .addMigrations(Migration_45_46)
         .addMigrations(Migration_46_47)
         .addMigrations(Migration_47_48)
+        .addMigrations(Migration_48_49)
         .build()
 
     @Singleton
@@ -135,6 +137,10 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideNFTDao(db: GemDatabase): NftDao = db.nftDao()
+
+    @Singleton
+    @Provides
+    fun provideAssetsPriorityDao(db: GemDatabase): AssetsPriorityDao = db.assetsPriorityDao()
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {
@@ -326,7 +332,7 @@ val MIGRATION_11_12 = object : Migration(11, 12) {
     }
 }
 
-class MIGRATION_12_14(private val context: Context) : Migration(12, 14) {
+val MIGRATION_12_14 = object : Migration(12, 14) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL(
             "CREATE TABLE tx_swap_metadata (" +
@@ -487,7 +493,7 @@ val MIGRATION_25_26 = object : Migration(25, 26) {
     }
 }
 
-class MIGRATION_26_27(private val context: Context) : Migration(26, 27) {
+val MIGRATION_26_27 = object : Migration(26, 27) {
     override fun migrate(db: SupportSQLiteDatabase) {
         db.execSQL(
             "CREATE TABLE session (" +
