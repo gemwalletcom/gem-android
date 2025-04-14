@@ -44,8 +44,7 @@ android {
 dependencies {
     //noinspection UseTomlInstead
     api(libs.gemstone)
-    // JSON
-    api(libs.gson)
+
     api(libs.kotlinx.serialization.json)
     implementation(libs.compose.runtime.android)
 

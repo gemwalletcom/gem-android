@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.services.gemapi.di
 
 import android.content.Context
+import com.gemwallet.android.blockchain.Mime
 import com.gemwallet.android.blockchain.RpcClientAdapter
 import com.gemwallet.android.blockchain.clients.algorand.services.AlgorandService
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosServices
@@ -23,32 +24,19 @@ import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.data.services.gemapi.GemApiStaticClient
 import com.gemwallet.android.data.services.gemapi.http.NodeSelectorInterceptor
 import com.gemwallet.android.data.services.gemapi.http.ResultCallAdapterFactory
-import com.gemwallet.android.data.services.gemapi.models.DeviceSerializer
-import com.gemwallet.android.data.services.gemapi.models.NameRecordDeserialize
-import com.gemwallet.android.data.services.gemapi.models.NodeSerializer
-import com.gemwallet.android.data.services.gemapi.models.ReleaseDeserialize
-import com.gemwallet.android.data.services.gemapi.models.SubscriptionSerializer
 import com.gemwallet.android.ext.available
 import com.gemwallet.android.ext.toChainType
-import com.gemwallet.android.serializer.AssetIdSerializer
+import com.gemwallet.android.serializer.jsonEncoder
 import com.google.gson.Gson
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
-import com.wallet.core.primitives.Device
-import com.wallet.core.primitives.NameRecord
-import com.wallet.core.primitives.Node
-import com.wallet.core.primitives.Release
-import com.wallet.core.primitives.Subscription
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.serialization.json.Json
 import okhttp3.Cache
 import okhttp3.ConnectionPool
-import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Converter.Factory
@@ -59,20 +47,15 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
 
-
 @Qualifier
 annotation class NodeHttpClient
 
 @Qualifier
 annotation class GemHttpClient
 
-@Qualifier
-annotation class GemJson
-
 @InstallIn(SingletonComponent::class)
 @Module
 object ClientsModule {
-
     @GemHttpClient
     @Provides
     @Singleton
@@ -116,48 +99,24 @@ object ClientsModule {
         })
         .build()
 
-    @GemJson
-    @Provides
-    @Singleton
-    fun provideGemApiJson(gson: Gson): Gson {
-        return gson.newBuilder()
-            .registerTypeAdapter(Node::class.java, NodeSerializer())
-            .registerTypeAdapter(Device::class.java, DeviceSerializer())
-            .registerTypeAdapter(Subscription::class.java, SubscriptionSerializer())
-            .registerTypeAdapter(NameRecord::class.java, NameRecordDeserialize())
-            .registerTypeAdapter(Release::class.java, ReleaseDeserialize())
-            .registerTypeAdapter(AssetId::class.java, AssetIdSerializer())
-            .create()
-    }
-
-    @Provides
-    @Singleton
-    fun provideJSONConverterFactory(@GemJson gson: Gson): Factory = GsonConverterFactory.create(gson)
-
     @Provides
     @Singleton
     fun provideGemApiClient(@GemHttpClient httpClient: OkHttpClient): GemApiClient =
         Retrofit.Builder()
             .baseUrl("https://api.gemwallet.com")
             .client(httpClient)
-            .addConverterFactory(
-                Json {
-                    ignoreUnknownKeys = true
-                    coerceInputValues = true
-                    explicitNulls = false
-                }.asConverterFactory("application/json; charset=UTF8".toMediaType())
-            )
+            .addConverterFactory(jsonEncoder.asConverterFactory(Mime.Json.value))
             .addCallAdapterFactory(ResultCallAdapterFactory())
             .build()
             .create(GemApiClient::class.java)
 
     @Provides
     @Singleton
-    fun provideGemApiStaticClient(@GemHttpClient httpClient: OkHttpClient, converterFactory: Factory): GemApiStaticClient {
+    fun provideGemApiStaticClient(@GemHttpClient httpClient: OkHttpClient): GemApiStaticClient {
         return Retrofit.Builder()
             .baseUrl("https://assets.gemwallet.com")
             .client(httpClient)
-            .addConverterFactory(converterFactory)
+            .addConverterFactory(jsonEncoder.asConverterFactory(Mime.Json.value))
             .addCallAdapterFactory(ResultCallAdapterFactory())
             .build()
             .create(GemApiStaticClient::class.java)
@@ -167,33 +126,20 @@ object ClientsModule {
     @Singleton
     fun provideRpcClientsAdapter(
         @NodeHttpClient httpClient: OkHttpClient,
-        gson: Gson,
-        converter: Factory,
     ): RpcClientAdapter {
+        val gson = Gson()
+        val converter = jsonEncoder.asConverterFactory(Mime.Json.value)
         val ethConverter = GsonConverterFactory.create(
             gson.newBuilder()
-                .registerTypeAdapter(
-                    EvmRpcClient.EvmNumber::class.java,
-                    EvmRpcClient.BalanceDeserializer()
-                )
-                .registerTypeAdapter(
-                    EvmRpcClient.TokenBalance::class.java,
-                    EvmRpcClient.TokenBalanceDeserializer()
-                )
+                .registerTypeAdapter(EvmRpcClient.EvmNumber::class.java, EvmRpcClient.BalanceDeserializer())
+                .registerTypeAdapter(EvmRpcClient.TokenBalance::class.java, EvmRpcClient.TokenBalanceDeserializer())
                 .create()
         )
         val tonConverter = GsonConverterFactory.create(
-            gson.newBuilder().registerTypeAdapter(
-                TonRpcClient.JetonAddress::class.java,
-                TonRpcClient.JetonAddressSerializer()
-            ).create()
+            gson.newBuilder()
+                .registerTypeAdapter(TonRpcClient.JetonAddress::class.java, TonRpcClient.JetonAddressSerializer())
+                .create()
         )
-        val algorandConverter = Json {
-            ignoreUnknownKeys = true
-            coerceInputValues = true
-            explicitNulls = false
-        }
-        .asConverterFactory("application/json; charset=UTF8".toMediaType())
         val adapter = RpcClientAdapter()
         Chain.available().map {
             val url = "https://${it.string}"
@@ -208,7 +154,7 @@ object ClientsModule {
                 ChainType.Sui -> buildClient(url, SuiRpcClient::class.java, converter, httpClient)
                 ChainType.Xrp -> buildClient(url, XrpRpcClient::class.java, converter, httpClient)
                 ChainType.Near -> buildClient(url, NearRpcClient::class.java, converter, httpClient)
-                ChainType.Algorand -> buildClient(url, AlgorandService::class.java, algorandConverter, httpClient)
+                ChainType.Algorand -> buildClient(url, AlgorandService::class.java, converter, httpClient)
                 ChainType.Stellar -> buildClient(url, StellarService::class.java, converter, httpClient)
                 ChainType.Polkadot -> buildClient(url, PolkadotServices::class.java, converter, httpClient)
                 ChainType.Cardano -> buildClient(url, CardanoServices::class.java, converter, httpClient)

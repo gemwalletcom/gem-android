@@ -28,6 +28,7 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
+import com.gemwallet.android.model.toModel
 import com.wallet.core.primitives.AssetId
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -401,7 +402,7 @@ class SwapViewModel @Inject constructor(
                 protocolId = quote.data.provider.protocolId,
                 to = swapData.to,
                 value = swapData.value,
-                approval = swapData.approval,
+                approval = swapData.approval?.toModel(),
                 gasLimit = swapData.gasLimit?.toBigIntegerOrNull(),
             )
         )

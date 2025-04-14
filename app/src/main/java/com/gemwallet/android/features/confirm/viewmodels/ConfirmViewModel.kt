@@ -11,7 +11,6 @@ import com.gemwallet.android.cases.transactions.CreateTransaction
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
-import com.gemwallet.android.data.services.gemapi.di.GemJson
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAddressEllipsisText
@@ -31,6 +30,7 @@ import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.format
+import com.gemwallet.android.serializer.jsonEncoder
 import com.gemwallet.android.services.SignerPreloaderProxy
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
@@ -38,7 +38,6 @@ import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
-import com.google.gson.Gson
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.DelegationValidator
@@ -77,7 +76,6 @@ class ConfirmViewModel @Inject constructor(
     private val broadcastClientProxy: BroadcastClientProxy,
     private val createTransactionsCase: CreateTransaction,
     private val stakeRepository: StakeRepository,
-    @GemJson private val gson: Gson, // TODO: Clean it
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -139,6 +137,11 @@ class ConfirmViewModel @Inject constructor(
             else -> params.input.amount
         }
         state.update { ConfirmState.Ready }
+
+        if (params.input is ConfirmParams.SwapParams) {
+            assembleMetadata(params)
+        }
+
         params.copy(finalAmount = finalAmount)
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -399,7 +402,7 @@ class ConfirmViewModel @Inject constructor(
 
     private fun assembleMetadata(signerParams: SignerParams) = when (val input = signerParams.input) {
         is ConfirmParams.SwapParams -> {
-            gson.toJson(
+            jsonEncoder.encodeToString(
                 TransactionSwapMetadata(
                     fromAsset = input.fromAsset.id,
                     toAsset = input.toAssetId,
