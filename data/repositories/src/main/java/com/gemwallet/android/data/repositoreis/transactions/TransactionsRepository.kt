@@ -149,7 +149,6 @@ class TransactionsRepository(
             utxoInputs = emptyList(),
             utxoOutputs = emptyList(),
             createdAt = System.currentTimeMillis(),
-            updatedAt = System.currentTimeMillis(),
         )
         transactionsDao.insert(listOf(transaction.toRecord(walletId)))
         addSwapMetadata(listOf(transaction))
@@ -210,9 +209,9 @@ class TransactionsRepository(
                     block = tx.blockNumber,
                 )
             )
-        } catch (err: ServiceUnavailable) {
+        } catch (_: ServiceUnavailable) {
             return tx.copy(updatedAt = System.currentTimeMillis())
-        } catch (err: Throwable) {
+        } catch (_: Throwable) {
             TransactionChages(tx.state)
         }
         return if (state.state != tx.state) {

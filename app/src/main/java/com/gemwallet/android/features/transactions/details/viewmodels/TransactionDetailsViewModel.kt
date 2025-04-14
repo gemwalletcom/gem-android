@@ -73,7 +73,7 @@ class TransactionDetailsViewModel @Inject constructor(
         val blockExplorerName = getCurrentBlockExplorerCase.getCurrentBlockExplorer(transaction.asset.chain())
         val explorer = Explorer(asset.chain().string)
         val provider = tx.getSwapMetadata()?.provider
-        val swapExplorerUrl = explorer.getTransactionSwapUrl(blockExplorerName, tx.hash, provider ?: "")
+        val swapExplorerUrl = provider?.let { explorer.getTransactionSwapUrl(blockExplorerName, tx.hash, provider) }
         val explorerUrl = swapExplorerUrl?.url ?: explorer.getTransactionUrl(blockExplorerName, tx.hash)
 
         TxDetailsScreenModel(
