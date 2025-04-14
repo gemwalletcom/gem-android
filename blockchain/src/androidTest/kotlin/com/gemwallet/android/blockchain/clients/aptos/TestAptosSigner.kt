@@ -3,12 +3,15 @@ package com.gemwallet.android.blockchain.clients.aptos
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
 import com.wallet.core.primitives.Account
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
@@ -36,7 +39,7 @@ class TestAptosSigner {
         val sign = runBlocking {
             signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    AssetId(Chain.Aptos),
+                    Chain.Aptos.asset(),
                     Account(Chain.Aptos, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
                     BigInteger.valueOf(10_000_000_000),
                     DestinationAddress("0x82111f2975a0f6080d178236369b7479f6aed1203ef4a23f8205e4b91716b783"),
@@ -83,7 +86,7 @@ class TestAptosSigner {
         val sign = runBlocking {
             signer.signTokenTransfer(
                 params = ConfirmParams.TransferParams.Token(
-                    AssetId(Chain.Aptos, "0x53a30a6e5936c0a4c5140daed34de39d17ca7fcae08f947c02e979cef98a3719::coin::LSD"),
+                    Asset(AssetId(Chain.Aptos, "0x53a30a6e5936c0a4c5140daed34de39d17ca7fcae08f947c02e979cef98a3719::coin::LSD"), symbol = "", decimals = 8, name =  "", type = AssetType.TOKEN),
                     Account(Chain.Aptos, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
                     BigInteger.valueOf(10_000_000_000),
                     DestinationAddress("0x82111f2975a0f6080d178236369b7479f6aed1203ef4a23f8205e4b91716b783"),

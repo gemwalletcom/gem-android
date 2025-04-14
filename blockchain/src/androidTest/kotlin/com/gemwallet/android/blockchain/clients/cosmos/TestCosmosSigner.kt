@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.cosmos
 
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
@@ -36,7 +37,7 @@ class TestCosmosSigner {
 
     @Test
     fun testSignNativeTransfer() {
-        val transfer = ConfirmParams.Builder(AssetId(Chain.Osmosis), osmoAccount, BigInteger.TEN)
+        val transfer = ConfirmParams.Builder(Chain.Osmosis.asset(), osmoAccount, BigInteger.TEN)
             .transfer(DestinationAddress("osmo1rcjvzz8wzktqfz8qjf0l9q45kzxvd0z0n7l5cf")) as ConfirmParams.TransferParams.Native
         val chainData = CosmosSignerPreloader.CosmosChainData(
             chainId = "osmosis-1",
@@ -74,7 +75,7 @@ class TestCosmosSigner {
 
     @Test
     fun testSignStake() {
-        val transfer = ConfirmParams.Builder(AssetId(Chain.Osmosis), osmoAccount, BigInteger.TEN)
+        val transfer = ConfirmParams.Builder(Chain.Osmosis.asset(), osmoAccount, BigInteger.TEN)
             .delegate("osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm")
         val chainData = CosmosSignerPreloader.CosmosChainData(
             chainId = "osmosis-1",
@@ -113,7 +114,7 @@ class TestCosmosSigner {
 
     @Test
     fun testSignUndelegate() {
-        val transfer = ConfirmParams.Builder(AssetId(Chain.Osmosis), osmoAccount, BigInteger.TEN)
+        val transfer = ConfirmParams.Builder(Chain.Osmosis.asset(), osmoAccount, BigInteger.TEN)
             .undelegate(
                 Delegation(
                     base = DelegationBase(
@@ -174,7 +175,7 @@ class TestCosmosSigner {
 
     @Test
     fun testSignRedelegate() {
-        val transfer = ConfirmParams.Builder(AssetId(Chain.Osmosis), osmoAccount, BigInteger.TEN)
+        val transfer = ConfirmParams.Builder(Chain.Osmosis.asset(), osmoAccount, BigInteger.TEN)
             .redelegate(
                 "osmovaloper1z0sh4s80u99l6y9d3vfy582p8jejeeu6tcucs2",
                 Delegation(
@@ -237,7 +238,7 @@ class TestCosmosSigner {
 
     @Test
     fun testSignRewards() {
-        val transfer = ConfirmParams.Builder(AssetId(Chain.Osmosis), osmoAccount, BigInteger.TEN)
+        val transfer = ConfirmParams.Builder(Chain.Osmosis.asset(), osmoAccount, BigInteger.TEN)
             .rewards(
                 listOf(
                     "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm",

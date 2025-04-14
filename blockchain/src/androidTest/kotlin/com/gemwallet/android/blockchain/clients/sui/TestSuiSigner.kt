@@ -2,12 +2,15 @@ package com.gemwallet.android.blockchain.clients.sui
 
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.Fee
 import com.wallet.core.primitives.Account
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
@@ -34,7 +37,7 @@ class TestSuiSigner {
         val sign = runBlocking {
             signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    AssetId(Chain.Sui),
+                    Chain.Sui.asset(),
                     Account(Chain.Sui, from, ""),
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
@@ -81,7 +84,7 @@ class TestSuiSigner {
         val sign = runBlocking {
             signer.signTokenTransfer(
                 params = ConfirmParams.TransferParams.Token(
-                    AssetId(Chain.Sui, "0xe4239cd951f6c53d9c41e25270d80d31f925ad1655e5ba5b543843d4a66975ee::SUIP::SUIP"),
+                    Asset(AssetId(Chain.Sui, "0xe4239cd951f6c53d9c41e25270d80d31f925ad1655e5ba5b543843d4a66975ee::SUIP::SUIP"), "", "", 8, AssetType.TOKEN),
                     Account(Chain.Sui, from, ""),
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),

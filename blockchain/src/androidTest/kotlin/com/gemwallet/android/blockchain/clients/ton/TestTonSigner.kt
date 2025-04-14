@@ -2,12 +2,15 @@ package com.gemwallet.android.blockchain.clients.ton
 
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.Fee
 import com.wallet.core.primitives.Account
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
@@ -34,7 +37,7 @@ class TestTonSigner {
         val sign = runBlocking {
             signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    AssetId(Chain.Ton),
+                    Chain.Ton.asset(),
                     Account(Chain.Ton, from, ""),
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
@@ -73,7 +76,7 @@ class TestTonSigner {
         val sign = runBlocking {
             signer.signTokenTransfer(
                 params = ConfirmParams.TransferParams.Token(
-                    AssetId(Chain.Ton, "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs"),
+                    Asset(AssetId(Chain.Ton, "EQCxE6mUtQJKFnGfaROTKOt1lZbDiiX1kCixRv7Nw2Id_sDs"), "", "", 8, AssetType.TOKEN),
                     Account(Chain.Ton, from, ""),
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),

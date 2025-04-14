@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.bitcoin
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinFeeService
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinUTXOService
 import com.gemwallet.android.blockchain.includeLibs
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
@@ -68,7 +69,7 @@ class TestBitcoinSignerPreloader {
         val result = runBlocking {
             preloader.preloadNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    assetId = AssetId(Chain.Bitcoin),
+                    asset = Chain.Bitcoin.asset(),
                     from = Account(
                         Chain.Doge,
                         "DDyZeg24eU3csLa7LMWrZEoqnHXccz6c94",
