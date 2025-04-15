@@ -27,6 +27,15 @@ class SignClientProxy(
             ?: throw Exception("Chain isn't support")
     }
 
+    suspend fun signData(
+        chain: Chain,
+        input: String,
+        privateKey: ByteArray
+    ): ByteArray {
+        return clients.getClient(chain)?.signData(chain, input, privateKey)
+            ?: throw Exception("Chain isn't support")
+    }
+
     suspend fun signTransaction(
         params: SignerParams,
         feePriority: FeePriority,

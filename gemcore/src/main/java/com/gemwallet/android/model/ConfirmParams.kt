@@ -4,6 +4,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
+import com.gemwallet.android.serializer.BigIntegerSerializer
 import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
@@ -11,15 +12,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.TransactionType
-import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.Serializer
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.json.JsonDecoder
-import kotlinx.serialization.json.JsonEncoder
-import kotlinx.serialization.json.JsonUnquotedLiteral
-import kotlinx.serialization.json.jsonPrimitive
 import java.math.BigInteger
 import java.util.Base64
 
@@ -324,18 +317,4 @@ fun uniffi.gemstone.ApprovalData.toModel(): ConfirmParams.SwapParams.ApprovalDat
         spender = this.spender,
         value = this.value,
     )
-}
-
-@OptIn(ExperimentalSerializationApi::class)
-@Serializer(forClass = BigInteger::class)
-private object BigIntegerSerializer {
-    override fun serialize(encoder: Encoder, value: BigInteger) = when (encoder) {
-        is JsonEncoder -> encoder.encodeJsonElement(JsonUnquotedLiteral(value.toString()))
-        else -> encoder.encodeString(value.toString())
-    }
-
-    override fun deserialize(decoder: Decoder): BigInteger = when (decoder) {
-        is JsonDecoder -> decoder.decodeJsonElement().jsonPrimitive.content.toBigInteger()
-        else -> decoder.decodeString().toBigInteger()
-    }
 }

@@ -26,6 +26,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.json.JSONArray
+import org.json.JSONObject
 import wallet.core.jni.EthereumAbi
 import wallet.core.jni.Hash
 import java.math.BigInteger
@@ -63,7 +64,11 @@ class RequestViewModel @Inject constructor(
                 String(data.decodeHex())
             }
             WalletConnectionMethods.eth_send_transaction.string -> request.request.params
-            else -> return // TODO: eth_sign_transaction
+            WalletConnectionMethods.solana_sign_transaction.string -> {
+                val params = JSONObject(request.request.params).getString("transaction")
+                params
+            }
+            else -> return
         }
         state.update { it.copy(sessionRequest = request, wallet = wallet, chain = chain, params = params) }
     }
@@ -109,16 +114,20 @@ class RequestViewModel @Inject constructor(
                         val messagePrefix = "\u0019Ethereum Signed Message:\n${data.size}"
                         val prefix = messagePrefix.toByteArray()
                         val param = Hash.keccak256(prefix + data)
-                        signClient.signMessage(chain, param, privateKey)
+                        signClient.signMessage(chain, param, privateKey).toHexString()
                     }
                     WalletConnectionMethods.eth_sign_typed_data,
                     WalletConnectionMethods.eth_sign_typed_data_v4 -> {
                         val param = EthereumAbi.encodeTyped(state.value.params)
-                        signClient.signTypedMessage(chain, param, privateKey)
+                        signClient.signTypedMessage(chain, param, privateKey).toHexString()
+                    }
+                    WalletConnectionMethods.solana_sign_transaction -> {
+                        val param = state.value.params
+                        String(signClient.signData(chain, param, privateKey))//.toHexString()
                     }
                     WalletConnectionMethods.solana_sign_message -> {
                         val param = state.value.params.toByteArray()
-                        signClient.signMessage(chain, param, privateKey)
+                        signClient.signMessage(chain, param, privateKey).toHexString()
                     }
                     else -> return@launch
                 }
@@ -132,7 +141,7 @@ class RequestViewModel @Inject constructor(
                     sessionTopic = sessionRequest.topic,
                     jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
                         sessionRequest.request.id,
-                        sign.toHexString()
+                        sign
                     )
                 ),
                 onSuccess = { state.update { it.copy(canceled = true) } },
@@ -186,6 +195,7 @@ private data class RequestViewModelState(
             WalletConnectionMethods.eth_sign.string,
             WalletConnectionMethods.personal_sign.string,
             WalletConnectionMethods.eth_sign_typed_data_v4.string,
+            WalletConnectionMethods.solana_sign_message.string,
             WalletConnectionMethods.eth_sign_typed_data.string -> RequestSceneState.SignMessage(
                 account = account,
                 walletName = wallet.name,
@@ -197,7 +207,18 @@ private data class RequestViewModelState(
                     uri = sessionRequest.peerMetaData?.description ?: "",
                 ),
                 params = params,
-
+            )
+            WalletConnectionMethods.solana_sign_transaction.string -> RequestSceneState.SignMessage(
+                account = account,
+                walletName = wallet.name,
+                session = SessionUI(
+                    id = "",
+                    name = sessionRequest.peerMetaData?.name ?: "",
+                    icon = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
+                    description = sessionRequest.peerMetaData?.description ?: "",
+                    uri = sessionRequest.peerMetaData?.description ?: "",
+                ),
+                params = params,
             )
             WalletConnectionMethods.eth_send_transaction.string -> {
                 try {
