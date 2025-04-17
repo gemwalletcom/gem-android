@@ -4,6 +4,7 @@ import com.gemwallet.android.blockchain.clients.stellar.StellarSignClient
 import com.gemwallet.android.blockchain.clients.stellar.StellarSignPreloadClient
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
@@ -36,7 +37,7 @@ class TestStellarSigner {
         val sign = runBlocking {
             signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    AssetId(Chain.Stellar),
+                    Chain.Stellar.asset(),
                     Account(Chain.Stellar, from, ""),
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),

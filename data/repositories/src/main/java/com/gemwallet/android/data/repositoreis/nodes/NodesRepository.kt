@@ -12,7 +12,7 @@ import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.service.store.database.NodesDao
 import com.gemwallet.android.data.service.store.database.entities.DbNode
 import com.gemwallet.android.ext.findByString
-import com.google.gson.Gson
+import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainNodes
 import com.wallet.core.primitives.Node
@@ -27,7 +27,6 @@ import uniffi.gemstone.Config
 import uniffi.gemstone.NodePriority
 
 class NodesRepository(
-    private val gson: Gson,
     private val nodesDao: NodesDao,
     private val configStore: ConfigStore,
     scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
@@ -64,7 +63,7 @@ class NodesRepository(
     override fun setCurrentNode(chain: Chain, node: Node) {
         configStore.putString(
             ConfigKey.CurrentNode.string,
-            gson.toJson(node),
+            jsonEncoder.encodeToString(node),
             chain.string
         )
     }
@@ -75,7 +74,7 @@ class NodesRepository(
             postfix = chain.string
         )
         val node = try {
-            gson.fromJson(data, Node::class.java)
+            jsonEncoder.decodeFromString<Node>(data)
         } catch (_: Throwable) {
             return null
         }

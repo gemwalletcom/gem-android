@@ -58,6 +58,14 @@ class BridgesRepository(
         }
     }
 
+    suspend fun getConnectionByTopic(topic: String): WalletConnection? {
+        val sessions = runCatching { WalletKit.getListOfActiveSessions().filter { wcSession -> wcSession.metaData != null } }
+            .getOrNull() ?: return null
+        val local = getConnections().firstOrNull() ?: emptyList()
+        val sessionId = sessions.firstOrNull { it.topic == topic }?.pairingTopic
+        return local.firstOrNull { it.session.sessionId == sessionId }
+    }
+
     suspend fun getConnections(connectionId: String): Flow<WalletConnection?> {
         return walletsRepository.getAll().flatMapLatest { wallets ->
             connectionsDao.getConnection(connectionId).map { room ->

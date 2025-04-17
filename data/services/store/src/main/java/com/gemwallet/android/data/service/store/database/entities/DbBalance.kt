@@ -71,6 +71,7 @@ fun AssetBalance.toRecord(walletId: String, accountAddress: String, updateAt: Lo
         reservedAmount = this.balanceAmount.reserved,
         totalAmount = this.totalAmount,
         updatedAt = updateAt,
+        isActive = isActive,
     )
 }
 
@@ -96,6 +97,7 @@ fun DbBalance.toModel(): AssetBalance? {
             reserved = reservedAmount,
         ),
         totalAmount = totalAmount,
+        isActive = isActive,
     )
 }
 

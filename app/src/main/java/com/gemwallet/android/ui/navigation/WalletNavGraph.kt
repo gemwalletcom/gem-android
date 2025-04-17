@@ -138,6 +138,7 @@ fun WalletNavGraph(
                 onChart = navController::navigateToAssetChartScreen,
                 openNetwork = navController::navigateToAssetScreen,
                 onStake = navController::navigateToStake,
+                onConfirm = navController::navigateToConfirmScreen
             )
 
             assetChartScreen(

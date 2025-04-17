@@ -3,7 +3,9 @@ package com.gemwallet.android.data.repositoreis.tokens
 import com.gemwallet.android.blockchain.clients.GetTokenClient
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.service.store.database.AssetsDao
+import com.gemwallet.android.data.service.store.database.AssetsPriorityDao
 import com.gemwallet.android.data.service.store.database.entities.toRecord
+import com.gemwallet.android.data.service.store.database.entities.toRecordPriority
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.wallet.core.primitives.AssetBasic
 import com.wallet.core.primitives.AssetId
@@ -16,6 +18,7 @@ import kotlinx.coroutines.withContext
 
 class TokensRepository (
     private val assetsDao: AssetsDao,
+    private val assetsPriorityDao: AssetsPriorityDao,
     private val gemApiClient: GemApiClient,
     private val getTokenClients: List<GetTokenClient>,
 ) : SearchTokensCase {
@@ -47,6 +50,7 @@ class TokensRepository (
             assets
         } else {
             assetsDao.insert(tokens.map { it.toRecord() })
+            assetsPriorityDao.put(tokens.toRecordPriority(query))
             tokens
         }
         assets.isNotEmpty()

@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.algorand
 
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
@@ -33,7 +34,7 @@ class TestAlgorandSigner {
         val sign = runBlocking {
             signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    AssetId(Chain.Algorand),
+                    Chain.Algorand.asset(),
                     Account(Chain.Algorand, "GOZOAE6SH6XGGDRBQLZEDRITKMF5OLVJNACVRQBUEGFLBBR5I64A7QN63E", ""),
                     BigInteger.valueOf(10_000_000),
                     DestinationAddress("GOZOAE6SH6XGGDRBQLZEDRITKMF5OLVJNACVRQBUEGFLBBR5I64A7QN63E"),

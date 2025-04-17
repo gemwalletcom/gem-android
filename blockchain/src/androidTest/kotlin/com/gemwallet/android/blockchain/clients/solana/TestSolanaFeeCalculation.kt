@@ -1,10 +1,13 @@
 package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.includeLibs
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.wallet.core.primitives.Account
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
@@ -25,7 +28,7 @@ class TestSolanaFeeCalculation {
         val result = runBlocking {
             feeCalculator.calculate(
                 ConfirmParams.Builder(
-                    assetId = AssetId(Chain.Solana),
+                    asset = Chain.Solana.asset(),
                     from = Account(Chain.Solana, "AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh", ""),
                     amount = BigInteger.valueOf(10_000_000)
                 ).transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh"))
@@ -45,7 +48,7 @@ class TestSolanaFeeCalculation {
         val result = runBlocking {
             feeCalculator.calculate(
                 ConfirmParams.Builder(
-                    assetId = AssetId(Chain.Solana),
+                    asset = Chain.Solana.asset(),
                     from = Account(Chain.Solana, "AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh", ""),
                     amount = BigInteger.valueOf(10_000_000)
                 ).transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh"))
@@ -65,7 +68,7 @@ class TestSolanaFeeCalculation {
         val result = runBlocking {
             feeCalculator.calculate(
                 ConfirmParams.Builder(
-                    assetId = AssetId(Chain.Solana),
+                    asset = Chain.Solana.asset(),
                     from = Account(Chain.Solana, "AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh", ""),
                     amount = BigInteger.valueOf(10_000_000)
                 ).transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh"))
@@ -85,7 +88,7 @@ class TestSolanaFeeCalculation {
         val result = runBlocking {
             feeCalculator.calculate(
                 ConfirmParams.Builder(
-                    assetId = AssetId(Chain.Solana, "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"),
+                    asset = Asset(AssetId(Chain.Solana, "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"), name = "usdt", symbol = "usdt", decimals = 8, type = AssetType.TOKEN),
                     from = Account(Chain.Solana, "AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh", ""),
                     amount = BigInteger.valueOf(10_000_000)
                 ).transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh"))

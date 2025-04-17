@@ -33,6 +33,7 @@ fun Transaction.getSwapMetadata(): TransactionSwapMetadata? {
             },
             fromValue = json.getString("fromValue"),
             toValue = json.getString("toValue"),
+            provider = json.optString("provider"),
         )
     } catch (_: Throwable) {
         null

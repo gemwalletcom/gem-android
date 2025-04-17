@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.cardano
 import com.gemwallet.android.blockchain.clients.cardano.CardanoSignerPreloaderClient.CardanoChainData
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
@@ -34,7 +35,7 @@ class TestCardanoSigner {
         val sign = runBlocking {
             signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    AssetId(Chain.Cardano),
+                    Chain.Cardano.asset(),
                     Account(Chain.Cardano, "addr1q9d2dxen8ywvs9yzxxn2w4mvffn797fquauvugt2ug7mfsuqj3lzdq9h0rsketzszrnfm930658swmpe7kpq53c2tmwql4rvtq", ""),
                     BigInteger.valueOf(10_000),
                     DestinationAddress("addr1q9d2dxen8ywvs9yzxxn2w4mvffn797fquauvugt2ug7mfsuqj3lzdq9h0rsketzszrnfm930658swmpe7kpq53c2tmwql4rvtq"),

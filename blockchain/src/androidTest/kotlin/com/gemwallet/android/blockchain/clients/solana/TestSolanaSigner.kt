@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
@@ -44,7 +45,7 @@ class TestSolanaSigner {
             }
         )
         val params = ConfirmParams.Builder(
-                assetId = AssetId(Chain.Solana),
+                asset = Chain.Solana.asset(),
                 from = Account(Chain.Solana, "4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S", ""),
                 amount = BigInteger.valueOf(10_000_000)
             )
@@ -93,7 +94,7 @@ class TestSolanaSigner {
             }
         )
         val params = ConfirmParams.Builder(
-                assetId = AssetId(Chain.Solana, "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"),
+                asset = Asset(AssetId(Chain.Solana, "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"), "", "", 8, AssetType.TOKEN),
                 from = Account(Chain.Solana, "4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S", ""),
                 amount = BigInteger.valueOf(10_000_000)
             )
@@ -143,7 +144,7 @@ class TestSolanaSigner {
             }
         )
         val params = ConfirmParams.Builder(
-                assetId = AssetId(Chain.Solana, "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo"),
+                asset = Asset(AssetId(Chain.Solana, "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo"), "", "", 8, AssetType.TOKEN),
                 from = Account(Chain.Solana, "4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S", ""),
                 amount = BigInteger.valueOf(10_000_000)
             )

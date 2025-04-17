@@ -23,6 +23,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.assets.BalancesRemoteSource
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
+import com.gemwallet.android.data.service.store.database.AssetsPriorityDao
 import com.gemwallet.android.data.service.store.database.BalancesDao
 import com.gemwallet.android.data.service.store.database.PricesDao
 import com.gemwallet.android.data.services.gemapi.GemApiClient
@@ -44,6 +45,7 @@ object AssetsModule {
     fun provideAssetsRepository(
         gemApiClient: GemApiClient,
         assetsDao: AssetsDao,
+        assetsPriorityDao: AssetsPriorityDao,
         balancesDao: BalancesDao,
         pricesDao: PricesDao,
         sessionRepository: SessionRepository,
@@ -54,6 +56,7 @@ object AssetsModule {
     ): AssetsRepository = AssetsRepository(
         gemApi = gemApiClient,
         assetsDao = assetsDao,
+        assetsPriorityDao = assetsPriorityDao,
         balancesDao = balancesDao,
         pricesDao = pricesDao,
         sessionRepository = sessionRepository,

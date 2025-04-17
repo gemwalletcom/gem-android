@@ -11,7 +11,9 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
 import com.wallet.core.primitives.Account
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.runBlocking
@@ -39,7 +41,7 @@ class TestEthSign {
         val sign = runBlocking {
             signClient.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    assetId = Chain.Ethereum.asset().id,
+                    asset = Chain.Ethereum.asset(),
                     amount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                     destination = DestinationAddress("0x9b1DB81180c31B1b428572Be105E209b5A6222b7"),
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
@@ -76,7 +78,13 @@ class TestEthSign {
         val sign = runBlocking {
             signClient.signTokenTransfer(
                 params = ConfirmParams.TransferParams.Token(
-                    assetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+                    Asset(
+                        AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+                        name = "USDT",
+                        symbol = "USDT",
+                        decimals = 8,
+                        type = AssetType.ERC20,
+                    ),
                     amount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                     destination = DestinationAddress("0x9b1DB81180c31B1b428572Be105E209b5A6222b7"),
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
@@ -115,12 +123,19 @@ class TestEthSign {
         val sign = runBlocking {
             signClient.signSwap(
                 params = ConfirmParams.SwapParams(
-                    fromAssetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+                    fromAsset = Asset(
+                        AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+                        name = "USDT",
+                        symbol = "USDT",
+                        decimals = 8,
+                        type = AssetType.ERC20,
+                    ),
                     toAssetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
                     fromAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                     toAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                     swapData = "0xbc",
                     provider = "some_provide",
+                    protocolId = "some_provide",
                     to = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                     value = "10",
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
@@ -157,7 +172,7 @@ class TestEthSign {
         val sign = runBlocking {
             signClient.signDelegate(
                 params = ConfirmParams.Stake.DelegateParams(
-                    assetId = AssetId(Chain.SmartChain),
+                    asset = Chain.SmartChain.asset(),
                     amount = BigInteger.TEN,
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
                     validatorId = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8"
@@ -197,7 +212,7 @@ class TestEthSign {
         val sign = runBlocking {
             signClient.signUndelegate(
                 params = ConfirmParams.Stake.UndelegateParams(
-                    assetId = AssetId(Chain.SmartChain),
+                    asset = Chain.SmartChain.asset(),
                     amount = BigInteger("1002901689671695193"),
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
                     validatorId = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8",
@@ -239,7 +254,13 @@ class TestEthSign {
         val sign = runBlocking {
             signClient.signTokenApproval(
                 params = ConfirmParams.TokenApprovalParams(
-                    assetId = AssetId(Chain.SmartChain, "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"),
+                    Asset(
+                        AssetId(Chain.SmartChain, "0x0E09FaBB73Bd3Ade0a17ECC321fD13a19e81cE82"),
+                        name = "USDT",
+                        symbol = "USDT",
+                        decimals = 8,
+                        type = AssetType.ERC20,
+                    ),
                     from = Account(Chain.SmartChain, "0x0Eb3a705fc54725037CC9e008bDede697f62F335", ""),
                     data = "0x095ea7b300000000000000000000000031c2f6fcff4f8759b3bd5bf0e1084a" +
                             "055615c7687ffffffffffffffffffffffffffffffffffffffffffffffffffff" +

@@ -2,13 +2,13 @@ package com.gemwallet.android.model
 
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
-import com.gemwallet.android.serializer.AssetIdSerializer
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.TransactionType
+import kotlinx.serialization.Serializable
 import java.util.Base64
 
+@Serializable
 data class AmountParams(
     val assetId: AssetId,
     val txType: TransactionType,
@@ -19,21 +19,21 @@ data class AmountParams(
 ) {
 
     fun pack(): String? {
-        val json = getGson().toJson(this)
+        val json = jsonEncoder.encodeToString(this)
         return Base64.getEncoder().encodeToString(json.toByteArray()).urlEncode()
     }
 
     companion object {
         fun unpack(input: String): AmountParams? {
             val json = String(Base64.getDecoder().decode(input.urlDecode()))
-            return getGson().fromJson(json, AmountParams::class.java)
+            return jsonEncoder.decodeFromString<AmountParams>(json)
         }
 
-        private fun getGson(): Gson {
-            return GsonBuilder()
-                .registerTypeAdapter(AssetId::class.java, AssetIdSerializer())
-                .create()
-        }
+//        private fun getGson(): Gson {
+//            return GsonBuilder()
+//                .registerTypeAdapter(AssetId::class.java, AssetIdSerializer())
+//                .create()
+//        }
 
         fun buildTransfer(
             assetId: AssetId,

@@ -75,7 +75,6 @@ fun DbTransaction.toModel(): Transaction {
         utxoInputs = emptyList(),
         utxoOutputs = emptyList(),
         createdAt = if (this.createdAt == 0L) System.currentTimeMillis() else this.createdAt,
-        updatedAt = this.updatedAt,
         metadata = this.metadata,
     )
 }

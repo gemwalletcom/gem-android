@@ -44,7 +44,11 @@ class SolanaBalanceClient(
             )
         }
 
-        val responseAccountOwner = accountsService.batchAccount(accountsRequests)
+        val responseAccountOwner = try {
+            accountsService.batchAccount(accountsRequests)
+        } catch (err: Throwable) {
+            throw err
+        }
         val balances = responseAccountOwner.getOrNull()?.mapIndexed { index, value ->
             val balance = value.result.value.firstOrNull()?.let { account ->
                 account.account.data.parsed.info.tokenAmount.amount.toBigIntegerOrNull()

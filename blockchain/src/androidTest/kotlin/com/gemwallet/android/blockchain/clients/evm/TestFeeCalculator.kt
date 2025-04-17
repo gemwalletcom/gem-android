@@ -9,11 +9,14 @@ import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.wallet.core.blockchain.ethereum.models.EthereumFeeHistory
 import com.wallet.core.primitives.Account
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
@@ -106,7 +109,7 @@ class TestFeeCalculator {
                     coinType = CoinType.SMARTCHAIN,
                 ).calculate(
                     ConfirmParams.Builder(
-                        AssetId(Chain.SmartChain),
+                        Chain.SmartChain.asset(),
                         Account(Chain.SmartChain, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
                         amount = BigInteger.TEN,
                     ).transfer(
@@ -143,7 +146,7 @@ class TestFeeCalculator {
         val result = runBlocking {
             feeCalculator.calculate(
                 ConfirmParams.Builder(
-                    AssetId(Chain.SmartChain),
+                    Chain.SmartChain.asset(),
                     Account(Chain.SmartChain, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
                     amount = BigInteger.TEN,
                 ).transfer(
@@ -181,7 +184,7 @@ class TestFeeCalculator {
         val result = runBlocking {
             feeCalculator.calculate(
                 ConfirmParams.Builder(
-                    AssetId(Chain.SmartChain),
+                    Chain.SmartChain.asset(),
                     Account(Chain.SmartChain, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
                     amount = BigInteger.TEN,
                 ).transfer(
@@ -221,7 +224,7 @@ class TestFeeCalculator {
         val result = runBlocking {
             feeCalculator.calculate(
                 ConfirmParams.Builder(
-                    AssetId(Chain.SmartChain),
+                    Chain.SmartChain.asset(),
                     Account(Chain.SmartChain, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
                     amount = BigInteger.TEN,
                 ).transfer(
@@ -261,7 +264,7 @@ class TestFeeCalculator {
         val result = runBlocking {
             feeCalculator.calculate(
                 ConfirmParams.Builder(
-                    AssetId(Chain.OpBNB),
+                    Chain.OpBNB.asset(),
                     Account(Chain.OpBNB, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
                     amount = BigInteger.TEN,
                 ).transfer(
@@ -301,7 +304,7 @@ class TestFeeCalculator {
         val result = runBlocking {
             feeCalculator.calculate(
                 ConfirmParams.Builder(
-                    AssetId(Chain.SmartChain, "0x2170Ed0880ac9A755fd29B2688956BD959F933F8"),
+                    Asset(AssetId(Chain.SmartChain, "0x2170Ed0880ac9A755fd29B2688956BD959F933F8"), name = "usdt", symbol = "usdt", decimals = 8, type = AssetType.TOKEN),
                     Account(Chain.SmartChain, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
                     amount = BigInteger.TEN,
                 ).transfer(
@@ -342,7 +345,7 @@ class TestFeeCalculator {
             coinType = CoinType.SMARTCHAIN,
         )
         val params = ConfirmParams.Builder(
-            AssetId(Chain.SmartChain),
+            Chain.SmartChain.asset(),
             Account(Chain.SmartChain, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
             amount = BigInteger.TEN,
         ).delegate("0xa857a4E4B3f7C0eb7e132A7A4abcA287225dDB2A")
@@ -379,7 +382,7 @@ class TestFeeCalculator {
                     coinType = CoinType.SMARTCHAIN,
                 ).calculate(
                     ConfirmParams.Builder(
-                        AssetId(Chain.SmartChain),
+                        Chain.SmartChain.asset(),
                         Account(Chain.SmartChain, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
                         amount = BigInteger.TEN,
                     ).transfer(

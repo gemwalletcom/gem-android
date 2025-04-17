@@ -105,6 +105,23 @@ interface AssetsDao {
     @Query("""
         SELECT
             *,
+            assets_priority.priority,
+            MAX(address)
+        FROM asset_info
+        JOIN assets_priority ON id IN (assets_priority.asset_id)
+        WHERE
+            id NOT IN (:exclude)
+            AND (chain IN (SELECT chain FROM accounts JOIN session ON accounts.wallet_id = session.wallet_id AND session.id = 1))
+            AND (walletId = (SELECT wallet_id FROM session WHERE session.id = 1) OR walletId IS NULL)
+            AND `query` = :query
+            GROUP BY id
+            ORDER BY balanceFiatTotalAmount DESC, priority DESC, assetRank DESC
+        """)
+    fun searchWithPriority(query: String, exclude: List<String> = emptyList()): Flow<List<DbAssetInfo>>
+
+    @Query("""
+        SELECT
+            *,
             MAX(address)
         FROM asset_info WHERE
             (symbol LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%' COLLATE NOCASE)
@@ -113,6 +130,21 @@ interface AssetsDao {
             
         """)
     fun searchByAllWallets(query: String): Flow<List<DbAssetInfo>>
+
+    @Query("""
+        SELECT
+            *,
+            assets_priority.priority,
+            MAX(address)
+        FROM asset_info
+        JOIN assets_priority ON id IN (assets_priority.asset_id)
+        WHERE
+            `query` = :query
+            GROUP BY id
+            ORDER BY balanceFiatTotalAmount DESC, priority DESC, assetRank DESC
+            
+        """)
+    fun searchByAllWalletsWithPriority(query: String): Flow<List<DbAssetInfo>>
 
     @Query("""
         SELECT

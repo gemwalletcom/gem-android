@@ -59,7 +59,7 @@ class EvmSignerPreloader(
         val approval = params.approval
         val approvalData = if (approval != null) {
             preloadApproval(
-                params = ConfirmParams.Builder(params.assetId, params.from).approval(
+                params = ConfirmParams.Builder(params.asset, params.from).approval(
                     approvalData = encodeApprove(approval.spender).toHexString(),
                     provider = "",
                     contract = approval.token,

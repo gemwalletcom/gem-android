@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material3.AlertDialog
@@ -72,42 +73,55 @@ import uniffi.gemstone.paymentDecodeUrl
 import java.nio.ByteBuffer
 import kotlin.math.min
 
-@kotlin.OptIn(ExperimentalPermissionsApi::class)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun qrCodeRequest(
+fun QrCodeRequest(
     onCancel: () -> Unit,
     onResult: (String) -> Unit,
-): Boolean {
+) {
     val cameraPermissionState = rememberPermissionState(permission = Manifest.permission.CAMERA)
+    var showPermissionRequest by remember { mutableStateOf(true) }
+
     BackHandler(true) {
         onCancel()
     }
-    return if (cameraPermissionState.status.isGranted) {
-        QRScannerScene(onCancel, onResult)
-        true
-    } else {
+
+    if (!cameraPermissionState.status.isGranted && showPermissionRequest) {
         AlertDialog(
-            onDismissRequest = onCancel,
+            onDismissRequest = { showPermissionRequest = false },
             text = {
                 Text(text = stringResource(id = R.string.camera_permission_request_camera))
             },
             confirmButton = {
-                Button(onClick = { cameraPermissionState.launchPermissionRequest() }) {
+                Button(
+                    onClick = {
+                        cameraPermissionState.launchPermissionRequest()
+                    }
+                ) {
                     Text(text = stringResource(id = R.string.common_grant_permission))
                 }
             },
             dismissButton = {
-                Button(onClick = onCancel) {
+                Button(onClick = { showPermissionRequest = false }) {
                     Text(text = stringResource(id = R.string.common_cancel))
                 }
             }
         )
-        false
+    } else {
+        QRScannerScene(
+            isCameraGranted = cameraPermissionState.status.isGranted,
+            onGrantPermission = { showPermissionRequest = true },
+            onCancel = onCancel,
+            onResult = onResult
+        )
     }
 }
 
+@androidx.annotation.OptIn(ExperimentalGetImage::class)
 @Composable
 fun QRScannerScene(
+    isCameraGranted: Boolean,
+    onGrantPermission: () -> Unit,
     onCancel: () -> Unit,
     onResult: (String) -> Unit,
 ) {
@@ -135,7 +149,7 @@ fun QRScannerScene(
             bitmap.getPixels(intArray, 0, bitmap.getWidth(), 0, 0, bitmap.getWidth(), bitmap.getHeight())
 
             try {
-                val source =RGBLuminanceSource(
+                val source = RGBLuminanceSource(
                     bitmap.getWidth(),
                     bitmap.getHeight(),
                     intArray
@@ -161,10 +175,12 @@ fun QRScannerScene(
     Scene(
         title = stringResource(id = R.string.wallet_scan_qr_code),
         actions = {
-            IconButton(
-                modifier = Modifier.padding(padding16),
-                onClick = { galleryLauncher.launch("image/*") }
-            ) {
+            if (!isCameraGranted) {
+                IconButton(onClick = onGrantPermission) {
+                    Icon(imageVector = Icons.Default.Camera, contentDescription = "from_camera")
+                }
+            }
+            IconButton(onClick = { galleryLauncher.launch("image/*") }) {
                 Icon(imageVector = Icons.Default.Image, contentDescription = "from_image")
             }
             if (imageUri != null) {
@@ -195,7 +211,9 @@ fun QRScannerScene(
                     )
                     if (imageResult.isNotEmpty()) {
                         Column(
-                            modifier = Modifier.padding(40.dp).align(Alignment.BottomCenter),
+                            modifier = Modifier
+                                .padding(40.dp)
+                                .align(Alignment.BottomCenter),
                             horizontalAlignment = Alignment.CenterHorizontally,
                         ) {
                             Text(
@@ -219,7 +237,8 @@ fun QRScannerScene(
                     if (imageError.isNotEmpty()) {
                         Text(
                             modifier = Modifier
-                                .padding(40.dp).align(Alignment.BottomCenter)
+                                .padding(40.dp)
+                                .align(Alignment.BottomCenter)
                                 .padding(padding16)
                                 .background(Color.Black, MaterialTheme.shapes.medium)
                                 .padding(padding16),

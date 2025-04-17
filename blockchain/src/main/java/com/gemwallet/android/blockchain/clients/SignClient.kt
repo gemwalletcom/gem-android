@@ -16,6 +16,14 @@ interface SignClient : BlockchainClient {
 
     suspend fun signTypedMessage(chain: Chain, input: ByteArray, privateKey: ByteArray): ByteArray = byteArrayOf()
 
+    suspend fun signGenericTransfer(
+        params: ConfirmParams.TransferParams.Generic,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        feePriority: FeePriority,
+        privateKey: ByteArray,
+    ): List<ByteArray> = emptyList()
+
     suspend fun signNativeTransfer(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
@@ -82,6 +90,14 @@ interface SignClient : BlockchainClient {
 
     suspend fun signWithdraw(
         params: ConfirmParams.Stake.WithdrawParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        feePriority: FeePriority,
+        privateKey: ByteArray,
+    ): List<ByteArray> = emptyList()
+
+    suspend fun signActivate(
+        params: ConfirmParams.Activate,
         chainData: ChainSignData,
         finalAmount: BigInteger,
         feePriority: FeePriority,

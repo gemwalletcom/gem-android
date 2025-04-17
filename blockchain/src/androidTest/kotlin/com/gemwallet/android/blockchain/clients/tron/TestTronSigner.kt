@@ -2,12 +2,15 @@ package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.Fee
 import com.wallet.core.primitives.Account
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
@@ -34,7 +37,7 @@ class TestTronSigner {
         val sign = runBlocking {
             signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    AssetId(Chain.Tron),
+                    Chain.Tron.asset(),
                     Account(Chain.Tron, from, ""),
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
@@ -88,7 +91,7 @@ class TestTronSigner {
         val sign = runBlocking {
             signer.signTokenTransfer(
                 params = ConfirmParams.TransferParams.Token(
-                    AssetId(Chain.Tron, "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"),
+                    Asset(AssetId(Chain.Tron, "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t"), "", "", 8, AssetType.TOKEN),
                     Account(Chain.Tron, from, ""),
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
@@ -146,7 +149,7 @@ class TestTronSigner {
         val sign = runBlocking {
             signer.signDelegate(
                 params = ConfirmParams.Stake.DelegateParams(
-                    AssetId(Chain.Tron),
+                    Chain.Tron.asset(),
                     Account(Chain.Tron, from, ""),
                     BigInteger.valueOf(10_000),
                     validatorId = "TCEo1hMAdaJrQmvnGTCcGT2LqrGU4N7Jqf",

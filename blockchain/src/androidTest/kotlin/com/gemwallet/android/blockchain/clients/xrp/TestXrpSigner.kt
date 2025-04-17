@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.xrp
 
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
@@ -34,7 +35,7 @@ class TestXrpSigner {
         val sign = runBlocking {
             signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    AssetId(Chain.Xrp),
+                    Chain.Xrp.asset(),
                     Account(Chain.Xrp, from, ""),
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
@@ -42,10 +43,12 @@ class TestXrpSigner {
                 chainData = XrpSignerPreloader.XrpChainData(
                     sequence = 1,
                     blockNumber = 1,
-                    fee = Fee(
-                        priority = FeePriority.Normal,
-                        feeAssetId = AssetId(Chain.Xrp),
-                        amount = BigInteger.TEN,
+                    fees = listOf(
+                        Fee(
+                            priority = FeePriority.Normal,
+                            feeAssetId = AssetId(Chain.Xrp),
+                            amount = BigInteger.TEN,
+                        )
                     ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
@@ -55,11 +58,11 @@ class TestXrpSigner {
         }
 
         assertEquals(
-            "0x12000022000000002400000001201b0000000b61400000000000271068400000000000000" +
-                "a7321020927cc15435c44dd3b74189e950d941939425f2864876e06747f093dc68b83e9744630440" +
-                "2205db7de344e8aabb5887f1e612aa32faa16ada58c177ee25150758bb8772a320402201140778e8" +
-                "b58fa7884c0fffe632cbca99f3a7396ed8ff57213232f18ef65fcb38114dd10693e412bff789ebf6" +
-                "baa9714036c9ae214bb8314dd10693e412bff789ebf6baa9714036c9ae214bb",
+            "0x12000022000000002400000001201b0000000d61400000000000271068400000000000000a73210209" +
+                    "27cc15435c44dd3b74189e950d941939425f2864876e06747f093dc68b83e974473045022100" +
+                    "d5b18dd75818a07d4b4ed5846b07604e48607789d393691334f59d3761f6874c02205ac35c8b" +
+                    "cadb9fdbd81022f3629bfa0aac0b80afa655628c8ddbfee030f1bb178114dd10693e412bff78" +
+                    "9ebf6baa9714036c9ae214bb8314dd10693e412bff789ebf6baa9714036c9ae214bb",
             sign.first().toHexString()
         )
     }

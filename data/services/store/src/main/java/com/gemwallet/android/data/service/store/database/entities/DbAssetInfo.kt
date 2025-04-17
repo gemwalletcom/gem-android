@@ -65,7 +65,8 @@ import kotlinx.coroutines.flow.map
             balances.reserved_amount AS balanceReservedAmount,
             balances.total_amount AS balanceTotalAmount,
             (balances.total_amount * prices.value) AS balanceFiatTotalAmount,
-            balances.updated_at AS balanceUpdatedAt
+            balances.updated_at AS balanceUpdatedAt,
+            balances.is_active AS assetIsActive
         FROM asset
         LEFT JOIN asset_wallet ON asset.id = asset_wallet.asset_id
         LEFT JOIN session ON asset_wallet.wallet_id = session.wallet_id
@@ -122,6 +123,7 @@ data class DbAssetInfo(
     val balanceReservedAmount: Double?,
     val balanceTotalAmount: Double?,
     val balanceFiatTotalAmount: Double?,
+    val assetIsActive: Boolean,
 
     val balanceUpdatedAt: Long?,
 )
@@ -162,6 +164,7 @@ fun DbAssetInfo.toModel(): AssetInfo? {
         ),
         totalAmount = entity.balanceTotalAmount ?: 0.0,
         fiatTotalAmount = entity.balanceFiatTotalAmount ?: 0.0,
+        isActive = assetIsActive,
     )
 
     val currency = Currency.entries.firstOrNull { it.string == entity.priceCurrency }

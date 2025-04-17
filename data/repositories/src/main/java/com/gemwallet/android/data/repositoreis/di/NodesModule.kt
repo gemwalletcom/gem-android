@@ -11,7 +11,6 @@ import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
 import com.gemwallet.android.data.repositoreis.nodes.NodesRepository
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.service.store.database.NodesDao
-import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -26,11 +25,9 @@ object NodesModule {
     @Provides
     @Singleton
     fun provideNodesRepository(
-        gson: Gson,
         @ApplicationContext context: Context,
         nodesDao: NodesDao,
     ): NodesRepository = NodesRepository(
-        gson = gson,
         nodesDao = nodesDao,
         configStore = ConfigStore(
             context.getSharedPreferences(

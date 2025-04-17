@@ -3,6 +3,8 @@ package com.gemwallet.android.blockchain.clients.xrp
 import com.gemwallet.android.blockchain.clients.xrp.services.XrpAccountsService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.wallet.core.blockchain.xrp.models.XRPAccount
+import com.wallet.core.blockchain.xrp.models.XRPAccountLine
+import com.wallet.core.blockchain.xrp.models.XRPAccountLinesResult
 import com.wallet.core.blockchain.xrp.models.XRPAccountResult
 import com.wallet.core.blockchain.xrp.models.XRPResult
 
@@ -21,6 +23,16 @@ internal class TestXrpAccountsService(
                         Sequence = 92788459,
                     ),
                     ledger_current_index = 1
+                )
+            )
+        )
+    }
+
+    override suspend fun accountLines(request: JSONRpcRequest<List<Map<String, String>>>): Result<XRPResult<XRPAccountLinesResult>> {
+        return Result.success(
+            XRPResult(
+                XRPAccountLinesResult(
+                    listOf()
                 )
             )
         )

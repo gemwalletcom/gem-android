@@ -4,34 +4,40 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
-import com.gemwallet.android.serializer.AccountSerializer
-import com.gemwallet.android.serializer.AssetIdSerializer
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
+import com.gemwallet.android.serializer.BigIntegerSerializer
+import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.Account
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.TransactionType
-import uniffi.gemstone.ApprovalData
+import kotlinx.serialization.Serializable
+import org.json.JSONObject
 import java.math.BigInteger
 import java.util.Base64
 
-sealed class ConfirmParams(
-    val assetId: AssetId,
-    val from: Account,
-    val amount: BigInteger = BigInteger.ZERO,
-) {
+@Serializable
+sealed class ConfirmParams {
+
+    abstract val asset: Asset
+
+    abstract val from: Account
+
+    @Serializable(BigIntegerSerializer::class)
+    abstract val amount: BigInteger
+
+    val assetId: AssetId get() = asset.id
 
     class Builder(
-        val assetId: AssetId,
+        val asset: Asset,
         val from: Account,
         val amount: BigInteger = BigInteger.ZERO,
     ) {
         fun transfer(destination: DestinationAddress, memo: String? = null, isMax: Boolean = false): TransferParams {
-            return when (assetId.type()) {
+            return when (asset.id.type()) {
                 AssetSubtype.NATIVE -> TransferParams.Native(
-                    assetId = assetId,
+                    asset = asset,
                     from = from,
                     amount = amount,
                     destination = destination,
@@ -39,7 +45,7 @@ sealed class ConfirmParams(
                     isMaxAmount = isMax
                 )
                 AssetSubtype.TOKEN -> TransferParams.Token(
-                    assetId = assetId,
+                    asset = asset,
                     from = from,
                     amount = amount,
                     destination = destination,
@@ -50,15 +56,15 @@ sealed class ConfirmParams(
         }
 
         fun approval(approvalData: String, provider: String, contract: String = ""): TokenApprovalParams {
-            return TokenApprovalParams(assetId, from, approvalData, provider, contract)
+            return TokenApprovalParams(asset, from, approvalData, provider, contract)
         }
 
-        fun delegate(validatorId: String) = Stake.DelegateParams(assetId, from, amount, validatorId)
+        fun delegate(validatorId: String) = Stake.DelegateParams(asset, from, amount, validatorId)
 
-        fun rewards(validatorsId: List<String>) = Stake.RewardsParams(assetId, from, validatorsId, amount)
+        fun rewards(validatorsId: List<String>) = Stake.RewardsParams(asset, from, validatorsId, amount)
 
         fun withdraw(delegation: Delegation) = Stake.WithdrawParams(
-            assetId = assetId,
+            asset = asset,
             from = from,
             amount = amount,
             validatorId = delegation.validator.id,
@@ -67,7 +73,7 @@ sealed class ConfirmParams(
 
         fun undelegate(delegation: Delegation): Stake.UndelegateParams {
             return Stake.UndelegateParams(
-                assetId,
+                asset,
                 from,
                 amount,
                 delegation.validator.id,
@@ -79,7 +85,7 @@ sealed class ConfirmParams(
 
         fun redelegate(dstValidatorId: String, delegation: Delegation): Stake.RedelegateParams {
             return Stake.RedelegateParams(
-                assetId,
+                asset,
                 from = from,
                 amount,
                 delegation.validator.id,
@@ -88,16 +94,18 @@ sealed class ConfirmParams(
                 delegation.base.balance,
             )
         }
+
+        fun activate(): Activate {
+            return Activate(asset, from)
+        }
     }
 
-    sealed class TransferParams(
-        assetId: AssetId,
-        from: Account,
-        amount: BigInteger,
-        val destination: DestinationAddress,
-        val memo: String? = null,
-        val isMaxAmount: Boolean = false,
-    ) : ConfirmParams(assetId, from, amount) {
+    @Serializable
+    sealed class TransferParams : ConfirmParams() {
+        abstract val destination: DestinationAddress
+        abstract val memo: String?
+        abstract val isMaxAmount: Boolean
+        abstract val inputType: InputType?
 
         override fun isMax(): Boolean {
             return isMaxAmount
@@ -111,111 +119,163 @@ sealed class ConfirmParams(
             return memo
         }
 
-        class Native(
-            assetId: AssetId,
-            from: Account,
-            amount: BigInteger,
-            destination: DestinationAddress,
-            memo: String? = null,
-            isMaxAmount: Boolean = false,
-        ) : TransferParams(assetId, from, amount, destination, memo, isMaxAmount)
+        @Serializable
+        class Generic(
+            override val asset: Asset,
+            override val from: Account,
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger = BigInteger.ZERO,
+            override val destination: DestinationAddress = DestinationAddress(""),
+            override val memo: String? = null,
+            override val isMaxAmount: Boolean = false,
+            override val inputType: InputType? = null,
+        ) : TransferParams()
 
+        @Serializable
+        class Native(
+            override val asset: Asset,
+            override val from: Account,
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
+            override val destination: DestinationAddress,
+            override val memo: String? = null,
+            override val isMaxAmount: Boolean = false,
+            override val inputType: InputType? = null,
+        ) : TransferParams()
+
+        @Serializable
         class Token(
-            assetId: AssetId,
-            from: Account,
-            amount: BigInteger,
-            destination: DestinationAddress,
-            memo: String? = null,
-            isMaxAmount: Boolean = false,
-        ) : TransferParams(assetId, from, amount, destination, memo, isMaxAmount)
+            override val asset: Asset,
+            override val from: Account,
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
+            override val destination: DestinationAddress,
+            override val memo: String? = null,
+            override val isMaxAmount: Boolean = false,
+            override val inputType: InputType? = null,
+        ) : TransferParams()
+
+        @Serializable
+        enum class InputType {
+            Signature,
+            EncodeTransaction,
+        }
     }
 
+    @Serializable
     class TokenApprovalParams(
-        assetId: AssetId,
-        from: Account,
+        override val asset: Asset,
+        override val from: Account,
         val data: String,
         val provider: String,
         val contract: String
-    ) : ConfirmParams(assetId, from)
+    ) : ConfirmParams() {
+        override val amount: BigInteger
+            get() = BigInteger.ZERO
+    }
 
+    @Serializable
     class SwapParams(
-        from: Account,
-        val fromAssetId: AssetId,
-        val fromAmount: BigInteger,
+        override val from: Account,
+        val fromAsset: Asset,
+        @Serializable(BigIntegerSerializer::class) val fromAmount: BigInteger,
         val toAssetId: AssetId,
-        val toAmount: BigInteger,
+        @Serializable(BigIntegerSerializer::class) val toAmount: BigInteger,
         val swapData: String,
         val provider: String,
+        val protocolId: String,
         val to: String,
         val value: String,
         val approval: ApprovalData? = null,
-        val gasLimit: BigInteger? = null,
-    ) : ConfirmParams(fromAssetId, from, fromAmount) {
+        @Serializable(BigIntegerSerializer::class) val gasLimit: BigInteger? = null,
+    ) : ConfirmParams() {
 
+        override val asset: Asset
+            get() = fromAsset
+        override val amount: BigInteger
+            get() = fromAmount
         override fun destination(): DestinationAddress = DestinationAddress(to)
+
+        @Serializable
+        data class ApprovalData(
+            val token: String,
+            var spender: String,
+            var value: String
+        )
 
     }
 
-    sealed class Stake(
-        assetId: AssetId,
-        from: Account,
-        amount: BigInteger,
-        val validatorId: String,
-    ) : ConfirmParams(assetId, from, amount) {
+    @Serializable
+    class Activate(
+        override val asset: Asset,
+        override val from: Account,
+        @Serializable(BigIntegerSerializer::class) override val amount: BigInteger = BigInteger.ZERO,
+    ) : ConfirmParams()
 
+    @Serializable
+    sealed class Stake : ConfirmParams() {
+        abstract val validatorId: String
+
+        @Serializable
         class DelegateParams(
-            assetId: AssetId,
-            from: Account,
-            amount: BigInteger,
-            validatorId: String,
-        ) : Stake(assetId, from, amount, validatorId)
+            override val asset: Asset,
+            override val from: Account,
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
+            override val validatorId: String,
+        ) : Stake()
 
+        @Serializable
         class WithdrawParams(
-            assetId: AssetId,
-            from: Account,
-            amount: BigInteger,
-            validatorId: String,
+            override val asset: Asset,
+            override val from: Account,
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
+            override val validatorId: String,
             val delegationId: String,
-        ) : Stake(assetId, from, amount, validatorId)
+        ) : Stake()
 
+        @Serializable
         class UndelegateParams(
-            assetId: AssetId,
-            from: Account,
-            amount: BigInteger,
-            validatorId: String,
+            override val asset: Asset,
+            override val from: Account,
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
+            override val validatorId: String,
             val delegationId: String,
             val share: String?,
             val balance: String?
-        ) : Stake(assetId, from, amount, validatorId)
+        ) : Stake()
 
+        @Serializable
         class RedelegateParams(
-            assetId: AssetId,
-            from: Account,
-            amount: BigInteger,
+            override val asset: Asset,
+            override val from: Account,
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
             val srcValidatorId: String,
             val dstValidatorId: String,
             val share: String?,
-            val balance: String?
-        ) : Stake(assetId, from, amount, srcValidatorId)
+            val balance: String?,
+        ) : Stake() {
+            override val validatorId: String = ""
+        }
 
+        @Serializable
         class RewardsParams(
-            assetId: AssetId,
-            from: Account,
+            override val asset: Asset,
+            override val from: Account,
             val validatorsId: List<String>,
-            amount: BigInteger
-        ) : Stake(assetId, from, amount, "")
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
+        ) : Stake() {
+            override val validatorId: String = ""
+        }
     }
 
     fun pack(): String? {
-        val json = getGson().toJson(this)
+        val json = jsonEncoder.encodeToString(this)
         return Base64.getEncoder().encodeToString(json.toByteArray()).urlEncode()
     }
 
     fun getTxType() : TransactionType {
         return when (this) {
-            is TransferParams  -> TransactionType.Transfer
-            is TokenApprovalParams  -> TransactionType.TokenApproval
+            is TransferParams -> TransactionType.Transfer
+            is TokenApprovalParams -> TransactionType.TokenApproval
             is SwapParams  -> TransactionType.Swap
+            is Activate  -> TransactionType.AssetActivation
             is Stake.DelegateParams  -> TransactionType.StakeDelegate
             is Stake.RewardsParams -> TransactionType.StakeRewards
             is Stake.RedelegateParams  -> TransactionType.StakeRedelegate
@@ -232,7 +292,7 @@ sealed class ConfirmParams(
     open fun isMax(): Boolean = false
 
     override fun hashCode(): Int {
-        return assetId.toIdentifier().hashCode() +
+        return asset.id.toIdentifier().hashCode() +
                 destination().hashCode() +
                 memo().hashCode() +
                 amount.hashCode() +
@@ -242,41 +302,32 @@ sealed class ConfirmParams(
     companion object {
         fun unpack(txType: TransactionType, input: String): ConfirmParams {
             val json = String(Base64.getDecoder().decode(input.urlDecode()))
-            val type = when (txType) {
-                TransactionType.Transfer -> TransferParams.Native::class.java
-                TransactionType.Swap -> SwapParams::class.java
-                TransactionType.TokenApproval -> TokenApprovalParams::class.java
-                TransactionType.StakeDelegate -> Stake.DelegateParams::class.java
-                TransactionType.StakeUndelegate -> Stake.UndelegateParams::class.java
-                TransactionType.StakeRewards -> Stake.RewardsParams::class.java
-                TransactionType.StakeRedelegate -> Stake.RedelegateParams::class.java
-                TransactionType.StakeWithdraw -> Stake.WithdrawParams::class.java
-                TransactionType.AssetActivation -> TODO()
-                TransactionType.TransferNFT -> TODO()
-                TransactionType.SmartContractCall -> TODO()
+            val type = JSONObject(json).getString("type")
+            val result = when (type) {
+                TransferParams.Generic::class.qualifiedName -> jsonEncoder.decodeFromString<TransferParams.Generic>(json)
+                TransferParams.Native::class.qualifiedName -> jsonEncoder.decodeFromString<TransferParams.Native>(json)
+                TransferParams.Token::class.qualifiedName -> jsonEncoder.decodeFromString<TransferParams.Token>(json)
+                TransactionType.Swap::class.qualifiedName -> jsonEncoder.decodeFromString<SwapParams>(json)
+                TransactionType.TokenApproval::class.qualifiedName -> jsonEncoder.decodeFromString<TokenApprovalParams>(json)
+                TransactionType.StakeDelegate::class.qualifiedName -> jsonEncoder.decodeFromString<Stake.DelegateParams>(json)
+                TransactionType.StakeUndelegate::class.qualifiedName -> jsonEncoder.decodeFromString<Stake.UndelegateParams>(json)
+                TransactionType.StakeRewards::class.qualifiedName -> jsonEncoder.decodeFromString<Stake.RewardsParams>(json)
+                TransactionType.StakeRedelegate::class.qualifiedName -> jsonEncoder.decodeFromString<Stake.RedelegateParams>(json)
+                TransactionType.StakeWithdraw::class.qualifiedName -> jsonEncoder.decodeFromString<Stake.WithdrawParams>(json)
+                TransactionType.AssetActivation::class.qualifiedName -> jsonEncoder.decodeFromString<Activate>(json)
+                TransactionType.TransferNFT::class.qualifiedName -> TODO()
+                TransactionType.SmartContractCall::class.qualifiedName -> TODO()
+                else -> throw IllegalStateException()
             }
-
-            val result = getGson().fromJson(json, type)
-
-            return if (result.assetId.type() == AssetSubtype.TOKEN && result is TransferParams.Native) {
-                TransferParams.Token(
-                    result.assetId,
-                    result.from,
-                    result.amount,
-                    result.destination,
-                    result.memo,
-                    result.isMaxAmount,
-                )
-            } else {
-                result
-            }
-        }
-
-        private fun getGson(): Gson {
-            return GsonBuilder()
-                .registerTypeAdapter(AssetId::class.java, AssetIdSerializer())
-                .registerTypeAdapter(Account::class.java, AccountSerializer())
-                .create()
+            return result
         }
     }
+}
+
+fun uniffi.gemstone.ApprovalData.toModel(): ConfirmParams.SwapParams.ApprovalData {
+    return ConfirmParams.SwapParams.ApprovalData(
+        token = this.token,
+        spender = this.spender,
+        value = this.value,
+    )
 }

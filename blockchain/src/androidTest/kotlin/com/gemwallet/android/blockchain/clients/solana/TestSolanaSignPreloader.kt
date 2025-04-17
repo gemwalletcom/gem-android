@@ -4,12 +4,15 @@ import com.gemwallet.android.blockchain.clients.solana.services.SolanaNetworkInf
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.wallet.core.blockchain.solana.models.SolanaBlockhash
 import com.wallet.core.blockchain.solana.models.SolanaBlockhashResult
 import com.wallet.core.primitives.Account
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.SolanaTokenProgramId
 import junit.framework.TestCase.assertEquals
@@ -47,7 +50,7 @@ class TestSolanaSignPreloader {
         val result = runBlocking {
             preloader.preloadNativeTransfer(
                 ConfirmParams.Builder(
-                    assetId = AssetId(Chain.Solana),
+                    asset = Chain.Solana.asset(),
                     from = Account(Chain.Solana, "AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh", ""),
                     amount = BigInteger.valueOf(10_000_000)
                 )
@@ -76,7 +79,7 @@ class TestSolanaSignPreloader {
         val result = runBlocking {
             preloader.preloadTokenTransfer(
                 ConfirmParams.Builder(
-                    assetId = AssetId(Chain.Solana, "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"),
+                    asset = Asset(AssetId(Chain.Solana, "Es9vMFrzaCERmJfrF4H2FYD4KCoNkY11McCe8BenwNYB"), name = "usdt", symbol = "usdt", decimals = 8, type = AssetType.TOKEN),
                     from = Account(Chain.Solana, "AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh", ""),
                     amount = BigInteger.valueOf(10_000_000)
                 )
@@ -105,7 +108,7 @@ class TestSolanaSignPreloader {
         val result = runBlocking {
             preloader.preloadTokenTransfer(
                 ConfirmParams.Builder(
-                    assetId = AssetId(Chain.Solana, "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo"),
+                    asset = Asset(AssetId(Chain.Solana, "2b1kV6DkPAnxd5ixfnxCpjxmKwqjjaYmCZfHsFu24GXo"), name = "smt", symbol = "", decimals = 8, type = AssetType.TOKEN),
                     from = Account(Chain.Solana, "AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh", ""),
                     amount = BigInteger.valueOf(10_000_000)
                 )

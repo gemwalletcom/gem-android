@@ -137,7 +137,7 @@ class AsseDetailsViewModel @Inject constructor(
             val fiatTotal = currency.format(balances.fiatTotalAmount)
             val stakeBalance = balances.balanceAmount.getStackedAmount()
             return AssetInfoUIModel(
-                asset = asset,
+                assetInfo = assetInfo,
                 name = if (asset.type == AssetType.NATIVE) {
                     asset.id.chain.asset().name
                 } else {
@@ -155,7 +155,7 @@ class AsseDetailsViewModel @Inject constructor(
                 networkTitle = "${asset.id.chain.asset().name} (${asset.type.string})",
                 isBuyEnabled = assetInfo.metadata?.isBuyEnabled == true,
                 isSwapEnabled = assetInfo.metadata?.isSwapEnabled == true,
-                account = AssetInfoUIModel.Account(
+                accountInfoUIModel = AssetInfoUIModel.AccountInfoUIModel(
                     walletType = assetInfo.walletType,
                     totalBalance = balances.totalFormatted(),
                     totalFiat = fiatTotal,

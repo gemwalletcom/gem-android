@@ -28,6 +28,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.banners.viewmodels.BannersViewModel
@@ -50,7 +51,9 @@ fun BannersScene(
     isGlobal: Boolean = false,
     viewModel: BannersViewModel = hiltViewModel(),
 ) {
-    LaunchedEffect(asset?.id?.toIdentifier(), isGlobal) { viewModel.init(asset, isGlobal) }
+    LaunchedEffect(asset?.id?.toIdentifier(), isGlobal) {
+        viewModel.init(asset, isGlobal)
+    }
 
     val banners by viewModel.banners.collectAsStateWithLifecycle()
     val pageState = rememberPagerState { banners.size }
@@ -76,8 +79,10 @@ fun BannersScene(
                     stringResource(R.string.common_warning),
                     stringResource(R.string.warnings_multi_signature_blocked, asset?.chain() ?: "")
                 )
-
-                BannerEvent.ActivateAsset -> TODO()
+                BannerEvent.ActivateAsset -> Pair(
+                    stringResource(R.string.transfer_activate_asset_title),
+                    stringResource(R.string.banner_activate_asset_description, asset?.name ?: "", asset?.id?.chain?.asset()?.name ?: ""),
+                )
             }
             BannerText(
                 title = title,

@@ -3,11 +3,9 @@ package com.gemwallet.android.features.asset.details.views
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
@@ -48,6 +46,7 @@ import com.gemwallet.android.features.asset.details.models.AssetStateError
 import com.gemwallet.android.features.asset.details.viewmodels.AsseDetailsViewModel
 import com.gemwallet.android.features.banners.views.BannersScene
 import com.gemwallet.android.features.transactions.components.transactionsList
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
@@ -57,6 +56,7 @@ import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.clipboard.setPlainText
+import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding32
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
@@ -87,6 +87,7 @@ fun AssetDetailsScene(
     onChart: (AssetId) -> Unit,
     openNetwork: AssetIdAction,
     onStake: (AssetId) -> Unit,
+    onConfirm: (ConfirmParams) -> Unit
 ) {
     val viewModel: AsseDetailsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -117,6 +118,7 @@ fun AssetDetailsScene(
             openNetwork = openNetwork,
             onStake = onStake,
             onPriceAlert = viewModel::enablePriceAlert,
+            onConfirm = onConfirm,
             onCancel = onCancel,
         )
         uiState is AssetInfoUIState.Loading || uiModel == null -> LoadingScene(assetId.chain.string, onCancel)
@@ -141,6 +143,7 @@ private fun Success(
     openNetwork: AssetIdAction,
     onStake: (AssetId) -> Unit,
     onPriceAlert: (AssetId) -> Unit,
+    onConfirm: (ConfirmParams) -> Unit,
 ) {
     val scope = rememberCoroutineScope()
 
@@ -172,7 +175,7 @@ private fun Success(
                 }
             }
             IconButton(
-                onClick = { clipboardManager.setPlainText(uiState.account.owner) }
+                onClick = { clipboardManager.setPlainText(uiState.accountInfoUIModel.owner) }
             ) {
                 Icon(Icons.Default.ContentCopy, "")
             }
@@ -199,23 +202,23 @@ private fun Success(
             LazyColumn {
                 item {
                     AmountListHead(
-                        amount = uiState.account.totalBalance,
-                        equivalent = uiState.account.totalFiat,
+                        amount = uiState.accountInfoUIModel.totalBalance,
+                        equivalent = uiState.accountInfoUIModel.totalFiat,
                         iconUrl = uiState.iconUrl,
                         supportIconUrl = if (uiState.asset.id.type() == AssetSubtype.NATIVE) null else uiState.asset.chain().getIconUrl(),
                         placeholder = uiState.asset.name.getOrNull(0)?.toString() ?: uiState.asset.type.string,
                     ) {
                         AssetHeadActions(
-                            walletType = uiState.account.walletType,
+                            walletType = uiState.accountInfoUIModel.walletType,
                             onTransfer = { onTransfer(uiState.asset.id) },
-                            transferEnabled = uiState.account.walletType != WalletType.view,
+                            transferEnabled = uiState.accountInfoUIModel.walletType != WalletType.view,
                             onReceive = { onReceive(uiState.asset.id) },
                             onBuy = if (uiState.isBuyEnabled) {
                                 { onBuy(uiState.asset.id) }
                             } else {
                                 null
                             },
-                            onSwap = if (uiState.isSwapEnabled && uiState.account.walletType != WalletType.view) {
+                            onSwap = if (uiState.isSwapEnabled && uiState.accountInfoUIModel.walletType != WalletType.view) {
                                 {
                                     val toAssetId = if (uiState.asset.type == AssetType.NATIVE) {
                                         null
@@ -238,9 +241,15 @@ private fun Success(
                                 BannerEvent.Stake -> onStake(uiState.asset.id)
                                 BannerEvent.AccountBlockedMultiSignature ->
                                     uriHandler.open(Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
-                                BannerEvent.ActivateAsset -> uiState.asset.chain().getReserveBalanceUrl()?.let {
-                                    uriHandler.open(it)
+                                BannerEvent.ActivateAsset -> {
+                                    val params = ConfirmParams.Builder(
+                                        asset = uiState.asset,
+                                        from = uiState.assetInfo.owner ?: return@BannersScene
+                                    ).activate()
+                                    onConfirm(params)
                                 }
+                                BannerEvent.AccountActivation -> uiState.asset.chain()
+                                    .getReserveBalanceUrl()?.let { uriHandler.open(it) }
                                 else -> {}
                             }
                         },
@@ -310,41 +319,41 @@ private fun LazyListScope.balanceDetails(
     uiState: AssetInfoUIModel,
     onStake: (AssetId) -> Unit,
 ) {
-    if (!uiState.account.hasBalanceDetails) {
+    if (!uiState.accountInfoUIModel.hasBalanceDetails) {
         return
     }
     item {
         val uriHandler = LocalUriHandler.current
 
-        if (uiState.account.available.isNotEmpty()) {
-            Spacer(modifier = Modifier.size(8.dp))
+        if (uiState.accountInfoUIModel.available.isNotEmpty()) {
+            Spacer8()
             SubheaderItem(title = stringResource(id = R.string.asset_balances))
-            Spacer(modifier = Modifier.size(8.dp))
+            Spacer8()
         }
         val cells = mutableListOf<CellEntity<Any>>()
-        if (uiState.account.available.isNotEmpty()) {
+        if (uiState.accountInfoUIModel.available.isNotEmpty()) {
             cells.add(
                 CellEntity(
                     label = stringResource(R.string.asset_balances_available),
-                    data = uiState.account.available,
+                    data = uiState.accountInfoUIModel.available,
                 )
             )
         }
-        if (uiState.account.stake.isNotEmpty()) {
+        if (uiState.accountInfoUIModel.stake.isNotEmpty()) {
             cells.add(
                 CellEntity(
                     label = stringResource(R.string.wallet_stake),
-                    data = uiState.account.stake,
+                    data = uiState.accountInfoUIModel.stake,
                     action = { onStake(uiState.asset.id) },
                     testTag = "assetStake",
                 )
             )
         }
-        if (uiState.account.reserved.isNotEmpty()) {
+        if (uiState.accountInfoUIModel.reserved.isNotEmpty()) {
             cells.add(
                 CellEntity(
                     label = stringResource(R.string.asset_balances_reserved),
-                    data = uiState.account.reserved,
+                    data = uiState.accountInfoUIModel.reserved,
                     action = {
                         uriHandler.open(uiState.asset.id.chain.getReserveBalanceUrl() ?: return@CellEntity)
                     },

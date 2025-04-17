@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.near
 import com.gemwallet.android.blockchain.clients.near.NearSignerPreloader.NearChainData
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
@@ -35,7 +36,7 @@ class TestNearSigner {
         val sign = runBlocking {
             signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    AssetId(Chain.Near),
+                    Chain.Near.asset(),
                     Account(Chain.Near, from, ""),
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),

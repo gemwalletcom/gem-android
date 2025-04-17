@@ -119,7 +119,7 @@ class EvmSignClient(
 
         val approvalSign = if (approvalData != null) {
             signTokenApproval(
-                params = ConfirmParams.Builder(params.assetId, params.from)
+                params = ConfirmParams.Builder(params.asset, params.from)
                     .approval(
                         approvalData = encodeApprove(approvalData.spender).toHexString(),
                         provider = "",

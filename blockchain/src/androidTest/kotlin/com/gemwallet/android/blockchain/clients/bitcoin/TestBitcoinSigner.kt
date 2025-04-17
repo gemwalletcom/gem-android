@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.bitcoin
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
@@ -43,7 +44,7 @@ class TestBitcoinSigner {
         val sign = runBlocking {
             signer.signNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    AssetId(Chain.Doge),
+                    Chain.Doge.asset(),
                     Account(Chain.Doge, "D8UBj4EfNfNWNCdnCSgpY48yZDqPdTZXWW", "", "dgub8rNuTi8ofZu1jVDKpBxW9VFo62kjjx3b6CcameEZnrNNHJ3sKCnWBxQSv6qAP6jrwZEpfT1ZdKsrcBFKGTMV8zgBtjZmvQt29VPnLzbHjjD"),
                     BigInteger.valueOf(10_000_000_000),
                     DestinationAddress("D8UBj4EfNfNWNCdnCSgpY48yZDqPdTZXWW"),

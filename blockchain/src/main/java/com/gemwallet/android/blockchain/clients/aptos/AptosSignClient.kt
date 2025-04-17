@@ -85,7 +85,7 @@ class AptosSignClient(
     }
 
     private fun buildTokenCoinMessage(params: ConfirmParams.TransferParams.Token, finalAmount: BigInteger): TokenTransferCoinsMessage {
-        val parts = params.assetId.tokenId?.split("::") ?: throw Exception("Bad asset id: wait token")
+        val parts = params.asset.id.tokenId?.split("::") ?: throw Exception("Bad asset id: wait token")
         val accountAddress = parts.firstOrNull() ?: throw Exception("Bad token: no account address")
         val module = parts.getOrNull(1) ?: throw Exception("Bad token: no module")
         val name = parts.getOrNull(2) ?: throw Exception("Bad token: no name")

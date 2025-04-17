@@ -29,6 +29,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import uniffi.gemstone.Explorer
+import uniffi.gemstone.SwapProvider
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -70,7 +71,10 @@ class TransactionDetailsViewModel @Inject constructor(
             currency.format(fee.convert(feeAsset.decimals, it).atomicValue)
         } ?: ""
         val blockExplorerName = getCurrentBlockExplorerCase.getCurrentBlockExplorer(transaction.asset.chain())
-        val explorerUrl = Explorer(asset.chain().string).getTransactionUrl(blockExplorerName, tx.hash)
+        val explorer = Explorer(asset.chain().string)
+        val provider = tx.getSwapMetadata()?.provider
+        val swapExplorerUrl = provider?.let { explorer.getTransactionSwapUrl(blockExplorerName, tx.hash, provider) }
+        val explorerUrl = swapExplorerUrl?.url ?: explorer.getTransactionUrl(blockExplorerName, tx.hash)
 
         TxDetailsScreenModel(
             assetId = asset.id,
@@ -90,7 +94,7 @@ class TransactionDetailsViewModel @Inject constructor(
             feeFiat = feeFiat,
             type = tx.type,
             explorerUrl = explorerUrl,
-            explorerName = blockExplorerName,
+            explorerName = swapExplorerUrl?.name ?: blockExplorerName,
             fromAsset = assets.firstOrNull { it.id() == fromId },
             toAsset = assets.firstOrNull { it.id() == toId },
             fromValue = swapMetadata?.fromValue,

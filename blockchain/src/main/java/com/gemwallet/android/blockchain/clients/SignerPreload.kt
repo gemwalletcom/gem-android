@@ -3,6 +3,11 @@ package com.gemwallet.android.blockchain.clients
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.SignerParams
 
+
+interface GenericTransferPreloader : BlockchainClient {
+    suspend fun preloadGeneric(params: ConfirmParams.TransferParams.Generic): SignerParams
+}
+
 interface NativeTransferPreloader : BlockchainClient {
     suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams
 }
@@ -21,4 +26,8 @@ interface ApprovalTransactionPreloader : BlockchainClient {
 
 interface StakeTransactionPreloader : BlockchainClient {
     suspend fun preloadStake(params: ConfirmParams.Stake): SignerParams
+}
+
+interface ActivationTransactionPreloader : BlockchainClient {
+    suspend fun preloadActivate(params: ConfirmParams.Activate): SignerParams
 }

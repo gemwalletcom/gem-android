@@ -35,7 +35,6 @@ data class Transaction (
     val metadata: String? = null,
     @Serializable(with = DateSerializer::class)
     val createdAt: Long,
-    val updatedAt: Long
 )
 
 @OptIn(ExperimentalSerializationApi::class)

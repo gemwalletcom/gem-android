@@ -38,7 +38,7 @@ import com.gemwallet.android.ui.components.TransferTextFieldActions
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.qrCodeRequest
+import com.gemwallet.android.ui.components.QrCodeRequest
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Chain
 import java.text.NumberFormat
@@ -131,7 +131,7 @@ fun AddNodeScene(chain: Chain, onCancel: () -> Unit) {
     }
 
     if (isShowQRScan) {
-        qrCodeRequest(onCancel = { isShowQRScan = false }) {
+        QrCodeRequest(onCancel = { isShowQRScan = false }) {
             isShowQRScan = false
             viewModel.url.value = it
             viewModel.onUrlChange()

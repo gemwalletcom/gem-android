@@ -24,7 +24,7 @@ import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.Transaction
 import com.gemwallet.android.model.TransactionChages
 import com.gemwallet.android.model.TransactionExtended
-import com.google.gson.Gson
+import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.TransactionDirection
@@ -50,7 +50,6 @@ class TransactionsRepository(
     private val transactionsDao: TransactionsDao,
     assetsDao: AssetsDao,
     private val stateClients: List<TransactionStatusClient>,
-    private val gson: Gson,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetTransactions, GetTransaction, CreateTransaction, PutTransactions, GetTransactionUpdateTime {
 
@@ -149,7 +148,6 @@ class TransactionsRepository(
             utxoInputs = emptyList(),
             utxoOutputs = emptyList(),
             createdAt = System.currentTimeMillis(),
-            updatedAt = System.currentTimeMillis(),
         )
         transactionsDao.insert(listOf(transaction.toRecord(walletId)))
         addSwapMetadata(listOf(transaction))
@@ -210,9 +208,9 @@ class TransactionsRepository(
                     block = tx.blockNumber,
                 )
             )
-        } catch (err: ServiceUnavailable) {
+        } catch (_: ServiceUnavailable) {
             return tx.copy(updatedAt = System.currentTimeMillis())
-        } catch (err: Throwable) {
+        } catch (_: Throwable) {
             TransactionChages(tx.state)
         }
         return if (state.state != tx.state) {
@@ -235,8 +233,8 @@ class TransactionsRepository(
     }
 
     private fun addSwapMetadata(txs: List<Transaction>) {
-        val room = txs.filter { it.type == TransactionType.Swap && it.metadata != null }.map {
-            val txMetadata = gson.fromJson(it.metadata, TransactionSwapMetadata::class.java)
+        val room = txs.filter { it.type == TransactionType.Swap && it.metadata != null }.mapNotNull {
+            val txMetadata = it.metadata?.let { jsonEncoder.decodeFromString<TransactionSwapMetadata>(it) } ?: return@mapNotNull null
             DbTxSwapMetadata(
                 txId = it.id,
                 fromAssetId = txMetadata.fromAsset.toIdentifier(),

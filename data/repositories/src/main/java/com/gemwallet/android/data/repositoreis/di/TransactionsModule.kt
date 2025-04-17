@@ -23,10 +23,8 @@ import com.gemwallet.android.cases.transactions.PutTransactions
 import com.gemwallet.android.data.repositoreis.transactions.TransactionsRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
-import com.gemwallet.android.data.services.gemapi.di.GemJson
 import com.gemwallet.android.ext.available
 import com.gemwallet.android.ext.toChainType
-import com.google.gson.Gson
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
 import dagger.Module
@@ -45,11 +43,9 @@ object TransactionsModule {
         transactionsDao: TransactionsDao,
         assetsDao: AssetsDao,
         rpcClients: RpcClientAdapter,
-        @GemJson gson: Gson,
     ): TransactionsRepository = TransactionsRepository(
         transactionsDao = transactionsDao,
         assetsDao = assetsDao,
-        gson = gson,
         stateClients = Chain.available().map {
             when (it.toChainType()) {
                 ChainType.Bitcoin -> BitcoinTransactionStatusClient(it, rpcClients.getClient(it))
