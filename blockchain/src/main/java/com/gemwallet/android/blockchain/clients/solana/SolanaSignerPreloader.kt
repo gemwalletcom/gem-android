@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.solana
 
+import com.gemwallet.android.blockchain.clients.GenericTransferPreloader
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
@@ -27,9 +28,13 @@ class SolanaSignerPreloader(
     feeService: SolanaFeeService,
     private val networkInfoService: SolanaNetworkInfoService,
     private val accountsService: SolanaAccountsService,
-) : NativeTransferPreloader, TokenTransferPreloader, SwapTransactionPreloader, StakeTransactionPreloader {
+) : GenericTransferPreloader, NativeTransferPreloader, TokenTransferPreloader, SwapTransactionPreloader, StakeTransactionPreloader {
 
     private val feeCalculator = SolanaFeeCalculator(feeService)
+
+    override suspend fun preloadGeneric(params: ConfirmParams.TransferParams.Generic): SignerParams {
+        return preload(params)
+    }
 
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
         return preload(params, "", null, SolanaTokenProgramId.Token)

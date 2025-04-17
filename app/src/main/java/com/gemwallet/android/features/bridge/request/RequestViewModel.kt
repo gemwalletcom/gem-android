@@ -1,21 +1,27 @@
 package com.gemwallet.android.features.bridge.request
 
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
+import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
 import com.gemwallet.android.data.repositoreis.bridge.findByNamespace
-import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.features.bridge.model.SessionUI
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.toHexString
+import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.serializer.jsonEncoder
 import com.reown.walletkit.client.Wallet
 import com.reown.walletkit.client.WalletKit
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.WCSolanaSignMessageResult
 import com.wallet.core.primitives.WalletConnectionMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -34,21 +40,33 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RequestViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
+    private val walletsRepository: WalletsRepository,
+    private val bridgeRepository: BridgesRepository,
     private val passwordStore: PasswordStore,
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
     val signClient: SignClientProxy,
 ) : ViewModel() {
+
     private val state = MutableStateFlow(RequestViewModelState())
     val sceneState = state.map { it.toSceneState() }.stateIn(viewModelScope, SharingStarted.Eagerly, RequestSceneState.Loading)
 
-    fun onRequest(request: Wallet.Model.SessionRequest, onCancel: () -> Unit) {
-        val wallet = sessionRepository.getSession()?.wallet
+    fun onRequest(request: Wallet.Model.SessionRequest, onCancel: () -> Unit) = viewModelScope.launch {
+        val connection = bridgeRepository.getConnectionByTopic(request.topic)
+        if (connection == null) {
+            onCancel()
+            return@launch
+        }
+        val wallet = walletsRepository.getWallet(connection.wallet.id)
+        if (wallet == null) {
+            onCancel()
+            return@launch
+        }
         val chain = Chain.findByNamespace(request.chainId)
         if (chain == null) {
             onCancel()
-            return
+            return@launch
         }
+
         val params = when (request.request.method) {
             WalletConnectionMethods.solana_sign_message.string,
             WalletConnectionMethods.eth_sign.string -> {
@@ -64,47 +82,48 @@ class RequestViewModel @Inject constructor(
                 String(data.decodeHex())
             }
             WalletConnectionMethods.eth_send_transaction.string -> request.request.params
+            WalletConnectionMethods.solana_sign_and_send_transaction.string,
             WalletConnectionMethods.solana_sign_transaction.string -> {
                 val params = JSONObject(request.request.params).getString("transaction")
                 params
             }
-            else -> return
+            else -> {
+                state.update { it.copy(error = "Unsupported method: ${request.request.method}") }
+                return@launch
+            }
         }
         state.update { it.copy(sessionRequest = request, wallet = wallet, chain = chain, params = params) }
     }
 
     fun onSent(hash: String) {
-        val sessionRequest = state.value.sessionRequest ?: return // TODO: Handle error
+        val sessionRequest = state.value.sessionRequest ?: return
+        val data = when (state.value.sessionRequest?.request?.method) {
+            WalletConnectionMethods.solana_sign_transaction.string -> jsonEncoder.encodeToString(WCSolanaSignMessageResult(signature = hash))
+            else -> hash
+        }
 
         viewModelScope.launch(Dispatchers.IO) {
-            val response = Wallet.Params.SessionRequestResponse(
-                sessionTopic = sessionRequest.topic,
-                jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
-                    sessionRequest.request.id,
-                    hash,
-                )
+            WalletKit.respondSessionRequest(
+                params = Wallet.Params.SessionRequestResponse(
+                    sessionTopic = sessionRequest.topic,
+                    jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(sessionRequest.request.id, data)
+                ),
+                onSuccess = { state.update { it.copy(canceled = true) } },
+                onError = { error -> state.update { it.copy(error = error.throwable.message ?: "Can't sent data to WalletConnect") } }
             )
-
-            WalletKit.respondSessionRequest(response,
-                onSuccess = {
-                    state.update { it.copy(canceled = true) }
-                },
-                onError = { error ->
-                    state.update { it.copy(error = error.throwable.message ?: "Can't sent hash to WalletConnect") }
-                })
         }
     }
 
     fun onSign() {
-        val session = sessionRepository.getSession() ?: return
-        val sessionRequest = state.value.sessionRequest ?: return // TODO: Handle error
+        val sessionRequest = state.value.sessionRequest ?: return
+        val wallet = state.value.wallet ?: return
         val chain = state.value.chain ?: return
 
         viewModelScope.launch(Dispatchers.IO) {
             val method = WalletConnectionMethods.entries
                 .firstOrNull { it.string == sessionRequest.request.method }
-            val password = passwordStore.getPassword(session.wallet.id)
-            val privateKey = loadPrivateKeyOperator(session.wallet, chain, password)
+            val password = passwordStore.getPassword(wallet.id)
+            val privateKey = loadPrivateKeyOperator(wallet, chain, password)
 
             val sign = try {
                 when (method) {
@@ -123,7 +142,9 @@ class RequestViewModel @Inject constructor(
                     }
                     WalletConnectionMethods.solana_sign_transaction -> {
                         val param = state.value.params
-                        String(signClient.signData(chain, param, privateKey))//.toHexString()
+                        val sign = signClient.signData(chain, param, privateKey)
+                        val result = jsonEncoder.encodeToString(WCSolanaSignMessageResult(signature = String(sign)))
+                        result
                     }
                     WalletConnectionMethods.solana_sign_message -> {
                         val param = state.value.params.toByteArray()
@@ -187,6 +208,9 @@ private data class RequestViewModelState(
         if (canceled) {
             return RequestSceneState.Cancel
         }
+        if (error != null) {
+            RequestSceneState.Error(error)
+        }
         if (sessionRequest == null) {
             return RequestSceneState.Loading
         }
@@ -196,27 +220,18 @@ private data class RequestViewModelState(
             WalletConnectionMethods.personal_sign.string,
             WalletConnectionMethods.eth_sign_typed_data_v4.string,
             WalletConnectionMethods.solana_sign_message.string,
+            WalletConnectionMethods.solana_sign_transaction.string,
             WalletConnectionMethods.eth_sign_typed_data.string -> RequestSceneState.SignMessage(
                 account = account,
                 walletName = wallet.name,
+                chain = chain,
+                method = sessionRequest.request.method,
                 session = SessionUI(
                     id = "",
                     name = sessionRequest.peerMetaData?.name ?: "",
                     icon = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
                     description = sessionRequest.peerMetaData?.description ?: "",
-                    uri = sessionRequest.peerMetaData?.description ?: "",
-                ),
-                params = params,
-            )
-            WalletConnectionMethods.solana_sign_transaction.string -> RequestSceneState.SignMessage(
-                account = account,
-                walletName = wallet.name,
-                session = SessionUI(
-                    id = "",
-                    name = sessionRequest.peerMetaData?.name ?: "",
-                    icon = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
-                    description = sessionRequest.peerMetaData?.description ?: "",
-                    uri = sessionRequest.peerMetaData?.description ?: "",
+                    uri = sessionRequest.peerMetaData?.url?.toUri()?.host ?: "",
                 ),
                 params = params,
             )
@@ -236,6 +251,22 @@ private data class RequestViewModelState(
                     RequestSceneState.Error("Argument error: ${err.message}")
                 }
             }
+//            WalletConnectionMethods.solana_sign_transaction.string -> RequestSceneState.SignGeneric(
+//                    ConfirmParams.TransferParams.Generic(
+//                    asset = chain.asset(),
+//                    from = account,
+//                    memo = params,
+//                    inputType = ConfirmParams.TransferParams.InputType.Signature
+//                )
+//            )
+            WalletConnectionMethods.solana_sign_and_send_transaction.string -> RequestSceneState.SignGeneric(
+                ConfirmParams.TransferParams.Generic(
+                    asset = chain.asset(),
+                    from = account,
+                    memo = params,
+                    inputType = ConfirmParams.TransferParams.InputType.EncodeTransaction
+                )
+            )
             else -> RequestSceneState.Error("Unsupported method")
         }
     }
@@ -250,6 +281,8 @@ sealed interface RequestSceneState {
     class Error(val message: String) : RequestSceneState
 
     class SignMessage(
+        val chain: Chain,
+        val method: String,
         val walletName: String,
         val account: Account,
         val session: SessionUI,
@@ -262,5 +295,8 @@ sealed interface RequestSceneState {
         val value: BigInteger,
         val data: String,
     ) : RequestSceneState
+
+    class SignGeneric(val params: ConfirmParams.TransferParams.Generic) : RequestSceneState
+    class SendGeneric(val params: ConfirmParams.TransferParams.Generic) : RequestSceneState
 }
 

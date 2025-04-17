@@ -19,15 +19,21 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.confirm.views.ConfirmScreen
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.ConfirmParams.TransferParams.*
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene
-import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
+import com.gemwallet.android.ui.components.designsystem.Spacer4
+import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
+import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.components.list_item.PropertyDataText
+import com.gemwallet.android.ui.components.list_item.PropertyItem
+import com.gemwallet.android.ui.components.list_item.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
 import com.reown.walletkit.client.Wallet
+import com.wallet.core.primitives.WalletConnectionMethods
 
 @Composable
 fun RequestScene(
@@ -51,13 +57,14 @@ fun RequestScene(
             message = (sceneState as RequestSceneState.Error).message,
             onCancel = viewModel::onReject
         )
-        is RequestSceneState.SignMessage -> (sceneState as RequestSceneState.SignMessage).Render(
+        is RequestSceneState.SignMessage -> Render(
+            request = (sceneState as RequestSceneState.SignMessage),
             onApprove = viewModel::onSign,
             onReject = viewModel::onReject,
         )
         is RequestSceneState.SendTransaction -> {
             ConfirmScreen(
-                params = ConfirmParams.TransferParams.Native(
+                params = Native(
                     from = (sceneState as RequestSceneState.SendTransaction).account,
                     asset = (sceneState as RequestSceneState.SendTransaction).account.chain.asset(),
                     amount = (sceneState as RequestSceneState.SendTransaction).value,
@@ -68,13 +75,23 @@ fun RequestScene(
                 cancelAction = viewModel::onReject
             )
         }
-
+        is RequestSceneState.SendGeneric -> ConfirmScreen(
+            (sceneState as RequestSceneState.SendGeneric).params,
+            finishAction = { assetId, hash, route -> viewModel.onSent(hash) },
+            cancelAction = viewModel::onReject
+        )
+        is RequestSceneState.SignGeneric -> ConfirmScreen(
+            (sceneState as RequestSceneState.SignGeneric).params,
+            finishAction = { assetId, hash, route -> viewModel.onSent(hash) },
+            cancelAction = viewModel::onReject
+        )
         RequestSceneState.Cancel -> onCancel()
     }
 }
 
 @Composable
-private fun RequestSceneState.SignMessage.Render(
+private fun Render(
+    request: RequestSceneState.SignMessage,
     onApprove: () -> Unit,
     onReject: () -> Unit,
 ) {
@@ -86,36 +103,31 @@ private fun RequestSceneState.SignMessage.Render(
         onClose = onReject,
     ) {
         LazyColumn {
+            item { PropertyItem(R.string.wallet_connect_app, request.session.name) }
+            item { PropertyItem(R.string.wallet_connect_website, request.session.uri) }
+            item { PropertyItem(R.string.transfer_from, request.walletName) }
             item {
-                Table(
-                    items = listOf(
-                        CellEntity(
-                            label = stringResource(id = R.string.asset_market_cap),
-                            data = session.name,
-                        ),
-                        CellEntity(
-                            label = stringResource(id = R.string.asset_circulating_supply),
-                            data = session.description,
-                        ),
-                        CellEntity(
-                            label = stringResource(id = R.string.asset_total_supply),
-                            data = session.uri,
-                        ),
-                    ),
+                PropertyItem(
+                    title = { PropertyTitleText(R.string.transfer_network) },
+                    data = {
+                        PropertyDataText(
+                            request.chain.asset().name,
+                            badge = {
+                                Spacer4()
+                                AsyncImage(request.chain.asset(), trailingIconMedium)
+                            }
+                        )
+                   },
                 )
-                Spacer(modifier = Modifier.size(24.dp))
             }
-            item {
-                Surface(
-                    shadowElevation = 16.dp,
-                    color = MaterialTheme.colorScheme.background,
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        text = params
-                    )
+            item { PropertyItem("Method", request.method) }
+            when (request.method) {
+                WalletConnectionMethods.solana_sign_transaction.string -> {}
+                else -> item {
+                    Spacer(modifier = Modifier.size(24.dp))
+                    Surface(shadowElevation = 16.dp, color = MaterialTheme.colorScheme.background) {
+                        Text(modifier = Modifier.fillMaxWidth().padding(16.dp), text = request.params)
+                    }
                 }
             }
         }

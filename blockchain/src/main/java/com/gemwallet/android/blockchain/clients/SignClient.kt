@@ -18,6 +18,14 @@ interface SignClient : BlockchainClient {
 
     suspend fun signData(chain: Chain, input: String, privateKey: ByteArray): ByteArray = byteArrayOf()
 
+    suspend fun signGenericTransfer(
+        params: ConfirmParams.TransferParams.Generic,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        feePriority: FeePriority,
+        privateKey: ByteArray,
+    ): List<ByteArray> = emptyList()
+
     suspend fun signNativeTransfer(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,

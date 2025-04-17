@@ -279,6 +279,22 @@ class ConfirmViewModel @Inject constructor(
                 getBalance(assetInfo, signerParams.input),
             )
             val signs = sign(signerParams, session, assetInfo, txSpeed)
+            when (signerParams.input) {
+                is ConfirmParams.TransferParams.Generic -> {
+                    when ((signerParams.input as ConfirmParams.TransferParams.Generic).inputType) {
+                        ConfirmParams.TransferParams.InputType.Signature -> {
+                            val hash = String(signs.firstOrNull() ?: byteArrayOf())
+                            state.update { ConfirmState.Result(txHash = hash) }
+                            viewModelScope.launch(Dispatchers.Main) {
+                                finishAction(assetId = assetInfo.id(), hash = hash, route = "")
+                            }
+                            return@launch
+                        }
+                        else -> {}
+                    }
+                }
+                else -> {}
+            }
             for (sign in signs) {
                 val txHash = broadcastClientProxy.send(account, sign, signerParams.input.getTxType())
                 if (sign != signs.last()) {

@@ -2,6 +2,7 @@ package com.gemwallet.android.services
 
 import com.gemwallet.android.blockchain.clients.ActivationTransactionPreloader
 import com.gemwallet.android.blockchain.clients.ApprovalTransactionPreloader
+import com.gemwallet.android.blockchain.clients.GenericTransferPreloader
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
@@ -32,7 +33,8 @@ class SignerPreloaderProxy(
     private val swapTransactionClients: List<SwapTransactionPreloader>,
     private val approvalTransactionClients: List<ApprovalTransactionPreloader>,
     private val activatePreloaderClients: List<ActivationTransactionPreloader>,
-) : NativeTransferPreloader, TokenTransferPreloader, StakeTransactionPreloader,
+    private val genericPreloaderClients: List<GenericTransferPreloader>,
+) : GenericTransferPreloader, NativeTransferPreloader, TokenTransferPreloader, StakeTransactionPreloader,
     SwapTransactionPreloader, ApprovalTransactionPreloader, ActivationTransactionPreloader {
 
     suspend fun preload(params: ConfirmParams): SignerParams = withContext(Dispatchers.IO) {
@@ -55,6 +57,7 @@ class SignerPreloaderProxy(
                 is ConfirmParams.TransferParams.Native -> preloadNativeTransfer(params)
                 is ConfirmParams.TransferParams.Token -> preloadTokenTransfer(params)
                 is ConfirmParams.Activate -> preloadActivate(params)
+                is ConfirmParams.TransferParams.Generic -> preloadGeneric(params)
             }
         }
 
@@ -101,6 +104,11 @@ class SignerPreloaderProxy(
             ?: throw IllegalArgumentException("Chain isn't support")
     }
 
+    override suspend fun preloadGeneric(params: ConfirmParams.TransferParams.Generic): SignerParams {
+        return genericPreloaderClients.getClient(params.from.chain)?.preloadGeneric(params = params)
+            ?: throw IllegalArgumentException("Chain isn't support")
+    }
+
     private suspend fun isValidTransaction(payload: ScanTransactionPayload): ScanTransaction? {
         return try {
             gemApiClient.getScanTransaction(payload).getOrNull()?.data
@@ -123,6 +131,7 @@ class SignerPreloaderProxy(
             is ConfirmParams.Stake -> ScanAddressTarget(chain, params.validatorId)
             is ConfirmParams.TokenApprovalParams -> ScanAddressTarget(chain, params.contract)
             is ConfirmParams.TransferParams.Native,
+            is ConfirmParams.TransferParams.Generic,
             is ConfirmParams.TransferParams.Token -> ScanAddressTarget(chain, params.destination().address)
             is ConfirmParams.Activate -> ScanAddressTarget(chain, params.from.address)
         }

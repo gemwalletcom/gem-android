@@ -39,6 +39,47 @@ class SolanaSignClient(
         return Base64.encode(signed).toByteArray()
     }
 
+    override suspend fun signData(chain: Chain, input: String, privateKey: ByteArray): ByteArray {
+        val bytes = Base64.decode(input)
+        val numRequiredSignatures = bytes.firstOrNull()?.toInt() ?: throw IllegalArgumentException("Bad sign data")
+        val signatures = (0..<numRequiredSignatures).map { signatureIndex ->
+            val startOffset = signatureIndex * 64 + 1
+            val endOffset = startOffset + 64
+            bytes.copyOfRange(startOffset, endOffset)
+        }
+        val message = bytes.copyOfRange(signatures.size * 64 + 1, bytes.size)
+        val signature = PrivateKey(privateKey).sign(message, Curve.ED25519)
+        return Base58.encodeNoCheck(signature).toByteArray()
+    }
+
+    override suspend fun signGenericTransfer(
+        params: ConfirmParams.TransferParams.Generic,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        feePriority: FeePriority,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val input = params.memo ?: throw java.lang.IllegalArgumentException("No data")
+        val bytes = Base64.decode(input)
+        val numRequiredSignatures = bytes.firstOrNull()?.toInt() ?: throw IllegalArgumentException("Bad sign data")
+        val signatures = (0..<numRequiredSignatures).map { signatureIndex ->
+            val startOffset = signatureIndex * 64 + 1
+            val endOffset = startOffset + 64
+            bytes.copyOfRange(startOffset, endOffset)
+        }
+        val message = bytes.copyOfRange(signatures.size * 64 + 1, bytes.size)
+        val signature = PrivateKey(privateKey).sign(message, Curve.ED25519)
+
+        val sign = when (params.inputType!!) {
+            ConfirmParams.TransferParams.InputType.Signature -> Base58.encodeNoCheck(signature).toByteArray()
+            ConfirmParams.TransferParams.InputType.EncodeTransaction -> Base64.encode(
+                (signatures.toMutableList().apply { set(0, signature) } + listOf(message))
+                    .fold(byteArrayOf()) { initial, value -> initial + value }
+            ).toByteArray()
+        }
+        return listOf(sign)
+    }
+
     override suspend fun signNativeTransfer(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,

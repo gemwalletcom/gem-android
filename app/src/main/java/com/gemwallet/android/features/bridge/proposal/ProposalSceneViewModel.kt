@@ -74,7 +74,8 @@ class ProposalSceneViewModel @Inject constructor(
         sessionRepository.session(),
         availableWallets,
     ) { wallet, session, availableWallets ->
-        wallet ?: session?.wallet?.takeIf { it in availableWallets } ?: availableWallets.firstOrNull()
+        val current = session?.wallet
+        wallet ?: availableWallets.firstOrNull { current?.id == it.id } ?: availableWallets.firstOrNull()
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

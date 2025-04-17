@@ -52,6 +52,7 @@ class SignClientProxy(
             is ConfirmParams.Stake.WithdrawParams -> client.signWithdraw(input, params.chainData, params.finalAmount, feePriority, privateKey)
             is ConfirmParams.SwapParams -> client.signSwap(input, params.chainData, params.finalAmount, feePriority, privateKey)
             is ConfirmParams.TokenApprovalParams -> client.signTokenApproval(input, params.chainData, params.finalAmount, feePriority, privateKey)
+            is ConfirmParams.TransferParams.Generic -> client.signGenericTransfer(input, params.chainData, params.finalAmount, feePriority, privateKey)
             is ConfirmParams.TransferParams.Native -> client.signNativeTransfer(input, params.chainData, params.finalAmount, feePriority, privateKey)
             is ConfirmParams.TransferParams.Token -> client.signTokenTransfer(input, params.chainData, params.finalAmount, feePriority, privateKey)
             is ConfirmParams.Activate -> client.signActivate(input, params.chainData, params.finalAmount, feePriority, privateKey)

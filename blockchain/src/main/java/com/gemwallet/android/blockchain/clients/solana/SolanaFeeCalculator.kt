@@ -24,6 +24,7 @@ class SolanaFeeCalculator(
         is ConfirmParams.Stake -> calculate(params)
         is ConfirmParams.SwapParams -> calculate(params)
         is ConfirmParams.TokenApprovalParams -> throw IllegalArgumentException("Token approval doesn't support")
+        is ConfirmParams.TransferParams.Generic -> calculate(params)
         is ConfirmParams.TransferParams -> calculate(params)
         is ConfirmParams.Activate -> throw IllegalArgumentException()
     }
@@ -32,6 +33,13 @@ class SolanaFeeCalculator(
         return calculate(
             gasLimit = 100_000L,
             multipleOf = 50_000,
+        )
+    }
+
+    suspend fun calculate(params: ConfirmParams.TransferParams.Generic): List<GasFee> {
+        return calculate(
+            gasLimit = 420_000L,
+            multipleOf = 250_000,
         )
     }
 
