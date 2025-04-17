@@ -140,12 +140,6 @@ class RequestViewModel @Inject constructor(
                         val param = EthereumAbi.encodeTyped(state.value.params)
                         signClient.signTypedMessage(chain, param, privateKey).toHexString()
                     }
-                    WalletConnectionMethods.solana_sign_transaction -> {
-                        val param = state.value.params
-                        val sign = signClient.signData(chain, param, privateKey)
-                        val result = jsonEncoder.encodeToString(WCSolanaSignMessageResult(signature = String(sign)))
-                        result
-                    }
                     WalletConnectionMethods.solana_sign_message -> {
                         val param = state.value.params.toByteArray()
                         signClient.signMessage(chain, param, privateKey).toHexString()
@@ -220,7 +214,6 @@ private data class RequestViewModelState(
             WalletConnectionMethods.personal_sign.string,
             WalletConnectionMethods.eth_sign_typed_data_v4.string,
             WalletConnectionMethods.solana_sign_message.string,
-            WalletConnectionMethods.solana_sign_transaction.string,
             WalletConnectionMethods.eth_sign_typed_data.string -> RequestSceneState.SignMessage(
                 account = account,
                 walletName = wallet.name,
@@ -251,14 +244,14 @@ private data class RequestViewModelState(
                     RequestSceneState.Error("Argument error: ${err.message}")
                 }
             }
-//            WalletConnectionMethods.solana_sign_transaction.string -> RequestSceneState.SignGeneric(
-//                    ConfirmParams.TransferParams.Generic(
-//                    asset = chain.asset(),
-//                    from = account,
-//                    memo = params,
-//                    inputType = ConfirmParams.TransferParams.InputType.Signature
-//                )
-//            )
+            WalletConnectionMethods.solana_sign_transaction.string -> RequestSceneState.SignGeneric(
+                    ConfirmParams.TransferParams.Generic(
+                    asset = chain.asset(),
+                    from = account,
+                    memo = params,
+                    inputType = ConfirmParams.TransferParams.InputType.Signature
+                )
+            )
             WalletConnectionMethods.solana_sign_and_send_transaction.string -> RequestSceneState.SignGeneric(
                 ConfirmParams.TransferParams.Generic(
                     asset = chain.asset(),
