@@ -8,7 +8,6 @@ import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.wallet.core.primitives.AssetId
@@ -45,8 +44,8 @@ class PriceAlertViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val alertingAssets = getPriceAlertsCase.getPriceAlerts().flatMapLatest { alerts ->
         val ids = alerts.map { it.assetId }
-        refreshPrices(ids.mapNotNull { it.toAssetId() })
-        assetsRepository.getAssetsInfoByAllWallets(ids).map { it.distinctBy { it.id() } }
+        refreshPrices(ids)
+        assetsRepository.getAssetsInfoByAllWallets(ids.map { it.toIdentifier() }).map { it.distinctBy { it.id() } }
     }
     .map { it.map { AssetInfoUIModel(it) } }
     .combine(forceSync) { items, sync ->
@@ -80,7 +79,7 @@ class PriceAlertViewModel @Inject constructor(
 
     fun addAsset(assetId: AssetId) = viewModelScope.launch {
         assetsRepository.updatePrices(sessionRepository.getSession()?.currency ?: return@launch, assetId)
-        putPriceAlertCase.putPriceAlert(PriceAlert(assetId.toIdentifier(), Currency.USD.string)) // TODO: Add user selected currency
+        putPriceAlertCase.putPriceAlert(PriceAlert(assetId, Currency.USD.string)) // TODO: Add user selected currency
     }
 
     private fun refreshPrices(ids: List<AssetId>) = viewModelScope.launch(Dispatchers.IO) {

@@ -11,6 +11,7 @@ import com.gemwallet.android.data.service.store.database.entities.toModel
 import com.gemwallet.android.data.service.store.database.entities.toModels
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
@@ -43,7 +44,7 @@ class PriceAlertRepository(
         val priceAlert = priceAlertsDao.getAlert(assetIdentifier).firstOrNull().let {
             if (it == null) {
                 priceAlertsDao.put(listOf(DbPriceAlert(assetIdentifier, enabled = true)))
-                listOf(PriceAlert(assetIdentifier, Currency.USD.string)) // TODO: Add user currency select
+                listOf(PriceAlert(assetId, Currency.USD.string)) // TODO: Add user currency select
             } else {
                 listOf(it.toModel())
             }
@@ -88,7 +89,7 @@ class PriceAlertRepository(
         val local = priceAlertsDao.getAlerts().firstOrNull() ?: emptyList()
         val remote = gemClient.getPriceAlerts(getDeviceId()).getOrNull() ?: return
         val toExclude = remote.filter { remote ->
-            local.firstOrNull { it.assetId == remote.assetId } == null
+            local.firstOrNull { it.assetId.toAssetId() == remote.assetId } == null
         }
         gemClient.excludePriceAlert(getDeviceId(), toExclude)
     }

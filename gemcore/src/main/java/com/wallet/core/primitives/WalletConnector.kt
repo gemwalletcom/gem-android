@@ -51,8 +51,8 @@ data class WalletConnectionSession (
 	val sessionId: String,
 	val state: WalletConnectionState,
 	val chains: List<Chain>,
-	val createdAt: Long,
-	val expireAt: Long,
+	val createdAt: SerializedDate,
+	val expireAt: SerializedDate,
 	val metadata: WalletConnectionSessionAppMetadata
 )
 

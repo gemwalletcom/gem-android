@@ -3,6 +3,8 @@ package com.gemwallet.android.data.service.store.database.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.PriceAlertDirection
@@ -22,7 +24,7 @@ data class DbPriceAlert(
 
 fun DbPriceAlert.toModel(): PriceAlert {
     return PriceAlert(
-        assetId = assetId,
+        assetId = assetId.toAssetId() ?: throw IllegalStateException(),
         price = price,
         priceDirection = priceDirection,
         pricePercentChange = pricePercentChange,
@@ -32,7 +34,7 @@ fun DbPriceAlert.toModel(): PriceAlert {
 
 fun PriceAlert.toRecord(): DbPriceAlert {
     return DbPriceAlert(
-        assetId = assetId,
+        assetId = assetId.toIdentifier(),
         price = price,
         pricePercentChange = pricePercentChange,
         priceDirection = priceDirection,
