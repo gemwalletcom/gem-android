@@ -1,7 +1,10 @@
 package com.gemwallet.android
 
+import android.graphics.Color
 import android.os.Bundle
+import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,6 +18,10 @@ import com.gemwallet.android.ui.theme.WalletTheme
 abstract class SecureBaseFragmentActivity : FragmentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge(
+            statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
+            navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT),
+        )
         super.onCreate(savedInstanceState)
         setContent {
             BaseContent()
@@ -39,3 +46,4 @@ abstract class SecureBaseFragmentActivity : FragmentActivity() {
         }
     }
 }
+
