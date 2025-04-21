@@ -287,7 +287,7 @@ class AssetsRepository @Inject constructor(
             launch { updatePrices(currency) }
 
         }
-        wallet.accounts.map {
+        wallet.accounts.filter { !Chain.exclude().contains(it.chain) }.map {
             async {
                 val balances = updateBalances(wallet.id, it, emptyList()).firstOrNull()
                 if ((balances?.totalAmount ?: 0.0) > 0.0) {
