@@ -53,6 +53,7 @@ import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlin.math.min
 
 @Composable
 fun Chart(
@@ -137,7 +138,7 @@ fun Chart(
                                 marker: CartesianMarker,
                                 targets: List<CartesianMarker.Target>
                             ) {
-                                price = uiModel.chartPoints[targets.first().x.toInt()]
+                                price = uiModel.chartPoints[min(uiModel.chartPoints.size - 1, targets.first().x.toInt())]
                             }
                         },
                         chart = rememberCartesianChart(
