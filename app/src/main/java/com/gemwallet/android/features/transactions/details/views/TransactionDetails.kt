@@ -16,6 +16,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.transactions.details.viewmodels.TransactionDetailsViewModel
+import com.gemwallet.android.features.transactions.details.viewmodels.getIcon
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.CellEntity
@@ -27,6 +28,7 @@ import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getSupportIconUrl
+import com.gemwallet.android.ui.components.image.getSwapProviderIcon
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
@@ -190,6 +192,21 @@ fun TransactionDetails(
                     }
                 )
             )
+            model.provider?.let {
+                cells.add(
+                    CellEntity(
+                        label = stringResource(id = R.string.swap_provider),
+                        data = model.provider.name.lowercase(),
+                        trailing = {
+                            AsyncImage(
+                                model = model.provider.getIcon(),
+                                size = trailingIconMedium,
+                                placeholderText = model.assetType.string,
+                            )
+                        }
+                    )
+                )
+            }
             cells.add(
                 CellEntity(
                     label = stringResource(id = R.string.transfer_network_fee),

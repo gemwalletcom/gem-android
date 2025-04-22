@@ -8,6 +8,8 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FiatProvider
 import uniffi.gemstone.SwapProvider
 
+fun Int.getDrawableUri() = "android.resource://com.gemwallet.android/drawable/$this"
+
 fun Asset.getIconUrl(): String = id.getIconUrl()
 
 fun Asset.getSupportIconUrl(): String? = id.getSupportIconUrl()
@@ -24,8 +26,6 @@ fun AssetId.getSupportIconUrl(): String? = if (type() == AssetSubtype.NATIVE) nu
 fun Chain.getIconUrl(): String = "file:///android_asset/chains/icons/${string}.svg"
 
 fun FiatProvider.getFiatProviderIcon(): String = "file:///android_asset/fiat/${name.lowercase()}.png"
-
-fun Int.getDrawableUri() = "android.resource://com.gemwallet.android/drawable/$this"
 
 fun SwapProvider.getSwapProviderIcon(): String {
     val iconName = when (this) {
