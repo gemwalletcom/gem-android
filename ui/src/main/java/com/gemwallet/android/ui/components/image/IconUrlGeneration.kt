@@ -6,7 +6,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FiatProvider
-import uniffi.gemstone.SwapProvider
+import uniffi.gemstone.GemSwapProvider
 
 fun Int.getDrawableUri() = "android.resource://com.gemwallet.android/drawable/$this"
 
@@ -27,22 +27,22 @@ fun Chain.getIconUrl(): String = "file:///android_asset/chains/icons/${string}.s
 
 fun FiatProvider.getFiatProviderIcon(): String = "file:///android_asset/fiat/${name.lowercase()}.png"
 
-fun SwapProvider.getSwapProviderIcon(): String {
+fun GemSwapProvider.getSwapProviderIcon(): String {
     val iconName = when (this) {
-        SwapProvider.UNISWAP_V4,
-        SwapProvider.UNISWAP_V3 -> "uniswap"
-        SwapProvider.PANCAKE_SWAP_V3,
-        SwapProvider.PANCAKE_SWAP_APTOS_V2 -> "pancakeswap"
-        SwapProvider.THORCHAIN -> "thorchain"
-        SwapProvider.ORCA -> "orca"
-        SwapProvider.JUPITER -> "jupiter"
-        SwapProvider.ACROSS -> "across"
-        SwapProvider.OKU -> "oku"
-        SwapProvider.WAGMI -> "wagmi"
-        SwapProvider.CETUS -> "cetus"
-        SwapProvider.STON_FI_V2 -> "stonfi"
-        SwapProvider.MAYAN -> "mayan"
-        SwapProvider.RESERVOIR -> "reservoir"
+        GemSwapProvider.UNISWAP_V4,
+        GemSwapProvider.UNISWAP_V3 -> "uniswap"
+        GemSwapProvider.PANCAKE_SWAP_V3,
+        GemSwapProvider.PANCAKE_SWAP_APTOS_V2 -> "pancakeswap"
+        GemSwapProvider.THORCHAIN -> "thorchain"
+        GemSwapProvider.ORCA -> "orca"
+        GemSwapProvider.JUPITER -> "jupiter"
+        GemSwapProvider.ACROSS -> "across"
+        GemSwapProvider.OKU -> "oku"
+        GemSwapProvider.WAGMI -> "wagmi"
+        GemSwapProvider.CETUS -> "cetus"
+        GemSwapProvider.STON_FI_V2 -> "stonfi"
+        GemSwapProvider.MAYAN -> "mayan"
+        GemSwapProvider.RESERVOIR -> "reservoir"
     }
     return "file:///android_asset/swap/${iconName.lowercase()}.svg"
 }

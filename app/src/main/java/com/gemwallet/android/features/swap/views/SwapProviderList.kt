@@ -31,16 +31,16 @@ import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator20
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
-import uniffi.gemstone.SwapProvider
+import uniffi.gemstone.GemSwapProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ProviderList(
     isShow: MutableState<Boolean>,
     isUpdated: Boolean,
-    currentProvider: SwapProvider?,
+    currentProvider: GemSwapProvider?,
     providers: List<SwapProviderItem>,
-    onProviderSelect: (SwapProvider) -> Unit,
+    onProviderSelect: (GemSwapProvider) -> Unit,
 ) {
     if (!isShow.value) {
         return
@@ -72,7 +72,7 @@ internal fun ProviderList(
 private fun SwapProviderItemView(
     swapProvider: SwapProviderItem,
     isSelected: Boolean,
-    onProviderSelect: (SwapProvider) -> Unit
+    onProviderSelect: (GemSwapProvider) -> Unit
 ) {
     ListItem(
         modifier = Modifier.clickable(onClick = { onProviderSelect(swapProvider.swapProvider.id) }),

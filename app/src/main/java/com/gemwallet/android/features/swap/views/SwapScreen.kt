@@ -16,6 +16,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.icons.outlined.Warning
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,6 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.asset_select.views.SelectSwapScreen
 import com.gemwallet.android.features.confirm.views.ConfirmScreen
+import com.gemwallet.android.features.swap.models.PriceImpact
 import com.gemwallet.android.features.swap.models.PriceImpactType
 import com.gemwallet.android.features.swap.models.SwapError
 import com.gemwallet.android.features.swap.models.SwapItemModel
@@ -87,6 +90,17 @@ fun SwapScreen(
     val pair = pairState
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    var isShowPriceImpactAlert by remember { mutableStateOf(false) }
+
+    val onSwap: () -> Unit =  {
+        when (swapState) {
+            SwapState.Ready -> viewModel.swap(onConfirm)
+            SwapState.RequestApprove -> viewModel.swap { approveParams = it }
+            is SwapState.Error -> viewModel.refresh()
+            else -> {}
+        }
+    }
+
     BackHandler(selectState != null) {
         if (approveParams != null) {
             approveParams = null
@@ -107,11 +121,9 @@ fun SwapScreen(
             title = stringResource(id = R.string.wallet_swap),
             mainAction = {
                 SwapAction(swapState, pair) {
-                    when (swapState) {
-                        SwapState.Ready -> viewModel.swap(onConfirm)
-                        SwapState.RequestApprove -> viewModel.swap({ approveParams = it })
-                        is SwapState.Error -> viewModel.refresh()
-                        else -> {}
+                    isShowPriceImpactAlert = priceImpact?.isHigh == true
+                    if (!isShowPriceImpactAlert) {
+                        onSwap()
                     }
                 }
             },
@@ -176,6 +188,13 @@ fun SwapScreen(
             }
             Spacer16()
             SwapError(swapState)
+        }
+
+        if (isShowPriceImpactAlert) {
+            PriceImpactWarningDialog(priceImpact, pair.from.asset, { isShowPriceImpactAlert = false }) {
+                isShowPriceImpactAlert = false
+                onSwap()
+            }
         }
     }
 
@@ -331,4 +350,37 @@ fun PreviewSwapItem() {
             onAssetSelect = {},
         )
     }
+}
+
+@Composable
+private fun PriceImpactWarningDialog(
+    priceImpact: PriceImpact?,
+    asset: Asset,
+    onDismiss: () -> Unit,
+    onContinue: () -> Unit,
+) {
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            Button(onContinue) {
+                Text(stringResource(R.string.common_continue))
+            }
+        },
+        dismissButton = {
+            Button(onDismiss) {
+                Text(stringResource(R.string.common_cancel))
+            }
+        },
+        title = { Text(stringResource(R.string.swap_price_impact_warning_title)) },
+        text = {
+            Text(
+                stringResource(
+                    R.string.swap_price_impact_warning_description,
+                    priceImpact?.percentageFormatted ?: "",
+                    asset.symbol,
+                ),
+            )
+        },
+        containerColor = MaterialTheme.colorScheme.background,
+    )
 }

@@ -31,6 +31,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import uniffi.gemstone.Explorer
+import uniffi.gemstone.GemSwapProvider
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -109,20 +110,20 @@ class TransactionDetailsViewModel @Inject constructor(
 
 fun SwapProvider.getIcon(): String {
     return when (this) {
-        SwapProvider.UniswapV3 -> uniffi.gemstone.SwapProvider.UNISWAP_V3
-        SwapProvider.UniswapV4 -> uniffi.gemstone.SwapProvider.UNISWAP_V4
-        SwapProvider.PancakeSwapV3 -> uniffi.gemstone.SwapProvider.PANCAKE_SWAP_V3
-        SwapProvider.PancakeSwapAptosV2 -> uniffi.gemstone.SwapProvider.PANCAKE_SWAP_APTOS_V2
-        SwapProvider.Thorchain -> uniffi.gemstone.SwapProvider.THORCHAIN
-        SwapProvider.Orca -> uniffi.gemstone.SwapProvider.ORCA
-        SwapProvider.Jupiter -> uniffi.gemstone.SwapProvider.JUPITER
-        SwapProvider.Across -> uniffi.gemstone.SwapProvider.ACROSS
-        SwapProvider.Oku -> uniffi.gemstone.SwapProvider.OKU
-        SwapProvider.Wagmi -> uniffi.gemstone.SwapProvider.WAGMI
-        SwapProvider.Cetus -> uniffi.gemstone.SwapProvider.CETUS
-        SwapProvider.StonFiV2 -> uniffi.gemstone.SwapProvider.STON_FI_V2
-        SwapProvider.Mayan -> uniffi.gemstone.SwapProvider.MAYAN
-        SwapProvider.Reservoir -> uniffi.gemstone.SwapProvider.RESERVOIR
+        SwapProvider.UniswapV3 -> GemSwapProvider.UNISWAP_V3
+        SwapProvider.UniswapV4 -> GemSwapProvider.UNISWAP_V4
+        SwapProvider.PancakeSwapV3 -> GemSwapProvider.PANCAKE_SWAP_V3
+        SwapProvider.PancakeSwapAptosV2 -> GemSwapProvider.PANCAKE_SWAP_APTOS_V2
+        SwapProvider.Thorchain -> GemSwapProvider.THORCHAIN
+        SwapProvider.Orca -> GemSwapProvider.ORCA
+        SwapProvider.Jupiter -> GemSwapProvider.JUPITER
+        SwapProvider.Across -> GemSwapProvider.ACROSS
+        SwapProvider.Oku -> GemSwapProvider.OKU
+        SwapProvider.Wagmi -> GemSwapProvider.WAGMI
+        SwapProvider.Cetus -> GemSwapProvider.CETUS
+        SwapProvider.StonFiV2 -> GemSwapProvider.STON_FI_V2
+        SwapProvider.Mayan -> GemSwapProvider.MAYAN
+        SwapProvider.Reservoir -> GemSwapProvider.RESERVOIR
     }.getSwapProviderIcon()
 
 }
