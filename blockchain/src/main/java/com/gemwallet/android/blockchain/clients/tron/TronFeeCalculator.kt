@@ -94,7 +94,7 @@ class TronFeeCalculator(
             address,
             value.toByteArray().toHexString("")
         ).joinToString(separator = "") { it.padStart(64, '0') }
-        val result = callService.triggerSmartContract(
+        val response = callService.triggerSmartContract(
             contractAddress = contractAddress,
             functionSelector = "transfer(address,uint256)",
             parameter = parameter,
@@ -102,7 +102,8 @@ class TronFeeCalculator(
             callValue = 0L,
             ownerAddress = ownerAddress,
             visible = true
-        ).getOrNull()
+        )
+        val result = response.getOrNull()
         if (result == null || !result.result.message.isNullOrEmpty()) {
             throw IllegalStateException("Can't get gas limit")
         }
