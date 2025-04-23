@@ -200,8 +200,8 @@ class SwapViewModel @Inject constructor(
         delay(500L) // User input type - doesn't want spam nodes
         val quotes = try {
             swapRepository.getQuotes(
-                from = fromAsset.asset.id,
-                to = toAsset.asset.id,
+                from = fromAsset.asset,
+                to = toAsset.asset,
                 ownerAddress = fromAsset.owner!!.address,
                 destination = toAsset.owner!!.address,
                 amount = Crypto(fromValue, fromAsset.asset.decimals).atomicValue.toString(),

@@ -112,8 +112,8 @@ fun SwapProvider.getIcon(): String {
     return when (this) {
         SwapProvider.UniswapV3 -> GemSwapProvider.UNISWAP_V3
         SwapProvider.UniswapV4 -> GemSwapProvider.UNISWAP_V4
-        SwapProvider.PancakeSwapV3 -> GemSwapProvider.PANCAKE_SWAP_V3
-        SwapProvider.PancakeSwapAptosV2 -> GemSwapProvider.PANCAKE_SWAP_APTOS_V2
+        SwapProvider.PancakeswapV3 -> GemSwapProvider.PANCAKESWAP_V3
+        SwapProvider.PancakeswapAptosV2 -> GemSwapProvider.PANCAKESWAP_APTOS_V2
         SwapProvider.Thorchain -> GemSwapProvider.THORCHAIN
         SwapProvider.Orca -> GemSwapProvider.ORCA
         SwapProvider.Jupiter -> GemSwapProvider.JUPITER
@@ -121,9 +121,10 @@ fun SwapProvider.getIcon(): String {
         SwapProvider.Oku -> GemSwapProvider.OKU
         SwapProvider.Wagmi -> GemSwapProvider.WAGMI
         SwapProvider.Cetus -> GemSwapProvider.CETUS
-        SwapProvider.StonFiV2 -> GemSwapProvider.STON_FI_V2
+        SwapProvider.StonfiV2 -> GemSwapProvider.STONFI_V2
         SwapProvider.Mayan -> GemSwapProvider.MAYAN
         SwapProvider.Reservoir -> GemSwapProvider.RESERVOIR
+        SwapProvider.Symbiosis -> GemSwapProvider.SYMBIOSIS
     }.getSwapProviderIcon()
 
 }

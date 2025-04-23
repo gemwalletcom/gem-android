@@ -48,6 +48,7 @@ import uniffi.gemstone.DocsUrl
 import uniffi.gemstone.PublicUrl
 import uniffi.gemstone.SocialUrl
 import java.util.Locale
+import androidx.core.net.toUri
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -138,8 +139,7 @@ fun SettingsScene(
                     title = stringResource(id = R.string.settings_language),
                     icon = R.drawable.settings_language,
                     supportingContent = {
-                        val language =
-                            context.resources.configuration.getLocales().get(0).displayLanguage.replaceFirstChar {
+                        val language = context.resources.configuration.getLocales().get(0).displayLanguage.replaceFirstChar {
                                 if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
                             }
                         Text(text = language)
@@ -181,13 +181,25 @@ fun SettingsScene(
                 title = stringResource(id = R.string.settings_help_center),
                 icon = R.drawable.settings_help_center,
             ) {
-                uriHandler.open(Config().getDocsUrl(DocsUrl.START))
+                uriHandler.open(
+                    Config().getDocsUrl(DocsUrl.START).toUri()
+                        .buildUpon()
+                        .appendQueryParameter("utm_source", "gemwallet_android")
+                        .build()
+                        .toString()
+                )
             }
             LinkItem(
                 title = stringResource(id = R.string.settings_support),
                 icon = R.drawable.settings_support,
             ) {
-                uriHandler.open(Config().getPublicUrl(PublicUrl.SUPPORT))
+                uriHandler.open(
+                    Config().getPublicUrl(PublicUrl.SUPPORT).toUri()
+                        .buildUpon()
+                        .appendQueryParameter("utm_source", "gemwallet_android")
+                        .build()
+                        .toString()
+                )
             }
             LinkItem(
                 title = stringResource(id = R.string.settings_aboutus),

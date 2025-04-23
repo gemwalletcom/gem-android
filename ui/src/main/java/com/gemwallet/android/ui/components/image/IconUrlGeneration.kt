@@ -31,8 +31,8 @@ fun GemSwapProvider.getSwapProviderIcon(): String {
     val iconName = when (this) {
         GemSwapProvider.UNISWAP_V4,
         GemSwapProvider.UNISWAP_V3 -> "uniswap"
-        GemSwapProvider.PANCAKE_SWAP_V3,
-        GemSwapProvider.PANCAKE_SWAP_APTOS_V2 -> "pancakeswap"
+        GemSwapProvider.PANCAKESWAP_V3,
+        GemSwapProvider.PANCAKESWAP_APTOS_V2 -> "pancakeswap"
         GemSwapProvider.THORCHAIN -> "thorchain"
         GemSwapProvider.ORCA -> "orca"
         GemSwapProvider.JUPITER -> "jupiter"
@@ -40,9 +40,10 @@ fun GemSwapProvider.getSwapProviderIcon(): String {
         GemSwapProvider.OKU -> "oku"
         GemSwapProvider.WAGMI -> "wagmi"
         GemSwapProvider.CETUS -> "cetus"
-        GemSwapProvider.STON_FI_V2 -> "stonfi"
+        GemSwapProvider.STONFI_V2 -> "stonfi"
         GemSwapProvider.MAYAN -> "mayan"
         GemSwapProvider.RESERVOIR -> "reservoir"
+        GemSwapProvider.SYMBIOSIS -> "symbiosis"
     }
     return "file:///android_asset/swap/${iconName.lowercase()}.svg"
 }

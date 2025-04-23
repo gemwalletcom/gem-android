@@ -9,14 +9,14 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 enum class SwapProvider(val string: String) {
-	@SerialName("uniswapv3")
-	UniswapV3("uniswapv3"),
-	@SerialName("uniswapv4")
-	UniswapV4("uniswapv4"),
-	@SerialName("pancakeswapv3")
-	PancakeSwapV3("pancakeswapv3"),
-	@SerialName("pancakeswapaptosv2")
-	PancakeSwapAptosV2("pancakeswapaptosv2"),
+	@SerialName("uniswap_v3")
+	UniswapV3("uniswap_v3"),
+	@SerialName("uniswap_v4")
+	UniswapV4("uniswap_v4"),
+	@SerialName("pancakeswap_v3")
+	PancakeswapV3("pancakeswap_v3"),
+	@SerialName("pancakeswap_aptos_v2")
+	PancakeswapAptosV2("pancakeswap_aptos_v2"),
 	@SerialName("thorchain")
 	Thorchain("thorchain"),
 	@SerialName("orca")
@@ -31,11 +31,13 @@ enum class SwapProvider(val string: String) {
 	Wagmi("wagmi"),
 	@SerialName("cetus")
 	Cetus("cetus"),
-	@SerialName("stonfiv2")
-	StonFiV2("stonfiv2"),
+	@SerialName("stonfi_v2")
+	StonfiV2("stonfi_v2"),
 	@SerialName("mayan")
 	Mayan("mayan"),
 	@SerialName("reservoir")
 	Reservoir("reservoir"),
+	@SerialName("symbiosis")
+	Symbiosis("symbiosis"),
 }
 
