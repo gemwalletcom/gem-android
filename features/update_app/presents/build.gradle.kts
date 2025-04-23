@@ -35,7 +35,7 @@ android {
 
 dependencies {
     implementation(project(":ui"))
-    implementation(project(":features:recipient:viewmodels"))
+    implementation(project(":features:update_app:viewmodels"))
 
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)

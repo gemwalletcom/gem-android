@@ -4,13 +4,23 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.longPreferencesKey
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import com.gemwallet.android.cases.config.GetInAppUpdateTask
+import com.gemwallet.android.cases.config.GetLatestVersion
+import com.gemwallet.android.cases.config.SetInAppUpdateTask
+import com.gemwallet.android.cases.config.SetLatestVersion
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class UserConfig(
     private val context: Context,
-) {
+) : GetLatestVersion,
+    SetLatestVersion,
+    GetInAppUpdateTask,
+    SetInAppUpdateTask {
+
     private lateinit var store: SharedPreferences
     private val Context.dataStore by preferencesDataStore(name = "user_config")
 
@@ -55,6 +65,25 @@ class UserConfig(
         }
     }
 
+    override fun getLatestVersion(): Flow<String> = context.dataStore.data
+        .map { preferences -> preferences[Key.LatestVersion] ?: "" }
+
+    override suspend fun setLatestVersion(version: String) {
+        context.dataStore.edit { preferences ->
+            preferences[Key.LatestVersion] = version
+        }
+    }
+
+    override fun getInAppUpdateTask(): Flow<Long?> = context.dataStore.data
+        .map { preferences -> preferences[Key.InAppUpdateTaskId] }
+
+    override suspend fun setInAppUpdateTask(task: Long?) {
+        context.dataStore.edit { preferences ->
+            task?.let { preferences[Key.InAppUpdateTaskId] = task }
+                ?: preferences.remove(Key.InAppUpdateTaskId)
+        }
+    }
+
     private fun getStore(): SharedPreferences {
         if (!::store.isInitialized) {
             store = context.getSharedPreferences("config", Context.MODE_PRIVATE)
@@ -94,5 +123,7 @@ class UserConfig(
 
     private object Key {
         val IsHideBalances = booleanPreferencesKey("hide_balances")
+        val LatestVersion = stringPreferencesKey("latest_version")
+        val InAppUpdateTaskId = longPreferencesKey("in_app_update_task_id")
     }
 }

@@ -75,6 +75,7 @@ class AppViewModel @Inject constructor(
 
         val skipVersion = userConfig.getAppVersionSkip()
         if (current.compareTo(BuildConfig.VERSION_NAME) > 0 && skipVersion != current) {
+            userConfig.setLatestVersion(current)
             state.update {
                 it.copy(intent = AppIntent.ShowUpdate, version = current)
             }
