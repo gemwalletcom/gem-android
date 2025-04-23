@@ -5,6 +5,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.nft.GetAssetNftCase
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.ext.getAccount
+import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.NFTAttribute
 import com.wallet.core.primitives.NFTCollection
@@ -23,6 +26,7 @@ val nftAssetIdArg = "assetId"
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class NftDetailsViewModel @Inject constructor(
+    private val sessionRepository: SessionRepository,
     private val getAssetNft: GetAssetNftCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -34,13 +38,14 @@ class NftDetailsViewModel @Inject constructor(
         .flatMapLatest { getAssetNft.getAssetNft(it) }
         .catch { Log.d("NFT-DETAILS", "Error on get nft: ", it) }
         .filterNotNull()
-        .map { NftAssetDetailsUIModel(it.collection, it.assets.first()) }
+        .map { NftAssetDetailsUIModel(it.collection, it.assets.first(), sessionRepository.getSession()?.wallet?.getAccount(it.assets.first().chain)!!) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 }
 
 class NftAssetDetailsUIModel(
     val collection: NFTCollection,
     val asset: NFTAsset,
+    val account: Account,
 ) {
     val imageUrl: String get() = asset.images.preview.url
     val assetName: String get() = asset.name

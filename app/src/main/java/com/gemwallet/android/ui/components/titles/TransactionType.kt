@@ -29,7 +29,7 @@ fun TransactionType.getTitle(direction: TransactionDirection? = null, state: Tra
         TransactionType.TokenApproval -> R.string.transfer_approve_title
         TransactionType.StakeWithdraw -> R.string.transfer_withdraw_title
         TransactionType.AssetActivation -> R.string.transfer_activate_asset_title
-        TransactionType.TransferNFT -> TODO()
+        TransactionType.TransferNFT -> R.string.transfer_title
         TransactionType.SmartContractCall -> TODO()
     }
 }

@@ -11,6 +11,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Delegation
+import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.TransactionType
 import kotlinx.serialization.Serializable
 import org.json.JSONObject
@@ -210,6 +211,16 @@ sealed class ConfirmParams {
     ) : ConfirmParams()
 
     @Serializable
+    class NftParams(
+        override val asset: Asset,
+        override val from: Account,
+        val destination: DestinationAddress,
+        val nftAsset: NFTAsset,
+    ) : ConfirmParams() {
+        @Serializable(BigIntegerSerializer::class) override val amount: BigInteger = BigInteger.ZERO
+    }
+
+    @Serializable
     sealed class Stake : ConfirmParams() {
         abstract val validatorId: String
 
@@ -276,6 +287,7 @@ sealed class ConfirmParams {
             is TokenApprovalParams -> TransactionType.TokenApproval
             is SwapParams  -> TransactionType.Swap
             is Activate  -> TransactionType.AssetActivation
+            is NftParams  -> TransactionType.TransferNFT
             is Stake.DelegateParams  -> TransactionType.StakeDelegate
             is Stake.RewardsParams -> TransactionType.StakeRewards
             is Stake.RedelegateParams  -> TransactionType.StakeRedelegate
@@ -315,7 +327,7 @@ sealed class ConfirmParams {
                 Stake.RedelegateParams::class.qualifiedName -> jsonEncoder.decodeFromString<Stake.RedelegateParams>(json)
                 Stake.WithdrawParams::class.qualifiedName -> jsonEncoder.decodeFromString<Stake.WithdrawParams>(json)
                 Activate::class.qualifiedName -> jsonEncoder.decodeFromString<Activate>(json)
-//                TransferNFTParams::class.qualifiedName -> TODO()
+                NftParams::class.qualifiedName -> jsonEncoder.decodeFromString<NftParams>(json)
 //                SmartContractCallParams::class.qualifiedName -> TODO()
                 else -> throw IllegalStateException()
             }

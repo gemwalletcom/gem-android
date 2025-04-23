@@ -72,55 +72,6 @@ fun Chain.getReserveBalanceUrl(): String? = Config().getChainConfig(this.string)
 
 fun Chain.isStakeSupported(): Boolean = Config().getChainConfig(this.string).isStakeSupported
 
-fun Chain.eip1559Support() = when (this) {
-    Chain.OpBNB,
-    Chain.Optimism,
-    Chain.Base,
-    Chain.AvalancheC,
-    Chain.SmartChain,
-    Chain.Polygon,
-    Chain.Fantom,
-    Chain.Gnosis,
-    Chain.Manta,
-    Chain.Blast,
-    Chain.ZkSync,
-    Chain.Linea,
-    Chain.Mantle,
-    Chain.Celo,
-    Chain.World,
-    Chain.Sonic,
-    Chain.Abstract,
-    Chain.Ink,
-    Chain.Berachain,
-    Chain.Unichain,
-    Chain.Hyperliquid,
-    Chain.Monad,
-    Chain.Ethereum -> true
-    Chain.Bitcoin,
-    Chain.Litecoin,
-    Chain.BitcoinCash,
-    Chain.Solana,
-    Chain.Thorchain,
-    Chain.Cosmos,
-    Chain.Osmosis,
-    Chain.Sei,
-    Chain.Arbitrum,
-    Chain.Ton,
-    Chain.Tron,
-    Chain.Doge,
-    Chain.Aptos,
-    Chain.Sui,
-    Chain.Celestia,
-    Chain.Injective,
-    Chain.Noble,
-    Chain.Near,
-    Chain.Algorand,
-    Chain.Stellar,
-    Chain.Polkadot,
-    Chain.Cardano,
-    Chain.Xrp -> false
-}
-
 fun Chain.asset(): Asset {
     val wrapper = uniffi.gemstone.assetWrapper(string)
     return Asset(

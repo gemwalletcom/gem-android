@@ -103,4 +103,12 @@ interface SignClient : BlockchainClient {
         feePriority: FeePriority,
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
+
+    suspend fun signNft(
+        params: ConfirmParams.NftParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        feePriority: FeePriority,
+        privateKey: ByteArray,
+    ): List<ByteArray> = emptyList()
 }

@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.ApprovalTransactionPreloader
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
+import com.gemwallet.android.blockchain.clients.NftTransactionPreloader
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
@@ -19,6 +20,7 @@ import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -28,7 +30,12 @@ class EvmSignerPreloader(
     private val chain: Chain,
     private val feeService: EvmFeeService,
     callService: EvmCallService,
-) : NativeTransferPreloader, TokenTransferPreloader, SwapTransactionPreloader, StakeTransactionPreloader, ApprovalTransactionPreloader {
+) : NativeTransferPreloader,
+    TokenTransferPreloader,
+    SwapTransactionPreloader,
+    StakeTransactionPreloader,
+    ApprovalTransactionPreloader,
+    NftTransactionPreloader {
 
     private val wcCoinType = WCChainTypeProxy().invoke(chain)
     private val feeCalculator = EvmFeeCalculator(feeService, callService, wcCoinType)
@@ -38,6 +45,11 @@ class EvmSignerPreloader(
 
     override suspend fun preloadTokenTransfer(params: ConfirmParams.TransferParams.Token): SignerParams =
         preload(params.assetId, params.from, params.destination().address, params.amount, params.memo, params)
+
+    override suspend fun preloadNft(params: ConfirmParams.NftParams): SignerParams {
+        val memo = EVMChain.encodeNFT(params)
+        return preload(params.assetId, params.from, params.destination.address, params.amount, memo, params)
+    }
 
     override suspend fun preloadStake(params: ConfirmParams.Stake): SignerParams =
         preload(
@@ -98,7 +110,6 @@ class EvmSignerPreloader(
         }
         return data
     }
-
 
     override suspend fun preloadApproval(params: ConfirmParams.TokenApprovalParams): SignerParams =
         preload(params.assetId, params.from, params.contract, BigInteger.ZERO, params.data, params)

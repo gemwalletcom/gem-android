@@ -2,7 +2,6 @@ package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
-import com.gemwallet.android.ext.eip1559Support
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
@@ -213,6 +212,29 @@ class EvmSignClient(
         return stakeSmartchain(params, chainData, finalAmount, feePriority, privateKey)
     }
 
+    override suspend fun signNft(
+        params: ConfirmParams.NftParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        feePriority: FeePriority,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val meta = chainData as EvmSignerPreloader.EvmChainData
+        val amount = BigInteger.ZERO
+        val input = buildSignInput(
+            assetId = AssetId(chain, params.nftAsset.contractAddress),
+            amount = amount,
+            tokenAmount = finalAmount,
+            fee = meta.gasFee(feePriority),
+            chainId = meta.chainId.toBigInteger(),
+            nonce = meta.nonce,
+            destinationAddress = params.destination.address,
+            memo = EVMChain.encodeNFT(params),
+            privateKey = privateKey,
+        )
+        return sign(input, privateKey)
+    }
+
     private fun stakeSmartchain(
         params: ConfirmParams.Stake,
         chainData: ChainSignData,
@@ -231,17 +253,9 @@ class EvmSignClient(
         }
         val callData = StakeHub.encodeStake(params)
         val input = Ethereum.SigningInput.newBuilder().apply {
-            when (chain.eip1559Support()) {
-                true -> {
-                    this.txMode = Ethereum.TransactionMode.Enveloped
-                    this.maxFeePerGas = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
-                    this.maxInclusionFeePerGas = ByteString.copyFrom(fee.minerFee.toByteArray())
-                }
-                false -> {
-                    this.txMode = Ethereum.TransactionMode.Legacy
-                    this.gasPrice = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
-                }
-            }
+            this.txMode = Ethereum.TransactionMode.Enveloped
+            this.maxFeePerGas = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
+            this.maxInclusionFeePerGas = ByteString.copyFrom(fee.minerFee.toByteArray())
             this.gasLimit = ByteString.copyFrom(fee.limit.toByteArray())
             this.chainId = ByteString.copyFrom(meta.chainId.toByteArray())
             this.nonce = ByteString.copyFrom(meta.nonce.toByteArray())
@@ -270,25 +284,16 @@ class EvmSignClient(
         privateKey: ByteArray,
     ): Ethereum.SigningInput {
         return Ethereum.SigningInput.newBuilder().apply {
-            when (chain.eip1559Support()) {
-                true -> {
-                    this.txMode = Ethereum.TransactionMode.Enveloped
-                    this.maxFeePerGas = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
-                    this.maxInclusionFeePerGas = ByteString.copyFrom(fee.minerFee.toByteArray())
-                }
-
-                false -> {
-                    this.txMode = Ethereum.TransactionMode.Legacy
-                    this.gasPrice = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
-                }
-            }
+            this.txMode = Ethereum.TransactionMode.Enveloped
+            this.maxFeePerGas = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
+            this.maxInclusionFeePerGas = ByteString.copyFrom(fee.minerFee.toByteArray())
             this.gasLimit = ByteString.copyFrom(fee.limit.toByteArray())
             this.chainId = ByteString.copyFrom(chainId.toByteArray())
             this.nonce = ByteString.copyFrom(nonce.toByteArray())
             this.toAddress = EVMChain.getDestinationAddress(assetId, destinationAddress)
             this.privateKey = ByteString.copyFrom(privateKey)
             this.transaction = Ethereum.Transaction.newBuilder().apply {
-                this.transfer = Ethereum.Transaction.Transfer.newBuilder().apply {
+            this.transfer = Ethereum.Transaction.Transfer.newBuilder().apply {
                     this.amount = ByteString.copyFrom(amount.toByteArray())
                     this.data = ByteString.copyFrom(
                         EVMChain.encodeTransactionData(assetId, memo, tokenAmount, destinationAddress)

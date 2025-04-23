@@ -26,6 +26,7 @@ class SolanaFeeCalculator(
         is ConfirmParams.TokenApprovalParams -> throw IllegalArgumentException("Token approval doesn't support")
         is ConfirmParams.TransferParams.Generic -> calculate(params)
         is ConfirmParams.TransferParams -> calculate(params)
+        is ConfirmParams.NftParams,
         is ConfirmParams.Activate -> throw IllegalArgumentException()
     }
 

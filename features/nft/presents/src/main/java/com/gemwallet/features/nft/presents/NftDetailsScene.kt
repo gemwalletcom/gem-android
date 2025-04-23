@@ -5,6 +5,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -12,6 +16,9 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.ext.asset
+import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Table
@@ -29,6 +36,7 @@ import com.wallet.core.primitives.NFTAttribute
 @Composable
 fun NFTDetailsScene(
     cancelAction: CancelAction,
+    onConfirm: (ConfirmParams) -> Unit,
 ) {
     val viewModel: NftDetailsViewModel = hiltViewModel()
     val assetData by viewModel.nftAsset.collectAsStateWithLifecycle()
@@ -41,7 +49,23 @@ fun NFTDetailsScene(
     val model = assetData!!
     Scene(
         title = model.assetName,
-        onClose = { cancelAction() }
+        actions = {
+            IconButton(
+                {
+                    onConfirm(
+                        ConfirmParams.NftParams(
+                            asset = model.asset.chain.asset(),
+                            from = model.account,
+                            destination = DestinationAddress("0xBA4D1d35bCe0e8F28E5a3403e7a0b996c5d50AC4"),
+                            nftAsset = model.asset,
+                        )
+                    )
+                }
+            ) {
+                Icon(Icons.AutoMirrored.Default.Send, contentDescription = "Send nft")
+            }
+        },
+        onClose = { cancelAction() },
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {
@@ -49,7 +73,9 @@ fun NFTDetailsScene(
                     model.imageUrl,
                     size = null,
                     transformation = null,
-                    modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f),
                 )
             }
             listSpacerBig()
