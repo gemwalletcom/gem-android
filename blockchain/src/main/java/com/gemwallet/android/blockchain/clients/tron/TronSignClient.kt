@@ -113,7 +113,7 @@ class TronSignClient(
     ): List<ByteArray> {
         val chainData = chainData as TronSignerPreloader.TronChainData
         val votes = chainData.votes
-        return listOf(
+        return listOfNotNull(
             Tron.UnfreezeBalanceV2Contract.newBuilder().apply {
                 this.ownerAddress = params.from.address
                 this.unfreezeBalance = params.amount.toLong()
@@ -121,7 +121,6 @@ class TronSignClient(
             }.build(),
             if (votes.isEmpty()) null else createVoteContract(chainData, params.from.address),
         )
-        .filterNotNull()
         .map {
             sign(chainData, it, privateKey)
         }
@@ -171,6 +170,25 @@ class TronSignClient(
         )
     }
 
+    override suspend fun signSwap(
+        params: ConfirmParams.SwapParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        feePriority: FeePriority,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val chainData = chainData as TronSignerPreloader.TronChainData
+        val data = params.swapData
+        val callValue = params.value.toLong()
+        val contract = Tron.TriggerSmartContract.newBuilder().apply {
+            this.ownerAddress = params.from.address
+            this.contractAddress = params.to
+            this.data = ByteString.copyFrom(data.toByteArray())
+            this.callValue = callValue
+        }
+        return listOf(sign(chainData, contract, privateKey))
+    }
+
     private fun createVoteContract(chainData: TronSignerPreloader.TronChainData, owner: String) = Tron.VoteWitnessContract.newBuilder().apply {
             this.ownerAddress = owner
             this.support = true
@@ -194,6 +212,7 @@ class TronSignClient(
                 is Tron.UnfreezeBalanceV2Contract -> this.unfreezeBalanceV2 = contract
                 is Tron.WithdrawExpireUnfreezeContract -> this.withdrawExpireUnfreeze = contract
                 is Tron.WithdrawBalanceContract -> this.withdrawBalance = contract
+                is Tron.TriggerSmartContract -> this.triggerSmartContract = contract
             }
             this.blockHeader = Tron.BlockHeader.newBuilder().apply {
                 this.number = chainData.number

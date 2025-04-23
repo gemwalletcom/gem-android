@@ -3,12 +3,9 @@ package com.gemwallet.android
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.widget.Toast
 import android.widget.Toast.makeText
-import androidx.activity.SystemBarStyle
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
@@ -17,7 +14,6 @@ import androidx.biometric.BiometricManager.Authenticators.DEVICE_CREDENTIAL
 import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -95,11 +91,6 @@ class MainActivity : SecureBaseFragmentActivity() {
     @Composable
     override fun MainContent() {
         val state by viewModel.uiState.collectAsStateWithLifecycle()
-        val darkTheme = isSystemInDarkTheme()
-        enableEdgeToEdge(
-            statusBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { darkTheme },
-            navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT) { darkTheme },
-        )
         if ((state.initialAuth == AuthState.Required || state.authState == AuthState.Required) && enabledSysAuth()) {
             biometricPrompt.authenticate(promptInfo)
         } else {

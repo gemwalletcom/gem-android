@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
+import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.clients.tron.services.TronAccountsService
 import com.gemwallet.android.blockchain.clients.tron.services.TronCallService
@@ -27,7 +28,7 @@ class TronSignerPreloader(
     private val nodeStatusService: TronNodeStatusService,
     private val accountsService: TronAccountsService,
     callService: TronCallService,
-) : NativeTransferPreloader, TokenTransferPreloader, StakeTransactionPreloader  {
+) : NativeTransferPreloader, TokenTransferPreloader, StakeTransactionPreloader, SwapTransactionPreloader  {
     val feeCalculator = TronFeeCalculator(chain, nodeStatusService, callService)
 
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
@@ -71,6 +72,10 @@ class TronSignerPreloader(
             }
             votes.filter { it.value > 0 }
         }
+    }
+
+    override suspend fun preloadSwap(params: ConfirmParams.SwapParams): SignerParams {
+        TODO("Not yet implemented")
     }
 
     private suspend fun preload(

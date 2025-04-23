@@ -18,7 +18,9 @@ import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.getRelativeDate
 import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.ui.components.image.getSwapProviderIcon
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.SwapProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -29,7 +31,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import uniffi.gemstone.Explorer
-import uniffi.gemstone.SwapProvider
+import uniffi.gemstone.GemSwapProvider
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -72,7 +74,7 @@ class TransactionDetailsViewModel @Inject constructor(
         } ?: ""
         val blockExplorerName = getCurrentBlockExplorerCase.getCurrentBlockExplorer(transaction.asset.chain())
         val explorer = Explorer(asset.chain().string)
-        val provider = tx.getSwapMetadata()?.provider
+        val provider = swapMetadata?.provider
         val swapExplorerUrl = provider?.let { explorer.getTransactionSwapUrl(blockExplorerName, tx.hash, provider) }
         val explorerUrl = swapExplorerUrl?.url ?: explorer.getTransactionUrl(blockExplorerName, tx.hash)
 
@@ -99,8 +101,30 @@ class TransactionDetailsViewModel @Inject constructor(
             toAsset = assets.firstOrNull { it.id() == toId },
             fromValue = swapMetadata?.fromValue,
             toValue = swapMetadata?.toValue,
+            provider = SwapProvider.entries.firstOrNull { it.string == provider },
             currency = currency,
         )
     }
     .stateIn(viewModelScope, started = SharingStarted.Eagerly, null)
+}
+
+fun SwapProvider.getIcon(): String {
+    return when (this) {
+        SwapProvider.UniswapV3 -> GemSwapProvider.UNISWAP_V3
+        SwapProvider.UniswapV4 -> GemSwapProvider.UNISWAP_V4
+        SwapProvider.PancakeswapV3 -> GemSwapProvider.PANCAKESWAP_V3
+        SwapProvider.PancakeswapAptosV2 -> GemSwapProvider.PANCAKESWAP_APTOS_V2
+        SwapProvider.Thorchain -> GemSwapProvider.THORCHAIN
+        SwapProvider.Orca -> GemSwapProvider.ORCA
+        SwapProvider.Jupiter -> GemSwapProvider.JUPITER
+        SwapProvider.Across -> GemSwapProvider.ACROSS
+        SwapProvider.Oku -> GemSwapProvider.OKU
+        SwapProvider.Wagmi -> GemSwapProvider.WAGMI
+        SwapProvider.Cetus -> GemSwapProvider.CETUS
+        SwapProvider.StonfiV2 -> GemSwapProvider.STONFI_V2
+        SwapProvider.Mayan -> GemSwapProvider.MAYAN
+        SwapProvider.Reservoir -> GemSwapProvider.RESERVOIR
+        SwapProvider.Symbiosis -> GemSwapProvider.SYMBIOSIS
+    }.getSwapProviderIcon()
+
 }

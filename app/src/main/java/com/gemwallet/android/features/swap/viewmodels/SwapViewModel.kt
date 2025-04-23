@@ -50,11 +50,13 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import uniffi.gemstone.SwapProvider
+import uniffi.gemstone.Config
+import uniffi.gemstone.GemSwapProvider
 import uniffi.gemstone.SwapperException
 import java.math.BigDecimal
 import java.math.BigInteger
 import javax.inject.Inject
+import kotlin.math.absoluteValue
 import kotlin.math.max
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -198,8 +200,8 @@ class SwapViewModel @Inject constructor(
         delay(500L) // User input type - doesn't want spam nodes
         val quotes = try {
             swapRepository.getQuotes(
-                from = fromAsset.asset.id,
-                to = toAsset.asset.id,
+                from = fromAsset.asset,
+                to = toAsset.asset,
                 ownerAddress = fromAsset.owner!!.address,
                 destination = toAsset.owner!!.address,
                 amount = Crypto(fromValue, fromAsset.asset.decimals).atomicValue.toString(),
@@ -230,7 +232,7 @@ class SwapViewModel @Inject constructor(
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val selectedProvider = MutableStateFlow<SwapProvider?>(null)
+    val selectedProvider = MutableStateFlow<GemSwapProvider?>(null)
 
     val providers = quotes.combine(assetsState) { quotes, assets ->
         val price = assets?.to?.price
@@ -314,11 +316,12 @@ class SwapViewModel @Inject constructor(
             return@combine null
         }
         val impact = (((to.toDouble() / from) - 1.0) * 100)
+        val isHigh = impact.absoluteValue > Config().getSwapConfig().highPriceImpactPercent.toDouble()
         when {
-            impact > 0 -> PriceImpact(impact, PriceImpactType.Positive)
+            impact > 0 -> PriceImpact(impact, PriceImpactType.Positive, isHigh)
             impact > -1 -> null
-            impact > -5 -> PriceImpact(impact, PriceImpactType.Medium)
-            else -> PriceImpact(impact, PriceImpactType.High)
+            impact > -5 -> PriceImpact(impact, PriceImpactType.Medium, isHigh)
+            else -> PriceImpact(impact, PriceImpactType.High, isHigh)
         }
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -422,7 +425,7 @@ class SwapViewModel @Inject constructor(
         approveTxHash.update { "${assetsState.value?.from?.id()?.chain?.string}_$hash" }
     }
 
-    fun setProvider(provider: SwapProvider) {
+    fun setProvider(provider: GemSwapProvider) {
         this.selectedProvider.update { provider }
     }
 

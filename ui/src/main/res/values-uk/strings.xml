@@ -118,9 +118,9 @@
   <string name="asset.price">Ціна</string>
   <string name="date.today">Сьогодні</string>
   <string name="date.yesterday">Вчора</string>
-  <string name="asset.market_cap">Ринкова Капіталізація</string>
+  <string name="asset.market_cap">Ринкова капіталізація</string>
   <string name="asset.trading_volume">Обсяг Торгів (24г)</string>
-  <string name="asset.market_cap_rank">Рейтинг Ринкової Капіталізації</string>
+  <string name="asset.market_cap_rank">Рейтинг ринкової капіталізації</string>
   <string name="asset.total_supply">Загальна пропозиція</string>
   <string name="asset.circulating_supply">В обігу</string>
   <string name="common.not_available">Недоступно</string>
@@ -391,4 +391,15 @@
   <string name="transfer.recipient.my_wallets">My Wallets</string>
   <string name="transfer.recipient.view_wallets">View Wallets</string>
   <string name="settings.disable_value">Disable %s</string>
+  <string name="onboarding.security.create_wallet.message">Hate sharing 🍕 slices? Follow this unless you want to share your crypto as well.</string>
+  <string name="onboarding.security.create_wallet.checkmart_title">In the next screen we will show you a Secret Phrase</string>
+  <string name="onboarding.security.create_wallet.item_1.title">Do Not Share It With Anyone</string>
+  <string name="onboarding.security.create_wallet.item_1.subtitle">Anyone who has your secret phrase can access your wallet from anywhere in the world.</string>
+  <string name="onboarding.security.create_wallet.item_2.subtitle">Store it somewhere safe, the phrase is only way to access your wallet.</string>
+  <string name="onboarding.security.create_wallet.item_3.subtitle">Its created only for you. Gem Wallet does not keep copy of your phrase.</string>
+  <string name="onboarding.security.create_wallet.item_2.title">Keep Your Secret Phrase Safe</string>
+  <string name="onboarding.security.create_wallet.item_3.title">If you lose it, we cannot recover it</string>
+  <string name="transfer.minimum_account_balance">Після цього має залишитися мінімальний баланс %s, якщо ви не використовуєте весь баланс.</string>
+  <string name="swap.price_impact_warning.description" formatted="false">Ви втратите %s із своїх %s у цій торгівлі. Ви впевнені, що бажаєте продовжити?</string>
+  <string name="swap.price_impact_warning.title">Високий ціновий вплив</string>
 </resources>

@@ -17,12 +17,12 @@ enum class PriceAlertDirection(val string: String) {
 
 @Serializable
 data class PriceAlert (
-	val assetId: String,
+	val assetId: AssetId,
 	val currency: String,
 	val price: Double? = null,
 	val pricePercentChange: Double? = null,
 	val priceDirection: PriceAlertDirection? = null,
-	val lastNotifiedAt: Long? = null
+	val lastNotifiedAt: SerializedDate? = null
 )
 
 @Serializable

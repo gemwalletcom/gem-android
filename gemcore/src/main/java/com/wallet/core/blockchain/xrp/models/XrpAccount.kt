@@ -10,7 +10,8 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class XRPAccount (
 	val Balance: String,
-	val Sequence: Int
+	val Sequence: Int,
+	val OwnerCount: Int
 )
 
 @Serializable

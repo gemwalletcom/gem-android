@@ -52,9 +52,6 @@ fun AmountScene(
     val isKeyBoardOpen by keyboardAsState()
     val isSmallScreen = LocalConfiguration.current.screenHeightDp.dp < 680.dp
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
-    }
     Scene(
         title = when (uiModel.txType) {
             TransactionType.Transfer -> stringResource(id = R.string.transfer_send_title)
@@ -110,6 +107,12 @@ fun AmountScene(
                 )
             }
         }
+    }
+
+    LaunchedEffect(Unit) {
+        try {
+            focusRequester.requestFocus()
+        } catch (_: Throwable) {}
     }
 }
 

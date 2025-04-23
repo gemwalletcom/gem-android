@@ -6,10 +6,12 @@ import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.cases.swap.GetSwapSupportedCase
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Wallet
 import uniffi.gemstone.Config
 import uniffi.gemstone.FetchQuoteData
+import uniffi.gemstone.GemQuoteAsset
 import uniffi.gemstone.GemSlippage
 import uniffi.gemstone.GemSwapMode
 import uniffi.gemstone.GemSwapOptions
@@ -17,7 +19,7 @@ import uniffi.gemstone.GemSwapper
 import uniffi.gemstone.Permit2Data
 import uniffi.gemstone.Permit2Detail
 import uniffi.gemstone.PermitSingle
-import uniffi.gemstone.SlippageMode
+import uniffi.gemstone.GemSlippageMode
 import uniffi.gemstone.SwapAssetList
 import uniffi.gemstone.SwapQuote
 import uniffi.gemstone.SwapQuoteData
@@ -32,16 +34,24 @@ class SwapRepository(
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
 ) : GetSwapSupportedCase {
 
-    suspend fun getQuotes(ownerAddress: String, destination: String, from: AssetId, to: AssetId, amount: String): List<SwapQuote>? {
+    suspend fun getQuotes(ownerAddress: String, destination: String, from: Asset, to: Asset, amount: String): List<SwapQuote>? {
         val swapRequest = SwapQuoteRequest(
-            fromAsset = from.toIdentifier(),
-            toAsset = to.toIdentifier(),
+            fromAsset = GemQuoteAsset(
+                id = from.id.toIdentifier(),
+                symbol = from.symbol,
+                decimals = from.decimals.toUInt(),
+            ),
+            toAsset = GemQuoteAsset(
+                id = to.id.toIdentifier(),
+                symbol = to.symbol,
+                decimals = to.decimals.toUInt(),
+            ),
             walletAddress = ownerAddress,
             destinationAddress = destination,
             value = amount,
             mode = GemSwapMode.EXACT_IN,
             options = GemSwapOptions(
-                slippage = GemSlippage(100u, SlippageMode.EXACT),
+                slippage = GemSlippage(100u, GemSlippageMode.EXACT),
                 fee = Config().getSwapConfig().referralFee,
                 preferredProviders = emptyList(),
             )
@@ -64,7 +74,7 @@ class SwapRepository(
             value = permit.value,
             nonce = permit.permit2Nonce
         )
-        val chain = quote.request.fromAsset.toAssetId()?.chain ?: throw Exception()
+        val chain = quote.request.fromAsset.id.toAssetId()?.chain ?: throw Exception()
         val permit2Json = permit2DataToEip712Json(
             chain = chain.string,
             data = permit2Single,

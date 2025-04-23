@@ -27,7 +27,7 @@ data class Transaction (
 	val utxoInputs: List<TransactionInput>,
 	val utxoOutputs: List<TransactionInput>,
 	val metadata: String?? = null,
-	val createdAt: Long
+	val createdAt: SerializedDate
 )
 
 @Serializable
