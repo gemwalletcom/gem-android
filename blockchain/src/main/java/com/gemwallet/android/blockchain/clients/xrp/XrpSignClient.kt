@@ -28,7 +28,7 @@ class XrpSignClient(
         val operation = OperationPayment.newBuilder().apply {
             this.destination = params.destination().address
             this.amount = finalAmount.toLong()
-            this.destinationTag = try { params.memo()?.toInt() ?: 0 } catch (_: Throwable) { 0 }
+            this.destinationTag = try { params.memo()?.toLong() ?: 0 } catch (_: Throwable) { 0 }
         }.build()
         return sign(params, chainData, feePriority, operation, privateKey)
     }
@@ -47,7 +47,7 @@ class XrpSignClient(
                 this.currency = hexSymbol(params.asset.symbol)
                 this.value = Crypto(finalAmount).value(params.asset.decimals).toString()
             }.build()
-            this.destinationTag = try { params.memo()?.toInt() ?: 0 } catch (_: Throwable) { 0 }
+            this.destinationTag = try { params.memo()?.toLong() ?: 0 } catch (_: Throwable) { 0L }
         }.build()
         return sign(params, chainData, feePriority, operation, privateKey)
     }

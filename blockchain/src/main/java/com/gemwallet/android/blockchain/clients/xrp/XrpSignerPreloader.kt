@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.xrp
 
 import com.gemwallet.android.blockchain.clients.ActivationTransactionPreloader
+import com.gemwallet.android.blockchain.clients.BlockchainError
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.clients.xrp.services.account
@@ -38,7 +39,7 @@ class XrpSignerPreloader(
             async { rpcClient.account(params.from.address).getOrNull()?.result },
             async { feeCalculator.calculate() }
         )
-        val account = getSequence.await() ?: throw Exception("No account found")
+        val account = getSequence.await() ?: throw BlockchainError.AccountNotActive
         val fee = getFee.await()
 
         SignerParams(

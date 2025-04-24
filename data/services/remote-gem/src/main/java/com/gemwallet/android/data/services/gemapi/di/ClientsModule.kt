@@ -153,7 +153,7 @@ object ClientsModule {
                 ChainType.Tron -> buildClient(url, TronRpcClient::class.java, gsonConverter, httpClient)
                 ChainType.Aptos -> buildClient(url, AptosServices::class.java, converter, httpClient)
                 ChainType.Sui -> buildClient(url, SuiRpcClient::class.java, gsonConverter, httpClient)
-                ChainType.Xrp -> buildClient(url, XrpRpcClient::class.java, converter, httpClient)
+                ChainType.Xrp -> buildClient(url, XrpRpcClient::class.java, gsonConverter, httpClient)
                 ChainType.Near -> buildClient(url, NearRpcClient::class.java, gsonConverter, httpClient)
                 ChainType.Algorand -> buildClient(url, AlgorandService::class.java, converter, httpClient)
                 ChainType.Stellar -> buildClient(url, StellarService::class.java, converter, httpClient)

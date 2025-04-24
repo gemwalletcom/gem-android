@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.settings.networks.views
 
+import android.icu.text.DecimalFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -54,8 +55,14 @@ internal fun NodeItem(
             )
         },
         subtitle = {
+            val blockNumber = if (nodeStatus?.blockNumber.isNullOrEmpty()) {
+                ""
+            } else {
+                DecimalFormat.getInstance().format(nodeStatus.blockNumber.toLong())
+            }
+
             Text(
-                text = "${stringResource(R.string.nodes_import_node_latest_block)} - ${nodeStatus?.blockNumber ?: ""}",
+                text = "${stringResource(R.string.nodes_import_node_latest_block)} - $blockNumber",
                 maxLines = 1,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyMedium,
