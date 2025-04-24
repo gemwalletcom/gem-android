@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -29,6 +30,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
+import java.nio.file.WatchEvent
 
 @Composable
 fun Scene(
@@ -96,8 +98,10 @@ fun Scene(
         },
         bottomBar = {
             if (mainAction != null) {
-                Box(modifier = Modifier.padding(mainActionPadding)) {
-                    mainAction()
+                Box(modifier = Modifier.navigationBarsPadding()) {
+                    Box(modifier = Modifier.padding(mainActionPadding)) {
+                        mainAction()
+                    }
                 }
             }
         },
@@ -109,6 +113,7 @@ fun Scene(
     ) {
         Box(
             modifier = Modifier
+                .navigationBarsPadding()
                 .padding(top = it.calculateTopPadding())
                 .fillMaxSize(),
         ) {
