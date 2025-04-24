@@ -51,6 +51,10 @@ class PriceAlertRepository(
         }
         priceAlertsDao.enabled(assetIdentifier, enabled)
 
+        if (enabled) {
+            setPriceAlertEnabled(true)
+        }
+
         launch(Dispatchers.IO) {
             if (enabled) {
                 gemClient.includePriceAlert(getDeviceId(), priceAlert)
