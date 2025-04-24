@@ -1,4 +1,4 @@
-@file:kotlin.OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.gemwallet.android.features.settings.networks.views
 
@@ -6,6 +6,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -14,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -36,8 +39,8 @@ import com.gemwallet.android.features.settings.networks.models.NetworksUIState
 import com.gemwallet.android.model.NodeStatus
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.padding8
-import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Node
@@ -129,19 +132,21 @@ private fun BlockExplorerItem(
     explorerName: String,
     onSelect: (String) -> Unit,
 ) {
-    ListItem(
-        modifier = Modifier.clickable { onSelect(explorerName) },
-        dividerShowed = true,
-        title = {
+    Box(
+        modifier = Modifier
+            .clickable { onSelect(explorerName) }
+            .padding(start = padding16, end = 0.dp)
+    ) {
+        Row(modifier = Modifier.padding(vertical = padding16).padding(end = padding16)) {
             Text(
+                modifier = Modifier.weight(1f),
                 text = explorerName,
                 maxLines = 1,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.bodyLarge,
             )
-        },
-        trailing = {
             if (explorerName == current) {
+                Spacer16()
                 Icon(
                     modifier = Modifier
                         .padding(end = padding8)
@@ -151,5 +156,6 @@ private fun BlockExplorerItem(
                 )
             }
         }
-    )
+        HorizontalDivider(Modifier.align(Alignment.BottomStart), thickness = 0.4.dp)
+    }
 }

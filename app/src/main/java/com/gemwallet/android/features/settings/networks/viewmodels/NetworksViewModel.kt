@@ -97,11 +97,7 @@ class NetworksViewModel @Inject constructor(
             nodes.map { node ->
                 async(Dispatchers.IO) {
                     val status = nodeStatusClient.getNodeStatus(chain, node.url)
-                    statuses[node.url] = if (status == null) {
-                        statuses[node.url]?.copy(loading = false)
-                    } else {
-                        status
-                    }
+                    statuses[node.url] = status ?: statuses[node.url]?.copy(loading = false)
                     send(statuses.toImmutableMap())
                 }
             }.awaitAll()
