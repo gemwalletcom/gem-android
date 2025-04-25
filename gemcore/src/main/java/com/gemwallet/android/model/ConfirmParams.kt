@@ -218,6 +218,10 @@ sealed class ConfirmParams {
         val nftAsset: NFTAsset,
     ) : ConfirmParams() {
         @Serializable(BigIntegerSerializer::class) override val amount: BigInteger = BigInteger.ZERO
+
+        override fun destination(): DestinationAddress {
+            return destination
+        }
     }
 
     @Serializable

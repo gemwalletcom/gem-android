@@ -78,7 +78,7 @@ fun TransactionDetails(
                         TransactionType.Transfer -> model.cryptoAmount
                         TransactionType.AssetActivation,
                         TransactionType.TokenApproval -> model.assetSymbol
-                        TransactionType.TransferNFT -> TODO()
+                        TransactionType.TransferNFT -> model.assetSymbol
                         TransactionType.SmartContractCall -> TODO()
                     },
                     equivalent = when (model.type) {
@@ -90,8 +90,8 @@ fun TransactionDetails(
                         TransactionType.Swap,
                         TransactionType.Transfer -> model.fiatAmount
                         TransactionType.AssetActivation,
+                        TransactionType.TransferNFT,
                         TransactionType.TokenApproval -> null
-                        TransactionType.TransferNFT -> TODO()
                         TransactionType.SmartContractCall -> TODO()
                     },
                 )

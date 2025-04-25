@@ -34,6 +34,7 @@ data class DbNFTAsset(
     val name: String,
     val description: String? = null,
     val chain: Chain,
+    @ColumnInfo(name = "contract_address") val contractAddress: String?,
     @ColumnInfo(name = "image_url") val imageUrl: String,
     @ColumnInfo(name = "preview_image_url") val previewImageUrl: String,
     @ColumnInfo(name = "original_image_url") val originalSourceUrl: String,

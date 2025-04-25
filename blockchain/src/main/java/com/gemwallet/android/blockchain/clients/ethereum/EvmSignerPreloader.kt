@@ -18,6 +18,7 @@ import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.Account
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain
@@ -48,7 +49,7 @@ class EvmSignerPreloader(
 
     override suspend fun preloadNft(params: ConfirmParams.NftParams): SignerParams {
         val memo = EVMChain.encodeNFT(params)
-        return preload(params.assetId, params.from, params.destination.address, params.amount, memo, params)
+        return preload(AssetId(params.assetId.chain, params.nftAsset.contractAddress), params.from, params.destination.address, params.amount, memo, params)
     }
 
     override suspend fun preloadStake(params: ConfirmParams.Stake): SignerParams =

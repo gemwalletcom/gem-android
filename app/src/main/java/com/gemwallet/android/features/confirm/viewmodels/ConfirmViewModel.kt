@@ -174,6 +174,7 @@ class ConfirmViewModel @Inject constructor(
             fromAmount = amount.atomicValue.toString(),
             toAsset = toAssetInfo,
             toAmount = (request as? ConfirmParams.SwapParams)?.toAmount.toString(),
+            nftAsset = (request as? ConfirmParams.NftParams)?.nftAsset,
             currency = currency,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)

@@ -33,6 +33,7 @@ import com.gemwallet.android.features.confirm.viewmodels.ConfirmViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
+import com.gemwallet.android.ui.components.NftHead
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
@@ -91,16 +92,16 @@ fun ConfirmScreen(
             )
         }
     ) {
-        if (amountModel?.txType == TransactionType.Swap) {
-            SwapListHead(
+        when (amountModel?.txType) {
+            TransactionType.Swap -> SwapListHead(
                 fromAsset = amountModel?.fromAsset,
                 fromValue = amountModel?.fromAmount!!,
                 toAsset = amountModel?.toAsset!!,
                 toValue = amountModel?.toAmount!!,
                 currency = amountModel?.currency,
             )
-        } else {
-            AmountListHead(
+            TransactionType.TransferNFT -> amountModel?.nftAsset?.let { NftHead(it) }
+            else -> AmountListHead(
                 amount = amountModel?.amount ?: "",
                 equivalent = amountModel?.amountEquivalent,
             )

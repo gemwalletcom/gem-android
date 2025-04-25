@@ -65,8 +65,8 @@ fun TransactionType.getValue(direction: TransactionDirection, value: String): St
             TransactionDirection.Incoming -> "+${value}"
         }
         TransactionType.TokenApproval,
+        TransactionType.TransferNFT,
         TransactionType.AssetActivation -> ""
-        TransactionType.TransferNFT -> TODO()
         TransactionType.SmartContractCall -> TODO()
     }
 }
@@ -74,6 +74,7 @@ fun TransactionType.getValue(direction: TransactionDirection, value: String): St
 @Composable
 fun TransactionType.getAddress(direction: TransactionDirection, from: String, to: String): String {
     return when (this) {
+        TransactionType.TransferNFT,
         TransactionType.Transfer -> when (direction) {
             TransactionDirection.SelfTransfer,
             TransactionDirection.Outgoing -> "${stringResource(id = R.string.transfer_to)} ${to.getAddressEllipsisText()}"
@@ -87,7 +88,6 @@ fun TransactionType.getAddress(direction: TransactionDirection, from: String, to
         TransactionType.StakeWithdraw,
         TransactionType.AssetActivation,
         TransactionType.StakeRewards -> ""
-        TransactionType.TransferNFT -> TODO()
         TransactionType.SmartContractCall -> TODO()
     }
 }

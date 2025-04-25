@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.nft.GetAssetNftCase
+import com.gemwallet.android.cases.nft.GetAssetNft
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.getAccount
 import com.wallet.core.primitives.Account
@@ -27,7 +27,7 @@ val nftAssetIdArg = "assetId"
 @HiltViewModel
 class NftDetailsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
-    private val getAssetNft: GetAssetNftCase,
+    private val getAssetNft: GetAssetNft,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 

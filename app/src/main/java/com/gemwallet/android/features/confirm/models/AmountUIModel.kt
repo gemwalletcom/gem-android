@@ -2,6 +2,7 @@ package com.gemwallet.android.features.confirm.models
 
 import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.TransactionType
 
 class AmountUIModel(
@@ -12,5 +13,6 @@ class AmountUIModel(
     val toAsset: AssetInfo?,
     val fromAmount: String?,
     val toAmount: String?,
+    val nftAsset: NFTAsset?,
     val currency: Currency = Currency.USD,
 )

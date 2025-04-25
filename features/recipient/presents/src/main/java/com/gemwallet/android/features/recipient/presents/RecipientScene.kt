@@ -66,7 +66,7 @@ fun RecipientScene(
         addressError = addressError,
         memoError = memoError,
         onQrScan = { scan = it },
-        onNext = { viewModel.onNext(amountAction) },
+        onNext = { viewModel.onNext(amountAction, confirmAction) },
         onCancel = cancelAction,
     )
 }
