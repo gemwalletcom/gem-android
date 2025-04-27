@@ -57,5 +57,7 @@ enum class EVMChain(val string: String) {
 	Hyperliquid("hyperliquid"),
 	@SerialName("monad")
 	Monad("monad"),
+	@SerialName("xdc")
+	XDC("xdc"),
 }
 
