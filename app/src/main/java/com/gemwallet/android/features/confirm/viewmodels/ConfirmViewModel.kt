@@ -92,7 +92,7 @@ class ConfirmViewModel @Inject constructor(
 
             state.update { ConfirmState.Prepare }
 
-            ConfirmParams.unpack(txType, paramsPack)
+            ConfirmParams.unpack(paramsPack)
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
