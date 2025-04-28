@@ -59,9 +59,9 @@ fun TransactionDetails(
             when (model.type) {
                 TransactionType.Swap -> SwapListHead(
                     fromAsset = model.fromAsset,
-                    fromValue = model.fromValue!!,
+                    fromValue = model.fromValue ?: "0",
                     toAsset = model.toAsset,
-                    toValue = model.toValue!!,
+                    toValue = model.toValue ?: "0",
                     currency = model.currency
                 )
                 else -> AmountListHead(

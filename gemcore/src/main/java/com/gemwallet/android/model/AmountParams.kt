@@ -29,12 +29,6 @@ data class AmountParams(
             return jsonEncoder.decodeFromString<AmountParams>(json)
         }
 
-//        private fun getGson(): Gson {
-//            return GsonBuilder()
-//                .registerTypeAdapter(AssetId::class.java, AssetIdSerializer())
-//                .create()
-//        }
-
         fun buildTransfer(
             assetId: AssetId,
             destination: DestinationAddress?,

@@ -300,7 +300,7 @@ sealed class ConfirmParams {
     }
 
     companion object {
-        fun unpack(txType: TransactionType, input: String): ConfirmParams {
+        fun unpack(input: String): ConfirmParams {
             val json = String(Base64.getDecoder().decode(input.urlDecode()))
             val type = JSONObject(json).getString("type")
             val result = when (type) {
