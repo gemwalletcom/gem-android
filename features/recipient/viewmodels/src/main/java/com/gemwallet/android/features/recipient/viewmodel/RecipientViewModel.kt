@@ -30,6 +30,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
@@ -39,8 +40,8 @@ import kotlinx.coroutines.launch
 import java.math.BigInteger
 import javax.inject.Inject
 
-val assetIdArg = "assetId"
-val nftAssetIdArg = "nftAssetId"
+const val assetIdArg = "assetId"
+const val nftAssetIdArg = "nftAssetId"
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -61,7 +62,7 @@ class RecipientViewModel @Inject constructor(
     val nftAssetId = savedStateHandle.getStateFlow(nftAssetIdArg, "")
     val asset = assetId.flatMapLatest { assetsRepository.getAssetInfo(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-    val nftAsset = nftAssetId.flatMapLatest { getAssetNft.getAssetNft(it) }
+    val nftAsset = nftAssetId.filterNotNull().flatMapLatest { getAssetNft.getAssetNft(it) }
         .map { it.assets.firstOrNull() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

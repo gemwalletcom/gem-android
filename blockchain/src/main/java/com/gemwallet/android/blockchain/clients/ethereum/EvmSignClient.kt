@@ -327,7 +327,16 @@ class EvmSignClient(
             return Transfer.newBuilder().apply {
                 this.amount = ByteString.copyFrom(amount.toByteArray())
                 this.data = ByteString.copyFrom(
-                    EVMChain.encodeTransactionData(params.assetId, params.memo(), finalAmount, params.destination()?.address ?: "")
+                    when (params) {
+                        is ConfirmParams.SwapParams -> EVMChain.encodeTransactionData(
+                            params.assetId,
+                            params.swapData,
+                            finalAmount,
+                            params.destination().address
+                        )
+                        else -> EVMChain.encodeTransactionData(params.assetId, params.memo(), finalAmount, params.destination()?.address ?: "")
+                    }
+
                 )
             }.build()
         }
