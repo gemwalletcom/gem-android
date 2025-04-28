@@ -22,6 +22,7 @@ import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.LoadingScene
+import com.gemwallet.android.ui.components.NftHead
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.clipboard.setPlainText
@@ -53,7 +54,7 @@ fun TransactionDetails(
         LoadingScene(title = "", onCancel)
     } else {
         Scene(
-            title = model.type.getTransactionTitle(model.direction, model.state, model.assetSymbol),
+            title = model.type.getTransactionTitle(model.direction, model.state),
             onClose = onCancel,
         ) {
             when (model.type) {
@@ -64,6 +65,7 @@ fun TransactionDetails(
                     toValue = model.toValue ?: "0",
                     currency = model.currency
                 )
+                TransactionType.TransferNFT -> NftHead(model.nftAsset!!)
                 else -> AmountListHead(
                     iconUrl = model.assetIcon,
                     supportIconUrl = model.assetId.getSupportIconUrl(),
@@ -75,10 +77,10 @@ fun TransactionDetails(
                         TransactionType.StakeRedelegate,
                         TransactionType.StakeWithdraw,
                         TransactionType.Swap,
+                        TransactionType.TransferNFT,
                         TransactionType.Transfer -> model.cryptoAmount
                         TransactionType.AssetActivation,
                         TransactionType.TokenApproval -> model.assetSymbol
-                        TransactionType.TransferNFT -> TODO()
                         TransactionType.SmartContractCall -> TODO()
                     },
                     equivalent = when (model.type) {
@@ -90,8 +92,8 @@ fun TransactionDetails(
                         TransactionType.Swap,
                         TransactionType.Transfer -> model.fiatAmount
                         TransactionType.AssetActivation,
+                        TransactionType.TransferNFT,
                         TransactionType.TokenApproval -> null
-                        TransactionType.TransferNFT -> TODO()
                         TransactionType.SmartContractCall -> TODO()
                     },
                 )
@@ -129,6 +131,7 @@ fun TransactionDetails(
                 ),
             )
             when (model.type) {
+                TransactionType.TransferNFT,
                 TransactionType.Transfer -> when (model.direction) {
                     TransactionDirection.SelfTransfer,
                     TransactionDirection.Outgoing -> cells.add(
@@ -168,7 +171,6 @@ fun TransactionDetails(
                 TransactionType.StakeRewards,
                 TransactionType.StakeRedelegate,
                 TransactionType.AssetActivation,
-                TransactionType.TransferNFT,
                 TransactionType.SmartContractCall,
                 TransactionType.StakeWithdraw -> {}
             }

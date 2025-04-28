@@ -10,6 +10,7 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getAssociatedAssetIds
+import com.gemwallet.android.ext.getNftMetadata
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.features.transactions.details.model.TxDetailsScreenModel
 import com.gemwallet.android.features.transactions.navigation.txIdArg
@@ -57,6 +58,7 @@ class TransactionDetailsViewModel @Inject constructor(
     val screenModel = tx.combine(assets) { transaction, assets ->
         transaction ?: return@combine null
         val swapMetadata = transaction.transaction.getSwapMetadata()
+        val nftMetadata = transaction.transaction.getNftMetadata()
         val fromId = swapMetadata?.fromAsset
         val toId = swapMetadata?.toAsset
         val currency = sessionRepository.getSession()?.currency ?: Currency.USD
@@ -103,6 +105,7 @@ class TransactionDetailsViewModel @Inject constructor(
             toValue = swapMetadata?.toValue,
             provider = SwapProvider.entries.firstOrNull { it.string == provider },
             currency = currency,
+            nftAsset = nftMetadata,
         )
     }
     .stateIn(viewModelScope, started = SharingStarted.Eagerly, null)

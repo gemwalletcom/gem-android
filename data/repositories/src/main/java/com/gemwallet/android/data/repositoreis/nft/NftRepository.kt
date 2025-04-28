@@ -1,7 +1,7 @@
 package com.gemwallet.android.data.repositoreis.nft
 
 import com.gemwallet.android.cases.device.GetDeviceIdCase
-import com.gemwallet.android.cases.nft.GetAssetNftCase
+import com.gemwallet.android.cases.nft.GetAssetNft
 import com.gemwallet.android.cases.nft.GetListNftCase
 import com.gemwallet.android.cases.nft.LoadNFTCase
 import com.gemwallet.android.cases.nft.NftError
@@ -29,7 +29,7 @@ class NftRepository(
     private val gemApiClient: GemApiClient,
     private val getDeviceId: GetDeviceIdCase,
     private val nftDao: NftDao,
-) : LoadNFTCase, GetListNftCase, GetAssetNftCase {
+) : LoadNFTCase, GetListNftCase, GetAssetNft {
 
     override suspend fun loadNFT(wallet: Wallet) {
         val deviceId = getDeviceId.getDeviceId()
@@ -59,6 +59,7 @@ class NftRepository(
                         name = asset.name,
                         tokenId = asset.tokenId,
                         tokenType = asset.tokenType,
+                        contractAddress = asset.contractAddress,
                         chain = asset.chain,
                         description = asset.description,
                         imageUrl = asset.images.preview.url,
@@ -159,6 +160,7 @@ private fun DbNFTAsset.mapToModel(attributes: List<DbNFTAttribute>?) = NFTAsset(
     collectionId = this.collectionId,
     tokenId = this.tokenId,
     tokenType = this.tokenType,
+    contractAddress = this.contractAddress,
     name = this.name,
     description = this.description,
     chain = this.chain,

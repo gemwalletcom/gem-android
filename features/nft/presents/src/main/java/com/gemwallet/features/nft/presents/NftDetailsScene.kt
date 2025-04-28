@@ -5,6 +5,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -23,12 +28,14 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.features.nft.viewmodels.NftAssetDetailsUIModel
 import com.gemwallet.features.nft.viewmodels.NftDetailsViewModel
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.NFTAttribute
 
 @Composable
 fun NFTDetailsScene(
     cancelAction: CancelAction,
+    onRecipient: (AssetId, String) -> Unit,
 ) {
     val viewModel: NftDetailsViewModel = hiltViewModel()
     val assetData by viewModel.nftAsset.collectAsStateWithLifecycle()
@@ -41,7 +48,12 @@ fun NFTDetailsScene(
     val model = assetData!!
     Scene(
         title = model.assetName,
-        onClose = { cancelAction() }
+        actions = {
+            IconButton( { onRecipient(AssetId(model.asset.chain), model.asset.id) } ) {
+                Icon(Icons.Default.ArrowUpward, contentDescription = "Send nft")
+            }
+        },
+        onClose = { cancelAction() },
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {
@@ -49,13 +61,15 @@ fun NFTDetailsScene(
                     model.imageUrl,
                     size = null,
                     transformation = null,
-                    modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f),
                 )
             }
             listSpacerBig()
             generalInfo(model)
             nftAttributes(model.attributes)
-            nftLinks(model.collection.links, { uriHandler.openUri(it) })
+            nftLinks(model.collection.links) { uriHandler.openUri(it) }
         }
     }
 }

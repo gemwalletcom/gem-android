@@ -31,3 +31,7 @@ interface StakeTransactionPreloader : BlockchainClient {
 interface ActivationTransactionPreloader : BlockchainClient {
     suspend fun preloadActivate(params: ConfirmParams.Activate): SignerParams
 }
+
+interface NftTransactionPreloader : BlockchainClient {
+    suspend fun preloadNft(params: ConfirmParams.NftParams): SignerParams
+}

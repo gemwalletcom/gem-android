@@ -73,6 +73,7 @@ class EvmFeeCalculator(
             val minerFee = when (params) {
                 is ConfirmParams.Stake,
                 is ConfirmParams.SwapParams,
+                is ConfirmParams.NftParams,
                 is ConfirmParams.TokenApprovalParams -> priorityFee
                 is ConfirmParams.TransferParams -> if (params.assetId.type() == AssetSubtype.NATIVE && params.isMax()) { // TODO: params.assetId.type - plain, replace to type
                     maxGasPrice

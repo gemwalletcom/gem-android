@@ -100,7 +100,7 @@ fun TransactionItem(
         },
         title = {
             ListItemTitleText(
-                type.getTransactionTitle(direction, state, assetSymbol = assetSymbol),
+                type.getTransactionTitle(direction, state),
                 titleBadge = {
                     val badge = when (state) {
                         TransactionState.Pending -> stringResource(id = R.string.transaction_status_pending)

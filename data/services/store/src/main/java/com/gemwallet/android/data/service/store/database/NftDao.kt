@@ -31,7 +31,7 @@ interface NftDao {
 
     @Query("""
         DELETE FROM nft_collection WHERE
-            id IN (SELECT nft_asset.id FROM nft_asset
+            id IN (SELECT nft_asset.collection_id FROM nft_asset
                 LEFT JOIN nft_association ON nft_asset.id = nft_association.asset_id
                 AND nft_association.wallet_id = :walletId
             )

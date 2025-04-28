@@ -111,9 +111,9 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeUndelegate,
             TransactionType.StakeRedelegate,
             TransactionType.StakeWithdraw -> Crypto(BigInteger(delegation?.base?.balance ?: "0"))
-            TransactionType.AssetActivation -> TODO()
-            TransactionType.TransferNFT -> TODO()
-            TransactionType.SmartContractCall -> TODO()
+            TransactionType.AssetActivation,
+            TransactionType.TransferNFT,
+            TransactionType.SmartContractCall,
             null -> Crypto(BigInteger.ZERO)
         }
     }

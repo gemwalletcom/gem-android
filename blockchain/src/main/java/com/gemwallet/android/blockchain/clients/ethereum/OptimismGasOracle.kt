@@ -6,8 +6,10 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
+import com.google.protobuf.ByteString
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
+import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.TransactionType
 import kotlinx.coroutines.Dispatchers
@@ -18,6 +20,7 @@ import wallet.core.jni.EthereumAbi
 import wallet.core.jni.EthereumAbiFunction
 import wallet.core.jni.PrivateKey
 import wallet.core.jni.proto.Ethereum
+import wallet.core.jni.proto.Ethereum.Transaction.Transfer
 import java.math.BigInteger
 
 class OptimismGasOracle(
@@ -112,15 +115,19 @@ class OptimismGasOracle(
         nonce: BigInteger,
         gasFee: GasFee,
     ): ByteArray {
+        val transfer = Transfer.newBuilder().apply {
+            this.amount = ByteString.copyFrom(amount.toByteArray())
+            this.data = ByteString.copyFrom(
+                EVMChain.encodeTransactionData(assetId, meta, amount, destinationAddress)
+            )
+        }.build()
         val signInput = EvmSignClient(assetId.chain).buildSignInput(
             assetId = assetId,
-            amount = amount,
-            tokenAmount = amount,
             fee = gasFee,
             chainId = chainId.toBigInteger(),
             nonce = nonce,
             destinationAddress = destinationAddress,
-            memo = meta,
+            transfer = transfer,
             privateKey = PrivateKey().data(),
         )
         val signer = AnySigner.sign(signInput, coin, Ethereum.SigningOutput.parser())

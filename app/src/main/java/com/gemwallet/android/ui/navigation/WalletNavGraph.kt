@@ -185,6 +185,7 @@ fun WalletNavGraph(
                 cancelAction = onCancel,
                 collectionIdAction = navController::navigateToNftCollection,
                 assetIdAction = navController::navigateToNftAsset,
+                onRecipient = navController::navigateToRecipientInput
             )
 
             fiatScreen(

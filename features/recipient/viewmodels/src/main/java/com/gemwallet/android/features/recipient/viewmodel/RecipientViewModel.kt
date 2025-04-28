@@ -6,8 +6,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
+import com.gemwallet.android.cases.nft.GetAssetNft
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
+import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isMemoSupport
 import com.gemwallet.android.ext.mutableStateIn
 import com.gemwallet.android.ext.toAssetId
@@ -19,13 +23,16 @@ import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.gemwallet.android.ui.models.actions.ConfirmTransactionAction
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.NameRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -33,12 +40,15 @@ import kotlinx.coroutines.launch
 import java.math.BigInteger
 import javax.inject.Inject
 
-val assetIdArg = "assetId"
+const val assetIdArg = "assetId"
+const val nftAssetIdArg = "nftAssetId"
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class RecipientViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
+    private val getAssetNft: GetAssetNft,
+    private val sessionRepository: SessionRepository,
     private val validateAddressOperator: ValidateAddressOperator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -49,7 +59,11 @@ class RecipientViewModel @Inject constructor(
 
     val assetId = savedStateHandle.getStateFlow(assetIdArg, "")
         .mapNotNull { it.toAssetId() }
+    val nftAssetId = savedStateHandle.getStateFlow(nftAssetIdArg, "")
     val asset = assetId.flatMapLatest { assetsRepository.getAssetInfo(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val nftAsset = nftAssetId.filterNotNull().flatMapLatest { getAssetNft.getAssetNft(it) }
+        .map { it.assets.firstOrNull() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val addressError = combine(
@@ -68,7 +82,7 @@ class RecipientViewModel @Inject constructor(
 
     fun hasMemo(): Boolean = asset.value?.asset?.chain()?.isMemoSupport() == true
 
-    fun onNext(amountAction: AmountTransactionAction) = viewModelScope.launch {
+    fun onNext(amountAction: AmountTransactionAction, confirmAction: ConfirmTransactionAction) = viewModelScope.launch {
         val assetId = asset.value?.id() ?: return@launch
         val destination = DestinationAddress(
             address = nameRecordState.value?.address ?: addressState.value,
@@ -80,7 +94,11 @@ class RecipientViewModel @Inject constructor(
             this@RecipientViewModel.addressError.update { addressError }
             return@launch
         }
-        amountAction(AmountParams.buildTransfer(assetId, destination, memo))
+        val nftAsset = nftAsset.value
+        when {
+            nftAsset != null -> onNftConfirm(nftAsset, destination, confirmAction)
+            else -> amountAction(AmountParams.buildTransfer(assetId, destination, memo))
+        }
     }
 
     fun setQrData(type: QrScanField, data: String, confirmAction: ConfirmTransactionAction) {
@@ -115,6 +133,16 @@ class RecipientViewModel @Inject constructor(
                 memoState.value = paymentWrapper.memo ?: data
             }
         }
+    }
+
+    private fun onNftConfirm(nftAsset: NFTAsset, destination: DestinationAddress, confirmAction: ConfirmTransactionAction) {
+        val params = ConfirmParams.NftParams(
+            asset = nftAsset.chain.asset(),
+            from = sessionRepository.getSession()?.wallet?.getAccount(nftAsset.chain) ?: return,
+            destination = destination,
+            nftAsset = nftAsset,
+        )
+        confirmAction(params)
     }
 
     private fun validateDestination(chain: Chain, destination: DestinationAddress?): RecipientError {

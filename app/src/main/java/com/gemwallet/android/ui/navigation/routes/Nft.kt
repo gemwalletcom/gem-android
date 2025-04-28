@@ -4,11 +4,13 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.NftAssetIdAction
 import com.gemwallet.android.ui.models.actions.NftCollectionIdAction
 import com.gemwallet.features.nft.presents.NFTDetailsScene
 import com.gemwallet.features.nft.presents.NftListScene
+import com.wallet.core.primitives.AssetId
 import kotlinx.serialization.Serializable
 
 val nftRoute = "nft"
@@ -29,6 +31,7 @@ fun NavController.navigateToNftAsset(assetId: String) {
 
 fun NavGraphBuilder.nftCollection(
     cancelAction: CancelAction,
+    onRecipient: (AssetId, String) -> Unit,
     collectionIdAction: NftCollectionIdAction,
     assetIdAction: NftAssetIdAction,
 ) {
@@ -37,6 +40,6 @@ fun NavGraphBuilder.nftCollection(
     }
 
     composable<NftAssetRoute> {
-        NFTDetailsScene(cancelAction)
+        NFTDetailsScene(cancelAction, onRecipient)
     }
 }

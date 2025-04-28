@@ -174,6 +174,7 @@ class ConfirmViewModel @Inject constructor(
             fromAmount = amount.atomicValue.toString(),
             toAsset = toAssetInfo,
             toAmount = (request as? ConfirmParams.SwapParams)?.toAmount.toString(),
+            nftAsset = (request as? ConfirmParams.NftParams)?.nftAsset,
             currency = currency,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -307,6 +308,7 @@ class ConfirmViewModel @Inject constructor(
                         is ConfirmParams.TokenApprovalParams -> swapRoute
                         is ConfirmParams.TransferParams -> assetRoute
                         is ConfirmParams.Activate -> assetRoute
+                        is ConfirmParams.NftParams -> assetRoute
                     }
                     viewModelScope.launch(Dispatchers.Main) {
                         finishAction(assetId = assetInfo.id(), hash = txHash, route = finishRoute)
@@ -344,6 +346,7 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams,
             is ConfirmParams.Activate,
+            is ConfirmParams.NftParams,
             is ConfirmParams.Stake.DelegateParams -> assetInfo.balance.balance.available.toBigInteger()
             is ConfirmParams.Stake.RedelegateParams -> BigInteger(stakeRepository.getDelegation(params.srcValidatorId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.Stake.UndelegateParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
@@ -363,6 +366,7 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.Stake.RewardsParams,
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams,
+            is ConfirmParams.NftParams,
             is ConfirmParams.TransferParams -> null
         }
         return stakeRepository.getStakeValidator(params.assetId, validatorId ?: return null)
@@ -383,6 +387,12 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.Stake.WithdrawParams -> CellEntity(label = R.string.stake_validator, data = validator?.name ?: "")
             is ConfirmParams.SwapParams -> CellEntity(label = R.string.swap_provider, data = provider)
             is ConfirmParams.TokenApprovalParams -> CellEntity(label = R.string.swap_provider, data = provider)
+            is ConfirmParams.NftParams -> {
+                return when { // TODO: Join with transfer
+                    destination.domainName.isNullOrEmpty() -> CellEntity(label = R.string.transaction_recipient, data = destination.address)
+                    else -> CellEntity(label = R.string.transaction_recipient, support = destination.address, data = destination.domainName!!)
+                }
+            }
             is ConfirmParams.TransferParams -> {
                 return when {
                     destination.domainName.isNullOrEmpty() -> CellEntity(label = R.string.transaction_recipient, data = destination.address)
@@ -428,6 +438,7 @@ class ConfirmViewModel @Inject constructor(
                 )
             )
         }
+        is ConfirmParams.NftParams -> jsonEncoder.encodeToString(input.nftAsset)
         else -> null
     }
 
@@ -479,8 +490,8 @@ class ConfirmViewModel @Inject constructor(
                 TransactionType.StakeUndelegate,
                 TransactionType.StakeRewards,
                 TransactionType.StakeRedelegate,
-                TransactionType.StakeWithdraw -> amount
-                TransactionType.TransferNFT -> TODO()
+                TransactionType.StakeWithdraw,
+                TransactionType.TransferNFT -> amount
                 TransactionType.SmartContractCall -> TODO()
             }
 
