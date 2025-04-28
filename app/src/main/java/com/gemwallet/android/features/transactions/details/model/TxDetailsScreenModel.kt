@@ -4,6 +4,7 @@ import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.SwapProvider
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
@@ -34,4 +35,5 @@ class TxDetailsScreenModel(
     val toValue: String? = null,
     val provider: SwapProvider? = null,
     val currency: Currency? = null,
+    val nftAsset: NFTAsset? = null,
 )

@@ -35,7 +35,7 @@ fun TransactionType.getTitle(direction: TransactionDirection? = null, state: Tra
 }
 
 @Composable
-fun TransactionType.getTransactionTitle(direction: TransactionDirection, state: TransactionState, assetSymbol: String): String {
+fun TransactionType.getTransactionTitle(direction: TransactionDirection, state: TransactionState): String {
     return when (this) {
         TransactionType.StakeDelegate,
         TransactionType.StakeUndelegate,
@@ -46,7 +46,7 @@ fun TransactionType.getTransactionTitle(direction: TransactionDirection, state: 
         TransactionType.Swap -> stringResource(getTitle(direction, state))
         TransactionType.TokenApproval -> stringResource(id = R.string.transfer_approve_title)
         TransactionType.AssetActivation -> stringResource(R.string.transfer_activate_asset_title)
-        TransactionType.TransferNFT -> stringResource(R.string.transfer_title)
+        TransactionType.TransferNFT -> "${stringResource(R.string.transfer_title)} NFT"
         TransactionType.SmartContractCall -> TODO()
     }
 }

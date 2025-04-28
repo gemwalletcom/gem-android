@@ -289,14 +289,14 @@ sealed class ConfirmParams {
         return when (this) {
             is TransferParams -> TransactionType.Transfer
             is TokenApprovalParams -> TransactionType.TokenApproval
-            is SwapParams  -> TransactionType.Swap
-            is Activate  -> TransactionType.AssetActivation
-            is NftParams  -> TransactionType.TransferNFT
-            is Stake.DelegateParams  -> TransactionType.StakeDelegate
+            is SwapParams -> TransactionType.Swap
+            is Activate -> TransactionType.AssetActivation
+            is NftParams -> TransactionType.TransferNFT
+            is Stake.DelegateParams -> TransactionType.StakeDelegate
             is Stake.RewardsParams -> TransactionType.StakeRewards
-            is Stake.RedelegateParams  -> TransactionType.StakeRedelegate
-            is Stake.UndelegateParams  -> TransactionType.StakeUndelegate
-            is Stake.WithdrawParams  -> TransactionType.StakeWithdraw
+            is Stake.RedelegateParams -> TransactionType.StakeRedelegate
+            is Stake.UndelegateParams -> TransactionType.StakeUndelegate
+            is Stake.WithdrawParams -> TransactionType.StakeWithdraw
             is Stake -> throw IllegalArgumentException("Invalid stake parameter")
         }
     }

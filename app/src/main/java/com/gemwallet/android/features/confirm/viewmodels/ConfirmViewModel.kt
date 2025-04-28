@@ -438,6 +438,7 @@ class ConfirmViewModel @Inject constructor(
                 )
             )
         }
+        is ConfirmParams.NftParams -> jsonEncoder.encodeToString(input.nftAsset)
         else -> null
     }
 
@@ -489,8 +490,8 @@ class ConfirmViewModel @Inject constructor(
                 TransactionType.StakeUndelegate,
                 TransactionType.StakeRewards,
                 TransactionType.StakeRedelegate,
-                TransactionType.StakeWithdraw -> amount
-                TransactionType.TransferNFT -> amount // TODO: Check fee balance is available
+                TransactionType.StakeWithdraw,
+                TransactionType.TransferNFT -> amount
                 TransactionType.SmartContractCall -> TODO()
             }
 
