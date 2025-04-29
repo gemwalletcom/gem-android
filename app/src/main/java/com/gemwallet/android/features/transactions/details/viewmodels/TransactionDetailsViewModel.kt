@@ -46,9 +46,9 @@ class TransactionDetailsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val tx: StateFlow<TransactionExtended?> = savedStateHandle.getStateFlow<String?>(txIdArg, null)
-    .filterNotNull()
-    .flatMapLatest { getTransaction.getTransaction(it) }
-    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        .filterNotNull()
+        .flatMapLatest { getTransaction.getTransaction(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val assets = tx.flatMapLatest { tx ->
         val ids = tx?.transaction?.getAssociatedAssetIds() ?: return@flatMapLatest emptyFlow()
