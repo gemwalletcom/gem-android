@@ -1,39 +1,56 @@
 package com.gemwallet.android.features.transactions.details.views
 
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.features.transactions.details.model.TxDetailsScreenModel
 import com.gemwallet.android.features.transactions.details.viewmodels.TransactionDetailsViewModel
 import com.gemwallet.android.features.transactions.details.viewmodels.getIcon
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
-import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.components.NftHead
 import com.gemwallet.android.ui.components.SwapListHead
-import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.clipboard.setPlainText
+import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getSupportIconUrl
+import com.gemwallet.android.ui.components.list_item.PropertyDataText
+import com.gemwallet.android.ui.components.list_item.PropertyItem
+import com.gemwallet.android.ui.components.list_item.PropertyTitleText
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.titles.getTransactionTitle
 import com.gemwallet.android.ui.theme.pendingColor
+import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.SwapProvider
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
@@ -44,10 +61,6 @@ fun TransactionDetails(
     viewModel: TransactionDetailsViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.screenModel.collectAsStateWithLifecycle()
-
-    val uriHandler = LocalUriHandler.current
-    val clipboardManager = LocalClipboard.current.nativeClipboard
-
     val model = uiState
 
     if (model == null) {
@@ -57,176 +70,240 @@ fun TransactionDetails(
             title = model.type.getTransactionTitle(model.direction, model.state),
             onClose = onCancel,
         ) {
-            when (model.type) {
-                TransactionType.Swap -> SwapListHead(
-                    fromAsset = model.fromAsset,
-                    fromValue = model.fromValue ?: "0",
-                    toAsset = model.toAsset,
-                    toValue = model.toValue ?: "0",
-                    currency = model.currency
-                )
-                TransactionType.TransferNFT -> NftHead(model.nftAsset!!)
-                else -> AmountListHead(
-                    iconUrl = model.assetIcon,
-                    supportIconUrl = model.assetId.getSupportIconUrl(),
-                    placeholder = model.assetType.string,
-                    amount = when (model.type) {
-                        TransactionType.StakeDelegate,
-                        TransactionType.StakeUndelegate,
-                        TransactionType.StakeRewards,
-                        TransactionType.StakeRedelegate,
-                        TransactionType.StakeWithdraw,
-                        TransactionType.Swap,
-                        TransactionType.TransferNFT,
-                        TransactionType.Transfer -> model.cryptoAmount
-                        TransactionType.AssetActivation,
-                        TransactionType.TokenApproval -> model.assetSymbol
-                        TransactionType.SmartContractCall -> TODO()
-                    },
-                    equivalent = when (model.type) {
-                        TransactionType.StakeDelegate,
-                        TransactionType.StakeUndelegate,
-                        TransactionType.StakeRewards,
-                        TransactionType.StakeRedelegate,
-                        TransactionType.StakeWithdraw,
-                        TransactionType.Swap,
-                        TransactionType.Transfer -> model.fiatAmount
-                        TransactionType.AssetActivation,
-                        TransactionType.TransferNFT,
-                        TransactionType.TokenApproval -> null
-                        TransactionType.SmartContractCall -> TODO()
-                    },
-                )
+            LazyColumn(modifier = Modifier.fillMaxSize()) {
+                transactionItemHead(model)
+                transactionDateItem(model.createdAt)
+                transactionRecipientItem(model)
+                transactionStatusItem(model)
+                transactionMemoItem(model.memo)
+                transactionNetworkItem(model.networkTitle, model.assetId)
+                transactionProviderItem(model.provider)
+                transactionNetworkFeeItem(model.networkTitle, model.feeCrypto, model.feeFiat)
+                transactionExplorer(model.explorerName, model.explorerUrl)
             }
-            val cells = mutableListOf<CellEntity<Any>>()
-            cells.add(
-                CellEntity(
-                    label = stringResource(id = R.string.transaction_date),
-                    data = model.createdAt
-                )
+        }
+    }
+}
+
+private fun LazyListScope.transactionItemHead(model: TxDetailsScreenModel) {
+    item {
+        when (model.type) {
+            TransactionType.Swap -> SwapListHead(
+                fromAsset = model.fromAsset,
+                fromValue = model.fromValue ?: "0",
+                toAsset = model.toAsset,
+                toValue = model.toValue ?: "0",
+                currency = model.currency
             )
-            val dataColor = when (model.state) {
-                TransactionState.Pending -> pendingColor
-                TransactionState.Confirmed -> MaterialTheme.colorScheme.tertiary
-                TransactionState.Failed,
-                TransactionState.Reverted -> MaterialTheme.colorScheme.error
-            }
-            cells.add(
-                CellEntity(
-                    label = stringResource(id = R.string.transaction_status),
-                    trailing = {
-                        when (model.state) {
-                            TransactionState.Pending -> CircularProgressIndicator16(color = pendingColor)
-                            else -> null
-                        }
-                    },
-                    data = when (model.state) {
+            TransactionType.TransferNFT -> NftHead(model.nftAsset!!)
+            else -> AmountListHead(
+                iconUrl = model.assetIcon,
+                supportIconUrl = model.assetId.getSupportIconUrl(),
+                placeholder = model.assetType.string,
+                amount = when (model.type) {
+                    TransactionType.StakeDelegate,
+                    TransactionType.StakeUndelegate,
+                    TransactionType.StakeRewards,
+                    TransactionType.StakeRedelegate,
+                    TransactionType.StakeWithdraw,
+                    TransactionType.Swap,
+                    TransactionType.TransferNFT,
+                    TransactionType.Transfer -> model.cryptoAmount
+                    TransactionType.AssetActivation,
+                    TransactionType.TokenApproval -> model.assetSymbol
+                    TransactionType.SmartContractCall -> TODO()
+                },
+                equivalent = when (model.type) {
+                    TransactionType.StakeDelegate,
+                    TransactionType.StakeUndelegate,
+                    TransactionType.StakeRewards,
+                    TransactionType.StakeRedelegate,
+                    TransactionType.StakeWithdraw,
+                    TransactionType.Swap,
+                    TransactionType.Transfer -> model.fiatAmount
+                    TransactionType.AssetActivation,
+                    TransactionType.TransferNFT,
+                    TransactionType.TokenApproval -> null
+                    TransactionType.SmartContractCall -> TODO()
+                },
+            )
+        }
+    }
+}
+
+private fun LazyListScope.transactionDateItem(date: String) {
+    item {
+        PropertyItem(
+            R.string.transaction_date,
+            date,
+        )
+
+    }
+}
+
+private fun LazyListScope.transactionStatusItem(model: TxDetailsScreenModel) {
+    item {
+        PropertyItem(
+            title = {
+                PropertyTitleText(R.string.transaction_status, info = InfoSheetEntity.TransactionInfo(icon = model.assetIcon, state = model.state))
+            },
+            data = {
+                PropertyDataText(
+                    text = when (model.state) {
                         TransactionState.Pending -> stringResource(id = R.string.transaction_status_pending)
                         TransactionState.Confirmed -> stringResource(id = R.string.transaction_status_confirmed)
                         TransactionState.Failed -> stringResource(id = R.string.transaction_status_failed)
                         TransactionState.Reverted -> stringResource(id = R.string.transaction_status_reverted)
                     },
-                    dataColor = dataColor,
-                    info = InfoSheetEntity.TransactionInfo(icon = model.assetIcon, state = model.state)
-                ),
-            )
-            when (model.type) {
-                TransactionType.TransferNFT,
-                TransactionType.Transfer -> when (model.direction) {
-                    TransactionDirection.SelfTransfer,
-                    TransactionDirection.Outgoing -> cells.add(
-                        CellEntity(
-                            label = stringResource(id = R.string.transaction_recipient),
-                            data = model.to,
-                            action = { clipboardManager.setPlainText(model.to) },
-                            actionIcon = {
-                                Icon(
-                                    modifier = Modifier.padding(horizontal = 8.dp),
-                                    imageVector = Icons.Default.ContentCopy,
-                                    contentDescription = ""
-                                )
-                            }
-                        )
-                    )
-
-                    TransactionDirection.Incoming -> cells.add(
-                        CellEntity(
-                            label = stringResource(id = R.string.transaction_sender),
-                            data = model.from,
-                            action = { clipboardManager.setPlainText(model.from) },
-                            actionIcon = {
-                                Icon(
-                                    modifier = Modifier.padding(horizontal = 8.dp),
-                                    imageVector = Icons.Default.ContentCopy,
-                                    contentDescription = ""
-                                )
-                            }
-                        )
-                    )
-                }
-                TransactionType.Swap,
-                TransactionType.TokenApproval,
-                TransactionType.StakeDelegate,
-                TransactionType.StakeUndelegate,
-                TransactionType.StakeRewards,
-                TransactionType.StakeRedelegate,
-                TransactionType.AssetActivation,
-                TransactionType.SmartContractCall,
-                TransactionType.StakeWithdraw -> {}
-            }
-            if (!model.memo.isNullOrEmpty()) {
-                CellEntity(
-                    label = stringResource(id = R.string.transfer_memo),
-                    data = model.memo
+                    color = when (model.state) {
+                        TransactionState.Pending -> pendingColor
+                        TransactionState.Confirmed -> MaterialTheme.colorScheme.tertiary
+                        TransactionState.Failed,
+                        TransactionState.Reverted -> MaterialTheme.colorScheme.error
+                    },
+                    badge = {
+                        when (model.state) {
+                            TransactionState.Pending -> CircularProgressIndicator16(color = pendingColor)
+                            else -> null
+                        }
+                    }
                 )
             }
-            cells.add(
-                CellEntity(
-                    label = stringResource(id = R.string.transfer_network),
-                    data = model.networkTitle,
-                    trailing = {
+        )
+    }
+}
+
+private fun LazyListScope.transactionRecipientItem(model: TxDetailsScreenModel) {
+    val (title, address) = when (model.type) {
+        TransactionType.Swap,
+        TransactionType.TokenApproval,
+        TransactionType.StakeDelegate,
+        TransactionType.StakeUndelegate,
+        TransactionType.StakeRewards,
+        TransactionType.StakeRedelegate,
+        TransactionType.AssetActivation,
+        TransactionType.SmartContractCall,
+        TransactionType.StakeWithdraw -> return
+
+        TransactionType.Transfer,
+        TransactionType.TransferNFT -> when (model.direction) {
+            TransactionDirection.SelfTransfer,
+            TransactionDirection.Outgoing -> Pair(R.string.transaction_recipient, model.to)
+            TransactionDirection.Incoming -> Pair(R.string.transaction_sender, model.from)
+        }
+    }
+    item {
+        val clipboardManager = LocalClipboard.current.nativeClipboard
+
+        PropertyItem(
+            title = { PropertyTitleText(title) },
+            data = {
+                Row(
+                    modifier = Modifier
+                        .clickable { clipboardManager.setPlainText(model.to) }
+                        .weight(1f),
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Text(
+                        modifier = Modifier.weight(1f),
+                        text = address,
+                        textAlign = TextAlign.End,
+                        maxLines = 1,
+                        overflow = TextOverflow.MiddleEllipsis,
+                        color = MaterialTheme.colorScheme.secondary,
+                        style = MaterialTheme.typography.bodyLarge,
+                    )
+                    Spacer8()
+                    Icon(
+                        imageVector = Icons.Default.ContentCopy,
+                        tint = MaterialTheme.colorScheme.secondary,
+                        contentDescription = ""
+                    )
+                }
+            }
+        )
+    }
+}
+
+private fun LazyListScope.transactionMemoItem(memo: String?) {
+    if (memo.isNullOrEmpty()) {
+        return
+    }
+    item {
+        PropertyItem(R.string.transfer_memo, memo)
+    }
+}
+
+private fun LazyListScope.transactionNetworkItem(networkTitle: String, assetId: AssetId) {
+    item {
+        PropertyItem(
+            title = {
+                PropertyTitleText(R.string.transfer_network)
+            },
+            data = {
+                PropertyDataText(
+                    networkTitle,
+                    badge = {
+                        Spacer8()
                         AsyncImage(
-                            model = model.assetId.chain.asset(),
+                            model = assetId.chain.asset(),
                             size = trailingIconMedium,
-                            placeholderText = model.assetType.string,
+                            placeholderText = networkTitle,
                         )
                     }
                 )
-            )
-            model.provider?.let {
-                cells.add(
-                    CellEntity(
-                        label = stringResource(id = R.string.swap_provider),
-                        data = model.provider.name.lowercase(),
-                        trailing = {
-                            AsyncImage(
-                                model = model.provider.getIcon(),
-                                size = trailingIconMedium,
-                                placeholderText = model.assetType.string,
-                            )
-                        }
-                    )
+            }
+        )
+    }
+}
+
+private fun LazyListScope.transactionProviderItem(provider: SwapProvider?) {
+    provider ?: return
+    item {
+        PropertyItem(
+            title = {
+                PropertyTitleText(R.string.swap_provider)
+            },
+            data = {
+                PropertyDataText(
+                    provider.name.lowercase(),
+                    badge = {
+                        Spacer8()
+                        AsyncImage(
+                            model = provider.getIcon(),
+                            size = trailingIconMedium,
+                            placeholderText = provider.name
+                        )
+                    }
                 )
             }
-            cells.add(
-                CellEntity(
-                    label = stringResource(id = R.string.transfer_network_fee),
-                    data = model.feeCrypto,
-                    support = model.feeFiat,
-                    info = InfoSheetEntity.NetworkFeeInfo(networkTitle = model.networkTitle)
-                )
-            )
-            cells.add(
-                CellEntity(
-                    label = stringResource(
-                        id = R.string.transaction_view_on,
-                        model.explorerName
-                    ),
-                    data = "",
-                    action = { uriHandler.open(model.explorerUrl) }
-                )
-            )
-            Table(items = cells)
-        }
+        )
+    }
+}
+
+private fun LazyListScope.transactionNetworkFeeItem(networkTitle: String, feeCrypto: String, feeFiat: String) {
+    item {
+        PropertyItem(
+            modifier = Modifier.height(72.dp),
+            title = {
+                PropertyTitleText(R.string.transfer_network_fee, info = InfoSheetEntity.NetworkFeeInfo(networkTitle = networkTitle))
+            },
+            data = {
+                Column(horizontalAlignment = Alignment.End) {
+                    Row(horizontalArrangement = Arrangement.End) { PropertyDataText(feeCrypto) }
+                    Row(horizontalArrangement = Arrangement.End) { PropertyDataText(feeFiat) }
+                }
+            }
+        )
+    }
+}
+
+private fun LazyListScope.transactionExplorer(explorerName: String, uri: String) {
+    item {
+        val uriHandler = LocalUriHandler.current
+        PropertyItem(
+            modifier = Modifier.clickable { uriHandler.open(uri) },
+            title = { PropertyTitleText(stringResource(id = R.string.transaction_view_on, explorerName)) },
+            data = { PropertyDataText("", badge = { Icon(Icons.Default.ChevronRight, contentDescription = "", tint = MaterialTheme.colorScheme.secondary) }) }
+        )
     }
 }

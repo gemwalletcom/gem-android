@@ -46,7 +46,7 @@ fun PropertyItem(
     modifier: Modifier = Modifier,
 ) {
     ListItem(
-        modifier = modifier.height(56.dp),
+        modifier = modifier.then(Modifier.height(56.dp)),
         title = title,
         trailing = data,
     )
