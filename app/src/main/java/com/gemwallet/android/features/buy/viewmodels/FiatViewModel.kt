@@ -5,6 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.ext.chain
+import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.buy.models.AmountValidator
 import com.gemwallet.android.features.buy.models.BuyError
@@ -37,6 +40,7 @@ import kotlin.random.Random
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class FiatViewModel @Inject constructor(
+    private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val buyRepository: BuyRepository,
     savedStateHandle: SavedStateHandle
@@ -51,9 +55,18 @@ class FiatViewModel @Inject constructor(
     private val _amount = MutableStateFlow("")
     val amount: StateFlow<String> get() = _amount
 
-    val asset = assetId.flatMapLatest { assetsRepository.getAssetInfo(it).mapNotNull { it } }
-        .map { AssetInfoUIModel(it, false, 6, -1) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val asset = assetId.flatMapLatest {
+        assetsRepository.getTokenInfo(it).mapNotNull { it }
+    }
+    .map {
+        if (it.owner == null) {
+            it.copy(owner = sessionRepository.getSession()?.wallet?.getAccount(it.asset.chain()))
+        } else {
+            it
+        }
+    }
+    .map { AssetInfoUIModel(it, false, 6, -1) }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val amountValidator = type.mapLatest {
         AmountValidator(

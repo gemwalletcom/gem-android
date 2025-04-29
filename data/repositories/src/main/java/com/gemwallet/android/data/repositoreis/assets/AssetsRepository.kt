@@ -114,7 +114,7 @@ class AssetsRepository @Inject constructor(
 
     suspend fun syncMarketInfo(assetId: AssetId, owner: Account?) = withContext(Dispatchers.IO) {
         val assetInfo = if (owner == null) {
-            getAssetsInfoByAllWallets(listOf(assetId.toIdentifier())).map { it.firstOrNull() }
+            getTokensInfo(listOf(assetId.toIdentifier())).map { it.firstOrNull() }
         } else {
             getAssetInfo(assetId)
         }.firstOrNull() ?: return@withContext
@@ -172,10 +172,15 @@ class AssetsRepository @Inject constructor(
         assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel()?.asset }
     }
 
-    fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> =
-        assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel() }
+    fun getTokenInfo(assetId: AssetId): Flow<AssetInfo?> {
+        return assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel() }
+    }
 
-    fun getAssetsInfoByAllWallets(assetsId: List<String>): Flow<List<AssetInfo>> {
+    fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
+        return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel() }
+    }
+
+    fun getTokensInfo(assetsId: List<String>): Flow<List<AssetInfo>> {
         return assetsDao.getAssetsInfoByAllWallets(assetsId).toAssetInfoModel()
     }
 

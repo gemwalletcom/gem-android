@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.receive.navigation.assetIdArg
@@ -30,7 +31,14 @@ class ReceiveViewModel @Inject constructor(
     val asset = savedStateHandle.getStateFlow(assetIdArg, "")
         .map { it.toAssetId() }
         .filterNotNull()
-        .flatMapLatest { assetsRepository.getAssetInfo(it) }
+        .flatMapLatest { assetsRepository.getTokenInfo(it) }
+        .map {
+            if (it?.owner == null) {
+                it?.copy(owner = sessionRepository.getSession()?.wallet?.getAccount(it.asset.chain()))
+            } else {
+                it
+            }
+        }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun setVisible() {
