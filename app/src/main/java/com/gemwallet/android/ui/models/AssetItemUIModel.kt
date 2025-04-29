@@ -1,7 +1,6 @@
 package com.gemwallet.android.ui.models
 
 import androidx.compose.runtime.Stable
-import com.gemwallet.android.ext.same
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.image.getSupportIconUrl
@@ -68,7 +67,7 @@ class AssetInfoUIModel(
     override val metadata: AssetMetaData? by lazy { assetInfo.metadata }
 
     override fun equals(other: Any?): Boolean {
-        return (other is AssetInfoUIModel) && other.asset.id.same(asset.id)
+        return (other is AssetInfoUIModel) && other.asset.id == asset.id
                 && other.assetInfo.price == assetInfo.price
                 && other.assetInfo.balance == assetInfo.balance
                 && other.metadata?.isEnabled == assetInfo.metadata?.isEnabled

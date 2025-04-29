@@ -1,6 +1,5 @@
 package com.gemwallet.android.model
 
-import com.gemwallet.android.ext.same
 import com.wallet.core.primitives.Asset
 import java.math.BigInteger
 
@@ -15,7 +14,7 @@ data class AssetBalance(
 
     override fun equals(other: Any?): Boolean {
         return other is AssetBalance
-                && asset.id.same(other.asset.id)
+                && asset.id == other.asset.id
                 && balance == other.balance
                 && totalAmount == other.totalAmount
     }

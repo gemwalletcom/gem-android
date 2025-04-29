@@ -17,7 +17,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ext.getSwapMetadata
-import com.gemwallet.android.ext.same
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.model.format
@@ -159,7 +158,7 @@ fun TransactionItem(
                         TransactionType.Swap -> {
                             val swapMetadata = metadata as? TransactionSwapMetadata
                             val toId = swapMetadata?.toAsset
-                            val asset = assets.firstOrNull { toId?.same(it.id) == true }
+                            val asset = assets.firstOrNull { toId == it.id }
                             if (swapMetadata == null || asset == null) {
                                 ""
                             } else {
@@ -183,7 +182,7 @@ fun TransactionItem(
                     TransactionType.Swap -> {
                         val swapMetadata = metadata as? TransactionSwapMetadata
                         val fromId = swapMetadata?.fromAsset
-                        val asset = assets.firstOrNull { fromId?.same(it.id) == true }
+                        val asset = assets.firstOrNull { fromId == it.id }
                         if (swapMetadata == null || asset == null) {
                             ""
                         } else {
