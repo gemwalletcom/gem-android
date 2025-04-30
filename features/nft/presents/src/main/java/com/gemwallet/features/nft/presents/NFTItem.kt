@@ -3,6 +3,7 @@ package com.gemwallet.features.nft.presents
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Card
@@ -42,7 +43,7 @@ fun NFTItem(
                 placeholderText = model.name,
                 transformation = null,
                 size = null,
-                modifier = Modifier.widthIn(min = 150.dp)
+                modifier = Modifier.widthIn(min = 150.dp).height(150.dp)
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),

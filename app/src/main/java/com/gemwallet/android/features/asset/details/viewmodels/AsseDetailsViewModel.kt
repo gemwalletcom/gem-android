@@ -85,15 +85,15 @@ class AsseDetailsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val sync: Flow<Unit> = combine(uiState, model) { uiState, model ->
-        if (uiState is AssetInfoUIState.Idle
-                && (uiState.sync == AssetInfoUIState.SyncState.Wait || uiState.sync == AssetInfoUIState.SyncState.Process)
-        ) {
-            model ?: return@combine
-            syncAssetInfo(model.assetInfo.asset.id)
+            if (uiState is AssetInfoUIState.Idle
+                    && (uiState.sync == AssetInfoUIState.SyncState.Wait || uiState.sync == AssetInfoUIState.SyncState.Process)
+            ) {
+                model ?: return@combine
+                syncAssetInfo(model.assetInfo.asset.id)
+            }
         }
-    }
-    .flowOn(Dispatchers.IO)
-    .stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
+        .flowOn(Dispatchers.IO)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
 
     val uiModel = model.map { it?.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)

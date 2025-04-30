@@ -54,7 +54,7 @@ class AssetChartViewModel @Inject constructor(
             asset = asset,
             assetTitle = asset.name,
             assetLinks = links.toModel(),
-            currency = assetInfo.price?.currency ?: Currency.USD,
+            currency = currency,
             marketInfo = market,
             explorerName = getCurrentBlockExplorerCase.getCurrentBlockExplorer(asset.chain())
         )

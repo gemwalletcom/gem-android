@@ -16,6 +16,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.InfoButton
 import com.gemwallet.android.ui.components.InfoSheetEntity
+import com.gemwallet.android.ui.components.designsystem.Spacer8
 
 
 @Composable
@@ -56,20 +57,24 @@ fun PropertyItem(
 fun PropertyTitleText(
     @StringRes text: Int,
     badge: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
     color: Color = MaterialTheme.colorScheme.onSurface,
     info: InfoSheetEntity? = null,
 ) {
-    PropertyTitleText(stringResource(text), badge, color, info)
+    PropertyTitleText(stringResource(text), badge, trailing, color, info)
 }
 
 @Composable
 fun PropertyTitleText(
     text: String,
     badge: (@Composable () -> Unit)? = null,
+    trailing: (@Composable () -> Unit)? = null,
     color: Color = MaterialTheme.colorScheme.onSurface,
     info: InfoSheetEntity? = null,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
+        trailing?.invoke()
+        Spacer8()
         Text(
             modifier = Modifier.weight(1f, false),
             text = text,
