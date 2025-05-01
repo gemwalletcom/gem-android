@@ -22,8 +22,8 @@ import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
 import com.gemwallet.android.model.getStackedAmount
 import com.gemwallet.android.model.reservedFormatted
-import com.gemwallet.android.model.stakedFormatted
 import com.gemwallet.android.model.totalFormatted
+import com.gemwallet.android.model.totalStakeFormatted
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
@@ -170,7 +170,7 @@ class AsseDetailsViewModel @Inject constructor(
                         if (stakeBalance == 0.0) {
                             "APR ${PriceUIState.formatPercentage(assetInfo.stakeApr ?: 0.0, false)}"
                         } else {
-                            balances.stakedFormatted()
+                            balances.totalStakeFormatted()
                         }
                     } else {
                         ""

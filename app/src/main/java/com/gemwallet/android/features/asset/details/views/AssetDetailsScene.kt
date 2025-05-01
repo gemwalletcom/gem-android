@@ -326,9 +326,7 @@ private fun LazyListScope.balanceDetails(
         val uriHandler = LocalUriHandler.current
 
         if (uiState.accountInfoUIModel.available.isNotEmpty()) {
-            Spacer8()
             SubheaderItem(title = stringResource(id = R.string.asset_balances))
-            Spacer8()
         }
         val cells = mutableListOf<CellEntity<Any>>()
         if (uiState.accountInfoUIModel.available.isNotEmpty()) {
