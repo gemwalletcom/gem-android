@@ -109,7 +109,7 @@ fun DbAsset.toModel(): Asset? {
     )
 }
 
-fun Asset.toRecord() = DbAsset(
+fun Asset.toRecord(defaultScore: Int) = DbAsset(
     id = id.toIdentifier(),
     chain = chain(),
     name = name,
@@ -117,6 +117,7 @@ fun Asset.toRecord() = DbAsset(
     decimals = decimals,
     type = type,
     isSwapEnabled = chain().isSwapSupport(),
+    isBuyEnabled = defaultScore >= 40,
     updatedAt = System.currentTimeMillis(),
 )
 

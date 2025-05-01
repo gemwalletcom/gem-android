@@ -146,6 +146,18 @@ class AssetsRepository @Inject constructor(
         assetsDao.insert(linkRecords, marketRecord)
     }
 
+    /**
+     *  Create assets for new wallet(import or create wallet)
+     *  */
+    suspend fun createAssets(wallet: Wallet) {
+        wallet.accounts.filter { !Chain.exclude().contains(it.chain) }
+            .map { account ->
+                val asset = account.chain.asset()
+                val isVisible = account.isVisibleByDefault(wallet.type)
+                add(wallet.id, account.address, asset, isVisible)
+            }
+    }
+
     suspend fun getNativeAssets(wallet: Wallet): List<Asset> = withContext(Dispatchers.IO) {
         assetsDao.getNativeWalletAssets(wallet.id)
             .firstOrNull()
@@ -242,18 +254,6 @@ class AssetsRepository @Inject constructor(
         }
         balancesJob.await()
         pricesJob.await()
-    }
-
-    /**
-     *  Create assets for new wallet(import or create wallet)
-     *  */
-    suspend fun createAssets(wallet: Wallet) {
-        wallet.accounts.filter { !Chain.exclude().contains(it.chain) }
-            .map { account ->
-                val asset = account.chain.asset()
-                val isVisible = account.isVisibleByDefault(wallet.type)
-                add(wallet.id, account.address, asset, isVisible)
-            }
     }
 
     fun importAssets(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
@@ -388,7 +388,8 @@ class AssetsRepository @Inject constructor(
             walletId = walletId,
             isVisible = visible,
         )
-        assetsDao.insert(asset.toRecord(), link, config)
+        val defaultScore = uniffi.gemstone.assetDefaultRank(asset.chain().string)
+        assetsDao.insert(asset.toRecord(defaultScore), link, config)
     }
 
 
