@@ -27,14 +27,13 @@ lifecycleRuntimeCompose = "2.8.7"
 loggingInterceptor = "4.12.0"
 retrofit = "2.11.0"
 review = "2.0.2"
-room = "2.7.0"
+room = "2.7.1"
 securityCrypto = "1.0.0"
-compose = "1.7.6"
-compose-alpha = "1.8.0-rc03"
+compose = "1.8.0"
 materialIcons = "1.7.8"
-material3 = "1.4.0-alpha12"
+material3 = "1.4.0-alpha13"
 navigationCompose = "2.8.9"
-uiTestJunit4 = "1.7.8"
+uiTestJunit4 = "1.8.0"
 testRunner = "1.6.2"
 ksp = "2.0.21-1.0.26"
 android-lib = "8.9.2"
@@ -45,7 +44,7 @@ turbine = "1.2.0"
 protobuf = "4.29.3"
 reorderable = "2.4.3"
 mockkVersion = "1.13.17"
-datastore = "1.1.4"
+datastore = "1.1.5"
 appcompat = "1.7.0"
 material = "1.12.0"
 wallet-core = "4.3.2"
@@ -67,11 +66,11 @@ androidx-security-crypto = { module = "androidx.security:security-crypto", versi
 # Compose
 compose-activity = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 compose-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
-compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose-alpha" }
-compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose-alpha" }
+compose-ui = { module = "androidx.compose.ui:ui", version.ref = "compose" }
+compose-foundation = { module = "androidx.compose.foundation:foundation", version.ref = "compose" }
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
-compose-runtime-android = { module = "androidx.compose.runtime:runtime-android", version.ref = "compose-alpha" }
-compose-material = { module = "androidx.compose.material:material", version.ref = "compose-alpha" }
+compose-runtime-android = { module = "androidx.compose.runtime:runtime-android", version.ref = "compose" }
+compose-material = { module = "androidx.compose.material:material", version.ref = "compose" }
 compose-material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "materialIcons" }
 compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "materialIcons" }
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
