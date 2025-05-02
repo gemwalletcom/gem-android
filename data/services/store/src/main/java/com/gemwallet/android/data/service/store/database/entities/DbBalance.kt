@@ -45,7 +45,7 @@ data class DbBalance(
 
     @ColumnInfo("total_amount") var totalAmount: Double = 0.0,
     @ColumnInfo("is_active") var isActive: Boolean = true,
-    @ColumnInfo("updated_at") var updatedAt: Long?
+    @ColumnInfo("updated_at") var updatedAt: Long?,
 ) {
     companion object
 }
