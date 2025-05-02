@@ -9,7 +9,7 @@ import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.JsonDecoder
 import kotlinx.serialization.json.JsonEncoder
-import kotlinx.serialization.json.JsonUnquotedLiteral
+import kotlinx.serialization.json.JsonPrimitive
 import kotlinx.serialization.json.contentOrNull
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
@@ -19,7 +19,7 @@ import java.io.IOException
 @Serializer(forClass = AssetId::class)
 object AssetIdSerializer {
     override fun serialize(encoder: Encoder, value: AssetId) = when (encoder) {
-        is JsonEncoder -> encoder.encodeJsonElement(JsonUnquotedLiteral(value.toIdentifier()))
+        is JsonEncoder -> encoder.encodeJsonElement(JsonPrimitive(value.toIdentifier()))
         else -> encoder.encodeString(value.toString())
     }
 
