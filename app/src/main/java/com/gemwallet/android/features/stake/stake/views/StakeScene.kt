@@ -40,7 +40,7 @@ import com.wallet.core.primitives.WalletType
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun StakeScene(
-    uiState: StakeUIState.Loaded,
+    uiState: StakeUIState,
     amountAction: AmountTransactionAction,
     onRefresh: () -> Unit,
     onConfirm: () -> Unit,
@@ -139,7 +139,7 @@ private fun LazyListScope.actions(
 fun PreviewStakeScene() {
     WalletTheme {
         StakeScene(
-            uiState = StakeUIState.Loaded(
+            uiState = StakeUIState(
                 loading = false,
                 error = StakeError.None,
                 walletType = WalletType.single,

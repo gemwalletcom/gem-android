@@ -18,7 +18,6 @@ import com.wallet.core.primitives.AssetId
 
 @Composable
 fun StakeScreen(
-    assetId: AssetId,
     amountAction: AmountTransactionAction,
     onConfirm: (ConfirmParams) -> Unit,
     onDelegation: (String, String) -> Unit,
@@ -27,25 +26,14 @@ fun StakeScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    DisposableEffect(assetId.toIdentifier()) {
-
-        viewModel.init(assetId)
-
-        onDispose {  }
-    }
-    
-    when (uiState) {
-        is StakeUIState.FatalError -> FatalStateScene(
-            title = (uiState as StakeUIState.FatalError).title,
-            message = "Stake error",
-            onCancel = onCancel
-        )
-        StakeUIState.Loading -> LoadingScene(
+    if (uiState == null || (uiState?.apr ?: 0.0) <= 0.0) {
+        LoadingScene(
             title = stringResource(id = R.string.wallet_stake),
             onCancel = onCancel,
         )
-        is StakeUIState.Loaded -> StakeScene(
-            uiState = uiState as StakeUIState.Loaded,
+    } else {
+        StakeScene(
+            uiState = uiState ?: return,
             onRefresh = viewModel::onRefresh,
             amountAction = amountAction,
             onConfirm = { viewModel.onRewards(onConfirm) },

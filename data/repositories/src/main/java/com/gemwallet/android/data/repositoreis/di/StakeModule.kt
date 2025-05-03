@@ -8,6 +8,7 @@ import com.gemwallet.android.blockchain.clients.sui.SuiStakeClient
 import com.gemwallet.android.blockchain.clients.tron.TronStakeClient
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.data.service.store.database.StakeDao
+import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.data.services.gemapi.GemApiStaticClient
 import com.gemwallet.android.ext.available
 import com.gemwallet.android.ext.toChainType
@@ -28,9 +29,11 @@ object StakeModule {
         stakeDao: StakeDao,
         rpcClients: RpcClientAdapter,
         gemApiStaticClient: GemApiStaticClient,
+        gemApiClient: GemApiClient,
     ): StakeRepository = StakeRepository(
         stakeDao = stakeDao,
         gemApiStaticClient = gemApiStaticClient,
+        gemApiClient = gemApiClient,
         stakeClients = Chain.available().mapNotNull {
             when (it.toChainType()) {
                 ChainType.Ethereum -> when (it) {

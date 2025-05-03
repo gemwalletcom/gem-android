@@ -1,6 +1,7 @@
 package com.gemwallet.android.features.stake.stake.viewmodels
 
 import android.text.format.DateUtils
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
@@ -9,128 +10,150 @@ import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.byChain
 import com.gemwallet.android.ext.getAccount
+import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.stake.stake.model.StakeError
 import com.gemwallet.android.features.stake.stake.model.StakeUIState
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.Account
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.StakeChain
-import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import uniffi.gemstone.Config
 import java.math.BigInteger
 import javax.inject.Inject
 
+private const val assetIdArg = "assetId"
+
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class StakeViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val stakeRepository: StakeRepository,
+    sessionRepository: SessionRepository,
+    stateHandle: SavedStateHandle,
 ): ViewModel() {
 
-    private val state = MutableStateFlow(State())
-    val uiState = state.map { it.toUIState() }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, StakeUIState.Loading)
+    private val assetId = stateHandle.getStateFlow<String?>(assetIdArg, null)
+        .filterNotNull()
+        .map { it.toAssetId() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    fun init(assetId: AssetId) {
-        val session = sessionRepository.getSession() ?: return
-        val account = session.wallet.getAccount(assetId.chain) ?: return
-        viewModelScope.launch {
-            val asset = assetsRepository.getAssetInfo(assetId).firstOrNull() ?: return@launch
-            state.update { it.copy(apr = asset.stakeApr ?: 0.0) }
-            onRefresh(assetId)
-            stakeRepository.getDelegations(assetId, account.address).collect { delegations ->
-                state.update { state ->
-                    state.copy(
-                        loading = false,
-                        walletType = session.wallet.type,
-                        account = account,
-                        asset = asset,
-                        delegations = delegations,
-                        rewardsAmount = delegations.map { BigInteger(it.base.rewards) }
-                            .reduceOrNull { acc, delegation -> acc + delegation } ?: BigInteger.ZERO,
-                    )
+    private val assetInfo = assetId.filterNotNull().flatMapLatest { assetsRepository.getAssetInfo(it) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val session = sessionRepository.session()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val account = session.combine(assetId.filterNotNull()) { session, assetId ->
+        session?.wallet?.getAccount(assetId.chain)
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    private val delegations = account.combine(assetId.filterNotNull()) { account, assetId -> Pair(account, assetId) }
+        .flatMapLatest {
+            val (account, assetId) = it
+            val accountAddress = account?.address ?: return@flatMapLatest emptyFlow()
+            stakeRepository.getDelegations(assetId, accountAddress)
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    private val rewardsAmount = delegations
+        .mapLatest { delegations ->
+            delegations.map { BigInteger(it.base.rewards) }
+                .reduceOrNull { acc, delegation -> acc + delegation } ?: BigInteger.ZERO
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, BigInteger.ZERO)
+
+    private val sync = MutableStateFlow<Boolean>(true)
+
+    private val isSync = combine(sync, assetId.filterNotNull(), account.filterNotNull()) { sync, assetId, account -> Triple(sync, assetId, account) }
+        .flatMapLatest {
+            val (isSync, assetId, account) = it
+            flow {
+                if (!isSync) {
+                    emit(false)
+                    return@flow
                 }
+                emit(true)
+                assetsRepository.syncMarketInfo(assetId, account)
+                stakeRepository.sync(assetId.chain, account.address)
+                emit(false)
+                sync.update { false }
             }
         }
-    }
+        .flowOn(Dispatchers.IO)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, true)
+
+    val uiState = combine(
+        assetInfo.filterNotNull(),
+        session.filterNotNull(),
+        account.filterNotNull(),
+        delegations,
+        rewardsAmount,
+        isSync,
+    ) { flows ->
+        val assetInfo = flows[0] as AssetInfo
+        val session = flows[1] as Session
+        val account = flows[2] as Account
+        val delegations = flows[3] as List<Delegation>
+        val rewardsAmount = flows[4] as BigInteger
+        val isSync = flows[5] as Boolean
+        StakeUIState(
+            loading = isSync,
+            error = StakeError.None,
+            assetId = assetInfo.asset.id,
+            assetIcon = assetInfo.id().getIconUrl(),
+            walletType = session.wallet.type,
+            stakeChain = StakeChain.byChain(assetInfo.asset.id.chain)!!,
+            assetDecimals = assetInfo.asset.decimals,
+            assetSymbol = assetInfo.asset.symbol,
+            ownerAddress = account.address,
+            title = "${assetInfo.asset.id.chain.asset().name} (${assetInfo.asset.symbol})",
+            apr = assetInfo.stakeApr ?: 0.0,
+            lockTime = (Config().getStakeConfig(account.chain.string).timeLock / (DateUtils.DAY_IN_MILLIS / 1000).toULong()).toInt(),
+            hasRewards = rewardsAmount > BigInteger.ZERO,
+            rewardsAmount = assetInfo.asset.format(Crypto(rewardsAmount)),
+            delegations = delegations,
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
 
     fun onRefresh() {
-        onRefresh(state.value.asset?.id() ?: return)
-    }
-
-    fun onRefresh(assetId: AssetId) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val asset = assetsRepository.getAssetInfo(assetId).firstOrNull() ?: return@launch
-            val assetId = asset.id()
-            state.update { it.copy(loading = true) }
-            stakeRepository.sync(assetId.chain, asset.owner?.address ?: return@launch, asset.stakeApr ?: return@launch)
-            state.update { it.copy(loading = false) }
-        }
+        sync.update { true }
     }
 
     fun onRewards(onConfirm: (ConfirmParams) -> Unit) {
-        val currentState = state.value
+        val assetInfo = assetInfo.value ?: return
+        val account = account.value ?: return
+        val validatorsId = delegations.value.filter { BigInteger(it.base.rewards) > BigInteger.ZERO }
+            .map { it.base.validatorId }
+            .toSet()
+            .toList()
         onConfirm(
             ConfirmParams.Stake.RewardsParams(
-                asset = currentState.asset?.asset!!,
-                from = currentState.asset.owner!!,
-                validatorsId = currentState.delegations
-                    .filter { BigInteger(it.base.rewards) > BigInteger.ZERO }
-                    .map { it.base.validatorId }
-                    .toSet()
-                    .toList(),
-                amount = state.value.rewardsAmount
+                asset = assetInfo.asset,
+                from = account,
+                validatorsId = validatorsId,
+                amount = rewardsAmount.value
             )
         )
-    }
-
-    private data class State(
-        val loading: Boolean = true,
-        val error: StakeError = StakeError.None,
-        val walletType: WalletType = WalletType.view,
-        val asset: AssetInfo? = null,
-        val account: Account? = null,
-        val apr: Double = 0.0,
-        val rewardsAmount: BigInteger = BigInteger.ZERO,
-        val delegations: List<Delegation> = emptyList(),
-    ) {
-        fun toUIState(): StakeUIState {
-            return when {
-                asset == null || account == null -> StakeUIState.Loading
-                else -> {
-                    StakeUIState.Loaded(
-                        loading = loading,
-                        error = error,
-                        assetId = asset.asset.id,
-                        assetIcon = asset.id().getIconUrl(),
-                        walletType = walletType,
-                        stakeChain = StakeChain.byChain(asset.asset.id.chain)!!,
-                        assetDecimals = asset.asset.decimals,
-                        assetSymbol = asset.asset.symbol,
-                        ownerAddress = account.address,
-                        title = "${asset.asset.id.chain.asset().name} (${asset.asset.symbol})",
-                        apr = apr,
-                        lockTime = (Config().getStakeConfig(account.chain.string).timeLock / (DateUtils.DAY_IN_MILLIS / 1000).toULong()).toInt(),
-                        hasRewards = rewardsAmount > BigInteger.ZERO,
-                        rewardsAmount = asset.asset.format(Crypto(rewardsAmount)),
-                        delegations = delegations,
-                    )
-                }
-            }
-        }
     }
 }

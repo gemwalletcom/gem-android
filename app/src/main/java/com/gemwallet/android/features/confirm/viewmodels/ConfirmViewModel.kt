@@ -22,7 +22,6 @@ import com.gemwallet.android.features.confirm.models.ConfirmError
 import com.gemwallet.android.features.confirm.models.ConfirmState
 import com.gemwallet.android.features.confirm.navigation.paramsArg
 import com.gemwallet.android.features.confirm.navigation.txTypeArg
-import com.gemwallet.android.features.stake.navigation.stakeRoute
 import com.gemwallet.android.features.swap.navigation.swapRoute
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
@@ -38,6 +37,7 @@ import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
+import com.gemwallet.android.ui.navigation.routes.stakeRoute
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.DelegationValidator

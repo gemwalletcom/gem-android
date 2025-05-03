@@ -53,10 +53,6 @@ import com.gemwallet.android.features.settings.navigation.navigateToPriceAlertsS
 import com.gemwallet.android.features.settings.navigation.navigateToSecurityScreen
 import com.gemwallet.android.features.settings.navigation.settingsRoute
 import com.gemwallet.android.features.settings.navigation.settingsScreen
-import com.gemwallet.android.features.stake.navigation.navigateToDelegation
-import com.gemwallet.android.features.stake.navigation.navigateToStake
-import com.gemwallet.android.features.stake.navigation.stake
-import com.gemwallet.android.features.stake.navigation.stakeRoute
 import com.gemwallet.android.features.swap.navigation.navigateToSwap
 import com.gemwallet.android.features.swap.navigation.swap
 import com.gemwallet.android.features.swap.navigation.swapRoute
@@ -71,11 +67,15 @@ import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
 import com.gemwallet.android.features.wallets.navigation.walletsScreen
 import com.gemwallet.android.ui.navigation.routes.SendSelect
 import com.gemwallet.android.ui.navigation.routes.Transfer
+import com.gemwallet.android.ui.navigation.routes.navigateToDelegation
 import com.gemwallet.android.ui.navigation.routes.navigateToNftAsset
 import com.gemwallet.android.ui.navigation.routes.navigateToNftCollection
 import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
+import com.gemwallet.android.ui.navigation.routes.navigateToStake
 import com.gemwallet.android.ui.navigation.routes.nftCollection
 import com.gemwallet.android.ui.navigation.routes.recipientInput
+import com.gemwallet.android.ui.navigation.routes.stake
+import com.gemwallet.android.ui.navigation.routes.stakeRoute
 import com.wallet.core.primitives.AssetId
 
 @OptIn(ExperimentalComposeUiApi::class)
