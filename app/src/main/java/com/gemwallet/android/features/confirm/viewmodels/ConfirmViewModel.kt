@@ -15,7 +15,6 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.features.asset.navigation.assetRoute
 import com.gemwallet.android.features.confirm.models.AmountUIModel
 import com.gemwallet.android.features.confirm.models.ConfirmError
@@ -87,11 +86,7 @@ class ConfirmViewModel @Inject constructor(
         .combine(restart) { request, _ -> request }
         .filterNotNull()
         .mapNotNull { paramsPack ->
-            val txTypeString = savedStateHandle.get<String?>(txTypeArg)?.urlDecode()
-            val txType = TransactionType.entries.firstOrNull { it.string == txTypeString } ?: return@mapNotNull null
-
             state.update { ConfirmState.Prepare }
-
             ConfirmParams.unpack(paramsPack)
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
