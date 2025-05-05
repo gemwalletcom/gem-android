@@ -36,11 +36,6 @@ fun ValidatorsScreen(
             message = "Validators not found",
             onCancel = onCancel
         )
-        ValidatorsUIState.Fatal -> FatalStateScene(
-            title = stringResource(id = R.string.stake_validators),
-            message = "Error load validators",
-            onCancel = onCancel
-        )
         is ValidatorsUIState.Loaded -> ValidatorsScene(
             uiState = uiState as ValidatorsUIState.Loaded,
             selectedValidatorId = selectedValidatorId,

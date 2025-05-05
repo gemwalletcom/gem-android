@@ -18,10 +18,6 @@ internal const val paramsArg = "params"
 const val sendAssetSelectRoute = "sendAssetSelect"
 const val sendAmountRoute = "send_amount"
 
-fun interface OnAmount {
-    operator fun invoke(params: AmountParams)
-}
-
 fun NavController.navigateToAmountScreen(params: AmountParams) {
     navigate(
         route = "$sendAmountRoute?$paramsArg=${params.pack()}",

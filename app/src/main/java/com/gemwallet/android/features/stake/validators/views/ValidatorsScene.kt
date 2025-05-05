@@ -62,7 +62,6 @@ fun PreviewValidatorsScene() {
     WalletTheme {
         ValidatorsScene(
             uiState = ValidatorsUIState.Loaded(
-                chainTitle = "SEI",
                 recomended = emptyList(),
                 validators = listOf(
                     DelegationValidator(
