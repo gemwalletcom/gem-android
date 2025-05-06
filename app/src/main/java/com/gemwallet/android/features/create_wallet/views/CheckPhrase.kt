@@ -21,6 +21,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -64,8 +65,8 @@ internal fun CheckPhrase(
             result.joinToString() == words.joinToString()
         }
     }
-    val configuration = LocalConfiguration.current
-    val isSmallScreen = configuration.screenHeightDp.dp < 680.dp
+    val container = LocalWindowInfo.current.containerSize
+    val isSmallScreen = container.height.dp < 740.dp
 
     val onWordClick: (String) -> Boolean = { word ->
         val index = result.size

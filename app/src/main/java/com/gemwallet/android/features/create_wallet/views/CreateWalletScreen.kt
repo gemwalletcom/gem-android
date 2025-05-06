@@ -9,8 +9,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -132,26 +130,19 @@ fun UI(
             )
         }
     ) {
-        Spacer16()
         if (dataError.isNotEmpty()) {
             Text(text = dataError)
         } else {
-            PhraseLayout(words = data)
-            Spacer(modifier = Modifier.height(12.dp))
             Text(
-                text = stringResource(id = R.string.wallet_new_backup_warning),
+                text = stringResource(id = R.string.secret_phrase_save_phrase_safely),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colorScheme.secondary,
             )
             Spacer16()
-
+            PhraseLayout(words = data)
         }
         Spacer16()
-        TextButton(
-            onClick = {
-                clipboardManager.setPlainText(data.joinToString(" "))
-            }
-        ) {
+        TextButton(onClick = { clipboardManager.setPlainText(data.joinToString(" ")) }) {
             Text(text = stringResource(id = R.string.common_copy))
         }
     }
