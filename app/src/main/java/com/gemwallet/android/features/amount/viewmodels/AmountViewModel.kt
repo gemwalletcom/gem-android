@@ -55,6 +55,14 @@ class AmountViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
+    var amount by mutableStateOf("")
+        private set
+
+    val inputErrorState = MutableStateFlow<AmountError>(AmountError.None)
+    val nextErrorState = MutableStateFlow<AmountError>(AmountError.None)
+
+    private val maxAmount = MutableStateFlow(false)
+
     private val params = savedStateHandle
         .getStateFlow(paramsArg, "")
         .mapNotNull { AmountParams.unpack(it) }
@@ -78,7 +86,6 @@ class AmountViewModel @Inject constructor(
     private val recommendedValidator = params
         .flatMapLatest { params -> stakeRepository.getRecommended(params.assetId.chain) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
     private val srcValidator = combine(params, delegation, recommendedValidator) { params, delegation, recommended ->
         when (params.txType) {
             TransactionType.StakeWithdraw,
@@ -90,6 +97,7 @@ class AmountViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val selectedValidator = MutableStateFlow<DelegationValidator?>(null)
+
     val validatorState = selectedValidator.combine(srcValidator) { selected, src ->
         selected ?: src
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -144,18 +152,10 @@ class AmountViewModel @Inject constructor(
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    var amount by mutableStateOf("")
-        private set
-
     val equivalentState = snapshotFlow { amount }.combine(asset) { amount, assetInfo ->
         calcEquivalent(amount, assetInfo)
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
-
-    val inputErrorState = MutableStateFlow<AmountError>(AmountError.None)
-    val nextErrorState = MutableStateFlow<AmountError>(AmountError.None)
-
-    private val maxAmount = MutableStateFlow(false)
 
     fun setDelegatorValidator(validatorId: String) {
         viewModelScope.launch(Dispatchers.IO) {
