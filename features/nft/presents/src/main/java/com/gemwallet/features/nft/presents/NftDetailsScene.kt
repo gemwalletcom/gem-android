@@ -133,21 +133,7 @@ private fun LazyListScope.nftLinks(links: List<AssetLink>, onLinkClick: (String)
 
     item {
         links.firstOrNull { it.name == "website"}?.let {
-            PropertyItem(
-                modifier = Modifier.clickable { onLinkClick(it.url) },
-                title = { PropertyTitleText(R.string.social_website, trailing = { AsyncImage(R.drawable.website, 24.dp) }) },
-                data = {
-                    PropertyDataText(
-                        it.url.toUri().host ?: it.url,
-                        badge = {
-                            Icon(
-                                Icons.Default.ChevronRight,
-                                contentDescription = "",
-                                tint = MaterialTheme.colorScheme.secondary
-                            )
-                        })
-                }
-            )
+            PropertyItem(R.string.social_website, R.drawable.website) { onLinkClick(it.url) }
         }
 
         links.filter { it.name != "website" }.sortedByDescending { it.name }.map {
@@ -164,21 +150,7 @@ private fun LazyListScope.nftLinks(links: List<AssetLink>, onLinkClick: (String)
                 "discord" -> Triple(it.url, R.string.social_discord, R.drawable.discord)
                 else -> Triple(it.url, R.string.social_website, R.drawable.website)
             }
-            PropertyItem(
-                modifier = Modifier.clickable { onLinkClick(url) },
-                title = { PropertyTitleText(text = title, trailing = { AsyncImage(icon, 24.dp) }) },
-                data = {
-                    PropertyDataText(
-                        "",
-                        badge = {
-                            Icon(
-                                Icons.Default.ChevronRight,
-                                contentDescription = "",
-                                tint = MaterialTheme.colorScheme.secondary
-                            )
-                        })
-                }
-            )
+            PropertyItem(title, icon) { onLinkClick(url) }
         }
     }
 }

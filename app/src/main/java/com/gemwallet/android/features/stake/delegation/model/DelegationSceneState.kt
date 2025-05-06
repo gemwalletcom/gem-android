@@ -6,15 +6,12 @@ import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.WalletType
 
-sealed interface DelegationSceneState {
-    data object Loading : DelegationSceneState
-
-    class Loaded(
-        val walletType: WalletType,
-        val state: DelegationState,
-        val validator: DelegationValidator,
-        val balances: List<CellEntity<Int>>,
-        val availableIn: String,
-        val stakeChain: StakeChain,
-    ) : DelegationSceneState
-}
+class DelegationSceneState (
+    val walletType: WalletType,
+    val state: DelegationState,
+    val validator: DelegationValidator,
+    val stakeBalance: String,
+    val rewardsBalance: String,
+    val availableIn: String,
+    val stakeChain: StakeChain,
+)

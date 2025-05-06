@@ -2,15 +2,9 @@ package com.gemwallet.android.ui.navigation.routes
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import androidx.navigation.navOptions
-import androidx.navigation.navigation
-import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.ext.urlDecode
-import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.stake.delegation.views.DelegationScene
 import com.gemwallet.android.features.stake.stake.views.StakeScreen
 import com.gemwallet.android.model.ConfirmParams
@@ -21,21 +15,17 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class StakeRoute(val assetId: String)
 
-internal const val validatorIdArg = "validator_id"
-internal const val delegationIdArg = "delegation_id"
+@Serializable
+data class DelegationRoute(val validatorId: String, val delegationId: String)
 
 const val stakeRoute = "stake"
-const val delegationRoute = "delegation"
 
 fun NavController.navigateToStake(assetId: AssetId) {
     navigate(StakeRoute(assetId.toIdentifier()), navOptions { launchSingleTop = true })
 }
 
 fun NavController.navigateToDelegation(validatorId: String, delegationId: String) {
-    navigate(
-        route = "$delegationRoute?$validatorIdArg=${validatorId.urlEncode()}&$delegationIdArg=${delegationId.urlEncode()}",
-        navOptions = navOptions { launchSingleTop = true },
-    )
+    navigate(DelegationRoute(validatorId, delegationId), navOptions = navOptions { launchSingleTop = true })
 }
 
 fun NavGraphBuilder.stake(
@@ -53,29 +43,8 @@ fun NavGraphBuilder.stake(
         )
     }
 
-    composable(
-        route = "$delegationRoute?$validatorIdArg={$validatorIdArg}&$delegationIdArg={$delegationIdArg}",
-        arguments = listOf(
-            navArgument(validatorIdArg) {
-                type = NavType.StringType
-                nullable = false
-            },
-            navArgument(delegationIdArg) {
-                type = NavType.StringType
-                nullable = true
-            }
-        ),
-    ) {
-        val validatorId = it.arguments?.getString(validatorIdArg)
-        val delegationId = it.arguments?.getString(delegationIdArg) ?: ""
-
-        if (validatorId == null) {
-            onCancel()
-            return@composable
-        }
+    composable<DelegationRoute> {
         DelegationScene(
-            validatorId = validatorId,
-            delegationId = delegationId,
             onAmount = onAmount,
             onCancel = onCancel,
         )

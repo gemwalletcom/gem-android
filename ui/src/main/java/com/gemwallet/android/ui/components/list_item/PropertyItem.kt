@@ -1,9 +1,13 @@
 package com.gemwallet.android.ui.components.list_item
 
 import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,26 +21,73 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.InfoButton
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.designsystem.Spacer8
+import com.gemwallet.android.ui.components.image.AsyncImage
 
+@Composable
+fun PropertyItem(
+    @StringRes action: Int,
+    actionIconModel: Any? = null,
+    data: String? = null,
+    onClick: () -> Unit,
+) {
+    PropertyItem(stringResource(action), actionIconModel, data, onClick)
+}
+
+@Composable
+fun PropertyItem(
+    action: String,
+    actionIconModel: Any? = null,
+    data: String? = null,
+    onClick: () -> Unit,
+) {
+    PropertyItem(
+        modifier = Modifier.clickable(onClick = onClick),
+        title = { PropertyTitleText(text = action, trailing = { AsyncImage(actionIconModel, 24.dp) }) },
+        data = {
+            PropertyDataText(
+                data ?: "",
+                badge = {
+                    Icon(
+                        Icons.Default.ChevronRight,
+                        contentDescription = "",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                }
+            )
+        }
+    )
+}
 
 @Composable
 fun PropertyItem(
     @StringRes title: Int,
     data: String? = null,
     info: InfoSheetEntity? = null,
+    dataColor: Color = MaterialTheme.colorScheme.secondary,
 ) {
-    PropertyItem(stringResource(title), data, info)
+    PropertyItem(stringResource(title), data, dataColor, info)
+}
+
+@Composable
+fun PropertyItem(
+    @StringRes title: Int,
+    @StringRes data: Int,
+    info: InfoSheetEntity? = null,
+    dataColor: Color = MaterialTheme.colorScheme.secondary,
+) {
+    PropertyItem(stringResource(title), stringResource(data), dataColor, info)
 }
 
 @Composable
 fun PropertyItem(
     title: String,
     data: String? = null,
+    dataColor: Color = MaterialTheme.colorScheme.secondary,
     info: InfoSheetEntity? = null,
 ) {
     PropertyItem(
         title = { PropertyTitleText(title, info = info) },
-        data = data?.let{ { PropertyDataText(data) } },
+        data = data?.let{ { PropertyDataText(data, color = dataColor) } },
     )
 }
 

@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.stake.delegation.viewmodels
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
@@ -9,122 +10,91 @@ import com.gemwallet.android.ext.byChain
 import com.gemwallet.android.features.stake.delegation.model.DelegationSceneState
 import com.gemwallet.android.features.stake.model.availableIn
 import com.gemwallet.android.model.AmountParams
-import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
-import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionType
-import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+internal const val validatorIdArg = "validatorId"
+internal const val delegationIdArg = "delegationId"
+
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class DelegationViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val stakeRepository: StakeRepository,
+    sessionRepository: SessionRepository,
+    savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    private val state = MutableStateFlow(State())
-    val uiState  = state.map { it.toUIState() }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, DelegationSceneState.Loading)
+    val validatorId = savedStateHandle.getStateFlow<String?>(validatorIdArg, null).filterNotNull()
+    val delegationId = savedStateHandle.getStateFlow<String?>(delegationIdArg, null).filterNotNull()
 
-    fun init(validatorId: String, delegationId: String) {
-        val session = sessionRepository.getSession() ?: return
-        viewModelScope.launch(Dispatchers.IO) {
-            val delegation = stakeRepository.getDelegation(
-                delegationId = delegationId,
-                validatorId = validatorId
-            ).firstOrNull()
-            val assetInfo = assetsRepository.getAssetInfo(delegation?.base?.assetId ?: return@launch).firstOrNull()
-            state.update { it.copy(walletType = session.wallet.type, delegation = delegation, assetInfo = assetInfo) }
+    val delegation = combine(validatorId, delegationId) { validatorId, delegationId -> Pair(validatorId, delegationId) }
+        .flatMapLatest {
+            val (validatorId, delegationId) = it
+            stakeRepository.getDelegation(delegationId = delegationId, validatorId = validatorId)
         }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val assetInfo = delegation.filterNotNull()
+        .flatMapLatest { assetsRepository.getAssetInfo(it.base.assetId) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val uiState = combine(
+        delegation,
+        assetInfo,
+        sessionRepository.session().filterNotNull(),
+    ) { delegation, assetInfo, session ->
+        if (assetInfo == null || delegation == null) {
+            return@combine null
+        }
+        val stakeChain = StakeChain.byChain(assetInfo.asset.id.chain)!!
+        DelegationSceneState(
+            walletType = session.wallet.type,
+            state = delegation.base.state,
+            validator = delegation.validator,
+            stakeBalance = assetInfo.asset.format(Crypto(delegation.base.balance)),
+            rewardsBalance = assetInfo.asset.format(Crypto(delegation.base.rewards)),
+            availableIn = availableIn(delegation),
+            stakeChain = stakeChain,
+        )
     }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun onStake(call: AmountTransactionAction) {
-        call(
-            AmountParams.buildStake(
-                assetId = state.value.assetInfo?.asset?.id!!,
-                txType = TransactionType.StakeDelegate,
-                validatorId = state.value.delegation?.validator?.id,
-                delegationId = state.value.delegation?.base?.delegationId!!
-            )
-        )
+        call(buildStake(TransactionType.StakeDelegate))
     }
 
     fun onUnstake(call: AmountTransactionAction) {
-        call(
-            AmountParams.buildStake(
-                assetId = state.value.assetInfo?.asset?.id!!,
-                txType = TransactionType.StakeUndelegate,
-                validatorId = state.value.delegation?.validator?.id,
-                delegationId = state.value.delegation?.base?.delegationId!!
-            )
-        )
+        call(buildStake(TransactionType.StakeUndelegate))
     }
 
     fun onRedelegate(call: AmountTransactionAction) {
-        call(
-            AmountParams.buildStake(
-                assetId = state.value.assetInfo?.asset?.id!!,
-                txType = TransactionType.StakeRedelegate,
-                validatorId = state.value.delegation?.validator?.id,
-                delegationId = state.value.delegation?.base?.delegationId!!
-            )
-        )
+        call(buildStake(TransactionType.StakeRedelegate))
     }
 
     fun onWithdraw(call: AmountTransactionAction) {
-        call(
-            AmountParams.buildStake(
-                assetId = state.value.assetInfo?.asset?.id!!,
-                txType = TransactionType.StakeWithdraw,
-                validatorId = state.value.delegation?.validator?.id,
-                delegationId = state.value.delegation?.base?.delegationId!!
-            )
-        )
+        call(buildStake(TransactionType.StakeWithdraw))
     }
 
-    private data class State(
-        val walletType: WalletType = WalletType.view,
-        val assetInfo: AssetInfo? = null,
-        val delegation: Delegation? = null,
-    ) {
-        fun toUIState(): DelegationSceneState {
-            if (assetInfo == null || delegation == null) {
-                return DelegationSceneState.Loading
-            }
-            val stakeChain = StakeChain.byChain(assetInfo.asset.id.chain)!!
-            val balances = listOf(
-                CellEntity(
-                    label = R.string.wallet_stake,
-                    data = assetInfo.asset.format(Crypto(delegation.base.balance))
-                ),
-                CellEntity(
-                    label = R.string.stake_rewards,
-                    data = assetInfo.asset.format(Crypto(delegation.base.rewards))
-                ),
-            )
-            return DelegationSceneState.Loaded(
-                walletType = walletType,
-                state = delegation.base.state,
-                validator = delegation.validator,
-                balances = balances,
-                availableIn = availableIn(delegation),
-                stakeChain = stakeChain,
-            )
-        }
+    private fun buildStake(type: TransactionType): AmountParams {
+        return AmountParams.buildStake(
+            assetId = assetInfo.value?.asset?.id!!,
+            txType = type,
+            validatorId = delegation.value?.validator?.id,
+            delegationId = delegation.value?.base?.delegationId!!
+        )
     }
 }
