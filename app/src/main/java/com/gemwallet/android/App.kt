@@ -26,8 +26,6 @@ class App : Application(), SingletonImageLoader.Factory {
     }
 
     private fun walletConnectConfig() {
-//        val projectId = "238a413d92737d557e4383160caa8a72"
-//        val projectId = "3bc07cd7179d11ea65335fb9377702b6"
         val projectId = "0d9db544461f12ed6dd8450a6c717753"
         val connectionType = ConnectionType.AUTOMATIC
         val metaData = Core.Model.AppMetaData(

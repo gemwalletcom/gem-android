@@ -105,12 +105,8 @@ class AssetsViewModel @Inject constructor(
 
     private fun updateAssetData(session: Session) { // TODO: Out to case
         viewModelScope.launch(Dispatchers.IO) {
-            val syncAssets = async {
-                assetsRepository.sync(session.currency)
-            }
-            val syncTxs = async {
-                syncTransactions(session.wallet)
-            }
+            val syncAssets = async { assetsRepository.sync() }
+            val syncTxs = async { syncTransactions(session.wallet) }
             syncAssets.await()
             syncTxs.await()
         }

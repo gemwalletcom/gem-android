@@ -15,9 +15,9 @@ data class MarketDominance (
 
 @Serializable
 data class MarketsAssets (
-	val trending: List<String>,
-	val gainers: List<String>,
-	val losers: List<String>
+	val trending: List<AssetId>,
+	val gainers: List<AssetId>,
+	val losers: List<AssetId>
 )
 
 @Serializable
