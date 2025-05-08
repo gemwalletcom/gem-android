@@ -252,7 +252,7 @@
   <string name="transaction.title.sent">Đã gửi</string>
   <string name="stake.stake">Stake</string>
   <string name="banner.account_activation.title">%s Account Activation Fee</string>
-  <string name="banner.account_activation.description" formatted="false">The %s network requires a one time fee of %s.</string>
+  <string name="banner.account_activation.description" formatted="false">Mạng %s yêu cầu một khoản phí một lần là %s.</string>
   <string name="banner.stake.title">Start staking %s</string>
   <string name="banner.stake.description">Earn %s rewards on your stake while you sleep.</string>
   <string name="banner.enable_notifications.title">Bật thông báo</string>
@@ -332,7 +332,7 @@
   <string name="common.avatar">Hình đại diện</string>
   <string name="common.photo">Ảnh</string>
   <string name="info.price_impact.title">Tác động giá</string>
-  <string name="info.price_impact.description">Tác động giá là sự thay đổi về giá token do quy mô giao dịch của bạn gây ra. Tác động giá cao hơn có nghĩa là bạn nhận được ít token hơn do tính thanh khoản thấp hoặc quy mô lệnh lớn. </string>
+  <string name="info.price_impact.description">Tác động giá là sự thay đổi về giá token do quy mô giao dịch của bạn gây ra. Tác động giá cao hơn có nghĩa là bạn nhận được ít token hơn do tính thanh khoản thấp hoặc quy mô lệnh lớn.</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
   <string name="social.instagram">Instagram</string>

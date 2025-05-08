@@ -252,7 +252,7 @@
   <string name="transaction.title.sent">Sent</string>
   <string name="stake.stake">Stake</string>
   <string name="banner.account_activation.title">%s Account Activation Fee</string>
-  <string name="banner.account_activation.description" formatted="false">The %s network requires a one time fee of %s.</string>
+  <string name="banner.account_activation.description" formatted="false">%s नेटवर्क को %s का एक बार शुल्क देना पड़ता है।</string>
   <string name="banner.stake.title">Start staking %s</string>
   <string name="banner.stake.description">Earn %s rewards on your stake while you sleep.</string>
   <string name="banner.enable_notifications.title">Enable Notifications</string>
@@ -332,7 +332,7 @@
   <string name="common.avatar">अवतार</string>
   <string name="common.photo">तस्वीर</string>
   <string name="info.price_impact.title">मूल्य प्रभाव</string>
-  <string name="info.price_impact.description">मूल्य प्रभाव आपके व्यापार आकार के कारण टोकन मूल्य में होने वाला परिवर्तन है। उच्च मूल्य प्रभाव का मतलब है कि आपको कम तरलता या बड़े ऑर्डर आकार के कारण कम टोकन प्राप्त होते हैं। </string>
+  <string name="info.price_impact.description">मूल्य प्रभाव आपके व्यापार आकार के कारण टोकन मूल्य में होने वाला परिवर्तन है। उच्च मूल्य प्रभाव का मतलब है कि आपको कम तरलता या बड़े ऑर्डर आकार के कारण कम टोकन प्राप्त होते हैं।</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
   <string name="social.instagram">Instagram</string>

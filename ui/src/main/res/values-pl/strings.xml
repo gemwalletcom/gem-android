@@ -252,7 +252,7 @@
   <string name="transaction.title.sent">Wysłano</string>
   <string name="stake.stake">Stake</string>
   <string name="banner.account_activation.title">%s Account Activation Fee</string>
-  <string name="banner.account_activation.description" formatted="false">The %s network requires a one time fee of %s.</string>
+  <string name="banner.account_activation.description" formatted="false">Sieć %s wymaga jednorazowej opłaty w wysokości %s.</string>
   <string name="banner.stake.title">Start staking %s</string>
   <string name="banner.stake.description">Earn %s rewards on your stake while you sleep.</string>
   <string name="banner.enable_notifications.title">Włącz powiadomienia</string>
@@ -332,7 +332,7 @@
   <string name="common.avatar">Awatara</string>
   <string name="common.photo">Zdjęcie</string>
   <string name="info.price_impact.title">Wpływ na cenę</string>
-  <string name="info.price_impact.description">Wpływ ceny to zmiana ceny tokena spowodowana rozmiarem transakcji. Większy wpływ ceny oznacza, że otrzymujesz mniej tokenów z powodu niskiej płynności lub dużego rozmiaru zamówienia. </string>
+  <string name="info.price_impact.description">Wpływ ceny to zmiana ceny tokena spowodowana rozmiarem transakcji. Większy wpływ ceny oznacza, że otrzymujesz mniej tokenów z powodu niskiej płynności lub dużego rozmiaru zamówienia.</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
   <string name="social.instagram">Instagram</string>

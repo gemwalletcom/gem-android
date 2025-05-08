@@ -332,7 +332,7 @@
   <string name="common.avatar">Avatar</string>
   <string name="common.photo">Fotoğraf</string>
   <string name="info.price_impact.title">Fiyat Etkisi</string>
-  <string name="info.price_impact.description">Fiyat etkisi, işlem boyutunuzdan kaynaklanan token fiyatındaki değişikliktir. Daha yüksek fiyat etkisi, düşük likidite veya büyük sipariş boyutu nedeniyle daha az token aldığınız anlamına gelir. </string>
+  <string name="info.price_impact.description">Fiyat etkisi, işlem boyutunuzdan kaynaklanan token fiyatındaki değişikliktir. Daha yüksek fiyat etkisi, düşük likidite veya büyük sipariş boyutu nedeniyle daha az token aldığınız anlamına gelir.</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
   <string name="social.instagram">Instagram</string>

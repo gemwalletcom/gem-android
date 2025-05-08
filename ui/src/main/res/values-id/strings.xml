@@ -332,7 +332,7 @@
   <string name="common.avatar">Gambar avatarnya</string>
   <string name="common.photo">Foto</string>
   <string name="info.price_impact.title">Dampak Harga</string>
-  <string name="info.price_impact.description">Dampak harga adalah perubahan harga token yang disebabkan oleh ukuran perdagangan Anda. Dampak harga yang lebih tinggi berarti Anda menerima lebih sedikit token karena likuiditas rendah atau ukuran pesanan besar. </string>
+  <string name="info.price_impact.description">Dampak harga adalah perubahan harga token yang disebabkan oleh ukuran perdagangan Anda. Dampak harga yang lebih tinggi berarti Anda menerima lebih sedikit token karena likuiditas rendah atau ukuran pesanan besar.</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
   <string name="social.instagram">Instagram</string>

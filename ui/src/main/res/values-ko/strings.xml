@@ -252,7 +252,7 @@
   <string name="transaction.title.sent">전송된</string>
   <string name="stake.stake">Stake</string>
   <string name="banner.account_activation.title">%s Account Activation Fee</string>
-  <string name="banner.account_activation.description" formatted="false">The %s network requires a one time fee of %s.</string>
+  <string name="banner.account_activation.description" formatted="false">%s 네트워크에는 %s 의 일회성 수수료가 필요합니다.</string>
   <string name="banner.stake.title">Start staking %s</string>
   <string name="banner.stake.description">Earn %s rewards on your stake while you sleep.</string>
   <string name="banner.enable_notifications.title">알림 활성화</string>
@@ -332,7 +332,7 @@
   <string name="common.avatar">화신</string>
   <string name="common.photo">사진</string>
   <string name="info.price_impact.title">가격 영향</string>
-  <string name="info.price_impact.description">가격 영향은 거래 규모로 인해 발생하는 토큰 가격의 변화입니다. 가격 영향이 클수록 유동성이 낮거나 주문 규모가 커서 토큰을 덜 받는다는 의미입니다. </string>
+  <string name="info.price_impact.description">가격 영향은 거래 규모로 인해 발생하는 토큰 가격의 변화입니다. 가격 영향이 클수록 유동성이 낮거나 주문 규모가 커서 토큰을 덜 받는다는 의미입니다.</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
   <string name="social.instagram">Instagram</string>

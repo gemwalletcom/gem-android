@@ -332,7 +332,7 @@
   <string name="common.avatar">Avatar</string>
   <string name="common.photo">Photo</string>
   <string name="info.price_impact.title">Price Impact</string>
-  <string name="info.price_impact.description">Price impact is the change in token price caused by your trade size. Higher price impact means you receive fewer tokens due to low liquidity or a large order size. </string>
+  <string name="info.price_impact.description">Price impact is the change in token price caused by your trade size. Higher price impact means you receive fewer tokens due to low liquidity or a large order size.</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
   <string name="social.instagram">Instagram</string>

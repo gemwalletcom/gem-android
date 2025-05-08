@@ -252,7 +252,7 @@
   <string name="transaction.title.sent">Envoyé</string>
   <string name="stake.stake">Stake</string>
   <string name="banner.account_activation.title">%s Account Activation Fee</string>
-  <string name="banner.account_activation.description" formatted="false">The %s network requires a one time fee of %s.</string>
+  <string name="banner.account_activation.description" formatted="false">Le réseau %s nécessite des frais uniques de %s.</string>
   <string name="banner.stake.title">Start staking %s</string>
   <string name="banner.stake.description">Earn %s rewards on your stake while you sleep.</string>
   <string name="banner.enable_notifications.title">Activer les notifications</string>
@@ -332,7 +332,7 @@
   <string name="common.avatar">Avatar</string>
   <string name="common.photo">Photo</string>
   <string name="info.price_impact.title">Impact sur les prix</string>
-  <string name="info.price_impact.description">L\'impact sur le prix est la variation du prix du jeton causée par la taille de votre transaction. Un impact sur le prix plus élevé signifie que vous recevez moins de jetons en raison d\'une faible liquidité ou d\'une taille de commande importante. </string>
+  <string name="info.price_impact.description">L\'impact sur le prix est la variation du prix du jeton causée par la taille de votre transaction. Un impact sur le prix plus élevé signifie que vous recevez moins de jetons en raison d\'une faible liquidité ou d\'une taille de commande importante.</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
   <string name="social.instagram">Instagram</string>

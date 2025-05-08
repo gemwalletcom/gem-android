@@ -252,7 +252,7 @@
   <string name="transaction.title.sent">Sent</string>
   <string name="stake.stake">Stake</string>
   <string name="banner.account_activation.title">%s Account Activation Fee</string>
-  <string name="banner.account_activation.description" formatted="false">The %s network requires a one time fee of %s.</string>
+  <string name="banner.account_activation.description" formatted="false">เครือข่าย %s ต้องเสียค่าธรรมเนียมครั้งเดียวจำนวน %s</string>
   <string name="banner.stake.title">Start staking %s</string>
   <string name="banner.stake.description">Earn %s rewards on your stake while you sleep.</string>
   <string name="banner.enable_notifications.title">Enable Notifications</string>
@@ -332,7 +332,7 @@
   <string name="common.avatar">อวตาร</string>
   <string name="common.photo">รูปถ่าย</string>
   <string name="info.price_impact.title">ผลกระทบต่อราคา</string>
-  <string name="info.price_impact.description">ผลกระทบต่อราคาคือการเปลี่ยนแปลงของราคาโทเค็นที่เกิดจากขนาดการซื้อขายของคุณ ผลกระทบต่อราคาที่สูงขึ้นหมายความว่าคุณได้รับโทเค็นน้อยลงเนื่องจากสภาพคล่องต่ำหรือขนาดคำสั่งซื้อที่ใหญ่ </string>
+  <string name="info.price_impact.description">ผลกระทบต่อราคาคือการเปลี่ยนแปลงของราคาโทเค็นที่เกิดจากขนาดการซื้อขายของคุณ ผลกระทบต่อราคาที่สูงขึ้นหมายความว่าคุณได้รับโทเค็นน้อยลงเนื่องจากสภาพคล่องต่ำหรือขนาดคำสั่งซื้อที่ใหญ่</string>
   <string name="social.opensea">OpenSea</string>
   <string name="social.magiceden">MagicEden</string>
   <string name="social.instagram">Instagram</string>
