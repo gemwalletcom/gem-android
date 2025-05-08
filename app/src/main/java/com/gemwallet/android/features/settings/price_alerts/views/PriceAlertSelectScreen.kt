@@ -5,16 +5,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.views.AssetSelectScreen
 import com.gemwallet.android.features.asset_select.views.getAssetBadge
 import com.gemwallet.android.features.settings.price_alerts.viewmodels.PriceAlertsSelectViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.PriceInfo
-import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.AssetSubtype
 
 @Composable
 fun PriceAlertSelectScreen(
