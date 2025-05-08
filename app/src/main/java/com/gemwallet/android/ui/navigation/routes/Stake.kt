@@ -2,6 +2,7 @@ package com.gemwallet.android.ui.navigation.routes
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.gemwallet.android.ext.toIdentifier
@@ -20,8 +21,8 @@ data class DelegationRoute(val validatorId: String, val delegationId: String)
 
 const val stakeRoute = "stake"
 
-fun NavController.navigateToStake(assetId: AssetId) {
-    navigate(StakeRoute(assetId.toIdentifier()), navOptions { launchSingleTop = true })
+fun NavController.navigateToStake(assetId: AssetId, navOptions: NavOptions? = null) {
+    navigate(StakeRoute(assetId.toIdentifier()), navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavController.navigateToDelegation(validatorId: String, delegationId: String) {

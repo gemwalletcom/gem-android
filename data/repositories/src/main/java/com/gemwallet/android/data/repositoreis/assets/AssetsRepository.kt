@@ -55,6 +55,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -185,7 +186,13 @@ class AssetsRepository @Inject constructor(
     }
 
     fun getTokenInfo(assetId: AssetId): Flow<AssetInfo?> {
-        return assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel() }
+        return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain).flatMapLatest {
+            if (it == null) {
+                assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel() }
+            } else {
+                flow { emit(it.toModel()) }
+            }
+        }
     }
 
     fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {

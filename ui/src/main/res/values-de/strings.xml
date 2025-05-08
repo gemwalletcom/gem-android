@@ -291,15 +291,15 @@
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">Eine Brieftasche, auf die Sie keinen Zugriff haben, deren Transaktionen und Bewegungen Sie jedoch beobachten können.</string>
   <string name="info.network_fee.description">%s Das Netzwerk erhebt eine Transaktionsgebühr, die je nach Netzwerknutzung variiert. Wird an die Miner gezahlt, die Ihre Transaktion verarbeiten.</string>
-  <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
-  <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
-  <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
+  <string name="info.transaction.error.description">Die Transaktion konnte aufgrund eines Fehlers nicht abgeschlossen werden, z. B. aufgrund unzureichender Mittel, ungültiger Eingaben oder einer Ablehnung durch das Netzwerk. Bitte überprüfen Sie die Details und versuchen Sie es erneut.</string>
+  <string name="info.transaction.pending.description">Die Transaktion wurde übermittelt und wartet auf die Bestätigung im Netzwerk. Die Bearbeitungszeit kann variieren. Bitte schauen Sie später noch einmal vorbei, um Updates zu erhalten.</string>
+  <string name="info.transaction.success.description">Die Transaktion wurde abgeschlossen und im Netzwerk bestätigt. Sie können die Details überprüfen, um den Status zu verifizieren.</string>
   <string name="info.lock_time.description">Lock time, also known as the unbonding or unfreezing period, is the duration during which staked assets are inaccessible after you decide to unstake them.</string>
   <string name="input.enter_amount_to">Please enter amount to %s</string>
   <string name="input.transfer">transfer</string>
   <string name="settings.hide_balance">Hide Balance</string>
   <string name="common.popular">Beliebt</string>
-  <string name="errors.dust_threshold">The transaction failed because the amount is too small to meet the %s network’s minimum requirement (dust threshold). This limit ensures the transaction value covers the fees and processing costs. Increase the amount or reduce the fees to proceed.</string>
+  <string name="errors.dust_threshold">Die Transaktion ist fehlgeschlagen, da der Betrag zu gering ist, um die Mindestanforderung des %s -Netzwerks (Dust-Schwellenwert) zu erfüllen. Dieses Limit stellt sicher, dass der Transaktionswert die Gebühren und Bearbeitungskosten deckt. Erhöhen Sie den Betrag oder reduzieren Sie die Gebühren, um fortzufahren.</string>
   <string name="rootcheck.security_alert">Sicherheitswarnung</string>
   <string name="rootcheck.body">Ihr Gerät scheint Root-Zugriff zu haben, was die Sicherheitsrisiken erheblich erhöhen kann. Die Verwendung dieser App auf einem gerooteten Gerät kann Ihre Vermögenswerte einem unbefugten Zugriff und einem möglichen Verlust aussetzen. Zur Sicherheit Ihrer Gelder empfehlen wir dringend die Verwendung eines nicht gerooteten Geräts.</string>
   <string name="rootcheck.ignore">Ignore</string>
@@ -363,7 +363,7 @@
   <string name="contacts.title">Kontakte</string>
   <string name="common.percentage">Percentage</string>
   <string name="price_alerts.set_alert.current_price">Current price</string>
-  <string name="price_alerts.added_for">Set price alert for %s</string>
+  <string name="price_alerts.added_for">Set price alert %s</string>
   <string name="assets.tags.trending">Trending</string>
   <string name="assets.tags.gainers">Gainers</string>
   <string name="assets.tags.losers">Losers</string>
@@ -381,9 +381,9 @@
   <string name="stake.state.empty.description">Stake your first %s</string>
   <string name="wallet_connect.state.empty.title">Your connections will appear here️</string>
   <string name="wallet_connect.state.empty.description">Scan or paste code to connect to the DApp</string>
-  <string name="assets.state.empty.search_description">You can try add it manually</string>
+  <string name="assets.state.empty.search_description">You can try to add it manually</string>
   <string name="activity.state.empty.search_description">Clear filters to refresh your activities</string>
-  <string name="search.state.empty.description">Check the spelling or try a new search</string>
+  <string name="search.state.empty.description">Check the spelling or try a new search.</string>
   <string name="assets.state.empty.search_title">No assets found</string>
   <string name="networks.state.empty.search_title">No networks found</string>
   <string name="activity.state.empty.search_title">No activities found</string>
@@ -391,15 +391,17 @@
   <string name="transfer.recipient.my_wallets">My Wallets</string>
   <string name="transfer.recipient.view_wallets">View Wallets</string>
   <string name="settings.disable_value">Disable %s</string>
-  <string name="onboarding.security.create_wallet.message">Hate sharing 🍕 slices? Follow this unless you want to share your crypto as well.</string>
-  <string name="onboarding.security.create_wallet.checkmart_title">In the next screen we will show you a Secret Phrase</string>
-  <string name="onboarding.security.create_wallet.item_1.title">Do Not Share It With Anyone</string>
-  <string name="onboarding.security.create_wallet.item_1.subtitle">Anyone who has your secret phrase can access your wallet from anywhere in the world.</string>
-  <string name="onboarding.security.create_wallet.item_2.subtitle">Store it somewhere safe, the phrase is only way to access your wallet.</string>
-  <string name="onboarding.security.create_wallet.item_3.subtitle">Its created only for you. Gem Wallet does not keep copy of your phrase.</string>
-  <string name="onboarding.security.create_wallet.item_2.title">Keep Your Secret Phrase Safe</string>
-  <string name="onboarding.security.create_wallet.item_3.title">If you lose it, we cannot recover it</string>
+  <string name="onboarding.security.create_wallet.intro.title">Sie erhalten eine geheime Phrase – nur so können Sie auf Ihr Wallet zugreifen.</string>
+  <string name="onboarding.security.create_wallet.confirm.title">Ich verstehe und möchte fortfahren</string>
+  <string name="onboarding.security.create_wallet.do_not_share.title">Geben Sie es an niemanden weiter</string>
+  <string name="onboarding.security.create_wallet.do_not_share.subtitle">Jeder, der Ihre geheime Phrase erhält, kann die vollständige Kontrolle über Ihr Portemonnaie übernehmen.</string>
+  <string name="onboarding.security.create_wallet.keep_safe.subtitle">Der geheime Satz ist die einzige Möglichkeit, auf Ihr Wallet zuzugreifen.</string>
+  <string name="onboarding.security.create_wallet.no_recovery.subtitle">Wenn Sie Ihre geheime Phrase verlieren, verlieren Sie den Zugriff auf Ihre Brieftasche.</string>
+  <string name="onboarding.security.create_wallet.keep_safe.title">Bewahren Sie es an einem sicheren Ort auf</string>
+  <string name="onboarding.security.create_wallet.no_recovery.title">Wir können Ihnen nicht bei der Wiederherstellung helfen</string>
   <string name="transfer.minimum_account_balance">Danach muss ein Mindestguthaben %s übrig bleiben, es sei denn, Sie nutzen Ihr gesamtes Guthaben.</string>
   <string name="swap.price_impact_warning.description" formatted="false">Sie verlieren bei diesem Handel %s Ihrer %s. Möchten Sie wirklich fortfahren?</string>
   <string name="swap.price_impact_warning.title">Hoher Preiseinfluss</string>
+  <string name="wallet_connect.domain">Domain</string>
+  <string name="sign_message.view_full_message">View Full Message</string>
 </resources>

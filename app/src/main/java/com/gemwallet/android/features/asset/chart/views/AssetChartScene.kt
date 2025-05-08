@@ -103,7 +103,7 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
                         uriHandler.open(Explorer(asset.chain().string).getTokenUrl(explorerName, it) ?: return@combinedClickable)
                     }
                 ),
-                title = { PropertyTitleText(text = R.string.asset_contract) },
+                title = { PropertyTitleText("Contract") },
                 data = {
                     PropertyDataText(
                         modifier = Modifier.weight(1f).padding(top = 0.dp, bottom = 2.dp),
