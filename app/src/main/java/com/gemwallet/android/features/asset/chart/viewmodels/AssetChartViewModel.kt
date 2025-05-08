@@ -36,9 +36,8 @@ class AssetChartViewModel @Inject constructor(
 
     private val assetIdStr = savedStateHandle.getStateFlow<String?>(assetIdArg, null)
     private val assetInfo = assetIdStr.flatMapLatest { assetId ->
-            val assetId = assetId ?: return@flatMapLatest emptyFlow()
-            assetsRepository.getAssetsInfoByAllWallets(listOf(assetId))
-                .map { it.firstOrNull() }
+            val assetId = assetId?.toAssetId() ?: return@flatMapLatest emptyFlow()
+            assetsRepository.getTokenInfo(assetId)
                 .filterNotNull()
         }
 
@@ -55,7 +54,7 @@ class AssetChartViewModel @Inject constructor(
             asset = asset,
             assetTitle = asset.name,
             assetLinks = links.toModel(),
-            currency = assetInfo.price?.currency ?: Currency.USD,
+            currency = currency,
             marketInfo = market,
             explorerName = getCurrentBlockExplorerCase.getCurrentBlockExplorer(asset.chain())
         )

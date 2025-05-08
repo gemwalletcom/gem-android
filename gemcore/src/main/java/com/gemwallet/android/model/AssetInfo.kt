@@ -1,6 +1,5 @@
 package com.gemwallet.android.model
 
-import com.gemwallet.android.ext.same
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetMetaData
@@ -22,9 +21,7 @@ data class AssetInfo(
     fun id() = asset.id
 
     override fun equals(other: Any?): Boolean {
-        return (other as? AssetInfo)?.let { info ->
-            asset.same(info.asset)
-        } == true
+        return (other as? AssetInfo)?.let { info -> asset == info.asset } == true
     }
 
     override fun hashCode(): Int {

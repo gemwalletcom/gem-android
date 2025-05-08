@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flatMapMerge
 import kotlinx.coroutines.flow.map
@@ -53,6 +54,14 @@ class AmountViewModel @Inject constructor(
     private val stakeRepository: StakeRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
+
+    var amount by mutableStateOf("")
+        private set
+
+    val inputErrorState = MutableStateFlow<AmountError>(AmountError.None)
+    val nextErrorState = MutableStateFlow<AmountError>(AmountError.None)
+
+    private val maxAmount = MutableStateFlow(false)
 
     private val params = savedStateHandle
         .getStateFlow(paramsArg, "")
@@ -74,16 +83,21 @@ class AmountViewModel @Inject constructor(
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val srcValidator = params.combine(delegation) { params, delegation ->
+    private val recommendedValidator = params
+        .flatMapLatest { params -> stakeRepository.getRecommended(params.assetId.chain) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    private val srcValidator = combine(params, delegation, recommendedValidator) { params, delegation, recommended ->
         when (params.txType) {
             TransactionType.StakeWithdraw,
             TransactionType.StakeUndelegate -> delegation?.validator
             TransactionType.StakeDelegate,
-            TransactionType.StakeRedelegate -> stakeRepository.getRecommended(params.assetId.chain)
+            TransactionType.StakeRedelegate -> recommended
             else -> null
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     private val selectedValidator = MutableStateFlow<DelegationValidator?>(null)
+
     val validatorState = selectedValidator.combine(srcValidator) { selected, src ->
         selected ?: src
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -111,9 +125,9 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeUndelegate,
             TransactionType.StakeRedelegate,
             TransactionType.StakeWithdraw -> Crypto(BigInteger(delegation?.base?.balance ?: "0"))
-            TransactionType.AssetActivation -> TODO()
-            TransactionType.TransferNFT -> TODO()
-            TransactionType.SmartContractCall -> TODO()
+            TransactionType.AssetActivation,
+            TransactionType.TransferNFT,
+            TransactionType.SmartContractCall,
             null -> Crypto(BigInteger.ZERO)
         }
     }
@@ -138,24 +152,16 @@ class AmountViewModel @Inject constructor(
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    var amount by mutableStateOf("")
-        private set
-
     val equivalentState = snapshotFlow { amount }.combine(asset) { amount, assetInfo ->
         calcEquivalent(amount, assetInfo)
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    val inputErrorState = MutableStateFlow<AmountError>(AmountError.None)
-    val nextErrorState = MutableStateFlow<AmountError>(AmountError.None)
-
-    private val maxAmount = MutableStateFlow(false)
-
     fun setDelegatorValidator(validatorId: String) {
         viewModelScope.launch(Dispatchers.IO) {
             val assetId = state.value?.assetInfo?.asset?.id ?: return@launch
             val validator = stakeRepository.getStakeValidator(assetId, validatorId)
-                ?: stakeRepository.getRecommended(assetId.chain)
+                ?: stakeRepository.getRecommended(assetId.chain).firstOrNull()
             selectedValidator.update { validator }
         }
     }

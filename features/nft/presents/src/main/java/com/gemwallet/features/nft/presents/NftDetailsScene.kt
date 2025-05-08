@@ -5,6 +5,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -18,17 +22,20 @@ import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.cells.cellNetwork
 import com.gemwallet.android.ui.components.designsystem.listSpacerBig
 import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.components.list_item.PropertyItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.features.nft.viewmodels.NftAssetDetailsUIModel
 import com.gemwallet.features.nft.viewmodels.NftDetailsViewModel
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.NFTAttribute
 
 @Composable
 fun NFTDetailsScene(
     cancelAction: CancelAction,
+    onRecipient: (AssetId, String) -> Unit,
 ) {
     val viewModel: NftDetailsViewModel = hiltViewModel()
     val assetData by viewModel.nftAsset.collectAsStateWithLifecycle()
@@ -41,7 +48,12 @@ fun NFTDetailsScene(
     val model = assetData!!
     Scene(
         title = model.assetName,
-        onClose = { cancelAction() }
+        actions = {
+            IconButton( { onRecipient(AssetId(model.asset.chain), model.asset.id) } ) {
+                Icon(Icons.Default.ArrowUpward, contentDescription = "Send nft")
+            }
+        },
+        onClose = { cancelAction() },
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             item {
@@ -49,13 +61,15 @@ fun NFTDetailsScene(
                     model.imageUrl,
                     size = null,
                     transformation = null,
-                    modifier = Modifier.fillMaxWidth().aspectRatio(1f),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(1f),
                 )
             }
             listSpacerBig()
             generalInfo(model)
             nftAttributes(model.attributes)
-            nftLinks(model.collection.links, { uriHandler.openUri(it) })
+            nftLinks(model.collection.links) { uriHandler.openUri(it) }
         }
     }
 }
@@ -110,15 +124,26 @@ private fun LazyListScope.nftLinks(links: List<AssetLink>, onLinkClick: (String)
     }
 
     item {
-        Table(
-            links.map {
-                CellEntity(
-                    label = it.name,
-                    data = "",
-                    action = { onLinkClick(it.url) }
-                )
+        links.firstOrNull { it.name == "website"}?.let {
+            PropertyItem(R.string.social_website, R.drawable.website) { onLinkClick(it.url) }
+        }
+
+        links.filter { it.name != "website" }.sortedByDescending { it.name }.map {
+            val (url, title, icon) = when (it.name) {
+                "coingecko" -> Triple(it.url, R.string.social_coingecko, R.drawable.coingecko)
+                "x", "twitter" -> Triple(it.url, R.string.social_x, R.drawable.twitter)
+                "telegram" -> Triple(it.url, R.string.social_telegram, R.drawable.telegram)
+                "github" -> Triple(it.url, R.string.social_github, R.drawable.github)
+                "instagram" -> Triple(it.url, R.string.social_instagram, R.drawable.instagram)
+                "opensea" -> Triple(it.url, R.string.social_opensea, R.drawable.opensea)
+                "magiceden" -> Triple(it.url, R.string.social_magiceden, R.drawable.magiceden)
+                "coinmarketcap" -> Triple(it.url, R.string.social_coinmarketcap, R.drawable.coinmarketcap)
+                "tiktok" -> Triple(it.url, R.string.social_tiktok, R.drawable.tiktok)
+                "discord" -> Triple(it.url, R.string.social_discord, R.drawable.discord)
+                else -> Triple(it.url, R.string.social_website, R.drawable.website)
             }
-        )
+            PropertyItem(title, icon) { onLinkClick(url) }
+        }
     }
 }
 

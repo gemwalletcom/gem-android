@@ -2,7 +2,6 @@ package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
-import com.gemwallet.android.ext.eip1559Support
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
@@ -13,12 +12,16 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.FeePriority
+import com.wallet.core.primitives.NFTType
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
 import wallet.core.jni.EthereumMessageSigner
 import wallet.core.jni.PrivateKey
 import wallet.core.jni.proto.Ethereum
 import wallet.core.jni.proto.Ethereum.Transaction.ContractGeneric
+import wallet.core.jni.proto.Ethereum.Transaction.ERC1155Transfer
+import wallet.core.jni.proto.Ethereum.Transaction.ERC721Transfer
+import wallet.core.jni.proto.Ethereum.Transaction.Transfer
 import java.math.BigInteger
 
 class EvmSignClient(
@@ -46,18 +49,17 @@ class EvmSignClient(
         privateKey: ByteArray
     ): List<ByteArray> {
         val meta = chainData as EvmSignerPreloader.EvmChainData
+        val transfer = buildTransfer(finalAmount, finalAmount, params)
         val input = buildSignInput(
             assetId = params.assetId,
-            amount = finalAmount,
-            tokenAmount = finalAmount,
             fee = meta.gasFee(feePriority),
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.destination().address,
-            memo = params.memo(),
+            transfer = transfer,
             privateKey = privateKey,
         )
-        return sign(input, privateKey)
+        return sign(input)
     }
 
     override suspend fun signTokenTransfer(
@@ -69,18 +71,17 @@ class EvmSignClient(
     ): List<ByteArray> {
         val meta = chainData as EvmSignerPreloader.EvmChainData
         val amount = BigInteger.ZERO
+        val transfer = buildTransfer(amount, finalAmount, params)
         val input = buildSignInput(
             assetId = params.assetId,
-            amount = amount,
-            tokenAmount = finalAmount,
             fee = meta.gasFee(feePriority),
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.destination().address,
-            memo = params.memo(),
+            transfer = transfer,
             privateKey = privateKey,
         )
-        return sign(input, privateKey)
+        return sign(input)
     }
 
     override suspend fun signTokenApproval(
@@ -92,18 +93,17 @@ class EvmSignClient(
     ): List<ByteArray> {
         val meta = chainData as EvmSignerPreloader.EvmChainData
         val amount = BigInteger.ZERO
+        val transfer = buildTransfer(amount, finalAmount, params)
         val input = buildSignInput(
             assetId = params.assetId,
-            amount = amount,
-            tokenAmount = finalAmount,
             fee = meta.gasFee(priority),
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.destination()?.address ?: "",
-            memo = params.data,
+            transfer = transfer,
             privateKey = privateKey,
         )
-        return sign(input, privateKey)
+        return sign(input)
     }
 
     override suspend fun signSwap(
@@ -146,20 +146,18 @@ class EvmSignClient(
                 )
             }
         }
-
+        val transfer = buildTransfer(amount, finalAmount, params)
         val swapInput = buildSignInput(
             assetId = AssetId(params.assetId.chain),
-            amount = amount,
-            tokenAmount = finalAmount,
             fee = fee,
             chainId = chainData.chainId.toBigInteger(),
             nonce = chainData.nonce + if (approvalSign.isEmpty()) BigInteger.ZERO else BigInteger.ONE,
             destinationAddress = params.destination().address,
-            memo = params.swapData,
+            transfer = transfer,
             privateKey = privateKey,
         )
 
-        val swapSign = sign(swapInput, privateKey)
+        val swapSign = sign(swapInput)
         return approvalSign + swapSign
     }
 
@@ -213,6 +211,41 @@ class EvmSignClient(
         return stakeSmartchain(params, chainData, finalAmount, feePriority, privateKey)
     }
 
+    override suspend fun signNft(
+        params: ConfirmParams.NftParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        feePriority: FeePriority,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val meta = chainData as EvmSignerPreloader.EvmChainData
+        val transfer = when (params.nftAsset.tokenType) {
+            NFTType.ERC721 -> ERC721Transfer.newBuilder().apply {
+                this.from = params.from.address
+                this.to = params.destination.address
+                this.tokenId = ByteString.copyFrom(BigInteger(params.nftAsset.tokenId).abs().toByteArray())
+            }.build()
+            NFTType.ERC1155 -> ERC1155Transfer.newBuilder().apply {
+                this.from = params.from.address
+                this.to = params.destination.address
+                this.tokenId = ByteString.copyFrom(BigInteger(params.nftAsset.tokenId).abs().toByteArray())
+                this.value = ByteString.copyFrom(BigInteger.ONE.toByteArray())
+            }.build()
+            else -> throw IllegalArgumentException("Not supported token type")
+        }
+
+        val input = buildSignInput(
+            assetId = AssetId(chain, params.nftAsset.contractAddress),
+            fee = meta.gasFee(feePriority),
+            chainId = meta.chainId.toBigInteger(),
+            nonce = meta.nonce,
+            destinationAddress = params.destination.address,
+            privateKey = privateKey,
+            transfer = transfer,
+        )
+        return sign(input)
+    }
+
     private fun stakeSmartchain(
         params: ConfirmParams.Stake,
         chainData: ChainSignData,
@@ -231,17 +264,9 @@ class EvmSignClient(
         }
         val callData = StakeHub.encodeStake(params)
         val input = Ethereum.SigningInput.newBuilder().apply {
-            when (chain.eip1559Support()) {
-                true -> {
-                    this.txMode = Ethereum.TransactionMode.Enveloped
-                    this.maxFeePerGas = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
-                    this.maxInclusionFeePerGas = ByteString.copyFrom(fee.minerFee.toByteArray())
-                }
-                false -> {
-                    this.txMode = Ethereum.TransactionMode.Legacy
-                    this.gasPrice = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
-                }
-            }
+            this.txMode = Ethereum.TransactionMode.Enveloped
+            this.maxFeePerGas = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
+            this.maxInclusionFeePerGas = ByteString.copyFrom(fee.minerFee.toByteArray())
             this.gasLimit = ByteString.copyFrom(fee.limit.toByteArray())
             this.chainId = ByteString.copyFrom(meta.chainId.toByteArray())
             this.nonce = ByteString.copyFrom(meta.nonce.toByteArray())
@@ -255,50 +280,40 @@ class EvmSignClient(
             }.build()
         }.build()
 
-        return sign(input = input, privateKey)
+        return sign(input)
     }
 
     internal fun buildSignInput(
         assetId: AssetId,
-        amount: BigInteger,
-        tokenAmount: BigInteger,
         fee: GasFee,
         chainId: BigInteger,
         nonce: BigInteger,
         destinationAddress: String,
-        memo: String?,
+        transfer: Any,
         privateKey: ByteArray,
     ): Ethereum.SigningInput {
         return Ethereum.SigningInput.newBuilder().apply {
-            when (chain.eip1559Support()) {
-                true -> {
-                    this.txMode = Ethereum.TransactionMode.Enveloped
-                    this.maxFeePerGas = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
-                    this.maxInclusionFeePerGas = ByteString.copyFrom(fee.minerFee.toByteArray())
-                }
-
-                false -> {
-                    this.txMode = Ethereum.TransactionMode.Legacy
-                    this.gasPrice = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
-                }
-            }
+            this.txMode = Ethereum.TransactionMode.Enveloped
+            this.maxFeePerGas = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
+            this.maxInclusionFeePerGas = ByteString.copyFrom(fee.minerFee.toByteArray())
             this.gasLimit = ByteString.copyFrom(fee.limit.toByteArray())
             this.chainId = ByteString.copyFrom(chainId.toByteArray())
             this.nonce = ByteString.copyFrom(nonce.toByteArray())
             this.toAddress = EVMChain.getDestinationAddress(assetId, destinationAddress)
             this.privateKey = ByteString.copyFrom(privateKey)
             this.transaction = Ethereum.Transaction.newBuilder().apply {
-                this.transfer = Ethereum.Transaction.Transfer.newBuilder().apply {
-                    this.amount = ByteString.copyFrom(amount.toByteArray())
-                    this.data = ByteString.copyFrom(
-                        EVMChain.encodeTransactionData(assetId, memo, tokenAmount, destinationAddress)
-                    )
-                }.build()
+                when (transfer) {
+                    is Transfer -> this.transfer = transfer
+                    is ERC721Transfer -> this.erc721Transfer = transfer
+                    is ERC1155Transfer -> this.erc1155Transfer = transfer
+                    is ContractGeneric -> this.contractGeneric = transfer
+                }
+
             }.build()
         }.build()
     }
 
-    internal fun sign(input: Ethereum.SigningInput, privateKey: ByteArray): List<ByteArray> {
+    internal fun sign(input: Ethereum.SigningInput): List<ByteArray> {
         val output = AnySigner.sign(input, coinType, Ethereum.SigningOutput.parser())
             .encoded
             .toByteArray()
@@ -306,4 +321,24 @@ class EvmSignClient(
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
+
+    companion object {
+        fun buildTransfer(amount: BigInteger, finalAmount: BigInteger, params: ConfirmParams): Transfer {
+            return Transfer.newBuilder().apply {
+                this.amount = ByteString.copyFrom(amount.toByteArray())
+                this.data = ByteString.copyFrom(
+                    when (params) {
+                        is ConfirmParams.SwapParams -> EVMChain.encodeTransactionData(
+                            params.assetId,
+                            params.swapData,
+                            finalAmount,
+                            params.destination().address
+                        )
+                        else -> EVMChain.encodeTransactionData(params.assetId, params.memo(), finalAmount, params.destination()?.address ?: "")
+                    }
+
+                )
+            }.build()
+        }
+    }
 }

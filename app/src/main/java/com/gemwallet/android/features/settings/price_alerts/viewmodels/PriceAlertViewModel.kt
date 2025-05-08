@@ -45,7 +45,7 @@ class PriceAlertViewModel @Inject constructor(
     val alertingAssets = getPriceAlertsCase.getPriceAlerts().flatMapLatest { alerts ->
         val ids = alerts.map { it.assetId }
         refreshPrices(ids)
-        assetsRepository.getAssetsInfoByAllWallets(ids.map { it.toIdentifier() }).map { it.distinctBy { it.id() } }
+        assetsRepository.getTokensInfo(ids.map { it.toIdentifier() }).map { it.distinctBy { it.id() } }
     }
     .map { it.map { AssetInfoUIModel(it) } }
     .combine(forceSync) { items, sync ->

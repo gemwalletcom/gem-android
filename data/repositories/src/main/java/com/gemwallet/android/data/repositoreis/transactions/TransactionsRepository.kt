@@ -17,7 +17,6 @@ import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetada
 import com.gemwallet.android.data.service.store.database.entities.toModel
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.ext.getSwapMetadata
-import com.gemwallet.android.ext.same
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.Fee
@@ -83,10 +82,11 @@ class TransactionsRepository(
             .mapNotNull { it.toModel() }
             .map { items ->
                 items.filter {
+                    val swapMetadata = it.transaction.getSwapMetadata()
                     (assetId == null
-                        || it.asset.id.same(assetId)
-                        || it.transaction.getSwapMetadata()?.toAsset?.same(assetId) == true
-                        || it.transaction.getSwapMetadata()?.fromAsset?.same(assetId) == true
+                        || it.asset.id == assetId
+                        || swapMetadata?.toAsset == assetId
+                        || swapMetadata?.fromAsset == assetId
                     )
                 }.map {
                     val metadata = it.transaction.getSwapMetadata()

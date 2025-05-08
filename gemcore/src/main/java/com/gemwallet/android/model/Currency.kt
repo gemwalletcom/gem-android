@@ -188,41 +188,6 @@ fun AssetBalance.availableFormatted(
     return format(balanceAmount.available, decimalPlace, SignMode.NoPLus, dynamicPlace, 0, true)
 }
 
-fun AssetBalance.frozenFormatted(
-    decimalPlace: Int = 6,
-    dynamicPlace: Boolean = false,
-): String {
-    return format(balanceAmount.frozen, decimalPlace, SignMode.NoPLus, dynamicPlace, 0, true)
-}
-
-fun AssetBalance.lockedFormatted(
-    decimalPlace: Int = 6,
-    dynamicPlace: Boolean = false,
-): String {
-    return format(balanceAmount.locked, decimalPlace, SignMode.NoPLus, dynamicPlace, 0, true)
-}
-
-fun AssetBalance.stakedFormatted(
-    decimalPlace: Int = 6,
-    dynamicPlace: Boolean = false,
-): String {
-    return format(balanceAmount.staked, decimalPlace, SignMode.NoPLus, dynamicPlace, 0, true)
-}
-
-fun AssetBalance.pendingFormatted(
-    decimalPlace: Int = 6,
-    dynamicPlace: Boolean = false,
-): String {
-    return format(balanceAmount.pending, decimalPlace, SignMode.NoPLus, dynamicPlace, 0, true)
-}
-
-fun AssetBalance.rewardsFormatted(
-    decimalPlace: Int = 6,
-    dynamicPlace: Boolean = false,
-): String {
-    return format(balanceAmount.rewards, decimalPlace, SignMode.NoPLus, dynamicPlace, 0, true)
-}
-
 fun AssetBalance.reservedFormatted(
     decimalPlace: Int = 6,
     dynamicPlace: Boolean = false,

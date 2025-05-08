@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset.chart.models.ChartUIModel
 import com.gemwallet.android.features.asset.chart.models.PricePoint
@@ -40,10 +41,8 @@ class ChartViewModel @Inject constructor(
     private val assetIdStr = savedStateHandle.getStateFlow<String?>(assetIdArg, null)
     private val assetInfo = assetIdStr
         .flatMapLatest {
-            val assetId = it ?: return@flatMapLatest emptyFlow()
-            assetsRepository.getAssetsInfoByAllWallets(listOf(assetId))
-                .map { it.firstOrNull() }
-                .filterNotNull()
+            val assetId = it?.toAssetId() ?: return@flatMapLatest emptyFlow()
+            assetsRepository.getTokenInfo(assetId).filterNotNull()
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
     private val chartState = MutableStateFlow(ChartState())

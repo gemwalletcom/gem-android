@@ -123,7 +123,7 @@ data class DbAssetInfo(
     val balanceReservedAmount: Double?,
     val balanceTotalAmount: Double?,
     val balanceFiatTotalAmount: Double?,
-    val assetIsActive: Boolean,
+    val assetIsActive: Boolean?,
 
     val balanceUpdatedAt: Long?,
 )
@@ -164,7 +164,7 @@ fun DbAssetInfo.toModel(): AssetInfo? {
         ),
         totalAmount = entity.balanceTotalAmount ?: 0.0,
         fiatTotalAmount = entity.balanceFiatTotalAmount ?: 0.0,
-        isActive = assetIsActive,
+        isActive = assetIsActive != false,
     )
 
     val currency = Currency.entries.firstOrNull { it.string == entity.priceCurrency }

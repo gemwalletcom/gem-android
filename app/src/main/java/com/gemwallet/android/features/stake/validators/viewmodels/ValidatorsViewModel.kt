@@ -1,80 +1,53 @@
 package com.gemwallet.android.features.stake.validators.viewmodels
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
-import com.gemwallet.android.ext.asset
-import com.gemwallet.android.features.stake.validators.model.ValidatorsError
 import com.gemwallet.android.features.stake.validators.model.ValidatorsUIState
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.DelegationValidator
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ValidatorsViewModel @Inject constructor(
     private val stakeRepository: StakeRepository,
-    private val assetsRepository: AssetsRepository,
+    val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val state = MutableStateFlow(State())
-    val uiState = state.map { it.toUIState() }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, ValidatorsUIState.Loading)
+    private val assetId = MutableStateFlow<AssetId?>(null)
+    val validators = assetId.filterNotNull()
+        .flatMapLatest { stakeRepository.getValidators(it.chain) }
+        .map { it.filter { it.name.isNotEmpty() } }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    fun init(chain: Chain) {
-        viewModelScope.launch {
-            stakeRepository.getValidators(chain).collect { validators ->
-                state.update {
-                    it.copy(
-                        loading = false,
-                        validators = validators.filter { it.name.isNotEmpty() },
-                        chain = chain,
-                        recommended = stakeRepository.getRecommendValidators(chain)
-                    )
-                }
-            }
-        }
-    }
-
-    fun sync() = viewModelScope.launch {
-        state.update { it.copy(loading = true) }
-        val assetId = AssetId(state.value.chain!!)
-        val stakeApr = assetsRepository.getAssetInfo(assetId).firstOrNull()?.stakeApr ?: return@launch
-        viewModelScope.launch {
-            stakeRepository.syncValidators(state.value.chain, stakeApr)
-        }
-    }
-
-    private data class State(
-        val error: ValidatorsError? = null,
-        val fatalError: ValidatorsError? = null,
-        val loading: Boolean = false,
-        val chain: Chain? = null,
-        val recommended: List<String> = emptyList(),
-        val validators: List<DelegationValidator> = emptyList(),
-    ) {
-        fun toUIState(): ValidatorsUIState {
-            return when {
-                chain == null -> ValidatorsUIState.Loading
-                fatalError != null -> ValidatorsUIState.Fatal
-                validators.isNotEmpty() -> ValidatorsUIState.Loaded(
-                    loading = loading,
-                    error = error,
-                    chainTitle = chain.asset().name,
+    val uiState = combine(assetId, validators) { assetId, validators ->
+        when {
+            assetId == null -> ValidatorsUIState.Loading
+            validators.isNotEmpty() -> {
+                val recommended = stakeRepository.getRecommendValidators(assetId.chain)
+                ValidatorsUIState.Loaded(
+                    loading = false,
                     recomended = validators.filter { it.name.isNotEmpty() && recommended.contains(it.id) },
                     validators = validators,
                 )
-                else -> ValidatorsUIState.Empty
             }
+            else -> ValidatorsUIState.Empty
         }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, ValidatorsUIState.Loading)
+
+    fun init(chain: Chain) {
+        assetId.update { AssetId(chain) }
     }
 }

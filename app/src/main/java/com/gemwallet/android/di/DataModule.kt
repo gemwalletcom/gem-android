@@ -5,6 +5,7 @@ import com.gemwallet.android.blockchain.clients.ActivationTransactionPreloader
 import com.gemwallet.android.blockchain.clients.ApprovalTransactionPreloader
 import com.gemwallet.android.blockchain.clients.BroadcastClientProxy
 import com.gemwallet.android.blockchain.clients.GenericTransferPreloader
+import com.gemwallet.android.blockchain.clients.NftTransactionPreloader
 import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
 import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
@@ -152,6 +153,7 @@ object DataModule {
             approvalTransactionClients = preloaders.mapNotNull { it as? ApprovalTransactionPreloader },
             activatePreloaderClients = preloaders.mapNotNull { it as? ActivationTransactionPreloader },
             genericPreloaderClients = preloaders.mapNotNull { it as? GenericTransferPreloader },
+            nftPreloadClients = preloaders.mapNotNull { it as? NftTransactionPreloader },
         )
     }
 

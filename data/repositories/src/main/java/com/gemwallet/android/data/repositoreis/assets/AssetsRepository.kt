@@ -55,6 +55,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -114,11 +115,11 @@ class AssetsRepository @Inject constructor(
 
     suspend fun syncMarketInfo(assetId: AssetId, owner: Account?) = withContext(Dispatchers.IO) {
         val assetInfo = if (owner == null) {
-            getAssetsInfoByAllWallets(listOf(assetId.toIdentifier())).map { it.firstOrNull() }
+            getTokensInfo(listOf(assetId.toIdentifier())).map { it.firstOrNull() }
         } else {
             getAssetInfo(assetId)
         }.firstOrNull() ?: return@withContext
-        val currency = assetInfo.price?.currency ?: return@withContext
+        val currency = assetInfo.price?.currency ?: Currency.USD
         val assetIdIdentifier = assetId.toIdentifier()
         val assetFullJob = async { gemApi.getAsset(assetIdIdentifier, currency.string).getOrNull() }
         val marketInfoJob = async { gemApi.getMarket(assetIdIdentifier, currency.string).getOrNull() }
@@ -144,6 +145,18 @@ class AssetsRepository @Inject constructor(
         val marketRecord = marketInfo?.market?.toRecord(assetId) ?: DbAssetMarket(assetId.toIdentifier())
         assetsDao.update(record)
         assetsDao.insert(linkRecords, marketRecord)
+    }
+
+    /**
+     *  Create assets for new wallet(import or create wallet)
+     *  */
+    suspend fun createAssets(wallet: Wallet) {
+        wallet.accounts.filter { !Chain.exclude().contains(it.chain) }
+            .map { account ->
+                val asset = account.chain.asset()
+                val isVisible = account.isVisibleByDefault(wallet.type)
+                add(wallet.id, account.address, asset, isVisible)
+            }
     }
 
     suspend fun getNativeAssets(wallet: Wallet): List<Asset> = withContext(Dispatchers.IO) {
@@ -172,10 +185,21 @@ class AssetsRepository @Inject constructor(
         assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel()?.asset }
     }
 
-    fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> =
-        assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel() }
+    fun getTokenInfo(assetId: AssetId): Flow<AssetInfo?> {
+        return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain).flatMapLatest {
+            if (it == null) {
+                assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel() }
+            } else {
+                flow { emit(it.toModel()) }
+            }
+        }
+    }
 
-    fun getAssetsInfoByAllWallets(assetsId: List<String>): Flow<List<AssetInfo>> {
+    fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
+        return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel() }
+    }
+
+    fun getTokensInfo(assetsId: List<String>): Flow<List<AssetInfo>> {
         return assetsDao.getAssetsInfoByAllWallets(assetsId).toAssetInfoModel()
     }
 
@@ -237,18 +261,6 @@ class AssetsRepository @Inject constructor(
         }
         balancesJob.await()
         pricesJob.await()
-    }
-
-    /**
-     *  Create assets for new wallet(import or create wallet)
-     *  */
-    suspend fun createAssets(wallet: Wallet) {
-        wallet.accounts.filter { !Chain.exclude().contains(it.chain) }
-            .map { account ->
-                val asset = account.chain.asset()
-                val isVisible = account.isVisibleByDefault(wallet.type)
-                add(wallet.id, account.address, asset, isVisible)
-            }
     }
 
     fun importAssets(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
@@ -383,7 +395,8 @@ class AssetsRepository @Inject constructor(
             walletId = walletId,
             isVisible = visible,
         )
-        assetsDao.insert(asset.toRecord(), link, config)
+        val defaultScore = uniffi.gemstone.assetDefaultRank(asset.chain().string)
+        assetsDao.insert(asset.toRecord(defaultScore), link, config)
     }
 
 

@@ -41,7 +41,6 @@ fun WalletApp() {
         currentRoute = dest.route
     }
     WalletNavGraph(
-        modifier = Modifier.navigationBarsPadding(),
         navController = navController,
         startDestination = startDestination,
         onboard = {

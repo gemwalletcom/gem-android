@@ -15,15 +15,14 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.features.asset.navigation.assetRoute
 import com.gemwallet.android.features.confirm.models.AmountUIModel
 import com.gemwallet.android.features.confirm.models.ConfirmError
 import com.gemwallet.android.features.confirm.models.ConfirmState
 import com.gemwallet.android.features.confirm.navigation.paramsArg
 import com.gemwallet.android.features.confirm.navigation.txTypeArg
-import com.gemwallet.android.features.stake.navigation.stakeRoute
 import com.gemwallet.android.features.swap.navigation.swapRoute
+import com.gemwallet.android.features.transactions.details.viewmodels.getIcon
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
@@ -35,13 +34,17 @@ import com.gemwallet.android.services.SignerPreloaderProxy
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.InfoSheetEntity
+import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
+import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
+import com.gemwallet.android.ui.navigation.routes.stakeRoute
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.FeePriority
+import com.wallet.core.primitives.SwapProvider
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
@@ -63,6 +66,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigInteger
 import javax.inject.Inject
+import kotlin.collections.firstOrNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -87,12 +91,8 @@ class ConfirmViewModel @Inject constructor(
         .combine(restart) { request, _ -> request }
         .filterNotNull()
         .mapNotNull { paramsPack ->
-            val txTypeString = savedStateHandle.get<String?>(txTypeArg)?.urlDecode()
-            val txType = TransactionType.entries.firstOrNull { it.string == txTypeString } ?: return@mapNotNull null
-
             state.update { ConfirmState.Prepare }
-
-            ConfirmParams.unpack(txType, paramsPack)
+            ConfirmParams.unpack(paramsPack)
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -174,6 +174,7 @@ class ConfirmViewModel @Inject constructor(
             fromAmount = amount.atomicValue.toString(),
             toAsset = toAssetInfo,
             toAmount = (request as? ConfirmParams.SwapParams)?.toAmount.toString(),
+            nftAsset = (request as? ConfirmParams.NftParams)?.nftAsset,
             currency = currency,
         )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -182,7 +183,7 @@ class ConfirmViewModel @Inject constructor(
         request ?: return@combine emptyList()
         val assetInfo = assetsInfo?.getByAssetId(request.assetId) ?: return@combine emptyList()
         listOf(
-            assetInfo.getFromCell(),
+            assetInfo.getFromCell(request),
             request.getRecipientCell(getValidator(request)),
             request.getMemoCell(),
             assetInfo.getNetworkCell(),
@@ -249,6 +250,9 @@ class ConfirmViewModel @Inject constructor(
     }
 
     fun changeFeePriority(feePriority: FeePriority) {
+        if (feePriority == this.feePriority.value) {
+            return
+        }
         state.update { ConfirmState.Prepare }
         this.feePriority.update { feePriority }
     }
@@ -307,6 +311,7 @@ class ConfirmViewModel @Inject constructor(
                         is ConfirmParams.TokenApprovalParams -> swapRoute
                         is ConfirmParams.TransferParams -> assetRoute
                         is ConfirmParams.Activate -> assetRoute
+                        is ConfirmParams.NftParams -> assetRoute
                     }
                     viewModelScope.launch(Dispatchers.Main) {
                         finishAction(assetId = assetInfo.id(), hash = txHash, route = finishRoute)
@@ -344,6 +349,7 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams,
             is ConfirmParams.Activate,
+            is ConfirmParams.NftParams,
             is ConfirmParams.Stake.DelegateParams -> assetInfo.balance.balance.available.toBigInteger()
             is ConfirmParams.Stake.RedelegateParams -> BigInteger(stakeRepository.getDelegation(params.srcValidatorId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.Stake.UndelegateParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
@@ -363,6 +369,7 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.Stake.RewardsParams,
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams,
+            is ConfirmParams.NftParams,
             is ConfirmParams.TransferParams -> null
         }
         return stakeRepository.getStakeValidator(params.assetId, validatorId ?: return null)
@@ -381,8 +388,21 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.Stake.RedelegateParams,
             is ConfirmParams.Stake.UndelegateParams,
             is ConfirmParams.Stake.WithdrawParams -> CellEntity(label = R.string.stake_validator, data = validator?.name ?: "")
-            is ConfirmParams.SwapParams -> CellEntity(label = R.string.swap_provider, data = provider)
+            is ConfirmParams.SwapParams -> {
+                val swapProvider = SwapProvider.entries.firstOrNull { it.string == protocolId }
+                CellEntity(
+                    label = R.string.swap_provider,
+                    data = provider,
+                    trailing = { AsyncImage(swapProvider?.getIcon(), size = trailingIconMedium) }
+                )
+            }
             is ConfirmParams.TokenApprovalParams -> CellEntity(label = R.string.swap_provider, data = provider)
+            is ConfirmParams.NftParams -> {
+                return when { // TODO: Join with transfer
+                    destination.domainName.isNullOrEmpty() -> CellEntity(label = R.string.transaction_recipient, data = destination.address)
+                    else -> CellEntity(label = R.string.transaction_recipient, support = destination.address, data = destination.domainName!!)
+                }
+            }
             is ConfirmParams.TransferParams -> {
                 return when {
                     destination.domainName.isNullOrEmpty() -> CellEntity(label = R.string.transaction_recipient, data = destination.address)
@@ -392,8 +412,12 @@ class ConfirmViewModel @Inject constructor(
         }
     }
 
-    private fun AssetInfo.getFromCell(): CellEntity<Int> {
-        return CellEntity(label = R.string.transfer_from, data = "$walletName (${owner?.address?.getAddressEllipsisText() ?: ""})")
+    private fun AssetInfo.getFromCell(input: ConfirmParams): CellEntity<Int> {
+        val fromData = when (input.getTxType()) {
+            TransactionType.Swap -> walletName
+            else -> "$walletName (${owner?.address?.getAddressEllipsisText() ?: ""})"
+        }
+        return CellEntity(label = R.string.transfer_from, data = fromData)
     }
 
     private fun ConfirmParams.getMemoCell(): CellEntity<Int>? {
@@ -428,6 +452,7 @@ class ConfirmViewModel @Inject constructor(
                 )
             )
         }
+        is ConfirmParams.NftParams -> jsonEncoder.encodeToString(input.nftAsset)
         else -> null
     }
 
@@ -479,8 +504,8 @@ class ConfirmViewModel @Inject constructor(
                 TransactionType.StakeUndelegate,
                 TransactionType.StakeRewards,
                 TransactionType.StakeRedelegate,
-                TransactionType.StakeWithdraw -> amount
-                TransactionType.TransferNFT -> TODO()
+                TransactionType.StakeWithdraw,
+                TransactionType.TransferNFT -> amount
                 TransactionType.SmartContractCall -> TODO()
             }
 

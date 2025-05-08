@@ -1,7 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import com.gemwallet.android.cases.device.GetDeviceIdCase
-import com.gemwallet.android.cases.nft.GetAssetNftCase
+import com.gemwallet.android.cases.nft.GetAssetNft
 import com.gemwallet.android.cases.nft.GetListNftCase
 import com.gemwallet.android.cases.nft.LoadNFTCase
 import com.gemwallet.android.data.repositoreis.nft.NftRepository
@@ -34,5 +34,5 @@ class NftModule {
     fun provideGetNftCase(nftRepository: NftRepository): GetListNftCase = nftRepository
 
     @Provides
-    fun provideGetAssetNftCase(nftRepository: NftRepository): GetAssetNftCase = nftRepository
+    fun provideGetAssetNftCase(nftRepository: NftRepository): GetAssetNft = nftRepository
 }

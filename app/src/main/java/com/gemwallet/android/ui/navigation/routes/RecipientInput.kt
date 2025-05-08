@@ -12,19 +12,20 @@ import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.ConfirmTransactionAction
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.NFTAsset
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class RecipientInput(val assetId: String)
+data class RecipientInput(val assetId: String, val nftAssetId: String?)
 
 @Serializable
 object SendSelect
 
-fun NavController.navigateToRecipientInput(assetId: AssetId? = null) {
+fun NavController.navigateToRecipientInput(assetId: AssetId? = null, nftAssetId: String? = null) {
     if (assetId == null) {
         navigate(SendSelect, navOptions { launchSingleTop = true })
     } else {
-        navigate(RecipientInput(assetId.toIdentifier()), navOptions { launchSingleTop = true })
+        navigate(RecipientInput(assetId.toIdentifier(), nftAssetId), navOptions { launchSingleTop = true })
     }
 }
 

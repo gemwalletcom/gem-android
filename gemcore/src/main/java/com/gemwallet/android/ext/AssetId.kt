@@ -16,8 +16,3 @@ fun String.toAssetId(): AssetId? {
     val token = if (components.size > 1) components[1] else null
     return AssetId(chain, token)
 }
-
-fun AssetId.isSwapable() = type() == AssetSubtype.NATIVE
-        && (EVMChain.entries.map { it.string }.contains(chain.string) || chain == Chain.Solana)
-
-fun AssetId.same(other: AssetId) = chain == other.chain && tokenId == other.tokenId

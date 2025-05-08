@@ -22,8 +22,8 @@ import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
 import com.gemwallet.android.model.getStackedAmount
 import com.gemwallet.android.model.reservedFormatted
-import com.gemwallet.android.model.stakedFormatted
 import com.gemwallet.android.model.totalFormatted
+import com.gemwallet.android.model.totalStakeFormatted
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
@@ -85,15 +85,15 @@ class AsseDetailsViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val sync: Flow<Unit> = combine(uiState, model) { uiState, model ->
-        if (uiState is AssetInfoUIState.Idle
-                && (uiState.sync == AssetInfoUIState.SyncState.Wait || uiState.sync == AssetInfoUIState.SyncState.Process)
-        ) {
-            model ?: return@combine
-            syncAssetInfo(model.assetInfo.asset.id)
+            if (uiState is AssetInfoUIState.Idle
+                    && (uiState.sync == AssetInfoUIState.SyncState.Wait || uiState.sync == AssetInfoUIState.SyncState.Process)
+            ) {
+                model ?: return@combine
+                syncAssetInfo(model.assetInfo.asset.id)
+            }
         }
-    }
-    .flowOn(Dispatchers.IO)
-    .stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
+        .flowOn(Dispatchers.IO)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, Unit)
 
     val uiModel = model.map { it?.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -170,7 +170,7 @@ class AsseDetailsViewModel @Inject constructor(
                         if (stakeBalance == 0.0) {
                             "APR ${PriceUIState.formatPercentage(assetInfo.stakeApr ?: 0.0, false)}"
                         } else {
-                            balances.stakedFormatted()
+                            balances.totalStakeFormatted()
                         }
                     } else {
                         ""

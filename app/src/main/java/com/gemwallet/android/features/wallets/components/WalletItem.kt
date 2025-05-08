@@ -3,7 +3,7 @@ package com.gemwallet.android.features.wallets.components
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircleOutline
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -93,7 +93,7 @@ fun WalletItem(
                 Spacer16()
                 if (isCurrent) {
                     Icon(
-                        imageVector = Icons.Default.CheckCircleOutline,
+                        imageVector = Icons.Default.CheckCircle,
                         contentDescription = "checked",
                         tint = MaterialTheme.colorScheme.primary,
                     )

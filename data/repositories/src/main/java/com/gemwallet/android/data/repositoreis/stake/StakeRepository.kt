@@ -4,10 +4,12 @@ import com.gemwallet.android.blockchain.clients.StakeClient
 import com.gemwallet.android.data.service.store.database.StakeDao
 import com.gemwallet.android.data.service.store.database.entities.toModel
 import com.gemwallet.android.data.service.store.database.entities.toRecord
+import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.data.services.gemapi.GemApiStaticClient
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.DelegationBase
 import com.wallet.core.primitives.DelegationValidator
@@ -25,12 +27,14 @@ import java.math.BigInteger
 
 class StakeRepository(
     private val gemApiStaticClient: GemApiStaticClient,
+    private val gemApiClient: GemApiClient,
     private val stakeClients: List<StakeClient>,
     private val stakeDao: StakeDao,
 ) {
     private val recommendedValidators = Config().getValidators()
 
-    suspend fun sync(chain: Chain, address: String, apr: Double) = withContext(Dispatchers.IO) {
+    suspend fun sync(chain: Chain, address: String) = withContext(Dispatchers.IO) {
+        val apr = gemApiClient.getAsset(chain.string, Currency.USD.string).getOrNull()?.properties?.stakingApr ?: return@withContext // TODO: Throw exception
         syncValidators(chain, apr)
         syncDelegations(chain, address, apr)
     }
@@ -50,8 +54,7 @@ class StakeRepository(
             ?.groupBy { it.id }
             ?.mapValues { it.value.firstOrNull() }
             ?: emptyMap()
-        val validators = stakeClients
-            .filter { it.supported(chain) }
+        val validators = stakeClients.filter { it.supported(chain) }
             .asFlow()
             .mapNotNull {
                 try {
@@ -77,11 +80,12 @@ class StakeRepository(
         return recommendedValidators[chain.string] ?: emptyList()
     }
 
-    suspend fun getRecommended(chain: Chain): DelegationValidator? {
-        val validators = getValidators(chain).first()
+    fun getRecommended(chain: Chain): Flow<DelegationValidator?> {
+        val validators = getValidators(chain)
         val recommendedId = getRecommendValidators(chain)
-        return validators.firstOrNull { it.name.isNotEmpty() && recommendedId.contains(it.id) }
-            ?: validators.firstOrNull { it.name.isNotEmpty() }
+        return validators.map { items ->
+            items.firstOrNull { it.name.isNotEmpty() && recommendedId.contains(it.id) } ?: items.firstOrNull { it.name.isNotEmpty() }
+        }
     }
 
     fun getValidators(chain: Chain): Flow<List<DelegationValidator>> {

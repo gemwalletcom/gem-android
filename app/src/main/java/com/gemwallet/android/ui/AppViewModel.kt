@@ -64,7 +64,7 @@ class AppViewModel @Inject constructor(
                     PlatformStore.Fdroid -> "fdroid"
                     PlatformStore.Huawei -> "huawei"
                     PlatformStore.SolanaStore -> "solana"
-                    PlatformStore.SamsungStore -> "sumsung"
+                    PlatformStore.SamsungStore -> "samsung"
                     PlatformStore.ApkUniversal -> "universal"
                     PlatformStore.AppStore -> it.store.string
                     PlatformStore.Local -> "local"
