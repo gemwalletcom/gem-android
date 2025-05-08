@@ -81,6 +81,14 @@ android {
             }
             buildConfigField("String", "UPDATE_URL", "\"https://apk.gemwallet.com/gem_wallet_latest.apk\"")
         }
+        create("samsung") {
+            dimension = channelDimension
+            ndk {
+                abiFilters.add("armeabi-v7a")
+                abiFilters.add("arm64-v8a")
+            }
+            buildConfigField("String", "UPDATE_URL", "\"https://apps.samsung.com/appquery/appDetail.as?appId=com.gemwallet.android\"")
+        }
     }
     signingConfigs {
         create("release") {
@@ -215,6 +223,8 @@ dependencies {
     "universalImplementation"(libs.firebase.messaging)
     "universalImplementation"(libs.play.review)
     "universalImplementation"(libs.play.review.ktx)
+    // Samsung
+    "samsungImplementation"(libs.firebase.messaging)
 
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
