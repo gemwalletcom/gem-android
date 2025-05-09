@@ -54,9 +54,9 @@ class AppViewModel @Inject constructor(
     private fun hasSession(): Boolean = sessionRepository.hasSession()
 
     private suspend fun handleAppVersion() = withContext(Dispatchers.IO) {
-        if (BuildConfig.DEBUG) {
-            return@withContext
-        }
+//        if (BuildConfig.DEBUG) {
+//            return@withContext
+//        }
         val response = gemApiClient.getConfig().getOrNull()
         val current = response?.releases?.filter {
                 val versionFlavor = when (it.store) {
