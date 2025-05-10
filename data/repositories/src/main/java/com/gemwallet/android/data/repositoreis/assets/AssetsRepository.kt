@@ -9,6 +9,7 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.AssetsPriorityDao
 import com.gemwallet.android.data.service.store.database.BalancesDao
+import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.service.store.database.PricesDao
 import com.gemwallet.android.data.service.store.database.entities.DbAsset
 import com.gemwallet.android.data.service.store.database.entities.DbAssetConfig
@@ -86,6 +87,7 @@ class AssetsRepository @Inject constructor(
     private val assetsPriorityDao: AssetsPriorityDao,
     private val balancesDao: BalancesDao,
     private val pricesDao: PricesDao,
+    private val priceAlertsDao: PriceAlertsDao,
     private val gemApi: GemApiClient,
     private val sessionRepository: SessionRepository,
     private val balancesRemoteSource: BalancesRemoteSource,
@@ -124,23 +126,13 @@ class AssetsRepository @Inject constructor(
         webSockets()
     }
 
-//    suspend fun sync(currency: Currency) = withContext(Dispatchers.IO) {
-//        val balancesJob = getAssetsInfo().firstOrNull()?.updateBalances()
-//        val pricesJob = async(Dispatchers.IO) { updatePrices(currency) }
-//        balancesJob?.awaitAll()
-//        pricesJob.await()
-//    }
-
     suspend fun sync() = withContext(Dispatchers.IO) {
         getAssetsInfo().firstOrNull()?.updateBalances()?.awaitAll()
     }
 
     suspend fun syncAssetInfo(assetId: AssetId, account: Account) = withContext(Dispatchers.IO) {
-        val currency = getAssetInfo(assetId).firstOrNull()?.price?.currency ?: return@withContext
-//        val updatePriceJob = async { updatePrices(currency, assetId) }
         val updateBalancesJob = async { updateBalances(assetId) }
         val getAssetFull = async { syncMarketInfo(assetId, account) }
-//        updatePriceJob.await()
         updateBalancesJob.await()
         getAssetFull.await()
     }
@@ -270,7 +262,7 @@ class AssetsRepository @Inject constructor(
             }
     }
 
-    suspend fun resolve(currency: Currency, wallet: Wallet, assetsId: List<AssetId>) = withContext(Dispatchers.IO) {
+    suspend fun resolve(wallet: Wallet, assetsId: List<AssetId>) = withContext(Dispatchers.IO) {
         if (assetsId.isEmpty()) return@withContext
         val assetsFull = gemApi.getAssets(assetsId.map { it.toIdentifier() }).getOrNull() ?: return@withContext
         assetsFull.forEach {
@@ -282,14 +274,10 @@ class AssetsRepository @Inject constructor(
         val balancesJob = async(Dispatchers.IO) {
             getAssetsInfo(assetsId).firstOrNull()?.updateBalances()
         }
-//        val pricesJob = async(Dispatchers.IO) {
-//            updatePrices(currency)
-//        }
         balancesJob.await()
-//        pricesJob.await()
     }
 
-    fun importAssets(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
+    fun importAssets(wallet: Wallet) = scope.launch(Dispatchers.IO) {
         launch(Dispatchers.IO) {
             delay(2000) // Wait subscription - token processing
             val availableAssetsId = gemApi.getAssets(getDeviceIdCase.getDeviceId(), wallet.index).getOrNull()
@@ -321,8 +309,6 @@ class AssetsRepository @Inject constructor(
                     }
                 }
                 .awaitAll()
-
-//            launch { updatePrices(currency) }
         }
         wallet.accounts.filter { !Chain.exclude().contains(it.chain) }.map {
             async {
@@ -337,7 +323,7 @@ class AssetsRepository @Inject constructor(
     /**
      * Check and add new coins and active tokens
      * */
-    fun invalidateDefault(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
+    fun invalidateDefault(wallet: Wallet) = scope.launch(Dispatchers.IO) {
         val assets = getNativeAssets(wallet).associateBy( { it.id.toIdentifier() }, { it })
 
         wallet.accounts.filter { !Chain.exclude().contains(it.chain) }
@@ -353,7 +339,6 @@ class AssetsRepository @Inject constructor(
                     }
                 }
             }.awaitAll()
-//        scope.launch { updatePrices(currency) }
     }
 
     suspend fun switchVisibility(
@@ -361,7 +346,6 @@ class AssetsRepository @Inject constructor(
         owner: Account,
         assetId: AssetId,
         visibility: Boolean,
-        currency: Currency,
     ) = withContext(Dispatchers.IO) {
         assetsDao.linkAssetToWallet(
             DbAssetWallet(
@@ -372,8 +356,7 @@ class AssetsRepository @Inject constructor(
         )
         setVisibility(walletId, assetId, visibility)
         if (visibility) {
-            launch { updateBalances(assetId) }
-//            launch { updatePrices(currency) }
+            updateBalances(assetId)
         }
     }
 
@@ -384,20 +367,6 @@ class AssetsRepository @Inject constructor(
         )
         assetsDao.setConfig(config.copy(isVisible = true, isPinned = !config.isPinned))
     }
-
-//    suspend fun clearPrices() = withContext(Dispatchers.IO) {
-//        pricesDao.deleteAll()
-//    }
-
-//    suspend fun updatePrices(currency: Currency, vararg assetIds: AssetId) = withContext(Dispatchers.IO) {
-//        val ids = assetIds.toList().ifEmpty { assetsDao.getAssetsPriceUpdate().map { it.toAssetId() } }.filterNotNull()
-//        val prices = try {
-//            gemApi.prices(AssetPricesRequest(currency.string, ids)).getOrNull()?.prices ?: emptyList()
-//        } catch (_: Throwable) {
-//            emptyList()
-//        }
-//        pricesDao.insert(prices.toRecord(currency))
-//    }
 
     suspend fun updateBalances(vararg tokens: AssetId) {
         getAssetsInfo(tokens.toList()).firstOrNull()?.updateBalances()?.awaitAll()
@@ -594,13 +563,14 @@ class AssetsRepository @Inject constructor(
 
     private suspend fun DefaultClientWebSocketSession.init() {
         val ids = assetsDao.getAssetsPriceUpdate().mapNotNull { it.toAssetId() }
-        // TODO + priceAlert.getAssets()
+        val priceAlerts = priceAlertsDao.getAlerts().firstOrNull()
+            ?.mapNotNull { it.assetId.toAssetId() } ?: emptyList()
 
         try {
             sendSerialized(
                 WebSocketPriceAction(
                     action = WebSocketPriceActionType.Subscribe,
-                    assets = ids
+                    assets = ids + priceAlerts
                 )
             )
         } catch (err: Throwable) { // TODO: Add resend or reconnect
