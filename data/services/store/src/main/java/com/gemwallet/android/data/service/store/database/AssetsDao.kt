@@ -27,16 +27,13 @@ interface AssetsDao {
     suspend fun insert(asset: DbAsset, walletLink: DbAssetWallet, config: DbAssetConfig)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun addLinks(links: List<DbAssetLink>)
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(links: List<DbAssetLink>, market: DbAssetMarket)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun setConfig(config: DbAssetConfig)
+    suspend fun addLinks(links: List<DbAssetLink>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun setConfig(config: List<DbAssetConfig>)
+    suspend fun setConfig(config: DbAssetConfig)
 
     @Update
     fun update(asset: DbAsset)
