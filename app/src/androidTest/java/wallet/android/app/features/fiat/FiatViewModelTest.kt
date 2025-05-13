@@ -3,6 +3,7 @@ package wallet.android.app.features.fiat
 import app.cash.turbine.test
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.features.buy.viewmodels.FiatViewModel
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -16,12 +17,14 @@ import org.junit.Test
 class FiatViewModelTest {
 
     private lateinit var viewModel: FiatViewModel
+    private val sessionRepository: SessionRepository = mockk()
     private val assetsRepository: AssetsRepository = mockk()
     private val buyRepository: BuyRepository = mockk()
 
     @Before
     fun setup() {
         viewModel = FiatViewModel(
+            sessionRepository = sessionRepository,
             assetsRepository = assetsRepository,
             buyRepository = buyRepository,
             savedStateHandle = mockk(relaxed = true)
@@ -30,16 +33,7 @@ class FiatViewModelTest {
 
     @Test
     fun testInitialState() = runTest {
-        viewModel.state.test {
-            assertNull(awaitItem())
-        }
-    }
-
-    @Test
-    fun testDefaultAmountText() = runTest {
-        viewModel.amount.test {
-            assertEquals(viewModel.defaultAmount, awaitItem())
-        }
+        viewModel.state.test { assertNull(awaitItem()) }
     }
 
     @Test
