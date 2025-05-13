@@ -109,7 +109,7 @@ class PriceWebSocketClient(
 
     private suspend fun updatePrices(prices: List<AssetPrice>, rate: FiatRate) {
         val newPrices = prices.toRecord(rate)
-        pricesDao.insert(newPrices)
+        runCatching { pricesDao.insert(newPrices) }
     }
 
     private suspend fun handlePriceUpdate(prices: List<AssetPrice>, newRates: List<FiatRate>) {
