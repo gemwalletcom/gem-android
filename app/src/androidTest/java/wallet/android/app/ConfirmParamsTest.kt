@@ -3,9 +3,7 @@ package wallet.android.app
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.ConfirmParams
 import com.wallet.core.primitives.Account
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.TransactionType
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.math.BigInteger

@@ -47,7 +47,7 @@ class ReceiveViewModel @Inject constructor(
         val account = session.wallet.getAccount(assetId.chain) ?: return
 
         viewModelScope.launch(Dispatchers.IO) {
-            assetsRepository.switchVisibility(session.wallet.id, account, assetId, true, session.currency)
+            assetsRepository.switchVisibility(session.wallet.id, account, assetId, true)
         }
     }
 }

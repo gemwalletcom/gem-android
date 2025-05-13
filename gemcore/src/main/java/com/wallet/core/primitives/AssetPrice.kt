@@ -20,9 +20,10 @@ data class AssetMarket (
 
 @Serializable
 data class AssetPrice (
-	val assetId: String,
+	val assetId: AssetId,
 	val price: Double,
-	val priceChangePercentage24h: Double
+	val priceChangePercentage24h: Double,
+	val updatedAt: SerializedDate
 )
 
 @Serializable

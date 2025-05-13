@@ -34,7 +34,7 @@ class CheckAccounts @Inject constructor(
 
             if (wallet.type != WalletType.multicoin) {
                 if (nativeAssets.isEmpty()) {
-                    assetsRepository.invalidateDefault(wallet, currency)
+                    assetsRepository.invalidateDefault(wallet)
                 }
                 return@forEach
             }
@@ -48,7 +48,7 @@ class CheckAccounts @Inject constructor(
                 val newWallet = wallet.copy(accounts = wallet.accounts + newAccounts)
                 walletsRepository.updateWallet(newWallet)
                 if (newAccounts.isNotEmpty()) {
-                    assetsRepository.invalidateDefault(newWallet, currency)
+                    assetsRepository.invalidateDefault(newWallet)
                 }
                 syncSubscriptionCase.syncSubscription(walletsRepository.getAll().firstOrNull() ?: emptyList())
             }

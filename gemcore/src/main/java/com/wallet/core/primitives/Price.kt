@@ -10,7 +10,8 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class Price (
 	val price: Double,
-	val priceChangePercentage24h: Double
+	val priceChangePercentage24h: Double,
+	val updatedAt: SerializedDate
 )
 
 @Serializable

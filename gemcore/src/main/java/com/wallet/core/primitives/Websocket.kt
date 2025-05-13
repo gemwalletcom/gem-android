@@ -26,3 +26,4 @@ data class WebSocketPricePayload (
 	val prices: List<AssetPrice>,
 	val rates: List<FiatRate>
 )
+

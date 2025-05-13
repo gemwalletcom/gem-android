@@ -18,8 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.confirm.views.ConfirmScreen
-import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.ConfirmParams.TransferParams.*
+import com.gemwallet.android.model.ConfirmParams.TransferParams.Native
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.FatalStateScene

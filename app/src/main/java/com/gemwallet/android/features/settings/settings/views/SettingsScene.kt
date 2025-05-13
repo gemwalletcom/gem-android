@@ -28,6 +28,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.settings.currency.components.emojiFlags
@@ -48,7 +49,6 @@ import uniffi.gemstone.DocsUrl
 import uniffi.gemstone.PublicUrl
 import uniffi.gemstone.SocialUrl
 import java.util.Locale
-import androidx.core.net.toUri
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

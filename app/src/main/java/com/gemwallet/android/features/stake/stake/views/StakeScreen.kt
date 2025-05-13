@@ -1,20 +1,15 @@
 package com.gemwallet.android.features.stake.stake.views
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.stake.stake.model.StakeUIState
 import com.gemwallet.android.features.stake.stake.viewmodels.StakeViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.FatalStateScene
 import com.gemwallet.android.ui.components.LoadingScene
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
-import com.wallet.core.primitives.AssetId
 
 @Composable
 fun StakeScreen(

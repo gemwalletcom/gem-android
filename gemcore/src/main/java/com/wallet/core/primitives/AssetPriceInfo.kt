@@ -9,7 +9,7 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 data class AssetPriceInfo (
-	val assetId: String,
+	val assetId: AssetId,
 	val price: Price,
 	val market: AssetMarket
 )
