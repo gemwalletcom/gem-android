@@ -54,6 +54,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -138,7 +139,7 @@ class AssetsRepository @Inject constructor(
         val linkRecords = assetFull.links.toAssetLinkRecord(assetId)
         val marketRecord = marketInfo?.market?.toRecord(assetId) ?: DbAssetMarket(assetId.toIdentifier())
         assetsDao.update(record)
-        assetsDao.insert(linkRecords, marketRecord)
+        runCatching { assetsDao.insert(linkRecords, marketRecord) }
     }
 
     /**
@@ -180,7 +181,13 @@ class AssetsRepository @Inject constructor(
     }
 
     fun getTokenInfo(assetId: AssetId): Flow<AssetInfo?> {
-        return assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel() }
+        return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain).flatMapLatest {
+            if (it == null) {
+                assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel() }
+            } else {
+                flow { emit(it.toModel()) }
+            }
+        }
     }
 
     fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
@@ -238,7 +245,7 @@ class AssetsRepository @Inject constructor(
         assetsFull.forEach {
             val asset = it.asset
             add(wallet.id, wallet.getAccount(asset.chain())?.address ?: return@forEach, asset, true)
-            assetsDao.addLinks(it.links.toAssetLinkRecord(asset.id))
+            runCatching { assetsDao.addLinks(it.links.toAssetLinkRecord(asset.id)) }
         }
 
         val balancesJob = async(Dispatchers.IO) {
@@ -317,13 +324,15 @@ class AssetsRepository @Inject constructor(
         assetId: AssetId,
         visibility: Boolean,
     ) = withContext(Dispatchers.IO) {
-        assetsDao.linkAssetToWallet(
-            DbAssetWallet(
-            walletId = walletId,
-            assetId = assetId.toIdentifier(),
-            accountAddress = owner.address
+        runCatching {
+            assetsDao.linkAssetToWallet(
+                DbAssetWallet(
+                    walletId = walletId,
+                    assetId = assetId.toIdentifier(),
+                    accountAddress = owner.address
+                )
             )
-        )
+        }
         setVisibility(walletId, assetId, visibility)
         if (visibility) {
             updateBalances(assetId)
@@ -335,7 +344,7 @@ class AssetsRepository @Inject constructor(
             walletId = walletId,
             assetId = assetId.toIdentifier(),
         )
-        assetsDao.setConfig(config.copy(isVisible = true, isPinned = !config.isPinned))
+        runCatching { assetsDao.setConfig(config.copy(isVisible = true, isPinned = !config.isPinned)) }
     }
 
     suspend fun updateBalances(vararg tokens: AssetId) {
@@ -354,7 +363,7 @@ class AssetsRepository @Inject constructor(
             isVisible = visible,
         )
         val defaultScore = uniffi.gemstone.assetDefaultRank(asset.chain().string)
-        assetsDao.insert(asset.toRecord(defaultScore), link, config)
+        runCatching { assetsDao.insert(asset.toRecord(defaultScore), link, config) }
 
         if (visible) {
             priceClient.addAssetId(asset.id)
@@ -394,7 +403,7 @@ class AssetsRepository @Inject constructor(
     private suspend fun setVisibility(walletId: String, assetId: AssetId, visibility: Boolean) = withContext(Dispatchers.IO) {
         val config = assetsDao.getConfig(walletId = walletId, assetId = assetId.toIdentifier())
             ?: DbAssetConfig(assetId = assetId.toIdentifier(), walletId = walletId)
-        assetsDao.setConfig(config.copy(isVisible = visibility))
+        runCatching { assetsDao.setConfig(config.copy(isVisible = visibility)) }
 
         if (visibility) {
             priceClient.addAssetId(assetId)
@@ -416,18 +425,28 @@ class AssetsRepository @Inject constructor(
                 prevBalance,
                 nativeBalance?.toRecord(walletId, account.address, updatedAt),
             )
-            dbNativeBalance?.let { balancesDao.insert(it) }
+            dbNativeBalance?.let { runCatching { balancesDao.insert(it) } }
 
             val delegationBalances = balancesRemoteSource.getDelegationBalances(account)
             val dbFullBalance = DbBalance.mergeDelegation(dbNativeBalance, delegationBalances
                 ?.toRecord(walletId, account.address, updatedAt))
-            dbFullBalance?.let { balancesDao.insert(it) }
+            dbFullBalance?.let { runCatching { balancesDao.insert(it) } }
             dbFullBalance?.toModel()
         }
 
         val getTokens = async {
             val balances = balancesRemoteSource.getTokensBalances(account, tokens)
-            balancesDao.insert(balances.map { it.toRecord(walletId, account.address, updatedAt) })
+            runCatching {
+                balancesDao.insert(
+                    balances.map {
+                        it.toRecord(
+                            walletId,
+                            account.address,
+                            updatedAt
+                        )
+                    }
+                )
+            }
             balances
         }
         listOfNotNull(getNative.await()) + getTokens.await()

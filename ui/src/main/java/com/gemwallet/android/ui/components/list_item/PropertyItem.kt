@@ -124,8 +124,10 @@ fun PropertyTitleText(
     info: InfoSheetEntity? = null,
 ) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        trailing?.invoke()
-        Spacer8()
+        trailing?.let {
+            it()
+            Spacer8()
+        }
         Text(
             modifier = Modifier.weight(1f, false),
             text = text,

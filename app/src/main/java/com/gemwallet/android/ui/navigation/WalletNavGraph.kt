@@ -173,7 +173,7 @@ fun WalletNavGraph(
                     finishAction = { assetId, hash, route ->
                         when (route) {
                             assetRoute -> NavigateAfterConfirm.Transfer(assetId).navigate(navController)
-                            stakeRoute -> NavigateAfterConfirm.Stake().navigate(navController)
+                            stakeRoute -> NavigateAfterConfirm.Stake(assetId).navigate(navController)
                             swapRoute -> NavigateAfterConfirm.Swap(assetId).navigate(navController)
                         }
                     },
@@ -332,10 +332,18 @@ sealed interface NavigateAfterConfirm {
         }
     }
 
-    class Stake() : NavigateAfterConfirm {
+    class Stake(private val assetId: AssetId) : NavigateAfterConfirm {
 
         override fun navigate(navController: NavController) {
-            navController.popBackStack(stakeRoute, true)
+            navController.navigateToStake(
+                assetId,
+                navOptions {
+                    launchSingleTop = true
+                    popUpTo(Transfer) {
+                        inclusive = true
+                    }
+                }
+            )
         }
     }
 

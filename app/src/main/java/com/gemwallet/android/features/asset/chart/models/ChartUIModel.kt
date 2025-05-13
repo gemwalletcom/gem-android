@@ -10,5 +10,6 @@ class ChartUIModel(
     class State(
         val loading: Boolean = true,
         val period: ChartPeriod = ChartPeriod.Day,
+        val empty: Boolean = false,
     )
 }

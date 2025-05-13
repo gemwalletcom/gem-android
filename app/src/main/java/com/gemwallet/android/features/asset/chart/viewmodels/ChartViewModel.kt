@@ -46,7 +46,7 @@ class ChartViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
     private val chartState = MutableStateFlow(ChartState())
-    val chartUIState = chartState.map { ChartUIModel.State(it.loading, it.period) }
+    val chartUIState = chartState.map { ChartUIModel.State(it.loading, it.period, it.empty) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, ChartUIModel.State())
 
     val chartUIModel = assetInfo.combine(chartState) { assetInfo, chartState -> Pair(assetInfo, chartState) }
@@ -98,7 +98,7 @@ class ChartViewModel @Inject constructor(
             )
         } + if (currentPoint != null) listOf(currentPoint) else emptyList()
 
-        chartState.update { it.copy(loading = false) }
+        chartState.update { it.copy(loading = false, empty = currentPoint == null && chartPoints.isEmpty()) }
 
         return ChartUIModel(
             period = period,
@@ -117,5 +117,6 @@ class ChartViewModel @Inject constructor(
     private data class ChartState(
         val period: ChartPeriod = ChartPeriod.Day,
         val loading: Boolean = true,
+        val empty: Boolean = false,
     )
 }

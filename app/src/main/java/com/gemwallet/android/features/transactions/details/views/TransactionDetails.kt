@@ -133,11 +133,7 @@ private fun LazyListScope.transactionItemHead(model: TxDetailsScreenModel) {
 
 private fun LazyListScope.transactionDateItem(date: String) {
     item {
-        PropertyItem(
-            R.string.transaction_date,
-            date,
-        )
-
+        PropertyItem(R.string.transaction_date, date)
     }
 }
 
@@ -162,6 +158,7 @@ private fun LazyListScope.transactionStatusItem(model: TxDetailsScreenModel) {
                         TransactionState.Reverted -> MaterialTheme.colorScheme.error
                     },
                     badge = {
+                        Spacer8()
                         when (model.state) {
                             TransactionState.Pending -> CircularProgressIndicator16(color = pendingColor)
                             else -> null
@@ -265,7 +262,7 @@ private fun LazyListScope.transactionProviderItem(provider: SwapProvider?) {
             },
             data = {
                 PropertyDataText(
-                    provider.name.lowercase(),
+                    provider.name,
                     badge = {
                         Spacer8()
                         AsyncImage(

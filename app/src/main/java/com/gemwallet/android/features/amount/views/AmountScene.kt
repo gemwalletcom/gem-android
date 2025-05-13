@@ -3,7 +3,10 @@ package com.gemwallet.android.features.amount.views
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -127,6 +130,13 @@ private fun LazyListScope.validatorView(
             ValidatorItem(
                 data = validatorState,
                 inContainer = true,
+                trailingIcon = {
+                    Icon(
+                        Icons.Default.ChevronRight,
+                        contentDescription = "select_validator",
+                        tint = MaterialTheme.colorScheme.secondary
+                    )
+                },
                 onClick = when (uiModel.txType) {
                     TransactionType.StakeUndelegate -> null
                     else -> {

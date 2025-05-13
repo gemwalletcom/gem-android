@@ -46,10 +46,10 @@ class TokensRepository (
             .awaitAll()
             .mapNotNull { it }
             .map { AssetBasic(asset = it, score = AssetScore(0), properties = AssetProperties(false, false, false, false, false)) }
-            assetsDao.insert(assets.map { it.toRecord() })
+            runCatching { assetsDao.insert(assets.map { it.toRecord() }) }
             assets
         } else {
-            assetsDao.insert(tokens.map { it.toRecord() })
+            runCatching { assetsDao.insert(tokens.map { it.toRecord() }) }
             assetsPriorityDao.put(tokens.toRecordPriority(query))
             tokens
         }
@@ -66,7 +66,7 @@ class TokensRepository (
         }
         val record = AssetBasic(asset = asset, score = AssetScore(0), properties = AssetProperties(false, false, false, false, false))
             .toRecord()
-        assetsDao.insert(record)
+        runCatching { assetsDao.insert(record) }
         return true
     }
 }

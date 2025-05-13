@@ -26,7 +26,7 @@ fun SelectChain(
     onCancel: () -> Unit,
 ) {
     Scene(
-        title = stringResource(id = R.string.transfer_network),
+        title = stringResource(id = R.string.settings_networks_title),
         onClose = onCancel,
     ) {
         LazyColumn(modifier = Modifier, state = listState) {

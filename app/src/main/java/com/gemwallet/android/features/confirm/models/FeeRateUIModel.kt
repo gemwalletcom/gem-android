@@ -44,7 +44,7 @@ data class FeeRateUIModel(
             Chain.Solana -> fee.amount
             else -> (fee as? GasFee)?.maxGasPrice ?: fee.amount
         }
-        val formattedValue = Crypto(value).format(decimals, symbol, 6, -1, SignMode.NoSign, true)
+        val formattedValue = Crypto(value).format(decimals, symbol, 8, -1, SignMode.NoSign, true)
         return formattedValue
     }
 }

@@ -45,10 +45,10 @@ fun AddAssetScene(
     onCancel: () -> Unit,
 ) {
     Scene(
-        title = stringResource(id = R.string.assets_add_custom_token),
+        title = stringResource(id = R.string.wallet_add_token_title),
         mainAction = {
             MainActionButton(
-                title = stringResource(id = R.string.assets_add_custom_token),
+                title = stringResource(id = R.string.wallet_import_action),
                 enabled = searchState is TokenSearchState.Idle && token != null,
                 onClick = onAddAsset,
             )

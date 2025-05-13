@@ -68,7 +68,7 @@ class WalletsRepository @Inject constructor(
     }
 
     suspend fun updateWallet(wallet: Wallet) {
-        putWallet(wallet)
+        walletsDao.update(wallet.toRecord())
     }
 
     suspend fun removeWallet(walletId: String) = withContext(Dispatchers.IO) {
