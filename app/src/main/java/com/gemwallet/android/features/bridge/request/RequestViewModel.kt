@@ -33,7 +33,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
-import wallet.core.jni.EthereumAbi
 import wallet.core.jni.Hash
 import java.math.BigInteger
 import javax.inject.Inject
