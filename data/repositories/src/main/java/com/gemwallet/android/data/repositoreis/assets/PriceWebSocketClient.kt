@@ -53,8 +53,19 @@ class PriceWebSocketClient(
         }
     }
 
+    init {
+        scope.launch {
+            sessionRepository.session().collectLatest {
+                if (!started.get()) start()
+            }
+        }
+    }
+
     fun start() = scope.launch(Dispatchers.IO) {
-        started.set(true)
+        started.set(sessionRepository.getSession()?.wallet != null)
+        if (!started.get()) {
+            return@launch
+        }
         client.wss(method = HttpMethod.Get, host = "api.gemwallet.com", port = 443, path = "/v1/ws/prices") {
             launch(Dispatchers.IO) {
                 priceActionFlow.collectLatest {
