@@ -21,10 +21,12 @@ import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.assets.BalancesRemoteSource
+import com.gemwallet.android.data.repositoreis.assets.PriceWebSocketClient
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.AssetsPriorityDao
 import com.gemwallet.android.data.service.store.database.BalancesDao
+import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.service.store.database.PricesDao
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.available
@@ -53,6 +55,7 @@ object AssetsModule {
         getTransactions: GetTransactions,
         searchTokensCase: SearchTokensCase,
         getDeviceIdCase: GetDeviceIdCase,
+        priceClient: PriceWebSocketClient,
     ): AssetsRepository = AssetsRepository(
         gemApi = gemApiClient,
         assetsDao = assetsDao,
@@ -64,6 +67,7 @@ object AssetsModule {
         balancesRemoteSource = balancesRemoteSource,
         searchTokensCase = searchTokensCase,
         getDeviceIdCase = getDeviceIdCase,
+        priceClient = priceClient
     )
 
     @Provides
@@ -90,5 +94,21 @@ object AssetsModule {
             }
         }
     )
+
+    @Provides
+    @Singleton
+    fun providePriceClient(
+        sessionRepository: SessionRepository,
+        assetsDao: AssetsDao,
+        pricesDao: PricesDao,
+        priceAlertsDao: PriceAlertsDao,
+    ): PriceWebSocketClient {
+        return PriceWebSocketClient(
+            sessionRepository = sessionRepository,
+            assetsDao = assetsDao,
+            pricesDao = pricesDao,
+            priceAlertsDao = priceAlertsDao
+        )
+    }
 }
 

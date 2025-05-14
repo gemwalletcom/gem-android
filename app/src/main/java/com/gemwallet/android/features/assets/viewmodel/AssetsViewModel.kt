@@ -108,12 +108,8 @@ class AssetsViewModel @Inject constructor(
 
     private fun updateAssetData(session: Session) { // TODO: Out to case
         viewModelScope.launch(Dispatchers.IO) {
-            val syncAssets = async {
-                assetsRepository.sync(session.currency)
-            }
-            val syncTxs = async {
-                syncTransactions(session.wallet)
-            }
+            val syncAssets = async { assetsRepository.sync() }
+            val syncTxs = async { syncTransactions(session.wallet) }
             syncAssets.await()
             syncTxs.await()
         }
@@ -123,7 +119,7 @@ class AssetsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val session = sessionRepository.getSession() ?: return@launch
             val account = session.wallet.getAccount(assetId.chain) ?: return@launch
-            assetsRepository.switchVisibility(session.wallet.id, account, assetId, false, session.currency)
+            assetsRepository.switchVisibility(session.wallet.id, account, assetId, false)
         }
     }
 

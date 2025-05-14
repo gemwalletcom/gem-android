@@ -22,8 +22,6 @@ enum class AssetRank(val string: String) {
 	Low("low"),
 	@SerialName("trivial")
 	Trivial("trivial"),
-	@SerialName("unknown")
-	Unknown("unknown"),
 	@SerialName("inactive")
 	Inactive("inactive"),
 	@SerialName("abandoned")
@@ -38,5 +36,7 @@ enum class AssetRank(val string: String) {
 	Spam("spam"),
 	@SerialName("fradulent")
 	Fradulent("fradulent"),
+	@SerialName("unknown")
+	Unknown("unknown"),
 }
 

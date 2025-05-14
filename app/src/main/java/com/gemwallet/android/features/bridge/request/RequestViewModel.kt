@@ -33,7 +33,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
-import wallet.core.jni.EthereumAbi
 import wallet.core.jni.Hash
 import java.math.BigInteger
 import javax.inject.Inject
@@ -137,8 +136,7 @@ class RequestViewModel @Inject constructor(
                     }
                     WalletConnectionMethods.eth_sign_typed_data,
                     WalletConnectionMethods.eth_sign_typed_data_v4 -> {
-                        val param = EthereumAbi.encodeTyped(state.value.params)
-                        signClient.signTypedMessage(chain, param, privateKey).toHexString()
+                        signClient.signTypedMessage(chain, state.value.params.toByteArray(), privateKey).toHexString()
                     }
                     WalletConnectionMethods.solana_sign_message -> {
                         val param = state.value.params.toByteArray()

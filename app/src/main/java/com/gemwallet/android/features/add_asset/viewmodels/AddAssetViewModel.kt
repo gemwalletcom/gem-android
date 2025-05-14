@@ -144,7 +144,6 @@ class AddAssetViewModel @Inject constructor(
                 owner = session.wallet.getAccount(chain.value) ?: return@async,
                 assetId = token.value?.id ?: return@async,
                 visibility = true,
-                currency = session.currency
             )
         }.await()
     }

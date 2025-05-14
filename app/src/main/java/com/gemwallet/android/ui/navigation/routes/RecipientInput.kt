@@ -12,7 +12,6 @@ import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.ConfirmTransactionAction
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.NFTAsset
 import kotlinx.serialization.Serializable
 
 @Serializable

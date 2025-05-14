@@ -33,12 +33,12 @@ import com.gemwallet.android.features.settings.networks.viewmodels.AddNodeViewMo
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AssetListItem
 import com.gemwallet.android.ui.components.CellEntity
+import com.gemwallet.android.ui.components.QrCodeRequest
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.TransferTextFieldActions
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.QrCodeRequest
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Chain
 import java.text.NumberFormat

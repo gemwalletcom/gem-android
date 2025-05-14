@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.gemwallet.android.data.service.store.database.entities.DbAccount
 import com.gemwallet.android.data.service.store.database.entities.DbWallet
 import kotlinx.coroutines.flow.Flow
@@ -22,6 +23,9 @@ interface WalletsDao {
 
     @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun insert(wallet: DbWallet)
+
+    @Update
+    suspend fun update(wallet: DbWallet)
 
     @Delete
     suspend fun delete(account: DbWallet)

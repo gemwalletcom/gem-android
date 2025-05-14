@@ -164,7 +164,10 @@ fun DbAssetInfo.toModel(): AssetInfo? {
         ),
         totalAmount = entity.balanceTotalAmount ?: 0.0,
         fiatTotalAmount = entity.balanceFiatTotalAmount ?: 0.0,
-        isActive = assetIsActive != false,
+        isActive = when (assetId.chain) {
+            Chain.Xrp -> assetIsActive != false // TODO: Fast fix removed in price websockets. Idea: Some users have inconsistent database.
+            else -> true
+        },
     )
 
     val currency = Currency.entries.firstOrNull { it.string == entity.priceCurrency }
@@ -183,9 +186,10 @@ fun DbAssetInfo.toModel(): AssetInfo? {
             AssetPriceInfo(
                 currency = currency,
                 price = AssetPrice(
-                    assetId = assetId.toIdentifier(),
+                    assetId = assetId,
                     price = entity.priceValue,
                     priceChangePercentage24h = entity.priceDayChanges ?: 0.0,
+                    updatedAt = System.currentTimeMillis()
                 )
             )
         } else null,

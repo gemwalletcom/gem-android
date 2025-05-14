@@ -2,6 +2,7 @@ package com.gemwallet.android.features.asset.chart.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,6 +18,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -25,9 +28,11 @@ import com.gemwallet.android.features.asset.chart.components.rememberBottomAxis
 import com.gemwallet.android.features.asset.chart.components.rememberTopAxis
 import com.gemwallet.android.features.asset.chart.models.PricePoint
 import com.gemwallet.android.features.asset.chart.viewmodels.ChartViewModel
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.PriceInfo
 import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.padding4
 import com.gemwallet.android.ui.components.designsystem.space8
 import com.gemwallet.android.ui.components.getRelativeDate
@@ -69,6 +74,7 @@ fun Chart(
     val maxIndex = points.indexOf(max)
     val modelProducer = remember { CartesianChartModelProducer.build() }
     var price by remember { mutableStateOf<PricePoint?>(null) }
+
     Container {
         Column {
             Column(
@@ -96,86 +102,103 @@ fun Chart(
             }
             Spacer16()
             Box(modifier = Modifier.fillMaxWidth().height(200.dp)) {
-                if (state.loading || state.period != uiModel.period) {
-                    CircularProgressIndicator(
+                when {
+                    state.loading || state.period != uiModel.period -> CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
                         strokeWidth = 1.dp
                     )
-                } else if (points.isEmpty()) {
-                    Spacer16()
-                } else {
-                    LaunchedEffect(uiModel.period) {
-                        withContext(Dispatchers.Default) {
-                            modelProducer.tryRunTransaction {
-                                lineSeries {
-                                    series(
-                                        x = List(points.size) { index -> index },
-                                        y = points,
-                                    )
+
+                    state.empty -> ChartError()
+                    points.isEmpty() -> Spacer16()
+                    else -> {
+                        LaunchedEffect(uiModel.period) {
+                            withContext(Dispatchers.Default) {
+                                modelProducer.tryRunTransaction {
+                                    lineSeries {
+                                        series(
+                                            x = List(points.size) { index -> index },
+                                            y = points,
+                                        )
+                                    }
                                 }
                             }
                         }
-                    }
-                    CartesianChartHost(
-                        modifier = Modifier.fillMaxWidth().height(200.dp).padding(end = padding4),
-                        diffAnimationSpec = null,
-                        markerVisibilityListener = object : CartesianMarkerVisibilityListener {
-                            override fun onHidden(marker: CartesianMarker) {
-                                price = null
-                            }
-
-                            override fun onShown(
-                                marker: CartesianMarker,
-                                targets: List<CartesianMarker.Target>
-                            ) {
-                                val index = targets.first().x.toInt()
-                                if (index > 0 && index < uiModel.chartPoints.size) {
-                                    price = uiModel.chartPoints[index]
+                        CartesianChartHost(
+                            modifier = Modifier.fillMaxWidth().height(200.dp)
+                                .padding(end = padding4),
+                            diffAnimationSpec = null,
+                            markerVisibilityListener = object : CartesianMarkerVisibilityListener {
+                                override fun onHidden(marker: CartesianMarker) {
+                                    price = null
                                 }
-                            }
 
-                            override fun onUpdated(
-                                marker: CartesianMarker,
-                                targets: List<CartesianMarker.Target>
-                            ) {
-                                price = uiModel.chartPoints[min(uiModel.chartPoints.size - 1, targets.first().x.toInt())]
-                            }
-                        },
-                        chart = rememberCartesianChart(
-                            rememberLineCartesianLayer(
-                                spacing = 0.1.dp,
-                                lines = listOf(
-                                    rememberLineSpec(
-                                        shader = DynamicShader.color(MaterialTheme.colorScheme.primary),
-                                        backgroundShader = null,
+                                override fun onShown(
+                                    marker: CartesianMarker,
+                                    targets: List<CartesianMarker.Target>
+                                ) {
+                                    val index = targets.first().x.toInt()
+                                    if (index > 0 && index < uiModel.chartPoints.size) {
+                                        price = uiModel.chartPoints[index]
+                                    }
+                                }
+
+                                override fun onUpdated(
+                                    marker: CartesianMarker,
+                                    targets: List<CartesianMarker.Target>
+                                ) {
+                                    price = uiModel.chartPoints[min(
+                                        uiModel.chartPoints.size - 1,
+                                        targets.first().x.toInt()
+                                    )]
+                                }
+                            },
+                            chart = rememberCartesianChart(
+                                rememberLineCartesianLayer(
+                                    spacing = 0.1.dp,
+                                    lines = listOf(
+                                        rememberLineSpec(
+                                            shader = DynamicShader.color(MaterialTheme.colorScheme.primary),
+                                            backgroundShader = null,
+                                        ),
+                                    ),
+                                    axisValueOverrider = AxisValueOverrider.fixed(
+                                        minY = min,
+                                        maxY = max
                                     ),
                                 ),
-                                axisValueOverrider = AxisValueOverrider.fixed(
-                                    minY = min,
-                                    maxY = max
+                                topAxis = rememberTopAxis(
+                                    valueFormatter = { value, _, _ ->
+                                        if (value == maxIndex.toFloat()) uiModel.chartPoints[maxIndex].yLabel
+                                            ?: "" else ""
+                                    },
+                                ),
+                                bottomAxis = rememberBottomAxis(
+                                    valueFormatter = { value, _, _ ->
+                                        if (value == minIndex.toFloat()) uiModel.chartPoints[minIndex].yLabel
+                                            ?: "" else ""
+                                    }
                                 ),
                             ),
-                            topAxis = rememberTopAxis(
-                                valueFormatter = { value, _, _ ->
-                                    if (value == maxIndex.toFloat()) uiModel.chartPoints[maxIndex].yLabel
-                                        ?: "" else ""
-                                },
-                            ),
-                            bottomAxis = rememberBottomAxis(
-                                valueFormatter = { value, _, _ ->
-                                    if (value == minIndex.toFloat()) uiModel.chartPoints[minIndex].yLabel
-                                        ?: "" else ""
-                                }
-                            ),
-                        ),
-                        marker = rememberMarker(labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint),
-                        modelProducer = modelProducer,
-                    )
+                            marker = rememberMarker(labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint),
+                            modelProducer = modelProducer,
+                        )
+                    }
                 }
             }
             Spacer16()
             PeriodsPanel(state.period, viewModel::setPeriod)
         }
+    }
+}
+
+@Composable
+fun ChartError() {
+    Box(modifier = Modifier.fillMaxSize().padding(padding16)) {
+        Text(
+            modifier = Modifier.align(Alignment.Center),
+            textAlign = TextAlign.Center,
+            text = stringResource(R.string.errors_error_occured),
+        )
     }
 }
 

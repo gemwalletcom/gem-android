@@ -12,43 +12,44 @@ core = "3.5.3"
 coreKtx = "1.16.0"
 espressoCore = "3.6.1"
 firebaseMessaging = "24.1.1"
-gradle = "8.9.2"
+gradle = "8.10.0"
 gson = "2.12.1"
 hiltAndroid = "2.55"
 hiltNavigationCompose = "1.2.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 kotlinGradlePlugin = "1.9.24"
-kotlinSerialization = "2.0.21"
+kotlinSerialization = "2.1.20"
 kotlinxSerializationJson = "1.8.0"
 kotlinxCollectionsImmutable = "0.3.8"
 kotlinxCoroutinesAndroid = "1.10.1"
-lifecycleRuntimeCompose = "2.8.7"
+lifecycleRuntimeCompose = "2.9.0"
 loggingInterceptor = "4.12.0"
 retrofit = "2.11.0"
 review = "2.0.2"
 room = "2.7.1"
 securityCrypto = "1.0.0"
-compose = "1.8.0"
+compose = "1.8.1"
 materialIcons = "1.7.8"
-material3 = "1.4.0-alpha13"
-navigationCompose = "2.8.9"
-uiTestJunit4 = "1.8.0"
+material3 = "1.4.0-alpha14"
+navigationCompose = "2.9.0"
+uiTestJunit4 = "1.8.1"
 testRunner = "1.6.2"
-ksp = "2.0.21-1.0.26"
-android-lib = "8.9.2"
-kotlin = "2.0.21"
+ksp = "2.1.21-2.0.1"
+android-lib = "8.10.0"
+kotlin = "2.1.20"
 google-services = "4.4.2"
 material3AdaptiveAndroid = "1.0.0-alpha06"
 turbine = "1.2.0"
 protobuf = "4.29.3"
 reorderable = "2.4.3"
 mockkVersion = "1.13.17"
-datastore = "1.1.4"
+datastore = "1.1.6"
 appcompat = "1.7.0"
 material = "1.12.0"
-wallet-core = "4.3.2"
-gemstone = "0.31.4"
+wallet-core = "4.3.3"
+gemstone = "0.31.6"
+ktor = "3.1.2"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -155,6 +156,11 @@ datastore = { module ="androidx.datastore:datastore-preferences", version.ref = 
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
+# ktor
+ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
+ktor-websocket = { group = "io.ktor", name = "ktor-client-websockets", version.ref = "ktor" }
+ktor-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}

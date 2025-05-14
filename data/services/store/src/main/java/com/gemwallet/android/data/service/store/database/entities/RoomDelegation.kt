@@ -47,7 +47,7 @@ data class RoomDelegation(
                 shares = shares ?: "",
             ),
             price = if (price != null) {
-                Price(price, priceChange ?: 0.0)
+                Price(price, priceChange ?: 0.0, 0L)
             } else {
                 null
             }

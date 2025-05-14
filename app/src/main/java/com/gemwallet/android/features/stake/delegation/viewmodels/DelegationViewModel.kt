@@ -12,8 +12,6 @@ import com.gemwallet.android.features.stake.model.availableIn
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
-import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionType

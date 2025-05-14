@@ -78,14 +78,14 @@ class PriceAlertViewModel @Inject constructor(
     }
 
     fun addAsset(assetId: AssetId) = viewModelScope.launch {
-        assetsRepository.updatePrices(sessionRepository.getSession()?.currency ?: return@launch, assetId)
+//        assetsRepository.updatePrices(sessionRepository.getSession()?.currency ?: return@launch, assetId)
         putPriceAlertCase.putPriceAlert(PriceAlert(assetId, Currency.USD.string)) // TODO: Add user selected currency
     }
 
     private fun refreshPrices(ids: List<AssetId>) = viewModelScope.launch(Dispatchers.IO) {
-        assetsRepository.updatePrices(
-            sessionRepository.getSession()?.currency ?: Currency.USD,
-            *ids.toTypedArray(),
-        )
+//        assetsRepository.updatePrices(
+//            sessionRepository.getSession()?.currency ?: Currency.USD,
+//            *ids.toTypedArray(),
+//        )
     }
 }

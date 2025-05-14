@@ -8,24 +8,6 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-enum class SignDigestType(val string: String) {
-	@SerialName("sign")
-	Sign("sign"),
-	@SerialName("eip191")
-	Eip191("eip191"),
-	@SerialName("eip712")
-	Eip712("eip712"),
-	@SerialName("base58")
-	Base58("base58"),
-}
-
-@Serializable
-data class SignMessage (
-	val type: SignDigestType,
-	val data: ByteArray
-)
-
-@Serializable
 enum class WalletConnectionState(val string: String) {
 	@SerialName("started")
 	Started("started"),
@@ -109,5 +91,7 @@ enum class WalletConnectionMethods(val string: String) {
 	solana_sign_transaction("solana_signTransaction"),
 	@SerialName("solana_signAndSendTransaction")
 	solana_sign_and_send_transaction("solana_signAndSendTransaction"),
+	@SerialName("solana_signAllTransactions")
+	solana_sign_all_transactions("solana_signAllTransactions"),
 }
 
