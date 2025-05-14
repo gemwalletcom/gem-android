@@ -8,6 +8,20 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
+data class SolanaAccountMeta (
+	val pubkey: String,
+	val isSigner: Boolean,
+	val isWritable: Boolean
+)
+
+@Serializable
+data class SolanaInstruction (
+	val programId: String,
+	val accounts: List<SolanaAccountMeta>,
+	val data: String
+)
+
+@Serializable
 object SolanaTransactionError
 
 @Serializable

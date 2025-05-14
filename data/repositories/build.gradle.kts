@@ -66,6 +66,11 @@ dependencies {
 
     implementation(libs.datastore)
 
+    implementation(libs.ktor.core)
+    implementation(libs.ktor.cio)
+    implementation(libs.ktor.websocket)
+    implementation(libs.ktor.json)
+
     implementation(libs.ktx.core)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

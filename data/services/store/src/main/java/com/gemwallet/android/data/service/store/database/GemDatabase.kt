@@ -23,6 +23,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbNFTCollectio
 import com.gemwallet.android.data.service.store.database.entities.DbNode
 import com.gemwallet.android.data.service.store.database.entities.DbPrice
 import com.gemwallet.android.data.service.store.database.entities.DbPriceAlert
+import com.gemwallet.android.data.service.store.database.entities.DbFiatRate
 import com.gemwallet.android.data.service.store.database.entities.DbSession
 import com.gemwallet.android.data.service.store.database.entities.DbTransaction
 import com.gemwallet.android.data.service.store.database.entities.DbTransactionExtended
@@ -30,7 +31,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetada
 import com.gemwallet.android.data.service.store.database.entities.DbWallet
 
 @Database(
-    version = 50,
+    version = 51,
     entities = [
         DbWallet::class,
         DbAccount::class,
@@ -55,7 +56,8 @@ import com.gemwallet.android.data.service.store.database.entities.DbWallet
         DbAssetLink::class,
         DbAssetWallet::class,
         DbAssetMarket::class,
-        DbAssetPriority::class
+        DbAssetPriority::class,
+        DbFiatRate::class,
     ],
     views = [
         DbAssetInfo::class,

@@ -137,11 +137,11 @@ fun DbTransactionExtended.toModel(): TransactionExtended? {
         price = if (this.assetPrice == null)
             null
         else
-            Price(this.assetPrice, this.assetPriceChanged ?: 0.0),
+            Price(this.assetPrice, this.assetPriceChanged ?: 0.0, 0L),
         feePrice = if (this.feePrice == null)
             null
         else
-            Price(this.feePrice, this.feePriceChanged ?: 0.0),
+            Price(this.feePrice, this.feePriceChanged ?: 0.0, 0L),
         assets = emptyList(),
     )
 }

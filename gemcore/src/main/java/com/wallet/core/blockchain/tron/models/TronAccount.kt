@@ -49,7 +49,9 @@ data class TronAccountRequest (
 @Serializable
 data class TronAccountUsage (
 	val freeNetUsed: Int? = null,
-	val freeNetLimit: Int? = null
+	val freeNetLimit: Int? = null,
+	val EnergyUsed: Long? = null,
+	val EnergyLimit: Long? = null
 )
 
 @Serializable

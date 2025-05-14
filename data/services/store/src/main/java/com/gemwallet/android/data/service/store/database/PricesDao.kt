@@ -5,6 +5,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.gemwallet.android.data.service.store.database.entities.DbPrice
+import com.gemwallet.android.data.service.store.database.entities.DbFiatRate
+import com.wallet.core.primitives.Currency
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -16,6 +18,9 @@ interface PricesDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(priceRoom: List<DbPrice>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun setRates(rates: List<DbFiatRate>)
+
     @Query("SELECT * FROM prices")
     fun getAll(): Flow<List<DbPrice>>
 
@@ -24,4 +29,7 @@ interface PricesDao {
 
     @Query("DELETE FROM prices")
     suspend fun deleteAll()
+
+    @Query("SELECT * FROM currency_rates WHERE currency=:currency")
+    suspend fun getRates(currency: Currency): DbFiatRate?
 }

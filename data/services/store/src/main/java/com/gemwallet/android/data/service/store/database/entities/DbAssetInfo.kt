@@ -186,9 +186,10 @@ fun DbAssetInfo.toModel(): AssetInfo? {
             AssetPriceInfo(
                 currency = currency,
                 price = AssetPrice(
-                    assetId = assetId.toIdentifier(),
+                    assetId = assetId,
                     price = entity.priceValue,
                     priceChangePercentage24h = entity.priceDayChanges ?: 0.0,
+                    updatedAt = System.currentTimeMillis()
                 )
             )
         } else null,

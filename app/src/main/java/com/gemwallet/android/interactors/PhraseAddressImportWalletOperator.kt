@@ -20,7 +20,6 @@ import com.gemwallet.android.ui.R
 import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.BannerState
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.CoroutineScope
@@ -62,7 +61,7 @@ class PhraseAddressImportWalletOperator(
         setupWallet(wallet)
 
         scope.launch(Dispatchers.IO) {
-            assetsRepository.importAssets(wallet, sessionRepository.getSession()?.currency ?: Currency.USD)
+            assetsRepository.importAssets(wallet)
             checkAddresses(wallet)
         }
 

@@ -39,7 +39,6 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.AssetMarket
-import com.wallet.core.primitives.AssetPricesRequest
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
@@ -75,8 +74,10 @@ class AssetsRepository @Inject constructor(
     getTransactions: GetTransactions,
     private val searchTokensCase: SearchTokensCase,
     private val getDeviceIdCase: GetDeviceIdCase,
+    private val priceClient: PriceWebSocketClient,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetAsset {
+
     private val visibleByDefault = listOf(Chain.Ethereum, Chain.Bitcoin, Chain.SmartChain, Chain.Solana)
 
     init {
@@ -87,7 +88,7 @@ class AssetsRepository @Inject constructor(
         }
         scope.launch(Dispatchers.IO) {
             sessionRepository.session().collectLatest {
-                sync(it?.currency ?: return@collectLatest)
+                changeCurrency(it?.currency ?: return@collectLatest)
             }
         }
 
@@ -96,19 +97,13 @@ class AssetsRepository @Inject constructor(
         }
     }
 
-    suspend fun sync(currency: Currency) = withContext(Dispatchers.IO) {
-        val balancesJob = getAssetsInfo().firstOrNull()?.updateBalances()
-        val pricesJob = async(Dispatchers.IO) { updatePrices(currency) }
-        balancesJob?.awaitAll()
-        pricesJob.await()
+    suspend fun sync() = withContext(Dispatchers.IO) {
+        getAssetsInfo().firstOrNull()?.updateBalances()?.awaitAll()
     }
 
     suspend fun syncAssetInfo(assetId: AssetId, account: Account) = withContext(Dispatchers.IO) {
-        val currency = getAssetInfo(assetId).firstOrNull()?.price?.currency ?: return@withContext
-        val updatePriceJob = async { updatePrices(currency, assetId) }
         val updateBalancesJob = async { updateBalances(assetId) }
         val getAssetFull = async { syncMarketInfo(assetId, account) }
-        updatePriceJob.await()
         updateBalancesJob.await()
         getAssetFull.await()
     }
@@ -244,7 +239,7 @@ class AssetsRepository @Inject constructor(
             }
     }
 
-    suspend fun resolve(currency: Currency, wallet: Wallet, assetsId: List<AssetId>) = withContext(Dispatchers.IO) {
+    suspend fun resolve(wallet: Wallet, assetsId: List<AssetId>) = withContext(Dispatchers.IO) {
         if (assetsId.isEmpty()) return@withContext
         val assetsFull = gemApi.getAssets(assetsId.map { it.toIdentifier() }).getOrNull() ?: return@withContext
         assetsFull.forEach {
@@ -256,14 +251,10 @@ class AssetsRepository @Inject constructor(
         val balancesJob = async(Dispatchers.IO) {
             getAssetsInfo(assetsId).firstOrNull()?.updateBalances()
         }
-        val pricesJob = async(Dispatchers.IO) {
-            updatePrices(currency)
-        }
         balancesJob.await()
-        pricesJob.await()
     }
 
-    fun importAssets(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
+    fun importAssets(wallet: Wallet) = scope.launch(Dispatchers.IO) {
         launch(Dispatchers.IO) {
             delay(2000) // Wait subscription - token processing
             val availableAssetsId = gemApi.getAssets(getDeviceIdCase.getDeviceId(), wallet.index).getOrNull()
@@ -295,9 +286,6 @@ class AssetsRepository @Inject constructor(
                     }
                 }
                 .awaitAll()
-
-            launch { updatePrices(currency) }
-
         }
         wallet.accounts.filter { !Chain.exclude().contains(it.chain) }.map {
             async {
@@ -312,7 +300,7 @@ class AssetsRepository @Inject constructor(
     /**
      * Check and add new coins and active tokens
      * */
-    fun invalidateDefault(wallet: Wallet, currency: Currency) = scope.launch(Dispatchers.IO) {
+    fun invalidateDefault(wallet: Wallet) = scope.launch(Dispatchers.IO) {
         val assets = getNativeAssets(wallet).associateBy( { it.id.toIdentifier() }, { it })
 
         wallet.accounts.filter { !Chain.exclude().contains(it.chain) }
@@ -328,11 +316,6 @@ class AssetsRepository @Inject constructor(
                     }
                 }
             }.awaitAll()
-        scope.launch { updatePrices(currency) }
-    }
-
-    private fun Account.isVisibleByDefault(type: WalletType): Boolean {
-        return visibleByDefault.contains(chain) || type != WalletType.multicoin
     }
 
     suspend fun switchVisibility(
@@ -340,7 +323,6 @@ class AssetsRepository @Inject constructor(
         owner: Account,
         assetId: AssetId,
         visibility: Boolean,
-        currency: Currency,
     ) = withContext(Dispatchers.IO) {
         runCatching {
             assetsDao.linkAssetToWallet(
@@ -353,8 +335,7 @@ class AssetsRepository @Inject constructor(
         }
         setVisibility(walletId, assetId, visibility)
         if (visibility) {
-            launch { updateBalances(assetId) }
-            launch { updatePrices(currency) }
+            updateBalances(assetId)
         }
     }
 
@@ -364,22 +345,6 @@ class AssetsRepository @Inject constructor(
             assetId = assetId.toIdentifier(),
         )
         runCatching { assetsDao.setConfig(config.copy(isVisible = true, isPinned = !config.isPinned)) }
-    }
-
-    suspend fun clearPrices() = withContext(Dispatchers.IO) {
-        pricesDao.deleteAll()
-    }
-
-    suspend fun updatePrices(currency: Currency, vararg assetIds: AssetId) = withContext(Dispatchers.IO) {
-        val ids = assetIds.toList().map { it.toIdentifier() }.ifEmpty { assetsDao.getAssetsPriceUpdate() }
-        // TODO: java.lang.ClassCastException:
-        //  at com.gemwallet.android.data.repositoreis.assets.AssetsRepository$updatePrices$2.invokeSuspend (AssetsRepository.kt:388)
-        val prices = try {
-            gemApi.prices(AssetPricesRequest(currency.string, ids)).getOrNull()?.prices ?: emptyList()
-        } catch (_: Throwable) {
-            emptyList()
-        }
-        pricesDao.insert(prices.toRecord(currency))
     }
 
     suspend fun updateBalances(vararg tokens: AssetId) {
@@ -399,13 +364,50 @@ class AssetsRepository @Inject constructor(
         )
         val defaultScore = uniffi.gemstone.assetDefaultRank(asset.chain().string)
         runCatching { assetsDao.insert(asset.toRecord(defaultScore), link, config) }
+
+        if (visible) {
+            priceClient.addAssetId(asset.id)
+        }
     }
 
+    suspend fun updateBuyAvailable(assets: List<String>) {
+        assetsDao.resetBuyAvailable()
+        assetsDao.updateBuyAvailable(assets)
+    }
+
+    suspend fun updateSellAvailable(assets: List<String>) {
+        assetsDao.resetSellAvailable()
+        assetsDao.updateSellAvailable(assets)
+    }
+
+    private fun onTransactions(txs: List<TransactionExtended>) = scope.launch {
+        txs.map { txEx ->
+            async {
+                getAssetsInfo(txEx.transaction.getAssociatedAssetIds()).firstOrNull()?.updateBalances()
+            }
+        }.awaitAll()
+    }
+
+    fun getAssetLinks(id: AssetId): Flow<List<AssetLink>> {
+        return assetsDao.getAssetLinks(id.toIdentifier()).toAssetLinksModel()
+    }
+
+    fun getAssetMarket(id: AssetId): Flow<AssetMarket?> {
+        return assetsDao.getAssetMarket(id.toIdentifier()).map { it?.toModel() }
+    }
+
+    private fun Account.isVisibleByDefault(type: WalletType): Boolean {
+        return visibleByDefault.contains(chain) || type != WalletType.multicoin
+    }
 
     private suspend fun setVisibility(walletId: String, assetId: AssetId, visibility: Boolean) = withContext(Dispatchers.IO) {
         val config = assetsDao.getConfig(walletId = walletId, assetId = assetId.toIdentifier())
             ?: DbAssetConfig(assetId = assetId.toIdentifier(), walletId = walletId)
         runCatching { assetsDao.setConfig(config.copy(isVisible = visibility)) }
+
+        if (visibility) {
+            priceClient.addAssetId(assetId)
+        }
     }
 
     private suspend fun syncSwapSupportChains() {
@@ -450,24 +452,6 @@ class AssetsRepository @Inject constructor(
         listOfNotNull(getNative.await()) + getTokens.await()
     }
 
-    suspend fun updateBuyAvailable(assets: List<String>) {
-        assetsDao.resetBuyAvailable()
-        assetsDao.updateBuyAvailable(assets)
-    }
-
-    suspend fun updateSellAvailable(assets: List<String>) {
-        assetsDao.resetSellAvailable()
-        assetsDao.updateSellAvailable(assets)
-    }
-
-    private fun onTransactions(txs: List<TransactionExtended>) = scope.launch {
-        txs.map { txEx ->
-            async {
-                getAssetsInfo(txEx.transaction.getAssociatedAssetIds()).firstOrNull()?.updateBalances()
-            }
-        }.awaitAll()
-    }
-
     private suspend fun List<AssetInfo>.updateBalances(): List<Deferred<List<AssetBalance>>> = withContext(Dispatchers.IO) {
         println()
         groupBy { it.walletId }
@@ -490,11 +474,10 @@ class AssetsRepository @Inject constructor(
             .flatten()
     }
 
-    fun getAssetLinks(id: AssetId): Flow<List<AssetLink>> {
-        return assetsDao.getAssetLinks(id.toIdentifier()).toAssetLinksModel()
-    }
-
-    fun getAssetMarket(id: AssetId): Flow<AssetMarket?> {
-        return assetsDao.getAssetMarket(id.toIdentifier()).map { it?.toModel() }
+    private suspend fun changeCurrency(currency: Currency) {
+        val rate = pricesDao.getRates(currency)?.toModel() ?: return
+        pricesDao.getAll().firstOrNull()?.map {
+            it.copy(value = (it.usdValue ?: 0.0) * rate.rate, currency = currency.string)
+        }?.let { pricesDao.insert(it) }
     }
 }

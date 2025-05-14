@@ -363,10 +363,10 @@ class SwapViewModel @Inject constructor(
         val fromAccount = session.wallet.getAccount(fromId.chain) ?: return
         val toAccount = session.wallet.getAccount(toId.chain) ?: return
         viewModelScope.launch(Dispatchers.IO) {
-            assetsRepository.switchVisibility(session.wallet.id, fromAccount, fromId, true, session.currency)
+            assetsRepository.switchVisibility(session.wallet.id, fromAccount, fromId, true)
         }
         viewModelScope.launch(Dispatchers.IO) {
-            assetsRepository.switchVisibility(session.wallet.id, toAccount, toId, true, session.currency)
+            assetsRepository.switchVisibility(session.wallet.id, toAccount, toId, true)
         }
     }
 

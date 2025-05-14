@@ -35,6 +35,7 @@ data class AssetFull (
 	val asset: Asset,
 	val properties: AssetProperties,
 	val score: AssetScore,
+	val tags: List<String>,
 	val links: List<AssetLink>
 )
 

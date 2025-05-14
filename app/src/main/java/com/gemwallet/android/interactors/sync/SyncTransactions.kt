@@ -36,6 +36,6 @@ class SyncTransactions @Inject constructor(
         val notAvailableAssetIds = txs.map {
             it.getAssociatedAssetIds().filter { assetsRepository.getAsset(it) == null }.toSet()
         }.flatten()
-        assetsRepository.resolve(session.currency, session.wallet, notAvailableAssetIds)
+        assetsRepository.resolve(session.wallet, notAvailableAssetIds)
     }
 }
