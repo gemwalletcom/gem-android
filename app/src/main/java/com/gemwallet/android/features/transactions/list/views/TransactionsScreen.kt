@@ -1,6 +1,7 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.gemwallet.android.features.transactions.list.views
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,11 +12,12 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -47,7 +49,6 @@ fun TransactionsScreen(
     )
 }
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 private fun List(
     uiState: TxListScreenState,
@@ -55,12 +56,25 @@ private fun List(
     onRefresh: () -> Unit,
     onTransactionClick: (String) -> Unit
 ) {
-    val pullRefreshState = rememberPullRefreshState(uiState.loading, onRefresh)
+    val pullToRefreshState = rememberPullToRefreshState()
     Scene(
         title = stringResource(id = R.string.activity_title),
         mainActionPadding = PaddingValues(0.dp),
     ) {
-        Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+        PullToRefreshBox(
+            modifier = Modifier,
+            isRefreshing = uiState.loading,
+            onRefresh = onRefresh,
+            state = pullToRefreshState,
+            indicator = {
+                Indicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    isRefreshing = uiState.loading,
+                    state = pullToRefreshState,
+                    containerColor = MaterialTheme.colorScheme.background
+                )
+            }
+        ) {
             when {
                 uiState.transactions.isEmpty() -> {
                     Column(
@@ -89,7 +103,6 @@ private fun List(
                     }
                 }
             }
-            PullRefreshIndicator(uiState.loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
         }
 
     }

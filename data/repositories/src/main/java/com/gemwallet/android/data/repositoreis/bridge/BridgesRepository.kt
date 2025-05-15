@@ -143,7 +143,6 @@ class BridgesRepository(
             params = approveProposal,
             onError = { error -> onError(error.throwable.message ?: "Unknown error") },
             onSuccess = {
-                it.proposerPublicKey
                 scope.launch(Dispatchers.IO) { addConnection(wallet, proposal) }
                 onSuccess()
             }

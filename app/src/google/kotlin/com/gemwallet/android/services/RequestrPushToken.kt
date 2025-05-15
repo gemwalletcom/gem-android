@@ -4,14 +4,14 @@ import com.gemwallet.android.cases.device.RequestPushToken
 import com.google.firebase.messaging.FirebaseMessaging
 
 class StoreRequestPushToken : RequestPushToken {
-    override suspend fun invoke(onToken: (String) -> Unit) {
+    override suspend fun invoke(callback: (String) -> Unit) {
         try {
             FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
                 val token = if (task.isSuccessful) { task.result } else { "" }
-                onToken(token)
+                callback(token)
             }
         } catch (_: Throwable) {
-            onToken("")
+            callback("")
         }
     }
 }
