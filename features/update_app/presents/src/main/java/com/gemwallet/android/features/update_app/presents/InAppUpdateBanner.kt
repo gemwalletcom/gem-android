@@ -21,7 +21,7 @@ fun InAppUpdateBanner() {
     val context = LocalContext.current
 
     val updateAvailable by viewModel.updateAvailable.collectAsStateWithLifecycle()
-    val updateTask by viewModel.updateTask.collectAsStateWithLifecycle()
+//    val updateTask by viewModel.updateTask.collectAsStateWithLifecycle()
     val progress by viewModel.progress.collectAsStateWithLifecycle()
 
     val coroutine = rememberCoroutineScope()
@@ -33,29 +33,20 @@ fun InAppUpdateBanner() {
     Row {
         Column {
             Text(
-                if (updateTask == null) {
+                if (progress == null) {
                     stringResource(R.string.update_app_title)
                 } else {
                     "Updating"
                 }
             )
-            updateTask?.let {
-                LinearProgressIndicator()
+            progress?.let { progress ->
+                LinearProgressIndicator(
+                    progress = { progress.toFloat() * 0.01f }
+                )
             }
             Button(onClick = { viewModel.startDownload() } ) {
                 Text("Start update")
             }
         }
     }
-
-//    LaunchedEffect(updateTask) {
-//        coroutine.launch(Dispatchers.IO) {
-//            updateTask?.let {
-//                while (progress?.state != DownloadState.PROGRESS) {
-//                    progress = viewModel.observeDownload(it, context)
-//                    delay(60 * 1000)
-//                }
-//            }
-//        }
-//    }
 }

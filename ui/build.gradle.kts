@@ -52,7 +52,7 @@ dependencies {
     // Compose
     api(libs.androidx.material3.adaptive.android)
     api(libs.compose.ui)
-    api(libs.compose.foundation)
+//    api(libs.compose.foundation)
     api(libs.compose.material)
     api(libs.compose.material.icons.core)
     api(libs.compose.material.icons.extended)
