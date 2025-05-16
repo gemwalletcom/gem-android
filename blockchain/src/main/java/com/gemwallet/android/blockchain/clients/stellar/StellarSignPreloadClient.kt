@@ -70,7 +70,7 @@ class StellarSignPreloadClient(
         val fees: List<Fee>,
         val sequence: Long,
     ) : ChainSignData {
-        override fun fee(feePriority: FeePriority): Fee = fees.firstOrNull { it.priority == feePriority } ?: fees.first()
+        override fun fee(speed: FeePriority): Fee = fees.firstOrNull { it.priority == speed } ?: fees.first()
 
         override fun allFee(): List<Fee> = fees
 

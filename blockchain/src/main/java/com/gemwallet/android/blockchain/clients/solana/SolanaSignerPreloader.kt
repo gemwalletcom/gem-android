@@ -95,7 +95,7 @@ class SolanaSignerPreloader(
         val tokenProgram: SolanaTokenProgramId,
         val fees: List<GasFee>,
     ) : ChainSignData {
-        override fun fee(feePriority: FeePriority): Fee = fees.firstOrNull { it.priority == feePriority } ?: fees.first()
+        override fun fee(speed: FeePriority): Fee = fees.firstOrNull { it.priority == speed } ?: fees.first()
 
         override fun allFee(): List<Fee> = fees
     }

@@ -56,6 +56,32 @@ fun AssetChartScene(
         onClose = onCancel,
     ) {
         LazyColumn {
+//            item {
+//                LineChart(
+//                    modifier = Modifier.fillMaxWidth().height(200.dp),
+//                    labelHelperProperties = LabelHelperProperties(enabled = false),
+//                    gridProperties = GridProperties(enabled = false),
+//                    indicatorProperties = HorizontalIndicatorProperties(enabled = false),
+//                    zeroLineProperties = ZeroLineProperties(enabled = false),
+//                    dividerProperties = DividerProperties(enabled = false),
+//                    data = remember {
+//                        listOf(
+//                            Line(
+//                                label = "price",
+//                                values = listOf(28.0, 41.0, 5.0, 10.0, 35.0),
+//                                color = SolidColor(Color(0xFF23af92)),
+////                                firstGradientFillColor = Color(0xFF2BC0A1).copy(alpha = .5f),
+////                                secondGradientFillColor = Color.Transparent,
+//                                strokeAnimationSpec = tween(500, easing = EaseInOutCubic),
+//                                drawStyle = DrawStyle.Stroke(width = 2.dp),
+//                            )
+//                        )
+//                    },
+//                    minValue = 5.0,
+//                    maxValue = 41.0,
+//                    animationMode = AnimationMode.Together(delayBuilder = { it * 500L }),
+//                )
+//            }
             item { Chart() }
             assetMarket(marketModel.currency, marketModel.asset, marketModel.marketInfo, marketModel.explorerName)
 

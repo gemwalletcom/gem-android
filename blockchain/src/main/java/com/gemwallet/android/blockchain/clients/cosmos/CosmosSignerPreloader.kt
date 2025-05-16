@@ -70,6 +70,6 @@ class CosmosSignerPreloader(
         val sequence: Long,
         val fee: Fee,
     ) : ChainSignData {
-        override fun fee(feePriority: FeePriority): Fee = fee
+        override fun fee(speed: FeePriority): Fee = fee
     }
 }

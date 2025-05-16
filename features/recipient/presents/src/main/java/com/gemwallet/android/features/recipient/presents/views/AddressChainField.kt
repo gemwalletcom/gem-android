@@ -22,12 +22,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.recipient.viewmodel.AddressChainViewModel
+import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.designsystem.space4
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.wallet.core.primitives.Chain
@@ -48,7 +50,7 @@ fun ColumnScope.AddressChainField(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val keyboardController = LocalSoftwareKeyboardController.current
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
 
     LaunchedEffect(key1 = value) {
         viewModel.onNameRecord(chain, value)
@@ -102,7 +104,7 @@ fun ColumnScope.AddressChainField(
                 }
                 TransferTextFieldActions(
                     value = value,
-                    paste = { onValueChange(clipboardManager.getText()?.text ?: "", uiState.nameRecord) },
+                    paste = { onValueChange(clipboardManager.getPlainText() ?: "", uiState.nameRecord) },
                     qrScanner = onQrScanner,
                     onClean = {
                         onValueChange("", null)

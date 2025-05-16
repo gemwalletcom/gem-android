@@ -17,10 +17,10 @@ class NativeProvider(
     private val httpClient: OkHttpClient = OkHttpClient(),
 ): AlienProvider {
 
-    override fun getEndpoint(chainString: uniffi.gemstone.Chain): String {
-        return Chain.entries.firstOrNull { it.string == chainString }?.let {
+    override fun getEndpoint(chain: uniffi.gemstone.Chain): String {
+        return Chain.entries.firstOrNull { it.string == chain }?.let {
             getCurrentNodeCase.getCurrentNode(it)?.url
-        } ?: throw IllegalArgumentException("Can't found node url for chain: $chainString")
+        } ?: throw IllegalArgumentException("Can't found node url for chain: $chain")
     }
 
     override suspend fun batchRequest(targets: List<AlienTarget>): List<ByteArray> = withContext(Dispatchers.IO) {
