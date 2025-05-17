@@ -200,8 +200,6 @@ dependencies {
     implementation(libs.lifecycle.runtime.compose)
     implementation(libs.lifecycle.viewmodel.savedstate)
 
-    implementation(libs.compose.activity)
-
     implementation(libs.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
 
@@ -213,6 +211,8 @@ dependencies {
     implementation(libs.vico.m3)
 
     implementation(libs.reorderable)
+
+//    implementation ("io.github.ehsannarmani:compose-charts:0.1.7")
 
     // Google Play
     "googleImplementation"(libs.firebase.messaging)

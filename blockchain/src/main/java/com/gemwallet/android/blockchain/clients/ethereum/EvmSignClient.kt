@@ -88,7 +88,7 @@ class EvmSignClient(
         params: ConfirmParams.TokenApprovalParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        priority: FeePriority,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val meta = chainData as EvmSignerPreloader.EvmChainData
@@ -96,7 +96,7 @@ class EvmSignClient(
         val transfer = buildTransfer(amount, finalAmount, params)
         val input = buildSignInput(
             assetId = params.assetId,
-            fee = meta.gasFee(priority),
+            fee = meta.gasFee(feePriority),
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.destination()?.address ?: "",
@@ -127,7 +127,7 @@ class EvmSignClient(
                     ),
                 chainData = chainData,
                 finalAmount = BigInteger.ZERO,
-                priority = feePriority,
+                feePriority = feePriority,
                 privateKey = privateKey
             )
         } else emptyList()

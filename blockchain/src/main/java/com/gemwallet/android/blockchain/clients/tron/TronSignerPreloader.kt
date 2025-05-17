@@ -118,6 +118,6 @@ class TronSignerPreloader(
         val fee: Fee,
         val votes: Map<String, Long> = emptyMap()
     ) : ChainSignData {
-        override fun fee(feePriority: FeePriority): Fee = fee
+        override fun fee(speed: FeePriority): Fee = fee
     }
 }

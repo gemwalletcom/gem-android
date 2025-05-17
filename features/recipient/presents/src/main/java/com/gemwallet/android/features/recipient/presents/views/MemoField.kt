@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.recipient.presents.views
 
+import android.content.ClipboardManager
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
@@ -9,9 +10,11 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.gemwallet.android.features.recipient.viewmodel.models.RecipientError
+import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.designsystem.space4
 
 @Composable
@@ -23,7 +26,7 @@ fun MemoTextField(
     onQrScanner: (() -> Unit)? = null,
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
-    val clipboardManager = LocalClipboardManager.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
     OutlinedTextField(
         modifier = Modifier
             .fillMaxWidth()
@@ -37,7 +40,7 @@ fun MemoTextField(
         trailingIcon = {
             TransferTextFieldActions(
                 value = value,
-                paste = { onValueChange(clipboardManager.getText()?.text ?: "") },
+                paste = { onValueChange(clipboardManager.getPlainText() ?: "") },
                 qrScanner = onQrScanner,
                 onClean = {
                     onValueChange("")

@@ -1,14 +1,16 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.gemwallet.android.features.stake.stake.views
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,7 +39,6 @@ import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionType
 import com.wallet.core.primitives.WalletType
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun StakeScene(
     uiState: StakeUIState,
@@ -47,13 +48,26 @@ fun StakeScene(
     onDelegation: (String, String) -> Unit,
     onCancel: () -> Unit,
 ) {
-    val pullRefreshState = rememberPullRefreshState(uiState.loading, { onRefresh() })
+    val pullToRefreshState = rememberPullToRefreshState()
 
     Scene(
         title = stringResource(id = R.string.transfer_stake_title),
         onClose = onCancel,
     ) {
-        Box(modifier = Modifier.pullRefresh(pullRefreshState)) {
+        PullToRefreshBox(
+            modifier = Modifier,
+            isRefreshing = uiState.loading,
+            onRefresh = onRefresh,
+            state = pullToRefreshState,
+            indicator = {
+                Indicator(
+                    modifier = Modifier.align(Alignment.TopCenter),
+                    isRefreshing = uiState.loading,
+                    state = pullToRefreshState,
+                    containerColor = MaterialTheme.colorScheme.background
+                )
+            }
+        ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
                     SubheaderItem(title = uiState.title)
@@ -90,7 +104,6 @@ fun StakeScene(
                     )
                 }
             }
-            PullRefreshIndicator(uiState.loading, pullRefreshState, Modifier.align(Alignment.TopCenter))
         }
     }
 }

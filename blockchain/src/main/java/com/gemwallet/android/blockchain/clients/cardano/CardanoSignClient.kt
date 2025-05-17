@@ -20,7 +20,7 @@ class CardanoSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        txSpeed: FeePriority,
+        feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = (chainData as? CardanoSignerPreloaderClient.CardanoChainData)

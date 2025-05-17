@@ -185,7 +185,7 @@ class SuiSignerPreloader(
         val messageBytes: String,
         val fee: Fee,
     ) : ChainSignData {
-        override fun fee(feePriority: FeePriority): Fee = fee
+        override fun fee(speed: FeePriority): Fee = fee
     }
 
     private fun com.wallet.core.blockchain.sui.models.SuiCoin.togemstone() = SuiCoin(
