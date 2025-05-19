@@ -10,9 +10,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.gemwallet.android.MainActivity
-import com.gemwallet.android.cases.device.GetPushEnabledCase
-import com.gemwallet.android.cases.device.SetPushTokenCase
-import com.gemwallet.android.cases.device.SyncDeviceInfoCase
+import com.gemwallet.android.cases.device.GetPushEnabled
+import com.gemwallet.android.cases.device.SetPushToken
+import com.gemwallet.android.cases.device.SyncDeviceInfo
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -25,7 +25,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.jvm.java
 
 @AndroidEntryPoint
 class FCM : FirebaseMessagingService() {
@@ -39,11 +38,11 @@ class FCM : FirebaseMessagingService() {
     @Inject
     lateinit var enablePriceAlertCase: EnablePriceAlertCase
     @Inject
-    lateinit var syncDeviceInfoCase: SyncDeviceInfoCase
+    lateinit var syncDeviceInfoCase: SyncDeviceInfo
     @Inject
-    lateinit var getPushEnabledCase: GetPushEnabledCase
+    lateinit var getPushEnabledCase: GetPushEnabled
     @Inject
-    lateinit var setPushTokenCase: SetPushTokenCase
+    lateinit var setPushTokenCase: SetPushToken
 
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 

@@ -71,14 +71,12 @@ class AppViewModel @Inject constructor(
                 }
                 BuildConfig.FLAVOR == versionFlavor
             }
-            ?.firstOrNull()?.version ?: return@withContext
+            ?.firstOrNull() ?: return@withContext
 
         val skipVersion = userConfig.getAppVersionSkip()
-        if (current.compareTo(BuildConfig.VERSION_NAME) > 0 && skipVersion != current) {
-            userConfig.setLatestVersion(current)
-            state.update {
-                it.copy(intent = AppIntent.ShowUpdate, version = current)
-            }
+        userConfig.setLatestVersion(current.version)
+        if (current.version.compareTo(BuildConfig.VERSION_NAME) > 0 && skipVersion != current.version && current.store != PlatformStore.ApkUniversal) {
+            state.update { it.copy(intent = AppIntent.ShowUpdate, version = current.version) }
         }
     }
 

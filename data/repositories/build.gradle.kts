@@ -70,7 +70,6 @@ dependencies {
     api(libs.ktor.cio)
     api(libs.ktor.websocket)
     api(libs.ktor.json)
-    api(libs.ktor.client)
 
     implementation(libs.ktx.core)
     testImplementation(libs.junit)

@@ -1,9 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import android.content.Context
-import com.gemwallet.android.cases.config.GetInAppUpdateTask
 import com.gemwallet.android.cases.config.GetLatestVersion
-import com.gemwallet.android.cases.config.SetInAppUpdateTask
 import com.gemwallet.android.cases.config.SetLatestVersion
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import dagger.Module
@@ -22,14 +20,6 @@ object ConfigModule {
     fun provideConfigRepository(
         @ApplicationContext context: Context,
     ): UserConfig = UserConfig(context = context)
-
-    @Singleton
-    @Provides
-    fun provideGetInAppUpdateTask(userConfig: UserConfig): GetInAppUpdateTask = userConfig
-
-    @Singleton
-    @Provides
-    fun provideSetInAppUpdateTask(userConfig: UserConfig): SetInAppUpdateTask = userConfig
 
     @Singleton
     @Provides
