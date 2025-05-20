@@ -18,7 +18,11 @@ class SolanaTokenClient(
 ) : GetTokenClient {
 
     override suspend fun getTokenData(tokenId: String): Asset? = withContext(Dispatchers.IO) {
-        val metadataKey = uniffi.gemstone.solanaDeriveMetadataPda(tokenId)
+        val metadataKey = try {
+            uniffi.gemstone.solanaDeriveMetadataPda(tokenId)
+        } catch (_: Throwable) {
+            return@withContext null
+        }
 
         val tokenInfoJob = async {
             accountsService.getAccountInfoSpl(accountsService.createAccountInfoRequest(tokenId))
@@ -32,7 +36,11 @@ class SolanaTokenClient(
         val tokenInfo = tokenInfoJob.await() ?: return@withContext null
         val base64 = base64Job.await() ?: return@withContext null
 
-        val metadata = uniffi.gemstone.solanaDecodeMetadata(base64)
+        val metadata = try {
+            uniffi.gemstone.solanaDecodeMetadata(base64)
+        } catch (_: Throwable) {
+            return@withContext null
+        }
 
         Asset(
             id = AssetId(chain = chain, tokenId = tokenId),
