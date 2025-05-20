@@ -3,7 +3,7 @@ package com.gemwallet.android.interactors
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.blockchain.operators.LoadPrivateDataOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
-import com.gemwallet.android.cases.device.SyncSubscriptionCase
+import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
@@ -23,7 +23,7 @@ class CheckAccounts @Inject constructor(
     private val passwordStore: PasswordStore,
     private val createAccountOperator: CreateAccountOperator,
     private val sessionRepository: SessionRepository,
-    private val syncSubscriptionCase: SyncSubscriptionCase,
+    private val syncSubscription: SyncSubscription,
 ) {
     suspend operator fun invoke() {
         val wallets = walletsRepository.getAll().firstOrNull() ?: emptyList()
@@ -50,7 +50,7 @@ class CheckAccounts @Inject constructor(
                 if (newAccounts.isNotEmpty()) {
                     assetsRepository.invalidateDefault(newWallet)
                 }
-                syncSubscriptionCase.syncSubscription(walletsRepository.getAll().firstOrNull() ?: emptyList())
+                syncSubscription.syncSubscription(walletsRepository.getAll().firstOrNull() ?: emptyList())
             }
         }
     }

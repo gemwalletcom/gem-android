@@ -1,5 +1,5 @@
 package com.gemwallet.android.cases.device
 
-interface SwitchPushEnabledCase {
+interface SwitchPushEnabled {
     fun switchPushEnabledCase(enabled: Boolean)
 }

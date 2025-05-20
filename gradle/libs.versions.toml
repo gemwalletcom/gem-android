@@ -151,6 +151,7 @@ datastore = { module ="androidx.datastore:datastore-preferences", version.ref = 
 # ktor
 ktor-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
 ktor-cio = { group = "io.ktor", name = "ktor-client-cio", version.ref = "ktor" }
+ktor-client = { module = "io.ktor:ktor-client-android", version.ref = "ktor" }
 ktor-websocket = { group = "io.ktor", name = "ktor-client-websockets", version.ref = "ktor" }
 ktor-json = { group = "io.ktor", name = "ktor-serialization-kotlinx-json", version.ref = "ktor" }
 

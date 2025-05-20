@@ -9,7 +9,7 @@ import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.blockchain.operators.ValidatePhraseOperator
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.cases.banners.AddBannerCase
-import com.gemwallet.android.cases.device.SyncSubscriptionCase
+import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
@@ -36,7 +36,7 @@ class PhraseAddressImportWalletOperator(
     private val phraseValidate: ValidatePhraseOperator,
     private val addressValidate: ValidateAddressOperator,
     private val passwordStore: PasswordStore,
-    private val syncSubscriptionCase: SyncSubscriptionCase,
+    private val syncSubscription: SyncSubscription,
     private val addressStatusClients: AddressStatusClientProxy,
     private val addBannerCase: AddBannerCase,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
@@ -83,7 +83,7 @@ class PhraseAddressImportWalletOperator(
         sessionRepository.setWallet(wallet)
 
         scope.launch(Dispatchers.IO) {
-            syncSubscriptionCase.syncSubscription(listOf(wallet))
+            syncSubscription.syncSubscription(listOf(wallet))
         }
     }
 

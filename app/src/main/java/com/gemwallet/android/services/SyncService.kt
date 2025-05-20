@@ -1,6 +1,6 @@
 package com.gemwallet.android.services
 
-import com.gemwallet.android.cases.device.SyncSubscriptionCase
+import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
@@ -17,7 +17,7 @@ class SyncService @Inject constructor(
     private val walletsRepository: WalletsRepository,
     private val syncTransactions: SyncTransactions,
     private val buyRepository: BuyRepository,
-    private val syncSubscriptionCase: SyncSubscriptionCase,
+    private val syncSubscription: SyncSubscription,
 ) {
 
     suspend fun sync() {
@@ -26,7 +26,7 @@ class SyncService @Inject constructor(
                 async { syncTransactions(sessionRepository.getSession()?.wallet ?: return@async) },
                 async { buyRepository.sync() }
             ).awaitAll()
-            syncSubscriptionCase.syncSubscription(walletsRepository.getAll().firstOrNull() ?: emptyList())
+            syncSubscription.syncSubscription(walletsRepository.getAll().firstOrNull() ?: emptyList())
         }
     }
 }

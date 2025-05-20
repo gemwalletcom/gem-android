@@ -188,6 +188,7 @@ dependencies {
     // Features
     implementation(project(":features:recipient:presents"))
     implementation(project(":features:nft:presents"))
+    implementation(project(":features:update_app:presents"))
 
     implementation(libs.ktx.core)
 

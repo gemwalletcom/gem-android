@@ -2,7 +2,7 @@ package com.gemwallet.android.features.settings.price_alerts.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.device.SyncDeviceInfoCase
+import com.gemwallet.android.cases.device.SyncDeviceInfo
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
@@ -34,7 +34,7 @@ class PriceAlertViewModel @Inject constructor(
     val sessionRepository: SessionRepository,
     private val enablePriceAlertCase: EnablePriceAlertCase,
     private val putPriceAlertCase: PutPriceAlertCase,
-    private val syncDeviceInfoCase: SyncDeviceInfoCase,
+    private val syncDeviceInfo: SyncDeviceInfo,
 ) : ViewModel() {
 
     val forceSync = MutableStateFlow(false)
@@ -68,7 +68,7 @@ class PriceAlertViewModel @Inject constructor(
     fun onEnablePriceAlerts(enabled: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
             enablePriceAlertCase.setPriceAlertEnabled(enabled)
-            syncDeviceInfoCase.syncDeviceInfo()
+            syncDeviceInfo.syncDeviceInfo()
         }
         this.enabled.update { enabled }
     }

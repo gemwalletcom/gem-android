@@ -68,7 +68,7 @@ import com.gemwallet.android.blockchain.clients.xrp.XrpNodeStatusClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignerPreloader
 import com.gemwallet.android.cases.device.GetDeviceIdCase
-import com.gemwallet.android.cases.device.SyncSubscriptionCase
+import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -216,14 +216,14 @@ object DataModule {
         walletsRepository: WalletsRepository,
         buyRepository: BuyRepository,
         syncTransactions: SyncTransactions,
-        syncSubscriptionCase: SyncSubscriptionCase,
+        syncSubscription: SyncSubscription,
     ): SyncService {
         return SyncService(
             sessionRepository = sessionRepository,
             walletsRepository = walletsRepository,
             syncTransactions = syncTransactions,
             buyRepository = buyRepository,
-            syncSubscriptionCase = syncSubscriptionCase,
+            syncSubscription = syncSubscription,
         )
     }
 }

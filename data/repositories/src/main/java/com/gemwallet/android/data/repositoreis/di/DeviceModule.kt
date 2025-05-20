@@ -2,12 +2,12 @@ package com.gemwallet.android.data.repositoreis.di
 
 import android.content.Context
 import com.gemwallet.android.cases.device.GetDeviceIdCase
-import com.gemwallet.android.cases.device.GetPushEnabledCase
-import com.gemwallet.android.cases.device.GetPushTokenCase
-import com.gemwallet.android.cases.device.SetPushTokenCase
-import com.gemwallet.android.cases.device.SwitchPushEnabledCase
-import com.gemwallet.android.cases.device.SyncDeviceInfoCase
-import com.gemwallet.android.cases.device.SyncSubscriptionCase
+import com.gemwallet.android.cases.device.GetPushEnabled
+import com.gemwallet.android.cases.device.GetPushToken
+import com.gemwallet.android.cases.device.SetPushToken
+import com.gemwallet.android.cases.device.SwitchPushEnabled
+import com.gemwallet.android.cases.device.SyncDeviceInfo
+import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
 import com.gemwallet.android.cases.session.GetCurrentCurrencyCase
 import com.gemwallet.android.data.repositoreis.device.DeviceRepository
@@ -55,20 +55,20 @@ object DeviceModule {
     }
 
     @Provides
-    fun provideSyncDeviceInfoCase(repository: DeviceRepository): SyncDeviceInfoCase = repository
+    fun provideSyncDeviceInfoCase(repository: DeviceRepository): SyncDeviceInfo = repository
 
     @Provides
-    fun provideSwitchPushEnabledCase(repository: DeviceRepository): SwitchPushEnabledCase = repository
+    fun provideSwitchPushEnabledCase(repository: DeviceRepository): SwitchPushEnabled = repository
 
     @Provides
-    fun provideGetPushEnabledCase(repository: DeviceRepository): GetPushEnabledCase = repository
+    fun provideGetPushEnabledCase(repository: DeviceRepository): GetPushEnabled = repository
 
     @Provides
-    fun provideSetPushTokenCase(repository: DeviceRepository): SetPushTokenCase = repository
+    fun provideSetPushTokenCase(repository: DeviceRepository): SetPushToken = repository
 
     @Provides
-    fun provideGetPushTokenCase(repository: DeviceRepository): GetPushTokenCase = repository
+    fun provideGetPushTokenCase(repository: DeviceRepository): GetPushToken = repository
 
     @Provides
-    fun provideSyncSubscriptionCase(repository: DeviceRepository): SyncSubscriptionCase = repository
+    fun provideSyncSubscriptionCase(repository: DeviceRepository): SyncSubscription = repository
 }

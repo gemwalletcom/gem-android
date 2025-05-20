@@ -3,11 +3,11 @@ package com.gemwallet.android.features.settings.settings.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.device.GetDeviceIdCase
-import com.gemwallet.android.cases.device.GetPushEnabledCase
-import com.gemwallet.android.cases.device.GetPushTokenCase
-import com.gemwallet.android.cases.device.SwitchPushEnabledCase
-import com.gemwallet.android.cases.device.SyncDeviceInfoCase
-import com.gemwallet.android.cases.device.SyncSubscriptionCase
+import com.gemwallet.android.cases.device.GetPushEnabled
+import com.gemwallet.android.cases.device.GetPushToken
+import com.gemwallet.android.cases.device.SwitchPushEnabled
+import com.gemwallet.android.cases.device.SyncDeviceInfo
+import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.OnSessionChange
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -30,12 +30,12 @@ class SettingsViewModel @Inject constructor(
     private val userConfig: UserConfig,
     private val walletsRepository: WalletsRepository,
     private val sessionRepository: SessionRepository,
-    private val syncDeviceInfoCase: SyncDeviceInfoCase,
+    private val syncDeviceInfo: SyncDeviceInfo,
     private val getDeviceIdCase: GetDeviceIdCase,
-    private val switchPushEnabledCase: SwitchPushEnabledCase,
-    private val getPushTokenCase: GetPushTokenCase,
-    private val getPushEnabledCase: GetPushEnabledCase,
-    private val syncSubscriptionCase: SyncSubscriptionCase,
+    private val switchPushEnabled: SwitchPushEnabled,
+    private val getPushToken: GetPushToken,
+    private val getPushEnabled: GetPushEnabled,
+    private val syncSubscription: SyncSubscription,
 ) : ViewModel(), OnSessionChange {
 
     private val state = MutableStateFlow(SettingsViewModelState())
@@ -55,10 +55,10 @@ class SettingsViewModel @Inject constructor(
         state.update {
             it.copy(
                 currency = sessionRepository.getSession()?.currency ?: Currency.USD,
-                pushEnabled = getPushEnabledCase.getPushEnabled(),
+                pushEnabled = getPushEnabled.getPushEnabled(),
                 developEnabled = userConfig.developEnabled(),
                 deviceId = getDeviceIdCase.getDeviceId(),
-                pushToken = getPushTokenCase.getPushToken()
+                pushToken = getPushToken.getPushToken()
             )
         }
     }
@@ -72,9 +72,9 @@ class SettingsViewModel @Inject constructor(
         val pushEnabled = !state.value.pushEnabled
         state.update { it.copy(pushEnabled = pushEnabled) }
         viewModelScope.launch {
-            switchPushEnabledCase.switchPushEnabledCase(pushEnabled)
-            syncDeviceInfoCase.syncDeviceInfo()
-            syncSubscriptionCase.syncSubscription(walletsRepository.getAll().firstOrNull() ?: emptyList())
+            switchPushEnabled.switchPushEnabledCase(pushEnabled)
+            syncDeviceInfo.syncDeviceInfo()
+            syncSubscription.syncSubscription(walletsRepository.getAll().firstOrNull() ?: emptyList())
         }
     }
 

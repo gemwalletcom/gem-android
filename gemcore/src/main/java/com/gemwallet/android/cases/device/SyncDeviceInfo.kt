@@ -1,5 +1,5 @@
 package com.gemwallet.android.cases.device
 
-interface SyncDeviceInfoCase {
+interface SyncDeviceInfo {
     suspend fun syncDeviceInfo()
 }

@@ -66,10 +66,10 @@ dependencies {
 
     implementation(libs.datastore)
 
-    implementation(libs.ktor.core)
-    implementation(libs.ktor.cio)
-    implementation(libs.ktor.websocket)
-    implementation(libs.ktor.json)
+    api(libs.ktor.core)
+    api(libs.ktor.cio)
+    api(libs.ktor.websocket)
+    api(libs.ktor.json)
 
     implementation(libs.ktx.core)
     testImplementation(libs.junit)

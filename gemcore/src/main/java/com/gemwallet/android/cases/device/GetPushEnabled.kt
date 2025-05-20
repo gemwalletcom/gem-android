@@ -1,5 +1,5 @@
 package com.gemwallet.android.cases.device
 
-interface GetPushEnabledCase {
+interface GetPushEnabled {
     fun getPushEnabled(): Boolean
 }
