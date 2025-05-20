@@ -24,8 +24,11 @@ class SyncTransactions @Inject constructor(
     suspend operator fun invoke(wallet: Wallet) = withContext(Dispatchers.IO) {
         val deviceId = getDeviceIdCase.getDeviceId()
         val lastSyncTime = getTransactionUpdateTime.getTransactionUpdateTime(wallet.id) / 1000
-        val response = runCatching { gemApiClient.getTransactions(deviceId, wallet.index, lastSyncTime) }
-        val txs = response.getOrNull()?.getOrNull() ?: return@withContext
+        val response = runCatching {
+            val result: List<Transaction>? = gemApiClient.getTransactions(deviceId, wallet.index, lastSyncTime).getOrNull()
+            result
+        }
+        val txs: List<Transaction> = response.getOrNull() ?: return@withContext
         prefetchAssets(txs)
 
         putTransactions.putTransactions(walletId = wallet.id, txs.toList())
