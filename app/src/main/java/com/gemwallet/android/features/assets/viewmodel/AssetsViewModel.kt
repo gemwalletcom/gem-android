@@ -97,9 +97,6 @@ class AssetsViewModel @Inject constructor(
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, WalletInfoUIState())
 
-    val currentVersion = userConfig.getLatestVersion()
-        .stateIn(viewModelScope, SharingStarted.Eagerly, "")
-
     fun onRefresh() {
         val session = sessionRepository.getSession() ?: return
         refreshingState.update { RefresingState.OnForce }

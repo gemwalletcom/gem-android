@@ -54,11 +54,11 @@ class AppViewModel @Inject constructor(
     private fun hasSession(): Boolean = sessionRepository.hasSession()
 
     private suspend fun handleAppVersion() = withContext(Dispatchers.IO) {
-//        if (BuildConfig.DEBUG) {
-//            return@withContext
-//        }
+        if (BuildConfig.DEBUG) {
+            return@withContext
+        }
         val response = gemApiClient.getConfig().getOrNull()
-        val current = response?.releases?.filter {
+        val lastRelease = response?.releases?.filter {
                 val versionFlavor = when (it.store) {
                     PlatformStore.GooglePlay -> "google"
                     PlatformStore.Fdroid -> "fdroid"
@@ -74,9 +74,10 @@ class AppViewModel @Inject constructor(
             ?.firstOrNull() ?: return@withContext
 
         val skipVersion = userConfig.getAppVersionSkip()
-        userConfig.setLatestVersion(current.version)
-        if (current.version.compareTo(BuildConfig.VERSION_NAME) > 0 && skipVersion != current.version && current.store != PlatformStore.ApkUniversal) {
-            state.update { it.copy(intent = AppIntent.ShowUpdate, version = current.version) }
+        val lastVersion = lastRelease.version
+        userConfig.setLatestVersion(lastVersion)
+        if (lastVersion.compareTo(BuildConfig.VERSION_NAME) > 0 && skipVersion != lastVersion/* && current.store != PlatformStore.ApkUniversal*/) {
+            state.update { it.copy(intent = AppIntent.ShowUpdate, version = lastVersion) }
         }
     }
 

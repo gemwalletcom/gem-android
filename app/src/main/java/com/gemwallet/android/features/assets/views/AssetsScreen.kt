@@ -46,6 +46,7 @@ import com.gemwallet.android.features.assets.model.WalletInfoUIState
 import com.gemwallet.android.features.assets.viewmodel.AssetsViewModel
 import com.gemwallet.android.features.banners.views.BannersScene
 import com.gemwallet.android.features.update_app.presents.InAppUpdateBanner
+import com.gemwallet.android.ui.BuildConfig
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
@@ -73,7 +74,6 @@ fun AssetsScreen(
     val unpinnedAssets by viewModel.unpinnedAssets.collectAsStateWithLifecycle()
     val walletInfo by viewModel.walletInfo.collectAsStateWithLifecycle()
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
-    val currentVersion by viewModel.currentVersion.collectAsStateWithLifecycle()
 
     val uriHandler = LocalUriHandler.current
 
@@ -105,9 +105,6 @@ fun AssetsScreen(
             ) {
                 assetsHead(walletInfo, onSendClick, onReceiveClick, onBuyClick, viewModel::hideBalances)
                 item {
-//                    if (currentVersion.compareTo(BuildConfig.VERSION_NAME) > 0) {
-//                        InAppUpdateBanner()
-//                    }
                     InAppUpdateBanner()
                     BannersScene(
                         asset = null,

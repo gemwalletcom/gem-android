@@ -9,6 +9,7 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.config.GetLatestVersion
+import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.model.BuildInfo
 import com.wallet.core.primitives.PlatformStore
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,13 +40,14 @@ class InAppUpdateViewModels @Inject constructor(
     @ApplicationContext private val context: Context,
     private val buildInfo: BuildInfo,
     private val getLatestVersion: GetLatestVersion,
+    private val userConfig: UserConfig,
 ) : ViewModel() {
 
     val appFileProvider = "${context.packageName}.provider"
     val intentDataType = "application/vnd.android.package-archive"
 
     val updateAvailable = getLatestVersion.getLatestVersion().map {
-        if (buildInfo.versionName != it && buildInfo.platformStore == PlatformStore.ApkUniversal) {
+        if (buildInfo.versionName != it && buildInfo.platformStore == PlatformStore.ApkUniversal && userConfig.developEnabled()) {
             it
         } else {
             null
@@ -81,7 +83,6 @@ class InAppUpdateViewModels @Inject constructor(
     private fun download() {
         val version = updateAvailable.value ?: throw IllegalArgumentException()
         val url = "https://apk.gemwallet.com/gem_wallet_universal_v${version}.apk"
-//            val url = "https://apk.gemwallet.com/gem_wallet_universal_v1.2.361.apk"
         val destinationFile = getApkFile()
         val client = OkHttpClient()
         val request = Request.Builder().url(url).build()
