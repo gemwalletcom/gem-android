@@ -393,7 +393,12 @@ class SwapViewModel @Inject constructor(
             return@launch
         }
         val wallet = sessionRepository.getSession()?.wallet ?: return@launch
-        val swapData = swapRepository.getQuoteData(quote, wallet)
+        val swapData = try {
+            swapRepository.getQuoteData(quote, wallet)
+        } catch (_: Throwable) {
+            swapScreenState.update { SwapState.Error(SwapError.NoQuote) }
+            return@launch
+        }
         onConfirm(
             ConfirmParams.SwapParams(
                 from = from.owner!!,
