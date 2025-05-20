@@ -18,12 +18,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.asset.chart.components.PeriodsPanel
+import com.gemwallet.android.features.asset.chart.components.ShapeComponent
 import com.gemwallet.android.features.asset.chart.components.rememberBottomAxis
 import com.gemwallet.android.features.asset.chart.components.rememberTopAxis
 import com.gemwallet.android.features.asset.chart.models.PricePoint
@@ -43,7 +46,6 @@ import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineSpec
 import com.patrykandpatrick.vico.compose.cartesian.marker.rememberDefaultCartesianMarker
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
-import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.patrykandpatrick.vico.compose.common.shader.color
 import com.patrykandpatrick.vico.compose.common.shape.dashed
@@ -53,6 +55,7 @@ import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarker
 import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerVisibilityListener
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
+import com.patrykandpatrick.vico.core.common.Dimensions
 import com.patrykandpatrick.vico.core.common.component.LineComponent
 import com.patrykandpatrick.vico.core.common.shader.DynamicShader
 import com.patrykandpatrick.vico.core.common.shape.Shape
@@ -226,6 +229,26 @@ private fun rememberMarker(
 }
 
 @Composable
+public fun rememberShapeComponent(
+    shape: Shape = Shape.Rectangle,
+    color: Color = Color.Black,
+    dynamicShader: DynamicShader? = null,
+    margins: Dimensions = Dimensions.Empty,
+    strokeWidth: Dp = 0.dp,
+    strokeColor: Color = Color.Transparent,
+): ShapeComponent =
+    remember(shape, color, dynamicShader, margins, strokeWidth, strokeColor) {
+        ShapeComponent(
+            shape = shape,
+            color = color.toArgb(),
+            dynamicShader = dynamicShader,
+            margins = margins,
+            strokeWidthDp = strokeWidth.value,
+            strokeColor = strokeColor.toArgb(),
+        )
+    }
+
+@Composable
 private fun rememberMarketGuideLine(): LineComponent {
     return rememberLineComponent(
         color = MaterialTheme.colorScheme.outlineVariant,
@@ -238,3 +261,4 @@ private fun rememberMarketGuideLine(): LineComponent {
         },
     )
 }
+
