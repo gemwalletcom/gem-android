@@ -34,9 +34,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.settings.currency.components.emojiFlags
 import com.gemwallet.android.features.settings.settings.components.LinkItem
 import com.gemwallet.android.features.settings.settings.viewmodels.SettingsViewModel
-import com.gemwallet.android.services.isNotificationsAvailable
+import com.gemwallet.android.flavors.ReviewManager
+import com.gemwallet.android.flavors.isNotificationsAvailable
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.ReviewManager
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.open

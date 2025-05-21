@@ -4,7 +4,6 @@ plugins {
     kotlin("android")
     kotlin("kapt")
     id("kotlinx-serialization")
-    id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
     id("androidx.room")
     alias(libs.plugins.compose.compiler)
@@ -215,17 +214,23 @@ dependencies {
 //    implementation ("io.github.ehsannarmani:compose-charts:0.1.7")
 
     // Google Play
-    "googleImplementation"(libs.firebase.messaging)
-    "googleImplementation"(libs.play.review)
-    "googleImplementation"(libs.play.review.ktx)
+    "googleImplementation"(project(":flavors:fcm"))
+    "googleImplementation"(project(":flavors:google-review"))
     // Solana Store
-    "solanaImplementation"(libs.firebase.messaging)
+    "solanaImplementation"(project(":flavors:fcm"))
+    "solanaImplementation"(project(":flavors:review-stub"))
     // Universal
-    "universalImplementation"(libs.firebase.messaging)
-    "universalImplementation"(libs.play.review)
-    "universalImplementation"(libs.play.review.ktx)
+    "universalImplementation"(project(":flavors:fcm"))
+    "universalImplementation"(project(":flavors:google-review"))
     // Samsung
-    "samsungImplementation"(libs.firebase.messaging)
+    "samsungImplementation"(project(":flavors:fcm"))
+    "samsungImplementation"(project(":flavors:review-stub"))
+    // huawei
+    "huaweiImplementation"(project(":flavors:pushes-stub"))
+    "huaweiImplementation"(project(":flavors:review-stub"))
+    // fdroid
+    "fdroidImplementation"(project(":flavors:pushes-stub"))
+    "fdroidImplementation"(project(":flavors:review-stub"))
 
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
