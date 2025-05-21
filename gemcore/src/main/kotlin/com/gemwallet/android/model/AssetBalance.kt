@@ -75,6 +75,12 @@ private fun Balance<String>.createAmount(decimals: Int) = Balance<Double>(
     reserved = Crypto(reserved).value(decimals).stripTrailingZeros().toDouble(),
 )
 
+fun Balance<String>.hasAvailable() = try {
+    available.toBigInteger() > BigInteger.ZERO
+} catch (_: Throwable) {
+    false
+}
+
 fun Balance<Double>.getTotalAmount() = available + frozen + locked + staked + pending + rewards
 
 fun Balance<Double>.getStackedAmount() = frozen + staked + pending + rewards + locked

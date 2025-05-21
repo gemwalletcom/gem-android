@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.features.buy.models.BuyFiatProviderUIModel
 import com.gemwallet.android.features.buy.models.FiatSceneState
 import com.gemwallet.android.features.buy.models.FiatSuggestion
+import com.gemwallet.android.model.hasAvailable
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.AssetListItem
@@ -67,7 +68,7 @@ fun BuyScene(
 
     Scene(
         title = {
-            if (asset.assetInfo.metadata?.isSellEnabled == true) {
+            if (asset.assetInfo.metadata?.isSellEnabled == true && asset.assetInfo.balance.balance.hasAvailable()) {
                 SingleChoiceSegmentedButtonRow {
                     FiatQuoteType.entries.forEachIndexed { index, entry ->
                         SegmentedButton(
