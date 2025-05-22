@@ -1,6 +1,8 @@
 package com.wallet
 
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.format
+import com.wallet.core.primitives.Currency
 import junit.framework.TestCase.assertEquals
 import org.junit.Test
 import java.math.BigInteger
@@ -20,5 +22,12 @@ class TestFormat {
         assertEquals(Crypto(BigInteger.valueOf(12345678910)).format(6, "", 2), "12,345.67")
         assertEquals(Crypto(BigInteger.valueOf(12345678910)).format(10, "", 2), "1.23")
         assertEquals(Crypto(BigInteger.valueOf(12345678910)).format(18, "", 2, dynamicPlace = true), "0.00000001")
+    }
+
+    @Test
+    fun testCurrency_Format() {
+        assertEquals(Currency.USD.format(2.0), "$2.00")
+        assertEquals(Currency.USD.format(2.04E-6), "$0.00")
+        assertEquals(Currency.USD.format(2.04E-6, dynamicPlace = true), "$0.00000204")
     }
 }

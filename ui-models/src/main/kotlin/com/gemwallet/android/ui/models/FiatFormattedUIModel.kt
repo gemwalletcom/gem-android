@@ -8,5 +8,5 @@ interface FiatFormattedUIModel {
     val fiat: Double?
 
     val fiatFormatted: String
-        get() = fiat?.let { currency.format(it) } ?: ""
+        get() = fiat?.let { currency.format(it, dynamicPlace = true) } ?: ""
 }

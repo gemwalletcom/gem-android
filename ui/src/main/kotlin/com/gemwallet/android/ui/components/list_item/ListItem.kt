@@ -46,11 +46,6 @@ fun ListItem(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                // TODO: On commit time compose correct calculate weight only with >= 3 items in row:
-                // TODO: LEADING | MIDDLE.weight(1) | TRAILING
-                // TODO: weight(1) used to flexible fill middle space
-                // TODO: We add stub item for get 3 items in container
-                // TODO: After change check BuyScreen (random)
                 Stub()
                 Column(
                     modifier = Modifier.weight(1f).fillMaxHeight(),

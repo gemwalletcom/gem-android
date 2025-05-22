@@ -144,7 +144,7 @@ class AsseDetailsViewModel @Inject constructor(
                     asset.name
                 },
                 iconUrl = asset.id.getIconUrl(),
-                priceValue = if (price == 0.0) "" else currency.format(price),
+                priceValue = if (price == 0.0) "" else currency.format(price, dynamicPlace = true),
                 priceDayChanges = PriceUIState.formatPercentage(
                     assetInfo.price?.price?.priceChangePercentage24h ?: 0.0
                 ),
