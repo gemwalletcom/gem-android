@@ -66,7 +66,7 @@ fun SettingsScene(
     val viewModel: SettingsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val reviewManager = remember { ReviewManager(context) }
+    val reviewManager = remember { ReviewManager() }
     val version = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
     } else {

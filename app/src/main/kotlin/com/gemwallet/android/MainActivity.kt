@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Bundle
+import android.os.SystemClock
 import android.widget.Toast
 import android.widget.Toast.makeText
 import androidx.activity.viewModels
@@ -57,6 +58,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -64,6 +66,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.concurrent.Executor
 import javax.inject.Inject
+import kotlin.concurrent.atomics.AtomicLong
+import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.system.exitProcess
 
 @AndroidEntryPoint
@@ -85,6 +89,16 @@ class MainActivity : SecureBaseFragmentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         prepareBiometricAuth()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onActivityResumed()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.onActivityPaused()
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -234,6 +248,7 @@ class MainActivity : SecureBaseFragmentActivity() {
     }
 }
 
+@OptIn(ExperimentalAtomicApi::class)
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val userConfig: UserConfig,
@@ -247,6 +262,9 @@ class MainViewModel @Inject constructor(
             initialAuth = if (userConfig.authRequired()) AuthState.Required else AuthState.Success
         )
     )
+
+    private val pauseTime = AtomicLong(0)
+
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, MainUIState())
 
@@ -306,6 +324,20 @@ class MainViewModel @Inject constructor(
     fun resetWcError() {
         state.update { it.copy(wcError = null) }
     }
+
+    fun onActivityResumed() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val interval = SystemClock.uptimeMillis() - pauseTime.load()
+            if (userConfig.authRequired() && interval > (userConfig.getLockInterval().firstOrNull() ?: 0) * 60 * 1000) {
+                state.update { it.copy(initialAuth = AuthState.Required) }
+            }
+        }
+    }
+
+    fun onActivityPaused() {
+        pauseTime.store(SystemClock.uptimeMillis())
+    }
+
 
     data class MainState(
         val initialAuth: AuthState = AuthState.Required,

@@ -4,17 +4,22 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.gemwallet.android.cases.config.GetLatestVersion
+import com.gemwallet.android.cases.config.GetLockInterval
 import com.gemwallet.android.cases.config.SetLatestVersion
+import com.gemwallet.android.cases.config.SetLockInterval
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 class UserConfig(
     private val context: Context,
 ) : GetLatestVersion,
-    SetLatestVersion
+        SetLatestVersion,
+        GetLockInterval,
+        SetLockInterval
 {
 
     private lateinit var store: SharedPreferences
@@ -70,6 +75,15 @@ class UserConfig(
         }
     }
 
+    override fun getLockInterval(): Flow<Int> = context.dataStore.data
+    .map { preferences -> preferences[Key.LockInterval] ?: 1 }
+
+    override suspend fun setLockInterval(minutes: Int) {
+        context.dataStore.edit { preferences ->
+            preferences[Key.LockInterval] = minutes
+        }
+    }
+
     private fun getStore(): SharedPreferences {
         if (!::store.isInitialized) {
             store = context.getSharedPreferences("config", Context.MODE_PRIVATE)
@@ -110,5 +124,6 @@ class UserConfig(
     private object Key {
         val IsHideBalances = booleanPreferencesKey("hide_balances")
         val LatestVersion = stringPreferencesKey("latest_version")
+        val LockInterval = intPreferencesKey("lock_interval")
     }
 }

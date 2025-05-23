@@ -1,16 +1,15 @@
 package com.gemwallet.android.flavors
 
-import android.content.Context
+import android.app.Activity
 import com.google.android.play.core.review.ReviewManagerFactory
 
-class ReviewManager(val context: Context) {
-//    private val reviewManager = FakeReviewManager(context)
-    private val reviewManager = ReviewManagerFactory.create(context)
-
-    fun open() {
+class ReviewManager() {
+    fun open(activity: Activity) {
+        //    private val reviewManager = FakeReviewManager(context)
+        val reviewManager = ReviewManagerFactory.create(activity)
         reviewManager.requestReviewFlow().addOnCompleteListener {
             if (it.isSuccessful) {
-//                reviewManager.launchReviewFlow(context.getActivity()!!, it.result)
+                reviewManager.launchReviewFlow(activity, it.result)
             }
         }
     }

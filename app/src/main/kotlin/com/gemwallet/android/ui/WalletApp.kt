@@ -1,6 +1,7 @@
 package com.gemwallet.android.ui
 
 import android.content.Context
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -58,7 +59,7 @@ fun WalletApp() {
 
     if (state.intent == AppIntent.ShowReview) {
         viewModel.onReviewOpen()
-        ReviewManager(LocalContext.current).open()
+        ReviewManager().open(LocalActivity.current ?: return)
     }
 }
 
