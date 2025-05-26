@@ -170,6 +170,8 @@ sealed class ConfirmParams {
     ) : ConfirmParams() {
         override val amount: BigInteger
             get() = BigInteger.ZERO
+
+        override fun memo(): String? = data
     }
 
     @Serializable
