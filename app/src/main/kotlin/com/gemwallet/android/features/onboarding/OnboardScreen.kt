@@ -2,6 +2,7 @@ package com.gemwallet.android.features.onboarding
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -31,6 +32,7 @@ fun OnboardScreen(
 ) {
     Column(
         modifier = Modifier
+            .background(MaterialTheme.colorScheme.background)
             .fillMaxSize()
             .padding(horizontal = 16.dp, vertical = 48.dp)
     ) {
@@ -46,6 +48,7 @@ fun OnboardScreen(
                 contentDescription = "welcome_icon",
                 modifier = Modifier.size(100.dp),
             )
+            Spacer16()
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(id = R.string.welcome_title),
