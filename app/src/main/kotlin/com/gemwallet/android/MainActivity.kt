@@ -105,7 +105,9 @@ class MainActivity : SecureBaseFragmentActivity() {
     @Composable
     override fun MainContent() {
         val state by viewModel.uiState.collectAsStateWithLifecycle()
-        if ((state.initialAuth == AuthState.Required || state.authState == AuthState.Required) && enabledSysAuth()) {
+        val enableSysAuth = enabledSysAuth()
+        val authState = (state.initialAuth == AuthState.Required || state.authState == AuthState.Required)
+        if (authState && enableSysAuth) {
             biometricPrompt.authenticate(promptInfo)
         } else {
             if (state.authState == AuthState.Success) {
@@ -113,7 +115,7 @@ class MainActivity : SecureBaseFragmentActivity() {
             }
         }
         WalletTheme {
-            if (state.initialAuth == AuthState.Success) {
+            if (state.initialAuth == AuthState.Success || !enableSysAuth) {
                 WalletApp()
                 OnWalletConnect()
             } else {
@@ -200,7 +202,8 @@ class MainActivity : SecureBaseFragmentActivity() {
     }
 
     private fun enabledSysAuth(): Boolean {
-        return BiometricManager.from(this).canAuthenticate(authenticators) != BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
+        val canAuth = BiometricManager.from(this).canAuthenticate(authenticators)
+        return canAuth != BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED
     }
 
     private fun prepareBiometricAuth() {
@@ -242,8 +245,12 @@ class MainActivity : SecureBaseFragmentActivity() {
     companion object {
         fun requestAuth(context: Context, auth: AuthRequest, onSuccess: () -> Unit) {
             val activity = context.getActivity() ?: exitProcess(0)
-            activity.onSuccessAuth = onSuccess
-            activity.auth(auth)
+            if (activity.enabledSysAuth()) {
+                activity.onSuccessAuth = onSuccess
+                activity.auth(auth)
+            } else {
+                onSuccess()
+            }
         }
     }
 }
@@ -351,7 +358,6 @@ class MainViewModel @Inject constructor(
                 initialAuth = initialAuth,
                 authState = authState,
                 wcError = wcError,
-                showWCPairing = showWCPairing,
             )
         }
     }
@@ -360,7 +366,6 @@ class MainViewModel @Inject constructor(
         val initialAuth: AuthState = AuthState.Required,
         val authState: AuthState? = null,
         val wcError: String? = null,
-        val showWCPairing: Boolean = false,
     )
 }
 
@@ -368,7 +373,6 @@ enum class AuthRequest {
     Initial,
     Enable,
     Phrase,
-    Transfer,
 }
 
 enum class AuthState {
