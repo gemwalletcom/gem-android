@@ -42,7 +42,7 @@ generate: generate-models
 
 generate-models: install-typeshare
     @echo "==> Generate typeshare for Android"
-    @cd core && cargo run --package generate --bin generate android ../gemcore/src/main/java/com/wallet/core
+    @cd core && cargo run --package generate --bin generate android ../gemcore/src/main/kotlin/com/wallet/core
 
 build-base-image:
 	docker build -t gem-android-base -f Dockerfile.base . &> build.base.log
