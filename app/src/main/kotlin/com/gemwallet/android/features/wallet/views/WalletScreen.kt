@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.wallet
+package com.gemwallet.android.features.wallet.views
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,6 +32,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.AuthRequest
 import com.gemwallet.android.MainActivity
+import com.gemwallet.android.features.wallet.viewmodels.WalletUIState
+import com.gemwallet.android.features.wallet.viewmodels.WalletViewModel
 import com.gemwallet.android.features.wallets.components.ConfirmWalletDeleteDialog
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity

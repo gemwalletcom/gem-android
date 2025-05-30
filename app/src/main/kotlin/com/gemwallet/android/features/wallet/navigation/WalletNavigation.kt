@@ -9,7 +9,7 @@ import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
-import com.gemwallet.android.features.wallet.WalletScreen
+import com.gemwallet.android.features.wallet.views.WalletScreen
 import com.gemwallet.android.features.wallet.phrase.views.PhraseScreen
 
 internal const val walletIdArg = "walletId"
