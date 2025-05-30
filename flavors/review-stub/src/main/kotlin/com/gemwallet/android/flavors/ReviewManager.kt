@@ -1,7 +1,7 @@
 package com.gemwallet.android.flavors
 
-import android.content.Context
+import android.app.Activity
 
-class ReviewManager(val context: Context) {
-    fun open() { }
+class ReviewManager() {
+    fun open(activity: Activity) { }
 }
