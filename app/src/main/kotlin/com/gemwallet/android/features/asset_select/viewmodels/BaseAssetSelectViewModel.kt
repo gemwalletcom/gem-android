@@ -14,6 +14,7 @@ import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Chain
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -39,6 +40,7 @@ open class BaseAssetSelectViewModel(
 
     val queryState = TextFieldState()
     private val searchState = MutableStateFlow<SearchState>(SearchState.Init)
+    val chainFilter = MutableStateFlow<List<Chain>>(emptyList())
 
     private val queryFlow = snapshotFlow<String> { queryState.text.toString() }
         .onEach {
@@ -54,11 +56,16 @@ open class BaseAssetSelectViewModel(
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    private val assets = search(sessionRepository.session(), queryFlow)
-        .map { items -> items.map { AssetInfoUIModel(it) } }
-        .onEach { searchState.update { SearchState.Idle } }
-        .flowOn(Dispatchers.IO)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>())
+    private val assets = chainFilter.combine(search(sessionRepository.session(), queryFlow)) { chainFilter, items ->
+        if (chainFilter.isEmpty()) {
+            return@combine items
+        }
+        items.filter { chainFilter.contains(it.id().chain) }
+    }
+    .map { items -> items.map { AssetInfoUIModel(it) } }
+    .onEach { searchState.update { SearchState.Idle } }
+    .flowOn(Dispatchers.IO)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>())
 
     val pinned = assets.map { items: List<AssetItemUIModel> ->
         items.filter { it.metadata?.isPinned == true }.toImmutableList()
@@ -87,6 +94,16 @@ open class BaseAssetSelectViewModel(
         val session = sessionRepository.getSession() ?: return@launch
         val account = session.wallet.getAccount(assetId.chain) ?: return@launch
         assetsRepository.switchVisibility(session.wallet.id, account, assetId, visible)
+    }
+
+    fun onChainFilter(chain: Chain) {
+        chainFilter.update {
+            val chains = it.toMutableList()
+            if (!chains.remove(chain)) {
+                chains.add(chain)
+            }
+            chains.toList()
+        }
     }
 
     fun getAccount(assetId: AssetId): Account? {
