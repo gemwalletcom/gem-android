@@ -177,6 +177,12 @@ android {
     room {
         schemaDirectory("$projectDir/schemas")
     }
+
+    lint {
+        disable += "Instantiatable"
+        checkGeneratedSources = true
+        checkDependencies = true
+    }
 }
 
 dependencies {
