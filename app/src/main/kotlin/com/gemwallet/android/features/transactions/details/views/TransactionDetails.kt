@@ -33,7 +33,7 @@ import com.gemwallet.android.features.transactions.details.viewmodels.getIcon
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.InfoSheetEntity
-import com.gemwallet.android.ui.components.LoadingScene
+import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.NftHead
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.clipboard.setPlainText

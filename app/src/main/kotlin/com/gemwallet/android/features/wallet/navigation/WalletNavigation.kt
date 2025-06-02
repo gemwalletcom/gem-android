@@ -1,30 +1,30 @@
 package com.gemwallet.android.features.wallet.navigation
 
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
 import androidx.navigation.navOptions
-import com.gemwallet.android.ext.urlDecode
-import com.gemwallet.android.ext.urlEncode
-import com.gemwallet.android.features.wallet.views.WalletScreen
-import com.gemwallet.android.features.wallet.phrase.views.PhraseScreen
+import com.gemwallet.android.AuthRequest
+import com.gemwallet.android.MainActivity
+import com.gemwallet.android.features.wallet.presents.PhraseScreen
+import com.gemwallet.android.features.wallet.presents.WalletScreen
+import kotlinx.serialization.Serializable
 
-internal const val walletIdArg = "walletId"
 
-const val walletRoute = "wallet"
-const val phraseRoute = "phrase"
+@Serializable
+data class WalletDetailsRoute(val walletId: String)
+
+@Serializable
+data class WalletPhraseRoute(val walletId: String, val inPhrase: Boolean = true)
 
 fun NavController.navigateToWalletScreen(walletId: String, navOptions: NavOptions? = null) {
-    navigate("$walletRoute/${walletId.urlEncode()}", navOptions ?: navOptions {
-        launchSingleTop = true
-    })
+    navigate(WalletDetailsRoute(walletId), navOptions ?: navOptions {launchSingleTop = true})
 }
 
 fun NavController.navigateToPhraseScreen(walletId: String, navOptions: NavOptions? = null) {
-    navigate("$phraseRoute/${walletId.urlEncode()}", navOptions ?: navOptions { launchSingleTop = true })
+    navigate(WalletPhraseRoute(walletId), navOptions ?: navOptions {launchSingleTop = true})
 }
 
 fun NavGraphBuilder.walletScreen(
@@ -32,44 +32,20 @@ fun NavGraphBuilder.walletScreen(
     onCancel: () -> Unit,
     onPhraseShow: (String) -> Unit
 ) {
-    composable(
-        "$walletRoute/{$walletIdArg}",
-        arguments = listOf(
-            navArgument(walletIdArg) {
-                type = NavType.StringType
-            }
-        ),
-    ) {
-        val walletId = it.arguments?.getString(walletIdArg)?.urlDecode()
-        if (walletId == null) {
-            onCancel()
-            return@composable
-        }
+    composable<WalletDetailsRoute> {
+        val context = LocalContext.current
+
         WalletScreen(
-            walletId = walletId,
-            isPhrase = false,
+            onAuthRequest = { callback ->
+                MainActivity.requestAuth(context, AuthRequest.Phrase) { callback() }
+            },
             onPhraseShow = onPhraseShow,
             onBoard = onBoard,
             onCancel = onCancel,
         )
     }
 
-    composable(
-        "$phraseRoute/{$walletIdArg}",
-        arguments = listOf(
-            navArgument(walletIdArg) {
-                type = NavType.StringType
-            }
-        ),
-    ) {
-        val walletId = it.arguments?.getString(walletIdArg)?.urlDecode()
-        if (walletId == null) {
-            onCancel()
-            return@composable
-        }
-        PhraseScreen(
-            walletId = walletId,
-            onCancel = onCancel,
-        )
+    composable<WalletPhraseRoute> {
+        PhraseScreen(onCancel = onCancel)
     }
 }

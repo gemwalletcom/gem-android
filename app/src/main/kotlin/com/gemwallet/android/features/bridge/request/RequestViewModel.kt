@@ -27,6 +27,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -55,7 +56,7 @@ class RequestViewModel @Inject constructor(
             onCancel()
             return@launch
         }
-        val wallet = walletsRepository.getWallet(connection.wallet.id)
+        val wallet = walletsRepository.getWallet(connection.wallet.id).firstOrNull()
         if (wallet == null) {
             onCancel()
             return@launch

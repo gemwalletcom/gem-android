@@ -2,9 +2,9 @@ package com.gemwallet.android.features.wallets.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.wallet.DeleteWallet
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.interactors.DeleteWalletOperator
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.Wallet
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class WalletsViewModel @Inject constructor(
     private val walletsRepository: WalletsRepository,
     private val sessionRepository: SessionRepository,
-    private val deleteWalletOperator: DeleteWalletOperator,
+    private val deleteWallet: DeleteWallet,
 ) : ViewModel() {
     private val state = MutableStateFlow(WalletsViewModelState())
     val uiState = state.map { it.toUIState() }
@@ -53,13 +53,13 @@ class WalletsViewModel @Inject constructor(
 
     fun handleSelectWallet(walletId: String) {
         viewModelScope.launch {
-            val wallet = walletsRepository.getWallet(walletId) ?: return@launch
+            val wallet = walletsRepository.getWallet(walletId).firstOrNull() ?: return@launch
             sessionRepository.setWallet(wallet)
         }
     }
 
     fun handleDeleteWallet(walletId: String, onBoard: () -> Unit) = viewModelScope.launch {
-        deleteWalletOperator(walletId, onBoard, ::refresh)
+        deleteWallet.deleteWallet(walletId, onBoard, ::refresh)
     }
 
     fun onTogglePin(walletId: String) = viewModelScope.launch {

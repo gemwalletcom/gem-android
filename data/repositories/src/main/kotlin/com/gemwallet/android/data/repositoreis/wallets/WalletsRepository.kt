@@ -10,7 +10,9 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import java.util.UUID
@@ -78,12 +80,12 @@ class WalletsRepository @Inject constructor(
         true
     }
 
-    suspend fun getWallet(walletId: String): Wallet? = withContext(Dispatchers.IO) {
-        walletsDao.getById(walletId).map { walletRecord ->
+    fun getWallet(walletId: String): Flow<Wallet?> {
+        return walletsDao.getById(walletId).map { walletRecord ->
             val accounts = accountsDao.getByWalletId(walletId)
             if (accounts.isEmpty()) return@map null
             walletRecord?.toModel(accounts)
-        }.firstOrNull()
+        }.flowOn(Dispatchers.IO)
     }
 
     suspend fun togglePin(walletId: String) = withContext(Dispatchers.IO) {
