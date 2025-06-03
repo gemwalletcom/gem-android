@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components
+package com.gemwallet.android.ui.components.screen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +13,6 @@ import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.screen.Scene
 
 @Composable
 fun FatalStateScene(

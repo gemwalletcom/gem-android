@@ -21,8 +21,8 @@ import com.gemwallet.android.features.confirm.views.ConfirmScreen
 import com.gemwallet.android.model.ConfirmParams.TransferParams.Native
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.FatalStateScene
-import com.gemwallet.android.ui.components.LoadingScene
+import com.gemwallet.android.ui.components.screen.FatalStateScene
+import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium

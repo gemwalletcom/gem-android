@@ -31,7 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.create_wallet.viewmodels.CreateWalletViewModel
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.PhraseLayout
+import com.gemwallet.android.ui.components.screen.PhraseLayout
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16

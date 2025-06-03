@@ -20,7 +20,7 @@ import com.gemwallet.android.model.compactFormatter
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Badge
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.LoadingScene
+import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.list_item.PropertyDataText

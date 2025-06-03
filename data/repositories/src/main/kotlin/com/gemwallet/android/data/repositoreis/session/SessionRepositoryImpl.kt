@@ -9,6 +9,7 @@ import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.runBlocking
@@ -19,18 +20,16 @@ class SessionRepositoryImpl(
     private val walletsRepository: WalletsRepository,
 ) : SessionRepository {
 
-//    private val sessionMapper = SessionMapper()
-
     override fun session(): Flow<Session?> = sessionDao.session().mapNotNull { record ->
         // TODO: dao map
-        val wallet = record?.walletId?.let { walletsRepository.getWallet(it) } ?: return@mapNotNull null
+        val wallet = record?.walletId?.let { walletsRepository.getWallet(it).firstOrNull() } ?: return@mapNotNull null
         record.toModel(wallet)
     }
 
     override fun getSession(): Session? {
         val entity = runBlocking(Dispatchers.IO) { sessionDao.getSession() } ?: return null
         val wallet = runBlocking(Dispatchers.IO) {
-            walletsRepository.getWallet(entity.walletId)
+            walletsRepository.getWallet(entity.walletId).firstOrNull()
         } ?: return null
         return entity.toModel(wallet)
     }

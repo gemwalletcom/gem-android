@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.wallet.phrase.views
+package com.gemwallet.android.features.wallet.presents
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -8,7 +8,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,35 +17,29 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.features.wallet.viewmodels.WalletUIState
 import com.gemwallet.android.features.wallet.viewmodels.WalletViewModel
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.LoadingScene
-import com.gemwallet.android.ui.components.PhraseLayout
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.screen.LoadingScene
+import com.gemwallet.android.ui.components.screen.PhraseLayout
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.WalletType
 
 @Composable
 fun PhraseScreen(
-    walletId: String,
     onCancel: () -> Unit,
 ) {
     val viewModel: WalletViewModel = hiltViewModel()
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val wallet by viewModel.wallet.collectAsStateWithLifecycle()
+    val phrase by viewModel.phrase.collectAsStateWithLifecycle()
 
-    DisposableEffect(walletId) {
-        viewModel.init(walletId, isPhrase = true)
-        onDispose {  }
-    }
     val clipboardManager = LocalClipboard.current.nativeClipboard
-    val words = (state as? WalletUIState.Phrase)?.words
-    val walletType = (state as? WalletUIState.Phrase)?.walletType
+    val walletType = wallet?.type
 
-    if (words == null) {
+    if (phrase == null) {
         LoadingScene(title = stringResource(id = R.string.common_secret_phrase), onCancel)
         return
     }
@@ -84,9 +77,9 @@ fun PhraseScreen(
         Spacer16()
         when (walletType) {
             WalletType.multicoin,
-            WalletType.single -> PhraseLayout(words = words)
+            WalletType.single -> PhraseLayout(words = phrase?.split(" ") ?: emptyList())
             WalletType.private_key -> Text(
-                words.firstOrNull() ?: "",
+                text = phrase ?: "",
                 style = MaterialTheme.typography.titleMedium,
                 textAlign = TextAlign.Center,
             )
@@ -95,7 +88,7 @@ fun PhraseScreen(
 
         Spacer16()
         TextButton(
-            onClick = { clipboardManager.setPlainText(words.joinToString(" ")) }
+            onClick = { clipboardManager.setPlainText(phrase ?: "") }
         ) {
             Text(text = stringResource(id = R.string.common_copy))
         }
