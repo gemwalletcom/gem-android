@@ -124,7 +124,7 @@ class EvmSignerPreloader(
         params: ConfirmParams,
     ) = withContext(Dispatchers.IO) {
         val nonce = feeService.getNonce(from.address)
-        val chainId = chain.getNetworkId()
+        val chainId = chain.getNetworkId().toIntOrNull() ?: throw Exception("Invalid chain")
         val fees = feeCalculator.calculate(
             params = params,
             assetId = assetId,
@@ -141,7 +141,7 @@ class EvmSignerPreloader(
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
     data class EvmChainData(
-        val chainId: String,
+        val chainId: Int,
         val nonce: BigInteger,
         val fees: List<GasFee>,
     ) : ChainSignData {
