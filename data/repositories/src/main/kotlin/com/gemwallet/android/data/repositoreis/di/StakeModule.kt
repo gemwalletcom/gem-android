@@ -41,7 +41,12 @@ object StakeModule {
                     else -> null
                 }
                 ChainType.Solana -> SolanaStakeClient(it, rpcClients.getClient(it))
-                ChainType.Cosmos -> CosmosStakeClient(it, rpcClients.getClient(it))
+                ChainType.Cosmos -> {
+                    when (it) {
+                        Chain.Noble, Chain.Thorchain -> null
+                        else -> CosmosStakeClient(it, rpcClients.getClient(it))
+                    }
+                }
                 ChainType.Sui -> SuiStakeClient(it, rpcClients.getClient(it))
                 ChainType.Tron -> TronStakeClient(it, rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Bitcoin,
