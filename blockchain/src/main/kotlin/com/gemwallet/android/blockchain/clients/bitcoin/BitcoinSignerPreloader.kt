@@ -40,7 +40,7 @@ class BitcoinSignerPreloader(
         val address = chain.toBitcoinChain().fullAddress(fromAccount.address)
         val utxo = utxoService.getUTXO(address).getOrNull() ?: throw Exception("Can't load UTXO")
         val fee = feeCalculator.calculate(utxo, fromAccount, destinationAddress, amount)
-        return BitcoinChainData(utxo, listOf(fee.firstOrNull{ it.priority == FeePriority.Fast } ?: fee.last())) // BTC Transaction is slow.
+        return BitcoinChainData(utxo, fee)
     }
 
     data class BitcoinChainData(
