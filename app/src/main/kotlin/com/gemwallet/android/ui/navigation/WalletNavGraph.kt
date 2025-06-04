@@ -285,11 +285,12 @@ fun WalletNavGraph(
         }
 
         createWalletScreen(
+            onCreateWallet = navController::navigateToCreateWalletScreen,
             onCancel = onCancel,
             onCreated = {
                 navController.navigateToRoot()
                 currentTab.value = assetsRoute
-            }
+            },
         )
 
         importWalletScreen(

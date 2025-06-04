@@ -39,10 +39,14 @@ import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.padding4
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.theme.WalletTheme
 
 @Composable
-fun PhraseAlertDialog() {
+fun PhraseAlertDialog(
+    onAccept: () -> Unit,
+    onCancel: CancelAction,
+) {
     var isStoreChecked by remember { mutableStateOf(false) }
     var isShareChecked by remember { mutableStateOf(false) }
     var isRecoveryChecked by remember { mutableStateOf(false) }
@@ -52,18 +56,21 @@ fun PhraseAlertDialog() {
         mainAction = {
             MainActionButton(
                 stringResource(R.string.common_continue),
-                enabled = isStoreChecked && isShareChecked && isRecoveryChecked
-            ) { }
+                enabled = isStoreChecked && isShareChecked && isRecoveryChecked,
+                onClick = onAccept,
+            )
         },
         actions = {
             IconButton({}) {
                 Icon(Icons.Outlined.Info, "")
             }
         },
-        onClose = {}
+        onClose = { onCancel() }
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(padding16),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(padding16),
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -140,6 +147,6 @@ private fun InfoBlock(
 @Composable
 fun PreviewPhraseAlertDialog() {
     WalletTheme {
-        PhraseAlertDialog()
+        PhraseAlertDialog( {} ) {}
     }
 }
