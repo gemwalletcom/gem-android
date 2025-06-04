@@ -39,11 +39,12 @@ fun GemSwapProvider.getSwapProviderIcon(): String {
         GemSwapProvider.ACROSS -> "across"
         GemSwapProvider.OKU -> "oku"
         GemSwapProvider.WAGMI -> "wagmi"
-        GemSwapProvider.CETUS -> "cetus"
+        GemSwapProvider.CETUS_AGGREGATOR, GemSwapProvider.CETUS -> "cetus"
         GemSwapProvider.STONFI_V2 -> "stonfi"
         GemSwapProvider.MAYAN -> "mayan"
         GemSwapProvider.RESERVOIR -> "reservoir"
         GemSwapProvider.SYMBIOSIS -> "symbiosis"
+        GemSwapProvider.CHAINFLIP -> "chainflip"
     }
     return "file:///android_asset/swap/${iconName.lowercase()}.svg"
 }
