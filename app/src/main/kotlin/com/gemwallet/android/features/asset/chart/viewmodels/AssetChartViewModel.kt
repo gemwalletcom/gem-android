@@ -57,7 +57,9 @@ class AssetChartViewModel @Inject constructor(
             marketInfo = market,
             explorerName = getCurrentBlockExplorerCase.getCurrentBlockExplorer(asset.chain())
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    }
+    .flowOn(Dispatchers.Default)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val sync = assetIdStr.flatMapLatest { assetId ->
         flow {

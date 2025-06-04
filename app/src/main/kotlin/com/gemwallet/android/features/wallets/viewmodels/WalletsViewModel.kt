@@ -10,6 +10,7 @@ import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.firstOrNull
@@ -34,7 +35,7 @@ class WalletsViewModel @Inject constructor(
     }
 
     fun refresh() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val wallets = walletsRepository.getAll().firstOrNull() ?: emptyList()
             val currentWallet = sessionRepository.getSession()?.wallet ?: return@launch
             val watch = wallets.filter { it.type == WalletType.view }

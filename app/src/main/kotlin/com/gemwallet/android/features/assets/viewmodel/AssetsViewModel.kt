@@ -67,25 +67,28 @@ class AssetsViewModel @Inject constructor(
             }
         }
         .map { it == SyncState.InSync }
-        .flowOn(Dispatchers.IO)
+        .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAssetsInfo()
 
     private val isHideBalances = userConfig.isHideBalances()
+        .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     private val assets: StateFlow<List<AssetItemUIModel>> = assetsState.combine(isHideBalances) { assets, isHideBalances ->
         assets.map { AssetInfoUIModel(it, isHideBalances) }.distinctBy { it.asset.id.toIdentifier() }
     }
-    .flowOn(Dispatchers.IO)
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val pinnedAssets = assets
         .map { items -> items.filter { asset -> asset.metadata?.isPinned == true } }
+        .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val unpinnedAssets = assets.map { it.filter { asset -> asset.metadata?.isPinned != true } }
+        .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val walletInfo: StateFlow<WalletInfoUIState> = combine(sessionRepository.session(), assetsState, isHideBalances) {session, assets, isHideBalances ->
@@ -93,7 +96,7 @@ class AssetsViewModel @Inject constructor(
         val currency = session.currency
         calcWalletInfo(wallet, currency, assets, isHideBalances)
     }
-    .flowOn(Dispatchers.IO)
+    .flowOn(Dispatchers.Default)
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, WalletInfoUIState())
 

@@ -23,6 +23,7 @@ import com.gemwallet.android.ui.components.image.getSwapProviderIcon
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.SwapProvider
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -30,6 +31,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import uniffi.gemstone.Explorer
 import uniffi.gemstone.GemSwapProvider
@@ -108,6 +110,7 @@ class TransactionDetailsViewModel @Inject constructor(
             nftAsset = nftMetadata,
         )
     }
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, started = SharingStarted.Eagerly, null)
 }
 

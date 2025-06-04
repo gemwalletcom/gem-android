@@ -7,7 +7,9 @@ import com.gemwallet.android.features.asset_select.models.BaseSelectSearch
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
@@ -33,6 +35,7 @@ class SendSelectSearch(
         return super.invoke(session, query).map { list ->
             list.filter { it.balance.totalAmount != 0.0 }
         }
+        .flowOn(Dispatchers.Default)
     }
 
 }

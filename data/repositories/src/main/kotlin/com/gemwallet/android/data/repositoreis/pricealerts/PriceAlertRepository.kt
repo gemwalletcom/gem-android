@@ -20,6 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -74,7 +75,9 @@ class PriceAlertRepository(
     }
 
     override fun isAssetPriceAlertEnabled(assetId: AssetId): Flow<Boolean> {
-        return priceAlertsDao.getAlert(assetId.toIdentifier()).map { it != null && it.enabled }
+        return priceAlertsDao.getAlert(assetId.toIdentifier())
+            .map { it != null && it.enabled }
+            .flowOn(Dispatchers.IO)
     }
 
     override suspend fun setPriceAlertEnabled(enabled: Boolean) {

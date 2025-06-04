@@ -104,7 +104,6 @@ class SwapViewModel @Inject constructor(
                 )
             }
     }
-    .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Lazily, null)
 
     val swapPairUIModel = assetsState.mapNotNull { assets ->
@@ -129,6 +128,7 @@ class SwapViewModel @Inject constructor(
             ),
         )
     }
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val fromValue: TextFieldState = TextFieldState()
@@ -145,6 +145,7 @@ class SwapViewModel @Inject constructor(
         valueNum.toDouble() * price.price.price
     }
     .filterNotNull()
+        .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, 0.0)
 
     val fromEquivalentFormatted = fromEquivalent.combine(assetsState) { value, assets ->
@@ -154,6 +155,7 @@ class SwapViewModel @Inject constructor(
         val price = assets?.from?.price ?: return@combine ""
         price.currency.format(value)
     }
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     private val refreshTimer = fromValueFlow.flatMapLatest {
@@ -167,7 +169,7 @@ class SwapViewModel @Inject constructor(
             }
         }
     }
-    .flowOn(Dispatchers.IO)
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
     private val refresh = MutableStateFlow(0L)
 
@@ -251,6 +253,7 @@ class SwapViewModel @Inject constructor(
             )
         }
     }
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val quote = combine(quotes, assetsState, selectedProvider) { quotes, assets, provider ->
@@ -265,6 +268,7 @@ class SwapViewModel @Inject constructor(
         swapScreenState.update { SwapState.Ready }
         quote
     }
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val rate = quote.combine(assetsState) { quote, assets ->
@@ -278,6 +282,7 @@ class SwapViewModel @Inject constructor(
         val rate = toAsset.format(toAmount / fromAmount, 2, dynamicPlace = true)
         "1 ${fromAsset.symbol} \u2248 $rate"
     }
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val currentProvider = quote.mapLatest { SwapProviderItem(it?.data?.provider ?: return@mapLatest null) }
@@ -297,6 +302,7 @@ class SwapViewModel @Inject constructor(
         }
     }
     .filterNotNull()
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, BigDecimal.ZERO)
 
     val toEquivalentFormatted = toEquivalent.combine(assetsState) { value, assets ->
@@ -310,6 +316,7 @@ class SwapViewModel @Inject constructor(
             ""
         }
     }
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     val priceImpact = combine(fromEquivalent, toEquivalent, swapScreenState) { from, to, state ->
@@ -325,6 +332,7 @@ class SwapViewModel @Inject constructor(
             else -> PriceImpact(impact, PriceImpactType.High, isHigh)
         }
     }
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val sync = swapPairState.flatMapLatest {
@@ -332,7 +340,8 @@ class SwapViewModel @Inject constructor(
             updateBalances(it?.fromId ?: return@flow, it.toId ?: return@flow)
             emit(true)
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun onSelect(select: SwapPairSelect) {
         val current = if (select.fromId == null || select.toId == null) {
