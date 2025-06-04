@@ -83,10 +83,3 @@ data class NFTData (
 	val assets: List<NFTAsset>
 )
 
-@Serializable
-data class NFTImageOld (
-	val imageUrl: String,
-	val previewImageUrl: String,
-	val originalSourceUrl: String
-)
-

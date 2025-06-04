@@ -43,7 +43,9 @@ enum class NameProvider(val string: String) {
 	Icns("icns"),
 	@SerialName("lens")
 	Lens("lens"),
-	@SerialName("bns")
-	Bns("bns"),
+	@SerialName("basenames")
+	Basenames("basenames"),
+	@SerialName("hyperliquid")
+	Hyperliquid("hyperliquid"),
 }
 

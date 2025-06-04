@@ -422,6 +422,7 @@ class SwapViewModel @Inject constructor(
                 value = swapData.value,
                 approval = swapData.approval?.toModel(),
                 gasLimit = swapData.gasLimit?.toBigIntegerOrNull(),
+                maxFrom = BigInteger(from.balance.balance.available) == Crypto(fromAmount, from.asset.decimals).atomicValue
             )
         )
         swapScreenState.update { SwapState.Ready }

@@ -131,6 +131,8 @@ fun SwapProvider.getIcon(): String {
         SwapProvider.Mayan -> GemSwapProvider.MAYAN
         SwapProvider.Reservoir -> GemSwapProvider.RESERVOIR
         SwapProvider.Symbiosis -> GemSwapProvider.SYMBIOSIS
+        SwapProvider.Chainflip -> GemSwapProvider.CHAINFLIP
+        SwapProvider.CetusAggregator -> GemSwapProvider.CETUS_AGGREGATOR
     }.getSwapProviderIcon()
 
 }
