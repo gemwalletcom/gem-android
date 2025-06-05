@@ -25,13 +25,13 @@ fun DevelopScene(
     ) {
         LazyColumn {
             item {
-                PropertyItem("Device Id", viewModel.getDeviceId()) {
+                PropertyItem("Device Id", data = viewModel.getDeviceId()) {
                     clipboardManager.setPlainText(viewModel.getDeviceId())
                 }
-                PropertyItem("Push token", viewModel.getPushToken()) {
+                PropertyItem("Push token", data = viewModel.getPushToken().let { it.takeIf { it.isNotEmpty() } ?: "-" }) {
                     clipboardManager.setPlainText(viewModel.getPushToken())
                 }
-                PropertyItem("Store", BuildConfig.FLAVOR) {
+                PropertyItem("Store", data = BuildConfig.FLAVOR) {
                     clipboardManager.setPlainText(BuildConfig.FLAVOR)
                 }
             }
