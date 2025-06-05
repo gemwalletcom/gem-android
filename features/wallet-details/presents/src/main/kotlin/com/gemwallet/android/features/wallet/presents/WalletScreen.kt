@@ -71,7 +71,6 @@ fun WalletScreen(
                 onCancel = onCancel,
             )
         }
-        else -> onCancel()
     }
 }
 

@@ -251,7 +251,7 @@
   <string name="transaction.title.received">受け取った</string>
   <string name="transaction.title.sent">送信済み</string>
   <string name="stake.stake">ステーク</string>
-  <string name="banner.account_activation.title">%s アカウントの有効化手数料</string>
+  <string name="banner.account_activation.title">アカウントの有効化手数料</string>
   <string name="banner.account_activation.description" formatted="false">%sネットワークは、一回限りの料金が%s必要です。</string>
   <string name="banner.stake.title">%s のステーキングを開始</string>
   <string name="banner.stake.description">寝ている間にステークで%sの報酬を獲得できます。</string>
@@ -402,6 +402,18 @@
   <string name="transfer.minimum_account_balance">残高をすべて使用しない限り、この後も最低%s残高が残っている必要があります。</string>
   <string name="swap.price_impact_warning.description" formatted="false">この取引で%sのうち%sを失います。続行してもよろしいですか?</string>
   <string name="swap.price_impact_warning.title">高い価格影響</string>
-  <string name="wallet_connect.domain">Domain</string>
-  <string name="sign_message.view_full_message">View Full Message</string>
+  <string name="wallet_connect.domain">ドメイン</string>
+  <string name="sign_message.view_full_message">メッセージ全文を表示</string>
+  <string name="info.slippage.description">スリッページとは、取引の予想価格と実際に約定した価格の差を指します。</string>
+  <string name="onboarding.accept_terms.title">利用規約に同意する</string>
+  <string name="onboarding.accept_terms.message">続行する前に、以下の利用規約をお読みいただき同意してください。</string>
+  <string name="onboarding.accept_terms.item1.message">ウォレットのセキュリティとバックアップは自己責任であり、Gemは一切関与しないことを理解しています。</string>
+  <string name="onboarding.accept_terms.item2.message">Gemは銀行や取引所ではなく、違法目的での使用は禁止されていることを理解しています。</string>
+  <string name="onboarding.accept_terms.item3.message">ウォレットへのアクセスを失った場合、Gemは責任を負わず、支援もできないことを理解しています。</string>
+  <string name="onboarding.accept_terms.continue">理解しました。続行します。</string>
+  <string name="errors.required">%s is required</string>
+  <string name="update_app.permission.title">Allow installation</string>
+  <string name="update_app.permission.description">Go to settings and allow installation from external sources</string>
+  <string name="update_app.permission.open_settings">Go to settings</string>
+  <string name="update_app.downloading">Downloading...</string>
 </resources>

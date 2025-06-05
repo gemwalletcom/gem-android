@@ -251,7 +251,7 @@
   <string name="transaction.title.received">Отримано</string>
   <string name="transaction.title.sent">Надіслано</string>
   <string name="stake.stake">Стейкнути</string>
-  <string name="banner.account_activation.title">%s Плата за активацію рахунку</string>
+  <string name="banner.account_activation.title">Плата за активацію рахунку</string>
   <string name="banner.account_activation.description" formatted="false">Мережа %s вимагає одноразової оплати в розмірі %s.</string>
   <string name="banner.stake.title">Почніть стейкінг %s</string>
   <string name="banner.stake.description">Заробляйте %s винагороди на свїй стейк, поки ви спите.</string>
@@ -404,4 +404,16 @@
   <string name="swap.price_impact_warning.title">Високий ціновий вплив</string>
   <string name="wallet_connect.domain">Domain</string>
   <string name="sign_message.view_full_message">View Full Message</string>
+  <string name="info.slippage.description">Slippage refers to the difference between the expected price of a trade and the actual price at which it is executed.</string>
+  <string name="onboarding.accept_terms.title">Accept Terms</string>
+  <string name="onboarding.accept_terms.message">Please read and agree to the following terms before you continue.</string>
+  <string name="onboarding.accept_terms.item1.message">I understand that I am solely responsible for the security and backup of my wallets, not Gem.</string>
+  <string name="onboarding.accept_terms.item2.message">I understand that Gem is not a bank or exchange, and using it for illegal purposes is strictly prohibited.</string>
+  <string name="onboarding.accept_terms.item3.message">I understand that if I ever lose access to my wallets, Gem is not liable and cannot help in any way.</string>
+  <string name="onboarding.accept_terms.continue">Agree and Continue</string>
+  <string name="errors.required">%s is required</string>
+  <string name="update_app.permission.title">Дозволити встановлення</string>
+  <string name="update_app.permission.description">Перейдіть до налаштувань та дозвольте встановлення із зовнішніх джерел</string>
+  <string name="update_app.permission.open_settings">Відкрити налаштування</string>
+  <string name="update_app.downloading">Завантаження...</string>
 </resources>

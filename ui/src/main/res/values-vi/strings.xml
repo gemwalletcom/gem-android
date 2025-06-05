@@ -251,7 +251,7 @@
   <string name="transaction.title.received">Đã nhận</string>
   <string name="transaction.title.sent">Đã gửi</string>
   <string name="stake.stake">Stake</string>
-  <string name="banner.account_activation.title">%s Account Activation Fee</string>
+  <string name="banner.account_activation.title">Account Activation Fee</string>
   <string name="banner.account_activation.description" formatted="false">Mạng %s yêu cầu một khoản phí một lần là %s.</string>
   <string name="banner.stake.title">Start staking %s</string>
   <string name="banner.stake.description">Earn %s rewards on your stake while you sleep.</string>
@@ -404,4 +404,16 @@
   <string name="swap.price_impact_warning.title">Tác động giá cao</string>
   <string name="wallet_connect.domain">Domain</string>
   <string name="sign_message.view_full_message">View Full Message</string>
+  <string name="info.slippage.description">Slippage refers to the difference between the expected price of a trade and the actual price at which it is executed.</string>
+  <string name="onboarding.accept_terms.title">Accept Terms</string>
+  <string name="onboarding.accept_terms.message">Please read and agree to the following terms before you continue.</string>
+  <string name="onboarding.accept_terms.item1.message">I understand that I am solely responsible for the security and backup of my wallets, not Gem.</string>
+  <string name="onboarding.accept_terms.item2.message">I understand that Gem is not a bank or exchange, and using it for illegal purposes is strictly prohibited.</string>
+  <string name="onboarding.accept_terms.item3.message">I understand that if I ever lose access to my wallets, Gem is not liable and cannot help in any way.</string>
+  <string name="onboarding.accept_terms.continue">Agree and Continue</string>
+  <string name="errors.required">%s is required</string>
+  <string name="update_app.permission.title">Allow installation</string>
+  <string name="update_app.permission.description">Go to settings and allow installation from external sources</string>
+  <string name="update_app.permission.open_settings">Go to settings</string>
+  <string name="update_app.downloading">Downloading...</string>
 </resources>

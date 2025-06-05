@@ -251,7 +251,7 @@
   <string name="transaction.title.received">已收到</string>
   <string name="transaction.title.sent">已發送</string>
   <string name="stake.stake">質押</string>
-  <string name="banner.account_activation.title">%s 帳戶啟動費用</string>
+  <string name="banner.account_activation.title">帳戶啟動費用</string>
   <string name="banner.account_activation.description" formatted="false">%s 網路需要一次性費用 %s 。</string>
   <string name="banner.stake.title">開始質押 %s</string>
   <string name="banner.stake.description">質押 %s 賺取獎勵，躺著也賺</string>
@@ -383,7 +383,7 @@
   <string name="wallet_connect.state.empty.description">掃描或複製連結以連接到DApp</string>
   <string name="assets.state.empty.search_description">请嘗試手動新增</string>
   <string name="activity.state.empty.search_description">清空篩選條件後將重新載入交易</string>
-  <string name="search.state.empty.description">Check the spelling or try a new search.</string>
+  <string name="search.state.empty.description">請檢查拼字或嘗試新的搜尋。</string>
   <string name="assets.state.empty.search_title">未找到任何資產</string>
   <string name="networks.state.empty.search_title">未找到任何網路</string>
   <string name="activity.state.empty.search_title">未找到任何交易</string>
@@ -402,6 +402,18 @@
   <string name="transfer.minimum_account_balance">此後必須保留最低%s餘額，除非您使用全部餘額。</string>
   <string name="swap.price_impact_warning.description" formatted="false">您將在本次交易中損失%s %s總金額。您確定要繼續嗎？</string>
   <string name="swap.price_impact_warning.title">滑點巨大</string>
-  <string name="wallet_connect.domain">Domain</string>
-  <string name="sign_message.view_full_message">View Full Message</string>
+  <string name="wallet_connect.domain">網域</string>
+  <string name="sign_message.view_full_message">查看完整訊息</string>
+  <string name="info.slippage.description">滑點是指交易預期價格與實際成交價格之間的差異。</string>
+  <string name="onboarding.accept_terms.title">接受條款</string>
+  <string name="onboarding.accept_terms.message">請閱讀並同意以下條款後繼續。</string>
+  <string name="onboarding.accept_terms.item1.message">我了解錢包的安全與備份完全由我自行負責，Gem 不承擔任何責任。</string>
+  <string name="onboarding.accept_terms.item2.message">我了解 Gem 不是銀行或交易所，嚴禁用於任何非法用途。</string>
+  <string name="onboarding.accept_terms.item3.message">我了解若遺失錢包存取權限，Gem 不負任何責任且無法提供協助。</string>
+  <string name="onboarding.accept_terms.continue">我了解，繼續</string>
+  <string name="errors.required">%s is required</string>
+  <string name="update_app.permission.title">Allow installation</string>
+  <string name="update_app.permission.description">Go to settings and allow installation from external sources</string>
+  <string name="update_app.permission.open_settings">Go to settings</string>
+  <string name="update_app.downloading">Downloading...</string>
 </resources>

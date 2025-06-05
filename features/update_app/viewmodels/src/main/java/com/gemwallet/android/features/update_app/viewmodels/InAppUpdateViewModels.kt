@@ -69,6 +69,7 @@ class InAppUpdateViewModels @Inject constructor(
         }
 
         viewModelScope.launch(Dispatchers.IO) {
+            downloadState.update { DownloadState.Preparing }
             try {
                 download()
                 installApk()

@@ -6,6 +6,7 @@ import android.provider.Settings
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -70,7 +71,7 @@ fun InAppUpdateBanner() {
                 text = if (state == DownloadState.Idle || state == DownloadState.Success) {
                     stringResource(R.string.update_app_title)
                 } else {
-                    "Downloading..."
+                    stringResource(R.string.update_app_downloading)
                 }
             )
 
@@ -79,14 +80,15 @@ fun InAppUpdateBanner() {
                     DownloadState.Error,
                     DownloadState.Success,
                     DownloadState.Idle -> TextButton(
-                        onClick = { requestInstallPermissions.value = !viewModel.update() }
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("UPDATE")
-                            Spacer4()
-                            Icon(Icons.Default.ArrowCircleDown, "Update application", tint = MaterialTheme.colorScheme.primary)
+                            onClick = { requestInstallPermissions.value = !viewModel.update() },
+                            contentPadding = PaddingValues(0.dp)
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(stringResource(R.string.update_app_action))
+                                Spacer4()
+                                Icon(Icons.Default.ArrowCircleDown, "Update application", tint = MaterialTheme.colorScheme.primary)
+                            }
                         }
-                    }
                     DownloadState.Preparing -> CircularProgressIndicator(
                         modifier = Modifier.size(size = 36.dp),
                         strokeWidth = 2.dp,
@@ -131,7 +133,7 @@ private fun RequestInstallPermissions(state: MutableState<Boolean>) {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = "Allow installation",
+                text = stringResource(R.string.update_app_permission_title),
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.headlineMedium
@@ -139,7 +141,7 @@ private fun RequestInstallPermissions(state: MutableState<Boolean>) {
 
             Text(
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 32.dp),
-                text = "Go to settings and allow installation from external sources",
+                text = stringResource(R.string.update_app_permission_description),
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center
@@ -159,7 +161,7 @@ private fun RequestInstallPermissions(state: MutableState<Boolean>) {
                         context.startActivity(intent)
                     }
                 ) {
-                    Text("Go to settings")
+                    Text(stringResource(R.string.update_app_permission_open_settings))
                 }
             }
         }

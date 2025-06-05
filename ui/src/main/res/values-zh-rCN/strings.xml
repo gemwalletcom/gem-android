@@ -14,7 +14,7 @@
   <string name="wallet.new.title">新建钱包</string>
   <string name="receive.title">接收%s</string>
   <string name="buy.title">购买%s</string>
-  <string name="welcome.legal.concent" formatted="false">开始使用Gem，表示您接受我们的【使用条款】（%s）和【隐私政策】（%s）。</string>
+  <string name="welcome.legal.concent" formatted="false">开始使用 Gem，表示您接受我们的【使用条款】（%s）和【隐私政策】（%s）。</string>
   <string name="wallet.import.secret_phrase">助记词</string>
   <string name="wallet.name">名称</string>
   <string name="wallet.import.action">导入</string>
@@ -192,8 +192,8 @@
   <string name="errors.import.invalid_secret_phrase_word">助记词无效：%s</string>
   <string name="secret_phrase.do_not_share.title">切勿泄露助记词！</string>
   <string name="secret_phrase.do_not_share.description">任何人只要拥有助记词，就能完全控制这个钱包！</string>
-  <string name="secret_phrase.save_phrase_safely">请妥善保管您的助记词，确保只有你本人可以访问</string>
-  <string name="secret_phrase.confirm.quick_test.title">完成这个快速测试，以确认您已正确保存所有内容</string>
+  <string name="secret_phrase.save_phrase_safely">请将助记词保存在只有自己能掌控的安全位置。</string>
+  <string name="secret_phrase.confirm.quick_test.title">完成这个快速测试，确认是否已正确保存所有内容。</string>
   <string name="wallets.watch">观察</string>
   <string name="transfer.minimum_amount">最低金额为%s</string>
   <string name="wallet_connect.no_active_connections">没有活跃的连接</string>
@@ -251,7 +251,7 @@
   <string name="transaction.title.received">已收到</string>
   <string name="transaction.title.sent">已发送</string>
   <string name="stake.stake">质押</string>
-  <string name="banner.account_activation.title">%s 账户激活费用</string>
+  <string name="banner.account_activation.title">账户激活费用</string>
   <string name="banner.account_activation.description" formatted="false">%s 网络需要一次性费用 %s。</string>
   <string name="banner.stake.title">开始质押 %s</string>
   <string name="banner.stake.description">质押 %s 赚取奖励，躺着也赚</string>
@@ -278,11 +278,11 @@
   <string name="price_alerts.get_notified_explain_message">当关注的加密资产出现大幅波动时，立即收到通知</string>
   <string name="assets.select_asset">选择资产</string>
   <string name="lock.privacy_lock">隐私锁</string>
-  <string name="receive.your_address">您的接收地址</string>
+  <string name="receive.your_address">接收地址</string>
   <string name="verify_phrase.title">确认</string>
   <string name="common.skip">跳过</string>
   <string name="common.warning">警告</string>
-  <string name="warnings.multi_signature_blocked">除非您确定自己控制私钥，否则请勿将资金转入此%s多重签名钱包。否则，您可能会遭受诈骗，并且可能会永久失去您的资产。</string>
+  <string name="warnings.multi_signature_blocked">除非确定自己掌握私钥，否则切勿将资金转入此 %s 多重签名钱包。否则可能遭受诈骗并永久损失资产。</string>
   <string name="swap.price_impact">价格影响</string>
   <string name="wallet.sell">出售</string>
   <string name="sell.title">出售%s</string>
@@ -293,7 +293,7 @@
   <string name="info.network_fee.description">%s网络收取交易费，具体费用取决于网络使用情况。支付给矿工以处理您的交易。</string>
   <string name="info.transaction.error.description">由于资金不足、输入无效或网络拒绝等错误，交易无法完成。请检查详情并重试。</string>
   <string name="info.transaction.pending.description">交易已提交，正在等待网络确认。处理时间可能有所不同。请稍后查看更新。</string>
-  <string name="info.transaction.success.description">交易已完成并在网络上确认。您可以查看详情以确认其状态。</string>
+  <string name="info.transaction.success.description">交易已完成并已在网络上确认。可查看详情以核实状态。</string>
   <string name="info.lock_time.description">锁仓期（又称为解锁期或解绑期）是指你发起解除质押后，资产在一段时间内无法使用的等待期间。</string>
   <string name="input.enter_amount_to">输入%s的数量</string>
   <string name="input.transfer">转账</string>
@@ -301,7 +301,7 @@
   <string name="common.popular">热门</string>
   <string name="errors.dust_threshold">交易失败，因为金额太小，无法满足%s网络的最低要求（粉尘阈值）。此限制可确保交易金额足以覆盖手续费和处理成本。请增加金额或降低手续费以继续操作。</string>
   <string name="rootcheck.security_alert">安全警告</string>
-  <string name="rootcheck.body">您的设备似乎具有 root 访问权限，这会大大增加安全风险。在已 root 的设备上使用此应用可能会使您的资产遭受未经授权的访问并可能造成损失。为了您的资金安全，我们强烈建议您使用未 root 的设备。</string>
+  <string name="rootcheck.body">检测到设备已获取 root 权限，可能显著增加安全风险。在已 root 的设备上使用此应用可能导致资产遭到未经授权的访问并造成损失。为保障资金安全，强烈建议使用非 root 设备。</string>
   <string name="rootcheck.ignore">忽略</string>
   <string name="rootcheck.exit">退出</string>
   <string name="errors.swap.no_quote_available">暂无报价</string>
@@ -316,7 +316,7 @@
   <string name="swap.quote_fee">报价包括 %s Gem 交易费用。</string>
   <string name="common.short_name">Gem</string>
   <string name="transfer.activate_asset.title">启用资产</string>
-  <string name="banner.activate_asset.description" formatted="false">要使用%s资产，您必须首先通过满足网络的特定要求在%s网络上启用它。</string>
+  <string name="banner.activate_asset.description" formatted="false">要使用 %s 资产，必须先在 %s 网络上启用它，并满足该网络的特定要求。</string>
   <string name="nft.properties">特性</string>
   <string name="nft.collections">藏品集合</string>
   <string name="common.description">描述</string>
@@ -375,15 +375,15 @@
   <string name="price_alerts.state.empty.description">请添加币种，即可开始追踪资产</string>
   <string name="asset.state.empty.title">交易将显示在此处</string>
   <string name="asset.state.empty.description">接收、兑换或购买%s</string>
-  <string name="activity.state.empty.title">您的交易将显示在此处</string>
-  <string name="activity.state.empty.description">发起您的第一笔交易</string>
-  <string name="stake.state.empty.title">您的质押将显示在这里️</string>
+  <string name="activity.state.empty.title">交易将在此显示</string>
+  <string name="activity.state.empty.description">发起第一笔交易</string>
+  <string name="stake.state.empty.title">质押将显示在这里️</string>
   <string name="stake.state.empty.description">质押第一个%s</string>
   <string name="wallet_connect.state.empty.title">连接将显示在这里️</string>
   <string name="wallet_connect.state.empty.description">扫描或复制链接以连接到 DApp</string>
   <string name="assets.state.empty.search_description">请尝试手动添加</string>
   <string name="activity.state.empty.search_description">清空筛选条件后将重新加载交易</string>
-  <string name="search.state.empty.description">Check the spelling or try a new search.</string>
+  <string name="search.state.empty.description">检查拼写或尝试新的搜索。</string>
   <string name="assets.state.empty.search_title">未找到任何资产</string>
   <string name="networks.state.empty.search_title">未找到任何网络</string>
   <string name="activity.state.empty.search_title">未找到任何交易</string>
@@ -391,17 +391,29 @@
   <string name="transfer.recipient.my_wallets">我的钱包</string>
   <string name="transfer.recipient.view_wallets">查看钱包</string>
   <string name="settings.disable_value">禁用 %s</string>
-  <string name="onboarding.security.create_wallet.intro.title">您将获得一个助记词——这是访问您的钱包的唯一方法。</string>
+  <string name="onboarding.security.create_wallet.intro.title">您将获得一个助记词——这是访问钱包的唯一方法。</string>
   <string name="onboarding.security.create_wallet.confirm.title">我理解并希望继续</string>
   <string name="onboarding.security.create_wallet.do_not_share.title">不要与任何人分享</string>
-  <string name="onboarding.security.create_wallet.do_not_share.subtitle">任何获得您的密码的人都可以完全控制您的钱包。</string>
-  <string name="onboarding.security.create_wallet.keep_safe.subtitle">助记词是访问您的钱包的唯一方法。</string>
+  <string name="onboarding.security.create_wallet.do_not_share.subtitle">任何获得助记词的人都可以完全控制您的钱包。</string>
+  <string name="onboarding.security.create_wallet.keep_safe.subtitle">助记词是访问钱包的唯一方法。</string>
   <string name="onboarding.security.create_wallet.no_recovery.subtitle">如果您丢失了助记词，将无法访问钱包。</string>
   <string name="onboarding.security.create_wallet.keep_safe.title">将其存放在安全的地方</string>
-  <string name="onboarding.security.create_wallet.no_recovery.title">我们无法帮助您找回助记词。</string>
-  <string name="transfer.minimum_account_balance">除非您使用全部余额，否则账户需保留最低 %s</string>
+  <string name="onboarding.security.create_wallet.no_recovery.title">我们无法帮您找回助记词。</string>
+  <string name="transfer.minimum_account_balance">除非使用全部余额，否则需保留至少 %s 余额。</string>
   <string name="swap.price_impact_warning.description" formatted="false">本次交易滑点较大，预计损失 %s %s。是否确认继续？</string>
   <string name="swap.price_impact_warning.title">滑点巨大</string>
-  <string name="wallet_connect.domain">Domain</string>
-  <string name="sign_message.view_full_message">View Full Message</string>
+  <string name="wallet_connect.domain">域名</string>
+  <string name="sign_message.view_full_message">查看完整消息</string>
+  <string name="info.slippage.description">滑点是指交易预期价格与实际执行价格之间的差异。</string>
+  <string name="onboarding.accept_terms.title">接受条款</string>
+  <string name="onboarding.accept_terms.message">请阅读并同意以下条款后继续。</string>
+  <string name="onboarding.accept_terms.item1.message">我明白钱包的安全备份由我自行负责，Gem 不承担任何责任。</string>
+  <string name="onboarding.accept_terms.item2.message">我明白 Gem 不是银行或交易所，严禁将其用于非法用途。</string>
+  <string name="onboarding.accept_terms.item3.message">我明白如果丢失钱包访问权限，Gem 不承担任何责任，也无法提供帮助。</string>
+  <string name="onboarding.accept_terms.continue">我已了解，继续</string>
+  <string name="errors.required">%s is required</string>
+  <string name="update_app.permission.title">Allow installation</string>
+  <string name="update_app.permission.description">Go to settings and allow installation from external sources</string>
+  <string name="update_app.permission.open_settings">Go to settings</string>
+  <string name="update_app.downloading">Downloading...</string>
 </resources>
