@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.xrp
 import com.gemwallet.android.blockchain.clients.ActivationTransactionPreloader
 import com.gemwallet.android.blockchain.clients.BlockchainError
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
+import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.clients.xrp.services.account
 import com.gemwallet.android.model.ChainSignData
@@ -18,7 +19,7 @@ import kotlinx.coroutines.withContext
 class XrpSignerPreloader(
     private val chain: Chain,
     private val rpcClient: XrpRpcClient,
-) : NativeTransferPreloader, TokenTransferPreloader, ActivationTransactionPreloader {
+) : NativeTransferPreloader, TokenTransferPreloader, ActivationTransactionPreloader, SwapTransactionPreloader {
 
     private val feeCalculator = XrpFeeCalculator(chain, rpcClient)
 
@@ -31,6 +32,10 @@ class XrpSignerPreloader(
     }
 
     override suspend fun preloadActivate(params: ConfirmParams.Activate): SignerParams {
+        return preload(params)
+    }
+
+    override suspend fun preloadSwap(params: ConfirmParams.SwapParams): SignerParams {
         return preload(params)
     }
 

@@ -9,6 +9,7 @@ import com.gemwallet.android.model.Crypto
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
+import com.wallet.core.primitives.SwapProvider
 import wallet.core.java.AnySigner
 import wallet.core.jni.proto.Ripple
 import wallet.core.jni.proto.Ripple.OperationPayment
@@ -69,6 +70,35 @@ class XrpSignClient(
         return sign(params, chainData, feePriority, operation, privateKey)
     }
 
+    override suspend fun signSwap(
+        params: ConfirmParams.SwapParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        feePriority: FeePriority,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        when (params.protocolId) {
+            SwapProvider.Thorchain.string -> {
+                val json = """
+                {
+                    "TransactionType": "Payment",
+                    "Destination": "${params.to})",
+                    "Amount": "${params.value}",
+                    "Memos": [
+                        {
+                            "Memo": {
+                                "MemoData": "${params.swapData.toByteArray().toHexString("")}"
+                            }
+                        }
+                    ]
+                }
+                """
+                return sign(params, chainData, feePriority,json, privateKey)
+            }
+            else -> throw Exception("Provider doesn't support")
+        }
+    }
+
     private fun sign(
         params: ConfirmParams,
         chainData: ChainSignData,
@@ -84,6 +114,7 @@ class XrpSignClient(
             this.privateKey = ByteString.copyFrom(privateKey)
             this.lastLedgerSequence = (metadata.blockNumber + 12)
             when (operation) {
+                is String -> this.rawJson = operation
                 is OperationPayment -> this.opPayment = operation
                 is OperationTrustSet -> this.opTrustSet = operation
             }
