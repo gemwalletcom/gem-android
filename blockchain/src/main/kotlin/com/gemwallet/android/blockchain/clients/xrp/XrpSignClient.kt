@@ -82,18 +82,18 @@ class XrpSignClient(
                 val json = """
                 {
                     "TransactionType": "Payment",
-                    "Destination": "${params.to})",
+                    "Destination": "${params.to}",
                     "Amount": "${params.value}",
                     "Memos": [
                         {
                             "Memo": {
-                                "MemoData": "${params.swapData.toByteArray().toHexString("")}"
+                                "MemoData": "${params.swapData/*.removePrefix("0x")*/.toByteArray().toHexString("")}"
                             }
                         }
                     ]
                 }
                 """
-                return sign(params, chainData, feePriority,json, privateKey)
+                return sign(params, chainData, feePriority, json, privateKey)
             }
             else -> throw Exception("Provider doesn't support")
         }

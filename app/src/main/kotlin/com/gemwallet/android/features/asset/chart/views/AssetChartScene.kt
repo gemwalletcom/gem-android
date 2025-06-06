@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.unit.dp
@@ -118,12 +119,13 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
     }
     asset.id.tokenId?.let {
         item {
+            val context = LocalContext.current
             val clipboardManager = LocalClipboard.current.nativeClipboard
             val uriHandler = LocalUriHandler.current
             PropertyItem(
                 modifier = Modifier.combinedClickable(
                     onLongClick = {
-                        clipboardManager.setPlainText(it)
+                        clipboardManager.setPlainText(context, it)
                     },
                     onClick = {
                         uriHandler.open(Explorer(asset.chain().string).getTokenUrl(explorerName, it) ?: return@combinedClickable)

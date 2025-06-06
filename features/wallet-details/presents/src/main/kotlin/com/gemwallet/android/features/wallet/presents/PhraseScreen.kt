@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -36,6 +37,7 @@ fun PhraseScreen(
     val wallet by viewModel.wallet.collectAsStateWithLifecycle()
     val phrase by viewModel.phrase.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
     val walletType = wallet?.type
 
@@ -88,7 +90,7 @@ fun PhraseScreen(
 
         Spacer16()
         TextButton(
-            onClick = { clipboardManager.setPlainText(phrase ?: "") }
+            onClick = { clipboardManager.setPlainText(context, phrase ?: "") }
         ) {
             Text(text = stringResource(id = R.string.common_copy))
         }

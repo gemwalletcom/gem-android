@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -85,6 +86,7 @@ private fun Wallet(
 ) {
     wallet ?: return
     var isShowDelete by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
 
     var walletName by remember(wallet.name) {
@@ -150,7 +152,7 @@ private fun Wallet(
                                     trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
                                     onClick = {
                                         callback()
-                                        clipboardManager.setPlainText(account.address)
+                                        clipboardManager.setPlainText(context, account.address)
                                     },
                                 )
                             },

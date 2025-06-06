@@ -6,6 +6,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gemwallet.android.features.asset_select.viewmodels.AssetSelectViewModel
@@ -19,6 +20,7 @@ fun SelectReceiveScreen(
     onSelect: ((AssetId) -> Unit)?,
     viewModel: AssetSelectViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
     AssetSelectScreen(
         title = stringResource(id = R.string.wallet_receive),
@@ -26,7 +28,7 @@ fun SelectReceiveScreen(
         itemTrailing = {
             IconButton(onClick = {
                 viewModel.onChangeVisibility(it.asset.id, true)
-                    clipboardManager.setPlainText(viewModel.getAccount(it.asset.id)?.address ?: "")
+                    clipboardManager.setPlainText(context, viewModel.getAccount(it.asset.id)?.address ?: "")
             }) {
                 Icon(imageVector = Icons.Default.ContentCopy, contentDescription = "")
             }

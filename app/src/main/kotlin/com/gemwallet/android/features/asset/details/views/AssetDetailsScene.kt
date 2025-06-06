@@ -29,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -147,6 +148,7 @@ private fun Success(
     val scope = rememberCoroutineScope()
 
     val pullToRefreshState = rememberPullToRefreshState()
+    val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
     val uriHandler = LocalUriHandler.current
 
@@ -174,7 +176,7 @@ private fun Success(
                 }
             }
             IconButton(
-                onClick = { clipboardManager.setPlainText(uiState.accountInfoUIModel.owner) }
+                onClick = { clipboardManager.setPlainText(context, uiState.accountInfoUIModel.owner) }
             ) {
                 Icon(Icons.Default.ContentCopy, "")
             }

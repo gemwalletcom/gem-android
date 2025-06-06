@@ -157,6 +157,9 @@ fun Chain.getNetworkId(): String {
 }
 
 fun Chain.isSwapSupport(): Boolean {
+    if (this == Chain.Xrp) {
+        return true
+    }
     return try {
         Config().getChainConfig(string).isSwapSupported
     } catch (_: Throwable) {

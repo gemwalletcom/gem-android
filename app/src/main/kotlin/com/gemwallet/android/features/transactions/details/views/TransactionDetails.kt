@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -33,7 +34,6 @@ import com.gemwallet.android.features.transactions.details.viewmodels.getIcon
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.InfoSheetEntity
-import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.NftHead
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.clipboard.setPlainText
@@ -46,6 +46,7 @@ import com.gemwallet.android.ui.components.list_item.PropertyItem
 import com.gemwallet.android.ui.components.list_item.PropertyTitleText
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
+import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.titles.getTransactionTitle
 import com.gemwallet.android.ui.theme.pendingColor
@@ -190,6 +191,7 @@ private fun LazyListScope.transactionRecipientItem(model: TxDetailsScreenModel) 
         }
     }
     item {
+        val context = LocalContext.current
         val clipboardManager = LocalClipboard.current.nativeClipboard
 
         PropertyItem(
@@ -197,7 +199,7 @@ private fun LazyListScope.transactionRecipientItem(model: TxDetailsScreenModel) 
             data = {
                 Row(
                     modifier = Modifier
-                        .clickable { clipboardManager.setPlainText(model.to) }
+                        .clickable { clipboardManager.setPlainText(context, model.to) }
                         .weight(1f),
                     verticalAlignment = Alignment.CenterVertically) {
                     Text(

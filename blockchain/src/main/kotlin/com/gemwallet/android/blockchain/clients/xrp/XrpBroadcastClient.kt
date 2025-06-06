@@ -12,7 +12,8 @@ class XrpBroadcastClient(
     private val rpcClient: XrpRpcClient,
 ) : BroadcastClient {
     override suspend fun send(account: Account, signedMessage: ByteArray, type: TransactionType): String {
-        val response = rpcClient.broadcast(signedMessage.toHexString("")).getOrNull()
+        val request = signedMessage.toHexString("")
+        val response = rpcClient.broadcast(request).getOrNull()
             ?: throw ServiceError.NetworkError
 
         if (response.result.accepted != true && !response.result.engine_result_message.isNullOrEmpty()) {

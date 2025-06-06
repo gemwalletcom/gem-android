@@ -68,8 +68,8 @@ private fun ReceiveScene(
     onCancel: () -> Unit,
 ) {
     assetInfo ?: return
-    val clipboardManager = LocalClipboard.current.nativeClipboard
     val context = LocalContext.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
     val shareTitle = stringResource(id = R.string.common_share)
 
     val onShare = fun () {
@@ -86,7 +86,7 @@ private fun ReceiveScene(
 
     val onCopyClick = fun () {
         onCopy()
-        clipboardManager.setPlainText(assetInfo.owner?.address ?: "")
+        clipboardManager.setPlainText(context, assetInfo.owner?.address ?: "")
     }
 
     Scene(

@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
@@ -117,6 +118,7 @@ fun UI(
     onCreate: (String) -> Unit,
     onCancel: () -> Unit,
 ) {
+    val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
     val name = stringResource(id = R.string.wallet_default_name, generatedNameIndex)
     Scene(
@@ -142,7 +144,7 @@ fun UI(
             PhraseLayout(words = data)
         }
         Spacer16()
-        TextButton(onClick = { clipboardManager.setPlainText(data.joinToString(" ")) }) {
+        TextButton(onClick = { clipboardManager.setPlainText(context, data.joinToString(" ")) }) {
             Text(text = stringResource(id = R.string.common_copy))
         }
     }

@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -32,6 +33,7 @@ internal fun AssetItem(
     onAssetHide: (AssetId) -> Unit,
     onTogglePin: (AssetId) -> Unit,
 ) {
+    val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
     DropDownContextItem(
         modifier = modifier.testTag(item.asset.id.toIdentifier()),
@@ -56,7 +58,7 @@ internal fun AssetItem(
                 text = { Text(text = stringResource(id = R.string.wallet_copy_address)) },
                 trailingIcon = { Icon(Icons.Default.ContentCopy, "copy") },
                 onClick = {
-                    clipboardManager.setPlainText(item.owner ?: "")
+                    clipboardManager.setPlainText(context, item.owner ?: "")
                     longPressState.value = null
                 },
             )
