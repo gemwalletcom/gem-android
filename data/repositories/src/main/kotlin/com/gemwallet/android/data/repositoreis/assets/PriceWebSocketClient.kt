@@ -18,6 +18,7 @@ import com.wallet.core.primitives.WebSocketPriceActionType
 import com.wallet.core.primitives.WebSocketPricePayload
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.websocket.DefaultClientWebSocketSession
 import io.ktor.client.plugins.websocket.WebSockets
 import io.ktor.client.plugins.websocket.receiveDeserialized
 import io.ktor.client.plugins.websocket.sendSerialized
@@ -56,51 +57,27 @@ class PriceWebSocketClient(
     init {
         scope.launch {
             sessionRepository.session().collectLatest {
-                if (!started.get()) start()
+                if (!started.get()) {
+                    start()
+                }
             }
         }
     }
 
     fun start() = scope.launch(Dispatchers.IO) {
-        started.set(sessionRepository.getSession()?.wallet != null)
-        if (!started.get()) {
-            return@launch
-        }
-        client.wss(method = HttpMethod.Get, host = "api.gemwallet.com", port = 443, path = "/v1/ws/prices") {
-            launch(Dispatchers.IO) {
-                priceActionFlow.collectLatest {
-                    try {
-                        sendSerialized(it)
-                    } catch (err: Throwable) {
-                        Log.d("WEBSOCKET", "Error: ", err)
-                    }
-                }
+        try {
+            started.set(sessionRepository.getSession()?.wallet != null)
+            if (!started.get()) {
+                return@launch
             }
-            val wss = this
-            launch(Dispatchers.Default) {
-                cancelCommandFlow.collectLatest {
-                    try {
-                        if (it) {
-                            started.set(false)
-                            wss.cancel()
-                        }
-                    } catch (err: Throwable) {
-                        Log.d("WEBSOCKET", "Error: ", err)
-                    }
-                }
-            }
-            reinit()
-            while(started.get()) {
-                val pricePayload = try {
-                    receiveDeserialized<WebSocketPricePayload>()
-                } catch (err: Throwable) {
-                    Log.d("WEBSOCKET", "Error: ", err)
-                    delay(15_000)
-                    continue
-                }
-                handlePriceUpdate(pricePayload.prices, pricePayload.rates)
-            }
-            cancel()
+            client.wss(
+                method = HttpMethod.Get,
+                host = "api.gemwallet.com",
+                port = 443,
+                path = "/v1/ws/prices",
+            ) { webSocketBlock() }
+        } catch (err: Throwable) {
+            Log.d("WEB-SOCKETS", "Error", err)
         }
     }
 
@@ -130,7 +107,7 @@ class PriceWebSocketClient(
         updatePrices(prices, rate)
     }
 
-    fun reinit() = scope.launch(Dispatchers.Default) {
+    private fun reinit() = scope.launch(Dispatchers.Default) {
         val ids = assetsDao.getAssetsPriceUpdate().mapNotNull { it.toAssetId() }
         val priceAlerts = priceAlertsDao.getAlerts().firstOrNull()
             ?.mapNotNull { it.assetId.toAssetId() } ?: emptyList()
@@ -155,5 +132,42 @@ class PriceWebSocketClient(
                 assets = listOf(id)
             )
         )
+    }
+
+    suspend fun DefaultClientWebSocketSession.webSocketBlock() {
+        launch(Dispatchers.IO) {
+            priceActionFlow.collectLatest {
+                try {
+                    sendSerialized(it)
+                } catch (err: Throwable) {
+                    Log.d("WEBSOCKET", "Error: ", err)
+                }
+            }
+        }
+        val wss = this
+        launch(Dispatchers.Default) {
+            cancelCommandFlow.collectLatest {
+                try {
+                    if (it) {
+                        started.set(false)
+                        wss.cancel()
+                    }
+                } catch (err: Throwable) {
+                    Log.d("WEBSOCKET", "Error: ", err)
+                }
+            }
+        }
+        runCatching { reinit() }
+        while (started.get()) {
+            val pricePayload = try {
+                receiveDeserialized<WebSocketPricePayload>()
+            } catch (err: Throwable) {
+                Log.d("WEBSOCKET", "Error: ", err)
+                delay(15_000)
+                continue
+            }
+            handlePriceUpdate(pricePayload.prices, pricePayload.rates)
+        }
+        cancel()
     }
 }
