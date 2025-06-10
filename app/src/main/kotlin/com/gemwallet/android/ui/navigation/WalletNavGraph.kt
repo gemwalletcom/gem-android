@@ -337,7 +337,7 @@ sealed interface NavigateAfterConfirm {
     class Stake(private val assetId: AssetId) : NavigateAfterConfirm {
 
         override fun navigate(navController: NavController) {
-            navController.navigateToStake(
+            navController.navigateToAssetScreen(
                 assetId,
                 navOptions {
                     launchSingleTop = true
