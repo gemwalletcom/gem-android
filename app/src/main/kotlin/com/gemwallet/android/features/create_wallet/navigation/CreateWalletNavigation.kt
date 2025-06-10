@@ -10,17 +10,30 @@ import com.gemwallet.android.features.create_wallet.views.PhraseAlertDialog
 import kotlinx.serialization.Serializable
 
 @Serializable
+object CreateWalletAlertRoute
+
+@Serializable
 data class CreateWalletRoute(val isAcceptedRules: Boolean)
 
 fun NavController.navigateToCreateWalletScreen(isAcceptedRules: Boolean = false, navOptions: NavOptions? = null) {
     navigate(CreateWalletRoute(isAcceptedRules), navOptions ?: navOptions { launchSingleTop = true })
 }
 
+fun NavController.navigateToCreateWalletRulesScreen(navOptions: NavOptions? = null) {
+    navigate(CreateWalletAlertRoute, navOptions ?: navOptions { launchSingleTop = true })
+}
+
 fun NavGraphBuilder.createWalletScreen(
-    onCreateWallet: (Boolean) -> Unit,
+    onAcceptRules: () -> Unit,
+    onCreateWallet: (Boolean, navOptions: NavOptions?) -> Unit,
     onCancel: () -> Unit,
     onCreated: () -> Unit,
 ) {
+
+    composable<CreateWalletAlertRoute> {
+        PhraseAlertDialog({ onCreateWallet(true, null) }, onCancel)
+    }
+
     composable<CreateWalletRoute> {
         if (it.arguments?.getBoolean("isAcceptedRules") == true) {
             CreateWalletScreen(
@@ -28,7 +41,7 @@ fun NavGraphBuilder.createWalletScreen(
                 onCreated = onCreated,
             )
         } else {
-            PhraseAlertDialog({ onCreateWallet(true) }, onCancel)
+            onAcceptRules()
         }
     }
 }

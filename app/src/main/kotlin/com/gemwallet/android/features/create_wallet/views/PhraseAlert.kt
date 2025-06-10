@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.create_wallet.views
 
+import android.content.Context
 import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,49 +15,55 @@ import androidx.compose.material.icons.filled.WarningAmber
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Checkbox
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.features.onboarding.AcceptTermsScreen
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.padding4
+import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.theme.WalletTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PhraseAlertDialog(
     onAccept: () -> Unit,
     onCancel: CancelAction,
 ) {
-    var isStoreChecked by remember { mutableStateOf(false) }
-    var isShareChecked by remember { mutableStateOf(false) }
-    var isRecoveryChecked by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+
+    var isAcceptedTerms by remember {
+        mutableStateOf(
+            context.getSharedPreferences("terms", Context.MODE_PRIVATE).getBoolean("is_accepted", false)
+        )
+    }
 
     Scene(
         title = stringResource(R.string.wallet_new_title),
         mainAction = {
             MainActionButton(
                 stringResource(R.string.common_continue),
-                enabled = isStoreChecked && isShareChecked && isRecoveryChecked,
                 onClick = onAccept,
             )
         },
@@ -82,22 +89,30 @@ fun PhraseAlertDialog(
                 Icons.Default.Edit,
                 R.string.onboarding_security_create_wallet_keep_safe_title,
                 R.string.onboarding_security_create_wallet_keep_safe_subtitle,
-                isStoreChecked,
-            ) { isStoreChecked = it }
+            )
             Spacer(Modifier.size(24.dp))
             InfoBlock(
                 Icons.Default.WarningAmber,
                 R.string.secret_phrase_do_not_share_title,
                 R.string.onboarding_security_create_wallet_do_not_share_subtitle,
-                isShareChecked,
-            ) { isShareChecked = it }
+            )
             Spacer(Modifier.size(24.dp))
             InfoBlock(
                 Icons.Default.Diamond,
                 R.string.onboarding_security_create_wallet_no_recovery_title,
                 R.string.onboarding_security_create_wallet_no_recovery_subtitle,
-                isRecoveryChecked
-            ) { isRecoveryChecked = it }
+            )
+        }
+    }
+
+    val state = rememberModalBottomSheetState(true)
+
+    if (!isAcceptedTerms) {
+        ModalBottomSheet(
+            onDismissRequest = { onCancel() },
+            sheetState = state,
+        ) {
+            AcceptTermsScreen(onCancel = onCancel) { isAcceptedTerms = true }
         }
     }
 }
@@ -107,8 +122,6 @@ private fun InfoBlock(
     icon: ImageVector,
     @StringRes title: Int,
     @StringRes description: Int,
-    isChecked: Boolean,
-    onChecked: (Boolean) -> Unit,
 ) {
     Card(
         modifier = Modifier,
@@ -135,9 +148,6 @@ private fun InfoBlock(
                     text = stringResource(description),
                     style = MaterialTheme.typography.bodyLarge,
                 )
-            }
-            CompositionLocalProvider(LocalMinimumInteractiveComponentSize provides 0.dp) {
-                Checkbox(isChecked, onChecked)
             }
         }
     }

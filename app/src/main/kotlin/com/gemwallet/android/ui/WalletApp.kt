@@ -18,7 +18,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.gemwallet.android.BuildConfig
-import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateWalletScreen
+import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateWalletRulesScreen
 import com.gemwallet.android.features.import_wallet.navigation.navigateToImportWalletScreen
 import com.gemwallet.android.features.onboarding.OnboardScreen
 import com.gemwallet.android.flavors.ReviewManager
@@ -44,7 +44,7 @@ fun WalletApp() {
         startDestination = startDestination,
         onboard = {
             OnboardScreen(
-                onCreateWallet = navController::navigateToCreateWalletScreen,
+                onCreateWallet = navController::navigateToCreateWalletRulesScreen,
                 onImportWallet = navController::navigateToImportWalletScreen,
             )
         },

@@ -38,6 +38,7 @@ import com.gemwallet.android.features.confirm.navigation.navigateToConfirmScreen
 import com.gemwallet.android.features.create_wallet.navigation.assetsManageScreen
 import com.gemwallet.android.features.create_wallet.navigation.createWalletScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsManageScreen
+import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateWalletRulesScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateWalletScreen
 import com.gemwallet.android.features.import_wallet.navigation.importWalletScreen
 import com.gemwallet.android.features.import_wallet.navigation.navigateToImportWalletScreen
@@ -87,9 +88,8 @@ fun WalletNavGraph(
     onboard: @Composable () -> Unit,
 ) {
     val onCancel: () -> Unit = { navController.navigateUp() }
-    val currentTab = remember {
-        mutableStateOf(assetsRoute)
-    }
+    val currentTab = remember { mutableStateOf(assetsRoute) }
+
     NavHost(
         modifier = modifier.semantics { testTagsAsResourceId = true },
         navController = navController,
@@ -199,7 +199,7 @@ fun WalletNavGraph(
             )
 
             walletsScreen(
-                onCreateWallet = navController::navigateToCreateWalletScreen,
+                onCreateWallet = navController::navigateToCreateWalletRulesScreen,
                 onImportWallet = navController::navigateToImportWalletScreen,
                 onEditWallet = navController::navigateToWalletScreen,
                 onSelectWallet = {
@@ -285,6 +285,7 @@ fun WalletNavGraph(
         }
 
         createWalletScreen(
+            onAcceptRules = navController::navigateToCreateWalletRulesScreen,
             onCreateWallet = navController::navigateToCreateWalletScreen,
             onCancel = onCancel,
             onCreated = {
