@@ -29,12 +29,17 @@
             android:theme="@style/Theme.Wallet"
             android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTask"
+            android:icon="@mipmap/ic_launcher"
             tools:node="merge"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <intent-filter>
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="com.android.ApplicationName" />
             </intent-filter>
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
