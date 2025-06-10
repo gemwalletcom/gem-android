@@ -21,6 +21,7 @@ internal class TestXrpAccountsService(
                     XRPAccount(
                         Balance = balance,
                         Sequence = 92788459,
+                        OwnerCount = 1,
                     ),
                     ledger_current_index = 1
                 )
