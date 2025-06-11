@@ -13,9 +13,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircleOutline
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,20 +27,24 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.content.edit
+import androidx.core.net.toUri
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.padding4
+import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.theme.WalletTheme
+import uniffi.gemstone.Config
+import uniffi.gemstone.PublicUrl
 
 @Composable
 fun AcceptTermsScreen(
@@ -46,6 +52,7 @@ fun AcceptTermsScreen(
     onAccept: () -> Unit,
 ) {
     val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
     var isUnderstand1 by remember { mutableStateOf(false) }
     var isUnderstand2 by remember { mutableStateOf(false) }
     var isUnderstand3 by remember { mutableStateOf(false) }
@@ -65,7 +72,22 @@ fun AcceptTermsScreen(
                     onAccept()
                 }
             )
-        }
+        },
+        actions = {
+            IconButton(
+                {
+                    uriHandler.open(
+                        Config().getPublicUrl(PublicUrl.TERMS_OF_SERVICE).toUri()
+                            .buildUpon()
+                            .appendQueryParameter("utm_source", "gemwallet_android")
+                            .build()
+                            .toString()
+                    )
+                }
+            ) {
+                Icon(Icons.Outlined.Info, "")
+            }
+        },
     ) {
         LazyColumn (
             modifier = Modifier
