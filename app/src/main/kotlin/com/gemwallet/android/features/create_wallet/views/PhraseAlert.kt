@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.features.onboarding.AcceptTermsScreen
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.designsystem.Spacer8
+import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.padding4
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
@@ -132,7 +132,7 @@ private fun InfoBlock(
             modifier = Modifier.padding(padding16),
         ) {
             Icon(imageVector = icon, "")
-            Spacer8()
+            Spacer16()
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = stringResource(title),

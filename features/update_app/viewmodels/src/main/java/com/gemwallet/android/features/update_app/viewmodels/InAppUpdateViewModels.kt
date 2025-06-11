@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -46,9 +46,13 @@ class InAppUpdateViewModels @Inject constructor(
     val appFileProvider = "${context.packageName}.provider"
     val intentDataType = "application/vnd.android.package-archive"
 
-    val updateAvailable = getLatestVersion.getLatestVersion().map {
-        if (buildInfo.versionName != it && buildInfo.platformStore == PlatformStore.ApkUniversal && userConfig.developEnabled()) {
-            it
+    val updateAvailable = userConfig.getAppVersionSkip().combine(getLatestVersion.getLatestVersion()) { skip, version ->
+        if (version != skip
+            && buildInfo.versionName != version
+            && buildInfo.platformStore == PlatformStore.ApkUniversal
+            && userConfig.developEnabled()
+        ) {
+            version
         } else {
             null
         }
@@ -81,6 +85,12 @@ class InAppUpdateViewModels @Inject constructor(
         return true
     }
 
+    fun skip() {
+        viewModelScope.launch {
+            userConfig.setAppVersionSkip(updateAvailable.value ?: return@launch)
+        }
+    }
+
     private fun download() {
         val version = updateAvailable.value ?: throw IllegalArgumentException()
         val url = "https://apk.gemwallet.com/gem_wallet_universal_v${version}.apk"
@@ -99,21 +109,33 @@ class InAppUpdateViewModels @Inject constructor(
         val bufferSize = 8 * 1024
         var bytesRead: Long = 0
 
-        while ((source.read(sinkBuffer, bufferSize.toLong()).also { bytesRead = it }) != -1L) {
-            sink.emit()
-            totalBytesRead += bytesRead
-            downloadState.update { DownloadState.Progress(totalBytesRead.toFloat() / contentLength.toFloat()) }
+        try {
+            if (downloadState.value == DownloadState.Canceled) {
+                return
+            }
+            while ((source.read(sinkBuffer, bufferSize.toLong()).also { bytesRead = it }) != -1L) {
+                sink.emit()
+                totalBytesRead += bytesRead
+                if (downloadState.value == DownloadState.Canceled) {
+                    return
+                }
+                downloadState.update { DownloadState.Progress(totalBytesRead.toFloat() / contentLength.toFloat()) }
+            }
+        } finally {
+            sink.flush()
+            sink.close()
+            source.close()
         }
 
-        sink.flush()
-        sink.close()
-        source.close()
         downloadState.update { DownloadState.Success }
     }
 
     private fun requestInstallFromUnknownSources(context: Context): Boolean = context.packageManager.canRequestPackageInstalls()
 
     private fun installApk() {
+        if (downloadState.value == DownloadState.Canceled) {
+            return
+        }
         val fileName = getApkFile()
         val apkUri = FileProvider.getUriForFile(context, appFileProvider, fileName)
         val intent = Intent(Intent.ACTION_VIEW).apply {
@@ -126,6 +148,10 @@ class InAppUpdateViewModels @Inject constructor(
     private fun getApkFile(): File {
         return File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) ?: context.filesDir, "gem.apk")
     }
+
+    fun cancel() {
+        downloadState.update { DownloadState.Canceled }
+    }
 }
 
 sealed interface DownloadState {
@@ -134,4 +160,5 @@ sealed interface DownloadState {
     class Progress(val value: Float) : DownloadState
     object Success : DownloadState
     object Error : DownloadState
+    object Canceled : DownloadState
 }

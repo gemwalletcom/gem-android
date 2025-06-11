@@ -18,8 +18,8 @@ import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AssetListItem
-import com.gemwallet.android.ui.components.DropDownContextItem
 import com.gemwallet.android.ui.components.clipboard.setPlainText
+import com.gemwallet.android.ui.components.list_item.DropDownContextItem
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
 
@@ -27,7 +27,7 @@ import com.wallet.core.primitives.AssetId
 internal fun AssetItem(
     item: AssetItemUIModel,
     longPressState: MutableState<AssetId?>,
-    modifier: Modifier = Modifier.Companion,
+    modifier: Modifier = Modifier,
     isPinned: Boolean = false,
     onAssetClick: (AssetId) -> Unit,
     onAssetHide: (AssetId) -> Unit,

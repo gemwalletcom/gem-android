@@ -1,9 +1,10 @@
-package com.gemwallet.android.ui.components
+package com.gemwallet.android.ui.components.list_item
 
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.DropdownMenu
@@ -64,10 +65,10 @@ fun DropDownContextItem(
                         onClick()
                     },
                     onPress = {
-                        val press = androidx.compose.foundation.interaction.PressInteraction.Press(it)
+                        val press = PressInteraction.Press(it)
                         interactionSource.emit(press)
                         tryAwaitRelease()
-                        interactionSource.emit(androidx.compose.foundation.interaction.PressInteraction.Release(press))
+                        interactionSource.emit(PressInteraction.Release(press))
                     }
                 )
         }

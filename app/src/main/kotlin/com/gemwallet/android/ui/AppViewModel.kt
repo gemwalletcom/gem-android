@@ -1,5 +1,6 @@
 package com.gemwallet.android.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.BuildConfig
@@ -14,6 +15,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -42,7 +45,7 @@ class AppViewModel @Inject constructor(
         }
     }
 
-    fun onSkip(version: String) {
+    fun onSkip(version: String) = viewModelScope.launch {
         userConfig.setAppVersionSkip(version)
         state.update { it.copy(intent = AppIntent.None) }
     }
@@ -54,26 +57,26 @@ class AppViewModel @Inject constructor(
     private fun hasSession(): Boolean = sessionRepository.hasSession()
 
     private suspend fun handleAppVersion() = withContext(Dispatchers.IO) {
-        if (BuildConfig.DEBUG) {
-            return@withContext
-        }
+//        if (BuildConfig.DEBUG) {
+//            return@withContext
+//        }
         val response = gemApiClient.getConfig().getOrNull()
         val lastRelease = response?.releases?.filter {
-                val versionFlavor = when (it.store) {
-                    PlatformStore.GooglePlay -> "google"
-                    PlatformStore.Fdroid -> "fdroid"
-                    PlatformStore.Huawei -> "huawei"
-                    PlatformStore.SolanaStore -> "solana"
-                    PlatformStore.SamsungStore -> "samsung"
-                    PlatformStore.ApkUniversal -> "universal"
-                    PlatformStore.AppStore -> it.store.string
-                    PlatformStore.Local -> "local"
-                }
-                BuildConfig.FLAVOR == versionFlavor
+            val versionFlavor = when (it.store) {
+                PlatformStore.GooglePlay -> "google"
+                PlatformStore.Fdroid -> "fdroid"
+                PlatformStore.Huawei -> "huawei"
+                PlatformStore.SolanaStore -> "solana"
+                PlatformStore.SamsungStore -> "samsung"
+                PlatformStore.ApkUniversal -> "universal"
+                PlatformStore.AppStore -> it.store.string
+                PlatformStore.Local -> "local"
             }
+            BuildConfig.FLAVOR == versionFlavor
+        }
             ?.firstOrNull() ?: return@withContext
 
-        val skipVersion = userConfig.getAppVersionSkip()
+        val skipVersion = userConfig.getAppVersionSkip().firstOrNull()
         val lastVersion = lastRelease.version
         userConfig.setLatestVersion(lastVersion)
         if (lastVersion.compareTo(BuildConfig.VERSION_NAME) > 0 && skipVersion != lastVersion/* && current.store != PlatformStore.ApkUniversal*/) {
