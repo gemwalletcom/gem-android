@@ -1,6 +1,5 @@
 package com.gemwallet.android.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.BuildConfig
@@ -16,7 +15,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -57,9 +55,9 @@ class AppViewModel @Inject constructor(
     private fun hasSession(): Boolean = sessionRepository.hasSession()
 
     private suspend fun handleAppVersion() = withContext(Dispatchers.IO) {
-//        if (BuildConfig.DEBUG) {
-//            return@withContext
-//        }
+        if (BuildConfig.DEBUG) {
+            return@withContext
+        }
         val response = gemApiClient.getConfig().getOrNull()
         val lastRelease = response?.releases?.filter {
             val versionFlavor = when (it.store) {

@@ -32,22 +32,22 @@ class TronSignerPreloader(
     val feeCalculator = TronFeeCalculator(chain, nodeStatusService, callService)
 
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
-        return preloadTransfer(params)
-    }
-
-    override suspend fun preloadTokenTransfer(params: ConfirmParams.TransferParams.Token): SignerParams {
-        return preloadTransfer(params)
-    }
-
-    override fun supported(chain: Chain): Boolean = this.chain == chain
-
-    private suspend fun preloadTransfer(params: ConfirmParams.TransferParams): SignerParams = withContext(Dispatchers.IO) {
-        preload(
+        return preload(
             params, { account, usage ->
                 feeCalculator.calculate(params, account, usage)
             }
         ) { emptyMap() }
     }
+
+    override suspend fun preloadTokenTransfer(params: ConfirmParams.TransferParams.Token): SignerParams {
+        return preload(
+            params, { account, usage ->
+                feeCalculator.calculate(params, account, usage)
+            }
+        ) { emptyMap() }
+    }
+
+    override fun supported(chain: Chain): Boolean = this.chain == chain
 
     override suspend fun preloadStake(params: ConfirmParams.Stake): SignerParams = withContext(Dispatchers.IO) {
         preload(

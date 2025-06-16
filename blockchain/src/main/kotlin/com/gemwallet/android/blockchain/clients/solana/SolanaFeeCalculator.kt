@@ -2,7 +2,6 @@ package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaFeeService
 import com.gemwallet.android.blockchain.clients.solana.services.getPriorityFees
-import com.gemwallet.android.blockchain.clients.solana.services.rentExemption
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
@@ -10,6 +9,8 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
+import uniffi.gemstone.Config
+import java.math.BigInteger
 import kotlin.math.max
 import kotlin.math.min
 
@@ -75,7 +76,7 @@ class SolanaFeeCalculator(
                     .fold(0) { acc, i -> acc + i } / priorityFees.size
                 max(((averagePriorityFee + multipleOf - 1) / multipleOf) * multipleOf, multipleOf)
             } * speedCoefficient
-            val tokenAccountCreation = feeService.rentExemption(tokenAccountSize)
+            val tokenAccountCreation = Config().getChainConfig(Chain.Solana.string).tokenActivationFee?.toBigInteger() ?: BigInteger.ZERO
             val totalFee = staticBaseFee + (minerFee * gasLimit / 1_000_000)
 
             GasFee(
