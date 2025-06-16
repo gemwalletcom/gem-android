@@ -6,10 +6,12 @@ import com.gemwallet.android.blockchain.clients.xrp.services.account
 import com.gemwallet.android.blockchain.clients.xrp.services.accountLines
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getReserveBalance
+import com.gemwallet.android.ext.getTokenActivationFee
 import com.gemwallet.android.model.AssetBalance
 import com.gemwallet.android.model.Crypto
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
+import java.math.BigInteger
 
 class XrpBalanceClient(
     private val chain: Chain,
@@ -17,13 +19,12 @@ class XrpBalanceClient(
 ) : BalanceClient {
 
     override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
-        val reserved = chain.getReserveBalance()
-        val amount = accountsService.account(address).mapCatching {
-            it.result.account_data?.Balance?.toBigInteger()?.let { it - reserved }
-        }.getOrNull() ?: return null
+        val account = accountsService.account(address).getOrNull()?.result?.account_data ?: return null
+        val amount = account.Balance.toBigInteger()
+        val reserved = chain.getReserveBalance() + (account.OwnerCount.toBigInteger() * chain.getTokenActivationFee())
         return AssetBalance.create(
             chain.asset(),
-            available = amount.toString(),
+            available = BigInteger.ZERO.max(amount - reserved).toString(),
             reserved = reserved.toString()
         )
     }
