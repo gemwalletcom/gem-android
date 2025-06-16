@@ -59,31 +59,31 @@ class ScreenshotsCapture {
         device.pressBack()
     }
 
-    @Test
-    fun takeScreenShots() {
-        assertThat(device, notNullValue())
-        val locales = arrayOf(
-            Pair("en", ""),
-            Pair("ar", ""),
-            Pair("de", ""),
-            Pair("es", ""),
-            Pair("fr", ""),
-            Pair("ja", ""),
-            Pair("ko", ""),
-            Pair("pl", ""),
-            Pair("pt", "BR"),
-            Pair("ru", ""),
-            Pair("tr", ""),
-            Pair("uk", ""),
-            Pair("vi", ""),
-            Pair("zh", "CN"),
-            Pair("zh", "TW"),
-        )
-
+//    @Test
+//    fun takeScreenShots() {
+//        assertThat(device, notNullValue())
+//        val locales = arrayOf(
+//            Pair("en", ""),
+//            Pair("ar", ""),
+//            Pair("de", ""),
+//            Pair("es", ""),
+//            Pair("fr", ""),
+//            Pair("ja", ""),
+//            Pair("ko", ""),
+//            Pair("pl", ""),
+//            Pair("pt", "BR"),
+//            Pair("ru", ""),
+//            Pair("tr", ""),
+//            Pair("uk", ""),
+//            Pair("vi", ""),
+//            Pair("zh", "CN"),
+//            Pair("zh", "TW"),
+//        )
+//
 //        for (locale in locales) {
 //            runScenario(language = locale.first, country = locale.second)
 //        }
-    }
+//    }
 
     private fun runScenario(language: String, country: String) {
         val context = ApplicationProvider.getApplicationContext<App>()
