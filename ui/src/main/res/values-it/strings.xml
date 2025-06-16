@@ -416,4 +416,12 @@
   <string name="update_app.permission.description">Go to settings and allow installation from external sources</string>
   <string name="update_app.permission.open_settings">Go to settings</string>
   <string name="update_app.downloading">Downloading...</string>
+  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.suspicious">Suspicious</string>
+  <string name="asset.verification.warning_title">Know What You’re Adding</string>
+  <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
+  <string name="transfer.smart_contract.title">Smart Contract</string>
+  <string name="transfer.other.title">Other</string>
+  <string name="filter.has_balance">Ha equilibrio</string>
+  <string name="swap.estimated_time.title">Estimated Time</string>
 </resources>

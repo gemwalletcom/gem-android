@@ -23,7 +23,7 @@ fun StakeScreen(
 
     if (uiState == null || (uiState?.apr ?: 0.0) <= 0.0) {
         LoadingScene(
-            title = stringResource(id = R.string.wallet_stake),
+            title = stringResource(id = R.string.transfer_stake_title),
             onCancel = onCancel,
         )
     } else {

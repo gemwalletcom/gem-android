@@ -373,7 +373,7 @@
   <string name="nft.state.empty.description">Receive your first NFT</string>
   <string name="price_alerts.state.empty.title">Your alerts will appear here️</string>
   <string name="price_alerts.state.empty.description">Enable them by adding coins to track</string>
-  <string name="asset.state.empty.title">Your transactions will appear here️</string>
+  <string name="asset.state.empty.title">Ваші транзакції з’являться тут ️</string>
   <string name="asset.state.empty.description">Receive, swap or buy %s</string>
   <string name="activity.state.empty.title">Your activity will appear here</string>
   <string name="activity.state.empty.description">Make your first transaction</string>
@@ -416,4 +416,12 @@
   <string name="update_app.permission.description">Перейдіть до налаштувань та дозвольте встановлення із зовнішніх джерел</string>
   <string name="update_app.permission.open_settings">Відкрити налаштування</string>
   <string name="update_app.downloading">Завантаження...</string>
+  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.suspicious">Suspicious</string>
+  <string name="asset.verification.warning_title">Know What You’re Adding</string>
+  <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
+  <string name="transfer.smart_contract.title">Smart Contract</string>
+  <string name="transfer.other.title">Other</string>
+  <string name="filter.has_balance">Має баланс</string>
+  <string name="swap.estimated_time.title">Estimated Time</string>
 </resources>

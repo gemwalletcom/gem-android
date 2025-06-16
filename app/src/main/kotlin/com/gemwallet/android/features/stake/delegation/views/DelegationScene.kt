@@ -34,12 +34,12 @@ fun DelegationScene(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     if (uiState == null) {
-        LoadingScene(title = stringResource(id = R.string.wallet_stake), onCancel = onCancel)
+        LoadingScene(title = stringResource(id = R.string.transfer_stake_title), onCancel = onCancel)
         return
     }
     val state = uiState!!
     Scene(
-        title = stringResource(R.string.wallet_stake),
+        title = stringResource(R.string.transfer_stake_title),
         onClose = onCancel,
     ) {
         LazyColumn{
@@ -64,7 +64,7 @@ fun DelegationScene(
 private fun LazyListScope.delegationBalances(stakeBalance: String, rewardsBalance: String) {
     item {
         SubheaderItem(title = stringResource(id = R.string.asset_balances))
-        PropertyItem(R.string.wallet_stake, stakeBalance)
+        PropertyItem(R.string.transfer_stake_title, stakeBalance)
         PropertyItem(R.string.stake_rewards, rewardsBalance)
     }
 }
