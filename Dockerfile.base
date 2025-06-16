@@ -39,7 +39,7 @@ RUN mkdir -p ${ANDROID_HOME} && \
 
 # Install SDK components
 RUN yes | ${ANDROID_HOME}/bin/sdkmanager --sdk_root=${ANDROID_HOME} --licenses && \
-    ${ANDROID_HOME}/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-36" "build-tools;36.0.0" "ndk;28.1.13356709"
+    ${ANDROID_HOME}/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-35" "build-tools;35.0.0" "ndk;28.1.13356709"
 
 # Install Rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
