@@ -1,23 +1,20 @@
-FROM gem-android-base:latest
+# This Dockerfile is used to build the Android app (no signing).
+ARG BASE_IMAGE_TAG=latest
+FROM gem-android-base:${BASE_IMAGE_TAG}
 
+# Arguments for current tag and skip sign
 ARG TAG
-ARG BUILD_MODE=release
-ARG SKIP_SIGN=true
-
-# Set up entrypoint to ensure environment variables are loaded
-ENTRYPOINT ["/bin/bash", "-c", "source $HOME/.bashrc && exec $0 \"$@\"", "--"]
+ARG SKIP_SIGN
 
 # Clone the repository
 RUN git clone --depth 1 --recursive --branch $TAG https://github.com/gemwalletcom/gem-android.git $HOME/gem-android
 
-# Set the working directory
 WORKDIR $HOME/gem-android
 
-# Generated models and kotlin bindgen are committed to the repository, so no need to generate here
-# gemstone is built by cargo-ndk along with gradle
+# Copy local.properties from the build context. For local builds, this is your local file. CI builds, this file is created by a previous workflow step.
+COPY --chown=root:root local.properties ./local.properties
 
-RUN make install-wallet-core
-
-RUN touch local.properties && SKIP_SIGN=${SKIP_SIGN} make release
+# Build the application
+RUN export SKIP_SIGN=${SKIP_SIGN} && just unsigned-release
 
 CMD ["bash"]
