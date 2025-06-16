@@ -89,8 +89,8 @@ jobs:
 
       - name: Create local.properties for CI
         run: |
-          echo "gpr.user=${{ github.actor }}" > local.properties
-          echo "gpr.key=${{ secrets.GITHUB_TOKEN }}" >> local.properties
+          echo "gpr.username=${{ github.actor }}" > local.properties
+          echo "gpr.token=${{ secrets.GITHUB_TOKEN }}" >> local.properties
           echo "# Automatically generated for CI build" >> local.properties
 
       - name: Build Dockerfile.app
