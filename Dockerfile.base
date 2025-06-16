@@ -1,3 +1,5 @@
+# This Dockerfile is used to setup the environment (jdk, sdk, ndk, rust, typeshare, etc) for Android app building.
+
 FROM debian:bookworm
 
 # Set environment variables for non-interactive installation
@@ -37,7 +39,7 @@ RUN mkdir -p ${ANDROID_HOME} && \
 
 # Install SDK components
 RUN yes | ${ANDROID_HOME}/bin/sdkmanager --sdk_root=${ANDROID_HOME} --licenses && \
-    ${ANDROID_HOME}/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;26.1.10909125"
+    ${ANDROID_HOME}/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-36" "build-tools;36.0.0" "ndk;28.1.13356709"
 
 # Install Rust
 RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
@@ -48,4 +50,4 @@ RUN rustup toolchain install stable
 RUN rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android
 
 # Cargo install
-RUN cargo install typeshare-cli --version 1.6.0 && cargo install cargo-ndk
+RUN cargo install typeshare-cli@1.13.2 cargo-ndk just
