@@ -64,6 +64,7 @@ fun PhraseAlertDialog(
             context.getSharedPreferences("terms", Context.MODE_PRIVATE).getBoolean("is_accepted", false)
         )
     }
+    val state = rememberModalBottomSheetState(true)
 
     Scene(
         title = stringResource(R.string.wallet_new_title),
@@ -120,8 +121,6 @@ fun PhraseAlertDialog(
             )
         }
     }
-
-    val state = rememberModalBottomSheetState(true)
 
     if (!isAcceptedTerms) {
         ModalBottomSheet(
