@@ -47,7 +47,7 @@ class TestEthSign {
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
                 ),
                 chainData = EvmSignerPreloader.EvmChainData(
-                    chainId = "1",
+                    chainId = 1,
                     nonce = BigInteger.ONE,
                     fees = listOf(
                         GasFee(
@@ -90,7 +90,7 @@ class TestEthSign {
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
                 ),
                 chainData = EvmSignerPreloader.EvmChainData(
-                    chainId = "1",
+                    chainId = 1,
                     nonce = BigInteger.ONE,
                     fees = listOf(
                         GasFee(
@@ -141,7 +141,7 @@ class TestEthSign {
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
                 ),
                 chainData = EvmSignerPreloader.EvmChainData(
-                    chainId = "1",
+                    chainId = 1,
                     nonce = BigInteger.ONE,
                     fees = listOf(
                         GasFee(
@@ -178,7 +178,7 @@ class TestEthSign {
                     validatorId = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8"
                 ),
                 chainData = EvmSignerPreloader.EvmChainData(
-                    chainId = "1",
+                    chainId = 1,
                     nonce = BigInteger.ONE,
                     fees = listOf(
                         GasFee(
@@ -221,7 +221,7 @@ class TestEthSign {
                     balance = "1002901689671695193",
                 ),
                 chainData = EvmSignerPreloader.EvmChainData(
-                    chainId = "1",
+                    chainId = 1,
                     nonce = BigInteger.ONE,
                     fees = listOf(
                         GasFee(
@@ -269,7 +269,7 @@ class TestEthSign {
                     contract = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                 ),
                 chainData = EvmSignerPreloader.EvmChainData(
-                    chainId = "1",
+                    chainId = 1,
                     nonce = BigInteger.ONE,
                     fees = listOf(
                         GasFee(
@@ -283,7 +283,7 @@ class TestEthSign {
                     )
                 ),
                 finalAmount = BigInteger.ZERO,
-                priority = FeePriority.Normal,
+                feePriority = FeePriority.Normal,
                 privateKey,
             )
         }

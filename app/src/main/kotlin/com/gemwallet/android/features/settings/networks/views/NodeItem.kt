@@ -55,11 +55,9 @@ internal fun NodeItem(
             )
         },
         subtitle = {
-            val blockNumber = if (nodeStatus?.blockNumber.isNullOrEmpty()) {
-                ""
-            } else {
+            val blockNumber = nodeStatus?.blockNumber?.takeIf { !it.isEmpty() }?.let {
                 DecimalFormat.getInstance().format(nodeStatus.blockNumber.toLong())
-            }
+            } ?: ""
 
             Text(
                 text = "${stringResource(R.string.nodes_import_node_latest_block)} - $blockNumber",

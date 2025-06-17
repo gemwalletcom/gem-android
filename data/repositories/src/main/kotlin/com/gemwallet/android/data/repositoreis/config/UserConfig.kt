@@ -33,14 +33,6 @@ class UserConfig(
         putBoolean(Keys.Auth, enabled)
     }
 
-    fun setAppVersionSkip(version: String) {
-        putString(Keys.AppVersionSkip, version)
-    }
-
-    fun getAppVersionSkip(): String {
-        return getString(Keys.AppVersionSkip)
-    }
-
     fun developEnabled(enabled: Boolean) {
         putBoolean(Keys.DevelopEnabled, enabled)
     }
@@ -72,6 +64,15 @@ class UserConfig(
     override suspend fun setLatestVersion(version: String) {
         context.dataStore.edit { preferences ->
             preferences[Key.LatestVersion] = version
+        }
+    }
+
+    fun getAppVersionSkip(): Flow<String>  = context.dataStore.data
+        .map { preferences -> preferences[Key.AppVersionSkip] ?: "" }
+
+    suspend fun setAppVersionSkip(version: String) {
+        context.dataStore.edit { preferences ->
+            preferences[Key.AppVersionSkip] = version
         }
     }
 
@@ -112,7 +113,6 @@ class UserConfig(
     enum class Keys(val string: String) {
         Auth("auth"),
         DeviceId("device-uuid"),
-        AppVersionSkip("app-version-skip"),
         DevelopEnabled("develop_enabled"),
         SubscriptionVersion("subscription_version"),
         LaunchNumber("launch_number"),
@@ -125,5 +125,6 @@ class UserConfig(
         val IsHideBalances = booleanPreferencesKey("hide_balances")
         val LatestVersion = stringPreferencesKey("latest_version")
         val LockInterval = intPreferencesKey("lock_interval")
+        val AppVersionSkip = stringPreferencesKey("app-version-skip")
     }
 }

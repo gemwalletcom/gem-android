@@ -124,7 +124,7 @@ private fun LazyListScope.actions(
         Spacer16()
         SubheaderItem(title = stringResource(R.string.common_manage))
         val cells = mutableListOf<CellEntity<Any>>(
-            CellEntity(label = stringResource(id = R.string.wallet_stake), data = "") {
+            CellEntity(label = stringResource(id = R.string.transfer_stake_title), data = "") {
                 amountAction(
                     AmountParams.buildStake(
                         assetId = assetId,

@@ -48,13 +48,13 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.getAddressEllipsisText
-import com.gemwallet.android.features.wallets.components.ConfirmWalletDeleteDialog
+import com.gemwallet.android.features.wallet.presents.ConfirmWalletDeleteDialog
 import com.gemwallet.android.features.wallets.components.WalletItem
 import com.gemwallet.android.features.wallets.viewmodels.WalletItemUIState
 import com.gemwallet.android.features.wallets.viewmodels.WalletsViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Container
-import com.gemwallet.android.ui.components.DropDownContextItem
+import com.gemwallet.android.ui.components.list_item.DropDownContextItem
 import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16

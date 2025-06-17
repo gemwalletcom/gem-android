@@ -30,9 +30,7 @@ class CosmosBalanceClient(
 
         when (chain) {
             Chain.Thorchain,
-            Chain.Noble -> {
-                AssetBalance.create(chain.asset(), available =  balance.toString())
-            }
+            Chain.Noble -> AssetBalance.create(chain.asset(), available =  balance.toString())
             else -> {
                 val getDelegations = async { stakeService.delegations(address).getOrNull()?.delegation_responses }
                 val getUnboundingDelegations = async { stakeService.undelegations(address).getOrNull()?.unbonding_responses }

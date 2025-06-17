@@ -30,7 +30,7 @@ class OptimismGasOracle(
 
     suspend fun estimate(
         params: ConfirmParams,
-        chainId: String,
+        chainId: Int,
         nonce: BigInteger,
         baseFee: BigInteger,
         priorityFee: BigInteger,
@@ -111,7 +111,7 @@ class OptimismGasOracle(
         destinationAddress: String,
         amount: BigInteger,
         meta: String?,
-        chainId: String,
+        chainId: Int,
         nonce: BigInteger,
         gasFee: GasFee,
     ): ByteArray {

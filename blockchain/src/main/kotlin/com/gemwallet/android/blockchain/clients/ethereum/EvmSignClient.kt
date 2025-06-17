@@ -268,7 +268,7 @@ class EvmSignClient(
             this.maxFeePerGas = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
             this.maxInclusionFeePerGas = ByteString.copyFrom(fee.minerFee.toByteArray())
             this.gasLimit = ByteString.copyFrom(fee.limit.toByteArray())
-            this.chainId = ByteString.copyFrom(meta.chainId.toByteArray())
+            this.chainId = ByteString.copyFrom(meta.chainId.toBigInteger().toByteArray())
             this.nonce = ByteString.copyFrom(meta.nonce.toByteArray())
             this.toAddress = StakeHub.address
             this.privateKey = ByteString.copyFrom(privateKey)

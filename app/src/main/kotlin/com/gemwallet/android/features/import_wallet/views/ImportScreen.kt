@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.import_wallet.views
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,6 +19,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
@@ -30,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.TextFieldValue
@@ -46,6 +49,7 @@ import com.gemwallet.android.features.import_wallet.components.WalletNameTextFie
 import com.gemwallet.android.features.import_wallet.components.WalletTypeTab
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportViewModel
+import com.gemwallet.android.features.onboarding.AcceptTermsScreen
 import com.gemwallet.android.interactors.ImportError
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
@@ -53,12 +57,14 @@ import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.space4
+import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.WalletType
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ImportScreen(
     importType: ImportType,
@@ -66,6 +72,7 @@ fun ImportScreen(
     onCancel: () -> Unit
 ) {
     val viewModel: ImportViewModel = hiltViewModel()
+    val context = LocalContext.current
 
     DisposableEffect(Unit) {
         viewModel.importSelect(importType)
@@ -73,6 +80,14 @@ fun ImportScreen(
         onDispose {  }
     }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    var isAcceptedTerms by remember {
+        mutableStateOf(
+            context.getSharedPreferences("terms", Context.MODE_PRIVATE).getBoolean("is_accepted", false)
+        )
+    }
+    val state = rememberModalBottomSheetState(true)
+
     ImportScene(
         importType = uiState.importType,
         generatedNameIndex = uiState.generatedNameIndex,
@@ -103,6 +118,15 @@ fun ImportScreen(
             ) {
                 CircularProgressIndicator()
             }
+        }
+    }
+
+    if (!isAcceptedTerms) {
+        ModalBottomSheet(
+            onDismissRequest = { onCancel() },
+            sheetState = state,
+        ) {
+            AcceptTermsScreen(onCancel = onCancel) { isAcceptedTerms = true }
         }
     }
 }

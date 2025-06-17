@@ -119,7 +119,7 @@ class TestFeeCalculator {
                     "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                     outputAmount = BigInteger.TEN,
                     null,
-                    chainId = Config().getChainConfig(Chain.SmartChain.string).networkId,
+                    chainId = Config().getChainConfig(Chain.SmartChain.string).networkId.toInt(),
                     BigInteger.ZERO,
                 )
             }
@@ -156,7 +156,7 @@ class TestFeeCalculator {
                 "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                 outputAmount = BigInteger.TEN,
                 null,
-                chainId = Config().getChainConfig(Chain.SmartChain.string).networkId,
+                chainId = Config().getChainConfig(Chain.SmartChain.string).networkId.toInt(),
                 BigInteger.ZERO,
             )
         }
@@ -195,7 +195,7 @@ class TestFeeCalculator {
                 "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                 outputAmount = BigInteger.TEN,
                 null,
-                chainId = Config().getChainConfig(Chain.SmartChain.string).networkId,
+                chainId = Config().getChainConfig(Chain.SmartChain.string).networkId.toInt(),
                 BigInteger.ZERO,
             )
         }
@@ -234,7 +234,7 @@ class TestFeeCalculator {
                 "0xa857a4E4B3f7C0eb7e132A7A4abcA287225dDB2A",
                 outputAmount = BigInteger.TEN,
                 null,
-                chainId = Config().getChainConfig(Chain.SmartChain.string).networkId,
+                chainId = Config().getChainConfig(Chain.SmartChain.string).networkId.toInt(),
                 BigInteger.ZERO,
             )
         }
@@ -274,7 +274,7 @@ class TestFeeCalculator {
                 "0xa857a4E4B3f7C0eb7e132A7A4abcA287225dDB2A",
                 outputAmount = BigInteger.TEN,
                 null,
-                chainId = Config().getChainConfig(Chain.OpBNB.string).networkId,
+                chainId = Config().getChainConfig(Chain.OpBNB.string).networkId.toInt(),
                 BigInteger.ZERO,
             )
         }
@@ -314,7 +314,7 @@ class TestFeeCalculator {
                 "0xa857a4E4B3f7C0eb7e132A7A4abcA287225dDB2A",
                 outputAmount = BigInteger.TEN,
                 null,
-                chainId = Config().getChainConfig(Chain.SmartChain.string).networkId,
+                chainId = Config().getChainConfig(Chain.SmartChain.string).networkId.toInt(),
                 BigInteger.ZERO,
             )
         }
@@ -356,7 +356,7 @@ class TestFeeCalculator {
                 recipient = StakeHub.address,
                 outputAmount = BigInteger.TEN,
                 payload = "0xb",
-                chainId = Config().getChainConfig(Chain.SmartChain.string).networkId,
+                chainId = Config().getChainConfig(Chain.SmartChain.string).networkId.toInt(),
                 BigInteger.ZERO,
             )
         }
@@ -392,7 +392,7 @@ class TestFeeCalculator {
                     "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                     outputAmount = BigInteger.TEN,
                     null,
-                    chainId = Config().getChainConfig(Chain.SmartChain.string).networkId,
+                    chainId = Config().getChainConfig(Chain.SmartChain.string).networkId.toInt(),
                     BigInteger.ZERO,
                 )
             }

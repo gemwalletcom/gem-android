@@ -56,6 +56,7 @@ class AddAssetViewModel @Inject constructor(
     val chains = snapshotFlow { chainFilter.text }.mapLatest { query ->
         getAvailableChains().filter(query.toString().lowercase())
     }
+    .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val chain = MutableStateFlow(
@@ -94,16 +95,17 @@ class AddAssetViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.Eagerly, TokenSearchState.Idle)
 
     val token = combine(addressQuery, chain) { address, chain ->
-            Pair(address.toString().trim(), chain)
+        Pair(address.toString().trim(), chain)
+    }
+    .flatMapLatest {
+        val (address, chain) = it
+        if (address.isEmpty()) {
+            return@flatMapLatest flowOf(null)
         }
-        .flatMapLatest {
-            val (address, chain) = it
-            if (address.isEmpty()) {
-                return@flatMapLatest flowOf(null)
-            }
-            assetsRepository.getToken(AssetId(chain, address))
-        }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        assetsRepository.getToken(AssetId(chain, address))
+    }
+    .flowOn(Dispatchers.IO)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun onQrScan() {
         state.update { it.copy(isQrScan = true) }

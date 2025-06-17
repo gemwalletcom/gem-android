@@ -68,6 +68,8 @@ fun Chain.assetType(): AssetType? {
 
 fun Chain.getReserveBalance(): BigInteger = Config().getChainConfig(this.string).accountActivationFee?.toBigInteger() ?: BigInteger.ZERO
 
+fun Chain.getTokenActivationFee(): BigInteger = Config().getChainConfig(this.string).tokenActivationFee?.toBigInteger() ?: BigInteger.ZERO
+
 fun Chain.getReserveBalanceUrl(): String? = Config().getChainConfig(this.string).accountActivationFeeUrl
 
 fun Chain.isStakeSupported(): Boolean = Config().getChainConfig(this.string).isStakeSupported
@@ -157,6 +159,9 @@ fun Chain.getNetworkId(): String {
 }
 
 fun Chain.isSwapSupport(): Boolean {
+    if (this == Chain.Xrp) {
+        return true
+    }
     return try {
         Config().getChainConfig(string).isSwapSupported
     } catch (_: Throwable) {

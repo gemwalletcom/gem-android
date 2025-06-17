@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.bitcoin
 
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
+import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinFeeService
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinUTXOService
 import com.gemwallet.android.ext.fullAddress
@@ -10,25 +11,37 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
+import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
+import java.math.BigInteger
 
 class BitcoinSignerPreloader(
     private val chain: Chain,
     private val utxoService: BitcoinUTXOService,
     feeService: BitcoinFeeService,
-) : NativeTransferPreloader {
+) : NativeTransferPreloader, SwapTransactionPreloader {
 
     private val feeCalculator = BitcoinFeeCalculator(feeService)
 
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
-        val address = chain.toBitcoinChain().fullAddress(params.from.address)
-        val utxo = utxoService.getUTXO(address).getOrNull() ?: throw Exception("Can't load UTXO")
-        val fee = feeCalculator.calculate(utxo, params.from, params.destination().address, params.amount)
-        return SignerParams(params, BitcoinChainData(utxo, fee))
+        val data = preload(params.from, params.destination().address, params.amount)
+        return SignerParams(params, data)
+    }
+
+    override suspend fun preloadSwap(params: ConfirmParams.SwapParams): SignerParams {
+        val data = preload(params.from, params.destination().address, params.amount)
+        return SignerParams(params, data)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
+
+    private suspend fun preload(fromAccount: Account, destinationAddress: String, amount: BigInteger): BitcoinChainData {
+        val address = chain.toBitcoinChain().fullAddress(fromAccount.address)
+        val utxo = utxoService.getUTXO(address).getOrNull() ?: throw Exception("Can't load UTXO")
+        val fee = feeCalculator.calculate(utxo, fromAccount, destinationAddress, amount)
+        return BitcoinChainData(utxo, fee)
+    }
 
     data class BitcoinChainData(
         val utxo: List<BitcoinUTXO>,

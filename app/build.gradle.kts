@@ -177,6 +177,12 @@ android {
     room {
         schemaDirectory("$projectDir/schemas")
     }
+
+    lint {
+        disable += "Instantiatable"
+        checkGeneratedSources = true
+        checkDependencies = true
+    }
 }
 
 dependencies {
@@ -188,6 +194,7 @@ dependencies {
     implementation(project(":features:recipient:presents"))
     implementation(project(":features:nft:presents"))
     implementation(project(":features:update_app:presents"))
+    implementation(project(":features:wallet-details:presents"))
 
     implementation(libs.ktx.core)
 

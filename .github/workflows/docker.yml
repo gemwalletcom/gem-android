@@ -1,0 +1,108 @@
+name: Docker CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  path:
+    - "Dockerfile.base"
+    - "Dockerfile.app"
+    - ".github/workflows/docker.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  BASE_IMAGE_NAME: gem-android-base
+
+jobs:
+  build_base_image:
+    name: Build Base Docker Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      image_tag: ${{ steps.meta.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract Docker metadata for base image
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.BASE_IMAGE_NAME }}
+          # Generate a version tag based on commit SHA. This will be unique.
+          tags: |
+            type=sha,format=long,prefix=
+
+      - name: Build and load Dockerfile.base
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.base
+          push: false
+          load: true
+          tags: ${{ env.BASE_IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Save base image to tarball
+        run: docker save ${{ env.BASE_IMAGE_NAME }}:${{ steps.meta.outputs.version }} -o base_image.tar
+
+      - name: Upload base image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: base-image-artifact
+          path: base_image.tar
+          retention-days: 1
+
+  build_app_image:
+    name: Build App Docker Image
+    needs: build_base_image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Download base image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: base-image-artifact
+
+      - name: Load base image from tarball
+        run: docker load -i base_image.tar
+
+      - name: Create local.properties for CI
+        run: |
+          echo "gpr.username=${{ github.actor }}" > local.properties
+          echo "gpr.token=${{ secrets.GITHUB_TOKEN }}" >> local.properties
+          echo "# Automatically generated for CI build" >> local.properties
+
+      - name: Build Dockerfile.app
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.app
+          build-args: |
+            TAG=${{ github.ref_name }}
+            BASE_IMAGE_TAG=${{ needs.build_base_image.outputs.image_tag }} # This is the SHA tag from the previous job
+            SKIP_SIGN=true
+          push: false
+          load: true
+          tags: gem-android-app:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

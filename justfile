@@ -1,5 +1,3 @@
-export WALLET_CORE_VERSION := "4.1.19"
-
 list:
     just --list
 
@@ -45,18 +43,18 @@ generate-models: install-typeshare
     @cd core && cargo run --package generate --bin generate android ../gemcore/src/main/kotlin/com/wallet/core
 
 build-base-image:
-	docker build -t gem-android-base -f Dockerfile.base . &> build.base.log
+	docker build -t gem-android-base -f Dockerfile.base . #&> build.base.log
 
 TAG := env("TAG", "main")
 BUILD_MODE := env("BUILD_MODE", "")
 
 build-app:
 	docker build --build-arg TAG={{TAG}} \
-	--build-arg BUILD_MODE={{BUILD_MODE}} \
+	--build-arg SKIP_SIGN=true \
 	--progress=plain \
-	-m 16g \
+	-m 32g \
 	-t gem-android-app \
-	-f Dockerfile.app . &> build.app.log
+	-f Dockerfile.app . #&> build.app.log
 
 core-upgrade:
 	@git submodule update --recursive --remote

@@ -8,7 +8,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.stake.stake.viewmodels.StakeViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.LoadingScene
+import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 
 @Composable
@@ -23,7 +23,7 @@ fun StakeScreen(
 
     if (uiState == null || (uiState?.apr ?: 0.0) <= 0.0) {
         LoadingScene(
-            title = stringResource(id = R.string.wallet_stake),
+            title = stringResource(id = R.string.transfer_stake_title),
             onCancel = onCancel,
         )
     } else {

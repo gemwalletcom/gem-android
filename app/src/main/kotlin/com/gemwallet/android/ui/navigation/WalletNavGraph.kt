@@ -1,5 +1,7 @@
 package com.gemwallet.android.ui.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,6 +40,7 @@ import com.gemwallet.android.features.confirm.navigation.navigateToConfirmScreen
 import com.gemwallet.android.features.create_wallet.navigation.assetsManageScreen
 import com.gemwallet.android.features.create_wallet.navigation.createWalletScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsManageScreen
+import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateWalletRulesScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateWalletScreen
 import com.gemwallet.android.features.import_wallet.navigation.importWalletScreen
 import com.gemwallet.android.features.import_wallet.navigation.navigateToImportWalletScreen
@@ -87,11 +90,12 @@ fun WalletNavGraph(
     onboard: @Composable () -> Unit,
 ) {
     val onCancel: () -> Unit = { navController.navigateUp() }
-    val currentTab = remember {
-        mutableStateOf(assetsRoute)
-    }
+    val currentTab = remember { mutableStateOf(assetsRoute) }
+
     NavHost(
-        modifier = modifier.semantics { testTagsAsResourceId = true },
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .semantics { testTagsAsResourceId = true },
         navController = navController,
         startDestination = startDestination,
         enterTransition = enterTransition,
@@ -199,7 +203,7 @@ fun WalletNavGraph(
             )
 
             walletsScreen(
-                onCreateWallet = navController::navigateToCreateWalletScreen,
+                onCreateWallet = navController::navigateToCreateWalletRulesScreen,
                 onImportWallet = navController::navigateToImportWalletScreen,
                 onEditWallet = navController::navigateToWalletScreen,
                 onSelectWallet = {
@@ -285,11 +289,13 @@ fun WalletNavGraph(
         }
 
         createWalletScreen(
+            onAcceptRules = navController::navigateToCreateWalletRulesScreen,
+            onCreateWallet = navController::navigateToCreateWalletScreen,
             onCancel = onCancel,
             onCreated = {
                 navController.navigateToRoot()
                 currentTab.value = assetsRoute
-            }
+            },
         )
 
         importWalletScreen(
@@ -335,7 +341,7 @@ sealed interface NavigateAfterConfirm {
     class Stake(private val assetId: AssetId) : NavigateAfterConfirm {
 
         override fun navigate(navController: NavController) {
-            navController.navigateToStake(
+            navController.navigateToAssetScreen(
                 assetId,
                 navOptions {
                     launchSingleTop = true

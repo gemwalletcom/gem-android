@@ -55,6 +55,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -165,11 +166,14 @@ class AssetsRepository @Inject constructor(
         getAssetInfo(assetId).firstOrNull()?.asset
     }
 
-    fun getAssetsInfo(): Flow<List<AssetInfo>> = assetsDao.getAssetsInfo().toAssetInfoModel()
+    fun getAssetsInfo(): Flow<List<AssetInfo>> = assetsDao.getAssetsInfo()
+        .toAssetInfoModel()
+        .flowOn(Dispatchers.IO)
 
     fun getAssetsInfo(assetsId: List<AssetId>): Flow<List<AssetInfo>> = assetsDao
         .getAssetsInfo(assetsId.map { it.toIdentifier() })
         .toAssetInfoModel()
+        .flowOn(Dispatchers.IO)
 
 
     suspend fun searchToken(assetId: AssetId): Boolean {
@@ -188,10 +192,13 @@ class AssetsRepository @Inject constructor(
                 flow { emit(it.toModel()) }
             }
         }
+        .flowOn(Dispatchers.IO)
     }
 
     fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
-        return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel() }
+        return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
+            .map { it?.toModel() }
+            .flowOn(Dispatchers.IO)
     }
 
     fun getTokensInfo(assetsId: List<String>): Flow<List<AssetInfo>> {
@@ -389,11 +396,15 @@ class AssetsRepository @Inject constructor(
     }
 
     fun getAssetLinks(id: AssetId): Flow<List<AssetLink>> {
-        return assetsDao.getAssetLinks(id.toIdentifier()).toAssetLinksModel()
+        return assetsDao.getAssetLinks(id.toIdentifier())
+            .toAssetLinksModel()
+            .flowOn(Dispatchers.IO)
     }
 
     fun getAssetMarket(id: AssetId): Flow<AssetMarket?> {
-        return assetsDao.getAssetMarket(id.toIdentifier()).map { it?.toModel() }
+        return assetsDao.getAssetMarket(id.toIdentifier())
+            .map { it?.toModel() }
+            .flowOn(Dispatchers.IO)
     }
 
     private fun Account.isVisibleByDefault(type: WalletType): Boolean {

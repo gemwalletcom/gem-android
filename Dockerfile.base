@@ -1,3 +1,5 @@
+# This Dockerfile is used to setup the environment (JDK, SDK, NDK, just) for Android app building.
+
 FROM debian:bookworm
 
 # Set environment variables for non-interactive installation
@@ -20,32 +22,27 @@ RUN apt-get update && apt-get install -y \
     zlib1g:amd64 \
     && rm -rf /var/lib/apt/lists/*
 
+# Install just using the official script
+RUN curl --proto '=https' --tlsv1.2 -sSf https://just.systems/install.sh | bash -s -- --to /usr/local/bin
+
 ENV HOME /root
 
 # Set environment variables for Android SDK
 ENV ANDROID_HOME /opt/android-sdk
 ENV ANDROID_SDK_ROOT /opt/android-sdk
-ENV PATH ${ANDROID_HOME}/cmdline-tools/bin:${ANDROID_HOME}/platform-tools:${PATH}
+ENV PATH ${ANDROID_HOME}/cmdline-tools/latest/bin:${ANDROID_HOME}/cmdline-tools/bin:${ANDROID_HOME}/platform-tools:${PATH}
 
-# Download and install Android SDK
-RUN mkdir -p ${ANDROID_HOME} && \
-    curl -o sdk-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-7583922_latest.zip && \
-    unzip sdk-tools.zip -d ${ANDROID_HOME} && \
-    mv ${ANDROID_HOME}/cmdline-tools/* ${ANDROID_HOME}/ && \
-    rm -rf ${ANDROID_HOME}/cmdline-tools && \
+# Download and install Android SDK command-line tools
+RUN mkdir -p ${ANDROID_HOME}/cmdline-tools && \
+    curl -o sdk-tools.zip https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip && \
+    unzip sdk-tools.zip -d ${ANDROID_HOME}/cmdline-tools && \
+    # The zip extracts to a 'cmdline-tools' directory, so we move its contents up.
+    mv ${ANDROID_HOME}/cmdline-tools/cmdline-tools/* ${ANDROID_HOME}/cmdline-tools/ && \
+    rm -rf ${ANDROID_HOME}/cmdline-tools/cmdline-tools && \
     rm sdk-tools.zip
 
-# Install SDK components
-RUN yes | ${ANDROID_HOME}/bin/sdkmanager --sdk_root=${ANDROID_HOME} --licenses && \
-    ${ANDROID_HOME}/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-34" "build-tools;34.0.0" "ndk;26.1.10909125"
+# Accept licenses and install SDK components
+RUN yes | ${ANDROID_HOME}/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --licenses && \
+    ${ANDROID_HOME}/cmdline-tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} "platform-tools" "platforms;android-35" "build-tools;35.0.0" "ndk;28.1.13356709"
 
-# Install Rust
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y && echo 'source $HOME/.cargo/env' >> $HOME/.bashrc
-ENV PATH "$HOME/.cargo/bin:${PATH}"
-
-# Install toolchain and targets
-RUN rustup toolchain install stable
-RUN rustup target add aarch64-linux-android armv7-linux-androideabi x86_64-linux-android
-
-# Cargo install
-RUN cargo install typeshare-cli --version 1.6.0 && cargo install cargo-ndk
+CMD ["bash"]

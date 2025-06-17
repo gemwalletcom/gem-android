@@ -35,7 +35,12 @@ class NativeProvider(
             target.headers?.forEach {
                 requestBuilder.addHeader(it.key, it.value)
             }
-            httpClient.newCall(requestBuilder.build()).execute().body?.bytes() ?: byteArrayOf()
+            val response = httpClient.newCall(requestBuilder.build()).execute()
+            val data = response.body?.bytes() ?: byteArrayOf()
+            if (response.code != 200 && data.isEmpty()) {
+                throw Exception("Invalid HTTP status code: ${response.code})")
+            }
+            data
         }.await()
     }
 }

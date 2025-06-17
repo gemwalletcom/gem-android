@@ -3,6 +3,7 @@ package com.gemwallet.android.features.settings.develop.views
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gemwallet.android.BuildConfig
@@ -17,6 +18,7 @@ fun DevelopScene(
     onCancel: () -> Unit,
     viewModel: DevelopViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
     Scene(
         title = stringResource(id = R.string.settings_developer),
@@ -25,14 +27,14 @@ fun DevelopScene(
     ) {
         LazyColumn {
             item {
-                PropertyItem("Device Id", viewModel.getDeviceId()) {
-                    clipboardManager.setPlainText(viewModel.getDeviceId())
+                PropertyItem("Device Id", data = viewModel.getDeviceId()) {
+                    clipboardManager.setPlainText(context, viewModel.getDeviceId())
                 }
-                PropertyItem("Push token", viewModel.getPushToken()) {
-                    clipboardManager.setPlainText(viewModel.getPushToken())
+                PropertyItem("Push token", data = viewModel.getPushToken().let { it.takeIf { it.isNotEmpty() } ?: "-" }) {
+                    clipboardManager.setPlainText(context, viewModel.getPushToken())
                 }
-                PropertyItem("Store", BuildConfig.FLAVOR) {
-                    clipboardManager.setPlainText(BuildConfig.FLAVOR)
+                PropertyItem("Store", data = BuildConfig.FLAVOR) {
+                    clipboardManager.setPlainText(context, BuildConfig.FLAVOR)
                 }
             }
         }

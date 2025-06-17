@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flatMapMerge
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
@@ -70,6 +71,7 @@ class AmountViewModel @Inject constructor(
     private val asset: Flow<AssetInfo> = params.flatMapLatest {
         assetsRepository.getAssetInfo(it.assetId).mapNotNull { it }
     }
+    .flowOn(Dispatchers.IO)
 
     private val delegation: StateFlow<Delegation?> = params.flatMapMerge {
         if (it.validatorId != null
@@ -81,11 +83,13 @@ class AmountViewModel @Inject constructor(
             emptyFlow()
         }
     }
+    .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val recommendedValidator = params
         .flatMapLatest { params -> stakeRepository.getRecommended(params.assetId.chain) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     private val srcValidator = combine(params, delegation, recommendedValidator) { params, delegation, recommended ->
         when (params.txType) {
             TransactionType.StakeWithdraw,
@@ -94,7 +98,8 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeRedelegate -> recommended
             else -> null
         }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val selectedValidator = MutableStateFlow<DelegationValidator?>(null)
 

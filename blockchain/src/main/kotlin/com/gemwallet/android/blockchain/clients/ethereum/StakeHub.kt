@@ -23,10 +23,7 @@ object StakeHub {
 
     fun encodeStake(params: ConfirmParams): String {
         return when (params) {
-            is ConfirmParams.Stake.DelegateParams -> encodeDelegateCall(
-                params.validatorId,
-                false
-            )
+            is ConfirmParams.Stake.DelegateParams -> encodeDelegateCall(params.validatorId, false)
 
             is ConfirmParams.Stake.RedelegateParams -> encodeRedelegateCall(params, false)
             is ConfirmParams.Stake.UndelegateParams -> encodeUndelegateCall(params)

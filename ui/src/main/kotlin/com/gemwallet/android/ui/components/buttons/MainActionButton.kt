@@ -25,10 +25,7 @@ fun MainActionButton(
     title: String,
     enabled: Boolean = true,
     loading: Boolean = false,
-    colors: ButtonColors = ButtonDefaults.buttonColors().copy(
-        disabledContainerColor = disableButtonColor,
-        disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-    ),
+    colors: ButtonColors = ButtonDefaults.buttonColors(),
     onClick: () -> Unit,
 ) {
     MainActionButton(enabled && !loading, colors, onClick) {

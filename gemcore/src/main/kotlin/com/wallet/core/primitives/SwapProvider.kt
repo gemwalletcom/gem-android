@@ -39,5 +39,9 @@ enum class SwapProvider(val string: String) {
 	Reservoir("reservoir"),
 	@SerialName("symbiosis")
 	Symbiosis("symbiosis"),
+	@SerialName("chainflip")
+	Chainflip("chainflip"),
+	@SerialName("cetus_aggregator")
+	CetusAggregator("cetus_aggregator"),
 }
 

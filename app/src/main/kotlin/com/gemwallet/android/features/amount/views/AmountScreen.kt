@@ -17,7 +17,7 @@ import com.gemwallet.android.features.amount.viewmodels.AmountViewModel
 import com.gemwallet.android.features.stake.validators.views.ValidatorsScreen
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.LoadingScene
+import com.gemwallet.android.ui.components.screen.LoadingScene
 
 @Composable
 fun AmountScreen(

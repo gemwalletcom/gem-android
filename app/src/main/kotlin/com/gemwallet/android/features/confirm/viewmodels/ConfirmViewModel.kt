@@ -59,6 +59,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
@@ -143,6 +144,7 @@ class ConfirmViewModel @Inject constructor(
 
         params.copy(finalAmount = finalAmount)
     }
+    .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val feeAssetInfo = preloadData.filterNotNull().flatMapLatest { signerParams ->
@@ -176,7 +178,9 @@ class ConfirmViewModel @Inject constructor(
             nftAsset = (request as? ConfirmParams.NftParams)?.nftAsset,
             currency = currency,
         )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    }
+    .flowOn(Dispatchers.Default)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val txInfoUIModel = combine(request, assetsInfo) { request, assetsInfo ->
         request ?: return@combine emptyList()
@@ -187,7 +191,9 @@ class ConfirmViewModel @Inject constructor(
             request.getMemoCell(),
             assetInfo.getNetworkCell(),
         ).mapNotNull { it }
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    }
+    .flowOn(Dispatchers.Default)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val feeUIModel = combine(preloadData, feeAssetInfo, state, feePriority) { signerParams, feeAssetInfo, state, speed ->
         val amount = signerParams?.chainData?.fee(speed)?.amount
@@ -236,6 +242,7 @@ class ConfirmViewModel @Inject constructor(
 
         listOf(result)
     }
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val allFee = preloadData.filterNotNull().map { it.chainData.allFee() }

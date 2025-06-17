@@ -38,6 +38,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
@@ -78,6 +79,7 @@ class TransactionsRepository(
 
     override fun getTransactions(assetId: AssetId?, state: TransactionState?): Flow<List<TransactionExtended>> {
         return transactionsDao.getExtendedTransactions()
+            .flowOn(Dispatchers.IO)
             .map { txs -> txs.filter { state == null || it.state == state } }
             .mapNotNull { it.toModel() }
             .map { items ->
@@ -102,11 +104,13 @@ class TransactionsRepository(
                     }
                 }
             }
+            .flowOn(Dispatchers.Default)
     }
 
     override fun getTransaction(txId: String): Flow<TransactionExtended?> {
         return transactionsDao.getExtendedTransaction(txId)
             .mapNotNull { it?.toModel() }
+            .flowOn(Dispatchers.IO)
     }
 
     override suspend fun putTransactions(walletId: String, transactions: List<Transaction>) = withContext(Dispatchers.IO) {

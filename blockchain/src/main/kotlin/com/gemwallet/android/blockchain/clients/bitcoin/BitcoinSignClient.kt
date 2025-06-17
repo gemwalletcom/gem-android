@@ -11,6 +11,7 @@ import com.google.protobuf.ByteString
 import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
+import com.wallet.core.primitives.SwapProvider
 import wallet.core.java.AnySigner
 import wallet.core.jni.BitcoinScript
 import wallet.core.jni.CoinType
@@ -48,14 +49,35 @@ class BitcoinSignClient(
         feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
+        val providers = setOf(SwapProvider.Thorchain, SwapProvider.Chainflip)
+            .map { it.string }
+        if (!providers.contains(params.protocolId)) {
+            throw Exception("Invalid signing input type or not supported provider id")
+        }
+        if (params.isMax() && params.protocolId == SwapProvider.Chainflip.string) {
+            throw Exception("Invalid signing input type or not supported provider id")
+        }
         val signingInput = getSigningInput(
             params,
             chainData,
             finalAmount,
             feePriority,
-            privateKey
+            privateKey,
         )
-        signingInput.outputOpReturn = ByteString.copyFrom(params.swapData.toByteArray())
+        when(params.protocolId) {
+            SwapProvider.Chainflip.string -> {
+                signingInput.outputOpReturnIndex = Bitcoin.OutputIndex.newBuilder().apply { index = 1 }.build()
+                signingInput.outputOpReturn = try {
+                    ByteString.copyFrom(params.swapData.decodeHex())
+                } catch (_: Throwable) {
+                    throw Exception("Invalid Chainflip swap data")
+                }
+            }
+            else -> {
+                signingInput.outputOpReturn = ByteString.copyFrom(params.swapData.toByteArray())
+            }
+        }
+
         return sign(signingInput.build())
     }
 

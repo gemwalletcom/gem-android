@@ -41,7 +41,7 @@ class EvmFeeCalculator(
         recipient: String,
         outputAmount: BigInteger,
         payload: String?,
-        chainId: String,
+        chainId: Int,
         nonce: BigInteger,
     ): List<GasFee> = withContext(Dispatchers.IO) {
         val getGasLimit = async { getGasLimit(assetId, params.from.address, recipient, outputAmount, payload) } // TODO: params.from.address plain

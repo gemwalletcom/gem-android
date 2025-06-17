@@ -313,6 +313,7 @@ fun com.wallet.core.primitives.Currency.compactFormatter(
     }
     val formatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT)
     formatter.currency = android.icu.util.Currency.getInstance(string)
+    formatter.maximumFractionDigits = 2
     return formatter.format(value)
 }
 
@@ -324,5 +325,6 @@ fun Asset.compactFormatter(
         return format(value)
     }
     val formatter = CompactDecimalFormat.getInstance(locale, CompactDecimalFormat.CompactStyle.SHORT)
+    formatter.maximumFractionDigits = 2
     return "${formatter.format(value)} $symbol"
 }

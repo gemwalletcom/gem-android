@@ -50,9 +50,7 @@ open class BaseAssetSelectViewModel(
                 searchTokensCase.search(it)
             }
         }
-        .mapLatest { query ->
-            query
-        }
+        .mapLatest { query -> query }
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
@@ -70,11 +68,13 @@ open class BaseAssetSelectViewModel(
     val pinned = assets.map { items: List<AssetItemUIModel> ->
         items.filter { it.metadata?.isPinned == true }.toImmutableList()
     }
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>().toImmutableList())
 
     val unpinned = assets.map { items: List<AssetItemUIModel> ->
         items.filter { it.metadata?.isPinned != true }.toImmutableList()
     }
+    .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>().toImmutableList())
 
     val uiState = assets.combine(searchState) { assets, searchState ->
@@ -87,7 +87,7 @@ open class BaseAssetSelectViewModel(
     .stateIn(viewModelScope, SharingStarted.Eagerly, UIState.Idle)
 
     val isAddAssetAvailable = sessionRepository.session().map { session ->
-        session?.wallet?.accounts?.filter { it.chain.assetType() != null }?.isNotEmpty() == true
+        session?.wallet?.accounts?.any { it.chain.assetType() != null } == true
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun onChangeVisibility(assetId: AssetId, visible: Boolean) = viewModelScope.launch(Dispatchers.IO) {

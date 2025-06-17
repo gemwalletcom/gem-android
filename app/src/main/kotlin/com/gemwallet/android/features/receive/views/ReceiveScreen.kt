@@ -42,7 +42,7 @@ import com.gemwallet.android.features.receive.viewmodels.ReceiveViewModel
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.FieldBottomAction
-import com.gemwallet.android.ui.components.LoadingScene
+import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.screen.Scene
@@ -68,8 +68,8 @@ private fun ReceiveScene(
     onCancel: () -> Unit,
 ) {
     assetInfo ?: return
-    val clipboardManager = LocalClipboard.current.nativeClipboard
     val context = LocalContext.current
+    val clipboardManager = LocalClipboard.current.nativeClipboard
     val shareTitle = stringResource(id = R.string.common_share)
 
     val onShare = fun () {
@@ -86,7 +86,7 @@ private fun ReceiveScene(
 
     val onCopyClick = fun () {
         onCopy()
-        clipboardManager.setPlainText(assetInfo.owner?.address ?: "")
+        clipboardManager.setPlainText(context, assetInfo.owner?.address ?: "")
     }
 
     Scene(

@@ -188,6 +188,7 @@ sealed class ConfirmParams {
         val value: String,
         val approval: ApprovalData? = null,
         @Serializable(BigIntegerSerializer::class) val gasLimit: BigInteger? = null,
+        val maxFrom: Boolean = false,
     ) : ConfirmParams() {
 
         override val asset: Asset
@@ -196,13 +197,14 @@ sealed class ConfirmParams {
             get() = fromAmount
         override fun destination(): DestinationAddress = DestinationAddress(to)
 
+        override fun isMax(): Boolean = maxFrom
+
         @Serializable
         data class ApprovalData(
             val token: String,
             var spender: String,
             var value: String
         )
-
     }
 
     @Serializable

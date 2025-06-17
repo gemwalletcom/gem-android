@@ -14,7 +14,7 @@ class SuiFeeCalculator(
         val computationCost = gasUsed.computationCost.toBigInteger()
         val storageCost = gasUsed.storageCost.toBigInteger()
         val storageRebate = gasUsed.storageRebate.toBigInteger()
-        val fee = computationCost + storageCost - storageRebate
+        val fee = computationCost.max(computationCost + storageCost - storageRebate)
         return Fee(feeAssetId = AssetId(chain), priority = FeePriority.Normal, amount = fee.abs())
     }
 }

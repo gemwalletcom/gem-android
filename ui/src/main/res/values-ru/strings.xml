@@ -251,7 +251,7 @@
   <string name="transaction.title.received">Получено</string>
   <string name="transaction.title.sent">Отправлено</string>
   <string name="stake.stake">Стейкнути</string>
-  <string name="banner.account_activation.title">%s Плата за активацию аккаунта</string>
+  <string name="banner.account_activation.title">Плата за активацию аккаунта</string>
   <string name="banner.account_activation.description" formatted="false">Сеть %s требует единовременную плату в размере %s.</string>
   <string name="banner.stake.title">Начните стейкинг %s</string>
   <string name="banner.stake.description">Зарабатывайте %s наград за свою стейк, пока спите.</string>
@@ -294,7 +294,7 @@
   <string name="info.transaction.error.description">Транзакция не может быть завершена из-за ошибки, например, недостаточно средств, неверных данных или отклонения сетью. Пожалуйста, проверьте детали и повторите попытку.</string>
   <string name="info.transaction.pending.description">Транзакция была отправлена и ожидает подтверждения в сети. Время обработки может меняться. Пожалуйста, проверяйте обновления.</string>
   <string name="info.transaction.success.description">Транзакция завершена и подтверждена в сети. Вы можете просмотреть детали, чтобы проверить ее статус.</string>
-  <string name="info.lock_time.description">Lock time, also known as the unbonding or unfreezing period, is the duration during which staked assets are inaccessible after you decide to unstake them.</string>
+  <string name="info.lock_time.description">Время блокировки, также известное как период разблокировки или размораживания, — это период времени, в течение которого активы недоступны после вывода стейка.</string>
   <string name="input.enter_amount_to">Пожалуйста введите сумму для</string>
   <string name="input.transfer">отправки</string>
   <string name="settings.hide_balance">Спрятать баланс</string>
@@ -312,7 +312,7 @@
   <string name="asset.contract">Контракт</string>
   <string name="filter.types">Типы</string>
   <string name="fee_rate.gwei">%s gwei</string>
-  <string name="swap.slippage">Slippage</string>
+  <string name="swap.slippage">Скольжение</string>
   <string name="swap.quote_fee">Quote includes a %s Gem fee.</string>
   <string name="common.short_name">Gem</string>
   <string name="transfer.activate_asset.title">Activate Asset</string>
@@ -369,11 +369,11 @@
   <string name="assets.tags.losers">Losers</string>
   <string name="assets.tags.new">Новый</string>
   <string name="assets.tags.stablecoins">Стейблкоины</string>
-  <string name="nft.state.empty.title">Your NFTs will appear here️</string>
+  <string name="nft.state.empty.title">Ваши NFT будут здесь️</string>
   <string name="nft.state.empty.description">Receive your first NFT</string>
   <string name="price_alerts.state.empty.title">Your alerts will appear here️</string>
   <string name="price_alerts.state.empty.description">Enable them by adding coins to track</string>
-  <string name="asset.state.empty.title">Your transactions will appear here️</string>
+  <string name="asset.state.empty.title">Ваши транзакции будут отображаться здесь️</string>
   <string name="asset.state.empty.description">Receive, swap or buy %s</string>
   <string name="activity.state.empty.title">Your activity will appear here</string>
   <string name="activity.state.empty.description">Make your first transaction</string>
@@ -404,4 +404,24 @@
   <string name="swap.price_impact_warning.title">Высокое ценовое воздействие</string>
   <string name="wallet_connect.domain">Domain</string>
   <string name="sign_message.view_full_message">View Full Message</string>
+  <string name="info.slippage.description">Slippage refers to the difference between the expected price of a trade and the actual price at which it is executed.</string>
+  <string name="onboarding.accept_terms.title">Accept Terms</string>
+  <string name="onboarding.accept_terms.message">Please read and agree to the following terms before you continue.</string>
+  <string name="onboarding.accept_terms.item1.message">I understand that I am solely responsible for the security and backup of my wallets, not Gem.</string>
+  <string name="onboarding.accept_terms.item2.message">I understand that Gem is not a bank or exchange, and using it for illegal purposes is strictly prohibited.</string>
+  <string name="onboarding.accept_terms.item3.message">I understand that if I ever lose access to my wallets, Gem is not liable and cannot help in any way.</string>
+  <string name="onboarding.accept_terms.continue">Agree and Continue</string>
+  <string name="errors.required">%s is required</string>
+  <string name="update_app.permission.title">Разрешить установку</string>
+  <string name="update_app.permission.description">Зайдите в настройки и разрешите установку из внешних источников</string>
+  <string name="update_app.permission.open_settings">Открыть настройки</string>
+  <string name="update_app.downloading">Загрузка...</string>
+  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.suspicious">Suspicious</string>
+  <string name="asset.verification.warning_title">Know What You’re Adding</string>
+  <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
+  <string name="transfer.smart_contract.title">Smart Contract</string>
+  <string name="transfer.other.title">Other</string>
+  <string name="filter.has_balance">Имеет баланс</string>
+  <string name="swap.estimated_time.title">Estimated Time</string>
 </resources>

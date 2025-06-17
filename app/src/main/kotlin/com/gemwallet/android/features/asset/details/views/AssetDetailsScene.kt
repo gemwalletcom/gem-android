@@ -29,6 +29,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -52,8 +53,8 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
 import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.FatalStateScene
-import com.gemwallet.android.ui.components.LoadingScene
+import com.gemwallet.android.ui.components.screen.FatalStateScene
+import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.padding32
@@ -147,6 +148,7 @@ private fun Success(
     val scope = rememberCoroutineScope()
 
     val pullToRefreshState = rememberPullToRefreshState()
+    val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
     val uriHandler = LocalUriHandler.current
 
@@ -174,7 +176,7 @@ private fun Success(
                 }
             }
             IconButton(
-                onClick = { clipboardManager.setPlainText(uiState.accountInfoUIModel.owner) }
+                onClick = { clipboardManager.setPlainText(context, uiState.accountInfoUIModel.owner) }
             ) {
                 Icon(Icons.Default.ContentCopy, "")
             }
