@@ -411,13 +411,13 @@
   <string name="onboarding.accept_terms.item2.message">我了解 Gem 不是銀行或交易所，嚴禁用於任何非法用途。</string>
   <string name="onboarding.accept_terms.item3.message">我了解若遺失錢包存取權限，Gem 不負任何責任且無法提供協助。</string>
   <string name="onboarding.accept_terms.continue">我了解，繼續</string>
-  <string name="errors.required">%s is required</string>
+  <string name="errors.required">%s為必填項</string>
   <string name="update_app.permission.title">Allow installation</string>
-  <string name="update_app.permission.description">Go to settings and allow installation from external sources</string>
-  <string name="update_app.permission.open_settings">Go to settings</string>
+  <string name="update_app.permission.description">轉到設定並允許從外部來源安裝</string>
+  <string name="update_app.permission.open_settings">前往設定</string>
   <string name="update_app.downloading">Downloading...</string>
   <string name="asset.verification.unverified">Unverified</string>
-  <string name="asset.verification.suspicious">Suspicious</string>
+  <string name="asset.verification.suspicious">可疑的</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
   <string name="transfer.smart_contract.title">Smart Contract</string>

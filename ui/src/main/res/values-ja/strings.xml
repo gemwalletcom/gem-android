@@ -411,13 +411,13 @@
   <string name="onboarding.accept_terms.item2.message">Gemは銀行や取引所ではなく、違法目的での使用は禁止されていることを理解しています。</string>
   <string name="onboarding.accept_terms.item3.message">ウォレットへのアクセスを失った場合、Gemは責任を負わず、支援もできないことを理解しています。</string>
   <string name="onboarding.accept_terms.continue">理解しました。続行します。</string>
-  <string name="errors.required">%s is required</string>
+  <string name="errors.required">%sは必須です</string>
   <string name="update_app.permission.title">Allow installation</string>
-  <string name="update_app.permission.description">Go to settings and allow installation from external sources</string>
-  <string name="update_app.permission.open_settings">Go to settings</string>
+  <string name="update_app.permission.description">設定に移動して外部ソースからのインストールを許可します</string>
+  <string name="update_app.permission.open_settings">設定に移動</string>
   <string name="update_app.downloading">Downloading...</string>
   <string name="asset.verification.unverified">Unverified</string>
-  <string name="asset.verification.suspicious">Suspicious</string>
+  <string name="asset.verification.suspicious">疑わしい</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
   <string name="transfer.smart_contract.title">Smart Contract</string>
