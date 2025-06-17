@@ -1,5 +1,7 @@
 package com.gemwallet.android.ui.navigation
 
+import androidx.compose.foundation.background
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -91,7 +93,9 @@ fun WalletNavGraph(
     val currentTab = remember { mutableStateOf(assetsRoute) }
 
     NavHost(
-        modifier = modifier.semantics { testTagsAsResourceId = true },
+        modifier = modifier
+            .background(MaterialTheme.colorScheme.background)
+            .semantics { testTagsAsResourceId = true },
         navController = navController,
         startDestination = startDestination,
         enterTransition = enterTransition,
