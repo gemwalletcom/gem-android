@@ -29,7 +29,7 @@ class TonSignClient(
             this.addMessages(
                 TheOpenNetwork.Transfer.newBuilder().apply {
                     this.dest = params.destination().address
-                    this.amount = finalAmount.toLong()
+                    this.amount = ByteString.copyFrom(finalAmount.toByteArray())
                     this.comment = params.memo() ?: ""
                     this.mode = TheOpenNetwork.SendMode.PAY_FEES_SEPARATELY_VALUE or TheOpenNetwork.SendMode.IGNORE_ACTION_PHASE_ERRORS_VALUE
                     this.bounceable = false
@@ -52,15 +52,15 @@ class TonSignClient(
         val meta = chainData as TonSignerPreloader.TonChainData
 
         val jettonTransfer = TheOpenNetwork.JettonTransfer.newBuilder().apply {
-            this.jettonAmount = finalAmount.toLong()
+            this.jettonAmount = ByteString.copyFrom(finalAmount.toByteArray())
             this.toOwner = params.destination().address
             this.responseAddress = params.from.address
-            this.forwardAmount = 1
+            this.forwardAmount = ByteString.copyFrom(BigInteger.ONE.toByteArray())
         }.build()
 
         val transfer = TheOpenNetwork.Transfer.newBuilder().apply {
             this.dest = meta.jettonAddress
-            this.amount = (meta.fee().options[tokenAccountCreationKey] ?: BigInteger.ZERO).toLong()
+            this.amount = ByteString.copyFrom((meta.fee().options[tokenAccountCreationKey] ?: BigInteger.ZERO).toByteArray())
             if (!params.memo().isNullOrEmpty()) {
                 this.comment = params.memo()
             }
@@ -96,7 +96,7 @@ class TonSignClient(
             this.addMessages(
                 TheOpenNetwork.Transfer.newBuilder().apply {
                     this.dest = params.destination().address
-                    this.amount = params.fromAmount.toLong()
+                    this.amount = ByteString.copyFrom(params.fromAmount.toByteArray())
                     this.comment = params.memo() ?: ""
                     this.mode = TheOpenNetwork.SendMode.PAY_FEES_SEPARATELY_VALUE or TheOpenNetwork.SendMode.IGNORE_ACTION_PHASE_ERRORS_VALUE
                     this.bounceable = true
