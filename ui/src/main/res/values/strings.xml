@@ -371,7 +371,7 @@
   <string name="assets.tags.stablecoins">Stablecoins</string>
   <string name="nft.state.empty.title">Your NFTs will appear here️</string>
   <string name="nft.state.empty.description">Receive your first NFT</string>
-  <string name="price_alerts.state.empty.title">Your alerts will appear here️</string>
+  <string name="price_alerts.state.empty.title">Your price alerts will appear here️</string>
   <string name="price_alerts.state.empty.description">Enable them by adding coins to track</string>
   <string name="asset.state.empty.title">Your transactions will appear here️</string>
   <string name="asset.state.empty.description">Receive, swap or buy %s</string>
