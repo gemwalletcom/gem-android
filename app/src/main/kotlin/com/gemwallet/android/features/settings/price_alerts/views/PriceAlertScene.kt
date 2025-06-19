@@ -2,7 +2,6 @@ package com.gemwallet.android.features.settings.price_alerts.views
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -17,7 +16,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
@@ -44,6 +42,7 @@ import com.gemwallet.android.ui.components.PriceInfo
 import com.gemwallet.android.ui.components.SwipeableItemWithActions
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.list_item.SwitchRow
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.gemwallet.android.ui.theme.WalletTheme
@@ -90,19 +89,7 @@ fun PriceAlertScene(
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
-                    Row(
-                        modifier = Modifier.padding(horizontal = padding16),
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Text(
-                            modifier = Modifier.weight(1f),
-                            text = stringResource(R.string.settings_enable_value, "")
-                        )
-                        Switch(
-                            checked = enabled,
-                            onCheckedChange = { onEnablePriceAlerts(it) },
-                        )
-                    }
+                    SwitchRow(stringResource(R.string.settings_enable_value, ""), enabled, onEnablePriceAlerts)
                     Text(
                         modifier = Modifier.padding(horizontal = padding16),
                         text = stringResource(R.string.price_alerts_get_notified_explain_message),
