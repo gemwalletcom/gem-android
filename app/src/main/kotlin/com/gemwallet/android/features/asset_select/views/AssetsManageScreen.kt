@@ -29,6 +29,9 @@ fun AssetsManageScreen(
     val pinned by viewModel.pinned.collectAsStateWithLifecycle()
     val unpinned by viewModel.unpinned.collectAsStateWithLifecycle()
 
+    val chainsFilter by viewModel.chainFilter.collectAsStateWithLifecycle()
+    val balanceFilter by viewModel.balanceFilter.collectAsStateWithLifecycle()
+
     AssetSelectScene(
         title = stringResource(id = R.string.wallet_manage_token_list),
         titleBadge = ::getAssetBadge,
@@ -42,6 +45,11 @@ fun AssetsManageScreen(
         unpinned = unpinned,
         state = uiStates,
         isAddAvailable = isAddAssetAvailable,
+        chainsFilter = chainsFilter,
+        balanceFilter = balanceFilter,
+        onChainFilter = viewModel::onChainFilter,
+        onBalanceFilter = viewModel::onBalanceFilter,
+        onClearFilters = viewModel::onClearFilres,
         onCancel = onCancel,
         onAddAsset = if (isAddAssetAvailable) onAddAsset else null,
         onSelect = {},
