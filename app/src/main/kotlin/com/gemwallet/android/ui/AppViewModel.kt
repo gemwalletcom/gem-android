@@ -58,21 +58,23 @@ class AppViewModel @Inject constructor(
         if (BuildConfig.DEBUG) {
             return@withContext
         }
-        val response = gemApiClient.getConfig().getOrNull()
-        val lastRelease = response?.releases?.filter {
-            val versionFlavor = when (it.store) {
-                PlatformStore.GooglePlay -> "google"
-                PlatformStore.Fdroid -> "fdroid"
-                PlatformStore.Huawei -> "huawei"
-                PlatformStore.SolanaStore -> "solana"
-                PlatformStore.SamsungStore -> "samsung"
-                PlatformStore.ApkUniversal -> "universal"
-                PlatformStore.AppStore -> it.store.string
-                PlatformStore.Local -> "local"
-            }
-            BuildConfig.FLAVOR == versionFlavor
-        }
-            ?.firstOrNull() ?: return@withContext
+        val lastRelease = runCatching {
+            gemApiClient.getConfig().getOrNull()?.releases
+                ?.filter {
+                    val versionFlavor = when (it.store) {
+                        PlatformStore.GooglePlay -> "google"
+                        PlatformStore.Fdroid -> "fdroid"
+                        PlatformStore.Huawei -> "huawei"
+                        PlatformStore.SolanaStore -> "solana"
+                        PlatformStore.SamsungStore -> "samsung"
+                        PlatformStore.ApkUniversal -> "universal"
+                        PlatformStore.AppStore -> it.store.string
+                        PlatformStore.Local -> "local"
+                    }
+                    BuildConfig.FLAVOR == versionFlavor
+                }
+                ?.firstOrNull()
+        }.getOrNull() ?: return@withContext
 
         val skipVersion = userConfig.getAppVersionSkip().firstOrNull()
         val lastVersion = lastRelease.version
