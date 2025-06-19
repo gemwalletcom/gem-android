@@ -14,6 +14,11 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -43,6 +48,7 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Chain
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.launch
@@ -57,6 +63,11 @@ internal fun AssetSelectScene(
     support: ((AssetItemUIModel) -> (@Composable () -> Unit)?)?,
     query: TextFieldState,
     isAddAvailable: Boolean = false,
+    chainsFilter: List<Chain> = emptyList(),
+    balanceFilter: Boolean = false,
+    onChainFilter: (Chain) -> Unit,
+    onBalanceFilter: (Boolean) -> Unit,
+    onClearFilters: () -> Unit,
     onSelect: ((AssetId) -> Unit)?,
     onCancel: () -> Unit,
     itemTrailing: (@Composable (AssetItemUIModel) -> Unit)? = null,
@@ -66,6 +77,8 @@ internal fun AssetSelectScene(
     val listState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     var isReturnToTop by remember { mutableStateOf(false) }
+
+    var showSelectNetworks by remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
         coroutineScope.launch {
@@ -84,7 +97,23 @@ internal fun AssetSelectScene(
         }
     }
 
-    Scene(title = title, actions = actions, onClose = onCancel) {
+    Scene(
+        title = title,
+        actions = {
+            IconButton(onClick = { showSelectNetworks = !showSelectNetworks }) {
+                Icon(
+                    imageVector = Icons.Default.FilterAlt,
+                    tint = if (chainsFilter.isEmpty() && !balanceFilter)
+                        LocalContentColor.current
+                    else
+                        MaterialTheme.colorScheme.primary,
+                    contentDescription = "Filter by networks",
+                )
+            }
+            actions()
+        },
+        onClose = onCancel
+    ) {
         SearchBar(modifier = Modifier.padding(horizontal = padding16), query = query)
         Spacer16()
         LazyColumn(state = listState) {
@@ -93,6 +122,17 @@ internal fun AssetSelectScene(
             loading(state)
             notFound(state = state, onAddAsset = onAddAsset, isAddAvailable = isAddAvailable)
         }
+    }
+
+    if (showSelectNetworks) {
+        AssetFilters(
+            chainFilter = chainsFilter,
+            balanceFilter = balanceFilter,
+            onDismissRequest = { showSelectNetworks = false },
+            onChainFilter = onChainFilter,
+            onBalanceFilter = onBalanceFilter,
+            onClearFilters = onClearFilters
+        )
     }
 }
 
@@ -163,7 +203,10 @@ private fun LazyListScope.loading(state: BaseAssetSelectViewModel.UIState) {
         return
     }
     item {
-        Box(modifier = Modifier.animateItem().fillMaxWidth().padding(padding16)) {
+        Box(modifier = Modifier
+            .animateItem()
+            .fillMaxWidth()
+            .padding(padding16)) {
             CircularProgressIndicator16(Modifier.align(Alignment.Center))
         }
     }
@@ -183,6 +226,9 @@ fun PreviewAssetScreenUI() {
             query = rememberTextFieldState(),
             onSelect = {},
             onAddAsset = {},
+            onChainFilter = {},
+            onBalanceFilter = {},
+            onClearFilters = {},
             onCancel = {},
         )
     }

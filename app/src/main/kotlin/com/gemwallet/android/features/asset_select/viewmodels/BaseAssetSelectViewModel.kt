@@ -41,6 +41,7 @@ open class BaseAssetSelectViewModel(
     val queryState = TextFieldState()
     private val searchState = MutableStateFlow<SearchState>(SearchState.Init)
     val chainFilter = MutableStateFlow<List<Chain>>(emptyList())
+    val balanceFilter = MutableStateFlow<Boolean>(false)
 
     private val queryFlow = snapshotFlow<String> { queryState.text.toString() }
         .onEach {
@@ -54,11 +55,16 @@ open class BaseAssetSelectViewModel(
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
-    private val assets = chainFilter.combine(search(sessionRepository.session(), queryFlow)) { chainFilter, items ->
-        if (chainFilter.isEmpty()) {
-            return@combine items
+    private val assets = combine(
+        chainFilter,
+        balanceFilter,
+        search(sessionRepository.session(), queryFlow)
+    ) { chainFilter, balanceFilter, items ->
+        val hasChainFilter = chainFilter.isNotEmpty()
+        items.filter { // TODO: Move to model
+            (!hasChainFilter || chainFilter.contains(it.id().chain))
+                    && (!balanceFilter || it.balance.totalAmount > 0.0)
         }
-        items.filter { chainFilter.contains(it.id().chain) }
     }
     .map { items -> items.map { AssetInfoUIModel(it) } }
     .onEach { searchState.update { SearchState.Idle } }
@@ -104,6 +110,15 @@ open class BaseAssetSelectViewModel(
             }
             chains.toList()
         }
+    }
+
+    fun onBalanceFilter(onlyWithBalance: Boolean) {
+        balanceFilter.update { onlyWithBalance }
+    }
+
+    fun onClearFilres() {
+        chainFilter.update { emptyList() }
+        balanceFilter.update { false }
     }
 
     fun getAccount(assetId: AssetId): Account? {
