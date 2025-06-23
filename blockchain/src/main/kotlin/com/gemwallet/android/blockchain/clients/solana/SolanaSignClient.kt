@@ -5,7 +5,10 @@ import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
+import com.gemwallet.android.serializer.jsonEncoder
 import com.google.protobuf.ByteString
+import com.wallet.core.blockchain.solana.models.SolanaAccountMeta
+import com.wallet.core.blockchain.solana.models.SolanaInstruction
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.SolanaTokenProgramId
@@ -162,20 +165,7 @@ class SolanaSignClient(
         val transaction = SolanaTransaction.setComputeUnitLimit(rawTx, feeLimit.toString()).ifEmpty {
             throw IllegalStateException("Unable to set compute unit limit")
         }
-        val transactionData = Base64.decode(transaction)
-
-        val decodeOutputData = TransactionDecoder.decode(CoinType.SOLANA, transactionData)
-        val decodeOutput = Solana.DecodingTransactionOutput.parseFrom(decodeOutputData)
-        val signingInput = Solana.SigningInput.newBuilder().apply {
-            this.privateKey = ByteString.copyFrom(privateKey)
-            this.rawMessage = decodeOutput.transaction
-            this.txEncoding = Solana.Encoding.Base64
-        }.build()
-        val output: Solana.SigningOutput = AnySigner.sign(signingInput, CoinType.SOLANA, Solana.SigningOutput.parser())
-        if (!output.errorMessage.isNullOrEmpty()) {
-            throw Exception(output.errorMessage)
-        }
-        return listOf(output.encoded.toByteArray())
+        return signRawTransaction(transaction, privateKey)
     }
 
     override suspend fun signDelegate(
@@ -185,6 +175,15 @@ class SolanaSignClient(
         feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
+        val instruction =  SolanaInstruction(
+            programId = "MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfcHr",
+            accounts = listOf(
+                SolanaAccountMeta(pubkey = params.from.address, isSigner = true, isWritable = true),
+            ),
+            data = Base58.encodeNoCheck((params.memo() ?: "").toByteArray())
+        )
+        val data = jsonEncoder.encodeToString(instruction)
+
         val recentBlockhash = (chainData as SolanaSignerPreloader.SolanaChainData).blockhash
         val signInput = Solana.SigningInput.newBuilder().apply {
             this.recentBlockhash = recentBlockhash
@@ -194,7 +193,9 @@ class SolanaSignClient(
             }.build()
             this.privateKey = ByteString.copyFrom(privateKey)
         }
-        return sign(input = signInput, fee = chainData.gasFee())
+        val encoded = sign(input = signInput, fee = chainData.gasFee())
+        val transaction = SolanaTransaction.insertInstruction(String(encoded.firstOrNull() ?: throw Exception()), -1, data)
+        return signRawTransaction(transaction, privateKey)
     }
 
     override suspend fun signUndelegate(
@@ -252,6 +253,23 @@ class SolanaSignClient(
         val encodedOutput = (if (offset == 0) base64 else base64.padStart(base64.length + 4 - offset, '='))
             .toByteArray()
         return listOf(encodedOutput)
+    }
+
+    private fun signRawTransaction(transaction: String, privateKey: ByteArray): List<ByteArray> {
+        val transactionData = Base64.decode(transaction)
+
+        val decodeOutputData = TransactionDecoder.decode(CoinType.SOLANA, transactionData)
+        val decodeOutput = Solana.DecodingTransactionOutput.parseFrom(decodeOutputData)
+        val signingInput = Solana.SigningInput.newBuilder().apply {
+            this.privateKey = ByteString.copyFrom(privateKey)
+            this.rawMessage = decodeOutput.transaction
+            this.txEncoding = Solana.Encoding.Base64
+        }.build()
+        val output: Solana.SigningOutput = AnySigner.sign(signingInput, CoinType.SOLANA, Solana.SigningOutput.parser())
+        if (!output.errorMessage.isNullOrEmpty()) {
+            throw Exception(output.errorMessage)
+        }
+        return listOf(output.encoded.toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
