@@ -44,7 +44,7 @@
   <string name="errors.transfer">转账错误：%s</string>
   <string name="errors.validation">验证错误：%s</string>
   <string name="errors.create_wallet">创建钱包错误: %s</string>
-  <string name="wallet.manage_token_list">代币列表</string>
+  <string name="wallet.manage_token_list">管理代币</string>
   <string name="wallet.scan_qr_code">扫描二维码</string>
   <string name="buy.providers.title">服务商</string>
   <string name="buy.rate">汇率</string>
@@ -137,7 +137,6 @@
   <string name="swap.you_receive">将收到</string>
   <string name="swap.approve_token">授权 %s 进行兑换</string>
   <string name="swap.approve_token_permission">授权 %s 代币进行兑换</string>
-  <string name="swap.provider">服务商</string>
   <string name="common.phrase">助记词</string>
   <string name="stake.active">已激活</string>
   <string name="stake.pending">待确认</string>
@@ -176,7 +175,6 @@
   <string name="asset.view_address_on">在 %s 上查看地址</string>
   <string name="transfer.rewards.title">奖励</string>
   <string name="wallet.title">钱包</string>
-  <string name="wallet.import.contract_address_field">合约地址或者代币 ID</string>
   <string name="wallet.add_token.title">添加代币</string>
   <string name="errors.token.invalid_id">代币 ID 无效</string>
   <string name="errors.token.unable_fetch_token_information">无法获取代币信息： %s</string>
@@ -424,4 +422,7 @@
   <string name="transfer.other.title">Other</string>
   <string name="filter.has_balance">有余额</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
+  <string name="wallet.import.contract_address_field">合约或代币ID</string>
+  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
 </resources>

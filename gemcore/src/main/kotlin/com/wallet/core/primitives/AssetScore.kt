@@ -40,3 +40,13 @@ enum class AssetRank(val string: String) {
 	Unknown("unknown"),
 }
 
+@Serializable
+enum class AssetScoreType(val string: String) {
+	@SerialName("verified")
+	Verified("verified"),
+	@SerialName("unverified")
+	Unverified("unverified"),
+	@SerialName("suspicious")
+	Suspicious("suspicious"),
+}
+

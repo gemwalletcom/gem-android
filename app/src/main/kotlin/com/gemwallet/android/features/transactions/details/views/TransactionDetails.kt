@@ -260,7 +260,7 @@ private fun LazyListScope.transactionProviderItem(provider: SwapProvider?) {
     item {
         PropertyItem(
             title = {
-                PropertyTitleText(R.string.swap_provider)
+                PropertyTitleText(R.string.common_provider)
             },
             data = {
                 PropertyDataText(

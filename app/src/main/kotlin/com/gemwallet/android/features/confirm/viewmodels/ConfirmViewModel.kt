@@ -397,12 +397,12 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.SwapParams -> {
                 val swapProvider = SwapProvider.entries.firstOrNull { it.string == protocolId }
                 CellEntity(
-                    label = R.string.swap_provider,
+                    label = R.string.common_provider,
                     data = provider,
                     trailing = { AsyncImage(swapProvider?.getIcon(), size = trailingIconMedium) }
                 )
             }
-            is ConfirmParams.TokenApprovalParams -> CellEntity(label = R.string.swap_provider, data = provider)
+            is ConfirmParams.TokenApprovalParams -> CellEntity(label = R.string.common_provider, data = provider)
             is ConfirmParams.NftParams -> {
                 return when { // TODO: Join with transfer
                     destination.domainName.isNullOrEmpty() -> CellEntity(label = R.string.transaction_recipient, data = destination.address)

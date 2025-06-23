@@ -44,7 +44,7 @@
   <string name="errors.transfer">Aktar</string>
   <string name="errors.validation">Ücret hesaplama hatası</string>
   <string name="errors.create_wallet">Yeni Cüzdan Oluştur</string>
-  <string name="wallet.manage_token_list">Belirteç Listesini Yönet</string>
+  <string name="wallet.manage_token_list">Jetonları Yönet</string>
   <string name="wallet.scan_qr_code">QR Kodunu Tara</string>
   <string name="buy.providers.title">Sağlayıcılar</string>
   <string name="buy.rate">Uygulamayı Değerlendirin</string>
@@ -137,7 +137,6 @@
   <string name="swap.you_receive">Aldığın</string>
   <string name="swap.approve_token">Onaylamak</string>
   <string name="swap.approve_token_permission">%s belirtecini takas erişimi için onaylayın.</string>
-  <string name="swap.provider">Sağlayıcı</string>
   <string name="common.phrase">Cümle</string>
   <string name="stake.active">Aktif</string>
   <string name="stake.pending">Beklemede</string>
@@ -176,7 +175,6 @@
   <string name="asset.view_address_on">%s üzerinde adresi görüntüle</string>
   <string name="transfer.rewards.title">Ödüller</string>
   <string name="wallet.title">Cüzdan</string>
-  <string name="wallet.import.contract_address_field">Sözleşme Adresi veya Token Kimliği</string>
   <string name="wallet.add_token.title">Jeton Ekle</string>
   <string name="errors.token.invalid_id">Geçersiz adres veya ad</string>
   <string name="errors.token.unable_fetch_token_information">Belirteç bilgileri getirilemiyor: %s</string>
@@ -424,4 +422,7 @@
   <string name="transfer.other.title">Other</string>
   <string name="filter.has_balance">Dengesi var</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
+  <string name="wallet.import.contract_address_field">Sözleşme veya Token ID</string>
+  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
 </resources>

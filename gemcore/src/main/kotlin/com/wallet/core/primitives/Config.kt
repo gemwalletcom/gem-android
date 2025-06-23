@@ -22,8 +22,14 @@ data class ConfigVersions (
 )
 
 @Serializable
+data class SwapConfig (
+	val enabledProviders: List<SwapProvider>
+)
+
+@Serializable
 data class ConfigResponse (
 	val releases: List<Release>,
-	val versions: ConfigVersions
+	val versions: ConfigVersions,
+	val swap: SwapConfig
 )
 

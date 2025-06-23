@@ -133,6 +133,8 @@ fun SwapProvider.getIcon(): String {
         SwapProvider.Symbiosis -> GemSwapProvider.SYMBIOSIS
         SwapProvider.Chainflip -> GemSwapProvider.CHAINFLIP
         SwapProvider.CetusAggregator -> GemSwapProvider.CETUS_AGGREGATOR
+        SwapProvider.Aerodrome -> GemSwapProvider.AERODROME
+        SwapProvider.Relay -> GemSwapProvider.RELAY
     }.getSwapProviderIcon()
 
 }

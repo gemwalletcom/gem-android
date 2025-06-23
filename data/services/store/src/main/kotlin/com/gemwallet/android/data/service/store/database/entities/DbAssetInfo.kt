@@ -200,6 +200,7 @@ fun DbAssetInfo.toModel(): AssetInfo? {
             isSwapEnabled = entity.isSwapEnabled,
             isStakeEnabled = asset.chain().isStakeSupported(),
             isPinned = entity.pinned == true,
+            rankScore = entity.assetRank,
             isActive = true,
         ),
         rank = entity.assetRank,

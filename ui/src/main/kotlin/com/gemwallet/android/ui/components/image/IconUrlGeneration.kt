@@ -46,6 +46,7 @@ fun GemSwapProvider.getSwapProviderIcon(): String {
         GemSwapProvider.SYMBIOSIS -> "symbiosis"
         GemSwapProvider.CHAINFLIP -> "chainflip"
         GemSwapProvider.RELAY -> "relay"
+        GemSwapProvider.AERODROME -> "aerodrome"
     }
     return "file:///android_asset/swap/${iconName.lowercase()}.svg"
 }

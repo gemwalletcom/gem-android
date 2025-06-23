@@ -44,7 +44,7 @@
   <string name="errors.transfer">送金エラー：%s</string>
   <string name="errors.validation">検証エラー: %s</string>
   <string name="errors.create_wallet">ウォレット作成エラー：%s</string>
-  <string name="wallet.manage_token_list">トークンリストの管理</string>
+  <string name="wallet.manage_token_list">トークンの管理</string>
   <string name="wallet.scan_qr_code">QRコードをスキャン</string>
   <string name="buy.providers.title">プロバイダー</string>
   <string name="buy.rate">レート</string>
@@ -137,7 +137,6 @@
   <string name="swap.you_receive">受け取るもの</string>
   <string name="swap.approve_token">%s をスワップするために承認してください</string>
   <string name="swap.approve_token_permission">スワップのために%sトークンの承認を行ってください。</string>
-  <string name="swap.provider">プロバイダー</string>
   <string name="common.phrase">フレーズ</string>
   <string name="stake.active">アクティブ</string>
   <string name="stake.pending">確認待ち</string>
@@ -176,7 +175,6 @@
   <string name="asset.view_address_on">%s でアドレスを見る</string>
   <string name="transfer.rewards.title">リワード</string>
   <string name="wallet.title">ウォレット</string>
-  <string name="wallet.import.contract_address_field">コントラクトアドレスまたはトークンID</string>
   <string name="wallet.add_token.title">トークンを追加</string>
   <string name="errors.token.invalid_id">無効なトークンID</string>
   <string name="errors.token.unable_fetch_token_information">トークン情報を取得できません: %s</string>
@@ -424,4 +422,7 @@
   <string name="transfer.other.title">Other</string>
   <string name="filter.has_balance">バランスがある</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
+  <string name="wallet.import.contract_address_field">契約またはトークンID</string>
+  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
 </resources>

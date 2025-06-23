@@ -258,7 +258,7 @@ private fun CurrentSwapProvider(
     }
     PropertyItem(
         modifier = modifier,
-        title = { PropertyTitleText(R.string.swap_provider) },
+        title = { PropertyTitleText(R.string.common_provider) },
         data = {
             PropertyDataText(
                 text = provider.swapProvider.name,

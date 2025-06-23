@@ -44,7 +44,7 @@
   <string name="errors.transfer">Transfer Error: %s</string>
   <string name="errors.validation">Validation Error: %s</string>
   <string name="errors.create_wallet">Create Wallet Error: %s</string>
-  <string name="wallet.manage_token_list">토큰 목록 관리</string>
+  <string name="wallet.manage_token_list">토큰 관리</string>
   <string name="wallet.scan_qr_code">Scan QR Code</string>
   <string name="buy.providers.title">Providers</string>
   <string name="buy.rate">Rate</string>
@@ -137,7 +137,6 @@
   <string name="swap.you_receive">당신은 받습니다</string>
   <string name="swap.approve_token">Approve %s to Swap</string>
   <string name="swap.approve_token_permission">Approve %s token for swap access.</string>
-  <string name="swap.provider">공급자</string>
   <string name="common.phrase">구절</string>
   <string name="stake.active">활동적인</string>
   <string name="stake.pending">Pending</string>
@@ -176,7 +175,6 @@
   <string name="asset.view_address_on">View address on %s</string>
   <string name="transfer.rewards.title">보상</string>
   <string name="wallet.title">지갑</string>
-  <string name="wallet.import.contract_address_field">Contract Address or Token ID</string>
   <string name="wallet.add_token.title">토큰 추가하기</string>
   <string name="errors.token.invalid_id">Invalid Token ID</string>
   <string name="errors.token.unable_fetch_token_information">토큰 정보를 가져올 수 없습니다: %s</string>
@@ -424,4 +422,7 @@
   <string name="transfer.other.title">Other</string>
   <string name="filter.has_balance">균형이 있다</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
+  <string name="wallet.import.contract_address_field">계약 또는 토큰 ID</string>
+  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
 </resources>

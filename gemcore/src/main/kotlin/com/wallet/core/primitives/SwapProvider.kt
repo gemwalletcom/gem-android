@@ -15,6 +15,8 @@ enum class SwapProvider(val string: String) {
 	UniswapV4("uniswap_v4"),
 	@SerialName("pancakeswap_v3")
 	PancakeswapV3("pancakeswap_v3"),
+	@SerialName("aerodrome")
+	Aerodrome("aerodrome"),
 	@SerialName("pancakeswap_aptos_v2")
 	PancakeswapAptosV2("pancakeswap_aptos_v2"),
 	@SerialName("thorchain")
@@ -43,5 +45,7 @@ enum class SwapProvider(val string: String) {
 	Chainflip("chainflip"),
 	@SerialName("cetus_aggregator")
 	CetusAggregator("cetus_aggregator"),
+	@SerialName("relay")
+	Relay("relay"),
 }
 
