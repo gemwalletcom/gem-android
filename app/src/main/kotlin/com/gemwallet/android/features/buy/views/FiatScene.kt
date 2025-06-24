@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.buy.views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,17 +30,17 @@ import com.gemwallet.android.model.hasAvailable
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountField
 import com.gemwallet.android.ui.components.AssetListItem
-import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Container
-import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.buttons.RandomGradientButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer8
-import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
-import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getFiatProviderIcon
+import com.gemwallet.android.ui.components.list_item.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
+import com.gemwallet.android.ui.components.list_item.PropertyDataText
+import com.gemwallet.android.ui.components.list_item.PropertyItem
+import com.gemwallet.android.ui.components.list_item.PropertyTitleText
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.AssetInfoUIModel
@@ -180,25 +181,17 @@ fun BuyScene(
             }
 
             null -> if (selectedProvider != null) {
-                Table(
-                    items = listOf(
-                        CellEntity(
-                            label = stringResource(id = R.string.common_provider),
-                            data = selectedProvider.provider.name,
-                            action = { isShowProviders.value = true },
-                            trailing = {
-                                AsyncImage(
-                                    model = selectedProvider.provider.getFiatProviderIcon(),
-                                    size = trailingIconMedium,
-                                )
-                            }
-                        ),
-                        CellEntity(
-                            label = stringResource(id = R.string.buy_rate),
-                            data = selectedProvider.rate,
+                PropertyItem(
+                    modifier = Modifier.clickable(onClick = { isShowProviders.value = true }),
+                    title = { PropertyTitleText(R.string.common_provider) },
+                    data = {
+                        PropertyDataText(
+                            selectedProvider.provider.name,
+                            badge = { DataBadgeChevron(selectedProvider.provider.getFiatProviderIcon()) }
                         )
-                    )
+                    }
                 )
+                PropertyItem(R.string.buy_rate, selectedProvider.rate)
             }
         }
     }

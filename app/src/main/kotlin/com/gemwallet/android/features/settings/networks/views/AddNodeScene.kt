@@ -32,13 +32,14 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.settings.networks.viewmodels.AddNodeViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AssetListItem
-import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.QrCodeRequest
-import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.TransferTextFieldActions
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.list_item.PropertyDataText
+import com.gemwallet.android.ui.components.list_item.PropertyItem
+import com.gemwallet.android.ui.components.list_item.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Chain
 import java.text.NumberFormat
@@ -91,16 +92,15 @@ fun AddNodeScene(chain: Chain, onCancel: () -> Unit) {
         if (uiModel.status != null) {
             val nf = NumberFormat.getInstance()
 
-            Table(
-                items = listOf(
-                    CellEntity(
-                        label = stringResource(id = R.string.nodes_import_node_chain_id),
-                        data = uiModel.status?.chainId ?: "",
-                    ),
-                    CellEntity(
-                        label = stringResource(id = R.string.nodes_import_node_in_sync),
-                        data = "",
-                        trailing = {
+            PropertyItem(R.string.nodes_import_node_chain_id, uiModel.status?.chainId ?: "")
+            PropertyItem(
+                title = {
+                    PropertyTitleText(R.string.nodes_import_node_in_sync)
+                },
+                data = {
+                    PropertyDataText(
+                        "",
+                        badge = {
                             if (uiModel.status?.inSync == true) {
                                 Icon(
                                     imageVector = Icons.Default.CheckCircleOutline,
@@ -115,18 +115,11 @@ fun AddNodeScene(chain: Chain, onCancel: () -> Unit) {
                                 )
                             }
                         }
-                    ),
-                    CellEntity(
-                        label = stringResource(id = R.string.nodes_import_node_latest_block),
-                        data = nf.format(uiModel.status?.blockNumber?.toLong() ?: ""),
-                    ),
-                    CellEntity(
-                        label = stringResource(id = R.string.nodes_import_node_latency),
-                        data = stringResource(R.string.common_latency_in_ms, uiModel.status?.latency ?: 0),
-                    ),
-                )
+                    )
+                },
             )
-
+            PropertyItem(R.string.nodes_import_node_latest_block, nf.format(uiModel.status?.blockNumber?.toLong() ?: ""))
+            PropertyItem(R.string.nodes_import_node_latency, stringResource(R.string.common_latency_in_ms, uiModel.status?.latency ?: 0))
         }
     }
 
