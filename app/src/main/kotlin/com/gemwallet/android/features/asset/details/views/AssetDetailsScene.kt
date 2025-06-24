@@ -1,14 +1,19 @@
 package com.gemwallet.android.features.asset.details.views
 
+import androidx.annotation.StringRes
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.NotificationsNone
@@ -47,25 +52,32 @@ import com.gemwallet.android.features.asset.details.models.AssetStateError
 import com.gemwallet.android.features.asset.details.viewmodels.AsseDetailsViewModel
 import com.gemwallet.android.features.banners.views.BannersScene
 import com.gemwallet.android.features.transactions.components.transactionsList
+import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
-import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.screen.FatalStateScene
-import com.gemwallet.android.ui.components.screen.LoadingScene
-import com.gemwallet.android.ui.components.Table
+import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.clipboard.setPlainText
+import com.gemwallet.android.ui.components.designsystem.Spacer4
+import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding32
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.ui.components.list_item.DataBadgeChevron
+import com.gemwallet.android.ui.components.list_item.PropertyDataText
+import com.gemwallet.android.ui.components.list_item.PropertyItem
+import com.gemwallet.android.ui.components.list_item.PropertyTitleText
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.priceColor
+import com.gemwallet.android.ui.components.screen.FatalStateScene
+import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AssetIdAction
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
@@ -201,68 +213,24 @@ private fun Success(
             }
         ) {
             LazyColumn {
-                item {
-                    AmountListHead(
-                        amount = uiState.accountInfoUIModel.totalBalance,
-                        equivalent = uiState.accountInfoUIModel.totalFiat,
-                        iconUrl = uiState.iconUrl,
-                        supportIconUrl = if (uiState.asset.id.type() == AssetSubtype.NATIVE) null else uiState.asset.chain().getIconUrl(),
-                        placeholder = uiState.asset.name.getOrNull(0)?.toString() ?: uiState.asset.type.string,
-                    ) {
-                        AssetHeadActions(
-                            walletType = uiState.accountInfoUIModel.walletType,
-                            onTransfer = { onTransfer(uiState.asset.id) },
-                            transferEnabled = uiState.accountInfoUIModel.walletType != WalletType.view,
-                            onReceive = { onReceive(uiState.asset.id) },
-                            onBuy = if (uiState.isBuyEnabled) {
-                                { onBuy(uiState.asset.id) }
-                            } else {
-                                null
-                            },
-                            onSwap = if (uiState.isSwapEnabled && uiState.accountInfoUIModel.walletType != WalletType.view) {
-                                {
-                                    val toAssetId = if (uiState.asset.type == AssetType.NATIVE) {
-                                        null
-                                    } else {
-                                        uiState.asset.id.chain.asset().id
-                                    }
-                                    onSwap(uiState.asset.id, toAssetId)
-                                }
-                            } else {
-                                null
-                            },
-                        )
-                    }
+                head(uiState, onTransfer, onReceive, onBuy, onSwap,)
+                banner(uiState.assetInfo, onStake, onConfirm)
+                status(uiState.asset, uiState.assetInfo.rank)
+                price(uiState, onChart)
+                network(uiState, openNetwork)
+                balancesHeader(uiState.accountInfoUIModel)
+                availableBalance(uiState.accountInfoUIModel.available)
+                additionBalance(R.string.wallet_stake, uiState.accountInfoUIModel.stake) {
+                    onStake(uiState.asset.id)
                 }
-                item {
-                    BannersScene(
-                        asset = uiState.asset,
-                        onClick = {
-                            when (it.event) {
-                                BannerEvent.Stake -> onStake(uiState.asset.id)
-                                BannerEvent.AccountBlockedMultiSignature ->
-                                    uriHandler.open(Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
-                                BannerEvent.ActivateAsset -> {
-                                    val params = ConfirmParams.Builder(
-                                        asset = uiState.asset,
-                                        from = uiState.assetInfo.owner ?: return@BannersScene
-                                    ).activate()
-                                    onConfirm(params)
-                                }
-                                BannerEvent.AccountActivation -> uiState.asset.chain()
-                                    .getReserveBalanceUrl()?.let { uriHandler.open(it) }
-                                else -> {}
-                            }
-                        },
-                        false
-                    )
-                    HorizontalDivider(thickness = 0.dp)
+                additionBalance(R.string.asset_balances_reserved, uiState.accountInfoUIModel.reserved) {
+                    uiState.asset.id.chain.getReserveBalanceUrl()?.let { uriHandler.open(it) }
                 }
-                networkInfo(uiState, onChart, openNetwork)
-                balanceDetails(uiState, onStake)
                 if (transactions.isEmpty()) {
                     item {
-                        Box(modifier = Modifier.fillMaxWidth().padding(vertical = padding32)) {
+                        Box(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = padding32)) {
                             Text(
                                 modifier = Modifier.align(Alignment.Center),
                                 color = MaterialTheme.colorScheme.secondary,
@@ -278,87 +246,223 @@ private fun Success(
     }
 }
 
-private fun LazyListScope.networkInfo(
+private fun LazyListScope.head(
     uiState: AssetInfoUIModel,
-    onChart: (AssetId) -> Unit,
-    openNetwork: AssetIdAction,
+    onTransfer: AssetIdAction,
+    onReceive: (AssetId) -> Unit,
+    onBuy: (AssetId) -> Unit,
+    onSwap: (AssetId, AssetId?) -> Unit,
 ) {
     item {
-        val cells = mutableListOf<CellEntity<Any>>()
-        cells.add(
-            CellEntity(
-                label = stringResource(id = R.string.asset_price),
-                data = uiState.priceValue,
-                trailing = {
-                    Text(
-                        text = uiState.priceDayChanges,
-                        color = priceColor(uiState.priceChangedType),
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
+        AmountListHead(
+            amount = uiState.accountInfoUIModel.totalBalance,
+            equivalent = uiState.accountInfoUIModel.totalFiat,
+            iconUrl = uiState.iconUrl,
+            supportIconUrl = if (uiState.asset.id.type() == AssetSubtype.NATIVE) null else uiState.asset.chain().getIconUrl(),
+            placeholder = uiState.asset.name.getOrNull(0)?.toString() ?: uiState.asset.type.string,
+        ) {
+            AssetHeadActions(
+                walletType = uiState.accountInfoUIModel.walletType,
+                onTransfer = { onTransfer(uiState.asset.id) },
+                transferEnabled = uiState.accountInfoUIModel.walletType != WalletType.view,
+                onReceive = { onReceive(uiState.asset.id) },
+                onBuy = if (uiState.isBuyEnabled) {
+                    { onBuy(uiState.asset.id) }
+                } else {
+                    null
                 },
-                action = { onChart(uiState.asset.id) },
-                testTag = "assetChart"
+                onSwap = if (uiState.isSwapEnabled && uiState.accountInfoUIModel.walletType != WalletType.view) {
+                    {
+                        val toAssetId = if (uiState.asset.type == AssetType.NATIVE) {
+                            null
+                        } else {
+                            uiState.asset.id.chain.asset().id
+                        }
+                        onSwap(uiState.asset.id, toAssetId)
+                    }
+                } else {
+                    null
+                },
             )
-        )
-        if (uiState.tokenType != AssetType.NATIVE) {
-            cells.add(
-                CellEntity(
-                    label = stringResource(id = R.string.transfer_network),
-                    data = uiState.networkTitle,
-                    trailing = { AsyncImage(uiState.asset.networkAsset(), trailingIconMedium) },
-                    action = { openNetwork(AssetId(uiState.asset.chain())) },
-                )
-            )
-        }
-        if (cells.isNotEmpty()) {
-            Table(items = cells)
         }
     }
 }
 
-private fun LazyListScope.balanceDetails(
-    uiState: AssetInfoUIModel,
+private fun LazyListScope.banner(
+    assetInfo: AssetInfo,
     onStake: (AssetId) -> Unit,
+    onConfirm: (ConfirmParams) -> Unit
 ) {
-    if (!uiState.accountInfoUIModel.hasBalanceDetails) {
+    item {
+        val uriHandler = LocalUriHandler.current
+        BannersScene(
+            asset = assetInfo.asset,
+            onClick = {
+                when (it.event) {
+                    BannerEvent.Stake -> onStake(assetInfo.asset.id)
+                    BannerEvent.AccountBlockedMultiSignature ->
+                        uriHandler.open(Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
+                    BannerEvent.ActivateAsset -> {
+                        val params = ConfirmParams.Builder(
+                            asset = assetInfo.asset,
+                            from = assetInfo.owner ?: return@BannersScene
+                        ).activate()
+                        onConfirm(params)
+                    }
+                    BannerEvent.AccountActivation -> assetInfo.asset.chain()
+                        .getReserveBalanceUrl()?.let { uriHandler.open(it) }
+                    else -> {}
+                }
+            },
+            false
+        )
+        HorizontalDivider(thickness = 0.dp)
+    }
+}
+
+private fun LazyListScope.status(asset: Asset, rank: Int) {
+    val status = rank.getVerificationStatus()
+    if (asset.id.type() == AssetSubtype.NATIVE || status == null) {
         return
     }
     item {
-        val uriHandler = LocalUriHandler.current
+        PropertyItem(
+            title = {
+                PropertyTitleText(
+                    text = R.string.transaction_status,
+                    info = when (status) {
+                        AssetVerification.Suspicious -> InfoSheetEntity.AssetStatusSuspiciousInfo
+                        AssetVerification.Unverified -> InfoSheetEntity.AssetStatusUnverifiedInfo
+                    }
+                )
+            },
+            data = {
+                PropertyDataText(
+                    stringResource(
+                        when (status) {
+                            AssetVerification.Suspicious ->  R.string.asset_verification_suspicious
+                            AssetVerification.Unverified -> R.string.asset_verification_unverified
+                        }
+                    ),
+                    badge = {
+                        Spacer8()
+                        when (status) {
+                            AssetVerification.Suspicious -> AsyncImage(R.drawable.suspicious, trailingIconMedium)
+                            AssetVerification.Unverified -> AsyncImage(R.drawable.unverified, trailingIconMedium)
+                        }
+                    }
+                )
+            },
+        )
+    }
+}
 
-        if (uiState.accountInfoUIModel.available.isNotEmpty()) {
-            SubheaderItem(title = stringResource(id = R.string.asset_balances))
-        }
-        val cells = mutableListOf<CellEntity<Any>>()
-        if (uiState.accountInfoUIModel.available.isNotEmpty()) {
-            cells.add(
-                CellEntity(
-                    label = stringResource(R.string.asset_balances_available),
-                    data = uiState.accountInfoUIModel.available,
+private fun LazyListScope.price(
+    uiState: AssetInfoUIModel,
+    onChart: (AssetId) -> Unit,
+) {
+    item {
+        PropertyItem(
+            modifier = Modifier.clickable(onClick = { onChart(uiState.asset.id) }),
+            title = { PropertyTitleText(R.string.asset_price) },
+            data = {
+                PropertyDataText(
+                    text = uiState.priceValue,
+                    badge = {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.End,
+                        ) {
+                            Spacer4()
+                            Text(
+                                text = uiState.priceDayChanges,
+                                color = priceColor(uiState.priceChangedType),
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                            Icon(
+                                modifier = Modifier.offset(8.dp),
+                                imageVector = Icons.Default.ChevronRight,
+                                contentDescription = "",
+                                tint = MaterialTheme.colorScheme.secondary
+                            )
+                        }
+                    }
                 )
-            )
-        }
-        if (uiState.accountInfoUIModel.stake.isNotEmpty()) {
-            cells.add(
-                CellEntity(
-                    label = stringResource(R.string.wallet_stake),
-                    data = uiState.accountInfoUIModel.stake,
-                    action = { onStake(uiState.asset.id) },
-                    testTag = "assetStake",
+            }
+        )
+    }
+}
+
+private fun LazyListScope.network(
+    uiState: AssetInfoUIModel,
+    openNetwork: AssetIdAction,
+) {
+    if (uiState.tokenType == AssetType.NATIVE) {
+        return
+    }
+    item {
+        PropertyItem(
+            modifier = Modifier.clickable(onClick = { openNetwork(AssetId(uiState.asset.chain())) }),
+            title = { PropertyTitleText(R.string.transfer_network) },
+            data = {
+                PropertyDataText(uiState.networkTitle, badge = {
+                    DataBadgeChevron(
+                        uiState.asset.networkAsset(),
+                        true
+                    )
+                }
                 )
-            )
-        }
-        if (uiState.accountInfoUIModel.reserved.isNotEmpty()) {
-            cells.add(
-                CellEntity(
-                    label = stringResource(R.string.asset_balances_reserved),
-                    data = uiState.accountInfoUIModel.reserved,
-                    action = {
-                        uriHandler.open(uiState.asset.id.chain.getReserveBalanceUrl() ?: return@CellEntity)
-                    },
-                )
-            )
-        }
-        Table(cells)
+            },
+        )
+    }
+}
+
+private fun LazyListScope.balancesHeader(model: AssetInfoUIModel.AccountInfoUIModel) {
+    if (model.available.isEmpty() && model.stake.isEmpty() && model.reserved.isEmpty()) {
+        return
+    }
+    item {
+        SubheaderItem(title = stringResource(id = R.string.asset_balances))
+    }
+}
+
+private fun LazyListScope.availableBalance(balance: String?) {
+    if (balance.isNullOrEmpty()) {
+        return
+    }
+    item {
+        PropertyItem(R.string.asset_balances_available, balance)
+    }
+}
+
+private fun LazyListScope.additionBalance(
+    @StringRes title: Int,
+    balance: String?,
+    onAction:() -> Unit,
+) {
+    if (balance.isNullOrEmpty()) {
+        return
+    }
+    item {
+        PropertyItem(
+            modifier = Modifier.clickable(onClick = onAction),
+            title = { PropertyTitleText(title) },
+            data = { PropertyDataText(balance, badge = { DataBadgeChevron(null, true) }) },
+        )
+    }
+}
+
+private enum class AssetVerification(val min: Int) {
+    Suspicious(5),
+    Unverified(15),
+}
+
+private fun Int.getVerificationStatus(): AssetVerification? {
+    return if (this < AssetVerification.Suspicious.min) {
+        AssetVerification.Suspicious
+    } else if (this < AssetVerification.Unverified.min) {
+        AssetVerification.Unverified
+    } else {
+        null
     }
 }

@@ -59,6 +59,7 @@ import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.components.list_item.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.PropertyItem
 import com.gemwallet.android.ui.components.list_item.PropertyTitleText
@@ -262,18 +263,7 @@ private fun CurrentSwapProvider(
         data = {
             PropertyDataText(
                 text = provider.swapProvider.name,
-                badge = {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.End,
-                    ) {
-                        Spacer4()
-                        AsyncImage(provider.icon, size = trailingIconMedium)
-                        if (isAvailableChoose) {
-                            Icon(Icons.Default.ChevronRight, "", tint = MaterialTheme.colorScheme.secondary)
-                        }
-                    }
-                }
+                badge = { DataBadgeChevron(provider.icon, isAvailableChoose) }
             )
         }
     )

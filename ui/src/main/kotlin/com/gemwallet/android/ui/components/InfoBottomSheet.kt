@@ -92,6 +92,20 @@ sealed class InfoSheetEntity(
         description = R.string.info_price_impact_description,
         infoUrl = Config().getDocsUrl(DocsUrl.PRICE_IMPACT),
     )
+
+    object AssetStatusSuspiciousInfo : InfoSheetEntity(
+        icon = R.drawable.ic_splash,
+        title = R.string.asset_verification_suspicious,
+        description = R.string.info_asset_status_suspicious_description,
+        infoUrl = Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION),
+    )
+
+    object AssetStatusUnverifiedInfo : InfoSheetEntity(
+        icon = R.drawable.ic_splash,
+        title = R.string.asset_verification_unverified,
+        description = R.string.info_asset_status_unverified_description,
+        infoUrl = Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION),
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

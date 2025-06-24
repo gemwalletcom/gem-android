@@ -32,6 +32,10 @@ fun AsyncImage(
     if (model == null) {
         return
     }
+    if (model is Asset) {
+        AsyncImage(model, size ?: iconSize, modifier, placeholderText, errorImageVector)
+        return
+    }
     val placeholder = if (placeholderText.isNullOrEmpty()) {
         null
     } else {
