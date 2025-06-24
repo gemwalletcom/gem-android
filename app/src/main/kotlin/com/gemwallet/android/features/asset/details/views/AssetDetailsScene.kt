@@ -2,18 +2,15 @@ package com.gemwallet.android.features.asset.details.views
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.NotificationsNone
@@ -60,7 +57,6 @@ import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.clipboard.setPlainText
-import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding32
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
@@ -369,21 +365,11 @@ private fun LazyListScope.price(
                 PropertyDataText(
                     text = uiState.priceValue,
                     badge = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.End,
-                        ) {
-                            Spacer4()
+                        DataBadgeChevron {
                             Text(
                                 text = uiState.priceDayChanges,
                                 color = priceColor(uiState.priceChangedType),
                                 style = MaterialTheme.typography.bodyLarge,
-                            )
-                            Icon(
-                                modifier = Modifier.offset(8.dp),
-                                imageVector = Icons.Default.ChevronRight,
-                                contentDescription = "",
-                                tint = MaterialTheme.colorScheme.secondary
                             )
                         }
                     }
@@ -405,12 +391,9 @@ private fun LazyListScope.network(
             modifier = Modifier.clickable(onClick = { openNetwork(AssetId(uiState.asset.chain())) }),
             title = { PropertyTitleText(R.string.transfer_network) },
             data = {
-                PropertyDataText(uiState.networkTitle, badge = {
-                    DataBadgeChevron(
-                        uiState.asset.networkAsset(),
-                        true
-                    )
-                }
+                PropertyDataText(
+                    text = uiState.networkTitle,
+                    badge = { DataBadgeChevron(uiState.asset.networkAsset()) }
                 )
             },
         )
@@ -447,7 +430,7 @@ private fun LazyListScope.additionBalance(
         PropertyItem(
             modifier = Modifier.clickable(onClick = onAction),
             title = { PropertyTitleText(title) },
-            data = { PropertyDataText(balance, badge = { DataBadgeChevron(null, true) }) },
+            data = { PropertyDataText(balance, badge = { DataBadgeChevron() }) },
         )
     }
 }

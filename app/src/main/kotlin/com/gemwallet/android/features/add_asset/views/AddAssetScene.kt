@@ -2,6 +2,7 @@ package com.gemwallet.android.features.add_asset.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -22,13 +23,14 @@ import com.gemwallet.android.ext.chain
 import com.gemwallet.android.features.add_asset.models.TokenSearchState
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AddressChainField
-import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.ChainItem
-import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.ui.components.list_item.DataBadgeChevron
+import com.gemwallet.android.ui.components.list_item.PropertyDataText
+import com.gemwallet.android.ui.components.list_item.PropertyItem
+import com.gemwallet.android.ui.components.list_item.PropertyTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Asset
@@ -108,25 +110,14 @@ fun AddAssetScene(
 }
 
 @Composable
-private fun AssetInfoTable(asset: Asset?) {
+private fun ColumnScope.AssetInfoTable(asset: Asset?) {
     if (asset == null) {
         return
     }
-    Table(
-        items = listOf(
-            CellEntity(
-                label = stringResource(id = R.string.asset_name),
-                data = asset.name,
-                trailing = { AsyncImage(model = asset) },
-            ),
-            CellEntity(
-                label = stringResource(id = R.string.asset_symbol),
-                data = asset.symbol,
-            ),
-            CellEntity(
-                label = stringResource(id = R.string.asset_decimals),
-                data = asset.decimals.toString(),
-            ),
-        )
+    PropertyItem(
+        title = { PropertyTitleText(R.string.asset_name) },
+        data = { PropertyDataText(asset.name, badge = { DataBadgeChevron(asset, false) }) }
     )
+    PropertyItem(R.string.asset_symbol, asset.symbol)
+    PropertyItem(R.string.asset_decimals, asset.decimals.toString())
 }

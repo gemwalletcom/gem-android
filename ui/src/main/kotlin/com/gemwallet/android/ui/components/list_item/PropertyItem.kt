@@ -23,7 +23,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.InfoButton
 import com.gemwallet.android.ui.components.InfoSheetEntity
-import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
@@ -167,14 +166,14 @@ fun RowScope.PropertyDataText(
 }
 
 @Composable
-fun DataBadgeChevron(icon: Any?, isShowChevron: Boolean = false) {
+fun DataBadgeChevron(isShowChevron: Boolean = true, content: (@Composable RowScope.() -> Unit)? = null) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End,
     ) {
-        icon?.let {
+        content?.let {
             Spacer8()
-            AsyncImage(it, size = trailingIconMedium)
+            it()
         }
         if (isShowChevron) {
             Icon(
@@ -184,5 +183,12 @@ fun DataBadgeChevron(icon: Any?, isShowChevron: Boolean = false) {
                 tint = MaterialTheme.colorScheme.secondary
             )
         }
+    }
+}
+
+@Composable
+fun DataBadgeChevron(icon: Any, isShowChevron: Boolean = true) {
+    DataBadgeChevron(isShowChevron) {
+        AsyncImage(icon, size = trailingIconMedium)
     }
 }
