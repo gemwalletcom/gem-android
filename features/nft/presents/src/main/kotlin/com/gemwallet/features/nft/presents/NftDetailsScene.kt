@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material3.Icon
@@ -20,6 +21,7 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.cells.cellNetwork
+import com.gemwallet.android.ui.components.cells.propertyNetwork
 import com.gemwallet.android.ui.components.designsystem.listSpacerBig
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.PropertyItem
@@ -76,25 +78,12 @@ fun NFTDetailsScene(
 
 private fun LazyListScope.generalInfo(model: NftAssetDetailsUIModel) {
     item {
-        Table(
-            listOf(
-                CellEntity(
-                    label = R.string.nft_collection,
-                    data = model.collection.name,
-                ),
-                cellNetwork(model.collection.chain),
-                model.asset.contractAddress?.let {
-                    CellEntity(
-                        label = R.string.asset_contract,
-                        data = it,
-                    )
-                },
-                CellEntity(
-                    label = R.string.asset_token_id,
-                    data = model.asset.tokenId,
-                )
-            )
-        )
+        PropertyItem(R.string.nft_collection, model.collection.name)
+        propertyNetwork(model.collection.chain)
+        model.asset.contractAddress?.let {
+            PropertyItem(R.string.asset_contract, it)
+        }
+        PropertyItem(R.string.asset_token_id, model.asset.tokenId)
     }
 }
 
@@ -102,16 +91,8 @@ private fun LazyListScope.nftAttributes(attributes: List<NFTAttribute>) {
     item {
         SubheaderItem(stringResource(R.string.nft_properties))
     }
-
-    item {
-        Table(
-            attributes.map {
-                CellEntity(
-                    label = it.name,
-                    data = it.value,
-                )
-            }
-        )
+    items(attributes) {
+        PropertyItem(it.name, it.value)
     }
 }
 
