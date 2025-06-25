@@ -1,16 +1,17 @@
 package com.gemwallet.android.features.asset.chart.views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.UriHandler
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -20,15 +21,16 @@ import com.gemwallet.android.features.asset.chart.viewmodels.AssetChartViewModel
 import com.gemwallet.android.model.compactFormatter
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Badge
-import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.screen.LoadingScene
-import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.clipboard.setPlainText
+import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
+import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.components.list_item.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.PropertyItem
 import com.gemwallet.android.ui.components.list_item.PropertyTitleText
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.open
+import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
@@ -50,7 +52,6 @@ fun AssetChartScene(
         return
     }
 
-    val uriHandler = LocalUriHandler.current
     Scene(
         title = marketModel.assetTitle,
         backHandle = true,
@@ -85,14 +86,21 @@ fun AssetChartScene(
 //            }
             item { Chart() }
             assetMarket(marketModel.currency, marketModel.asset, marketModel.marketInfo, marketModel.explorerName)
-
-            if (marketModel.assetLinks.isNotEmpty()) {
-                item {
-                    SubheaderItem(title = "LINKS")
-                    Table(marketModel.assetLinks.map { it.toCell(uriHandler) })
-                }
-            }
+            links(marketModel.assetLinks)
         }
+    }
+}
+
+private fun LazyListScope.links(links: List<AssetMarketUIModel.Link>) {
+    if (links.isEmpty()) return
+    item { SubheaderItem(title = "LINKS") }
+    items(links) {
+        val uriHandler = LocalUriHandler.current
+        PropertyItem(
+            modifier = Modifier.clickable(onClick = { uriHandler.open(it.url) }),
+            title = { PropertyTitleText(it.label, trailing = { AsyncImage(it.icon, trailingIconMedium) }) },
+            data = { PropertyDataText("", badge = { DataBadgeChevron() }) }
+        )
     }
 }
 
@@ -141,14 +149,4 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
             )
         }
     }
-}
-
-@Composable
-private fun AssetMarketUIModel.Link.toCell(uriHandler: UriHandler): CellEntity<Int> {
-    return CellEntity(
-        label = label,
-        icon = icon,
-        data = "",
-        action = { uriHandler.open(url) }
-    )
 }
