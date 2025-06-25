@@ -2,6 +2,7 @@
 
 package com.gemwallet.android.features.stake.stake.views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -24,11 +25,12 @@ import com.gemwallet.android.features.stake.stake.model.StakeError
 import com.gemwallet.android.features.stake.stake.model.StakeUIState
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.InfoSheetEntity
-import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.list_item.DataBadgeChevron
+import com.gemwallet.android.ui.components.list_item.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.PropertyItem
+import com.gemwallet.android.ui.components.list_item.PropertyTitleText
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
@@ -123,27 +125,32 @@ private fun LazyListScope.actions(
     item {
         Spacer16()
         SubheaderItem(title = stringResource(R.string.common_manage))
-        val cells = mutableListOf<CellEntity<Any>>(
-            CellEntity(label = stringResource(id = R.string.transfer_stake_title), data = "") {
-                amountAction(
-                    AmountParams.buildStake(
-                        assetId = assetId,
-                        txType = TransactionType.StakeDelegate,
+    }
+    item {
+        PropertyItem(
+            modifier = Modifier.clickable(
+                onClick = {
+                    amountAction(
+                        AmountParams.buildStake(
+                            assetId = assetId,
+                            txType = TransactionType.StakeDelegate,
+                        )
                     )
-                )
-            },
+                }
+            ),
+            title = { PropertyTitleText(R.string.transfer_stake_title) },
+            data = { PropertyDataText("", badge = { DataBadgeChevron() })},
         )
-        if (hasRewards && stakeChain.claimed()) {
-            cells.add(
-                CellEntity(
-                    label = stringResource(id = R.string.transfer_claim_rewards_title),
-                    data = rewardsAmount,
-                    action = onConfirm
-                )
-            )
+    }
+    item {
+        if (!hasRewards || !stakeChain.claimed()) {
+            return@item
         }
-        Table(items = cells)
-        Spacer16()
+        PropertyItem(
+            modifier = Modifier.clickable(onClick = onConfirm),
+            title = { PropertyTitleText(R.string.transfer_claim_rewards_title) },
+            data = { PropertyDataText(rewardsAmount, badge = { DataBadgeChevron() })},
+        )
     }
 }
 
