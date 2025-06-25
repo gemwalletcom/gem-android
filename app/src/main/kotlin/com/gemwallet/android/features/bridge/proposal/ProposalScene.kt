@@ -32,7 +32,6 @@ import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.reown.walletkit.client.Wallet
-import kotlin.math.min
 
 @Composable
 fun ProposalScene(
@@ -96,7 +95,7 @@ private fun Proposal(
         AsyncImage(
             model = peer.icon,
             size = 74.dp,
-            placeholderText = peer.name.substring(0..min(0, peer.name.length - 1)),
+            placeholderText = peer.name.takeIf { it.isNotEmpty() }?.substring(0..1) ?: "C",
             contentDescription = "peer_icon"
         )
         Spacer(modifier = Modifier.size(20.dp))
