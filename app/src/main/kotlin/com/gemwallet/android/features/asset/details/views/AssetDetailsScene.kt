@@ -57,10 +57,8 @@ import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.clipboard.setPlainText
-import com.gemwallet.android.ui.components.designsystem.Spacer8
+import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding32
-import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
-import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.list_item.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.PropertyDataText
@@ -73,6 +71,7 @@ import com.gemwallet.android.ui.components.screen.FatalStateScene
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AssetIdAction
+import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
@@ -322,7 +321,9 @@ private fun LazyListScope.status(asset: Asset, rank: Int) {
         return
     }
     item {
+        val uriHandler = LocalUriHandler.current
         PropertyItem(
+            modifier = Modifier.clickable(onClick = { uriHandler.open(Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION)) }),
             title = {
                 PropertyTitleText(
                     text = R.string.transaction_status,
@@ -340,16 +341,22 @@ private fun LazyListScope.status(asset: Asset, rank: Int) {
                             AssetVerification.Unverified -> R.string.asset_verification_unverified
                         }
                     ),
+                    color = when (status) {
+                        AssetVerification.Suspicious -> MaterialTheme.colorScheme.error
+                        AssetVerification.Unverified -> pendingColor
+                    },
                     badge = {
-                        Spacer8()
-                        when (status) {
-                            AssetVerification.Suspicious -> AsyncImage(R.drawable.suspicious, trailingIconMedium)
-                            AssetVerification.Unverified -> AsyncImage(R.drawable.unverified, trailingIconMedium)
-                        }
+                        DataBadgeChevron(
+                            when (status) {
+                                AssetVerification.Suspicious -> R.drawable.suspicious
+                                AssetVerification.Unverified -> R.drawable.unverified
+                            }
+                        )
                     }
                 )
             },
         )
+        Spacer16()
     }
 }
 
