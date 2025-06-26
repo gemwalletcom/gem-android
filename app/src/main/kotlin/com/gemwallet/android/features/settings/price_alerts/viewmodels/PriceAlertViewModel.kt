@@ -10,6 +10,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.models.AssetInfoUIModel
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PriceAlert
@@ -20,6 +21,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -77,9 +79,14 @@ class PriceAlertViewModel @Inject constructor(
         enablePriceAlertCase.setAssetPriceAlertEnabled(assetId, false)
     }
 
-    fun addAsset(assetId: AssetId) = viewModelScope.launch {
+    fun addAsset(assetId: AssetId, callback: (Asset) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
 //        assetsRepository.updatePrices(sessionRepository.getSession()?.currency ?: return@launch, assetId)
         putPriceAlertCase.putPriceAlert(PriceAlert(assetId, Currency.USD.string)) // TODO: Add user selected currency
+        val assetInfo = assetsRepository.getAssetsInfo(listOf(assetId)).firstOrNull()?.firstOrNull() ?: return@launch
+
+        viewModelScope.launch {
+            callback(assetInfo.asset)
+        }
     }
 
     private fun refreshPrices(ids: List<AssetId>) = viewModelScope.launch(Dispatchers.IO) {
