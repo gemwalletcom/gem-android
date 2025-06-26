@@ -47,6 +47,7 @@ fun NavGraphBuilder.stake(
     composable<DelegationRoute> {
         DelegationScene(
             onAmount = onAmount,
+            onConfirm = onConfirm,
             onCancel = onCancel,
         )
     }

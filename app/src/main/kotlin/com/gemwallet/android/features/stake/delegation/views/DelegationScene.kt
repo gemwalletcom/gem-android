@@ -1,7 +1,6 @@
 package com.gemwallet.android.features.stake.delegation.views
 
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyItemScope
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -19,6 +18,7 @@ import com.gemwallet.android.ui.components.list_item.PropertyItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
+import com.gemwallet.android.ui.models.actions.ConfirmTransactionAction
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.DelegationState
 import com.wallet.core.primitives.DelegationValidator
@@ -28,6 +28,7 @@ import com.wallet.core.primitives.WalletType
 @Composable
 fun DelegationScene(
     onAmount: AmountTransactionAction,
+    onConfirm: ConfirmTransactionAction,
     onCancel: () -> Unit,
     viewModel: DelegationViewModel = hiltViewModel(),
 ) {
@@ -42,7 +43,7 @@ fun DelegationScene(
         title = stringResource(R.string.transfer_stake_title),
         onClose = onCancel,
     ) {
-        LazyColumn{
+        LazyColumn {
             validatorNameItem(state.validator.name)
             stakeApr(state.validator)
             transactionStatus(state)
@@ -55,7 +56,7 @@ fun DelegationScene(
                 onStake = { viewModel.onStake(onAmount) },
                 onUnstake = { viewModel.onUnstake(onAmount) },
                 onRedelegate = { viewModel.onRedelegate(onAmount) },
-                onWithdraw = { viewModel.onWithdraw(onAmount) },
+                onWithdraw = { viewModel.onWithdraw(onConfirm) },
             )
         }
     }
@@ -152,7 +153,7 @@ private fun LazyListScope.delegationActions(
 }
 
 @Composable
-private fun LazyItemScope.DelegationActiveAction(
+private fun DelegationActiveAction(
     stakeChain: StakeChain,
     onStake: () -> Unit,
     onUnstake: () -> Unit,
@@ -167,7 +168,7 @@ private fun LazyItemScope.DelegationActiveAction(
 }
 
 @Composable
-private fun LazyItemScope.DelegationWithdrawAction(onWithdraw: () -> Unit) {
+private fun DelegationWithdrawAction(onWithdraw: () -> Unit) {
     SubheaderItem(title = stringResource(id = R.string.common_manage))
     PropertyItem(R.string.transfer_withdraw_title, onClick = onWithdraw)
 }

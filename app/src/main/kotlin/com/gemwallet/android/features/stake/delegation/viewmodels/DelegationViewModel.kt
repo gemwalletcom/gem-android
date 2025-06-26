@@ -10,9 +10,11 @@ import com.gemwallet.android.ext.byChain
 import com.gemwallet.android.features.stake.delegation.model.DelegationSceneState
 import com.gemwallet.android.features.stake.model.availableIn
 import com.gemwallet.android.model.AmountParams
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
+import com.gemwallet.android.ui.models.actions.ConfirmTransactionAction
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,6 +24,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
+import java.math.BigInteger
 import javax.inject.Inject
 
 internal const val validatorIdArg = "validatorId"
@@ -83,8 +86,14 @@ class DelegationViewModel @Inject constructor(
         call(buildStake(TransactionType.StakeRedelegate))
     }
 
-    fun onWithdraw(call: AmountTransactionAction) {
-        call(buildStake(TransactionType.StakeWithdraw))
+    fun onWithdraw(call: ConfirmTransactionAction) {
+        val assetInfo = assetInfo.value ?: return
+        val from = assetInfo.owner ?: return
+        val delegation = delegation.value ?: return
+        val balance = Crypto(delegation.base.balance.toBigIntegerOrNull() ?: BigInteger.ZERO)
+        val params = ConfirmParams.Builder(assetInfo.asset, from, balance.atomicValue)
+            .withdraw(delegation)
+        call(params)
     }
 
     private fun buildStake(type: TransactionType): AmountParams {
