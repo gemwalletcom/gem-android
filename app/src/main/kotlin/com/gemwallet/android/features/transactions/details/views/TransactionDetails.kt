@@ -30,7 +30,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.transactions.details.model.TxDetailsScreenModel
 import com.gemwallet.android.features.transactions.details.viewmodels.TransactionDetailsViewModel
-import com.gemwallet.android.features.transactions.details.viewmodels.getIcon
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.InfoSheetEntity
@@ -263,17 +262,7 @@ private fun LazyListScope.transactionProviderItem(provider: SwapProvider?) {
                 PropertyTitleText(R.string.common_provider)
             },
             data = {
-                PropertyDataText(
-                    provider.name,
-                    badge = {
-                        Spacer8()
-                        AsyncImage(
-                            model = provider.getIcon(),
-                            size = trailingIconMedium,
-                            placeholderText = provider.name
-                        )
-                    }
-                )
+                PropertyDataText(provider.name)
             }
         )
     }

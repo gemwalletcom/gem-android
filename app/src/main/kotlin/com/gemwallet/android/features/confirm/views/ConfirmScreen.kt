@@ -205,5 +205,6 @@ fun ConfirmError.toLabel() = when (this) {
     is ConfirmError.InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, chainTitle)
     is ConfirmError.BroadcastError ->  "${stringResource(R.string.errors_transfer_error)}: ${message ?: stringResource(R.string.errors_unknown)}"
     is ConfirmError.SignFail -> stringResource(R.string.errors_transfer_error)
+    is ConfirmError.RecipientEmpty -> "${stringResource(R.string.errors_transfer_error)}: recipient can't empty"
     is ConfirmError.None -> stringResource(id = R.string.transfer_confirm)
 }

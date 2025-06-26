@@ -2,13 +2,15 @@ package com.gemwallet.android.features.confirm.models
 
 sealed class ConfirmError(message: String) : Exception(message){
 
-    data object None : ConfirmError("")
+    object None : ConfirmError("")
 
     class Init(message: String) : ConfirmError(message)
 
     class PreloadError(message: String) : ConfirmError(message)
 
-    data object TransactionIncorrect : ConfirmError("Transaction data incorrect")
+    object TransactionIncorrect : ConfirmError("Transaction data incorrect")
+
+    object RecipientEmpty : ConfirmError("Recipient can't empty")
 
     class InsufficientBalance(val chainTitle: String) : ConfirmError("Insufficient Balance")
 
