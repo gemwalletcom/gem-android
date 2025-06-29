@@ -3,11 +3,11 @@ package com.gemwallet.android.blockchain.clients.near
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.gemwallet.android.math.decodeHex
-import com.wallet.core.blockchain.near.models.NearAccount
-import com.wallet.core.blockchain.near.models.NearAccountAccessKey
-import com.wallet.core.blockchain.near.models.NearBlock
-import com.wallet.core.blockchain.near.models.NearBroadcastResult
-import com.wallet.core.blockchain.near.models.NearGasPrice
+import com.wallet.core.blockchain.near.generated.NearAccount
+import com.wallet.core.blockchain.near.generated.NearAccountAccessKey
+import com.wallet.core.blockchain.near.generated.NearBlock
+import com.wallet.core.blockchain.near.generated.NearBroadcastResult
+import com.wallet.core.blockchain.near.generated.NearGasPrice
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST

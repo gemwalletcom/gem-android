@@ -1,9 +1,9 @@
 package com.gemwallet.android.blockchain.clients.cardano.services
 
-import com.wallet.core.blockchain.cardano.CardanoAggregateBalance
-import com.wallet.core.blockchain.cardano.CardanoUTXOS
-import com.wallet.core.blockchain.graphql.GraphqlData
-import com.wallet.core.blockchain.graphql.GraphqlRequest
+import com.wallet.core.blockchain.cardano.generated.CardanoAggregateBalance
+import com.wallet.core.blockchain.cardano.generated.CardanoUTXOS
+import com.wallet.core.blockchain.graphql.generated.GraphqlData
+import com.wallet.core.blockchain.graphql.generated.GraphqlRequest
 import retrofit2.http.Body
 import retrofit2.http.POST
 import java.math.BigInteger

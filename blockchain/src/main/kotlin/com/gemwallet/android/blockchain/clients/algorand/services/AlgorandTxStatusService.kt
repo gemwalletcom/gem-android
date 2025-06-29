@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.algorand.services
 
-import com.wallet.core.blockchain.algorand.AlgorandTransactionStatus
+import com.wallet.core.blockchain.algorand.generated.AlgorandTransactionStatus
 import retrofit2.http.GET
 import retrofit2.http.Path
 

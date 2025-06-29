@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.stellar.services
 
-import com.wallet.core.blockchain.stellar.StellarAccount
+import com.wallet.core.blockchain.stellar.generated.StellarAccount
 import retrofit2.http.GET
 import retrofit2.http.Path
 

@@ -1,9 +1,9 @@
 package com.gemwallet.android.blockchain.clients.cosmos.services
 
-import com.wallet.core.blockchain.cosmos.models.CosmosDelegations
-import com.wallet.core.blockchain.cosmos.models.CosmosRewards
-import com.wallet.core.blockchain.cosmos.models.CosmosUnboundingDelegations
-import com.wallet.core.blockchain.cosmos.models.CosmosValidators
+import com.wallet.core.blockchain.cosmos.generated.CosmosDelegations
+import com.wallet.core.blockchain.cosmos.generated.CosmosRewards
+import com.wallet.core.blockchain.cosmos.generated.CosmosUnboundingDelegations
+import com.wallet.core.blockchain.cosmos.generated.CosmosValidators
 import retrofit2.http.GET
 import retrofit2.http.Path
 

@@ -5,10 +5,10 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
-import com.wallet.core.blockchain.aptos.models.AptosSignature
-import com.wallet.core.blockchain.aptos.models.AptosTransaction
-import com.wallet.core.blockchain.aptos.models.AptosTransactionPayload
-import com.wallet.core.blockchain.aptos.models.AptosTransactionSimulation
+import com.wallet.core.blockchain.aptos.generated.AptosSignature
+import com.wallet.core.blockchain.aptos.generated.AptosTransaction
+import com.wallet.core.blockchain.aptos.generated.AptosTransactionPayload
+import com.wallet.core.blockchain.aptos.generated.AptosTransactionSimulation
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain

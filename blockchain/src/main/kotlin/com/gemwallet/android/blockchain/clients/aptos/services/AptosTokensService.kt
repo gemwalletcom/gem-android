@@ -1,7 +1,7 @@
 package com.gemwallet.android.blockchain.clients.aptos.services
 
-import com.wallet.core.blockchain.aptos.models.AptosCoinInfo
-import com.wallet.core.blockchain.aptos.models.AptosResource
+import com.wallet.core.blockchain.aptos.generated.AptosCoinInfo
+import com.wallet.core.blockchain.aptos.generated.AptosResource
 import retrofit2.http.GET
 import retrofit2.http.Path
 

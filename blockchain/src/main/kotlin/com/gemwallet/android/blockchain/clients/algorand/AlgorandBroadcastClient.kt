@@ -5,7 +5,7 @@ import com.gemwallet.android.blockchain.clients.BroadcastClient
 import com.gemwallet.android.blockchain.clients.algorand.services.AlgorandBroadcastService
 import com.gemwallet.android.blockchain.rpc.ServiceError
 import com.gemwallet.android.blockchain.rpc.handleError
-import com.wallet.core.blockchain.algorand.AlgorandTransactionBroadcast
+import com.wallet.core.blockchain.algorand.generated.AlgorandTransactionBroadcast
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType

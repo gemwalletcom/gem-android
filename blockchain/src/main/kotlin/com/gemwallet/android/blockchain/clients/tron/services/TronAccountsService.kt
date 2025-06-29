@@ -2,9 +2,9 @@ package com.gemwallet.android.blockchain.clients.tron.services
 
 import android.util.Log
 import com.gemwallet.android.math.toHexString
-import com.wallet.core.blockchain.tron.models.TronAccount
-import com.wallet.core.blockchain.tron.models.TronAccountRequest
-import com.wallet.core.blockchain.tron.models.TronAccountUsage
+import com.wallet.core.blockchain.tron.generated.TronAccount
+import com.wallet.core.blockchain.tron.generated.TronAccountRequest
+import com.wallet.core.blockchain.tron.generated.TronAccountUsage
 import retrofit2.http.Body
 import retrofit2.http.POST
 import wallet.core.jni.Base58

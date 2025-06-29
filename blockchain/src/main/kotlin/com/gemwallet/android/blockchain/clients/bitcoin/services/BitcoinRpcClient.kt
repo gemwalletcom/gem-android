@@ -1,7 +1,7 @@
 package com.gemwallet.android.blockchain.clients.bitcoin.services
 
-import com.wallet.core.blockchain.bitcoin.models.BitcoinBlock
-import com.wallet.core.blockchain.bitcoin.models.BitcoinNodeInfo
+import com.wallet.core.blockchain.bitcoin.generated.BitcoinBlock
+import com.wallet.core.blockchain.bitcoin.generated.BitcoinNodeInfo
 import retrofit2.Response
 
 interface BitcoinRpcClient :

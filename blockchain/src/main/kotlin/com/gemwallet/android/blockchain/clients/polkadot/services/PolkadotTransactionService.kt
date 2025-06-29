@@ -1,7 +1,7 @@
 package com.gemwallet.android.blockchain.clients.polkadot.services
 
-import com.wallet.core.blockchain.polkadot.PolkadotBlock
-import com.wallet.core.blockchain.polkadot.PolkadotTransactionMaterial
+import com.wallet.core.blockchain.polkadot.generated.PolkadotBlock
+import com.wallet.core.blockchain.polkadot.generated.PolkadotTransactionMaterial
 import retrofit2.http.GET
 import retrofit2.http.Query
 
