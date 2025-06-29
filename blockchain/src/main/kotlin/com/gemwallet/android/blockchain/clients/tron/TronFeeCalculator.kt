@@ -7,8 +7,8 @@ import com.gemwallet.android.blockchain.clients.tron.services.triggerSmartContra
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
-import com.wallet.core.blockchain.tron.models.TronAccount
-import com.wallet.core.blockchain.tron.models.TronAccountUsage
+import com.wallet.core.blockchain.tron.TronAccount
+import com.wallet.core.blockchain.tron.TronAccountUsage
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority

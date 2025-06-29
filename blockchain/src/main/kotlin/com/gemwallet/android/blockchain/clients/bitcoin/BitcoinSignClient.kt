@@ -8,7 +8,7 @@ import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
 import com.google.protobuf.ByteString
-import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
+import com.wallet.core.blockchain.bitcoin.BitcoinUTXO
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.SwapProvider

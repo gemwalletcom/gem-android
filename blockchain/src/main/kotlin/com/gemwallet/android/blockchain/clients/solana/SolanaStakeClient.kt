@@ -43,12 +43,12 @@ class SolanaStakeClient(
         delegations.map { delegation ->
             val info = delegation.account.data.parsed.info
             val deactivateEpoch = try {
-                info.stake.delegation.deactivationEpoch.toInt()
+                info.stake.delegation.deactivationEpoch.toLong()
             } catch (_: Throwable) {
                 null
             }
             val activationEpoch = try {
-                info.stake.delegation.activationEpoch.toInt()
+                info.stake.delegation.activationEpoch.toLong()
             } catch (_: Throwable) {
                 null
             }

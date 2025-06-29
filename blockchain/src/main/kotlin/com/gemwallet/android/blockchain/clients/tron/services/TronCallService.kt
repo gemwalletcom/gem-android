@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.tron.services
 
-import com.wallet.core.blockchain.tron.models.TronSmartContractResult
+import com.wallet.core.blockchain.tron.TronSmartContractResult
 import retrofit2.http.Body
 import retrofit2.http.POST
 

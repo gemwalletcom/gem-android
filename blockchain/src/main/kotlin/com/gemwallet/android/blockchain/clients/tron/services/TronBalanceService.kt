@@ -1,7 +1,7 @@
 package com.gemwallet.android.blockchain.clients.tron.services
 
 import com.gemwallet.android.ext.asset
-import com.wallet.core.blockchain.tron.models.TronAccount
+import com.wallet.core.blockchain.tron.TronAccount
 import com.wallet.core.primitives.Chain
 import java.math.BigInteger
 

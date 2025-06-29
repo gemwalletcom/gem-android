@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.aptos.services
 
-import com.wallet.core.blockchain.aptos.models.AptosTransaction
+import com.wallet.core.blockchain.aptos.AptosTransaction
 import retrofit2.http.GET
 import retrofit2.http.Path
 
