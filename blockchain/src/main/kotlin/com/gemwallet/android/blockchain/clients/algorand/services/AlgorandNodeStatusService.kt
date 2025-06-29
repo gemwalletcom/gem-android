@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.algorand.services
 
-import com.wallet.core.blockchain.algorand.generated.AlgorandTransactionParams
+import com.wallet.core.blockchain.algorand.AlgorandTransactionParams
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Url

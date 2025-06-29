@@ -1,7 +1,7 @@
 package com.gemwallet.android.blockchain.clients.tron.services
 
-import com.wallet.core.blockchain.tron.generated.TronReward
-import com.wallet.core.blockchain.tron.generated.WitnessesList
+import com.wallet.core.blockchain.tron.TronReward
+import com.wallet.core.blockchain.tron.WitnessesList
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

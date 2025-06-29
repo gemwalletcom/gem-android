@@ -1,9 +1,9 @@
 package com.gemwallet.android.blockchain.clients.cardano.services
 
-import com.wallet.core.blockchain.cardano.generated.CardanoBlockData
-import com.wallet.core.blockchain.cardano.generated.CardanoGenesisData
-import com.wallet.core.blockchain.graphql.generated.GraphqlData
-import com.wallet.core.blockchain.graphql.generated.GraphqlRequest
+import com.wallet.core.blockchain.cardano.CardanoBlockData
+import com.wallet.core.blockchain.cardano.CardanoGenesisData
+import com.wallet.core.blockchain.graphql.GraphqlData
+import com.wallet.core.blockchain.graphql.GraphqlRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST

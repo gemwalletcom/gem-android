@@ -9,7 +9,7 @@ import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
-import com.wallet.core.blockchain.polkadot.generated.PolkadotTransactionPayload
+import com.wallet.core.blockchain.polkadot.PolkadotTransactionPayload
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority

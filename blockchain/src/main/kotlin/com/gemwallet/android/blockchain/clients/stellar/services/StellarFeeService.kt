@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.stellar.services
 
-import com.wallet.core.blockchain.stellar.generated.StellarFees
+import com.wallet.core.blockchain.stellar.StellarFees
 import retrofit2.http.GET
 
 interface StellarFeeService {

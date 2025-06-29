@@ -5,7 +5,7 @@ import com.gemwallet.android.blockchain.clients.BroadcastClient
 import com.gemwallet.android.blockchain.clients.stellar.services.StellarBroadcastService
 import com.gemwallet.android.blockchain.rpc.ServiceError
 import com.gemwallet.android.blockchain.rpc.responseFold
-import com.wallet.core.blockchain.stellar.generated.StellarTransactionBroadcast
+import com.wallet.core.blockchain.stellar.StellarTransactionBroadcast
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType

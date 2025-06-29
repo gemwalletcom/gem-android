@@ -3,7 +3,7 @@ package com.gemwallet.android.blockchain.clients.polkadot
 import com.gemwallet.android.blockchain.clients.BroadcastClient
 import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotBroadcastService
 import com.gemwallet.android.math.toHexString
-import com.wallet.core.blockchain.polkadot.generated.PolkadotTransactionPayload
+import com.wallet.core.blockchain.polkadot.PolkadotTransactionPayload
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType

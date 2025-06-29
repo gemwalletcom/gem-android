@@ -3,10 +3,10 @@ package com.gemwallet.android.blockchain.clients.solana.services
 import com.gemwallet.android.blockchain.clients.solana.SolanaMethod
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
-import com.wallet.core.blockchain.solana.generated.SolanaEpoch
-import com.wallet.core.blockchain.solana.generated.SolanaStakeAccount
-import com.wallet.core.blockchain.solana.generated.SolanaValidator
-import com.wallet.core.blockchain.solana.generated.SolanaValidators
+import com.wallet.core.blockchain.solana.SolanaEpoch
+import com.wallet.core.blockchain.solana.SolanaStakeAccount
+import com.wallet.core.blockchain.solana.SolanaValidator
+import com.wallet.core.blockchain.solana.SolanaValidators
 import retrofit2.http.Body
 import retrofit2.http.POST
 

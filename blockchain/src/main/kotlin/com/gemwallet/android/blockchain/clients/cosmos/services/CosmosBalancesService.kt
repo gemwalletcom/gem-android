@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.cosmos.services
 
-import com.wallet.core.blockchain.cosmos.generated.CosmosBalances
+import com.wallet.core.blockchain.cosmos.CosmosBalances
 import retrofit2.http.GET
 import retrofit2.http.Path
 

@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.polkadot.services
 
-import com.wallet.core.blockchain.polkadot.generated.PolkadotAccountBalance
+import com.wallet.core.blockchain.polkadot.PolkadotAccountBalance
 import retrofit2.http.GET
 import retrofit2.http.Path
 

@@ -1,7 +1,7 @@
 package com.gemwallet.android.blockchain.clients.polkadot.services
 
-import com.wallet.core.blockchain.polkadot.generated.PolkadotEstimateFee
-import com.wallet.core.blockchain.polkadot.generated.PolkadotTransactionPayload
+import com.wallet.core.blockchain.polkadot.PolkadotEstimateFee
+import com.wallet.core.blockchain.polkadot.PolkadotTransactionPayload
 import retrofit2.http.Body
 import retrofit2.http.POST
 

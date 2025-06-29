@@ -2,11 +2,11 @@ package com.gemwallet.android.blockchain.clients.xrp
 
 import com.gemwallet.android.blockchain.clients.xrp.services.XrpAccountsService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
-import com.wallet.core.blockchain.xrp.generated.XRPFee
-import com.wallet.core.blockchain.xrp.generated.XRPLatestBlock
-import com.wallet.core.blockchain.xrp.generated.XRPResult
-import com.wallet.core.blockchain.xrp.generated.XRPTransactionBroadcast
-import com.wallet.core.blockchain.xrp.generated.XRPTransactionStatus
+import com.wallet.core.blockchain.xrp.XRPFee
+import com.wallet.core.blockchain.xrp.XRPLatestBlock
+import com.wallet.core.blockchain.xrp.XRPResult
+import com.wallet.core.blockchain.xrp.XRPTransactionBroadcast
+import com.wallet.core.blockchain.xrp.XRPTransactionStatus
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
