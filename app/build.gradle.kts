@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 plugins {
     id("com.android.application")
     id("com.google.dagger.hilt.android")
@@ -16,7 +19,7 @@ repositories {
 
 android {
     namespace = "com.gemwallet.android"
-    compileSdk = 35
+    compileSdk = 36
     ndkVersion = "28.1.13356709"
 
     val channelDimension by extra("channel")
@@ -25,7 +28,7 @@ android {
     defaultConfig {
         applicationId = "com.gemwallet.android"
         minSdk = 28
-        targetSdk = 35
+        targetSdk = 36
         versionCode = Integer.valueOf(System.getenv("BUILD_NUMBER") ?: "1")
         versionName = System.getenv("BUILD_VERSION") ?: "1.0"
 
@@ -154,8 +157,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = "17"
+    tasks.withType<KotlinJvmCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+            freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
+        }
     }
     buildFeatures {
         compose = true
