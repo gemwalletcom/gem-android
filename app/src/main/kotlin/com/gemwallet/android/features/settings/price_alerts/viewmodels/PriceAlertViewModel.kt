@@ -3,8 +3,8 @@ package com.gemwallet.android.features.settings.price_alerts.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.device.SyncDeviceInfo
-import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
-import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
+import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
+import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -31,20 +31,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PriceAlertViewModel @Inject constructor(
-    getPriceAlertsCase: GetPriceAlertsCase,
+    getPriceAlerts: GetPriceAlerts,
     private val assetsRepository: AssetsRepository,
     val sessionRepository: SessionRepository,
-    private val enablePriceAlertCase: EnablePriceAlertCase,
+    private val enablePriceAlert: EnablePriceAlert,
     private val putPriceAlertCase: PutPriceAlertCase,
     private val syncDeviceInfo: SyncDeviceInfo,
 ) : ViewModel() {
 
     val forceSync = MutableStateFlow(false)
 
-    val enabled = MutableStateFlow(enablePriceAlertCase.isPriceAlertEnabled())
+    val enabled = MutableStateFlow(enablePriceAlert.isPriceAlertEnabled())
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val alertingAssets = getPriceAlertsCase.getPriceAlerts().flatMapLatest { alerts ->
+    val alertingAssets = getPriceAlerts.getPriceAlerts().flatMapLatest { alerts ->
         val ids = alerts.map { it.assetId }
         refreshPrices(ids)
         assetsRepository.getTokensInfo(ids.map { it.toIdentifier() }).map { it.distinctBy { it.id() } }
@@ -69,14 +69,14 @@ class PriceAlertViewModel @Inject constructor(
 
     fun onEnablePriceAlerts(enabled: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            enablePriceAlertCase.setPriceAlertEnabled(enabled)
+            enablePriceAlert.setPriceAlertEnabled(enabled)
             syncDeviceInfo.syncDeviceInfo()
         }
         this.enabled.update { enabled }
     }
 
     fun excludeAsset(assetId: AssetId) = viewModelScope.launch {
-        enablePriceAlertCase.setAssetPriceAlertEnabled(assetId, false)
+        enablePriceAlert.setAssetPriceAlertEnabled(assetId, false)
     }
 
     fun addAsset(assetId: AssetId, callback: (Asset) -> Unit) = viewModelScope.launch(Dispatchers.IO) {

@@ -9,7 +9,7 @@ import com.gemwallet.android.cases.device.SetPushToken
 import com.gemwallet.android.cases.device.SwitchPushEnabled
 import com.gemwallet.android.cases.device.SyncDeviceInfo
 import com.gemwallet.android.cases.device.SyncSubscription
-import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
+import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
 import com.gemwallet.android.cases.session.GetCurrentCurrencyCase
 import com.gemwallet.android.data.repositoreis.config.UserConfig.Keys
 import com.gemwallet.android.data.service.store.ConfigStore
@@ -34,7 +34,7 @@ class DeviceRepository(
     private val platformStore: PlatformStore,
     private val versionName: String,
     private val getDeviceIdCase: GetDeviceIdCase,
-    private val enablePriceAlertCase: EnablePriceAlertCase,
+    private val enablePriceAlert: EnablePriceAlert,
     private val getCurrentCurrencyCase: GetCurrentCurrencyCase,
     private val coroutineScope: CoroutineScope = CoroutineScope(
         SupervisorJob() + CoroutineExceptionHandler { _, err -> Log.e("DEVICE", "Err:", err) } + Dispatchers.IO
@@ -61,7 +61,7 @@ class DeviceRepository(
             token = "",
             locale = getLocale(Locale.getDefault()),
             isPushEnabled = pushEnabled,
-            isPriceAlertsEnabled = enablePriceAlertCase.isPriceAlertEnabled(),
+            isPriceAlertsEnabled = enablePriceAlert.isPriceAlertEnabled(),
             version = versionName,
             currency = getCurrentCurrencyCase.getCurrentCurrency().string,
             subscriptionsVersion = getSubscriptionVersion(),

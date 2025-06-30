@@ -18,6 +18,8 @@ class AssetInfoUIModel(
     val accountInfoUIModel: AccountInfoUIModel = AccountInfoUIModel(),
     val isBuyEnabled: Boolean = false,
     val isSwapEnabled: Boolean = false,
+    val explorerName: String = "",
+    val explorerAddressUrl: String? = null,
     val updated: Long = System.currentTimeMillis(),
 ) {
 

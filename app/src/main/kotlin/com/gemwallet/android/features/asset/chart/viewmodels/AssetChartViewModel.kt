@@ -3,7 +3,7 @@ package com.gemwallet.android.features.asset.chart.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorerCase
+import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.toAssetId
@@ -29,7 +29,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AssetChartViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
-    private val getCurrentBlockExplorerCase: GetCurrentBlockExplorerCase,
+    private val getCurrentBlockExplorer: GetCurrentBlockExplorer,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -55,7 +55,7 @@ class AssetChartViewModel @Inject constructor(
             assetLinks = links.toModel(),
             currency = currency,
             marketInfo = market,
-            explorerName = getCurrentBlockExplorerCase.getCurrentBlockExplorer(asset.chain())
+            explorerName = getCurrentBlockExplorer.getCurrentBlockExplorer(asset.chain())
         )
     }
     .flowOn(Dispatchers.Default)

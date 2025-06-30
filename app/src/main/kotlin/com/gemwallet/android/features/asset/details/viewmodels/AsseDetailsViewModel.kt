@@ -3,12 +3,14 @@ package com.gemwallet.android.features.asset.details.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
-import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
+import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
+import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
+import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
 import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isStaked
 import com.gemwallet.android.ext.toAssetId
@@ -48,6 +50,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.internal.toImmutableList
+import uniffi.gemstone.Explorer
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -56,8 +59,9 @@ class AsseDetailsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val getTransactions: GetTransactions,
-    private val getPriceAlertsCase: GetPriceAlertsCase,
-    private val enablePriceAlertCase: EnablePriceAlertCase,
+    private val getPriceAlerts: GetPriceAlerts,
+    private val enablePriceAlert: EnablePriceAlert,
+    private val getCurrentBlockExplorer: GetCurrentBlockExplorer,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -67,15 +71,22 @@ class AsseDetailsViewModel @Inject constructor(
 
     private val model = assetId
         .onEach { uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process) } }
-        .flatMapLatest {
-            assetsRepository.getAssetInfo(it ?: return@flatMapLatest emptyFlow()).mapNotNull { it } // TODO: Could return null assetInfo. Add checking.
+        .flatMapLatest { assetId ->
+            assetId?.let { assetsRepository.getAssetInfo(it).mapNotNull { it } } ?: emptyFlow()
         }
-        .map { Model(it, System.currentTimeMillis()) }
+        .map {
+            val explorerName = getCurrentBlockExplorer.getCurrentBlockExplorer(it.asset.chain())
+            Model(
+                assetInfo = it,
+                explorerName = explorerName,
+                updatedAt = System.currentTimeMillis()
+            )
+        }
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val priceAlertEnabled = assetId.flatMapLatest {
-            getPriceAlertsCase.isAssetPriceAlertEnabled(it ?: return@flatMapLatest emptyFlow())
+            getPriceAlerts.isAssetPriceAlertEnabled(it ?: return@flatMapLatest emptyFlow())
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
@@ -112,7 +123,12 @@ class AsseDetailsViewModel @Inject constructor(
                 }
             )
         }
-        viewModelScope.launch { assetsRepository.syncAssetInfo(assetId, sessionRepository.getSession()?.wallet?.getAccount(assetId.chain) ?: return@launch) }
+        viewModelScope.launch {
+            assetsRepository.syncAssetInfo(
+                assetId = assetId,
+                account = sessionRepository.getSession()?.wallet?.getAccount(assetId.chain) ?: return@launch
+            )
+        }
         viewModelScope.launch {
             delay(300)
             uiState.update { AssetInfoUIState.Idle() }
@@ -120,12 +136,13 @@ class AsseDetailsViewModel @Inject constructor(
     }
 
     fun enablePriceAlert(assetId: AssetId) = viewModelScope.launch {
-        enablePriceAlertCase.setAssetPriceAlertEnabled(assetId, priceAlertEnabled.value != true)
+        enablePriceAlert.setAssetPriceAlertEnabled(assetId, priceAlertEnabled.value != true)
     }
 
     private data class Model(
         val assetInfo: AssetInfo,
         val updatedAt: Long,
+        val explorerName: String,
     ) {
         fun toUIState(): AssetInfoUIModel {
             val assetInfo = assetInfo
@@ -155,6 +172,10 @@ class AsseDetailsViewModel @Inject constructor(
                 networkTitle = "${asset.id.chain.asset().name} (${asset.type.string})",
                 isBuyEnabled = assetInfo.metadata?.isBuyEnabled == true,
                 isSwapEnabled = assetInfo.metadata?.isSwapEnabled == true,
+                explorerName = explorerName,
+                explorerAddressUrl = assetInfo.owner?.address?.let {
+                    Explorer(asset.chain().string).getAddressUrl(explorerName,  it)
+                },
                 accountInfoUIModel = AssetInfoUIModel.AccountInfoUIModel(
                     walletType = assetInfo.walletType,
                     totalBalance = balances.totalFormatted(),

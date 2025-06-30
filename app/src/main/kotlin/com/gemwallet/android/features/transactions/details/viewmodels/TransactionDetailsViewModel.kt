@@ -3,7 +3,7 @@ package com.gemwallet.android.features.transactions.details.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorerCase
+import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.cases.transactions.GetTransaction
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -42,7 +42,7 @@ import javax.inject.Inject
 class TransactionDetailsViewModel @Inject constructor(
     sessionRepository: SessionRepository,
     private val getTransaction: GetTransaction,
-    private val getCurrentBlockExplorerCase: GetCurrentBlockExplorerCase,
+    private val getCurrentBlockExplorer: GetCurrentBlockExplorer,
     private val assetsRepository: AssetsRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -76,7 +76,7 @@ class TransactionDetailsViewModel @Inject constructor(
         val feeFiat = transaction.feePrice?.price?.let {
             currency.format(fee.convert(feeAsset.decimals, it).atomicValue)
         } ?: ""
-        val blockExplorerName = getCurrentBlockExplorerCase.getCurrentBlockExplorer(transaction.asset.chain())
+        val blockExplorerName = getCurrentBlockExplorer.getCurrentBlockExplorer(transaction.asset.chain())
         val explorer = Explorer(asset.chain().string)
         val provider = swapMetadata?.provider
         val swapExplorerUrl = provider?.let { explorer.getTransactionSwapUrl(blockExplorerName, tx.hash, provider) }

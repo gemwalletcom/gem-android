@@ -2,8 +2,8 @@ package com.gemwallet.android.data.repositoreis.di
 
 import android.content.Context
 import com.gemwallet.android.cases.nodes.AddNodeCase
-import com.gemwallet.android.cases.nodes.GetBlockExplorersCase
-import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorerCase
+import com.gemwallet.android.cases.nodes.GetBlockExplorers
+import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.cases.nodes.GetNodesCase
 import com.gemwallet.android.cases.nodes.SetBlockExplorerCase
@@ -47,10 +47,10 @@ object NodesModule {
     fun provideSetBlockExplorerCase(repository: NodesRepository): SetBlockExplorerCase = repository
 
     @Provides
-    fun provideGetBlockExplorersCase(repository: NodesRepository): GetBlockExplorersCase = repository
+    fun provideGetBlockExplorersCase(repository: NodesRepository): GetBlockExplorers = repository
 
     @Provides
-    fun provideGetCurrentBlockExplorerCase(repository: NodesRepository): GetCurrentBlockExplorerCase = repository
+    fun provideGetCurrentBlockExplorerCase(repository: NodesRepository): GetCurrentBlockExplorer = repository
 
     @Provides
     fun provideGetNodesCase(repository: NodesRepository): GetNodesCase = repository

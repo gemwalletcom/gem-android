@@ -5,8 +5,8 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
-import com.gemwallet.android.cases.nodes.GetBlockExplorersCase
-import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorerCase
+import com.gemwallet.android.cases.nodes.GetBlockExplorers
+import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.cases.nodes.GetNodesCase
 import com.gemwallet.android.cases.nodes.SetBlockExplorerCase
@@ -46,8 +46,8 @@ import javax.inject.Inject
 class NetworksViewModel @Inject constructor(
     private val chainInfoRepository: ChainInfoRepository,
     private val getNodesCase: GetNodesCase,
-    private val getCurrentBlockExplorerCase: GetCurrentBlockExplorerCase,
-    private val getBlockExplorersCase: GetBlockExplorersCase,
+    private val getCurrentBlockExplorer: GetCurrentBlockExplorer,
+    private val getBlockExplorers: GetBlockExplorers,
     private val setBlockExplorerCase: SetBlockExplorerCase,
     private val getCurrentNodeCase: GetCurrentNodeCase,
     private val setCurrentNodeCase: SetCurrentNodeCase,
@@ -123,9 +123,9 @@ class NetworksViewModel @Inject constructor(
             it.copy(
                 chain = chain,
                 selectChain = false,
-                explorers = getBlockExplorersCase.getBlockExplorers(chain),
+                explorers = getBlockExplorers.getBlockExplorers(chain),
                 currentNode = getCurrentNodeCase.getCurrentNode(chain),
-                currentExplorer = getCurrentBlockExplorerCase.getCurrentBlockExplorer(chain),
+                currentExplorer = getCurrentBlockExplorer.getCurrentBlockExplorer(chain),
                 availableAddNode = nodeStatusClient.supported(chain),
             )
         }

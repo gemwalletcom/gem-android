@@ -2,6 +2,6 @@ package com.gemwallet.android.cases.nodes
 
 import com.wallet.core.primitives.Chain
 
-interface GetCurrentBlockExplorerCase {
+interface GetCurrentBlockExplorer {
     fun getCurrentBlockExplorer(chain: Chain): String
 }

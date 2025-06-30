@@ -2,8 +2,8 @@ package com.gemwallet.android.data.repositoreis.di
 
 import android.content.Context
 import com.gemwallet.android.cases.device.GetDeviceIdCase
-import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
-import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
+import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
+import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
 import com.gemwallet.android.data.repositoreis.pricealerts.PriceAlertRepository
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
@@ -41,12 +41,12 @@ object PriceAlertsModule {
     }
 
     @Provides
-    fun provideGetPriceAlertsCase(repository: PriceAlertRepository):  GetPriceAlertsCase = repository
+    fun provideGetPriceAlertsCase(repository: PriceAlertRepository):  GetPriceAlerts = repository
 
 
     @Provides
     fun providePutPriceAlertCase(repository: PriceAlertRepository):  PutPriceAlertCase = repository
 
     @Provides
-    fun provideEnabledPriceAlertCase(repository: PriceAlertRepository): EnablePriceAlertCase = repository
+    fun provideEnabledPriceAlertCase(repository: PriceAlertRepository): EnablePriceAlert = repository
 }

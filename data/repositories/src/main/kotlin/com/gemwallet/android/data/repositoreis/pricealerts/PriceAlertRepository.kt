@@ -1,8 +1,8 @@
 package com.gemwallet.android.data.repositoreis.pricealerts
 
 import com.gemwallet.android.cases.device.GetDeviceIdCase
-import com.gemwallet.android.cases.pricealerts.EnablePriceAlertCase
-import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
+import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
+import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
@@ -30,7 +30,7 @@ class PriceAlertRepository(
     private val priceAlertsDao: PriceAlertsDao,
     private val getDeviceIdCase: GetDeviceIdCase,
     private val configStore: ConfigStore,
-) : GetPriceAlertsCase, PutPriceAlertCase, EnablePriceAlertCase {
+) : GetPriceAlerts, PutPriceAlertCase, EnablePriceAlert {
 
     override fun getPriceAlerts(): Flow<List<PriceAlert>> {
         return priceAlertsDao.getAlerts().toModels()

@@ -1,8 +1,8 @@
 package com.gemwallet.android.data.repositoreis.nodes
 
 import com.gemwallet.android.cases.nodes.AddNodeCase
-import com.gemwallet.android.cases.nodes.GetBlockExplorersCase
-import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorerCase
+import com.gemwallet.android.cases.nodes.GetBlockExplorers
+import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.cases.nodes.GetNodesCase
 import com.gemwallet.android.cases.nodes.SetBlockExplorerCase
@@ -33,8 +33,8 @@ class NodesRepository(
 ) : SetCurrentNodeCase,
     GetCurrentNodeCase,
     SetBlockExplorerCase,
-    GetBlockExplorersCase,
-    GetCurrentBlockExplorerCase,
+    GetBlockExplorers,
+    GetCurrentBlockExplorer,
     GetNodesCase,
     AddNodeCase
 {

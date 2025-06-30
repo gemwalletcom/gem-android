@@ -1,6 +1,6 @@
 package com.gemwallet.android.features.settings.price_alerts.viewmodels
 
-import com.gemwallet.android.cases.pricealerts.GetPriceAlertsCase
+import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PriceAlertsSelectViewModel @Inject constructor(
-    getPriceAlertsCase: GetPriceAlertsCase,
+    getPriceAlerts: GetPriceAlerts,
     sessionRepository: SessionRepository,
     assetsRepository: AssetsRepository,
     searchTokensCase: SearchTokensCase,
@@ -29,16 +29,16 @@ class PriceAlertsSelectViewModel @Inject constructor(
     sessionRepository,
     assetsRepository,
     searchTokensCase,
-    PriceAlertSelectSearch(assetsRepository, getPriceAlertsCase),
+    PriceAlertSelectSearch(assetsRepository, getPriceAlerts),
 )
 
 @OptIn(ExperimentalCoroutinesApi::class)
 open class PriceAlertSelectSearch(
     private val assetsRepository: AssetsRepository,
-    getPriceAlertsCase: GetPriceAlertsCase,
+    getPriceAlerts: GetPriceAlerts,
 ) : SelectSearch {
 
-    val addedPriceAlerts = getPriceAlertsCase.getPriceAlerts().map { it.map { it.assetId } }
+    val addedPriceAlerts = getPriceAlerts.getPriceAlerts().map { it.map { it.assetId } }
 
     override fun invoke(
         session: Flow<Session?>,

@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.asset.details.views
 
+import android.content.Intent
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -12,8 +13,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.NotificationsNone
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -26,8 +30,10 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
@@ -38,6 +44,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.BuildConfig
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getReserveBalanceUrl
@@ -159,9 +166,23 @@ private fun Success(
     val clipboardManager = LocalClipboard.current.nativeClipboard
     val uriHandler = LocalUriHandler.current
 
-    val snackbar = remember { SnackbarHostState() }
+    val snackBar = remember { SnackbarHostState() }
     val priceAlertToastRes = if (priceAlertEnabled) R.string.price_alerts_disabled_for else R.string.price_alerts_enabled_for
     val priceAlertToastMessage = stringResource(priceAlertToastRes, uiState.asset.name)
+    var menuExpanded by remember { mutableStateOf(false) }
+    val shareTitle = stringResource(id = R.string.common_share)
+
+    val onShare = fun () {
+        val type = "text/plain"
+        val subject = "${uiState.assetInfo.owner?.chain}\n${uiState.assetInfo.asset.symbol}"
+
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = type
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject)
+        intent.putExtra(Intent.EXTRA_TEXT, uiState.assetInfo.owner?.address)
+
+        context.startActivity(Intent.createChooser(intent, shareTitle))
+    }
 
     Scene(
         title = {
@@ -173,7 +194,7 @@ private fun Success(
             IconButton(
                 onClick = {
                     onPriceAlert(uiState.asset.id)
-                    scope.launch { snackbar.showSnackbar(message = priceAlertToastMessage) }
+                    scope.launch { snackBar.showSnackbar(message = priceAlertToastMessage) }
                 }
             ) {
                 if (priceAlertEnabled) {
@@ -182,15 +203,49 @@ private fun Success(
                     Icon(Icons.Default.NotificationsNone, "")
                 }
             }
-            IconButton(
-                onClick = { clipboardManager.setPlainText(context, uiState.accountInfoUIModel.owner) }
+            if (BuildConfig.DEBUG) {
+                IconButton(
+                    onClick = {
+                        clipboardManager.setPlainText(
+                            context,
+                            uiState.accountInfoUIModel.owner
+                        )
+                    }
+                ) {
+                    Icon(Icons.Default.ContentCopy, "")
+                }
+            }
+            IconButton(onClick = { menuExpanded = !menuExpanded }) {
+                Icon(
+                    imageVector = Icons.Filled.MoreVert,
+                    contentDescription = "More",
+                )
+            }
+            DropdownMenu(
+                expanded = menuExpanded,
+                onDismissRequest = { menuExpanded = false },
+                containerColor = MaterialTheme.colorScheme.background,
             ) {
-                Icon(Icons.Default.ContentCopy, "")
+                uiState.explorerAddressUrl?.let {
+                    DropdownMenuItem(
+                        text = {
+                            Text(stringResource(R.string.asset_view_address_on, uiState.explorerName))
+                        },
+                        onClick = { uriHandler.open(it) },
+                    )
+
+                }
+                DropdownMenuItem(
+                    text = {
+                        Text(stringResource(R.string.common_share))
+                    },
+                    onClick = onShare,
+                )
             }
         },
         onClose = onCancel,
         contentPadding = PaddingValues(0.dp),
-        snackbar = snackbar,
+        snackbar = snackBar,
     ) {
         val isRefreshing = syncState == AssetInfoUIState.SyncState.Loading
         PullToRefreshBox(
@@ -208,7 +263,7 @@ private fun Success(
             }
         ) {
             LazyColumn {
-                head(uiState, onTransfer, onReceive, onBuy, onSwap,)
+                head(uiState, onTransfer, onReceive, onBuy, onSwap)
                 banner(uiState.assetInfo, onStake, onConfirm)
                 status(uiState.asset, uiState.assetInfo.rank)
                 price(uiState, onChart)
@@ -305,7 +360,7 @@ private fun LazyListScope.banner(
                         onConfirm(params)
                     }
                     BannerEvent.AccountActivation -> assetInfo.asset.chain()
-                        .getReserveBalanceUrl()?.let { uriHandler.open(it) }
+                        .getReserveBalanceUrl()?.let { uri -> uriHandler.open(uri) }
                     else -> {}
                 }
             },
