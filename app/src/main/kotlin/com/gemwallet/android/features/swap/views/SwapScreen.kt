@@ -6,14 +6,12 @@ import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.AlertDialog
@@ -54,11 +52,9 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer2
-import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
-import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.PropertyItem
@@ -85,6 +81,7 @@ fun SwapScreen(
     val providers by viewModel.providers.collectAsStateWithLifecycle()
     val priceImpact by viewModel.priceImpact.collectAsStateWithLifecycle()
     val rate by viewModel.rate.collectAsStateWithLifecycle()
+    val estimateTime by viewModel.estimateTime.collectAsStateWithLifecycle()
 
     val isShowProviderSelect = remember { mutableStateOf(false) }
     var approveParams by rememberSaveable { mutableStateOf<ConfirmParams?>(null) }
@@ -159,6 +156,12 @@ fun SwapScreen(
             )
             currentProvider?.let { provider ->
                 CurrentSwapProvider(provider, providers.size > 1, isShowProviderSelect)
+            }
+            estimateTime?.let {
+                PropertyItem(
+                    title = { PropertyTitleText(R.string.swap_estimated_time_title) },
+                    data = { PropertyDataText("\u2248 $it min") }
+                )
             }
             rate?.let {
                 PropertyItem(

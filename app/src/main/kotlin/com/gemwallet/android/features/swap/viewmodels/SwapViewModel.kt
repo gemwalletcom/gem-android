@@ -55,6 +55,8 @@ import uniffi.gemstone.GemSwapProvider
 import uniffi.gemstone.SwapperException
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.text.NumberFormat
+import java.util.Currency
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 import kotlin.math.max
@@ -281,6 +283,16 @@ class SwapViewModel @Inject constructor(
         val toAmount = Crypto(quote.toValue).value(toAsset.decimals)
         val rate = toAsset.format(toAmount / fromAmount, 2, dynamicPlace = true)
         "1 ${fromAsset.symbol} \u2248 $rate"
+    }
+    .flowOn(Dispatchers.Default)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val estimateTime = quote.mapLatest {
+        it?.etaInSeconds?.let { it.toDouble() / 60.0 }?.let {
+            val format = NumberFormat.getInstance()
+            format.maximumFractionDigits = 2
+            format.format(it)
+        }
     }
     .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
