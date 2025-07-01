@@ -20,6 +20,7 @@ import com.gemwallet.android.features.swap.models.SwapItemType
 import com.gemwallet.android.features.swap.models.SwapPairSelect
 import com.gemwallet.android.features.swap.models.SwapPairUIModel
 import com.gemwallet.android.features.swap.models.SwapProviderItem
+import com.gemwallet.android.features.swap.models.SwapRate
 import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.features.swap.navigation.pairArg
 import com.gemwallet.android.math.numberParse
@@ -55,8 +56,8 @@ import uniffi.gemstone.GemSwapProvider
 import uniffi.gemstone.SwapperException
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.math.MathContext
 import java.text.NumberFormat
-import java.util.Currency
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 import kotlin.math.max
@@ -281,8 +282,13 @@ class SwapViewModel @Inject constructor(
         }
         val fromAmount = Crypto(quote.fromValue).value(fromAsset.decimals)
         val toAmount = Crypto(quote.toValue).value(toAsset.decimals)
-        val rate = toAsset.format(toAmount / fromAmount, 2, dynamicPlace = true)
-        "1 ${fromAsset.symbol} \u2248 $rate"
+        val reverse = BigDecimal.ONE.divide(toAmount / fromAmount, MathContext.DECIMAL128)
+        val forwardRate = toAsset.format(toAmount / fromAmount, 2, dynamicPlace = true)
+        val reverseRate = fromAsset.format(reverse, 4, dynamicPlace = true)
+        SwapRate(
+            forward = "1 ${fromAsset.symbol} \u2248 $forwardRate",
+            reverse = "1 ${toAsset.symbol} \u2248 $reverseRate"
+        )
     }
     .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)

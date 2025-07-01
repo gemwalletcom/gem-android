@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.AlertDialog
@@ -85,8 +86,10 @@ fun SwapScreen(
 
     val isShowProviderSelect = remember { mutableStateOf(false) }
     var approveParams by rememberSaveable { mutableStateOf<ConfirmParams?>(null) }
+    var rateDirection by remember { mutableStateOf(false) }
     val pair = pairState
     val keyboardController = LocalSoftwareKeyboardController.current
+
 
     var isShowPriceImpactAlert by remember { mutableStateOf(false) }
 
@@ -166,7 +169,22 @@ fun SwapScreen(
             rate?.let {
                 PropertyItem(
                     title = { PropertyTitleText(R.string.buy_rate) },
-                    data = { PropertyDataText(it) }
+                    data = {
+                        PropertyDataText(
+                            text = when (rateDirection) {
+                                true -> it.reverse
+                                false -> it.forward
+                            },
+                            badge = {
+                                Icon(
+                                    modifier = Modifier.clickable(onClick = { rateDirection = !rateDirection }),
+                                    imageVector = Icons.Default.SwapVert,
+                                    contentDescription = "",
+                                    tint = MaterialTheme.colorScheme.secondary,
+                                )
+                            }
+                        )
+                    }
                 )
             }
             priceImpact?.let {
