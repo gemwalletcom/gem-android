@@ -22,6 +22,5 @@ data class AlgorandAccount (
 	@SerialName("assets")
 	val assets: List<AlgorandAccountAsset>,
 	@SerialName("min-balance")
-	val min_balance: Int
+	val min_balance: Long
 )
-

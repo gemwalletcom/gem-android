@@ -35,8 +35,8 @@ data class TronTransactionBroadcastError (
 
 @Serializable
 data class TronTransactionReceipt (
-	val blockNumber: Int,
-	val fee: Int? = null,
+	val blockNumber: Long,
+	val fee: Long? = null,
 	val result: String? = null,
 	val receipt: TronReceipt? = null
 )

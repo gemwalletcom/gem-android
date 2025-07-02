@@ -20,11 +20,11 @@ data class TronChainParameters (
 
 @Serializable
 enum class TronChainParameterKey(val string: String) {
-	@SerialName("GetCreateNewAccountFeeInSystemContract")
-	GetCreateNewAccountFeeInSystemContract("GetCreateNewAccountFeeInSystemContract"),
-	@SerialName("GetCreateAccountFee")
-	GetCreateAccountFee("GetCreateAccountFee"),
-	@SerialName("GetEnergyFee")
-	GetEnergyFee("GetEnergyFee"),
+	@SerialName("getCreateNewAccountFeeInSystemContract")
+	GetCreateNewAccountFeeInSystemContract("getCreateNewAccountFeeInSystemContract"),
+	@SerialName("getCreateAccountFee")
+	GetCreateAccountFee("getCreateAccountFee"),
+	@SerialName("getEnergyFee")
+	GetEnergyFee("getEnergyFee"),
 }
 

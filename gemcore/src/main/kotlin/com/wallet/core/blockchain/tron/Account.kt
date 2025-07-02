@@ -9,7 +9,7 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 data class TronAccountPermission (
-	val threshold: Int
+	val threshold: Long
 )
 
 @Serializable
@@ -48,8 +48,8 @@ data class TronAccountRequest (
 
 @Serializable
 data class TronAccountUsage (
-	val freeNetUsed: Int? = null,
-	val freeNetLimit: Int? = null,
+	val freeNetUsed: Long? = null,
+	val freeNetLimit: Long? = null,
 	val EnergyUsed: Long? = null,
 	val EnergyLimit: Long? = null
 )

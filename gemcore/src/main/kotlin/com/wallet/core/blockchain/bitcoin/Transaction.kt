@@ -9,7 +9,7 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 data class BitcoinTransaction (
-	val blockHeight: Int
+	val blockHeight: Long
 )
 
 @Serializable

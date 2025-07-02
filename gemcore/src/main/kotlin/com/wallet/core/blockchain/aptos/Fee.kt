@@ -9,8 +9,8 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 data class AptosGasFee (
-	val deprioritized_gas_estimate: Int,
-	val gas_estimate: Int,
-	val prioritized_gas_estimate: Int
+	val deprioritized_gas_estimate: Long,
+	val gas_estimate: Long,
+	val prioritized_gas_estimate: Long
 )
 

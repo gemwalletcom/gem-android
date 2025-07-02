@@ -16,18 +16,18 @@ data class AlgorandTransactionBroadcast (
 @Serializable
 data class AlgorandTransactionParams (
 	@SerialName("min-fee")
-	val min_fee: Int,
+	val min_fee: Long,
 	@SerialName("genesis-id")
 	val genesis_id: String,
 	@SerialName("genesis-hash")
 	val genesis_hash: String,
 	@SerialName("last-round")
-	val last_round: Int
+	val last_round: Long
 )
 
 @Serializable
 data class AlgorandTransactionStatus (
 	@SerialName("confirmed-round")
-	val confirmed_round: Int
+	val confirmed_round: Long
 )
 

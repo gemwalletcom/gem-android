@@ -9,6 +9,6 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 data class XRPLatestBlock (
-	val ledger_current_index: Int
+	val ledger_current_index: Long
 )
 

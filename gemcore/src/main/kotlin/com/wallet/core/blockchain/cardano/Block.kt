@@ -9,7 +9,7 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 data class CardanoBlock (
-	val number: Int
+	val number: Long
 )
 
 @Serializable
