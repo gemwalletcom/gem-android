@@ -5,7 +5,7 @@ import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient.E
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.gemwallet.android.math.append0x
-import com.wallet.core.blockchain.ethereum.models.EthereumFeeHistory
+import com.wallet.core.blockchain.ethereum.EthereumFeeHistory
 import retrofit2.http.Body
 import retrofit2.http.POST
 import java.math.BigInteger

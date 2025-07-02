@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.bitcoin.services
 
-import com.wallet.core.blockchain.bitcoin.models.BitcoinTransactionBroacastResult
+import com.wallet.core.blockchain.bitcoin.BitcoinTransactionBroacastResult
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.POST

@@ -3,7 +3,7 @@ package com.gemwallet.android.blockchain.clients.solana.services
 import com.gemwallet.android.blockchain.clients.solana.SolanaMethod
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
-import com.wallet.core.blockchain.solana.models.SolanaPrioritizationFee
+import com.wallet.core.blockchain.solana.SolanaPrioritizationFee
 import retrofit2.http.Body
 import retrofit2.http.POST
 import java.math.BigInteger

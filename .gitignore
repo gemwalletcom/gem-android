@@ -34,3 +34,4 @@ app/release/
 *.aar
 *.sha1
 .kotlin/
+.claude/

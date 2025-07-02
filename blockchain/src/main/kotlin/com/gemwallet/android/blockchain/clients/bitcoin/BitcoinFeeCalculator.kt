@@ -6,7 +6,7 @@ import com.gemwallet.android.ext.toBitcoinChain
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
-import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
+import com.wallet.core.blockchain.bitcoin.BitcoinUTXO
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.BitcoinChain

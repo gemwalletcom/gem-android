@@ -2,9 +2,9 @@ package com.gemwallet.android.blockchain.clients.xrp.services
 
 import com.gemwallet.android.blockchain.clients.xrp.XrpMethod
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
-import com.wallet.core.blockchain.xrp.models.XRPAccountLinesResult
-import com.wallet.core.blockchain.xrp.models.XRPAccountResult
-import com.wallet.core.blockchain.xrp.models.XRPResult
+import com.wallet.core.blockchain.xrp.XRPAccountLinesResult
+import com.wallet.core.blockchain.xrp.XRPAccountResult
+import com.wallet.core.blockchain.xrp.XRPResult
 import retrofit2.http.Body
 import retrofit2.http.POST
 

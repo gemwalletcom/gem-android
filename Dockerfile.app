@@ -3,11 +3,21 @@ ARG BASE_IMAGE_TAG=latest
 FROM gem-android-base:${BASE_IMAGE_TAG}
 
 # Arguments for current tag and skip sign
-ARG TAG
+ARG TAG=main
 ARG SKIP_SIGN
 
-# Clone the repository
-RUN git clone --depth 1 --recursive --branch $TAG https://github.com/gemwalletcom/gem-android.git $HOME/gem-android
+# Check if branch/tag exists and clone accordingly
+RUN REPO_URL="https://github.com/gemwalletcom/gem-android.git" && \
+    if git ls-remote --exit-code --heads "$REPO_URL" "$TAG" >/dev/null 2>&1; then \
+        echo "Branch $TAG exists, cloning it..." && \
+        git clone --depth 1 --recursive --branch "$TAG" "$REPO_URL" $HOME/gem-android; \
+    elif git ls-remote --exit-code --tags "$REPO_URL" "$TAG" >/dev/null 2>&1; then \
+        echo "Tag $TAG exists, cloning it..." && \
+        git clone --depth 1 --recursive --branch "$TAG" "$REPO_URL" $HOME/gem-android; \
+    else \
+        echo "Branch/tag $TAG not found, using main branch..." && \
+        git clone --depth 1 --recursive --branch main "$REPO_URL" $HOME/gem-android; \
+    fi
 
 WORKDIR $HOME/gem-android
 

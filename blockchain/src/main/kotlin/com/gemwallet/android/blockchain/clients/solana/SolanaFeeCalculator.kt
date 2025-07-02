@@ -73,7 +73,7 @@ class SolanaFeeCalculator(
             } else {
                 val averagePriorityFee = priorityFees.map { it.prioritizationFee }.sortedDescending()
                     .subList(0, min(5, priorityFees.size - 1))
-                    .fold(0) { acc, i -> acc + i } / priorityFees.size
+                    .fold(0L) { acc, i -> acc + i } / priorityFees.size
                 max(((averagePriorityFee + multipleOf - 1) / multipleOf) * multipleOf, multipleOf)
             } * speedCoefficient
             val tokenAccountCreation = Config().getChainConfig(Chain.Solana.string).tokenActivationFee?.toBigInteger() ?: BigInteger.ZERO

@@ -5,7 +5,7 @@ import com.gemwallet.android.blockchain.clients.tron.services.TronBroadcastServi
 import com.gemwallet.android.blockchain.clients.tron.services.TronCallService
 import com.gemwallet.android.blockchain.clients.tron.services.TronNodeStatusService
 import com.gemwallet.android.blockchain.clients.tron.services.TronStakeService
-import com.wallet.core.blockchain.tron.models.TronTransactionReceipt
+import com.wallet.core.blockchain.tron.TronTransactionReceipt
 import retrofit2.http.Body
 import retrofit2.http.POST
 

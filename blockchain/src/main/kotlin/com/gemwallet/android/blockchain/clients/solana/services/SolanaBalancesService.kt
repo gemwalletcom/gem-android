@@ -3,9 +3,9 @@ package com.gemwallet.android.blockchain.clients.solana.services
 import com.gemwallet.android.blockchain.clients.solana.SolanaMethod
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
-import com.wallet.core.blockchain.solana.models.SolanaBalance
-import com.wallet.core.blockchain.solana.models.SolanaBalanceValue
-import com.wallet.core.blockchain.solana.models.SolanaValue
+import com.wallet.core.blockchain.solana.SolanaBalance
+import com.wallet.core.blockchain.solana.SolanaBalanceValue
+import com.wallet.core.blockchain.solana.SolanaValue
 import retrofit2.http.Body
 import retrofit2.http.POST
 import java.math.BigInteger

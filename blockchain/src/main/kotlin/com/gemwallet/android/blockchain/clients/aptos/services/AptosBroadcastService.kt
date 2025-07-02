@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.aptos.services
 
-import com.wallet.core.blockchain.aptos.models.AptosTransactionBroacast
+import com.wallet.core.blockchain.aptos.AptosTransactionBroacast
 import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.Headers
