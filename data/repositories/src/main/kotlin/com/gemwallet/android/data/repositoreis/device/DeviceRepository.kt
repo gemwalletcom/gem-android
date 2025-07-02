@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.device
 
 import android.util.Log
+import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.GetPushToken
@@ -14,6 +15,7 @@ import com.gemwallet.android.cases.session.GetCurrentCurrencyCase
 import com.gemwallet.android.data.repositoreis.config.UserConfig.Keys
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
@@ -24,6 +26,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import wallet.core.jni.AnyAddress
+import wallet.core.jni.CoinType
 import java.util.Locale
 import kotlin.math.max
 
@@ -123,9 +127,10 @@ class DeviceRepository(
 
         wallets.forEach { wallet ->
             wallet.accounts.forEach { account ->
+                val checksum = AnyAddress(account.address, WCChainTypeProxy().invoke(account.chain)).description()
                 subscriptionsIndex["${account.chain.string}_${account.address}_${wallet.index}"] = Subscription(
                     chain = account.chain,
-                    address = account.address,
+                    address = checksum,
                     wallet_index = wallet.index,
                 )
             }
