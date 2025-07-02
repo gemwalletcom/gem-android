@@ -5,10 +5,10 @@ on:
     branches: ["main"]
   pull_request:
     branches: ["main"]
-  path:
-    - "Dockerfile.base"
-    - "Dockerfile.app"
-    - ".github/workflows/docker.yml"
+    paths:
+      - "Dockerfile.base"
+      - "Dockerfile.app"
+      - ".github/workflows/docker.yml"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
