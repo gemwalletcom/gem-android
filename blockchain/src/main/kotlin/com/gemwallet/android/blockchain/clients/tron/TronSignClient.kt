@@ -2,14 +2,19 @@ package com.gemwallet.android.blockchain.clients.tron
 
 import android.text.format.DateUtils
 import com.gemwallet.android.blockchain.clients.SignClient
+import com.gemwallet.android.blockchain.clients.ethereum.encodeApprove
 import com.gemwallet.android.math.decodeHex
+import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
 import wallet.core.java.AnySigner
+import wallet.core.jni.AnyAddress
+import wallet.core.jni.Base58
 import wallet.core.jni.CoinType
+import wallet.core.jni.EthereumAbi
 import wallet.core.jni.proto.Tron
 import wallet.core.jni.proto.Tron.TransferContract
 import wallet.core.jni.proto.Tron.TransferTRC20Contract
@@ -170,6 +175,23 @@ class TronSignClient(
         )
     }
 
+    override suspend fun signTokenApproval(
+        params: ConfirmParams.TokenApprovalParams,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        feePriority: FeePriority,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val spender = Base58.decodeNoCheck(params.data).drop(0).toByteArray()
+        val callData = encodeApprove(spender)
+        val approvalContract = Tron.TriggerSmartContract.newBuilder().apply {
+            ownerAddress = params.from.address
+            contractAddress = params.contract
+            data = ByteString.copyFrom(callData)
+        }
+        return listOf(sign(chainData as TronSignerPreloader.TronChainData, approvalContract, privateKey))
+    }
+
     override suspend fun signSwap(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
@@ -186,7 +208,22 @@ class TronSignClient(
             this.data = ByteString.copyFrom(data.toByteArray())
             this.callValue = callValue
         }
-        return listOf(sign(chainData, contract, privateKey))
+        val approvalData = params.approval
+        val approval = approvalData?.let {
+            signTokenApproval(
+                params = ConfirmParams.Builder(params.asset, params.from)
+                    .approval(
+                        approvalData = encodeApprove(AnyAddress(approvalData.spender, CoinType.ETHEREUM).data()).toHexString(),
+                        provider = "",
+                        contract = approvalData.token,
+                    ),
+                chainData = chainData,
+                finalAmount = BigInteger.ZERO,
+                feePriority = feePriority,
+                privateKey = privateKey
+            )
+        } ?: emptyList()
+        return listOf(sign(chainData, contract, privateKey)) + approval
     }
 
     private fun createVoteContract(chainData: TronSignerPreloader.TronChainData, owner: String) = Tron.VoteWitnessContract.newBuilder().apply {

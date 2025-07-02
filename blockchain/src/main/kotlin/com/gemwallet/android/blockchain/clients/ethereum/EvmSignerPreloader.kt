@@ -25,6 +25,8 @@ import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import wallet.core.jni.AnyAddress
+import wallet.core.jni.CoinType
 import java.math.BigInteger
 
 class EvmSignerPreloader(
@@ -73,7 +75,7 @@ class EvmSignerPreloader(
         val approvalData = if (approval != null) {
             preloadApproval(
                 params = ConfirmParams.Builder(params.asset, params.from).approval(
-                    approvalData = encodeApprove(approval.spender).toHexString(),
+                    approvalData = encodeApprove(AnyAddress(approval.spender, CoinType.ETHEREUM).data()).toHexString(),
                     provider = "",
                     contract = approval.token,
                 ),

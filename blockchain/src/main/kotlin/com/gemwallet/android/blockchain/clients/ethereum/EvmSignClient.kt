@@ -14,6 +14,7 @@ import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.NFTType
 import wallet.core.java.AnySigner
+import wallet.core.jni.AnyAddress
 import wallet.core.jni.CoinType
 import wallet.core.jni.EthereumMessageSigner
 import wallet.core.jni.PrivateKey
@@ -121,7 +122,7 @@ class EvmSignClient(
             signTokenApproval(
                 params = ConfirmParams.Builder(params.asset, params.from)
                     .approval(
-                        approvalData = encodeApprove(approvalData.spender).toHexString(),
+                        approvalData = encodeApprove(AnyAddress(approvalData.spender, CoinType.ETHEREUM).data()).toHexString(),
                         provider = "",
                         contract = approvalData.token,
                     ),
