@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.QrCodeScanner
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -37,9 +39,12 @@ import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
+import com.gemwallet.android.ui.components.open
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.WalletConnection
 import kotlinx.coroutines.launch
+import uniffi.gemstone.Config
+import uniffi.gemstone.DocsUrl
 import java.text.DateFormat
 import java.util.Date
 
@@ -51,6 +56,7 @@ fun ConnectionsScene(
 ) {
     val clipboardManager = LocalClipboard.current.nativeClipboard
     var scannerShowed by remember { mutableStateOf(false) }
+    val uriHandler = LocalUriHandler.current
 
     val connections by viewModel.connections.collectAsStateWithLifecycle()
 
@@ -78,6 +84,9 @@ fun ConnectionsScene(
             }
             IconButton(onClick = { scannerShowed  = true }) {
                 Icon(imageVector = Icons.Default.QrCodeScanner, contentDescription = "scan_qr")
+            }
+            IconButton(onClick = { uriHandler.open(Config().getDocsUrl(DocsUrl.WALLET_CONNECT)) }) {
+                Icon(imageVector = Icons.Outlined.Info, contentDescription = "WC_INFO")
             }
         },
         onClose = onCancel,
