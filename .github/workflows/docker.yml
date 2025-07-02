@@ -99,7 +99,7 @@ jobs:
           file: ./Dockerfile.app
           build-args: |
             TAG=${{ github.ref_name }}
-            BASE_IMAGE_TAG=${{ needs.build_base_image.outputs.image_tag }} # This is the SHA tag from the previous job
+            BASE_IMAGE_TAG=${{ needs.build_base_image.outputs.image_tag }}
             SKIP_SIGN=true
           push: false
           load: true
