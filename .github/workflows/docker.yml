@@ -16,6 +16,7 @@ concurrency:
 
 env:
   BASE_IMAGE_NAME: gem-android-base
+  DOCKER_BUILDKIT: 1
 
 jobs:
   build_base_image:
@@ -50,9 +51,9 @@ jobs:
           load: true
           tags: ${{ env.BASE_IMAGE_NAME }}:${{ steps.meta.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           platforms: linux/amd64
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
 
       - name: Save base image to tarball
         run: docker save ${{ env.BASE_IMAGE_NAME }}:${{ steps.meta.outputs.version }} -o base_image.tar
@@ -107,6 +108,4 @@ jobs:
           push: false
           load: true
           tags: gem-android-app:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
           platforms: linux/amd64
