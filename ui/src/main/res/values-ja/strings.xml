@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">ネットワーク料金</string>
   <string name="info.watch_wallet.title">ウォッチ</string>
   <string name="info.watch_wallet.description">アクセス権はありませんが、取引や動きを監視できるウォレットです。</string>
-  <string name="info.network_fee.description">%sネットワークは、ネットワークの使用状況に応じて変化する取引手数料を請求します。取引を処理するためにマイナーに支払われます。</string>
+  <string name="info.network_fee.description" formatted="false">Every transaction on the %s network requires a fee in %s paid to miners to process your transaction, not Gem Wallet. Network fees varies based on network usage.</string>
   <string name="info.transaction.error.description">残高不足、無効な入力、ネットワークによる拒否などのエラーにより、取引を完了できませんでした。詳細をご確認の上、再度お試しください。</string>
   <string name="info.transaction.pending.description">取引は送信済みで、ネットワーク上での確認を待っています。処理時間は異なる場合があります。最新情報を再度ご確認ください。</string>
   <string name="info.transaction.success.description">取引は完了し、ネットワーク上で確認されました。詳細を確認してステータスをご確認ください。</string>
@@ -423,6 +423,15 @@
   <string name="filter.has_balance">バランスがある</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
   <string name="wallet.import.contract_address_field">契約またはトークンID</string>
-  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.unverified.description">未検証トークンは、信頼できるサードパーティサービスによって十分に検証されていません。エアドロップ、送金、または手動インポートによってウォレットに表示される場合があります。</string>
+  <string name="info.asset_status.suspicious.description">疑わしいトークンやスパムトークンは、詐欺や有害な資産の可能性があると判断されます。エアドロップ、送金、または手動インポートによってウォレットに表示される場合があります。</string>
+  <string name="errors.insufficient_funds">資金不足</string>
+  <string name="info.insufficient_network_fee_balance.title">%sが必要です</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">このトランザクションでは%s %sに支払うネットワーク手数料を賄うためにGem Walletではなく %s が必要です。十分な%sがあることを確認してください。</string>
+  <string name="brand_name">Gem Wallet</string>
+  <string name="info.insufficient_balance.title">残高不足</string>
+  <string name="info.insufficient_balance.description">この取引を完了するには%sが足りません。ウォレットにチャージ、受け取り、または交換して、もう一度お試しください。</string>
+  <string name="info.account_minimum_balance.title">最低残高</string>
+  <string name="asset.buy_asset">%sを購入</string>
+  <string name="wallet.import_address_warning">このアドレスの残高と取引は表示できますが、**資金を送信または売却することはできません**。</string>
 </resources>

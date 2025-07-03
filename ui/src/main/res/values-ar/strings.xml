@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">محفظة لا يمكنك الوصول إليها، ولكن يمكنك مشاهدة معاملاتها وحركاتها.</string>
-  <string name="info.network_fee.description">تفرض شبكة %s رسومًا على المعاملات، والتي تختلف بناءً على استخدام الشبكة. يتم دفعها إلى عمال المناجم لمعالجة معاملتك.</string>
+  <string name="info.network_fee.description" formatted="false">Every transaction on the %s network requires a fee in %s paid to miners to process your transaction, not Gem Wallet. Network fees varies based on network usage.</string>
   <string name="info.transaction.error.description">تعذّر إتمام المعاملة بسبب خطأ، مثل عدم كفاية الرصيد، أو إدخال غير صحيح، أو رفض من قِبل الشبكة. يُرجى مراجعة التفاصيل والمحاولة مرة أخرى.</string>
   <string name="info.transaction.pending.description">تم إرسال المعاملة وهي بانتظار التأكيد على الشبكة. قد تختلف أوقات المعالجة. يُرجى مراجعة التحديثات.</string>
   <string name="info.transaction.success.description">تم إتمام المعاملة وتأكيدها على الشبكة. يمكنك مراجعة التفاصيل للتحقق من حالتها.</string>
@@ -423,6 +423,15 @@
   <string name="filter.has_balance">لديه توازن</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
   <string name="wallet.import.contract_address_field">عقد أو معرف توكن</string>
-  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.unverified.description">لم يتم التحقق من الرموز غير المُوثَّقة بشكل كافٍ من قِبل خدمات خارجية موثوقة. قد تظهر في محفظتك نتيجةً لعمليات الإنزال الجوي، أو التحويلات، أو الاستيراد اليدوي.</string>
+  <string name="info.asset_status.suspicious.description">يتم تحديد الرموز المشبوهة أو غير المرغوب فيها على أنها عمليات احتيال محتملة أو أصول ضارة. قد تظهر في محفظتك نتيجةً لعمليات الإنزال الجوي أو التحويلات أو الاستيراد اليدوي.</string>
+  <string name="errors.insufficient_funds">عدم كفاية الأموال</string>
+  <string name="info.insufficient_network_fee_balance.title">%s مطلوب</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">تتطلب هذه المعاملة %s لتغطية رسوم الشبكة المدفوعة لـ %s من عمال المناجم، وليس Gem Wallet. تأكد من وجود %s كافٍ لديك.</string>
+  <string name="brand_name">Gem Wallet</string>
+  <string name="info.insufficient_balance.title">رصيد غير كاف</string>
+  <string name="info.insufficient_balance.description">ليس لديك رصيد كافٍ %s لإتمام هذه المعاملة. يُرجى شحن رصيدك أو استلامه أو استبداله في محفظتك والمحاولة مرة أخرى.</string>
+  <string name="info.account_minimum_balance.title">الحد الأدنى للرصيد</string>
+  <string name="asset.buy_asset">شراء %s</string>
+  <string name="wallet.import_address_warning">يمكنك عرض الأرصدة والمعاملات لهذا العنوان، ولكن **لا يمكنك إرسال أو بيع الأموال**.</string>
 </resources>

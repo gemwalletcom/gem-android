@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">एक वॉलेट जिस तक आपकी पहुंच नहीं है, लेकिन आप इसके लेनदेन और गतिविधियों पर नजर रख सकते हैं।</string>
-  <string name="info.network_fee.description">%s नेटवर्क लेनदेन शुल्क लेता है, जो नेटवर्क उपयोग के आधार पर अलग-अलग होता है। आपके लेनदेन को संसाधित करने के लिए माइनर्स को भुगतान किया जाता है।</string>
+  <string name="info.network_fee.description" formatted="false">Every transaction on the %s network requires a fee in %s paid to miners to process your transaction, not Gem Wallet. Network fees varies based on network usage.</string>
   <string name="info.transaction.error.description">अपर्याप्त धनराशि, अमान्य इनपुट या नेटवर्क द्वारा अस्वीकृति जैसी किसी त्रुटि के कारण लेनदेन पूरा नहीं हो सका। कृपया विवरण की समीक्षा करें और पुनः प्रयास करें।</string>
   <string name="info.transaction.pending.description">लेन-देन सबमिट कर दिया गया है और नेटवर्क पर पुष्टि की प्रतीक्षा कर रहा है। प्रसंस्करण समय अलग-अलग हो सकता है। कृपया अपडेट के लिए वापस जाँच करें।</string>
   <string name="info.transaction.success.description">लेन-देन पूरा हो गया है और नेटवर्क पर इसकी पुष्टि हो गई है। आप इसकी स्थिति सत्यापित करने के लिए विवरण की समीक्षा कर सकते हैं।</string>
@@ -423,6 +423,15 @@
   <string name="filter.has_balance">संतुलन है</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
   <string name="wallet.import.contract_address_field">कॉन्ट्रैक्ट या टोकन ID</string>
-  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.unverified.description">असत्यापित टोकन को विश्वसनीय तृतीय-पक्ष सेवाओं द्वारा पर्याप्त रूप से सत्यापित नहीं किया गया है। वे एयरड्रॉप, ट्रांसफ़र या मैन्युअल आयात के कारण आपके वॉलेट में दिखाई दे सकते हैं।</string>
+  <string name="info.asset_status.suspicious.description">संदिग्ध या स्पैम टोकन को संभावित घोटाले या हानिकारक संपत्ति के रूप में पहचाना जाता है। वे एयरड्रॉप, ट्रांसफ़र या मैन्युअल आयात के कारण आपके वॉलेट में दिखाई दे सकते हैं।</string>
+  <string name="errors.insufficient_funds">अपर्याप्त कोष</string>
+  <string name="info.insufficient_network_fee_balance.title">%s आवश्यक</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">इस लेनदेन के लिए %s माइनर्स को भुगतान किए गए नेटवर्क शुल्क को कवर करने के लिए %s की आवश्यकता है, न कि Gem Wallet । सुनिश्चित करें कि आपके पास पर्याप्त %s है।</string>
+  <string name="brand_name">Gem Wallet</string>
+  <string name="info.insufficient_balance.title">अपर्याप्त शेषराशि</string>
+  <string name="info.insufficient_balance.description">इस लेनदेन को पूरा करने के लिए आपके पास पर्याप्त %s नहीं है। कृपया अपने वॉलेट में टॉप अप करें, प्राप्त करें या स्वैप करें और फिर से प्रयास करें।</string>
+  <string name="info.account_minimum_balance.title">न्यूनतम शेष</string>
+  <string name="asset.buy_asset">%s खरीदें</string>
+  <string name="wallet.import_address_warning">आप इस पते के लिए शेष राशि और लेनदेन देख सकते हैं, लेकिन **धन भेज या बेच नहीं सकते**।</string>
 </resources>

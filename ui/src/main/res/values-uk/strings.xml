@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">Мережева плата</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">Гаманець, до якого у вас немає доступу, але ви можете спостерігати за його транзакціями та рухами.</string>
-  <string name="info.network_fee.description">Мережа %s стягує комісію за транзакцію, яка залежить від використання мережі. Виплачується майнерам за обробку вашої транзакції.</string>
+  <string name="info.network_fee.description" formatted="false">Кожна транзакція в мережі %s вимагає комісію в %s, яка сплачується майнерам за обробку вашої транзакції, а не Гаманець Gem. Розмір мережевої комісії залежить від використання мережі.</string>
   <string name="info.transaction.error.description">Транзакцію не вдалося завершити через помилку, таку як недостатня кількість коштів, недійсні дані або відхилення мережею. Перегляньте деталі та повторіть спробу.</string>
   <string name="info.transaction.pending.description">Транзакцію надіслано та очікує підтвердження в мережі. Час обробки може змінюватися. Будь ласка, слідкуйте за оновленнями.</string>
   <string name="info.transaction.success.description">Транзакцію завершено та підтверджено в мережі. Ви можете переглянути деталі, щоб перевірити її статус.</string>
@@ -375,8 +375,8 @@
   <string name="asset.state.empty.description">Отримати, обміняти або купити %s</string>
   <string name="activity.state.empty.title">Ваша активність відображатиметься тут</string>
   <string name="activity.state.empty.description">Зробіть свою першу транзакцію</string>
-  <string name="stake.state.empty.title">Ваші ставки з\'являться тут</string>
-  <string name="stake.state.empty.description">Зробіть свою першу ставку %s</string>
+  <string name="stake.state.empty.title">Ваші стейкинги з\'являться тут</string>
+  <string name="stake.state.empty.description">Зробіть свій перший стейкінг %s</string>
   <string name="wallet_connect.state.empty.title">Ваші контакти з\'являться тут️</string>
   <string name="wallet_connect.state.empty.description">Відскануйте або вставте код для підключення до DApp</string>
   <string name="assets.state.empty.search_description">Ви можете спробувати додати його вручну</string>
@@ -423,6 +423,15 @@
   <string name="filter.has_balance">Має баланс</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
   <string name="wallet.import.contract_address_field">Контракт або ID токена</string>
-  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.unverified.description">Неперевірені токени не були достатньо перевірені надійними сторонніми сервісами. Вони можуть з\'явитися у вашому гаманці через аїрдропи, перекази або ручний імпорт.</string>
+  <string name="info.asset_status.suspicious.description">Підозрілі або спам-токени ідентифікуються як потенційні шахрайські або шкідливі активи. Вони можуть з\'явитися у вашому гаманці через аїрдропи, перекази або ручний імпорт.</string>
+  <string name="errors.insufficient_funds">Недостатньо коштів</string>
+  <string name="info.insufficient_network_fee_balance.title">Потрібно %s</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Для цієї транзакції потрібно %s для покриття мережевої комісії, сплаченої %s майнерам, а не Гаманець Gem. Переконайтеся, що у вас достатньо %s.</string>
+  <string name="brand_name">Гаманець Gem</string>
+  <string name="info.insufficient_balance.title">Недостатній баланс</string>
+  <string name="info.insufficient_balance.description">У вас недостатньо %s для завершення цієї транзакції. Будь ласка, поповніть, отримайте або обміняйте свій гаманець і спробуйте ще раз.</string>
+  <string name="info.account_minimum_balance.title">Мінімальний баланс</string>
+  <string name="asset.buy_asset">Купити %s</string>
+  <string name="wallet.import_address_warning">Ви можете переглядати баланси та транзакції для цієї адреси, але **не можете надсилати або продавати кошти**.</string>
 </resources>

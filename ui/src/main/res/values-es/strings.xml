@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">Tarifa de red</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">Una billetera a la que no tienes acceso, pero puedes observar sus transacciones y movimientos.</string>
-  <string name="info.network_fee.description">La red %s cobra una tarifa por transacción que varía según el uso de la red. Se paga a los mineros para que procesen su transacción.</string>
+  <string name="info.network_fee.description" formatted="false">Every transaction on the %s network requires a fee in %s paid to miners to process your transaction, not Gem Wallet. Network fees varies based on network usage.</string>
   <string name="info.transaction.error.description">La transacción no se pudo completar debido a un error, como fondos insuficientes, una entrada no válida o un rechazo de la red. Revise los detalles y vuelva a intentarlo.</string>
   <string name="info.transaction.pending.description">La transacción se ha enviado y está pendiente de confirmación en la red. El tiempo de procesamiento puede variar. Por favor, vuelva a consultar para obtener actualizaciones.</string>
   <string name="info.transaction.success.description">La transacción se ha completado y confirmado en la red. Puedes revisar los detalles para verificar su estado.</string>
@@ -423,6 +423,15 @@
   <string name="filter.has_balance">Tiene equilibrio</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
   <string name="wallet.import.contract_address_field">Contrato o ID de token</string>
-  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.unverified.description">Los tokens no verificados no han sido verificados adecuadamente por servicios externos de confianza. Podrían aparecer en tu billetera debido a airdrops, transferencias o importaciones manuales.</string>
+  <string name="info.asset_status.suspicious.description">Los tokens sospechosos o spam se identifican como posibles estafas o activos dañinos. Pueden aparecer en tu billetera debido a airdrops, transferencias o importaciones manuales.</string>
+  <string name="errors.insufficient_funds">Fondos insuficientes</string>
+  <string name="info.insufficient_network_fee_balance.title">%s requerido</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Esta transacción requiere %s para cubrir la comisión de red pagada a %s mineros, no Gem Wallet. Asegúrate de tener suficiente %s.</string>
+  <string name="brand_name">Gem Wallet</string>
+  <string name="info.insufficient_balance.title">Saldo insuficiente</string>
+  <string name="info.insufficient_balance.description">No tienes suficientes %s para completar esta transacción. Recarga, recibe o intercambia tu billetera y vuelve a intentarlo.</string>
+  <string name="info.account_minimum_balance.title">Saldo mínimo</string>
+  <string name="asset.buy_asset">Comprar %s</string>
+  <string name="wallet.import_address_warning">Puede ver los saldos y las transacciones de esta dirección, pero **no puede enviar ni vender fondos**.</string>
 </resources>

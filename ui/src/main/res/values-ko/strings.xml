@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">접근할 수는 없지만 거래 및 이동을 볼 수 있는 지갑입니다.</string>
-  <string name="info.network_fee.description">%s 네트워크는 네트워크 사용에 따라 달라지는 거래 수수료를 부과합니다. 거래를 처리하기 위해 광부에게 지불됩니다.</string>
+  <string name="info.network_fee.description" formatted="false">Every transaction on the %s network requires a fee in %s paid to miners to process your transaction, not Gem Wallet. Network fees varies based on network usage.</string>
   <string name="info.transaction.error.description">자금 부족, 잘못된 입력, 네트워크 거부 등의 오류로 인해 거래를 완료할 수 없습니다. 세부 정보를 확인하고 다시 시도해 주세요.</string>
   <string name="info.transaction.pending.description">거래가 제출되었으며 네트워크에서 확인을 기다리고 있습니다. 처리 시간은 다를 수 있습니다. 업데이트된 내용을 다시 확인해 주세요.</string>
   <string name="info.transaction.success.description">거래가 완료되었으며 네트워크에서 확인되었습니다. 세부 정보를 확인하여 거래 상태를 확인하실 수 있습니다.</string>
@@ -423,6 +423,15 @@
   <string name="filter.has_balance">균형이 있다</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
   <string name="wallet.import.contract_address_field">계약 또는 토큰 ID</string>
-  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.unverified.description">검증되지 않은 토큰은 신뢰할 수 있는 제3자 서비스에서 충분히 검증되지 않은 토큰입니다. 에어드랍, 이체 또는 수동 가져오기로 인해 지갑에 나타날 수 있습니다.</string>
+  <string name="info.asset_status.suspicious.description">의심스럽거나 스팸 토큰은 잠재적 사기 또는 유해 자산으로 식별됩니다. 이러한 토큰은 에어드랍, 이체 또는 수동 가져오기를 통해 지갑에 나타날 수 있습니다.</string>
+  <string name="errors.insufficient_funds">자금이 부족합니다</string>
+  <string name="info.insufficient_network_fee_balance.title">%s 이 필요합니다</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">이 거래에는 %s (가) %s 채굴자에게 지불한 네트워크 수수료를 충당해야 하며, Gem Wallet 필요하지 않습니다. 충분한 %s 이(가) 있는지 확인하세요.</string>
+  <string name="brand_name">Gem Wallet</string>
+  <string name="info.insufficient_balance.title">잔액이 부족합니다</string>
+  <string name="info.insufficient_balance.description">이 거래를 완료하기에 %s 잔액이 부족합니다. 지갑에 충전, 수령 또는 스왑한 후 다시 시도해 주세요.</string>
+  <string name="info.account_minimum_balance.title">최소 잔액</string>
+  <string name="asset.buy_asset">%s 구매</string>
+  <string name="wallet.import_address_warning">이 주소에 대한 잔액과 거래 내역은 볼 수 있지만, **자금을 보내거나 판매할 수는 없습니다**.</string>
 </resources>

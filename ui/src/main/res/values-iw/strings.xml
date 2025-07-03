@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">ארנק שאין לך גישה אליו, אבל אתה יכול לצפות בעסקאות ובתנועות שלו.</string>
-  <string name="info.network_fee.description">הרשת %s גובה עמלת עסקאות, המשתנות בהתאם לשימוש ברשת. שולם לכורים כדי לעבד את העסקה שלך.</string>
+  <string name="info.network_fee.description" formatted="false">Every transaction on the %s network requires a fee in %s paid to miners to process your transaction, not Gem Wallet. Network fees varies based on network usage.</string>
   <string name="info.transaction.error.description">לא ניתן היה להשלים את העסקה עקב שגיאה, כגון חוסר כספים, קלט לא תקין או דחייה על ידי הרשת. אנא בדוק את הפרטים ונסה שוב.</string>
   <string name="info.transaction.pending.description">העסקה הוגשה וממתינה לאישור ברשת. זמני העיבוד עשויים להשתנות. אנא בדקו שוב לעדכונים.</string>
   <string name="info.transaction.success.description">העסקה הושלמה ואושרה ברשת. באפשרותך לעיין בפרטים כדי לאמת את מצבה.</string>
@@ -423,6 +423,15 @@
   <string name="filter.has_balance">יש איזון</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
   <string name="wallet.import.contract_address_field">חוזה או מזהה טוקן</string>
-  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.unverified.description">אסימונים שלא אומתו לא אומתו כראוי על ידי שירותי צד שלישי מהימנים. ייתכן שהם יופיעו בארנק שלך עקב הטלות אוויר, העברות או ייבוא ידני.</string>
+  <string name="info.asset_status.suspicious.description">אסימונים חשודים או ספאם מזוהים כתרמיות פוטנציאליות או נכסים מזיקים. הם עשויים להופיע בארנק שלך עקב הטלות אוויר, העברות או ייבוא ידני.</string>
+  <string name="errors.insufficient_funds">חוסר כספים</string>
+  <string name="info.insufficient_network_fee_balance.title">נדרש %s</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">עסקה זו דורשת מ %s לכסות את דמי הרשת ששולמו לכורי %s, לא ל Gem Wallet. ודא שיש לך מספיק %s.</string>
+  <string name="brand_name">Gem Wallet</string>
+  <string name="info.insufficient_balance.title">יתרה לא מספקת</string>
+  <string name="info.insufficient_balance.description">אין לך מספיק %s כדי להשלים עסקה זו. אנא טען, קבל או החלף בארנק שלך ונסה שוב.</string>
+  <string name="info.account_minimum_balance.title">יתרה מינימלית</string>
+  <string name="asset.buy_asset">קנה %s</string>
+  <string name="wallet.import_address_warning">ניתן לצפות ביתרות ועסקאות עבור כתובת זו, אך **לא ניתן לשלוח או למכור כספים**.</string>
 </resources>

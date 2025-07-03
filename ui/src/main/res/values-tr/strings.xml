@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">Ağ</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">Erişiminizin olmadığı, ancak işlemlerini ve hareketlerini izleyebileceğiniz bir cüzdan.</string>
-  <string name="info.network_fee.description">%s ağı, ağ kullanımına bağlı olarak değişen işlem ücreti alır. İşleminizi gerçekleştirmek için madencilere ödenir.</string>
+  <string name="info.network_fee.description" formatted="false">Every transaction on the %s network requires a fee in %s paid to miners to process your transaction, not Gem Wallet. Network fees varies based on network usage.</string>
   <string name="info.transaction.error.description">İşlem, yetersiz fon, geçersiz giriş veya ağ tarafından reddedilme gibi bir hata nedeniyle tamamlanamadı. Lütfen ayrıntıları inceleyin ve tekrar deneyin.</string>
   <string name="info.transaction.pending.description">İşlem gönderildi ve ağda onay bekleniyor. İşlem süreleri değişiklik gösterebilir. Lütfen güncellemeler için tekrar kontrol edin.</string>
   <string name="info.transaction.success.description">İşlem tamamlandı ve ağda onaylandı. Durumunu doğrulamak için ayrıntıları inceleyebilirsiniz.</string>
@@ -423,6 +423,15 @@
   <string name="filter.has_balance">Dengesi var</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
   <string name="wallet.import.contract_address_field">Sözleşme veya Token ID</string>
-  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.unverified.description">Doğrulanmamış token\'lar güvenilir üçüncü taraf hizmetleri tarafından yeterince doğrulanmamıştır. Airdrop\'lar, transferler veya manuel içe aktarmalar nedeniyle cüzdanınızda görünebilirler.</string>
+  <string name="info.asset_status.suspicious.description">Şüpheli veya spam token\'lar potansiyel dolandırıcılık veya zararlı varlıklar olarak tanımlanır. Airdrop\'lar, transferler veya manuel ithalatlar nedeniyle cüzdanınızda görünebilirler.</string>
+  <string name="errors.insufficient_funds">Yetersiz fon</string>
+  <string name="info.insufficient_network_fee_balance.title">%s gerekli</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Bu işlem %s madenciye ödenen ağ ücretini karşılamak için %s gerektirir, Gem Wallet değil. Yeterli %s olduğundan emin olun.</string>
+  <string name="brand_name">Gem Wallet</string>
+  <string name="info.insufficient_balance.title">Yetersiz Bakiye</string>
+  <string name="info.insufficient_balance.description">Bu işlemi tamamlamak için yeterli %s iniz yok. Lütfen cüzdanınıza para yükleyin, alın veya takas edin ve tekrar deneyin.</string>
+  <string name="info.account_minimum_balance.title">Minimum bakiye</string>
+  <string name="asset.buy_asset">%s satın al</string>
+  <string name="wallet.import_address_warning">Bu adrese ait bakiyeleri ve işlemleri görüntüleyebilirsiniz, ancak **para gönderemez veya satamazsınız**.</string>
 </resources>
