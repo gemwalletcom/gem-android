@@ -78,7 +78,7 @@ fun TransactionDetails(
                 transactionMemoItem(model.memo)
                 transactionNetworkItem(model.networkTitle, model.assetId)
                 transactionProviderItem(model.provider)
-                transactionNetworkFeeItem(model.networkTitle, model.feeCrypto, model.feeFiat)
+                transactionNetworkFeeItem(model.networkTitle, model.networkSymbol, model.feeCrypto, model.feeFiat)
                 transactionExplorer(model.explorerName, model.explorerUrl)
             }
         }
@@ -268,12 +268,12 @@ private fun LazyListScope.transactionProviderItem(provider: SwapProvider?) {
     }
 }
 
-private fun LazyListScope.transactionNetworkFeeItem(networkTitle: String, feeCrypto: String, feeFiat: String) {
+private fun LazyListScope.transactionNetworkFeeItem(networkTitle: String, networkSymbol: String, feeCrypto: String, feeFiat: String) {
     item {
         PropertyItem(
             modifier = Modifier.height(72.dp),
             title = {
-                PropertyTitleText(R.string.transfer_network_fee, info = InfoSheetEntity.NetworkFeeInfo(networkTitle = networkTitle))
+                PropertyTitleText(R.string.transfer_network_fee, info = InfoSheetEntity.NetworkFeeInfo(networkTitle, networkSymbol))
             },
             data = {
                 Column(horizontalAlignment = Alignment.End) {

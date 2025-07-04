@@ -14,7 +14,7 @@ sealed class ConfirmError(message: String) : Exception(message){
 
     class InsufficientBalance(val chainTitle: String) : ConfirmError("Insufficient Balance")
 
-    class InsufficientFee(val chainTitle: String) : ConfirmError("Insufficient Fee")
+    class InsufficientFee(val networkTitle: String, val networkSymbol: String) : ConfirmError("Insufficient Fee")
 
     class SignFail(message: String) : ConfirmError(message)
 

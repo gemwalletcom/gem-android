@@ -36,17 +36,27 @@ import uniffi.gemstone.DocsUrl
 sealed class InfoSheetEntity(
     val icon: Any,
     val badgeIcon: Any? = null,
-    @StringRes val title: Int,
-    @StringRes val description: Int,
-    val descriptionArgs: Any? = null,
+    @param:StringRes val title: Int,
+    @param:StringRes val description: Int,
+    val titleArgs: List<Any>? = null,
+    val descriptionArgs: List<Any>? = null,
     val infoUrl: String?,
 ) {
-    class NetworkFeeInfo(networkTitle: String?) : InfoSheetEntity(
+    class NetworkFeeInfo(networkTitle: String, networkSymbol: String) : InfoSheetEntity(
         icon = R.drawable.ic_network_fee,
         title = R.string.transfer_network_fee,
         description = R.string.info_network_fee_description,
-        descriptionArgs = networkTitle,
         infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
+        descriptionArgs = listOf(networkTitle, networkSymbol),
+    )
+
+    class NetworkBalanceRequiredInfo(networkTitle: String, networkSymbol: String, value: String) : InfoSheetEntity(
+        icon = R.drawable.ic_network_fee,
+        title = R.string.info_insufficient_network_fee_balance_title,
+        description = R.string.info_insufficient_network_fee_balance_description,
+        infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
+        titleArgs = listOf(networkSymbol),
+        descriptionArgs = listOf(value, networkTitle, networkSymbol),
     )
 
     class StakeLockTimeInfo(icon: Any) : InfoSheetEntity(
@@ -108,6 +118,7 @@ sealed class InfoSheetEntity(
     )
 }
 
+/// https://gist.github.com/binrebin/f3dad29956eb8dcb760a38ce86a9553b
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InfoBottomSheet(
@@ -154,7 +165,11 @@ fun InfoBottomSheet(
             }
             Spacer16()
             Text(
-                text = stringResource(item.title),
+                text = parseMarkdownToAnnotatedString(
+                    markdown = item.titleArgs?.takeIf { it.isNotEmpty() }
+                        ?.let { stringResource(item.title, *it.toTypedArray()) }
+                        ?: stringResource(item.title)
+                ),
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.headlineMedium
@@ -162,11 +177,11 @@ fun InfoBottomSheet(
 
             Text(
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 32.dp),
-                text = if (item.descriptionArgs != null) {
-                    stringResource(item.description, item.descriptionArgs)
-                } else {
-                    stringResource(item.description)
-                },
+                text = parseMarkdownToAnnotatedString(
+                    markdown = item.descriptionArgs?.takeIf { it.isNotEmpty() }
+                        ?.let { stringResource(item.description, *it.toTypedArray()) }
+                        ?: stringResource(item.description)
+                ),
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center

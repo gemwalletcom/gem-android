@@ -22,7 +22,6 @@ import com.gemwallet.android.features.confirm.models.ConfirmState
 import com.gemwallet.android.features.confirm.navigation.paramsArg
 import com.gemwallet.android.features.confirm.navigation.txTypeArg
 import com.gemwallet.android.features.swap.navigation.swapRoute
-import com.gemwallet.android.features.transactions.details.viewmodels.getIcon
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
@@ -34,8 +33,6 @@ import com.gemwallet.android.services.SignerPreloaderProxy
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.InfoSheetEntity
-import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
-import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
@@ -195,6 +192,17 @@ class ConfirmViewModel @Inject constructor(
     .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
+    val feeValue = combine(preloadData, feeAssetInfo, state, feePriority) { signerParams, feeAssetInfo, state, speed ->
+        val amount = signerParams?.chainData?.fee(speed)?.amount
+        if (amount == null || feeAssetInfo == null) {
+            return@combine ""
+        }
+        val feeAmount = Crypto(amount)
+        feeAssetInfo.asset.format(feeAmount, 8, dynamicPlace = true)
+    }
+    .flowOn(Dispatchers.Default)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, "")
+
     val feeUIModel = combine(preloadData, feeAssetInfo, state, feePriority) { signerParams, feeAssetInfo, state, speed ->
         val amount = signerParams?.chainData?.fee(speed)?.amount
         val result = if (amount == null || feeAssetInfo == null) {
@@ -206,7 +214,9 @@ class ConfirmViewModel @Inject constructor(
                         CircularProgressIndicator16()
                     }
                 },
-                info = InfoSheetEntity.NetworkFeeInfo(networkTitle = feeAssetInfo?.asset?.name),
+                info = feeAssetInfo?.asset?.let {
+                    InfoSheetEntity.NetworkFeeInfo(it.name, it.symbol)
+                },
             )
         } else {
             val feeAmount = Crypto(amount)
@@ -236,7 +246,7 @@ class ConfirmViewModel @Inject constructor(
                 label = R.string.transfer_network_fee,
                 data = feeCrypto,
                 support = feeFiat,
-                info = InfoSheetEntity.NetworkFeeInfo(networkTitle = feeAssetInfo.asset.name)
+                info = feeAssetInfo.asset.let { InfoSheetEntity.NetworkFeeInfo(it.name, it.symbol) }
             )
         }
 
@@ -520,7 +530,7 @@ class ConfirmViewModel @Inject constructor(
             }
             if (feeAssetInfo.balance.balance.available.toBigInteger() < feeAmount) {
                 val label = "${feeAssetInfo.id().chain.asset().name} (${feeAssetInfo.asset.symbol})"
-                throw ConfirmError.InsufficientFee(label)
+                throw ConfirmError.InsufficientFee(networkTitle = label, feeAssetInfo.asset.symbol)
             }
         }
     }

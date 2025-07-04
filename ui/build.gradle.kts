@@ -79,7 +79,6 @@ dependencies {
     api(libs.coil.network)
     api(libs.coil.svg)
 
-
     // Permissions request
     api(libs.compose.permissions)
 

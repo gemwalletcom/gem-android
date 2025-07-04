@@ -19,6 +19,7 @@ import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Node
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableMap
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
@@ -37,7 +38,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.internal.toImmutableMap
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
