@@ -27,7 +27,7 @@ interface SolanaAccountsService {
     suspend fun getAccountInfoMpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaArrayData<String>>>>
 
     @POST("/")
-    suspend fun getTokenInfo(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaTokenOwner>>>
+    suspend fun getTokenInfo(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaParsedSplTokenInfo>>>
 }
 
 fun SolanaAccountsService.createAccountInfoRequest(tokenId: String): JSONRpcRequest<List<Any>> {
