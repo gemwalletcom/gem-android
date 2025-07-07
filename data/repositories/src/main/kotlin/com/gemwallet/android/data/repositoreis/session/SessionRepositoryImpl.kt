@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import java.util.Locale
 
 class SessionRepositoryImpl(
     private val sessionDao: SessionDao,
@@ -37,9 +38,11 @@ class SessionRepositoryImpl(
     override fun hasSession(): Boolean = getSession() != null
 
     override suspend fun setWallet(wallet: Wallet)  = withContext(Dispatchers.IO) {
-        val session = getSession()?.copy(wallet = wallet) ?: Session(
+        val session = getSession()?.copy(wallet = wallet) ?: Session( // Create session
             wallet = wallet,
-            currency = Currency.USD,
+            currency = android.icu.util.Currency.getInstance(Locale.getDefault()).let { sysCurrency ->
+                Currency.entries.firstOrNull { it.string == sysCurrency.currencyCode } ?: Currency.USD
+            },
         )
         sessionDao.update(session.toRecord())
     }
