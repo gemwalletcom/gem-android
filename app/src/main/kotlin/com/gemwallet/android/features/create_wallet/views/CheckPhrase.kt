@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.features.create_wallet.components.WordChip
+import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.screen.PhraseLayout
 import com.gemwallet.android.ui.components.buttons.MainActionButton
@@ -40,6 +41,8 @@ internal fun CheckPhrase(
     onDone: (String) -> Unit,
     onCancel: () -> Unit,
 ) {
+    DisableScreenShooting()
+
     val random = remember {
         val shuffled = mutableListOf<Pair<Int, String>>()
         for (i in 0..words.size / 4) {

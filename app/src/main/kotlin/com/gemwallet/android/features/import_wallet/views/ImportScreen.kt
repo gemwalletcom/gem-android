@@ -52,6 +52,7 @@ import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportViewModel
 import com.gemwallet.android.features.onboarding.AcceptTermsScreen
 import com.gemwallet.android.interactors.ImportError
+import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
@@ -74,6 +75,8 @@ fun ImportScreen(
     onImported: () -> Unit,
     onCancel: () -> Unit
 ) {
+    DisableScreenShooting()
+    
     val viewModel: ImportViewModel = hiltViewModel()
     val context = LocalContext.current
 

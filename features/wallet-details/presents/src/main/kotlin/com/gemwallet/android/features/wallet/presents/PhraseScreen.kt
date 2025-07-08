@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.wallet.presents
 
+import android.view.WindowManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -8,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -19,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.wallet.viewmodels.WalletViewModel
+import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
@@ -27,12 +30,15 @@ import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.PhraseLayout
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.findActivity
 import com.wallet.core.primitives.WalletType
 
 @Composable
 fun PhraseScreen(
     onCancel: () -> Unit,
 ) {
+    DisableScreenShooting()
+
     val viewModel: WalletViewModel = hiltViewModel()
     val wallet by viewModel.wallet.collectAsStateWithLifecycle()
     val phrase by viewModel.phrase.collectAsStateWithLifecycle()
@@ -40,7 +46,6 @@ fun PhraseScreen(
     val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
     val walletType = wallet?.type
-
     if (phrase == null) {
         LoadingScene(title = stringResource(id = R.string.common_secret_phrase), onCancel)
         return
