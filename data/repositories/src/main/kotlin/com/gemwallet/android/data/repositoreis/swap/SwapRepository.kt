@@ -13,13 +13,13 @@ import uniffi.gemstone.Config
 import uniffi.gemstone.FetchQuoteData
 import uniffi.gemstone.GemQuoteAsset
 import uniffi.gemstone.GemSlippage
+import uniffi.gemstone.GemSlippageMode
 import uniffi.gemstone.GemSwapMode
 import uniffi.gemstone.GemSwapOptions
 import uniffi.gemstone.GemSwapper
 import uniffi.gemstone.Permit2Data
 import uniffi.gemstone.Permit2Detail
 import uniffi.gemstone.PermitSingle
-import uniffi.gemstone.GemSlippageMode
 import uniffi.gemstone.SwapAssetList
 import uniffi.gemstone.SwapQuote
 import uniffi.gemstone.SwapQuoteData

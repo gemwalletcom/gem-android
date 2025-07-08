@@ -21,8 +21,6 @@ import com.gemwallet.android.features.confirm.views.ConfirmScreen
 import com.gemwallet.android.model.ConfirmParams.TransferParams.Native
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.screen.FatalStateScene
-import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
@@ -30,6 +28,8 @@ import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.PropertyItem
 import com.gemwallet.android.ui.components.list_item.PropertyTitleText
+import com.gemwallet.android.ui.components.screen.FatalStateScene
+import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.reown.walletkit.client.Wallet

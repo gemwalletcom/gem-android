@@ -6,7 +6,6 @@ import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.wallet.core.blockchain.solana.SolanaPrioritizationFee
 import retrofit2.http.Body
 import retrofit2.http.POST
-import java.math.BigInteger
 
 interface SolanaFeeService {
     @POST("/")

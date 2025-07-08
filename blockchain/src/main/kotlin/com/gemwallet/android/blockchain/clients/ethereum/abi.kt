@@ -1,7 +1,5 @@
 package com.gemwallet.android.blockchain.clients.ethereum
 
-import wallet.core.jni.AnyAddress
-import wallet.core.jni.CoinType
 import wallet.core.jni.EthereumAbi
 import wallet.core.jni.EthereumAbiFunction
 import java.math.BigInteger

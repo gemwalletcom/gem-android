@@ -11,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import wallet.core.jni.Base58
-import java.lang.Exception
 
 class SolanaTokenClient(
     private val chain: Chain,

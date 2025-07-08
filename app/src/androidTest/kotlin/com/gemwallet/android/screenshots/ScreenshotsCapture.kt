@@ -23,10 +23,8 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.core.IsNull
 import org.junit.Before
-import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.Locale
 

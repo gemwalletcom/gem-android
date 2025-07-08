@@ -76,7 +76,7 @@ fun ImportScreen(
     onCancel: () -> Unit
 ) {
     DisableScreenShooting()
-    
+
     val viewModel: ImportViewModel = hiltViewModel()
     val context = LocalContext.current
 
