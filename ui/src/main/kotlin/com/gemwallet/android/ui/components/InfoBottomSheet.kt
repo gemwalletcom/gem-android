@@ -43,7 +43,9 @@ sealed class InfoSheetEntity(
     @param:StringRes val description: Int,
     val titleArgs: List<Any>? = null,
     val descriptionArgs: List<Any>? = null,
-    val infoUrl: String?,
+    val actionLabel: String? = null,
+    val action: (() -> Unit)? = null,
+    val infoUrl: String? = null,
 ) {
     class NetworkFeeInfo(networkTitle: String, networkSymbol: String) : InfoSheetEntity(
         icon = R.drawable.ic_network_fee,
@@ -53,11 +55,13 @@ sealed class InfoSheetEntity(
         descriptionArgs = listOf(networkTitle, networkSymbol),
     )
 
-    class NetworkBalanceRequiredInfo(chain: Chain/*, networkTitle: String, networkSymbol: String,*/, value: String) : InfoSheetEntity(
+    class NetworkBalanceRequiredInfo(chain: Chain, value: String, actionLabel: String, action: () -> Unit) : InfoSheetEntity(
         icon = chain.asset().getIconUrl(),
         title = R.string.info_insufficient_network_fee_balance_title,
         description = R.string.info_insufficient_network_fee_balance_description,
-        infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
+//        infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
+        action = action,
+        actionLabel = actionLabel,
         titleArgs = listOf(chain.asset().symbol),
         descriptionArgs = listOf(value, chain.asset().name, chain.asset().symbol),
     )
@@ -126,7 +130,7 @@ sealed class InfoSheetEntity(
 @Composable
 fun InfoBottomSheet(
     item: InfoSheetEntity?,
-    onClose: (() -> Unit),
+    onClose: (() -> Unit)
 ) {
     if (item == null) return
     val uriHandler = LocalUriHandler.current
@@ -196,9 +200,10 @@ fun InfoBottomSheet(
                     .padding(vertical = 16.dp, horizontal = 32.dp),
             ) {
                 MainActionButton(
-                    title = stringResource(R.string.common_learn_more),
+                    title = item.actionLabel ?: stringResource(R.string.common_learn_more),
                     onClick = {
-                        item.infoUrl?.let { uriHandler.openUri(it) }
+                        scope.launch { sheetState.hide() }.invokeOnCompletion { onClose.invoke() }
+                        item.action?.let { it() } ?: item.infoUrl?.let { uriHandler.openUri(it) }
                     },
                 )
             }

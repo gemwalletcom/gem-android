@@ -51,6 +51,7 @@ import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.titles.getTitle
+import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
 import com.wallet.core.primitives.TransactionType
@@ -61,6 +62,7 @@ fun ConfirmScreen(
     params: ConfirmParams? = null,
     finishAction: FinishConfirmAction,
     cancelAction: CancelAction,
+    onBuy: AssetIdAction,
     viewModel: ConfirmViewModel = hiltViewModel(),
 ) {
     val amountModel by viewModel.amountUIModel.collectAsStateWithLifecycle()
@@ -126,7 +128,7 @@ fun ConfirmScreen(
             }
         )
         Spacer16()
-        ConfirmErrorInfo(state, feeValue = feeValue, isShowBottomSheetInfo)
+        ConfirmErrorInfo(state, feeValue = feeValue, isShowBottomSheetInfo, onBuy)
 
         if (showSelectTxSpeed) {
             SelectFeePriority(
@@ -157,12 +159,17 @@ fun ConfirmScreen(
 }
 
 @Composable
-private fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBottomSheetInfo: Boolean) {
+private fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBottomSheetInfo: Boolean, onBuy: AssetIdAction) {
     if (state !is ConfirmState.Error || state.message == ConfirmError.None) {
         return
     }
     val infoSheetEntity = when (state.message) {
-        is ConfirmError.InsufficientFee -> InfoSheetEntity.NetworkBalanceRequiredInfo(state.message.chain, feeValue)
+        is ConfirmError.InsufficientFee -> InfoSheetEntity.NetworkBalanceRequiredInfo(
+            chain = state.message.chain,
+            value = feeValue,
+            actionLabel = stringResource(R.string.asset_buy_asset, state.message.chain.asset().symbol),
+            action = { onBuy(state.message.chain.asset().id) },
+        )
         is ConfirmError.BroadcastError,
         is ConfirmError.Init,
         is ConfirmError.InsufficientBalance,
@@ -224,7 +231,7 @@ private fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBottom
         }
     }
     if (isShowInfoSheet) {
-        InfoBottomSheet(infoSheetEntity) { isShowInfoSheet = false }
+        InfoBottomSheet(item = infoSheetEntity) { isShowInfoSheet = false }
     }
 }
 

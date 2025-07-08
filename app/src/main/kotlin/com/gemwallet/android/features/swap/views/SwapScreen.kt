@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.SwapHoriz
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.AlertDialog
@@ -61,6 +60,7 @@ import com.gemwallet.android.ui.components.list_item.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.PropertyItem
 import com.gemwallet.android.ui.components.list_item.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
@@ -71,6 +71,7 @@ import com.wallet.core.primitives.Chain
 fun SwapScreen(
     viewModel: SwapViewModel = hiltViewModel(),
     onConfirm: (ConfirmParams) -> Unit,
+    onBuy: AssetIdAction,
     onCancel: () -> Unit,
 ) {
     val selectState by viewModel.selectPair.collectAsStateWithLifecycle()
@@ -232,6 +233,7 @@ fun SwapScreen(
                 approveParams = null
                 viewModel.onTxHash(hash)
             },
+            onBuy = onBuy,
             cancelAction = {
                 approveParams = null
             },

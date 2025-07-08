@@ -8,9 +8,9 @@ import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import com.gemwallet.android.features.confirm.views.ConfirmScreen
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
-
 
 internal const val paramsArg = "assetId"
 internal const val txTypeArg = "tx_type"
@@ -27,6 +27,7 @@ fun NavController.navigateToConfirmScreen(params: ConfirmParams) {
 
 fun NavGraphBuilder.confirm(
     finishAction: FinishConfirmAction,
+    onBuy: AssetIdAction,
     cancelAction: CancelAction,
 ) {
     composable(
@@ -44,6 +45,7 @@ fun NavGraphBuilder.confirm(
     ) { entry ->
         ConfirmScreen(
             cancelAction = cancelAction,
+            onBuy = onBuy,
             finishAction = finishAction,
         )
     }
