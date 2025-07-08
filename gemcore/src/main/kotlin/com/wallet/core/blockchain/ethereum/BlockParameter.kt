@@ -4,8 +4,8 @@
 
 package com.wallet.core.blockchain.ethereum
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 enum class EthereumBlockParameter(val string: String) {
