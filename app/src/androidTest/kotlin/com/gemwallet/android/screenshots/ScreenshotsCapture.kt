@@ -10,7 +10,7 @@ import androidx.test.core.app.takeScreenshot
 import androidx.test.core.graphics.writeToTestStorage
 import androidx.test.espresso.matcher.ViewMatchers.assertThat
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.SdkSuppress
+import androidx.test.filters.LargeTest
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.By
 import androidx.test.uiautomator.Direction
@@ -23,18 +23,19 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import org.hamcrest.Matchers.notNullValue
 import org.hamcrest.core.IsNull
 import org.junit.Before
+import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.Locale
-
 
 private const val BASIC_PACKAGE = "com.gemwallet.android"
 private const val LAUNCH_TIMEOUT = 5000L
 private const val SCREEN_TIMEOUT = 1000L
 
 @RunWith(AndroidJUnit4::class)
-@SdkSuppress(minSdkVersion = 18)
+@LargeTest
 class ScreenshotsCapture {
     private lateinit var device: UiDevice
 
@@ -57,9 +58,9 @@ class ScreenshotsCapture {
         device.pressBack()
     }
 
-//    @Test
-//    fun takeScreenShots() {
-//        assertThat(device, notNullValue())
+    @Test
+    fun takeScreenShots() {
+        assertThat(device, notNullValue())
 //        val locales = arrayOf(
 //            Pair("en", ""),
 //            Pair("ar", ""),
@@ -81,7 +82,7 @@ class ScreenshotsCapture {
 //        for (locale in locales) {
 //            runScenario(language = locale.first, country = locale.second)
 //        }
-//    }
+    }
 
     private fun runScenario(language: String, country: String) {
         val context = ApplicationProvider.getApplicationContext<App>()

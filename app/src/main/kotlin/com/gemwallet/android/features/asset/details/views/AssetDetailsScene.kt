@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -421,7 +422,7 @@ private fun LazyListScope.price(
 ) {
     item {
         PropertyItem(
-            modifier = Modifier.clickable(onClick = { onChart(uiState.asset.id) }),
+            modifier = Modifier.clickable(onClick = { onChart(uiState.asset.id) }).testTag("assetChart"),
             title = { PropertyTitleText(R.string.asset_price) },
             data = {
                 PropertyDataText(
@@ -490,7 +491,7 @@ private fun LazyListScope.additionBalance(
     }
     item {
         PropertyItem(
-            modifier = Modifier.clickable(onClick = onAction),
+            modifier = Modifier.clickable(onClick = onAction).testTag("assetStake"),
             title = { PropertyTitleText(title) },
             data = { PropertyDataText(balance, badge = { DataBadgeChevron() }) },
         )

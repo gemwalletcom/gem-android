@@ -52,6 +52,7 @@ import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportViewModel
 import com.gemwallet.android.features.onboarding.AcceptTermsScreen
 import com.gemwallet.android.interactors.ImportError
+import com.gemwallet.android.ui.BuildConfig
 import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
@@ -89,6 +90,7 @@ fun ImportScreen(
 
     var isAcceptedTerms by remember {
         mutableStateOf(
+            BuildConfig.DEBUG ||
             context.getSharedPreferences("terms", Context.MODE_PRIVATE).getBoolean("is_accepted", false)
         )
     }
