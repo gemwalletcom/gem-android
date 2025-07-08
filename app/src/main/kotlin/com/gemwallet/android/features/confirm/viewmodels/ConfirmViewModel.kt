@@ -12,6 +12,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.ext.toIdentifier
@@ -530,7 +531,7 @@ class ConfirmViewModel @Inject constructor(
             }
             if (feeAssetInfo.balance.balance.available.toBigInteger() < feeAmount) {
                 val label = "${feeAssetInfo.id().chain.asset().name} (${feeAssetInfo.asset.symbol})"
-                throw ConfirmError.InsufficientFee(networkTitle = label, feeAssetInfo.asset.symbol)
+                throw ConfirmError.InsufficientFee(chain = feeAssetInfo.asset.chain())
             }
         }
     }

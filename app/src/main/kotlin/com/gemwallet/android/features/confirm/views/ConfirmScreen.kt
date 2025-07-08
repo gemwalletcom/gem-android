@@ -31,6 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.confirm.models.ConfirmError
 import com.gemwallet.android.features.confirm.models.ConfirmState
 import com.gemwallet.android.features.confirm.viewmodels.ConfirmViewModel
@@ -73,6 +74,9 @@ fun ConfirmScreen(
     var showSelectTxSpeed by remember { mutableStateOf(false) }
     var isShowedBroadcastError by remember((state as? ConfirmState.BroadcastError)?.message) {
         mutableStateOf(state is ConfirmState.BroadcastError)
+    }
+    var isShowBottomSheetInfo by remember(state as? ConfirmState.Error) {
+        mutableStateOf((state as? ConfirmState.Error)?.message is ConfirmError.InsufficientFee )
     }
 
     DisposableEffect(params.hashCode()) {
@@ -122,7 +126,7 @@ fun ConfirmScreen(
             }
         )
         Spacer16()
-        ConfirmErrorInfo(state, feeValue = feeValue)
+        ConfirmErrorInfo(state, feeValue = feeValue, isShowBottomSheetInfo)
 
         if (showSelectTxSpeed) {
             SelectFeePriority(
@@ -153,12 +157,12 @@ fun ConfirmScreen(
 }
 
 @Composable
-private fun ConfirmErrorInfo(state: ConfirmState, feeValue: String) {
+private fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBottomSheetInfo: Boolean) {
     if (state !is ConfirmState.Error || state.message == ConfirmError.None) {
         return
     }
     val infoSheetEntity = when (state.message) {
-        is ConfirmError.InsufficientFee -> InfoSheetEntity.NetworkBalanceRequiredInfo(state.message.networkTitle, state.message.networkSymbol, feeValue)
+        is ConfirmError.InsufficientFee -> InfoSheetEntity.NetworkBalanceRequiredInfo(state.message.chain, feeValue)
         is ConfirmError.BroadcastError,
         is ConfirmError.Init,
         is ConfirmError.InsufficientBalance,
@@ -169,7 +173,7 @@ private fun ConfirmErrorInfo(state: ConfirmState, feeValue: String) {
         is ConfirmError.SignFail,
         ConfirmError.TransactionIncorrect -> null
     }
-    var isShowInfoSheet by remember { mutableStateOf(false) }
+    var isShowInfoSheet by remember(isShowBottomSheetInfo) { mutableStateOf(isShowBottomSheetInfo) }
     Column(
         modifier = Modifier
             .clickable(
@@ -243,7 +247,7 @@ fun ConfirmError.toLabel() = when (this) {
     is ConfirmError.TransactionIncorrect,
     is ConfirmError.PreloadError -> stringResource(R.string.confirm_fee_error)
     is ConfirmError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_balance, chainTitle)
-    is ConfirmError.InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, networkTitle)
+    is ConfirmError.InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, chain.asset().name)
     is ConfirmError.BroadcastError ->  "${stringResource(R.string.errors_transfer_error)}: ${message ?: stringResource(R.string.errors_unknown)}"
     is ConfirmError.SignFail -> stringResource(R.string.errors_transfer_error)
     is ConfirmError.RecipientEmpty -> "${stringResource(R.string.errors_transfer_error)}: recipient can't empty"

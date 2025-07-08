@@ -1,5 +1,7 @@
 package com.gemwallet.android.features.confirm.models
 
+import com.wallet.core.primitives.Chain
+
 sealed class ConfirmError(message: String) : Exception(message){
 
     object None : ConfirmError("")
@@ -14,7 +16,7 @@ sealed class ConfirmError(message: String) : Exception(message){
 
     class InsufficientBalance(val chainTitle: String) : ConfirmError("Insufficient Balance")
 
-    class InsufficientFee(val networkTitle: String, val networkSymbol: String) : ConfirmError("Insufficient Fee")
+    class InsufficientFee(val chain: Chain) : ConfirmError("Insufficient Fee")
 
     class SignFail(message: String) : ConfirmError(message)
 

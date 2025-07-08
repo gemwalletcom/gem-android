@@ -24,10 +24,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
 import kotlinx.coroutines.launch
 import uniffi.gemstone.Config
@@ -50,13 +53,13 @@ sealed class InfoSheetEntity(
         descriptionArgs = listOf(networkTitle, networkSymbol),
     )
 
-    class NetworkBalanceRequiredInfo(networkTitle: String, networkSymbol: String, value: String) : InfoSheetEntity(
-        icon = R.drawable.ic_network_fee,
+    class NetworkBalanceRequiredInfo(chain: Chain/*, networkTitle: String, networkSymbol: String,*/, value: String) : InfoSheetEntity(
+        icon = chain.asset().getIconUrl(),
         title = R.string.info_insufficient_network_fee_balance_title,
         description = R.string.info_insufficient_network_fee_balance_description,
         infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
-        titleArgs = listOf(networkSymbol),
-        descriptionArgs = listOf(value, networkTitle, networkSymbol),
+        titleArgs = listOf(chain.asset().symbol),
+        descriptionArgs = listOf(value, chain.asset().name, chain.asset().symbol),
     )
 
     class StakeLockTimeInfo(icon: Any) : InfoSheetEntity(
