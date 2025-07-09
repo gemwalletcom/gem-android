@@ -79,7 +79,7 @@ class RequestViewModel @Inject constructor(
             }
             WalletConnectionMethods.personal_sign.string -> {
                 val data = JSONArray(request.request.params).getString(0)
-                String(data.decodeHex())
+                String(data.decodeHex()) // TODO: Crashed with IllegalArgumentException
             }
             WalletConnectionMethods.eth_send_transaction.string -> request.request.params
             WalletConnectionMethods.solana_sign_and_send_transaction.string,

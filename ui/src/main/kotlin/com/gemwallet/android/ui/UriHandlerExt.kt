@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components
+package com.gemwallet.android.ui
 
 import android.util.Log
 import androidx.compose.ui.platform.UriHandler

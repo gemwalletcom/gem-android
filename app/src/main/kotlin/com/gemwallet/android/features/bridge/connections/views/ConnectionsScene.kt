@@ -39,7 +39,7 @@ import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
-import com.gemwallet.android.ui.components.open
+import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.WalletConnection
 import kotlinx.coroutines.launch

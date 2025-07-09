@@ -30,6 +30,7 @@ import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
+import com.gemwallet.android.ui.open
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
 import kotlinx.coroutines.launch
@@ -203,7 +204,7 @@ fun InfoBottomSheet(
                     title = item.actionLabel ?: stringResource(R.string.common_learn_more),
                     onClick = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion { onClose.invoke() }
-                        item.action?.let { it() } ?: item.infoUrl?.let { uriHandler.openUri(it) }
+                        item.action?.let { it() } ?: item.infoUrl?.let { uriHandler.open(it) }
                     },
                 )
             }
