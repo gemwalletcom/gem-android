@@ -4,7 +4,9 @@ import com.gemwallet.android.blockchain.clients.BalanceClient
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.total
+import com.gemwallet.android.math.clean0xPrefix
 import com.gemwallet.android.model.AssetBalance
+import com.wallet.core.blockchain.sui.SuiCoinBalance
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
 import java.math.BigInteger
@@ -39,9 +41,13 @@ class SuiBalanceClient(
             tokens.mapNotNull { token ->
                 AssetBalance.create(
                     token,
-                    balances.firstOrNull{ token.id.tokenId == it.coinType }?.totalBalance ?: return@mapNotNull null,
+                    balances.firstOrNull { it.isCoinType(token.id.tokenId) }?.totalBalance ?: return@mapNotNull null,
                 )
             }
         }.getOrNull() ?: emptyList()
+    }
+
+    fun SuiCoinBalance.isCoinType(tokenId: String?): Boolean {
+        return coinType.clean0xPrefix() == tokenId?.clean0xPrefix()?.removePrefix("0")
     }
 }
