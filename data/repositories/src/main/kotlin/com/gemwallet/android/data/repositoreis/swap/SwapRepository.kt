@@ -4,6 +4,7 @@ import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.cases.swap.GetSwapSupportedCase
+import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Asset
@@ -12,8 +13,6 @@ import com.wallet.core.primitives.Wallet
 import uniffi.gemstone.Config
 import uniffi.gemstone.FetchQuoteData
 import uniffi.gemstone.GemQuoteAsset
-import uniffi.gemstone.GemSlippage
-import uniffi.gemstone.GemSlippageMode
 import uniffi.gemstone.GemSwapMode
 import uniffi.gemstone.GemSwapOptions
 import uniffi.gemstone.GemSwapper
@@ -24,6 +23,7 @@ import uniffi.gemstone.SwapAssetList
 import uniffi.gemstone.SwapQuote
 import uniffi.gemstone.SwapQuoteData
 import uniffi.gemstone.SwapQuoteRequest
+import uniffi.gemstone.getDefaultSlippage
 import uniffi.gemstone.permit2DataToEip712Json
 import java.math.BigInteger
 
@@ -51,7 +51,7 @@ class SwapRepository(
             value = amount,
             mode = GemSwapMode.EXACT_IN,
             options = GemSwapOptions(
-                slippage = GemSlippage(100u, GemSlippageMode.EXACT),
+                slippage = getDefaultSlippage(from.chain().string),
                 fee = Config().getSwapConfig().referralFee,
                 preferredProviders = emptyList(),
             )

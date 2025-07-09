@@ -344,9 +344,9 @@ class SwapViewModel @Inject constructor(
         val impact = (((to.toDouble() / from) - 1.0) * 100)
         val isHigh = impact.absoluteValue > Config().getSwapConfig().highPriceImpactPercent.toDouble()
         when {
-            impact > 0 -> PriceImpact(impact, PriceImpactType.Positive, isHigh)
-            impact > -1 -> null
-            impact > -5 -> PriceImpact(impact, PriceImpactType.Medium, isHigh)
+            impact < 0 -> PriceImpact(impact, PriceImpactType.Positive, isHigh)
+            impact < 1 -> null
+            impact < 5 -> PriceImpact(impact, PriceImpactType.Medium, isHigh)
             else -> PriceImpact(impact, PriceImpactType.High, isHigh)
         }
     }
