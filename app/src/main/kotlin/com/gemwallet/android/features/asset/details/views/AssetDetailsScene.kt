@@ -381,7 +381,7 @@ private fun LazyListScope.status(asset: Asset, rank: Int) {
         val context = LocalContext.current
         val uriHandler = LocalUriHandler.current
         PropertyItem(
-            modifier = Modifier.clickable(onClick = { uriHandler.open(context, Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION)) }),
+            modifier = Modifier.clickable { uriHandler.open(context, Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION)) },
             title = {
                 PropertyTitleText(
                     text = R.string.transaction_status,
@@ -424,7 +424,8 @@ private fun LazyListScope.price(
 ) {
     item {
         PropertyItem(
-            modifier = Modifier.clickable(onClick = { onChart(uiState.asset.id) }).testTag("assetChart"),
+            modifier = Modifier.clickable { onChart(uiState.asset.id) }
+                .testTag("assetChart"),
             title = { PropertyTitleText(R.string.asset_price) },
             data = {
                 PropertyDataText(
@@ -453,7 +454,7 @@ private fun LazyListScope.network(
     }
     item {
         PropertyItem(
-            modifier = Modifier.clickable(onClick = { openNetwork(AssetId(uiState.asset.chain())) }),
+            modifier = Modifier.clickable { openNetwork(AssetId(uiState.asset.chain())) },
             title = { PropertyTitleText(R.string.transfer_network) },
             data = {
                 PropertyDataText(

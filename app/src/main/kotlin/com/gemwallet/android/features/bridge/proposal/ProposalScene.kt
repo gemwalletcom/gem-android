@@ -100,7 +100,7 @@ private fun Proposal(
         )
         Spacer(modifier = Modifier.size(20.dp))
         PropertyItem(
-            modifier = Modifier.clickable(onClick = { isShowSelectWallets = true }),
+            modifier = Modifier.clickable { isShowSelectWallets = true },
             title = { PropertyTitleText(R.string.common_wallet) },
             data = { PropertyDataText(selectedWallet?.name ?: "", badge = { DataBadgeChevron() })}
         )

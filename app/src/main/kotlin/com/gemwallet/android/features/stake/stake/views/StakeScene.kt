@@ -128,16 +128,14 @@ private fun LazyListScope.actions(
     }
     item {
         PropertyItem(
-            modifier = Modifier.clickable(
-                onClick = {
-                    amountAction(
-                        AmountParams.buildStake(
-                            assetId = assetId,
-                            txType = TransactionType.StakeDelegate,
-                        )
+            modifier = Modifier.clickable {
+                amountAction(
+                    AmountParams.buildStake(
+                        assetId = assetId,
+                        txType = TransactionType.StakeDelegate,
                     )
-                }
-            ),
+                )
+            },
             title = { PropertyTitleText(R.string.transfer_stake_title) },
             data = { PropertyDataText("", badge = { DataBadgeChevron() })},
         )

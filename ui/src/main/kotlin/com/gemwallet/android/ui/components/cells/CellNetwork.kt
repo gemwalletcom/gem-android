@@ -30,7 +30,7 @@ fun cellNetwork(chain: Chain, onOpenNetwork: ((Chain) -> Unit)? = null): CellEnt
 fun propertyNetwork(chain: Chain, onOpenNetwork: ((Chain) -> Unit)? = null) {
     val asset = chain.asset()
     PropertyItem(
-        modifier = Modifier.clickable(onClick = { onOpenNetwork?.invoke(chain) }),
+        modifier = Modifier.clickable { onOpenNetwork?.invoke(chain) },
         title = { PropertyTitleText(R.string.transfer_network, trailing = { AsyncImage(asset, trailingIconMedium) }) },
         data = { PropertyDataText(asset.name, badge = { DataBadgeChevron() }) }
     )

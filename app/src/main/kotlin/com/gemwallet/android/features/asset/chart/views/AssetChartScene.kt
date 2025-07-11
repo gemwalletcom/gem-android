@@ -98,7 +98,7 @@ private fun LazyListScope.links(links: List<AssetMarketUIModel.Link>) {
         val uriHandler = LocalUriHandler.current
         val context = LocalContext.current
         PropertyItem(
-            modifier = Modifier.clickable(onClick = { uriHandler.open(context, it.url) }),
+            modifier = Modifier.clickable { uriHandler.open(context, it.url) },
             title = { PropertyTitleText(it.label, trailing = { AsyncImage(it.icon, trailingIconMedium) }) },
             data = { PropertyDataText("", badge = { DataBadgeChevron() }) }
         )

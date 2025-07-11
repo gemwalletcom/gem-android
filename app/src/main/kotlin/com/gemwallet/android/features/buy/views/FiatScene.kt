@@ -184,12 +184,17 @@ fun BuyScene(
 
             null -> if (selectedProvider != null) {
                 PropertyItem(
-                    modifier = Modifier.clickable(onClick = { isShowProviders.value = true }),
+                    modifier = Modifier.clickable(enabled = providers.size > 1) { isShowProviders.value = true },
                     title = { PropertyTitleText(R.string.common_provider) },
                     data = {
                         PropertyDataText(
                             selectedProvider.provider.name,
-                            badge = { DataBadgeChevron(selectedProvider.provider.getFiatProviderIcon()) }
+                            badge = {
+                                DataBadgeChevron(
+                                    icon = selectedProvider.provider.getFiatProviderIcon(),
+                                    isShowChevron = providers.size > 1
+                                )
+                            }
                         )
                     }
                 )
