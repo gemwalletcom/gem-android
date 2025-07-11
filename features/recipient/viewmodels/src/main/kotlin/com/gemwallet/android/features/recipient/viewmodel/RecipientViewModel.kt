@@ -9,6 +9,7 @@ import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.cases.nft.GetAssetNft
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getAccount
@@ -46,9 +47,10 @@ const val nftAssetIdArg = "nftAssetId"
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class RecipientViewModel @Inject constructor(
+    private val sessionRepository: SessionRepository,
+    private val walletsRepository: WalletsRepository,
     private val assetsRepository: AssetsRepository,
     private val getAssetNft: GetAssetNft,
-    private val sessionRepository: SessionRepository,
     private val validateAddressOperator: ValidateAddressOperator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -62,9 +64,15 @@ class RecipientViewModel @Inject constructor(
     val nftAssetId = savedStateHandle.getStateFlow(nftAssetIdArg, "")
     val asset = assetId.flatMapLatest { assetsRepository.getAssetInfo(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     val nftAsset = nftAssetId.filterNotNull().flatMapLatest { getAssetNft.getAssetNft(it) }
         .map { it.assets.firstOrNull() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val wallets = sessionRepository.session().combine(walletsRepository.getAll()) { session, wallets ->
+        wallets.filter { it.id != session?.wallet?.id }
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val addressError = combine(
         asset,

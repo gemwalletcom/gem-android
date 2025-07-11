@@ -464,7 +464,6 @@ class AssetsRepository @Inject constructor(
     }
 
     private suspend fun List<AssetInfo>.updateBalances(): List<Deferred<List<AssetBalance>>> = withContext(Dispatchers.IO) {
-        println()
         groupBy { it.walletId }
             .mapValues { wallet ->
                 val walletId = wallet.key ?: return@mapValues null
