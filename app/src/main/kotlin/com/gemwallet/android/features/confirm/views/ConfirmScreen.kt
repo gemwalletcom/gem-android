@@ -183,17 +183,17 @@ private fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBottom
     var isShowInfoSheet by remember(isShowBottomSheetInfo) { mutableStateOf(isShowBottomSheetInfo) }
     Column(
         modifier = Modifier
-            .clickable(
-                enabled = infoSheetEntity != null,
-                onClick = { isShowInfoSheet = true }
-            )
             .padding(padding16)
             .background(
                 MaterialTheme.colorScheme.errorContainer.copy(0.2f),
                 shape = MaterialTheme.shapes.medium
             )
             .fillMaxWidth()
-            .padding(padding16),
+            .padding(padding16)
+            .clickable(
+                enabled = infoSheetEntity != null,
+                onClick = { isShowInfoSheet = true }
+            ),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
