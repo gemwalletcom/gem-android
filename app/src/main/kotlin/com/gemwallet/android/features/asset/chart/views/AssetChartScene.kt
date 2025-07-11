@@ -96,8 +96,9 @@ private fun LazyListScope.links(links: List<AssetMarketUIModel.Link>) {
     item { SubheaderItem(title = "LINKS") }
     items(links) {
         val uriHandler = LocalUriHandler.current
+        val context = LocalContext.current
         PropertyItem(
-            modifier = Modifier.clickable(onClick = { uriHandler.open(it.url) }),
+            modifier = Modifier.clickable(onClick = { uriHandler.open(context, it.url) }),
             title = { PropertyTitleText(it.label, trailing = { AsyncImage(it.icon, trailingIconMedium) }) },
             data = { PropertyDataText("", badge = { DataBadgeChevron() }) }
         )
@@ -105,7 +106,7 @@ private fun LazyListScope.links(links: List<AssetMarketUIModel.Link>) {
 }
 
 private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketInfo: AssetMarket?, explorerName: String) {
-    marketInfo?.marketCap?.let {
+    marketInfo?.marketCap?.let { cap ->
         item {
             PropertyItem(
                 title = {
@@ -115,7 +116,7 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
                             .let { { Badge("#${marketInfo.marketCapRank}") } }
                     )
                 },
-                data = { PropertyDataText(currency.compactFormatter(it)) }
+                data = { PropertyDataText(currency.compactFormatter(cap)) }
             )
         }
     }
@@ -136,7 +137,7 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
                         clipboardManager.setPlainText(context, it)
                     },
                     onClick = {
-                        uriHandler.open(Explorer(asset.chain().string).getTokenUrl(explorerName, it) ?: return@combinedClickable)
+                        uriHandler.open(context, Explorer(asset.chain().string).getTokenUrl(explorerName, it) ?: return@combinedClickable)
                     }
                 ),
                 title = { PropertyTitleText(R.string.asset_contract) },

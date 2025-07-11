@@ -35,6 +35,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -74,6 +75,7 @@ fun AssetsScreen(
     val walletInfo by viewModel.walletInfo.collectAsStateWithLifecycle()
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
 
+    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
 
     Scaffold(
@@ -110,7 +112,7 @@ fun AssetsScreen(
                         onClick = {
                             when (it.event) {
                                 BannerEvent.AccountBlockedMultiSignature ->
-                                    uriHandler.open(Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
+                                    uriHandler.open(context, Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
                                 else -> {}
                             }
                         },

@@ -232,7 +232,7 @@ private fun Success(
                         text = {
                             Text(stringResource(R.string.asset_view_address_on, uiState.explorerName))
                         },
-                        onClick = { uriHandler.open(it) },
+                        onClick = { uriHandler.open(context, it) },
                     )
 
                 }
@@ -275,7 +275,7 @@ private fun Success(
                     onStake(uiState.asset.id)
                 }
                 additionBalance(R.string.asset_balances_reserved, uiState.accountInfoUIModel.reserved) {
-                    uiState.asset.id.chain.getReserveBalanceUrl()?.let { uriHandler.open(it) }
+                    uiState.asset.id.chain.getReserveBalanceUrl()?.let { uriHandler.open(context, it) }
                 }
                 if (transactions.isEmpty()) {
                     item {
@@ -345,6 +345,7 @@ private fun LazyListScope.banner(
     onConfirm: (ConfirmParams) -> Unit
 ) {
     item {
+        val context = LocalContext.current
         val uriHandler = LocalUriHandler.current
         BannersScene(
             asset = assetInfo.asset,
@@ -352,7 +353,7 @@ private fun LazyListScope.banner(
                 when (it.event) {
                     BannerEvent.Stake -> onStake(assetInfo.asset.id)
                     BannerEvent.AccountBlockedMultiSignature ->
-                        uriHandler.open(Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
+                        uriHandler.open(context, Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
                     BannerEvent.ActivateAsset -> {
                         val params = ConfirmParams.Builder(
                             asset = assetInfo.asset,
@@ -361,7 +362,7 @@ private fun LazyListScope.banner(
                         onConfirm(params)
                     }
                     BannerEvent.AccountActivation -> assetInfo.asset.chain()
-                        .getReserveBalanceUrl()?.let { uri -> uriHandler.open(uri) }
+                        .getReserveBalanceUrl()?.let { uri -> uriHandler.open(context, uri) }
                     else -> {}
                 }
             },
@@ -377,9 +378,10 @@ private fun LazyListScope.status(asset: Asset, rank: Int) {
         return
     }
     item {
+        val context = LocalContext.current
         val uriHandler = LocalUriHandler.current
         PropertyItem(
-            modifier = Modifier.clickable(onClick = { uriHandler.open(Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION)) }),
+            modifier = Modifier.clickable(onClick = { uriHandler.open(context, Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION)) }),
             title = {
                 PropertyTitleText(
                     text = R.string.transaction_status,

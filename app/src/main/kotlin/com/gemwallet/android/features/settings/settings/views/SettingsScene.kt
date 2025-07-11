@@ -2,7 +2,6 @@ package com.gemwallet.android.features.settings.settings.views
 
 import android.Manifest
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.provider.Settings
@@ -39,13 +38,12 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.settings.currency.components.emojiFlags
 import com.gemwallet.android.features.settings.settings.components.LinkItem
 import com.gemwallet.android.features.settings.settings.viewmodels.SettingsViewModel
-import com.gemwallet.android.flavors.ReviewManager
 import com.gemwallet.android.flavors.isNotificationsAvailable
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
-import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.open
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -71,12 +69,12 @@ fun SettingsScene(
     val viewModel: SettingsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val reviewManager = remember { ReviewManager() }
-    val version = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-        context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
-    } else {
-        context.packageManager.getPackageInfo(context.packageName, 0)
-    }.versionName
+//    val reviewManager = remember { ReviewManager() }
+//    val version = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//        context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
+//    } else {
+//        context.packageManager.getPackageInfo(context.packageName, 0)
+//    }.versionName
     var isShowDevelopEnable by remember { mutableStateOf(false) }
 
     val uriHandler = LocalUriHandler.current
@@ -167,19 +165,19 @@ fun SettingsScene(
             
             SubheaderItem(title = stringResource(id = R.string.settings_community))
             LinkItem(title = stringResource(id = R.string.social_x), icon = R.drawable.twitter) {
-                uriHandler.open(Config().getSocialUrl(SocialUrl.X) ?: "")
+                uriHandler.open(context, Config().getSocialUrl(SocialUrl.X) ?: "")
             }
             LinkItem(title = stringResource(id = R.string.social_discord), icon = R.drawable.discord) {
-                uriHandler.open(Config().getSocialUrl(SocialUrl.DISCORD) ?: "")
+                uriHandler.open(context, Config().getSocialUrl(SocialUrl.DISCORD) ?: "")
             }
             LinkItem(title = stringResource(id = R.string.social_telegram), icon = R.drawable.telegram) {
-                uriHandler.open(Config().getSocialUrl(SocialUrl.TELEGRAM) ?: "")
+                uriHandler.open(context, Config().getSocialUrl(SocialUrl.TELEGRAM) ?: "")
             }
             LinkItem(title = stringResource(id = R.string.social_github), icon = R.drawable.github) {
-                uriHandler.open(Config().getSocialUrl(SocialUrl.GIT_HUB) ?: "")
+                uriHandler.open(context, Config().getSocialUrl(SocialUrl.GIT_HUB) ?: "")
             }
             LinkItem(title = stringResource(id = R.string.social_youtube), icon = R.drawable.youtube) {
-                uriHandler.open(Config().getSocialUrl(SocialUrl.YOU_TUBE) ?: "")
+                uriHandler.open(context, Config().getSocialUrl(SocialUrl.YOU_TUBE) ?: "")
             }
             HorizontalDivider(modifier = Modifier, thickness = 0.4.dp)
 
@@ -188,6 +186,7 @@ fun SettingsScene(
                 icon = R.drawable.settings_help_center,
             ) {
                 uriHandler.open(
+                    context,
                     Config().getDocsUrl(DocsUrl.START).toUri()
                         .buildUpon()
                         .appendQueryParameter("utm_source", "gemwallet_android")
@@ -200,6 +199,7 @@ fun SettingsScene(
                 icon = R.drawable.settings_support,
             ) {
                 uriHandler.open(
+                    context,
                     Config().getPublicUrl(PublicUrl.SUPPORT).toUri()
                         .buildUpon()
                         .appendQueryParameter("utm_source", "gemwallet_android")

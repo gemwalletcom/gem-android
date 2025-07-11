@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -64,6 +65,7 @@ fun BuyScene(
     onTypeClick: (FiatQuoteType) -> Unit,
 ) {
     asset ?: return
+    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val isShowProviders = remember { mutableStateOf(false) }
 
@@ -111,7 +113,7 @@ fun BuyScene(
             MainActionButton(
                 title = stringResource(id = R.string.common_continue),
                 enabled = state == null,
-                onClick = { uriHandler.open(selectedProvider?.redirectUrl ?: "") }
+                onClick = { uriHandler.open(context, selectedProvider?.redirectUrl ?: "") }
             )
         }
     ) {

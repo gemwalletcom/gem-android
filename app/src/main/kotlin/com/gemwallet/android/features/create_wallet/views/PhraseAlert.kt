@@ -78,6 +78,7 @@ fun PhraseAlertDialog(
             IconButton(
                 {
                     uriHandler.open(
+                        context,
                         Config().getPublicUrl(PublicUrl.TERMS_OF_SERVICE).toUri()
                             .buildUpon()
                             .appendQueryParameter("utm_source", "gemwallet_android")

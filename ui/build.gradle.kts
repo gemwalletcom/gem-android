@@ -64,6 +64,7 @@ dependencies {
     api(libs.compose.material3.window.size)
     api(libs.kotlinx.collections.immutable)
     api(libs.compose.activity)
+    api(libs.browser)
 
     // QRCode scanner: only for none private data: recipient, memo, amount, etc
     implementation(libs.camera.camera2)

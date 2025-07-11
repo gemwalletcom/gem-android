@@ -9,6 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.BuildConfig
@@ -21,7 +22,9 @@ import java.io.File
 
 @Composable
 fun RootWarningDialog(onCancel: () -> Unit, onIgnore: () -> Unit) {
+    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
+
     AlertDialog(
         onDismissRequest = onIgnore,
         title = { Text(text = stringResource(R.string.rootcheck_security_alert)) },
@@ -31,7 +34,7 @@ fun RootWarningDialog(onCancel: () -> Unit, onIgnore: () -> Unit) {
                 Spacer8()
                 Text(
                     modifier = Modifier.clickable {
-                        uriHandler.open(Config().getDocsUrl(DocsUrl.ROOTED_DEVICE))
+                        uriHandler.open(context, Config().getDocsUrl(DocsUrl.ROOTED_DEVICE))
                     },
                     text = stringResource(R.string.common_learn_more),
                     color = MaterialTheme.colorScheme.primary
@@ -77,7 +80,7 @@ private class RootChecker {
         return try {
             val process = Runtime.getRuntime().exec(arrayOf("/system/xbin/which", "su"))
             process.inputStream.bufferedReader().use { it.readLine() != null }
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             false
         }
     }

@@ -29,10 +29,10 @@ fun AboutUsScreen(
     }.versionName
     Scene(title = stringResource(id = R.string.settings_aboutus), onClose = onCancel) {
         LinkItem(title = stringResource(id = R.string.settings_privacy_policy)) {
-            uriHandler.open(Config().getPublicUrl(PublicUrl.PRIVACY_POLICY))
+            uriHandler.open(context, Config().getPublicUrl(PublicUrl.PRIVACY_POLICY))
         }
         LinkItem(title = stringResource(id = R.string.settings_terms_of_services)) {
-            uriHandler.open(Config().getPublicUrl(PublicUrl.TERMS_OF_SERVICE))
+            uriHandler.open(context, Config().getPublicUrl(PublicUrl.TERMS_OF_SERVICE))
         }
         LinkItem(
             title = stringResource(id = R.string.settings_version),

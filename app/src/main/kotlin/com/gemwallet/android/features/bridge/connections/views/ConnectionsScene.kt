@@ -25,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -56,6 +57,7 @@ fun ConnectionsScene(
 ) {
     val clipboardManager = LocalClipboard.current.nativeClipboard
     var scannerShowed by remember { mutableStateOf(false) }
+    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
 
     val connections by viewModel.connections.collectAsStateWithLifecycle()
@@ -85,7 +87,7 @@ fun ConnectionsScene(
             IconButton(onClick = { scannerShowed  = true }) {
                 Icon(imageVector = Icons.Default.QrCodeScanner, contentDescription = "scan_qr")
             }
-            IconButton(onClick = { uriHandler.open(Config().getDocsUrl(DocsUrl.WALLET_CONNECT)) }) {
+            IconButton(onClick = { uriHandler.open(context, Config().getDocsUrl(DocsUrl.WALLET_CONNECT)) }) {
                 Icon(imageVector = Icons.Outlined.Info, contentDescription = "WC_INFO")
             }
         },

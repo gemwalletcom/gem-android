@@ -18,6 +18,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -135,6 +136,7 @@ fun InfoBottomSheet(
 ) {
     if (item == null) return
     val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     ModalBottomSheet(
@@ -204,7 +206,7 @@ fun InfoBottomSheet(
                     title = item.actionLabel ?: stringResource(R.string.common_learn_more),
                     onClick = {
                         scope.launch { sheetState.hide() }.invokeOnCompletion { onClose.invoke() }
-                        item.action?.let { it() } ?: item.infoUrl?.let { uriHandler.open(it) }
+                        item.action?.let { it() } ?: item.infoUrl?.let { uriHandler.open(context, it) }
                     },
                 )
             }

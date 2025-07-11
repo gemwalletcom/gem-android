@@ -8,9 +8,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -32,12 +29,6 @@ fun WalletApp() {
 
     val navController = rememberNavController()
     val startDestination = viewModel.getStartDestination()
-    var currentRoute by remember {
-        mutableStateOf<String?>(null)
-    }
-    navController.addOnDestinationChangedListener { _, dest, _ ->
-        currentRoute = dest.route
-    }
     WalletNavGraph(
         navController = navController,
         startDestination = startDestination,
@@ -71,13 +62,14 @@ private fun ShowUpdateDialog(
     if (fromGooglePlay(LocalContext.current)) {
         return
     }
+    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     AlertDialog(
         onDismissRequest = onCancel,
         confirmButton = {
             TextButton(onClick = {
                 onCancel()
-                uriHandler.open(BuildConfig.UPDATE_URL)
+                uriHandler.open(context, BuildConfig.UPDATE_URL)
             }) {
                 Text(text = stringResource(id = R.string.update_app_action))
             }
