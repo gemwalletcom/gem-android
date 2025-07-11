@@ -18,8 +18,12 @@ class SolanaTokenClient(
 ) : GetTokenClient {
 
     override suspend fun getTokenData(tokenId: String): Asset? = withContext(Dispatchers.IO) {
-        val tokenInfo = accountsService.getAccountInfoSpl(accountsService.createAccountInfoRequest(tokenId))
-                .getOrNull()?.result?.value?.data?.parsed?.info ?: return@withContext null
+        val tokenInfo = try {
+            accountsService.getAccountInfoSpl(accountsService.createAccountInfoRequest(tokenId))
+                .result.value.data.parsed.info
+        } catch (_: Throwable) {
+            return@withContext null
+        }
         // spl 2022
         if (tokenInfo.extensions != null) {
             val extension = tokenInfo.extensions.firstOrNull { it.extension == "tokenMetadata" }
@@ -40,8 +44,13 @@ class SolanaTokenClient(
         }
 
         val base64Job = async {
-            accountsService.getAccountInfoMpl(accountsService.createAccountInfoRequest(metadataKey))
-                .getOrNull()?.result?.value?.data?.first()
+            try {
+                accountsService.getAccountInfoMpl(accountsService.createAccountInfoRequest(metadataKey))
+                    .result.value.data.first()
+            } catch (_: Throwable) {
+                null
+            }
+
         }
         val base64 = base64Job.await() ?: return@withContext null
 

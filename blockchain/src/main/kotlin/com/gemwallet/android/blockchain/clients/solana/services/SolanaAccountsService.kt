@@ -14,19 +14,19 @@ import retrofit2.http.POST
 
 interface SolanaAccountsService {
     @POST("/")
-    suspend fun getTokenAccountByOwner(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<List<SolanaTokenAccount>>>>
+    suspend fun getTokenAccountByOwner(@Body request: JSONRpcRequest<List<Any>>): JSONRpcResponse<SolanaValue<List<SolanaTokenAccount>>>
 
     @POST("/")
-    suspend fun batchAccount(@Body request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<SolanaValue<List<SolanaTokenAccount>>>>>
+    suspend fun batchAccount(@Body request: List<JSONRpcRequest<List<Any>>>): List<JSONRpcResponse<SolanaValue<List<SolanaTokenAccount>>>>
 
     @POST("/")
-    suspend fun getAccountInfoSpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaParsedData<SolanaInfo<SolanaParsedSplTokenInfo>>>>>
+    suspend fun getAccountInfoSpl(@Body request: JSONRpcRequest<List<Any>>): JSONRpcResponse<SolanaValue<SolanaParsedData<SolanaInfo<SolanaParsedSplTokenInfo>>>>
 
     @POST("/")
-    suspend fun getAccountInfoMpl(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaArrayData<String>>>>
+    suspend fun getAccountInfoMpl(@Body request: JSONRpcRequest<List<Any>>): JSONRpcResponse<SolanaValue<SolanaArrayData<String>>>
 
     @POST("/")
-    suspend fun getTokenInfo(@Body request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaParsedSplTokenInfo>>>
+    suspend fun getTokenInfo(@Body request: JSONRpcRequest<List<Any>>): JSONRpcResponse<SolanaValue<SolanaParsedSplTokenInfo>>
 }
 
 fun SolanaAccountsService.createAccountInfoRequest(tokenId: String): JSONRpcRequest<List<Any>> {
