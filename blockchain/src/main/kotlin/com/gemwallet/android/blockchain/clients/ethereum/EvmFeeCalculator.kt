@@ -19,7 +19,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
-import uniffi.gemstone.EvmHistoryRewardPercentiles
+import uniffi.gemstone.GemEthereumFeeHistory
+import uniffi.gemstone.GemFeeCalculator
+import uniffi.gemstone.GemPriorityFeeRecord
 import wallet.core.jni.CoinType
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -44,8 +46,8 @@ class EvmFeeCalculator(
         chainId: Int,
         nonce: BigInteger,
     ): List<GasFee> = withContext(Dispatchers.IO) {
-        val getGasLimit = async { getGasLimit(assetId, params.from.address, recipient, outputAmount, payload) } // TODO: params.from.address plain
-        val getBasePriorityFees = async { getBasePriorityFee(params.asset.id.chain, feeService) }    // TODO: chain is plain
+        val getGasLimit = async { getGasLimit(assetId, params.from.address, recipient, outputAmount, payload) }
+        val getBasePriorityFees = async { getBasePriorityFees(params) }
         val gasLimit = getGasLimit.await()
         val (baseFee, priorityFees) = getBasePriorityFees.await()
 
@@ -68,29 +70,26 @@ class EvmFeeCalculator(
             }
         }
 
-        priorityFees.mapIndexed { index, priorityFee ->
-            val maxGasPrice = baseFee.plus(priorityFee)
-            val minerFee = when (params) {
+        priorityFees.map { priorityFee ->
+            val value = priorityFee.value.toBigInteger()
+            val maxGasPrice: BigInteger = baseFee.plus(value)
+            val minerFee: BigInteger = when (params) {
                 is ConfirmParams.Stake,
                 is ConfirmParams.SwapParams,
                 is ConfirmParams.NftParams,
-                is ConfirmParams.TokenApprovalParams -> priorityFee
-                is ConfirmParams.TransferParams -> if (params.assetId.type() == AssetSubtype.NATIVE && params.isMax()) { // TODO: params.assetId.type - plain, replace to type
+                is ConfirmParams.TokenApprovalParams -> value
+                is ConfirmParams.TransferParams -> if (params.assetId.type() == AssetSubtype.NATIVE && params.isMax()) {
                     maxGasPrice
                 } else {
-                    priorityFee
+                    value
                 }
 
                 is ConfirmParams.Activate -> throw IllegalArgumentException()
             }
             GasFee(
-                feeAssetId = AssetId(params.assetId.chain), // TODO: params.assetId.chain
-                priority = when (index) {
-                    0 -> FeePriority.Slow
-                    1 -> FeePriority.Normal
-                    2 -> FeePriority.Fast
-                    else -> FeePriority.Normal
-                },
+                feeAssetId = AssetId(params.assetId.chain),
+                priority = FeePriority.entries.firstOrNull { it.string == priorityFee.priority.name.lowercase() }
+                    ?: FeePriority.Normal,
                 limit = gasLimit,
                 maxGasPrice = maxGasPrice,
                 minerFee = minerFee,
@@ -126,43 +125,36 @@ class EvmFeeCalculator(
         }
     }
 
-    internal suspend fun getBasePriorityFee(chain: Chain, feeService: EvmFeeService): Pair<BigInteger, List<BigInteger>> {
+    internal suspend fun getHistory(chain: Chain, feeService: EvmFeeService): Pair<BigInteger, GemEthereumFeeHistory> {
         val config = Config().getEvmChainConfig(chain.toEVM()?.string ?: throw IllegalArgumentException())
         val rewardsPercentiles = config.rewardsPercentiles
-        val minPriorityFee = config.minPriorityFee.toString().toBigInteger()
-
         val feeHistory = feeService.getFeeHistory(
             listOf(rewardsPercentiles.slow, rewardsPercentiles.normal, rewardsPercentiles.fast)
                 .map { it.toInt() }
         ) ?: throw Exception("Unable to calculate base fee")
-
-        val reward = feeHistory.reward.mapNotNull { it.firstOrNull()?.hexToBigInteger() }.maxOrNull()
-            ?: throw Exception("Unable to calculate priority fee")
-
         val baseFee = feeHistory.baseFeePerGas.mapNotNull { it.hexToBigInteger() }.maxOrNull()
             ?: throw Exception("Unable to calculate base fee")
 
-        val priorityFees = calculatePriorityFees(feeHistory.reward, rewardsPercentiles, minPriorityFee)
-        return Pair(baseFee, priorityFees)
+        return Pair(
+            baseFee,
+            GemEthereumFeeHistory(
+                reward = feeHistory.reward,
+                baseFeePerGas = feeHistory.baseFeePerGas,
+                gasUsedRatio = feeHistory.gasUsedRatio,
+                oldestBlock = feeHistory.oldestBlock,
+            )
+        )
     }
 
-    internal fun calculatePriorityFees(
-        rewards: List<List<String>>,
-        rewardsPercentiles: EvmHistoryRewardPercentiles,
-        minPriorityFee: BigInteger
-    ): List<BigInteger> {
-        return FeePriority.entries.map { speed ->
-            val prices = when (speed) {
-                FeePriority.Slow -> rewards.mapNotNull { it.getOrNull(0)?.hexToBigInteger() }
-                FeePriority.Normal -> rewards.mapNotNull { it.getOrNull(1)?.hexToBigInteger() }
-                FeePriority.Fast -> rewards.mapNotNull { it.getOrNull(2)?.hexToBigInteger() }
-            }
-            if (prices.isEmpty()) {
-                minPriorityFee
-            } else {
-                minPriorityFee.max(prices.fold(BigInteger.ZERO) { acc, v -> acc + v / prices.size.toBigInteger() })
-            }
-        }
+    internal suspend fun getBasePriorityFees(
+        params: ConfirmParams,
+    ): Pair<BigInteger, List<GemPriorityFeeRecord>> {
+        val history = getHistory(params.asset.id.chain, feeService)
+        val calculator = GemFeeCalculator()
+        val priority = calculator.caluclateBasePriorityFees(
+            chain = params.from.chain.string,
+            history = history.second
+        )
+        return Pair(history.first, priority)
     }
-
 }
