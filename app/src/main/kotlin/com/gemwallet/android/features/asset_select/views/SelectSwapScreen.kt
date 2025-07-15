@@ -6,10 +6,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.SwapSelectViewModel
 import com.gemwallet.android.features.swap.models.SwapPairSelect
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.getBalanceInfo
+import com.gemwallet.android.ui.components.list_item.ListItemSupportText
+import com.wallet.core.primitives.AssetSubtype
 import kotlinx.coroutines.coroutineScope
 
 @Composable
@@ -50,6 +54,10 @@ fun SelectSwapScreen(
         onCancel = onCancel,
         onAddAsset = null,
         itemTrailing =  { getBalanceInfo(it)() },
-        support = null,
+        support = {
+            if (it.asset.id.type() == AssetSubtype.NATIVE) null else {
+                @Composable { ListItemSupportText(it.asset.id.chain.asset().name) }
+            }
+        },
     )
 }

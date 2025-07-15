@@ -20,9 +20,7 @@ fun SelectBuyScreen(
         titleBadge = { null },
         itemTrailing = { getBalanceInfo(it)() },
         onSelect = onSelect,
-        onCancel = {
-            cancelAction.invoke()
-        },
+        onCancel = { cancelAction.invoke() },
         viewModel = viewModel,
     )
 }
