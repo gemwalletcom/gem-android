@@ -1,10 +1,12 @@
 package com.gemwallet.android
 
+import android.app.ComponentCaller
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.makeText
 import androidx.activity.viewModels
@@ -44,6 +46,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.features.bridge.proposal.ProposalScene
 import com.gemwallet.android.features.bridge.request.RequestScene
 import com.gemwallet.android.interactors.CheckAccounts
@@ -171,6 +175,11 @@ class MainActivity : SecureBaseFragmentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        if (intent.hasExtra("walletIndex") || intent.hasExtra("assetId")) {
+            val walletIndex = intent.getIntExtra("walletIndex", -1)
+            val assetId = intent.getStringExtra("assetId")
+            viewModel.onNotification(walletIndex, assetId)
+        }
         val data = intent.data ?: return
         when (data.scheme) {
             "wc" -> viewModel.addPairing(data.toString())
@@ -261,6 +270,8 @@ class MainActivity : SecureBaseFragmentActivity() {
 class MainViewModel @Inject constructor(
     private val userConfig: UserConfig,
     private val bridgesRepository: BridgesRepository,
+    private val sessionRepository: SessionRepository,
+    private val walletsRepository: WalletsRepository,
     private val syncService: SyncService,
     private val checkAccounts: CheckAccounts,
 ) : ViewModel() {
@@ -344,6 +355,16 @@ class MainViewModel @Inject constructor(
 
     fun onActivityPaused() {
         pauseTime.store(SystemClock.uptimeMillis())
+    }
+
+    fun onNotification(walletIndex: Int, assetId: String?) = viewModelScope.launch(Dispatchers.IO) {
+        walletIndex.takeIf { it > 0 }?.let { walletIndex ->
+            if (sessionRepository.getSession()?.wallet?.index != walletIndex) {
+                walletsRepository.getAll().firstOrNull()?.firstOrNull { it.index == walletIndex }?.let {
+                    sessionRepository.setWallet(it)
+                }
+            }
+        }
     }
 
 

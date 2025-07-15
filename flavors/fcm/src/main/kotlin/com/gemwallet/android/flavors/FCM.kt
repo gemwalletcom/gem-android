@@ -10,7 +10,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import javax.inject.Inject
+import kotlin.let
 
 @AndroidEntryPoint
 class FCM : FirebaseMessagingService() {
@@ -31,10 +33,22 @@ class FCM : FirebaseMessagingService() {
             return
         }
         scope.launch {
+            val (assetId, walletIndex) = message.data["data"].let { rawData ->
+                try {
+                    JSONObject(rawData).let {
+                        Pair(
+                            it.getString("assetId"),
+                            it.getString("walletIndex"),
+                        )
+                    }
+                } catch (_: Throwable) {
+                    Pair(null, null)
+                }
+            }
             val title = message.notification?.title
             val subtitle = message.notification?.body
             val channelId = message.data["type"]
-            showSystemNotification.showNotification(title, subtitle, channelId)
+            showSystemNotification.showNotification(title, subtitle, channelId, walletIndex, assetId)
         }
     }
 
@@ -45,4 +59,9 @@ class FCM : FirebaseMessagingService() {
         }
 
     }
+
+    private data class MessageData (
+        val walletIndex: Int?,
+        val assetId: String?,
+    )
 }

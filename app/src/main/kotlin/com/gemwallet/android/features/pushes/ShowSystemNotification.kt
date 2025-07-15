@@ -18,12 +18,21 @@ import jakarta.inject.Inject
 
 class ShowSystemNotification @Inject constructor(@ApplicationContext val applicationContext: Context) : ShowSystemNotification {
 
-    override fun showNotification(title: String?, subtitle: String?, channelId: String?) {
+    override fun showNotification(
+        title: String?,
+        subtitle: String?,
+        channelId: String?,
+        walletIndex: String?,
+        assetId: String?
+    ) {
         val intent = Intent(applicationContext, MainActivity::class.java)
+            .putExtra("walletIndex", walletIndex?.toIntOrNull())
+            .putExtra("assetId", assetId)
+            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val pendingIntent = PendingIntent.getActivity(
             applicationContext,
             0, intent,
-            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_MUTABLE,
         )
         val builder = NotificationCompat.Builder(applicationContext, channelId ?: "default")
             .setSmallIcon(R.drawable.ic_gem_notification)

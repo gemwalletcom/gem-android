@@ -1,5 +1,11 @@
 package com.gemwallet.android.cases.pushes
 
 interface ShowSystemNotification {
-    fun showNotification(title: String?, subtitle: String?, channelId: String?)
+    fun showNotification(
+        title: String?,
+        subtitle: String?,
+        channelId: String?,
+        walletIndex: String?,
+        assetId: String?,
+    )
 }
