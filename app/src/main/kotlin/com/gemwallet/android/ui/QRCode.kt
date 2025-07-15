@@ -29,6 +29,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.set
+import androidx.core.graphics.scale
 
 @Composable
 fun rememberQRCodePainter(
@@ -64,7 +67,7 @@ fun rememberQRCodePainter(
         }
     }
     return remember(bitmap) {
-        val currentBitmap = bitmap ?: Bitmap.createBitmap(sizePx, sizePx, Bitmap.Config.ARGB_8888)
+        val currentBitmap = bitmap ?: createBitmap(sizePx, sizePx)
             .apply {
                 eraseColor(Color.TRANSPARENT)
             }
@@ -95,15 +98,11 @@ private fun generateQr(
     }
     val matrixWidth = bitmapMatrix?.width ?: 0
     val matrixHeight = bitmapMatrix?.height ?: 0
-    val newBitmap = Bitmap.createBitmap(
-        matrixWidth,
-        matrixHeight,
-        Bitmap.Config.ARGB_8888,
-    )
+    val newBitmap = createBitmap(matrixWidth, matrixHeight)
     for (x in 0 until matrixWidth) {
         for (y in 0 until matrixHeight) {
             val pixelColor = if (bitmapMatrix?.get(x, y) == true) Color.BLACK else Color.WHITE
-            newBitmap.setPixel(x, y, pixelColor)
+            newBitmap[x, y] = pixelColor
         }
     }
     drawLogoOnQR(context, newBitmap)
@@ -115,10 +114,10 @@ private fun drawLogoOnQR(context: Context, qr: Bitmap) {
     val logoRaw = BitmapFactory.decodeStream(context.assets.open("brandmark.png"))
     val logoSize = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
-        48f,
+        32f,
         context.resources.displayMetrics
     ).toInt()
-    val logo = Bitmap.createScaledBitmap(logoRaw, logoSize, logoSize, false)
+    val logo = logoRaw.scale(logoSize, logoSize, false)
     val xCenter = (qr.width / 2).toFloat()
     val yCenter = (qr.height / 2).toFloat()
     val xLogo = xCenter - logo.width / 2f
