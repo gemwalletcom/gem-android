@@ -7,7 +7,6 @@ import com.gemwallet.android.model.DestinationAddress
 import com.wallet.core.blockchain.tron.models.TronAccount
 import com.wallet.core.blockchain.tron.models.TronAccountUsage
 import com.wallet.core.primitives.Account
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.runBlocking
 import org.junit.Test

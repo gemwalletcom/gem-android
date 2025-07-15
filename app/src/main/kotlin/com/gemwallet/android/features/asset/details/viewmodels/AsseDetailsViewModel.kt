@@ -33,6 +33,7 @@ import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.StakeChain
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
@@ -49,7 +50,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import okhttp3.internal.toImmutableList
 import uniffi.gemstone.Explorer
 import javax.inject.Inject
 

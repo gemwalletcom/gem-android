@@ -157,6 +157,7 @@ fun WalletNavGraph(
             navigation<Transfer>(startDestination = SendSelect) {
                 swap(
                     onConfirm = navController::navigateToConfirmScreen,
+                    onBuy = navController::navigateToBuyScreen,
                     onCancel = onCancel
                 )
 
@@ -181,6 +182,7 @@ fun WalletNavGraph(
                             swapRoute -> NavigateAfterConfirm.Swap(assetId).navigate(navController)
                         }
                     },
+                    onBuy = navController::navigateToBuyScreen,
                     cancelAction = onCancel
                 )
             }

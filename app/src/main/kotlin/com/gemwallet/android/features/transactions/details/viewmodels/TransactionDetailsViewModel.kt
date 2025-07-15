@@ -96,6 +96,7 @@ class TransactionDetailsViewModel @Inject constructor(
             memo = tx.memo,
             state = tx.state,
             networkTitle = asset.id.chain.asset().name,
+            networkSymbol = asset.id.chain.asset().symbol,
             feeCrypto = feeCrypto,
             feeFiat = feeFiat,
             type = tx.type,

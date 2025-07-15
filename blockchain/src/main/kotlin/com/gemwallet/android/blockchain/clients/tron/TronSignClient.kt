@@ -14,7 +14,6 @@ import wallet.core.java.AnySigner
 import wallet.core.jni.AnyAddress
 import wallet.core.jni.Base58
 import wallet.core.jni.CoinType
-import wallet.core.jni.EthereumAbi
 import wallet.core.jni.proto.Tron
 import wallet.core.jni.proto.Tron.TransferContract
 import wallet.core.jni.proto.Tron.TransferTRC20Contract

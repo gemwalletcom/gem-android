@@ -14,7 +14,17 @@ class SolanaInfo<T>(
 
 class SolanaParsedSplTokenInfo(
     val decimals: Int,
-    val isInitialized: Boolean
+    val extensions: List<Extension>? = null,
 )
 
 class SolanaArrayData<T>(val data: List<T>)
+
+data class Extension (
+    val extension: String,
+    val state: ExtensionState
+)
+
+data class ExtensionState (
+    val name: String?,
+    val symbol: String?,
+)

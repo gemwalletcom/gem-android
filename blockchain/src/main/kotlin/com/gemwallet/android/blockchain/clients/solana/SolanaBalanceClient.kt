@@ -49,12 +49,12 @@ class SolanaBalanceClient(
         } catch (err: Throwable) {
             throw err
         }
-        val balances = responseAccountOwner.getOrNull()?.mapIndexed { index, value ->
+        val balances = responseAccountOwner.mapIndexed { index, value ->
             val balance = value.result.value.firstOrNull()?.let { account ->
                 account.account.data.parsed.info.tokenAmount.amount.toBigIntegerOrNull()
             } ?: BigInteger.ZERO
             AssetBalance.create(tokens[index], available = balance.toString())
-        } ?: emptyList()
+        }
         return balances
     }
 

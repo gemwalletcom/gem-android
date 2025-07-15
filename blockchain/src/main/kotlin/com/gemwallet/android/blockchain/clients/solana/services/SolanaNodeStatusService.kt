@@ -14,7 +14,7 @@ interface SolanaNodeStatusService {
     suspend fun health(@Url url: String,@Body request: JSONRpcRequest<List<String>>): Response<JSONRpcResponse<String>>
 
     @POST
-    suspend fun slot(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<Int>>
+    suspend fun slot(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<Long>>
 
     @POST
     suspend fun genesisHash(@Url url: String, @Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<String>>
@@ -24,7 +24,7 @@ suspend fun SolanaNodeStatusService.health(url: String): Response<JSONRpcRespons
     return health(url, JSONRpcRequest.create(SolanaMethod.GetHealth, emptyList()))
 }
 
-suspend fun SolanaNodeStatusService.slot(url: String): Result<JSONRpcResponse<Int>> {
+suspend fun SolanaNodeStatusService.slot(url: String): Result<JSONRpcResponse<Long>> {
     return slot(url, JSONRpcRequest.create(SolanaMethod.GetSlot, emptyList()))
 }
 

@@ -1,6 +1,5 @@
 package com.gemwallet.android.data.repositoreis.buy
 
-import android.util.Log
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.toIdentifier

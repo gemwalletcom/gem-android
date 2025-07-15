@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.wallet.viewmodels.WalletViewModel
+import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
@@ -33,6 +34,8 @@ import com.wallet.core.primitives.WalletType
 fun PhraseScreen(
     onCancel: () -> Unit,
 ) {
+    DisableScreenShooting()
+
     val viewModel: WalletViewModel = hiltViewModel()
     val wallet by viewModel.wallet.collectAsStateWithLifecycle()
     val phrase by viewModel.phrase.collectAsStateWithLifecycle()
@@ -40,7 +43,6 @@ fun PhraseScreen(
     val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
     val walletType = wallet?.type
-
     if (phrase == null) {
         LoadingScene(title = stringResource(id = R.string.common_secret_phrase), onCancel)
         return

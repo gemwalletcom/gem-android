@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">Một ví mà bạn không thể truy cập nhưng bạn có thể theo dõi các giao dịch và biến động của nó.</string>
-  <string name="info.network_fee.description">Mạng %s tính phí giao dịch, thay đổi tùy theo mức sử dụng mạng. Trả cho thợ đào để xử lý giao dịch của bạn.</string>
+  <string name="info.network_fee.description" formatted="false">Every transaction on the %s network requires a fee in %s paid to miners to process your transaction, not Gem Wallet. Network fees varies based on network usage.</string>
   <string name="info.transaction.error.description">Giao dịch không thể hoàn tất do lỗi, chẳng hạn như không đủ tiền, đầu vào không hợp lệ hoặc bị mạng từ chối. Vui lòng xem lại chi tiết và thử lại.</string>
   <string name="info.transaction.pending.description">Giao dịch đã được gửi và đang chờ xác nhận trên mạng. Thời gian xử lý có thể thay đổi. Vui lòng kiểm tra lại để cập nhật.</string>
   <string name="info.transaction.success.description">Giao dịch đã hoàn tất và được xác nhận trên mạng. Bạn có thể xem lại thông tin chi tiết để xác minh trạng thái của giao dịch.</string>
@@ -423,6 +423,15 @@
   <string name="filter.has_balance">Có sự cân bằng</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
   <string name="wallet.import.contract_address_field">Hợp đồng hoặc ID token</string>
-  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.unverified.description">Các mã thông báo chưa được xác minh chưa được xác minh đầy đủ bởi các dịch vụ của bên thứ ba đáng tin cậy. Chúng có thể xuất hiện trong ví của bạn do airdrop, chuyển khoản hoặc nhập thủ công.</string>
+  <string name="info.asset_status.suspicious.description">Mã thông báo đáng ngờ hoặc thư rác được xác định là lừa đảo tiềm ẩn hoặc tài sản có hại. Chúng có thể xuất hiện trong ví của bạn do airdrop, chuyển khoản hoặc nhập thủ công.</string>
+  <string name="errors.insufficient_funds">Không đủ tiền</string>
+  <string name="info.insufficient_network_fee_balance.title">%s bắt buộc</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Giao dịch này yêu cầu %s phải trả phí mạng cho %s thợ đào, không phải Gem Wallet. Đảm bảo bạn có đủ %s.</string>
+  <string name="brand_name">Gem Wallet</string>
+  <string name="info.insufficient_balance.title">Số dư không đủ</string>
+  <string name="info.insufficient_balance.description">Bạn không có đủ %s để hoàn tất giao dịch này. Vui lòng nạp tiền, nhận hoặc đổi trong ví của bạn và thử lại.</string>
+  <string name="info.account_minimum_balance.title">Số dư tối thiểu</string>
+  <string name="asset.buy_asset">Mua %s</string>
+  <string name="wallet.import_address_warning">Bạn có thể xem số dư và giao dịch của địa chỉ này, nhưng **không thể gửi hoặc bán tiền**.</string>
 </resources>

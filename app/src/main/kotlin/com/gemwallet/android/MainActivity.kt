@@ -195,6 +195,7 @@ class MainActivity : SecureBaseFragmentActivity() {
                 )
                 is WalletConnectIntent.SessionRequest -> RequestScene(
                     request = (walletConnect as WalletConnectIntent.SessionRequest).request,
+                    onBuy = {},
                     onCancel = walletConnectViewModel::onCancel,
                 )
             }

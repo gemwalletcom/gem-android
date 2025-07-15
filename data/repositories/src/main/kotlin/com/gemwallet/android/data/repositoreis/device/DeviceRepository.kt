@@ -15,7 +15,6 @@ import com.gemwallet.android.cases.session.GetCurrentCurrencyCase
 import com.gemwallet.android.data.repositoreis.config.UserConfig.Keys
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemApiClient
-import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
@@ -27,7 +26,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import wallet.core.jni.AnyAddress
-import wallet.core.jni.CoinType
 import java.util.Locale
 import kotlin.math.max
 
@@ -91,8 +89,7 @@ class DeviceRepository(
             when {
                 remoteDeviceInfo == null -> gemApiClient.registerDevice(device)
                 remoteDeviceInfo.hasChanges(device) -> {
-                    val subVersion =
-                        max(device.subscriptionsVersion, remoteDeviceInfo.subscriptionsVersion) + 1
+                    val subVersion = max(device.subscriptionsVersion, remoteDeviceInfo.subscriptionsVersion) + 1
                     setSubscriptionVersion(subVersion)
                     gemApiClient.updateDevice(
                         device.id,

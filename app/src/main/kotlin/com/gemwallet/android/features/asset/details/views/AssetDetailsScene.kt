@@ -39,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -72,7 +73,7 @@ import com.gemwallet.android.ui.components.list_item.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.PropertyItem
 import com.gemwallet.android.ui.components.list_item.PropertyTitleText
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
-import com.gemwallet.android.ui.components.open
+import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.components.priceColor
 import com.gemwallet.android.ui.components.screen.FatalStateScene
 import com.gemwallet.android.ui.components.screen.LoadingScene
@@ -231,7 +232,7 @@ private fun Success(
                         text = {
                             Text(stringResource(R.string.asset_view_address_on, uiState.explorerName))
                         },
-                        onClick = { uriHandler.open(it) },
+                        onClick = { uriHandler.open(context, it) },
                     )
 
                 }
@@ -274,7 +275,7 @@ private fun Success(
                     onStake(uiState.asset.id)
                 }
                 additionBalance(R.string.asset_balances_reserved, uiState.accountInfoUIModel.reserved) {
-                    uiState.asset.id.chain.getReserveBalanceUrl()?.let { uriHandler.open(it) }
+                    uiState.asset.id.chain.getReserveBalanceUrl()?.let { uriHandler.open(context, it) }
                 }
                 if (transactions.isEmpty()) {
                     item {
@@ -344,6 +345,7 @@ private fun LazyListScope.banner(
     onConfirm: (ConfirmParams) -> Unit
 ) {
     item {
+        val context = LocalContext.current
         val uriHandler = LocalUriHandler.current
         BannersScene(
             asset = assetInfo.asset,
@@ -351,7 +353,7 @@ private fun LazyListScope.banner(
                 when (it.event) {
                     BannerEvent.Stake -> onStake(assetInfo.asset.id)
                     BannerEvent.AccountBlockedMultiSignature ->
-                        uriHandler.open(Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
+                        uriHandler.open(context, Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
                     BannerEvent.ActivateAsset -> {
                         val params = ConfirmParams.Builder(
                             asset = assetInfo.asset,
@@ -360,7 +362,7 @@ private fun LazyListScope.banner(
                         onConfirm(params)
                     }
                     BannerEvent.AccountActivation -> assetInfo.asset.chain()
-                        .getReserveBalanceUrl()?.let { uri -> uriHandler.open(uri) }
+                        .getReserveBalanceUrl()?.let { uri -> uriHandler.open(context, uri) }
                     else -> {}
                 }
             },
@@ -376,9 +378,10 @@ private fun LazyListScope.status(asset: Asset, rank: Int) {
         return
     }
     item {
+        val context = LocalContext.current
         val uriHandler = LocalUriHandler.current
         PropertyItem(
-            modifier = Modifier.clickable(onClick = { uriHandler.open(Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION)) }),
+            modifier = Modifier.clickable { uriHandler.open(context, Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION)) },
             title = {
                 PropertyTitleText(
                     text = R.string.transaction_status,
@@ -421,7 +424,8 @@ private fun LazyListScope.price(
 ) {
     item {
         PropertyItem(
-            modifier = Modifier.clickable(onClick = { onChart(uiState.asset.id) }),
+            modifier = Modifier.clickable { onChart(uiState.asset.id) }
+                .testTag("assetChart"),
             title = { PropertyTitleText(R.string.asset_price) },
             data = {
                 PropertyDataText(
@@ -450,7 +454,7 @@ private fun LazyListScope.network(
     }
     item {
         PropertyItem(
-            modifier = Modifier.clickable(onClick = { openNetwork(AssetId(uiState.asset.chain())) }),
+            modifier = Modifier.clickable { openNetwork(AssetId(uiState.asset.chain())) },
             title = { PropertyTitleText(R.string.transfer_network) },
             data = {
                 PropertyDataText(
@@ -490,7 +494,7 @@ private fun LazyListScope.additionBalance(
     }
     item {
         PropertyItem(
-            modifier = Modifier.clickable(onClick = onAction),
+            modifier = Modifier.clickable(onClick = onAction).testTag("assetStake"),
             title = { PropertyTitleText(title) },
             data = { PropertyDataText(balance, badge = { DataBadgeChevron() }) },
         )

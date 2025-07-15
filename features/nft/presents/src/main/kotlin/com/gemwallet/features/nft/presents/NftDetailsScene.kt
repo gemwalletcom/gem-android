@@ -18,9 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.Table
-import com.gemwallet.android.ui.components.cells.cellNetwork
 import com.gemwallet.android.ui.components.cells.propertyNetwork
 import com.gemwallet.android.ui.components.designsystem.listSpacerBig
 import com.gemwallet.android.ui.components.image.AsyncImage

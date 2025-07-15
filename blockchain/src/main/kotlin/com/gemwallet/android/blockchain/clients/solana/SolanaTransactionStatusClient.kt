@@ -17,7 +17,7 @@ class SolanaTransactionStatusClient(
     override suspend fun getStatus(request: TransactionStateRequest): TransactionChages {
         val resp = transactionService.transaction(request.hash).getOrNull() ?: throw ServiceUnavailable
         if (resp.error != null) return TransactionChages(TransactionState.Failed)
-        val state = if (resp.result.slot > 0) {
+        val state = if (resp.result.slot > 0L) {
             if (resp.result.meta.err != null) {
                 TransactionState.Failed
             } else {

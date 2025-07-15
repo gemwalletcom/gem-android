@@ -4,7 +4,6 @@ import androidx.room.DatabaseView
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.isStakeSupported
 import com.gemwallet.android.ext.toAssetId
-import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetBalance
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.AssetPriceInfo

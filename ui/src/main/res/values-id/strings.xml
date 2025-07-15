@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">Biaya Jaringan</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">Dompet yang tidak dapat Anda akses, tetapi Anda dapat memantau transaksi dan pergerakannya.</string>
-  <string name="info.network_fee.description">Jaringan %s mengenakan biaya transaksi, yang bervariasi berdasarkan penggunaan jaringan. Dibayar kepada penambang untuk memproses transaksi Anda.</string>
+  <string name="info.network_fee.description" formatted="false">Every transaction on the %s network requires a fee in %s paid to miners to process your transaction, not Gem Wallet. Network fees varies based on network usage.</string>
   <string name="info.transaction.error.description">Transaksi tidak dapat diselesaikan karena kesalahan, seperti dana tidak mencukupi, input tidak valid, atau penolakan oleh jaringan. Harap tinjau detailnya dan coba lagi.</string>
   <string name="info.transaction.pending.description">Transaksi telah dikirimkan dan sedang menunggu konfirmasi di jaringan. Waktu pemrosesan dapat bervariasi. Silakan periksa kembali untuk pembaruan.</string>
   <string name="info.transaction.success.description">Transaksi telah selesai dan dikonfirmasi di jaringan. Anda dapat meninjau detailnya untuk memverifikasi statusnya.</string>
@@ -423,6 +423,15 @@
   <string name="filter.has_balance">Memiliki keseimbangan</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
   <string name="wallet.import.contract_address_field">Kontrak atau Token ID</string>
-  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.unverified.description">Token yang belum diverifikasi belum diverifikasi secara memadai oleh layanan pihak ketiga yang tepercaya. Token tersebut mungkin muncul di dompet Anda karena airdrop, transfer, atau impor manual.</string>
+  <string name="info.asset_status.suspicious.description">Token yang mencurigakan atau spam diidentifikasi sebagai potensi penipuan atau aset berbahaya. Token tersebut mungkin muncul di dompet Anda karena airdrop, transfer, atau impor manual.</string>
+  <string name="errors.insufficient_funds">Dana tidak mencukupi</string>
+  <string name="info.insufficient_network_fee_balance.title">%s diperlukan</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Transaksi ini memerlukan %s untuk menutupi biaya jaringan yang dibayarkan kepada %s penambang, bukan Gem Wallet. Pastikan Anda memiliki cukup %s.</string>
+  <string name="brand_name">Gem Wallet</string>
+  <string name="info.insufficient_balance.title">Saldo Tidak Cukup</string>
+  <string name="info.insufficient_balance.description">Anda tidak memiliki cukup %s untuk menyelesaikan transaksi ini. Harap isi ulang, terima, atau tukarkan di dompet Anda dan coba lagi.</string>
+  <string name="info.account_minimum_balance.title">Saldo minimum</string>
+  <string name="asset.buy_asset">Beli %s</string>
+  <string name="wallet.import_address_warning">Anda dapat melihat saldo dan transaksi untuk alamat ini, tetapi **tidak dapat mengirim atau menjual dana**.</string>
 </resources>

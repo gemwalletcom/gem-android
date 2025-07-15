@@ -21,8 +21,6 @@ import com.gemwallet.android.features.confirm.views.ConfirmScreen
 import com.gemwallet.android.model.ConfirmParams.TransferParams.Native
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.screen.FatalStateScene
-import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
@@ -30,13 +28,17 @@ import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.PropertyItem
 import com.gemwallet.android.ui.components.list_item.PropertyTitleText
+import com.gemwallet.android.ui.components.screen.FatalStateScene
+import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.reown.walletkit.client.Wallet
 import com.wallet.core.primitives.WalletConnectionMethods
 
 @Composable
 fun RequestScene(
     request: Wallet.Model.SessionRequest,
+    onBuy: AssetIdAction,
     onCancel: () -> Unit,
 ) {
     val viewModel: RequestViewModel = hiltViewModel()
@@ -71,17 +73,20 @@ fun RequestScene(
                     memo = (sceneState as RequestSceneState.SendTransaction).data,
                 ),
                 finishAction = { assetId, hash, route -> viewModel.onSent(hash) },
+                onBuy = onBuy,
                 cancelAction = viewModel::onReject
             )
         }
         is RequestSceneState.SendGeneric -> ConfirmScreen(
             (sceneState as RequestSceneState.SendGeneric).params,
             finishAction = { assetId, hash, route -> viewModel.onSent(hash) },
+            onBuy = onBuy,
             cancelAction = viewModel::onReject
         )
         is RequestSceneState.SignGeneric -> ConfirmScreen(
             (sceneState as RequestSceneState.SignGeneric).params,
             finishAction = { assetId, hash, route -> viewModel.onSent(hash) },
+            onBuy = onBuy,
             cancelAction = viewModel::onReject
         )
         RequestSceneState.Cancel -> onCancel()

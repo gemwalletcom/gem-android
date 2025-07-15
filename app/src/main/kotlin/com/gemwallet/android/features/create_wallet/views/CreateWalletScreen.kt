@@ -31,12 +31,13 @@ import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.create_wallet.viewmodels.CreateWalletViewModel
+import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.screen.PhraseLayout
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.screen.PhraseLayout
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.WalletTheme
 
@@ -45,6 +46,8 @@ fun CreateWalletScreen(
     onCancel: () -> Unit,
     onCreated: () -> Unit,
 ) {
+    DisableScreenShooting()
+
     val viewModel: CreateWalletViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 

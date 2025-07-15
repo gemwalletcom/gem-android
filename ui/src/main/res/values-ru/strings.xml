@@ -138,7 +138,7 @@
   <string name="swap.approve_token">Одобрить %s на обмен</string>
   <string name="swap.approve_token_permission">Одобрите токен %s для доступа к обмену.</string>
   <string name="common.phrase">Фраза</string>
-  <string name="stake.active">Active</string>
+  <string name="stake.active">Активный</string>
   <string name="stake.pending">В ожидании</string>
   <string name="stake.rewards">Награды</string>
   <string name="assets.no_assets_found">Активы не найдены</string>
@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">Сетевая плата</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">Кошелек, к которому у вас нет доступа, но вы можете следить за его транзакциями и движениями.</string>
-  <string name="info.network_fee.description">%s сеть взимает комиссию за транзакцию, которая варьируется в зависимости от использования сети. Выплачивается майнерам за обработку вашей транзакции.</string>
+  <string name="info.network_fee.description" formatted="false">Каждая транзакция в сети %s требует плату в %s выплачиваемую майнерам за обработку вашей транзакции, а не Кошелек Gem. Сетевые сборы варьируются в зависимости от использования сети.</string>
   <string name="info.transaction.error.description">Транзакция не может быть завершена из-за ошибки, например, недостаточно средств, неверных данных или отклонения сетью. Пожалуйста, проверьте детали и повторите попытку.</string>
   <string name="info.transaction.pending.description">Транзакция была отправлена и ожидает подтверждения в сети. Время обработки может меняться. Пожалуйста, проверяйте обновления.</string>
   <string name="info.transaction.success.description">Транзакция завершена и подтверждена в сети. Вы можете просмотреть детали, чтобы проверить ее статус.</string>
@@ -375,8 +375,8 @@
   <string name="asset.state.empty.description">Получить, обменять или купить %s</string>
   <string name="activity.state.empty.title">Ваша активность будет отображаться здесь</string>
   <string name="activity.state.empty.description">Совершите свою первую транзакцию</string>
-  <string name="stake.state.empty.title">Ваши ставки будут отображаться здесь</string>
-  <string name="stake.state.empty.description">Сделайте свою первую ставку %s</string>
+  <string name="stake.state.empty.title">Ваш стейкинг будет отображаться здесь</string>
+  <string name="stake.state.empty.description">Начните стейкать %s</string>
   <string name="wallet_connect.state.empty.title">Ваши связи появятся здесь️</string>
   <string name="wallet_connect.state.empty.description">Отсканируйте или вставьте код для подключения к DApp</string>
   <string name="assets.state.empty.search_description">Вы можете попробовать добавить его вручную.</string>
@@ -425,4 +425,13 @@
   <string name="wallet.import.contract_address_field">Контракт или токен ID</string>
   <string name="info.asset_status.unverified.description">Неподтверждённые токены не прошли достаточную проверку со стороны надёжных сторонних сервисов. Они могут появиться в вашем кошельке в результате airdrop’ов, переводов или ручного импорта.</string>
   <string name="info.asset_status.suspicious.description">Подозрительные или спам‑токены помечаются как потенциальные мошеннические или вредоносные активы. Они могут появиться в вашем кошельке в результате airdrop‑раздач, переводов или ручного добавления.</string>
+  <string name="errors.insufficient_funds">Недостаточно средств</string>
+  <string name="info.insufficient_network_fee_balance.title">Требуется %s</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Эта транзакция требует %s для покрытия сетевой комиссии, выплачиваемой майнерам %s, а не Кошелек Gem. Убедитесь, что у вас достаточно %s.</string>
+  <string name="brand_name">Кошелек Gem</string>
+  <string name="info.insufficient_balance.title">Недостаточный баланс</string>
+  <string name="info.insufficient_balance.description">У вас недостаточно %s для завершения этой транзакции. Пожалуйста, пополните, получите или обменяйте ваш кошелек и попробуйте еще раз.</string>
+  <string name="info.account_minimum_balance.title">Минимальный баланс</string>
+  <string name="asset.buy_asset">Купить %s</string>
+  <string name="wallet.import_address_warning">Вы можете просматривать балансы и транзакции для этого адреса, но **не можете отправлять или продавать средства**.</string>
 </resources>

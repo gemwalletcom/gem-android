@@ -34,12 +34,10 @@ fun ProviderList(
         LazyColumn {
             items(providers) {
                 PropertyItem(
-                    modifier = Modifier.clickable(
-                        onClick = {
-                            onProviderSelect(it.provider)
-                            isShow.value = false
-                        }
-                    ),
+                    modifier = Modifier.clickable {
+                        onProviderSelect(it.provider)
+                        isShow.value = false
+                    },
                     title = {
                         PropertyTitleText(
                             text = it.provider.name,

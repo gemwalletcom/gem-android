@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">A wallet that you do not have access to, but you can watch its transactions and movements.</string>
-  <string name="info.network_fee.description">%s network charges transaction fee, which varies based on network usage. Paid to miners to process your transaction.</string>
+  <string name="info.network_fee.description" formatted="false">Every transaction on the %s network requires a fee in %s paid to miners to process your transaction, not Gem Wallet. Network fees varies based on network usage.</string>
   <string name="info.transaction.error.description">The transaction could not be completed due to an error, such as insufficient funds, invalid input, or rejection by the network. Please review the details and try again.</string>
   <string name="info.transaction.pending.description">The transaction has been submitted and is awaiting confirmation on the network. Processing times may vary. Please check back for updates.</string>
   <string name="info.transaction.success.description">The transaction has been completed and confirmed on the network. You can review the details to verify its status.</string>
@@ -423,6 +423,15 @@
   <string name="filter.has_balance">Ina usawa</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
   <string name="wallet.import.contract_address_field">Mkataba au ID ya Token</string>
-  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.unverified.description">Tokeni ambazo hazijathibitishwa hazijathibitishwa vya kutosha na huduma zinazoaminika za wahusika wengine. Huenda zikaonekana kwenye mkoba wako kwa sababu ya matone ya hewa, uhamisho, au uagizaji wa mikono.</string>
+  <string name="info.asset_status.suspicious.description">Tokeni zinazotiliwa shaka au taka zinatambuliwa kuwa ulaghai au mali hatari. Huenda zikaonekana kwenye mkoba wako kwa sababu ya matone ya hewa, uhamisho, au uagizaji wa mikono.</string>
+  <string name="errors.insufficient_funds">Upungufu wa fedha</string>
+  <string name="info.insufficient_network_fee_balance.title">%s inahitajika</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Muamala huu unahitaji %s kulipia ada ya mtandao inayolipwa kwa wachimbaji %s, si Gem Wallet. Hakikisha una %s ya kutosha .</string>
+  <string name="brand_name">Gem Wallet</string>
+  <string name="info.insufficient_balance.title">Mizani isiyotosha</string>
+  <string name="info.insufficient_balance.description">Huna %s ya kutosha kukamilisha muamala huu. Tafadhali jaza, pokea, au ubadilishe pochi yako na ujaribu tena.</string>
+  <string name="info.account_minimum_balance.title">Kiwango cha chini cha usawa</string>
+  <string name="asset.buy_asset">Nunua %s</string>
+  <string name="wallet.import_address_warning">Unaweza kuangalia salio na miamala ya anwani hii, lakini **haiwezi kutuma au kuuza fedha**.</string>
 </resources>

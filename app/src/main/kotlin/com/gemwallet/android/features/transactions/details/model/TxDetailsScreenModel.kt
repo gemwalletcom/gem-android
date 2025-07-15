@@ -24,6 +24,7 @@ class TxDetailsScreenModel(
     val memo: String?,
     val state: TransactionState,
     val networkTitle: String,
+    val networkSymbol: String,
     val feeCrypto: String,
     val feeFiat: String,
     val type: TransactionType,

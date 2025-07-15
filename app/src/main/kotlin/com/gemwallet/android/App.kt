@@ -34,7 +34,7 @@ class App : Application(), SingletonImageLoader.Factory,  Application.ActivityLi
     }
 
     private fun walletConnectConfig() {
-        val projectId = "0d9db544461f12ed6dd8450a6c717753"
+        val projectId = "3bc07cd7179d11ea65335fb9377702b6"
         val connectionType = ConnectionType.AUTOMATIC
         val metaData = Core.Model.AppMetaData(
             name = "Gem Wallet",

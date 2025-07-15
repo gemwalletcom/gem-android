@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">กระเป๋าเงินที่คุณไม่สามารถเข้าถึงได้แต่คุณสามารถดูธุรกรรมและการเคลื่อนไหวได้</string>
-  <string name="info.network_fee.description">%s เครือข่ายจะเรียกเก็บค่าธรรมเนียมการทำธุรกรรม ซึ่งแตกต่างกันไปตามการใช้งานเครือข่าย จ่ายให้กับนักขุดเพื่อดำเนินการธุรกรรมของคุณ</string>
+  <string name="info.network_fee.description" formatted="false">Every transaction on the %s network requires a fee in %s paid to miners to process your transaction, not Gem Wallet. Network fees varies based on network usage.</string>
   <string name="info.transaction.error.description">ไม่สามารถทำธุรกรรมให้เสร็จสมบูรณ์ได้เนื่องจากเกิดข้อผิดพลาด เช่น เงินไม่เพียงพอ ข้อมูลที่ป้อนไม่ถูกต้อง หรือเครือข่ายปฏิเสธ โปรดตรวจสอบรายละเอียดและลองอีกครั้ง</string>
   <string name="info.transaction.pending.description">ธุรกรรมได้รับการส่งแล้วและกำลังรอการยืนยันบนเครือข่าย เวลาในการประมวลผลอาจแตกต่างกัน โปรดตรวจสอบอีกครั้งเพื่อดูการอัปเดต</string>
   <string name="info.transaction.success.description">ธุรกรรมเสร็จสมบูรณ์และได้รับการยืนยันบนเครือข่ายแล้ว คุณสามารถตรวจสอบรายละเอียดเพื่อยืนยันสถานะได้</string>
@@ -423,6 +423,15 @@
   <string name="filter.has_balance">มีความสมดุล</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
   <string name="wallet.import.contract_address_field">สัญญาหรือรหัสโทเคน</string>
-  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.unverified.description">โทเค็นที่ไม่ได้รับการตรวจสอบนั้นไม่ได้รับการตรวจสอบอย่างเพียงพอโดยบริการบุคคลที่สามที่เชื่อถือได้ โทเค็นเหล่านี้อาจปรากฏในกระเป๋าเงินของคุณเนื่องจากการส่งทางอากาศ การโอน หรือการนำเข้าด้วยตนเอง</string>
+  <string name="info.asset_status.suspicious.description">โทเค็นที่น่าสงสัยหรือเป็นสแปมจะถูกระบุว่าเป็นการหลอกลวงหรือทรัพย์สินที่เป็นอันตราย โทเค็นเหล่านี้อาจปรากฏในกระเป๋าเงินของคุณเนื่องจากการส่งทางอากาศ การโอน หรือการนำเข้าด้วยตนเอง</string>
+  <string name="errors.insufficient_funds">เงินไม่เพียงพอ</string>
+  <string name="info.insufficient_network_fee_balance.title">%s จำเป็น</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">ธุรกรรมนี้จำเป็นต้อง %s ครอบคลุมค่าธรรมเนียมเครือข่ายที่จ่ายให้กับนักขุด %s คน ไม่ใช่ Gem Wallet โปรดตรวจสอบให้แน่ใจว่าคุณมี %s เพียงพอ</string>
+  <string name="brand_name">Gem Wallet</string>
+  <string name="info.insufficient_balance.title">ยอดเงินคงเหลือไม่เพียงพอ</string>
+  <string name="info.insufficient_balance.description">คุณมี %s ไม่เพียงพอสำหรับการทำธุรกรรมนี้ โปรดเติมเงิน รับ หรือแลกเปลี่ยนในกระเป๋าสตางค์ของคุณแล้วลองอีกครั้ง</string>
+  <string name="info.account_minimum_balance.title">ยอดคงเหลือขั้นต่ำ</string>
+  <string name="asset.buy_asset">ซื้อ %s</string>
+  <string name="wallet.import_address_warning">คุณสามารถดูยอดคงเหลือและธุรกรรมสำหรับที่อยู่นี้ แต่ **ไม่สามารถส่งหรือขายเงินได้**</string>
 </resources>

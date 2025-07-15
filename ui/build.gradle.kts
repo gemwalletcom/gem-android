@@ -1,4 +1,3 @@
-import org.gradle.kotlin.dsl.withType
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
 
@@ -65,6 +64,7 @@ dependencies {
     api(libs.compose.material3.window.size)
     api(libs.kotlinx.collections.immutable)
     api(libs.compose.activity)
+    api(libs.browser)
 
     // QRCode scanner: only for none private data: recipient, memo, amount, etc
     implementation(libs.camera.camera2)
@@ -78,7 +78,6 @@ dependencies {
     api(libs.coil.compose)
     api(libs.coil.network)
     api(libs.coil.svg)
-
 
     // Permissions request
     api(libs.compose.permissions)

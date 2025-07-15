@@ -18,16 +18,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
+import com.gemwallet.android.ui.open
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
 import kotlinx.coroutines.launch
 import uniffi.gemstone.Config
@@ -36,17 +41,31 @@ import uniffi.gemstone.DocsUrl
 sealed class InfoSheetEntity(
     val icon: Any,
     val badgeIcon: Any? = null,
-    @StringRes val title: Int,
-    @StringRes val description: Int,
-    val descriptionArgs: Any? = null,
-    val infoUrl: String?,
+    @param:StringRes val title: Int,
+    @param:StringRes val description: Int,
+    val titleArgs: List<Any>? = null,
+    val descriptionArgs: List<Any>? = null,
+    val actionLabel: String? = null,
+    val action: (() -> Unit)? = null,
+    val infoUrl: String? = null,
 ) {
-    class NetworkFeeInfo(networkTitle: String?) : InfoSheetEntity(
+    class NetworkFeeInfo(networkTitle: String, networkSymbol: String) : InfoSheetEntity(
         icon = R.drawable.ic_network_fee,
         title = R.string.transfer_network_fee,
         description = R.string.info_network_fee_description,
-        descriptionArgs = networkTitle,
         infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
+        descriptionArgs = listOf(networkTitle, networkSymbol),
+    )
+
+    class NetworkBalanceRequiredInfo(chain: Chain, value: String, actionLabel: String, action: () -> Unit) : InfoSheetEntity(
+        icon = chain.asset().getIconUrl(),
+        title = R.string.info_insufficient_network_fee_balance_title,
+        description = R.string.info_insufficient_network_fee_balance_description,
+//        infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
+        action = action,
+        actionLabel = actionLabel,
+        titleArgs = listOf(chain.asset().symbol),
+        descriptionArgs = listOf(value, chain.asset().name, chain.asset().symbol),
     )
 
     class StakeLockTimeInfo(icon: Any) : InfoSheetEntity(
@@ -108,14 +127,16 @@ sealed class InfoSheetEntity(
     )
 }
 
+/// https://gist.github.com/binrebin/f3dad29956eb8dcb760a38ce86a9553b
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InfoBottomSheet(
     item: InfoSheetEntity?,
-    onClose: (() -> Unit),
+    onClose: (() -> Unit)
 ) {
     if (item == null) return
     val uriHandler = LocalUriHandler.current
+    val context = LocalContext.current
     val sheetState = rememberModalBottomSheetState()
     val scope = rememberCoroutineScope()
     ModalBottomSheet(
@@ -154,7 +175,11 @@ fun InfoBottomSheet(
             }
             Spacer16()
             Text(
-                text = stringResource(item.title),
+                text = parseMarkdownToAnnotatedString(
+                    markdown = item.titleArgs?.takeIf { it.isNotEmpty() }
+                        ?.let { stringResource(item.title, *it.toTypedArray()) }
+                        ?: stringResource(item.title)
+                ),
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface,
                 style = MaterialTheme.typography.headlineMedium
@@ -162,11 +187,11 @@ fun InfoBottomSheet(
 
             Text(
                 modifier = Modifier.padding(vertical = 8.dp, horizontal = 32.dp),
-                text = if (item.descriptionArgs != null) {
-                    stringResource(item.description, item.descriptionArgs)
-                } else {
-                    stringResource(item.description)
-                },
+                text = parseMarkdownToAnnotatedString(
+                    markdown = item.descriptionArgs?.takeIf { it.isNotEmpty() }
+                        ?.let { stringResource(item.description, *it.toTypedArray()) }
+                        ?: stringResource(item.description)
+                ),
                 color = MaterialTheme.colorScheme.secondary,
                 style = MaterialTheme.typography.bodyLarge,
                 textAlign = TextAlign.Center
@@ -178,9 +203,10 @@ fun InfoBottomSheet(
                     .padding(vertical = 16.dp, horizontal = 32.dp),
             ) {
                 MainActionButton(
-                    title = stringResource(R.string.common_learn_more),
+                    title = item.actionLabel ?: stringResource(R.string.common_learn_more),
                     onClick = {
-                        item.infoUrl?.let { uriHandler.openUri(it) }
+                        scope.launch { sheetState.hide() }.invokeOnCompletion { onClose.invoke() }
+                        item.action?.let { it() } ?: item.infoUrl?.let { uriHandler.open(context, it) }
                     },
                 )
             }

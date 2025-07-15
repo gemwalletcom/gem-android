@@ -48,8 +48,11 @@ class SolanaSignerPreloader(
             accountsService.createAccountByOwnerRequest(owner, tokenId),
             accountsService.createAccountByOwnerRequest(params.destination.address, tokenId),
         )
-        val accountsResponse = accountsService.batchAccount(requests)
-        val accounts = accountsResponse.getOrNull() ?: throw Exception("Can't load account info")
+        val accounts = try {
+            accountsService.batchAccount(requests)
+        } catch (_: Throwable) {
+            throw Exception("Can't load account info")
+        }
         val senderToken =  accounts.getOrNull(0)?.result?.value?.firstOrNull() ?: throw Exception("Sender token address is empty")
         val recipientTokenAccounts = accounts.getOrNull(1)?.result?.value?.firstOrNull()?.pubkey
         val senderTokenAddress = senderToken.pubkey

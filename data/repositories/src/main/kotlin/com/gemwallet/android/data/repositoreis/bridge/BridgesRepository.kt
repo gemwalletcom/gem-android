@@ -111,13 +111,17 @@ class BridgesRepository(
     }
 
     fun addPairing(uri: String, onSuccess: () -> Unit = {}, onError: (String) -> Unit = {}) {
-        WalletKit.pair(
-            params = Wallet.Params.Pair(uri),
-            onSuccess = {  onSuccess() },
-            onError = {
-                onError(it.throwable.message ?: "Pair to ${uri.toUri().host} fail")
-            }
-        )
+        try {
+            WalletKit.pair(
+                params = Wallet.Params.Pair(uri),
+                onSuccess = { onSuccess() },
+                onError = {
+                    onError(it.throwable.message ?: "Pair to ${uri.toUri().host} fail")
+                }
+            )
+        } catch (err: Throwable) {
+            onError("Wallet Connect unavailable: ${err.message}")
+        }
     }
 
     fun approveConnection(

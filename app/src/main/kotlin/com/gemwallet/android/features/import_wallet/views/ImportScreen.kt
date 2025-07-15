@@ -51,12 +51,16 @@ import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportViewModel
 import com.gemwallet.android.features.onboarding.AcceptTermsScreen
 import com.gemwallet.android.interactors.ImportError
+import com.gemwallet.android.ui.BuildConfig
+import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.space4
+import com.gemwallet.android.ui.components.parseMarkdownToAnnotatedString
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.WalletTheme
@@ -71,6 +75,8 @@ fun ImportScreen(
     onImported: () -> Unit,
     onCancel: () -> Unit
 ) {
+    DisableScreenShooting()
+
     val viewModel: ImportViewModel = hiltViewModel()
     val context = LocalContext.current
 
@@ -83,6 +89,7 @@ fun ImportScreen(
 
     var isAcceptedTerms by remember {
         mutableStateOf(
+            BuildConfig.DEBUG ||
             context.getSharedPreferences("terms", Context.MODE_PRIVATE).getBoolean("is_accepted", false)
         )
     }
@@ -229,11 +236,22 @@ private fun LazyListScope.dataInput(
                 if (word.isNullOrEmpty()) {
                     return@ImportInput
                 }
-                val result = WCFindPhraseWord().invoke(word.toString())
+                val result = WCFindPhraseWord().invoke(word)
                 suggestions.addAll(result)
             }
         ) {
             nameRecordState.value = it
+        }
+        if (importType.walletType == WalletType.view) {
+            Spacer4()
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = parseMarkdownToAnnotatedString(
+                    stringResource(R.string.wallet_import_address_warning)
+                ),
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodySmall,
+            )
         }
         if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
             Spacer8()

@@ -3,7 +3,6 @@ package com.gemwallet.android.ext
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.EVMChain
 
 fun AssetId.toIdentifier() = "${chain.string}${if (tokenId.isNullOrEmpty()) "" else "_${tokenId}"}"
 

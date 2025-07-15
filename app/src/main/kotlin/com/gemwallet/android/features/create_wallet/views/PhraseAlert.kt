@@ -42,7 +42,7 @@ import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.padding4
-import com.gemwallet.android.ui.components.open
+import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
@@ -78,6 +78,7 @@ fun PhraseAlertDialog(
             IconButton(
                 {
                     uriHandler.open(
+                        context,
                         Config().getPublicUrl(PublicUrl.TERMS_OF_SERVICE).toUri()
                             .buildUpon()
                             .appendQueryParameter("utm_source", "gemwallet_android")

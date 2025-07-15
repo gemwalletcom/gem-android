@@ -2,12 +2,15 @@ package com.gemwallet.android.features.confirm.views
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -23,27 +26,32 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.confirm.models.ConfirmError
 import com.gemwallet.android.features.confirm.models.ConfirmState
 import com.gemwallet.android.features.confirm.viewmodels.ConfirmViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
+import com.gemwallet.android.ui.components.InfoBottomSheet
+import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.NftHead
 import com.gemwallet.android.ui.components.SwapListHead
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.Spacer2
+import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.titles.getTitle
+import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
 import com.wallet.core.primitives.TransactionType
@@ -54,11 +62,13 @@ fun ConfirmScreen(
     params: ConfirmParams? = null,
     finishAction: FinishConfirmAction,
     cancelAction: CancelAction,
+    onBuy: AssetIdAction,
     viewModel: ConfirmViewModel = hiltViewModel(),
 ) {
     val amountModel by viewModel.amountUIModel.collectAsStateWithLifecycle()
     val txInfoUIModel by viewModel.txInfoUIModel.collectAsStateWithLifecycle()
     val feeModel by viewModel.feeUIModel.collectAsStateWithLifecycle()
+    val feeValue by viewModel.feeValue.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val feePriority by viewModel.feePriority.collectAsStateWithLifecycle()
     val allFee by viewModel.allFee.collectAsStateWithLifecycle()
@@ -66,6 +76,9 @@ fun ConfirmScreen(
     var showSelectTxSpeed by remember { mutableStateOf(false) }
     var isShowedBroadcastError by remember((state as? ConfirmState.BroadcastError)?.message) {
         mutableStateOf(state is ConfirmState.BroadcastError)
+    }
+    var isShowBottomSheetInfo by remember(state as? ConfirmState.Error) {
+        mutableStateOf((state as? ConfirmState.Error)?.message is ConfirmError.InsufficientFee )
     }
 
     DisposableEffect(params.hashCode()) {
@@ -115,7 +128,7 @@ fun ConfirmScreen(
             }
         )
         Spacer16()
-        ConfirmErrorInfo(state)
+        ConfirmErrorInfo(state, feeValue = feeValue, isShowBottomSheetInfo, onBuy)
 
         if (showSelectTxSpeed) {
             SelectFeePriority(
@@ -146,10 +159,28 @@ fun ConfirmScreen(
 }
 
 @Composable
-private fun ConfirmErrorInfo(state: ConfirmState) {
+private fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBottomSheetInfo: Boolean, onBuy: AssetIdAction) {
     if (state !is ConfirmState.Error || state.message == ConfirmError.None) {
         return
     }
+    val infoSheetEntity = when (state.message) {
+        is ConfirmError.InsufficientFee -> InfoSheetEntity.NetworkBalanceRequiredInfo(
+            chain = state.message.chain,
+            value = feeValue,
+            actionLabel = stringResource(R.string.asset_buy_asset, state.message.chain.asset().symbol),
+            action = { onBuy(state.message.chain.asset().id) },
+        )
+        is ConfirmError.BroadcastError,
+        is ConfirmError.Init,
+        is ConfirmError.InsufficientBalance,
+        
+        ConfirmError.None,
+        is ConfirmError.PreloadError,
+        ConfirmError.RecipientEmpty,
+        is ConfirmError.SignFail,
+        ConfirmError.TransactionIncorrect -> null
+    }
+    var isShowInfoSheet by remember(isShowBottomSheetInfo) { mutableStateOf(isShowBottomSheetInfo) }
     Column(
         modifier = Modifier
             .padding(padding16)
@@ -158,7 +189,11 @@ private fun ConfirmErrorInfo(state: ConfirmState) {
                 shape = MaterialTheme.shapes.medium
             )
             .fillMaxWidth()
-            .padding(padding16),
+            .padding(padding16)
+            .clickable(
+                enabled = infoSheetEntity != null,
+                onClick = { isShowInfoSheet = true }
+            ),
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
@@ -172,14 +207,31 @@ private fun ConfirmErrorInfo(state: ConfirmState) {
             Spacer8()
             Text(
                 text = stringResource(R.string.errors_error_occured),
-                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.W400),
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.W500),
             )
         }
-        Spacer2()
-        Text(
-            text = state.message.toLabel(),
-            style = MaterialTheme.typography.bodyMedium,
-        )
+        Spacer4()
+        Row {
+            infoSheetEntity?.let {
+                Icon(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(percent = 50))
+                        .size(trailingIconMedium)
+                        .clickable(onClick = { isShowInfoSheet = true }),
+                    imageVector = Icons.Outlined.Info,
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.secondary.copy(alpha = 0.5f),
+                )
+                Spacer8()
+            }
+            Text(
+                text = state.message.toLabel(),
+                style = MaterialTheme.typography.bodyMedium,
+            )
+        }
+    }
+    if (isShowInfoSheet) {
+        InfoBottomSheet(item = infoSheetEntity) { isShowInfoSheet = false }
     }
 }
 
@@ -202,7 +254,7 @@ fun ConfirmError.toLabel() = when (this) {
     is ConfirmError.TransactionIncorrect,
     is ConfirmError.PreloadError -> stringResource(R.string.confirm_fee_error)
     is ConfirmError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_balance, chainTitle)
-    is ConfirmError.InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, chainTitle)
+    is ConfirmError.InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, chain.asset().name)
     is ConfirmError.BroadcastError ->  "${stringResource(R.string.errors_transfer_error)}: ${message ?: stringResource(R.string.errors_unknown)}"
     is ConfirmError.SignFail -> stringResource(R.string.errors_transfer_error)
     is ConfirmError.RecipientEmpty -> "${stringResource(R.string.errors_transfer_error)}: recipient can't empty"

@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -41,7 +42,7 @@ import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.PropertyItem
 import com.gemwallet.android.ui.components.list_item.PropertyTitleText
-import com.gemwallet.android.ui.components.open
+import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.actions.CancelAction
@@ -64,6 +65,7 @@ fun BuyScene(
     onTypeClick: (FiatQuoteType) -> Unit,
 ) {
     asset ?: return
+    val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
     val isShowProviders = remember { mutableStateOf(false) }
 
@@ -111,7 +113,7 @@ fun BuyScene(
             MainActionButton(
                 title = stringResource(id = R.string.common_continue),
                 enabled = state == null,
-                onClick = { uriHandler.open(selectedProvider?.redirectUrl ?: "") }
+                onClick = { uriHandler.open(context, selectedProvider?.redirectUrl ?: "") }
             )
         }
     ) {
@@ -182,12 +184,17 @@ fun BuyScene(
 
             null -> if (selectedProvider != null) {
                 PropertyItem(
-                    modifier = Modifier.clickable(onClick = { isShowProviders.value = true }),
+                    modifier = Modifier.clickable(enabled = providers.size > 1) { isShowProviders.value = true },
                     title = { PropertyTitleText(R.string.common_provider) },
                     data = {
                         PropertyDataText(
                             selectedProvider.provider.name,
-                            badge = { DataBadgeChevron(selectedProvider.provider.getFiatProviderIcon()) }
+                            badge = {
+                                DataBadgeChevron(
+                                    icon = selectedProvider.provider.getFiatProviderIcon(),
+                                    isShowChevron = providers.size > 1
+                                )
+                            }
                         )
                     }
                 )

@@ -201,7 +201,7 @@ private fun ShowSecretData(
         return
     }
     PropertyItem(
-        modifier = Modifier.clickable(onClick = { onAuthRequest(onPhraseShow) }),
+        modifier = Modifier.clickable { onAuthRequest(onPhraseShow) },
         title = {
             PropertyTitleText(
                 text = stringResource(

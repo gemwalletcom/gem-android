@@ -4,8 +4,8 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.gemwallet.android.data.service.store.database.entities.DbPrice
 import com.gemwallet.android.data.service.store.database.entities.DbFiatRate
+import com.gemwallet.android.data.service.store.database.entities.DbPrice
 import com.wallet.core.primitives.Currency
 import kotlinx.coroutines.flow.Flow
 

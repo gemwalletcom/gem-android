@@ -15,11 +15,7 @@ class GetDeviceId(
         initDeviceId()
     }
 
-    override fun getDeviceId(): String = if (BuildConfig.DEBUG) {
-        "android_debug_device_id"
-    } else {
-        configStore.getString(Keys.DeviceId.string)
-    }
+    override fun getDeviceId(): String = configStore.getString(Keys.DeviceId.string)
 
     private fun initDeviceId() {
         if (configStore.getString(ConfigKey.DeviceId.string).isNotEmpty()) {

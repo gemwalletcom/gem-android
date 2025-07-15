@@ -2,6 +2,7 @@
 
 [![Android Tests](https://github.com/gemwalletcom/gem-android/actions/workflows/ci.yml/badge.svg)](https://github.com/gemwalletcom/gem-android/actions/workflows/ci.yml)
 [![License](https://badgen.net/github/license/gemwalletcom/gem-android)](https://github.com/gemwalletcom/gem-android/blob/main/LICENSE)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/gemwalletcom/gem-android)
 [![Gem Wallet Discord](https://img.shields.io/discord/974531300394434630?style=plastic)](https://discord.gg/aWkq5sj7SY)
 [![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/GemWalletApp)](https://x.com/GemWalletApp)
 [![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=flat&logo=telegram&logoColor=white)](https://t.me/gemwallet_developers)

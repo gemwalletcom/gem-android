@@ -10,6 +10,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.swap.views.SwapScreen
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.wallet.core.primitives.AssetId
 
 internal const val pairArg = "pair"
@@ -24,6 +25,7 @@ fun NavController.navigateToSwap(from: AssetId? = null, to: AssetId? = null) {
 
 fun NavGraphBuilder.swap(
     onConfirm: (ConfirmParams) -> Unit,
+    onBuy: AssetIdAction,
     onCancel: () -> Unit,
 ) {
     composable(
@@ -37,6 +39,7 @@ fun NavGraphBuilder.swap(
     ) {
         SwapScreen(
             onConfirm = onConfirm,
+            onBuy = onBuy,
             onCancel = onCancel,
         )
     }

@@ -14,6 +14,7 @@ import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.TransactionType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import uniffi.gemstone.GemPriorityFeeRecord
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
 import wallet.core.jni.EthereumAbi
@@ -33,16 +34,17 @@ class OptimismGasOracle(
         chainId: Int,
         nonce: BigInteger,
         baseFee: BigInteger,
-        priorityFee: BigInteger,
+        priorityFee: GemPriorityFeeRecord,
         gasLimit: BigInteger,
         txSpeed: FeePriority,
     ): GasFee = withContext(Dispatchers.IO) {
+        val priorityFeeValue = priorityFee.value.toBigInteger()
         val assetId = params.assetId
         val feeAssetId = AssetId(assetId.chain)
-        val gasPrice = baseFee + priorityFee
+        val gasPrice = baseFee + priorityFeeValue
         val minerFee = when (params.getTxType()) {
-            TransactionType.Transfer -> if (assetId.type() == AssetSubtype.NATIVE && params.isMax()) gasPrice else priorityFee
-            TransactionType.Swap, TransactionType.TokenApproval -> priorityFee
+            TransactionType.Transfer -> if (assetId.type() == AssetSubtype.NATIVE && params.isMax()) gasPrice else priorityFeeValue
+            TransactionType.Swap, TransactionType.TokenApproval -> priorityFeeValue
             else -> throw IllegalAccessException("Operation doesn't available")
         }
         val amount = when (params.getTxType()) {

@@ -288,7 +288,7 @@
   <string name="info.network_fee.title">کارمزد شبکه</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">کیف پولی که به آن دسترسی ندارید اما می توانید تراکنش ها و حرکات آن را تماشا کنید.</string>
-  <string name="info.network_fee.description">شبکه %s کارمزد تراکنش را دریافت می کند که بر اساس میزان استفاده از شبکه متفاوت است. برای پردازش تراکنش شما به ماینرها پرداخت می شود.</string>
+  <string name="info.network_fee.description" formatted="false">Every transaction on the %s network requires a fee in %s paid to miners to process your transaction, not Gem Wallet. Network fees varies based on network usage.</string>
   <string name="info.transaction.error.description">تراکنش به دلیل خطایی مانند موجودی ناکافی، ورودی نامعتبر یا رد شدن توسط شبکه، انجام نشد. لطفاً جزئیات را بررسی کرده و دوباره امتحان کنید.</string>
   <string name="info.transaction.pending.description">تراکنش ارسال شده و در انتظار تأیید در شبکه است. زمان پردازش ممکن است متفاوت باشد. لطفاً برای به‌روزرسانی‌ها دوباره مراجعه کنید.</string>
   <string name="info.transaction.success.description">تراکنش تکمیل و در شبکه تأیید شده است. می‌توانید جزئیات را برای تأیید وضعیت آن بررسی کنید.</string>
@@ -423,6 +423,15 @@
   <string name="filter.has_balance">تعادل دارد</string>
   <string name="swap.estimated_time.title">Estimated Time</string>
   <string name="wallet.import.contract_address_field">قرارداد یا شناسه توکن</string>
-  <string name="info.asset_status.unverified.description">Unverified tokens have not been sufficiently verified by trusted third-party services. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
-  <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
+  <string name="info.asset_status.unverified.description">توکن‌های تایید نشده به اندازه کافی توسط سرویس‌های شخص ثالث مورد اعتماد تایید نشده‌اند. آنها ممکن است به دلیل ایردراپ، انتقال یا وارد کردن دستی در کیف پول شما ظاهر شوند.</string>
+  <string name="info.asset_status.suspicious.description">توکن‌های مشکوک یا اسپم به عنوان کلاهبرداری‌های بالقوه یا دارایی‌های مضر شناسایی می‌شوند. آنها ممکن است به دلیل ایردراپ‌ها، انتقال‌ها یا واردات دستی در کیف پول شما ظاهر شوند.</string>
+  <string name="errors.insufficient_funds">بودجه ناکافی</string>
+  <string name="info.insufficient_network_fee_balance.title">%s مورد نیاز</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">این تراکنش مستلزم %s است تا کارمزد شبکه پرداخت شده به %s ماینرها را پوشش دهد، نه Gem Wallet. مطمئن شوید که %s کافی دارید.</string>
+  <string name="brand_name">Gem Wallet</string>
+  <string name="info.insufficient_balance.title">موجودی ناکافی</string>
+  <string name="info.insufficient_balance.description">شما %s کافی برای تکمیل این تراکنش ندارید. لطفاً کیف پول خود را شارژ، دریافت یا مبادله کنید و دوباره امتحان کنید.</string>
+  <string name="info.account_minimum_balance.title">حداقل موجودی</string>
+  <string name="asset.buy_asset">خرید %s</string>
+  <string name="wallet.import_address_warning">شما می‌توانید موجودی و تراکنش‌های این آدرس را مشاهده کنید، اما **نمی‌توانید وجه ارسال یا بفروشید**.</string>
 </resources>
