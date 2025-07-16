@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">最低余额</string>
   <string name="asset.buy_asset">购买%s</string>
   <string name="wallet.import_address_warning">您可以查看此地址的余额和交易，但**不能发送或出售资金**。</string>
+  <string name="info.stake_minimum_amount.title">最低金额</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">在%s网络上，最低质押要求为 ** %s **。</string>
+  <string name="asset.add_to_wallet">添加到钱包</string>
+  <string name="asset.hide_from_wallet">隐藏钱包</string>
+  <string name="common.details">细节</string>
+  <string name="transaction.swap_again">再次交换</string>
 </resources>

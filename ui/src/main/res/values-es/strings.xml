@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">Saldo mínimo</string>
   <string name="asset.buy_asset">Comprar %s</string>
   <string name="wallet.import_address_warning">Puede ver los saldos y las transacciones de esta dirección, pero **no puede enviar ni vender fondos**.</string>
+  <string name="info.stake_minimum_amount.title">Cantidad mínima</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">En la red %s, el requisito mínimo de staking es ** %s **.</string>
+  <string name="asset.add_to_wallet">Añadir a la billetera</string>
+  <string name="asset.hide_from_wallet">Ocultar de la billetera</string>
+  <string name="common.details">Detalles</string>
+  <string name="transaction.swap_again">Intercambiar de nuevo</string>
 </resources>

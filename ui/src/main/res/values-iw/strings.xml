@@ -195,7 +195,7 @@
   <string name="wallets.watch">Watch</string>
   <string name="transfer.minimum_amount">Minimum Amount is %s</string>
   <string name="wallet_connect.no_active_connections">No active connections</string>
-  <string name="stake.minimum_amount">Minimum amount</string>
+  <string name="stake.minimum_amount">סכום מינימלי</string>
   <string name="common.no_results_found">No Results Found</string>
   <string name="social.x">X (formerly Twitter)</string>
   <string name="social.discord">Discord</string>
@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">יתרה מינימלית</string>
   <string name="asset.buy_asset">קנה %s</string>
   <string name="wallet.import_address_warning">ניתן לצפות ביתרות ועסקאות עבור כתובת זו, אך **לא ניתן לשלוח או למכור כספים**.</string>
+  <string name="info.stake_minimum_amount.title">סכום מינימלי</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">ברשת %s, דרישת ההימור המינימלית היא ** %s **.</string>
+  <string name="asset.add_to_wallet">הוסף לארנק</string>
+  <string name="asset.hide_from_wallet">הסתר מהארנק</string>
+  <string name="common.details">פרטים</string>
+  <string name="transaction.swap_again">החלפה נוספת</string>
 </resources>

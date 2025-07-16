@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">Mindestguthaben</string>
   <string name="asset.buy_asset">Kaufen %s</string>
   <string name="wallet.import_address_warning">Sie können Guthaben und Transaktionen für diese Adresse anzeigen, aber **kein Geld senden oder verkaufen**.</string>
+  <string name="info.stake_minimum_amount.title">Mindestbetrag</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Im %s -Netzwerk beträgt die Mindesteinsatzanforderung ** %s **.</string>
+  <string name="asset.add_to_wallet">Zum Wallet hinzufügen</string>
+  <string name="asset.hide_from_wallet">Vor der Brieftasche verstecken</string>
+  <string name="common.details">Details</string>
+  <string name="transaction.swap_again">Erneut tauschen</string>
 </resources>

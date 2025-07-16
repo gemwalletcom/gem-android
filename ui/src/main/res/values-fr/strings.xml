@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">Solde minimum</string>
   <string name="asset.buy_asset">Achetez %s</string>
   <string name="wallet.import_address_warning">Vous pouvez consulter les soldes et les transactions pour cette adresse, mais **vous ne pouvez pas envoyer ou vendre des fonds**.</string>
+  <string name="info.stake_minimum_amount.title">Montant minimum</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Sur le réseau %s, l\'exigence minimale de jalonnement est de ** %s **.</string>
+  <string name="asset.add_to_wallet">Ajouter au portefeuille</string>
+  <string name="asset.hide_from_wallet">Se cacher du portefeuille</string>
+  <string name="common.details">Détails</string>
+  <string name="transaction.swap_again">Échanger à nouveau</string>
 </resources>

@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">Saldo minimum</string>
   <string name="asset.buy_asset">Beli %s</string>
   <string name="wallet.import_address_warning">Anda dapat melihat saldo dan transaksi untuk alamat ini, tetapi **tidak dapat mengirim atau menjual dana**.</string>
+  <string name="info.stake_minimum_amount.title">Jumlah minimum</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Pada jaringan %s, persyaratan staking minimum adalah ** %s **.</string>
+  <string name="asset.add_to_wallet">Tambahkan ke dompet</string>
+  <string name="asset.hide_from_wallet">Sembunyikan dari dompet</string>
+  <string name="common.details">Rincian</string>
+  <string name="transaction.swap_again">Tukar Lagi</string>
 </resources>

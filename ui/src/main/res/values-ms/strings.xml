@@ -195,7 +195,7 @@
   <string name="wallets.watch">Watch</string>
   <string name="transfer.minimum_amount">Minimum Amount is %s</string>
   <string name="wallet_connect.no_active_connections">No active connections</string>
-  <string name="stake.minimum_amount">Minimum amount</string>
+  <string name="stake.minimum_amount">Jumlah minimum</string>
   <string name="common.no_results_found">No Results Found</string>
   <string name="social.x">X (formerly Twitter)</string>
   <string name="social.discord">Discord</string>
@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">Baki minimum</string>
   <string name="asset.buy_asset">Beli %s</string>
   <string name="wallet.import_address_warning">Anda boleh melihat baki dan urus niaga untuk alamat ini, tetapi **tidak boleh menghantar atau menjual dana**.</string>
+  <string name="info.stake_minimum_amount.title">Jumlah minimum</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Pada rangkaian %s, keperluan pertaruhan minimum ialah ** %s **.</string>
+  <string name="asset.add_to_wallet">Tambah pada dompet</string>
+  <string name="asset.hide_from_wallet">Sembunyi dari dompet</string>
+  <string name="common.details">Butiran</string>
+  <string name="transaction.swap_again">Tukar Lagi</string>
 </resources>

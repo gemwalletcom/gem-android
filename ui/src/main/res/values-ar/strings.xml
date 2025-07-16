@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">الحد الأدنى للرصيد</string>
   <string name="asset.buy_asset">شراء %s</string>
   <string name="wallet.import_address_warning">يمكنك عرض الأرصدة والمعاملات لهذا العنوان، ولكن **لا يمكنك إرسال أو بيع الأموال**.</string>
+  <string name="info.stake_minimum_amount.title">الحد الأدنى للمبلغ</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">على شبكة %s ، الحد الأدنى لمتطلبات المشاركة هو ** %s **.</string>
+  <string name="asset.add_to_wallet">أضف إلى المحفظة</string>
+  <string name="asset.hide_from_wallet">إخفاء من المحفظة</string>
+  <string name="common.details">تفاصيل</string>
+  <string name="transaction.swap_again">التبديل مرة أخرى</string>
 </resources>

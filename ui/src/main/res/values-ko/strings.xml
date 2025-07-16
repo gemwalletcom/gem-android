@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">최소 잔액</string>
   <string name="asset.buy_asset">%s 구매</string>
   <string name="wallet.import_address_warning">이 주소에 대한 잔액과 거래 내역은 볼 수 있지만, **자금을 보내거나 판매할 수는 없습니다**.</string>
+  <string name="info.stake_minimum_amount.title">최소 금액</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">%s 네트워크에서 최소 스테이킹 요구 사항은 ** %s **입니다.</string>
+  <string name="asset.add_to_wallet">지갑에 추가</string>
+  <string name="asset.hide_from_wallet">지갑에서 숨기기</string>
+  <string name="common.details">세부</string>
+  <string name="transaction.swap_again">다시 바꾸기</string>
 </resources>

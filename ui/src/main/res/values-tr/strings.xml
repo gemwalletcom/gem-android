@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">Minimum bakiye</string>
   <string name="asset.buy_asset">%s satın al</string>
   <string name="wallet.import_address_warning">Bu adrese ait bakiyeleri ve işlemleri görüntüleyebilirsiniz, ancak **para gönderemez veya satamazsınız**.</string>
+  <string name="info.stake_minimum_amount.title">Asgari tutar</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">%s ağında, minimum stake gereksinimi ** %s **\'dir.</string>
+  <string name="asset.add_to_wallet">Cüzdana ekle</string>
+  <string name="asset.hide_from_wallet">Cüzdandan gizle</string>
+  <string name="common.details">Detaylar</string>
+  <string name="transaction.swap_again">Tekrar Değiştir</string>
 </resources>

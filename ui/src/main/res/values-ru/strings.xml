@@ -407,8 +407,8 @@
   <string name="onboarding.accept_terms.message">Прежде чем продолжить, пожалуйста, прочтите и примите следующие условия.</string>
   <string name="onboarding.accept_terms.item1.message">Я понимаю, что ответственность за безопасность и резервное копирование моих кошельков несу исключительно я, а не Gem.</string>
   <string name="onboarding.accept_terms.item2.message">Я понимаю, что Gem не является банком или биржей, и использование его в незаконных целях строго запрещено.</string>
-  <string name="onboarding.accept_terms.item3.message">I understand that if I ever lose access to my wallets, Gem is not liable and cannot help in any way.</string>
-  <string name="onboarding.accept_terms.continue">Agree and Continue</string>
+  <string name="onboarding.accept_terms.item3.message">Я понимаю, что если я потеряю доступ к своим кошелькам, Gem не несет ответственности и не сможет оказать никакой помощи.</string>
+  <string name="onboarding.accept_terms.continue">Согласиться и продолжить</string>
   <string name="errors.required">%s требуется</string>
   <string name="update_app.permission.title">Разрешить установку</string>
   <string name="update_app.permission.description">Зайдите в настройки и разрешите установку из внешних источников</string>
@@ -421,7 +421,7 @@
   <string name="transfer.smart_contract.title">Smart Contract</string>
   <string name="transfer.other.title">Other</string>
   <string name="filter.has_balance">Имеет баланс</string>
-  <string name="swap.estimated_time.title">Estimated Time</string>
+  <string name="swap.estimated_time.title">Расчетное время</string>
   <string name="wallet.import.contract_address_field">Контракт или токен ID</string>
   <string name="info.asset_status.unverified.description">Неподтверждённые токены не прошли достаточную проверку со стороны надёжных сторонних сервисов. Они могут появиться в вашем кошельке в результате airdrop’ов, переводов или ручного импорта.</string>
   <string name="info.asset_status.suspicious.description">Подозрительные или спам‑токены помечаются как потенциальные мошеннические или вредоносные активы. Они могут появиться в вашем кошельке в результате airdrop‑раздач, переводов или ручного добавления.</string>
@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">Минимальный баланс</string>
   <string name="asset.buy_asset">Купить %s</string>
   <string name="wallet.import_address_warning">Вы можете просматривать балансы и транзакции для этого адреса, но **не можете отправлять или продавать средства**.</string>
+  <string name="info.stake_minimum_amount.title">Минимальная сумма</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">В сети %s минимальное требование к стейкингу составляет ** %s **.</string>
+  <string name="asset.add_to_wallet">Добавить в кошелек</string>
+  <string name="asset.hide_from_wallet">Скрыть из кошелька</string>
+  <string name="common.details">Детали</string>
+  <string name="transaction.swap_again">Поменять снова</string>
 </resources>

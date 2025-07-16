@@ -195,7 +195,7 @@
   <string name="wallets.watch">Watch</string>
   <string name="transfer.minimum_amount">Minimum Amount is %s</string>
   <string name="wallet_connect.no_active_connections">No active connections</string>
-  <string name="stake.minimum_amount">Minimum amount</string>
+  <string name="stake.minimum_amount">Suma minimă</string>
   <string name="common.no_results_found">No Results Found</string>
   <string name="social.x">X (formerly Twitter)</string>
   <string name="social.discord">Discord</string>
@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">Sold minim</string>
   <string name="asset.buy_asset">Cumpără %s</string>
   <string name="wallet.import_address_warning">Puteți vizualiza soldurile și tranzacțiile pentru această adresă, dar **nu puteți trimite sau vinde fonduri**.</string>
+  <string name="info.stake_minimum_amount.title">Suma minimă</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">În rețeaua %s, cerința minimă de staking este ** %s **.</string>
+  <string name="asset.add_to_wallet">Adaugă în portofel</string>
+  <string name="asset.hide_from_wallet">Ascunde din portofel</string>
+  <string name="common.details">Detalii</string>
+  <string name="transaction.swap_again">Schimbați din nou</string>
 </resources>

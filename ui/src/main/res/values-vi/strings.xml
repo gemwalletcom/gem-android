@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">Số dư tối thiểu</string>
   <string name="asset.buy_asset">Mua %s</string>
   <string name="wallet.import_address_warning">Bạn có thể xem số dư và giao dịch của địa chỉ này, nhưng **không thể gửi hoặc bán tiền**.</string>
+  <string name="info.stake_minimum_amount.title">Số tiền tối thiểu</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Trên mạng %s, yêu cầu đặt cược tối thiểu là ** %s **.</string>
+  <string name="asset.add_to_wallet">Thêm vào ví</string>
+  <string name="asset.hide_from_wallet">Ẩn khỏi ví</string>
+  <string name="common.details">Chi tiết</string>
+  <string name="transaction.swap_again">Hoán đổi lần nữa</string>
 </resources>

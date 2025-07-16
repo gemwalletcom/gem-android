@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">Мінімальний баланс</string>
   <string name="asset.buy_asset">Купити %s</string>
   <string name="wallet.import_address_warning">Ви можете переглядати баланси та транзакції для цієї адреси, але **не можете надсилати або продавати кошти**.</string>
+  <string name="info.stake_minimum_amount.title">Мінімальна сума</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">У мережі %s мінімальний розмір стейкінгу становить **%s**.</string>
+  <string name="asset.add_to_wallet">Додати до гаманця</string>
+  <string name="asset.hide_from_wallet">Приховати від гаманця</string>
+  <string name="common.details">Деталі</string>
+  <string name="transaction.swap_again">Знову обміняти</string>
 </resources>

@@ -195,7 +195,7 @@
   <string name="wallets.watch">Watch</string>
   <string name="transfer.minimum_amount">Minimum Amount is %s</string>
   <string name="wallet_connect.no_active_connections">No active connections</string>
-  <string name="stake.minimum_amount">Minimum amount</string>
+  <string name="stake.minimum_amount">Minimální částka</string>
   <string name="common.no_results_found">No Results Found</string>
   <string name="social.x">X (formerly Twitter)</string>
   <string name="social.discord">Discord</string>
@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">Minimální zůstatek</string>
   <string name="asset.buy_asset">Koupit %s</string>
   <string name="wallet.import_address_warning">Pro tuto adresu si můžete prohlížet zůstatky a transakce, ale **nemůžete posílat ani prodávat finanční prostředky**.</string>
+  <string name="info.stake_minimum_amount.title">Minimální částka</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">V síti %s je minimální požadavek na staking ** %s **.</string>
+  <string name="asset.add_to_wallet">Přidat do peněženky</string>
+  <string name="asset.hide_from_wallet">Skrýt z peněženky</string>
+  <string name="common.details">Podrobnosti</string>
+  <string name="transaction.swap_again">Znovu vyměnit</string>
 </resources>

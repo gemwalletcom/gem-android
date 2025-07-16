@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">حداقل موجودی</string>
   <string name="asset.buy_asset">خرید %s</string>
   <string name="wallet.import_address_warning">شما می‌توانید موجودی و تراکنش‌های این آدرس را مشاهده کنید، اما **نمی‌توانید وجه ارسال یا بفروشید**.</string>
+  <string name="info.stake_minimum_amount.title">حداقل مقدار</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">در شبکه %s ، حداقل میزان سپرده‌گذاری ** %s ** است.</string>
+  <string name="asset.add_to_wallet">اضافه کردن به کیف پول</string>
+  <string name="asset.hide_from_wallet">پنهان شدن از کیف پول</string>
+  <string name="common.details">جزئیات</string>
+  <string name="transaction.swap_again">دوباره مبادله کنید</string>
 </resources>

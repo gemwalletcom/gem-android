@@ -195,7 +195,7 @@
   <string name="wallets.watch">Watch</string>
   <string name="transfer.minimum_amount">Minimum Amount is %s</string>
   <string name="wallet_connect.no_active_connections">No active connections</string>
-  <string name="stake.minimum_amount">Minimum amount</string>
+  <string name="stake.minimum_amount">จำนวนเงินขั้นต่ำ</string>
   <string name="common.no_results_found">No Results Found</string>
   <string name="social.x">X (formerly Twitter)</string>
   <string name="social.discord">Discord</string>
@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">ยอดคงเหลือขั้นต่ำ</string>
   <string name="asset.buy_asset">ซื้อ %s</string>
   <string name="wallet.import_address_warning">คุณสามารถดูยอดคงเหลือและธุรกรรมสำหรับที่อยู่นี้ แต่ **ไม่สามารถส่งหรือขายเงินได้**</string>
+  <string name="info.stake_minimum_amount.title">จำนวนเงินขั้นต่ำ</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">บนเครือข่าย %s ข้อกำหนดการเดิมพันขั้นต่ำคือ ** %s **</string>
+  <string name="asset.add_to_wallet">เพิ่มลงในกระเป๋าสตางค์</string>
+  <string name="asset.hide_from_wallet">ซ่อนจากกระเป๋าสตางค์</string>
+  <string name="common.details">รายละเอียด</string>
+  <string name="transaction.swap_again">สลับอีกครั้ง</string>
 </resources>

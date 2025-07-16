@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">最低残高</string>
   <string name="asset.buy_asset">%sを購入</string>
   <string name="wallet.import_address_warning">このアドレスの残高と取引は表示できますが、**資金を送信または売却することはできません**。</string>
+  <string name="info.stake_minimum_amount.title">最低金額</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">%sネットワークでは、最小ステーキング要件は ** %s ** です。</string>
+  <string name="asset.add_to_wallet">ウォレットに追加</string>
+  <string name="asset.hide_from_wallet">財布から隠す</string>
+  <string name="common.details">詳細</string>
+  <string name="transaction.swap_again">再び交換</string>
 </resources>

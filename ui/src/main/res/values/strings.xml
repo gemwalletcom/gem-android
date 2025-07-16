@@ -427,11 +427,17 @@
   <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
   <string name="errors.insufficient_funds">Insufficient funds</string>
   <string name="info.insufficient_network_fee_balance.title">%s required</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">This transaction requires **%s** to cover the network fee paid to %s miners, not Gem Wallet. Ensure you have enough %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">This transaction requires %s to cover the network fee paid to %s miners, not Gem Wallet. Ensure you have enough %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Insufficient Balance</string>
   <string name="info.insufficient_balance.description">You don’t have enough %s to complete this transaction. Please top up, receive, or swap in your wallet and try again.</string>
   <string name="info.account_minimum_balance.title">Minimum balance</string>
   <string name="asset.buy_asset">Buy %s</string>
   <string name="wallet.import_address_warning">You can view balances and transactions for this address, but **cannot send or sell funds**.</string>
+  <string name="info.stake_minimum_amount.title">Minimum Amount</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">On the %s network, the minimum staking requirement is **%s**.</string>
+  <string name="asset.add_to_wallet">Add to wallet</string>
+  <string name="asset.hide_from_wallet">Hide from wallet</string>
+  <string name="common.details">Details</string>
+  <string name="transaction.swap_again">Swap Again</string>
 </resources>

@@ -195,7 +195,7 @@
   <string name="wallets.watch">Watch</string>
   <string name="transfer.minimum_amount">Minimum Amount is %s</string>
   <string name="wallet_connect.no_active_connections">No active connections</string>
-  <string name="stake.minimum_amount">Minimum amount</string>
+  <string name="stake.minimum_amount">کم از کم رقم</string>
   <string name="common.no_results_found">No Results Found</string>
   <string name="social.x">X (formerly Twitter)</string>
   <string name="social.discord">Discord</string>
@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">کم از کم بیلنس</string>
   <string name="asset.buy_asset">خریدیں %s</string>
   <string name="wallet.import_address_warning">آپ اس پتے کے بیلنس اور لین دین دیکھ سکتے ہیں، لیکن **فنڈز بھیج یا فروخت نہیں کر سکتے**۔</string>
+  <string name="info.stake_minimum_amount.title">کم از کم رقم</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">%s نیٹ ورک پر، اسٹیکنگ کی کم از کم ضرورت ** %s ** ہے۔</string>
+  <string name="asset.add_to_wallet">بٹوے میں شامل کریں۔</string>
+  <string name="asset.hide_from_wallet">بٹوے سے چھپائیں۔</string>
+  <string name="common.details">تفصیلات</string>
+  <string name="transaction.swap_again">دوبارہ تبدیل کریں۔</string>
 </resources>

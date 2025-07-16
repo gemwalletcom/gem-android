@@ -195,7 +195,7 @@
   <string name="wallets.watch">Watch</string>
   <string name="transfer.minimum_amount">Minimum Amount is %s</string>
   <string name="wallet_connect.no_active_connections">No active connections</string>
-  <string name="stake.minimum_amount">Minimum amount</string>
+  <string name="stake.minimum_amount">Minimumbedrag</string>
   <string name="common.no_results_found">No Results Found</string>
   <string name="social.x">X (formerly Twitter)</string>
   <string name="social.discord">Discord</string>
@@ -434,4 +434,10 @@
   <string name="info.account_minimum_balance.title">Minimumsaldo</string>
   <string name="asset.buy_asset">Koop %s</string>
   <string name="wallet.import_address_warning">U kunt het saldo en de transacties voor dit adres bekijken, maar u kunt geen geld verzenden of verkopen.</string>
+  <string name="info.stake_minimum_amount.title">Minimumbedrag</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Op het %s netwerk is de minimale inzetvereiste ** %s **.</string>
+  <string name="asset.add_to_wallet">Toevoegen aan portemonnee</string>
+  <string name="asset.hide_from_wallet">Verbergen voor portemonnee</string>
+  <string name="common.details">Details</string>
+  <string name="transaction.swap_again">Opnieuw ruilen</string>
 </resources>
