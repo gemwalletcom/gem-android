@@ -52,7 +52,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
-import uniffi.gemstone.GemSwapProvider
+import uniffi.gemstone.SwapperProvider
 import uniffi.gemstone.SwapperException
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -238,7 +238,7 @@ class SwapViewModel @Inject constructor(
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val selectedProvider = MutableStateFlow<GemSwapProvider?>(null)
+    val selectedProvider = MutableStateFlow<SwapperProvider?>(null)
 
     val providers = quotes.combine(assetsState) { quotes, assets ->
         val price = assets?.to?.price
@@ -459,7 +459,7 @@ class SwapViewModel @Inject constructor(
         approveTxHash.update { "${assetsState.value?.from?.id()?.chain?.string}_$hash" }
     }
 
-    fun setProvider(provider: GemSwapProvider) {
+    fun setProvider(provider: SwapperProvider) {
         this.selectedProvider.update { provider }
     }
 

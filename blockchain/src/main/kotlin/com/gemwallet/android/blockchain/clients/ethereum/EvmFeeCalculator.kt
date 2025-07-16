@@ -151,7 +151,7 @@ class EvmFeeCalculator(
     ): Pair<BigInteger, List<GemPriorityFeeRecord>> {
         val history = getHistory(params.asset.id.chain, feeService)
         val calculator = GemFeeCalculator()
-        val priority = calculator.caluclateBasePriorityFees(
+        val priority = calculator.calculateBasePriorityFees(
             chain = params.from.chain.string,
             history = history.second
         )

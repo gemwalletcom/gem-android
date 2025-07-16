@@ -4,8 +4,8 @@
 
 package com.wallet.core.primitives
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class AssetScore (
@@ -34,8 +34,8 @@ enum class AssetRank(val string: String) {
 	Deprecated("deprecated"),
 	@SerialName("spam")
 	Spam("spam"),
-	@SerialName("fradulent")
-	Fradulent("fradulent"),
+	@SerialName("fraudulent")
+	Fraudulent("fraudulent"),
 	@SerialName("unknown")
 	Unknown("unknown"),
 }

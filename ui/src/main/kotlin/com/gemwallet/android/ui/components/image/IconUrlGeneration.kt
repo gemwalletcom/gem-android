@@ -6,7 +6,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FiatProvider
-import uniffi.gemstone.GemSwapProvider
+import uniffi.gemstone.SwapperProvider
 
 fun Int.getDrawableUri() = "android.resource://com.gemwallet.android/drawable/$this"
 
@@ -27,26 +27,26 @@ fun Chain.getIconUrl(): String = "file:///android_asset/chains/icons/${string}.s
 
 fun FiatProvider.getFiatProviderIcon(): String = "file:///android_asset/fiat/${name.lowercase()}.png"
 
-fun GemSwapProvider.getSwapProviderIcon(): String {
+fun SwapperProvider.getSwapProviderIcon(): String {
     val iconName = when (this) {
-        GemSwapProvider.UNISWAP_V4,
-        GemSwapProvider.UNISWAP_V3 -> "uniswap"
-        GemSwapProvider.PANCAKESWAP_V3,
-        GemSwapProvider.PANCAKESWAP_APTOS_V2 -> "pancakeswap"
-        GemSwapProvider.THORCHAIN -> "thorchain"
-        GemSwapProvider.ORCA -> "orca"
-        GemSwapProvider.JUPITER -> "jupiter"
-        GemSwapProvider.ACROSS -> "across"
-        GemSwapProvider.OKU -> "oku"
-        GemSwapProvider.WAGMI -> "wagmi"
-        GemSwapProvider.CETUS_AGGREGATOR, GemSwapProvider.CETUS -> "cetus"
-        GemSwapProvider.STONFI_V2 -> "stonfi"
-        GemSwapProvider.MAYAN -> "mayan"
-        GemSwapProvider.RESERVOIR -> "reservoir"
-        GemSwapProvider.SYMBIOSIS -> "symbiosis"
-        GemSwapProvider.CHAINFLIP -> "chainflip"
-        GemSwapProvider.RELAY -> "relay"
-        GemSwapProvider.AERODROME -> "aerodrome"
+        SwapperProvider.UNISWAP_V4,
+        SwapperProvider.UNISWAP_V3 -> "uniswap"
+        SwapperProvider.PANCAKESWAP_V3,
+        SwapperProvider.PANCAKESWAP_APTOS_V2 -> "pancakeswap"
+        SwapperProvider.THORCHAIN -> "thorchain"
+        SwapperProvider.ORCA -> "orca"
+        SwapperProvider.JUPITER -> "jupiter"
+        SwapperProvider.ACROSS -> "across"
+        SwapperProvider.OKU -> "oku"
+        SwapperProvider.WAGMI -> "wagmi"
+        SwapperProvider.CETUS_AGGREGATOR, SwapperProvider.CETUS -> "cetus"
+        SwapperProvider.STONFI_V2 -> "stonfi"
+        SwapperProvider.MAYAN -> "mayan"
+        SwapperProvider.RESERVOIR -> "reservoir"
+        SwapperProvider.SYMBIOSIS -> "symbiosis"
+        SwapperProvider.CHAINFLIP -> "chainflip"
+        SwapperProvider.RELAY -> "relay"
+        SwapperProvider.AERODROME -> "aerodrome"
     }
     return "file:///android_asset/swap/${iconName.lowercase()}.svg"
 }

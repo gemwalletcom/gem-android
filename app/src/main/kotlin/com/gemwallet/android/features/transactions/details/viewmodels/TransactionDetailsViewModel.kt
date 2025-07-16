@@ -34,7 +34,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.stateIn
 import uniffi.gemstone.Explorer
-import uniffi.gemstone.GemSwapProvider
+import uniffi.gemstone.SwapperProvider
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -117,25 +117,25 @@ class TransactionDetailsViewModel @Inject constructor(
 
 fun SwapProvider.getIcon(): String {
     return when (this) {
-        SwapProvider.UniswapV3 -> GemSwapProvider.UNISWAP_V3
-        SwapProvider.UniswapV4 -> GemSwapProvider.UNISWAP_V4
-        SwapProvider.PancakeswapV3 -> GemSwapProvider.PANCAKESWAP_V3
-        SwapProvider.PancakeswapAptosV2 -> GemSwapProvider.PANCAKESWAP_APTOS_V2
-        SwapProvider.Thorchain -> GemSwapProvider.THORCHAIN
-        SwapProvider.Orca -> GemSwapProvider.ORCA
-        SwapProvider.Jupiter -> GemSwapProvider.JUPITER
-        SwapProvider.Across -> GemSwapProvider.ACROSS
-        SwapProvider.Oku -> GemSwapProvider.OKU
-        SwapProvider.Wagmi -> GemSwapProvider.WAGMI
-        SwapProvider.Cetus -> GemSwapProvider.CETUS
-        SwapProvider.StonfiV2 -> GemSwapProvider.STONFI_V2
-        SwapProvider.Mayan -> GemSwapProvider.MAYAN
-        SwapProvider.Reservoir -> GemSwapProvider.RESERVOIR
-        SwapProvider.Symbiosis -> GemSwapProvider.SYMBIOSIS
-        SwapProvider.Chainflip -> GemSwapProvider.CHAINFLIP
-        SwapProvider.CetusAggregator -> GemSwapProvider.CETUS_AGGREGATOR
-        SwapProvider.Aerodrome -> GemSwapProvider.AERODROME
-        SwapProvider.Relay -> GemSwapProvider.RELAY
+        SwapProvider.UniswapV3 -> SwapperProvider.UNISWAP_V3
+        SwapProvider.UniswapV4 -> SwapperProvider.UNISWAP_V4
+        SwapProvider.PancakeswapV3 -> SwapperProvider.PANCAKESWAP_V3
+        SwapProvider.PancakeswapAptosV2 -> SwapperProvider.PANCAKESWAP_APTOS_V2
+        SwapProvider.Thorchain -> SwapperProvider.THORCHAIN
+        SwapProvider.Orca -> SwapperProvider.ORCA
+        SwapProvider.Jupiter -> SwapperProvider.JUPITER
+        SwapProvider.Across -> SwapperProvider.ACROSS
+        SwapProvider.Oku -> SwapperProvider.OKU
+        SwapProvider.Wagmi -> SwapperProvider.WAGMI
+        SwapProvider.Cetus -> SwapperProvider.CETUS
+        SwapProvider.StonfiV2 -> SwapperProvider.STONFI_V2
+        SwapProvider.Mayan -> SwapperProvider.MAYAN
+        SwapProvider.Reservoir -> SwapperProvider.RESERVOIR
+        SwapProvider.Symbiosis -> SwapperProvider.SYMBIOSIS
+        SwapProvider.Chainflip -> SwapperProvider.CHAINFLIP
+        SwapProvider.CetusAggregator -> SwapperProvider.CETUS_AGGREGATOR
+        SwapProvider.Aerodrome -> SwapperProvider.AERODROME
+        SwapProvider.Relay -> SwapperProvider.RELAY
     }.getSwapProviderIcon()
 
 }
