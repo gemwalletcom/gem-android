@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.repositoreis.buy
 
+import android.util.Log
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.toIdentifier
@@ -21,15 +22,19 @@ class BuyRepository @Inject constructor(
 ) {
 
     suspend fun sync() {
-        val fiatVersion = gemApi.getConfig().getOrNull()?.versions?.fiatOnRampAssets
+        try {
+        val fiatVersion = gemApi.getConfig().versions.fiatOnRampAssets
         val currentVersion = configStore.getInt(ConfigKey.FiatAssetsVersion.string)
-        if (currentVersion > 0 && currentVersion >= (fiatVersion ?: 0)) return
-        val availableToBuyIds = gemApi.getOnRampAssets().getOrNull() ?: return
-        val availableToSellIds = gemApi.getOffRampAssets().getOrNull()
+        if (currentVersion > 0 && currentVersion >= fiatVersion) return
+        val availableToBuyIds = gemApi.getOnRampAssets()
+        val availableToSellIds = gemApi.getOffRampAssets()
         val latestVersion = availableToBuyIds.version.toInt()
         assetsRepository.updateBuyAvailable(availableToBuyIds.assetIds)
-        assetsRepository.updateSellAvailable(availableToSellIds?.assetIds ?: emptyList())
+        assetsRepository.updateSellAvailable(availableToSellIds.assetIds)
         configStore.putInt(ConfigKey.FiatAssetsVersion.string, latestVersion)
+        } catch (err: Throwable) {
+            Log.d("BUY_SYNC", "Error: ", err)
+        }
     }
 
     suspend fun getQuotes(
@@ -39,14 +44,18 @@ class BuyRepository @Inject constructor(
         amount: Double,
         owner: String,
     ): List<FiatQuote> {
-        return gemApi.getFiatQuotes(
-            assetId = asset.id.toIdentifier(),
-            type = type.string,
-            fiatAmount = if (type == FiatQuoteType.Buy) amount else null,
-            cryptoAmount = if (type == FiatQuoteType.Sell) Crypto(amount.toBigDecimal(), asset.decimals).atomicValue.toString() else null,
-            currency = fiatCurrency,
-            walletAddress = owner
-        ).getOrNull()?.quotes ?: throw Exception("Quotes not found")
+        return try {
+            gemApi.getFiatQuotes(
+                assetId = asset.id.toIdentifier(),
+                type = type.string,
+                fiatAmount = if (type == FiatQuoteType.Buy) amount else null,
+                cryptoAmount = if (type == FiatQuoteType.Sell) Crypto(amount.toBigDecimal(), asset.decimals).atomicValue.toString() else null,
+                currency = fiatCurrency,
+                walletAddress = owner
+            ).quotes
+        } catch (err: Throwable) {
+            throw Exception("Quotes not found", err)
+        }
     }
 
     private enum class ConfigKey(val string: String) {

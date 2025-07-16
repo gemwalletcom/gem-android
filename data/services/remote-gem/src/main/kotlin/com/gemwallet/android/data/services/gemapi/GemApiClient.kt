@@ -18,7 +18,6 @@ import com.wallet.core.primitives.ScanTransaction
 import com.wallet.core.primitives.ScanTransactionPayload
 import com.wallet.core.primitives.Subscription
 import kotlinx.serialization.Serializable
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.HTTP
@@ -29,10 +28,10 @@ import retrofit2.http.Query
 
 interface GemApiClient {
     @GET("/v1/config")
-    suspend fun getConfig(): Result<ConfigResponse>
+    suspend fun getConfig(): ConfigResponse
 
     @POST("/v1/prices")
-    suspend fun prices(@Body request: AssetPricesRequest): Result<PricesResponse>
+    suspend fun prices(@Body request: AssetPricesRequest): PricesResponse
 
     @GET("/v1/fiat/quotes/{asset_id}")
     suspend fun getFiatQuotes(
@@ -42,76 +41,76 @@ interface GemApiClient {
         @Query("crypto_value") cryptoAmount: String?,
         @Query("currency") currency: String,
         @Query("wallet_address") walletAddress: String
-    ): Result<FiatQuotes>
+    ): FiatQuotes
 
     @GET("/v1/fiat/on_ramp/assets")
-    suspend fun getOnRampAssets(): Result<FiatAssets>
+    suspend fun getOnRampAssets(): FiatAssets
 
     @GET("/v1/fiat/off_ramp/assets")
-    suspend fun getOffRampAssets(): Result<FiatAssets>
+    suspend fun getOffRampAssets(): FiatAssets
 
     @GET("/v1/transactions/device/{device_id}")
     suspend fun getTransactions(
         @Path("device_id") deviceId: String,
         @Query("wallet_index") walletIndex: Int,
         @Query("from_timestamp") from: Long
-    ): Result<List<Transaction>>
+    ): List<Transaction>
 
     @GET("/v1/name/resolve/{domain}")
-    suspend fun resolve(@Path("domain") domain: String, @Query("chain") chain: String): Result<NameRecord>
+    suspend fun resolve(@Path("domain") domain: String, @Query("chain") chain: String): NameRecord
 
     @POST("/v1/devices")
-    suspend fun registerDevice(@Body request: Device): Response<Device>
+    suspend fun registerDevice(@Body request: Device): Device
 
     @GET("/v1/devices/{device_id}")
-    suspend fun getDevice(@Path("device_id") deviceId: String): Response<Device>
+    suspend fun getDevice(@Path("device_id") deviceId: String): Device?
 
     @PUT("/v1/devices/{device_id}")
-    suspend fun updateDevice(@Path("device_id") deviceId: String, @Body request: Device): Response<Device>
+    suspend fun updateDevice(@Path("device_id") deviceId: String, @Body request: Device): Device
 
     @GET("/v1/subscriptions/{device_id}")
-    suspend fun getSubscriptions(@Path("device_id") deviceId: String): Response<List<Subscription>>
+    suspend fun getSubscriptions(@Path("device_id") deviceId: String): List<Subscription>?
 
     @HTTP(method = "DELETE", path = "/v1/subscriptions/{device_id}", hasBody = true)
-    suspend fun deleteSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Result<String>
+    suspend fun deleteSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): String
 
     @POST("/v1/subscriptions/{device_id}")
-    suspend fun addSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Result<String>
+    suspend fun addSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): String
 
     @GET("/v1/charts/{asset_id}")
-    suspend fun getChart(@Path("asset_id") assetId: String, @Query("currency") currency: String, @Query("period") period: String): Result<Charts>
+    suspend fun getChart(@Path("asset_id") assetId: String, @Query("currency") currency: String, @Query("period") period: String): Charts
 
     @GET("/v1/assets/{asset_id}")
-    suspend fun getAsset(@Path("asset_id") assetId: String, @Query("currency") currency: String): Result<AssetFull>
+    suspend fun getAsset(@Path("asset_id") assetId: String, @Query("currency") currency: String): AssetFull
 
     @GET("/v1/prices/{asset_id}")
-    suspend fun getMarket(@Path("asset_id") assetId: String, @Query("currency") currency: String): Result<AssetMarketPrice>
+    suspend fun getMarket(@Path("asset_id") assetId: String, @Query("currency") currency: String): AssetMarketPrice
 
     @POST("/v1/assets")
-    suspend fun getAssets(@Body ids: List<String>): Result<List<AssetFull>>
+    suspend fun getAssets(@Body ids: List<String>): List<AssetFull>
 
     @GET("/v1/assets/search")
     suspend fun search(
         @Query("query") query: String,
-    ): Result<List<AssetBasic>>
+    ): List<AssetBasic>
 
     @GET("/v1/assets/device/{device_id}")
-    suspend fun getAssets(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int, @Query("from_timestamp") fromTimestamp: Int = 0): Result<List<String>>
+    suspend fun getAssets(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int, @Query("from_timestamp") fromTimestamp: Int = 0): List<String>
 
     @POST("/v1/price_alerts/{device_id}")
-    suspend fun includePriceAlert(@Path("device_id") deviceId: String, @Body assets: List<PriceAlert>): Result<String>
+    suspend fun includePriceAlert(@Path("device_id") deviceId: String, @Body assets: List<PriceAlert>): String
 
     @HTTP(method = "DELETE", path = "/v1/price_alerts/{device_id}", hasBody = true)
-    suspend fun excludePriceAlert(@Path("device_id") deviceId: String, @Body assets: List<PriceAlert>): Result<String>
+    suspend fun excludePriceAlert(@Path("device_id") deviceId: String, @Body assets: List<PriceAlert>): String
 
     @GET("/v1/price_alerts/{device_id}")
-    suspend fun getPriceAlerts(@Path("device_id") deviceId: String): Result<List<PriceAlert>>
+    suspend fun getPriceAlerts(@Path("device_id") deviceId: String): List<PriceAlert>
 
     @GET("/v1/nft/assets/device/{device_id}")
-    suspend fun getNFTs(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int): Result<Data<List<NFTData>>>
+    suspend fun getNFTs(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int): Data<List<NFTData>>
 
     @POST("/v1/scan/transaction")
-    suspend fun getScanTransaction(@Body payload: ScanTransactionPayload): Result<Data<ScanTransaction>>
+    suspend fun getScanTransaction(@Body payload: ScanTransactionPayload): Data<ScanTransaction>
 }
 
 @Serializable

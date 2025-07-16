@@ -35,7 +35,7 @@ class NftRepository(
         val deviceId = getDeviceId.getDeviceId()
 
         val response = gemApiClient.getNFTs(deviceId, wallet.index)
-        val data = response.getOrThrow().data
+        val data = response.data
 
         val collections = data.map {
             DbNFTCollection(

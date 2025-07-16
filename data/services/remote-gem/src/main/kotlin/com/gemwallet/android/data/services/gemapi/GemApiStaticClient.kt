@@ -7,5 +7,5 @@ import retrofit2.http.Path
 interface GemApiStaticClient {
 
     @GET("/blockchains/{chain}/validators.json")
-    suspend fun getValidators(@Path("chain") chain:String): Result<List<StakeValidator>>
+    suspend fun getValidators(@Path("chain") chain:String): List<StakeValidator>
 }

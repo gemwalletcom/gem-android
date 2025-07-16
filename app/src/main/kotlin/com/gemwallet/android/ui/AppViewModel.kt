@@ -59,7 +59,7 @@ class AppViewModel @Inject constructor(
             return@withContext
         }
         val lastRelease = runCatching {
-            gemApiClient.getConfig().getOrNull()?.releases
+            gemApiClient.getConfig().releases
                 ?.filter {
                     val versionFlavor = when (it.store) {
                         PlatformStore.GooglePlay -> "google"

@@ -119,7 +119,7 @@ class SignerPreloaderProxy(
 
     private suspend fun isValidTransaction(payload: ScanTransactionPayload): ScanTransaction? {
         return try {
-            gemApiClient.getScanTransaction(payload).getOrNull()?.data
+            gemApiClient.getScanTransaction(payload).data
         } catch (_: Throwable) {
             null
         }

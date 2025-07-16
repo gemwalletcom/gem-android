@@ -27,9 +27,12 @@ class TokensRepository (
         if (query.isEmpty()) {
             return@withContext false
         }
-        val result = gemApiClient.search(query)
-        val tokens = result.getOrNull()
-        val assets = if (tokens.isNullOrEmpty()) {
+        val tokens = try {
+            gemApiClient.search(query)
+        } catch (_: Throwable) {
+            return@withContext false
+        }
+        val assets = if (tokens.isEmpty()) {
             val assets = getTokenClients.map {
                 async {
                     try {
@@ -45,7 +48,13 @@ class TokensRepository (
             }
             .awaitAll()
             .mapNotNull { it }
-            .map { AssetBasic(asset = it, score = AssetScore(0), properties = AssetProperties(false, false, false, false, false)) }
+            .map { AssetBasic(asset = it, score = AssetScore(0), properties = AssetProperties(
+                isEnabled = false,
+                isBuyable = false,
+                isSellable = false,
+                isSwapable = false,
+                isStakeable = false
+            )) }
             runCatching { assetsDao.insert(assets.map { it.toRecord() }) }
             assets
         } else {
@@ -64,7 +73,13 @@ class TokensRepository (
         if (asset == null) {
             return search(tokenId)
         }
-        val record = AssetBasic(asset = asset, score = AssetScore(0), properties = AssetProperties(false, false, false, false, false))
+        val record = AssetBasic(asset = asset, score = AssetScore(0), properties = AssetProperties(
+            isEnabled = false,
+            isBuyable = false,
+            isSellable = false,
+            isSwapable = false,
+            isStakeable = false
+        ))
             .toRecord()
         runCatching { assetsDao.insert(record) }
         return true

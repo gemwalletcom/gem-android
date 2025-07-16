@@ -25,7 +25,11 @@ class SyncTransactions @Inject constructor(
         val deviceId = getDeviceIdCase.getDeviceId()
         val lastSyncTime = getTransactionUpdateTime.getTransactionUpdateTime(wallet.id) / 1000
         val response = runCatching {
-            val result: List<Transaction>? = gemApiClient.getTransactions(deviceId, wallet.index, lastSyncTime).getOrNull()
+            val result: List<Transaction>? = try {
+                gemApiClient.getTransactions(deviceId, wallet.index, lastSyncTime)
+            } catch (_: Throwable) {
+                null
+            }
             result
         }
         val txs: List<Transaction> = response.getOrNull() ?: return@withContext
@@ -36,8 +40,8 @@ class SyncTransactions @Inject constructor(
 
     private suspend fun prefetchAssets(txs: List<Transaction>) {
         val session = sessionRepository.getSession() ?: return
-        val notAvailableAssetIds = txs.map {
-            it.getAssociatedAssetIds().filter { assetsRepository.getAsset(it) == null }.toSet()
+        val notAvailableAssetIds = txs.map { txs ->
+            txs.getAssociatedAssetIds().filter { assetsRepository.getAsset(it) == null }.toSet()
         }.flatten()
         assetsRepository.resolve(session.wallet, notAvailableAssetIds)
     }

@@ -38,7 +38,7 @@ class DeviceRepository(
     private val getDeviceIdCase: GetDeviceIdCase,
     private val enablePriceAlert: EnablePriceAlert,
     private val getCurrentCurrencyCase: GetCurrentCurrencyCase,
-    private val coroutineScope: CoroutineScope = CoroutineScope(
+    coroutineScope: CoroutineScope = CoroutineScope(
         SupervisorJob() + CoroutineExceptionHandler { _, err -> Log.e("DEVICE", "Err:", err) } + Dispatchers.IO
     ),
 ) : SyncDeviceInfo,
@@ -85,7 +85,7 @@ class DeviceRepository(
 
     private suspend fun callRegisterDevice(device: Device) {
         try {
-            val remoteDeviceInfo = gemApiClient.getDevice(device.id).body()
+            val remoteDeviceInfo = gemApiClient.getDevice(device.id)
             when {
                 remoteDeviceInfo == null -> gemApiClient.registerDevice(device)
                 remoteDeviceInfo.hasChanges(device) -> {
@@ -134,7 +134,7 @@ class DeviceRepository(
         }
 
         val remoteSubscriptions = try {
-            gemApiClient.getSubscriptions(deviceId).body() ?: throw Exception()
+            gemApiClient.getSubscriptions(deviceId) ?: throw Exception()
         } catch (_: Exception) {
             emptyList()
         }
@@ -142,7 +142,9 @@ class DeviceRepository(
             subscriptionsIndex.remove("${it.chain.string}_${it.address}_${it.wallet_index}")
         }
         if (subscriptionsIndex.isNotEmpty()) {
-            gemApiClient.addSubscriptions(deviceId, subscriptionsIndex.values.toList())
+            try {
+                gemApiClient.addSubscriptions(deviceId, subscriptionsIndex.values.toList())
+            } catch (_: Throwable) {}
             increaseSubscriptionVersion()
             syncDeviceInfo()
         }

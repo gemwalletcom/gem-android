@@ -57,11 +57,13 @@ class PriceAlertRepository(
         }
 
         launch(Dispatchers.IO) {
-            if (enabled) {
-                gemClient.includePriceAlert(getDeviceId(), priceAlert)
-            } else {
-                gemClient.excludePriceAlert(getDeviceId(), priceAlert)
-            }
+            try {
+                if (enabled) {
+                    gemClient.includePriceAlert(getDeviceId(), priceAlert)
+                } else {
+                    gemClient.excludePriceAlert(getDeviceId(), priceAlert)
+                }
+            } catch (_: Throwable) { }
             sync()
         }
     }
@@ -69,7 +71,9 @@ class PriceAlertRepository(
     override suspend fun putPriceAlert(alert: PriceAlert) = withContext(Dispatchers.IO) {
         priceAlertsDao.put(listOf(alert.toRecord()))
         launch(Dispatchers.IO) {
-            gemClient.includePriceAlert(getDeviceId(), listOf(alert))
+            try {
+                gemClient.includePriceAlert(getDeviceId(), listOf(alert))
+            } catch (_: Throwable) {}
         }
         Unit
     }
@@ -92,13 +96,24 @@ class PriceAlertRepository(
     }
 
     private suspend fun sync() {
-        gemClient.includePriceAlert(getDeviceId(), getPriceAlerts().firstOrNull() ?: emptyList())
+        try {
+            gemClient.includePriceAlert(
+                getDeviceId(),
+                getPriceAlerts().firstOrNull() ?: emptyList()
+            )
+        } catch (_: Throwable) {}
         val local = priceAlertsDao.getAlerts().firstOrNull() ?: emptyList()
-        val remote = gemClient.getPriceAlerts(getDeviceId()).getOrNull() ?: return
+        val remote = try {
+            gemClient.getPriceAlerts(getDeviceId())
+        } catch (_: Throwable) {
+            return
+        }
         val toExclude = remote.filter { remote ->
             local.firstOrNull { it.assetId.toAssetId() == remote.assetId } == null
         }
-        gemClient.excludePriceAlert(getDeviceId(), toExclude)
+        try {
+            gemClient.excludePriceAlert(getDeviceId(), toExclude)
+        } catch (_: Throwable) { }
     }
 
     private fun getDeviceId() = getDeviceIdCase.getDeviceId()

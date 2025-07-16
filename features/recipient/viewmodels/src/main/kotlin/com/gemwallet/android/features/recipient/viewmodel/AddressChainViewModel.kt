@@ -54,7 +54,9 @@ class AddressChainViewModel @Inject constructor(
         state.update { State(isLoading = true) }
         nameResolveJob = viewModelScope.launch(Dispatchers.IO) {
             delay(500L)
-            val nameRecord = gemClient.resolve(input.lowercase(Locale.getDefault()), chain.string).getOrNull()
+            val nameRecord = try {
+                gemClient.resolve(input.lowercase(Locale.getDefault()), chain.string)
+            } catch (_: Throwable) { null }
             setNameRecord(nameRecord, input)
         }
     }

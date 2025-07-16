@@ -117,8 +117,21 @@ class AssetsRepository @Inject constructor(
         }.firstOrNull() ?: return@withContext
         val currency = assetInfo.price?.currency ?: Currency.USD
         val assetIdIdentifier = assetId.toIdentifier()
-        val assetFullJob = async { gemApi.getAsset(assetIdIdentifier, currency.string).getOrNull() }
-        val marketInfoJob = async { gemApi.getMarket(assetIdIdentifier, currency.string).getOrNull() }
+        val assetFullJob = async {
+            try {
+                gemApi.getAsset(assetIdIdentifier, currency.string)
+            } catch (_: Throwable) {
+                null
+            }
+        }
+        val marketInfoJob = async {
+            try {
+                gemApi.getMarket(assetIdIdentifier, currency.string)
+            } catch (_: Throwable) {
+                null
+            }
+
+        }
 
         val assetFull = assetFullJob.await() ?: return@withContext
         val marketInfo = marketInfoJob.await()
@@ -129,9 +142,9 @@ class AssetsRepository @Inject constructor(
             decimals = assetInfo.asset.decimals,
             type = assetInfo.asset.type,
             chain = assetInfo.asset.chain(),
-            isBuyEnabled = assetFull.properties.isBuyable == true,
-            isSellEnabled = assetFull.properties.isSellable == true,
-            isStakeEnabled = assetFull.properties.isStakeable == true,
+            isBuyEnabled = assetFull.properties.isBuyable,
+            isSellEnabled = assetFull.properties.isSellable,
+            isStakeEnabled = assetFull.properties.isStakeable,
             isSwapEnabled = assetInfo.id().chain.isSwapSupport(),
             stakingApr = assetFull.properties.stakingApr,
             rank = assetFull.score.rank,
@@ -185,11 +198,12 @@ class AssetsRepository @Inject constructor(
     }
 
     fun getTokenInfo(assetId: AssetId): Flow<AssetInfo?> {
-        return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain).flatMapLatest {
-            if (it == null) {
+        return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
+            .flatMapLatest { assetInfo ->
+            if (assetInfo == null) {
                 assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel() }
             } else {
-                flow { emit(it.toModel()) }
+                flow { emit(assetInfo.toModel()) }
             }
         }
         .flowOn(Dispatchers.IO)
@@ -226,9 +240,9 @@ class AssetsRepository @Inject constructor(
             }
         }
         .toAssetInfoModel()
-        .map {
-            it.filter { !Chain.exclude().contains(it.asset.id.chain) }
-            .distinctBy { it.asset.id.toIdentifier() }
+        .map { assets ->
+            assets.filter { !Chain.exclude().contains(it.asset.id.chain) }
+                .distinctBy { it.asset.id.toIdentifier() }
         }
     }
 
@@ -240,19 +254,22 @@ class AssetsRepository @Inject constructor(
 
         return assetsDao.swapSearch(query, includeChains, includeAssetIds.map { it.toIdentifier() })
             .toAssetInfoModel()
-            .map {
-                it.filter { !Chain.exclude().contains(it.asset.id.chain) }
+            .map { assets ->
+                assets.filter { !Chain.exclude().contains(it.asset.id.chain) }
                     .distinctBy { it.asset.id.toIdentifier() }
             }
     }
 
     suspend fun resolve(wallet: Wallet, assetsId: List<AssetId>) = withContext(Dispatchers.IO) {
         if (assetsId.isEmpty()) return@withContext
-        val assetsFull = gemApi.getAssets(assetsId.map { it.toIdentifier() }).getOrNull() ?: return@withContext
-        assetsFull.forEach {
-            val asset = it.asset
-            add(wallet.id, wallet.getAccount(asset.chain())?.address ?: return@forEach, asset, true)
-            runCatching { assetsDao.addLinks(it.links.toAssetLinkRecord(asset.id)) }
+        try {
+            gemApi.getAssets(assetsId.map { it.toIdentifier() }).forEach {
+                val asset = it.asset
+                add(wallet.id, wallet.getAccount(asset.chain())?.address ?: return@forEach, asset, true)
+                runCatching { assetsDao.addLinks(it.links.toAssetLinkRecord(asset.id)) }
+            }
+        } catch (_: Throwable) {
+            return@withContext
         }
 
         val balancesJob = async(Dispatchers.IO) {
@@ -264,8 +281,11 @@ class AssetsRepository @Inject constructor(
     fun importAssets(wallet: Wallet) = scope.launch(Dispatchers.IO) {
         launch(Dispatchers.IO) {
             delay(2000) // Wait subscription - token processing
-            val availableAssetsId = gemApi.getAssets(getDeviceIdCase.getDeviceId(), wallet.index).getOrNull()
-                ?: return@launch
+            val availableAssetsId = try {
+                gemApi.getAssets(getDeviceIdCase.getDeviceId(), wallet.index)
+            } catch (_: Throwable) {
+                return@launch
+            }
             availableAssetsId.mapNotNull { it.toAssetId() }.filter { it.tokenId != null }
                 .map { assetId ->
                     async {

@@ -111,4 +111,3 @@ object AssetsModule {
         )
     }
 }
-

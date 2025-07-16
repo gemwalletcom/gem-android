@@ -34,7 +34,11 @@ class StakeRepository(
     private val recommendedValidators = Config().getValidators()
 
     suspend fun sync(chain: Chain, address: String) = withContext(Dispatchers.IO) {
-        val apr = gemApiClient.getAsset(chain.string, Currency.USD.string).getOrNull()?.properties?.stakingApr ?: return@withContext // TODO: Throw exception
+        val apr = try {
+            gemApiClient.getAsset(chain.string, Currency.USD.string).properties.stakingApr ?: return@withContext
+        } catch (_: Throwable) {
+            return@withContext
+        }
         syncValidators(chain, apr)
         syncDelegations(chain, address, apr)
     }
@@ -49,11 +53,14 @@ class StakeRepository(
     }
 
     suspend fun syncValidators(chain: Chain? = null, apr: Double) = withContext(Dispatchers.IO) {
-        val validatorsInfo = gemApiStaticClient.getValidators(chain?.string ?: return@withContext)
-            .getOrNull()
-            ?.groupBy { it.id }
-            ?.mapValues { it.value.firstOrNull() }
-            ?: emptyMap()
+        chain?.string ?: return@withContext
+        val validatorsInfo = try {
+            gemApiStaticClient.getValidators(chain.string)
+                .groupBy { it.id }
+                .mapValues { it.value.firstOrNull() }
+        } catch (_: Throwable) {
+            emptyMap()
+        }
         val validators = stakeClients.filter { it.supported(chain) }
             .asFlow()
             .mapNotNull {

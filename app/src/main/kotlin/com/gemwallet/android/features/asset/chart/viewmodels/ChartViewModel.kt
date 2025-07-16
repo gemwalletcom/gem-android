@@ -66,11 +66,15 @@ class ChartViewModel @Inject constructor(
     suspend fun request(assetInfo: AssetInfo, period: ChartPeriod): ChartUIModel {
         val currency = assetInfo.price?.currency ?: Currency.USD
 
-        val prices = gemApiClient.getChart(
-            assetId = assetInfo.asset.id.toIdentifier(),
-            currency = currency.string,
-            period = period.string
-        ).getOrNull()?.prices?.sortedBy { it.timestamp } ?: emptyList()
+        val prices = try {
+            gemApiClient.getChart(
+                assetId = assetInfo.asset.id.toIdentifier(),
+                currency = currency.string,
+                period = period.string
+            ).prices.sortedBy { it.timestamp }
+        } catch (_: Throwable) {
+            emptyList()
+        }
 
         val periodStartPrice = prices.firstOrNull()?.value ?: 0.0f
         val currentPoint = if (assetInfo.price == null) null else {
