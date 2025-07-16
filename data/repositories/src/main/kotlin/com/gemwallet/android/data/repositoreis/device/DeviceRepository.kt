@@ -120,8 +120,59 @@ class DeviceRepository(
 
     override suspend fun syncSubscription(wallets: List<Wallet>) {
         val deviceId = getDeviceIdCase.getDeviceId()
-        val subscriptionsIndex = mutableMapOf<String, Subscription>()
+        val subscriptionsIndex = buildSubscriptionIndex(wallets)
+        val remoteSubscriptions = getRemoteSubscriptions(deviceId)
 
+        val toAddSubscriptions = subscriptionsIndex.toMutableMap()
+        remoteSubscriptions.forEach {
+            toAddSubscriptions.remove("${it.chain.string}_${it.address}_${it.wallet_index}")
+        }
+
+        val toRemoveSubscription = remoteSubscriptions.filter {
+            !subscriptionsIndex.contains("${it.chain.string}_${it.address}_${it.wallet_index}")
+        }
+
+        addSubscriptions(deviceId, toAddSubscriptions.values.toList())
+        removeSubscriptions(deviceId, toRemoveSubscription)
+
+        if (toAddSubscriptions.isNotEmpty()) {
+            increaseSubscriptionVersion()
+            syncDeviceInfo()
+        }
+    }
+
+    private suspend fun getRemoteSubscriptions(deviceId: String): List<Subscription> {
+        return try {
+            gemApiClient.getSubscriptions(deviceId) ?: throw Exception()
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
+    private suspend fun addSubscriptions(deviceId: String, subscriptions: List<Subscription>) {
+        if (subscriptions.isEmpty()) {
+            return
+        }
+        try {
+            gemApiClient.addSubscriptions(deviceId, subscriptions)
+        } catch (err: Throwable) {
+            Log.d("GEM_API", "Add subscription error: ", err)
+        }
+    }
+
+    private suspend fun removeSubscriptions(deviceId: String, subscriptions: List<Subscription>) {
+        if (subscriptions.isEmpty()) {
+            return
+        }
+        try {
+            gemApiClient.deleteSubscriptions(deviceId, subscriptions)
+        } catch (err: Throwable) {
+            Log.d("GEM_API", "Remove subscription error: ", err)
+        }
+    }
+
+    private fun buildSubscriptionIndex(wallets: List<Wallet>): Map<String, Subscription> {
+        val subscriptionsIndex = mutableMapOf<String, Subscription>()
         wallets.forEach { wallet ->
             wallet.accounts.forEach { account ->
                 val checksum = AnyAddress(account.address, WCChainTypeProxy().invoke(account.chain)).description()
@@ -132,22 +183,7 @@ class DeviceRepository(
                 )
             }
         }
-
-        val remoteSubscriptions = try {
-            gemApiClient.getSubscriptions(deviceId) ?: throw Exception()
-        } catch (_: Exception) {
-            emptyList()
-        }
-        remoteSubscriptions.forEach {
-            subscriptionsIndex.remove("${it.chain.string}_${it.address}_${it.wallet_index}")
-        }
-        if (subscriptionsIndex.isNotEmpty()) {
-            try {
-                gemApiClient.addSubscriptions(deviceId, subscriptionsIndex.values.toList())
-            } catch (_: Throwable) {}
-            increaseSubscriptionVersion()
-            syncDeviceInfo()
-        }
+        return subscriptionsIndex
     }
 
     private fun getSubscriptionVersion(): Int {

@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.wallets
 
 import com.gemwallet.android.blockchain.operators.DeleteKeyStoreOperator
+import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.wallet.DeleteWallet
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.wallet.core.primitives.WalletType
@@ -15,6 +16,7 @@ class DeleteWalletOperator @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val walletsRepository: WalletsRepository,
     private val deleteKeyStoreOperator: DeleteKeyStoreOperator,
+    private val syncSubscription: SyncSubscription,
 ) : DeleteWallet {
 
     override suspend fun deleteWallet(walletId: String, onBoard: () -> Unit, onComplete: () -> Unit) =
@@ -40,6 +42,7 @@ class DeleteWalletOperator @Inject constructor(
                     sessionRepository.setWallet(wallets.first())
                 }
             }
+            walletsRepository.getAll().firstOrNull()?.let { syncSubscription.syncSubscription(it) }
             withContext(Dispatchers.Main) {
                 onComplete()
             }
