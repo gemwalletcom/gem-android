@@ -344,7 +344,7 @@ sealed class ConfirmParams {
     }
 }
 
-fun uniffi.gemstone.ApprovalData.toModel(): ConfirmParams.SwapParams.ApprovalData {
+fun uniffi.gemstone.SwapperApprovalData.toModel(): ConfirmParams.SwapParams.ApprovalData {
     return ConfirmParams.SwapParams.ApprovalData(
         token = this.token,
         spender = this.spender,

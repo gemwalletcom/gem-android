@@ -5,6 +5,7 @@
 package com.wallet.core.blockchain.ethereum
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class EthereumFeeHistory (

@@ -12,17 +12,17 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Wallet
 import uniffi.gemstone.Config
 import uniffi.gemstone.FetchQuoteData
-import uniffi.gemstone.GemQuoteAsset
-import uniffi.gemstone.GemSwapMode
-import uniffi.gemstone.GemSwapOptions
+import uniffi.gemstone.SwapperQuoteAsset
+import uniffi.gemstone.SwapperMode
+import uniffi.gemstone.SwapperOptions
 import uniffi.gemstone.GemSwapper
 import uniffi.gemstone.Permit2Data
 import uniffi.gemstone.Permit2Detail
 import uniffi.gemstone.PermitSingle
-import uniffi.gemstone.SwapAssetList
-import uniffi.gemstone.SwapQuote
-import uniffi.gemstone.SwapQuoteData
-import uniffi.gemstone.SwapQuoteRequest
+import uniffi.gemstone.SwapperAssetList
+import uniffi.gemstone.SwapperQuote
+import uniffi.gemstone.SwapperQuoteData
+import uniffi.gemstone.SwapperQuoteRequest
 import uniffi.gemstone.getDefaultSlippage
 import uniffi.gemstone.permit2DataToEip712Json
 import java.math.BigInteger
@@ -34,14 +34,14 @@ class SwapRepository(
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
 ) : GetSwapSupportedCase {
 
-    suspend fun getQuotes(ownerAddress: String, destination: String, from: Asset, to: Asset, amount: String): List<SwapQuote>? {
-        val swapRequest = SwapQuoteRequest(
-            fromAsset = GemQuoteAsset(
+    suspend fun getQuotes(ownerAddress: String, destination: String, from: Asset, to: Asset, amount: String): List<SwapperQuote>? {
+        val swapRequest = SwapperQuoteRequest(
+            fromAsset = SwapperQuoteAsset(
                 id = from.id.toIdentifier(),
                 symbol = from.symbol,
                 decimals = from.decimals.toUInt(),
             ),
-            toAsset = GemQuoteAsset(
+            toAsset = SwapperQuoteAsset(
                 id = to.id.toIdentifier(),
                 symbol = to.symbol,
                 decimals = to.decimals.toUInt(),
@@ -49,8 +49,8 @@ class SwapRepository(
             walletAddress = ownerAddress,
             destinationAddress = destination,
             value = amount,
-            mode = GemSwapMode.EXACT_IN,
-            options = GemSwapOptions(
+            mode = SwapperMode.EXACT_IN,
+            options = SwapperOptions(
                 slippage = getDefaultSlippage(from.chain().string),
                 fee = Config().getSwapConfig().referralFee,
                 preferredProviders = emptyList(),
@@ -61,7 +61,7 @@ class SwapRepository(
         return quote
     }
 
-    suspend fun getQuoteData(quote: SwapQuote, wallet: Wallet): SwapQuoteData {
+    suspend fun getQuoteData(quote: SwapperQuote, wallet: Wallet): SwapperQuoteData {
         val permit = gemSwapper.fetchPermit2ForQuote(quote = quote)
 
         if (permit == null) {
@@ -102,7 +102,7 @@ class SwapRepository(
         )
     }
 
-    override fun getSwapSupportChains(assetId: AssetId): SwapAssetList {
+    override fun getSwapSupportChains(assetId: AssetId): SwapperAssetList {
         return gemSwapper.supportedChainsForFromAsset(assetId.toIdentifier())
     }
 }

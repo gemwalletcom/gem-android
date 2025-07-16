@@ -1,10 +1,10 @@
 package com.gemwallet.android.features.swap.models
 
 import com.gemwallet.android.ui.components.image.getSwapProviderIcon
-import uniffi.gemstone.SwapProviderType
+import uniffi.gemstone.SwapperProviderType
 
 data class SwapProviderItem(
-    val swapProvider: SwapProviderType,
+    val swapProvider: SwapperProviderType,
     val price: String? = null,
     val fiat: String? = null,
 ) {
