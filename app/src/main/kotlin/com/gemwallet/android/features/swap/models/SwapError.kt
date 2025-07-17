@@ -9,6 +9,6 @@ sealed interface SwapError {
     object NotSupportedAsset : SwapError
     object NotImplemented : SwapError
     object NetworkError : SwapError
-    data class InsufficientBalance(val amount: String) : SwapError
+    data class InsufficientBalance(val symbol: String) : SwapError
     data class Unknown(val message: String) : SwapError
 }

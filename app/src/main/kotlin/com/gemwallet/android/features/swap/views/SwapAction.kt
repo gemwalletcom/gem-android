@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -20,10 +19,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gemwallet.android.features.swap.models.SwapError
 import com.gemwallet.android.features.swap.models.SwapPairUIModel
 import com.gemwallet.android.features.swap.models.SwapState
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.buttons.disableButtonColor
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.mainActionHeight
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator20
@@ -45,12 +44,8 @@ internal fun SwapAction(swapState: SwapState, pair: SwapPairUIModel, onSwap: () 
         }
         Button(
             modifier = Modifier.fillMaxWidth().heightIn(mainActionHeight),
-            colors = ButtonDefaults.buttonColors().copy(
-                disabledContainerColor = disableButtonColor,
-                disabledContentColor = MaterialTheme.colorScheme.onPrimary,
-            ),
             onClick = onSwap,
-            enabled = (swapState == SwapState.Ready || swapState == SwapState.RequestApprove || swapState is SwapState.Error)
+            enabled = (swapState == SwapState.Ready || swapState == SwapState.RequestApprove || swapState !is SwapState.Error)
         ) {
             when (swapState) {
                 SwapState.None,
@@ -82,7 +77,10 @@ internal fun SwapAction(swapState: SwapState, pair: SwapPairUIModel, onSwap: () 
 
                 is SwapState.Error -> Text(
                     modifier = Modifier.padding(4.dp),
-                    text = stringResource(R.string.common_try_again),
+                    text = when(swapState.error) {
+                        is SwapError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_balance, swapState.error.symbol)
+                        else -> stringResource(R.string.common_try_again)
+                    },
                     fontSize = 18.sp,
                 )
             }

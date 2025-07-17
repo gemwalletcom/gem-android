@@ -52,8 +52,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
-import uniffi.gemstone.SwapperProvider
 import uniffi.gemstone.SwapperException
+import uniffi.gemstone.SwapperProvider
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
@@ -197,11 +197,6 @@ class SwapViewModel @Inject constructor(
             swapScreenState.update { SwapState.None }
             return@mapLatest emptyList()
         }
-//        TODO: Change balance checking
-//        if (fromAsset.balance.balanceAmount.available < fromValue.toDouble()) {
-//            swapScreenState.update { SwapState.Error(SwapError.InsufficientBalance(data.first)) }
-//            return@mapLatest emptyList()
-//        }
         swapScreenState.update { SwapState.GetQuote }
         delay(500L) // User input type - doesn't want spam nodes
         val quotes = try {
@@ -266,9 +261,19 @@ class SwapViewModel @Inject constructor(
     .mapLatest {
         val quote = it.first ?: return@mapLatest null
         val assets = it.second ?: return@mapLatest null
+        val fromAsset = assets.from
+        val availableBalance = fromAsset?.balance?.balance?.available?.toBigInteger() ?: BigInteger.ZERO
+        val fromValue = quote.fromValue
         val amount = assets.to?.asset?.format(Crypto(quote.toValue), 8, showSymbol = false) ?: ""
         withContext(Dispatchers.Main) { toValue.edit { replace(0, length, amount) } }
-        swapScreenState.update { SwapState.Ready }
+
+        swapScreenState.update {
+            if (availableBalance < fromValue.toBigInteger()) {
+                SwapState.Error(SwapError.InsufficientBalance(fromAsset?.asset?.symbol ?: ""))
+            } else {
+                SwapState.Ready
+            }
+        }
         quote
     }
     .flowOn(Dispatchers.Default)

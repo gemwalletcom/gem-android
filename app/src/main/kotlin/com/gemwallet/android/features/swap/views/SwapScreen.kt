@@ -214,7 +214,10 @@ fun SwapScreen(
         }
 
         if (isShowPriceImpactAlert) {
-            PriceImpactWarningDialog(priceImpact, pair.from.asset, { isShowPriceImpactAlert = false }) {
+            PriceImpactWarningDialog(
+                priceImpact = priceImpact,
+                asset = pair.from.asset,
+                onDismiss = { isShowPriceImpactAlert = false }) {
                 isShowPriceImpactAlert = false
                 onSwap()
             }
@@ -294,8 +297,22 @@ private fun CurrentSwapProvider(
 
 @Composable
 private fun SwapError(state: SwapState) {
-    if (state !is SwapState.Error || state.error == SwapError.None) {
+    if (state !is SwapState.Error) {
         return
+    }
+
+    val errorText = when (state.error) {
+        SwapError.None -> ""
+        SwapError.IncorrectInput -> stringResource(R.string.common_required_field, stringResource(R.string.swap_you_pay))
+        SwapError.NoQuote -> stringResource(R.string.errors_swap_no_quote_available)
+        SwapError.NotSupportedAsset -> stringResource(R.string.errors_swap_not_supported_asset)
+        SwapError.NotSupportedChain -> stringResource(R.string.errors_swap_not_supported_chain)
+        SwapError.NotImplemented,
+        SwapError.NotSupportedPair -> stringResource(R.string.errors_swap_not_supported_pair)
+        SwapError.NetworkError -> "Node not available. Check internet connection."
+        is SwapError.Unknown -> "${stringResource(R.string.errors_unknown_try_again)}: ${state.error.message}"
+        SwapError.None,
+        is SwapError.InsufficientBalance -> return
     }
     Column(
         modifier = Modifier
@@ -324,18 +341,7 @@ private fun SwapError(state: SwapState) {
         }
         Spacer2()
         Text(
-            text = when (state.error) {
-                SwapError.None -> ""
-                SwapError.IncorrectInput -> stringResource(R.string.common_required_field, stringResource(R.string.swap_you_pay))
-                SwapError.NoQuote -> stringResource(R.string.errors_swap_no_quote_available)
-                SwapError.NotSupportedAsset -> stringResource(R.string.errors_swap_not_supported_asset)
-                SwapError.NotSupportedChain -> stringResource(R.string.errors_swap_not_supported_chain)
-                SwapError.NotImplemented,
-                SwapError.NotSupportedPair -> stringResource(R.string.errors_swap_not_supported_pair)
-                SwapError.NetworkError -> "Node not available. Check internet connection."
-                is SwapError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_balance, state.error.amount)
-                is SwapError.Unknown -> "${stringResource(R.string.errors_unknown_try_again)}: ${state.error.message}"
-            },
+            text = errorText,
             style = MaterialTheme.typography.bodyMedium,
         )
     }
