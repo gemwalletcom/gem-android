@@ -22,11 +22,11 @@ class ShowSystemNotification @Inject constructor(@ApplicationContext val applica
         title: String?,
         subtitle: String?,
         channelId: String?,
-        walletIndex: String?,
+        walletIndex: Int?,
         assetId: String?
     ) {
         val intent = Intent(applicationContext, MainActivity::class.java)
-            .putExtra("walletIndex", walletIndex?.toIntOrNull())
+            .putExtra("walletIndex", walletIndex)
             .putExtra("assetId", assetId)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val pendingIntent = PendingIntent.getActivity(

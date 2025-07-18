@@ -5,7 +5,7 @@ interface ShowSystemNotification {
         title: String?,
         subtitle: String?,
         channelId: String?,
-        walletIndex: String?,
+        walletIndex: Int?,
         assetId: String?,
     )
 }

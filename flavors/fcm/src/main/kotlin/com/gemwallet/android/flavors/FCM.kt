@@ -4,15 +4,17 @@ import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.SetPushToken
 import com.gemwallet.android.cases.device.SyncDeviceInfo
 import com.gemwallet.android.cases.pushes.ShowSystemNotification
+import com.gemwallet.android.serializer.jsonEncoder
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.wallet.core.primitives.PushNotificationAsset
+import com.wallet.core.primitives.PushNotificationTransaction
+import com.wallet.core.primitives.PushNotificationTypes
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.json.JSONObject
 import javax.inject.Inject
-import kotlin.let
 
 @AndroidEntryPoint
 class FCM : FirebaseMessagingService() {
@@ -33,22 +35,13 @@ class FCM : FirebaseMessagingService() {
             return
         }
         scope.launch {
-            val (assetId, walletIndex) = message.data["data"].let { rawData ->
-                try {
-                    JSONObject(rawData).let {
-                        Pair(
-                            it.getString("assetId"),
-                            it.getString("walletIndex"),
-                        )
-                    }
-                } catch (_: Throwable) {
-                    Pair(null, null)
-                }
-            }
+            val rawType = message.data["type"]
+            val rawData = message.data["data"]
+            val data = parseData(rawType, rawData)
             val title = message.notification?.title
             val subtitle = message.notification?.body
             val channelId = message.data["type"]
-            showSystemNotification.showNotification(title, subtitle, channelId, walletIndex, assetId)
+            showSystemNotification.showNotification(title, subtitle, channelId, data?.first, data?.second)
         }
     }
 
@@ -57,11 +50,32 @@ class FCM : FirebaseMessagingService() {
             setPushToken.setPushToken(token)
             syncDeviceInfo.syncDeviceInfo()
         }
-
     }
 
-    private data class MessageData (
-        val walletIndex: Int?,
-        val assetId: String?,
-    )
+    companion object {
+        internal fun parseData(rawType: String?, rawData: String?): Pair<Int?, String?>? {
+            if (rawType.isNullOrEmpty() || rawData.isNullOrEmpty()) {
+                return null
+            }
+            val type = PushNotificationTypes.entries.firstOrNull { it.string == rawType } ?: return null
+            return try {
+                when (type) {
+                    PushNotificationTypes.Transaction -> jsonEncoder.decodeFromString<PushNotificationTransaction>(rawData).let {
+                        Pair(it.walletIndex, it.assetId)
+                    }
+
+                    PushNotificationTypes.Asset -> Pair(
+                        null,
+                        jsonEncoder.decodeFromString<PushNotificationAsset>(rawData).assetId,
+                    )
+                    PushNotificationTypes.Test,
+                    PushNotificationTypes.PriceAlert,
+                    PushNotificationTypes.BuyAsset,
+                    PushNotificationTypes.SwapAsset -> null
+                }
+            } catch (_: Throwable) {
+                null
+            }
+        }
+    }
 }

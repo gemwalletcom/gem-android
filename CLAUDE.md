@@ -1,3 +1,7 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
 # Gem Wallet Android - Claude Code Reference
 
 ## Project Overview
@@ -85,21 +89,27 @@ just release
 
 # Extract universal APK from bundle
 just extract-universal-apk
+
+# Clean build
+./gradlew clean
 ```
 
 ### Testing
 ```bash
-# Build test APK
-just build-test
-
-# Run connected Android tests
-just test
-
 # Run unit tests
 ./gradlew test
 
 # Run specific test suite
 ./gradlew :app:testGoogleDebugUnitTest
+
+# Build test APK
+./gradlew assembleGoogleDebugAndroidTest
+
+# Run connected Android tests
+./gradlew connectedGoogleDebugAndroidTest
+
+# Run all tests
+./gradlew check
 ```
 
 ### Docker
@@ -138,7 +148,7 @@ TAG=feature-branch just build-app
 
 ### Build Flavors
 - **google**: Google Play Store version with Firebase/FCM
-- **fdroid**: F-Droid version without proprietary dependencies  
+- **huawei**: Huawei AppGallery version
 - **samsung**: Samsung Galaxy Store version
 - **solana**: Solana-focused variant
 - **universal**: Universal build
@@ -148,8 +158,12 @@ TAG=feature-branch just build-app
 - **Hilt**: Dependency injection
 - **Room**: Local database
 - **Retrofit**: Network layer
-- **WalletConnect**: dApp connectivity
+- **WalletConnect**: dApp connectivity via Reown SDK
 - **Rust Core**: Cryptographic operations via JNI
+- **Wallet Core**: TrustWallet core library for blockchain operations
+- **Gemstone**: Internal library for additional functionality
+- **Coil**: Image loading
+- **Ktor**: WebSocket client for real-time data
 
 ## CI/CD
 
@@ -198,6 +212,9 @@ just bootstrap
 ```bash
 # Reinstall NDK
 just install-ndk
+
+# Install Rust toolchains
+just install-toolchains
 ```
 
 **Submodule Issues:**
@@ -231,3 +248,7 @@ just core-upgrade
 - **Memory**: Configure Android Studio with sufficient heap size
 - **Build Cache**: Gradle build cache is enabled for faster builds
 - **Docker**: Multi-stage builds optimize image size and build speed
+
+## Development Memories
+
+- You will use only gradle for tests and build
