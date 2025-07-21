@@ -1,8 +1,7 @@
 package com.gemwallet.android.features.transactions.details.model
 
 import com.gemwallet.android.model.AssetInfo
-import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.AssetType
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.SwapProvider
@@ -11,10 +10,7 @@ import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
 
 class TxDetailsScreenModel(
-    val assetId: AssetId,
-    val assetSymbol: String,
-    val assetIcon: String,
-    val assetType: AssetType,
+    val asset: Asset,
     val cryptoAmount: String,
     val fiatAmount: String,
     val createdAt: String,
@@ -23,8 +19,6 @@ class TxDetailsScreenModel(
     val to: String,
     val memo: String?,
     val state: TransactionState,
-    val networkTitle: String,
-    val networkSymbol: String,
     val feeCrypto: String,
     val feeFiat: String,
     val type: TransactionType,

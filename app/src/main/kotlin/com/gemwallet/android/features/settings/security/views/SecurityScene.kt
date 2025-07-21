@@ -35,8 +35,8 @@ import com.gemwallet.android.MainActivity
 import com.gemwallet.android.features.settings.security.viewmodels.SecurityViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.designsystem.Spacer4
-import com.gemwallet.android.ui.components.list_item.PropertyItem
-import com.gemwallet.android.ui.components.list_item.PropertyTitleText
+import com.gemwallet.android.ui.components.list_item.property.PropertyItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
 
 @Composable

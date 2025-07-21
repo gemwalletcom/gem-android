@@ -11,18 +11,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.designsystem.listItemIconSize
+import com.gemwallet.android.ui.components.designsystem.listItemSupportIconSize
 import com.wallet.core.primitives.Asset
 
 @Composable
 fun IconWithBadge(
     asset: Asset,
     size: Dp = listItemIconSize,
+    supportSize: Dp = listItemSupportIconSize,
 ) {
     IconWithBadge(
         icon = asset.getIconUrl(),
         supportIcon = asset.getSupportIconUrl(),
         placeholder = asset.type.string,
-        size = size
+        size = size,
+        supportSize = supportSize,
     )
 }
 
@@ -32,6 +35,7 @@ fun IconWithBadge(
     placeholder: String? = null,
     supportIcon: Any? = null,
     size: Dp = listItemIconSize,
+    supportSize: Dp = listItemSupportIconSize,
 ) {
     icon ?: return
     Box {
@@ -44,7 +48,7 @@ fun IconWithBadge(
         supportIcon?.let {
             AsyncImage(
                 modifier = Modifier
-                    .size(18.dp)
+                    .size(supportSize)
                     .align(Alignment.Companion.BottomEnd)
                     .border(0.5.dp, MaterialTheme.colorScheme.surface, CircleShape),
                 model = supportIcon,

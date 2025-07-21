@@ -169,7 +169,6 @@ class AsseDetailsViewModel @Inject constructor(
                     assetInfo.price?.price?.priceChangePercentage24h ?: 0.0
                 ),
                 tokenType = asset.type,
-                networkTitle = "${asset.id.chain.asset().name} (${asset.type.string})",
                 isBuyEnabled = assetInfo.metadata?.isBuyEnabled == true,
                 isSwapEnabled = assetInfo.metadata?.isSwapEnabled == true,
                 explorerName = explorerName,

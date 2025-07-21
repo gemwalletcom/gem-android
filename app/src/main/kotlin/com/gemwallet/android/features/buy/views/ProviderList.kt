@@ -9,10 +9,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import com.gemwallet.android.features.buy.models.BuyFiatProviderUIModel
 import com.gemwallet.android.ui.components.image.AsyncImage
-import com.gemwallet.android.ui.components.list_item.DataBadgeChevron
-import com.gemwallet.android.ui.components.list_item.PropertyDataText
-import com.gemwallet.android.ui.components.list_item.PropertyItem
-import com.gemwallet.android.ui.components.list_item.PropertyTitleText
+import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
+import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
+import com.gemwallet.android.ui.components.list_item.property.PropertyItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.wallet.core.primitives.FiatProvider
 

@@ -10,20 +10,49 @@ import uniffi.gemstone.SwapperProvider
 
 fun Int.getDrawableUri() = "android.resource://com.gemwallet.android/drawable/$this"
 
+fun Chain.getIconUrl(): String = "file:///android_asset/chains/icons/${string}.svg"
+
+fun AssetId.getIconUrl(): String = when {
+    tokenId.isNullOrEmpty() -> when (chain) {
+        Chain.Optimism,
+        Chain.Base,
+        Chain.ZkSync,
+        Chain.Arbitrum,
+        Chain.Abstract,
+        Chain.Unichain,
+        Chain.Ink,
+        Chain.Linea,
+        Chain.OpBNB,
+        Chain.Blast,
+        Chain.World,
+        Chain.Manta -> "file:///android_asset/chains/icons/${Chain.Ethereum.string}.svg"
+        else -> chain.getIconUrl()
+    }
+    else -> "https://assets.gemwallet.com/blockchains/${chain.string}/assets/${tokenId}/logo.png"
+}
+
+fun AssetId.getSupportIconUrl(): String? = when (type()) {
+    AssetSubtype.NATIVE -> when (chain) {
+        Chain.Optimism,
+        Chain.Base,
+        Chain.ZkSync,
+        Chain.Arbitrum,
+        Chain.Abstract,
+        Chain.Unichain,
+        Chain.Ink,
+        Chain.Linea,
+        Chain.OpBNB,
+        Chain.Blast,
+        Chain.World,
+        Chain.Manta -> "file:///android_asset/chains/icons/${chain.string}.svg"
+        else -> null
+    }
+    AssetSubtype.TOKEN -> chain.getIconUrl()
+}
+
 fun Asset.getIconUrl(): String = id.getIconUrl()
 
 fun Asset.getSupportIconUrl(): String? = id.getSupportIconUrl()
-
-fun AssetId.getIconUrl(): String {
-    return when {
-        tokenId.isNullOrEmpty() -> chain.getIconUrl()
-        else -> "https://assets.gemwallet.com/blockchains/${chain.string}/assets/${tokenId}/logo.png"
-    }
-}
-
-fun AssetId.getSupportIconUrl(): String? = if (type() == AssetSubtype.NATIVE) null else chain.getIconUrl()
-
-fun Chain.getIconUrl(): String = "file:///android_asset/chains/icons/${string}.svg"
 
 fun FiatProvider.getFiatProviderIcon(): String = "file:///android_asset/fiat/${name.lowercase()}.png"
 

@@ -50,9 +50,9 @@ import com.gemwallet.android.features.update_app.presents.InAppUpdateBanner
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.AssetHeadActions
-import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.components.pinnedAssetsHeader
 import com.gemwallet.android.ui.models.AssetItemUIModel
+import com.gemwallet.android.ui.open
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.BannerEvent
 import uniffi.gemstone.Config

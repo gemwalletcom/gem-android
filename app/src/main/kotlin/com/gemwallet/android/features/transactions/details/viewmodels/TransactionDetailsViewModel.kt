@@ -7,7 +7,6 @@ import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.cases.transactions.GetTransaction
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getAssociatedAssetIds
 import com.gemwallet.android.ext.getNftMetadata
@@ -18,7 +17,6 @@ import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.getRelativeDate
-import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.image.getSwapProviderIcon
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.SwapProvider
@@ -83,10 +81,7 @@ class TransactionDetailsViewModel @Inject constructor(
         val explorerUrl = swapExplorerUrl?.url ?: explorer.getTransactionUrl(blockExplorerName, tx.hash)
 
         TxDetailsScreenModel(
-            assetId = asset.id,
-            assetSymbol = asset.symbol,
-            assetIcon = asset.getIconUrl(),
-            assetType = asset.type,
+            asset = asset,
             cryptoAmount = asset.format(value),
             fiatAmount = fiat,
             createdAt = getRelativeDate(tx.createdAt),
@@ -95,8 +90,6 @@ class TransactionDetailsViewModel @Inject constructor(
             to = tx.to,
             memo = tx.memo,
             state = tx.state,
-            networkTitle = asset.id.chain.asset().name,
-            networkSymbol = asset.id.chain.asset().symbol,
             feeCrypto = feeCrypto,
             feeFiat = feeFiat,
             type = tx.type,

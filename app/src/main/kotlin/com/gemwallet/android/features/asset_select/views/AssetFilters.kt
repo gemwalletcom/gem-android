@@ -33,7 +33,6 @@ import com.gemwallet.android.ui.components.ChainItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.SwitchRow
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
@@ -112,9 +111,8 @@ fun AssetFilters(
                         val chain = it.id.chain
                         item {
                             ChainItem(
-                                chain = chain,
                                 title = chain.asset().name,
-                                icon = chain.getIconUrl(),
+                                icon = chain,
                                 trailing = {
                                     if (chainFilter.contains(chain)) {
                                         Icon(

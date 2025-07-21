@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components.list_item
+package com.gemwallet.android.ui.components.list_item.property
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
@@ -26,6 +26,7 @@ import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.components.list_item.ListItem
 
 @Composable
 fun PropertyItem(

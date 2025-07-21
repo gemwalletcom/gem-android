@@ -11,6 +11,7 @@ import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.wallet.core.primitives.Chain
 
@@ -18,7 +19,6 @@ import com.wallet.core.primitives.Chain
 fun ChainItem(
     title: String,
     modifier: Modifier = Modifier,
-    chain: Chain? = null,
     icon: Any? = null,
     dividerShowed: Boolean = true,
     trailing: @Composable (() -> Unit)? = null,
@@ -29,8 +29,7 @@ fun ChainItem(
         modifier = modifier.heightIn(64.dp),
         leading = @Composable {
             IconWithBadge(
-                icon = icon,
-                placeholder = chain?.string?.get(0).toString(),
+                icon = (icon as? Chain)?.getIconUrl() ?: icon,
             )
         },
         title = @Composable {
@@ -51,6 +50,6 @@ fun ChainItem(
 @Composable
 fun PreviewChainSelectItem() {
     MaterialTheme {
-        ChainItem(chain = Chain.Polygon, title = "Foo title") {}
+        ChainItem(icon = Chain.Polygon, title = "Foo title") {}
     }
 }

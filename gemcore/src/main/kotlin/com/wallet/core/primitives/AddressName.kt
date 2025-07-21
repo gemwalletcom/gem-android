@@ -8,12 +8,9 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-enum class EncodingType(val string: String) {
-	@SerialName("Hex")
-	Hex("Hex"),
-	@SerialName("Base58")
-	Base58("Base58"),
-	@SerialName("Base32")
-	Base32("Base32"),
-}
+data class AddressName (
+	val chain: Chain,
+	val address: String,
+	val name: String
+)
 

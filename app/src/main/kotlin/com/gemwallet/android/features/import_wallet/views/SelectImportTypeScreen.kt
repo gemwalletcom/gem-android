@@ -74,9 +74,8 @@ private fun SelectImportTypeScene(
             }
             items(chains.size) {
                 ChainItem(
-                    chain = chains[it].chain,
                     title = chains[it].title,
-                    icon = chains[it].icon,
+                    icon = chains[it].chain,
                 ) {
                     onSelect(ImportType(WalletType.single, chains[it].chain))
                 }
@@ -92,12 +91,12 @@ fun PreviewChainSelectScreen() {
         Column {
             SelectImportTypeScene(
                 chains = listOf(
-                    ChainUIState(title = "foo Chain #1", icon = "", chain = Chain.Bitcoin),
-                    ChainUIState(title = "foo Chain #2", icon = "", chain = Chain.Bitcoin),
-                    ChainUIState(title = "foo Chain #3", icon = "", chain = Chain.Bitcoin),
-                    ChainUIState(title = "foo Chain #4", icon = "", chain = Chain.Bitcoin),
-                    ChainUIState(title = "foo Chain #5", icon = "", chain = Chain.Bitcoin),
-                    ChainUIState(title = "foo Chain #6", icon = "", chain = Chain.Bitcoin),
+                    ChainUIState(title = "foo Chain #1", chain = Chain.Bitcoin),
+                    ChainUIState(title = "foo Chain #2", chain = Chain.Bitcoin),
+                    ChainUIState(title = "foo Chain #3", chain = Chain.Bitcoin),
+                    ChainUIState(title = "foo Chain #4", chain = Chain.Bitcoin),
+                    ChainUIState(title = "foo Chain #5", chain = Chain.Bitcoin),
+                    ChainUIState(title = "foo Chain #6", chain = Chain.Bitcoin),
                 ),
                 chainFilter = rememberTextFieldState(),
                 onClose = {},

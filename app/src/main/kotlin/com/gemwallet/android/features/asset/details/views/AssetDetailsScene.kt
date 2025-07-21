@@ -49,7 +49,6 @@ import com.gemwallet.android.BuildConfig
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getReserveBalanceUrl
-import com.gemwallet.android.ext.networkAsset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIModel
 import com.gemwallet.android.features.asset.details.models.AssetInfoUIState
@@ -68,17 +67,18 @@ import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding32
 import com.gemwallet.android.ui.components.image.getIconUrl
-import com.gemwallet.android.ui.components.list_item.DataBadgeChevron
-import com.gemwallet.android.ui.components.list_item.PropertyDataText
-import com.gemwallet.android.ui.components.list_item.PropertyItem
-import com.gemwallet.android.ui.components.list_item.PropertyTitleText
+import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
+import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
+import com.gemwallet.android.ui.components.list_item.property.PropertyItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
-import com.gemwallet.android.ui.open
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
 import com.gemwallet.android.ui.components.priceColor
 import com.gemwallet.android.ui.components.screen.FatalStateScene
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AssetIdAction
+import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
@@ -308,9 +308,7 @@ private fun LazyListScope.head(
         AmountListHead(
             amount = uiState.accountInfoUIModel.totalBalance,
             equivalent = uiState.accountInfoUIModel.totalFiat,
-            iconUrl = uiState.iconUrl,
-            supportIconUrl = if (uiState.asset.id.type() == AssetSubtype.NATIVE) null else uiState.asset.chain().getIconUrl(),
-            placeholder = uiState.asset.name.getOrNull(0)?.toString() ?: uiState.asset.type.string,
+            icon = uiState.asset,
         ) {
             AssetHeadActions(
                 walletType = uiState.accountInfoUIModel.walletType,
@@ -452,18 +450,7 @@ private fun LazyListScope.network(
     if (uiState.tokenType == AssetType.NATIVE) {
         return
     }
-    item {
-        PropertyItem(
-            modifier = Modifier.clickable { openNetwork(AssetId(uiState.asset.chain())) },
-            title = { PropertyTitleText(R.string.transfer_network) },
-            data = {
-                PropertyDataText(
-                    text = uiState.networkTitle,
-                    badge = { DataBadgeChevron(uiState.asset.networkAsset()) }
-                )
-            },
-        )
-    }
+    item { PropertyNetwork(uiState.asset, openNetwork) }
 }
 
 private fun LazyListScope.balancesHeader(model: AssetInfoUIModel.AccountInfoUIModel) {

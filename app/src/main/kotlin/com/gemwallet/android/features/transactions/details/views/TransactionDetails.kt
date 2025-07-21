@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.transactions.details.views
 
-import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,10 +25,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.chain
 import com.gemwallet.android.features.transactions.details.model.TxDetailsScreenModel
 import com.gemwallet.android.features.transactions.details.viewmodels.TransactionDetailsViewModel
 import com.gemwallet.android.ui.R
@@ -37,22 +36,19 @@ import com.gemwallet.android.ui.components.AmountListHead
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.NftHead
 import com.gemwallet.android.ui.components.SwapListHead
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.Spacer8
-import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
-import com.gemwallet.android.ui.components.image.AsyncImage
-import com.gemwallet.android.ui.components.image.getSupportIconUrl
-import com.gemwallet.android.ui.components.list_item.PropertyDataText
-import com.gemwallet.android.ui.components.list_item.PropertyItem
-import com.gemwallet.android.ui.components.list_item.PropertyTitleText
+import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
+import com.gemwallet.android.ui.components.list_item.property.PropertyItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.components.titles.getTransactionTitle
-import com.gemwallet.android.ui.findActivity
 import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.theme.pendingColor
-import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.SwapProvider
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
@@ -79,9 +75,12 @@ fun TransactionDetails(
                 transactionRecipientItem(model)
                 transactionStatusItem(model)
                 transactionMemoItem(model.memo)
-                transactionNetworkItem(model.networkTitle, model.assetId)
+                item { PropertyNetwork(model.asset.chain()) }
                 transactionProviderItem(model.provider)
-                transactionNetworkFeeItem(model.networkTitle, model.networkSymbol, model.feeCrypto, model.feeFiat)
+                model.asset.chain().asset().let {
+                    transactionNetworkFeeItem(it.name, it.symbol, model.feeCrypto, model.feeFiat)
+                }
+
                 transactionExplorer(model.explorerName, model.explorerUrl)
             }
         }
@@ -100,9 +99,7 @@ private fun LazyListScope.transactionItemHead(model: TxDetailsScreenModel) {
             )
             TransactionType.TransferNFT -> NftHead(model.nftAsset!!)
             else -> AmountListHead(
-                iconUrl = model.assetIcon,
-                supportIconUrl = model.assetId.getSupportIconUrl(),
-                placeholder = model.assetType.string,
+                icon = model.asset,
                 amount = when (model.type) {
                     TransactionType.StakeDelegate,
                     TransactionType.StakeUndelegate,
@@ -113,7 +110,7 @@ private fun LazyListScope.transactionItemHead(model: TxDetailsScreenModel) {
                     TransactionType.TransferNFT,
                     TransactionType.Transfer -> model.cryptoAmount
                     TransactionType.AssetActivation,
-                    TransactionType.TokenApproval -> model.assetSymbol
+                    TransactionType.TokenApproval -> model.asset.symbol
                     TransactionType.SmartContractCall -> TODO()
                 },
                 equivalent = when (model.type) {
@@ -144,7 +141,7 @@ private fun LazyListScope.transactionStatusItem(model: TxDetailsScreenModel) {
     item {
         PropertyItem(
             title = {
-                PropertyTitleText(R.string.transaction_status, info = InfoSheetEntity.TransactionInfo(icon = model.assetIcon, state = model.state))
+                PropertyTitleText(R.string.transaction_status, info = InfoSheetEntity.TransactionInfo(icon = model.asset.getIconUrl(), state = model.state))
             },
             data = {
                 PropertyDataText(
@@ -231,29 +228,6 @@ private fun LazyListScope.transactionMemoItem(memo: String?) {
     }
     item {
         PropertyItem(R.string.transfer_memo, memo)
-    }
-}
-
-private fun LazyListScope.transactionNetworkItem(networkTitle: String, assetId: AssetId) {
-    item {
-        PropertyItem(
-            title = {
-                PropertyTitleText(R.string.transfer_network)
-            },
-            data = {
-                PropertyDataText(
-                    networkTitle,
-                    badge = {
-                        Spacer8()
-                        AsyncImage(
-                            model = assetId.chain.asset(),
-                            size = trailingIconMedium,
-                            placeholderText = networkTitle,
-                        )
-                    }
-                )
-            }
-        )
     }
 }
 

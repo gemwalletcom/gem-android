@@ -26,11 +26,10 @@ import com.gemwallet.android.ui.components.AddressChainField
 import com.gemwallet.android.ui.components.ChainItem
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.image.getIconUrl
-import com.gemwallet.android.ui.components.list_item.DataBadgeChevron
-import com.gemwallet.android.ui.components.list_item.PropertyDataText
-import com.gemwallet.android.ui.components.list_item.PropertyItem
-import com.gemwallet.android.ui.components.list_item.PropertyTitleText
+import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
+import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
+import com.gemwallet.android.ui.components.list_item.property.PropertyItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Asset
@@ -59,9 +58,8 @@ fun AddAssetScene(
     ) {
         ChainItem(
             modifier = Modifier.height(64.dp),
-            chain = network.chain(),
             title = network.name,
-            icon = network.chain().getIconUrl(),
+            icon = network.chain(),
             onClick = onChainSelect,
             dividerShowed = true,
             trailing = if (onChainSelect != null) {

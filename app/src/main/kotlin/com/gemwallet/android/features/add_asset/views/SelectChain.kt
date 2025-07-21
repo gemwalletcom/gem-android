@@ -13,7 +13,6 @@ import com.gemwallet.android.features.asset_select.components.SearchBar
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.ChainItem
 import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Chain
 
@@ -36,9 +35,8 @@ fun SelectChain(
             items(chains.size) {
                 val chain = chains[it]
                 ChainItem(
-                    chain = chain,
                     title = chain.asset().name,
-                    icon = chain.getIconUrl(),
+                    icon = chain,
                 ) {
                     onSelect(chain)
                 }

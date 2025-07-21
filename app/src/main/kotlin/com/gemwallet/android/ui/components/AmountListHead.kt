@@ -1,10 +1,8 @@
 package com.gemwallet.android.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -52,10 +50,12 @@ import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.headerIconSize
+import com.gemwallet.android.ui.components.designsystem.headerSupportIconSize
 import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.theme.WalletTheme
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.WalletType
 
 @Composable
@@ -63,9 +63,7 @@ fun AmountListHead(
     amount: String,
     onHideBalances: (() -> Unit)? = null,
     equivalent: String? = null,
-    iconUrl: String? = null,
-    supportIconUrl: String? = null,
-    placeholder: String? = null,
+    icon: Any? = null,
     changedValue: String? = null,
     changedPercentages: String? = null,
     changeState: PriceState = PriceState.None,
@@ -78,12 +76,8 @@ fun AmountListHead(
                 .padding(start = padding16, end = padding16, bottom = padding16),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            if (!iconUrl.isNullOrEmpty()) {
-                HeaderIcon(
-                    iconModel = iconUrl,
-                    supportIconUrl = supportIconUrl,
-                    placeholder = placeholder
-                )
+            (icon as? Asset)?.let {
+                HeaderIcon(it)
                 Spacer16()
             }
             DisplayText(text = amount, modifier = Modifier
@@ -122,31 +116,11 @@ fun AmountListHead(
 
 @Composable
 internal fun HeaderIcon(
-    iconModel: Any?,
-    supportIconUrl: Any? = null,
-    placeholder: String?,
+    asset: Asset?,
     iconSize: Dp = headerIconSize,
 ) {
-    if (iconModel == null) { return }
-    Box {
-        AsyncImage(
-            size = iconSize,
-            model = iconModel,
-            placeholderText = placeholder,
-            contentDescription = "header_icon"
-        )
-        if (supportIconUrl != null) {
-            AsyncImage(
-                size = 24.dp,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .border(0.5.dp, color = MaterialTheme.colorScheme.surface, shape = CircleShape),
-                model = supportIconUrl,
-                placeholderText = placeholder,
-                contentDescription = "header_support_icon"
-            )
-        }
-    }
+    if (asset == null) { return }
+    IconWithBadge(asset, iconSize, headerSupportIconSize)
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
@@ -170,7 +144,11 @@ fun AssetHeadActions(
     ) {
         if (onTransfer != null) {
             AssetAction(
-                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) Modifier.weight(1f) else Modifier,
+                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                    Modifier.weight(1f)
+                } else {
+                    Modifier
+                },
                 title = stringResource(id = R.string.wallet_send),
                 imageVector = Icons.Default.ArrowUpward,
                 contentDescription = "send",
@@ -180,7 +158,11 @@ fun AssetHeadActions(
         }
         if (onReceive != null) {
             AssetAction(
-                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) Modifier.weight(1f) else Modifier,
+                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                    Modifier.weight(1f)
+                } else {
+                    Modifier
+                },
                 title = stringResource(id = R.string.wallet_receive),
                 imageVector = Icons.Default.ArrowDownward,
                 contentDescription = "receive",
@@ -189,8 +171,12 @@ fun AssetHeadActions(
         }
         if (onBuy != null) {
             AssetAction(
-                modifier = (if (windowSizeClass == WindowWidthSizeClass.Compact) Modifier.weight(1f) else Modifier)
-                    .testTag("assetBuy"),
+                modifier = (if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                    Modifier.weight(1f)
+                } else {
+                    Modifier
+                })
+                .testTag("assetBuy"),
                 title = stringResource(id = R.string.wallet_buy),
                 imageVector = Icons.Default.Add,
                 contentDescription = "buy",
@@ -199,7 +185,11 @@ fun AssetHeadActions(
         }
         if (onSwap != null) {
             AssetAction(
-                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) Modifier.weight(1f) else Modifier,
+                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                    Modifier.weight(1f)
+                } else {
+                    Modifier
+                },
                 title = stringResource(id = R.string.wallet_swap),
                 imageVector = Icons.Default.SwapVert,
                 contentDescription = "swap",

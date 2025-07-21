@@ -18,10 +18,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.cells.propertyNetwork
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
 import com.gemwallet.android.ui.components.designsystem.listSpacerBig
 import com.gemwallet.android.ui.components.image.AsyncImage
-import com.gemwallet.android.ui.components.list_item.PropertyItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
@@ -76,7 +76,7 @@ fun NFTDetailsScene(
 private fun LazyListScope.generalInfo(model: NftAssetDetailsUIModel) {
     item {
         PropertyItem(R.string.nft_collection, model.collection.name)
-        propertyNetwork(model.collection.chain)
+        PropertyNetwork(model.collection.chain)
         model.asset.contractAddress?.let {
             PropertyItem(R.string.asset_contract, it)
         }

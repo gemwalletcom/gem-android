@@ -10,7 +10,7 @@ import com.gemwallet.android.BuildConfig
 import com.gemwallet.android.features.settings.develop.viewmodels.DevelopViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clipboard.setPlainText
-import com.gemwallet.android.ui.components.list_item.PropertyItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.screen.Scene
 
 @Composable

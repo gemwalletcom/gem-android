@@ -13,7 +13,7 @@ import com.gemwallet.android.features.stake.delegation.model.DelegationSceneStat
 import com.gemwallet.android.features.stake.delegation.viewmodels.DelegationViewModel
 import com.gemwallet.android.features.stake.model.formatApr
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.list_item.PropertyItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene

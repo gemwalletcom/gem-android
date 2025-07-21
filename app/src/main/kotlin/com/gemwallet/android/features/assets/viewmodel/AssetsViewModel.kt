@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.assets.model.PriceUIState
@@ -15,7 +16,6 @@ import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.models.AssetInfoUIModel
 import com.gemwallet.android.ui.models.AssetItemUIModel
 import com.gemwallet.android.ui.models.PriceState
@@ -141,7 +141,7 @@ class AssetsViewModel @Inject constructor(
         }
         val icon = when (wallet.type) {
             WalletType.multicoin -> R.drawable.multicoin_wallet
-            else -> wallet.accounts.firstOrNull()?.chain?.getIconUrl()
+            else -> wallet.accounts.firstOrNull()?.chain?.asset()
         }
         return if (isHideBalances) {
             WalletInfoUIState(

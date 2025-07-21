@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.chains.ChainInfoRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.filter
-import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -57,7 +56,6 @@ data class SelectChainViewModelState(
                     Chain.Tron -> it.asset().name.toUpperCase(Locale.current)
                     else -> it.asset().name
                 },
-                icon = it.getIconUrl()
             )
         }
     )
@@ -70,7 +68,6 @@ data class SelectImportTypeUIState(
 data class ChainUIState(
     val chain: Chain,
     val title: String,
-    val icon: Any,
 )
 
 data class ImportType(

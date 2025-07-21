@@ -15,6 +15,8 @@ data class TransactionExtended (
 	val price: Price? = null,
 	val feePrice: Price? = null,
 	val assets: List<Asset>,
-	val prices: List<AssetPrice>
+	val prices: List<AssetPrice>,
+	val fromAddress: AddressName? = null,
+	val toAddress: AddressName? = null
 )
 

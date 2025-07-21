@@ -37,3 +37,9 @@ data class TransactionsFetchOption (
 	val from_timestamp: UInt? = null
 )
 
+@Serializable
+data class TransactionsResponse (
+	val transactions: List<Transaction>,
+	val addressNames: List<AddressName>
+)
+
