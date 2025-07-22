@@ -9,7 +9,7 @@ import com.gemwallet.android.features.asset_select.views.AssetSelectScreen
 import com.gemwallet.android.features.asset_select.views.getAssetBadge
 import com.gemwallet.android.features.settings.price_alerts.viewmodels.PriceAlertsSelectViewModel
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.PriceInfo
+import com.gemwallet.android.ui.components.list_item.PriceInfo
 import com.wallet.core.primitives.AssetId
 
 @Composable

@@ -13,8 +13,8 @@ import com.gemwallet.android.features.settings.networks.views.NetworksScreen
 import com.gemwallet.android.features.settings.price_alerts.views.PriceAlertsScreen
 import com.gemwallet.android.features.settings.security.views.SecurityScene
 import com.gemwallet.android.features.settings.settings.views.SettingsScene
-import com.gemwallet.android.ui.navigation.enterTabScreenTransition
-import com.gemwallet.android.ui.navigation.exitTabScreenTransition
+import com.gemwallet.android.ui.components.animation.enterTabScreenTransition
+import com.gemwallet.android.ui.components.animation.exitTabScreenTransition
 import com.wallet.core.primitives.AssetId
 
 const val settingsRoute = "settings"

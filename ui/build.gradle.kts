@@ -65,6 +65,7 @@ dependencies {
     api(libs.kotlinx.collections.immutable)
     api(libs.compose.activity)
     api(libs.browser)
+    implementation(libs.compose.navigation)
 
     // QRCode scanner: only for none private data: recipient, memo, amount, etc
     implementation(libs.camera.camera2)
@@ -83,6 +84,10 @@ dependencies {
     api(libs.compose.permissions)
 
     implementation(libs.ktx.core)
+
+    debugImplementation(libs.androidx.ui.tooling)
+    implementation(libs.androidx.ui.tooling.preview)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

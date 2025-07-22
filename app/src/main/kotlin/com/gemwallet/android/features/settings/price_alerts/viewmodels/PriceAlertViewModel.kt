@@ -9,7 +9,7 @@ import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.ui.models.AssetInfoUIModel
+import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency

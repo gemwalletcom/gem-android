@@ -28,8 +28,8 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.ext.available
-import com.gemwallet.android.interactors.ImportWalletOperator
-import com.gemwallet.android.interactors.PhraseAddressImportWalletOperator
+import com.gemwallet.android.services.ImportWalletService
+import com.gemwallet.android.services.PhraseAddressImportWalletService
 import com.wallet.core.primitives.Chain
 import dagger.Module
 import dagger.Provides
@@ -103,7 +103,7 @@ object InteractsModule {
         rpcClients: RpcClientAdapter,
         addBannerCase: AddBannerCase,
         syncSubscription: SyncSubscription,
-    ): ImportWalletOperator = PhraseAddressImportWalletOperator(
+    ): ImportWalletService = PhraseAddressImportWalletService(
         walletsRepository = walletsRepository,
         assetsRepository = assetsRepository,
         sessionRepository = sessionRepository,

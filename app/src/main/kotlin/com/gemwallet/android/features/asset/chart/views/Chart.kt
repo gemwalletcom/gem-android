@@ -33,7 +33,7 @@ import com.gemwallet.android.features.asset.chart.models.PricePoint
 import com.gemwallet.android.features.asset.chart.viewmodels.ChartViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Container
-import com.gemwallet.android.ui.components.PriceInfo
+import com.gemwallet.android.ui.components.list_item.PriceInfo
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.padding4

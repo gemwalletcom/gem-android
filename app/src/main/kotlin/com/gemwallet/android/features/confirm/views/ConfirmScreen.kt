@@ -37,11 +37,11 @@ import com.gemwallet.android.features.confirm.models.ConfirmState
 import com.gemwallet.android.features.confirm.viewmodels.ConfirmViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.AmountListHead
+import com.gemwallet.android.ui.components.list_head.AmountListHead
 import com.gemwallet.android.ui.components.InfoBottomSheet
 import com.gemwallet.android.ui.components.InfoSheetEntity
-import com.gemwallet.android.ui.components.NftHead
-import com.gemwallet.android.ui.components.SwapListHead
+import com.gemwallet.android.ui.components.list_head.NftHead
+import com.gemwallet.android.ui.components.list_head.SwapListHead
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.Spacer16
@@ -49,8 +49,8 @@ import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
+import com.gemwallet.android.ui.components.list_item.getTitle
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.components.titles.getTitle
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction

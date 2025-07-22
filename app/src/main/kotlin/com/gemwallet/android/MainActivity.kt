@@ -48,7 +48,7 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.features.bridge.proposal.ProposalScene
 import com.gemwallet.android.features.bridge.request.RequestScene
-import com.gemwallet.android.interactors.CheckAccounts
+import com.gemwallet.android.services.CheckAccountsService
 import com.gemwallet.android.services.SyncService
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.WalletApp
@@ -271,7 +271,7 @@ class MainViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val walletsRepository: WalletsRepository,
     private val syncService: SyncService,
-    private val checkAccounts: CheckAccounts,
+    private val checkAccountsService: CheckAccountsService,
 ) : ViewModel() {
 
     private val state = MutableStateFlow(
@@ -295,7 +295,7 @@ class MainViewModel @Inject constructor(
     private fun maintain() {
         viewModelScope.launch(Dispatchers.IO) {
             withContext(Dispatchers.IO) { syncService.sync() }
-            withContext(Dispatchers.IO) { checkAccounts() }
+            withContext(Dispatchers.IO) { checkAccountsService() }
         }
     }
 

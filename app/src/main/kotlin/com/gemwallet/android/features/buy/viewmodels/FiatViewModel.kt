@@ -15,7 +15,7 @@ import com.gemwallet.android.features.buy.models.FiatSceneState
 import com.gemwallet.android.features.buy.models.FiatSuggestion
 import com.gemwallet.android.features.buy.models.toProviderUIModel
 import com.gemwallet.android.math.numberParse
-import com.gemwallet.android.ui.models.AssetInfoUIModel
+import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.FiatProvider
 import com.wallet.core.primitives.FiatQuote

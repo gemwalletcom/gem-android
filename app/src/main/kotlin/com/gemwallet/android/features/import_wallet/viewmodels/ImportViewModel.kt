@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.interactors.ImportError
-import com.gemwallet.android.interactors.ImportWalletOperator
+import com.gemwallet.android.services.ImportError
+import com.gemwallet.android.services.ImportWalletService
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +22,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ImportViewModel @Inject constructor(
     private val walletsRepository: WalletsRepository,
-    private val importWalletOperator: ImportWalletOperator,
+    private val importWalletService: ImportWalletService,
 ) : ViewModel() {
 
     private val state = MutableStateFlow(ImportViewModelState())
@@ -60,7 +60,7 @@ class ImportViewModel @Inject constructor(
     ) = viewModelScope.launch {
         state.update { it.copy(loading = true) }
         withContext(Dispatchers.IO) {
-            importWalletOperator.importWallet(
+            importWalletService.importWallet(
                 importType = state.value.importType,
                 walletName = name.ifEmpty { generatedName },
                 data = if (nameRecord?.address.isNullOrEmpty()) data.trim() else nameRecord.address,

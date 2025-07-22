@@ -197,6 +197,8 @@ dependencies {
     implementation(project(":data:repositories"))
 
     // Features
+    implementation(project(":features:activities:presents"))
+    implementation(project(":features:activities:viewmodels"))
     implementation(project(":features:recipient:presents"))
     implementation(project(":features:nft:presents"))
     implementation(project(":features:update_app:presents"))

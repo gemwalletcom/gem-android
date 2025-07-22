@@ -55,10 +55,10 @@ import com.gemwallet.android.features.settings.navigation.navigateToSecurityScre
 import com.gemwallet.android.features.settings.navigation.navigateToSettingsScreen
 import com.gemwallet.android.features.settings.navigation.settingsRoute
 import com.gemwallet.android.features.settings.settings.views.SettingsScene
-import com.gemwallet.android.features.transactions.list.views.TransactionsScreen
-import com.gemwallet.android.features.transactions.navigation.activitiesRoute
-import com.gemwallet.android.features.transactions.navigation.navigateToActivitiesScreen
-import com.gemwallet.android.features.transactions.navigation.navigateToTransactionScreen
+import com.gemwallet.android.features.activities.presents.list.views.TransactionsScreen
+import com.gemwallet.android.features.activities.presents.activitiesRoute
+import com.gemwallet.android.features.activities.presents.navigateToActivitiesScreen
+import com.gemwallet.android.features.activities.presents.navigateToTransactionScreen
 import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.navigation.routes.navigateToNftAsset

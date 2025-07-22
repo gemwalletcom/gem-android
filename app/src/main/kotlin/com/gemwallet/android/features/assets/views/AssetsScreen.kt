@@ -48,10 +48,10 @@ import com.gemwallet.android.features.assets.viewmodel.AssetsViewModel
 import com.gemwallet.android.features.banners.views.BannersScene
 import com.gemwallet.android.features.update_app.presents.InAppUpdateBanner
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.AmountListHead
-import com.gemwallet.android.ui.components.AssetHeadActions
+import com.gemwallet.android.ui.components.list_head.AmountListHead
+import com.gemwallet.android.ui.components.list_head.AssetHeadActions
 import com.gemwallet.android.ui.components.pinnedAssetsHeader
-import com.gemwallet.android.ui.models.AssetItemUIModel
+import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.open
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.BannerEvent

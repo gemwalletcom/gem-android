@@ -20,7 +20,7 @@ import com.gemwallet.android.features.asset.chart.models.AssetMarketUIModel
 import com.gemwallet.android.features.asset.chart.viewmodels.AssetChartViewModel
 import com.gemwallet.android.model.compactFormatter
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.Badge
+import com.gemwallet.android.ui.components.list_item.Badge
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage

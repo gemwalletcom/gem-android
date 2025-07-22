@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.operators.CreateWalletOperator
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.interactors.ImportWalletOperator
+import com.gemwallet.android.services.ImportWalletService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +20,7 @@ import javax.inject.Inject
 class CreateWalletViewModel @Inject constructor(
     private val createWalletOperator: CreateWalletOperator,
     private val walletsRepository: WalletsRepository,
-    private val importWalletOperator: ImportWalletOperator,
+    private val importWalletService: ImportWalletService,
 ) : ViewModel() {
 
     private val state = MutableStateFlow(CreateWalletViewModelState())
@@ -61,7 +61,7 @@ class CreateWalletViewModel @Inject constructor(
         viewModelScope.launch {
             val newState = withContext(Dispatchers.IO) {
                 val phrase = state.value.data.joinToString(" ")
-                importWalletOperator.createWallet(state.value.name, phrase)
+                importWalletService.createWallet(state.value.name, phrase)
             }.fold(
                 onSuccess = {
                     onCreated()

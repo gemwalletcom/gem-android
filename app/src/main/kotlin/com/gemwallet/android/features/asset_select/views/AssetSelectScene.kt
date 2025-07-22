@@ -39,14 +39,14 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset_select.components.SearchBar
 import com.gemwallet.android.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.AssetListItem
+import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.pinnedAssetsHeader
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.models.AssetInfoUIModel
-import com.gemwallet.android.ui.models.AssetItemUIModel
+import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
+import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import kotlinx.collections.immutable.ImmutableList
