@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.asset_select.components
+package com.gemwallet.android.ui.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -64,7 +64,7 @@ fun SearchBar(
                         .align(Alignment.CenterStart)
                         .padding(start = 48.dp, end = 32.dp),
                     maxLines = 1,
-                    text = stringResource(id = org.koin.android.R.string.abc_search_hint),
+                    text = stringResource(id = android.R.string.search_go),
                     color = MaterialTheme.colorScheme.secondary,
                     fontSize = 14.sp,
                 )

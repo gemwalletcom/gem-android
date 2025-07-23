@@ -26,6 +26,7 @@ fun SelectSwapScreen(
     val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
     val pinned by viewModel.pinned.collectAsStateWithLifecycle()
     val unpinned by viewModel.unpinned.collectAsStateWithLifecycle()
+    val availableChains by viewModel.availableChains.collectAsStateWithLifecycle()
     val chainsFilter by viewModel.chainFilter.collectAsStateWithLifecycle()
     val balanceFilter by viewModel.balanceFilter.collectAsStateWithLifecycle()
 
@@ -45,6 +46,7 @@ fun SelectSwapScreen(
         pinned = pinned,
         unpinned = unpinned,
         state = uiStates,
+        availableChains = availableChains,
         chainsFilter = chainsFilter,
         balanceFilter = balanceFilter,
         onChainFilter = viewModel::onChainFilter,

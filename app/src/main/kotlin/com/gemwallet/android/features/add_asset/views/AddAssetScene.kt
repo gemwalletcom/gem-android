@@ -23,7 +23,7 @@ import com.gemwallet.android.ext.chain
 import com.gemwallet.android.features.add_asset.models.TokenSearchState
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AddressChainField
-import com.gemwallet.android.ui.components.ChainItem
+import com.gemwallet.android.ui.components.list_item.ChainItem
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron

@@ -10,7 +10,7 @@ import androidx.navigation.navOptions
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.activities.presents.details.TransactionDetails
-import com.gemwallet.android.features.activities.presents.list.views.TransactionsScreen
+import com.gemwallet.android.features.activities.presents.list.TransactionsScreen
 import com.gemwallet.android.features.activities.viewmodels.txIdArg
 import com.gemwallet.android.ui.components.animation.enterTabScreenTransition
 import com.gemwallet.android.ui.components.animation.exitTabScreenTransition

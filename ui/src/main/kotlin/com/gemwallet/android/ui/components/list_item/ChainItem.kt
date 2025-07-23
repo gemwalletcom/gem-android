@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components
+package com.gemwallet.android.ui.components.list_item
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.heightIn
@@ -12,7 +12,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.image.getIconUrl
-import com.gemwallet.android.ui.components.list_item.ListItem
 import com.wallet.core.primitives.Chain
 
 @Composable

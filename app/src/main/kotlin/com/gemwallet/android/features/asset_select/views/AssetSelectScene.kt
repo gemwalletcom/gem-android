@@ -36,12 +36,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.asset_select.components.SearchBar
+import com.gemwallet.android.ui.components.SearchBar
 import com.gemwallet.android.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.filters.AssetsFilter
 import com.gemwallet.android.ui.components.pinnedAssetsHeader
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
@@ -63,6 +64,7 @@ internal fun AssetSelectScene(
     support: ((AssetItemUIModel) -> (@Composable () -> Unit)?)?,
     query: TextFieldState,
     isAddAvailable: Boolean = false,
+    availableChains: List<Chain> = emptyList(),
     chainsFilter: List<Chain> = emptyList(),
     balanceFilter: Boolean = false,
     onChainFilter: (Chain) -> Unit,
@@ -125,7 +127,8 @@ internal fun AssetSelectScene(
     }
 
     if (showSelectNetworks) {
-        AssetFilters(
+        AssetsFilter(
+            availableChains = availableChains,
             chainFilter = chainsFilter,
             balanceFilter = balanceFilter,
             onDismissRequest = { showSelectNetworks = false },

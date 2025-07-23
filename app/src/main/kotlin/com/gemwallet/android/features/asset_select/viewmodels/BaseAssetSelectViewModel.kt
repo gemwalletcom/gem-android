@@ -40,6 +40,9 @@ open class BaseAssetSelectViewModel(
 
     val queryState = TextFieldState()
     private val searchState = MutableStateFlow<SearchState>(SearchState.Init)
+    val availableChains = sessionRepository.session()
+        .map { session -> session?.wallet?.accounts?.map { it.chain } ?: emptyList() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     val chainFilter = MutableStateFlow<List<Chain>>(emptyList())
     val balanceFilter = MutableStateFlow<Boolean>(false)
 
