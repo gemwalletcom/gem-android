@@ -161,7 +161,7 @@ class SolanaSignClient(
         val encodedTx = params.swapData
         val encodedTxData = Base64.decode(encodedTx)
 
-        encodedTxData?.takeIf { it.isEmpty() } ?: throw Exception("unable to decode base64 string or empty transaction data")
+        encodedTxData?.takeIf { it.isNotEmpty() } ?: throw Exception("unable to decode base64 string or empty transaction data")
         val rawTxDecoder = SolanaRawTxDecoder(encodedTxData)
         val numRequiredSignature = rawTxDecoder.signatureCount()
         // other signers' signatures already prefilled, changing instructions would lead signature verification failure
