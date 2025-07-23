@@ -1,12 +1,12 @@
 package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.blockchain.includeLibs
-import com.wallet.core.blockchain.tron.models.TronAccount
-import com.wallet.core.blockchain.tron.models.TronFrozen
-import com.wallet.core.blockchain.tron.models.TronSmartContractResult
-import com.wallet.core.blockchain.tron.models.TronSmartContractResultMessage
-import com.wallet.core.blockchain.tron.models.TronUnfrozen
-import com.wallet.core.blockchain.tron.models.TronVote
+import com.wallet.core.blockchain.tron.TronAccount
+import com.wallet.core.blockchain.tron.TronFrozen
+import com.wallet.core.blockchain.tron.TronSmartContractResult
+import com.wallet.core.blockchain.tron.TronSmartContractResultMessage
+import com.wallet.core.blockchain.tron.TronUnfrozen
+import com.wallet.core.blockchain.tron.TronVote
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType

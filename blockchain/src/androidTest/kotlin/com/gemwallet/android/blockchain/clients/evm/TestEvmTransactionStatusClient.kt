@@ -6,7 +6,7 @@ import com.gemwallet.android.blockchain.clients.ethereum.services.EvmTransaction
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
-import com.wallet.core.blockchain.ethereum.models.EthereumTransactionReciept
+import com.wallet.core.blockchain.ethereum.EthereumTransactionReciept
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
 import junit.framework.TestCase.assertEquals

@@ -3,6 +3,7 @@ package com.gemwallet.android.blockchain.clients.solana
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
@@ -17,6 +18,7 @@ import com.wallet.core.primitives.SolanaTokenProgramId
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import wallet.core.jni.Base64
 import wallet.core.jni.CoinType
 import wallet.core.jni.HDWallet
 import java.math.BigInteger
@@ -177,5 +179,28 @@ class TestSolanaSigner {
                 "948467945306565364774563245554669444678777576354b6c714c594b4a674d6b704241774d41" +
                 "43514f417570552b4141414141414d4142514b67686745414241514241674541436777414141414" +
                 "1414141414141593d", result.first().toHexString())
+    }
+
+    @Test
+    fun solanaRawTxDecoder() {
+        val rawTx = "AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" +
+                "AAAAAAAAAAADg8M2FRx269K+zS8zLnv1jrOc5UgDry1oYxecVoCE+FxaIlIE3LTCK5GF5CzCCSkyPQP" +
+                "R14YZsIa38Vu8zmewBgAIAAwuF+6k+4pxgT6hYo1FojAEpCEHq+xnGOnCkddPHvDvvnwoEJW7RK+RvT" +
+                "yYjTaEmmeJJGx7FDytUlV3phwhnLk/r+o7AIiuGV76I/RQwJmovrxVIVynZIDhgTTNAHNxKXKQMOlp0" +
+                "lJiwd9U+29PnQtf+c3R43jQldu6Ve4l4MJzRLHu3TqNZNjLp6OSRg8r3sOv1e+QztSj31QG3tKRlT5z" +
+                "LCWp06QMZwgS1uI/TJ/gwLpboVWOHBIESfT2odVamEF8olyekhrnZjIZzm9FeP8AkdfjUBFdj1PeKOY" +
+                "jOQQ5yIVmPLxjpjiM7L1AxMxqh2a/yjPk5ti2H8FK09PE9u6wRAwZGb+UhFzL/7K26csOb57yM5bvF9" +
+                "xJrLEObOkAAAACMlyWPTiSJ8bs9ECkUjg2DC1oTmdr/EIQEjnvY2+n4WQbd9uHXZaGT2cvhRs7reawc" +
+                "tIXtX1s3kTqM9YV+/wCp0P5e0Steyi4OtRMALbRonjhrWQUnM3/sbCIGRwipaicFCAAJA4AaBgAAAAA" +
+                "ACQcAAgMLDQoOAQEKAwQCAAkDgJaYAAAAAAAFBQADAgsNvAGP6/zC01qGTam9BJP5vR95KkrtwfmdVF" +
+                "NadaRsOP1WqPLGt8jXWBehgJaYAAAAAAAAAAAAAAAAAJF5EQAAAAAAAAAAAAAAAAAVAIk/g7omh1PrQ" +
+                "HSTjRmxQaSVbGwIsUkg7qwrN0tYmJrlA5JYGB9c6sjb/7cDCJAkPK7WmpWZ0ohtlXqct2Vq872zKDwh" +
+                "DQAAAAAhh39oAAAAAJ1rmLGP0mte/uxo0CDc8b56lMLDFTU3ebxrOu1EGI3fMgUTAwIABQsGDxAREgc" +
+                "TDAEUFRYKDQiNNiXP7dL61wHZww37lhGNrgM1pfXVtOEebA/y8LN1Fi1I9ekUZZPYqwIREAopJw4LGg" +
+                "wPAwQg"
+        val rawTxData = Base64.decode(rawTx)
+        val decoder = SolanaRawTxDecoder(rawTxData)
+
+        assertEquals(2, decoder.signatureCount())
     }
 }

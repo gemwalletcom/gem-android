@@ -1,7 +1,7 @@
 package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.blockchain.clients.tron.services.TronCallService
-import com.wallet.core.blockchain.tron.models.TronSmartContractResult
+import com.wallet.core.blockchain.tron.TronSmartContractResult
 
 class FakeTronCallService(
     val responses: Map<String, TronSmartContractResult> = emptyMap()

@@ -8,13 +8,13 @@ import com.gemwallet.android.blockchain.clients.solana.models.SolanaTokenOwner
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaAccountsService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
-import com.wallet.core.blockchain.solana.models.SolanaAccount
-import com.wallet.core.blockchain.solana.models.SolanaAccountParsed
-import com.wallet.core.blockchain.solana.models.SolanaAccountParsedInfo
-import com.wallet.core.blockchain.solana.models.SolanaTokenAccount
-import com.wallet.core.blockchain.solana.models.SolanaTokenAmount
-import com.wallet.core.blockchain.solana.models.SolanaTokenInfo
-import com.wallet.core.blockchain.solana.models.SolanaValue
+import com.wallet.core.blockchain.solana.SolanaAccount
+import com.wallet.core.blockchain.solana.SolanaAccountParsed
+import com.wallet.core.blockchain.solana.SolanaAccountParsedInfo
+import com.wallet.core.blockchain.solana.SolanaTokenAccount
+import com.wallet.core.blockchain.solana.SolanaTokenAmount
+import com.wallet.core.blockchain.solana.SolanaTokenInfo
+import com.wallet.core.blockchain.solana.SolanaValue
 
 internal class TestSolanaAccountsService(
     private val tokenAddress: String? = null,
@@ -22,9 +22,33 @@ internal class TestSolanaAccountsService(
 ) : SolanaAccountsService {
     var tokenAccountRequest: JSONRpcRequest<List<Any>>? = null
 
-    override suspend fun getTokenAccountByOwner(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<List<SolanaTokenAccount>>>> {
+    override suspend fun getTokenAccountByOwner(request: JSONRpcRequest<List<Any>>): JSONRpcResponse<SolanaValue<List<SolanaTokenAccount>>> {
         tokenAccountRequest = request
-        return Result.success(
+        return JSONRpcResponse(
+            SolanaValue(
+                listOf(
+                    SolanaTokenAccount(
+                        pubkey = tokenAddress ?: "",
+                        account = SolanaAccount(
+                            lamports = 100000,
+                            space = 10,
+                            owner = owner,
+                            SolanaAccountParsed(
+                                SolanaAccountParsedInfo(
+                                    SolanaTokenInfo(
+                                        SolanaTokenAmount(tokenAddress ?: (request.params[1] as Map<*, *>)["mint"].toString())
+                                    )
+                                )
+                            )
+                        )
+                    ),
+                )
+            )
+        )
+    }
+
+    override suspend fun batchAccount(request: List<JSONRpcRequest<List<Any>>>): List<JSONRpcResponse<SolanaValue<List<SolanaTokenAccount>>>> {
+        return request.mapIndexed { index, request ->
             JSONRpcResponse(
                 SolanaValue(
                     listOf(
@@ -34,38 +58,10 @@ internal class TestSolanaAccountsService(
                                 lamports = 100000,
                                 space = 10,
                                 owner = owner,
-                                SolanaAccountParsed(
+                                data = SolanaAccountParsed(
                                     SolanaAccountParsedInfo(
                                         SolanaTokenInfo(
-                                            SolanaTokenAmount(tokenAddress ?: (request.params[1] as Map<*, *>)["mint"].toString())
-                                        )
-                                    )
-                                )
-                            )
-                        ),
-                    )
-                )
-            )
-        )
-    }
-
-    override suspend fun batchAccount(request: List<JSONRpcRequest<List<Any>>>): Result<List<JSONRpcResponse<SolanaValue<List<SolanaTokenAccount>>>>> {
-        return Result.success(
-            request.mapIndexed { index, request ->
-                JSONRpcResponse(
-                    SolanaValue(
-                        listOf(
-                            SolanaTokenAccount(
-                                pubkey = tokenAddress ?: "",
-                                account = SolanaAccount(
-                                    lamports = 100000,
-                                    space = 10,
-                                    owner = owner,
-                                    data = SolanaAccountParsed(
-                                        SolanaAccountParsedInfo(
-                                            SolanaTokenInfo(
-                                                SolanaTokenAmount(((index + 1) * 10000000).toString())
-                                            )
+                                            SolanaTokenAmount(((index + 1) * 10000000).toString())
                                         )
                                     )
                                 )
@@ -73,19 +69,19 @@ internal class TestSolanaAccountsService(
                         )
                     )
                 )
-            }
-        )
+            )
+        }
     }
 
-    override suspend fun getAccountInfoSpl(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaParsedData<SolanaInfo<SolanaParsedSplTokenInfo>>>>> {
+    override suspend fun getAccountInfoSpl(request: JSONRpcRequest<List<Any>>): JSONRpcResponse<SolanaValue<SolanaParsedData<SolanaInfo<SolanaParsedSplTokenInfo>>>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getAccountInfoMpl(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaArrayData<String>>>> {
+    override suspend fun getAccountInfoMpl(request: JSONRpcRequest<List<Any>>): JSONRpcResponse<SolanaValue<SolanaArrayData<String>>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTokenInfo(request: JSONRpcRequest<List<Any>>): Result<JSONRpcResponse<SolanaValue<SolanaTokenOwner>>> {
+    override suspend fun getTokenInfo(request: JSONRpcRequest<List<Any>>): JSONRpcResponse<SolanaValue<SolanaParsedSplTokenInfo>> {
         TODO("Not yet implemented")
     }
 }

@@ -1,9 +1,9 @@
 package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.blockchain.clients.tron.services.TronAccountsService
-import com.wallet.core.blockchain.tron.models.TronAccount
-import com.wallet.core.blockchain.tron.models.TronAccountRequest
-import com.wallet.core.blockchain.tron.models.TronAccountUsage
+import com.wallet.core.blockchain.tron.TronAccount
+import com.wallet.core.blockchain.tron.TronAccountRequest
+import com.wallet.core.blockchain.tron.TronAccountUsage
 
 class FakeTronAccountService(
     private val tronAccount: TronAccount? = null

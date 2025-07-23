@@ -7,8 +7,8 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
-import com.wallet.core.blockchain.bitcoin.models.BitcoinFeeResult
-import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
+import com.wallet.core.blockchain.bitcoin.BitcoinFeeResult
+import com.wallet.core.blockchain.bitcoin.BitcoinUTXO
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain

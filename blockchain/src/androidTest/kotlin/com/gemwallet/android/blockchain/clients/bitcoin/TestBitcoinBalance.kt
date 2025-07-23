@@ -4,7 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinBalancesService
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.ext.toIdentifier
-import com.wallet.core.blockchain.bitcoin.models.BitcoinAccount
+import com.wallet.core.blockchain.bitcoin.BitcoinAccount
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import junit.framework.TestCase.assertEquals

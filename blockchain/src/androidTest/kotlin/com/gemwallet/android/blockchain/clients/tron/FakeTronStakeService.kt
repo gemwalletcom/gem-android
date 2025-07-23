@@ -1,8 +1,8 @@
 package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.blockchain.clients.tron.services.TronStakeService
-import com.wallet.core.blockchain.tron.models.TronReward
-import com.wallet.core.blockchain.tron.models.WitnessesList
+import com.wallet.core.blockchain.tron.TronReward
+import com.wallet.core.blockchain.tron.WitnessesList
 
 class FakeTronStakeService(
     private val reward: Long? = null

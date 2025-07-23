@@ -1,10 +1,10 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosBalancesService
-import com.wallet.core.blockchain.aptos.models.AptosResource
-import com.wallet.core.blockchain.aptos.models.AptosResourceBalance
-import com.wallet.core.blockchain.aptos.models.AptosResourceBalanceOptional
-import com.wallet.core.blockchain.aptos.models.AptosResourceCoin
+import com.wallet.core.blockchain.aptos.AptosResource
+import com.wallet.core.blockchain.aptos.AptosResourceBalance
+import com.wallet.core.blockchain.aptos.AptosResourceBalanceOptional
+import com.wallet.core.blockchain.aptos.AptosResourceCoin
 
 class TestAptosBalancesService(
     val nativeBalance: String? = null,

@@ -7,8 +7,8 @@ import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
-import com.wallet.core.blockchain.solana.models.SolanaBlockhash
-import com.wallet.core.blockchain.solana.models.SolanaBlockhashResult
+import com.wallet.core.blockchain.solana.SolanaBlockhash
+import com.wallet.core.blockchain.solana.SolanaBlockhashResult
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId

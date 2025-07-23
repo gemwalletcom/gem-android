@@ -8,7 +8,7 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
-import com.wallet.core.blockchain.bitcoin.models.BitcoinUTXO
+import com.wallet.core.blockchain.bitcoin.BitcoinUTXO
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain

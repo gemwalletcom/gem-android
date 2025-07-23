@@ -63,7 +63,7 @@ class TestSolanaFeeCalculation {
 
     @Test
     fun testSolana_calculate_native_fee_without_create() {
-        val feeCalculator = SolanaFeeCalculator(TestSolanaFeeService(fees = emptyList(), rentExemption = 0))
+        val feeCalculator = SolanaFeeCalculator(TestSolanaFeeService(fees = emptyList()))
 
         val result = runBlocking {
             feeCalculator.calculate(

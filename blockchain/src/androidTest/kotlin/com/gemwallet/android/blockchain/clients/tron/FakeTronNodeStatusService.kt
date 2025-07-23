@@ -1,11 +1,11 @@
 package com.gemwallet.android.blockchain.clients.tron
 
 import com.gemwallet.android.blockchain.clients.tron.services.TronNodeStatusService
-import com.wallet.core.blockchain.tron.models.TronBlock
-import com.wallet.core.blockchain.tron.models.TronChainParameter
-import com.wallet.core.blockchain.tron.models.TronChainParameters
-import com.wallet.core.blockchain.tron.models.TronHeader
-import com.wallet.core.blockchain.tron.models.TronHeaderRawData
+import com.wallet.core.blockchain.tron.TronBlock
+import com.wallet.core.blockchain.tron.TronChainParameter
+import com.wallet.core.blockchain.tron.TronChainParameters
+import com.wallet.core.blockchain.tron.TronHeader
+import com.wallet.core.blockchain.tron.TronHeaderRawData
 import retrofit2.Response
 
 private val chainParamters = TronChainParameters(

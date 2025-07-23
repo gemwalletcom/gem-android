@@ -4,8 +4,8 @@ import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
-import com.wallet.core.blockchain.tron.models.TronAccount
-import com.wallet.core.blockchain.tron.models.TronAccountUsage
+import com.wallet.core.blockchain.tron.TronAccount
+import com.wallet.core.blockchain.tron.TronAccountUsage
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.runBlocking

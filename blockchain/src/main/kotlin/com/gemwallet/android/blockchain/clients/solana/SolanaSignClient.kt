@@ -158,7 +158,17 @@ class SolanaSignClient(
         val fee = chainData.gasFee(feePriority)
         val feePrice = fee.minerFee
         val feeLimit = fee.limit
+        val encodedTx = params.swapData
+        val encodedTxData = Base64.decode(encodedTx)
 
+        encodedTxData?.takeIf { it.isEmpty() } ?: throw Exception("unable to decode base64 string or empty transaction data")
+        val rawTxDecoder = SolanaRawTxDecoder(encodedTxData)
+        val numRequiredSignature = rawTxDecoder.signatureCount()
+        // other signers' signatures already prefilled, changing instructions would lead signature verification failure
+        if (numRequiredSignature > 1) {
+            return signRawTransaction(encodedTx, privateKey)
+        }
+        // Only user's signature is needed, safe to modifiy instructions
         val rawTx = SolanaTransaction.setComputeUnitPrice(params.swapData, feePrice.toString()).ifEmpty {
             throw IllegalStateException("Unable to set compute unit price")
         }
@@ -274,3 +284,39 @@ class SolanaSignClient(
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
 }
+//public struct SolanaRawTxDecoder {
+//    let rawData: Data
+//
+//    /// Decode a “short-vec” (compact-U16) length at `offset`, advancing the offset.
+//    private func decodeShortVecLength(offset: inout Int) -> UInt8 {
+//        let byte = rawData[offset]
+//        offset += 1
+//        return byte & 0x7F
+//    }
+//
+//    func signatureCount() -> UInt8 {
+//        var offset = 0
+//        return decodeShortVecLength(offset: &offset)
+//    }
+//
+//    func signatures() -> [Data] {
+//        var offset = 0
+//        let count = decodeShortVecLength(offset: &offset)
+//        var result: [Data] = []
+//        for _ in 0..<count {
+//            let sig = rawData.subdata(in: offset..<(offset + 64))
+//            result.append(sig)
+//            offset += 64
+//        }
+//        return result
+//    }
+//
+//    /// The serialized message bytes that every signer signs.
+//    /// (Everything after the sig-array: length byte + N×64-byte sigs.)
+//    func messageData() -> Data {
+//        var offset = 0
+//        let sigCount = Int(decodeShortVecLength(offset: &offset))
+//        offset += sigCount * 64
+//        return rawData.subdata(in: offset..<rawData.count)
+//    }
+//}

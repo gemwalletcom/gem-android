@@ -12,7 +12,7 @@ import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
-import com.wallet.core.blockchain.ethereum.models.EthereumFeeHistory
+import com.wallet.core.blockchain.ethereum.EthereumFeeHistory
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
@@ -134,7 +134,9 @@ class TestFeeCalculator {
         val feeService = FeeService(
             EthereumFeeHistory(
                 reward = listOf(listOf("0x3b9aca00")),
-                baseFeePerGas = listOf("0xa", "0xc")
+                baseFeePerGas = listOf("0xa", "0xc"),
+                oldestBlock = "",
+                gasUsedRatio = emptyList()
             ),
             gasLimit = BigInteger.valueOf(25_000)
         )
@@ -172,7 +174,9 @@ class TestFeeCalculator {
         val feeService = FeeService(
             EthereumFeeHistory(
                 reward = listOf(listOf("0x3b9aca00")),
-                baseFeePerGas = listOf("0xa", "0xc")
+                baseFeePerGas = listOf("0xa", "0xc"),
+                oldestBlock = "",
+                gasUsedRatio = emptyList()
             ),
             gasLimit = BigInteger.valueOf(25_000)
         )
@@ -212,7 +216,9 @@ class TestFeeCalculator {
         val feeService = FeeService(
             EthereumFeeHistory(
                 reward = listOf(listOf("0x3b9aca00")),
-                baseFeePerGas = listOf("0x0", "0x0")
+                baseFeePerGas = listOf("0x0", "0x0"),
+                oldestBlock = "",
+                gasUsedRatio = emptyList()
             ),
             gasLimit = BigInteger.valueOf(21_000)
         )
@@ -252,7 +258,9 @@ class TestFeeCalculator {
         val feeService = FeeService(
             EthereumFeeHistory(
                 reward = listOf(listOf("0x3b9aca00")),
-                baseFeePerGas = listOf("0x0", "0x0")
+                baseFeePerGas = listOf("0x0", "0x0"),
+                oldestBlock = "",
+                gasUsedRatio = emptyList()
             ),
             gasLimit = BigInteger.valueOf(21_000)
         )
@@ -292,7 +300,9 @@ class TestFeeCalculator {
         val feeService = FeeService(
             EthereumFeeHistory(
                 reward = listOf(listOf("0x3b9aca00")),
-                baseFeePerGas = listOf("0x0", "0x0")
+                baseFeePerGas = listOf("0x0", "0x0"),
+                oldestBlock = "",
+                gasUsedRatio = emptyList()
             ),
             gasLimit = BigInteger.valueOf(21_000)
         )
@@ -335,7 +345,9 @@ class TestFeeCalculator {
         val feeService = FeeService(
             EthereumFeeHistory(
                 reward = listOf(listOf("0x3b9aca00")),
-                baseFeePerGas = listOf("0x0", "0x0")
+                baseFeePerGas = listOf("0x0", "0x0"),
+                oldestBlock = "",
+                gasUsedRatio = emptyList()
             ),
             gasLimit = BigInteger.valueOf(21_000)
         )
