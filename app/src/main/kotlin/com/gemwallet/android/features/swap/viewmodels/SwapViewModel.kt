@@ -285,15 +285,19 @@ class SwapViewModel @Inject constructor(
         if (fromAsset == null || toAsset == null || quote == null) {
             return@combine null
         }
-        val fromAmount = Crypto(quote.fromValue).value(fromAsset.decimals)
-        val toAmount = Crypto(quote.toValue).value(toAsset.decimals)
-        val reverse = BigDecimal.ONE.divide(toAmount / fromAmount, MathContext.DECIMAL128)
-        val forwardRate = toAsset.format(toAmount / fromAmount, 2, dynamicPlace = true)
-        val reverseRate = fromAsset.format(reverse, 4, dynamicPlace = true)
-        SwapRate(
-            forward = "1 ${fromAsset.symbol} \u2248 $forwardRate",
-            reverse = "1 ${toAsset.symbol} \u2248 $reverseRate"
-        )
+        try {
+            val fromAmount = Crypto(quote.fromValue).value(fromAsset.decimals)
+            val toAmount = Crypto(quote.toValue).value(toAsset.decimals)
+            val reverse = BigDecimal.ONE.divide(toAmount / fromAmount, MathContext.DECIMAL128)
+            val forwardRate = toAsset.format(toAmount / fromAmount, 2, dynamicPlace = true)
+            val reverseRate = fromAsset.format(reverse, 4, dynamicPlace = true)
+            SwapRate(
+                forward = "1 ${fromAsset.symbol} \u2248 $forwardRate",
+                reverse = "1 ${toAsset.symbol} \u2248 $reverseRate"
+            )
+        } catch (_: Throwable) {
+            null
+        }
     }
     .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
