@@ -10,7 +10,6 @@ import com.gemwallet.android.data.repositoreis.chains.ChainInfoRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.filter
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -68,9 +67,4 @@ data class SelectImportTypeUIState(
 data class ChainUIState(
     val chain: Chain,
     val title: String,
-)
-
-data class ImportType(
-    val walletType: WalletType,
-    val chain: Chain? = null,
 )

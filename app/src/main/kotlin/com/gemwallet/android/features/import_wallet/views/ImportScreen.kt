@@ -47,10 +47,10 @@ import com.gemwallet.android.blockchain.operators.walletcore.WCFindPhraseWord
 import com.gemwallet.android.features.import_wallet.components.ImportInput
 import com.gemwallet.android.features.import_wallet.components.WalletNameTextField
 import com.gemwallet.android.features.import_wallet.components.WalletTypeTab
-import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportViewModel
 import com.gemwallet.android.features.onboarding.AcceptTermsScreen
-import com.gemwallet.android.services.ImportError
+import com.gemwallet.android.cases.wallet.ImportError
+import com.gemwallet.android.model.ImportType
 import com.gemwallet.android.ui.BuildConfig
 import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R

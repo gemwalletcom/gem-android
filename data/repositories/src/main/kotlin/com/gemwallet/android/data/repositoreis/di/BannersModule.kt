@@ -1,6 +1,6 @@
 package com.gemwallet.android.data.repositoreis.di
 
-import com.gemwallet.android.cases.banners.AddBannerCase
+import com.gemwallet.android.cases.banners.AddBanner
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
@@ -40,6 +40,6 @@ object BannersModule {
 
     @Singleton
     @Provides
-    fun provideAddBannerCase(bannersRepository: BannersRepository): AddBannerCase = bannersRepository
+    fun provideAddBannerCase(bannersRepository: BannersRepository): AddBanner = bannersRepository
 }
 

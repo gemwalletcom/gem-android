@@ -8,7 +8,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.math.BigInteger
 
-class ConfirmParamsTest {
+class TestConfirmParams {
     companion object {
         init {
             System.loadLibrary("TrustWalletCore")

@@ -52,7 +52,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.blockchain.operators.InvalidWords
 import com.gemwallet.android.blockchain.operators.walletcore.WCValidatePhraseOperator
-import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
+import com.gemwallet.android.model.ImportType
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AddressChainViewModel
 import com.gemwallet.android.ui.components.FieldBottomAction

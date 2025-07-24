@@ -8,9 +8,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
-import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.features.import_wallet.views.ImportScreen
 import com.gemwallet.android.features.import_wallet.views.SelectImportTypeScreen
+import com.gemwallet.android.model.ImportType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
 

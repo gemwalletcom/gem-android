@@ -5,7 +5,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.util.Locale
 
-class SyncDeviceLocaleTest {
+class TestSyncDeviceLocale {
 
     @Test
     fun testZH() {

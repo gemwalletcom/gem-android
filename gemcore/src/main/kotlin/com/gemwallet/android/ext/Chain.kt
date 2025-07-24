@@ -5,6 +5,7 @@ import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BitcoinChain
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
+import com.wallet.core.primitives.EncodingType
 import com.wallet.core.primitives.FeeUnitType
 import uniffi.gemstone.Config
 import java.math.BigInteger
@@ -185,3 +186,10 @@ fun BitcoinChain.fullAddress(address: String) = when (this) {
     }
     else -> address
 }
+
+val Chain.keyEncodingTypes: List<EncodingType>
+    get() = when (this) {
+        Chain.Solana -> listOf(EncodingType.Base58, EncodingType.Hex)
+        Chain.Stellar -> listOf(EncodingType.Base32, EncodingType.Hex)
+        else -> listOf(EncodingType.Hex)
+    }

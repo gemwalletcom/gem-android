@@ -16,8 +16,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.components.SearchBar
 import com.gemwallet.android.features.import_wallet.viewmodels.ChainUIState
-import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
 import com.gemwallet.android.features.import_wallet.viewmodels.SelectImportTypeViewModel
+import com.gemwallet.android.model.ImportType
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.ChainItem
 import com.gemwallet.android.ui.components.Container

@@ -1,6 +1,6 @@
-package com.gemwallet.android.services
+package com.gemwallet.android.cases.wallet
 
-import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
+import com.gemwallet.android.model.ImportType
 import com.wallet.core.primitives.Wallet
 
 interface ImportWalletService {

@@ -1,4 +1,4 @@
-package com.gemwallet.android.services
+package com.gemwallet.android.data.repositoreis.wallets
 
 import com.gemwallet.android.blockchain.clients.AddressStatusClientProxy
 import com.gemwallet.android.blockchain.operators.InvalidPhrase
@@ -8,24 +8,29 @@ import com.gemwallet.android.blockchain.operators.StorePhraseOperator
 import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.blockchain.operators.ValidatePhraseOperator
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
-import com.gemwallet.android.cases.banners.AddBannerCase
+import com.gemwallet.android.cases.banners.AddBanner
 import com.gemwallet.android.cases.device.SyncSubscription
+import com.gemwallet.android.cases.wallet.ImportError
+import com.gemwallet.android.cases.wallet.ImportWalletService
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.features.import_wallet.viewmodels.ImportType
+import com.gemwallet.android.ext.keyEncodingTypes
 import com.gemwallet.android.math.decodeHex
+import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.AddressStatus
-import com.gemwallet.android.ui.R
+import com.gemwallet.android.model.ImportType
 import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.BannerState
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.EncodingType
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import wallet.core.jni.Base32
+import wallet.core.jni.Base58
 import wallet.core.jni.PrivateKey
 
 class PhraseAddressImportWalletService(
@@ -38,7 +43,7 @@ class PhraseAddressImportWalletService(
     private val passwordStore: PasswordStore,
     private val syncSubscription: SyncSubscription,
     private val addressStatusClients: AddressStatusClientProxy,
-    private val addBannerCase: AddBannerCase,
+    private val addBanner: AddBanner,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : ImportWalletService {
 
@@ -68,15 +73,17 @@ class PhraseAddressImportWalletService(
         return Result.success(wallet)
     }
 
-    override suspend fun createWallet(walletName: String, data: String): Result<Wallet> = withContext(Dispatchers.IO) {
-        val result = handlePhrase(ImportType(WalletType.multicoin), walletName, data)
-        if (result.isFailure) return@withContext result
-        val wallet = result.getOrNull() ?: return@withContext Result.failure(Exception("Unknown error"))
+    override suspend fun createWallet(walletName: String, data: String): Result<Wallet> =
+        withContext(Dispatchers.IO) {
+            val result = handlePhrase(ImportType(WalletType.multicoin), walletName, data)
+            if (result.isFailure) return@withContext result
+            val wallet =
+                result.getOrNull() ?: return@withContext Result.failure(Exception("Unknown error"))
 
-        setupWallet(wallet)
+            setupWallet(wallet)
 
-        Result.success(wallet)
-    }
+            Result.success(wallet)
+        }
 
     private suspend fun setupWallet(wallet: Wallet) {
         assetsRepository.createAssets(wallet)
@@ -110,7 +117,6 @@ class PhraseAddressImportWalletService(
 
     private suspend fun handleAddress(chain: Chain, walletName: String, data: String): Result<Wallet> {
         if (addressValidate(data, chain).getOrNull() != true) {
-            R.string.errors_create_wallet
             return Result.failure(ImportError.InvalidAddress)
         }
         return try {
@@ -122,17 +128,18 @@ class PhraseAddressImportWalletService(
     }
 
     private suspend fun handlePrivateKey(chain: Chain, walletName: String, data: String): Result<Wallet> {
-        val cleanedData = data.trim()
-        try {
-            if (!PrivateKey.isValid(cleanedData.decodeHex(), WCChainTypeProxy().invoke(chain).curve())) {
+        val data = decodePrivateKey(chain, data.trim())
+        val key = try {
+            if (!PrivateKey.isValid(data, WCChainTypeProxy().invoke(chain).curve())) {
                 throw Exception()
             }
+            data.toHexString()
         } catch (_: Throwable) {
             return Result.failure(ImportError.InvalidationPrivateKey)
         }
-        val wallet = walletsRepository.addControlled(walletName, cleanedData, WalletType.private_key, chain)
+        val wallet = walletsRepository.addControlled(walletName, key, WalletType.private_key, chain)
         val password = passwordStore.createPassword(wallet.id)
-        val storeResult = storePhraseOperator(wallet, cleanedData, password)
+        val storeResult = storePhraseOperator(wallet, key, password)
         return if (storeResult.isSuccess) {
             Result.success(wallet)
         } else {
@@ -146,13 +153,56 @@ class PhraseAddressImportWalletService(
             val statuses = addressStatusClients.getAddressStatus(it.chain, it.address)
             for (status in statuses) {
                 if (status == AddressStatus.MultiSignature) {
-                    addBannerCase.addBanner(
+                    addBanner.addBanner(
                         wallet = wallet,
                         chain = it.chain,
                         event = BannerEvent.AccountBlockedMultiSignature,
                         state = BannerState.AlwaysActive,
                     )
                 }
+            }
+        }
+    }
+
+    companion object {
+
+        fun decodePrivateKey(chain: Chain, data: String): ByteArray {
+            chain.keyEncodingTypes.forEach { type ->
+                when (type) {
+                    EncodingType.Base58 -> {
+                        val decoded = Base58.decodeNoCheck(data)
+                            ?.takeIf { it.size % 32 == 0 }?.slice(0..< 32)
+                            ?.toByteArray()
+                        if (decoded != null) {
+                            return decoded
+                        }
+                    }
+                    EncodingType.Base32 -> {
+                        val decoded = decodeBase32(chain, data)
+                        if (decoded != null) {
+                            return decoded
+                        }
+                    }
+                    EncodingType.Hex -> return data.decodeHex()
+                }
+            }
+            throw IllegalArgumentException("Invalid private key encoding")
+        }
+
+        fun decodeBase32(chain: Chain, data: String): ByteArray? {
+            return when (chain) {
+                Chain.Stellar -> {
+                    if (data.length != 56 || !data.startsWith("S")) {
+                        return null
+                    }
+                    val decoded = Base32.decode(data)
+                    if (decoded.size == 35 && decoded[0] == 0x90.toByte()) {
+                        decoded.slice(1 .. 32).toByteArray()
+                    } else {
+                        null
+                    }
+                }
+                else -> null
             }
         }
     }

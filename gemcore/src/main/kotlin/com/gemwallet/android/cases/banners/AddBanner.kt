@@ -6,7 +6,7 @@ import com.wallet.core.primitives.BannerState
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet
 
-interface AddBannerCase {
+interface AddBanner {
     suspend fun addBanner(
         wallet: Wallet? = null,
         asset: Asset? = null,

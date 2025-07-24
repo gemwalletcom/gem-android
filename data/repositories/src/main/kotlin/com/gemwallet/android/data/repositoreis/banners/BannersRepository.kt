@@ -1,6 +1,6 @@
 package com.gemwallet.android.data.repositoreis.banners
 
-import com.gemwallet.android.cases.banners.AddBannerCase
+import com.gemwallet.android.cases.banners.AddBanner
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
@@ -26,7 +26,7 @@ class BannersRepository(
     private val assetRepository: AssetsRepository,
     private val bannersDao: BannersDao,
     private val userConfig: UserConfig,
-) : GetBannersCase, CancelBannerCase, AddBannerCase {
+) : GetBannersCase, CancelBannerCase, AddBanner {
 
     override suspend fun getActiveBanners(wallet: Wallet?, asset: Asset?): List<Banner> = withContext(Dispatchers.IO) {
         val assetInfo = asset?.id?.let { assetRepository.getAssetInfo(it).firstOrNull() }
