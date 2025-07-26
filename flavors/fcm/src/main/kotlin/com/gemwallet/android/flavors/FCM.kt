@@ -41,7 +41,11 @@ class FCM : FirebaseMessagingService() {
             val title = message.notification?.title
             val subtitle = message.notification?.body
             val channelId = message.data["type"]
-            showSystemNotification.showNotification(title, subtitle, channelId, data?.first, data?.second)
+            when (data) {
+                is PushNotificationAsset -> showSystemNotification.showNotification(title, subtitle, channelId, data)
+                is PushNotificationTransaction -> showSystemNotification.showNotification(title, subtitle, channelId, data)
+                else -> showSystemNotification.showNotification(title, subtitle, channelId)
+            }
         }
     }
 
@@ -53,24 +57,18 @@ class FCM : FirebaseMessagingService() {
     }
 
     companion object {
-        internal fun parseData(rawType: String?, rawData: String?): Pair<Int?, String?>? {
+        internal fun parseData(rawType: String?, rawData: String?): Any? {
             if (rawType.isNullOrEmpty() || rawData.isNullOrEmpty()) {
                 return null
             }
             val type = PushNotificationTypes.entries.firstOrNull { it.string == rawType } ?: return null
             return try {
                 when (type) {
-                    PushNotificationTypes.Transaction -> jsonEncoder.decodeFromString<PushNotificationTransaction>(rawData).let {
-                        Pair(it.walletIndex, it.assetId)
-                    }
-
-                    PushNotificationTypes.Asset -> Pair(
-                        null,
-                        jsonEncoder.decodeFromString<PushNotificationAsset>(rawData).assetId,
-                    )
-                    PushNotificationTypes.Test,
+                    PushNotificationTypes.Transaction -> jsonEncoder.decodeFromString<PushNotificationTransaction>(rawData)
                     PushNotificationTypes.PriceAlert,
                     PushNotificationTypes.BuyAsset,
+                    PushNotificationTypes.Asset -> jsonEncoder.decodeFromString<PushNotificationAsset>(rawData).assetId
+                    PushNotificationTypes.Test,
                     PushNotificationTypes.SwapAsset -> null
                 }
             } catch (_: Throwable) {

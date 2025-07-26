@@ -30,8 +30,6 @@ import kotlinx.coroutines.flow.stateIn
 import uniffi.gemstone.Explorer
 import javax.inject.Inject
 
-const val txIdArg = "txId"
-
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class TransactionDetailsViewModel @Inject constructor(
@@ -42,7 +40,7 @@ class TransactionDetailsViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val tx: StateFlow<TransactionExtended?> = savedStateHandle.getStateFlow<String?>(txIdArg, null)
+    private val tx: StateFlow<TransactionExtended?> = savedStateHandle.getStateFlow<String?>("txId", null)
         .filterNotNull()
         .flatMapLatest { getTransaction.getTransaction(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)

@@ -1,6 +1,7 @@
 package com.gemwallet.android.ui
 
 import android.content.Context
+import android.net.Uri
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.AlertDialog
@@ -13,6 +14,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.gemwallet.android.BuildConfig
 import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateWalletRulesScreen
@@ -23,11 +25,12 @@ import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.navigation.WalletNavGraph
 
 @Composable
-fun WalletApp() {
+fun WalletApp(
+    navController: NavHostController = rememberNavController(),
+) {
     val viewModel: AppViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val navController = rememberNavController()
     val startDestination = viewModel.getStartDestination()
     WalletNavGraph(
         navController = navController,

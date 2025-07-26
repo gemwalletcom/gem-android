@@ -29,6 +29,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,6 +43,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.compose.rememberNavController
 import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -106,7 +108,9 @@ class MainActivity : SecureBaseFragmentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun MainContent() {
+        val navController = rememberNavController()
         val state by viewModel.uiState.collectAsStateWithLifecycle()
+        val intent by viewModel.intent.collectAsStateWithLifecycle()
         val enableSysAuth = enabledSysAuth()
         val authState = (state.initialAuth == AuthState.Required || state.authState == AuthState.Required)
         if (authState && enableSysAuth) {
@@ -116,9 +120,12 @@ class MainActivity : SecureBaseFragmentActivity() {
                 onSuccessAuth?.invoke()
             }
         }
+        LaunchedEffect(intent) {
+            navController.handleDeepLink(intent)
+        }
         WalletTheme {
             if (state.initialAuth == AuthState.Success || !enableSysAuth) {
-                WalletApp()
+                WalletApp(navController)
                 OnWalletConnect()
             } else {
                 Box(modifier = Modifier
@@ -173,15 +180,16 @@ class MainActivity : SecureBaseFragmentActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent.hasExtra("walletIndex") || intent.hasExtra("assetId")) {
+        if (intent.hasExtra("walletIndex")) {
             val walletIndex = intent.getIntExtra("walletIndex", -1)
-            val assetId = intent.getStringExtra("assetId")
-            viewModel.onNotification(walletIndex, assetId)
+            viewModel.onNotification(walletIndex)
         }
         val data = intent.data ?: return
         when (data.scheme) {
             "wc" -> viewModel.addPairing(data.toString())
         }
+
+        viewModel.intent.update { intent }
     }
 
     @Composable
@@ -274,6 +282,8 @@ class MainViewModel @Inject constructor(
     private val checkAccountsService: CheckAccountsService,
 ) : ViewModel() {
 
+    val intent = MutableStateFlow<Intent?>(null)
+
     private val state = MutableStateFlow(
         MainState(
             initialAuth = if (userConfig.authRequired()) AuthState.Required else AuthState.Success
@@ -355,7 +365,7 @@ class MainViewModel @Inject constructor(
         pauseTime.store(SystemClock.uptimeMillis())
     }
 
-    fun onNotification(walletIndex: Int, assetId: String?) = viewModelScope.launch(Dispatchers.IO) {
+    fun onNotification(walletIndex: Int) = viewModelScope.launch(Dispatchers.IO) {
         walletIndex.takeIf { it > 0 }?.let { walletIndex ->
             if (sessionRepository.getSession()?.wallet?.index != walletIndex) {
                 walletsRepository.getAll().firstOrNull()?.firstOrNull { it.index == walletIndex }?.let {

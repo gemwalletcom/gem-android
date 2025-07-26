@@ -7,12 +7,18 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Bundle
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.net.toUri
 import com.gemwallet.android.MainActivity
 import com.gemwallet.android.cases.pushes.ShowSystemNotification
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.navigation.routes.transactionRouteUri
+import com.wallet.core.primitives.PushNotificationAsset
+import com.wallet.core.primitives.PushNotificationTransaction
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 
@@ -21,13 +27,45 @@ class ShowSystemNotification @Inject constructor(@ApplicationContext val applica
     override fun showNotification(
         title: String?,
         subtitle: String?,
+        channelId: String?
+    ) {
+        showNotification(title, subtitle, channelId, Bundle.EMPTY)
+    }
+
+    override fun showNotification(
+        title: String?,
+        subtitle: String?,
         channelId: String?,
-        walletIndex: Int?,
-        assetId: String?
+        data: PushNotificationTransaction
+    ) {
+        val extra = Bundle().apply {
+            putInt("walletIndex", data.walletIndex)
+        }
+        showNotification(title, subtitle, channelId, extra, "$transactionRouteUri/${data.transactionId}".toUri())
+    }
+
+    override fun showNotification(
+        title: String?,
+        subtitle: String?,
+        channelId: String?,
+        data: PushNotificationAsset,
+    ) {
+        val extra = Bundle().apply {
+            putString("assetId", data.assetId)
+        }
+        showNotification(title, subtitle, channelId, extra, "$transactionRouteUri/${data.assetId}".toUri())
+    }
+
+    private fun showNotification(
+        title: String?,
+        subtitle: String?,
+        channelId: String?,
+        data: Bundle,
+        uri: Uri? = null
     ) {
         val intent = Intent(applicationContext, MainActivity::class.java)
-            .putExtra("walletIndex", walletIndex)
-            .putExtra("assetId", assetId)
+            .putExtras(data)
+            .setData(uri)
             .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP)
         val pendingIntent = PendingIntent.getActivity(
             applicationContext,

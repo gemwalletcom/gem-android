@@ -252,3 +252,6 @@ just core-upgrade
 ## Development Memories
 
 - You will use only gradle for tests and build
+- Always run tests
+- remember not write comments to code
+- on each modification clean imports

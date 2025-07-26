@@ -59,10 +59,6 @@ import com.gemwallet.android.features.settings.navigation.settingsScreen
 import com.gemwallet.android.features.swap.navigation.navigateToSwap
 import com.gemwallet.android.features.swap.navigation.swap
 import com.gemwallet.android.features.swap.navigation.swapRoute
-import com.gemwallet.android.features.activities.presents.activitiesRoute
-import com.gemwallet.android.features.activities.presents.activitiesScreen
-import com.gemwallet.android.features.activities.presents.navigateToTransactionScreen
-import com.gemwallet.android.features.activities.presents.transactionScreen
 import com.gemwallet.android.features.wallet.navigation.navigateToPhraseScreen
 import com.gemwallet.android.features.wallet.navigation.navigateToWalletScreen
 import com.gemwallet.android.features.wallet.navigation.walletScreen
@@ -74,15 +70,18 @@ import com.gemwallet.android.ui.components.animation.popEnterTransition
 import com.gemwallet.android.ui.components.animation.popExitTransition
 import com.gemwallet.android.ui.navigation.routes.SendSelect
 import com.gemwallet.android.ui.navigation.routes.Transfer
+import com.gemwallet.android.ui.navigation.routes.activitiesScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToDelegation
 import com.gemwallet.android.ui.navigation.routes.navigateToNftAsset
 import com.gemwallet.android.ui.navigation.routes.navigateToNftCollection
 import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
 import com.gemwallet.android.ui.navigation.routes.navigateToStake
+import com.gemwallet.android.ui.navigation.routes.navigateToTransactionScreen
 import com.gemwallet.android.ui.navigation.routes.nftCollection
 import com.gemwallet.android.ui.navigation.routes.recipientInput
 import com.gemwallet.android.ui.navigation.routes.stake
 import com.gemwallet.android.ui.navigation.routes.stakeRoute
+import com.gemwallet.android.ui.navigation.routes.transactionDetailsScreen
 import com.wallet.core.primitives.AssetId
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -254,18 +253,9 @@ fun WalletNavGraph(
             )
         }
 
-        navigation(
-            startDestination = activitiesRoute,
-            route = "activities-group",
-        ) {
-            activitiesScreen(
-                onTransaction = navController::navigateToTransactionScreen
-            )
+        activitiesScreen(onTransaction = navController::navigateToTransactionScreen)
 
-            transactionScreen(
-                onCancel = onCancel,
-            )
-        }
+        transactionDetailsScreen(onCancel = onCancel)
 
         navigation(
             startDestination = settingsRoute,

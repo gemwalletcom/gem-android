@@ -1,29 +1,36 @@
-package com.gemwallet.android.features.activities.presents
+package com.gemwallet.android.ui.navigation.routes
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
-import com.gemwallet.android.ext.urlDecode
-import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.features.activities.presents.details.TransactionDetails
 import com.gemwallet.android.features.activities.presents.list.TransactionsScreen
-import com.gemwallet.android.features.activities.viewmodels.txIdArg
 import com.gemwallet.android.ui.components.animation.enterTabScreenTransition
 import com.gemwallet.android.ui.components.animation.exitTabScreenTransition
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 const val activitiesRoute = "transactions"
 const val transactionRoute = "transaction"
+const val transactionRouteUri = "gem://transaction"
+
+@Serializable
+object ActivitiesRoute
+
+@Serializable
+data class TransactionDetailsRoute(
+    @SerialName("txId") val txId: String
+)
 
 fun NavController.navigateToActivitiesScreen(navOptions: NavOptions? = null) {
-    navigate(activitiesRoute, navOptions ?: navOptions { launchSingleTop = true })
+    navigate(ActivitiesRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavController.navigateToTransactionScreen(txId: String, navOptions: NavOptions? = null) {
-    navigate("$transactionRoute/${txId.urlEncode()}", navOptions ?: navOptions {
+    navigate(TransactionDetailsRoute(txId), navOptions ?: navOptions {
         launchSingleTop = true
     })
 }
@@ -31,32 +38,22 @@ fun NavController.navigateToTransactionScreen(txId: String, navOptions: NavOptio
 fun NavGraphBuilder.activitiesScreen(
     onTransaction: (String) -> Unit,
 ) {
-    composable(
-        route = activitiesRoute,
+    composable<ActivitiesRoute>(
         enterTransition = enterTabScreenTransition,
         exitTransition = exitTabScreenTransition,
     ) {
-        TransactionsScreen(
-            onTransaction = onTransaction,
-        )
+        TransactionsScreen(onTransaction = onTransaction)
     }
 }
 
-fun NavGraphBuilder.transactionScreen(
+fun NavGraphBuilder.transactionDetailsScreen(
     onCancel: () -> Unit,
 ) {
-    composable(
-        "$transactionRoute/{$txIdArg}",
-        arguments = listOf(
-            navArgument(txIdArg) {
-                type = NavType.StringType
-            },
+    composable<TransactionDetailsRoute>(
+        deepLinks = listOf(
+            navDeepLink<TransactionDetailsRoute>(basePath = transactionRouteUri)
         )
     ) {
-        if (it.arguments?.getString(txIdArg)?.urlDecode().isNullOrEmpty()) {
-            onCancel()
-        } else {
-            TransactionDetails(onCancel = onCancel)
-        }
+        TransactionDetails(onCancel = onCancel)
     }
 }
