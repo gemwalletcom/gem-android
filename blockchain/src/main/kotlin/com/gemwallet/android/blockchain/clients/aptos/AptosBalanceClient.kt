@@ -11,12 +11,13 @@ class AptosBalanceClient(
     private val chain: Chain,
     private val balanceService: AptosBalancesService,
 ) : BalanceClient {
+    private val aptosCoin = "0x1::aptos_coin::AptosCoin"
+
     override suspend fun getNativeBalance(chain: Chain, address: String): AssetBalance? {
-        val result = balanceService.balance(address).getOrNull()?.data?.coin?.value ?: return null
-        return try { // String to number
+        return try {
+            val result = balanceService.balance(address, aptosCoin).string()
             AssetBalance.create(chain.asset(), available = result)
-        } catch (err: Throwable) {
-            print(err)
+        } catch (_: Throwable) {
             null
         }
     }
@@ -25,13 +26,17 @@ class AptosBalanceClient(
         if (tokens.isEmpty()) {
             return emptyList()
         }
-        val resources = balanceService.resources(address).getOrNull() ?: return emptyList()
+        val resources = try {
+            balanceService.resources(address)
+        } catch (_: Throwable) {
+            return emptyList()
+        }
         val result = mutableListOf<AssetBalance>()
 
         tokens.mapNotNull { token ->
             val resource = resources.firstOrNull { it.type == "0x1::coin::CoinStore<${token.id.tokenId}>" } ?: return@mapNotNull null
             val balance = resource.data.coin?.value ?: return@mapNotNull null
-            result.add(AssetBalance.create(token, available = balance.toString()))
+            result.add(AssetBalance.create(token, available = balance))
         }
         return result
     }
