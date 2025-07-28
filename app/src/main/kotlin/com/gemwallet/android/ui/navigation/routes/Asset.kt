@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.ConfirmParams
@@ -14,7 +15,8 @@ import com.wallet.core.primitives.AssetId
 import kotlinx.serialization.Serializable
 
 
-const val assetRoute = "asset"
+const val assetRoutePath = "asset"
+const val assetRouteUri = "gem://$assetRoutePath"
 
 @Serializable
 data class AssetRoute(val assetId: String)
@@ -47,7 +49,11 @@ fun NavGraphBuilder.assetScreen(
     onStake: (AssetId) -> Unit,
     onConfirm: (ConfirmParams) -> Unit,
 ) {
-    composable<AssetRoute> {
+    composable<AssetRoute>(
+        deepLinks = listOf(
+            navDeepLink<AssetRoute>(basePath = assetRouteUri)
+        )
+    ) {
         AssetDetailsScene(
             onCancel = onCancel,
             onTransfer = onTransfer,

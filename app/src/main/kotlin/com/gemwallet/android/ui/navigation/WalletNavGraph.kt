@@ -67,7 +67,7 @@ import com.gemwallet.android.ui.navigation.routes.SendSelect
 import com.gemwallet.android.ui.navigation.routes.Transfer
 import com.gemwallet.android.ui.navigation.routes.activitiesScreen
 import com.gemwallet.android.ui.navigation.routes.assetChartScreen
-import com.gemwallet.android.ui.navigation.routes.assetRoute
+import com.gemwallet.android.ui.navigation.routes.assetRoutePath
 import com.gemwallet.android.ui.navigation.routes.assetScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAssetChartScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAssetScreen
@@ -180,7 +180,7 @@ fun WalletNavGraph(
                 confirm(
                     finishAction = { assetId, hash, route ->
                         when (route) {
-                            assetRoute -> NavigateAfterConfirm.Transfer(assetId).navigate(navController)
+                            assetRoutePath -> NavigateAfterConfirm.Transfer(assetId).navigate(navController)
                             stakeRoute -> NavigateAfterConfirm.Stake(assetId).navigate(navController)
                             swapRoute -> NavigateAfterConfirm.Swap(assetId).navigate(navController)
                         }

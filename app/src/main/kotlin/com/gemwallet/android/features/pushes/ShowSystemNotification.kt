@@ -16,6 +16,7 @@ import androidx.core.net.toUri
 import com.gemwallet.android.MainActivity
 import com.gemwallet.android.cases.pushes.ShowSystemNotification
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.navigation.routes.assetRouteUri
 import com.gemwallet.android.ui.navigation.routes.transactionRouteUri
 import com.wallet.core.primitives.PushNotificationAsset
 import com.wallet.core.primitives.PushNotificationTransaction
@@ -50,10 +51,7 @@ class ShowSystemNotification @Inject constructor(@ApplicationContext val applica
         channelId: String?,
         data: PushNotificationAsset,
     ) {
-        val extra = Bundle().apply {
-            putString("assetId", data.assetId)
-        }
-        showNotification(title, subtitle, channelId, extra, "$transactionRouteUri/${data.assetId}".toUri())
+        showNotification(title, subtitle, channelId, Bundle.EMPTY, "$assetRouteUri/${data.assetId}".toUri())
     }
 
     private fun showNotification(

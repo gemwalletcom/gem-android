@@ -36,7 +36,7 @@ import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
-import com.gemwallet.android.ui.navigation.routes.assetRoute
+import com.gemwallet.android.ui.navigation.routes.assetRoutePath
 import com.gemwallet.android.ui.navigation.routes.stakeRoute
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
@@ -326,9 +326,9 @@ class ConfirmViewModel @Inject constructor(
                         is ConfirmParams.Stake -> stakeRoute
                         is ConfirmParams.SwapParams,
                         is ConfirmParams.TokenApprovalParams -> swapRoute
-                        is ConfirmParams.TransferParams -> assetRoute
-                        is ConfirmParams.Activate -> assetRoute
-                        is ConfirmParams.NftParams -> assetRoute
+                        is ConfirmParams.TransferParams -> assetRoutePath
+                        is ConfirmParams.Activate -> assetRoutePath
+                        is ConfirmParams.NftParams -> assetRoutePath
                     }
                     viewModelScope.launch(Dispatchers.Main) {
                         finishAction(assetId = assetInfo.id(), hash = txHash, route = finishRoute)
