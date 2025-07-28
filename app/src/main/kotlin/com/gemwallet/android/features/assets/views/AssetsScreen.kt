@@ -45,7 +45,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.assets.model.WalletInfoUIState
 import com.gemwallet.android.features.assets.viewmodel.AssetsViewModel
-import com.gemwallet.android.features.banners.views.BannersScene
+import com.gemwallet.features.banner.presents.views.BannersScene
 import com.gemwallet.android.features.update_app.presents.InAppUpdateBanner
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_head.AmountListHead

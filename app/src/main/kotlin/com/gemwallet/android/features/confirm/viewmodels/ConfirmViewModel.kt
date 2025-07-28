@@ -16,7 +16,6 @@ import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.asset.navigation.assetRoute
 import com.gemwallet.android.features.confirm.models.AmountUIModel
 import com.gemwallet.android.features.confirm.models.ConfirmError
 import com.gemwallet.android.features.confirm.models.ConfirmState
@@ -37,6 +36,7 @@ import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
+import com.gemwallet.android.ui.navigation.routes.assetRoute
 import com.gemwallet.android.ui.navigation.routes.stakeRoute
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency

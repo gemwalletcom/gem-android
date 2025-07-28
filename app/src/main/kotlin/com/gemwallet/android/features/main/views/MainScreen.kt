@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.gemwallet.android.features.asset.navigation.navigateToAssetScreen
 import com.gemwallet.android.features.assets.navigation.assetsRoute
 import com.gemwallet.android.features.assets.navigation.navigateToAssetsScreen
 import com.gemwallet.android.features.assets.views.AssetsScreen
@@ -60,6 +59,7 @@ import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.navigation.routes.activitiesRoute
 import com.gemwallet.android.ui.navigation.routes.navigateToActivitiesScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToAssetScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToNftAsset
 import com.gemwallet.android.ui.navigation.routes.navigateToNftCollection
 import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
