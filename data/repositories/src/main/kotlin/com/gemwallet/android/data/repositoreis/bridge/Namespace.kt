@@ -1,6 +1,8 @@
 package com.gemwallet.android.data.repositoreis.bridge
 
+import com.gemwallet.android.ext.toChainType
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.ChainType
 import com.wallet.core.primitives.WalletConnectionMethods
 import uniffi.gemstone.WalletConnectNamespace
 
@@ -34,20 +36,9 @@ fun Chain.getChainNameSpace(): String? {
 }
 
 fun Chain.getNameSpace(): ChainNamespace? {
-
-    return when (this) {
-        Chain.Ethereum,
-        Chain.SmartChain,
-        Chain.Base,
-        Chain.AvalancheC,
-        Chain.Polygon,
-        Chain.Arbitrum,
-        Chain.OpBNB,
-        Chain.Manta,
-        Chain.Fantom,
-        Chain.Gnosis,
-        Chain.Optimism -> ChainNamespace.Eip155
-        Chain.Solana -> ChainNamespace.Solana
+    return when (this.toChainType()) {
+        ChainType.Ethereum -> ChainNamespace.Eip155
+        ChainType.Solana -> ChainNamespace.Solana
         else -> return null
     }
 }
