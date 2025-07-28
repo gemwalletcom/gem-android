@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.os.SystemClock
 import android.widget.Toast
 import android.widget.Toast.makeText
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricManager.Authenticators.BIOMETRIC_STRONG
@@ -31,6 +33,9 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -40,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
@@ -54,8 +60,10 @@ import com.gemwallet.android.services.CheckAccountsService
 import com.gemwallet.android.services.SyncService
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.WalletApp
+import com.gemwallet.android.ui.components.RootWarningDialog
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.isDeviceRooted
 import com.gemwallet.android.ui.theme.WalletTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -74,8 +82,9 @@ import kotlin.concurrent.atomics.AtomicLong
 import kotlin.concurrent.atomics.ExperimentalAtomicApi
 import kotlin.system.exitProcess
 
+@OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
-class MainActivity : SecureBaseFragmentActivity() {
+class MainActivity : FragmentActivity() {
     private val authenticators = if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
         BIOMETRIC_STRONG or DEVICE_CREDENTIAL
     } else {
@@ -91,28 +100,39 @@ class MainActivity : SecureBaseFragmentActivity() {
     private var onSuccessAuth: (() -> Unit)? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         prepareBiometricAuth()
+
+        setContent {
+            RootWarning()
+            MainContent()
+        }
     }
 
-    override fun onResume() {
-        super.onResume()
-        viewModel.onActivityResumed()
-    }
+    @Composable
+    private fun RootWarning() {
+        WalletTheme {
+            var showRootWarningDialog by remember { mutableStateOf(isDeviceRooted()) }
 
-    override fun onPause() {
-        super.onPause()
-        viewModel.onActivityPaused()
+            if (showRootWarningDialog) {
+                RootWarningDialog(
+                    onCancel = { this.finishAffinity() },
+                    onIgnore = { showRootWarningDialog = false }
+                )
+            }
+        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    override fun MainContent() {
+    fun MainContent() {
         val navController = rememberNavController()
         val state by viewModel.uiState.collectAsStateWithLifecycle()
         val intent by viewModel.intent.collectAsStateWithLifecycle()
         val enableSysAuth = enabledSysAuth()
         val authState = (state.initialAuth == AuthState.Required || state.authState == AuthState.Required)
+
         if (authState && enableSysAuth) {
             biometricPrompt.authenticate(promptInfo)
         } else {
@@ -141,41 +161,19 @@ class MainActivity : SecureBaseFragmentActivity() {
                 }
             }
 
-            if (viewModel.resetWCPairing()) {
-                makeText(LocalContext.current, stringResource(id = R.string.wallet_connect_connection_title), Toast.LENGTH_SHORT).show()
-            }
-
-            if (!state.wcError.isNullOrEmpty()) {
-                BasicAlertDialog(
-                    onDismissRequest = viewModel::resetWcError,
-                ) {
-                    Box(
-                        contentAlignment= Alignment.Center,
-                        modifier = Modifier.background(
-                            MaterialTheme.colorScheme.background,
-                            shape = RoundedCornerShape(8.dp)
-                        )
-                    ) {
-                        Column(
-                            modifier = Modifier.padding(start = padding16, end = padding16, top = padding16),
-                            horizontalAlignment = Alignment.End
-                        ) {
-                            Text(
-                                modifier = Modifier.fillMaxWidth(),
-                                text = state.wcError!!,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.W400,
-                                textAlign = TextAlign.Center,
-                            )
-                            Spacer16()
-                            TextButton(onClick = viewModel::resetWcError) {
-                                Text(text = stringResource(id = R.string.common_cancel))
-                            }
-                        }
-                    }
-                }
-            }
+            ResetWCPair()
+            ShowWCError(state.wcError)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.onActivityResumed()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.onActivityPaused()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -190,6 +188,47 @@ class MainActivity : SecureBaseFragmentActivity() {
         }
 
         viewModel.intent.update { intent }
+    }
+
+    @Composable
+    fun ResetWCPair() {
+        if (viewModel.resetWCPairing()) {
+            makeText(LocalContext.current, stringResource(id = R.string.wallet_connect_connection_title), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    @Composable
+    private fun ShowWCError(wcError: String?) {
+        if (!wcError.isNullOrEmpty()) {
+            BasicAlertDialog(
+                onDismissRequest = viewModel::resetWcError,
+            ) {
+                Box(
+                    contentAlignment= Alignment.Center,
+                    modifier = Modifier.background(
+                        MaterialTheme.colorScheme.background,
+                        shape = RoundedCornerShape(8.dp)
+                    )
+                ) {
+                    Column(
+                        modifier = Modifier.padding(start = padding16, end = padding16, top = padding16),
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Text(
+                            modifier = Modifier.fillMaxWidth(),
+                            text = wcError,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.W400,
+                            textAlign = TextAlign.Center,
+                        )
+                        Spacer16()
+                        TextButton(onClick = viewModel::resetWcError) {
+                            Text(text = stringResource(id = R.string.common_cancel))
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Composable
