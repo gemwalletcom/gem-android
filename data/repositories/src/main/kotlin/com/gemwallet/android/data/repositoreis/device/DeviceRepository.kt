@@ -84,8 +84,12 @@ class DeviceRepository(
     }
 
     private suspend fun callRegisterDevice(device: Device) {
+        val remoteDeviceInfo = try {
+            gemApiClient.getDevice(device.id)
+        } catch (_: Throwable) {
+            null
+        }
         try {
-            val remoteDeviceInfo = gemApiClient.getDevice(device.id)
             when {
                 remoteDeviceInfo == null -> gemApiClient.registerDevice(device)
                 remoteDeviceInfo.hasChanges(device) -> {
@@ -97,7 +101,9 @@ class DeviceRepository(
                     )
                 }
             }
-        } catch (_: Throwable) {}
+        } catch (err: Throwable) {
+            Log.d("REGISTER-DEVICE", "Error", err)
+        }
     }
 
     override fun switchPushEnabledCase(enabled: Boolean) {
