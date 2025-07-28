@@ -302,8 +302,8 @@ class SwapViewModel @Inject constructor(
     .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val estimateTime = quote.mapLatest {
-        it?.etaInSeconds?.let { it.toDouble() / 60.0 }?.let {
+    val estimateTime = quote.mapLatest { quote ->
+        quote?.etaInSeconds?.let { it.toDouble() / 60.0 }?.takeIf { it > 0 }?.let {
             val format = NumberFormat.getInstance()
             format.maximumFractionDigits = 2
             format.format(it)
