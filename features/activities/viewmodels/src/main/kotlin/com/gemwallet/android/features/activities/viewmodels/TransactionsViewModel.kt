@@ -110,11 +110,6 @@ class TransactionsViewModel @Inject constructor(
         }
     }
 
-    fun clearFilters() {
-        clearChainsFilter()
-        clearTypeFilter()
-    }
-
     private data class State(
         val loading: Boolean = false,
         val transactions: List<TransactionExtended> = emptyList(),

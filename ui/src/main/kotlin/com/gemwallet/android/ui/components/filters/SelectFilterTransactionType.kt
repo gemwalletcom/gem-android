@@ -36,7 +36,7 @@ fun LazyListScope.selectFilterTransactionType(
     }
 }
 
-private fun TransactionTypeFilter.getLabel() = when (this) {
+fun TransactionTypeFilter.getLabel() = when (this) {
     TransactionTypeFilter.Transfer -> R.string.transfer_title
     TransactionTypeFilter.Swap -> R.string.wallet_swap
     TransactionTypeFilter.Stake -> R.string.wallet_stake

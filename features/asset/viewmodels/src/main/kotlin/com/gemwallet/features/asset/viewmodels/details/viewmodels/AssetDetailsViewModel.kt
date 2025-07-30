@@ -55,7 +55,7 @@ import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
-class AsseDetailsViewModel @Inject constructor(
+class AssetDetailsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val getTransactions: GetTransactions,

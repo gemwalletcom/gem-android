@@ -73,7 +73,7 @@ import com.gemwallet.android.ui.theme.pendingColor
 import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIModel
 import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIState
 import com.gemwallet.features.asset.viewmodels.details.models.AssetStateError
-import com.gemwallet.features.asset.viewmodels.details.viewmodels.AsseDetailsViewModel
+import com.gemwallet.features.asset.viewmodels.details.viewmodels.AssetDetailsViewModel
 import com.gemwallet.features.banner.presents.views.BannersScene
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
@@ -98,7 +98,7 @@ fun AssetDetailsScene(
     onStake: (AssetId) -> Unit,
     onConfirm: (ConfirmParams) -> Unit
 ) {
-    val viewModel: AsseDetailsViewModel = hiltViewModel()
+    val viewModel: AssetDetailsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val transactions by viewModel.transactions.collectAsStateWithLifecycle()
     val priceAlertEnabled by viewModel.priceAlertEnabled.collectAsStateWithLifecycle()

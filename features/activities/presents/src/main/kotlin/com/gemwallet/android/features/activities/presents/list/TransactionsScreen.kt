@@ -35,11 +35,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.ui.components.list_item.transactionsList
 import com.gemwallet.android.features.activities.viewmodels.TransactionsViewModel
 import com.gemwallet.android.features.activities.viewmodels.TxListScreenState
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.filters.ActivitiesFilter
+import com.gemwallet.android.ui.components.filters.TransactionsFilter
+import com.gemwallet.android.ui.components.list_item.transactionsList
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.TransactionTypeFilter
 import com.wallet.core.primitives.Chain
@@ -63,7 +63,8 @@ fun TransactionsScreen(
         onChainFilter = viewModel::onChainFilter,
         onTypeFilter = viewModel::onTypeFilter,
         onTransactionClick = onTransaction,
-        onClearFilters = viewModel::clearFilters
+        onClearChainsFilter = viewModel::clearChainsFilter,
+        onClearTypesFilter = viewModel::clearTypeFilter,
     )
 }
 
@@ -77,7 +78,8 @@ private fun List(
     onChainFilter: (Chain) -> Unit,
     onTypeFilter: (TransactionTypeFilter) -> Unit,
     onTransactionClick: (String) -> Unit,
-    onClearFilters: () -> Unit,
+    onClearChainsFilter: () -> Unit,
+    onClearTypesFilter: () -> Unit,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
     var showFilters by remember { mutableStateOf(false) }
@@ -143,14 +145,15 @@ private fun List(
         }
     }
     if (showFilters) {
-        ActivitiesFilter(
+        TransactionsFilter(
             availableChains = Chain.entries,
             chainsFilter = chainsFilter,
-            typeFilter = typeFilter,
+            typesFilter = typeFilter,
             onDismissRequest = { showFilters = false },
             onChainFilter = onChainFilter,
             onTypeFilter = onTypeFilter,
-            onClearFilters = onClearFilters,
+            onClearChainsFilter = onClearChainsFilter,
+            onClearTypesFilter = onClearTypesFilter,
         )
     }
 }

@@ -31,19 +31,18 @@ fun LazyListScope.selectFilterChain(
                 || asset.symbol.lowercase().contains(query)
                 || (asset.id.chain.assetType()?.string?.lowercase()
             ?.contains(query) == true)
-    }
-        .forEach {
-            val chain = it.id.chain
-            item {
-                ChainItem(
-                    title = chain.asset().name,
-                    icon = chain,
-                    trailing = {
-                        if (chainFilter.contains(chain)) {
-                            Icon(Icons.Default.CheckCircleOutline, contentDescription = "")
-                        }
+    }.forEach {
+        val chain = it.id.chain
+        item {
+            ChainItem(
+                title = chain.asset().name,
+                icon = chain,
+                trailing = {
+                    if (chainFilter.contains(chain)) {
+                        Icon(Icons.Default.CheckCircleOutline, contentDescription = "")
                     }
-                ) { onFilter(chain) }
-            }
+                }
+            ) { onFilter(chain) }
         }
+    }
 }
