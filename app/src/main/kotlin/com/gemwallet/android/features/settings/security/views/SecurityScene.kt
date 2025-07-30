@@ -57,7 +57,9 @@ fun SecurityScene(
                 viewModel.setAuthRequired(it)
                 authRequired = it
             }
-            requiredAuthDelay(lockInterval, viewModel::setLockInterval)
+            if (authRequired) {
+                requiredAuthDelay(lockInterval, viewModel::setLockInterval)
+            }
             hideBalanceItem(hideBalances, viewModel::setHideBalances)
         }
     }
