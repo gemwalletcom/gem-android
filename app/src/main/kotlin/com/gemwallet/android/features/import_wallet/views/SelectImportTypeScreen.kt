@@ -14,15 +14,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.ui.components.SearchBar
 import com.gemwallet.android.features.import_wallet.viewmodels.ChainUIState
 import com.gemwallet.android.features.import_wallet.viewmodels.SelectImportTypeViewModel
 import com.gemwallet.android.model.ImportType
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.list_item.ChainItem
 import com.gemwallet.android.ui.components.Container
+import com.gemwallet.android.ui.components.SearchBar
 import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.list_item.ChainItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType

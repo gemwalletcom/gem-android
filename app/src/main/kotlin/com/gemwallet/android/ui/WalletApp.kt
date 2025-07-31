@@ -1,7 +1,6 @@
 package com.gemwallet.android.ui
 
 import android.content.Context
-import android.net.Uri
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.AlertDialog

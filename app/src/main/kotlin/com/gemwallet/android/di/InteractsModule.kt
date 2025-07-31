@@ -23,13 +23,13 @@ import com.gemwallet.android.blockchain.operators.walletcore.WCValidateAddressOp
 import com.gemwallet.android.blockchain.operators.walletcore.WCValidatePhraseOperator
 import com.gemwallet.android.cases.banners.AddBanner
 import com.gemwallet.android.cases.device.SyncSubscription
+import com.gemwallet.android.cases.wallet.ImportWalletService
 import com.gemwallet.android.data.password.PreferencePasswordStore
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.wallets.PhraseAddressImportWalletService
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.ext.available
-import com.gemwallet.android.cases.wallet.ImportWalletService
-import com.gemwallet.android.data.repositoreis.wallets.PhraseAddressImportWalletService
 import com.wallet.core.primitives.Chain
 import dagger.Module
 import dagger.Provides

@@ -203,6 +203,8 @@ dependencies {
     implementation(project(":features:asset:viewmodels"))
     implementation(project(":features:banner:presents"))
     implementation(project(":features:banner:viewmodels"))
+    implementation(project(":features:transfer_amount:presents"))
+    implementation(project(":features:transfer_amount:viewmodels"))
     implementation(project(":features:recipient:presents"))
     implementation(project(":features:nft:presents"))
     implementation(project(":features:update_app:presents"))
@@ -251,9 +253,11 @@ dependencies {
     "fdroidImplementation"(project(":flavors:pushes-stub"))
     "fdroidImplementation"(project(":flavors:review-stub"))
 
+    // Preview
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
 
+    // Tests
     testImplementation(libs.junit)
     testImplementation(libs.androidx.junit)
     testImplementation(libs.androidx.junit.runner)

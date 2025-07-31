@@ -9,10 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ui.components.SearchBar
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.list_item.ChainItem
+import com.gemwallet.android.ui.components.SearchBar
 import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.components.list_item.ChainItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.wallet.core.primitives.Chain
 

@@ -17,10 +17,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.clipboard.setPlainText
-import com.gemwallet.android.ui.components.list_item.DropDownContextItem
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
+import com.gemwallet.android.ui.components.list_item.AssetListItem
+import com.gemwallet.android.ui.components.list_item.DropDownContextItem
 import com.wallet.core.primitives.AssetId
 
 @Composable
