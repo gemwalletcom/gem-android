@@ -77,7 +77,7 @@ fun AddAssetScene(
         ) {
             AddressChainField(
                 chain = network.chain(),
-                label = "Contract Address",
+                label = stringResource(R.string.wallet_import_contract_address_field),
                 value = addressState.value,
                 searchName = false,
                 onValueChange = { input, _ ->
