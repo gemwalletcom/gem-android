@@ -1,4 +1,4 @@
-package com.gemwallet.features.transfer_amount.presents.components
+package com.gemwallet.features.transfer_amount.presents.views
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
@@ -28,4 +28,5 @@ fun amountErrorString(error: AmountError): String = when (error) {
         error.minimumValue
     )
     AmountError.IncorrectAddress -> stringResource(id = R.string.errors_invalid_address_name)
+    is AmountError.Unknown -> "${stringResource(id = R.string.errors_unknown)}: ${error.data}"
 }

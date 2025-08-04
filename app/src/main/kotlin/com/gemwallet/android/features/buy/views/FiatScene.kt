@@ -46,6 +46,7 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.open
+import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.FiatProvider
 import com.wallet.core.primitives.FiatQuoteType
 
@@ -121,11 +122,12 @@ fun BuyScene(
         AmountField(
             amount = fiatAmount,
             assetSymbol = if (type == FiatQuoteType.Buy) "$" else asset.symbol,
+            currency = Currency.USD,
             equivalent = if (state == null && type == FiatQuoteType.Buy) selectedProvider?.cryptoFormatted ?: " " else " ",
             error = "",
             onValueChange = onAmount,
             textStyle = MaterialTheme.typography.displayMedium,
-            onNext = { }
+            onNext = { },
         )
         Container {
             AssetListItem(

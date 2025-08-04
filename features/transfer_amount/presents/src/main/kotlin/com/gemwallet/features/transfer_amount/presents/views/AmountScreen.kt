@@ -1,5 +1,6 @@
 package com.gemwallet.features.transfer_amount.presents.views
 
+import android.icu.util.Currency
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -24,13 +25,14 @@ fun AmountScreen(
     onConfirm: (ConfirmParams) -> Unit,
     viewModel: AmountViewModel = hiltViewModel(),
 ) {
-    val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
+    val params by viewModel.params.collectAsStateWithLifecycle()
+    val assetInfo by viewModel.assetInfo.collectAsStateWithLifecycle()
     val validatorState by viewModel.validatorState.collectAsStateWithLifecycle()
-    val inputError by viewModel.inputErrorState.collectAsStateWithLifecycle()
-    val amountError by viewModel.nextErrorState.collectAsStateWithLifecycle()
+    val error by viewModel.errorUIState.collectAsStateWithLifecycle()
     val equivalent by viewModel.equivalentState.collectAsStateWithLifecycle()
     val availableBalance by viewModel.availableBalance.collectAsStateWithLifecycle()
     val amountPrefill by viewModel.prefillAmount.collectAsStateWithLifecycle()
+    val amountInputType by viewModel.amountInputType.collectAsStateWithLifecycle()
 
     var isSelectValidator by remember {
         mutableStateOf(false)
@@ -40,7 +42,7 @@ fun AmountScreen(
         isSelectValidator = false
     }
 
-    if (uiModel == null) {
+    if (assetInfo == null) {
         LoadingScene(stringResource(id = R.string.transfer_amount_title), onCancel)
         return
     }
@@ -70,7 +72,7 @@ fun AmountScreen(
     ) { state ->
         when (state) {
             true -> ValidatorsScreen(
-                chain = uiModel?.asset?.id?.chain ?: return@AnimatedContent,
+                chain = assetInfo?.asset?.id?.chain ?: return@AnimatedContent,
                 selectedValidatorId = validatorState?.id!!,
                 onCancel = { isSelectValidator = false },
                 onSelect = {
@@ -81,15 +83,18 @@ fun AmountScreen(
             false -> AmountScene(
                 amount = viewModel.amount,
                 amountPrefill = amountPrefill,
-                uiModel = uiModel ?: return@AnimatedContent,
+                asset = assetInfo?.asset ?: return@AnimatedContent,
+                currency = assetInfo?.price?.currency ?: com.wallet.core.primitives.Currency.USD,
+                amountInputType = amountInputType,
+                txType = params?.txType ?: return@AnimatedContent,
                 validatorState = validatorState,
-                inputError = inputError,
-                amountError = amountError,
+                error = error,
                 equivalent = equivalent,
                 availableBalance = availableBalance,
                 onNext = { viewModel.onNext(onConfirm) },
-                onAmount = viewModel::updateAmount,
+                onInputAmount = viewModel::updateAmount,
                 onMaxAmount = viewModel::onMaxAmount,
+                onInputTypeClick = viewModel::switchInputType,
                 onCancel = onCancel,
             ) {
                 isSelectValidator = !isSelectValidator

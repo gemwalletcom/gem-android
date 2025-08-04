@@ -1,21 +1,25 @@
 package com.gemwallet.features.transfer_amount.viewmodels.models
 
-sealed interface AmountError {
-    data object None : AmountError
+import java.lang.Exception
 
-    data object Required : AmountError
+sealed class AmountError : Exception() {
+    data object None : AmountError()
 
-    data object Unavailable : AmountError
+    data object Required : AmountError()
 
-    data object IncorrectAmount : AmountError
+    data object Unavailable : AmountError()
 
-    data object ZeroAmount : AmountError
+    data object IncorrectAmount : AmountError()
 
-    class InsufficientBalance(val assetName: String) : AmountError
+    data object ZeroAmount : AmountError()
 
-    class InsufficientFeeBalance(val assetName: String) : AmountError
+    class InsufficientBalance(val assetName: String) : AmountError()
 
-    class MinimumValue(val minimumValue: String) : AmountError
+    class InsufficientFeeBalance(val assetName: String) : AmountError()
 
-    data object IncorrectAddress : AmountError
+    class MinimumValue(val minimumValue: String) : AmountError()
+
+    data object IncorrectAddress : AmountError()
+
+    data class Unknown(val data: String) : AmountError()
 }

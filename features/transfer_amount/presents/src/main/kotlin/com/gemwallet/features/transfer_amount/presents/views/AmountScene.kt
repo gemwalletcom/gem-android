@@ -29,9 +29,9 @@ import com.gemwallet.android.ui.components.fields.AmountField
 import com.gemwallet.android.ui.components.keyboardAsState
 import com.gemwallet.android.ui.components.list_item.ValidatorItem
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.features.transfer_amount.presents.components.amountErrorString
+import com.gemwallet.android.ui.models.AmountInputType
 import com.gemwallet.features.transfer_amount.viewmodels.models.AmountError
-import com.gemwallet.features.transfer_amount.viewmodels.models.AmountScreenModel
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.TransactionType
 
@@ -39,14 +39,17 @@ import com.wallet.core.primitives.TransactionType
 fun AmountScene(
     amount: String,
     amountPrefill: String?,
-    uiModel: AmountScreenModel,
+    amountInputType: AmountInputType,
+    txType: TransactionType,
+    asset: Asset,
+    currency: com.wallet.core.primitives.Currency,
     validatorState: DelegationValidator?,
-    inputError: AmountError,
-    amountError: AmountError,
+    error: AmountError,
     equivalent: String,
     availableBalance: String,
     onNext: () -> Unit,
-    onAmount: (String) -> Unit,
+    onInputAmount: (String) -> Unit,
+    onInputTypeClick: () -> Unit,
     onMaxAmount: () -> Unit,
     onCancel: () -> Unit,
     onValidator: () -> Unit,
@@ -56,19 +59,7 @@ fun AmountScene(
     val isSmallScreen = LocalConfiguration.current.screenHeightDp.dp < 680.dp
 
     Scene(
-        title = when (uiModel.txType) {
-            TransactionType.Transfer -> stringResource(id = R.string.transfer_send_title)
-            TransactionType.StakeDelegate -> stringResource(id = R.string.transfer_stake_title)
-            TransactionType.StakeUndelegate -> stringResource(id = R.string.transfer_unstake_title)
-            TransactionType.StakeRedelegate -> stringResource(id = R.string.transfer_redelegate_title)
-            TransactionType.StakeWithdraw -> stringResource(id = R.string.transfer_withdraw_title)
-            TransactionType.TransferNFT -> stringResource(id = R.string.nft_collection)
-            TransactionType.Swap -> stringResource(id = R.string.wallet_swap)
-            TransactionType.TokenApproval -> stringResource(id = R.string.transfer_approve_title)
-            TransactionType.StakeRewards -> stringResource(id = R.string.transfer_rewards_title)
-            TransactionType.AssetActivation -> stringResource(id = R.string.transfer_activate_asset_title)
-            TransactionType.SmartContractCall -> stringResource(id = R.string.transfer_amount_title)
-        },
+        title = getTitle(txType),
         onClose = onCancel,
         mainAction = {
             if (!isKeyBoardOpen || !isSmallScreen) {
@@ -93,18 +84,21 @@ fun AmountScene(
                 AmountField(
                     modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                     amount = amountPrefill ?: amount,
-                    assetSymbol = uiModel.asset.symbol,
+                    assetSymbol = asset.symbol,
+                    currency = currency,
+                    inputType = amountInputType,
+                    onInputTypeClick = onInputTypeClick,
                     equivalent = equivalent,
                     readOnly = !amountPrefill.isNullOrEmpty(),
-                    error = amountErrorString(error = if (AmountError.None == inputError) amountError else inputError),
-                    onValueChange = onAmount,
+                    error = amountErrorString(error = error),
+                    onValueChange = onInputAmount,
                     onNext = onNext
                 )
             }
-            validatorView(uiModel, validatorState, onValidator)
+            validatorView(txType, validatorState, onValidator)
             item {
                 AssetInfoCard(
-                    asset = uiModel.asset,
+                    asset = asset,
                     availableAmount = availableBalance,
                     onMaxAmount = onMaxAmount
                 )
@@ -120,7 +114,7 @@ fun AmountScene(
 }
 
 private fun LazyListScope.validatorView(
-    uiModel: AmountScreenModel,
+    txType: TransactionType,
     validatorState: DelegationValidator?,
     onValidator: () -> Unit
 ) {
@@ -137,7 +131,7 @@ private fun LazyListScope.validatorView(
                         tint = MaterialTheme.colorScheme.secondary
                     )
                 },
-                onClick = when (uiModel.txType) {
+                onClick = when (txType) {
                     TransactionType.StakeUndelegate -> null
                     else -> {
                         { onValidator() }
@@ -146,4 +140,19 @@ private fun LazyListScope.validatorView(
             )
         }
     }
+}
+
+@Composable
+private fun getTitle(txType: TransactionType) = when (txType) {
+    TransactionType.Transfer -> stringResource(id = R.string.transfer_send_title)
+    TransactionType.StakeDelegate -> stringResource(id = R.string.transfer_stake_title)
+    TransactionType.StakeUndelegate -> stringResource(id = R.string.transfer_unstake_title)
+    TransactionType.StakeRedelegate -> stringResource(id = R.string.transfer_redelegate_title)
+    TransactionType.StakeWithdraw -> stringResource(id = R.string.transfer_withdraw_title)
+    TransactionType.TransferNFT -> stringResource(id = R.string.nft_collection)
+    TransactionType.Swap -> stringResource(id = R.string.wallet_swap)
+    TransactionType.TokenApproval -> stringResource(id = R.string.transfer_approve_title)
+    TransactionType.StakeRewards -> stringResource(id = R.string.transfer_rewards_title)
+    TransactionType.AssetActivation -> stringResource(id = R.string.transfer_activate_asset_title)
+    TransactionType.SmartContractCall -> stringResource(id = R.string.transfer_amount_title)
 }

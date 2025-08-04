@@ -45,8 +45,6 @@ class CurrenciesViewModel @Inject constructor(
     fun setCurrency(currency: Currency) {
         viewModelScope.launch(Dispatchers.IO) {
             sessionRepository.setCurrency(currency)
-//            assetsRepository.clearPrices()
-//            assetsRepository.updatePrices(currency = currency)
         }
     }
 }

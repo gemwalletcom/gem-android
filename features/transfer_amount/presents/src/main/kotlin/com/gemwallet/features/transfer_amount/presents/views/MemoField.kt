@@ -13,7 +13,6 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.gemwallet.android.ui.components.designsystem.space4
 import com.gemwallet.android.ui.components.fields.TransferTextFieldActions
-import com.gemwallet.features.transfer_amount.presents.components.amountErrorString
 import com.gemwallet.features.transfer_amount.viewmodels.models.AmountError
 
 @Composable
