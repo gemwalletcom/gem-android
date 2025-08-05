@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.swap.navigation
+package com.gemwallet.android.ui.navigation.routes
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -12,14 +12,18 @@ import com.gemwallet.android.features.swap.views.SwapScreen
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.wallet.core.primitives.AssetId
+import kotlinx.serialization.Serializable
 
-internal const val pairArg = "pair"
 const val swapRoute = "swap"
 
+@Serializable
+data class SwapRoute(val from: String?, val to: String?)
+
 fun NavController.navigateToSwap(from: AssetId? = null, to: AssetId? = null) {
+    val route = SwapRoute(from?.toIdentifier(), to?.toIdentifier())
     navigate(
-        "$swapRoute/${from?.toIdentifier()?.urlEncode()}|${to?.toIdentifier()?.urlEncode()}",
-        navOptions { launchSingleTop = true },
+        route = route,
+        navOptions = navOptions { launchSingleTop = true },
     )
 }
 
@@ -28,15 +32,7 @@ fun NavGraphBuilder.swap(
     onBuy: AssetIdAction,
     onCancel: () -> Unit,
 ) {
-    composable(
-        route = "$swapRoute/{$pairArg}",
-        arguments = listOf(
-            navArgument(pairArg) {
-                type = NavType.StringType
-                nullable = true
-            },
-        )
-    ) {
+    composable<SwapRoute> {
         SwapScreen(
             onConfirm = onConfirm,
             onBuy = onBuy,

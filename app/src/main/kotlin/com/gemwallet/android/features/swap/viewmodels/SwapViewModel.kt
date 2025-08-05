@@ -22,7 +22,6 @@ import com.gemwallet.android.features.swap.models.SwapPairUIModel
 import com.gemwallet.android.features.swap.models.SwapProviderItem
 import com.gemwallet.android.features.swap.models.SwapRate
 import com.gemwallet.android.features.swap.models.SwapState
-import com.gemwallet.android.features.swap.navigation.pairArg
 import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
@@ -37,7 +36,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -77,23 +75,18 @@ class SwapViewModel @Inject constructor(
 
     private val approveTxHash = MutableStateFlow<String?>(null)
 
-    private val swapPairState: StateFlow<SwapPairState?> = savedStateHandle.getStateFlow<String?>(pairArg, null)
-        .mapNotNull {
-            val values = it?.split("|")
-            listOf(
-                values?.firstOrNull()?.toAssetId(),
-                values?.lastOrNull()?.toAssetId()
-            )
+    private val fromAssetId = savedStateHandle.getStateFlow<String?>("from", null)
+        .map { it?.toAssetId() }
+    private val toAssetId = savedStateHandle.getStateFlow<String?>("to", null)
+        .map { it?.toAssetId() }
+
+    private val swapPairState = combine(fromAssetId, toAssetId) { from, to ->
+        if (from == null || to == null) {
+            selectPair.update { SwapPairSelect.request(from, to) }
         }
-        .map {
-            val fromId = it.firstOrNull()
-            val toId = it.lastOrNull()
-            if (fromId == null || toId == null) {
-                selectPair.update { SwapPairSelect.request(fromId, toId) }
-            }
-            SwapPairState(fromId, toId)
-        }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        SwapPairState(from, to)
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val assetsState = swapPairState.flatMapLatest { ids ->
         if (ids?.fromId == null || ids.toId == null) {
@@ -386,7 +379,8 @@ class SwapViewModel @Inject constructor(
             select
         }
         val update = if (current.sameChain()) { // TODO: Change it validation
-            savedStateHandle[pairArg] = "${current.fromId?.toIdentifier()}|${current.toId?.toIdentifier()}"
+            savedStateHandle["from"] = current.fromId?.toIdentifier()
+            savedStateHandle["to"] = current.toId?.toIdentifier()
             null
         } else {
             current.opposite()

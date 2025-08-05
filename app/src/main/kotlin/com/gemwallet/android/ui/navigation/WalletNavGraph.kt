@@ -48,9 +48,9 @@ import com.gemwallet.android.features.settings.navigation.navigateToPriceAlertsS
 import com.gemwallet.android.features.settings.navigation.navigateToSecurityScreen
 import com.gemwallet.android.features.settings.navigation.settingsRoute
 import com.gemwallet.android.features.settings.navigation.settingsScreen
-import com.gemwallet.android.features.swap.navigation.navigateToSwap
-import com.gemwallet.android.features.swap.navigation.swap
-import com.gemwallet.android.features.swap.navigation.swapRoute
+import com.gemwallet.android.ui.navigation.routes.navigateToSwap
+import com.gemwallet.android.ui.navigation.routes.swap
+import com.gemwallet.android.ui.navigation.routes.swapRoute
 import com.gemwallet.android.features.wallet.navigation.navigateToPhraseScreen
 import com.gemwallet.android.features.wallet.navigation.navigateToWalletScreen
 import com.gemwallet.android.features.wallet.navigation.walletScreen
