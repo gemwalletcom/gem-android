@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.asset_select.views.SelectSendScreen
+import com.gemwallet.features.asset_select.presents.views.SelectSendScreen
 import com.gemwallet.android.features.recipient.presents.RecipientScene
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.gemwallet.android.ui.models.actions.AssetIdAction

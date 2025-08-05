@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.asset_select.views.SelectBuyScreen
+import com.gemwallet.features.asset_select.presents.views.SelectBuyScreen
 import com.gemwallet.android.features.buy.views.FiatScreen
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.wallet.core.primitives.AssetId

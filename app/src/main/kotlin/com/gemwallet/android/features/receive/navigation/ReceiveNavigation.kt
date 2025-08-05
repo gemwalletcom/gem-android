@@ -12,7 +12,7 @@ import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
-import com.gemwallet.android.features.asset_select.views.SelectReceiveScreen
+import com.gemwallet.features.asset_select.presents.views.SelectReceiveScreen
 import com.gemwallet.android.features.receive.views.ReceiveScreen
 import com.wallet.core.primitives.AssetId
 
