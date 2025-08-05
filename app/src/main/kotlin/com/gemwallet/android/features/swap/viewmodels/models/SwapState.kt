@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.swap.models
+package com.gemwallet.android.features.swap.viewmodels.models
 
 sealed interface SwapState {
     data object None : SwapState

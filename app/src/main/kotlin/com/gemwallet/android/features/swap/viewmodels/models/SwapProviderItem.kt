@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.swap.models
+package com.gemwallet.android.features.swap.viewmodels.models
 
 import com.gemwallet.android.ui.components.image.getSwapProviderIcon
 import uniffi.gemstone.SwapperProviderType

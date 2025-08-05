@@ -9,7 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.features.asset_select.viewmodels.SwapSelectViewModel
-import com.gemwallet.android.features.swap.models.SwapPairSelect
+import com.gemwallet.android.features.swap.viewmodels.models.SwapPairSelect
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.getBalanceInfo

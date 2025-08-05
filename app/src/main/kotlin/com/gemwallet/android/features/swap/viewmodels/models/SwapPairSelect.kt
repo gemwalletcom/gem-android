@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.swap.models
+package com.gemwallet.android.features.swap.viewmodels.models
 
 import com.wallet.core.primitives.AssetId
 

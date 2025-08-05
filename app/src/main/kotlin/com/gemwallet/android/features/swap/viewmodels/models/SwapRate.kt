@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.swap.models
+package com.gemwallet.android.features.swap.viewmodels.models
 
 data class SwapRate(
     val forward: String,
