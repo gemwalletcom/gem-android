@@ -22,7 +22,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.features.swap.models.SwapProviderItem
+import com.gemwallet.android.features.swap.viewmodels.models.SwapProviderItem
 import com.gemwallet.android.ui.components.designsystem.Spacer4
 import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.image.AsyncImage

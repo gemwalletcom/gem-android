@@ -8,7 +8,7 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.asset_select.models.SelectSearch
-import com.gemwallet.android.features.swap.models.SwapPairSelect
+import com.gemwallet.android.features.swap.viewmodels.models.SwapPairSelect
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
 import com.wallet.core.primitives.Chain
