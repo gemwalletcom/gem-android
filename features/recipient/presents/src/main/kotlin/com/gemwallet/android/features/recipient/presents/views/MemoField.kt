@@ -13,7 +13,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.gemwallet.android.features.recipient.viewmodel.models.RecipientError
 import com.gemwallet.android.ui.components.clipboard.getPlainText
-import com.gemwallet.android.ui.components.designsystem.space4
+import com.gemwallet.android.ui.theme.space4
 
 @Composable
 fun MemoTextField(

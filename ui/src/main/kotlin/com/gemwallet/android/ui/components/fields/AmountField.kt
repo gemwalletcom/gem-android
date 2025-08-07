@@ -34,7 +34,7 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ui.components.designsystem.headerSupportIconSize
+import com.gemwallet.android.ui.theme.headerSupportIconSize
 import com.gemwallet.android.ui.models.AmountInputType
 import com.wallet.core.primitives.Currency
 

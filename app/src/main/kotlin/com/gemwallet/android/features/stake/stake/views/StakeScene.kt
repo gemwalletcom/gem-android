@@ -24,7 +24,7 @@ import com.gemwallet.android.features.stake.stake.model.StakeUIState
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.InfoSheetEntity
-import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.components.list_item.DelegationItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.availableIn

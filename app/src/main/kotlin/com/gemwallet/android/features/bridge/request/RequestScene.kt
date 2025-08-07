@@ -22,8 +22,8 @@ import com.gemwallet.android.model.ConfirmParams.TransferParams.Native
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.designsystem.Spacer4
-import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
+import com.gemwallet.android.ui.theme.Spacer4
+import com.gemwallet.android.ui.theme.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem

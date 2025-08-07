@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.components.fields.AmountField
 import com.gemwallet.android.ui.components.keyboardAsState
 import com.gemwallet.android.ui.components.list_item.ValidatorItem

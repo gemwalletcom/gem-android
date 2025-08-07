@@ -61,8 +61,8 @@ import com.gemwallet.android.services.SyncService
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.WalletApp
 import com.gemwallet.android.ui.components.RootWarningDialog
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.components.isDeviceRooted
 import com.gemwallet.android.ui.theme.WalletTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -211,7 +211,7 @@ class MainActivity : FragmentActivity() {
                     )
                 ) {
                     Column(
-                        modifier = Modifier.padding(start = padding16, end = padding16, top = padding16),
+                        modifier = Modifier.padding(start = paddingDefault, end = paddingDefault, top = paddingDefault),
                         horizontalAlignment = Alignment.End
                     ) {
                         Text(

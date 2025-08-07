@@ -1,6 +1,7 @@
-package com.gemwallet.android.ui.components.designsystem
+package com.gemwallet.android.ui.theme
 
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.Composable
@@ -24,10 +25,30 @@ private val space16 = 16.dp
 val padding4 = 4.dp
 val padding8 = 8.dp
 val padding12 = 12.dp
-val padding16 = 16.dp
+val paddingDefault = 16.dp
 val padding32 = 32.dp
 
 val mainActionHeight = 48.dp
+
+fun Modifier.smallPadding(): Modifier {
+    return padding(4.dp)
+}
+
+fun Modifier.normalPadding(): Modifier {
+    return padding(8.dp)
+}
+
+fun Modifier.middlePadding(): Modifier {
+    return padding(12.dp)
+}
+
+fun Modifier.defaultPadding(): Modifier {
+    return padding(16.dp)
+}
+
+fun Modifier.largePadding(): Modifier {
+    return padding(32.dp)
+}
 
 @Composable
 fun Spacer2() {

@@ -11,8 +11,9 @@ import com.gemwallet.android.features.recipient.viewmodel.models.QrScanField
 import com.gemwallet.android.features.recipient.viewmodel.models.RecipientError
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.Spacer4
-import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.theme.Spacer4
+import com.gemwallet.android.ui.theme.defaultPadding
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.NameRecord
 
 fun LazyListScope.destinationView(
@@ -26,7 +27,7 @@ fun LazyListScope.destinationView(
     onQrScan: (QrScanField) -> Unit,
 ) {
     item {
-        Column(modifier = Modifier.padding(padding16)) {
+        Column(modifier = Modifier.defaultPadding()) {
             AddressChainField(
                 chain = asset.asset.chain(),
                 value = addressState.value,

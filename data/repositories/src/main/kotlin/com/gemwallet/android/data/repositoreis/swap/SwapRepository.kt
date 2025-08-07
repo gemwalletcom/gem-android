@@ -3,7 +3,8 @@ package com.gemwallet.android.data.repositoreis.swap
 import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
-import com.gemwallet.android.cases.swap.GetSwapSupportedCase
+import com.gemwallet.android.cases.swap.GetSwapQuotes
+import com.gemwallet.android.cases.swap.GetSwapSupported
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
@@ -32,9 +33,9 @@ class SwapRepository(
     private val signClient: SignClientProxy,
     private val passwordStore: PasswordStore,
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
-) : GetSwapSupportedCase {
+) : GetSwapSupported, GetSwapQuotes {
 
-    suspend fun getQuotes(ownerAddress: String, destination: String, from: Asset, to: Asset, amount: String): List<SwapperQuote>? {
+    override suspend fun getQuotes(ownerAddress: String, destination: String, from: Asset, to: Asset, amount: String): List<SwapperQuote>? {
         val swapRequest = SwapperQuoteRequest(
             fromAsset = SwapperQuoteAsset(
                 id = from.id.toIdentifier(),

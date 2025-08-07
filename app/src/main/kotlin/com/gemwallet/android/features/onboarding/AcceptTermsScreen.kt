@@ -36,13 +36,14 @@ import androidx.core.content.edit
 import androidx.core.net.toUri
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.designsystem.padding4
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.padding4
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.theme.WalletTheme
+import com.gemwallet.android.ui.theme.defaultPadding
 import uniffi.gemstone.Config
 import uniffi.gemstone.PublicUrl
 
@@ -93,7 +94,7 @@ fun AcceptTermsScreen(
         LazyColumn (
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(padding16),
+                .defaultPadding(),
         ) {
             item {
                 Text(
@@ -130,9 +131,7 @@ private fun LazyListScope.termItem(
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
             elevation = CardDefaults.cardElevation(padding4)
         ) {
-            Row(
-                modifier = Modifier.padding(padding16),
-            ) {
+            Row(modifier = Modifier.defaultPadding()) {
                 Icon(
                     imageVector = Icons.Default.CheckCircleOutline,
                     contentDescription = "Accept term",

@@ -38,15 +38,16 @@ import com.gemwallet.android.features.wallet.viewmodels.WalletViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.clipboard.setPlainText
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.designsystem.padding8
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.padding8
 import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.FatalStateScene
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.defaultPadding
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 
@@ -110,7 +111,7 @@ private fun Wallet(
             Container {
                 OutlinedTextField(
                     modifier = Modifier
-                        .padding(padding16)
+                        .defaultPadding()
                         .fillMaxWidth(),
                     label = { Text(text = stringResource(id = R.string.wallet_name)) },
                     value = walletName,
@@ -131,7 +132,7 @@ private fun Wallet(
             Button(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(padding16),
+                    .defaultPadding(),
                 colors = ButtonDefaults.buttonColors().copy(containerColor = MaterialTheme.colorScheme.error),
                 onClick = { isShowDelete = true },
             ) {
@@ -175,7 +176,7 @@ private fun WalletAddress(
         DropdownMenu(
             modifier = Modifier.align(Alignment.BottomEnd),
             expanded = isDropDownShow,
-            offset = DpOffset(padding16, padding8),
+            offset = DpOffset(paddingDefault, padding8),
             containerColor = MaterialTheme.colorScheme.background,
             onDismissRequest = { isDropDownShow = false },
         ) {

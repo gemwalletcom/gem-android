@@ -38,4 +38,6 @@ data class AssetInfo(
         result = 31 * result + position
         return result
     }
+
+    companion object
 }

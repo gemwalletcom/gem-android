@@ -15,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.gemwallet.android.ui.components.designsystem.mainActionHeight
+import com.gemwallet.android.ui.theme.mainActionHeight
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator20
 
 val disableButtonColor = Color(0xFF1742C5)

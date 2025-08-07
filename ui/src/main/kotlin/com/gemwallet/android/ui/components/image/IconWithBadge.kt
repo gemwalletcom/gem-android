@@ -10,8 +10,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ui.components.designsystem.listItemIconSize
-import com.gemwallet.android.ui.components.designsystem.listItemSupportIconSize
+import com.gemwallet.android.ui.theme.listItemIconSize
+import com.gemwallet.android.ui.theme.listItemSupportIconSize
 import com.wallet.core.primitives.Asset
 
 @Composable

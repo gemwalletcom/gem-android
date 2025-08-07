@@ -28,8 +28,8 @@ import com.gemwallet.android.features.create_wallet.components.WordChip
 import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.components.screen.PhraseLayout
 import com.gemwallet.android.ui.components.screen.Scene
 import kotlin.math.min
@@ -84,7 +84,7 @@ internal fun CheckPhrase(
     Scene(
         title = stringResource(id = R.string.transfer_confirm),
         onClose = onCancel,
-        padding = PaddingValues(horizontal = padding16),
+        padding = PaddingValues(horizontal = paddingDefault),
         mainAction = {
             AnimatedVisibility(
                 visible = isDone || !isSmallScreen,

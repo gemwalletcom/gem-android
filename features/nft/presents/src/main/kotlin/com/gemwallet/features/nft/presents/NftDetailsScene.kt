@@ -19,7 +19,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
-import com.gemwallet.android.ui.components.designsystem.listSpacerBig
+import com.gemwallet.android.ui.theme.listSpacerBig
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem

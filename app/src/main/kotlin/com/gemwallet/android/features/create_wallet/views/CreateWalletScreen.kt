@@ -35,8 +35,8 @@ import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.clipboard.setPlainText
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.components.screen.PhraseLayout
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.WalletTheme
@@ -127,7 +127,7 @@ fun UI(
     Scene(
         title = stringResource(id = R.string.wallet_new_title),
         onClose = onCancel,
-        padding = PaddingValues(padding16),
+        padding = PaddingValues(paddingDefault),
         mainAction = {
             MainActionButton(
                 title = stringResource(id = R.string.common_continue),

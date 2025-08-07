@@ -39,8 +39,8 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.SearchBar
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.components.filters.AssetsFilter
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
@@ -48,6 +48,7 @@ import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.list_item.pinnedAssetsHeader
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.defaultPadding
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import kotlinx.collections.immutable.ImmutableList
@@ -116,7 +117,7 @@ fun AssetSelectScene(
         },
         onClose = onCancel
     ) {
-        SearchBar(modifier = Modifier.padding(horizontal = padding16), query = query)
+        SearchBar(modifier = Modifier.padding(horizontal = paddingDefault), query = query)
         Spacer16()
         LazyColumn(state = listState) {
             assets(pinned, true, onSelect, support, titleBadge, itemTrailing)
@@ -184,7 +185,7 @@ private fun LazyListScope.notFound(
             modifier = Modifier
                 .animateItem()
                 .fillMaxWidth()
-                .padding(padding16)
+                .defaultPadding(),
         ) {
             Column(
                 modifier = Modifier.align(Alignment.Center),
@@ -206,10 +207,12 @@ private fun LazyListScope.loading(state: BaseAssetSelectViewModel.UIState) {
         return
     }
     item {
-        Box(modifier = Modifier
-            .animateItem()
-            .fillMaxWidth()
-            .padding(padding16)) {
+        Box(
+            modifier = Modifier
+                .animateItem()
+                .fillMaxWidth()
+                .defaultPadding(),
+        ) {
             CircularProgressIndicator16(Modifier.align(Alignment.Center))
         }
     }

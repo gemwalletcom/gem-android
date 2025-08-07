@@ -33,10 +33,10 @@ import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.features.banner.viewmodels.BannersViewModel
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.Spacer8
-import com.gemwallet.android.ui.components.designsystem.padding12
-import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.theme.padding12
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.wallet.core.primitives.Asset
@@ -58,7 +58,7 @@ fun BannersScene(
     val banners by viewModel.banners.collectAsStateWithLifecycle()
     val pageState = rememberPagerState { banners.size }
 
-    HorizontalPager(pageState, pageSpacing = padding16) { page ->
+    HorizontalPager(pageState, pageSpacing = paddingDefault) { page ->
         val banner = banners[page]
         Box(modifier = Modifier.clickable { onClick(banner) }) {
             val (title, description) = when (banner.event) {

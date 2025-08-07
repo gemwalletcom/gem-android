@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.cases.nodes.getGemNodeUrl
 import com.gemwallet.android.model.NodeStatus
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.Spacer6
-import com.gemwallet.android.ui.components.designsystem.padding4
-import com.gemwallet.android.ui.components.designsystem.padding8
+import com.gemwallet.android.ui.theme.Spacer6
+import com.gemwallet.android.ui.theme.padding4
+import com.gemwallet.android.ui.theme.padding8
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator14

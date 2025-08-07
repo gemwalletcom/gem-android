@@ -19,23 +19,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.gemwallet.features.swap.viewmodels.models.SwapError
-import com.gemwallet.features.swap.viewmodels.models.SwapPairUIModel
-import com.gemwallet.features.swap.viewmodels.models.SwapState
+import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.mainActionHeight
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator20
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.mainActionHeight
+import com.gemwallet.features.swap.viewmodels.models.SwapError
+import com.gemwallet.features.swap.viewmodels.models.SwapState
 
 @Composable
-internal fun SwapAction(swapState: SwapState, pair: SwapPairUIModel, onSwap: () -> Unit) {
+internal fun SwapAction(swapState: SwapState, pay: AssetInfo?, onSwap: () -> Unit) {
     Column {
         if (swapState == SwapState.RequestApprove) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(
                     id = R.string.swap_approve_token_permission,
-                    pair.from.asset.symbol
+                    pay?.asset?.symbol ?: ""
                 ),
                 textAlign = TextAlign.Center,
                 style = MaterialTheme.typography.bodySmall,
@@ -65,7 +65,7 @@ internal fun SwapAction(swapState: SwapState, pair: SwapPairUIModel, onSwap: () 
                         modifier = Modifier.padding(4.dp),
                         text = stringResource(
                             id = R.string.swap_approve_token,
-                            pair.from.asset.symbol
+                            pay?.asset?.symbol ?: ""
                         ),
                         fontSize = 18.sp,
                     )

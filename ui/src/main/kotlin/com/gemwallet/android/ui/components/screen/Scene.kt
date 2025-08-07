@@ -28,8 +28,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.paddingDefault
 
 @Composable
 fun Scene(
@@ -39,7 +39,7 @@ fun Scene(
     onClose: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
     mainAction: (@Composable () -> Unit)? = null,
-    mainActionPadding: PaddingValues = PaddingValues(start = padding16, top = padding16, end = padding16, bottom = padding16),
+    mainActionPadding: PaddingValues = PaddingValues(start = paddingDefault, top = paddingDefault, end = paddingDefault, bottom = paddingDefault),
     snackbar: SnackbarHostState? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
@@ -72,7 +72,7 @@ fun Scene(
     onClose: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
     mainAction: (@Composable () -> Unit)? = null,
-    mainActionPadding: PaddingValues = PaddingValues(padding16),
+    mainActionPadding: PaddingValues = PaddingValues(paddingDefault),
     snackbar: SnackbarHostState? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {

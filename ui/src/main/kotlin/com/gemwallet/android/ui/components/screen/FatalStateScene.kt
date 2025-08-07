@@ -11,8 +11,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.paddingDefault
 
 @Composable
 fun FatalStateScene(
@@ -23,7 +23,7 @@ fun FatalStateScene(
 ) {
     Scene(
         title = title,
-        padding = PaddingValues(padding16),
+        padding = PaddingValues(paddingDefault),
         onClose = onCancel,
     ) {
         Box(modifier = Modifier.fillMaxSize()) {

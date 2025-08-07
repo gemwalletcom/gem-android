@@ -9,7 +9,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.gemwallet.android.ui.components.designsystem.space4
+import com.gemwallet.android.ui.theme.space4
 
 @Composable
 fun WalletNameTextField(

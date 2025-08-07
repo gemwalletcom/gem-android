@@ -20,7 +20,7 @@ import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateW
 import com.gemwallet.android.features.import_wallet.navigation.navigateToImportWalletScreen
 import com.gemwallet.android.features.onboarding.OnboardScreen
 import com.gemwallet.android.flavors.ReviewManager
-import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.navigation.WalletNavGraph
 
 @Composable

@@ -8,5 +8,10 @@ sealed interface SwapState {
     data object CheckAllowance : SwapState
     data object RequestApprove : SwapState
     data object Approving : SwapState
-    data class Error(val error: SwapError) : SwapState
+
+    class Error(val error: SwapError) : SwapState {
+        companion object
+    }
 }
+
+fun SwapState.Error.Companion.create(err: Throwable) = SwapState.Error(SwapError.toError(err))

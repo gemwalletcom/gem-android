@@ -11,9 +11,10 @@ import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.SearchBar
-import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.components.list_item.ChainItem
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.defaultPadding
 import com.wallet.core.primitives.Chain
 
 @Composable
@@ -30,7 +31,7 @@ fun SelectChain(
     ) {
         LazyColumn(modifier = Modifier, state = listState) {
             item {
-                SearchBar(query = chainFilter, modifier = Modifier.padding(padding16))
+                SearchBar(query = chainFilter, modifier = Modifier.defaultPadding())
             }
             items(chains.size) {
                 val chain = chains[it]

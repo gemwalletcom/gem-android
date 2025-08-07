@@ -20,10 +20,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.features.confirm.models.FeeRateUIModel
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.ui.components.designsystem.Spacer8
-import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.designsystem.trailingIconSmall
+import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.trailingIconSmall
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
+import com.gemwallet.android.ui.theme.defaultPadding
 import com.wallet.core.primitives.FeePriority
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,7 +48,7 @@ fun SelectFeePriority(
 private fun FeePriorityView(fee: FeeRateUIModel, isSelected: Boolean, onClick: () -> Unit) {
     Column(modifier = Modifier.clickable(onClick = onClick)) {
         Row(
-            modifier = Modifier.padding(padding16),
+            modifier = Modifier.defaultPadding(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             if (isSelected) {
