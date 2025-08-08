@@ -160,7 +160,6 @@ fun WalletNavGraph(
             navigation<Transfer>(startDestination = SendSelect) {
                 swap(
                     onConfirm = navController::navigateToConfirmScreen,
-                    onBuy = navController::navigateToBuyScreen,
                     onCancel = onCancel
                 )
 

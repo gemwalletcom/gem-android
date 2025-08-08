@@ -26,13 +26,11 @@ fun NavController.navigateToSwap(from: AssetId? = null, to: AssetId? = null) {
 
 fun NavGraphBuilder.swap(
     onConfirm: (ConfirmParams) -> Unit,
-    onBuy: AssetIdAction,
     onCancel: () -> Unit,
 ) {
     composable<SwapRoute> {
         SwapScreen(
             onConfirm = onConfirm,
-            onBuy = onBuy,
             onCancel = onCancel,
         )
     }

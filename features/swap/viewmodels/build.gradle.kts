@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.lifecycle.viewmodel.savedstate)
 
     testImplementation(libs.junit)
+    testImplementation(libs.mockk.android)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

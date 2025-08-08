@@ -30,22 +30,10 @@ import com.gemwallet.features.swap.viewmodels.models.SwapState
 @Composable
 internal fun SwapAction(swapState: SwapState, pay: AssetInfo?, onSwap: () -> Unit) {
     Column {
-        if (swapState == SwapState.RequestApprove) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = stringResource(
-                    id = R.string.swap_approve_token_permission,
-                    pay?.asset?.symbol ?: ""
-                ),
-                textAlign = TextAlign.Center,
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Spacer16()
-        }
         Button(
             modifier = Modifier.fillMaxWidth().heightIn(mainActionHeight),
             onClick = onSwap,
-            enabled = (swapState == SwapState.Ready || swapState == SwapState.RequestApprove || swapState !is SwapState.Error)
+            enabled = (swapState == SwapState.Ready /*|| swapState == SwapState.RequestApprove*/ || swapState !is SwapState.Error)
         ) {
             when (swapState) {
                 SwapState.None,
@@ -54,22 +42,6 @@ internal fun SwapAction(swapState: SwapState, pay: AssetInfo?, onSwap: () -> Uni
                     style = MaterialTheme.typography.bodyLarge,
                     fontSize = 18.sp,
                 )
-
-                SwapState.RequestApprove -> {
-                    Icon(
-                        imageVector = Icons.Default.Lock,
-                        contentDescription = "approve_icon"
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        modifier = Modifier.padding(4.dp),
-                        text = stringResource(
-                            id = R.string.swap_approve_token,
-                            pay?.asset?.symbol ?: ""
-                        ),
-                        fontSize = 18.sp,
-                    )
-                }
                 SwapState.Swapping,
                 SwapState.GetQuote,
                 SwapState.CheckAllowance,

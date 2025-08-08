@@ -3,6 +3,8 @@ package com.gemwallet.features.swap.viewmodels.models
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
+import com.gemwallet.features.swap.viewmodels.cases.estimateRate
+import com.wallet.core.primitives.Asset
 import kotlinx.coroutines.flow.update
 import uniffi.gemstone.SwapperQuote
 import java.math.BigDecimal
@@ -29,23 +31,7 @@ internal fun QuoteState.validate(): SwapState {
 }
 
 internal val QuoteState.rates: SwapRate?
-    get() {
-        return try {
-            val fromAmount = Crypto(quote.fromValue).value(pay.asset.decimals)
-            val toAmount = Crypto(quote.toValue).value(receive.asset.decimals)
-            val reverse = BigDecimal.ONE.divide(toAmount / fromAmount, MathContext.DECIMAL128)
-
-            val forwardRate = receive.asset.format(toAmount / fromAmount, 2, dynamicPlace = true)
-            val reverseRate = pay.asset.format(reverse, 4, dynamicPlace = true)
-
-            SwapRate(
-                forward = "1 ${pay.asset.symbol} \u2248 $forwardRate",
-                reverse = "1 ${receive.asset.symbol} \u2248 $reverseRate"
-            )
-        } catch (_: Throwable) {
-            null
-        }
-    }
+    get() = estimateRate(pay.asset, receive.asset, quote.fromValue, quote.toValue)
 
 internal val QuoteState.estimateTime: String?
     get() = quote.etaInSeconds?.let { it.toDouble() / 60.0 }?.takeIf { it > 0 }?.let {

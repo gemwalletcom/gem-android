@@ -9,13 +9,16 @@ import com.gemwallet.android.model.format
 import com.gemwallet.features.swap.viewmodels.models.QuoteRequestParams
 import com.gemwallet.features.swap.viewmodels.models.QuotesState
 import com.gemwallet.features.swap.viewmodels.models.SwapProviderItem
+import com.gemwallet.features.swap.viewmodels.models.SwapRate
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
+import uniffi.gemstone.SwapperQuote
 import java.math.BigDecimal
+import java.math.MathContext
 
 internal fun refreshMachine(value: String): Flow<Long> {
     try {
@@ -30,6 +33,29 @@ internal fun refreshMachine(value: String): Flow<Long> {
             delay(30 * 1000)
             emit(System.currentTimeMillis())
         }
+    }
+}
+
+internal fun estimateRate(
+    pay: Asset,
+    receive: Asset,
+    payValue: String,
+    receiveValue: String,
+): SwapRate? {
+    return try {
+        val fromAmount = Crypto(payValue).value(pay.decimals)
+        val toAmount = Crypto(receiveValue).value(receive.decimals)
+        val reverse = BigDecimal.ONE.divide(toAmount / fromAmount, MathContext.DECIMAL128)
+
+        val forwardRate = receive.format(toAmount / fromAmount, 2, dynamicPlace = true)
+        val reverseRate = pay.format(reverse, 4, dynamicPlace = true)
+
+        SwapRate(
+            forward = "1 ${pay.symbol} \u2248 $forwardRate",
+            reverse = "1 ${receive.symbol} \u2248 $reverseRate"
+        )
+    } catch (_: Throwable) {
+        null
     }
 }
 
@@ -48,13 +74,14 @@ internal suspend fun QuoteRequestParams.requestQuotes(getSwapQuotes: GetSwapQuot
 
 internal fun QuotesState.getProviders(): List<SwapProviderItem> = receive.price?.let { price ->
     getProviders(
+        items,
         priceValue = price.price.price,
         currency = price.currency,
         asset = receive.asset,
     )
 } ?: emptyList()
 
-internal fun QuotesState.getProviders(priceValue: Double, currency: Currency, asset: Asset): List<SwapProviderItem> = items.map { quote ->
+internal fun getProviders(items: List<SwapperQuote>, priceValue: Double, currency: Currency, asset: Asset): List<SwapProviderItem> = items.map { quote ->
     val toValue = Crypto(quote.toValue)
     val fiatValue = toValue.convert(asset.decimals, priceValue)
     val fiatFormatted = currency.format(fiatValue.value(0))

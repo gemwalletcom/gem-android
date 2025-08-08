@@ -11,7 +11,8 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
 import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.gemwallet.features.asset_select.viewmodels.models.SelectSearch
-import com.gemwallet.features.swap.viewmodels.models.SwapPairSelect
+import com.gemwallet.features.swap.viewmodels.models.SwapItemType
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -36,9 +37,13 @@ class SwapSelectViewModel @Inject constructor(
     searchTokensCase = searchTokensCase,
     search = SwapSelectSearch(assetsRepository, getSwapSupported)
 ) {
-    fun setPair(select: SwapPairSelect) {
+    fun setPair(type: SwapItemType, payId: AssetId?, receiveId: AssetId?) {
         queryState.clearText()
-        (search as? SwapSelectSearch)?.preSetPair?.update { select }
+        (search as? SwapSelectSearch)?.apply {
+            this.swapItemType.update { type }
+            this.payId.update { payId }
+            this.receiveId.update { receiveId }
+        }
     }
 }
 
@@ -48,18 +53,25 @@ class SwapSelectSearch(
     private val getSwapSupported: GetSwapSupported,
 ) : SelectSearch {
 
-    val preSetPair = MutableStateFlow<SwapPairSelect?>(null)
+    val swapItemType = MutableStateFlow<SwapItemType?>(null)
+    val payId = MutableStateFlow<AssetId?>(null)
+    val receiveId = MutableStateFlow<AssetId?>(null)
 
     override fun invoke(
         session: Flow<Session?>,
         query: Flow<String>
     ): Flow<List<AssetInfo>> {
-        return combine(session, query, preSetPair) { session, query, pair -> Triple(session, query, pair) }
-            .flatMapLatest {
-                val (session, query, pair) = it
+        return combine(session, query, swapItemType) { session, query, type -> Triple(session, query, type) }
+            .flatMapLatest { data ->
+                val (session, query, type) = data
                 val wallet = session?.wallet ?: return@flatMapLatest emptyFlow()
-                pair ?: return@flatMapLatest emptyFlow()
-                val oppositeId = pair.oppositeId() ?: return@flatMapLatest emptyFlow()
+                type ?: return@flatMapLatest emptyFlow()
+
+                val oppositeId = when (swapItemType.value) {
+                    SwapItemType.Pay -> receiveId.value
+                    SwapItemType.Receive -> payId.value
+                    null -> null
+                } ?: return@flatMapLatest emptyFlow()
                 val supported = getSwapSupported.getSwapSupportChains(oppositeId)
                 assetsRepository.swapSearch(
                     wallet,
@@ -71,13 +83,13 @@ class SwapSelectSearch(
             .map { items ->
                 items.filter { assetInfo ->
                     assetInfo.metadata?.isSwapEnabled == true
-                        && if (preSetPair.value is SwapPairSelect.From) {
-                            assetInfo.balance.totalAmount == 0.0
-                    } else {
-                        true
-                    }
+                        && if (swapItemType.value == SwapItemType.Pay) {
+                            assetInfo.balance.totalAmount > 0.0
+                        } else {
+                            true
+                        }
                 }
             }
-            .map { it.distinctBy { it.asset.id.toIdentifier() } }
+            .map { items -> items.distinctBy { it.asset.id.toIdentifier() } }
     }
 }

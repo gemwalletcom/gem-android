@@ -6,7 +6,6 @@ sealed interface SwapState {
     data object Ready : SwapState
     data object Swapping : SwapState
     data object CheckAllowance : SwapState
-    data object RequestApprove : SwapState
     data object Approving : SwapState
 
     class Error(val error: SwapError) : SwapState {

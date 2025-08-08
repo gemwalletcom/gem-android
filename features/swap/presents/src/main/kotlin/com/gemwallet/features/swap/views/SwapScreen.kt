@@ -1,7 +1,5 @@
 package com.gemwallet.features.swap.views
 
-// import com.gemwallet.android.features.confirm.views.ConfirmScreen
-import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
@@ -15,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -29,11 +26,9 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.features.swap.viewmodels.SwapViewModel
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
-import com.gemwallet.features.swap.viewmodels.models.SwapPairSelect
 import com.gemwallet.features.swap.viewmodels.models.SwapRate
 import com.gemwallet.features.swap.viewmodels.models.SwapState
 import com.gemwallet.features.swap.views.components.CurrentSwapProvider
@@ -45,10 +40,10 @@ import com.gemwallet.features.swap.views.components.SwapItem
 fun SwapScreen(
     viewModel: SwapViewModel = hiltViewModel(),
     onConfirm: (ConfirmParams) -> Unit,
-    onBuy: AssetIdAction,
     onCancel: () -> Unit,
 ) {
-    val selectState by viewModel.selectPair.collectAsStateWithLifecycle()
+    var selectState by remember { mutableStateOf<SwapItemType?>(null) }
+
     val pay by viewModel.payAsset.collectAsStateWithLifecycle()
     val receive by viewModel.receiveAsset.collectAsStateWithLifecycle()
     val fromEquivalent by viewModel.fromEquivalentFormatted.collectAsStateWithLifecycle()
@@ -61,7 +56,6 @@ fun SwapScreen(
     val estimateTime by viewModel.estimateTime.collectAsStateWithLifecycle()
 
     val isShowProviderSelect = remember { mutableStateOf(false) }
-    var approveParams by rememberSaveable { mutableStateOf<ConfirmParams?>(null) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
     var isShowPriceImpactAlert by remember { mutableStateOf(false) }
@@ -69,22 +63,8 @@ fun SwapScreen(
     val onSwap: () -> Unit =  {
         when (swapState) {
             SwapState.Ready -> viewModel.swap(onConfirm)
-            SwapState.RequestApprove -> viewModel.swap { approveParams = it }
             is SwapState.Error -> viewModel.refresh()
             else -> {}
-        }
-    }
-
-    BackHandler(selectState != null) {
-        if (approveParams != null) {
-            approveParams = null
-            return@BackHandler
-        }
-
-        if (pay == null && receive == null) {
-            onCancel()
-        } else {
-            viewModel.onSelect(SwapPairSelect.request(pay?.id(), receive?.id()))
         }
     }
 
@@ -107,7 +87,7 @@ fun SwapScreen(
             state = viewModel.payValue,
             onAssetSelect = {
                 keyboardController?.hide()
-                viewModel.changePair(it)
+                selectState = SwapItemType.Pay
             }
         )
         IconButton(onClick = viewModel::switchSwap) {
@@ -124,7 +104,7 @@ fun SwapScreen(
             calculating = swapState == SwapState.GetQuote,
             onAssetSelect = {
                 keyboardController?.hide()
-                viewModel.changePair(it)
+                selectState = SwapItemType.Receive
             }
         )
         currentProvider?.let { provider ->
@@ -153,39 +133,21 @@ fun SwapScreen(
     }
 
     AnimatedVisibility(
-        visible = approveParams != null,
-        enter = slideIn { IntOffset(it.width, 0) },
-        exit = slideOut { IntOffset(it.width, 0) },
-    ) {
-        LocalSoftwareKeyboardController.current?.hide()
-//        ConfirmScreen(
-//            approveParams ?: return@AnimatedVisibility,
-//            finishAction = { assetId, hash, route ->
-//                approveParams = null
-//                viewModel.onTxHash(hash)
-//            },
-//            onBuy = onBuy,
-//            cancelAction = {
-//                approveParams = null
-//            },
-//        )
-    }
-
-    AnimatedVisibility(
         visible = selectState != null,
         enter = slideIn { IntOffset(it.width, 0) },
         exit = slideOut { IntOffset(it.width, 0) },
     ) {
         SelectSwapScreen(
             select = selectState ?: return@AnimatedVisibility,
+            payAssetId = pay?.id(),
+            receiveAssetId = receive?.id(),
             onCancel = {
-                if (pay == null || receive == null) {
-                    onCancel()
-                } else {
-                    viewModel.onSelect(SwapPairSelect.request(pay?.id(), receive?.id()))
-                }
+                selectState = null
             },
-            onSelect = {select -> viewModel.onSelect(select) },
+            onSelect = { select ->
+                viewModel.onSelect(selectState!!, select)
+                selectState = null
+            },
         )
     }
     ProviderListDialog(

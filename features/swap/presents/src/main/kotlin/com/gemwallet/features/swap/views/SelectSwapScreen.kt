@@ -13,15 +13,18 @@ import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.getBalanceInfo
 import com.gemwallet.features.asset_select.presents.views.AssetSelectScene
 import com.gemwallet.features.swap.viewmodels.SwapSelectViewModel
-import com.gemwallet.features.swap.viewmodels.models.SwapPairSelect
+import com.gemwallet.features.swap.viewmodels.models.SwapItemType
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import kotlinx.coroutines.coroutineScope
 
 @Composable
 fun SelectSwapScreen(
-    select: SwapPairSelect,
+    select: SwapItemType,
+    payAssetId: AssetId?,
+    receiveAssetId: AssetId?,
     onCancel: () -> Unit,
-    onSelect: ((SwapPairSelect) -> Unit)?,
+    onSelect: ((AssetId) -> Unit)?,
     viewModel: SwapSelectViewModel = hiltViewModel()
 ) {
     val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
@@ -31,16 +34,16 @@ fun SelectSwapScreen(
     val chainsFilter by viewModel.chainFilter.collectAsStateWithLifecycle()
     val balanceFilter by viewModel.balanceFilter.collectAsStateWithLifecycle()
 
-    LaunchedEffect(select.fromId, select.toId) {
+    LaunchedEffect(select, payAssetId, receiveAssetId) {
         coroutineScope {
-            viewModel.setPair(select)
+            viewModel.setPair(select, payAssetId, receiveAssetId)
         }
     }
 
     AssetSelectScene(
         title = when (select) {
-            is SwapPairSelect.From -> stringResource(id = R.string.swap_you_pay)
-            is SwapPairSelect.To -> stringResource(id = R.string.swap_you_receive)
+            SwapItemType.Pay -> stringResource(id = R.string.swap_you_pay)
+            SwapItemType.Receive -> stringResource(id = R.string.swap_you_receive)
         },
         titleBadge = { null },
         query = viewModel.queryState,
@@ -53,7 +56,7 @@ fun SelectSwapScreen(
         onChainFilter = viewModel::onChainFilter,
         onBalanceFilter = viewModel::onBalanceFilter,
         onClearFilters = viewModel::onClearFilres,
-        onSelect = { onSelect?.invoke(select.select(it)) },
+        onSelect = { onSelect?.invoke(it) },
         onCancel = onCancel,
         onAddAsset = null,
         itemTrailing = { getBalanceInfo(it)() },
