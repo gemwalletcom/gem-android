@@ -1,4 +1,4 @@
-package com.gemwallet.features.swap.views
+package com.gemwallet.features.swap.views.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

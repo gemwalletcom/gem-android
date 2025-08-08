@@ -1,7 +1,10 @@
-package com.gemwallet.features.swap.views
+package com.gemwallet.features.swap.views.dialogs
 
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -11,6 +14,7 @@ import com.gemwallet.android.ext.type
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.getBalanceInfo
+import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.features.asset_select.presents.views.AssetSelectScene
 import com.gemwallet.features.swap.viewmodels.SwapSelectViewModel
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
@@ -18,8 +22,37 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import kotlinx.coroutines.coroutineScope
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectSwapScreen(
+internal fun SelectSwapAssetDialog(
+    select: MutableState<SwapItemType?>,
+    payAssetId: AssetId?,
+    receiveAssetId: AssetId?,
+    onSelect: (SwapItemType, AssetId) -> Unit,
+) {
+    val selectType = select.value ?: return
+    val sheetState = rememberModalBottomSheetState(true)
+    val dismiss = fun () { select.value = null }
+
+    ModalBottomSheet(
+        sheetState = sheetState,
+        onDismissRequest = dismiss,
+    ) {
+        SelectSwapScreen(
+            select = selectType,
+            payAssetId = payAssetId,
+            receiveAssetId = receiveAssetId,
+            onCancel = dismiss,
+            onSelect = {
+                onSelect(selectType, it)
+                dismiss()
+            },
+        )
+    }
+}
+
+@Composable
+private fun SelectSwapScreen(
     select: SwapItemType,
     payAssetId: AssetId?,
     receiveAssetId: AssetId?,

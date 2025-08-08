@@ -1,8 +1,7 @@
-package com.gemwallet.features.swap.views
+package com.gemwallet.features.swap.views.dialogs
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.BottomSheetDefaults
@@ -12,10 +11,10 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.gemwallet.features.swap.viewmodels.models.SwapProviderItem
-import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator20
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.theme.defaultPadding
+import com.gemwallet.features.swap.views.components.SwapProviderItemView
 import uniffi.gemstone.SwapperProvider
 
 @OptIn(ExperimentalMaterial3Api::class)
