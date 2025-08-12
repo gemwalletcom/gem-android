@@ -7,7 +7,7 @@ import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
-import com.gemwallet.android.data.repositoreis.bridge.findByNamespace
+import com.gemwallet.android.data.repositoreis.bridge.getNamespace
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
@@ -61,7 +61,7 @@ class RequestViewModel @Inject constructor(
             onCancel()
             return@launch
         }
-        val chain = Chain.findByNamespace(request.chainId)
+        val chain = Chain.getNamespace(request.chainId)
         if (chain == null) {
             onCancel()
             return@launch
@@ -86,6 +86,21 @@ class RequestViewModel @Inject constructor(
             WalletConnectionMethods.solana_sign_transaction.string -> {
                 val params = JSONObject(request.request.params).getString("transaction")
                 params
+            }
+            WalletConnectionMethods.wallet_switch_ethereum_chain.string -> {
+                WalletKit.respondSessionRequest(
+                    params = Wallet.Params.SessionRequestResponse(
+                        sessionTopic = request.topic,
+                        jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
+                            request.request.id,
+                            "null"
+                        )
+                    ),
+                    onSuccess = {  },
+                    onError = { error -> }
+                )
+                onCancel()
+                return@launch
             }
             else -> {
                 state.update { it.copy(error = "Unsupported method: ${request.request.method}") }

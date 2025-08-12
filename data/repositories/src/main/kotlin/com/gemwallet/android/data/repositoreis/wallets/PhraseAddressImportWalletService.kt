@@ -130,7 +130,7 @@ class PhraseAddressImportWalletService(
     private suspend fun handlePrivateKey(chain: Chain, walletName: String, data: String): Result<Wallet> {
         val key = try {
             val data = decodePrivateKey(chain, data.trim())
-            
+
             if (!PrivateKey.isValid(data, WCChainTypeProxy().invoke(chain).curve())) {
                 throw Exception()
             }

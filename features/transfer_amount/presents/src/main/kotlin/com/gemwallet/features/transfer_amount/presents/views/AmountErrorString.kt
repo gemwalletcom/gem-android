@@ -8,7 +8,7 @@ import com.gemwallet.features.transfer_amount.viewmodels.models.AmountError
 @Composable
 fun amountErrorString(error: AmountError): String = when (error) {
     AmountError.None -> ""
-    AmountError.IncorrectAmount -> stringResource(id = R.string.errors_unable_estimate_network_fee)
+    AmountError.IncorrectAmount -> stringResource(id = R.string.errors_invalid_amount)
     AmountError.Required -> stringResource(
         id = R.string.common_required_field,
         stringResource(id = R.string.transfer_amount)
