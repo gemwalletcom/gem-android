@@ -3,6 +3,7 @@ package com.gemwallet.features.swap.viewmodels.models
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
+import com.gemwallet.features.swap.viewmodels.cases.calculateFiat
 import com.gemwallet.features.swap.viewmodels.cases.estimateRate
 import com.wallet.core.primitives.Asset
 import kotlinx.coroutines.flow.update
@@ -41,6 +42,7 @@ internal val QuoteState.estimateTime: String?
     }
 
 internal val QuoteState.receiveEquivalent: BigDecimal
-    get() = receive.price?.takeIf { it.price.price > 0 }?.let {
-        Crypto(quote.toValue).convert(receive.asset.decimals, it.price.price).value(0)
-    } ?: BigDecimal.ZERO
+    get() = receive.calculateFiat(quote.toValue)
+
+internal val QuoteState.payEquivalent: BigDecimal
+    get() = pay.calculateFiat(quote.fromValue)

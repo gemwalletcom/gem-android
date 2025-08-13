@@ -14,12 +14,13 @@ import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.math.numberParse
+import com.gemwallet.android.math.numberParseOrNull
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.model.toModel
-import com.gemwallet.features.swap.viewmodels.cases.calculateEquivalent
-import com.gemwallet.features.swap.viewmodels.cases.formatEquivalent
+import com.gemwallet.features.swap.viewmodels.cases.calculateFiat
+import com.gemwallet.features.swap.viewmodels.cases.formatFiat
 import com.gemwallet.features.swap.viewmodels.cases.getProviders
 import com.gemwallet.features.swap.viewmodels.cases.refreshMachine
 import com.gemwallet.features.swap.viewmodels.cases.requestQuotes
@@ -35,6 +36,7 @@ import com.gemwallet.features.swap.viewmodels.models.create
 import com.gemwallet.features.swap.viewmodels.models.estimateTime
 import com.gemwallet.features.swap.viewmodels.models.formattedToAmount
 import com.gemwallet.features.swap.viewmodels.models.getQuote
+import com.gemwallet.features.swap.viewmodels.models.payEquivalent
 import com.gemwallet.features.swap.viewmodels.models.rates
 import com.gemwallet.features.swap.viewmodels.models.receiveEquivalent
 import com.gemwallet.features.swap.viewmodels.models.validate
@@ -59,6 +61,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
 import uniffi.gemstone.SwapperProvider
+import java.math.BigDecimal
 import java.math.BigInteger
 import javax.inject.Inject
 import kotlin.math.absoluteValue
@@ -83,6 +86,11 @@ class SwapViewModel @Inject constructor(
 
     val selectedProvider = MutableStateFlow<SwapperProvider?>(null)
 
+    private val refresh = MutableStateFlow(0L)
+    private val refreshTimer = payValueFlow.flatMapLatest { refreshMachine(it) }
+        .flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
+
     private val fromAssetId = savedStateHandle.getStateFlow<String?>("from", null)
         .map { it?.toAssetId() }
         .onEach { id -> id?.let { updateBalance(it) } }
@@ -101,15 +109,15 @@ class SwapViewModel @Inject constructor(
         .flatMapLatest { assetId -> assetId?.let { assetsRepository.getAssetInfo(it) } ?: flow { emit(null) } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val fromEquivalentFormatted = payValueFlow
-        .combine(payAsset) { value, fromAsset -> fromAsset?.formatEquivalent(value) ?: "" }
+    val fromEquivalentFormatted = combine(payValueFlow, payAsset) { rawInput, fromAsset ->
+            fromAsset?.let {
+                val parsedValue = rawInput.numberParseOrNull() ?: BigDecimal.ZERO
+                val equivalentValue = it.calculateFiat(parsedValue)
+                it.formatFiat(equivalentValue)
+            } ?: ""
+        }
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
-
-    private val refresh = MutableStateFlow(0L)
-    private val refreshTimer = payValueFlow.flatMapLatest { refreshMachine(it) }
-        .flowOn(Dispatchers.Default)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, 0)
 
     private val quotes = combine(
             payValueFlow,
@@ -118,14 +126,21 @@ class SwapViewModel @Inject constructor(
             refreshTimer,
             refresh,
         ) { value, fromAsset, toAsset, _, _ -> QuoteRequestParams.create(value, fromAsset, toAsset) }
-        .onEach { it?.let { swapScreenState.update { SwapState.GetQuote } } ?: resetReceive() }
+        .onEach {
+            if (it == null) {
+                resetReceiveInput()
+                swapScreenState.update { SwapState.None }
+            } else {
+                swapScreenState.update { SwapState.GetQuote }
+            }
+        }
         .filterNotNull()
         .mapLatest { it }
         .onEach { delay(500) }
         .mapLatest { it.requestQuotes(getSwapQuotes) }
         .onEach { data ->
             if (data.err != null) {
-                resetReceive()
+                resetReceiveInput()
                 swapScreenState.update { SwapState.Error.create(data.err) }
             }
         }
@@ -156,6 +171,7 @@ class SwapViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val toEquivalentFormatted = quote.mapLatest { quote ->
+        quote?.receive?.formatFiat(quote.receiveEquivalent)
         quote?.receive
             ?.price?.takeIf { it.price.price > 0 }
             ?.currency?.format(quote.receiveEquivalent)
@@ -165,13 +181,11 @@ class SwapViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     val priceImpact = combine( quote, swapScreenState) { quote, state ->
-        quote ?: return@combine null
-        val receiveEquivalent = quote.receiveEquivalent
-        val payEquivalent = quote.pay.calculateEquivalent(quote.quote.fromValue)
-
-        if (state != SwapState.Ready) {
+        if (quote == null || state != SwapState.Ready) {
             return@combine null
         }
+        val receiveEquivalent = quote.receiveEquivalent
+        val payEquivalent = quote.payEquivalent
 
         val impact = (((receiveEquivalent.toDouble() / payEquivalent.toDouble()) - 1.0) * 100)
         val isHigh = impact.absoluteValue > Config().getSwapConfig().highPriceImpactPercent.toDouble()
@@ -208,7 +222,8 @@ class SwapViewModel @Inject constructor(
         savedStateHandle["from"] = payAssetId
         savedStateHandle["to"] = receiveAssetId
         payValue.clearText()
-        resetReceive()
+        resetReceiveInput()
+        swapScreenState.update { SwapState.None }
     }
 
     fun swap(onConfirm: (ConfirmParams) -> Unit) = viewModelScope.launch {
@@ -271,11 +286,10 @@ class SwapViewModel @Inject constructor(
         }
     }
 
-    private suspend fun resetReceive() {
+    private suspend fun resetReceiveInput() {
         withContext(Dispatchers.Main) {
             receiveValue.edit { replace(0, length, "0") }
         }
-        swapScreenState.update { SwapState.None }
     }
 
     private suspend fun setReceive(amount: String) {

@@ -18,6 +18,7 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
 import uniffi.gemstone.SwapperQuote
 import java.math.BigDecimal
+import java.math.BigInteger
 import java.math.MathContext
 
 internal fun refreshMachine(value: String): Flow<Long> {
@@ -100,22 +101,20 @@ val AssetInfo.availableBalance: String
 val AssetInfo.availableBalanceFormatted: String
     get() = balance.availableFormatted(4, dynamicPlace = true)
 
-fun AssetInfo.calculateEquivalent(value: String): BigDecimal {
-    val valueNum = try {
-        value.numberParse()
-    } catch (_: Throwable) {
-        BigDecimal.ZERO
-    }
-    return calculateEquivalent(valueNum)
+
+fun AssetInfo.calculateFiat(rawInput: String): BigDecimal {
+    val value = Crypto(rawInput.toBigIntegerOrNull() ?: BigInteger.ZERO)
+        .value(asset.decimals)
+    return calculateFiat(value)
 }
 
-fun AssetInfo.calculateEquivalent(value: BigDecimal): BigDecimal {
-    val price = price ?: return BigDecimal.ZERO
-    return value * price.price.price.toBigDecimal()
+fun AssetInfo.calculateFiat(value: BigDecimal): BigDecimal {
+    return price?.takeIf { it.price.price > 0.0 }?.let {
+        value * it.price.price.toBigDecimal()
+    } ?: return BigDecimal.ZERO
 }
 
-fun AssetInfo.formatEquivalent(value: String): String {
-    val value = calculateEquivalent(value)
+fun AssetInfo.formatFiat(value: BigDecimal): String {
     if (value <= BigDecimal.ZERO) {
         return ""
     }

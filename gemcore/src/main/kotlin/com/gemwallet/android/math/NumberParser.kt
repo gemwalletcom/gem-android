@@ -12,3 +12,11 @@ fun String.numberParse(): BigDecimal {
     }.joinToString("")
     return BigDecimal(number.trim().replace("\uFEFF", ""))
 }
+
+fun String.numberParseOrNull(): BigDecimal? {
+    return try {
+        numberParse()
+    } catch (_: Throwable) {
+        null
+    }
+}
