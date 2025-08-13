@@ -64,14 +64,18 @@ class SwapSelectSearch(
         return combine(session, query, swapItemType) { session, query, type -> Triple(session, query, type) }
             .flatMapLatest { data ->
                 val (session, query, type) = data
-                val wallet = session?.wallet ?: return@flatMapLatest emptyFlow()
-                type ?: return@flatMapLatest emptyFlow()
+                val wallet = session?.wallet
 
-                val oppositeId = when (swapItemType.value) {
+                val oppositeId = when (type) {
                     SwapItemType.Pay -> receiveId.value
                     SwapItemType.Receive -> payId.value
                     null -> null
-                } ?: return@flatMapLatest emptyFlow()
+                }
+
+                if (oppositeId == null || wallet == null) {
+                    return@flatMapLatest emptyFlow()
+                }
+
                 val supported = getSwapSupported.getSwapSupportChains(oppositeId)
                 assetsRepository.swapSearch(
                     wallet,

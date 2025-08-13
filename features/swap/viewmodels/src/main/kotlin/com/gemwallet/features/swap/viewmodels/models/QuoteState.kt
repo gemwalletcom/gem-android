@@ -5,11 +5,8 @@ import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.features.swap.viewmodels.cases.calculateFiat
 import com.gemwallet.features.swap.viewmodels.cases.estimateRate
-import com.wallet.core.primitives.Asset
-import kotlinx.coroutines.flow.update
 import uniffi.gemstone.SwapperQuote
 import java.math.BigDecimal
-import java.math.MathContext
 import java.text.NumberFormat
 
 data class QuoteState(
