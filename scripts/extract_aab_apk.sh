@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+set -euo pipefail
 
 BUNDLETOOL_VERSION="1.18.1"
 
@@ -13,15 +13,15 @@ ensure_bundletool() {
     
     if [ ! -f "$bundletool_jar" ]; then
         echo "Downloading bundletool-all-${BUNDLETOOL_VERSION}.jar..."
-        curl -L -o "$bundletool_jar" "https://github.com/google/bundletool/releases/download/${BUNDLETOOL_VERSION}/bundletool-all-${BUNDLETOOL_VERSION}.jar"
+        curl -L --fail -o "$bundletool_jar" "https://github.com/google/bundletool/releases/download/${BUNDLETOOL_VERSION}/bundletool-all-${BUNDLETOOL_VERSION}.jar"
     fi
     
     echo "$bundletool_jar"
 }
 
-find_aab_files() {
+aab_files_exist() {
     local base_path="$1"
-    find "${base_path}/../app/build/outputs/bundle" -name "*.aab" -type f
+    [ -n "$(find "${base_path}/../app/build/outputs/bundle" -name "*.aab" -type f -print -quit)" ]
 }
 
 get_output_name() {
@@ -39,7 +39,12 @@ process_aab_file() {
     
     echo "Processing: $aab_file -> ${output_name}"
     
-    rm -rf "${base_path}/${output_name}"*
+    if [ -d "${base_path}/${output_name}" ]; then
+        rm -rf "${base_path}/${output_name}"
+    fi
+    if [ -f "${base_path}/${output_name}.apks" ]; then
+        rm "${base_path}/${output_name}.apks"
+    fi
     
     java -jar "$bundletool_jar" build-apks \
         --bundle="$aab_file" \
@@ -55,16 +60,14 @@ process_aab_file() {
 main() {
     local base_path=$(get_base_path)
     local bundletool_jar=$(ensure_bundletool "$base_path")
-    local aab_files=$(find_aab_files "$base_path")
-    
-    if [ -z "$aab_files" ]; then
+    if ! aab_files_exist "$base_path"; then
         echo "No AAB files found in app/build/outputs/bundle/"
         exit 1
     fi
     
-    for aab_file in $aab_files; do
+    while IFS= read -r -d '' aab_file; do
         process_aab_file "$aab_file" "$bundletool_jar" "$base_path"
-    done
+    done < <(find "${base_path}/../app/build/outputs/bundle" -name "*.aab" -type f -print0)
 }
 
 main "$@"
