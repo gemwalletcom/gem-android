@@ -187,6 +187,7 @@ class SwapViewModel @Inject constructor(
         val receiveEquivalent = quote.receiveEquivalent
         val payEquivalent = quote.payEquivalent
 
+        if (payEquivalent.compareTo(BigDecimal.ZERO) == 0) return@combine null
         val impact = (((receiveEquivalent.toDouble() / payEquivalent.toDouble()) - 1.0) * 100)
         val isHigh = impact.absoluteValue > Config().getSwapConfig().highPriceImpactPercent.toDouble()
         when {
