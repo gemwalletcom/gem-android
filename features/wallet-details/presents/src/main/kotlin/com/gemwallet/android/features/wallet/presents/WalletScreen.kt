@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -39,16 +38,16 @@ import com.gemwallet.android.features.wallet.viewmodels.WalletViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.clipboard.setPlainText
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.paddingDefault
-import com.gemwallet.android.ui.theme.padding8
 import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.FatalStateScene
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.defaultPadding
+import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 
