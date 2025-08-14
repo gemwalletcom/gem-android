@@ -2,6 +2,7 @@ package com.gemwallet.android.data.repositoreis.session
 
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.data.service.store.database.SessionDao
+import com.gemwallet.android.data.service.store.database.entities.DbSession
 import com.gemwallet.android.data.service.store.database.entities.toModel
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.model.Session
@@ -22,7 +23,6 @@ class SessionRepositoryImpl(
 ) : SessionRepository {
 
     override fun session(): Flow<Session?> = sessionDao.session().mapNotNull { record ->
-        // TODO: dao map
         val wallet = record?.walletId?.let { walletsRepository.getWallet(it).firstOrNull() } ?: return@mapNotNull null
         record.toModel(wallet)
     }
@@ -38,13 +38,18 @@ class SessionRepositoryImpl(
     override fun hasSession(): Boolean = getSession() != null
 
     override suspend fun setWallet(wallet: Wallet)  = withContext(Dispatchers.IO) {
-        val session = getSession()?.copy(wallet = wallet) ?: Session( // Create session
-            wallet = wallet,
-            currency = android.icu.util.Currency.getInstance(Locale.getDefault()).let { sysCurrency ->
-                Currency.entries.firstOrNull { it.string == sysCurrency.currencyCode } ?: Currency.USD
-            },
-        )
-        sessionDao.update(session.toRecord())
+        val oldSession = runBlocking(Dispatchers.IO) { sessionDao.getSession() }
+        val session = if (oldSession == null) {
+            DbSession( // Create session
+                walletId = wallet.id,
+                currency = android.icu.util.Currency.getInstance(Locale.getDefault()).let { sysCurrency ->
+                    Currency.entries.firstOrNull { it.string == sysCurrency.currencyCode } ?: Currency.USD
+                }.string,
+            )
+        } else {
+            oldSession.copy(walletId = wallet.id)
+        }
+        sessionDao.update(session)
     }
 
     override suspend fun setCurrency(currency: Currency) = withContext(Dispatchers.IO) {
