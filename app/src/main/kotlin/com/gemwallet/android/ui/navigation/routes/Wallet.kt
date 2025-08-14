@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.wallet.navigation
+package com.gemwallet.android.ui.navigation.routes
 
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController

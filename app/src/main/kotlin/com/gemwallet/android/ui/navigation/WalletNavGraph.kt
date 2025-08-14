@@ -51,9 +51,9 @@ import com.gemwallet.android.features.settings.navigation.settingsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToSwap
 import com.gemwallet.android.ui.navigation.routes.swap
 import com.gemwallet.android.ui.navigation.routes.swapRoute
-import com.gemwallet.android.features.wallet.navigation.navigateToPhraseScreen
-import com.gemwallet.android.features.wallet.navigation.navigateToWalletScreen
-import com.gemwallet.android.features.wallet.navigation.walletScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToPhraseScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToWalletScreen
+import com.gemwallet.android.ui.navigation.routes.walletScreen
 import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
 import com.gemwallet.android.features.wallets.navigation.walletsScreen
 import com.gemwallet.android.ui.components.animation.enterTransition
