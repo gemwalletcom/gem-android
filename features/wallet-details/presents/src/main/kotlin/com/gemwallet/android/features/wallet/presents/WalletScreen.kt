@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -100,6 +101,14 @@ private fun Wallet(
     }
     Scene(
         title = stringResource(id = R.string.common_wallet),
+        actions = {
+            TextButton(onClick = onCancel,
+                colors = ButtonDefaults.textButtonColors()
+                    .copy(contentColor = MaterialTheme.colorScheme.onBackground)
+            ) {
+                Text(stringResource(R.string.common_done).uppercase())
+            }
+        },
         onClose = onCancel
     ) {
         Column(
