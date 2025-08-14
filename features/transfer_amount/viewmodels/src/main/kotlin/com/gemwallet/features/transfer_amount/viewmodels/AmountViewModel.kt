@@ -206,24 +206,27 @@ class AmountViewModel @Inject constructor(
         amount = ""
     }
 
-    fun onNext(onConfirm: (ConfirmParams) -> Unit) = viewModelScope.launch {
-        val params = params.value ?: return@launch
-        try {
-            onNext(params, amount, onConfirm)
-        } catch (err: AmountError) {
-            errorUIState.update { err }
-        } catch (err: Throwable) {
-            errorUIState.update { AmountError.Unknown(err.message ?: "Unknown error") }
+    fun onNext(onConfirm: (ConfirmParams) -> Unit) {
+        val params = params.value ?: return
+        viewModelScope.launch {
+            try {
+                onNext(params, amount, onConfirm)
+            } catch (err: Throwable) {
+                when (err) {
+                    is AmountError -> errorUIState.update { err }
+                    else -> errorUIState.update { AmountError.Unknown(err.message ?: "Unknown error") }
+                }
+            }
         }
     }
 
-    private fun onNext(
+    private suspend fun onNext(
         params: AmountParams,
         rawAmount: String,
         onConfirm: (ConfirmParams) -> Unit
-    ) = viewModelScope.launch {
+    ) {
         val assetInfo = assetInfo.value
-        val owner = assetInfo?.owner ?: return@launch
+        val owner = assetInfo?.owner ?: return
         val validator = validatorState.value
         val delegation = delegation.value
         val asset = assetInfo.asset
@@ -244,8 +247,8 @@ class AmountViewModel @Inject constructor(
         val builder = ConfirmParams.Builder(asset, owner, amount.atomicValue)
         val nextParams = when (params.txType) {
             TransactionType.Transfer -> builder.transfer(destination!!, memo, maxAmount.value,)
-            TransactionType.StakeDelegate -> builder.delegate(validator?.id ?: return@launch)
-            TransactionType.StakeUndelegate -> builder.undelegate(delegation ?: return@launch)
+            TransactionType.StakeDelegate -> builder.delegate(validator?.id ?: return)
+            TransactionType.StakeUndelegate -> builder.undelegate(delegation ?: return)
             TransactionType.StakeRewards -> {
                 val validators = stakeRepository.getRewards(asset.id, owner.address)
                     .map { it.validator.id }
@@ -297,7 +300,6 @@ class AmountViewModel @Inject constructor(
         }
     }
 
-    @Throws(AmountError::class)
     private fun validateAmount(asset: Asset, amount: String, minValue: BigInteger) {
         if (amount.isEmpty()) {
             throw AmountError.Required

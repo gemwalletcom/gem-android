@@ -47,15 +47,13 @@ fun Chain.getReference(): String? {
     return WalletConnectNamespace().getReference(string)
 }
 
-fun Chain.Companion.findByNamespace(walletConnectChainId: String?): Chain? {
+fun Chain.Companion.getNamespace(walletConnectChainId: String?): Chain? { // TODO: Use Reown call for parse
     val chainId = walletConnectChainId?.split(":")
     return if (!chainId.isNullOrEmpty() && chainId.size >= 2) {
-        Chain.findByNamespace(chainId[0], chainId[1])
+        WalletConnectNamespace().getChain(chainId[0], chainId[1])?.let { namespace ->
+            Chain.entries.firstOrNull { it.string == namespace }
+        }
     } else {
         null
     }
-}
-
-fun Chain.Companion.findByNamespace(namespace: String, reference: String): Chain? {
-    return Chain.entries.firstOrNull { it.getNameSpace()?.string == namespace && it.getReference() == reference }
 }
