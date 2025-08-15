@@ -1,15 +1,13 @@
 package com.gemwallet.features.asset_select.presents.views
 
-import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
-import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
+import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 
@@ -31,11 +29,7 @@ fun AssetSelectScreen(
     val availableChains by viewModel.availableChains.collectAsStateWithLifecycle()
     val chainsFilter by viewModel.chainFilter.collectAsStateWithLifecycle()
     val balanceFilter by viewModel.balanceFilter.collectAsStateWithLifecycle()
-
-    val start = remember { System.currentTimeMillis() }
-
-    Log.d("ASSET_SELECT", "Size: ${unpinned.size}; Delay: ${System.currentTimeMillis() - start}")
-
+    
     AssetSelectScene(
         title = title,
         titleBadge = titleBadge,
