@@ -14,6 +14,7 @@ import com.gemwallet.features.asset_select.viewmodels.models.SelectSearch
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -61,39 +62,45 @@ class SwapSelectSearch(
         session: Flow<Session?>,
         query: Flow<String>
     ): Flow<List<AssetInfo>> {
-        return combine(session, query, swapItemType) { session, query, type -> Triple(session, query, type) }
-            .flatMapLatest { data ->
-                val (session, query, type) = data
-                val wallet = session?.wallet
-
-                val oppositeId = when (type) {
-                    SwapItemType.Pay -> receiveId.value
-                    SwapItemType.Receive -> payId.value
-                    null -> null
-                }
-
-                if (oppositeId == null || wallet == null) {
-                    return@flatMapLatest emptyFlow()
-                }
-
-                val supported = getSwapSupported.getSwapSupportChains(oppositeId)
-                assetsRepository.swapSearch(
-                    wallet,
-                    query,
-                    supported.chains.mapNotNull { item -> Chain.entries.firstOrNull { it.string == item } },
-                    supported.assetIds.mapNotNull { it.toAssetId() }
-                )
+        return combine(session, query, swapItemType, payId, receiveId) { session, query, type, payId, receiveId ->
+            val oppositeId = getOppositeAssetId(type, payId, receiveId)
+            SearchParams(session?.wallet, query, oppositeId)
+        }
+        .flatMapLatest { params ->
+            if (params.oppositeAssetId == null || params.wallet == null) {
+                return@flatMapLatest emptyFlow()
             }
-            .map { items ->
-                items.filter { assetInfo ->
-                    assetInfo.metadata?.isSwapEnabled == true
-                        && if (swapItemType.value == SwapItemType.Pay) {
-                            assetInfo.balance.totalAmount > 0.0
-                        } else {
-                            true
-                        }
-                }
+
+            val supported = getSwapSupported.getSwapSupportChains(params.oppositeAssetId)
+            assetsRepository.swapSearch(
+                params.wallet,
+                params.query,
+                supported.chains.mapNotNull { item -> Chain.entries.firstOrNull { it.string == item } },
+                supported.assetIds.mapNotNull { it.toAssetId() }
+            )
+        }
+        .map { items ->
+            items.filter { assetInfo ->
+                assetInfo.metadata?.isSwapEnabled == true
+                    && if (swapItemType.value == SwapItemType.Pay) {
+                        assetInfo.balance.totalAmount > 0.0
+                    } else {
+                        true
+                    }
             }
-            .map { items -> items.distinctBy { it.asset.id.toIdentifier() } }
+        }
+        .map { items -> items.distinctBy { it.asset.id.toIdentifier() } }
     }
+
+    private fun getOppositeAssetId(type: SwapItemType?, payId: AssetId?, receiveId: AssetId?) =  when (type) {
+        SwapItemType.Pay -> receiveId
+        SwapItemType.Receive -> payId
+        null -> null
+    }
+
+    private class SearchParams(
+        val wallet: Wallet?,
+        val query: String,
+        val oppositeAssetId: AssetId?
+    )
 }
