@@ -31,14 +31,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.features.banner.viewmodels.BannersViewModel
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.padding12
 import com.gemwallet.android.ui.theme.paddingDefault
-import com.gemwallet.android.ui.components.image.IconWithBadge
-import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.features.banner.viewmodels.BannersViewModel
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Banner
 import com.wallet.core.primitives.BannerEvent

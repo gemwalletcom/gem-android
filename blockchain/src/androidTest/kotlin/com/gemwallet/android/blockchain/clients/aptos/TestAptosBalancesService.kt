@@ -2,10 +2,8 @@ package com.gemwallet.android.blockchain.clients.aptos
 
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosBalancesService
 import com.wallet.core.blockchain.aptos.AptosResource
-import com.wallet.core.blockchain.aptos.AptosResourceBalance
 import com.wallet.core.blockchain.aptos.AptosResourceBalanceOptional
 import com.wallet.core.blockchain.aptos.AptosResourceCoin
-import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okhttp3.ResponseBody.Companion.toResponseBody
 

@@ -220,8 +220,8 @@ class SwapViewModel @Inject constructor(
     fun switchSwap() = viewModelScope.launch {
         val payAssetId = fromAssetId.value?.toIdentifier()
         val receiveAssetId = toAssetId.value?.toIdentifier()
-        savedStateHandle["from"] = payAssetId
-        savedStateHandle["to"] = receiveAssetId
+        savedStateHandle["from"] = receiveAssetId
+        savedStateHandle["to"] = payAssetId
         payValue.clearText()
         resetReceiveInput()
         swapScreenState.update { SwapState.None }

@@ -22,12 +22,12 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.transform.RoundedCornersTransformation
-import com.gemwallet.android.ui.theme.paddingDefault
-import com.gemwallet.android.ui.theme.padding8
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.models.NftItemUIModel
 import com.gemwallet.android.ui.models.actions.NftAssetIdAction
 import com.gemwallet.android.ui.models.actions.NftCollectionIdAction
+import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingDefault
 
 @Composable
 fun NFTItem(

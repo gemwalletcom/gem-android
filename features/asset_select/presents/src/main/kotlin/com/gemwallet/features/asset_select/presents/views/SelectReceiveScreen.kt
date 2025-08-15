@@ -9,9 +9,9 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.gemwallet.features.asset_select.viewmodels.AssetSelectViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clipboard.setPlainText
+import com.gemwallet.features.asset_select.viewmodels.AssetSelectViewModel
 import com.wallet.core.primitives.AssetId
 
 @Composable

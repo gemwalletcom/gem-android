@@ -28,10 +28,10 @@ import com.gemwallet.android.features.create_wallet.components.WordChip
 import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.components.screen.PhraseLayout
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.paddingDefault
 import kotlin.math.min
 
 @OptIn(ExperimentalLayoutApi::class)

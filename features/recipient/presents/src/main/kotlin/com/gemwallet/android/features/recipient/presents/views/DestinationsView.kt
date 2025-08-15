@@ -1,7 +1,6 @@
 package com.gemwallet.android.features.recipient.presents.views
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
@@ -13,7 +12,6 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.defaultPadding
-import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.NameRecord
 
 fun LazyListScope.destinationView(

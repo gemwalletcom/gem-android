@@ -61,10 +61,10 @@ import com.gemwallet.android.services.SyncService
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.WalletApp
 import com.gemwallet.android.ui.components.RootWarningDialog
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.components.isDeviceRooted
+import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
+import com.gemwallet.android.ui.theme.paddingDefault
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

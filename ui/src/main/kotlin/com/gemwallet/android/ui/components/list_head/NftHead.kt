@@ -12,9 +12,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import coil3.transform.RoundedCornersTransformation
 import com.gemwallet.android.ui.components.DisplayText
+import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.paddingDefault
-import com.gemwallet.android.ui.components.image.AsyncImage
 import com.wallet.core.primitives.NFTAsset
 
 @Composable

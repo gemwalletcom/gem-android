@@ -2,7 +2,6 @@ package com.gemwallet.features.swap.viewmodels.models
 
 import com.gemwallet.android.model.AssetInfo
 import uniffi.gemstone.SwapperProvider
-import uniffi.gemstone.SwapperProviderType
 import uniffi.gemstone.SwapperQuote
 
 internal data class QuotesState(

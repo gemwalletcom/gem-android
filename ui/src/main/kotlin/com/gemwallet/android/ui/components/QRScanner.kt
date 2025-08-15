@@ -55,7 +55,6 @@ import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.defaultPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi

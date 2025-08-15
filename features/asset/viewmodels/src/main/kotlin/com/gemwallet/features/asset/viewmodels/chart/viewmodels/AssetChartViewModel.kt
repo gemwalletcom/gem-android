@@ -7,9 +7,9 @@ import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.toAssetId
-import com.gemwallet.features.asset.viewmodels.chart.models.AssetMarketUIModel
-import com.gemwallet.features.asset.viewmodels.assetIdArg
 import com.gemwallet.android.ui.R
+import com.gemwallet.features.asset.viewmodels.assetIdArg
+import com.gemwallet.features.asset.viewmodels.chart.models.AssetMarketUIModel
 import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel

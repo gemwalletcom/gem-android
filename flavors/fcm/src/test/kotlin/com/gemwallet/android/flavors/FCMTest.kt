@@ -1,6 +1,5 @@
 package com.gemwallet.android.flavors
 
-import kotlinx.serialization.json.Json
 import org.junit.Assert.*
 import org.junit.Test
 

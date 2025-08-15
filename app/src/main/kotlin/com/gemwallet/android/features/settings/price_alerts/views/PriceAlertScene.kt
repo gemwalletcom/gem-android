@@ -38,14 +38,14 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.ActionIcon
 import com.gemwallet.android.ui.components.SwipeableItemWithActions
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.list_item.PriceInfo
 import com.gemwallet.android.ui.components.list_item.SwitchRow
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.AssetId
 
 @OptIn(ExperimentalMaterial3Api::class)

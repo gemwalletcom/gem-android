@@ -33,10 +33,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ui.theme.paddingDefault
-import com.gemwallet.android.ui.theme.padding8
-import com.gemwallet.android.ui.theme.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.trailingIconMedium
 
 data class CellEntity<T>(
     val label: T,

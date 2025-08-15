@@ -38,11 +38,11 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.settings.networks.models.NetworksUIState
 import com.gemwallet.android.model.NodeStatus
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.paddingDefault
-import com.gemwallet.android.ui.theme.padding8
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.Node
 
 @Composable

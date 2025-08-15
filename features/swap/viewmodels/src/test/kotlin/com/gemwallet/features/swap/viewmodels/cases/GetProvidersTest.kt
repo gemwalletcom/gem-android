@@ -1,6 +1,5 @@
 package com.gemwallet.features.swap.viewmodels.cases
 
-import com.gemwallet.features.swap.viewmodels.models.SwapProviderItem
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
@@ -12,7 +11,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import uniffi.gemstone.SwapperProvider
 import uniffi.gemstone.SwapperProviderData
 import uniffi.gemstone.SwapperProviderType
 import uniffi.gemstone.SwapperQuote

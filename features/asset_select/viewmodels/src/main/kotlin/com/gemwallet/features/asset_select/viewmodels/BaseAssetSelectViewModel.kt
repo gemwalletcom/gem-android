@@ -9,9 +9,9 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.assetType
 import com.gemwallet.android.ext.getAccount
-import com.gemwallet.features.asset_select.viewmodels.models.SelectSearch
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
+import com.gemwallet.features.asset_select.viewmodels.models.SelectSearch
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
