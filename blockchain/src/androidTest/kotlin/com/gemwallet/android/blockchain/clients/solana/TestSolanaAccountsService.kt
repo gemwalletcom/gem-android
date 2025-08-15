@@ -4,7 +4,6 @@ import com.gemwallet.android.blockchain.clients.solana.models.SolanaArrayData
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaInfo
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaParsedData
 import com.gemwallet.android.blockchain.clients.solana.models.SolanaParsedSplTokenInfo
-import com.gemwallet.android.blockchain.clients.solana.models.SolanaTokenOwner
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaAccountsService
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcResponse

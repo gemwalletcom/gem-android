@@ -49,16 +49,16 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.DisplayText
 import com.gemwallet.android.ui.components.InfoBottomSheet
 import com.gemwallet.android.ui.components.InfoSheetEntity
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.Spacer4
-import com.gemwallet.android.ui.components.designsystem.Spacer8
-import com.gemwallet.android.ui.components.designsystem.headerIconSize
-import com.gemwallet.android.ui.components.designsystem.headerSupportIconSize
-import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.PriceInfo
 import com.gemwallet.android.ui.models.PriceState
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer4
+import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
+import com.gemwallet.android.ui.theme.headerIconSize
+import com.gemwallet.android.ui.theme.headerSupportIconSize
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.WalletType
 
@@ -77,7 +77,7 @@ fun AmountListHead(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = padding16, end = padding16, bottom = padding16),
+                .padding(start = paddingDefault, end = paddingDefault, bottom = paddingDefault),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             (icon as? Asset)?.let {

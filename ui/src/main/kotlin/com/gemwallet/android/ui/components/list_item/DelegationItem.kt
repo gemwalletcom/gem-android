@@ -12,8 +12,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.Spacer2
 import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.theme.Spacer2
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.DelegationState.Activating
@@ -23,7 +23,6 @@ import com.wallet.core.primitives.DelegationState.Deactivating
 import com.wallet.core.primitives.DelegationState.Inactive
 import com.wallet.core.primitives.DelegationState.Pending
 import com.wallet.core.primitives.DelegationState.Undelegating
-import com.wallet.core.primitives.DelegationValidator
 
 @Composable
 fun DelegationItem(

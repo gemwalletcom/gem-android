@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.theme.paddingDefault
 
 @Composable
 fun SwitchRow(
@@ -16,7 +16,7 @@ fun SwitchRow(
     onCheckedChange: (Boolean) -> Unit,
 ) {
     Row(
-        modifier = Modifier.padding(horizontal = padding16),
+        modifier = Modifier.padding(horizontal = paddingDefault),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(

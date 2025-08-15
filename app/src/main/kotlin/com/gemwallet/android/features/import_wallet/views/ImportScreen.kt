@@ -55,15 +55,15 @@ import com.gemwallet.android.ui.BuildConfig
 import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.Spacer4
-import com.gemwallet.android.ui.components.designsystem.Spacer8
-import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.designsystem.space4
 import com.gemwallet.android.ui.components.parseMarkdownToAnnotatedString
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer4
+import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
+import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.space4
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.WalletType
@@ -172,7 +172,7 @@ private fun ImportScene(
 
     Scene(
         title = stringResource(id = R.string.wallet_import_title),
-        padding = PaddingValues(padding16),
+        padding = PaddingValues(paddingDefault),
         onClose = onCancel,
         mainAction = {
             MainActionButton(

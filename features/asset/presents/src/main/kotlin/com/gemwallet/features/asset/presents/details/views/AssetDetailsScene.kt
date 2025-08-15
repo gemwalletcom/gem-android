@@ -52,8 +52,6 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.InfoSheetEntity
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding32
 import com.gemwallet.android.ui.components.list_head.AmountListHead
 import com.gemwallet.android.ui.components.list_head.AssetHeadActions
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
@@ -69,6 +67,8 @@ import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.open
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.padding32
 import com.gemwallet.android.ui.theme.pendingColor
 import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIModel
 import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIState

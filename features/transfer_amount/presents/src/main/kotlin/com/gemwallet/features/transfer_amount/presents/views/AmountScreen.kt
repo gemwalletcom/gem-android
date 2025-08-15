@@ -1,6 +1,5 @@
 package com.gemwallet.features.transfer_amount.presents.views
 
-import android.icu.util.Currency
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedContentTransitionScope

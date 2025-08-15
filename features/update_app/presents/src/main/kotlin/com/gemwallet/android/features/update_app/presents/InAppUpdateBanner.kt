@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowCircleDown
@@ -40,9 +39,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.update_app.viewmodels.DownloadState
 import com.gemwallet.android.features.update_app.viewmodels.InAppUpdateViewModels
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.Spacer4
-import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.list_item.DropDownContextItem
+import com.gemwallet.android.ui.theme.Spacer4
+import com.gemwallet.android.ui.theme.defaultPadding
 import kotlin.math.roundToInt
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -134,7 +133,7 @@ private fun UpdateInfo(
         modifier = Modifier
             .fillMaxWidth()
             .height(72.dp)
-            .padding(padding16),
+            .defaultPadding(),
         verticalArrangement = Arrangement.Center,
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {

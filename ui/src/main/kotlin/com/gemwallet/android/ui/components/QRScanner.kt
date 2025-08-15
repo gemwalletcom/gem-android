@@ -55,8 +55,8 @@ import coil3.compose.AsyncImage
 import coil3.request.CachePolicy
 import coil3.request.ImageRequest
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.defaultPadding
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -218,9 +218,9 @@ fun QRScannerScene(
                         ) {
                             Text(
                                 modifier = Modifier
-                                    .padding(padding16)
+                                    .defaultPadding()
                                     .background(Color.Black, MaterialTheme.shapes.medium)
-                                    .padding(padding16),
+                                    .defaultPadding(),
                                 text = imageResult,
                                 color = Color.White,
                                 textAlign = TextAlign.Center,
@@ -239,9 +239,9 @@ fun QRScannerScene(
                             modifier = Modifier
                                 .padding(40.dp)
                                 .align(Alignment.BottomCenter)
-                                .padding(padding16)
+                                .defaultPadding()
                                 .background(Color.Black, MaterialTheme.shapes.medium)
-                                .padding(padding16),
+                                .defaultPadding(),
                             text = "Image doesn't contains qr code or data",
                             color = Color.White,
                             textAlign = TextAlign.Center,

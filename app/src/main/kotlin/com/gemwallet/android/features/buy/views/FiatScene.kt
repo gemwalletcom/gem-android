@@ -32,8 +32,6 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.buttons.RandomGradientButton
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.fields.AmountField
 import com.gemwallet.android.ui.components.image.getFiatProviderIcon
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
@@ -46,6 +44,8 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.open
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer8
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.FiatProvider
 import com.wallet.core.primitives.FiatQuoteType

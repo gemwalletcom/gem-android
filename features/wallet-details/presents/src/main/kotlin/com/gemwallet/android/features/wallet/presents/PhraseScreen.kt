@@ -22,12 +22,12 @@ import com.gemwallet.android.features.wallet.viewmodels.WalletViewModel
 import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clipboard.setPlainText
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.Spacer8
-import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.PhraseLayout
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.WalletType
 
 @Composable
@@ -50,7 +50,7 @@ fun PhraseScreen(
 
     Scene(
         title = stringResource(id = R.string.common_secret_phrase),
-        padding = PaddingValues(padding16),
+        padding = PaddingValues(paddingDefault),
         backHandle = true,
         onClose = onCancel,
     ) {

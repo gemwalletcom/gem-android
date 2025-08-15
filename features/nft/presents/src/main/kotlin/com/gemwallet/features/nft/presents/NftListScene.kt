@@ -30,13 +30,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.cases.nft.NftError
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.designsystem.padding8
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator20
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.NftAssetIdAction
 import com.gemwallet.android.ui.models.actions.NftCollectionIdAction
+import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.features.nft.viewmodels.NftListViewModels
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -117,7 +117,7 @@ fun NftListScene(
                 modifier = Modifier.padding(/*horizontal = 8.dp*/),
                 columns = GridCells.Adaptive(minSize = 150.dp),
                 state = listState,
-                contentPadding = PaddingValues(padding8, padding16)
+                contentPadding = PaddingValues(padding8, paddingDefault)
             ) {
                 items(items) { item -> NFTItem(item, collectionAction, assetAction) }
             }

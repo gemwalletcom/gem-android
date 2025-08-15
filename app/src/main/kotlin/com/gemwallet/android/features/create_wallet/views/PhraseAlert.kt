@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Diamond
@@ -39,14 +38,14 @@ import androidx.core.net.toUri
 import com.gemwallet.android.features.onboarding.AcceptTermsScreen
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.designsystem.padding4
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.open
+import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
+import com.gemwallet.android.ui.theme.defaultPadding
+import com.gemwallet.android.ui.theme.padding4
 import uniffi.gemstone.Config
 import uniffi.gemstone.PublicUrl
 
@@ -95,7 +94,7 @@ fun PhraseAlertDialog(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(padding16),
+                .defaultPadding(),
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
@@ -144,9 +143,7 @@ private fun InfoBlock(
         colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
         elevation = CardDefaults.cardElevation(padding4)
     ) {
-        Row(
-            modifier = Modifier.padding(padding16),
-        ) {
+        Row(modifier = Modifier.defaultPadding()) {
             Icon(imageVector = icon, "")
             Spacer16()
             Column(modifier = Modifier.weight(1f)) {

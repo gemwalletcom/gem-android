@@ -5,7 +5,7 @@ import androidx.annotation.RestrictTo
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.gemwallet.android.ui.components.designsystem.padding8
+import com.gemwallet.android.ui.theme.padding8
 import com.patrykandpatrick.vico.compose.cartesian.axis.rememberAxisLabelComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
 import com.patrykandpatrick.vico.compose.common.of

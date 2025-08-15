@@ -25,21 +25,21 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.Container
+import com.gemwallet.android.ui.components.getRelativeDate
+import com.gemwallet.android.ui.components.list_item.PriceInfo
+import com.gemwallet.android.ui.models.PriceState
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.defaultPadding
+import com.gemwallet.android.ui.theme.padding4
+import com.gemwallet.android.ui.theme.space8
 import com.gemwallet.features.asset.presents.chart.components.PeriodsPanel
 import com.gemwallet.features.asset.presents.chart.components.ShapeComponent
 import com.gemwallet.features.asset.presents.chart.components.rememberBottomAxis
 import com.gemwallet.features.asset.presents.chart.components.rememberTopAxis
 import com.gemwallet.features.asset.viewmodels.chart.models.PricePoint
 import com.gemwallet.features.asset.viewmodels.chart.viewmodels.ChartViewModel
-import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.Container
-import com.gemwallet.android.ui.components.list_item.PriceInfo
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.designsystem.padding4
-import com.gemwallet.android.ui.components.designsystem.space8
-import com.gemwallet.android.ui.components.getRelativeDate
-import com.gemwallet.android.ui.models.PriceState
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineSpec
@@ -196,7 +196,7 @@ fun Chart(
 
 @Composable
 fun ChartError() {
-    Box(modifier = Modifier.fillMaxSize().padding(padding16)) {
+    Box(modifier = Modifier.fillMaxSize().defaultPadding()) {
         Text(
             modifier = Modifier.align(Alignment.Center),
             textAlign = TextAlign.Center,

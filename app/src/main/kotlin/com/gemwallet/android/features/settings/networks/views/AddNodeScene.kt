@@ -34,13 +34,13 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.QrCodeRequest
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.clipboard.getPlainText
-import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.fields.TransferTextFieldActions
 import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.Spacer16
 import com.wallet.core.primitives.Chain
 import java.text.NumberFormat
 

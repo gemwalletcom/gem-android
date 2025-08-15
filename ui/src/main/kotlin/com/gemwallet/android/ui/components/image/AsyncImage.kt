@@ -16,7 +16,7 @@ import coil3.request.ImageRequest
 import coil3.request.transformations
 import coil3.transform.CircleCropTransformation
 import coil3.transform.Transformation
-import com.gemwallet.android.ui.components.designsystem.iconSize
+import com.gemwallet.android.ui.theme.iconSize
 import com.wallet.core.primitives.Asset
 
 @Composable

@@ -34,7 +34,6 @@ import com.gemwallet.android.features.activities.viewmodels.TxDetailsScreenModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.clipboard.setPlainText
-import com.gemwallet.android.ui.components.designsystem.Spacer8
 import com.gemwallet.android.ui.components.getRelativeDate
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.list_head.AmountListHead
@@ -49,6 +48,7 @@ import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.open
+import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.SwapProvider
 import com.wallet.core.primitives.TransactionDirection

@@ -18,13 +18,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
-import com.gemwallet.android.ui.components.designsystem.listSpacerBig
 import com.gemwallet.android.ui.components.image.AsyncImage
-import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
+import com.gemwallet.android.ui.theme.listSpacerBig
 import com.gemwallet.features.nft.viewmodels.NftAssetDetailsUIModel
 import com.gemwallet.features.nft.viewmodels.NftDetailsViewModel
 import com.wallet.core.primitives.AssetId

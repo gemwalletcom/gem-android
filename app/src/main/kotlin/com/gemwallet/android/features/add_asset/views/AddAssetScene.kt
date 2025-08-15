@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Icon
@@ -24,7 +23,6 @@ import com.gemwallet.android.features.add_asset.models.TokenSearchState
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AddressChainField
 import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.list_item.ChainItem
 import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
@@ -32,6 +30,7 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.defaultPadding
 import com.wallet.core.primitives.Asset
 
 @Composable
@@ -72,9 +71,7 @@ fun AddAssetScene(
                 }
             } else null
         )
-        Column(
-            modifier = Modifier.padding(padding16)
-        ) {
+        Column(modifier = Modifier.defaultPadding()) {
             AddressChainField(
                 chain = network.chain(),
                 label = stringResource(R.string.wallet_import_contract_address_field),
@@ -96,7 +93,7 @@ fun AddAssetScene(
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(padding16),
+                        .defaultPadding(),
                     text = stringResource(id = R.string.errors_token_unable_fetch_token_information, addressState.value),
                     color = MaterialTheme.colorScheme.error,
                     textAlign = TextAlign.Center,

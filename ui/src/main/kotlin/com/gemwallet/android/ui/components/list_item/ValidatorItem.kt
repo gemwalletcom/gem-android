@@ -16,10 +16,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.space4
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.models.PriceUIState
 import com.gemwallet.android.ui.theme.WalletTheme
+import com.gemwallet.android.ui.theme.space4
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.DelegationValidator

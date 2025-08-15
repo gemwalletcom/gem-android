@@ -21,14 +21,14 @@ import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.SearchBar
-import com.gemwallet.android.ui.components.designsystem.listItemIconSize
-import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.filters.model.FilterType
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.models.TransactionTypeFilter
+import com.gemwallet.android.ui.theme.listItemIconSize
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.Chain
 
 @Composable
@@ -118,7 +118,7 @@ fun TransactionsFilter(
             onClearFilters = onClearChainsFilter.takeIf { chainsFilter.isNotEmpty() },
         ) {
             val query = rememberTextFieldState()
-            SearchBar(query, Modifier.Companion.padding(horizontal = padding16))
+            SearchBar(query, Modifier.Companion.padding(horizontal = paddingDefault))
             LazyColumn(modifier = Modifier.Companion.fillMaxSize()) {
                 selectFilterChain(availableChains, chainsFilter, query.text.toString(), onChainFilter)
             }

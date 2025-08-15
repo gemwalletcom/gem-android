@@ -7,7 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import com.gemwallet.android.ui.components.designsystem.Spacer16
+import com.gemwallet.android.ui.theme.Spacer16
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

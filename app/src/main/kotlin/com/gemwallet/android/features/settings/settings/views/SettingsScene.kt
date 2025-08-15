@@ -40,10 +40,10 @@ import com.gemwallet.android.features.settings.settings.components.LinkItem
 import com.gemwallet.android.features.settings.settings.viewmodels.SettingsViewModel
 import com.gemwallet.android.flavors.isNotificationsAvailable
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.Spacer16
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.open
+import com.gemwallet.android.ui.theme.Spacer16
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState

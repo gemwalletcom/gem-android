@@ -14,8 +14,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import com.gemwallet.android.ui.components.designsystem.Spacer4
-import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
+import com.gemwallet.android.ui.theme.Spacer4
+import com.gemwallet.android.ui.theme.trailingIconMedium
 
 @Composable
 fun InfoButton(entity: InfoSheetEntity) {

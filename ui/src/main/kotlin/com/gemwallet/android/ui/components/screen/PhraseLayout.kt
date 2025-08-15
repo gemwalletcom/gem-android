@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -17,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ui.components.designsystem.Spacer8
-import com.gemwallet.android.ui.components.designsystem.padding8
+import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.theme.normalPadding
 
 @Composable
 fun PhraseLayout(
@@ -64,7 +63,7 @@ fun RowScope.PhraseWordItem(
         border = if (isNextToEnter) BorderStroke(0.5.dp, MaterialTheme.colorScheme.primary) else null
     ) {
         Row(
-            modifier = Modifier.padding(padding8),
+            modifier = Modifier.normalPadding(),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Row(

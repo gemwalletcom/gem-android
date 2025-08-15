@@ -7,12 +7,12 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.features.asset.viewmodels.chart.models.ChartUIModel
-import com.gemwallet.features.asset.viewmodels.chart.models.PricePoint
-import com.gemwallet.features.asset.viewmodels.assetIdArg
-import com.gemwallet.android.ui.models.PriceUIState
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.format
+import com.gemwallet.android.ui.models.PriceUIState
+import com.gemwallet.features.asset.viewmodels.assetIdArg
+import com.gemwallet.features.asset.viewmodels.chart.models.ChartUIModel
+import com.gemwallet.features.asset.viewmodels.chart.models.PricePoint
 import com.wallet.core.primitives.ChartPeriod
 import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel

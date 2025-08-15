@@ -16,8 +16,8 @@ import com.gemwallet.android.features.buy.models.BuyError
 import com.gemwallet.android.features.buy.models.FiatSuggestion
 import com.gemwallet.android.features.buy.viewmodels.FiatViewModel
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.padding8
 import com.gemwallet.android.ui.models.actions.CancelAction
+import com.gemwallet.android.ui.theme.padding8
 import com.wallet.core.primitives.FiatQuoteType
 
 @Composable

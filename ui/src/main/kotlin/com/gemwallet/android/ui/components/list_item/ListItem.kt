@@ -14,11 +14,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.Spacer2
-import com.gemwallet.android.ui.components.designsystem.Stub
-import com.gemwallet.android.ui.components.designsystem.padding12
-import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer2
+import com.gemwallet.android.ui.theme.Stub
+import com.gemwallet.android.ui.theme.padding12
+import com.gemwallet.android.ui.theme.paddingDefault
 
 @Composable
 fun ListItem(
@@ -42,7 +42,7 @@ fun ListItem(
             Row(
                 modifier = Modifier
                     .align(Alignment.Center)
-                    .padding(top = padding12, end = padding16, bottom = padding12)
+                    .padding(top = padding12, end = paddingDefault, bottom = padding12)
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {

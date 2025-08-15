@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
@@ -57,9 +56,9 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AddressChainViewModel
 import com.gemwallet.android.ui.components.FieldBottomAction
 import com.gemwallet.android.ui.components.clipboard.getPlainText
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.defaultPadding
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.WalletType
 
@@ -98,7 +97,7 @@ internal fun ImportInput(
     Column(
         modifier = Modifier
             .border(borderStroke, OutlinedTextFieldDefaults.shape)
-            .padding(padding16),
+            .defaultPadding(),
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             BasicTextField(

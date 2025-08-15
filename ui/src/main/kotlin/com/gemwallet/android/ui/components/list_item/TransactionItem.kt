@@ -23,13 +23,13 @@ import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.Spacer2
-import com.gemwallet.android.ui.components.designsystem.Spacer8
-import com.gemwallet.android.ui.components.designsystem.padding4
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.image.getSupportIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator10
+import com.gemwallet.android.ui.theme.Spacer2
+import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.theme.padding4
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId

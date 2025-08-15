@@ -6,7 +6,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -41,11 +40,6 @@ import com.gemwallet.android.ui.components.InfoBottomSheet
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.Spacer4
-import com.gemwallet.android.ui.components.designsystem.Spacer8
-import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.list_head.AmountListHead
 import com.gemwallet.android.ui.components.list_head.NftHead
 import com.gemwallet.android.ui.components.list_head.SwapListHead
@@ -54,6 +48,11 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer4
+import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.theme.defaultPadding
+import com.gemwallet.android.ui.theme.trailingIconMedium
 import com.wallet.core.primitives.TransactionType
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -183,13 +182,13 @@ private fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBottom
     var isShowInfoSheet by remember(isShowBottomSheetInfo) { mutableStateOf(isShowBottomSheetInfo) }
     Column(
         modifier = Modifier
-            .padding(padding16)
+            .defaultPadding()
             .background(
                 MaterialTheme.colorScheme.errorContainer.copy(0.2f),
                 shape = MaterialTheme.shapes.medium
             )
             .fillMaxWidth()
-            .padding(padding16)
+            .defaultPadding()
             .clickable(
                 enabled = infoSheetEntity != null,
                 onClick = { isShowInfoSheet = true }

@@ -38,11 +38,11 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.settings.networks.models.NetworksUIState
 import com.gemwallet.android.model.NodeStatus
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.designsystem.padding8
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.Node
 
 @Composable
@@ -135,9 +135,9 @@ private fun BlockExplorerItem(
     Box(
         modifier = Modifier
             .clickable { onSelect(explorerName) }
-            .padding(start = padding16, end = 0.dp)
+            .padding(start = paddingDefault, end = 0.dp)
     ) {
-        Row(modifier = Modifier.padding(vertical = padding16).padding(end = padding16)) {
+        Row(modifier = Modifier.padding(vertical = paddingDefault).padding(end = paddingDefault)) {
             Text(
                 modifier = Modifier.weight(1f),
                 text = explorerName,

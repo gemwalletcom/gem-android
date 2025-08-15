@@ -50,7 +50,7 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_head.AmountListHead
 import com.gemwallet.android.ui.components.list_head.AssetHeadActions
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
-import com.gemwallet.android.ui.components.pinnedAssetsHeader
+import com.gemwallet.android.ui.components.list_item.pinnedAssetsHeader
 import com.gemwallet.android.ui.open
 import com.gemwallet.features.banner.presents.views.BannersScene
 import com.wallet.core.primitives.AssetId

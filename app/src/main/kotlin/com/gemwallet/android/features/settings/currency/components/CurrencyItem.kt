@@ -10,9 +10,9 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ui.components.designsystem.padding8
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
+import com.gemwallet.android.ui.theme.padding8
 import com.wallet.core.primitives.Currency
 
 @Composable

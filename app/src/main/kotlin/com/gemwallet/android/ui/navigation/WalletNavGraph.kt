@@ -48,12 +48,6 @@ import com.gemwallet.android.features.settings.navigation.navigateToPriceAlertsS
 import com.gemwallet.android.features.settings.navigation.navigateToSecurityScreen
 import com.gemwallet.android.features.settings.navigation.settingsRoute
 import com.gemwallet.android.features.settings.navigation.settingsScreen
-import com.gemwallet.android.ui.navigation.routes.navigateToSwap
-import com.gemwallet.android.ui.navigation.routes.swap
-import com.gemwallet.android.ui.navigation.routes.swapRoute
-import com.gemwallet.android.features.wallet.navigation.navigateToPhraseScreen
-import com.gemwallet.android.features.wallet.navigation.navigateToWalletScreen
-import com.gemwallet.android.features.wallet.navigation.walletScreen
 import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
 import com.gemwallet.android.features.wallets.navigation.walletsScreen
 import com.gemwallet.android.ui.components.animation.enterTransition
@@ -73,15 +67,21 @@ import com.gemwallet.android.ui.navigation.routes.navigateToAssetScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToDelegation
 import com.gemwallet.android.ui.navigation.routes.navigateToNftAsset
 import com.gemwallet.android.ui.navigation.routes.navigateToNftCollection
+import com.gemwallet.android.ui.navigation.routes.navigateToPhraseScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
 import com.gemwallet.android.ui.navigation.routes.navigateToSendScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToStake
+import com.gemwallet.android.ui.navigation.routes.navigateToSwap
 import com.gemwallet.android.ui.navigation.routes.navigateToTransactionScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToWalletScreen
 import com.gemwallet.android.ui.navigation.routes.nftCollection
 import com.gemwallet.android.ui.navigation.routes.recipientInput
 import com.gemwallet.android.ui.navigation.routes.stake
 import com.gemwallet.android.ui.navigation.routes.stakeRoute
+import com.gemwallet.android.ui.navigation.routes.swap
+import com.gemwallet.android.ui.navigation.routes.swapRoute
 import com.gemwallet.android.ui.navigation.routes.transactionDetailsScreen
+import com.gemwallet.android.ui.navigation.routes.walletScreen
 import com.wallet.core.primitives.AssetId
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -160,7 +160,6 @@ fun WalletNavGraph(
             navigation<Transfer>(startDestination = SendSelect) {
                 swap(
                     onConfirm = navController::navigateToConfirmScreen,
-                    onBuy = navController::navigateToBuyScreen,
                     onCancel = onCancel
                 )
 

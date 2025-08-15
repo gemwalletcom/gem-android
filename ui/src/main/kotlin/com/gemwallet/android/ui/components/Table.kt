@@ -33,10 +33,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ui.components.designsystem.padding16
-import com.gemwallet.android.ui.components.designsystem.padding8
-import com.gemwallet.android.ui.components.designsystem.trailingIconMedium
 import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.trailingIconMedium
 
 data class CellEntity<T>(
     val label: T,
@@ -92,7 +92,7 @@ fun Table(
                     DropdownMenu(
                         modifier = Modifier.align(Alignment.BottomEnd),
                         expanded = isDropDownShow == item && item.dropDownActions != null,
-                        offset = DpOffset(padding16, padding8),
+                        offset = DpOffset(paddingDefault, padding8),
                         containerColor = MaterialTheme.colorScheme.background,
                         onDismissRequest = { isDropDownShow = null },
                     ) {
@@ -136,10 +136,10 @@ private fun Cell(
             )
             .fillMaxWidth()
             .padding(
-                start = padding16,
-                top = padding16,
-                bottom = padding16,
-                end = if (action == null) padding16 else padding8
+                start = paddingDefault,
+                top = paddingDefault,
+                bottom = paddingDefault,
+                end = if (action == null) paddingDefault else padding8
             )
             ,
         verticalAlignment = Alignment.CenterVertically,

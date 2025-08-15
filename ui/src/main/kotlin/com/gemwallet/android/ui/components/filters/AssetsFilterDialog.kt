@@ -10,9 +10,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.SearchBar
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.list_item.SwitchRow
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.Chain
 
 @Composable
@@ -31,7 +31,7 @@ fun AssetsFilter(
         onDismissRequest = onDismissRequest,
         onClearFilters = onClearFilters,
     ) {
-        SearchBar(query, Modifier.Companion.padding(horizontal = padding16))
+        SearchBar(query, Modifier.Companion.padding(horizontal = paddingDefault))
         HasBalances(isActive = balanceFilter, onBalanceFilter)
         LazyColumn(modifier = Modifier.Companion.fillMaxSize()) {
             selectFilterChain(availableChains, chainFilter, query.text.toString(), onChainFilter)

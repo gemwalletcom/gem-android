@@ -7,13 +7,13 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.gemwallet.android.ui.components.designsystem.padding16
+import com.gemwallet.android.ui.theme.paddingDefault
 
 @Composable
 fun LoadingScene(title: String, onCancel: () -> Unit) {
     Scene(
         title = title,
-        padding = PaddingValues(padding16),
+        padding = PaddingValues(paddingDefault),
         onClose = onCancel
     ) {
         Box(modifier = Modifier.fillMaxSize()) {

@@ -1,7 +1,6 @@
 package com.gemwallet.android.features.import_wallet.views
 
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -20,10 +19,10 @@ import com.gemwallet.android.model.ImportType
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.SearchBar
-import com.gemwallet.android.ui.components.designsystem.Spacer16
-import com.gemwallet.android.ui.components.designsystem.padding16
 import com.gemwallet.android.ui.components.list_item.ChainItem
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.defaultPadding
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
 
@@ -57,7 +56,7 @@ private fun SelectImportTypeScene(
     ) {
         LazyColumn(modifier = Modifier) {
             item {
-                SearchBar(query = chainFilter, modifier = Modifier.padding(padding16))
+                SearchBar(query = chainFilter, modifier = Modifier.defaultPadding())
             }
             item {
                 Container {

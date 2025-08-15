@@ -22,9 +22,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.designsystem.Spacer8
-import com.gemwallet.android.ui.components.designsystem.padding8
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
+import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.theme.normalPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,7 +43,7 @@ fun FilterDialog(
             Row (
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(padding8),
+                    .normalPadding(),
             ) {
                 Box(modifier = Modifier.weight(0.3f)) {
                     onClearFilters?.let {
