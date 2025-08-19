@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.receive.viewmodels
+package com.gemwallet.features.receive.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -8,7 +8,6 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
-import com.gemwallet.android.features.receive.navigation.assetIdArg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -28,7 +27,7 @@ class ReceiveViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val asset = savedStateHandle.getStateFlow(assetIdArg, "")
+    val asset = savedStateHandle.getStateFlow("assetId", "")
         .map { it.toAssetId() }
         .filterNotNull()
         .flatMapLatest { assetsRepository.getTokenInfo(it) }

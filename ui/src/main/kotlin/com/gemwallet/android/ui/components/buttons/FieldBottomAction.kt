@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components
+package com.gemwallet.android.ui.components.buttons
 
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

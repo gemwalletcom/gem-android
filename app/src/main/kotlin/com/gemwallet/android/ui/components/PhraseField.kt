@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.buttons.FieldBottomAction
 import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme

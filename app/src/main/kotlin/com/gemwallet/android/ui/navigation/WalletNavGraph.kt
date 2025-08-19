@@ -38,8 +38,8 @@ import com.gemwallet.android.features.import_wallet.navigation.importWalletScree
 import com.gemwallet.android.features.import_wallet.navigation.navigateToImportWalletScreen
 import com.gemwallet.android.features.main.views.MainScreen
 import com.gemwallet.android.features.onboarding.OnboardingDest
-import com.gemwallet.android.features.receive.navigation.navigateToReceiveScreen
-import com.gemwallet.android.features.receive.navigation.receiveScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToReceiveScreen
+import com.gemwallet.android.ui.navigation.routes.receiveScreen
 import com.gemwallet.android.features.settings.navigation.navigateToAboutUsScreen
 import com.gemwallet.android.features.settings.navigation.navigateToCurrenciesScreen
 import com.gemwallet.android.features.settings.navigation.navigateToDevelopScreen

@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.receive.views
+package com.gemwallet.features.receive.presents
 
 import android.content.Intent
 import androidx.compose.foundation.Image
@@ -34,20 +34,18 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.features.receive.viewmodels.ReceiveViewModel
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.FieldBottomAction
+import com.gemwallet.android.ui.components.buttons.FieldBottomAction
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.rememberQRCodePainter
 import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.WalletTheme
+import com.gemwallet.features.receive.presents.components.rememberQRCodePainter
+import com.gemwallet.features.receive.viewmodels.ReceiveViewModel
 
 @Composable
 fun ReceiveScreen(onCancel: () -> Unit) {
@@ -177,14 +175,3 @@ private fun ReceiveScene(
     }
 }
 
-@Preview
-@Composable
-fun PreviewReceiveScreen() {
-    WalletTheme {
-        ReceiveScene(
-            null,
-            onCancel = {},
-            onCopy = {},
-        )
-    }
-}

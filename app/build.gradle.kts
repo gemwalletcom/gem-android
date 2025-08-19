@@ -209,6 +209,8 @@ dependencies {
     implementation(project(":features:transfer_amount:viewmodels"))
     implementation(project(":features:swap:presents"))
     implementation(project(":features:swap:viewmodels"))
+    implementation(project(":features:receive:presents"))
+    implementation(project(":features:receive:viewmodels"))
     implementation(project(":features:recipient:presents"))
     implementation(project(":features:nft:presents"))
     implementation(project(":features:update_app:presents"))

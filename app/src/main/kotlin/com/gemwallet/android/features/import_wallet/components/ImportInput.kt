@@ -54,7 +54,7 @@ import com.gemwallet.android.blockchain.operators.walletcore.WCValidatePhraseOpe
 import com.gemwallet.android.model.ImportType
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AddressChainViewModel
-import com.gemwallet.android.ui.components.FieldBottomAction
+import com.gemwallet.android.ui.components.buttons.FieldBottomAction
 import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.theme.Spacer16

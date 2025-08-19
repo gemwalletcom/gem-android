@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui
+package com.gemwallet.features.receive.presents.components
 
 import android.content.Context
 import android.graphics.Bitmap
