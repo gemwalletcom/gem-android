@@ -27,6 +27,14 @@ fun DevelopScene(
     ) {
         LazyColumn {
             item {
+                PropertyItem(
+                    "Reset transactions",
+                    data = ""
+                ) {
+                    viewModel.resetTransactions()
+                }
+            }
+            item {
                 PropertyItem("Device Id", data = viewModel.getDeviceId()) {
                     clipboardManager.setPlainText(context, viewModel.getDeviceId())
                 }
