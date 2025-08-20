@@ -55,7 +55,7 @@ import com.gemwallet.android.features.settings.navigation.navigateToSecurityScre
 import com.gemwallet.android.features.settings.navigation.navigateToSettingsScreen
 import com.gemwallet.android.features.settings.navigation.settingsRoute
 import com.gemwallet.android.features.settings.settings.views.SettingsScene
-import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToWalletsScreen
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.navigation.routes.activitiesRoute
 import com.gemwallet.android.ui.navigation.routes.navigateToActivitiesScreen

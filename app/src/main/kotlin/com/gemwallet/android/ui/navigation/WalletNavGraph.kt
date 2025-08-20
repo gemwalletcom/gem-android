@@ -48,8 +48,8 @@ import com.gemwallet.android.features.settings.navigation.navigateToPriceAlertsS
 import com.gemwallet.android.features.settings.navigation.navigateToSecurityScreen
 import com.gemwallet.android.features.settings.navigation.settingsRoute
 import com.gemwallet.android.features.settings.navigation.settingsScreen
-import com.gemwallet.android.features.wallets.navigation.navigateToWalletsScreen
-import com.gemwallet.android.features.wallets.navigation.walletsScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToWalletsScreen
+import com.gemwallet.android.ui.navigation.routes.walletsScreen
 import com.gemwallet.android.ui.components.animation.enterTransition
 import com.gemwallet.android.ui.components.animation.exitTransition
 import com.gemwallet.android.ui.components.animation.popEnterTransition

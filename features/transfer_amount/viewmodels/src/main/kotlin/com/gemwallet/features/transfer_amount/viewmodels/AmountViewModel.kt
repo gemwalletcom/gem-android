@@ -9,7 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
-import com.gemwallet.android.math.numberParse
+import com.gemwallet.android.math.parseNumber
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
@@ -276,13 +276,13 @@ class AmountViewModel @Inject constructor(
             when (inputDirection) {
                 AmountInputType.Crypto -> {
                     validateAmount(asset, inputAmount, BigInteger.ZERO)
-                    val amount = inputAmount.numberParse()
+                    val amount = inputAmount.parseNumber()
                     val decimals = asset.decimals
                     val unit = Crypto(amount, decimals).convert(decimals, price)
                     currency.format(unit.atomicValue)
                 }
                 AmountInputType.Fiat -> {
-                    val value = inputAmount.numberParse()
+                    val value = inputAmount.parseNumber()
                     val crypto = value.divide(price.toBigDecimal(), MathContext.DECIMAL128)
                     validateAmount(asset, crypto.toString(), BigInteger.ZERO)
                     asset.format(crypto, dynamicPlace = true)
@@ -305,11 +305,11 @@ class AmountViewModel @Inject constructor(
             throw AmountError.Required
         }
         try {
-            amount.numberParse()
+            amount.parseNumber()
         } catch (_: Throwable) {
             throw AmountError.IncorrectAmount
         }
-        val crypto = Crypto(amount.numberParse(), asset.decimals)
+        val crypto = Crypto(amount.parseNumber(), asset.decimals)
         if (BigInteger.ZERO != minValue && crypto.atomicValue < minValue) {
             throw AmountError.MinimumValue(asset.format(Crypto(minValue), decimalPlace = 2))
         }

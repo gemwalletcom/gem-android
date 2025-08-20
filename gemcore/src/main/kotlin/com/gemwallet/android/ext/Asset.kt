@@ -7,8 +7,6 @@ import com.wallet.core.primitives.StakeChain
 
 fun Asset.chain(): Chain = id.chain
 
-fun Asset.networkAsset(): Asset = id.chain.asset()
-
 fun Asset.isStackable(): Boolean {
     return id.type() == AssetSubtype.NATIVE && StakeChain.isStaked(id.chain) && id.chain != Chain.Tron
 }

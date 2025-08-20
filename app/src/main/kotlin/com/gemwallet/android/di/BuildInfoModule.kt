@@ -38,6 +38,6 @@ object BuildInfoModule {
     @Provides
     @Singleton
     fun provideShowSystemNotification(@ApplicationContext context: Context): ShowSystemNotification {
-        return com.gemwallet.android.features.pushes.ShowSystemNotification(context)
+        return com.gemwallet.android.features.notifications.ShowSystemNotification(context)
     }
 }

@@ -5,7 +5,7 @@ import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.blockchain.clients.cardano.services.CardanoTransactionService
 import com.gemwallet.android.blockchain.clients.cardano.services.transaction
-import com.gemwallet.android.model.TransactionChages
+import com.gemwallet.android.model.TransactionChanges
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
 
@@ -14,9 +14,9 @@ class CardanoTransactionStatusClient(
     private val transactionsService: CardanoTransactionService,
 ) : TransactionStatusClient {
 
-    override suspend fun getStatus(request: TransactionStateRequest): TransactionChages {
+    override suspend fun getStatus(request: TransactionStateRequest): TransactionChanges {
         val transaction = transactionsService.transaction(request.hash) ?: throw ServiceUnavailable
-        return TransactionChages(
+        return TransactionChanges(
             state = TransactionState.Confirmed,
             fee = transaction.fee.toBigInteger(),
         )

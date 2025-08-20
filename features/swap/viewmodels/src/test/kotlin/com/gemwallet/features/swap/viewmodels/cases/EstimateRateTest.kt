@@ -20,7 +20,7 @@ class EstimateRateTest {
         val payValue = "1000000000000000000"
         val receiveValue = "2000000000"
         
-        val result = estimateRate(ethAsset, usdcAsset, payValue, receiveValue)
+        val result = estimateSwapRate(ethAsset, usdcAsset, payValue, receiveValue)
         
         val expected = SwapRate(
             forward = "1 ETH ≈ 2,000.00 USDC",
@@ -38,7 +38,7 @@ class EstimateRateTest {
         val payValue = "1000000"
         val receiveValue = "1000000000000000000"
         
-        val result = estimateRate(usdcAsset, ethAsset, payValue, receiveValue)
+        val result = estimateSwapRate(usdcAsset, ethAsset, payValue, receiveValue)
         
         val expected = SwapRate(
             forward = "1 USDC ≈ 1.00 ETH",
@@ -56,7 +56,7 @@ class EstimateRateTest {
         val payValue = "1000000000000000000"
         val receiveValue = "5000000000000000000"
         
-        val result = estimateRate(asset1, asset2, payValue, receiveValue)
+        val result = estimateSwapRate(asset1, asset2, payValue, receiveValue)
         
         val expected = SwapRate(
             forward = "1 ETH ≈ 5.00 BNB",
@@ -74,7 +74,7 @@ class EstimateRateTest {
         val payValue = "1000000"
         val receiveValue = "500000000"
         
-        val result = estimateRate(btcAsset, usdcAsset, payValue, receiveValue)
+        val result = estimateSwapRate(btcAsset, usdcAsset, payValue, receiveValue)
         
         val expected = SwapRate(
             forward = "1 BTC ≈ 50,000.00 USDC",
@@ -92,7 +92,7 @@ class EstimateRateTest {
         val payValue = "0"
         val receiveValue = "2000000000"
         
-        val result = estimateRate(ethAsset, usdcAsset, payValue, receiveValue)
+        val result = estimateSwapRate(ethAsset, usdcAsset, payValue, receiveValue)
         
         assertNull("Result should be null for zero payValue", result)
     }
@@ -105,7 +105,7 @@ class EstimateRateTest {
         val payValue = "1000000000000000000"
         val receiveValue = "0"
         
-        val result = estimateRate(ethAsset, usdcAsset, payValue, receiveValue)
+        val result = estimateSwapRate(ethAsset, usdcAsset, payValue, receiveValue)
         
         assertNull("Result should be null for zero receiveValue", result)
     }
@@ -118,7 +118,7 @@ class EstimateRateTest {
         val payValue = "invalid_number"
         val receiveValue = "2000000000"
         
-        val result = estimateRate(ethAsset, usdcAsset, payValue, receiveValue)
+        val result = estimateSwapRate(ethAsset, usdcAsset, payValue, receiveValue)
         
         assertNull("Result should be null for invalid input", result)
     }
@@ -131,7 +131,7 @@ class EstimateRateTest {
         val payValue = "-1000000000000000000"
         val receiveValue = "2000000000"
         
-        val result = estimateRate(ethAsset, usdcAsset, payValue, receiveValue)
+        val result = estimateSwapRate(ethAsset, usdcAsset, payValue, receiveValue)
         
         if (result != null) {
             assertTrue("Result should contain negative values", 
@@ -147,7 +147,7 @@ class EstimateRateTest {
         val payValue = "1000000000000000000"
         val receiveValue = "1500000000"
         
-        val result = estimateRate(ethAsset, usdcAsset, payValue, receiveValue)
+        val result = estimateSwapRate(ethAsset, usdcAsset, payValue, receiveValue)
         
         val expected = SwapRate(
             forward = "1 ETH ≈ 1,500.00 USDC",
@@ -165,7 +165,7 @@ class EstimateRateTest {
         val payValue = "1000000000000000000"
         val receiveValue = "500000000000000000"
         
-        val result = estimateRate(asset1, asset2, payValue, receiveValue)
+        val result = estimateSwapRate(asset1, asset2, payValue, receiveValue)
         
         val expected = SwapRate(
             forward = "1 TOKEN1 ≈ 0.50 TOKEN2",

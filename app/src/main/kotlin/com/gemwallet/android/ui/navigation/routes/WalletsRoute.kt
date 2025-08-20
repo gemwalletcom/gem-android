@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.wallets.navigation
+package com.gemwallet.android.ui.navigation.routes
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -6,11 +6,13 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.gemwallet.android.features.wallets.views.WalletsScreen
+import kotlinx.serialization.Serializable
 
-const val walletsRoute = "wallets"
+@Serializable
+object WalletsRoute
 
 fun NavController.navigateToWalletsScreen(navOptions: NavOptions? = null) {
-    navigate(walletsRoute, navOptions ?: navOptions { launchSingleTop = true })
+    navigate(WalletsRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavGraphBuilder.walletsScreen(
@@ -21,7 +23,7 @@ fun NavGraphBuilder.walletsScreen(
     onSelectWallet: () -> Unit,
     onBoard: () -> Unit,
 ) {
-    composable(walletsRoute) {
+    composable<WalletsRoute> {
         WalletsScreen(
             onCreateWallet = onCreateWallet,
             onImportWallet = onImportWallet,

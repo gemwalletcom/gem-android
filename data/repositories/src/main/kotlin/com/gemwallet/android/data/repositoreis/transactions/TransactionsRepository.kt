@@ -21,7 +21,7 @@ import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.Transaction
-import com.gemwallet.android.model.TransactionChages
+import com.gemwallet.android.model.TransactionChanges
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.Account
@@ -215,7 +215,7 @@ class TransactionsRepository(
         } catch (_: ServiceUnavailable) {
             return tx.copy(updatedAt = System.currentTimeMillis())
         } catch (_: Throwable) {
-            TransactionChages(tx.state)
+            TransactionChanges(tx.state)
         }
         return if (state.state != tx.state) {
             val newTx = tx.copy(

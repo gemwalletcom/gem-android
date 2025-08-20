@@ -22,9 +22,9 @@ fun SwapScreen(
 ) {
     val pay by viewModel.payAsset.collectAsStateWithLifecycle()
     val receive by viewModel.receiveAsset.collectAsStateWithLifecycle()
-    val fromEquivalent by viewModel.fromEquivalentFormatted.collectAsStateWithLifecycle()
+    val fromEquivalent by viewModel.payEquivalentFormatted.collectAsStateWithLifecycle()
     val toEquivalent by viewModel.toEquivalentFormatted.collectAsStateWithLifecycle()
-    val swapState by viewModel.swapScreenState.collectAsStateWithLifecycle()
+    val swapState by viewModel.uiSwapScreenState.collectAsStateWithLifecycle()
     val currentProvider by viewModel.currentProvider.collectAsStateWithLifecycle()
     val providers by viewModel.providers.collectAsStateWithLifecycle()
     val priceImpact by viewModel.priceImpact.collectAsStateWithLifecycle()

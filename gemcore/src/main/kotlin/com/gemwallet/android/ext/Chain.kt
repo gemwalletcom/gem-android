@@ -5,6 +5,7 @@ import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BitcoinChain
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
+import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.EncodingType
 import com.wallet.core.primitives.FeeUnitType
 import uniffi.gemstone.Config
@@ -65,6 +66,18 @@ fun Chain.assetType(): AssetType? {
         Chain.Cardano,
         Chain.Near -> null
     }
+}
+
+fun Chain.toBitcoinChain() = when (this) {
+    Chain.Bitcoin -> BitcoinChain.Bitcoin
+    Chain.Doge -> BitcoinChain.Doge
+    Chain.Litecoin -> BitcoinChain.Litecoin
+    Chain.BitcoinCash -> BitcoinChain.BitcoinCash
+    else -> throw IllegalArgumentException("Not bitcoin chain")
+}
+
+fun Chain.toEVM(): EVMChain? {
+    return EVMChain.entries.firstOrNull { it.string == string }
 }
 
 fun Chain.getReserveBalance(): BigInteger = Config().getChainConfig(this.string).accountActivationFee?.toBigInteger() ?: BigInteger.ZERO

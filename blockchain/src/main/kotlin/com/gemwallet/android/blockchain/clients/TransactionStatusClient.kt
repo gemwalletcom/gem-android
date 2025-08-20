@@ -1,11 +1,11 @@
 package com.gemwallet.android.blockchain.clients
 
-import com.gemwallet.android.model.TransactionChages
+import com.gemwallet.android.model.TransactionChanges
 import com.wallet.core.primitives.Chain
 
 interface TransactionStatusClient : BlockchainClient {
 
-    suspend fun getStatus(request: TransactionStateRequest): TransactionChages
+    suspend fun getStatus(request: TransactionStateRequest): TransactionChanges
 }
 
 class TransactionStateRequest(

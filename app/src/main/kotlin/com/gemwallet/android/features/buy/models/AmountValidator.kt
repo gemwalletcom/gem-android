@@ -1,6 +1,6 @@
 package com.gemwallet.android.features.buy.models
 
-import com.gemwallet.android.math.numberParse
+import com.gemwallet.android.math.parseNumber
 
 internal class AmountValidator(private val minValue: Double) {
     var error: BuyError? = null
@@ -9,7 +9,7 @@ internal class AmountValidator(private val minValue: Double) {
     fun validate(input: String): Boolean {
         error = null
         val value = try {
-            input.ifEmpty { "0.0" }.numberParse().toDouble()
+            input.ifEmpty { "0.0" }.parseNumber().toDouble()
         } catch (_: Throwable) {
             error = BuyError.ValueIncorrect
             return false

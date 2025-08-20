@@ -5,8 +5,8 @@ import java.math.BigInteger
 
 data class AssetBalance(
     val asset: Asset,
-    val balance: Balance<String> = Balance<String>("0", "0", "0", "0", "0", "0", "0"),
-    val balanceAmount: Balance<Double> = Balance<Double>(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+    val balance: Balance<String> = Balance("0", "0", "0", "0", "0", "0", "0"),
+    val balanceAmount: Balance<Double> = Balance(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
     val totalAmount: Double = 0.0,
     val fiatTotalAmount: Double = 0.0,
     val isActive: Boolean = true,

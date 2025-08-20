@@ -4,7 +4,7 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.features.swap.viewmodels.cases.calculateFiat
-import com.gemwallet.features.swap.viewmodels.cases.estimateRate
+import com.gemwallet.features.swap.viewmodels.cases.estimateSwapRate
 import uniffi.gemstone.SwapperQuote
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -29,7 +29,7 @@ internal fun QuoteState.validate(): SwapState {
 }
 
 internal val QuoteState.rates: SwapRate?
-    get() = estimateRate(pay.asset, receive.asset, quote.fromValue, quote.toValue)
+    get() = estimateSwapRate(pay.asset, receive.asset, quote.fromValue, quote.toValue)
 
 internal val QuoteState.estimateTime: String?
     get() = quote.etaInSeconds?.let { it.toDouble() / 60.0 }?.takeIf { it > 0 }?.let {

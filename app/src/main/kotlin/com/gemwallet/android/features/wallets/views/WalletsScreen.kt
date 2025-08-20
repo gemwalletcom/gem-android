@@ -49,7 +49,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.features.wallet.presents.ConfirmWalletDeleteDialog
-import com.gemwallet.android.features.wallets.components.WalletItem
+import com.gemwallet.android.ui.components.list_item.WalletItem
 import com.gemwallet.android.features.wallets.viewmodels.WalletItemUIState
 import com.gemwallet.android.features.wallets.viewmodels.WalletsViewModel
 import com.gemwallet.android.ui.R

@@ -14,7 +14,7 @@ import com.gemwallet.android.features.buy.models.BuyError
 import com.gemwallet.android.features.buy.models.FiatSceneState
 import com.gemwallet.android.features.buy.models.FiatSuggestion
 import com.gemwallet.android.features.buy.models.toProviderUIModel
-import com.gemwallet.android.math.numberParse
+import com.gemwallet.android.math.parseNumber
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.FiatProvider
@@ -125,7 +125,7 @@ class FiatViewModel @Inject constructor(
                 asset.asset,
                 type = type,
                 currency.string,
-                amount.numberParse().toDouble(),
+                amount.parseNumber().toDouble(),
                 asset.assetInfo.owner?.address ?: ""
             )
             _state.value = null

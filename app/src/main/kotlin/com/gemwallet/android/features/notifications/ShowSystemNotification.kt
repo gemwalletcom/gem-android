@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.pushes
+package com.gemwallet.android.features.notifications
 
 import android.Manifest
 import android.app.NotificationChannel

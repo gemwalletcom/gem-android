@@ -4,7 +4,7 @@ import com.gemwallet.android.blockchain.clients.ServiceUnavailable
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.TransactionStatusClient
 import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotTransactionService
-import com.gemwallet.android.model.TransactionChages
+import com.gemwallet.android.model.TransactionChanges
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
 import java.math.BigInteger
@@ -13,7 +13,7 @@ class PolkadotTransactionStatusClient(
     private val chain: Chain,
     private val transactionService: PolkadotTransactionService,
 ) : TransactionStatusClient {
-    override suspend fun getStatus(request: TransactionStateRequest): TransactionChages {
+    override suspend fun getStatus(request: TransactionStateRequest): TransactionChanges {
         val blockNumber = try {
             request.block.toBigInteger()
         } catch (_: Throwable) {
@@ -30,11 +30,11 @@ class PolkadotTransactionStatusClient(
             for (extr in block.extrinsics) {
                 if (extr.hash == request.hash) {
                     val state = if (extr.success) TransactionState.Confirmed else TransactionState.Failed
-                    return TransactionChages(state)
+                    return TransactionChanges(state)
                 }
             }
         }
-        return TransactionChages(TransactionState.Pending)
+        return TransactionChanges(TransactionState.Pending)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

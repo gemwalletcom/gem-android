@@ -12,20 +12,20 @@ import com.gemwallet.features.swap.viewmodels.models.SwapError.NotSupportedPair
 import com.gemwallet.features.swap.viewmodels.models.SwapError.TransactionError
 import uniffi.gemstone.SwapperException
 
-sealed interface SwapError {
-    object None : SwapError
-    object NoQuote : SwapError
-    object IncorrectInput : SwapError
-    object NotSupportedChain : SwapError
-    object NotSupportedPair : SwapError
-    object NotSupportedAsset : SwapError
-    object NotImplemented : SwapError
-    object NetworkError : SwapError
-    object InputAmountTooSmall : SwapError
-    object NoAvailableProvider : SwapError
-    object TransactionError : SwapError
-    data class InsufficientBalance(val symbol: String) : SwapError
-    data class Unknown(val message: String) : SwapError
+sealed class SwapError : Throwable() {
+    object None : SwapError()
+    object NoQuote : SwapError()
+    object IncorrectInput : SwapError()
+    object NotSupportedChain : SwapError()
+    object NotSupportedPair : SwapError()
+    object NotSupportedAsset : SwapError()
+    object NotImplemented : SwapError()
+    object NetworkError : SwapError()
+    object InputAmountTooSmall : SwapError()
+    object NoAvailableProvider : SwapError()
+    object TransactionError : SwapError()
+    data class InsufficientBalance(val symbol: String) : SwapError()
+    data class Unknown(val data: String) : SwapError()
 
     companion object
 }
@@ -41,7 +41,7 @@ fun SwapError.Companion.toError(err: Throwable) = when (err) {
     is SwapperException.AbiException -> NetworkError
     is SwapperException.InvalidAddress,
     is SwapperException.InvalidRoute,
-    is SwapperException.InvalidAmount  -> IncorrectInput
+    is SwapperException.InvalidAmount -> IncorrectInput
     is SwapperException.InputAmountTooSmall -> InputAmountTooSmall
     is SwapperException.NoAvailableProvider -> NoAvailableProvider
     is SwapperException.TransactionException -> TransactionError

@@ -1,43 +1,44 @@
 package com.gemwallet.features.swap.viewmodels.cases
 
-import com.gemwallet.android.cases.swap.GetSwapQuotes
-import com.gemwallet.android.math.numberParse
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
-import com.gemwallet.features.swap.viewmodels.models.QuoteRequestParams
+import com.gemwallet.features.swap.viewmodels.models.PriceImpact
+import com.gemwallet.features.swap.viewmodels.models.PriceImpactType
+import com.gemwallet.features.swap.viewmodels.models.QuoteState
 import com.gemwallet.features.swap.viewmodels.models.QuotesState
 import com.gemwallet.features.swap.viewmodels.models.SwapProviderItem
 import com.gemwallet.features.swap.viewmodels.models.SwapRate
+import com.gemwallet.features.swap.viewmodels.models.payEquivalent
+import com.gemwallet.features.swap.viewmodels.models.receiveEquivalent
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flow
+import uniffi.gemstone.Config
 import uniffi.gemstone.SwapperQuote
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
+import kotlin.math.absoluteValue
 
-internal fun refreshMachine(value: String): Flow<Long> {
-    try {
-        if (value.numberParse() == BigDecimal.ZERO) {
-            throw IllegalArgumentException()
-        }
-    } catch (_: Throwable) {
-        return emptyFlow()
-    }
-    return flow {
-        while (true) {
-            delay(30 * 1000)
-            emit(System.currentTimeMillis())
+internal fun tickerFlow(value: BigDecimal): Flow<Long> {
+    return if (value == BigDecimal.ZERO) {
+        emptyFlow()
+    } else {
+        flow {
+            while (true) {
+                delay(30 * 1000)
+                emit(System.currentTimeMillis())
+            }
         }
     }
 }
 
-internal fun estimateRate(
+internal fun estimateSwapRate(
     pay: Asset,
     receive: Asset,
     payValue: String,
@@ -60,19 +61,6 @@ internal fun estimateRate(
     }
 }
 
-internal suspend fun QuoteRequestParams.requestQuotes(getSwapQuotes: GetSwapQuotes): QuotesState = try {
-    val quotes = getSwapQuotes.getQuotes(
-        from = pay.asset,
-        to = receive.asset,
-        ownerAddress = pay.owner!!.address,
-        destination = receive.owner!!.address,
-        amount = Crypto(value, pay.asset.decimals).atomicValue.toString(),
-    ) ?: emptyList()
-    QuotesState(quotes, pay, receive)
-} catch (err: Throwable) {
-    QuotesState(pay = pay, receive = receive, err = err)
-}
-
 internal fun QuotesState.getProviders(): List<SwapProviderItem> = receive.price?.let { price ->
     getProviders(
         items,
@@ -91,6 +79,37 @@ internal fun getProviders(items: List<SwapperQuote>, priceValue: Double, currenc
         price = asset.format(toValue, 2, dynamicPlace = true),
         fiat = fiatFormatted,
     )
+}
+
+internal fun calculatePriceImpact(quote: QuoteState): PriceImpact? = calculatePriceImpact(
+    quote.payEquivalent,
+    quote.receiveEquivalent,
+)
+
+internal fun calculatePriceImpact(pay: BigDecimal, receive: BigDecimal): PriceImpact? {
+    return calculatePriceImpactCore(pay, receive) { impact ->
+        val isHigh = impact.absoluteValue > Config().getSwapConfig().highPriceImpactPercent.toDouble()
+        isHigh
+    }
+}
+
+internal fun calculatePriceImpactCore(
+    pay: BigDecimal, 
+    receive: BigDecimal, 
+    isHighProvider: (Double) -> Boolean = { false }
+): PriceImpact? {
+    if (pay.compareTo(BigDecimal.ZERO) == 0) {
+        return null
+    }
+    val impact = (((receive.toDouble() / pay.toDouble()) - 1.0) * 100)
+    val isHigh = isHighProvider(impact)
+
+    return when {
+        impact < 0 -> PriceImpact(impact, PriceImpactType.Positive, isHigh)
+        impact < 1 -> null
+        impact < 5 -> PriceImpact(impact, PriceImpactType.Medium, isHigh)
+        else -> PriceImpact(impact, PriceImpactType.High, isHigh)
+    }
 }
 
 val AssetInfo.availableBalance: String
