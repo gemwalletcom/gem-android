@@ -22,7 +22,11 @@ class EvmTransactionStatusClient(
 
     private suspend fun getStatus(txId: String): TransactionChanges {
         val request = JSONRpcRequest.create(EvmMethod.GetTransaction, listOf(txId))
-        val resp = transactionsService.transaction(request).getOrNull()?.result ?: throw ServiceUnavailable
+        val resp = try {
+            transactionsService.transaction(request).result
+        } catch (_: Throwable) {
+            throw ServiceUnavailable
+        }
 
         if (resp.status != "0x0" && resp.status != "0x1") {
             return TransactionChanges(TransactionState.Pending)

@@ -8,5 +8,5 @@ import retrofit2.http.POST
 
 interface EvmTransactionsService {
     @POST("/")
-    suspend fun transaction(@Body request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept?>>
+    suspend fun transaction(@Body request: JSONRpcRequest<List<String>>): JSONRpcResponse<EthereumTransactionReciept>
 }
