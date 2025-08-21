@@ -23,8 +23,6 @@ import com.gemwallet.features.swap.viewmodels.cases.calculatePriceImpact
 import com.gemwallet.features.swap.viewmodels.cases.formatFiat
 import com.gemwallet.features.swap.viewmodels.cases.getProviders
 import com.gemwallet.features.swap.viewmodels.cases.tickerFlow
-import com.gemwallet.features.swap.viewmodels.models.PriceImpact
-import com.gemwallet.features.swap.viewmodels.models.PriceImpactType
 import com.gemwallet.features.swap.viewmodels.models.QuoteState
 import com.gemwallet.features.swap.viewmodels.models.SwapError
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
@@ -34,7 +32,6 @@ import com.gemwallet.features.swap.viewmodels.models.create
 import com.gemwallet.features.swap.viewmodels.models.estimateTime
 import com.gemwallet.features.swap.viewmodels.models.formattedToAmount
 import com.gemwallet.features.swap.viewmodels.models.getQuote
-import com.gemwallet.features.swap.viewmodels.models.payEquivalent
 import com.gemwallet.features.swap.viewmodels.models.rates
 import com.gemwallet.features.swap.viewmodels.models.receiveEquivalent
 import com.gemwallet.features.swap.viewmodels.models.validate
@@ -55,12 +52,10 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import uniffi.gemstone.Config
 import uniffi.gemstone.SwapperProvider
 import java.math.BigDecimal
 import java.math.BigInteger
 import javax.inject.Inject
-import kotlin.math.absoluteValue
 import kotlin.math.max
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -81,7 +76,7 @@ class SwapViewModel @Inject constructor(
     private val payValueFlow = snapshotFlow { payValue.text }
         .map { it.toString() }
         .map { it.parseNumberOrNull() ?: BigDecimal.ZERO }
-        .onEach { swapScreenState.update { SwapState.GetQuote } }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, BigDecimal.ZERO)
 
     val selectedProvider = MutableStateFlow<SwapperProvider?>(null)
 
@@ -91,6 +86,7 @@ class SwapViewModel @Inject constructor(
     private val refreshState = combine(refresh, ticker) { user, ticker ->
         max(user, ticker)
     }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, 0L)
 
     val payAsset = savedStateHandle.getStateFlow<String?>("from", null)
         .map { it?.toAssetId() }
