@@ -38,20 +38,16 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
 import java.math.BigInteger
-import kotlin.collections.mapNotNull
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TransactionsRepository(
@@ -68,26 +64,29 @@ class TransactionsRepository(
     ClearPendingTransactions
 {
 
-    private val assetsRoomSource = GetAssetByIdCase(assetsDao)
-    private val changedTransactions = MutableStateFlow<List<TransactionExtended>>(emptyList())
+    private val tenSeconds = 10 * DateUtils.SECOND_IN_MILLIS
 
-    // TODO: Rename to changedTransactions???
-    private val pendingTransactions = transactionsDao.getExtendedTransactions(TransactionState.Pending)
-//        .map { items -> items.filter { it.state == TransactionState.Pending } }
+    private val assetsRoomSource = GetAssetByIdCase(assetsDao)
+
+    val changedTransactions = transactionsDao.getExtendedTransactions(TransactionState.Pending)
         .flatMapLatest { items ->
             flow {
+                val delay = items.minOfOrNull { tx ->
+                    tx.assetId.toAssetId()?.chain?.string?.let {
+                        Config().getChainConfig(it).blockTime.toLong()
+                    } ?: tenSeconds
+                } ?: tenSeconds
+                var iteration = 0
                 while (items.isNotEmpty()) {
-                    val delay = items.minOf { tx ->
-                        tx.assetId.toAssetId()?.chain?.string?.let {
-                            Config().getChainConfig(it).blockTime.toLong()
-                        } ?: 0L
-                    }
+                    transactionCheckDelay(delay, iteration)
+
                     emit(items)
-                    delay(delay)
+
+                    iteration++
                 }
             }
         }
-        .onEach {
+        .map {
             observePending(it)
         }
         .shareIn(scope, SharingStarted.Eagerly)
@@ -104,19 +103,6 @@ class TransactionsRepository(
                 emit(markAsFailed(items))
             }
         }
-
-//    init {
-//        scope.launch {
-//            while (true) {
-//                observePending()
-//                delay(10 * DateUtils.SECOND_IN_MILLIS)
-//            }
-//        }
-//    }
-
-    override fun getChangedTransactions(): Flow<List<TransactionExtended>> {
-        return changedTransactions
-    }
 
     override fun getTransactionUpdateTime(walletId: String): Long {
         return transactionsDao.getUpdateTime(walletId)
@@ -155,6 +141,8 @@ class TransactionsRepository(
             }
             .flowOn(Dispatchers.Default)
     }
+
+    override fun getChangedTransactions(): Flow<List<TransactionExtended>> = changedTransactions
 
     override fun getTransaction(txId: String): Flow<TransactionExtended?> {
         return transactionsDao.getExtendedTransaction(txId)
@@ -207,11 +195,19 @@ class TransactionsRepository(
         transaction
     }
 
+    private suspend fun transactionCheckDelay(delay: Long, iteration: Int) {
+        val multiple = when (iteration) {
+            0 -> 1.2
+            1 -> 1.5
+            2 -> 2.0
+            3 -> 5.0
+            else -> 10.0
+        }
+        val delay = (delay * multiple).toLong().takeIf { it < tenSeconds } ?: tenSeconds
+        delay(delay)
+    }
+
     private suspend fun observePending(items: List<DbTransactionExtended>): List<TransactionExtended> = withContext(Dispatchers.IO) {
-        // TODO: Update stake state
-//        val pendingTxs = transactionsDao.getExtendedTransactions().firstOrNull()?.filter {
-//            it.state == TransactionState.Pending
-//        } ?: emptyList()
         val updatedTxs = items.map { tx ->
             async {
                 val newTx = checkTx(tx)
@@ -223,21 +219,15 @@ class TransactionsRepository(
         }
         .awaitAll()
         .filterNotNull()
-        if (updatedTxs.isNotEmpty()) {
-            changedTransactions.tryEmit(updatedTxs.toModel())
 
+        if (updatedTxs.isNotEmpty()) {
             updateTransaction(updatedTxs)
         }
-
-        (transactionsDao.getExtendedTransactions().firstOrNull() ?: emptyList())
-            .filter { it.state == TransactionState.Pending }
-            .toModel()
+        updatedTxs.toModel()
     }
 
     private suspend fun markAsFailed(items: List<DbTransactionExtended>): List<DbTransactionExtended> {
-        val failedByTimeout = /*(transactionsDao.getExtendedTransactions().firstOrNull() ?: emptyList())
-            .filter { it.state == TransactionState.Pending }*/
-            items
+        val failedByTimeout = items
                 .mapNotNull {
                     val assetId = it.assetId.toAssetId() ?: return@mapNotNull null
                     val timeout = Config().getChainConfig(assetId.chain.string).transactionTimeout.toLong() * 1000L
@@ -249,13 +239,7 @@ class TransactionsRepository(
                     }
                 }
         updateTransaction(failedByTimeout)
-        changedTransactions.tryEmit(failedByTimeout.toModel())
         return failedByTimeout
-    }
-
-    private suspend fun updateTransaction(txs: List<DbTransactionExtended>) = withContext(Dispatchers.IO) {
-        val data = txs.mapNotNull { it.toModel()?.transaction?.toRecord(it.walletId) }
-        transactionsDao.insert(data)
     }
 
     private suspend fun checkTx(tx: DbTransactionExtended): DbTransactionExtended? {
@@ -292,6 +276,11 @@ class TransactionsRepository(
         } else {
             null
         }
+    }
+
+    private suspend fun updateTransaction(txs: List<DbTransactionExtended>) = withContext(Dispatchers.IO) {
+        val data = txs.mapNotNull { it.toModel()?.transaction?.toRecord(it.walletId) }
+        transactionsDao.insert(data)
     }
 
     private fun addSwapMetadata(txs: List<Transaction>) {

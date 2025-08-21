@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.repositoreis.assets
 
+import android.util.Log
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
@@ -85,6 +86,7 @@ class AssetsRepository @Inject constructor(
         scope.launch(Dispatchers.IO) {
             getTransactions.getChangedTransactions().collect {
                 onTransactions(it)
+                Log.d("ASSETS", "React to txs: $it")
             }
         }
         scope.launch(Dispatchers.IO) {
@@ -410,7 +412,9 @@ class AssetsRepository @Inject constructor(
     private fun onTransactions(txs: List<TransactionExtended>) = scope.launch {
         txs.map { txEx ->
             async {
-                getAssetsInfo(txEx.transaction.getAssociatedAssetIds()).firstOrNull()?.updateBalances()
+                getAssetsInfo(txEx.transaction.getAssociatedAssetIds())
+                    .firstOrNull()
+                    ?.updateBalances()
             }
         }.awaitAll()
     }
@@ -480,7 +484,9 @@ class AssetsRepository @Inject constructor(
             }
             balances
         }
-        listOfNotNull(getNative.await()) + getTokens.await()
+        val native = getNative.await()
+        val tokens = getTokens.await()
+        listOfNotNull(native) + tokens
     }
 
     private suspend fun List<AssetInfo>.updateBalances(): List<Deferred<List<AssetBalance>>> = withContext(Dispatchers.IO) {
