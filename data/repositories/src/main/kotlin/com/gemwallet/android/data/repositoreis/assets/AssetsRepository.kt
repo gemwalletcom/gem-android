@@ -1,6 +1,5 @@
 package com.gemwallet.android.data.repositoreis.assets
 
-import android.util.Log
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
@@ -86,7 +85,6 @@ class AssetsRepository @Inject constructor(
         scope.launch(Dispatchers.IO) {
             getTransactions.getChangedTransactions().collect {
                 onTransactions(it)
-                Log.d("ASSETS", "React to txs: $it")
             }
         }
         scope.launch(Dispatchers.IO) {
