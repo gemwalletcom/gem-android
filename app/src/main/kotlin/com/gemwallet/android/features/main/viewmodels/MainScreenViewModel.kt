@@ -21,7 +21,7 @@ class MainScreenViewModel @Inject constructor(
 ) : ViewModel() {
     val pendingTxCount = sessionRepository.session()
         .filterNotNull()
-        .flatMapLatest { getTransactions.getPendingTransactions() }
+        .flatMapLatest { getTransactions.getPendingTransactionsCount() }
         .filterNotNull()
         .map { if (it == 0) null else it.toString() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)

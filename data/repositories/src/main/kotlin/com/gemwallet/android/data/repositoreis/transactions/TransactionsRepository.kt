@@ -12,7 +12,6 @@ import com.gemwallet.android.cases.transactions.GetTransactionUpdateTime
 import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.cases.transactions.PutTransactions
 import com.gemwallet.android.data.repositoreis.assets.GetAssetByIdCase
-import com.gemwallet.android.data.repositoreis.bridge.getChainNameSpace
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
 import com.gemwallet.android.data.service.store.database.entities.DbTransactionExtended
@@ -43,7 +42,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
@@ -79,7 +77,7 @@ class TransactionsRepository(
         return transactionsDao.getUpdateTime(walletId)
     }
 
-    override fun getPendingTransactions(): Flow<Int?> {
+    override fun getPendingTransactionsCount(): Flow<Int?> {
         return transactionsDao.getPendingCount()
     }
 
@@ -91,19 +89,17 @@ class TransactionsRepository(
             .map { items ->
                 items.filter {
                     val swapMetadata = it.transaction.getSwapMetadata()
-                    (assetId == null
-                        || it.asset.id == assetId
+                    assetId == null || it.asset.id == assetId
                         || swapMetadata?.toAsset == assetId
                         || swapMetadata?.fromAsset == assetId
-                    )
                 }.map {
                     val metadata = it.transaction.getSwapMetadata()
                     if (metadata != null) {
                         it.copy(
-                            assets = listOf(
+                            assets = listOfNotNull(
                                 assetsRoomSource.getById(metadata.fromAsset),
                                 assetsRoomSource.getById(metadata.toAsset),
-                            ).mapNotNull { asset -> asset }
+                            )
                         )
                     } else {
                         it
@@ -113,17 +109,26 @@ class TransactionsRepository(
             .flowOn(Dispatchers.Default)
     }
 
-    override fun getChangedTransactions(): Flow<List<TransactionExtended>> = changedTransactions
-
     override fun getTransaction(txId: String): Flow<TransactionExtended?> {
         return transactionsDao.getExtendedTransaction(txId)
             .mapNotNull { it?.toModel() }
             .flowOn(Dispatchers.IO)
     }
 
+    override fun getChangedTransactions(): Flow<List<TransactionExtended>> = changedTransactions
+
     override suspend fun putTransactions(walletId: String, transactions: List<Transaction>) = withContext(Dispatchers.IO) {
         transactionsDao.insert(transactions.toRecord(walletId))
         addSwapMetadata(transactions.filter { it.type == TransactionType.Swap })
+    }
+
+    private suspend fun updateTransaction(txs: List<DbTransactionExtended>) = withContext(Dispatchers.IO) {
+        val data = txs.mapNotNull { it.toModel()?.transaction?.toRecord(it.walletId) }
+        transactionsDao.insert(data)
+    }
+
+    override suspend fun clearPending() {
+        transactionsDao.removePendingTransactions()
     }
 
     override suspend fun createTransaction(
@@ -164,11 +169,6 @@ class TransactionsRepository(
         transactionsDao.insert(listOf(transaction.toRecord(walletId)))
         addSwapMetadata(listOf(transaction))
         transaction
-    }
-
-    private suspend fun updateTransaction(txs: List<DbTransactionExtended>) = withContext(Dispatchers.IO) {
-        val data = txs.mapNotNull { it.toModel()?.transaction?.toRecord(it.walletId) }
-        transactionsDao.insert(data)
     }
 
     private fun addSwapMetadata(txs: List<Transaction>) {
@@ -278,9 +278,5 @@ class TransactionsRepository(
         } else {
             null
         }
-    }
-
-    override suspend fun clearPending() {
-        transactionsDao.removePendingTransactions()
     }
 }
