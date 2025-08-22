@@ -3,8 +3,8 @@ package com.gemwallet.android.blockchain.clients.cosmos
 import com.gemwallet.android.blockchain.Mime
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosBroadcastService
 import com.gemwallet.android.math.decodeHex
-import com.wallet.core.blockchain.cosmos.models.CosmosBroadcastResponse
-import com.wallet.core.blockchain.cosmos.models.CosmosBroadcastResult
+import com.wallet.core.blockchain.cosmos.CosmosBroadcastResponse
+import com.wallet.core.blockchain.cosmos.CosmosBroadcastResult
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType
@@ -43,7 +43,13 @@ class TestCosmosBroadcast {
                     request.writeTo(buffer)
                     sendingData = String(buffer.inputStream().readAllBytes())
                     return Result.success(
-                        CosmosBroadcastResponse(CosmosBroadcastResult(txhash = "some hash", code = 0, raw_log = ""))
+                        CosmosBroadcastResponse(
+                            CosmosBroadcastResult(
+                                txhash = "some hash",
+                                code = 0,
+                                raw_log = ""
+                            )
+                        )
                     )
                 }
             }

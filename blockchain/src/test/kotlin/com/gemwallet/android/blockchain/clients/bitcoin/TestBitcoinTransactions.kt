@@ -2,7 +2,7 @@ package com.gemwallet.android.blockchain.clients.bitcoin
 
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinTransactionsService
-import com.wallet.core.blockchain.bitcoin.models.BitcoinTransaction
+import com.wallet.core.blockchain.bitcoin.BitcoinTransaction
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
 import junit.framework.TestCase.assertEquals

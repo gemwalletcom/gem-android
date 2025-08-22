@@ -1,20 +1,20 @@
 package com.gemwallet.android.blockchain.clients.cosmos
 
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosStakeService
-import com.wallet.core.blockchain.cosmos.models.CosmosBalance
-import com.wallet.core.blockchain.cosmos.models.CosmosDelegation
-import com.wallet.core.blockchain.cosmos.models.CosmosDelegationData
-import com.wallet.core.blockchain.cosmos.models.CosmosDelegations
-import com.wallet.core.blockchain.cosmos.models.CosmosReward
-import com.wallet.core.blockchain.cosmos.models.CosmosRewards
-import com.wallet.core.blockchain.cosmos.models.CosmosUnboudingDelegationEntry
-import com.wallet.core.blockchain.cosmos.models.CosmosUnboundingDelegation
-import com.wallet.core.blockchain.cosmos.models.CosmosUnboundingDelegations
-import com.wallet.core.blockchain.cosmos.models.CosmosValidator
-import com.wallet.core.blockchain.cosmos.models.CosmosValidatorCommission
-import com.wallet.core.blockchain.cosmos.models.CosmosValidatorCommissionRates
-import com.wallet.core.blockchain.cosmos.models.CosmosValidatorMoniker
-import com.wallet.core.blockchain.cosmos.models.CosmosValidators
+import com.wallet.core.blockchain.cosmos.CosmosBalance
+import com.wallet.core.blockchain.cosmos.CosmosDelegation
+import com.wallet.core.blockchain.cosmos.CosmosDelegationData
+import com.wallet.core.blockchain.cosmos.CosmosDelegations
+import com.wallet.core.blockchain.cosmos.CosmosReward
+import com.wallet.core.blockchain.cosmos.CosmosRewards
+import com.wallet.core.blockchain.cosmos.CosmosUnboudingDelegationEntry
+import com.wallet.core.blockchain.cosmos.CosmosUnboundingDelegation
+import com.wallet.core.blockchain.cosmos.CosmosUnboundingDelegations
+import com.wallet.core.blockchain.cosmos.CosmosValidator
+import com.wallet.core.blockchain.cosmos.CosmosValidatorCommission
+import com.wallet.core.blockchain.cosmos.CosmosValidatorCommissionRates
+import com.wallet.core.blockchain.cosmos.CosmosValidatorMoniker
+import com.wallet.core.blockchain.cosmos.CosmosValidators
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.DelegationState
@@ -148,7 +148,7 @@ class TestCosmosStake {
                         "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm",
                         entries = listOf(
                             CosmosUnboudingDelegationEntry(
-                                creation_height	= "25053096",
+                                creation_height = "25053096",
                                 completion_time = "2024-12-18T02:11:27.650773866Z",
                                 balance = "2000000",
                             )

@@ -3,7 +3,7 @@ package com.gemwallet.android.blockchain.clients.bitcoin
 import com.gemwallet.android.blockchain.Mime
 import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinBroadcastService
 import com.gemwallet.android.math.decodeHex
-import com.wallet.core.blockchain.bitcoin.models.BitcoinTransactionBroacastResult
+import com.wallet.core.blockchain.bitcoin.BitcoinTransactionBroacastResult
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType

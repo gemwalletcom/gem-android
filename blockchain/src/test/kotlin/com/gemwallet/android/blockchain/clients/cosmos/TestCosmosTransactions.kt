@@ -2,8 +2,8 @@ package com.gemwallet.android.blockchain.clients.cosmos
 
 import com.gemwallet.android.blockchain.clients.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosTransactionsService
-import com.wallet.core.blockchain.cosmos.models.CosmosTransactionDataResponse
-import com.wallet.core.blockchain.cosmos.models.CosmosTransactionResponse
+import com.wallet.core.blockchain.cosmos.CosmosTransactionDataResponse
+import com.wallet.core.blockchain.cosmos.CosmosTransactionResponse
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
 import junit.framework.TestCase.assertEquals
@@ -19,7 +19,14 @@ class TestCosmosTransactions {
         val transactionsService = object : CosmosTransactionsService {
             override suspend fun transaction(txId: String): Result<CosmosTransactionResponse> {
                 requestId = txId
-                return Result.success(CosmosTransactionResponse(CosmosTransactionDataResponse(txId, 0)))
+                return Result.success(
+                    CosmosTransactionResponse(
+                        CosmosTransactionDataResponse(
+                            txId,
+                            0
+                        )
+                    )
+                )
             }
 
         }
