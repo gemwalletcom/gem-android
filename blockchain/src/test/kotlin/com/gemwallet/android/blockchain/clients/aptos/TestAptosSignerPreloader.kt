@@ -3,13 +3,14 @@ package com.gemwallet.android.blockchain.clients.aptos
 import com.gemwallet.android.blockchain.clients.aptos.models.AptosAccount
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosAccountsService
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosFeeService
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
-import com.wallet.core.blockchain.aptos.models.AptosGasFee
-import com.wallet.core.blockchain.aptos.models.AptosTransaction
-import com.wallet.core.blockchain.aptos.models.AptosTransactionSimulation
+import com.wallet.core.blockchain.aptos.AptosGasFee
+import com.wallet.core.blockchain.aptos.AptosTransaction
+import com.wallet.core.blockchain.aptos.AptosTransactionSimulation
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -47,7 +48,7 @@ class TestAptosSignerPreloader {
         val result = runBlocking {
             preloader.preloadNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    assetId = AssetId(Chain.Aptos),
+                    asset = Chain.Aptos.asset(),
                     from = Account(Chain.Aptos, "0x80c3cca35602e4568a7ac88d4d91110f8efa6c45c659439c2b4ed04033059c6f", ""),
                     amount = BigInteger.valueOf(10_000_000_000),
                     destination = DestinationAddress("0xd7257c62806cea85fc8eaf947377b672fe062b81e6c0b19b6d8a3f408e59cf8c"),
@@ -94,7 +95,7 @@ class TestAptosSignerPreloader {
         val result = runBlocking {
             preloader.preloadNativeTransfer(
                 params = ConfirmParams.TransferParams.Native(
-                    assetId = AssetId(Chain.Aptos),
+                    asset = Chain.Aptos.asset(),
                     from = Account(Chain.Aptos, "0x80c3cca35602e4568a7ac88d4d91110f8efa6c45c659439c2b4ed04033059c6f", ""),
                     amount = BigInteger.valueOf(10_000_000_000),
                     destination = DestinationAddress("0xd7257c62806cea85fc8eaf947377b672fe062b81e6c0b19b6d8a3f408e59cf8c"),
@@ -134,7 +135,7 @@ class TestAptosSignerPreloader {
             runBlocking {
                 preloader.preloadNativeTransfer(
                     params = ConfirmParams.TransferParams.Native(
-                        assetId = AssetId(Chain.Aptos),
+                        asset = Chain.Aptos.asset(),
                         from = Account(Chain.Aptos, "0x80c3cca35602e4568a7ac88d4d91110f8efa6c45c659439c2b4ed04033059c6f", ""),
                         amount = BigInteger.valueOf(10_000_000_000),
                         destination = DestinationAddress("0xd7257c62806cea85fc8eaf947377b672fe062b81e6c0b19b6d8a3f408e59cf8c"),

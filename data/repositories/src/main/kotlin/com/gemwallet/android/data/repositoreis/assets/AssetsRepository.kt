@@ -410,7 +410,9 @@ class AssetsRepository @Inject constructor(
     private fun onTransactions(txs: List<TransactionExtended>) = scope.launch {
         txs.map { txEx ->
             async {
-                getAssetsInfo(txEx.transaction.getAssociatedAssetIds()).firstOrNull()?.updateBalances()
+                getAssetsInfo(txEx.transaction.getAssociatedAssetIds())
+                    .firstOrNull()
+                    ?.updateBalances()
             }
         }.awaitAll()
     }
@@ -480,7 +482,9 @@ class AssetsRepository @Inject constructor(
             }
             balances
         }
-        listOfNotNull(getNative.await()) + getTokens.await()
+        val native = getNative.await()
+        val tokens = getTokens.await()
+        listOfNotNull(native) + tokens
     }
 
     private suspend fun List<AssetInfo>.updateBalances(): List<Deferred<List<AssetBalance>>> = withContext(Dispatchers.IO) {

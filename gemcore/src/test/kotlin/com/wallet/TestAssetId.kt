@@ -49,7 +49,7 @@ class TestAssetId {
         } catch (err: Throwable) {
             assertTrue(err is IOException)
         }
-        assertEquals("ethereum", jsonEncoder.encodeToString(AssetId(Chain.Ethereum)))
-        assertEquals("ethereum_SomeTOken", jsonEncoder.encodeToString(AssetId(Chain.Ethereum, "SomeTOken")))
+        assertEquals("\"ethereum\"", jsonEncoder.encodeToString(AssetId(Chain.Ethereum)))
+        assertEquals("\"ethereum_SomeTOken\"", jsonEncoder.encodeToString(AssetId(Chain.Ethereum, "SomeTOken")))
     }
 }

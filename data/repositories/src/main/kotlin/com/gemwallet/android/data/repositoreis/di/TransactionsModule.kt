@@ -16,6 +16,7 @@ import com.gemwallet.android.blockchain.clients.ton.TonTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.tron.TronTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpTransactionStatusClient
 import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.cases.transactions.ClearPendingTransactions
 import com.gemwallet.android.cases.transactions.CreateTransaction
 import com.gemwallet.android.cases.transactions.GetTransaction
 import com.gemwallet.android.cases.transactions.GetTransactionUpdateTime
@@ -96,10 +97,15 @@ object TransactionsModule {
         return transactionsRepository
     }
 
-
     @Singleton
     @Provides
     fun provideUpdateTime(transactionsRepository: TransactionsRepository): GetTransactionUpdateTime {
+        return transactionsRepository
+    }
+
+    @Singleton
+    @Provides
+    fun provideClearPending(transactionsRepository: TransactionsRepository): ClearPendingTransactions {
         return transactionsRepository
     }
     

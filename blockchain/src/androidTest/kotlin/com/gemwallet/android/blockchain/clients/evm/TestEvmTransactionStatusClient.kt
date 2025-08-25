@@ -28,15 +28,13 @@ class TestEvmTransactionStatusClient {
         val  client = EvmTransactionStatusClient(
             chain = Chain.SmartChain,
             transactionsService = object : EvmTransactionsService {
-                override suspend fun transaction(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept?>> {
-                    return Result.success(
-                        JSONRpcResponse(
-                            EthereumTransactionReciept(
-                                status = "0x1",
-                                gasUsed = "10",
-                                effectiveGasPrice = "2",
-                                l1Fee = "1"
-                            )
+                override suspend fun transaction(request: JSONRpcRequest<List<String>>): JSONRpcResponse<EthereumTransactionReciept> {
+                    return JSONRpcResponse(
+                        EthereumTransactionReciept(
+                            status = "0x1",
+                            gasUsed = "10",
+                            effectiveGasPrice = "2",
+                            l1Fee = "1"
                         )
                     )
                 }
@@ -63,19 +61,16 @@ class TestEvmTransactionStatusClient {
         val  client = EvmTransactionStatusClient(
             chain = Chain.SmartChain,
             transactionsService = object : EvmTransactionsService {
-                override suspend fun transaction(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept?>> {
-                    return Result.success(
-                        JSONRpcResponse(
-                            EthereumTransactionReciept(
-                                status = "0x0",
-                                gasUsed = "10",
-                                effectiveGasPrice = "2",
-                                l1Fee = "1"
-                            )
+                override suspend fun transaction(request: JSONRpcRequest<List<String>>): JSONRpcResponse<EthereumTransactionReciept> {
+                    return JSONRpcResponse(
+                        EthereumTransactionReciept(
+                            status = "0x0",
+                            gasUsed = "10",
+                            effectiveGasPrice = "2",
+                            l1Fee = "1"
                         )
                     )
                 }
-
             }
         )
         val resullt = runBlocking {
@@ -99,15 +94,13 @@ class TestEvmTransactionStatusClient {
         val  client = EvmTransactionStatusClient(
             chain = Chain.SmartChain,
             transactionsService = object : EvmTransactionsService {
-                override suspend fun transaction(request: JSONRpcRequest<List<String>>): Result<JSONRpcResponse<EthereumTransactionReciept?>> {
-                    return Result.success(
-                        JSONRpcResponse(
-                            EthereumTransactionReciept(
-                                status = "0x2",
-                                gasUsed = "10",
-                                effectiveGasPrice = "2",
-                                l1Fee = "1"
-                            )
+                override suspend fun transaction(request: JSONRpcRequest<List<String>>): JSONRpcResponse<EthereumTransactionReciept> {
+                    return JSONRpcResponse(
+                        EthereumTransactionReciept(
+                            status = "0x2",
+                            gasUsed = "10",
+                            effectiveGasPrice = "2",
+                            l1Fee = "1"
                         )
                     )
                 }

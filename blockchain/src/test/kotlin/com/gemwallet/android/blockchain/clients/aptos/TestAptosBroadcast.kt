@@ -3,7 +3,7 @@ package com.gemwallet.android.blockchain.clients.aptos
 import com.gemwallet.android.blockchain.Mime
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosBroadcastService
 import com.gemwallet.android.math.decodeHex
-import com.wallet.core.blockchain.aptos.models.AptosTransactionBroacast
+import com.wallet.core.blockchain.aptos.AptosTransactionBroacast
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType

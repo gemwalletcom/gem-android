@@ -13,5 +13,5 @@ interface GetTransactions {
 
     fun getChangedTransactions(): Flow<List<TransactionExtended>>
 
-    fun getPendingTransactions(): Flow<Int?>
+    fun getPendingTransactionsCount(): Flow<Int?>
 }

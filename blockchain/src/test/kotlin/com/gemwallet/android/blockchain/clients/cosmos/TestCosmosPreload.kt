@@ -1,16 +1,17 @@
 package com.gemwallet.android.blockchain.clients.cosmos
 
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosAccountsService
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
-import com.wallet.core.blockchain.cosmos.models.CosmosAccount
-import com.wallet.core.blockchain.cosmos.models.CosmosAccountResponse
-import com.wallet.core.blockchain.cosmos.models.CosmosBlock
-import com.wallet.core.blockchain.cosmos.models.CosmosBlockResponse
-import com.wallet.core.blockchain.cosmos.models.CosmosHeader
-import com.wallet.core.blockchain.cosmos.models.CosmosInjectiveAccount
+import com.wallet.core.blockchain.cosmos.CosmosAccount
+import com.wallet.core.blockchain.cosmos.CosmosAccountResponse
+import com.wallet.core.blockchain.cosmos.CosmosBlock
+import com.wallet.core.blockchain.cosmos.CosmosBlockResponse
+import com.wallet.core.blockchain.cosmos.CosmosHeader
+import com.wallet.core.blockchain.cosmos.CosmosInjectiveAccount
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -36,7 +37,14 @@ class TestCosmosPreload {
         }
 
         override suspend fun getNodeInfo(): Result<CosmosBlockResponse> {
-            return Result.success(CosmosBlockResponse(CosmosBlock(CosmosHeader(chain_id = "osmosis-1", height = "25181150"))))
+            return Result.success(CosmosBlockResponse(
+                CosmosBlock(
+                    CosmosHeader(
+                        chain_id = "osmosis-1",
+                        height = "25181150"
+                    )
+                )
+            ))
         }
     }
 
@@ -49,7 +57,7 @@ class TestCosmosPreload {
                 ConfirmParams.TransferParams.Native(
                     from = Account(Chain.Osmosis, "osmo1q0d0q8w8y8t6h4l9w5u8p8s8h8f8e8r8t8y8u8i8o8p8", ""),
                     amount = BigInteger.ONE,
-                    assetId = AssetId(Chain.Osmosis),
+                    asset = Chain.Osmosis.asset(),
                     destination = DestinationAddress("osmo1rcjvzz8wzktqfz8qjf0l9q45kzxvd0z0n7l5cf"),
                 )
             )
@@ -81,7 +89,7 @@ class TestCosmosPreload {
                 ConfirmParams.Stake.DelegateParams(
                     from = Account(Chain.Osmosis, "osmo1q0d0q8w8y8t6h4l9w5u8p8s8h8f8e8r8t8y8u8i8o8p8", ""),
                     amount = BigInteger.ONE,
-                    assetId = AssetId(Chain.Osmosis),
+                    asset = Chain.Osmosis.asset(),
                     validatorId = "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm"
                 )
             )
@@ -106,7 +114,7 @@ class TestCosmosPreload {
                 ConfirmParams.Stake.UndelegateParams(
                     from = Account(Chain.Osmosis, "osmo1q0d0q8w8y8t6h4l9w5u8p8s8h8f8e8r8t8y8u8i8o8p8", ""),
                     amount = BigInteger.ONE,
-                    assetId = AssetId(Chain.Osmosis),
+                    asset = Chain.Osmosis.asset(),
                     validatorId = "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm",
                     delegationId = "25053096",
                     share = "",
@@ -133,7 +141,7 @@ class TestCosmosPreload {
                 ConfirmParams.Stake.RedelegateParams(
                     from = Account(Chain.Osmosis, "osmo1q0d0q8w8y8t6h4l9w5u8p8s8h8f8e8r8t8y8u8i8o8p8", ""),
                     amount = BigInteger.ONE,
-                    assetId = AssetId(Chain.Osmosis),
+                    asset = Chain.Osmosis.asset(),
                     srcValidatorId = "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm",
                     dstValidatorId = "osmovaloper1z0sh4s80u99l6y9d3vfy582p8jejeeu6tcucs2",
                     share = "",
@@ -160,7 +168,7 @@ class TestCosmosPreload {
                 ConfirmParams.Stake.RewardsParams(
                     from = Account(Chain.Osmosis, "osmo1q0d0q8w8y8t6h4l9w5u8p8s8h8f8e8r8t8y8u8i8o8p8", ""),
                     amount = BigInteger.ONE,
-                    assetId = AssetId(Chain.Osmosis),
+                    asset = Chain.Osmosis.asset(),
                     validatorsId = listOf(
                         "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm",
                         "osmovaloper1z0sh4s80u99l6y9d3vfy582p8jejeeu6tcucs2",

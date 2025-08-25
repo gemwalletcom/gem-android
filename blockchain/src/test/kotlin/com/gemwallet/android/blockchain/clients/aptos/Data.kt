@@ -1,7 +1,7 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
 import com.gemwallet.android.blockchain.clients.aptos.models.AptosAccount
-import com.wallet.core.blockchain.aptos.models.AptosGasFee
+import com.wallet.core.blockchain.aptos.AptosGasFee
 
 internal val aptosAccountResponse = AptosAccount(
     sequence_number = "8",
