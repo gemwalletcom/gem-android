@@ -19,7 +19,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.gemwallet.android.ext.claimed
 import com.gemwallet.android.features.assets.model.PriceUIState
-import com.gemwallet.android.features.stake.stake.model.StakeError
 import com.gemwallet.android.features.stake.stake.model.StakeUIState
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.ui.R
@@ -159,7 +158,6 @@ fun PreviewStakeScene() {
         StakeScene(
             uiState = StakeUIState(
                 loading = false,
-                error = StakeError.None,
                 walletType = WalletType.single,
                 assetId = AssetId(Chain.Cosmos),
                 stakeChain = StakeChain.Cosmos,

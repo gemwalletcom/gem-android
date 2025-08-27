@@ -7,7 +7,6 @@ import com.wallet.core.primitives.WalletType
 
 class StakeUIState(
     val loading: Boolean,
-    val error: StakeError,
     val walletType: WalletType,
     val assetId: AssetId,
     val assetIcon: String? = "",

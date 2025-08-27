@@ -11,7 +11,6 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.byChain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
-import com.gemwallet.android.features.stake.stake.model.StakeError
 import com.gemwallet.android.features.stake.stake.model.StakeUIState
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
@@ -118,7 +117,6 @@ class StakeViewModel @Inject constructor(
         val isSync = flows[5] as Boolean
         StakeUIState(
             loading = isSync,
-            error = StakeError.None,
             assetId = assetInfo.asset.id,
             assetIcon = assetInfo.id().getIconUrl(),
             walletType = session.wallet.type,
