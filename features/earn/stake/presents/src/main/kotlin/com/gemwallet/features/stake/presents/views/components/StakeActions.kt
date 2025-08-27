@@ -37,7 +37,7 @@ internal fun LazyListScope.stakeActions(
     }
     item {
         PropertyItem(
-            modifier = Modifier.Companion.clickable {
+            modifier = Modifier.clickable {
                 amountAction(
                     AmountParams.Companion.buildStake(
                         assetId = assetId,
