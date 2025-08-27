@@ -26,6 +26,11 @@ class WalletsViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val deleteWallet: DeleteWallet,
 ) : ViewModel() {
+
+    private val wallets = walletsRepository.getAll()
+    private val session = sessionRepository.session()
+
+
     private val state = MutableStateFlow(WalletsViewModelState())
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, WalletsUIState())

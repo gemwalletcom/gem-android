@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ext.chain
-import com.gemwallet.android.features.add_asset.models.TokenSearchState
+import com.gemwallet.android.features.add_asset.viewmodels.models.TokenSearchState
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AddressChainField
 import com.gemwallet.android.ui.components.buttons.MainActionButton

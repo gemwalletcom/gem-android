@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.stake.stake.model
+package com.gemwallet.features.stake.viewmodels
 
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Delegation

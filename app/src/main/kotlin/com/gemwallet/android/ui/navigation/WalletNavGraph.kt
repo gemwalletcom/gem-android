@@ -18,8 +18,6 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
-import com.gemwallet.android.features.add_asset.navigation.addAssetScreen
-import com.gemwallet.android.features.add_asset.navigation.navigateToAddAssetScreen
 import com.gemwallet.android.features.assets.navigation.assetsRoute
 import com.gemwallet.android.features.assets.navigation.assetsScreen
 import com.gemwallet.android.features.bridge.navigation.bridgesScreen
@@ -57,10 +55,12 @@ import com.gemwallet.android.ui.components.animation.popExitTransition
 import com.gemwallet.android.ui.navigation.routes.SendSelect
 import com.gemwallet.android.ui.navigation.routes.Transfer
 import com.gemwallet.android.ui.navigation.routes.activitiesScreen
+import com.gemwallet.android.ui.navigation.routes.addAssetScreen
 import com.gemwallet.android.ui.navigation.routes.amount
 import com.gemwallet.android.ui.navigation.routes.assetChartScreen
 import com.gemwallet.android.ui.navigation.routes.assetRoutePath
 import com.gemwallet.android.ui.navigation.routes.assetScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToAddAssetScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAmountScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAssetChartScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAssetScreen

@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.gemwallet.android.features.stake.stake.views
+package com.gemwallet.features.stake.presents.views
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,8 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.gemwallet.android.ext.claimed
-import com.gemwallet.android.features.assets.model.PriceUIState
-import com.gemwallet.android.features.stake.stake.model.StakeUIState
+import com.gemwallet.android.ui.models.PriceUIState
+import com.gemwallet.features.stake.viewmodels.StakeUIState
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.InfoSheetEntity

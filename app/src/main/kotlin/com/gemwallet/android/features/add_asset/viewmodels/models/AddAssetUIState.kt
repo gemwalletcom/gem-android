@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.add_asset.models
+package com.gemwallet.android.features.add_asset.viewmodels.models
 
 class AddAssetUIState(
     val scene: Scene = Scene.Form,

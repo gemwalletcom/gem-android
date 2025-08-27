@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.stake.delegation.views.DelegationScene
-import com.gemwallet.android.features.stake.stake.views.StakeScreen
+import com.gemwallet.features.stake.presents.views.StakeScreen
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.wallet.core.primitives.AssetId

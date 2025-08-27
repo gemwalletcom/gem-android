@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.stake.stake.viewmodels
+package com.gemwallet.features.stake.viewmodels
 
 import android.text.format.DateUtils
 import androidx.lifecycle.SavedStateHandle
@@ -11,7 +11,6 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.byChain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
-import com.gemwallet.android.features.stake.stake.model.StakeUIState
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
