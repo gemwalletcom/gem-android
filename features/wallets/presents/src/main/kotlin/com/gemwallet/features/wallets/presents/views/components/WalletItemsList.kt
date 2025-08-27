@@ -107,7 +107,7 @@ private fun WalletDropDownItem(
                     tint = color,
                     contentDescription = text
                 )
-                is Int -> Icon(painterResource(R.drawable.keep_off), text)
+                is Int -> Icon(painterResource(icon), text)
             }
 
         },
