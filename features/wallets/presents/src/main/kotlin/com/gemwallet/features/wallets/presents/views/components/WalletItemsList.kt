@@ -68,11 +68,11 @@ internal fun LazyListScope.wallets(
                     if (wallet.isPinned) R.string.common_unpin else R.string.common_pin,
                     if (wallet.isPinned) R.drawable.keep_off else Icons.Default.PushPin,
                 ) {
-                    onTogglePin(longPressedWallet.value)
+                    onTogglePin(wallet.id)
                     longPressedWallet.value = ""
                 }
                 WalletDropDownItem(R.string.common_wallet, Icons.Default.Settings) {
-                    onEdit(longPressedWallet.value)
+                    onEdit(wallet.id)
                     longPressedWallet.value = ""
                 }
                 WalletDropDownItem(R.string.common_delete, Icons.Default.Delete, MaterialTheme.colorScheme.error) {
