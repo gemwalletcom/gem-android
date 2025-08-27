@@ -215,6 +215,8 @@ dependencies {
     implementation(project(":features:wallets:viewmodels"))
     implementation(project(":features:earn:stake:presents"))
     implementation(project(":features:earn:stake:viewmodels"))
+    implementation(project(":features:earn:delegation:presents"))
+    implementation(project(":features:earn:delegation:viewmodels"))
     implementation(project(":features:recipient:presents"))
     implementation(project(":features:nft:presents"))
     implementation(project(":features:update_app:presents"))
