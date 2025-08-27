@@ -7,7 +7,7 @@ import com.wallet.core.primitives.WalletType
 
 // TODO: Out to ui-models
 
-internal val Wallet.typeLabel: String
+val Wallet.typeLabel: String
     get() = when (type) {
         WalletType.view,
         WalletType.private_key,
@@ -15,7 +15,7 @@ internal val Wallet.typeLabel: String
         WalletType.multicoin -> "Multi-coin"
     }
 
-internal val Wallet.icon: Any
+val Wallet.icon: Any
     get() = if (accounts.size > 1) {
         R.drawable.multicoin_wallet
     } else {

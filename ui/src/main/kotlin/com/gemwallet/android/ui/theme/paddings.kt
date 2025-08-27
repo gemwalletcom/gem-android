@@ -24,6 +24,7 @@ private val space16 = 16.dp
 
 val padding4 = 4.dp
 val padding8 = 8.dp
+val padding16 = 16.dp
 val padding12 = 12.dp
 val paddingDefault = 16.dp
 val padding32 = 32.dp
