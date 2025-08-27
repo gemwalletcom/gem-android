@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.wallets.views
+package com.gemwallet.features.wallets.presents.views
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
@@ -50,8 +50,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.features.wallet.presents.ConfirmWalletDeleteDialog
 import com.gemwallet.android.ui.components.list_item.WalletItem
-import com.gemwallet.android.features.wallets.viewmodels.WalletItemUIState
-import com.gemwallet.android.features.wallets.viewmodels.WalletsViewModel
+import com.gemwallet.features.wallets.viewmodels.WalletItemUIState
+import com.gemwallet.features.wallets.viewmodels.WalletsViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.list_item.DropDownContextItem
