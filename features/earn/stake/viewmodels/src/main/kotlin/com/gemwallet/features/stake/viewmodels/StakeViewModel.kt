@@ -1,25 +1,14 @@
 package com.gemwallet.features.stake.viewmodels
 
-import android.text.format.DateUtils
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
-import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.byChain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
-import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.Crypto
-import com.gemwallet.android.model.Session
-import com.gemwallet.android.model.format
-import com.gemwallet.android.ui.components.image.getIconUrl
-import com.wallet.core.primitives.Account
-import com.wallet.core.primitives.Delegation
-import com.wallet.core.primitives.StakeChain
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -35,7 +24,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import uniffi.gemstone.Config
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -55,17 +43,20 @@ class StakeViewModel @Inject constructor(
         .map { it.toAssetId() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val assetInfo = assetId.filterNotNull().flatMapLatest { assetsRepository.getAssetInfo(it) }
+    val assetInfo = assetId.filterNotNull().flatMapLatest { assetsRepository.getAssetInfo(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val session = sessionRepository.session()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val walletType = session.mapLatest { it?.wallet?.type }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val account = session.combine(assetId.filterNotNull()) { session, assetId ->
         session?.wallet?.getAccount(assetId.chain)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val delegations = account.combine(assetId.filterNotNull()) { account, assetId -> Pair(account, assetId) }
+    val delegations = account.combine(assetId.filterNotNull()) { account, assetId -> Pair(account, assetId) }
         .flatMapLatest {
             val (account, assetId) = it
             val accountAddress = account?.address ?: return@flatMapLatest emptyFlow()
@@ -73,7 +64,7 @@ class StakeViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    private val rewardsAmount = delegations
+    val rewardsAmount = delegations
         .mapLatest { delegations ->
             delegations.map { BigInteger(it.base.rewards) }
                 .reduceOrNull { acc, delegation -> acc + delegation } ?: BigInteger.ZERO
@@ -82,7 +73,7 @@ class StakeViewModel @Inject constructor(
 
     private val sync = MutableStateFlow<Boolean>(true)
 
-    private val isSync = combine(sync, assetId.filterNotNull(), account.filterNotNull()) { sync, assetId, account -> Triple(sync, assetId, account) }
+    val isSync = combine(sync, assetId.filterNotNull(), account.filterNotNull()) { sync, assetId, account -> Triple(sync, assetId, account) }
         .flatMapLatest {
             val (isSync, assetId, account) = it
             flow {
@@ -99,39 +90,6 @@ class StakeViewModel @Inject constructor(
         }
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, true)
-
-    val uiState = combine(
-        assetInfo.filterNotNull(),
-        session.filterNotNull(),
-        account.filterNotNull(),
-        delegations,
-        rewardsAmount,
-        isSync,
-    ) { flows ->
-        val assetInfo = flows[0] as AssetInfo
-        val session = flows[1] as Session
-        val account = flows[2] as Account
-        val delegations = flows[3] as List<Delegation>
-        val rewardsAmount = flows[4] as BigInteger
-        val isSync = flows[5] as Boolean
-        StakeUIState(
-            loading = isSync,
-            assetId = assetInfo.asset.id,
-            assetIcon = assetInfo.id().getIconUrl(),
-            walletType = session.wallet.type,
-            stakeChain = StakeChain.byChain(assetInfo.asset.id.chain)!!,
-            assetDecimals = assetInfo.asset.decimals,
-            assetSymbol = assetInfo.asset.symbol,
-            ownerAddress = account.address,
-            title = "${assetInfo.asset.id.chain.asset().name} (${assetInfo.asset.symbol})",
-            apr = assetInfo.stakeApr ?: 0.0,
-            lockTime = (Config().getStakeConfig(account.chain.string).timeLock / (DateUtils.DAY_IN_MILLIS / 1000).toULong()).toInt(),
-            hasRewards = rewardsAmount > BigInteger.ZERO,
-            rewardsAmount = assetInfo.asset.format(Crypto(rewardsAmount)),
-            delegations = delegations,
-        )
-    }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
 
     fun onRefresh() {
         sync.update { true }

@@ -19,16 +19,24 @@ fun StakeScreen(
     onCancel: () -> Unit,
     viewModel: StakeViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val inSync by viewModel.isSync.collectAsStateWithLifecycle()
+    val walletType by viewModel.walletType.collectAsStateWithLifecycle()
+    val assetInfo by viewModel.assetInfo.collectAsStateWithLifecycle()
+    val rewardsAmount by viewModel.rewardsAmount.collectAsStateWithLifecycle()
+    val delegations by viewModel.delegations.collectAsStateWithLifecycle()
 
-    if (uiState == null || (uiState?.apr ?: 0.0) <= 0.0) {
+    if (assetInfo == null || walletType == null || (assetInfo?.stakeApr ?: 0.0) <= 0.0) {
         LoadingScene(
             title = stringResource(id = R.string.transfer_stake_title),
             onCancel = onCancel,
         )
     } else {
         StakeScene(
-            uiState = uiState ?: return,
+            inSync = inSync,
+            walletType = walletType!!,
+            assetInfo = assetInfo!!,
+            rewardsAmount = rewardsAmount,
+            delegations = delegations,
             onRefresh = viewModel::onRefresh,
             amountAction = amountAction,
             onConfirm = { viewModel.onRewards(onConfirm) },

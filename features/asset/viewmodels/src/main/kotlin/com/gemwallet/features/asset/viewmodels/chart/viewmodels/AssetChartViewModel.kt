@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
-import com.gemwallet.android.ext.chain
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ui.R
 import com.gemwallet.features.asset.viewmodels.assetIdArg
@@ -55,7 +55,7 @@ class AssetChartViewModel @Inject constructor(
             assetLinks = links.toModel(),
             currency = currency,
             marketInfo = market,
-            explorerName = getCurrentBlockExplorer.getCurrentBlockExplorer(asset.chain())
+            explorerName = getCurrentBlockExplorer.getCurrentBlockExplorer(asset.chain)
         )
     }
     .flowOn(Dispatchers.Default)

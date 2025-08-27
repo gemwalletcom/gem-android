@@ -9,8 +9,8 @@ import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
 import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isStaked
 import com.gemwallet.android.ext.toAssetId
@@ -75,7 +75,7 @@ class AssetDetailsViewModel @Inject constructor(
             assetId?.let { assetsRepository.getAssetInfo(it).mapNotNull { it } } ?: emptyFlow()
         }
         .map {
-            val explorerName = getCurrentBlockExplorer.getCurrentBlockExplorer(it.asset.chain())
+            val explorerName = getCurrentBlockExplorer.getCurrentBlockExplorer(it.asset.chain)
             Model(
                 assetInfo = it,
                 explorerName = explorerName,
@@ -173,7 +173,7 @@ class AssetDetailsViewModel @Inject constructor(
                 isSwapEnabled = assetInfo.metadata?.isSwapEnabled == true,
                 explorerName = explorerName,
                 explorerAddressUrl = assetInfo.owner?.address?.let {
-                    Explorer(asset.chain().string).getAddressUrl(explorerName,  it)
+                    Explorer(asset.chain.string).getAddressUrl(explorerName,  it)
                 },
                 accountInfoUIModel = AssetInfoUIModel.AccountInfoUIModel(
                     walletType = assetInfo.walletType,

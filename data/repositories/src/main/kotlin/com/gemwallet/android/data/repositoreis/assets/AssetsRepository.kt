@@ -22,8 +22,8 @@ import com.gemwallet.android.data.service.store.database.entities.toAssetLinksMo
 import com.gemwallet.android.data.service.store.database.entities.toModel
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.exclude
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAssociatedAssetIds
@@ -141,7 +141,7 @@ class AssetsRepository @Inject constructor(
             symbol = assetInfo.asset.symbol,
             decimals = assetInfo.asset.decimals,
             type = assetInfo.asset.type,
-            chain = assetInfo.asset.chain(),
+            chain = assetInfo.asset.chain,
             isBuyEnabled = assetFull.properties.isBuyable,
             isSellEnabled = assetFull.properties.isSellable,
             isStakeEnabled = assetFull.properties.isStakeable,
@@ -265,7 +265,7 @@ class AssetsRepository @Inject constructor(
         try {
             gemApi.getAssets(assetsId.map { it.toIdentifier() }).forEach {
                 val asset = it.asset
-                add(wallet.id, wallet.getAccount(asset.chain())?.address ?: return@forEach, asset, true)
+                add(wallet.id, wallet.getAccount(asset.chain)?.address ?: return@forEach, asset, true)
                 runCatching { assetsDao.addLinks(it.links.toAssetLinkRecord(asset.id)) }
             }
         } catch (_: Throwable) {
@@ -389,7 +389,7 @@ class AssetsRepository @Inject constructor(
             walletId = walletId,
             isVisible = visible,
         )
-        val defaultScore = uniffi.gemstone.assetDefaultRank(asset.chain().string)
+        val defaultScore = uniffi.gemstone.assetDefaultRank(asset.chain.string)
         runCatching { assetsDao.insert(asset.toRecord(defaultScore), link, config) }
 
         if (visible) {
@@ -491,7 +491,7 @@ class AssetsRepository @Inject constructor(
         groupBy { it.walletId }
             .mapValues { wallet ->
                 val walletId = wallet.key ?: return@mapValues null
-                wallet.value.groupBy { it.asset.chain() }
+                wallet.value.groupBy { it.asset.chain }
                     .mapKeys { it.value.firstOrNull()?.owner }
                     .mapValues { entry -> entry.value.filter { it.metadata?.isEnabled == true }.map { it.asset } }
                     .mapNotNull { entry ->

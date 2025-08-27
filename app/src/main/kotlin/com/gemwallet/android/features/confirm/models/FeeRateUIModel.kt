@@ -2,8 +2,8 @@ package com.gemwallet.android.features.confirm.models
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.feeUnitType
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
@@ -28,7 +28,7 @@ data class FeeRateUIModel(
 
     val price: String get() {
         val asset = fee.feeAssetId.chain.asset()
-        val feeUnitType = asset.chain().feeUnitType()
+        val feeUnitType = asset.chain.feeUnitType()
         val decimals = when (feeUnitType) {
             FeeUnitType.SatVb -> 0
             FeeUnitType.Gwei -> 9
@@ -40,7 +40,7 @@ data class FeeRateUIModel(
             FeeUnitType.Native -> asset.symbol
             null -> ""
         }
-        val value = when (asset.chain()) {
+        val value = when (asset.chain) {
             Chain.Solana -> fee.amount
             else -> (fee as? GasFee)?.maxGasPrice ?: fee.amount
         }

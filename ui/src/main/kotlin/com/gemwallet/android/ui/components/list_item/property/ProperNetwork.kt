@@ -3,8 +3,8 @@ package com.gemwallet.android.ui.components.list_item.property
 import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.models.actions.AssetIdAction
@@ -23,7 +23,7 @@ fun PropertyNetwork(chain: Chain, value: String = chain.asset().name, onOpenNetw
         data = {
             PropertyDataText(
                 text = value,
-                badge = { DataBadgeChevron(asset.chain().getIconUrl(), onOpenNetwork != null) }
+                badge = { DataBadgeChevron(asset.chain.getIconUrl(), onOpenNetwork != null) }
             )
         },
     )
@@ -31,5 +31,5 @@ fun PropertyNetwork(chain: Chain, value: String = chain.asset().name, onOpenNetw
 
 @Composable
 fun PropertyNetwork(asset: Asset, onOpenNetwork: AssetIdAction? = null) {
-    PropertyNetwork(asset.chain(), "${asset.id.chain.asset().name} (${asset.type.string})", onOpenNetwork)
+    PropertyNetwork(asset.chain, "${asset.id.chain.asset().name} (${asset.type.string})", onOpenNetwork)
 }

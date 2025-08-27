@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ext.chain
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.features.add_asset.viewmodels.models.TokenSearchState
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.AddressChainField
@@ -58,7 +58,7 @@ fun AddAssetScene(
         ChainItem(
             modifier = Modifier.height(64.dp),
             title = network.name,
-            icon = network.chain(),
+            icon = network.chain,
             onClick = onChainSelect,
             dividerShowed = true,
             trailing = if (onChainSelect != null) {
@@ -73,7 +73,7 @@ fun AddAssetScene(
         )
         Column(modifier = Modifier.defaultPadding()) {
             AddressChainField(
-                chain = network.chain(),
+                chain = network.chain,
                 label = stringResource(R.string.wallet_import_contract_address_field),
                 value = addressState.value,
                 searchName = false,

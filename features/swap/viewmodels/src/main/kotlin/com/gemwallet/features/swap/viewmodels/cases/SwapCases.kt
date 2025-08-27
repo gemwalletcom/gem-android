@@ -111,32 +111,3 @@ internal fun calculatePriceImpactCore(
         else -> PriceImpact(impact, PriceImpactType.High, isHigh)
     }
 }
-
-val AssetInfo.availableBalance: String
-    get() = Crypto(balance.balance.available)
-        .value(asset.decimals)
-        .stripTrailingZeros().toPlainString()
-
-val AssetInfo.availableBalanceFormatted: String
-    get() = balance.availableFormatted(4, dynamicPlace = true)
-
-
-fun AssetInfo.calculateFiat(rawInput: String): BigDecimal {
-    val value = Crypto(rawInput.toBigIntegerOrNull() ?: BigInteger.ZERO)
-        .value(asset.decimals)
-    return calculateFiat(value)
-}
-
-fun AssetInfo.calculateFiat(value: BigDecimal): BigDecimal {
-    return price?.takeIf { it.price.price > 0.0 }?.let {
-        value * it.price.price.toBigDecimal()
-    } ?: return BigDecimal.ZERO
-}
-
-fun AssetInfo.formatFiat(value: BigDecimal): String {
-    if (value <= BigDecimal.ZERO) {
-        return ""
-    }
-
-    return price?.currency?.format(value) ?: ""
-}

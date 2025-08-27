@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.ext.chain
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.mutableStateIn
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.models.TransactionTypeFilter
@@ -44,7 +44,7 @@ class TransactionsViewModel @Inject constructor(
             val byChain = if (chainsFilter.isEmpty()) {
                 true
             } else {
-                val txChains = (tx.assets + listOf(tx.asset, tx.feeAsset)).map { it.chain() }.toSet()
+                val txChains = (tx.assets + listOf(tx.asset, tx.feeAsset)).map { it.chain }.toSet()
                 chainsFilter.containsAll(txChains)
             }
             val byType = if (typeFilter.isEmpty()) {

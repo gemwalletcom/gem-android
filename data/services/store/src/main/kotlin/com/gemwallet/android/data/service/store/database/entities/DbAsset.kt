@@ -3,7 +3,7 @@ package com.gemwallet.android.data.service.store.database.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import com.gemwallet.android.ext.chain
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.isSwapSupport
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
@@ -111,19 +111,19 @@ fun DbAsset.toModel(): Asset? {
 
 fun Asset.toRecord(defaultScore: Int) = DbAsset(
     id = id.toIdentifier(),
-    chain = chain(),
+    chain = chain,
     name = name,
     symbol = symbol,
     decimals = decimals,
     type = type,
-    isSwapEnabled = chain().isSwapSupport(),
+    isSwapEnabled = chain.isSwapSupport(),
     isBuyEnabled = defaultScore >= 40,
     updatedAt = System.currentTimeMillis(),
 )
 
 fun AssetFull.toRecord() = DbAsset(
     id = asset.id.toIdentifier(),
-    chain = asset.chain(),
+    chain = asset.chain,
     name = asset.name,
     symbol = asset.symbol,
     decimals = asset.decimals,
@@ -131,14 +131,14 @@ fun AssetFull.toRecord() = DbAsset(
     isBuyEnabled = properties.isBuyable == true,
     isSellEnabled = properties.isSellable == true,
     isStakeEnabled = properties.isStakeable == true,
-    isSwapEnabled = asset.chain().isSwapSupport(),
+    isSwapEnabled = asset.chain.isSwapSupport(),
     stakingApr = properties.stakingApr,
     rank = score.rank,
 )
 
 fun AssetBasic.toRecord() = DbAsset(
     id = asset.id.toIdentifier(),
-    chain = asset.chain(),
+    chain = asset.chain,
     name = asset.name,
     symbol = asset.symbol,
     decimals = asset.decimals,
@@ -146,7 +146,7 @@ fun AssetBasic.toRecord() = DbAsset(
     isBuyEnabled = properties.isBuyable == true,
     isSellEnabled = properties.isSellable == true,
     isStakeEnabled = properties.isStakeable == true,
-    isSwapEnabled = asset.chain().isSwapSupport(),
+    isSwapEnabled = asset.chain.isSwapSupport(),
     stakingApr = properties.stakingApr,
     rank = score.rank,
 )

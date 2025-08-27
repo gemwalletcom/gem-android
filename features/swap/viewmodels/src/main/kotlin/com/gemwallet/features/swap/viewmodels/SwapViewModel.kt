@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.swap.SwapRepository
+import com.gemwallet.android.domains.asset.calculateFiat
+import com.gemwallet.android.domains.asset.formatFiat
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
@@ -18,9 +20,7 @@ import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.model.toModel
 import com.gemwallet.features.swap.viewmodels.cases.QuoteRequester
-import com.gemwallet.features.swap.viewmodels.cases.calculateFiat
 import com.gemwallet.features.swap.viewmodels.cases.calculatePriceImpact
-import com.gemwallet.features.swap.viewmodels.cases.formatFiat
 import com.gemwallet.features.swap.viewmodels.cases.getProviders
 import com.gemwallet.features.swap.viewmodels.cases.tickerFlow
 import com.gemwallet.features.swap.viewmodels.models.QuoteState
