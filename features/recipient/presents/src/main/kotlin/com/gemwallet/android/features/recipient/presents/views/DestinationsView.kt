@@ -5,7 +5,7 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.gemwallet.android.ext.chain
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.features.recipient.viewmodel.models.QrScanField
 import com.gemwallet.android.features.recipient.viewmodel.models.RecipientError
 import com.gemwallet.android.model.AssetInfo
@@ -27,7 +27,7 @@ fun LazyListScope.destinationView(
     item {
         Column(modifier = Modifier.defaultPadding()) {
             AddressChainField(
-                chain = asset.asset.chain(),
+                chain = asset.asset.chain,
                 value = addressState.value,
                 label = stringResource(id = R.string.transfer_recipient_address_field),
                 error = recipientErrorString(error = addressError),

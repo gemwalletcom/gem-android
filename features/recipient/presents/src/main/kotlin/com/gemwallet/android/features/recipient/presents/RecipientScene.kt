@@ -19,7 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.ext.chain
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.features.recipient.presents.views.destinationView
 import com.gemwallet.android.features.recipient.presents.views.walletsDestination
 import com.gemwallet.android.features.recipient.viewmodel.RecipientViewModel
@@ -129,7 +129,7 @@ fun RecipientScene(
                 nameRecordState = nameRecordState,
                 onQrScan = onQrScan,
             )
-            walletsDestination(toChain = assetInfo.asset.chain(), items = wallets) {
+            walletsDestination(toChain = assetInfo.asset.chain, items = wallets) {
                 addressState.value = it.address
                 onNext()
             }

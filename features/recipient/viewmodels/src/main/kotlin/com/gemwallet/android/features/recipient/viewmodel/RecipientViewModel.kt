@@ -10,8 +10,8 @@ import com.gemwallet.android.cases.nft.GetAssetNft
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isMemoSupport
 import com.gemwallet.android.ext.mutableStateIn
@@ -88,7 +88,7 @@ class RecipientViewModel @Inject constructor(
 
     val memoErrorState = MutableStateFlow<RecipientError>(RecipientError.None)
 
-    fun hasMemo(): Boolean = asset.value?.asset?.chain()?.isMemoSupport() == true
+    fun hasMemo(): Boolean = asset.value?.asset?.chain?.isMemoSupport() == true
 
     fun onNext(amountAction: AmountTransactionAction, confirmAction: ConfirmTransactionAction) = viewModelScope.launch {
         val assetId = asset.value?.id() ?: return@launch
@@ -123,7 +123,7 @@ class RecipientViewModel @Inject constructor(
         if (
             address.isNotEmpty()
             && amount != null
-            && (assetInfo.asset.chain().isMemoSupport() || !memo.isNullOrEmpty())
+            && (assetInfo.asset.chain.isMemoSupport() || !memo.isNullOrEmpty())
         ) {
             val params = ConfirmParams.Builder(assetInfo.asset, assetInfo.owner!!, amount).transfer(DestinationAddress(address), memo)
             confirmAction(params)

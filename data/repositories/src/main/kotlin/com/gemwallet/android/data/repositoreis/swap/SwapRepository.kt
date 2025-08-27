@@ -5,7 +5,7 @@ import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.cases.swap.GetSwapQuotes
 import com.gemwallet.android.cases.swap.GetSwapSupported
-import com.gemwallet.android.ext.chain
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Asset
@@ -52,7 +52,7 @@ class SwapRepository(
             value = amount,
             mode = SwapperMode.EXACT_IN,
             options = SwapperOptions(
-                slippage = getDefaultSlippage(from.chain().string),
+                slippage = getDefaultSlippage(from.chain.string),
                 fee = Config().getSwapConfig().referralFee,
                 preferredProviders = emptyList(),
             )

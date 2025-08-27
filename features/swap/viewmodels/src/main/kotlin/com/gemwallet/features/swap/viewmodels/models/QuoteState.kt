@@ -1,9 +1,9 @@
 package com.gemwallet.features.swap.viewmodels.models
 
+import com.gemwallet.android.domains.asset.calculateFiat
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
-import com.gemwallet.features.swap.viewmodels.cases.calculateFiat
 import com.gemwallet.features.swap.viewmodels.cases.estimateSwapRate
 import uniffi.gemstone.SwapperQuote
 import java.math.BigDecimal

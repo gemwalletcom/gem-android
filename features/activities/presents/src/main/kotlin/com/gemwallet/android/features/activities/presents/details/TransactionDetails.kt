@@ -27,8 +27,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.chain
 import com.gemwallet.android.features.activities.viewmodels.TransactionDetailsViewModel
 import com.gemwallet.android.features.activities.viewmodels.TxDetailsScreenModel
 import com.gemwallet.android.ui.R
@@ -76,9 +76,9 @@ fun TransactionDetails(
                 transactionRecipientItem(model)
                 transactionStatusItem(model)
                 transactionMemoItem(model.memo)
-                item { PropertyNetwork(model.asset.chain()) }
+                item { PropertyNetwork(model.asset.chain) }
                 transactionProviderItem(model.provider)
-                model.asset.chain().asset().let {
+                model.asset.chain.asset().let {
                     transactionNetworkFeeItem(it.name, it.symbol, model.feeCrypto, model.feeFiat)
                 }
 

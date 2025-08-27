@@ -2,7 +2,6 @@
 
 package com.gemwallet.features.stake.presents.views
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -16,33 +15,35 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import com.gemwallet.android.ext.claimed
-import com.gemwallet.android.ui.models.PriceUIState
-import com.gemwallet.features.stake.viewmodels.StakeUIState
-import com.gemwallet.android.model.AmountParams
+import com.gemwallet.android.domains.asset.lockTime
+import com.gemwallet.android.domains.asset.stakeChain
+import com.gemwallet.android.domains.asset.title
+import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.InfoSheetEntity
+import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.list_item.DelegationItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.availableIn
-import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
-import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
-import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.PriceUIState
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.WalletTheme
+import com.gemwallet.features.stake.presents.views.components.stakeActions
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.StakeChain
-import com.wallet.core.primitives.TransactionType
+import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.WalletType
+import java.math.BigInteger
 
 @Composable
 fun StakeScene(
-    uiState: StakeUIState,
+    inSync: Boolean,
+    walletType: WalletType,
+    assetInfo: AssetInfo,
+    rewardsAmount: BigInteger,
+    delegations: List<Delegation>,
     amountAction: AmountTransactionAction,
     onRefresh: () -> Unit,
     onConfirm: () -> Unit,
@@ -57,13 +58,13 @@ fun StakeScene(
     ) {
         PullToRefreshBox(
             modifier = Modifier,
-            isRefreshing = uiState.loading,
+            isRefreshing = inSync,
             onRefresh = onRefresh,
             state = pullToRefreshState,
             indicator = {
                 Indicator(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    isRefreshing = uiState.loading,
+                    isRefreshing = inSync,
                     state = pullToRefreshState,
                     containerColor = MaterialTheme.colorScheme.background
                 )
@@ -71,34 +72,24 @@ fun StakeScene(
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
-                    SubheaderItem(title = uiState.title)
-                    PropertyItem(
-                        title = stringResource(id = R.string.stake_apr, ""),
-                        data = PriceUIState.formatPercentage(uiState.apr, false)
-                    )
+                    SubheaderItem(title = assetInfo.title)
                 }
-                item {
-                    PropertyItem(
-                        title = stringResource(id = R.string.stake_lock_time),
-                        data = "${uiState.lockTime} days",
-                        info = InfoSheetEntity.StakeLockTimeInfo(icon = uiState.assetIcon ?: "")
-                    )
-                }
+                apr(assetInfo.stakeApr ?: 0.0)
+                assetInfo.lockTime?.let { lockTime(it, assetInfo.id()) }
 
-                actions(
-                    assetId = uiState.assetId,
-                    stakeChain = uiState.stakeChain,
-                    rewardsAmount = uiState.rewardsAmount,
-                    hasRewards = uiState.hasRewards,
+                stakeActions(
+                    assetId = assetInfo.id(),
+                    stakeChain = assetInfo.stakeChain ?: return@LazyColumn,
+                    rewardsAmount = assetInfo.asset.format(Crypto(rewardsAmount)),
+                    hasRewards = rewardsAmount > BigInteger.ZERO,
                     amountAction = amountAction,
                     onConfirm = onConfirm,
-                    walletType = uiState.walletType,
+                    walletType = walletType,
                 )
 
-                items(uiState.delegations) {
+                items(delegations) {
                     DelegationItem(
-                        assetDecimals = uiState.assetDecimals,
-                        assetSymbol = uiState.assetSymbol,
+                        asset = assetInfo.asset,
                         delegation = it,
                         completedAt = availableIn(it),
                         onClick = { onDelegation(it.validator.id, it.base.delegationId) }
@@ -109,72 +100,21 @@ fun StakeScene(
     }
 }
 
-private fun LazyListScope.actions(
-    assetId: AssetId,
-    stakeChain: StakeChain,
-    rewardsAmount: String,
-    hasRewards: Boolean,
-    amountAction: AmountTransactionAction,
-    walletType: WalletType,
-    onConfirm: () -> Unit
-) {
-    if (walletType == WalletType.view) {
-        return
-    }
-    item {
-        Spacer16()
-        SubheaderItem(title = stringResource(R.string.common_manage))
-    }
+private fun LazyListScope.lockTime(lockTime: Int, id: AssetId) {
     item {
         PropertyItem(
-            modifier = Modifier.clickable {
-                amountAction(
-                    AmountParams.buildStake(
-                        assetId = assetId,
-                        txType = TransactionType.StakeDelegate,
-                    )
-                )
-            },
-            title = { PropertyTitleText(R.string.transfer_stake_title) },
-            data = { PropertyDataText("", badge = { DataBadgeChevron() })},
-        )
-    }
-    item {
-        if (!hasRewards || !stakeChain.claimed()) {
-            return@item
-        }
-        PropertyItem(
-            modifier = Modifier.clickable(onClick = onConfirm),
-            title = { PropertyTitleText(R.string.transfer_claim_rewards_title) },
-            data = { PropertyDataText(rewardsAmount, badge = { DataBadgeChevron() })},
+            title = stringResource(id = R.string.stake_lock_time),
+            data = "$lockTime days",
+            info = InfoSheetEntity.StakeLockTimeInfo(icon = id.getIconUrl())
         )
     }
 }
 
-@Composable
-@Preview
-fun PreviewStakeScene() {
-    WalletTheme {
-        StakeScene(
-            uiState = StakeUIState(
-                loading = false,
-                walletType = WalletType.single,
-                assetId = AssetId(Chain.Cosmos),
-                stakeChain = StakeChain.Cosmos,
-                assetDecimals = 8,
-                assetSymbol = "ATOM",
-                ownerAddress = "",
-                title = "Cosmos (ATOM)",
-                apr = 13.94,
-                lockTime = 21,
-                hasRewards = true,
-            ),
-            onRefresh = { },
-            amountAction = { _ -> },
-            onConfirm = { },
-            onDelegation = {_, _ -> },
-        ) {
-
-        }
+internal fun LazyListScope.apr(apr: Double) {
+    item {
+        PropertyItem(
+            title = stringResource(id = R.string.stake_apr, ""),
+            data = PriceUIState.formatPercentage(apr, false) // TODO: Out to AssetInfo ext
+        )
     }
 }

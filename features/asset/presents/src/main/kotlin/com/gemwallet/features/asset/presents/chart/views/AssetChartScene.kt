@@ -16,7 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.ext.chain
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.model.compactFormatter
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clipboard.setPlainText
@@ -136,7 +136,7 @@ private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketIn
                         clipboardManager.setPlainText(context, it)
                     },
                     onClick = {
-                        uriHandler.open(context, Explorer(asset.chain().string).getTokenUrl(explorerName, it) ?: return@combinedClickable)
+                        uriHandler.open(context, Explorer(asset.chain.string).getTokenUrl(explorerName, it) ?: return@combinedClickable)
                     }
                 ),
                 title = { PropertyTitleText(R.string.asset_contract) },

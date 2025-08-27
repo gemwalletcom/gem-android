@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.ext.chain
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +33,7 @@ class ReceiveViewModel @Inject constructor(
         .flatMapLatest { assetsRepository.getTokenInfo(it) }
         .map {
             if (it?.owner == null) {
-                it?.copy(owner = sessionRepository.getSession()?.wallet?.getAccount(it.asset.chain()))
+                it?.copy(owner = sessionRepository.getSession()?.wallet?.getAccount(it.asset.chain))
             } else {
                 it
             }

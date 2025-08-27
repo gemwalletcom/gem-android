@@ -11,10 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.theme.Spacer2
 import com.gemwallet.android.ui.theme.pendingColor
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.DelegationState.Activating
 import com.wallet.core.primitives.DelegationState.Active
@@ -26,8 +28,7 @@ import com.wallet.core.primitives.DelegationState.Undelegating
 
 @Composable
 fun DelegationItem(
-    assetDecimals: Int,
-    assetSymbol: String,
+    asset: Asset,
     delegation: Delegation,
     completedAt: String,
     onClick: () -> Unit
@@ -71,7 +72,7 @@ fun DelegationItem(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.End,
             ) {
-                ListItemTitleText(Crypto(delegation.base.balance).format(assetDecimals, assetSymbol, 2))
+                ListItemTitleText(asset.format(Crypto(delegation.base.balance), 2))
 
                 when (delegation.base.state) {
                     Pending,

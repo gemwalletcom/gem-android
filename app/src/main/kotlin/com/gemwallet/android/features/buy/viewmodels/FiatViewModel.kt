@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.ext.chain
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.features.buy.models.AmountValidator
@@ -63,7 +63,7 @@ class FiatViewModel @Inject constructor(
     .flowOn(Dispatchers.IO)
     .map {
         if (it.owner == null) {
-            it.copy(owner = sessionRepository.getSession()?.wallet?.getAccount(it.asset.chain()))
+            it.copy(owner = sessionRepository.getSession()?.wallet?.getAccount(it.asset.chain))
         } else {
             it
         }

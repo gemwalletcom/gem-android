@@ -43,8 +43,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.chain
 import com.gemwallet.android.ext.getReserveBalanceUrl
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.AssetInfo
@@ -340,7 +340,7 @@ private fun LazyListScope.banner(
                         ).activate()
                         onConfirm(params)
                     }
-                    BannerEvent.AccountActivation -> assetInfo.asset.chain()
+                    BannerEvent.AccountActivation -> assetInfo.asset.chain
                         .getReserveBalanceUrl()?.let { uri -> uriHandler.open(context, uri) }
                     else -> {}
                 }
