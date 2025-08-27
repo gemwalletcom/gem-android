@@ -27,9 +27,6 @@ import kotlinx.coroutines.flow.stateIn
 import java.math.BigInteger
 import javax.inject.Inject
 
-internal const val validatorIdArg = "validatorId"
-internal const val delegationIdArg = "delegationId"
-
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class DelegationViewModel @Inject constructor(
@@ -39,8 +36,8 @@ class DelegationViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
-    val validatorId = savedStateHandle.getStateFlow<String?>(validatorIdArg, null).filterNotNull()
-    val delegationId = savedStateHandle.getStateFlow<String?>(delegationIdArg, null).filterNotNull()
+    val validatorId = savedStateHandle.getStateFlow<String?>("validatorId", null).filterNotNull()
+    val delegationId = savedStateHandle.getStateFlow<String?>("delegationId", null).filterNotNull()
 
     val delegation = combine(validatorId, delegationId) { validatorId, delegationId -> Pair(validatorId, delegationId) }
         .flatMapLatest {
