@@ -54,7 +54,7 @@ internal fun LazyListScope.stakeActions(
             return@item
         }
         PropertyItem(
-            modifier = Modifier.Companion.clickable(onClick = onConfirm),
+            modifier = Modifier.clickable(onClick = onConfirm),
             title = { PropertyTitleText(R.string.transfer_claim_rewards_title) },
             data = { PropertyDataText(rewardsAmount, badge = { DataBadgeChevron() }) },
         )
