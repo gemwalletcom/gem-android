@@ -36,7 +36,7 @@ class DeleteWalletOperator @Inject constructor(
         }
         if (session.wallet.id == walletId) {
             val wallets = walletsRepository.getAll().firstOrNull() ?: emptyList()
-            val wallet = wallets.sortedBy { it.type }.minByOrNull { wallet.index }
+            val wallet = wallets.sortedBy { it.type }.minByOrNull { it.index }
 
             if (wallet == null) {
                 sessionRepository.reset()
