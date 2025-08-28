@@ -4,7 +4,7 @@ import android.content.Context
 
 interface RequestPushToken {
 
-    fun init(context: Context)
+    fun initRequester(context: Context)
 
     suspend fun requestToken(callback: (String) -> Unit)
 }

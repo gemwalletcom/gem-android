@@ -5,7 +5,7 @@ import com.gemwallet.android.cases.device.RequestPushToken
 
 class StoreRequestPushToken : RequestPushToken {
 
-    override fun init(context: Context) {}
+    override fun initRequester(context: Context) {}
 
     override suspend fun requestToken(callback: (String) -> Unit) {
         callback("")
