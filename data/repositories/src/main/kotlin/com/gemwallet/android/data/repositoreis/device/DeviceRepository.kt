@@ -54,13 +54,13 @@ class DeviceRepository(
 
     override suspend fun syncDeviceInfo() {
         val pushToken = getPushToken()
-        val pushEnabled = pushToken.isNotEmpty()
+        val pushEnabled = getPushEnabled()
         val deviceId = getDeviceIdCase.getDeviceId()
         val device = Device(
             id = deviceId,
             platform = Platform.Android,
             platformStore = platformStore,
-            token = "",
+            token = pushToken,
             locale = getLocale(Locale.getDefault()),
             isPushEnabled = pushEnabled,
             isPriceAlertsEnabled = enablePriceAlert.isPriceAlertEnabled(),
@@ -74,7 +74,7 @@ class DeviceRepository(
             }
         }
         if (pushEnabled && pushToken.isEmpty()) {
-            requestPushToken.invoke { pushToken ->
+            requestPushToken.requestToken { pushToken ->
                 setPushToken(pushToken)
                 register()
             }
