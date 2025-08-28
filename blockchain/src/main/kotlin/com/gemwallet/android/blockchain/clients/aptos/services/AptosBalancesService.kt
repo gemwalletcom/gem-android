@@ -9,7 +9,4 @@ import retrofit2.http.Path
 interface AptosBalancesService {
     @GET("/v1/accounts/{address}/balance/{assetType}")
     suspend fun balance(@Path("address") address: String, @Path("assetType") assetType: String): ResponseBody
-
-    @GET("/v1/accounts/{address}/resources")
-    suspend fun resources(@Path("address") address: String): List<AptosResource<AptosResourceBalanceOptional>>
 }

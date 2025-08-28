@@ -6,6 +6,10 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.withContext
 
 class AptosBalanceClient(
     private val chain: Chain,
@@ -26,19 +30,21 @@ class AptosBalanceClient(
         if (tokens.isEmpty()) {
             return emptyList()
         }
-        val resources = try {
-            balanceService.resources(address)
-        } catch (_: Throwable) {
-            return emptyList()
+        return withContext(Dispatchers.IO) {
+            tokens.map { token ->
+                async {
+                    val tokenId = token.id.tokenId ?: return@async null
+                    try {
+                        val result = balanceService.balance(address,  tokenId).string()
+                        AssetBalance.create(token, available = result)
+                    } catch (_: Throwable) {
+                        null
+                    }
+                }
+            }
+            .awaitAll()
+            .filterNotNull()
         }
-        val result = mutableListOf<AssetBalance>()
-
-        tokens.mapNotNull { token ->
-            val resource = resources.firstOrNull { it.type == "0x1::coin::CoinStore<${token.id.tokenId}>" } ?: return@mapNotNull null
-            val balance = resource.data.coin?.value ?: return@mapNotNull null
-            result.add(AssetBalance.create(token, available = balance))
-        }
-        return result
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
