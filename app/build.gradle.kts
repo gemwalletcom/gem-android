@@ -10,6 +10,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("androidx.room")
     alias(libs.plugins.compose.compiler)
+    id("com.google.gms.google-services")
 }
 
 repositories {

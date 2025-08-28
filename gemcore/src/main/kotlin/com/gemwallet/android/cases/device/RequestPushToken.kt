@@ -1,5 +1,10 @@
 package com.gemwallet.android.cases.device
 
-fun interface RequestPushToken {
-    suspend fun invoke(callback: (String) -> Unit)
+import android.content.Context
+
+interface RequestPushToken {
+
+    fun initRequester(context: Context)
+
+    suspend fun requestToken(callback: (String) -> Unit)
 }

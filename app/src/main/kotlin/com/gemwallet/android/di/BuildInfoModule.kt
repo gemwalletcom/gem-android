@@ -1,6 +1,7 @@
 package com.gemwallet.android.di
 
 import android.content.Context
+import com.gemwallet.android.cases.device.RequestPushToken
 import com.gemwallet.android.cases.pushes.ShowSystemNotification
 import com.gemwallet.android.flavors.StoreRequestPushToken
 import com.gemwallet.android.flavors.isNotificationsAvailable
@@ -20,12 +21,21 @@ object BuildInfoModule {
 
     @Provides
     @Singleton
-    fun provideBuildInfo(platformStore: PlatformStore): BuildInfo {
+    fun provideBuildInfo(
+        platformStore: PlatformStore,
+        requestPushToken: RequestPushToken,
+    ): BuildInfo {
         return BuildInfo(
             platformStore = platformStore,
             versionName = com.gemwallet.android.BuildConfig.VERSION_NAME,
-            requestPushToken = StoreRequestPushToken(),
+            requestPushToken = requestPushToken,
         )
+    }
+
+    @Provides
+    @Singleton
+    fun provideRequestPushToken(): RequestPushToken {
+        return StoreRequestPushToken()
     }
 
     @Provides
