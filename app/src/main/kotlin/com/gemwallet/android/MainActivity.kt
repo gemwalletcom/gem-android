@@ -50,12 +50,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.compose.rememberNavController
+import com.gemwallet.android.cases.security.AuthRequester
 import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.features.bridge.proposal.ProposalScene
 import com.gemwallet.android.features.bridge.request.RequestScene
+import com.gemwallet.android.model.AuthRequest
+import com.gemwallet.android.model.AuthState
 import com.gemwallet.android.services.CheckAccountsService
 import com.gemwallet.android.services.SyncService
 import com.gemwallet.android.ui.R
@@ -84,7 +87,7 @@ import kotlin.system.exitProcess
 
 @OptIn(ExperimentalMaterial3Api::class)
 @AndroidEntryPoint
-class MainActivity : FragmentActivity() {
+class MainActivity : FragmentActivity(), AuthRequester {
     private val authenticators = if (android.os.Build.VERSION.SDK_INT > android.os.Build.VERSION_CODES.Q) {
         BIOMETRIC_STRONG or DEVICE_CREDENTIAL
     } else {
@@ -297,17 +300,26 @@ class MainActivity : FragmentActivity() {
         }
     }
 
-    companion object {
-        fun requestAuth(context: Context, auth: AuthRequest, onSuccess: () -> Unit) {
-            val activity = context.getActivity() ?: exitProcess(0)
-            if (activity.enabledSysAuth()) {
-                activity.onSuccessAuth = onSuccess
-                activity.auth(auth)
-            } else {
-                onSuccess()
-            }
+    override fun requestAuth(auth: AuthRequest, onSuccess: () -> Unit) {
+        if (enabledSysAuth()) {
+            onSuccessAuth = onSuccess
+            auth(auth)
+        } else {
+            onSuccess()
         }
     }
+
+//    companion object {
+//        fun requestAuth(context: Context, auth: AuthRequest, onSuccess: () -> Unit) {
+//            val activity = context.getActivity() ?: exitProcess(0)
+//            if (activity.enabledSysAuth()) {
+//                activity.onSuccessAuth = onSuccess
+//                activity.auth(auth)
+//            } else {
+//                onSuccess()
+//            }
+//        }
+//    }
 }
 
 @OptIn(ExperimentalAtomicApi::class)
@@ -436,18 +448,6 @@ class MainViewModel @Inject constructor(
         val authState: AuthState? = null,
         val wcError: String? = null,
     )
-}
-
-enum class AuthRequest {
-    Initial,
-    Enable,
-    Phrase,
-}
-
-enum class AuthState {
-    Required,
-    Success,
-    Fail,
 }
 
 fun Context.getActivity(): MainActivity? = when (this) {

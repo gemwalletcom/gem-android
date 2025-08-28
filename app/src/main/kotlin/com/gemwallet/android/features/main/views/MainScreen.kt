@@ -54,7 +54,6 @@ import com.gemwallet.android.ui.navigation.routes.navigateToPriceAlertsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToSecurityScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToSettingsScreen
 import com.gemwallet.android.ui.navigation.routes.settingsRoute
-import com.gemwallet.android.features.settings.settings.views.SettingsScene
 import com.gemwallet.android.ui.navigation.routes.navigateToWalletsScreen
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.navigation.routes.activitiesRoute
@@ -66,6 +65,7 @@ import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
 import com.gemwallet.android.ui.navigation.routes.navigateToTransactionScreen
 import com.gemwallet.android.ui.navigation.routes.nftRoute
 import com.gemwallet.features.nft.presents.NftListScene
+import com.gemwallet.features.settings.settings.presents.views.SettingsScene
 import kotlinx.coroutines.launch
 
 @Composable

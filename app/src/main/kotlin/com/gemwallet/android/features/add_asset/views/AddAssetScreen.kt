@@ -13,6 +13,7 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.add_asset.viewmodels.models.AddAssetUIState
 import com.gemwallet.android.features.add_asset.viewmodels.AddAssetViewModel
 import com.gemwallet.android.ui.components.QrCodeRequest
+import com.gemwallet.android.ui.components.screen.SelectChain
 
 @Composable
 fun AddAssetScree(

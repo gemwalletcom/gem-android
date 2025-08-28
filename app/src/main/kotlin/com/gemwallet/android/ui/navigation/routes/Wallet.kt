@@ -6,10 +6,10 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
-import com.gemwallet.android.AuthRequest
-import com.gemwallet.android.MainActivity
 import com.gemwallet.android.features.wallet.presents.PhraseScreen
 import com.gemwallet.android.features.wallet.presents.WalletScreen
+import com.gemwallet.android.model.AuthRequest
+import com.gemwallet.android.ui.requestAuth
 import kotlinx.serialization.Serializable
 
 
@@ -37,7 +37,7 @@ fun NavGraphBuilder.walletScreen(
 
         WalletScreen(
             onAuthRequest = { callback ->
-                MainActivity.requestAuth(context, AuthRequest.Phrase) { callback() }
+                context.requestAuth(AuthRequest.Phrase) { callback() }
             },
             onPhraseShow = onPhraseShow,
             onBoard = onBoard,
