@@ -3,6 +3,7 @@ package com.gemwallet.android.data.repositoreis.di
 import com.gemwallet.android.blockchain.RpcClientAdapter
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosStakeClient
 import com.gemwallet.android.blockchain.clients.ethereum.SmartchainStakeClient
+import com.gemwallet.android.blockchain.clients.hyper.HyperCoreStakeClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaStakeClient
 import com.gemwallet.android.blockchain.clients.sui.SuiStakeClient
 import com.gemwallet.android.blockchain.clients.tron.TronStakeClient
@@ -49,6 +50,7 @@ object StakeModule {
                 }
                 ChainType.Sui -> SuiStakeClient(it, rpcClients.getClient(it))
                 ChainType.Tron -> TronStakeClient(it, rpcClients.getClient(it), rpcClients.getClient(it))
+                ChainType.HyperCore -> HyperCoreStakeClient(it)
                 ChainType.Bitcoin,
                 ChainType.Ton,
                 ChainType.Tron,

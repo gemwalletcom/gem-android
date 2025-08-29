@@ -523,6 +523,8 @@ class ConfirmViewModel @Inject constructor(
                 TransactionType.StakeWithdraw,
                 TransactionType.TransferNFT -> amount
                 TransactionType.SmartContractCall -> TODO()
+                TransactionType.PerpetualOpenPosition -> TODO()
+                TransactionType.PerpetualClosePosition -> TODO()
             }
 
             if (assetBalance < totalAmount) {

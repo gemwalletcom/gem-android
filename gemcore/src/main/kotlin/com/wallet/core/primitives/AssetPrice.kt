@@ -63,8 +63,6 @@ enum class ChartPeriod(val string: String) {
 	Week("week"),
 	@SerialName("month")
 	Month("month"),
-	@SerialName("quarter")
-	Quarter("quarter"),
 	@SerialName("year")
 	Year("year"),
 	@SerialName("all")

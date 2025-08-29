@@ -133,6 +133,8 @@ class AmountViewModel @Inject constructor(
             TransactionType.TransferNFT,
             TransactionType.SmartContractCall,
             TransactionType.TokenApproval,
+            TransactionType.PerpetualOpenPosition -> throw IllegalArgumentException() // TODO: HyperCore
+            TransactionType.PerpetualClosePosition -> throw IllegalArgumentException() // TODO: HyperCore
             null -> Crypto(BigInteger.ZERO)
         }
         assetInfo.asset.format(value, 8)
@@ -260,7 +262,9 @@ class AmountViewModel @Inject constructor(
             TransactionType.Swap,
             TransactionType.TransferNFT,
             TransactionType.SmartContractCall,
-            TransactionType.TokenApproval -> throw IllegalArgumentException()
+            TransactionType.TokenApproval,
+            TransactionType.PerpetualOpenPosition,
+            TransactionType.PerpetualClosePosition -> throw IllegalArgumentException()
         }
         onConfirm(nextParams)
     }
@@ -335,6 +339,8 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeWithdraw -> Crypto(BigInteger(delegation?.base?.balance ?: "0"))
             TransactionType.AssetActivation,
             TransactionType.TransferNFT,
+            TransactionType.PerpetualOpenPosition,
+            TransactionType.PerpetualClosePosition,
             TransactionType.SmartContractCall -> throw IllegalArgumentException()
         }
         if (amount.atomicValue > availableAmount.atomicValue) {

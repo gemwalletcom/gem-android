@@ -49,6 +49,8 @@ class  CosmosFeeCalculator(
             TransactionType.AssetActivation,
             TransactionType.TransferNFT,
             TransactionType.SmartContractCall,
+            TransactionType.PerpetualOpenPosition,
+            TransactionType.PerpetualClosePosition,
             TransactionType.TokenApproval -> throw IllegalArgumentException("Chain not available: no limit fee")
 
         }

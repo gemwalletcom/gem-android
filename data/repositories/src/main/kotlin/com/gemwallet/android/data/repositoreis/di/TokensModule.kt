@@ -3,6 +3,7 @@ package com.gemwallet.android.data.repositoreis.di
 import com.gemwallet.android.blockchain.RpcClientAdapter
 import com.gemwallet.android.blockchain.clients.aptos.AptosGetTokenClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmGetTokenClient
+import com.gemwallet.android.blockchain.clients.hyper.HyperCoreGetTokenClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaTokenClient
 import com.gemwallet.android.blockchain.clients.sui.SuiGetTokenClient
 import com.gemwallet.android.blockchain.clients.ton.TonGetTokenClient
@@ -51,6 +52,7 @@ object TokensModule {
                 ChainType.Stellar,
                 ChainType.Polkadot,
                 ChainType.Cardano,
+                ChainType.HyperCore -> HyperCoreGetTokenClient(chain)
                 ChainType.Near -> null
             }
         }

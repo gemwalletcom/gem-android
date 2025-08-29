@@ -27,5 +27,7 @@ enum class StakeChain(val string: String) {
 	SmartChain("smartchain"),
 	@SerialName("tron")
 	Tron("tron"),
+	@SerialName("hypercore")
+	HyperCore("hypercore"),
 }
 

@@ -31,5 +31,9 @@ enum class TransactionType(val string: String) {
 	AssetActivation("assetActivation"),
 	@SerialName("smartContractCall")
 	SmartContractCall("smartContractCall"),
+	@SerialName("perpetualOpenPosition")
+	PerpetualOpenPosition("perpetualOpenPosition"),
+	@SerialName("perpetualClosePosition")
+	PerpetualClosePosition("perpetualClosePosition"),
 }
 

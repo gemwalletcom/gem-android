@@ -9,6 +9,7 @@ import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinRpcClien
 import com.gemwallet.android.blockchain.clients.cardano.services.CardanoServices
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosRpcClient
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
+import com.gemwallet.android.blockchain.clients.hyper.services.HyperCoreServices
 import com.gemwallet.android.blockchain.clients.near.NearRpcClient
 import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotServices
 import com.gemwallet.android.blockchain.clients.solana.services.SolanaRpcClient
@@ -46,6 +47,7 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Qualifier
 import javax.inject.Singleton
+import kotlin.collections.map
 
 @Qualifier
 annotation class NodeHttpClient
@@ -159,6 +161,7 @@ object ClientsModule {
                 ChainType.Stellar -> buildClient(url, StellarService::class.java, converter, httpClient)
                 ChainType.Polkadot -> buildClient(url, PolkadotServices::class.java, converter, httpClient)
                 ChainType.Cardano -> buildClient(url, CardanoServices::class.java, converter, httpClient)
+                ChainType.HyperCore -> buildClient(url, HyperCoreServices::class.java, converter, httpClient)
             }
             adapter.add(it, rpc)
         }

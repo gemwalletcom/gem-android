@@ -77,7 +77,6 @@ private fun ChartPeriod.getLabel(): String? {
         ChartPeriod.Month -> R.string.charts_month
         ChartPeriod.Year -> R.string.charts_year
         ChartPeriod.All -> R.string.charts_all
-        ChartPeriod.Quarter -> return null
     }
     return stringResource(id = strId)
 }

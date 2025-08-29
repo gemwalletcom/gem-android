@@ -68,26 +68,26 @@ class RequestViewModel @Inject constructor(
         }
 
         val params = when (request.request.method) {
-            WalletConnectionMethods.solana_sign_message.string,
-            WalletConnectionMethods.eth_sign.string -> {
+            WalletConnectionMethods.SolanaSignMessage.string,
+            WalletConnectionMethods.EthSign.string -> {
                 val data = JSONArray(request.request.params).getString(1)
                 String(data.decodeHex())
             }
-            WalletConnectionMethods.eth_sign_typed_data_v4.string,
-            WalletConnectionMethods.eth_sign_typed_data.string -> {
+            WalletConnectionMethods.EthSignTypedDataV4.string,
+            WalletConnectionMethods.EthSignTypedData.string -> {
                 JSONArray(request.request.params).getString(1)
             }
-            WalletConnectionMethods.personal_sign.string -> {
+            WalletConnectionMethods.PersonalSign.string -> {
                 val data = JSONArray(request.request.params).getString(0)
                 String(data.decodeHex()) // TODO: Crashed with IllegalArgumentException
             }
-            WalletConnectionMethods.eth_send_transaction.string -> request.request.params
-            WalletConnectionMethods.solana_sign_and_send_transaction.string,
-            WalletConnectionMethods.solana_sign_transaction.string -> {
+            WalletConnectionMethods.EthSendTransaction.string -> request.request.params
+            WalletConnectionMethods.SolanaSignAndSendTransaction.string,
+            WalletConnectionMethods.SolanaSignTransaction.string -> {
                 val params = JSONObject(request.request.params).getString("transaction")
                 params
             }
-            WalletConnectionMethods.wallet_switch_ethereum_chain.string -> {
+            WalletConnectionMethods.WalletSwitchEthereumChain.string -> {
                 WalletKit.respondSessionRequest(
                     params = Wallet.Params.SessionRequestResponse(
                         sessionTopic = request.topic,
@@ -113,7 +113,7 @@ class RequestViewModel @Inject constructor(
     fun onSent(hash: String) {
         val sessionRequest = state.value.sessionRequest ?: return
         val data = when (state.value.sessionRequest?.request?.method) {
-            WalletConnectionMethods.solana_sign_transaction.string -> jsonEncoder.encodeToString(WCSolanaSignMessageResult(signature = hash))
+            WalletConnectionMethods.SolanaSignTransaction.string -> jsonEncoder.encodeToString(WCSolanaSignMessageResult(signature = hash))
             else -> hash
         }
 
@@ -142,19 +142,19 @@ class RequestViewModel @Inject constructor(
 
             val sign = try {
                 when (method) {
-                    WalletConnectionMethods.eth_sign,
-                    WalletConnectionMethods.personal_sign -> {
+                    WalletConnectionMethods.EthSign,
+                    WalletConnectionMethods.PersonalSign -> {
                         val data = state.value.params.toByteArray()
                         val messagePrefix = "\u0019Ethereum Signed Message:\n${data.size}"
                         val prefix = messagePrefix.toByteArray()
                         val param = Hash.keccak256(prefix + data)
                         signClient.signMessage(chain, param, privateKey).toHexString()
                     }
-                    WalletConnectionMethods.eth_sign_typed_data,
-                    WalletConnectionMethods.eth_sign_typed_data_v4 -> {
+                    WalletConnectionMethods.EthSignTypedData,
+                    WalletConnectionMethods.EthSignTypedDataV4 -> {
                         signClient.signTypedMessage(chain, state.value.params.toByteArray(), privateKey).toHexString()
                     }
-                    WalletConnectionMethods.solana_sign_message -> {
+                    WalletConnectionMethods.SolanaSignMessage -> {
                         val param = state.value.params.toByteArray()
                         signClient.signMessage(chain, param, privateKey).toHexString()
                     }
@@ -224,11 +224,11 @@ private data class RequestViewModelState(
         }
         val account = wallet?.getAccount(chain!!)!!
         return when (sessionRequest.request.method) {
-            WalletConnectionMethods.eth_sign.string,
-            WalletConnectionMethods.personal_sign.string,
-            WalletConnectionMethods.eth_sign_typed_data_v4.string,
-            WalletConnectionMethods.solana_sign_message.string,
-            WalletConnectionMethods.eth_sign_typed_data.string -> RequestSceneState.SignMessage(
+            WalletConnectionMethods.EthSign.string,
+            WalletConnectionMethods.PersonalSign.string,
+            WalletConnectionMethods.EthSignTypedDataV4.string,
+            WalletConnectionMethods.SolanaSignMessage.string,
+            WalletConnectionMethods.EthSignTypedData.string -> RequestSceneState.SignMessage(
                 account = account,
                 walletName = wallet.name,
                 chain = chain,
@@ -242,7 +242,7 @@ private data class RequestViewModelState(
                 ),
                 params = params,
             )
-            WalletConnectionMethods.eth_send_transaction.string -> {
+            WalletConnectionMethods.EthSendTransaction.string -> {
                 try {
                     val jObj = JSONArray(params).getJSONObject(0)
                     val to = jObj.getString("to")
@@ -258,7 +258,7 @@ private data class RequestViewModelState(
                     RequestSceneState.Error("Argument error: ${err.message}")
                 }
             }
-            WalletConnectionMethods.solana_sign_transaction.string -> RequestSceneState.SignGeneric(
+            WalletConnectionMethods.SolanaSignTransaction.string -> RequestSceneState.SignGeneric(
                     ConfirmParams.TransferParams.Generic(
                     asset = chain.asset(),
                     from = account,
@@ -266,7 +266,7 @@ private data class RequestViewModelState(
                     inputType = ConfirmParams.TransferParams.InputType.Signature
                 )
             )
-            WalletConnectionMethods.solana_sign_and_send_transaction.string -> RequestSceneState.SignGeneric(
+            WalletConnectionMethods.SolanaSignAndSendTransaction.string -> RequestSceneState.SignGeneric(
                 ConfirmParams.TransferParams.Generic(
                     asset = chain.asset(),
                     from = account,

@@ -35,6 +35,10 @@ import com.gemwallet.android.blockchain.clients.ethereum.EvmBroadcastClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmNodeStatusClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmSignClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmSignerPreloader
+import com.gemwallet.android.blockchain.clients.hyper.HyperCoreBroadcatClient
+import com.gemwallet.android.blockchain.clients.hyper.HyperCoreNodeStatusClient
+import com.gemwallet.android.blockchain.clients.hyper.HyperCoreSignClient
+import com.gemwallet.android.blockchain.clients.hyper.HyperCoreSignerPreloaderClient
 import com.gemwallet.android.blockchain.clients.near.NearBroadcastClient
 import com.gemwallet.android.blockchain.clients.near.NearNodeStatusClient
 import com.gemwallet.android.blockchain.clients.near.NearSignClient
@@ -112,6 +116,7 @@ object DataModule {
                 ChainType.Stellar -> StellarBroadcastClient(it, rpcClients.getClient(it))
                 ChainType.Polkadot -> PolkadotBroadcastClient(it, rpcClients.getClient(it))
                 ChainType.Cardano -> CardanoBroadcastClient(it, rpcClients.getClient(it))
+                ChainType.HyperCore -> HyperCoreBroadcatClient(it)
             }
         },
     )
@@ -140,6 +145,7 @@ object DataModule {
                 ChainType.Stellar -> StellarSignPreloadClient(it, rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Polkadot -> PolkadotSignerPreloaderClient(it, rpcClients.getClient(it), rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Cardano -> CardanoSignerPreloaderClient(it, rpcClients.getClient(it))
+                ChainType.HyperCore -> HyperCoreSignerPreloaderClient(it)
             }
         }
         return SignerPreloaderProxy(
@@ -178,6 +184,7 @@ object DataModule {
                 ChainType.Stellar -> StellarSignClient(it)
                 ChainType.Polkadot -> PolkadotSignClient(it)
                 ChainType.Cardano -> CardanoSignClient(it)
+                ChainType.HyperCore -> HyperCoreSignClient(it)
             }
         },
     )
@@ -204,6 +211,7 @@ object DataModule {
                     ChainType.Stellar -> StellarNodeStatusClient(it, rpcClients.getClient(it))
                     ChainType.Polkadot -> PolkadotNodeStatusClient(it, rpcClients.getClient(it))
                     ChainType.Cardano -> CardanoNodeStatusClient(it, rpcClients.getClient(it))
+                    ChainType.HyperCore -> HyperCoreNodeStatusClient(it)
                 }
             }
         )

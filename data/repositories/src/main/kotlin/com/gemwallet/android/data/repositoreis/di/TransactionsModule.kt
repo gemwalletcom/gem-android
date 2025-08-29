@@ -7,6 +7,7 @@ import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinTransactionStatus
 import com.gemwallet.android.blockchain.clients.cardano.CardanoTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmTransactionStatusClient
+import com.gemwallet.android.blockchain.clients.hyper.HyperCoreTransactionsStatusClient
 import com.gemwallet.android.blockchain.clients.near.NearTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.polkadot.PolkadotTransactionStatusClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaTransactionStatusClient
@@ -69,6 +70,7 @@ object TransactionsModule {
                 ChainType.Stellar -> StellarTransactionStatusClient(it, rpcClients.getClient(it))
                 ChainType.Polkadot -> PolkadotTransactionStatusClient(it, rpcClients.getClient(it))
                 ChainType.Cardano -> CardanoTransactionStatusClient(it, rpcClients.getClient(it))
+                ChainType.HyperCore -> HyperCoreTransactionsStatusClient(it)
             }
         },
     )

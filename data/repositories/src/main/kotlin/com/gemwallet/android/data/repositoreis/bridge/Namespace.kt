@@ -10,23 +10,23 @@ enum class ChainNamespace(val string: String, val methods: List<WalletConnection
     Eip155(
         "eip155",
         listOf(
-            WalletConnectionMethods.eth_chain_id,
-            WalletConnectionMethods.eth_sign,
-            WalletConnectionMethods.personal_sign,
-            WalletConnectionMethods.eth_sign_typed_data,
-            WalletConnectionMethods.eth_sign_typed_data_v4,
-            WalletConnectionMethods.eth_sign_transaction,
-            WalletConnectionMethods.eth_send_transaction,
-            WalletConnectionMethods.wallet_add_ethereum_chain,
-            WalletConnectionMethods.wallet_switch_ethereum_chain,
-            WalletConnectionMethods.eth_send_raw_transaction,
+            WalletConnectionMethods.EthChainId,
+            WalletConnectionMethods.EthSign,
+            WalletConnectionMethods.PersonalSign,
+            WalletConnectionMethods.EthSignTypedData,
+            WalletConnectionMethods.EthSignTypedDataV4,
+            WalletConnectionMethods.EthSendTransaction,
+            WalletConnectionMethods.EthSendTransaction,
+            WalletConnectionMethods.WalletAddEthereumChain,
+            WalletConnectionMethods.WalletSwitchEthereumChain,
+            WalletConnectionMethods.EthSendRawTransaction,
         )
     ),
     Solana(
         Chain.Solana.string,
         listOf(
-            WalletConnectionMethods.solana_sign_transaction,
-            WalletConnectionMethods.solana_sign_message,
+            WalletConnectionMethods.SolanaSignTransaction,
+            WalletConnectionMethods.SolanaSignMessage,
         )
     )
 }

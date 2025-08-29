@@ -32,7 +32,7 @@ data class DelegationBase (
 	val balance: String,
 	val shares: String,
 	val rewards: String,
-	val completionDate: Long? = null,
+	val completionDate: SerializedDate? = null,
 	val delegationId: String,
 	val validatorId: String
 )

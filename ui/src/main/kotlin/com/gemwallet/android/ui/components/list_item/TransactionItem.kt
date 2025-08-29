@@ -229,7 +229,9 @@ fun TransactionType.getTitle(direction: TransactionDirection? = null, state: Tra
         TransactionType.StakeWithdraw -> R.string.transfer_withdraw_title
         TransactionType.AssetActivation -> R.string.transfer_activate_asset_title
         TransactionType.TransferNFT -> R.string.transfer_title
-        TransactionType.SmartContractCall -> TODO()
+        TransactionType.SmartContractCall -> R.string.transfer_smart_contract_title
+        TransactionType.PerpetualOpenPosition -> R.string.perpetual_position
+        TransactionType.PerpetualClosePosition -> R.string.perpetual_close_position
     }
 }
 
@@ -246,7 +248,9 @@ fun TransactionType.getTransactionTitle(direction: TransactionDirection, state: 
         TransactionType.TokenApproval -> stringResource(id = R.string.transfer_approve_title)
         TransactionType.AssetActivation -> stringResource(R.string.transfer_activate_asset_title)
         TransactionType.TransferNFT -> "${stringResource(R.string.transfer_title)} NFT"
-        TransactionType.SmartContractCall -> TODO()
+        TransactionType.SmartContractCall -> stringResource(R.string.transfer_smart_contract_title)
+        TransactionType.PerpetualOpenPosition -> stringResource(R.string.perpetual_position)
+        TransactionType.PerpetualClosePosition -> stringResource(R.string.perpetual_close_position)
     }
 }
 
@@ -255,8 +259,10 @@ fun TransactionType.getValue(direction: TransactionDirection, value: String): St
         TransactionType.StakeUndelegate,
         TransactionType.StakeRewards,
         TransactionType.StakeRedelegate,
-        TransactionType.StakeWithdraw -> value
-        TransactionType.StakeDelegate -> value
+        TransactionType.StakeWithdraw,
+        TransactionType.StakeDelegate,
+        TransactionType.PerpetualOpenPosition,
+        TransactionType.PerpetualClosePosition -> value
         TransactionType.Transfer,
         TransactionType.Swap -> when (direction) {
             TransactionDirection.SelfTransfer,
@@ -265,8 +271,8 @@ fun TransactionType.getValue(direction: TransactionDirection, value: String): St
         }
         TransactionType.TokenApproval,
         TransactionType.TransferNFT,
-        TransactionType.AssetActivation -> ""
-        TransactionType.SmartContractCall -> TODO()
+        TransactionType.AssetActivation,
+        TransactionType.SmartContractCall -> ""
     }
 }
 
@@ -286,8 +292,10 @@ fun TransactionType.getAddress(direction: TransactionDirection, from: String, to
         TransactionType.StakeRedelegate,
         TransactionType.StakeWithdraw,
         TransactionType.AssetActivation,
-        TransactionType.StakeRewards -> ""
-        TransactionType.SmartContractCall -> TODO()
+        TransactionType.StakeRewards,
+        TransactionType.SmartContractCall,
+        TransactionType.PerpetualOpenPosition,
+        TransactionType.PerpetualClosePosition -> ""
     }
 }
 

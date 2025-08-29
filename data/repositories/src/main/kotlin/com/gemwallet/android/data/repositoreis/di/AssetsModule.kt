@@ -8,6 +8,7 @@ import com.gemwallet.android.blockchain.clients.cardano.CardanoBalanceClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosBalanceClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmBalanceClient
 import com.gemwallet.android.blockchain.clients.ethereum.SmartchainStakeClient
+import com.gemwallet.android.blockchain.clients.hyper.HyperCoreBalanceClient
 import com.gemwallet.android.blockchain.clients.near.NearBalanceClient
 import com.gemwallet.android.blockchain.clients.polkadot.PolkadotBalancesClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaBalanceClient
@@ -91,6 +92,7 @@ object AssetsModule {
                 ChainType.Stellar -> StellarBalanceClient(it, rpcClients.getClient(it))
                 ChainType.Polkadot -> PolkadotBalancesClient(it, rpcClients.getClient(it))
                 ChainType.Cardano -> CardanoBalanceClient(it, rpcClients.getClient(it))
+                ChainType.HyperCore -> HyperCoreBalanceClient(it)
             }
         }
     )

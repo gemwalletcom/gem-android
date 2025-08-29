@@ -37,5 +37,7 @@ enum class AssetType(val string: String) {
 	SYNTH("SYNTH"),
 	@SerialName("ASA")
 	ASA("ASA"),
+	@SerialName("PERPETUAL")
+	PERPETUAL("PERPETUAL"),
 }
 
