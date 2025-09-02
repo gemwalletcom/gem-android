@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
-import com.gemwallet.android.blockchain.clients.aptos.services.AptosFeeService
+import com.gemwallet.android.blockchain.clients.aptos.services.AptosServices
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
@@ -21,12 +21,12 @@ import java.math.BigInteger
 
 internal class AptosFeeCalculator(
     private val chain: Chain,
-    private val feeRpcClient: AptosFeeService,
+    private val aptosServices: AptosServices,
 ) {
     private val maxGasAmount = BigInteger.valueOf(1_500)
 
     suspend fun calculate(params: ConfirmParams, sequence: Long): List<Fee> = withContext(Dispatchers.IO) {
-        val feePrice = feeRpcClient.feePrice().getOrThrow()
+        val feePrice = aptosServices.feePrice().getOrThrow()
 
         FeePriority.entries.map {
             async(Dispatchers.IO) {
@@ -95,7 +95,7 @@ internal class AptosFeeCalculator(
                 signature = null,
             ),
         )
-        val response = feeRpcClient.simulate(transaction)
+        val response = aptosServices.simulate(transaction)
         val simulated = response.getOrNull()?.firstOrNull()
         return simulated ?: throw Exception("No aptos transaction")
     }

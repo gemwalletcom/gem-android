@@ -2,8 +2,7 @@ package com.gemwallet.android.blockchain.clients.bitcoin
 
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
-import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinFeeService
-import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinUTXOService
+import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinRpcClient
 import com.gemwallet.android.ext.fullAddress
 import com.gemwallet.android.ext.toBitcoinChain
 import com.gemwallet.android.model.ChainSignData
@@ -18,11 +17,10 @@ import java.math.BigInteger
 
 class BitcoinSignerPreloader(
     private val chain: Chain,
-    private val utxoService: BitcoinUTXOService,
-    feeService: BitcoinFeeService,
+    private val client: BitcoinRpcClient,
 ) : NativeTransferPreloader, SwapTransactionPreloader {
 
-    private val feeCalculator = BitcoinFeeCalculator(feeService)
+    private val feeCalculator = BitcoinFeeCalculator(client)
 
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
         val data = preload(params.from, params.destination().address, params.amount)
@@ -38,7 +36,7 @@ class BitcoinSignerPreloader(
 
     private suspend fun preload(fromAccount: Account, destinationAddress: String, amount: BigInteger): BitcoinChainData {
         val address = chain.toBitcoinChain().fullAddress(fromAccount.address)
-        val utxo = utxoService.getUTXO(address).getOrNull() ?: throw Exception("Can't load UTXO")
+        val utxo = client.getUTXO(address).getOrNull() ?: throw Exception("Can't load UTXO")
         val fee = feeCalculator.calculate(utxo, fromAccount, destinationAddress, amount)
         return BitcoinChainData(utxo, fee)
     }

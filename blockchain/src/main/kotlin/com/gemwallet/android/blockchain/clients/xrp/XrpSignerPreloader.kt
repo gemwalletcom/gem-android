@@ -5,7 +5,6 @@ import com.gemwallet.android.blockchain.clients.BlockchainError
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
-import com.gemwallet.android.blockchain.clients.xrp.services.account
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee

@@ -120,7 +120,7 @@ class XrpSignClient(
             }
         }.build()
         val output = AnySigner.sign(signInput, WCChainTypeProxy().invoke(chain), Ripple.SigningOutput.parser())
-        return listOf(output.encoded.toByteArray())
+        return listOf(output.encoded.toByteArray().toHexString().toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.cosmos
 
-import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosAccountsService
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.ConfirmParams

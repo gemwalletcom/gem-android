@@ -3,85 +3,54 @@ package com.gemwallet.android.di
 import com.gemwallet.android.blockchain.RpcClientAdapter
 import com.gemwallet.android.blockchain.clients.ActivationTransactionPreloader
 import com.gemwallet.android.blockchain.clients.ApprovalTransactionPreloader
-import com.gemwallet.android.blockchain.clients.BroadcastClientProxy
 import com.gemwallet.android.blockchain.clients.GenericTransferPreloader
 import com.gemwallet.android.blockchain.clients.NftTransactionPreloader
-import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
-import com.gemwallet.android.blockchain.clients.SignClientProxy
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
-import com.gemwallet.android.blockchain.clients.algorand.AlgorandBroadcastClient
-import com.gemwallet.android.blockchain.clients.algorand.AlgorandNodeStatusClient
 import com.gemwallet.android.blockchain.clients.algorand.AlgorandSignClient
 import com.gemwallet.android.blockchain.clients.algorand.AlgorandSignPreloadClient
-import com.gemwallet.android.blockchain.clients.aptos.AptosBroadcastClient
-import com.gemwallet.android.blockchain.clients.aptos.AptosNodeStatusClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosSignClient
 import com.gemwallet.android.blockchain.clients.aptos.AptosSignerPreloader
-import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinBroadcastClient
-import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinNodeStatusClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinSignClient
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinSignerPreloader
-import com.gemwallet.android.blockchain.clients.cardano.CardanoBroadcastClient
-import com.gemwallet.android.blockchain.clients.cardano.CardanoNodeStatusClient
 import com.gemwallet.android.blockchain.clients.cardano.CardanoSignClient
 import com.gemwallet.android.blockchain.clients.cardano.CardanoSignerPreloaderClient
-import com.gemwallet.android.blockchain.clients.cosmos.CosmosBroadcastClient
-import com.gemwallet.android.blockchain.clients.cosmos.CosmosNodeStatusClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosSignClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosSignerPreloader
 import com.gemwallet.android.blockchain.clients.ethereum.EvmBroadcastClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmNodeStatusClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmSignClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmSignerPreloader
-import com.gemwallet.android.blockchain.clients.hyper.HyperCoreBroadcatClient
-import com.gemwallet.android.blockchain.clients.hyper.HyperCoreNodeStatusClient
 import com.gemwallet.android.blockchain.clients.hyper.HyperCoreSignClient
 import com.gemwallet.android.blockchain.clients.hyper.HyperCoreSignerPreloaderClient
-import com.gemwallet.android.blockchain.clients.near.NearBroadcastClient
-import com.gemwallet.android.blockchain.clients.near.NearNodeStatusClient
 import com.gemwallet.android.blockchain.clients.near.NearSignClient
 import com.gemwallet.android.blockchain.clients.near.NearSignerPreloader
-import com.gemwallet.android.blockchain.clients.polkadot.PolkadotBroadcastClient
-import com.gemwallet.android.blockchain.clients.polkadot.PolkadotNodeStatusClient
 import com.gemwallet.android.blockchain.clients.polkadot.PolkadotSignClient
 import com.gemwallet.android.blockchain.clients.polkadot.PolkadotSignerPreloaderClient
-import com.gemwallet.android.blockchain.clients.solana.SolanaBroadcastClient
-import com.gemwallet.android.blockchain.clients.solana.SolanaNodeStatusClient
 import com.gemwallet.android.blockchain.clients.solana.SolanaSignClient
-import com.gemwallet.android.blockchain.clients.solana.SolanaSignerPreloader
-import com.gemwallet.android.blockchain.clients.stellar.StellarBroadcastClient
-import com.gemwallet.android.blockchain.clients.stellar.StellarNodeStatusClient
 import com.gemwallet.android.blockchain.clients.stellar.StellarSignClient
 import com.gemwallet.android.blockchain.clients.stellar.StellarSignPreloadClient
-import com.gemwallet.android.blockchain.clients.sui.SuiBroadcastClient
-import com.gemwallet.android.blockchain.clients.sui.SuiNodeStatusClient
 import com.gemwallet.android.blockchain.clients.sui.SuiSignClient
 import com.gemwallet.android.blockchain.clients.sui.SuiSignerPreloader
-import com.gemwallet.android.blockchain.clients.ton.TonBroadcastClient
-import com.gemwallet.android.blockchain.clients.ton.TonNodeStatusClient
 import com.gemwallet.android.blockchain.clients.ton.TonSignClient
 import com.gemwallet.android.blockchain.clients.ton.TonSignerPreloader
-import com.gemwallet.android.blockchain.clients.tron.TronBroadcastClient
-import com.gemwallet.android.blockchain.clients.tron.TronNodeStatusClient
 import com.gemwallet.android.blockchain.clients.tron.TronSignClient
 import com.gemwallet.android.blockchain.clients.tron.TronSignerPreloader
-import com.gemwallet.android.blockchain.clients.xrp.XrpBroadcastClient
-import com.gemwallet.android.blockchain.clients.xrp.XrpNodeStatusClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignerPreloader
-import com.gemwallet.android.cases.device.GetDeviceIdCase
+import com.gemwallet.android.blockchain.services.BroadcastClientProxy
+import com.gemwallet.android.blockchain.services.NodeStatusClientProxy
+import com.gemwallet.android.blockchain.services.SignClientProxy
+import com.gemwallet.android.blockchain.services.SignerPreloaderProxy
 import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.available
 import com.gemwallet.android.ext.toChainType
-import com.gemwallet.android.services.SignerPreloaderProxy
 import com.gemwallet.android.services.SyncService
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
@@ -89,6 +58,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import uniffi.gemstone.GemGateway
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -98,25 +68,26 @@ object DataModule {
     @Provides
     @Singleton
     fun providesBroadcastProxy(
+        gateway: GemGateway,
         rpcClients: RpcClientAdapter,
     ): BroadcastClientProxy = BroadcastClientProxy(
-        Chain.available().map {
+        gateway = gateway,
+        clients = Chain.available().mapNotNull {
             when (it.toChainType()) {
-                ChainType.Bitcoin -> BitcoinBroadcastClient(it, rpcClients.getClient(it))
                 ChainType.Ethereum -> EvmBroadcastClient(it, rpcClients.getClient(it))
-                ChainType.Solana -> SolanaBroadcastClient(it, rpcClients.getClient(Chain.Solana))
-                ChainType.Cosmos -> CosmosBroadcastClient(it, rpcClients.getClient(it))
-                ChainType.Ton -> TonBroadcastClient(it, rpcClients.getClient(it))
-                ChainType.Tron -> TronBroadcastClient(it, rpcClients.getClient(Chain.Tron))
-                ChainType.Aptos -> AptosBroadcastClient(it, rpcClients.getClient(it))
-                ChainType.Sui -> SuiBroadcastClient(it, rpcClients.getClient(it))
-                ChainType.Xrp -> XrpBroadcastClient(it, rpcClients.getClient(it))
-                ChainType.Near -> NearBroadcastClient(it, rpcClients.getClient(it))
-                ChainType.Algorand -> AlgorandBroadcastClient(it, rpcClients.getClient(it))
-                ChainType.Stellar -> StellarBroadcastClient(it, rpcClients.getClient(it))
-                ChainType.Polkadot -> PolkadotBroadcastClient(it, rpcClients.getClient(it))
-                ChainType.Cardano -> CardanoBroadcastClient(it, rpcClients.getClient(it))
-                ChainType.HyperCore -> HyperCoreBroadcatClient(it)
+                else -> null
+//                ChainType.Bitcoin -> BitcoinBroadcastClient(it, rpcClients.getClient(it))
+//                ChainType.Cosmos -> CosmosBroadcastClient(it, rpcClients.getClient(it))
+//                ChainType.Ton -> TonBroadcastClient(it, rpcClients.getClient(it))
+//                ChainType.Tron -> TronBroadcastClient(it, rpcClients.getClient(Chain.Tron))
+//                ChainType.Aptos -> AptosBroadcastClient(it, rpcClients.getClient(it))
+//                ChainType.Sui -> SuiBroadcastClient(it, rpcClients.getClient(it))
+//                ChainType.Xrp -> XrpBroadcastClient(it, rpcClients.getClient(it))
+//                ChainType.Near -> NearBroadcastClient(it, rpcClients.getClient(it))
+//                ChainType.Algorand -> AlgorandBroadcastClient(it, rpcClients.getClient(it))
+//                ChainType.Stellar -> StellarBroadcastClient(it, rpcClients.getClient(it))
+//                ChainType.Polkadot -> PolkadotBroadcastClient(it, rpcClients.getClient(it))
+//                ChainType.Cardano -> CardanoBroadcastClient(it, rpcClients.getClient(it))
             }
         },
     )
@@ -124,16 +95,14 @@ object DataModule {
     @Provides
     @Singleton
     fun provideSignerPreloader(
+        gateway: GemGateway,
         rpcClients: RpcClientAdapter,
-        gemApiClient: GemApiClient,
-        sessionRepository: SessionRepository,
-        getDeviceIdCase: GetDeviceIdCase,
     ): SignerPreloaderProxy {
-        val preloaders = Chain.available().map {
+        val preloaders = Chain.available().mapNotNull {
             when (it.toChainType()) {
                 ChainType.Bitcoin -> BitcoinSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Ethereum -> EvmSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it))
-                ChainType.Solana -> SolanaSignerPreloader(it, rpcClients.getClient(Chain.Solana), rpcClients.getClient(Chain.Solana), rpcClients.getClient(Chain.Solana))
+                ChainType.Solana -> null
                 ChainType.Cosmos -> CosmosSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Ton -> TonSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Tron -> TronSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it), rpcClients.getClient(it))
@@ -149,9 +118,7 @@ object DataModule {
             }
         }
         return SignerPreloaderProxy(
-            gemApiClient = gemApiClient,
-            sessionRepository = sessionRepository,
-            getDeviceIdCase = getDeviceIdCase,
+            gateway = gateway,
             nativeTransferClients = preloaders,
             tokenTransferClients = preloaders.mapNotNull { it as? TokenTransferPreloader },
             stakeTransactionClients = preloaders.mapNotNull { it as? StakeTransactionPreloader },
@@ -192,26 +159,15 @@ object DataModule {
     @Singleton
     @Provides
     fun provideNodeStatusClient(
+        gateway: GemGateway,
         rpcClients: RpcClientAdapter,
     ): NodeStatusClientProxy {
         return NodeStatusClientProxy(
-            Chain.available().map {
+            gateway = gateway,
+            clients = Chain.available().mapNotNull {
                 when (it.toChainType()) {
                     ChainType.Ethereum -> EvmNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.Bitcoin -> BitcoinNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.Solana -> SolanaNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.Cosmos -> CosmosNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.Ton -> TonNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.Tron -> TronNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.Aptos -> AptosNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.Sui -> SuiNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.Xrp -> XrpNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.Near -> NearNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.Algorand -> AlgorandNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.Stellar -> StellarNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.Polkadot -> PolkadotNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.Cardano -> CardanoNodeStatusClient(it, rpcClients.getClient(it))
-                    ChainType.HyperCore -> HyperCoreNodeStatusClient(it)
+                    else -> null
                 }
             }
         )

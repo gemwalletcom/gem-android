@@ -1,8 +1,7 @@
 package com.gemwallet.android.blockchain.clients.stellar
 
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
-import com.gemwallet.android.blockchain.clients.stellar.services.StellarAccountService
-import com.gemwallet.android.blockchain.clients.stellar.services.StellarFeeService
+import com.gemwallet.android.blockchain.clients.stellar.services.StellarService
 import com.gemwallet.android.blockchain.clients.stellar.services.accounts
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
@@ -17,19 +16,18 @@ import java.math.BigInteger
 
 class StellarSignPreloadClient(
     private val chain: Chain,
-    private val accountService: StellarAccountService,
-    feeService: StellarFeeService,
+    private val client: StellarService,
 ) : NativeTransferPreloader {
 
-    private val feeCalculator = StellarFeeCalculator(chain, feeService)
+    private val feeCalculator = StellarFeeCalculator(chain, client)
 
     override suspend fun preloadNativeTransfer(
         params: ConfirmParams.TransferParams.Native
     ): SignerParams = withContext(Dispatchers.IO) {
-        val getAccount = async { accountService.accounts(params.from.address) }
+        val getAccount = async { client.accounts(params.from.address) }
         val getIsDestinationAccountExist = async {
             try {
-                accountService.accounts(params.destination.address) != null
+                client.accounts(params.destination.address) != null
             } catch (_: Throwable) {
                 false
             }

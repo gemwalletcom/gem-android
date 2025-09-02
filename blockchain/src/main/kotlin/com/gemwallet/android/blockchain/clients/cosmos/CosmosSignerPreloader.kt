@@ -4,7 +4,7 @@ import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
-import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosAccountsService
+import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosRpcClient
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
@@ -17,7 +17,7 @@ import kotlinx.coroutines.withContext
 
 class CosmosSignerPreloader(
     private val chain: Chain,
-    private val accountsService: CosmosAccountsService,
+    private val client: CosmosRpcClient,
 ) : NativeTransferPreloader, TokenTransferPreloader, StakeTransactionPreloader, SwapTransactionPreloader {
 
     private val feeCalculator = CosmosFeeCalculator(chain)
@@ -42,11 +42,11 @@ class CosmosSignerPreloader(
     private suspend fun preload(params: ConfirmParams) = withContext(Dispatchers.IO) {
         val accountJob = async {
             when (chain) {
-                Chain.Injective -> accountsService.getInjectiveAccountData(params.from.address).getOrNull()?.account?.base_account
-                else -> accountsService.getAccountData(params.from.address).getOrNull()?.account
+                Chain.Injective -> client.getInjectiveAccountData(params.from.address).getOrNull()?.account?.base_account
+                else -> client.getAccountData(params.from.address).getOrNull()?.account
             }
         }
-        val nodeInfoJob = async { accountsService.getNodeInfo().getOrNull()?.block?.header?.chain_id }
+        val nodeInfoJob = async { client.getNodeInfo().getOrNull()?.block?.header?.chain_id }
         val fee = feeCalculator.calculate(params.getTxType())
 
         val (account, nodeInfo) = Pair(

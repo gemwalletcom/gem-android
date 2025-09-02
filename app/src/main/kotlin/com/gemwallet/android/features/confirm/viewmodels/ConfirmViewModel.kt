@@ -3,8 +3,8 @@ package com.gemwallet.android.features.confirm.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.blockchain.clients.BroadcastClientProxy
-import com.gemwallet.android.blockchain.clients.SignClientProxy
+import com.gemwallet.android.blockchain.services.BroadcastClientProxy
+import com.gemwallet.android.blockchain.services.SignClientProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.cases.transactions.CreateTransaction
@@ -28,7 +28,7 @@ import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.format
 import com.gemwallet.android.serializer.jsonEncoder
-import com.gemwallet.android.services.SignerPreloaderProxy
+import com.gemwallet.android.blockchain.services.SignerPreloaderProxy
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.CellEntity
 import com.gemwallet.android.ui.components.InfoSheetEntity

@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.solana
 
+import com.gemwallet.android.blockchain.clients.solana.models.SolanaChainData
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
 import com.gemwallet.android.ext.asset
@@ -51,7 +52,7 @@ class TestSolanaSigner {
                 amount = BigInteger.valueOf(10_000_000)
             )
             .transfer(destination = DestinationAddress("4Yu2e1Wz5T1Ci2hAPswDqvMgSnJ1Ftw7ZZh8x7xKLx7S")) as ConfirmParams.TransferParams.Native
-        val chainData = SolanaSignerPreloader.SolanaChainData(
+        val chainData = SolanaChainData(
             blockhash = "kiEPF6aKvEsj5nbi4FBvgRRm9ha36Y3cgDU9qnUKt32",
             fees = listOf(
                 GasFee(
@@ -100,7 +101,7 @@ class TestSolanaSigner {
                 amount = BigInteger.valueOf(10_000_000)
             )
             .transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh")) as ConfirmParams.TransferParams.Token
-        val chainData = SolanaSignerPreloader.SolanaChainData(
+        val chainData = SolanaChainData(
             blockhash = "kiEPF6aKvEsj5nbi4FBvgRRm9ha36Y3cgDU9qnUKt32",
             fees = listOf(
                 GasFee(
@@ -150,7 +151,7 @@ class TestSolanaSigner {
                 amount = BigInteger.valueOf(10_000_000)
             )
             .transfer(destination = DestinationAddress("AGkXQZ9qm99xukisDUHvspWHESrcjs8Y4AmQQgef3BRh")) as ConfirmParams.TransferParams.Token
-        val chainData = SolanaSignerPreloader.SolanaChainData(
+        val chainData = SolanaChainData(
             blockhash = "kiEPF6aKvEsj5nbi4FBvgRRm9ha36Y3cgDU9qnUKt32",
             fees = listOf(
                 GasFee(

@@ -4,7 +4,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
+import com.gemwallet.android.blockchain.services.NodeStatusClientProxy
 import com.gemwallet.android.cases.nodes.GetBlockExplorers
 import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
@@ -13,9 +13,9 @@ import com.gemwallet.android.cases.nodes.SetBlockExplorerCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
 import com.gemwallet.android.data.repositoreis.chains.ChainInfoRepository
 import com.gemwallet.android.ext.filter
+import com.gemwallet.android.model.NodeStatus
 import com.gemwallet.features.settings.networks.viewmodels.models.AddSourceType
 import com.gemwallet.features.settings.networks.viewmodels.models.NetworksUIState
-import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Node
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -82,9 +82,9 @@ class NetworksViewModel @Inject constructor(
                 statuses[url] = NodeStatus(
                     url = url,
                     chainId = "",
-                    blockNumber = "",
+                    blockNumber = 0UL,
                     inSync = false,
-                    latency = 0,
+                    latency = 0UL,
                     loading = true,
                 )
             }

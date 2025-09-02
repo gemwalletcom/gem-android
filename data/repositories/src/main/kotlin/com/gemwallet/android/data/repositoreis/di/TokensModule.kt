@@ -1,13 +1,8 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import com.gemwallet.android.blockchain.RpcClientAdapter
-import com.gemwallet.android.blockchain.clients.aptos.AptosGetTokenClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmGetTokenClient
-import com.gemwallet.android.blockchain.clients.hyper.HyperCoreGetTokenClient
-import com.gemwallet.android.blockchain.clients.solana.SolanaTokenClient
-import com.gemwallet.android.blockchain.clients.sui.SuiGetTokenClient
-import com.gemwallet.android.blockchain.clients.ton.TonGetTokenClient
-import com.gemwallet.android.blockchain.clients.tron.TronGetTokenClient
+import com.gemwallet.android.blockchain.services.TokenService
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.tokens.TokensRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
@@ -21,6 +16,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import uniffi.gemstone.GemGateway
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -31,31 +27,23 @@ object TokensModule {
     fun provideTokensRepository(
         assetsDao: AssetsDao,
         assetsPriorityDao: AssetsPriorityDao,
+        gateway: GemGateway,
         gemApiClient: GemApiClient,
         rpcClients: RpcClientAdapter,
 ): TokensRepository = TokensRepository(
         assetsDao = assetsDao,
         assetsPriorityDao = assetsPriorityDao,
         gemApiClient = gemApiClient,
-        getTokenClients = Chain.available().mapNotNull { chain ->
-            when (chain.toChainType()) {
-                ChainType.Ethereum -> EvmGetTokenClient(chain, rpcClients.getClient(chain))
-                ChainType.Solana -> SolanaTokenClient(chain, rpcClients.getClient(chain))
-                ChainType.Ton -> TonGetTokenClient(chain, rpcClients.getClient(chain))
-                ChainType.Tron -> TronGetTokenClient(chain, rpcClients.getClient(chain))
-                ChainType.Sui -> SuiGetTokenClient(chain, rpcClients.getClient(chain))
-                ChainType.Aptos -> AptosGetTokenClient(chain, rpcClients.getClient(chain))
-                ChainType.Bitcoin,
-                ChainType.Cosmos,
-                ChainType.Xrp,
-                ChainType.Algorand,
-                ChainType.Stellar,
-                ChainType.Polkadot,
-                ChainType.Cardano,
-                ChainType.HyperCore -> HyperCoreGetTokenClient(chain)
-                ChainType.Near -> null
+        tokenService = TokenService(
+            gateway = gateway,
+            getTokenClients = Chain.available().mapNotNull { chain ->
+                when (chain.toChainType()) {
+                    ChainType.Ethereum -> EvmGetTokenClient(chain, rpcClients.getClient(chain))
+                    else -> null
+                }
             }
-        }
+        ),
+
     )
 
     @Provides

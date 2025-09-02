@@ -29,7 +29,7 @@ class EvmNodeStatusClient(
         NodeStatus(
             url = url,
             chainId = chainId.body()?.result?.value?.toString() ?: return@withContext null,
-            blockNumber = blockNumber,
+            blockNumber = blockNumber.toULong(),
             inSync = !inSync,
             latency = chainId.getLatency(),
         )

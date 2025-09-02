@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.assets
 
 import com.gemwallet.android.blockchain.operators.GetAsset
+import com.gemwallet.android.blockchain.services.BalancesService
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactions
@@ -71,7 +72,7 @@ class AssetsRepository @Inject constructor(
     private val pricesDao: PricesDao,
     private val gemApi: GemApiClient,
     private val sessionRepository: SessionRepository,
-    private val balancesRemoteSource: BalancesRemoteSource,
+    private val balancesService: BalancesService,
     getTransactions: GetTransactions,
     private val searchTokensCase: SearchTokensCase,
     private val getDeviceIdCase: GetDeviceIdCase,
@@ -453,14 +454,14 @@ class AssetsRepository @Inject constructor(
 
         val getNative = async {
             val prevBalance = balancesDao.getByAccount(walletId, account.address, account.chain.string)
-            val nativeBalance = balancesRemoteSource.getNativeBalances(account)
+            val nativeBalance = balancesService.getNativeBalances(account)
             val dbNativeBalance = DbBalance.mergeNative(
                 prevBalance,
                 nativeBalance?.toRecord(walletId, account.address, updatedAt),
             )
             dbNativeBalance?.let { runCatching { balancesDao.insert(it) } }
 
-            val delegationBalances = balancesRemoteSource.getDelegationBalances(account)
+            val delegationBalances = balancesService.getDelegationBalances(account)
             val dbFullBalance = DbBalance.mergeDelegation(dbNativeBalance, delegationBalances
                 ?.toRecord(walletId, account.address, updatedAt))
             dbFullBalance?.let { runCatching { balancesDao.insert(it) } }
@@ -468,7 +469,7 @@ class AssetsRepository @Inject constructor(
         }
 
         val getTokens = async {
-            val balances = balancesRemoteSource.getTokensBalances(account, tokens)
+            val balances = balancesService.getTokensBalances(account, tokens)
             runCatching {
                 balancesDao.insert(
                     balances.map {

@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.bitcoin
 
-import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinFeeService
+import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinRpcClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.ext.toBitcoinChain
 import com.gemwallet.android.model.Crypto
@@ -27,7 +27,7 @@ import java.math.BigInteger
 import java.math.RoundingMode
 
 class BitcoinFeeCalculator(
-    private val feeService: BitcoinFeeService,
+    private val client: BitcoinRpcClient,
 ) {
     suspend fun calculate(
         utxos: List<BitcoinUTXO>,
@@ -62,7 +62,7 @@ class BitcoinFeeCalculator(
                 FeePriority.Fast -> it.fast
             }
         }.toString()
-        return feeService.estimateFee(priority).fold(
+        return client.estimateFee(priority).fold(
             {
                 val networkFeePerKb = Crypto(it.result, decimals).atomicValue
                 val feePerByte = networkFeePerKb.toBigDecimal().divide(BigDecimal(1000), RoundingMode.CEILING).toBigInteger()

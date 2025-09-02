@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.SignClient
+import com.gemwallet.android.blockchain.clients.solana.models.SolanaChainData
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
@@ -80,7 +81,7 @@ class SolanaSignClient(
         feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val blockhash = (chainData as SolanaSignerPreloader.SolanaChainData).blockhash
+        val blockhash = (chainData as SolanaChainData).blockhash
         val input = Solana.SigningInput.newBuilder().apply {
             this.transferTransaction = Solana.Transfer.newBuilder().apply {
                 this.recipient = params.destination().address
@@ -106,10 +107,11 @@ class SolanaSignClient(
         val tokenId = params.assetId.tokenId
         val amount = finalAmount.toLong()
         val recipient = params.destination().address
-        val metadata = chainData as SolanaSignerPreloader.SolanaChainData
+        val metadata = chainData as SolanaChainData
         val tokenProgramId = when (metadata.tokenProgram) {
             SolanaTokenProgramId.Token -> Solana.TokenProgramId.TokenProgram
             SolanaTokenProgramId.Token2022 -> Solana.TokenProgramId.Token2022Program
+            null -> throw IllegalArgumentException("Not token program id")
         }
         val input = Solana.SigningInput.newBuilder().apply {
             this.recentBlockhash = metadata.blockhash
@@ -194,7 +196,7 @@ class SolanaSignClient(
         )
         val data = jsonEncoder.encodeToString(instruction)
 
-        val recentBlockhash = (chainData as SolanaSignerPreloader.SolanaChainData).blockhash
+        val recentBlockhash = (chainData as SolanaChainData).blockhash
         val signInput = Solana.SigningInput.newBuilder().apply {
             this.recentBlockhash = recentBlockhash
             this.delegateStakeTransaction = Solana.DelegateStake.newBuilder().apply {
@@ -215,7 +217,7 @@ class SolanaSignClient(
         feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val recentBlockhash = (chainData as SolanaSignerPreloader.SolanaChainData).blockhash
+        val recentBlockhash = (chainData as SolanaChainData).blockhash
         val signInput = Solana.SigningInput.newBuilder().apply {
             this.recentBlockhash = recentBlockhash
             this.deactivateStakeTransaction = Solana.DeactivateStake.newBuilder().apply {
@@ -233,7 +235,7 @@ class SolanaSignClient(
         feePriority: FeePriority,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val recentBlockhash = (chainData as SolanaSignerPreloader.SolanaChainData).blockhash
+        val recentBlockhash = (chainData as SolanaChainData).blockhash
         val signInput = Solana.SigningInput.newBuilder().apply {
             this.recentBlockhash = recentBlockhash
             this.withdrawTransaction = Solana.WithdrawStake.newBuilder().apply {

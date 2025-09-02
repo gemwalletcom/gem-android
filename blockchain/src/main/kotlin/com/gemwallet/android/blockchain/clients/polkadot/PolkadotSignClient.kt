@@ -49,7 +49,7 @@ class PolkadotSignClient(
             }.build()
         }.build()
         val output = AnySigner.sign(input, CoinType.POLKADOT, Polkadot.SigningOutput.parser())
-        return listOf(output.encoded.toByteArray())
+        return listOf(output.encoded.toByteArray().toHexString().toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

@@ -102,7 +102,7 @@ class BitcoinSignClient(
             this.useMaxAmount = params.isMax()
             this.addPrivateKey(ByteString.copyFrom(privateKey))
             this.addAllUtxo(chainData.utxo.getUtxoTransactions(params.from.address, coinType))
-            chainData.utxo.forEach {
+            chainData.utxo.forEach { _ ->
                 val redeemScript = BitcoinScript.lockScriptForAddress(params.from.address, coinType)
                 val scriptData = redeemScript.data()
                 if (coinType == CoinType.BITCOIN || scriptData?.isNotEmpty() == true) {
@@ -126,7 +126,7 @@ class BitcoinSignClient(
         if (output.errorMessage.isNotEmpty()) {
             throw IllegalStateException(output.errorMessage)
         }
-        return listOf(output.encoded.toByteArray())
+        return listOf(output.encoded.toByteArray().toHexString("").toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

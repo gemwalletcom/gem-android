@@ -5,10 +5,6 @@ import com.gemwallet.android.blockchain.rpc.model.JSONRpcMethod
 enum class XrpMethod(val value: String) : JSONRpcMethod {
     Account("account_info"),
     Fee("fee"),
-    Transaction("tx"),
-    Broadcast("submit"),
-    LatestBlock("ledger_current"),
-    AccountLines("account_lines"),
     ;
 
     override fun value(): String = value

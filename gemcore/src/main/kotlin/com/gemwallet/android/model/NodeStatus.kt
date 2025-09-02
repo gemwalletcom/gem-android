@@ -3,8 +3,8 @@ package com.gemwallet.android.model
 data class NodeStatus(
     val url: String,
     val chainId: String,
-    val blockNumber: String,
+    val blockNumber: ULong,
     val inSync: Boolean,
-    val latency: Long,
+    val latency: ULong,
     val loading: Boolean = false,
 )

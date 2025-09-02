@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.cardano
 
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.math.decodeHex
+import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.google.protobuf.ByteString
@@ -51,7 +52,7 @@ class CardanoSignClient(
         if (!output.errorMessage.isNullOrEmpty()) {
             throw Exception(output.errorMessage)
         }
-        return listOf(output.encoded.toByteArray())
+        return listOf(output.encoded.toByteArray().toHexString("").toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

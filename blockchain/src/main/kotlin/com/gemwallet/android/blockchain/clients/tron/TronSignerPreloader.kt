@@ -4,11 +4,6 @@ import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
-import com.gemwallet.android.blockchain.clients.tron.services.TronAccountsService
-import com.gemwallet.android.blockchain.clients.tron.services.TronCallService
-import com.gemwallet.android.blockchain.clients.tron.services.TronNodeStatusService
-import com.gemwallet.android.blockchain.clients.tron.services.getAccount
-import com.gemwallet.android.blockchain.clients.tron.services.getAccountUsage
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
@@ -25,11 +20,9 @@ import java.math.BigInteger
 
 class TronSignerPreloader(
     private val chain: Chain,
-    private val nodeStatusService: TronNodeStatusService,
-    private val accountsService: TronAccountsService,
-    callService: TronCallService,
+    private val client: TronRpcClient,
 ) : NativeTransferPreloader, TokenTransferPreloader, StakeTransactionPreloader, SwapTransactionPreloader  {
-    val feeCalculator = TronFeeCalculator(chain, nodeStatusService, callService)
+    val feeCalculator = TronFeeCalculator(chain, client)
 
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
         return preload(
@@ -83,9 +76,9 @@ class TronSignerPreloader(
         feeCalc: suspend (TronAccount?, TronAccountUsage?) -> Fee,
         votes: suspend (TronAccount?) -> Map<String, Long>,
     ): SignerParams = withContext(Dispatchers.IO) {
-        val getAccountUsage = async { accountsService.getAccountUsage(params.from.address) }
-        val getAccount = async { accountsService.getAccount(params.from.address, true) }
-        val nowBlockJob = async { nodeStatusService.nowBlock() }
+        val getAccountUsage = async { client.getAccountUsage(params.from.address) }
+        val getAccount = async { client.getAccount(params.from.address, true) }
+        val nowBlockJob = async { client.nowBlock() }
 
         val nowBlock = nowBlockJob.await().getOrThrow()
         val account = getAccount.await()

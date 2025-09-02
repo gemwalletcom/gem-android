@@ -2,9 +2,7 @@ package com.gemwallet.android.blockchain.clients.polkadot
 
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.polkadot.models.PolkadotSigningData
-import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotBalancesService
-import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotFeeService
-import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotTransactionService
+import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotServices
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
@@ -19,15 +17,13 @@ import kotlinx.coroutines.withContext
 
 class PolkadotSignerPreloaderClient(
     private val chain: Chain,
-    private val transactionService: PolkadotTransactionService,
-    private val feeService: PolkadotFeeService,
-    private val balancesService: PolkadotBalancesService,
+    private val client: PolkadotServices,
 ) : NativeTransferPreloader {
 
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams = withContext(Dispatchers.IO) {
-        val getTransactionMaterial = async { transactionService.transactionMaterial().getOrNull() }
-        val getBalance = async { balancesService.balance(params.destination.address).getOrNull() }
-        val getNonce = async { balancesService.balance(params.from.address).getOrNull()?.nonce?.toLong() }
+        val getTransactionMaterial = async { client.transactionMaterial().getOrNull() }
+        val getBalance = async { client.balance(params.destination.address).getOrNull() }
+        val getNonce = async { client.balance(params.from.address).getOrNull()?.nonce?.toLong() }
 
         val transactionMaterial = getTransactionMaterial.await() ?: throw Exception("Can't load chain data")
         val balance = getBalance.await() ?: throw Exception("Can't load chain data")
@@ -53,7 +49,7 @@ class PolkadotSignerPreloaderClient(
             nonce = nonce,
             data = signData,
         )
-        val feeAmount = feeService.fee(PolkadotTransactionPayload(transactionData)).getOrNull()?.partialFee?.toBigInteger()
+        val feeAmount = client.fee(PolkadotTransactionPayload(transactionData)).getOrNull()?.partialFee?.toBigInteger()
             ?: throw java.lang.Exception("Can't estimate fee")
         val fee = Fee(
             priority = FeePriority.Normal,

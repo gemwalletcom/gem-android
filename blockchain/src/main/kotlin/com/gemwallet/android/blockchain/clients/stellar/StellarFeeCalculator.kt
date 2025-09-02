@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.stellar
 
-import com.gemwallet.android.blockchain.clients.stellar.services.StellarFeeService
+import com.gemwallet.android.blockchain.clients.stellar.services.StellarService
 import com.gemwallet.android.model.Fee
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -9,10 +9,10 @@ import java.math.BigInteger
 
 class StellarFeeCalculator(
     private val chain: Chain,
-    private val feeService: StellarFeeService,
+    private val client: StellarService,
 ) {
     suspend fun calculate(): List<Fee> {
-        val fees = feeService.fee().getOrNull() ?: throw Exception("fee load error")
+        val fees = client.fee().getOrNull() ?: throw Exception("fee load error")
         val min = BigInteger(fees.fee_charged.min).max(BigInteger(fees.last_ledger_base_fee))
         val assetId = AssetId(chain)
         return listOf(

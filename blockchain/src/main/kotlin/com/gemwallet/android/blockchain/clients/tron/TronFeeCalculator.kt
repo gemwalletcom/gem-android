@@ -1,9 +1,5 @@
 package com.gemwallet.android.blockchain.clients.tron
 
-import com.gemwallet.android.blockchain.clients.tron.services.TronCallService
-import com.gemwallet.android.blockchain.clients.tron.services.TronNodeStatusService
-import com.gemwallet.android.blockchain.clients.tron.services.staked
-import com.gemwallet.android.blockchain.clients.tron.services.triggerSmartContract
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
@@ -21,8 +17,7 @@ import java.math.BigInteger
 
 class TronFeeCalculator(
     private val chain: Chain,
-    private val nodeStatusService: TronNodeStatusService,
-    private val callService: TronCallService,
+    private val client: TronRpcClient,
 ) {
     val baseFee = BigInteger.valueOf(280_000)
 
@@ -47,7 +42,7 @@ class TronFeeCalculator(
     }
 
     suspend fun calculate(inParams: ConfirmParams.TransferParams.Native, account: TronAccount?, accountUsage: TronAccountUsage?) = withContext(Dispatchers.IO) {
-        val getParams = async { nodeStatusService.getChainParameters().fold({ it.chainParameter }) { null } }
+        val getParams = async { client.getChainParameters().fold({ it.chainParameter }) { null } }
         val params = getParams.await()
 
         val isNewAccount = account?.address.isNullOrEmpty()
@@ -70,7 +65,7 @@ class TronFeeCalculator(
     }
 
     suspend fun calculate(inParams: ConfirmParams.TransferParams.Token, account: TronAccount?, accountUsage: TronAccountUsage?) = withContext(Dispatchers.IO) {
-        val getParams = async { nodeStatusService.getChainParameters().fold({ it.chainParameter }) { null } }
+        val getParams = async { client.getChainParameters().fold({ it.chainParameter }) { null } }
 
         // https://developers.tron.network/docs/set-feelimit#how-to-estimate-energy-consumption
         val gasLimit = estimateTRC20Transfer(
@@ -112,7 +107,7 @@ class TronFeeCalculator(
             address,
             value.toByteArray().toHexString("")
         ).joinToString(separator = "") { it.padStart(64, '0') }
-        val response = callService.triggerSmartContract(
+        val response = client.triggerSmartContract(
             contractAddress = contractAddress,
             functionSelector = "transfer(address,uint256)",
             parameter = parameter,

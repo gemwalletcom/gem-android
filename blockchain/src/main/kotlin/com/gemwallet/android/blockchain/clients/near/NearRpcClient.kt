@@ -15,8 +15,6 @@ import retrofit2.http.Url
 import wallet.core.jni.Base58
 
 interface NearRpcClient {
-    @POST("/")
-    suspend fun getGasPrice(@Body params: JSONRpcRequest<List<String?>>): Result<JSONRpcResponse<NearGasPrice>>
 
     @POST("/")
     suspend fun account(@Body params: JSONRpcRequest<Any>): Result<JSONRpcResponse<NearAccount>>
@@ -27,14 +25,6 @@ interface NearRpcClient {
     @POST("/")
     suspend fun latestBlock(@Body params: JSONRpcRequest<Any>): Result<JSONRpcResponse<NearBlock>>
 
-    @POST("/")
-    suspend fun transaction(@Body params: JSONRpcRequest<Any>): Result<JSONRpcResponse<NearBroadcastResult>>
-
-    @POST("/")
-    suspend fun broadcast(@Body params: JSONRpcRequest<Any>): Result<JSONRpcResponse<NearBroadcastResult>>
-
-    @POST
-    suspend fun latestBlock(@Url url: String, @Body params: JSONRpcRequest<Any>): Response<JSONRpcResponse<NearBlock>>
 }
 
 suspend fun NearRpcClient.accountAccessKey(from: String, ): NearAccountAccessKey {
@@ -61,13 +51,4 @@ suspend fun NearRpcClient.latestBlock(): NearBlock {
             )
         )
     ).getOrNull()?.result  ?: throw IllegalStateException("Can't get block")
-}
-
-suspend fun NearRpcClient.getGasPrice(): NearGasPrice {
-    return getGasPrice(
-        JSONRpcRequest(
-            method = NearMethod.GasPrice.value,
-            params = listOf(null),
-        )
-    ).getOrNull()?.result ?: throw IllegalStateException("Can't get gas price")
 }

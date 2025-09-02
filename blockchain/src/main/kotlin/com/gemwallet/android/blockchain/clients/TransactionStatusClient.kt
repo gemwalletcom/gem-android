@@ -17,8 +17,4 @@ class TransactionStateRequest(
 
 sealed class TransactionStatusError(message: String? = null) : Exception(message)
 
-data object ServiceUnavailable : TransactionStatusError()
-
-class TransactionError(message: String) : TransactionStatusError(message)
-
-class TransactionNotFound(message: String? = null) : TransactionStatusError(message)
+object ServiceUnavailable : TransactionStatusError()

@@ -208,3 +208,7 @@ val Chain.keyEncodingTypes: List<EncodingType>
         Chain.Stellar -> listOf(EncodingType.Base32, EncodingType.Hex)
         else -> listOf(EncodingType.Hex)
     }
+
+fun uniffi.gemstone.Chain.toChain(): Chain? {
+    return Chain.entries.firstOrNull { it.string == this }
+}

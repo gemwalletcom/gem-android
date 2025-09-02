@@ -8,5 +8,3 @@ data class AptosAccount(
     val message: String?,
     val error_code: String?,
 )
-
-const val aptosErrorCode = "account_not_found"

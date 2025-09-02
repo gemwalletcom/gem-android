@@ -5,7 +5,7 @@ import android.webkit.URLUtil
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
+import com.gemwallet.android.blockchain.services.NodeStatusClientProxy
 import com.gemwallet.android.cases.nodes.AddNodeCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
 import com.gemwallet.features.settings.networks.viewmodels.models.AddNodeUIModel

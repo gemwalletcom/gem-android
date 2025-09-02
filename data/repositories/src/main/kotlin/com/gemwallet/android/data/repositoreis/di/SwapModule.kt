@@ -1,9 +1,11 @@
 package com.gemwallet.android.data.repositoreis.di
 
-import com.gemwallet.android.blockchain.clients.SignClientProxy
+import com.gemwallet.android.blockchain.services.SignClientProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
+import com.gemwallet.android.cases.nodes.GetNodesCase
+import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
 import com.gemwallet.android.cases.swap.GetSwapQuotes
 import com.gemwallet.android.cases.swap.GetSwapSupported
 import com.gemwallet.android.data.repositoreis.swap.NativeProvider
@@ -12,6 +14,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import uniffi.gemstone.AlienProvider
 import uniffi.gemstone.GemSwapper
 import javax.inject.Singleton
 
@@ -21,9 +24,19 @@ object SwapModule {
 
     @Singleton
     @Provides
-    fun provideGemSwapper(
+    fun provideAlienProvider(
+        getNodesCase: GetNodesCase,
         getCurrentNodeCase: GetCurrentNodeCase,
-    ) = GemSwapper(NativeProvider(getCurrentNodeCase))
+        setCurrentNodeCase: SetCurrentNodeCase,
+    ): AlienProvider {
+        return NativeProvider(getNodesCase, getCurrentNodeCase, setCurrentNodeCase)
+    }
+
+    @Singleton
+    @Provides
+    fun provideGemSwapper(
+        alienProvider: AlienProvider,
+    ) = GemSwapper(alienProvider)
 
     @Singleton
     @Provides

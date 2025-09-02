@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.repositoreis.bridge
 
+import com.gemwallet.android.ext.toChain
 import com.gemwallet.android.ext.toChainType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
@@ -50,9 +51,7 @@ fun Chain.getReference(): String? {
 fun Chain.Companion.getNamespace(walletConnectChainId: String?): Chain? { // TODO: Use Reown call for parse
     val chainId = walletConnectChainId?.split(":")
     return if (!chainId.isNullOrEmpty() && chainId.size >= 2) {
-        WalletConnectNamespace().getChain(chainId[0], chainId[1])?.let { namespace ->
-            Chain.entries.firstOrNull { it.string == namespace }
-        }
+        WalletConnectNamespace().getChain(chainId[0], chainId[1])?.toChain()
     } else {
         null
     }
