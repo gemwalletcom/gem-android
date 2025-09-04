@@ -1,12 +1,12 @@
 package com.gemwallet.android.blockchain.services
 
-import com.gemwallet.android.blockchain.clients.GetTokenClient
 import com.gemwallet.android.blockchain.services.mapper.toApp
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetBasic
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetProperties
 import com.wallet.core.primitives.AssetScore
+import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -14,15 +14,14 @@ import kotlinx.coroutines.withContext
 import uniffi.gemstone.GemGateway
 
 class TokenService(
-    private val getTokenClients: List<GetTokenClient>,
     private val gateway: GemGateway,
 ) {
     suspend fun search(query: String) = withContext(Dispatchers.IO) {
-        getTokenClients.map {
+        Chain.entries.map {
             async {
                 try {
-                    if (it.isTokenQuery(query)) {
-                        it.getTokenData(query)
+                    if (gateway.getIsTokenAddress(it.string, query)) {
+                        getTokenData(AssetId(it, query))
                     } else {
                         null
                     }

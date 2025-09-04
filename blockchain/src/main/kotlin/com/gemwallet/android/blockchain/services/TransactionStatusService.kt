@@ -1,20 +1,14 @@
 package com.gemwallet.android.blockchain.services
 
-import com.gemwallet.android.blockchain.clients.ServiceUnavailable
-import com.gemwallet.android.blockchain.clients.TransactionStateRequest
-import com.gemwallet.android.blockchain.clients.TransactionStatusClient
-import com.gemwallet.android.ext.toAssetId
-import com.gemwallet.android.ext.toChainType
+import com.gemwallet.android.blockchain.model.ServiceUnavailable
+import com.gemwallet.android.blockchain.model.TransactionStateRequest
 import com.gemwallet.android.model.HashChanges
 import com.gemwallet.android.model.TransactionChanges
-import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.ChainType
 import com.wallet.core.primitives.TransactionState
 import okhttp3.internal.toLongOrDefault
 import uniffi.gemstone.GemGateway
 import uniffi.gemstone.GemTransactionChange
 import uniffi.gemstone.GemTransactionStateRequest
-import java.lang.IllegalArgumentException
 
 class TransactionStatusService(
     private val gateway: GemGateway,

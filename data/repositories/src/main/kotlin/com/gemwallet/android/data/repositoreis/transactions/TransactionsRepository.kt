@@ -2,9 +2,8 @@ package com.gemwallet.android.data.repositoreis.transactions
 
 import android.text.format.DateUtils
 import android.util.Log
-import com.gemwallet.android.blockchain.clients.ServiceUnavailable
-import com.gemwallet.android.blockchain.clients.TransactionStateRequest
-import com.gemwallet.android.blockchain.clients.TransactionStatusClient
+import com.gemwallet.android.blockchain.model.ServiceUnavailable
+import com.gemwallet.android.blockchain.model.TransactionStateRequest
 import com.gemwallet.android.blockchain.services.TransactionStatusService
 import com.gemwallet.android.cases.transactions.ClearPendingTransactions
 import com.gemwallet.android.cases.transactions.CreateTransaction

@@ -1,7 +1,6 @@
 package com.gemwallet.android.blockchain.clients.evm
 
-import com.gemwallet.android.blockchain.clients.TransactionStateRequest
-import com.gemwallet.android.blockchain.clients.ethereum.EvmTransactionStatusClient
+import com.gemwallet.android.blockchain.model.TransactionStateRequest
 import com.gemwallet.android.blockchain.clients.ethereum.services.EvmTransactionsService
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest

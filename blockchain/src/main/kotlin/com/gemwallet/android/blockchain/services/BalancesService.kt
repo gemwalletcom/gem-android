@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.services
 
-import com.gemwallet.android.blockchain.clients.BalanceClient
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetBalance

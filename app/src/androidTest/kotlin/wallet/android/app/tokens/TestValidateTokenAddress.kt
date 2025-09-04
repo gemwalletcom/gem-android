@@ -1,6 +1,5 @@
 package wallet.android.app.tokens
 
-import com.gemwallet.android.blockchain.clients.ethereum.EvmGetTokenClient
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Test
