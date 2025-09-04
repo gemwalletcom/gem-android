@@ -7,9 +7,9 @@ import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.Fee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
 import wallet.core.jni.PrivateKey
@@ -24,22 +24,21 @@ class PolkadotSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val chainData = (chainData as? PolkadotSignerPreloaderClient.PolkadotChainData) ?: throw Exception("incomplete data")
-        val data = chainData.data
+        val chainData = (chainData as? PolkadotChainData) ?: throw Exception("incomplete data")
         val input = Polkadot.SigningInput.newBuilder().apply {
-            this.genesisHash = ByteString.copyFrom(data.genesisHash.decodeHex())
-            this.blockHash = ByteString.copyFrom(data.blockHash.decodeHex())
+            this.genesisHash = ByteString.copyFrom(chainData.genesisHash.decodeHex())
+            this.blockHash = ByteString.copyFrom(chainData.blockHash.decodeHex())
             this.nonce = chainData.sequence.toLong()
-            this.specVersion = data.specVersion.toInt()
+            this.specVersion = chainData.specVersion.toInt()
             this.network = CoinType.POLKADOT.ss58Prefix()
-            this.transactionVersion = data.transactionVersion.toInt()
+            this.transactionVersion = chainData.transactionVersion.toInt()
             this.privateKey = ByteString.copyFrom(privateKey)
             this.era = Polkadot.Era.newBuilder().apply {
-                this.blockNumber = data.blockNumber.toLong()
-                this.period = data.period
+                this.blockNumber = chainData.blockNumber.toLong()
+                this.period = chainData.period
             }.build()
             this.balanceCall = Polkadot.Balance.newBuilder().apply {
                 transfer = Polkadot.Balance.Transfer.newBuilder().apply {
@@ -55,11 +54,11 @@ class PolkadotSignClient(
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
     companion object {
-        fun transactionPayload(toAdresss: String, value: BigInteger, nonce: Long, data: PolkadotSigningData): String {
+        fun transactionPayload(toAdresss: String, value: BigInteger, nonce: ULong, data: PolkadotSigningData): String {
             val input = Polkadot.SigningInput.newBuilder().apply {
                 this.genesisHash = ByteString.copyFrom(data.genesisHash.toByteArray())
                 this.blockHash = ByteString.copyFrom(data.blockHash.toByteArray())
-                this.nonce = nonce
+                this.nonce = nonce.toLong()
                 this.specVersion = data.specVersion.toInt()
                 this.network = CoinType.POLKADOT.ss58Prefix()
                 this.transactionVersion = data.transactionVersion.toInt()

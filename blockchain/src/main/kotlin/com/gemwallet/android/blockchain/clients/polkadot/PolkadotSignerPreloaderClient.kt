@@ -3,7 +3,6 @@ package com.gemwallet.android.blockchain.clients.polkadot
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.polkadot.models.PolkadotSigningData
 import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotServices
-import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
@@ -23,7 +22,7 @@ class PolkadotSignerPreloaderClient(
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams = withContext(Dispatchers.IO) {
         val getTransactionMaterial = async { client.transactionMaterial().getOrNull() }
         val getBalance = async { client.balance(params.destination.address).getOrNull() }
-        val getNonce = async { client.balance(params.from.address).getOrNull()?.nonce?.toLong() }
+        val getNonce = async { client.balance(params.from.address).getOrNull()?.nonce?.toULong() }
 
         val transactionMaterial = getTransactionMaterial.await() ?: throw Exception("Can't load chain data")
         val balance = getBalance.await() ?: throw Exception("Can't load chain data")
@@ -59,26 +58,19 @@ class PolkadotSignerPreloaderClient(
         SignerParams(
             input = params,
             chainData = PolkadotChainData(
-                sequence = nonce.toInt(),
-                data = signData,
-                blockNumber = signData.blockNumber.toInt(),
-                fee = fee
-            )
+                sequence = nonce,
+                genesisHash = transactionMaterial.genesisHash,
+                blockHash = transactionMaterial.at.hash,
+                blockNumber = transactionMaterial.at.height.toULong(),
+                specVersion = transactionMaterial.specVersion.toULong(),
+                transactionVersion = transactionMaterial.txVersion.toULong(),
+                period = periodLength
+            ),
+            fee = listOf(fee)
         )
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
-
-    data class PolkadotChainData(
-        val sequence: Int,
-        val data: PolkadotSigningData,
-        val blockNumber: Int,
-        val fee: Fee
-    ) : ChainSignData {
-        override fun fee(speed: FeePriority): Fee = fee
-
-        override fun blockNumber(): String = blockNumber.toString()
-    }
 
     companion object {
         const val periodLength: Long = 64

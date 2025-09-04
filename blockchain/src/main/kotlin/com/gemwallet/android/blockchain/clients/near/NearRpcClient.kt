@@ -6,12 +6,8 @@ import com.gemwallet.android.math.decodeHex
 import com.wallet.core.blockchain.near.NearAccount
 import com.wallet.core.blockchain.near.NearAccountAccessKey
 import com.wallet.core.blockchain.near.NearBlock
-import com.wallet.core.blockchain.near.NearBroadcastResult
-import com.wallet.core.blockchain.near.NearGasPrice
-import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
-import retrofit2.http.Url
 import wallet.core.jni.Base58
 
 interface NearRpcClient {

@@ -20,49 +20,6 @@ class BalancesService(
 ) {
 
     suspend fun getNativeBalances(account: Account): AssetBalance? {
-        return if (account.chain.toChainType() == ChainType.Ethereum) {
-            val client = balanceClients.getClient(account.chain) ?: return null
-            try {
-                client.getNativeBalance(account.chain, account.address)
-            } catch (_: Throwable) {
-                null
-            }
-        } else {
-            callNativeBalanceGateWay(account)
-        }
-    }
-
-    suspend fun getDelegationBalances(account: Account): AssetBalance? {
-        return if (account.chain.toChainType() == ChainType.Ethereum) {
-            val client = balanceClients.getClient(account.chain) ?: return null
-            try {
-                client.getDelegationBalances(account.chain, account.address)
-            } catch (_: Throwable) {
-                null
-            }
-        } else {
-            callDelegationBalanceGateWay(account)
-        }
-    }
-
-    suspend fun getTokensBalances(account: Account, tokens: List<Asset>): List<AssetBalance> {
-        val tokens = tokens.filter { it.id.type() == AssetSubtype.TOKEN && account.chain == it.id.chain }
-            .ifEmpty { return emptyList() }
-
-        return if (account.chain.toChainType() == ChainType.Ethereum) {
-            val client = balanceClients.getClient(account.chain) ?: return emptyList()
-            val tokensBalances = try {
-                client.getTokenBalances(account.chain, account.address, tokens)
-            } catch (_: Throwable) {
-                emptyList()
-            }
-            tokensBalances
-        } else {
-            callTokenBalancesGateWay(account, tokens)
-        }
-    }
-
-    private suspend fun callNativeBalanceGateWay(account: Account): AssetBalance? {
         return try {
             val result = gateway.getBalanceCoin(account.chain.string, account.address)
             AssetBalance.Companion.create(
@@ -76,6 +33,42 @@ class BalancesService(
         } catch (_: Throwable) {
             null
         }
+    }
+
+    suspend fun getDelegationBalances(account: Account): AssetBalance? {
+        return try {
+            val result = gateway.getBalanceStaking(account.chain.string, account.address)
+                ?: return null
+            AssetBalance.Companion.create(
+                asset = account.chain.asset(),
+                frozen = result.balance.frozen,
+                locked = result.balance.locked,
+                staked = result.balance.staked,
+                pending = result.balance.pending,
+                rewards = result.balance.rewards,
+            )
+        } catch (_: GatewayException) {
+            null
+        } catch (_: Throwable) {
+            null
+        }
+    }
+
+    suspend fun getTokensBalances(account: Account, tokens: List<Asset>): List<AssetBalance> {
+//        val tokens = tokens.filter { it.id.type() == AssetSubtype.TOKEN && account.chain == it.id.chain }
+//            .ifEmpty { return emptyList() }
+//
+//        return if (account.chain.toChainType() == ChainType.Ethereum) {
+//            val client = balanceClients.getClient(account.chain) ?: return emptyList()
+//            val tokensBalances = try {
+//                client.getTokenBalances(account.chain, account.address, tokens)
+//            } catch (_: Throwable) {
+//                emptyList()
+//            }
+//            tokensBalances
+//        } else {
+            return callTokenBalancesGateWay(account, tokens)
+//        }
     }
 
     private suspend fun callTokenBalancesGateWay(account: Account, tokens: List<Asset>): List<AssetBalance> {
@@ -98,25 +91,6 @@ class BalancesService(
             emptyList()
         } catch (_: Throwable) {
             emptyList()
-        }
-    }
-
-    private suspend fun callDelegationBalanceGateWay(account: Account): AssetBalance? {
-        return try {
-            val result = gateway.getBalanceStaking(account.chain.string, account.address)
-                ?: return null
-            AssetBalance.Companion.create(
-                asset = account.chain.asset(),
-                frozen = result.balance.frozen,
-                locked = result.balance.locked,
-                staked = result.balance.staked,
-                pending = result.balance.pending,
-                rewards = result.balance.rewards,
-            )
-        } catch (_: GatewayException) {
-            null
-        } catch (_: Throwable) {
-            null
         }
     }
 }

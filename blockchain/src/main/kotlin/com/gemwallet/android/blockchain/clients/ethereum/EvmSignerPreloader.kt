@@ -12,16 +12,13 @@ import com.gemwallet.android.blockchain.clients.ethereum.services.getNonce
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.ext.getNetworkId
 import com.gemwallet.android.math.toHexString
-import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain
-import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import wallet.core.jni.AnyAddress
@@ -95,7 +92,7 @@ class EvmSignerPreloader(
         } else {
             // Add approval fee
             val chainData = (approvalData.chainData as EvmChainData)
-            val fees = chainData.fees.map {
+            val fees = approvalData.allFee().map { it as GasFee }.map {
                 GasFee(
                     feeAssetId = it.feeAssetId,
                     priority = it.priority,
@@ -107,7 +104,8 @@ class EvmSignerPreloader(
             }
             SignerParams(
                 input = params,
-                chainData = chainData.copy(fees = fees),
+                chainData = chainData,
+                fee = fees
             )
         }
         return data
@@ -136,18 +134,8 @@ class EvmSignerPreloader(
             nonce = nonce
         )
 
-        SignerParams(params, EvmChainData(chainId, nonce, fees))
+        SignerParams(params, EvmChainData(chainId, nonce), fees)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
-
-    data class EvmChainData(
-        val chainId: Int,
-        val nonce: BigInteger,
-        val fees: List<GasFee>,
-    ) : ChainSignData {
-        override fun fee(speed: FeePriority): Fee = fees.firstOrNull { it.priority == speed } ?: fees.first()
-
-        override fun allFee(): List<Fee> = fees
     }
-}

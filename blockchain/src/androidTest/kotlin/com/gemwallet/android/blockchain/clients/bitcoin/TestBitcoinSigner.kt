@@ -49,7 +49,7 @@ class TestBitcoinSigner {
                     BigInteger.valueOf(10_000_000_000),
                     DestinationAddress("D8UBj4EfNfNWNCdnCSgpY48yZDqPdTZXWW"),
                 ),
-                chainData = BitcoinSignerPreloader.BitcoinChainData(
+                chainData = BitcoinChainData(
                     listOf(
                         BitcoinUTXO(
                             txid = "9f47e5d5ae3dac0662766f95d0cdda9c242c08d6baac4ce5d82464cf948abd53",

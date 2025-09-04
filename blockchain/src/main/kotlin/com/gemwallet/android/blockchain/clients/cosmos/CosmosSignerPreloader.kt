@@ -5,12 +5,9 @@ import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosRpcClient
-import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -57,19 +54,11 @@ class CosmosSignerPreloader(
             input = params,
             chainData = CosmosChainData(
                 chainId = nodeInfo,
-                accountNumber = account.account_number.toLong(),
-                sequence = account.sequence.toLong(),
-                fee = fee,
-            )
+                accountNumber = account.account_number.toULong(),
+                sequence = account.sequence.toULong(),
+            ),
+            fee = listOf(fee),
         )
     }
 
-    data class CosmosChainData(
-        val chainId: String,
-        val accountNumber: Long,
-        val sequence: Long,
-        val fee: Fee,
-    ) : ChainSignData {
-        override fun fee(speed: FeePriority): Fee = fee
-    }
 }

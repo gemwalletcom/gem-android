@@ -39,7 +39,7 @@ class TestAlgorandSigner {
                     BigInteger.valueOf(10_000_000),
                     DestinationAddress("GOZOAE6SH6XGGDRBQLZEDRITKMF5OLVJNACVRQBUEGFLBBR5I64A7QN63E"),
                 ),
-                chainData = AlgorandSignPreloadClient.AlgorandChainData(
+                chainData = AlgorandChainData(
                     sequence = 46932581,
                     block = "wGHE2Pwdvd7S12BL5FaOP20EGYesN73ktiC1qzkkit8=",
                     chainId = "mainnet-v1.0",

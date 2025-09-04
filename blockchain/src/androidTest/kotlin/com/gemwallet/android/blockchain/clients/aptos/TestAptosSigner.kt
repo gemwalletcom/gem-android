@@ -44,14 +44,16 @@ class TestAptosSigner {
                     BigInteger.valueOf(10_000_000_000),
                     DestinationAddress("0x82111f2975a0f6080d178236369b7479f6aed1203ef4a23f8205e4b91716b783"),
                 ),
-                chainData = AptosSignerPreloader.AptosChainData(
+                chainData = AptosChainData(
                     8L,
-                    listOf(GasFee(
-                        AssetId(Chain.Aptos),
-                        priority = FeePriority.Normal,
-                        maxGasPrice = BigInteger.valueOf(150L),
-                        limit = BigInteger.valueOf(18L)
-                    ))
+                    listOf(
+                        GasFee(
+                            AssetId(Chain.Aptos),
+                            priority = FeePriority.Normal,
+                            maxGasPrice = BigInteger.valueOf(150L),
+                            limit = BigInteger.valueOf(18L)
+                        )
+                    )
                 ),
                 finalAmount = BigInteger.valueOf(10_000_000_000),
                 FeePriority.Normal,
@@ -91,14 +93,16 @@ class TestAptosSigner {
                     BigInteger.valueOf(10_000_000_000),
                     DestinationAddress("0x82111f2975a0f6080d178236369b7479f6aed1203ef4a23f8205e4b91716b783"),
                 ),
-                chainData = AptosSignerPreloader.AptosChainData(
+                chainData = AptosChainData(
                     8L,
-                    listOf(GasFee(
-                        AssetId(Chain.Aptos),
-                        priority = FeePriority.Normal,
-                        maxGasPrice = BigInteger.valueOf(150L),
-                        limit = BigInteger.valueOf(18L)
-                    ))
+                    listOf(
+                        GasFee(
+                            AssetId(Chain.Aptos),
+                            priority = FeePriority.Normal,
+                            maxGasPrice = BigInteger.valueOf(150L),
+                            limit = BigInteger.valueOf(18L)
+                        )
+                    )
                 ),
                 finalAmount = BigInteger.valueOf(10_000_000_000),
                 FeePriority.Normal,

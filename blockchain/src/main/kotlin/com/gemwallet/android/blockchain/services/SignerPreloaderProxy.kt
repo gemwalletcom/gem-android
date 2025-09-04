@@ -8,8 +8,21 @@ import com.gemwallet.android.blockchain.clients.NftTransactionPreloader
 import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
+import com.gemwallet.android.blockchain.clients.algorand.toChainData
+import com.gemwallet.android.blockchain.clients.aptos.toChainData
+import com.gemwallet.android.blockchain.clients.bitcoin.toChainData
+import com.gemwallet.android.blockchain.clients.cardano.toChainData
+import com.gemwallet.android.blockchain.clients.cosmos.toChainData
+import com.gemwallet.android.blockchain.clients.ethereum.toChainData
 import com.gemwallet.android.blockchain.clients.getClient
-import com.gemwallet.android.blockchain.clients.solana.models.SolanaChainData
+import com.gemwallet.android.blockchain.clients.near.toChainData
+import com.gemwallet.android.blockchain.clients.polkadot.toChainData
+import com.gemwallet.android.blockchain.clients.solana.toChainData
+import com.gemwallet.android.blockchain.clients.stellar.toChainData
+import com.gemwallet.android.blockchain.clients.sui.toChainData
+import com.gemwallet.android.blockchain.clients.ton.toChainData
+import com.gemwallet.android.blockchain.clients.tron.toChainData
+import com.gemwallet.android.blockchain.clients.xrp.toChainData
 import com.gemwallet.android.blockchain.services.mapper.toGem
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.GasFee
@@ -17,24 +30,19 @@ import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
-import com.wallet.core.primitives.SolanaTokenProgramId
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import uniffi.gemstone.GemGasPriceType
 import uniffi.gemstone.GemGateway
 import uniffi.gemstone.GemGatewayEstimateFee
-import uniffi.gemstone.GemSolanaTokenProgramId
 import uniffi.gemstone.GemTransactionInputType
 import uniffi.gemstone.GemTransactionLoadFee
 import uniffi.gemstone.GemTransactionLoadInput
 import uniffi.gemstone.GemTransactionLoadMetadata
 import uniffi.gemstone.GemTransactionPreloadInput
+import uniffi.gemstone.SwapperException
 
 class SignerPreloaderProxy(
-//    private val gemApiClient: GemApiClient,
-//    private val sessionRepository: SessionRepository,
-//    private val getDeviceIdCase: GetDeviceIdCase,
     private val gateway: GemGateway,
     private val nativeTransferClients: List<NativeTransferPreloader>,
     private val tokenTransferClients: List<TokenTransferPreloader>,
@@ -50,17 +58,6 @@ class SignerPreloaderProxy(
     NftTransactionPreloader {
 
     suspend fun preload(params: ConfirmParams): SignerParams = withContext(Dispatchers.IO) {
-//        val isValidTransactionJob = async {
-//            isValidTransaction(
-//                getScanTransactionPayload(
-//                    params,
-//                    sessionRepository.getSession()?.wallet
-//                        ?: throw IllegalStateException("Session isn't available"),
-//                    getDeviceIdCase.getDeviceId()
-//                )
-//            )
-//        }
-
         val preloadJob = async {
             when (params) {
                 is ConfirmParams.Stake -> preloadStake(params)
@@ -74,10 +71,7 @@ class SignerPreloaderProxy(
             }
         }
 
-//        val isValidTransaction = isValidTransactionJob.await()
-        val preload = preloadJob.await()
-//        preload.copy(scanTransaction = isValidTransaction)
-        preload
+        preloadJob.await()
     }
 
     override fun supported(chain: Chain): Boolean {
@@ -89,6 +83,89 @@ class SignerPreloaderProxy(
     }
 
     override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
+        when (params.assetId.chain) {
+            Chain.Solana -> {
+                val gemAsset = params.asset.toGem()
+                val assetId = params.assetId
+                val chain = assetId.chain
+                val gemChain = assetId.chain.string
+                return try {
+                    val metadata = gateway.getTransactionPreload(
+                        chain = gemChain,
+                        input = GemTransactionPreloadInput(
+                            inputType = GemTransactionInputType.Transfer(gemAsset),
+                            senderAddress = params.from.address,
+                            destinationAddress = params.destination.address,
+                        )
+                    )
+                    val feeRates = gateway.getFeeRates(
+                        chain = gemChain,
+                        input = GemTransactionInputType.Transfer(gemAsset),
+                    )
+
+                    val fees = feeRates.map { feeRate ->
+                        val feeRegular = feeRate.gasPriceType
+                        val result = gateway.getTransactionLoad(
+                            chain = gemChain,
+                            input = GemTransactionLoadInput(
+                                inputType = GemTransactionInputType.Transfer(gemAsset),
+                                senderAddress = params.from.address,
+                                destinationAddress = params.destination.address,
+                                value = params.amount.toString(),
+                                gasPrice = feeRegular,
+                                memo = params.memo,
+                                isMaxValue = params.isMax(),
+                                metadata = metadata,
+                            ),
+                            provider = object : GemGatewayEstimateFee {
+                                override suspend fun getFee(
+                                    chain: uniffi.gemstone.Chain,
+                                    input: GemTransactionLoadInput
+                                ): GemTransactionLoadFee? = null
+
+                                override suspend fun getFeeData(
+                                    chain: uniffi.gemstone.Chain,
+                                    input: GemTransactionLoadInput
+                                ): String? = null
+                            }
+                        )
+                        GasFee(
+                            feeAssetId = AssetId(chain),
+                            priority = FeePriority.entries.firstOrNull { it.string == feeRate.priority } ?: return@map null,
+                            limit = result.fee.gasLimit.toBigInteger(),
+                            maxGasPrice = result.fee.fee.toBigInteger(),
+                            options = result.fee.options.options.mapKeys { it.key.name }.mapValues { it.value.toBigInteger() }
+                        )
+                    }.filterNotNull()
+                    val chainData = when (metadata) {
+                        is GemTransactionLoadMetadata.Algorand -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Aptos -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Bitcoin -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Cardano -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Cosmos -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Evm -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Near -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Polkadot -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Solana -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Stellar -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Sui -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Ton -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Tron -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Xrp -> metadata.toChainData()
+                        is GemTransactionLoadMetadata.Hyperliquid -> throw SwapperException.NotSupportedChain()// metadata.toChainData()
+                        GemTransactionLoadMetadata.None -> throw SwapperException.NotSupportedChain()
+                    }
+                    SignerParams(
+                        input = params,
+                        chainData = chainData,
+                        fee = fees
+                    )
+                } catch (err: Throwable) {
+                    throw err
+                }
+            }
+            else -> {}
+        }
         return nativeTransferClients.getClient(params.from.chain)?.preloadNativeTransfer(params = params)
             ?: throw IllegalArgumentException("Chain isn't support")
     }
@@ -119,87 +196,6 @@ class SignerPreloaderProxy(
     }
 
     override suspend fun preloadGeneric(params: ConfirmParams.TransferParams.Generic): SignerParams {
-        when (params.assetId.chain) {
-            Chain.Solana -> {
-                val gemAsset = params.asset.toGem()
-                val assetId = params.assetId
-                val chain = assetId.chain
-                val gemChain = assetId.chain.string
-                return try {
-                    val result = gateway.getTransactionPreload(
-                        chain = gemChain,
-                        input = GemTransactionPreloadInput(
-                            inputType = GemTransactionInputType.Transfer(gemAsset),
-                            senderAddress = params.from.address,
-                            destinationAddress = params.destination.address,
-                        )
-                    )
-                    val feeRates = gateway.getFeeRates(
-                        chain = gemChain,
-                        input = GemTransactionInputType.Transfer(gemAsset),
-                    )
-
-                    val fees = feeRates.map { feeRate ->
-                        val feeRegular = feeRate.gasPriceType as GemGasPriceType.Solana
-                        when (chain) {
-                            Chain.Solana -> {
-                                val metadata = result as? GemTransactionLoadMetadata.Solana
-                                val result = gateway.getTransactionLoad(
-                                    chain = gemChain,
-                                    input = GemTransactionLoadInput(
-                                        inputType = GemTransactionInputType.Transfer(gemAsset),
-                                        senderAddress = params.from.address,
-                                        destinationAddress = params.destination.address,
-                                        value = params.amount.toString(),
-                                        gasPrice = feeRegular,
-                                        memo = params.memo,
-                                        isMaxValue = params.isMax(),
-                                        metadata = metadata!!,
-                                    ),
-                                    provider = object : GemGatewayEstimateFee {
-                                        override suspend fun getFee(
-                                            chain: uniffi.gemstone.Chain,
-                                            input: GemTransactionLoadInput
-                                        ): GemTransactionLoadFee? = null
-
-                                        override suspend fun getFeeData(
-                                            chain: uniffi.gemstone.Chain,
-                                            input: GemTransactionLoadInput
-                                        ): String? = null
-                                    }
-                                )
-                                GasFee(
-                                    feeAssetId = AssetId(chain),
-                                    priority = FeePriority.entries.firstOrNull { it.string == feeRate.priority } ?: return@map null,
-                                    limit = result.fee.gasLimit.toBigInteger(),
-                                    maxGasPrice = result.fee.fee.toBigInteger(),
-                                    options = result.fee.options.options.mapKeys { it.key.name }.mapValues { it.value.toBigInteger() }
-                                )
-                            }
-                            else -> null
-                        }
-                    }.filterNotNull()
-                    val metadata = result as GemTransactionLoadMetadata.Solana
-                    SignerParams(
-                        input = params,
-                        chainData = SolanaChainData(
-                            blockhash = metadata.blockHash,
-                            senderTokenAddress = metadata.senderTokenAddress,
-                            recipientTokenAddress = metadata.recipientTokenAddress,
-                            tokenProgram = when (metadata.tokenProgram) {
-                                GemSolanaTokenProgramId.TOKEN -> SolanaTokenProgramId.Token
-                                GemSolanaTokenProgramId.TOKEN2022 -> SolanaTokenProgramId.Token2022
-                                null -> null
-                            },
-                            fees = fees
-                        )
-                    )
-                } catch (err: Throwable) {
-                    throw err
-                }
-            }
-            else -> {}
-        }
         return genericPreloaderClients.getClient(params.from.chain)?.preloadGeneric(params = params)
             ?: throw IllegalArgumentException("Chain isn't support")
     }
@@ -208,45 +204,4 @@ class SignerPreloaderProxy(
         return nftPreloadClients.getClient(params.from.chain)?.preloadNft(params = params)
             ?: throw IllegalArgumentException("Chain isn't support")
     }
-
-//    private suspend fun isValidTransaction(payload: ScanTransactionPayload): ScanTransaction? {
-//        return try {
-//            gemApiClient.getScanTransaction(payload).data
-//        } catch (_: Throwable) {
-//            null
-//        }
-//    }
-
-//    private fun getScanTransactionPayload(params: ConfirmParams, wallet: Wallet, deviceId: String): ScanTransactionPayload {
-//        val chain = params.assetId.chain
-//        val origin = ScanAddressTarget(
-//            chain = chain,
-//            address = params.from.address,
-//        )
-//        val target = when (params) {
-//            is ConfirmParams.SwapParams -> ScanAddressTarget(
-//                params.toAssetId.chain,
-//                address = wallet.getAccount(params.toAssetId.chain)?.address
-//                    ?: throw IllegalArgumentException("Account isn't available")
-//            )
-//            is ConfirmParams.Stake -> ScanAddressTarget(chain, params.validatorId)
-//            is ConfirmParams.TokenApprovalParams -> ScanAddressTarget(chain, params.contract)
-//            is ConfirmParams.TransferParams.Native,
-//            is ConfirmParams.TransferParams.Generic,
-//            is ConfirmParams.TransferParams.Token -> ScanAddressTarget(
-//                chain,
-//                params.destination().address
-//            )
-//            is ConfirmParams.Activate -> ScanAddressTarget(chain, params.from.address)
-//            is ConfirmParams.NftParams -> ScanAddressTarget(chain, params.from.address)
-//        }
-//
-//        return ScanTransactionPayload(
-//            deviceId = deviceId,
-//            walletIndex = wallet.index.toUInt(),
-//            origin = origin,
-//            target = target,
-//            type = params.getTxType(),
-//        )
-//    }
 }

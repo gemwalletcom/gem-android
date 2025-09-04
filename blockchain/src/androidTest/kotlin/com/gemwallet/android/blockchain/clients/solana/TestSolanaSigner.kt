@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.clients.solana
 
-import com.gemwallet.android.blockchain.clients.solana.models.SolanaChainData
+import com.gemwallet.android.blockchain.clients.solana.SolanaChainData
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
 import com.gemwallet.android.ext.asset

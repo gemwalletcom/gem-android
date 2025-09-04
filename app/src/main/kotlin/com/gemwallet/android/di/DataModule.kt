@@ -76,18 +76,6 @@ object DataModule {
             when (it.toChainType()) {
                 ChainType.Ethereum -> EvmBroadcastClient(it, rpcClients.getClient(it))
                 else -> null
-//                ChainType.Bitcoin -> BitcoinBroadcastClient(it, rpcClients.getClient(it))
-//                ChainType.Cosmos -> CosmosBroadcastClient(it, rpcClients.getClient(it))
-//                ChainType.Ton -> TonBroadcastClient(it, rpcClients.getClient(it))
-//                ChainType.Tron -> TronBroadcastClient(it, rpcClients.getClient(Chain.Tron))
-//                ChainType.Aptos -> AptosBroadcastClient(it, rpcClients.getClient(it))
-//                ChainType.Sui -> SuiBroadcastClient(it, rpcClients.getClient(it))
-//                ChainType.Xrp -> XrpBroadcastClient(it, rpcClients.getClient(it))
-//                ChainType.Near -> NearBroadcastClient(it, rpcClients.getClient(it))
-//                ChainType.Algorand -> AlgorandBroadcastClient(it, rpcClients.getClient(it))
-//                ChainType.Stellar -> StellarBroadcastClient(it, rpcClients.getClient(it))
-//                ChainType.Polkadot -> PolkadotBroadcastClient(it, rpcClients.getClient(it))
-//                ChainType.Cardano -> CardanoBroadcastClient(it, rpcClients.getClient(it))
             }
         },
     )
@@ -100,19 +88,19 @@ object DataModule {
     ): SignerPreloaderProxy {
         val preloaders = Chain.available().mapNotNull {
             when (it.toChainType()) {
-                ChainType.Bitcoin -> BitcoinSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it))
+                ChainType.Bitcoin -> BitcoinSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Ethereum -> EvmSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it))
                 ChainType.Solana -> null
                 ChainType.Cosmos -> CosmosSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Ton -> TonSignerPreloader(it, rpcClients.getClient(it))
-                ChainType.Tron -> TronSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it), rpcClients.getClient(it))
-                ChainType.Aptos -> AptosSignerPreloader(it, rpcClients.getClient(it), rpcClients.getClient(it))
+                ChainType.Tron -> TronSignerPreloader(it, rpcClients.getClient(it))
+                ChainType.Aptos -> AptosSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Sui -> SuiSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Xrp -> XrpSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Near -> NearSignerPreloader(it, rpcClients.getClient(it))
                 ChainType.Algorand -> AlgorandSignPreloadClient(it, rpcClients.getClient(it))
-                ChainType.Stellar -> StellarSignPreloadClient(it, rpcClients.getClient(it), rpcClients.getClient(it))
-                ChainType.Polkadot -> PolkadotSignerPreloaderClient(it, rpcClients.getClient(it), rpcClients.getClient(it), rpcClients.getClient(it))
+                ChainType.Stellar -> StellarSignPreloadClient(it, rpcClients.getClient(it))
+                ChainType.Polkadot -> PolkadotSignerPreloaderClient(it, rpcClients.getClient(it))
                 ChainType.Cardano -> CardanoSignerPreloaderClient(it, rpcClients.getClient(it))
                 ChainType.HyperCore -> HyperCoreSignerPreloaderClient(it)
             }

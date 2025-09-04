@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.near
 
-import com.gemwallet.android.blockchain.clients.near.NearSignerPreloader.NearChainData
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
 import com.gemwallet.android.ext.asset

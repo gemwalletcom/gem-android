@@ -6,12 +6,9 @@ import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.gemwallet.android.math.toHexString
-import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -121,8 +118,8 @@ class SuiSignerPreloader(
             input = params,
             chainData = SuiChainData(
                 messageBytes = "${Base64.encode(data.txData)}_${data.hash.toHexString()}",
-                fee = fee,
-            )
+            ),
+            fee = listOf(fee),
         )
     }
 
@@ -179,13 +176,6 @@ class SuiSignerPreloader(
             )
         )
         suiEncodeUnstake(input)
-    }
-
-    data class SuiChainData(
-        val messageBytes: String,
-        val fee: Fee,
-    ) : ChainSignData {
-        override fun fee(speed: FeePriority): Fee = fee
     }
 
     private fun com.wallet.core.blockchain.sui.SuiCoin.togemstone() = SuiCoin(

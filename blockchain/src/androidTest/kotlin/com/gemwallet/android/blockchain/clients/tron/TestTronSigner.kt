@@ -42,13 +42,13 @@ class TestTronSigner {
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
                 ),
-                chainData = TronSignerPreloader.TronChainData(
-                    number = 69501435,
-                    version = 31,
+                chainData = TronChainData(
+                    blockNumber = 69501435,
+                    blockVersion = 31,
                     txTrieRoot = "fe35cfe51299075978398390271d3f09bdc34e6f43fe8b76eb469314b32ceaff",
                     witnessAddress = "41456798cb4ab28109d8cc643cd7da7bd6069ceae9",
                     parentHash = "00000000042481fa52ef745a31aa66fc2acf8d156b6116bc5b3ede2aebbb894c",
-                    timestamp = 1739156280000,
+                    blockTimestamp = 1739156280000,
                     votes = emptyMap(),
                     fee = Fee(
                         priority = FeePriority.Normal,
@@ -96,13 +96,13 @@ class TestTronSigner {
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
                 ),
-                chainData = TronSignerPreloader.TronChainData(
-                    number = 69501435,
-                    version = 31,
+                chainData = TronChainData(
+                    blockNumber = 69501435,
+                    blockVersion = 31,
                     txTrieRoot = "fe35cfe51299075978398390271d3f09bdc34e6f43fe8b76eb469314b32ceaff",
                     witnessAddress = "41456798cb4ab28109d8cc643cd7da7bd6069ceae9",
                     parentHash = "00000000042481fa52ef745a31aa66fc2acf8d156b6116bc5b3ede2aebbb894c",
-                    timestamp = 1739156280000,
+                    blockTimestamp = 1739156280000,
                     votes = emptyMap(),
                     fee = Fee(
                         priority = FeePriority.Normal,
@@ -154,13 +154,13 @@ class TestTronSigner {
                     BigInteger.valueOf(10_000),
                     validatorId = "TCEo1hMAdaJrQmvnGTCcGT2LqrGU4N7Jqf",
                 ),
-                chainData = TronSignerPreloader.TronChainData(
-                    number = 69501435,
-                    version = 31,
+                chainData = TronChainData(
+                    blockNumber = 69501435,
+                    blockVersion = 31,
                     txTrieRoot = "fe35cfe51299075978398390271d3f09bdc34e6f43fe8b76eb469314b32ceaff",
                     witnessAddress = "41456798cb4ab28109d8cc643cd7da7bd6069ceae9",
                     parentHash = "00000000042481fa52ef745a31aa66fc2acf8d156b6116bc5b3ede2aebbb894c",
-                    timestamp = 1739156280000,
+                    blockTimestamp = 1739156280000,
                     votes = mapOf(
                         "TLyqzVGLV1srkB7dToTAEqgDSfPtXRJZYH" to 1,
                         "TCEo1hMAdaJrQmvnGTCcGT2LqrGU4N7Jqf" to 1,

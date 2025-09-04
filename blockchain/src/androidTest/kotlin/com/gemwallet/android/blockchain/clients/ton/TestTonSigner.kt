@@ -42,7 +42,7 @@ class TestTonSigner {
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
                 ),
-                chainData = TonSignerPreloader.TonChainData(
+                chainData = TonChainData(
                     sequence = 1,
                     fee = Fee(
                         priority = FeePriority.Normal,
@@ -81,7 +81,7 @@ class TestTonSigner {
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
                 ),
-                chainData = TonSignerPreloader.TonChainData(
+                chainData = TonChainData(
                     sequence = 1,
                     jettonAddress = "EQAlgB03OjJKdXrlwZiGJD5snSzPKF2VL5bErJn_cqJANGH9",
                     expireAt = 1000000000,

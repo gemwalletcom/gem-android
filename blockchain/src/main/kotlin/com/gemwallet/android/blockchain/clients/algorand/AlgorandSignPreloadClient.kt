@@ -2,7 +2,6 @@ package com.gemwallet.android.blockchain.clients.algorand
 
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.algorand.services.AlgorandService
-import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
@@ -25,22 +24,13 @@ class AlgorandSignPreloadClient(
         return SignerParams(
             input = params,
             chainData = AlgorandChainData(
-                sequence = txParams.last_round.toInt(),
+                sequence = txParams.last_round.toULong(),
                 block = txParams.genesis_hash,
                 chainId = txParams.genesis_id,
-                fee = fee
-            )
+            ),
+            fee = listOf(fee)
         )
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
-
-    data class AlgorandChainData(
-        val sequence: Int,
-        val block: String,
-        val chainId: String,
-        val fee: Fee,
-    ) : ChainSignData {
-        override fun fee(speed: FeePriority): Fee = fee
-    }
 }

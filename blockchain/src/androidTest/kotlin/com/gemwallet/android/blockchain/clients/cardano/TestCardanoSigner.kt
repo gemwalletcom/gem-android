@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.cardano
 
-import com.gemwallet.android.blockchain.clients.cardano.CardanoSignerPreloaderClient.CardanoChainData
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
 import com.gemwallet.android.ext.asset

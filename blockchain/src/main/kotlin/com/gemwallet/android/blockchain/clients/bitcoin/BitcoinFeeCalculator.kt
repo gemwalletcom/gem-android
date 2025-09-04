@@ -6,12 +6,12 @@ import com.gemwallet.android.ext.toBitcoinChain
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
-import com.wallet.core.blockchain.bitcoin.BitcoinUTXO
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.BitcoinChain
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
+import com.wallet.core.primitives.UTXO
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -30,7 +30,7 @@ class BitcoinFeeCalculator(
     private val client: BitcoinRpcClient,
 ) {
     suspend fun calculate(
-        utxos: List<BitcoinUTXO>,
+        utxos: List<UTXO>,
         account: Account,
         recipient: String,
         amount: BigInteger,
@@ -79,7 +79,7 @@ class BitcoinFeeCalculator(
         to: String,
         amount: Long,
         bytePrice: Long,
-        utxos: List<BitcoinUTXO>,
+        utxos: List<UTXO>,
     ): BigInteger {
         val coinType = WCChainTypeProxy().invoke(chain)
         val total = utxos.map { it.value.toLong() }.fold(0L) { x, y -> x + y }
@@ -106,7 +106,7 @@ class BitcoinFeeCalculator(
             else -> throw IllegalStateException(plan.error.name)
         }
 
-        val selectedUtxos: MutableList<BitcoinUTXO> = mutableListOf()
+        val selectedUtxos: MutableList<UTXO> = mutableListOf()
         for (raw in plan.utxosList) {
             input.utxoList?.indexOfFirst { it == raw }?.let {
                 selectedUtxos.add(utxos[it])

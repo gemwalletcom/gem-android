@@ -2,6 +2,7 @@ package com.gemwallet.android.data.repositoreis.di
 
 import com.gemwallet.android.blockchain.RpcClientAdapter
 import com.gemwallet.android.blockchain.clients.ethereum.EvmBalanceClient
+//import com.gemwallet.android.blockchain.clients.ethereum.EvmBalanceClient
 import com.gemwallet.android.blockchain.clients.ethereum.SmartchainStakeClient
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
@@ -103,7 +104,12 @@ object AssetsModule {
         gateway = gateway,
         balanceClients = Chain.available().mapNotNull {
             when (it.toChainType()) {
-                ChainType.Ethereum -> EvmBalanceClient(it, rpcClients.getClient(it), rpcClients.getClient(it), SmartchainStakeClient(it, rpcClients.getClient(it)))
+                ChainType.Ethereum -> EvmBalanceClient(
+                    it,
+                    rpcClients.getClient(it),
+                    rpcClients.getClient(it),
+                    SmartchainStakeClient(it, rpcClients.getClient(it))
+                )
                 else -> null
             }
         }

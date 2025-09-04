@@ -5,14 +5,12 @@ import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.blockchain.tron.TronAccount
 import com.wallet.core.blockchain.tron.TronAccountUsage
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -63,7 +61,7 @@ class TronSignerPreloader(
                 is ConfirmParams.Stake.RewardsParams,
                 is ConfirmParams.Stake.WithdrawParams -> {}
             }
-            votes.filter { it.value > 0 }
+            votes.filter { it.value > 0 }.mapValues { it.value.toULong() }
         }
     }
 
@@ -74,7 +72,7 @@ class TronSignerPreloader(
     private suspend fun preload(
         params: ConfirmParams,
         feeCalc: suspend (TronAccount?, TronAccountUsage?) -> Fee,
-        votes: suspend (TronAccount?) -> Map<String, Long>,
+        votes: suspend (TronAccount?) -> Map<String, ULong>,
     ): SignerParams = withContext(Dispatchers.IO) {
         val getAccountUsage = async { client.getAccountUsage(params.from.address) }
         val getAccount = async { client.getAccount(params.from.address, true) }
@@ -89,28 +87,16 @@ class TronSignerPreloader(
         SignerParams(
             input = params,
             chainData = TronChainData(
-                number = nowBlock.block_header.raw_data.number,
-                version = nowBlock.block_header.raw_data.version,
+                blockNumber = nowBlock.block_header.raw_data.number.toULong(),
+                blockVersion = nowBlock.block_header.raw_data.version.toULong(),
                 txTrieRoot = nowBlock.block_header.raw_data.txTrieRoot,
                 witnessAddress = nowBlock.block_header.raw_data.witness_address,
                 parentHash = nowBlock.block_header.raw_data.parentHash,
-                timestamp = nowBlock.block_header.raw_data.timestamp,
-                fee = fee,
+                blockTimestamp = nowBlock.block_header.raw_data.timestamp.toULong(),
                 votes = votes(account)
-            )
+            ),
+            fee = listOf(fee),
         )
     }
 
-    data class TronChainData(
-        val number: Long,
-        val version: Long,
-        val txTrieRoot: String,
-        val witnessAddress: String,
-        val parentHash: String,
-        val timestamp: Long,
-        val fee: Fee,
-        val votes: Map<String, Long> = emptyMap()
-    ) : ChainSignData {
-        override fun fee(speed: FeePriority): Fee = fee
-    }
 }

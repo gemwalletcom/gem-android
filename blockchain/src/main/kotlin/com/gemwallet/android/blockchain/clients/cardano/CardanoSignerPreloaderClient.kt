@@ -4,7 +4,6 @@ import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.cardano.services.CardanoServices
 import com.gemwallet.android.blockchain.clients.cardano.services.utxos
 import com.gemwallet.android.math.decodeHex
-import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
@@ -29,13 +28,15 @@ class CardanoSignerPreloaderClient(
         return SignerParams(
             input = params,
             chainData = CardanoChainData(
-                fee = Fee(
+                utxos = utxos,
+            ),
+            fee = listOf(
+                Fee(
                     feeAssetId = AssetId(chain),
                     priority = FeePriority.Normal,
                     amount = fee.toBigInteger(),
-                ),
-                utxos = utxos,
-            )
+                )
+            ),
         )
     }
 
@@ -67,12 +68,4 @@ class CardanoSignerPreloaderClient(
         return plan.fee
     }
 
-    data class CardanoChainData(
-        val fee: Fee,
-        val utxos: List<UTXO>,
-    ) : ChainSignData {
-
-        override fun fee(speed: FeePriority): Fee = fee
-
-    }
 }

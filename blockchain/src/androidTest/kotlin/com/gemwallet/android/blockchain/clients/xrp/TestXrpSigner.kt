@@ -40,7 +40,7 @@ class TestXrpSigner {
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
                 ),
-                chainData = XrpSignerPreloader.XrpChainData(
+                chainData = XrpChainData(
                     sequence = 1,
                     blockNumber = 1,
                     fees = listOf(

@@ -4,12 +4,9 @@ import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.clients.aptos.services.AptosServices
-import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
 
 class AptosSignerPreloader(
     private val chain: Chain,
@@ -33,23 +30,14 @@ class AptosSignerPreloader(
     private suspend fun preloadTransfer(params: ConfirmParams): SignerParams {
         val sequence = try {
             val response = aptosServices.accounts(params.from.address).getOrThrow()
-            response.sequence_number?.toLong() ?: 0L
+            response.sequence_number?.toULong() ?: 0UL
         } catch (_: Throwable) {
-            0L
+            0UL
         }
         val fee = feeCalculator.calculate(params, sequence)
-        val input = SignerParams(params, AptosChainData(sequence, fee))
+        val input = SignerParams(params, AptosChainData(sequence), fee = fee)
         return input
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
-
-    data class AptosChainData(
-        val sequence: Long,
-        val fees: List<Fee>,
-    ) : ChainSignData {
-        override fun fee(speed: FeePriority): Fee = fees.firstOrNull { it.priority == speed } ?: fees.first()
-
-        override fun allFee(): List<Fee> = fees
-    }
 }

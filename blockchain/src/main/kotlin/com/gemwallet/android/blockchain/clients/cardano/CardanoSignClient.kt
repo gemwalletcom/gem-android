@@ -5,9 +5,9 @@ import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.Fee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
 import wallet.core.jni.proto.Cardano
@@ -21,10 +21,10 @@ class CardanoSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val chainData = (chainData as? CardanoSignerPreloaderClient.CardanoChainData)
+        val chainData = (chainData as? CardanoChainData)
             ?: throw IllegalArgumentException()
         val signingInput = Cardano.SigningInput.newBuilder().apply {
             this.addPrivateKey(ByteString.copyFrom(privateKey))

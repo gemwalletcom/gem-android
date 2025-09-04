@@ -6,7 +6,6 @@ enum class SuiMethod(val value: String) : JSONRpcMethod {
     Coins("suix_getCoins"),
     GasPrice("suix_getReferenceGasPrice"),
     DryRun("sui_dryRunTransactionBlock"),
-    Transaction("sui_getTransactionBlock"),
     GetObject("sui_getObject"),
     ;
 

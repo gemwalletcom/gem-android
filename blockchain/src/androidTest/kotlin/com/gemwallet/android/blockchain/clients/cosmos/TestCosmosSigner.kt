@@ -39,7 +39,7 @@ class TestCosmosSigner {
     fun testSignNativeTransfer() {
         val transfer = ConfirmParams.Builder(Chain.Osmosis.asset(), osmoAccount, BigInteger.TEN)
             .transfer(DestinationAddress("osmo1rcjvzz8wzktqfz8qjf0l9q45kzxvd0z0n7l5cf")) as ConfirmParams.TransferParams.Native
-        val chainData = CosmosSignerPreloader.CosmosChainData(
+        val chainData = CosmosChainData(
             chainId = "osmosis-1",
             accountNumber = 2913388L,
             sequence = 10L,
@@ -77,7 +77,7 @@ class TestCosmosSigner {
     fun testSignStake() {
         val transfer = ConfirmParams.Builder(Chain.Osmosis.asset(), osmoAccount, BigInteger.TEN)
             .delegate("osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm")
-        val chainData = CosmosSignerPreloader.CosmosChainData(
+        val chainData = CosmosChainData(
             chainId = "osmosis-1",
             accountNumber = 2913388L,
             sequence = 10L,
@@ -137,7 +137,7 @@ class TestCosmosSigner {
                     )
                 )
             )
-        val chainData = CosmosSignerPreloader.CosmosChainData(
+        val chainData = CosmosChainData(
             chainId = "osmosis-1",
             accountNumber = 2913388L,
             sequence = 10L,
@@ -199,7 +199,7 @@ class TestCosmosSigner {
                     )
                 )
             )
-        val chainData = CosmosSignerPreloader.CosmosChainData(
+        val chainData = CosmosChainData(
             chainId = "osmosis-1",
             accountNumber = 2913388L,
             sequence = 10L,
@@ -245,7 +245,7 @@ class TestCosmosSigner {
                     "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm",
                 ),
             )
-        val chainData = CosmosSignerPreloader.CosmosChainData(
+        val chainData = CosmosChainData(
             chainId = "osmosis-1",
             accountNumber = 2913388L,
             sequence = 10L,

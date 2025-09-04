@@ -37,19 +37,20 @@ class SignClientProxy(
         val chain = params.input.asset.id.chain
         val client = clients.getClient(chain) ?: throw Exception("Chain isn't support")
         val input = params.input
+        val fee = params.fee(feePriority)
         return when (input) {
-            is ConfirmParams.Stake.DelegateParams -> client.signDelegate(input, params.chainData, params.finalAmount, feePriority, privateKey)
-            is ConfirmParams.Stake.RedelegateParams -> client.signRedelegate(input, params.chainData, params.finalAmount, feePriority, privateKey)
-            is ConfirmParams.Stake.RewardsParams -> client.signRewards(input, params.chainData, params.finalAmount, feePriority, privateKey)
-            is ConfirmParams.Stake.UndelegateParams -> client.signUndelegate(input, params.chainData, params.finalAmount, feePriority, privateKey)
-            is ConfirmParams.Stake.WithdrawParams -> client.signWithdraw(input, params.chainData, params.finalAmount, feePriority, privateKey)
-            is ConfirmParams.SwapParams -> client.signSwap(input, params.chainData, params.finalAmount, feePriority, privateKey)
-            is ConfirmParams.TokenApprovalParams -> client.signTokenApproval(input, params.chainData, params.finalAmount, feePriority, privateKey)
-            is ConfirmParams.TransferParams.Generic -> client.signGenericTransfer(input, params.chainData, params.finalAmount, feePriority, privateKey)
-            is ConfirmParams.TransferParams.Native -> client.signNativeTransfer(input, params.chainData, params.finalAmount, feePriority, privateKey)
-            is ConfirmParams.TransferParams.Token -> client.signTokenTransfer(input, params.chainData, params.finalAmount, feePriority, privateKey)
-            is ConfirmParams.Activate -> client.signActivate(input, params.chainData, params.finalAmount, feePriority, privateKey)
-            is ConfirmParams.NftParams -> client.signNft(input, params.chainData, params.finalAmount, feePriority, privateKey)
+            is ConfirmParams.Stake.DelegateParams -> client.signDelegate(input, params.chainData, params.finalAmount, fee, privateKey)
+            is ConfirmParams.Stake.RedelegateParams -> client.signRedelegate(input, params.chainData, params.finalAmount, fee, privateKey)
+            is ConfirmParams.Stake.RewardsParams -> client.signRewards(input, params.chainData, params.finalAmount, fee, privateKey)
+            is ConfirmParams.Stake.UndelegateParams -> client.signUndelegate(input, params.chainData, params.finalAmount, fee, privateKey)
+            is ConfirmParams.Stake.WithdrawParams -> client.signWithdraw(input, params.chainData, params.finalAmount, fee, privateKey)
+            is ConfirmParams.SwapParams -> client.signSwap(input, params.chainData, params.finalAmount, fee, privateKey)
+            is ConfirmParams.TokenApprovalParams -> client.signTokenApproval(input, params.chainData, params.finalAmount, fee, privateKey)
+            is ConfirmParams.TransferParams.Generic -> client.signGenericTransfer(input, params.chainData, params.finalAmount, fee, privateKey)
+            is ConfirmParams.TransferParams.Native -> client.signNativeTransfer(input, params.chainData, params.finalAmount, fee, privateKey)
+            is ConfirmParams.TransferParams.Token -> client.signTokenTransfer(input, params.chainData, params.finalAmount, fee, privateKey)
+            is ConfirmParams.Activate -> client.signActivate(input, params.chainData, params.finalAmount, fee, privateKey)
+            is ConfirmParams.NftParams -> client.signNft(input, params.chainData, params.finalAmount, fee, privateKey)
         }
     }
 

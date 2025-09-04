@@ -5,12 +5,9 @@ import com.gemwallet.android.blockchain.clients.BlockchainError
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
 import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
 import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
-import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
@@ -51,20 +48,11 @@ class XrpSignerPreloader(
             XrpChainData(
                 account.account_data?.Sequence ?: 0,
                 account.ledger_current_index,
-                fee,
-            )
+            ),
+            fee = fee,
         )
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
-    data class XrpChainData(
-        val sequence: Int,
-        val blockNumber: Int,
-        val fees: List<Fee>,
-    ) : ChainSignData {
-        override fun fee(speed: FeePriority): Fee = fees.firstOrNull { it.priority == speed } ?: fees.first()
-
-        override fun allFee(): List<Fee> = fees
-    }
 }

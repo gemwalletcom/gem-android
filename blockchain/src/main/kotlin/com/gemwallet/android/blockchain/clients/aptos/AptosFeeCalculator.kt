@@ -25,7 +25,7 @@ internal class AptosFeeCalculator(
 ) {
     private val maxGasAmount = BigInteger.valueOf(1_500)
 
-    suspend fun calculate(params: ConfirmParams, sequence: Long): List<Fee> = withContext(Dispatchers.IO) {
+    suspend fun calculate(params: ConfirmParams, sequence: ULong): List<Fee> = withContext(Dispatchers.IO) {
         val feePrice = aptosServices.feePrice().getOrThrow()
 
         FeePriority.entries.map {
@@ -69,7 +69,7 @@ internal class AptosFeeCalculator(
     private suspend fun simulateTransactions(
         sender: String,
         recipient: String,
-        sequence: Long,
+        sequence: ULong,
         value: BigInteger,
         gasPrice: BigInteger,
         maxGasAmount: BigInteger

@@ -1,7 +1,6 @@
 package com.gemwallet.android.blockchain.clients.near
 
 import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
-import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
@@ -30,9 +29,11 @@ class NearSignerPreloader(
         SignerParams(
             input = params,
             chainData = NearChainData(
-                sequence = account.nonce + 1L,
+                sequence = account.nonce.toULong() + 1UL,
                 block = block.header.hash,
-                fee = Fee(
+            ),
+            fee = listOf(
+                Fee(
                     feeAssetId = AssetId(chain),
                     priority = FeePriority.Normal,
                     amount = fee,
@@ -43,11 +44,4 @@ class NearSignerPreloader(
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
 
-    data class NearChainData(
-        val block: String,
-        val sequence: Long,
-        val fee: Fee,
-    ) : ChainSignData {
-        override fun fee(speed: FeePriority): Fee = fee
-    }
 }
