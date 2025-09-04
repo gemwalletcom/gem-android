@@ -18,8 +18,6 @@ import com.gemwallet.android.blockchain.clients.cardano.CardanoSignClient
 import com.gemwallet.android.blockchain.clients.cardano.CardanoSignerPreloaderClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosSignClient
 import com.gemwallet.android.blockchain.clients.cosmos.CosmosSignerPreloader
-import com.gemwallet.android.blockchain.clients.ethereum.EvmBroadcastClient
-import com.gemwallet.android.blockchain.clients.ethereum.EvmNodeStatusClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmSignClient
 import com.gemwallet.android.blockchain.clients.ethereum.EvmSignerPreloader
 import com.gemwallet.android.blockchain.clients.hyper.HyperCoreSignClient
@@ -39,8 +37,8 @@ import com.gemwallet.android.blockchain.clients.tron.TronSignClient
 import com.gemwallet.android.blockchain.clients.tron.TronSignerPreloader
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignClient
 import com.gemwallet.android.blockchain.clients.xrp.XrpSignerPreloader
-import com.gemwallet.android.blockchain.services.BroadcastClientProxy
-import com.gemwallet.android.blockchain.services.NodeStatusClientProxy
+import com.gemwallet.android.blockchain.services.BroadcastService
+import com.gemwallet.android.blockchain.services.NodeStatusService
 import com.gemwallet.android.blockchain.services.SignClientProxy
 import com.gemwallet.android.blockchain.services.SignerPreloaderProxy
 import com.gemwallet.android.cases.device.SyncSubscription
@@ -69,15 +67,8 @@ object DataModule {
     @Singleton
     fun providesBroadcastProxy(
         gateway: GemGateway,
-        rpcClients: RpcClientAdapter,
-    ): BroadcastClientProxy = BroadcastClientProxy(
+    ): BroadcastService = BroadcastService(
         gateway = gateway,
-        clients = Chain.available().mapNotNull {
-            when (it.toChainType()) {
-                ChainType.Ethereum -> EvmBroadcastClient(it, rpcClients.getClient(it))
-                else -> null
-            }
-        },
     )
 
     @Provides
@@ -148,17 +139,8 @@ object DataModule {
     @Provides
     fun provideNodeStatusClient(
         gateway: GemGateway,
-        rpcClients: RpcClientAdapter,
-    ): NodeStatusClientProxy {
-        return NodeStatusClientProxy(
-            gateway = gateway,
-            clients = Chain.available().mapNotNull {
-                when (it.toChainType()) {
-                    ChainType.Ethereum -> EvmNodeStatusClient(it, rpcClients.getClient(it))
-                    else -> null
-                }
-            }
-        )
+    ): NodeStatusService {
+        return NodeStatusService(gateway)
     }
 
     @Singleton

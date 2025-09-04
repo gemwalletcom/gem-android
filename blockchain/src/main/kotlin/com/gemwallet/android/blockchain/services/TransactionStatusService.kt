@@ -18,33 +18,27 @@ import java.lang.IllegalArgumentException
 
 class TransactionStatusService(
     private val gateway: GemGateway,
-    private val stateClients: List<TransactionStatusClient>,
 ) {
     suspend fun getStatus(request: TransactionStateRequest): TransactionChanges? {
         return try {
-            if (request.chain.toChainType() == ChainType.Ethereum) {
-                stateClients.firstOrNull { it.supported(request.chain) }
-                    ?.getStatus(request)
-            } else {
-                val result = gateway.getTransactionStatus(
-                    chain = request.chain.string,
-                    GemTransactionStateRequest(
-                        id = request.hash,
-                        senderAddress = request.sender,
-                        createdAt = 0L, /// TODO: Add created at for HyperCore,
-                        blockNumber = request.block.toLongOrDefault(0L) ,
-                    )
+            val result = gateway.getTransactionStatus(
+                chain = request.chain.string,
+                GemTransactionStateRequest(
+                    id = request.hash,
+                    senderAddress = request.sender,
+                    createdAt = 0L, /// TODO: Add created at for HyperCore,
+                    blockNumber = request.block.toLongOrDefault(0L) ,
                 )
-                val fee = result.changes.firstNotNullOfOrNull { it as? GemTransactionChange.NetworkFee }
-                    ?.v1?.toBigIntegerOrNull()
-                val hashChanges = result.changes.firstNotNullOfOrNull { it as? GemTransactionChange.HashChange }
+            )
+            val fee = result.changes.firstNotNullOfOrNull { it as? GemTransactionChange.NetworkFee }
+                ?.v1?.toBigIntegerOrNull()
+            val hashChanges = result.changes.firstNotNullOfOrNull { it as? GemTransactionChange.HashChange }
 
-                return TransactionChanges(
-                    state = TransactionState.entries.firstOrNull { it.string == result.state } ?: throw ServiceUnavailable,
-                    fee = fee,
-                    hashChanges = hashChanges?.let { HashChanges(it.old, it.new) }
-                )
-            }
+            TransactionChanges(
+                state = TransactionState.entries.firstOrNull { it.string == result.state } ?: throw ServiceUnavailable,
+                fee = fee,
+                hashChanges = hashChanges?.let { HashChanges(it.old, it.new) }
+            )
         } catch (_: Throwable) {
             throw ServiceUnavailable
         }

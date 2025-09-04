@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
-import com.gemwallet.android.blockchain.services.BroadcastClientProxy
+import com.gemwallet.android.blockchain.services.BroadcastService
 import com.gemwallet.android.blockchain.services.SignClientProxy
 import com.gemwallet.android.blockchain.services.SignerPreloaderProxy
 import com.gemwallet.android.cases.transactions.CreateTransaction
@@ -74,7 +74,7 @@ class ConfirmViewModel @Inject constructor(
     private val passwordStore: PasswordStore,
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
     private val signClient: SignClientProxy,
-    private val broadcastClientProxy: BroadcastClientProxy,
+    private val broadcastService: BroadcastService,
     private val createTransactionsCase: CreateTransaction,
     private val stakeRepository: StakeRepository,
     private val savedStateHandle: SavedStateHandle,
@@ -309,7 +309,7 @@ class ConfirmViewModel @Inject constructor(
                 else -> {}
             }
             for (sign in signs) {
-                val txHash = broadcastClientProxy.send(account, sign, signerParams.input.getTxType())
+                val txHash = broadcastService.send(account, sign, signerParams.input.getTxType())
                 if (!sign.contentEquals(signs.last())) {
                     delay(500)
                 } else {

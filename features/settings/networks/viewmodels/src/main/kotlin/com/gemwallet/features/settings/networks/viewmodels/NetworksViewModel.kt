@@ -4,7 +4,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.blockchain.services.NodeStatusClientProxy
+import com.gemwallet.android.blockchain.services.NodeStatusService
 import com.gemwallet.android.cases.nodes.GetBlockExplorers
 import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
@@ -51,7 +51,7 @@ class NetworksViewModel @Inject constructor(
     private val setBlockExplorerCase: SetBlockExplorerCase,
     private val getCurrentNodeCase: GetCurrentNodeCase,
     private val setCurrentNodeCase: SetCurrentNodeCase,
-    private val nodeStatusClient: NodeStatusClientProxy,
+    private val nodeStatusClient: NodeStatusService,
 ) : ViewModel() {
 
     private val state = MutableStateFlow(State())
@@ -126,7 +126,7 @@ class NetworksViewModel @Inject constructor(
                 explorers = getBlockExplorers.getBlockExplorers(chain),
                 currentNode = getCurrentNodeCase.getCurrentNode(chain),
                 currentExplorer = getCurrentBlockExplorer.getCurrentBlockExplorer(chain),
-                availableAddNode = nodeStatusClient.supported(chain),
+                availableAddNode = true,
             )
         }
     }

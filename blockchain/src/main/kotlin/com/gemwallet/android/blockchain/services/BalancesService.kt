@@ -1,21 +1,15 @@
 package com.gemwallet.android.blockchain.services
 
 import com.gemwallet.android.blockchain.clients.BalanceClient
-import com.gemwallet.android.blockchain.clients.getClient
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.ext.toChainType
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
-import com.wallet.core.primitives.AssetSubtype
-import com.wallet.core.primitives.ChainType
 import uniffi.gemstone.GatewayException
 import uniffi.gemstone.GemGateway
 
 class BalancesService(
-    private val balanceClients: List<BalanceClient>,
     private val gateway: GemGateway,
 ) {
 
@@ -55,23 +49,6 @@ class BalancesService(
     }
 
     suspend fun getTokensBalances(account: Account, tokens: List<Asset>): List<AssetBalance> {
-//        val tokens = tokens.filter { it.id.type() == AssetSubtype.TOKEN && account.chain == it.id.chain }
-//            .ifEmpty { return emptyList() }
-//
-//        return if (account.chain.toChainType() == ChainType.Ethereum) {
-//            val client = balanceClients.getClient(account.chain) ?: return emptyList()
-//            val tokensBalances = try {
-//                client.getTokenBalances(account.chain, account.address, tokens)
-//            } catch (_: Throwable) {
-//                emptyList()
-//            }
-//            tokensBalances
-//        } else {
-            return callTokenBalancesGateWay(account, tokens)
-//        }
-    }
-
-    private suspend fun callTokenBalancesGateWay(account: Account, tokens: List<Asset>): List<AssetBalance> {
         return try {
             val ids = tokens.mapNotNull { it.id.tokenId }
             val result = gateway.getBalanceTokens(

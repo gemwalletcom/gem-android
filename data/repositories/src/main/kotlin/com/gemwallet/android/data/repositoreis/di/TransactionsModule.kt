@@ -1,7 +1,6 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import com.gemwallet.android.blockchain.RpcClientAdapter
-import com.gemwallet.android.blockchain.clients.ethereum.EvmTransactionStatusClient
 import com.gemwallet.android.blockchain.services.TransactionStatusService
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.transactions.ClearPendingTransactions
@@ -18,10 +17,6 @@ import com.gemwallet.android.data.repositoreis.transactions.TransactionsReposito
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
 import com.gemwallet.android.data.services.gemapi.GemApiClient
-import com.gemwallet.android.ext.available
-import com.gemwallet.android.ext.toChainType
-import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.ChainType
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,12 +40,6 @@ object TransactionsModule {
         assetsDao = assetsDao,
         transactionStatusService = TransactionStatusService(
             gateway = gateway,
-            stateClients = Chain.available().mapNotNull {
-                when (it.toChainType()) {
-                    ChainType.Ethereum -> EvmTransactionStatusClient(it, rpcClients.getClient(it))
-                    else -> null
-                }
-            }
         ),
     )
 

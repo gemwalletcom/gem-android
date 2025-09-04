@@ -1,7 +1,6 @@
 package com.gemwallet.android.data.repositoreis.stake
 
-import com.gemwallet.android.blockchain.clients.StakeClient
-import com.gemwallet.android.blockchain.services.StakeClientProxy
+import com.gemwallet.android.blockchain.services.StakeService
 import com.gemwallet.android.data.service.store.database.StakeDao
 import com.gemwallet.android.data.service.store.database.entities.toModel
 import com.gemwallet.android.data.service.store.database.entities.toRecord
@@ -20,19 +19,16 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
-import uniffi.gemstone.GemGateway
 import java.math.BigInteger
 
 class StakeRepository(
     private val gemApiStaticClient: GemApiStaticClient,
     private val gemApiClient: GemApiClient,
-    private val gateway: GemGateway,
-    private val stakeClients: List<StakeClient>,
+    private val stakeService: StakeService,
     private val stakeDao: StakeDao,
 ) {
     private val recommendedValidators = Config().getValidators()
 
-    private val stakeClientsProxy = StakeClientProxy(gateway, stakeClients)
 
     suspend fun sync(chain: Chain, address: String) = withContext(Dispatchers.IO) {
         val apr = try {
@@ -41,13 +37,12 @@ class StakeRepository(
             return@withContext
         }
         syncValidators(chain, apr)
-        syncDelegations(chain, address, apr)
+        syncDelegations(chain, address)
     }
 
-    private suspend fun syncDelegations(chain: Chain, address: String, apr: Double) = withContext(Dispatchers.IO) {
+    private suspend fun syncDelegations(chain: Chain, address: String) = withContext(Dispatchers.IO) {
         val delegations = try {
-            stakeClientsProxy.getStakeDelegations(chain, address, apr)
-//            stakeClients.firstOrNull { it.supported(chain) }?.getStakeDelegations(chain, address, apr) ?: return@withContext
+            stakeService.getStakeDelegations(chain, address)
         } catch (_: Throwable) {
             return@withContext
         }
@@ -63,7 +58,7 @@ class StakeRepository(
         } catch (_: Throwable) {
             emptyMap()
         }
-        val validators = stakeClientsProxy.getValidators(chain, apr)
+        val validators = stakeService.getValidators(chain, apr)
             .map {
                 if (it.name.isEmpty()) {
                     it.copy(name = validatorsInfo[it.id]?.name ?: "")
