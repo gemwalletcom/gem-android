@@ -43,17 +43,15 @@ class TestStellarSigner {
                     DestinationAddress(from),
                 ),
                 chainData = StellarChainData(
-                    sequence = 1,
-                    fees = listOf(
-                        Fee(
-                            priority = FeePriority.Normal,
-                            feeAssetId = AssetId(Chain.Stellar),
-                            amount = BigInteger.TEN
-                        ),
-                    ),
+                    sequence = 1UL,
+                    isDestinationAddressExist = true,
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                FeePriority.Normal,
+                Fee(
+                    priority = FeePriority.Normal,
+                    feeAssetId = AssetId(Chain.Stellar),
+                    amount = BigInteger.TEN
+                ),
                 privateKey.data(),
             )
         }

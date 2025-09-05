@@ -80,7 +80,13 @@ class AssetsRepository @Inject constructor(
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetAsset {
 
-    private val visibleByDefault = listOf(Chain.Ethereum, Chain.Bitcoin, Chain.SmartChain, Chain.Solana)
+    private val visibleByDefault = listOf(
+        Chain.Ethereum,
+        Chain.Bitcoin,
+        Chain.SmartChain,
+        Chain.Solana,
+        Chain.Tron,
+    )
 
     init {
         scope.launch(Dispatchers.IO) {

@@ -42,15 +42,14 @@ class TestNearSigner {
                 ),
                 chainData = NearChainData(
                     block = "2ADR7pgpkd2uFFkQcAyCxL5YB4d9SewALTLEuFbUUJLe",
-                    sequence = 134180900000002,
-                    fee = Fee(
-                        priority = FeePriority.Normal,
-                        feeAssetId = AssetId(Chain.Near),
-                        amount = BigInteger.TEN
-                    ),
+                    sequence = 134180900000002UL,
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                FeePriority.Normal,
+                fee = Fee(
+                    priority = FeePriority.Normal,
+                    feeAssetId = AssetId(Chain.Near),
+                    amount = BigInteger.TEN
+                ),
                 privateKey.data(),
             )
         }
