@@ -172,6 +172,10 @@ sealed class ConfirmParams {
             get() = BigInteger.ZERO
 
         override fun memo(): String? = data
+
+        override fun destination(): DestinationAddress? {
+            return DestinationAddress(contract)
+        }
     }
 
     @Serializable
@@ -193,11 +197,15 @@ sealed class ConfirmParams {
 
         override val asset: Asset
             get() = fromAsset
+
         override val amount: BigInteger
             get() = fromAmount
+
         override fun destination(): DestinationAddress = DestinationAddress(to)
 
         override fun isMax(): Boolean = maxFrom
+
+        override fun memo(): String? = swapData
 
         @Serializable
         data class ApprovalData(
@@ -212,7 +220,11 @@ sealed class ConfirmParams {
         override val asset: Asset,
         override val from: Account,
         @Serializable(BigIntegerSerializer::class) override val amount: BigInteger = BigInteger.ZERO,
-    ) : ConfirmParams()
+    ) : ConfirmParams() {
+        override fun destination(): DestinationAddress? {
+            return DestinationAddress(from.address)
+        }
+    }
 
     @Serializable
     class NftParams(
@@ -282,6 +294,10 @@ sealed class ConfirmParams {
         ) : Stake() {
             override val validatorId: String = ""
         }
+
+        override fun destination(): DestinationAddress? {
+            return DestinationAddress(validatorId)
+        }
     }
 
     fun pack(): String? {
@@ -305,7 +321,7 @@ sealed class ConfirmParams {
         }
     }
 
-    open fun destination(): DestinationAddress? = null
+    open  fun destination(): DestinationAddress? = null
 
     open fun memo(): String? = null
 

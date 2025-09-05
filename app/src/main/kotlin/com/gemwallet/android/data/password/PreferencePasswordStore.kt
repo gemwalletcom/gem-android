@@ -8,6 +8,7 @@ import androidx.security.crypto.MasterKey
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.math.toHexString
 import java.security.SecureRandom
+import androidx.core.content.edit
 
 class PreferencePasswordStore(
     private val context: Context,
@@ -18,10 +19,9 @@ class PreferencePasswordStore(
     override fun createPassword(walletId: String): String {
         val key = ByteArray(16)
         random.nextBytes(key)
-        getStore()
-            .edit()
-            .putString(walletId, key.toHexString())
-            .commit()
+        getStore().edit(commit = true) {
+            putString(walletId, key.toHexString())
+        }
         return key.toHexString()
     }
 

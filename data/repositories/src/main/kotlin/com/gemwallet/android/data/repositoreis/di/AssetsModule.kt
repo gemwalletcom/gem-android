@@ -61,40 +61,6 @@ object AssetsModule {
 
     @Provides
     @Singleton
-    fun provideGateway(alienProvider: AlienProvider): GemGateway {
-        return GemGateway(
-            alienProvider,
-            object : GemPreferences {
-                override fun get(key: String): String? {
-                    TODO("Not yet implemented")
-                }
-
-                override fun set(key: String, value: String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun remove(key: String) {
-                    TODO("Not yet implemented")
-                }
-            },
-            object : GemPreferences {
-                override fun get(key: String): String? {
-                    TODO("Not yet implemented")
-                }
-
-                override fun set(key: String, value: String) {
-                    TODO("Not yet implemented")
-                }
-
-                override fun remove(key: String) {
-                    TODO("Not yet implemented")
-                }
-            },
-        )
-    }
-
-    @Provides
-    @Singleton
     fun provideBalanceRemoteSource(
         gateway: GemGateway,
     ): BalancesService = BalancesService(
