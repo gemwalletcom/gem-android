@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.buy.viewmodels
+package com.gemwallet.features.buy.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -9,11 +9,11 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
-import com.gemwallet.android.features.buy.models.AmountValidator
-import com.gemwallet.android.features.buy.models.BuyError
-import com.gemwallet.android.features.buy.models.FiatSceneState
-import com.gemwallet.android.features.buy.models.FiatSuggestion
-import com.gemwallet.android.features.buy.models.toProviderUIModel
+import com.gemwallet.features.buy.viewmodels.models.AmountValidator
+import com.gemwallet.features.buy.viewmodels.models.BuyError
+import com.gemwallet.features.buy.viewmodels.models.FiatSceneState
+import com.gemwallet.features.buy.viewmodels.models.FiatSuggestion
+import com.gemwallet.features.buy.viewmodels.models.toProviderUIModel
 import com.gemwallet.android.math.parseNumber
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.wallet.core.primitives.Currency

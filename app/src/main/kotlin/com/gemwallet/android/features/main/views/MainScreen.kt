@@ -41,7 +41,7 @@ import com.gemwallet.android.features.assets.navigation.assetsRoute
 import com.gemwallet.android.features.assets.navigation.navigateToAssetsScreen
 import com.gemwallet.android.features.assets.views.AssetsScreen
 import com.gemwallet.android.features.bridge.navigation.navigateToBridgesScreen
-import com.gemwallet.android.features.buy.navigation.navigateToBuyScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToBuyScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsManageScreen
 import com.gemwallet.android.features.main.models.BottomNavItem
 import com.gemwallet.android.features.main.viewmodels.MainScreenViewModel

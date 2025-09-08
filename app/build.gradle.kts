@@ -208,6 +208,8 @@ dependencies {
     implementation(project(":features:asset_select:viewmodels"))
     implementation(project(":features:banner:presents"))
     implementation(project(":features:banner:viewmodels"))
+    implementation(project(":features:buy:presents"))
+    implementation(project(":features:buy:viewmodels"))
     implementation(project(":features:transfer_amount:presents"))
     implementation(project(":features:transfer_amount:viewmodels"))
     implementation(project(":features:swap:presents"))

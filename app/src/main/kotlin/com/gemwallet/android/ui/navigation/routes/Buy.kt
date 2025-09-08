@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.buy.navigation
+package com.gemwallet.android.ui.navigation.routes
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.buy.views.FiatScreen
+import com.gemwallet.features.buy.views.FiatScreen
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.features.asset_select.presents.views.SelectBuyScreen
 import com.wallet.core.primitives.AssetId

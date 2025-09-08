@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.buy.views
+package com.gemwallet.features.buy.views
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -24,9 +24,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.features.buy.models.BuyFiatProviderUIModel
-import com.gemwallet.android.features.buy.models.FiatSceneState
-import com.gemwallet.android.features.buy.models.FiatSuggestion
+import com.gemwallet.features.buy.viewmodels.models.BuyFiatProviderUIModel
+import com.gemwallet.features.buy.viewmodels.models.FiatSceneState
+import com.gemwallet.features.buy.viewmodels.models.FiatSuggestion
 import com.gemwallet.android.model.hasAvailable
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Container

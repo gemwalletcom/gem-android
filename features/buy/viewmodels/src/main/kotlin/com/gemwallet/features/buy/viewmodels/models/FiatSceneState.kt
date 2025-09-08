@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.buy.models
+package com.gemwallet.features.buy.viewmodels.models
 
 sealed interface FiatSceneState {
     data object Loading : FiatSceneState

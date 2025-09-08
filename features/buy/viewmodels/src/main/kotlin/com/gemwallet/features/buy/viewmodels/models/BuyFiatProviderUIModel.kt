@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.buy.models
+package com.gemwallet.features.buy.viewmodels.models
 
 import androidx.compose.runtime.Stable
 import com.gemwallet.android.model.format

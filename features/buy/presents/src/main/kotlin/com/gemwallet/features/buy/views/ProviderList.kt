@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.buy.views
+package com.gemwallet.features.buy.views
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyColumn
@@ -7,7 +7,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
-import com.gemwallet.android.features.buy.models.BuyFiatProviderUIModel
+import com.gemwallet.features.buy.viewmodels.models.BuyFiatProviderUIModel
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
