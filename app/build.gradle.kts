@@ -200,6 +200,8 @@ dependencies {
     // Features
     implementation(project(":features:activities:presents"))
     implementation(project(":features:activities:viewmodels"))
+    implementation(project(":features:add_asset:presents"))
+    implementation(project(":features:add_asset:viewmodels"))
     implementation(project(":features:asset:presents"))
     implementation(project(":features:asset:viewmodels"))
     implementation(project(":features:asset_select:presents"))

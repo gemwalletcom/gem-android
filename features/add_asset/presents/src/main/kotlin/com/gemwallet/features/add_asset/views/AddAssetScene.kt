@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.add_asset.views
+package com.gemwallet.features.add_asset.views
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,9 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.domains.asset.chain
-import com.gemwallet.android.features.add_asset.viewmodels.models.TokenSearchState
+import com.gemwallet.features.add_asset.viewmodels.models.TokenSearchState
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.AddressChainField
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.list_item.ChainItem
 import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron

@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.add_asset.views
+package com.gemwallet.features.add_asset.views
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
@@ -10,8 +10,8 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.features.add_asset.viewmodels.models.AddAssetUIState
-import com.gemwallet.android.features.add_asset.viewmodels.AddAssetViewModel
+import com.gemwallet.features.add_asset.viewmodels.models.AddAssetUIState
+import com.gemwallet.features.add_asset.viewmodels.AddAssetViewModel
 import com.gemwallet.android.ui.components.QrCodeRequest
 import com.gemwallet.android.ui.components.screen.SelectChain
 

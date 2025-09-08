@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
-import com.gemwallet.android.features.add_asset.views.AddAssetScree
+import com.gemwallet.features.add_asset.views.AddAssetScree
 import kotlinx.serialization.Serializable
 
 @Serializable

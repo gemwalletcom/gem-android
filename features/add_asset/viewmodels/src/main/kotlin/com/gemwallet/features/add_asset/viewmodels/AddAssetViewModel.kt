@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.add_asset.viewmodels
+package com.gemwallet.features.add_asset.viewmodels
 
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.getValue
@@ -12,9 +12,9 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.assetType
 import com.gemwallet.android.ext.filter
 import com.gemwallet.android.ext.getAccount
-import com.gemwallet.android.features.add_asset.viewmodels.models.AddAssetError
-import com.gemwallet.android.features.add_asset.viewmodels.models.AddAssetUIState
-import com.gemwallet.android.features.add_asset.viewmodels.models.TokenSearchState
+import com.gemwallet.features.add_asset.viewmodels.models.AddAssetError
+import com.gemwallet.features.add_asset.viewmodels.models.AddAssetUIState
+import com.gemwallet.features.add_asset.viewmodels.models.TokenSearchState
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import dagger.hilt.android.lifecycle.HiltViewModel

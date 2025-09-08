@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.add_asset.viewmodels.models
+package com.gemwallet.features.add_asset.viewmodels.models
 
 enum class AddAssetError {
     None,
