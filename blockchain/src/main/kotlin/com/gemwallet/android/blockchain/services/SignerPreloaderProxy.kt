@@ -40,15 +40,12 @@ import kotlinx.coroutines.withContext
 import uniffi.gemstone.GemGasPriceType
 import uniffi.gemstone.GemGateway
 import uniffi.gemstone.GemGatewayEstimateFee
-import uniffi.gemstone.GemGatewayEstimateFeeImpl
 import uniffi.gemstone.GemTransactionInputType
 import uniffi.gemstone.GemTransactionLoadFee
 import uniffi.gemstone.GemTransactionLoadInput
 import uniffi.gemstone.GemTransactionLoadMetadata
 import uniffi.gemstone.GemTransactionPreloadInput
 import uniffi.gemstone.SwapperException
-import java.math.BigInteger
-import kotlin.collections.mapValues
 
 class SignerPreloaderProxy(
     private val gateway: GemGateway,
@@ -184,6 +181,7 @@ class SignerPreloaderProxy(
         return when (chain.toChainType()) {
             ChainType.Bitcoin -> BitcoinGatewayEstimateFee()
             ChainType.Ethereum -> EvmGatewayEstimateFee()
+            ChainType.Cardano,
             ChainType.Solana,
             ChainType.Cosmos,
             ChainType.Ton,
@@ -195,7 +193,6 @@ class SignerPreloaderProxy(
             ChainType.Stellar,
             ChainType.Algorand,
             ChainType.Polkadot,
-            ChainType.Cardano,
             ChainType.HyperCore -> StubGatewayEstimateFee
         }
     }
