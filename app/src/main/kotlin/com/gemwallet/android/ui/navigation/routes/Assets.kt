@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.assets.navigation
+package com.gemwallet.android.ui.navigation.routes
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -9,11 +9,15 @@ import com.gemwallet.android.features.assets.views.AssetsScreen
 import com.gemwallet.android.ui.components.animation.enterTabScreenTransition
 import com.gemwallet.android.ui.components.animation.exitTabScreenTransition
 import com.wallet.core.primitives.AssetId
+import kotlinx.serialization.Serializable
 
 const val assetsRoute = "assets"
 
+@Serializable
+object AssetsRoute
+
 fun NavController.navigateToAssetsScreen(navOptions: NavOptions? = null) {
-    navigate(assetsRoute, navOptions ?: navOptions { launchSingleTop = true })
+    navigate(AssetsRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
 fun NavGraphBuilder.assetsScreen(
@@ -24,8 +28,7 @@ fun NavGraphBuilder.assetsScreen(
     onShowAssetManage: () -> Unit,
     onAssetClick: (AssetId) -> Unit,
 ) {
-    composable(
-        route = assetsRoute,
+    composable<AssetsRoute>(
         enterTransition = enterTabScreenTransition,
         exitTransition = exitTabScreenTransition,
     ) {

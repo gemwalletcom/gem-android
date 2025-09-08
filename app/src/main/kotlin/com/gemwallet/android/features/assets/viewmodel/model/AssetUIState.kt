@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.assets.model
+package com.gemwallet.android.features.assets.viewmodel.model
 
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.models.PriceState

@@ -37,8 +37,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.gemwallet.android.features.activities.presents.list.TransactionsScreen
-import com.gemwallet.android.features.assets.navigation.assetsRoute
-import com.gemwallet.android.features.assets.navigation.navigateToAssetsScreen
+import com.gemwallet.android.ui.navigation.routes.assetsRoute
+import com.gemwallet.android.ui.navigation.routes.navigateToAssetsScreen
 import com.gemwallet.android.features.assets.views.AssetsScreen
 import com.gemwallet.android.features.bridge.navigation.navigateToBridgesScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToBuyScreen

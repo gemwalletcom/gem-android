@@ -18,8 +18,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
-import com.gemwallet.android.features.assets.navigation.assetsRoute
-import com.gemwallet.android.features.assets.navigation.assetsScreen
+import com.gemwallet.android.ui.navigation.routes.assetsRoute
+import com.gemwallet.android.ui.navigation.routes.assetsScreen
 import com.gemwallet.android.features.bridge.navigation.bridgesScreen
 import com.gemwallet.android.features.bridge.navigation.navigateToBridgeScreen
 import com.gemwallet.android.features.bridge.navigation.navigateToBridgesScreen

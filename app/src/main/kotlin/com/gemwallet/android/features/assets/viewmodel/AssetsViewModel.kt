@@ -9,8 +9,8 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.assets.model.PriceUIState
-import com.gemwallet.android.features.assets.model.WalletInfoUIState
+import com.gemwallet.android.features.assets.viewmodel.model.PriceUIState
+import com.gemwallet.android.features.assets.viewmodel.model.WalletInfoUIState
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SyncState
