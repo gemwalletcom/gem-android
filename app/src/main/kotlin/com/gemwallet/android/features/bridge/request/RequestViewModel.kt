@@ -93,7 +93,7 @@ class RequestViewModel @Inject constructor(
                         sessionTopic = request.topic,
                         jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
                             request.request.id,
-                            "null",
+                            null,
                         )
                     ),
                     onSuccess = {  },

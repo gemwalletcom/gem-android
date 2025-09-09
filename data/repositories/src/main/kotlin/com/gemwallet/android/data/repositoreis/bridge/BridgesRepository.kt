@@ -1,5 +1,8 @@
 package com.gemwallet.android.data.repositoreis.bridge
 
+import android.app.Application
+import android.content.Context
+import android.util.Log
 import androidx.core.net.toUri
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.data.service.store.database.ConnectionsDao
@@ -7,6 +10,8 @@ import com.gemwallet.android.data.service.store.database.entities.DbConnection
 import com.gemwallet.android.data.service.store.database.entities.toModel
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.reown.android.Core
+import com.reown.android.CoreClient
+import com.reown.android.relay.ConnectionType
 import com.reown.walletkit.client.Wallet
 import com.reown.walletkit.client.WalletKit
 import com.wallet.core.primitives.Chain
@@ -18,33 +23,84 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.UUID
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BridgesRepository(
+    private val context: Context,
     private val walletsRepository: WalletsRepository,
     private val connectionsDao: ConnectionsDao,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob()),
 ) {
+
+    private val isWalletConnectInit = MutableStateFlow(false)
+    val bridgeEvents = isWalletConnectInit.flatMapLatest {
+        if (it) {
+            WalletConnectDelegate.walletEvents
+        } else {
+            emptyFlow()
+        }
+    }
+
     init {
         scope.launch(Dispatchers.IO) {
-            sync()
-            WalletConnectDelegate.walletEvents.collectLatest { event ->
-                withContext(Dispatchers.IO) {
-                    when (event) {
-                        is Wallet.Model.Session -> updateSession(event)
-                        is Wallet.Model.SessionDelete -> sync()
-                        else -> Unit
+            if ((getConnections().firstOrNull() ?: emptyList()).isNotEmpty()) {
+                initWalletConnect()
+                sync()
+                WalletConnectDelegate.walletEvents.collectLatest { event ->
+                    withContext(Dispatchers.IO) {
+                        when (event) {
+                            is Wallet.Model.Session -> updateSession(event)
+                            is Wallet.Model.SessionDelete -> sync()
+                            else -> Unit
+                        }
                     }
                 }
             }
         }
+    }
+
+    private fun initWalletConnect(onSuccess: () -> Unit = {}) {
+        if (isWalletConnectInit.value) {
+            onSuccess()
+            return
+        }
+
+        val projectId = "3bc07cd7179d11ea65335fb9377702b6"
+        val connectionType = ConnectionType.AUTOMATIC
+        val metaData = Core.Model.AppMetaData(
+            name = "Gem Wallet",
+            description = "Gem Web3 Wallet",
+            url = "https://gemwallet.com",
+            icons = listOf("https://gemwallet.com/images/gem-logo-256x256.png"),
+            redirect = "gem://wc/"
+        )
+        CoreClient.initialize(
+            application = context as Application,
+            projectId = projectId,
+            metaData = metaData,
+            connectionType = connectionType,
+            telemetryEnabled = false,
+        ) {
+            Log.d("WalletConnect", "Err", it.throwable)
+        }
+        val initParams = Wallet.Params.Init(core = CoreClient)
+        WalletKit.initialize(
+            initParams,
+            {
+                isWalletConnectInit.update { true }
+                onSuccess()
+            }
+        ) { _ -> }
     }
 
     fun getConnections(): Flow<List<WalletConnection>> {
@@ -111,17 +167,21 @@ class BridgesRepository(
     }
 
     fun addPairing(uri: String, onSuccess: () -> Unit = {}, onError: (String) -> Unit = {}) {
-        try {
-            WalletKit.pair(
-                params = Wallet.Params.Pair(uri),
-                onSuccess = { onSuccess() },
-                onError = {
-                    onError(it.throwable.message ?: "Pair to ${uri.toUri().host} fail")
+        initWalletConnect(
+            {
+                try {
+                    WalletKit.pair(
+                        params = Wallet.Params.Pair(uri),
+                        onSuccess = { onSuccess() },
+                        onError = {
+                            onError(it.throwable.message ?: "Pair to ${uri.toUri().host} fail")
+                        }
+                    )
+                } catch (err: Throwable) {
+                    onError("Wallet Connect unavailable: ${err.message}")
                 }
-            )
-        } catch (err: Throwable) {
-            onError("Wallet Connect unavailable: ${err.message}")
-        }
+            }
+        )
     }
 
     fun approveConnection(
