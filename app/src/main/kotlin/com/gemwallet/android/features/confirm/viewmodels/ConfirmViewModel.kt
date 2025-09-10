@@ -19,8 +19,8 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.confirm.models.AmountUIModel
 import com.gemwallet.android.features.confirm.models.ConfirmError
 import com.gemwallet.android.features.confirm.models.ConfirmState
-import com.gemwallet.android.features.confirm.navigation.paramsArg
-import com.gemwallet.android.features.confirm.navigation.txTypeArg
+import com.gemwallet.android.ui.navigation.routes.paramsArg
+import com.gemwallet.android.ui.navigation.routes.txTypeArg
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
