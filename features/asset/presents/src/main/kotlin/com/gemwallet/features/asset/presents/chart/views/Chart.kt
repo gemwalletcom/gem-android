@@ -1,6 +1,5 @@
 package com.gemwallet.features.asset.presents.chart.views
 
-import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -74,27 +73,30 @@ fun Chart(
     val modelProducer = remember { CartesianChartModelProducer() }
     var price by remember { mutableStateOf<PricePoint?>(null) }
 
-    val persistentMarkers = mapOf(
-        minIndex to rememberDefaultCartesianMarker(
-            TextComponent(
-                color = MaterialTheme.colorScheme.secondary.toArgb(),
-                margins = Insets(4f, 4f)
-            ),
-            labelPosition = DefaultCartesianMarker.LabelPosition.Bottom,
-            valueFormatter = { _, targets ->
-                uiModel.chartPoints[minIndex].yLabel ?: "~"
-            }
-        ),
-        maxIndex to rememberDefaultCartesianMarker(
-        TextComponent(
-            color = MaterialTheme.colorScheme.secondary.toArgb(),
-            margins = Insets(4f, 4f)
-        ),
-            valueFormatter = { _, targets ->
-                uiModel.chartPoints[maxIndex].yLabel ?: "~"
-            }
-        )
+    val persistentLabel = TextComponent(
+        color = MaterialTheme.colorScheme.secondary.toArgb(),
+        margins = Insets(4f, 4f)
     )
+
+    val persistentMarkers = if (points.isNotEmpty()) {
+        mapOf(
+            minIndex to rememberDefaultCartesianMarker(
+                persistentLabel,
+                labelPosition = DefaultCartesianMarker.LabelPosition.Bottom,
+                valueFormatter = { _, targets ->
+                    uiModel.chartPoints[minIndex].yLabel ?: "~"
+                }
+            ),
+            maxIndex to rememberDefaultCartesianMarker(
+                persistentLabel,
+                valueFormatter = { _, targets ->
+                    uiModel.chartPoints[maxIndex].yLabel ?: "~"
+                }
+            )
+        )
+    } else {
+        emptyMap()
+    }
 
     Container {
         Column {
@@ -163,8 +165,6 @@ fun Chart(
                                     persistentMarkers.forEach { index, marker ->
                                         marker at index
                                     }
-
-                                    Log.d("CHART", "This: $this; $extraStore")
                                 },
                                 markerVisibilityListener = object : CartesianMarkerVisibilityListener {
                                     override fun onHidden(marker: CartesianMarker) {
