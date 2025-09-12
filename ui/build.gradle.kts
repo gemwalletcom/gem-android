@@ -65,6 +65,7 @@ dependencies {
     api(libs.kotlinx.collections.immutable)
     api(libs.compose.activity)
     api(libs.browser)
+    api(libs.constraint.layout)
     implementation(libs.compose.navigation)
 
     // QRCode scanner: only for none private data: recipient, memo, amount, etc
