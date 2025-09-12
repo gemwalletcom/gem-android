@@ -21,7 +21,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -34,31 +33,27 @@ import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.defaultPadding
 import com.gemwallet.android.ui.theme.padding4
 import com.gemwallet.android.ui.theme.space8
-import com.gemwallet.features.asset.presents.chart.components.PeriodsPanel
-import com.gemwallet.features.asset.presents.chart.components.ShapeComponent
-import com.gemwallet.features.asset.presents.chart.components.rememberBottomAxis
-import com.gemwallet.features.asset.presents.chart.components.rememberTopAxis
 import com.gemwallet.features.asset.viewmodels.chart.models.PricePoint
 import com.gemwallet.features.asset.viewmodels.chart.viewmodels.ChartViewModel
 import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineCartesianLayer
-import com.patrykandpatrick.vico.compose.cartesian.layer.rememberLineSpec
 import com.patrykandpatrick.vico.compose.cartesian.marker.rememberDefaultCartesianMarker
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.compose.common.component.rememberLineComponent
+import com.patrykandpatrick.vico.compose.common.component.rememberShapeComponent
 import com.patrykandpatrick.vico.compose.common.component.rememberTextComponent
-import com.patrykandpatrick.vico.compose.common.shader.color
-import com.patrykandpatrick.vico.compose.common.shape.dashed
-import com.patrykandpatrick.vico.core.cartesian.data.AxisValueOverrider
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
+import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarker
 import com.patrykandpatrick.vico.core.cartesian.marker.CartesianMarkerVisibilityListener
 import com.patrykandpatrick.vico.core.cartesian.marker.DefaultCartesianMarker
-import com.patrykandpatrick.vico.core.common.Dimensions
+import com.patrykandpatrick.vico.core.common.Fill
+import com.patrykandpatrick.vico.core.common.Insets
 import com.patrykandpatrick.vico.core.common.component.LineComponent
-import com.patrykandpatrick.vico.core.common.shader.DynamicShader
-import com.patrykandpatrick.vico.core.common.shape.Shape
+import com.patrykandpatrick.vico.core.common.component.TextComponent
+import com.patrykandpatrick.vico.core.common.shape.CorneredShape
+import com.patrykandpatrick.vico.core.common.shape.DashedShape
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlin.math.min
@@ -75,8 +70,33 @@ fun Chart(
     val max = points.maxOrNull() ?: 0f
     val minIndex = points.indexOf(min)
     val maxIndex = points.indexOf(max)
-    val modelProducer = remember { CartesianChartModelProducer.build() }
+    val modelProducer = remember { CartesianChartModelProducer() }
     var price by remember { mutableStateOf<PricePoint?>(null) }
+
+    val persistentLabel = TextComponent(
+        color = MaterialTheme.colorScheme.secondary.toArgb(),
+        margins = Insets(4f, 4f)
+    )
+
+    val persistentMarkers = if (points.isNotEmpty()) {
+        mapOf(
+            minIndex to rememberDefaultCartesianMarker(
+                persistentLabel,
+                labelPosition = DefaultCartesianMarker.LabelPosition.Bottom,
+                valueFormatter = { _, targets ->
+                    uiModel.chartPoints[minIndex].yLabel ?: "~"
+                }
+            ),
+            maxIndex to rememberDefaultCartesianMarker(
+                persistentLabel,
+                valueFormatter = { _, targets ->
+                    uiModel.chartPoints[maxIndex].yLabel ?: "~"
+                }
+            )
+        )
+    } else {
+        emptyMap()
+    }
 
     Container {
         Column {
@@ -90,7 +110,7 @@ fun Chart(
                     if (price == null) uiModel.currentPoint else price
                 }
                 PriceInfo(
-                    priceValue =  point?.yLabel ?: "",
+                    priceValue = point?.yLabel ?: "",
                     changedPercentages = point?.percentage ?: "",
                     state = point?.priceState ?: PriceState.None,
                     style = MaterialTheme.typography.headlineSmall,
@@ -104,7 +124,9 @@ fun Chart(
                 )
             }
             Spacer16()
-            Box(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+            Box(modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)) {
                 when {
                     state.loading || state.period != uiModel.period -> CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
@@ -116,7 +138,7 @@ fun Chart(
                     else -> {
                         LaunchedEffect(uiModel.period) {
                             withContext(Dispatchers.Default) {
-                                modelProducer.tryRunTransaction {
+                                modelProducer.runTransaction {
                                     lineSeries {
                                         series(
                                             x = List(points.size) { index -> index },
@@ -127,63 +149,51 @@ fun Chart(
                             }
                         }
                         CartesianChartHost(
-                            modifier = Modifier.fillMaxWidth().height(200.dp)
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
                                 .padding(end = padding4),
-                            diffAnimationSpec = null,
-                            markerVisibilityListener = object : CartesianMarkerVisibilityListener {
-                                override fun onHidden(marker: CartesianMarker) {
-                                    price = null
-                                }
-
-                                override fun onShown(
-                                    marker: CartesianMarker,
-                                    targets: List<CartesianMarker.Target>
-                                ) {
-                                    val index = targets.first().x.toInt()
-                                    if (index > 0 && index < uiModel.chartPoints.size) {
-                                        price = uiModel.chartPoints[index]
-                                    }
-                                }
-
-                                override fun onUpdated(
-                                    marker: CartesianMarker,
-                                    targets: List<CartesianMarker.Target>
-                                ) {
-                                    price = uiModel.chartPoints[min(
-                                        uiModel.chartPoints.size - 1,
-                                        targets.first().x.toInt()
-                                    )]
-                                }
-                            },
+                            animateIn = false,
+                            modelProducer = modelProducer,
                             chart = rememberCartesianChart(
                                 rememberLineCartesianLayer(
-                                    spacing = 0.1.dp,
-                                    lines = listOf(
-                                        rememberLineSpec(
-                                            shader = DynamicShader.color(MaterialTheme.colorScheme.primary),
-                                            backgroundShader = null,
-                                        ),
-                                    ),
-                                    axisValueOverrider = AxisValueOverrider.fixed(
-                                        minY = min,
-                                        maxY = max
-                                    ),
+                                    pointSpacing = 0.1.dp,
+                                    rangeProvider = CartesianLayerRangeProvider.fixed(minY = min.toDouble(), maxY = max.toDouble())
                                 ),
-                                topAxis = rememberTopAxis(
-                                    valueFormatter = { value, _, _ ->
-                                        if (value == maxIndex.toFloat()) uiModel.chartPoints[maxIndex].yLabel
-                                            ?: "" else ""
-                                    },
-                                ),
-                                bottomAxis = rememberBottomAxis(
-                                    valueFormatter = { value, _, _ ->
-                                        if (value == minIndex.toFloat()) uiModel.chartPoints[minIndex].yLabel
-                                            ?: "" else ""
+                                marker = rememberMarker(labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint),
+                                persistentMarkers = { extraStore ->
+                                    persistentMarkers.forEach { index, marker ->
+                                        marker at index
                                     }
-                                ),
+                                },
+                                markerVisibilityListener = object : CartesianMarkerVisibilityListener {
+                                    override fun onHidden(marker: CartesianMarker) {
+                                        price = null
+                                    }
+
+                                    override fun onShown(
+                                        marker: CartesianMarker,
+                                        targets: List<CartesianMarker.Target>
+                                    ) {
+                                        val index = targets.first().x.toInt()
+                                        if (index > 0 && index < uiModel.chartPoints.size) {
+                                            price = uiModel.chartPoints[index]
+                                        }
+                                    }
+
+                                    override fun onUpdated(
+                                        marker: CartesianMarker,
+                                        targets: List<CartesianMarker.Target>
+                                    ) {
+                                        price = uiModel.chartPoints[
+                                            min(
+                                                uiModel.chartPoints.size - 1,
+                                                targets.first().x.toInt()
+                                            )
+                                        ]
+                                    }
+                                },
                             ),
-                            marker = rememberMarker(labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint),
-                            modelProducer = modelProducer,
                         )
                     }
                 }
@@ -196,7 +206,9 @@ fun Chart(
 
 @Composable
 fun ChartError() {
-    Box(modifier = Modifier.fillMaxSize().defaultPadding()) {
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .defaultPadding()) {
         Text(
             modifier = Modifier.align(Alignment.Center),
             textAlign = TextAlign.Center,
@@ -211,52 +223,33 @@ private fun rememberMarker(
     labelPosition: DefaultCartesianMarker.LabelPosition,
     guideline: LineComponent? = rememberMarketGuideLine(),
 ): DefaultCartesianMarker {
+    val indicator = rememberShapeComponent(
+        shape = CorneredShape.Pill,
+        fill = Fill(Color.White.toArgb()),
+        strokeThickness = 2.dp,
+        strokeFill = Fill(MaterialTheme.colorScheme.primary.toArgb()),
+    )
     return rememberDefaultCartesianMarker(
         valueFormatter = { _, _ -> ""},
         label = rememberTextComponent(
             color = Color.Black,
             background = null,
         ),
-        indicator = rememberShapeComponent(
-            shape = Shape.Pill,
-            color = Color.White,
-            strokeWidth = 2.dp,
-            strokeColor = MaterialTheme.colorScheme.primary,
-        ),
+        indicator = { indicator },
         labelPosition = labelPosition,
         guideline = guideline,
     )
 }
 
 @Composable
-public fun rememberShapeComponent(
-    shape: Shape = Shape.Rectangle,
-    color: Color = Color.Black,
-    dynamicShader: DynamicShader? = null,
-    margins: Dimensions = Dimensions.Empty,
-    strokeWidth: Dp = 0.dp,
-    strokeColor: Color = Color.Transparent,
-): ShapeComponent =
-    remember(shape, color, dynamicShader, margins, strokeWidth, strokeColor) {
-        ShapeComponent(
-            shape = shape,
-            color = color.toArgb(),
-            dynamicShader = dynamicShader,
-            margins = margins,
-            strokeWidthDp = strokeWidth.value,
-            strokeColor = strokeColor.toArgb(),
-        )
-    }
-
-@Composable
 private fun rememberMarketGuideLine(): LineComponent {
     return rememberLineComponent(
-        color = MaterialTheme.colorScheme.outlineVariant,
+        fill = Fill(MaterialTheme.colorScheme.outlineVariant.toArgb()),
         shape = remember {
-            Shape.dashed(
-                shape = Shape.Pill,
-                dashLength = 4.dp,
-                gapLength = 8.dp,
+            DashedShape(
+                shape = CorneredShape.Pill,
+                dashLengthDp = 4f,
+                gapLengthDp = 8f,
             )
         },
     )

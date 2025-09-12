@@ -1,4 +1,4 @@
-package com.gemwallet.features.asset.presents.chart.components
+package com.gemwallet.features.asset.presents.chart.views
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
