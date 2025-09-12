@@ -40,7 +40,7 @@ fun WalletItem(
             WalletType.multicoin -> "Multi-coin"
         },
         icon = if (wallet.accounts.size > 1) {
-            ""
+            R.drawable.multicoin_wallet
         } else {
             wallet.accounts.firstOrNull()?.chain?.getIconUrl() ?: ""
         },
