@@ -42,8 +42,10 @@ class QuoteRequester @Inject constructor(
         .onEach { onStart(it) }
         .filterNotNull()
         .mapLatest { it }
-        .onEach { delay(500) }
-        .mapLatest { requestQuotes(it) }
+        .mapLatest {
+            delay(500)
+            requestQuotes(it)
+        }
         .onEach { data ->
             data.err?.let { onError(it) }
         }

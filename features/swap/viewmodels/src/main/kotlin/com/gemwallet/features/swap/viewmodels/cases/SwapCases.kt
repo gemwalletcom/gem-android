@@ -1,8 +1,6 @@
 package com.gemwallet.features.swap.viewmodels.cases
 
-import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
-import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
 import com.gemwallet.features.swap.viewmodels.models.PriceImpact
 import com.gemwallet.features.swap.viewmodels.models.PriceImpactType
@@ -21,7 +19,6 @@ import kotlinx.coroutines.flow.flow
 import uniffi.gemstone.Config
 import uniffi.gemstone.SwapperQuote
 import java.math.BigDecimal
-import java.math.BigInteger
 import java.math.MathContext
 import kotlin.math.absoluteValue
 
@@ -98,16 +95,16 @@ internal fun calculatePriceImpactCore(
     receive: BigDecimal, 
     isHighProvider: (Double) -> Boolean = { false }
 ): PriceImpact? {
-    if (pay.compareTo(BigDecimal.ZERO) == 0) {
+    if (pay.compareTo(BigDecimal.ZERO) == 0 || receive.compareTo(BigDecimal.ZERO) == 0) {
         return null
     }
     val impact = (((receive.toDouble() / pay.toDouble()) - 1.0) * 100)
     val isHigh = isHighProvider(impact)
 
     return when {
-        impact < 0 -> PriceImpact(impact, PriceImpactType.Positive, isHigh)
-        impact < 1 -> null
-        impact < 5 -> PriceImpact(impact, PriceImpactType.Medium, isHigh)
+        impact * -1 < 0 -> PriceImpact(impact, PriceImpactType.Positive, isHigh)
+        impact * -1 < 1 -> null
+        impact * -1 < 5 -> PriceImpact(impact, PriceImpactType.Medium, isHigh)
         else -> PriceImpact(impact, PriceImpactType.High, isHigh)
     }
 }

@@ -363,6 +363,7 @@ class AssetsRepository @Inject constructor(
         setVisibility(walletId, assetId, visibility)
         if (visibility) {
             updateBalances(assetId)
+            priceClient.addAssetId(assetId)
         }
     }
 
