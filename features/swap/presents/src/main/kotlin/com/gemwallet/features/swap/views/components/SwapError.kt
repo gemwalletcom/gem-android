@@ -47,7 +47,7 @@ internal fun SwapError(state: SwapState) {
         SwapError.TransactionError -> stringResource(R.string.errors_swap_no_quote_available)
     }
     Column(
-        modifier = Modifier.Companion
+        modifier = Modifier
             .defaultPadding()
             .background(
                 MaterialTheme.colorScheme.errorContainer.copy(0.2f),
@@ -57,10 +57,10 @@ internal fun SwapError(state: SwapState) {
             .defaultPadding(),
     ) {
         Row(
-            verticalAlignment = Alignment.Companion.CenterVertically
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                modifier = Modifier.Companion.size(trailingIconMedium),
+                modifier = Modifier.size(trailingIconMedium),
                 imageVector = Icons.Outlined.Warning,
                 tint = MaterialTheme.colorScheme.error,
                 contentDescription = ""
@@ -68,7 +68,7 @@ internal fun SwapError(state: SwapState) {
             Spacer8()
             Text(
                 text = stringResource(R.string.errors_error_occured),
-                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Companion.W400),
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.W400),
             )
         }
         Spacer2()

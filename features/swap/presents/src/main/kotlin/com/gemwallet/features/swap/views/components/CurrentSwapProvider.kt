@@ -20,9 +20,9 @@ internal fun CurrentSwapProvider(
 ) {
     Spacer16()
     val modifier = if (isAvailableChoose) {
-        Modifier.Companion.clickable { isShowProviderSelect.value = true }
+        Modifier.clickable { isShowProviderSelect.value = true }
     } else {
-        Modifier.Companion
+        Modifier
     }
     PropertyItem(
         modifier = modifier,

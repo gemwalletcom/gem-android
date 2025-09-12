@@ -1,6 +1,7 @@
 package com.gemwallet.features.swap.views.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material3.Icon
@@ -11,6 +12,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
@@ -33,9 +36,13 @@ internal fun SwapRate(rate: SwapRate?) {
                 },
                 badge = {
                     Icon(
-                        modifier = Modifier.Companion.clickable(onClick = {
-                            direction = !direction
-                        }),
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp)) // TODO: Out to extension
+                            .clickable(onClick = {
+                                direction = !direction
+                            }
+
+                        ),
                         imageVector = Icons.Default.SwapVert,
                         contentDescription = "",
                         tint = MaterialTheme.colorScheme.secondary,

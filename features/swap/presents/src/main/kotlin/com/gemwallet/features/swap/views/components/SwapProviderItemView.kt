@@ -29,13 +29,13 @@ internal fun SwapProviderItemView(
     onProviderSelect: (SwapperProvider) -> Unit
 ) {
     ListItem(
-        modifier = Modifier.Companion.clickable(onClick = { onProviderSelect(swapProvider.swapProvider.id) }),
+        modifier = Modifier.clickable(onClick = { onProviderSelect(swapProvider.swapProvider.id) }),
         leading = {
             AsyncImage(model = swapProvider.icon,)
         },
         title = {
             Row(
-                verticalAlignment = Alignment.Companion.CenterVertically,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 ListItemTitleText(swapProvider.name)
                 if (isSelected) {
@@ -53,7 +53,7 @@ internal fun SwapProviderItemView(
         dividerShowed = false,
         trailing = {
             swapProvider.price?.let { price ->
-                Column(horizontalAlignment = Alignment.Companion.End) {
+                Column(horizontalAlignment = Alignment.End) {
                     ListItemTitleText(price)
                     swapProvider.fiat?.let {
                         ListItemSupportText(it)
