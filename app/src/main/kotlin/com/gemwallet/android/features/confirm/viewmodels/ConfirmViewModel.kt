@@ -12,6 +12,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.domains.asset.chain
+import com.gemwallet.android.domains.asset.isMemoSupport
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAddressEllipsisText
@@ -406,7 +407,7 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.Stake.UndelegateParams,
             is ConfirmParams.Stake.WithdrawParams -> CellEntity(label = R.string.stake_validator, data = validator?.name ?: "")
             is ConfirmParams.SwapParams -> {
-                val swapProvider = SwapProvider.entries.firstOrNull { it.string == protocolId }
+                // TODO: val swapProvider = SwapProvider.entries.firstOrNull { it.string == protocolId }
                 CellEntity(
                     label = R.string.common_provider,
                     data = provider,
@@ -437,7 +438,7 @@ class ConfirmViewModel @Inject constructor(
     }
 
     private fun ConfirmParams.getMemoCell(): CellEntity<Int>? {
-        return if (this is ConfirmParams.TransferParams) {
+        return if (this is ConfirmParams.TransferParams && this.asset.isMemoSupport()) {
             val memo = memo()
             if (memo.isNullOrEmpty()) {
                 return null

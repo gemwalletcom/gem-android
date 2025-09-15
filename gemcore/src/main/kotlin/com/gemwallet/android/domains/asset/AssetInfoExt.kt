@@ -2,6 +2,7 @@ package com.gemwallet.android.domains.asset
 
 import android.text.format.DateUtils
 import com.gemwallet.android.ext.byChain
+import com.gemwallet.android.ext.isMemoSupport
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.availableFormatted
@@ -57,3 +58,5 @@ fun AssetInfo.formatFiat(value: BigDecimal): String {
 
     return price?.currency?.format(value) ?: ""
 }
+
+fun AssetInfo.isMemoSupport() = asset.isMemoSupport()
