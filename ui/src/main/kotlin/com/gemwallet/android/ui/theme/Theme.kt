@@ -10,6 +10,9 @@ import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalWindowInfo
+import androidx.compose.ui.unit.dp
 
 val pendingColor = Color(0xffff9314)
 
@@ -41,6 +44,16 @@ private val LightColorScheme = lightColorScheme(
     error = Color(0xFFF84E4E),
     scrim = Color(0xffededed),//from #f2f2f2
 )
+
+@Composable
+fun isSmallScreen(): Boolean {
+    val density = LocalDensity.current
+    val container = LocalWindowInfo.current.containerSize
+    val containerHeight = with(density) {
+        container.height.toDp()
+    }
+    return containerHeight < 740.dp
+}
 
 @Composable
 fun WalletTheme(

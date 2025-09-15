@@ -29,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.isSmallScreen
 import com.gemwallet.android.ui.theme.paddingDefault
 
 @Composable
@@ -39,7 +40,11 @@ fun Scene(
     onClose: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
     mainAction: (@Composable () -> Unit)? = null,
-    mainActionPadding: PaddingValues = PaddingValues(start = paddingDefault, top = paddingDefault, end = paddingDefault, bottom = paddingDefault),
+    mainActionPadding: PaddingValues = if (isSmallScreen()) {
+        PaddingValues(horizontal = paddingDefault)
+    } else {
+        PaddingValues(start = paddingDefault, top = paddingDefault, end = paddingDefault, bottom = paddingDefault)
+    },
     snackbar: SnackbarHostState? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {

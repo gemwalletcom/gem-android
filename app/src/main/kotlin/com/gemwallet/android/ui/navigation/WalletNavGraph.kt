@@ -288,7 +288,18 @@ fun WalletNavGraph(
             onCreateWallet = navController::navigateToCreateWalletScreen,
             onCancel = onCancel,
             onCreated = {
-                navController.navigateToRoot()
+                try {
+                    navController.navigateToRoot()
+                } catch (_: Throwable) {
+                    navController.navigate(
+                        route = "/",
+                        navOptions = navOptions {
+                            popUpTo(0) {
+                                inclusive = true
+                            }
+                        }
+                    )
+                }
                 currentTab.value = assetsRoute
             },
         )
