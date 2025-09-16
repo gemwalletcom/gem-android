@@ -242,9 +242,10 @@ class MainActivity : FragmentActivity(), AuthRequester {
             modifier = Modifier.navigationBarsPadding(),
         ) {
             when (walletConnect) {
-                is WalletConnectIntent.AuthRequest -> {}
-                is WalletConnectIntent.ConnectionState -> {}
-                WalletConnectIntent.None -> {}
+                is WalletConnectIntent.AuthRequest,
+                is WalletConnectIntent.ConnectionState,
+                WalletConnectIntent.Idle,
+                WalletConnectIntent.Cancel,
                 WalletConnectIntent.SessionDelete -> {}
                 is WalletConnectIntent.SessionProposal -> ProposalScene(
                     proposal = (walletConnect as WalletConnectIntent.SessionProposal).sessionProposal,

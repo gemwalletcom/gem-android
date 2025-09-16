@@ -10,9 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer2
@@ -46,9 +50,8 @@ fun ListItem(
                     .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                Stub()
                 Column(
-                    modifier = Modifier.weight(1f).fillMaxHeight(),
+                    modifier = Modifier.fillMaxHeight(),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.Start,
                 ) {
@@ -58,14 +61,43 @@ fun ListItem(
                         it()
                     }
                 }
-                trailing?.let {
-                    Spacer16()
-                    it()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.End,
+                ) {
+                    trailing?.let {
+                        Spacer16()
+                        it()
+                    }
                 }
             }
             if (dividerShowed) {
                 HorizontalDivider(Modifier.align(Alignment.BottomStart), thickness = 0.4.dp)
             }
         }
+    }
+}
+
+
+@Preview
+@Composable
+fun PreviewListItem() {
+    MaterialTheme {
+        ListItem(
+            title = {
+                Text(
+                    "Some title",
+                    overflow = TextOverflow.MiddleEllipsis,
+                    maxLines = 1,
+                )
+            },
+            trailing = {
+                Text(
+                    "Some_data_Some_data_Some_data_Some_data_Some_data_Some_data_Some_data_Some_data!",
+                    overflow = TextOverflow.MiddleEllipsis,
+                    maxLines = 1,
+                )
+            }
+        )
     }
 }

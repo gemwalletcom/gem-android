@@ -20,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalWindowInfo
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,6 +30,7 @@ import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.screen.PhraseLayout
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.isSmallScreen
 import com.gemwallet.android.ui.theme.paddingDefault
 import kotlin.math.min
 
@@ -67,8 +67,7 @@ internal fun CheckPhrase(
             result.joinToString() == words.joinToString()
         }
     }
-    val container = LocalWindowInfo.current.containerSize
-    val isSmallScreen = container.height.dp < 740.dp
+    val isSmallScreen = isSmallScreen()
 
     val onWordClick: (String) -> Boolean = { word ->
         val index = result.size

@@ -16,7 +16,7 @@ object WalletConnectDelegate : WalletKit.WalletDelegate, CoreClient.CoreDelegate
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private val _walletEvents: MutableSharedFlow<Wallet.Model> = MutableSharedFlow()
-    val walletEvents: SharedFlow<Wallet.Model> = _walletEvents.asSharedFlow()
+    internal val walletEvents: SharedFlow<Wallet.Model> = _walletEvents.asSharedFlow()
 
     init {
         CoreClient.setDelegate(this)

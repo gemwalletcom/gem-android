@@ -13,6 +13,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.domains.asset.chain
+import com.gemwallet.android.domains.asset.isMemoSupport
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.getAddressEllipsisText
@@ -20,8 +21,8 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.confirm.models.AmountUIModel
 import com.gemwallet.android.features.confirm.models.ConfirmError
 import com.gemwallet.android.features.confirm.models.ConfirmState
-import com.gemwallet.android.features.confirm.navigation.paramsArg
-import com.gemwallet.android.features.confirm.navigation.txTypeArg
+import com.gemwallet.android.ui.navigation.routes.paramsArg
+import com.gemwallet.android.ui.navigation.routes.txTypeArg
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
@@ -398,6 +399,7 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.Stake.UndelegateParams,
             is ConfirmParams.Stake.WithdrawParams -> CellEntity(label = R.string.stake_validator, data = validator?.name ?: "")
             is ConfirmParams.SwapParams -> {
+                // TODO: val swapProvider = SwapProvider.entries.firstOrNull { it.string == protocolId }
                 CellEntity(
                     label = R.string.common_provider,
                     data = provider,
@@ -428,7 +430,7 @@ class ConfirmViewModel @Inject constructor(
     }
 
     private fun ConfirmParams.getMemoCell(): CellEntity<Int>? {
-        return if (this is ConfirmParams.TransferParams) {
+        return if (this is ConfirmParams.TransferParams && this.asset.isMemoSupport()) {
             val memo = memo()
             if (memo.isNullOrEmpty()) {
                 return null

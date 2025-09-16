@@ -2,165 +2,203 @@ package com.gemwallet.features.swap.viewmodels.cases
 
 import com.gemwallet.features.swap.viewmodels.models.PriceImpactType
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import java.math.BigDecimal
+import kotlin.math.abs
 import kotlin.math.absoluteValue
 
-/**
- * Tests for the calculatePriceImpact function logic using calculatePriceImpactCore.
- */
 class CalculatePriceImpactTest {
 
     @Test
-    fun `calculatePriceImpactCore should return null when pay is zero`() {
-        val result = calculatePriceImpactCore(
-            pay = BigDecimal.ZERO,
-            receive = BigDecimal("1000.0")
-        )
-
-        assertNull("Should return null when pay is zero", result)
+    fun `calculatePriceImpactCore should return null when pay amount is zero`() {
+        val result = calculatePriceImpactCore(BigDecimal.ZERO, BigDecimal("100"))
+        assertNull(result)
     }
 
     @Test
-    fun `calculatePriceImpactCore should return positive impact for negative price change`() {
-        val result = calculatePriceImpactCore(
-            pay = BigDecimal("1000.0"),
-            receive = BigDecimal("900.0")
-        )
-
-        assertEquals(-10.0, result?.percentage ?: 0.0, 0.001)
-        assertEquals(PriceImpactType.Positive, result?.type)
-        assertEquals(false, result?.isHigh)
+    fun `calculatePriceImpactCore should return null when receive amount is zero`() {
+        val result = calculatePriceImpactCore(BigDecimal("100"), BigDecimal.ZERO)
+        assertNull(result)
     }
 
     @Test
-    fun `calculatePriceImpactCore should return positive impact for large negative change`() {
-        val result = calculatePriceImpactCore(
-            pay = BigDecimal("1000.0"),
-            receive = BigDecimal("850.0"),
-            isHighProvider = { impact -> impact.absoluteValue > 10.0 }
-        )
-
-        assertEquals(-15.0, result?.percentage ?: 0.0, 0.001)
-        assertEquals(PriceImpactType.Positive, result?.type)
-        assertEquals(true, result?.isHigh)
+    fun `calculatePriceImpactCore should return null when both amounts are zero`() {
+        val result = calculatePriceImpactCore(BigDecimal.ZERO, BigDecimal.ZERO)
+        assertNull(result)
     }
 
     @Test
-    fun `calculatePriceImpactCore should return null for very small positive impact`() {
-        val result = calculatePriceImpactCore(
-            pay = BigDecimal("1000.0"),
-            receive = BigDecimal("1005.0")
-        )
-
-        assertNull("Should return null for impact less than 1%", result)
+    fun `calculatePriceImpactCore should return Positive type for favorable swap`() {
+        val pay = BigDecimal("100")
+        val receive = BigDecimal("110")
+        
+        val result = calculatePriceImpactCore(pay, receive)
+        
+        assertNotNull(result)
+        assertEquals(PriceImpactType.Positive, result!!.type)
+        assertEquals(false, result.isHigh)
+        assertTrue("Expected ~10% but got ${result.percentage}", abs(result.percentage!! - 10.0) < 0.001)
     }
 
     @Test
-    fun `calculatePriceImpactCore should return medium impact for exactly 1 percent`() {
-        val result = calculatePriceImpactCore(
-            pay = BigDecimal("1000.0"),
-            receive = BigDecimal("1010.0")
-        )
-
-        assertEquals(1.0, result?.percentage ?: 0.0, 0.001)
-        assertEquals(PriceImpactType.Medium, result?.type)
-        assertEquals(false, result?.isHigh)
+    fun `calculatePriceImpactCore should return null for very small negative impact`() {
+        val pay = BigDecimal("100")
+        val receive = BigDecimal("99.5")
+        
+        val result = calculatePriceImpactCore(pay, receive)
+        
+        assertNull("Impact less than 1 percent should return null", result)
     }
 
     @Test
-    fun `calculatePriceImpactCore should return medium impact for 1 to 5 percent range`() {
-        val result = calculatePriceImpactCore(
-            pay = BigDecimal("1000.0"),
-            receive = BigDecimal("1030.0")
-        )
-
-        assertEquals(3.0, result?.percentage ?: 0.0, 0.001)
-        assertEquals(PriceImpactType.Medium, result?.type)
-        assertEquals(false, result?.isHigh)
+    fun `calculatePriceImpactCore should return Medium type for 1-5 percent negative impact`() {
+        val pay = BigDecimal("100")
+        val receive = BigDecimal("97")
+        
+        val result = calculatePriceImpactCore(pay, receive)
+        
+        assertNotNull(result)
+        assertEquals(PriceImpactType.Medium, result!!.type)
+        assertEquals(false, result.isHigh)
+        assertTrue("Expected ~-3% but got ${result.percentage}", abs(result.percentage!! - (-3.0)) < 0.001)
     }
 
     @Test
-    fun `calculatePriceImpactCore should return high impact for exactly 5 percent`() {
-        val result = calculatePriceImpactCore(
-            pay = BigDecimal("1000.0"),
-            receive = BigDecimal("1050.0")
-        )
-
-        assertEquals(5.0, result?.percentage ?: 0.0, 0.001)
-        assertEquals(PriceImpactType.High, result?.type)
-        assertEquals(false, result?.isHigh)
+    fun `calculatePriceImpactCore should return High type for greater than 5 percent negative impact`() {
+        val pay = BigDecimal("100")
+        val receive = BigDecimal("90")
+        
+        val result = calculatePriceImpactCore(pay, receive)
+        
+        assertNotNull(result)
+        assertEquals(PriceImpactType.High, result!!.type)
+        assertEquals(false, result.isHigh)
+        assertTrue("Expected ~-10% but got ${result.percentage}", abs(result.percentage!! - (-10.0)) < 0.001)
     }
 
     @Test
-    fun `calculatePriceImpactCore should return high impact for greater than 5 percent`() {
-        val result = calculatePriceImpactCore(
-            pay = BigDecimal("1000.0"),
-            receive = BigDecimal("1080.0"),
-            isHighProvider = { impact -> impact.absoluteValue > 5.0 }
-        )
-
-        assertEquals(8.0, result?.percentage ?: 0.0, 0.001)
-        assertEquals(PriceImpactType.High, result?.type)
-        assertEquals(true, result?.isHigh)
+    fun `calculatePriceImpactCore should handle equal pay and receive amounts`() {
+        val pay = BigDecimal("100")
+        val receive = BigDecimal("100")
+        
+        val result = calculatePriceImpactCore(pay, receive)
+        
+        assertNull("Equal amounts should have 0 percent impact and return null", result)
     }
 
     @Test
-    fun `calculatePriceImpactCore should handle very large amounts correctly`() {
-        val result = calculatePriceImpactCore(
-            pay = BigDecimal("1000000.0"),
-            receive = BigDecimal("1030000.0")
-        )
-
-        assertEquals(3.0, result?.percentage ?: 0.0, 0.001)
-        assertEquals(PriceImpactType.Medium, result?.type)
-        assertEquals(false, result?.isHigh)
+    fun `calculatePriceImpactCore should calculate correct impact for different decimals`() {
+        val pay = BigDecimal("1.5")
+        val receive = BigDecimal("3.0")
+        
+        val result = calculatePriceImpactCore(pay, receive)
+        
+        assertNotNull(result)
+        assertEquals(PriceImpactType.Positive, result!!.type)
+        assertEquals(false, result.isHigh)
+        assertTrue("Expected ~100% but got ${result.percentage}", abs(result.percentage!! - 100.0) < 0.001)
     }
 
     @Test
-    fun `calculatePriceImpactCore should handle very small amounts correctly`() {
-        val result = calculatePriceImpactCore(
-            pay = BigDecimal("0.001"),
-            receive = BigDecimal("0.00103")
-        )
-
-        assertEquals(3.0, result?.percentage ?: 0.0, 0.001)
-        assertEquals(PriceImpactType.Medium, result?.type)
-        assertEquals(false, result?.isHigh)
+    fun `calculatePriceImpactCore should handle very large numbers`() {
+        val pay = BigDecimal("1000000000")
+        val receive = BigDecimal("950000000")
+        
+        val result = calculatePriceImpactCore(pay, receive)
+        
+        assertNotNull(result)
+        assertEquals(PriceImpactType.High, result!!.type)
+        assertEquals(false, result.isHigh)
+        assertTrue("Expected ~-5% but got ${result.percentage}", abs(result.percentage!! - (-5.0)) < 0.01)
     }
 
     @Test
-    fun `calculatePriceImpactCore should handle decimal precision correctly`() {
-        val result = calculatePriceImpactCore(
-            pay = BigDecimal("100.123456"),
-            receive = BigDecimal("102.12595344")
-        )
-
-        assertEquals(1.999999968012799, result?.percentage ?: 0.0, 0.001)
-        assertEquals(PriceImpactType.Medium, result?.type)
-        assertEquals(false, result?.isHigh)
+    fun `calculatePriceImpactCore should handle very small numbers`() {
+        val pay = BigDecimal("0.00001")
+        val receive = BigDecimal("0.000008")
+        
+        val result = calculatePriceImpactCore(pay, receive)
+        
+        assertNotNull(result)
+        assertEquals(PriceImpactType.High, result!!.type)
+        assertEquals(false, result.isHigh)
+        assertTrue("Expected ~-20% but got ${result.percentage}", abs(result.percentage!! - (-20.0)) < 0.01)
     }
 
     @Test
-    fun `calculatePriceImpactCore should handle zero receive amount`() {
-        val result = calculatePriceImpactCore(
-            pay = BigDecimal("1000.0"),
-            receive = BigDecimal.ZERO
-        )
-
-        assertEquals(-100.0, result?.percentage ?: 0.0, 0.001)
-        assertEquals(PriceImpactType.Positive, result?.type)
-        assertEquals(false, result?.isHigh)
+    fun `calculatePriceImpactCore should use custom isHighProvider when provided`() {
+        val pay = BigDecimal("100")
+        val receive = BigDecimal("97")
+        val customHighProvider = { impact: Double -> impact.absoluteValue > 2.0 }
+        
+        val result = calculatePriceImpactCore(pay, receive, customHighProvider)
+        
+        assertNotNull(result)
+        assertEquals(PriceImpactType.Medium, result!!.type)
+        assertEquals(true, result.isHigh)
+        assertTrue("Expected ~-3% but got ${result.percentage}", abs(result.percentage!! - (-3.0)) < 0.001)
     }
 
     @Test
-    fun `calculatePriceImpactCore should handle equal amounts`() {
-        val result = calculatePriceImpactCore(
-            pay = BigDecimal("1000.0"),
-            receive = BigDecimal("1000.0")
-        )
+    fun `calculatePriceImpactCore should handle boundary case at exactly 1 percent negative impact`() {
+        val pay = BigDecimal("100")
+        val receive = BigDecimal("99")
+        
+        val result = calculatePriceImpactCore(pay, receive)
+        
+        assertNotNull(result)
+        assertEquals(PriceImpactType.Medium, result!!.type)
+        assertEquals(false, result.isHigh)
+        assertTrue("Expected ~-1% but got ${result.percentage}", abs(result.percentage!! - (-1.0)) < 0.01)
+    }
 
-        assertNull("Should return null for 0% impact", result)
+    @Test
+    fun `calculatePriceImpactCore should handle boundary case at exactly 5 percent negative impact`() {
+        val pay = BigDecimal("100")
+        val receive = BigDecimal("95")
+        
+        val result = calculatePriceImpactCore(pay, receive)
+        
+        assertNotNull(result)
+        assertTrue("Expected ~-5% but got ${result!!.percentage}", abs(result.percentage!! - (-5.0)) < 0.01)
+    }
+
+    @Test
+    fun `calculatePriceImpactCore should handle precision edge cases`() {
+        val pay = BigDecimal("100.123456789")
+        val receive = BigDecimal("98.765432109")
+        
+        val result = calculatePriceImpactCore(pay, receive)
+        
+        assertNotNull(result)
+        assertEquals(PriceImpactType.Medium, result!!.type)
+        assertEquals(false, result.isHigh)
+    }
+
+    @Test
+    fun `calculatePriceImpactCore should handle negative amounts gracefully`() {
+        val pay = BigDecimal("-100")
+        val receive = BigDecimal("97")
+        
+        val result = calculatePriceImpactCore(pay, receive)
+        
+        assertNotNull(result)
+        assertEquals(false, result!!.isHigh)
+    }
+
+    @Test
+    fun `calculatePriceImpactCore should handle fractional amounts`() {
+        val pay = BigDecimal("0.5")
+        val receive = BigDecimal("0.48")
+        
+        val result = calculatePriceImpactCore(pay, receive)
+        
+        assertNotNull(result)
+        assertEquals(PriceImpactType.Medium, result!!.type)
+        assertEquals(false, result.isHigh)
+        assertTrue("Expected ~-4% but got ${result.percentage}", abs(result.percentage!! - (-4.0)) < 0.01)
     }
 }

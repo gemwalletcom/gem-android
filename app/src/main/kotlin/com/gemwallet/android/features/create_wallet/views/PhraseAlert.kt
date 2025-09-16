@@ -45,7 +45,9 @@ import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.defaultPadding
+import com.gemwallet.android.ui.theme.isSmallScreen
 import com.gemwallet.android.ui.theme.padding4
+import com.gemwallet.android.ui.theme.paddingDefault
 import uniffi.gemstone.Config
 import uniffi.gemstone.PublicUrl
 
@@ -64,6 +66,7 @@ fun PhraseAlertDialog(
         )
     }
     val state = rememberModalBottomSheetState(true)
+    val isSmallScreen = isSmallScreen()
 
     Scene(
         title = stringResource(R.string.wallet_new_title),
@@ -101,19 +104,19 @@ fun PhraseAlertDialog(
                 text = stringResource(R.string.onboarding_security_create_wallet_intro_title),
                 textAlign = TextAlign.Center,
             )
-            Spacer(Modifier.size(24.dp))
+            Spacer(Modifier.size(if (isSmallScreen) paddingDefault else 24.dp))
             InfoBlock(
                 Icons.Default.Edit,
                 R.string.onboarding_security_create_wallet_keep_safe_title,
                 R.string.onboarding_security_create_wallet_keep_safe_subtitle,
             )
-            Spacer(Modifier.size(24.dp))
+            Spacer(Modifier.size(if (isSmallScreen) paddingDefault else 24.dp))
             InfoBlock(
                 Icons.Default.WarningAmber,
                 R.string.secret_phrase_do_not_share_title,
                 R.string.onboarding_security_create_wallet_do_not_share_subtitle,
             )
-            Spacer(Modifier.size(24.dp))
+            Spacer(Modifier.size(if (isSmallScreen) paddingDefault else 24.dp))
             InfoBlock(
                 Icons.Default.Diamond,
                 R.string.onboarding_security_create_wallet_no_recovery_title,

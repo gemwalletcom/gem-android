@@ -3,7 +3,6 @@ package com.gemwallet.android
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
-import android.util.Log
 import coil3.ImageLoader
 import coil3.PlatformContext
 import coil3.SingletonImageLoader
@@ -12,11 +11,6 @@ import coil3.disk.directory
 import coil3.memory.MemoryCache
 import coil3.svg.SvgDecoder
 import com.gemwallet.android.data.repositoreis.assets.PriceWebSocketClient
-import com.reown.android.Core
-import com.reown.android.CoreClient
-import com.reown.android.relay.ConnectionType
-import com.reown.walletkit.client.Wallet
-import com.reown.walletkit.client.WalletKit
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -30,30 +24,6 @@ class App : Application(), SingletonImageLoader.Factory,  Application.ActivityLi
     override fun onCreate() {
         super.onCreate()
         registerActivityLifecycleCallbacks(this)
-        walletConnectConfig()
-    }
-
-    private fun walletConnectConfig() {
-        val projectId = "3bc07cd7179d11ea65335fb9377702b6"
-        val connectionType = ConnectionType.AUTOMATIC
-        val metaData = Core.Model.AppMetaData(
-            name = "Gem Wallet",
-            description = "Gem Web3 Wallet",
-            url = "https://gemwallet.com",
-            icons = listOf("https://gemwallet.com/images/gem-logo-256x256.png"),
-            redirect = "gem://wc/"
-        )
-        CoreClient.initialize(
-            application = this,
-            projectId = projectId,
-            metaData = metaData,
-            connectionType = connectionType,
-            telemetryEnabled = false,
-        ) {
-            Log.d("WalletConnect", "Err", it.throwable)
-        }
-        val initParams = Wallet.Params.Init(core = CoreClient)
-        WalletKit.initialize(initParams) { _ -> }
     }
 
     override fun newImageLoader(context: PlatformContext): ImageLoader {

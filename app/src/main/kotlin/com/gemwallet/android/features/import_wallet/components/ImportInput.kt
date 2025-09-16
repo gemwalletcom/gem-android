@@ -47,13 +47,13 @@ import androidx.compose.ui.text.input.PlatformImeOptions
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.blockchain.operators.InvalidWords
 import com.gemwallet.android.blockchain.operators.walletcore.WCValidatePhraseOperator
 import com.gemwallet.android.model.ImportType
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.AddressChainViewModel
+import com.gemwallet.features.add_asset.viewmodels.AddressChainViewModel
 import com.gemwallet.android.ui.components.buttons.FieldBottomAction
 import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16

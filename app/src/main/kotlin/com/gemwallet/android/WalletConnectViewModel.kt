@@ -2,41 +2,46 @@ package com.gemwallet.android
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.data.repositoreis.bridge.WalletConnectDelegate
+import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
 import com.reown.walletkit.client.Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WalletConnectViewModel @Inject constructor() : ViewModel() {
+class WalletConnectViewModel @Inject constructor(
+    bridgesRepository: BridgesRepository,
+) : ViewModel() {
 
-    private val state = MutableStateFlow<WalletConnectIntent>(WalletConnectIntent.None)
-    val uiState = state
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), WalletConnectIntent.None)
+    private val state = MutableStateFlow<WalletConnectIntent>(WalletConnectIntent.Idle)
+    private val bridgeEvents = bridgesRepository.bridgeEvents
+        .onEach { state.update { WalletConnectIntent.Idle } }
 
-    init {
-        viewModelScope.launch(Dispatchers.IO) {
-            WalletConnectDelegate.walletEvents.collectLatest { event ->
-                state.update { event.toUIState() }
-            }
+
+    val uiState = state.combine(bridgeEvents) { state, event ->
+        if (state == WalletConnectIntent.Cancel) {
+            WalletConnectIntent.Idle
+        } else {
+            event.toUIState()
         }
     }
+    .stateIn(viewModelScope, SharingStarted.WhileSubscribed(), WalletConnectIntent.Idle)
 
     fun onCancel() {
-        state.update { WalletConnectIntent.None }
+        state.update { WalletConnectIntent.Cancel }
     }
 }
 
 sealed interface WalletConnectIntent {
 
-    data object None : WalletConnectIntent
+    data object Idle : WalletConnectIntent
+
+    data object Cancel : WalletConnectIntent
 
     data object SessionDelete : WalletConnectIntent
 
@@ -63,6 +68,6 @@ private fun Wallet.Model.toUIState(): WalletConnectIntent {
         } else {
             WalletConnectIntent.ConnectionState(error = "No Internet connection, please check your internet connection and try again")
         }
-        else -> WalletConnectIntent.None
+        else -> WalletConnectIntent.Idle
     }
 }

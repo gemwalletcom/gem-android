@@ -8,6 +8,7 @@ import com.gemwallet.android.cases.transactions.GetTransaction
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.domains.asset.chain
+import com.gemwallet.android.domains.asset.isMemoSupport
 import com.gemwallet.android.ext.getAssociatedAssetIds
 import com.gemwallet.android.ext.getNftMetadata
 import com.gemwallet.android.ext.getSwapMetadata
@@ -16,6 +17,7 @@ import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.SwapProvider
+import com.wallet.core.primitives.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -83,7 +85,7 @@ class TransactionDetailsViewModel @Inject constructor(
             direction = tx.direction,
             from = tx.from,
             to = tx.to,
-            memo = tx.memo,
+            memo = tx.memo.takeIf { asset.isMemoSupport() },
             state = tx.state,
             feeCrypto = feeCrypto,
             feeFiat = feeFiat,

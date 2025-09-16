@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -41,7 +42,9 @@ import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.defaultPadding
+import com.gemwallet.android.ui.theme.isSmallScreen
 import com.gemwallet.android.ui.theme.padding4
+import com.gemwallet.android.ui.theme.paddingDefault
 import uniffi.gemstone.Config
 import uniffi.gemstone.PublicUrl
 
@@ -55,6 +58,7 @@ fun AcceptTermsScreen(
     var isUnderstand1 by remember { mutableStateOf(false) }
     var isUnderstand2 by remember { mutableStateOf(false) }
     var isUnderstand3 by remember { mutableStateOf(false) }
+    val isSmallScreen = isSmallScreen()
 
     Scene(
         title = stringResource(R.string.onboarding_accept_terms_title),
@@ -92,7 +96,7 @@ fun AcceptTermsScreen(
         LazyColumn (
             modifier = Modifier
                 .fillMaxWidth()
-                .defaultPadding(),
+                .padding(horizontal = paddingDefault),
         ) {
             item {
                 Text(
@@ -100,7 +104,7 @@ fun AcceptTermsScreen(
                     text = stringResource(R.string.onboarding_accept_terms_message),
                     textAlign = TextAlign.Center,
                 )
-                Spacer(Modifier.size(24.dp))
+                Spacer(Modifier.size(if (isSmallScreen) paddingDefault else 24.dp))
             }
             termItem(
                 isUnderstand1,
@@ -148,7 +152,7 @@ private fun LazyListScope.termItem(
                 }
             }
         }
-        Spacer(Modifier.size(24.dp))
+        Spacer(Modifier.size(if (isSmallScreen()) paddingDefault else 24.dp))
     }
 }
 

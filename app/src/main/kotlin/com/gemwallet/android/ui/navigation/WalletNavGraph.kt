@@ -18,15 +18,15 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
-import com.gemwallet.android.features.assets.navigation.assetsRoute
-import com.gemwallet.android.features.assets.navigation.assetsScreen
+import com.gemwallet.android.ui.navigation.routes.assetsRoute
+import com.gemwallet.android.ui.navigation.routes.assetsScreen
 import com.gemwallet.android.features.bridge.navigation.bridgesScreen
 import com.gemwallet.android.features.bridge.navigation.navigateToBridgeScreen
 import com.gemwallet.android.features.bridge.navigation.navigateToBridgesScreen
-import com.gemwallet.android.features.buy.navigation.fiatScreen
-import com.gemwallet.android.features.buy.navigation.navigateToBuyScreen
-import com.gemwallet.android.features.confirm.navigation.confirm
-import com.gemwallet.android.features.confirm.navigation.navigateToConfirmScreen
+import com.gemwallet.android.ui.navigation.routes.fiatScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToBuyScreen
+import com.gemwallet.android.ui.navigation.routes.confirm
+import com.gemwallet.android.ui.navigation.routes.navigateToConfirmScreen
 import com.gemwallet.android.features.create_wallet.navigation.assetsManageScreen
 import com.gemwallet.android.features.create_wallet.navigation.createWalletScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsManageScreen
@@ -288,7 +288,18 @@ fun WalletNavGraph(
             onCreateWallet = navController::navigateToCreateWalletScreen,
             onCancel = onCancel,
             onCreated = {
-                navController.navigateToRoot()
+                try {
+                    navController.navigateToRoot()
+                } catch (_: Throwable) {
+                    navController.navigate(
+                        route = "/",
+                        navOptions = navOptions {
+                            popUpTo(0) {
+                                inclusive = true
+                            }
+                        }
+                    )
+                }
                 currentTab.value = assetsRoute
             },
         )
