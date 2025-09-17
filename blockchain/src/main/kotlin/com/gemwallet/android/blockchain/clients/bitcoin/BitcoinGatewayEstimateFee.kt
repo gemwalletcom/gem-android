@@ -31,10 +31,17 @@ class BitcoinGatewayEstimateFee : GemGatewayEstimateFee {
             ?: throw IllegalArgumentException("Incorrect Byte Price")
         val amount = input.value.toLongOrNull() ?: return null
 
-        val destination = input.destinationAddress
-        val from = input.senderAddress
+        val destinationAddress = input.destinationAddress
+        val senderAddress = input.senderAddress
 
-        val fee = calcFee(chain, from, destination, amount, bytePrice, utxos)
+        val fee = calcFee(
+            chain = chain,
+            senderAddress = senderAddress,
+            destinationAddress = destinationAddress,
+            amount = amount,
+            bytePrice = bytePrice,
+            utxos = utxos
+        )
 
         return GemTransactionLoadFee(
             fee = fee.toString(),
@@ -53,8 +60,8 @@ class BitcoinGatewayEstimateFee : GemGatewayEstimateFee {
 
     private fun calcFee(
         chain: com.wallet.core.primitives.Chain,
-        from: String,
-        to: String,
+        senderAddress: String,
+        destinationAddress: String,
         amount: Long,
         bytePrice: Long,
         utxos: List<UTXO>,
@@ -70,9 +77,9 @@ class BitcoinGatewayEstimateFee : GemGatewayEstimateFee {
             this.amount = amount
             this.useMaxAmount = total == amount
             this.coinType = coinType.value()
-            this.toAddress = to
-            this.changeAddress = from
-            this.addAllUtxo(utxos.getUtxoTransactions(from, coinType))
+            this.toAddress = destinationAddress
+            this.changeAddress = senderAddress
+            this.addAllUtxo(utxos.getUtxoTransactions(senderAddress, coinType))
         }.build()
 
         val plan = AnySigner.plan(input, coinType, Bitcoin.TransactionPlan.parser())
@@ -91,8 +98,8 @@ class BitcoinGatewayEstimateFee : GemGatewayEstimateFee {
             }
         }
         if (utxos.isNotEmpty() && selectedUtxos.isEmpty() && amount != total && amount <= total) {
-            return calcFee(chain, from, to, total, bytePrice, utxos)
+            return calcFee(chain, senderAddress, destinationAddress, total, bytePrice, utxos)
         }
-        return BigInteger.valueOf(plan.fee / bytePrice)
+        return BigInteger.valueOf(plan.fee/* / bytePrice*/) //
     }
 }

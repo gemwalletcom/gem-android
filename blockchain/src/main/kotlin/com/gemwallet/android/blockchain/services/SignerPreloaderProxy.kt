@@ -1,23 +1,16 @@
 package com.gemwallet.android.blockchain.services
 
-import com.gemwallet.android.blockchain.clients.ActivationTransactionPreloader
-import com.gemwallet.android.blockchain.clients.ApprovalTransactionPreloader
-import com.gemwallet.android.blockchain.clients.GenericTransferPreloader
-import com.gemwallet.android.blockchain.clients.NativeTransferPreloader
-import com.gemwallet.android.blockchain.clients.NftTransactionPreloader
-import com.gemwallet.android.blockchain.clients.StakeTransactionPreloader
-import com.gemwallet.android.blockchain.clients.SwapTransactionPreloader
-import com.gemwallet.android.blockchain.clients.TokenTransferPreloader
 import com.gemwallet.android.blockchain.clients.algorand.toChainData
 import com.gemwallet.android.blockchain.clients.aptos.toChainData
 import com.gemwallet.android.blockchain.clients.bitcoin.BitcoinGatewayEstimateFee
 import com.gemwallet.android.blockchain.clients.bitcoin.toChainData
+import com.gemwallet.android.blockchain.clients.cardano.CardanoGatewayEstimateFee
 import com.gemwallet.android.blockchain.clients.cardano.toChainData
 import com.gemwallet.android.blockchain.clients.cosmos.toChainData
 import com.gemwallet.android.blockchain.clients.ethereum.EvmGatewayEstimateFee
 import com.gemwallet.android.blockchain.clients.ethereum.toChainData
-import com.gemwallet.android.blockchain.clients.getClient
 import com.gemwallet.android.blockchain.clients.near.toChainData
+import com.gemwallet.android.blockchain.clients.polkadot.PolkadotGatewayEstimateFee
 import com.gemwallet.android.blockchain.clients.polkadot.toChainData
 import com.gemwallet.android.blockchain.clients.solana.toChainData
 import com.gemwallet.android.blockchain.clients.stellar.toChainData
@@ -49,18 +42,7 @@ import uniffi.gemstone.SwapperException
 
 class SignerPreloaderProxy(
     private val gateway: GemGateway,
-    private val nativeTransferClients: List<NativeTransferPreloader>,
-    private val tokenTransferClients: List<TokenTransferPreloader>,
-    private val stakeTransactionClients: List<StakeTransactionPreloader>,
-    private val swapTransactionClients: List<SwapTransactionPreloader>,
-    private val approvalTransactionClients: List<ApprovalTransactionPreloader>,
-    private val activatePreloaderClients: List<ActivationTransactionPreloader>,
-    private val genericPreloaderClients: List<GenericTransferPreloader>,
-    private val nftPreloadClients: List<NftTransactionPreloader>,
-) : GenericTransferPreloader, NativeTransferPreloader, TokenTransferPreloader,
-    StakeTransactionPreloader,
-    SwapTransactionPreloader, ApprovalTransactionPreloader, ActivationTransactionPreloader,
-    NftTransactionPreloader {
+) {
 
     suspend fun preload(params: ConfirmParams): SignerParams = withContext(Dispatchers.IO) {
         val gemAsset = params.asset.toGem()
@@ -68,6 +50,7 @@ class SignerPreloaderProxy(
         val chain = assetId.chain
         val gemChain = assetId.chain.string
         val destination = params.destination()?.address ?: throw java.lang.IllegalArgumentException()
+
         try {
             val metadata = gateway.getTransactionPreload(
                 chain = gemChain,
@@ -129,59 +112,12 @@ class SignerPreloaderProxy(
 //        preloadJob.await()
     }
 
-    override fun supported(chain: Chain): Boolean {
-        return (nativeTransferClients
-                + tokenTransferClients
-                + stakeTransactionClients
-                + swapTransactionClients
-                + approvalTransactionClients).getClient(chain) != null
-    }
-
-    override suspend fun preloadNativeTransfer(params: ConfirmParams.TransferParams.Native): SignerParams {
-        return nativeTransferClients.getClient(params.from.chain)?.preloadNativeTransfer(params = params)
-            ?: throw IllegalArgumentException("Chain isn't support")
-    }
-
-    override suspend fun preloadTokenTransfer(params: ConfirmParams.TransferParams.Token): SignerParams {
-        return tokenTransferClients.getClient(params.from.chain)?.preloadTokenTransfer(params = params)
-            ?: throw IllegalArgumentException("Chain isn't support")
-    }
-
-    override suspend fun preloadStake(params: ConfirmParams.Stake): SignerParams {
-        return stakeTransactionClients.getClient(params.from.chain)?.preloadStake(params = params)
-            ?: throw IllegalArgumentException("Chain isn't support")
-    }
-
-    override suspend fun preloadSwap(params: ConfirmParams.SwapParams): SignerParams {
-        return swapTransactionClients.getClient(params.from.chain)?.preloadSwap(params = params)
-            ?: throw IllegalArgumentException("Chain isn't support")
-    }
-
-    override suspend fun preloadApproval(params: ConfirmParams.TokenApprovalParams): SignerParams {
-        return approvalTransactionClients.getClient(params.from.chain)?.preloadApproval(params = params)
-            ?: throw IllegalArgumentException("Chain isn't support")
-    }
-
-    override suspend fun preloadActivate(params: ConfirmParams.Activate): SignerParams {
-        return activatePreloaderClients.getClient(params.from.chain)?.preloadActivate(params = params)
-            ?: throw IllegalArgumentException("Chain isn't support")
-    }
-
-    override suspend fun preloadGeneric(params: ConfirmParams.TransferParams.Generic): SignerParams {
-        return genericPreloaderClients.getClient(params.from.chain)?.preloadGeneric(params = params)
-            ?: throw IllegalArgumentException("Chain isn't support")
-    }
-
-    override suspend fun preloadNft(params: ConfirmParams.NftParams): SignerParams {
-        return nftPreloadClients.getClient(params.from.chain)?.preloadNft(params = params)
-            ?: throw IllegalArgumentException("Chain isn't support")
-    }
-    
     private fun getEstimateFee(chain: Chain): GemGatewayEstimateFee {
         return when (chain.toChainType()) {
             ChainType.Bitcoin -> BitcoinGatewayEstimateFee()
             ChainType.Ethereum -> EvmGatewayEstimateFee()
-            ChainType.Cardano,
+            ChainType.Cardano -> CardanoGatewayEstimateFee()
+            ChainType.Polkadot -> PolkadotGatewayEstimateFee()
             ChainType.Solana,
             ChainType.Cosmos,
             ChainType.Ton,
@@ -192,7 +128,6 @@ class SignerPreloaderProxy(
             ChainType.Near,
             ChainType.Stellar,
             ChainType.Algorand,
-            ChainType.Polkadot,
             ChainType.HyperCore -> StubGatewayEstimateFee
         }
     }

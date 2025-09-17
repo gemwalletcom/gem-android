@@ -16,13 +16,13 @@ enum class PerpetualMarginType(val string: String) {
 }
 
 @Serializable
-enum class PerpetualDirection // TODO: It's stub wait fix
-
-@Serializable
 data class PriceTarget (
 	val price: Double? = null,
 	val percentage: Double? = null
 )
+
+@Serializable
+enum class PerpetualDirection // TODO: It's stub wait fix
 
 @Serializable
 data class PerpetualPosition (
