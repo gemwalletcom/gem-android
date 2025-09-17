@@ -122,135 +122,130 @@ fun WalletNavGraph(
             MainScreen(navController = navController, currentTab = currentTab)
         }
 
-        navigation(
-            startDestination = assetsRoute,
-            route = "wallet-group",
-        ) {
-            assetsScreen(
-                onShowWallets = navController::navigateToWalletsScreen,
-                onShowAssetManage = navController::navigateToAssetsManageScreen,
-                onSendClick = navController::navigateToRecipientInput,
-                onReceiveClick = navController::navigateToReceiveScreen,
-                onBuyClick = navController::navigateToBuyScreen,
-                onAssetClick = navController::navigateToAssetScreen,
-            )
+        assetsScreen(
+            onShowWallets = navController::navigateToWalletsScreen,
+            onShowAssetManage = navController::navigateToAssetsManageScreen,
+            onSendClick = navController::navigateToRecipientInput,
+            onReceiveClick = navController::navigateToReceiveScreen,
+            onBuyClick = navController::navigateToBuyScreen,
+            onAssetClick = navController::navigateToAssetScreen,
+        )
 
-            assetScreen(
-                onCancel = onCancel,
-                onTransfer = navController::navigateToRecipientInput,
-                onReceive = navController::navigateToReceiveScreen,
-                onBuy = navController::navigateToBuyScreen,
-                onSwap = navController::navigateToSwap,
-                onTransaction = navController::navigateToTransactionScreen,
-                onChart = navController::navigateToAssetChartScreen,
-                openNetwork = navController::navigateToAssetScreen,
-                onStake = navController::navigateToStake,
-                onConfirm = navController::navigateToConfirmScreen
-            )
+        assetScreen(
+            onCancel = onCancel,
+            onTransfer = navController::navigateToRecipientInput,
+            onReceive = navController::navigateToReceiveScreen,
+            onBuy = navController::navigateToBuyScreen,
+            onSwap = navController::navigateToSwap,
+            onTransaction = navController::navigateToTransactionScreen,
+            onChart = navController::navigateToAssetChartScreen,
+            openNetwork = navController::navigateToAssetScreen,
+            onStake = navController::navigateToStake,
+            onConfirm = navController::navigateToConfirmScreen
+        )
 
-            assetChartScreen(
-                onCancel = onCancel
-            )
+        assetChartScreen(
+            onCancel = onCancel
+        )
 
-            assetsManageScreen(
-                onAddAsset = navController::navigateToAddAssetScreen,
-                onCancel = onCancel,
-            )
+        assetsManageScreen(
+            onAddAsset = navController::navigateToAddAssetScreen,
+            onCancel = onCancel,
+        )
 
-            navigation<Transfer>(startDestination = SendSelect) {
-                swap(
-                    onConfirm = navController::navigateToConfirmScreen,
-                    onCancel = onCancel
-                )
-
-                recipientInput(
-                    cancelAction = onCancel,
-                    recipientAction = navController::navigateToRecipientInput,
-                    amountAction = navController::navigateToAmountScreen,
-                    confirmAction = navController::navigateToConfirmScreen,
-                )
-
-                amount(
-                    onCancel = onCancel,
-                    onSend = navController::navigateToSendScreen,
-                    onConfirm = navController::navigateToConfirmScreen,
-                )
-
-                confirm(
-                    finishAction = { assetId, hash, route ->
-                        when (route) {
-                            assetRoutePath -> NavigateAfterConfirm.Transfer(assetId).navigate(navController)
-                            stakeRoute -> NavigateAfterConfirm.Stake(assetId).navigate(navController)
-                            swapRoute -> NavigateAfterConfirm.Swap(assetId).navigate(navController)
-                        }
-                    },
-                    onBuy = navController::navigateToBuyScreen,
-                    cancelAction = onCancel
-                )
-            }
-
-            nftCollection(
-                cancelAction = onCancel,
-                collectionIdAction = navController::navigateToNftCollection,
-                assetIdAction = navController::navigateToNftAsset,
-                onRecipient = navController::navigateToRecipientInput
-            )
-
-            fiatScreen(
-                cancelAction = onCancel,
-                onBuy = navController::navigateToBuyScreen
-            )
-
-            receiveScreen(
-                onCancel = onCancel,
-                onReceive = navController::navigateToReceiveScreen,
-            )
-
-            walletsScreen(
-                onCreateWallet = navController::navigateToCreateWalletRulesScreen,
-                onImportWallet = navController::navigateToImportWalletScreen,
-                onEditWallet = navController::navigateToWalletScreen,
-                onSelectWallet = {
-                    navController.navigateToRoot()
-                    currentTab.value = assetsRoute
-                },
-                onBoard = {
-                    navController.navigate(OnboardingDest.route) {
-                        popUpTo(0) {
-                            inclusive = true
-                        }
-                    }
-                },
-                onCancel = onCancel
-            )
-
-            walletScreen(
-                onCancel = onCancel,
-                onBoard = {
-                    navController.navigate(OnboardingDest.route) {
-                        popUpTo(0) {
-                            inclusive = true
-                        }
-                    }
-                },
-                onPhraseShow = navController::navigateToPhraseScreen
-            )
-
-            stake(
-                onAmount = navController::navigateToAmountScreen,
+        navigation<Transfer>(startDestination = SendSelect) {
+            swap(
                 onConfirm = navController::navigateToConfirmScreen,
-                onDelegation = navController::navigateToDelegation,
-                onCancel = onCancel,
+                onCancel = onCancel
             )
 
-            addAssetScreen(
+            recipientInput(
+                cancelAction = onCancel,
+                recipientAction = navController::navigateToRecipientInput,
+                amountAction = navController::navigateToAmountScreen,
+                confirmAction = navController::navigateToConfirmScreen,
+            )
+
+            amount(
                 onCancel = onCancel,
-                onFinish = {
-                    navController.navigateToRoot()
-                    currentTab.value = assetsRoute
-                }
+                onSend = navController::navigateToSendScreen,
+                onConfirm = navController::navigateToConfirmScreen,
+            )
+
+            confirm(
+                finishAction = { assetId, hash, route ->
+                    when (route) {
+                        assetRoutePath -> NavigateAfterConfirm.Transfer(assetId).navigate(navController)
+                        stakeRoute -> NavigateAfterConfirm.Stake(assetId).navigate(navController)
+                        swapRoute -> NavigateAfterConfirm.Swap(assetId).navigate(navController)
+                    }
+                },
+                onBuy = navController::navigateToBuyScreen,
+                cancelAction = onCancel
             )
         }
+
+        nftCollection(
+            cancelAction = onCancel,
+            collectionIdAction = navController::navigateToNftCollection,
+            assetIdAction = navController::navigateToNftAsset,
+            onRecipient = navController::navigateToRecipientInput
+        )
+
+        fiatScreen(
+            cancelAction = onCancel,
+            onBuy = navController::navigateToBuyScreen
+        )
+
+        receiveScreen(
+            onCancel = onCancel,
+            onReceive = navController::navigateToReceiveScreen,
+        )
+
+        walletsScreen(
+            onCreateWallet = navController::navigateToCreateWalletRulesScreen,
+            onImportWallet = navController::navigateToImportWalletScreen,
+            onEditWallet = navController::navigateToWalletScreen,
+            onSelectWallet = {
+                navController.navigateToRoot()
+                currentTab.value = assetsRoute
+            },
+            onBoard = {
+                navController.navigate(OnboardingDest.route) {
+                    popUpTo(0) {
+                        inclusive = true
+                    }
+                }
+            },
+            onCancel = onCancel
+        )
+
+        walletScreen(
+            onCancel = onCancel,
+            onBoard = {
+                navController.navigate(OnboardingDest.route) {
+                    popUpTo(0) {
+                        inclusive = true
+                    }
+                }
+            },
+            onPhraseShow = navController::navigateToPhraseScreen
+        )
+
+        stake(
+            onAmount = navController::navigateToAmountScreen,
+            onConfirm = navController::navigateToConfirmScreen,
+            onDelegation = navController::navigateToDelegation,
+            onCancel = onCancel,
+        )
+
+        addAssetScreen(
+            onCancel = onCancel,
+            onFinish = {
+                navController.navigateToRoot()
+                currentTab.value = assetsRoute
+            }
+        )
 
         activitiesScreen(onTransaction = navController::navigateToTransactionScreen)
 
