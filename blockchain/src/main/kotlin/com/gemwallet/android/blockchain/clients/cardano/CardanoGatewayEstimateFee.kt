@@ -20,7 +20,7 @@ class CardanoGatewayEstimateFee : GemGatewayEstimateFee {
         chain: Chain,
         input: GemTransactionLoadInput
     ): GemTransactionLoadFee? {
-        val utxos = (input.metadata as? GemTransactionLoadMetadata.Bitcoin)?.utxos?.toUtxo()
+        val utxos = (input.metadata as? GemTransactionLoadMetadata.Cardano)?.utxos?.toUtxo()
             ?: throw IllegalArgumentException("Incorrect UTXO")
 
         val amount = input.value.toLongOrNull() ?: return null

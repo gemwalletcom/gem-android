@@ -9,6 +9,7 @@ import com.gemwallet.android.model.GasFee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.CosmosDenom
+import com.wallet.core.primitives.DelegationValidator
 import wallet.core.java.AnySigner
 import wallet.core.jni.AnyAddress
 import wallet.core.jni.CoinType
@@ -101,7 +102,7 @@ class CosmosSignClient(
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = CosmosDenom.from(chain)
-        val message = getStakeMessage(params.from.address, params.validatorId, getAmount(finalAmount, denom))
+        val message = getStakeMessage(params.from.address, params.validator.id, getAmount(finalAmount, denom))
         return sign(chainData, fee, message, "Stake via Gem Wallet", privateKey)
     }
 
@@ -115,8 +116,8 @@ class CosmosSignClient(
         val denom = CosmosDenom.from(chain)
         val message = getRedelegateMessage(
             delegatorAddress = params.from.address,
-            validatorSrcAddress = params.srcValidatorId,
-            validatorDstAddress = params.dstValidatorId,
+            validatorSrcAddress = params.delegation.validator.id,
+            validatorDstAddress = params.dstValidator.id,
             amount = getAmount(params.amount, denom),
         )
         return sign(chainData, fee, message, "Stake via Gem Wallet", privateKey)
@@ -129,7 +130,7 @@ class CosmosSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val message = getRewardsMessage(params.from.address, params.validatorsId)
+        val message = getRewardsMessage(params.from.address, params.validators)
         return sign(chainData, fee, message, "Stake via Gem Wallet", privateKey)
     }
 
@@ -141,7 +142,7 @@ class CosmosSignClient(
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = CosmosDenom.from(chain)
-        val message = getUnstakeMessage(params.from.address, params.validatorId, getAmount(params.amount, denom))
+        val message = getUnstakeMessage(params.from.address, params.delegation.validator.id, getAmount(params.amount, denom))
         return sign(chainData, fee, message, "Stake via Gem Wallet", privateKey)
     }
 
@@ -220,12 +221,12 @@ class CosmosSignClient(
         return listOf(message)
     }
 
-    fun getRewardsMessage(delegatorAddress: String, validators: List<String>): List<Message> {
+    fun getRewardsMessage(delegatorAddress: String, validators: List<DelegationValidator>): List<Message> {
         return validators.map { validator ->
             Message.newBuilder().apply {
                 withdrawStakeRewardMessage = WithdrawDelegationReward.newBuilder().apply {
                     this.delegatorAddress = delegatorAddress
-                    this.validatorAddress = validator
+                    this.validatorAddress = validator.id
                 }.build()
             }.build()
         }

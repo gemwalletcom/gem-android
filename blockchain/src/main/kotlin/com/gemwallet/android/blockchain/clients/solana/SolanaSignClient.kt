@@ -1,7 +1,6 @@
 package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.blockchain.clients.SignClient
-import com.gemwallet.android.blockchain.clients.solana.SolanaChainData
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
@@ -200,7 +199,7 @@ class SolanaSignClient(
         val signInput = Solana.SigningInput.newBuilder().apply {
             this.recentBlockhash = recentBlockhash
             this.delegateStakeTransaction = Solana.DelegateStake.newBuilder().apply {
-                this.validatorPubkey = params.validatorId
+                this.validatorPubkey = params.validator.id
                 this.value = finalAmount.toLong()
             }.build()
             this.privateKey = ByteString.copyFrom(privateKey)
@@ -221,7 +220,7 @@ class SolanaSignClient(
         val signInput = Solana.SigningInput.newBuilder().apply {
             this.recentBlockhash = recentBlockhash
             this.deactivateStakeTransaction = Solana.DeactivateStake.newBuilder().apply {
-                this.stakeAccount = params.delegationId
+                this.stakeAccount = params.delegation.base.delegationId
             }.build()
             this.privateKey = ByteString.copyFrom(privateKey)
         }
@@ -239,7 +238,7 @@ class SolanaSignClient(
         val signInput = Solana.SigningInput.newBuilder().apply {
             this.recentBlockhash = recentBlockhash
             this.withdrawTransaction = Solana.WithdrawStake.newBuilder().apply {
-                stakeAccount = params.delegationId
+                stakeAccount = params.delegation.base.delegationId
                 value = finalAmount.toLong()
             }.build()
             this.privateKey = ByteString.copyFrom(privateKey)

@@ -65,4 +65,5 @@ class PolkadotGatewayEstimateFee : GemGatewayEstimateFee {
 
         val output = AnySigner.sign(input, CoinType.POLKADOT, Polkadot.SigningOutput.parser())
         return output.encoded.toByteArray().toHexString().append0x()
-    } }
+    }
+}

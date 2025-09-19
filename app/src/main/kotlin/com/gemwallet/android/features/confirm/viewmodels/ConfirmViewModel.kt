@@ -21,8 +21,6 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.confirm.models.AmountUIModel
 import com.gemwallet.android.features.confirm.models.ConfirmError
 import com.gemwallet.android.features.confirm.models.ConfirmState
-import com.gemwallet.android.ui.navigation.routes.paramsArg
-import com.gemwallet.android.ui.navigation.routes.txTypeArg
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
@@ -37,8 +35,10 @@ import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
 import com.gemwallet.android.ui.navigation.routes.assetRoutePath
+import com.gemwallet.android.ui.navigation.routes.paramsArg
 import com.gemwallet.android.ui.navigation.routes.stakeRoute
 import com.gemwallet.android.ui.navigation.routes.swapRoute
+import com.gemwallet.android.ui.navigation.routes.txTypeArg
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.DelegationValidator
@@ -96,7 +96,7 @@ class ConfirmViewModel @Inject constructor(
 
     private val assetsInfo = request.filterNotNull().mapNotNull {
         if (it is ConfirmParams.SwapParams) {
-            listOf(it.fromAsset.id, it.toAssetId)
+            listOf(it.fromAsset.id, it.toAsset.id)
         } else {
             listOf(it.assetId)
         }
@@ -147,7 +147,7 @@ class ConfirmViewModel @Inject constructor(
         val fromAssetId = request?.assetId ?: return@combine null
         val assetInfo = assetsInfo?.getByAssetId(fromAssetId) ?: return@combine null
         val toAssetInfo = if (request is ConfirmParams.SwapParams) {
-            assetsInfo.getByAssetId(request.toAssetId) ?: return@combine null
+            assetsInfo.getByAssetId(request.toAsset.id) ?: return@combine null
         } else {
             null
         }
@@ -361,9 +361,9 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.Activate,
             is ConfirmParams.NftParams,
             is ConfirmParams.Stake.DelegateParams -> assetInfo.balance.balance.available.toBigInteger()
-            is ConfirmParams.Stake.RedelegateParams -> BigInteger(stakeRepository.getDelegation(params.srcValidatorId).firstOrNull()?.base?.balance ?: "0")
-            is ConfirmParams.Stake.UndelegateParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
-            is ConfirmParams.Stake.WithdrawParams -> BigInteger(stakeRepository.getDelegation(params.validatorId, params.delegationId).firstOrNull()?.base?.balance ?: "0")
+            is ConfirmParams.Stake.RedelegateParams -> BigInteger(stakeRepository.getDelegation(params.delegation.validator.id).firstOrNull()?.base?.balance ?: "0")
+            is ConfirmParams.Stake.UndelegateParams -> BigInteger(stakeRepository.getDelegation(params.delegation.validator.id, params.delegation.base.delegationId).firstOrNull()?.base?.balance ?: "0")
+            is ConfirmParams.Stake.WithdrawParams -> BigInteger(stakeRepository.getDelegation(params.delegation.validator.id, params.delegation.base.delegationId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.Stake.RewardsParams -> stakeRepository.getRewards(assetInfo.asset.id, assetInfo.owner?.address ?: "")
                 .fold(BigInteger.ZERO) { acc, delegation -> acc + BigInteger(delegation.base.balance) }
         }
@@ -371,10 +371,10 @@ class ConfirmViewModel @Inject constructor(
 
     private suspend fun getValidator(params: ConfirmParams): DelegationValidator? {
         val validatorId = when (params) {
-            is ConfirmParams.Stake.DelegateParams -> params.validatorId
-            is ConfirmParams.Stake.RedelegateParams -> params.dstValidatorId
-            is ConfirmParams.Stake.UndelegateParams -> params.validatorId
-            is ConfirmParams.Stake.WithdrawParams -> params.validatorId
+            is ConfirmParams.Stake.DelegateParams -> params.validator.id
+            is ConfirmParams.Stake.RedelegateParams -> params.dstValidator.id
+            is ConfirmParams.Stake.UndelegateParams -> params.delegation.base.validatorId
+            is ConfirmParams.Stake.WithdrawParams -> params.delegation.base.validatorId
             is ConfirmParams.Activate,
             is ConfirmParams.Stake.RewardsParams,
             is ConfirmParams.SwapParams,
@@ -454,7 +454,7 @@ class ConfirmViewModel @Inject constructor(
             jsonEncoder.encodeToString(
                 TransactionSwapMetadata(
                     fromAsset = input.fromAsset.id,
-                    toAsset = input.toAssetId,
+                    toAsset = input.toAsset.id,
                     fromValue = input.fromAmount.toString(),
                     toValue = input.toAmount.toString(),
                     provider = input.protocolId,
@@ -489,7 +489,7 @@ class ConfirmViewModel @Inject constructor(
             } else {
                 TransactionDirection.Outgoing
             },
-            blockNumber = signerParams.chainData.blockNumber()
+            blockNumber = signerParams.data(feePriority.value).chainData.blockNumber()
         )
     }
 

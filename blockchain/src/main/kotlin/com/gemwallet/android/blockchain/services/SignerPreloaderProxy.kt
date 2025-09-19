@@ -7,7 +7,6 @@ import com.gemwallet.android.blockchain.clients.bitcoin.toChainData
 import com.gemwallet.android.blockchain.clients.cardano.CardanoGatewayEstimateFee
 import com.gemwallet.android.blockchain.clients.cardano.toChainData
 import com.gemwallet.android.blockchain.clients.cosmos.toChainData
-import com.gemwallet.android.blockchain.clients.ethereum.EvmGatewayEstimateFee
 import com.gemwallet.android.blockchain.clients.ethereum.toChainData
 import com.gemwallet.android.blockchain.clients.near.toChainData
 import com.gemwallet.android.blockchain.clients.polkadot.PolkadotGatewayEstimateFee
@@ -19,6 +18,8 @@ import com.gemwallet.android.blockchain.clients.ton.toChainData
 import com.gemwallet.android.blockchain.clients.tron.toChainData
 import com.gemwallet.android.blockchain.clients.xrp.toChainData
 import com.gemwallet.android.blockchain.services.mapper.toGem
+import com.gemwallet.android.domains.confirm.toGem
+import com.gemwallet.android.domains.stake.toGem
 import com.gemwallet.android.ext.toChainType
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
@@ -30,14 +31,19 @@ import com.wallet.core.primitives.ChainType
 import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import uniffi.gemstone.GemApprovalData
 import uniffi.gemstone.GemGasPriceType
 import uniffi.gemstone.GemGateway
 import uniffi.gemstone.GemGatewayEstimateFee
+import uniffi.gemstone.GemStakeType
 import uniffi.gemstone.GemTransactionInputType
 import uniffi.gemstone.GemTransactionLoadFee
 import uniffi.gemstone.GemTransactionLoadInput
 import uniffi.gemstone.GemTransactionLoadMetadata
 import uniffi.gemstone.GemTransactionPreloadInput
+import uniffi.gemstone.GemTransferDataExtra
+import uniffi.gemstone.GemTransferDataOutputType
+import uniffi.gemstone.GemWalletConnectionSessionAppMetadata
 import uniffi.gemstone.SwapperException
 
 class SignerPreloaderProxy(
@@ -45,34 +51,34 @@ class SignerPreloaderProxy(
 ) {
 
     suspend fun preload(params: ConfirmParams): SignerParams = withContext(Dispatchers.IO) {
-        val gemAsset = params.asset.toGem()
         val assetId = params.assetId
         val chain = assetId.chain
+        val feeAssetId = AssetId(chain)
         val gemChain = assetId.chain.string
         val destination = params.destination()?.address ?: throw java.lang.IllegalArgumentException()
 
         try {
+            val inputType = getInputType(params)
             val metadata = gateway.getTransactionPreload(
                 chain = gemChain,
                 input = GemTransactionPreloadInput(
-                    inputType = GemTransactionInputType.Transfer(gemAsset),
+                    inputType = inputType,
                     senderAddress = params.from.address,
                     destinationAddress = destination
                 )
             )
             val feeRates = gateway.getFeeRates(
                 chain = gemChain,
-                input = GemTransactionInputType.Transfer(gemAsset),
+                input = inputType
             )
 
-            val fees = feeRates.map { feeRate ->
-                val feeAssetId = AssetId(chain)
+            val transactionData = feeRates.map { feeRate ->
                 val priority = FeePriority.entries.firstOrNull { it.string == feeRate.priority } ?: return@map null
 
                 val result = gateway.getTransactionLoad(
                     chain = gemChain,
                     input = GemTransactionLoadInput(
-                        inputType = GemTransactionInputType.Transfer(gemAsset),
+                        inputType = inputType,
                         senderAddress = params.from.address,
                         destinationAddress = destination,
                         value = params.amount.toString(),
@@ -83,41 +89,99 @@ class SignerPreloaderProxy(
                     ),
                     provider = getEstimateFee(chain)
                 )
-                chain.toFeeType().convertFee(feeAssetId, priority, result.fee)
+                val fee = chain.toFeeType().convertFee(feeAssetId, priority, result.fee)
+                val chainData = result.metadata.toChainData()
+                SignerParams.Data(chainData = chainData, fee = fee)
             }.filterNotNull()
-
-            val chainData = metadata.toChainData()
 
             SignerParams(
                 input = params,
-                chainData = chainData,
-                fee = fees
+                data = transactionData,
             )
         } catch (err: Throwable) {
             throw err
         }
-//        val preloadJob = async {
-//            when (params) {
-//                is ConfirmParams.Stake -> preloadStake(params)
-//                is ConfirmParams.SwapParams -> preloadSwap(params)
-//                is ConfirmParams.TokenApprovalParams -> preloadApproval(params)
-//                is ConfirmParams.TransferParams.Native -> preloadNativeTransfer(params)
-//                is ConfirmParams.TransferParams.Token -> preloadTokenTransfer(params)
-//                is ConfirmParams.Activate -> preloadActivate(params)
-//                is ConfirmParams.TransferParams.Generic -> preloadGeneric(params)
-//                is ConfirmParams.NftParams -> preloadNft(params)
-//            }
-//        }
+    }
 
-//        preloadJob.await()
+    private fun getInputType(params: ConfirmParams): GemTransactionInputType {
+        val gemAsset = params.asset.toGem()
+        val chain = params.assetId.chain.string
+
+        return when (params) {
+            is ConfirmParams.Stake.DelegateParams -> GemTransactionInputType.Stake(
+                asset = gemAsset,
+                stakeType = GemStakeType.Delegate(params.validator.toGem(chain))
+            )
+            is ConfirmParams.Stake.RedelegateParams -> GemTransactionInputType.Stake(
+                asset = gemAsset,
+                stakeType = GemStakeType.Redelegate(
+                    delegation = params.delegation.toGem(chain),
+                    toValidator = params.dstValidator.toGem(chain)
+                )
+            )
+            is ConfirmParams.Stake.RewardsParams -> GemTransactionInputType.Stake(
+                asset = gemAsset,
+                stakeType = GemStakeType.WithdrawRewards(
+                    validators = params.validators.map { it.toGem(chain) }
+                )
+            )
+            is ConfirmParams.Stake.UndelegateParams -> GemTransactionInputType.Stake(
+                asset = gemAsset,
+                stakeType = GemStakeType.Undelegate(
+                    delegation = params.delegation.toGem(chain),
+                )
+            )
+            is ConfirmParams.Stake.WithdrawParams -> GemTransactionInputType.Stake(
+                asset = gemAsset,
+                stakeType = GemStakeType.Withdraw(params.delegation.toGem(chain))
+            )
+            is ConfirmParams.SwapParams -> GemTransactionInputType.Swap(
+                fromAsset = params.fromAsset.toGem(),
+                toAsset = params.toAsset.toGem(),
+                swapData = params.toGem()
+            )
+            is ConfirmParams.TokenApprovalParams -> GemTransactionInputType.TokenApprove(
+                gemAsset,
+                GemApprovalData(
+                    params.assetId.tokenId!!,
+                    spender = params.contract,
+                    value = params.amount.toString(),
+                )
+            )
+            is ConfirmParams.TransferParams.Generic -> GemTransactionInputType.Generic(
+                asset = gemAsset,
+                metadata = GemWalletConnectionSessionAppMetadata(
+                    name = params.name,
+                    description = params.description,
+                    url = params.url,
+                    icon = params.icon,
+                    redirectNative = params.redirectNative,
+                    redirectUniversal = params.redirectUniversal, // TODO: Remove not used data
+                ),
+                extra = GemTransferDataExtra(
+                    gasLimit = null,
+                    gasPrice = null,
+                    data = params.memo?.toByteArray(),
+                    outputType = when (params.inputType) {
+                        ConfirmParams.TransferParams.InputType.Signature -> GemTransferDataOutputType.SIGNATURE
+                        ConfirmParams.TransferParams.InputType.EncodeTransaction -> GemTransferDataOutputType.ENCODED_TRANSACTION
+                        null -> throw IllegalArgumentException("Not supported ${params.inputType}")
+                    },
+                ),
+            )
+            is ConfirmParams.Activate,
+            is ConfirmParams.NftParams,
+            is ConfirmParams.TransferParams.Native,
+            is ConfirmParams.TransferParams.Token -> GemTransactionInputType.Transfer(gemAsset)
+        }
     }
 
     private fun getEstimateFee(chain: Chain): GemGatewayEstimateFee {
         return when (chain.toChainType()) {
             ChainType.Bitcoin -> BitcoinGatewayEstimateFee()
-            ChainType.Ethereum -> EvmGatewayEstimateFee()
             ChainType.Cardano -> CardanoGatewayEstimateFee()
             ChainType.Polkadot -> PolkadotGatewayEstimateFee()
+            ChainType.Ethereum,
             ChainType.Solana,
             ChainType.Cosmos,
             ChainType.Ton,

@@ -319,7 +319,7 @@ class EvmSignClient(
         val output = AnySigner.sign(input, coinType, Ethereum.SigningOutput.parser())
             .encoded
             .toByteArray()
-        return listOf(output)
+        return listOf(output.toHexString("").toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

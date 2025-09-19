@@ -249,14 +249,14 @@ class AmountViewModel @Inject constructor(
         val builder = ConfirmParams.Builder(asset, owner, amount.atomicValue)
         val nextParams = when (params.txType) {
             TransactionType.Transfer -> builder.transfer(destination!!, memo, maxAmount.value,)
-            TransactionType.StakeDelegate -> builder.delegate(validator?.id ?: return)
+            TransactionType.StakeDelegate -> builder.delegate(validator ?: return)
             TransactionType.StakeUndelegate -> builder.undelegate(delegation ?: return)
             TransactionType.StakeRewards -> {
                 val validators = stakeRepository.getRewards(asset.id, owner.address)
-                    .map { it.validator.id }
+                    .map { it.validator }
                 builder.rewards(validators)
             }
-            TransactionType.StakeRedelegate -> builder.redelegate(validator?.id!!, delegation!!)
+            TransactionType.StakeRedelegate -> builder.redelegate(validator!!, delegation!!)
             TransactionType.StakeWithdraw -> builder.withdraw(delegation!!)
             TransactionType.AssetActivation -> builder.activate()
             TransactionType.Swap,
