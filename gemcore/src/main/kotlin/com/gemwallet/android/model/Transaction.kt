@@ -26,8 +26,8 @@ data class Transaction (
     val value: String,
     val memo: String? = null,
     val direction: TransactionDirection,
-    val utxoInputs: List<TransactionInput>,
-    val utxoOutputs: List<TransactionInput>,
+    val utxoInputs: List<TransactionUtxoInput>,
+    val utxoOutputs: List<TransactionUtxoInput>,
     @Serializable(with = JsonAsStringSerializer::class) val metadata: String? = null,
     @Serializable(with = DateSerializer::class)
     val createdAt: Long,

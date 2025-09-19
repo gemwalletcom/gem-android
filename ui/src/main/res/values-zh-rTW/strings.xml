@@ -474,5 +474,15 @@
   <string name="errors.wallets.limit.description">您已達到允許的最大錢包數量（ %d ）。請移除現有錢包以新增或建立新錢包。</string>
   <string name="banner.asset_status.title">可疑資產</string>
   <string name="banner.asset_status.description">代幣可能不安全或具有誤導性。請僅在完全信任的情況下繼續操作。</string>
-  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.maximum_amount">最高金額為 %s</string>
+  <string name="transfer.reserved_fees">我們省略了%s以便您可以支付提款費用。</string>
+  <string name="price_alerts.auto_footer">當價格發生重大變動時，警報就會觸發。</string>
+  <string name="price_alerts.set_alert.title">設定價格提醒</string>
+  <string name="swap.min_receive">最少接收</string>
+  <string name="transfer.freeze.title">凍結</string>
+  <string name="transfer.unfreeze.title">解凍</string>
+  <string name="asset.resources">資源</string>
+  <string name="stake.resource">資源</string>
+  <string name="stake.resource.energy">活力</string>
+  <string name="stake.resource.bandwidth">頻寬</string>
 </resources>

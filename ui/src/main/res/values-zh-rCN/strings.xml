@@ -447,7 +447,7 @@
   <string name="wallet.withdraw">提现</string>
   <string name="info.funding_payments.title">资金费用</string>
   <string name="info.funding_payments.description">资金费用是交易者之间的定期支付，用于使永续合约价格接近标的资产现货价格。正资金费用表示多头支付空头，负资金费用表示空头支付多头。</string>
-  <string name="info.funding_rate.title">资金費率</string>
+  <string name="info.funding_rate.title">资金费率</string>
   <string name="info.funding_rate.description">资金费率决定持有永续仓位的成本。它按小时计算，有助于维持永续合约与标的资产现货价格之间的价格平衡。</string>
   <string name="info.liquidation_price.title">强平价格</string>
   <string name="info.liquidation_price.description">强平价格是当市场价格达到该水平时，您的仓位将被自动平仓以防止进一步亏损的价格。当市场价触及此价位，仓位被强制平仓，保证金将被扣除。</string>
@@ -474,5 +474,15 @@
   <string name="errors.wallets.limit.description">您已达到允许的最大钱包数量（ %d ）。请移除现有钱包以添加或创建新钱包。</string>
   <string name="banner.asset_status.title">可疑资产</string>
   <string name="banner.asset_status.description">代币可能不安全或具有误导性。请仅在完全信任的情况下继续操作。</string>
-  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.maximum_amount">最高金额为%s</string>
+  <string name="transfer.reserved_fees">我们省略了%s以便您可以支付提款费用。</string>
+  <string name="price_alerts.auto_footer">当价格发生重大变动时，警报就会触发。</string>
+  <string name="price_alerts.set_alert.title">设置价格提醒</string>
+  <string name="swap.min_receive">最少接收</string>
+  <string name="transfer.freeze.title">冻结</string>
+  <string name="transfer.unfreeze.title">解冻</string>
+  <string name="asset.resources">资源</string>
+  <string name="stake.resource">资源</string>
+  <string name="stake.resource.energy">活力</string>
+  <string name="stake.resource.bandwidth">带宽</string>
 </resources>

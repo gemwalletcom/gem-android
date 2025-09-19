@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">Aktywacja</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">Wycofać</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Wiadomość</string>
@@ -475,4 +475,14 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">Pozostawiliśmy %s abyś mógł zapłacić opłaty za wypłatę.</string>
+  <string name="price_alerts.auto_footer">Alerty uruchamiają się w przypadku znacznych wahań cen.</string>
+  <string name="price_alerts.set_alert.title">Ustaw alert cenowy</string>
+  <string name="swap.min_receive">Minimalny odbiór</string>
+  <string name="transfer.freeze.title">Zamrażać</string>
+  <string name="transfer.unfreeze.title">Odmrozić</string>
+  <string name="asset.resources">Zasoby</string>
+  <string name="stake.resource">Ratunek</string>
+  <string name="stake.resource.energy">Energia</string>
+  <string name="stake.resource.bandwidth">Przepustowość łącza</string>
 </resources>

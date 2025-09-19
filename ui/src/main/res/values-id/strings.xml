@@ -475,4 +475,14 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">Kami tidak menyertakan %s agar Anda dapat membayar biaya penarikan.</string>
+  <string name="price_alerts.auto_footer">Peringatan dipicu pada pergerakan harga yang signifikan.</string>
+  <string name="price_alerts.set_alert.title">Tetapkan Peringatan Harga</string>
+  <string name="swap.min_receive">Penerimaan Minimum</string>
+  <string name="transfer.freeze.title">Membekukan</string>
+  <string name="transfer.unfreeze.title">Cairkan</string>
+  <string name="asset.resources">Sumber daya</string>
+  <string name="stake.resource">Sumber</string>
+  <string name="stake.resource.energy">Energi</string>
+  <string name="stake.resource.bandwidth">Lebar pita</string>
 </resources>

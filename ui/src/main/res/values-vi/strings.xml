@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">Kích hoạt</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">Rút</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Tin nhắn</string>
@@ -475,4 +475,14 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">Chúng tôi đã bỏ %s ra để bạn có thể trả phí rút tiền.</string>
+  <string name="price_alerts.auto_footer">Cảnh báo sẽ được kích hoạt khi giá biến động đáng kể.</string>
+  <string name="price_alerts.set_alert.title">Đặt cảnh báo giá</string>
+  <string name="swap.min_receive">Nhận tối thiểu</string>
+  <string name="transfer.freeze.title">Đông cứng</string>
+  <string name="transfer.unfreeze.title">Giải đông</string>
+  <string name="asset.resources">Tài nguyên</string>
+  <string name="stake.resource">Tài nguyên</string>
+  <string name="stake.resource.energy">Năng lượng</string>
+  <string name="stake.resource.bandwidth">Băng thông</string>
 </resources>

@@ -518,6 +518,8 @@ class ConfirmViewModel @Inject constructor(
                 TransactionType.SmartContractCall -> TODO()
                 TransactionType.PerpetualOpenPosition -> TODO()
                 TransactionType.PerpetualClosePosition -> TODO()
+                TransactionType.StakeFreeze -> TODO()
+                TransactionType.StakeUnfreeze -> TODO()
             }
 
             if (assetBalance < totalAmount) {

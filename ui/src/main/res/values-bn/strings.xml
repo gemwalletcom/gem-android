@@ -149,7 +149,7 @@
   <string name="stake.validator">Validator</string>
   <string name="stake.validators">Validators</string>
   <string name="stake.apr">APR %s</string>
-  <string name="asset.balances.reserved">Reserved</string>
+  <string name="asset.balances.reserved">সংরক্ষিত</string>
   <string name="wallet.receive.no_memo_required">No memo required</string>
   <string name="wallet.receive.no_destination_tag_required">No destination tag required</string>
   <string name="stake.available_in">Available In</string>
@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">Activating</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">প্রত্যাহার করুন</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Message</string>
@@ -475,4 +475,14 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">আমরা %s বাদ দিয়েছি যাতে আপনি টাকা তোলার ফি পরিশোধ করতে পারেন।</string>
+  <string name="price_alerts.auto_footer">উল্লেখযোগ্য মূল্য পরিবর্তনের সময় সতর্কতাগুলি ট্রিগার করে।</string>
+  <string name="price_alerts.set_alert.title">মূল্য সতর্কতা সেট করুন</string>
+  <string name="swap.min_receive">প্রাপ্তির সর্বনিম্ন</string>
+  <string name="transfer.freeze.title">জমে যাওয়া</string>
+  <string name="transfer.unfreeze.title">আনফ্রিজ করুন</string>
+  <string name="asset.resources">রিসোর্স</string>
+  <string name="stake.resource">রিসোর্স</string>
+  <string name="stake.resource.energy">শক্তি</string>
+  <string name="stake.resource.bandwidth">ব্যান্ডউইথ</string>
 </resources>

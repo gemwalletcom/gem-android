@@ -472,7 +472,17 @@
   <string name="lock.footer">デバイス上のこのアプリへのアクセスを保護する</string>
   <string name="errors.wallets.limit.title">ウォレットの上限に達しました</string>
   <string name="errors.wallets.limit.description">ウォレットの上限数（ %d ）に達しました。既存のウォレットを削除して、新しいウォレットを追加するか作成してください。</string>
-  <string name="banner.asset_status.title">Suspicious Asset</string>
-  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
-  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="banner.asset_status.title">不審資産</string>
+  <string name="banner.asset_status.description">トークンは安全でないか、誤解を招く可能性がある。完全に信頼できる場合のみ手続きを行ってください。</string>
+  <string name="transfer.maximum_amount">最大金額は%s</string>
+  <string name="transfer.reserved_fees">出金手数料をお支払いいただけるよう、 %sを省略しました。</string>
+  <string name="price_alerts.auto_footer">大幅な価格変動が発生するとアラートが発動します。</string>
+  <string name="price_alerts.set_alert.title">価格アラートを設定する</string>
+  <string name="swap.min_receive">最小受取額</string>
+  <string name="transfer.freeze.title">フリーズ</string>
+  <string name="transfer.unfreeze.title">解凍</string>
+  <string name="asset.resources">リソース</string>
+  <string name="stake.resource">リソース</string>
+  <string name="stake.resource.energy">エネルギー</string>
+  <string name="stake.resource.bandwidth">帯域幅</string>
 </resources>

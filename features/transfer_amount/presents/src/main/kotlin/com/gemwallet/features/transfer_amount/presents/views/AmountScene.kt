@@ -157,4 +157,6 @@ private fun getTitle(txType: TransactionType) = when (txType) {
     TransactionType.SmartContractCall -> stringResource(id = R.string.transfer_amount_title)
     TransactionType.PerpetualOpenPosition -> stringResource(R.string.perpetual_position)
     TransactionType.PerpetualClosePosition -> stringResource(R.string.perpetual_close_position)
+    TransactionType.StakeFreeze -> stringResource(R.string.transfer_freeze_title)
+    TransactionType.StakeUnfreeze -> stringResource(R.string.transfer_unfreeze_title)
 }

@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">활성화</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">철회하다</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">메시지</string>
@@ -475,4 +475,14 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">출금 수수료를 지불할 수 있도록 %s 제외했습니다.</string>
+  <string name="price_alerts.auto_footer">가격이 크게 변동하면 알림이 울립니다.</string>
+  <string name="price_alerts.set_alert.title">가격 설정 알림</string>
+  <string name="swap.min_receive"> 최소 수령</string>
+  <string name="transfer.freeze.title">꼭 매달리게 하다</string>
+  <string name="transfer.unfreeze.title">녹이다</string>
+  <string name="asset.resources">자원</string>
+  <string name="stake.resource">의지</string>
+  <string name="stake.resource.energy">에너지</string>
+  <string name="stake.resource.bandwidth">대역폭</string>
 </resources>

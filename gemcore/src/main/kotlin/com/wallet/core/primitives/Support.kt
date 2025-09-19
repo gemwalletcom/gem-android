@@ -10,6 +10,7 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class SupportDevice (
 	val supportId: String,
-	val deviceId: String
+	val deviceId: String,
+	val unread: Int
 )
 

@@ -232,6 +232,8 @@ fun TransactionType.getTitle(direction: TransactionDirection? = null, state: Tra
         TransactionType.SmartContractCall -> R.string.transfer_smart_contract_title
         TransactionType.PerpetualOpenPosition -> R.string.perpetual_position
         TransactionType.PerpetualClosePosition -> R.string.perpetual_close_position
+        TransactionType.StakeFreeze -> R.string.transfer_freeze_title
+        TransactionType.StakeUnfreeze -> R.string.transfer_unfreeze_title
     }
 }
 
@@ -251,6 +253,8 @@ fun TransactionType.getTransactionTitle(direction: TransactionDirection, state: 
         TransactionType.SmartContractCall -> stringResource(R.string.transfer_smart_contract_title)
         TransactionType.PerpetualOpenPosition -> stringResource(R.string.perpetual_position)
         TransactionType.PerpetualClosePosition -> stringResource(R.string.perpetual_close_position)
+        TransactionType.StakeFreeze -> stringResource(R.string.transfer_freeze_title)
+        TransactionType.StakeUnfreeze -> stringResource(R.string.transfer_unfreeze_title)
     }
 }
 
@@ -272,6 +276,8 @@ fun TransactionType.getValue(direction: TransactionDirection, value: String): St
         TransactionType.TokenApproval,
         TransactionType.TransferNFT,
         TransactionType.AssetActivation,
+        TransactionType.StakeFreeze,
+        TransactionType.StakeUnfreeze,
         TransactionType.SmartContractCall -> ""
     }
 }
@@ -295,6 +301,8 @@ fun TransactionType.getAddress(direction: TransactionDirection, from: String, to
         TransactionType.StakeRewards,
         TransactionType.SmartContractCall,
         TransactionType.PerpetualOpenPosition,
+        TransactionType.StakeFreeze,
+        TransactionType.StakeUnfreeze,
         TransactionType.PerpetualClosePosition -> ""
     }
 }

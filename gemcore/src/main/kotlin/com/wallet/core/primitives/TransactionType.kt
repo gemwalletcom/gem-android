@@ -27,6 +27,10 @@ enum class TransactionType(val string: String) {
 	StakeRedelegate("stakeRedelegate"),
 	@SerialName("stakeWithdraw")
 	StakeWithdraw("stakeWithdraw"),
+	@SerialName("stakeFreeze")
+	StakeFreeze("stakeFreeze"),
+	@SerialName("stakeUnfreeze")
+	StakeUnfreeze("stakeUnfreeze"),
 	@SerialName("assetActivation")
 	AssetActivation("assetActivation"),
 	@SerialName("smartContractCall")

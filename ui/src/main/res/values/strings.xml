@@ -475,4 +475,14 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">We\'ve left %s out so you can pay for withdrawal fees.</string>
+  <string name="price_alerts.auto_footer">Alerts trigger on significant price moves.</string>
+  <string name="price_alerts.set_alert.title">Set Price Alert</string>
+  <string name="swap.min_receive">Minimum Receive</string>
+  <string name="transfer.freeze.title">Freeze</string>
+  <string name="transfer.unfreeze.title">Unfreeze</string>
+  <string name="asset.resources">Resources</string>
+  <string name="stake.resource">Resource</string>
+  <string name="stake.resource.energy">Energy</string>
+  <string name="stake.resource.bandwidth">Bandwidth</string>
 </resources>
