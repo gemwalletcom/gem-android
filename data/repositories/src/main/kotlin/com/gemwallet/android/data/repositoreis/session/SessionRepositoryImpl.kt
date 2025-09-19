@@ -37,7 +37,7 @@ class SessionRepositoryImpl(
 
     override fun hasSession(): Boolean = getSession() != null
 
-    override suspend fun setWallet(wallet: Wallet)  = withContext(Dispatchers.IO) {
+    override suspend fun setWallet(wallet: Wallet) {
         val oldSession = runBlocking(Dispatchers.IO) { sessionDao.getSession() }
         val session = if (oldSession == null) {
             DbSession( // Create session

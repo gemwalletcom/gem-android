@@ -181,16 +181,7 @@ class MainActivity : FragmentActivity(), AuthRequester {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        if (intent.hasExtra("walletIndex")) {
-            val walletIndex = intent.getIntExtra("walletIndex", -1)
-            viewModel.onNotification(walletIndex)
-        }
-        val data = intent.data ?: return
-        when (data.scheme) {
-            "wc" -> viewModel.addPairing(data.toString())
-        }
-
-        viewModel.intent.update { intent }
+        viewModel.handleIntent(intent)
     }
 
     @Composable
@@ -417,7 +408,8 @@ class MainViewModel @Inject constructor(
         pauseTime.store(SystemClock.uptimeMillis())
     }
 
-    fun onNotification(walletIndex: Int) = viewModelScope.launch(Dispatchers.IO) {
+
+    suspend fun onWallet(walletIndex: Int) {
         walletIndex.takeIf { it > 0 }?.let { walletIndex ->
             if (sessionRepository.getSession()?.wallet?.index != walletIndex) {
                 walletsRepository.getAll().firstOrNull()?.firstOrNull { it.index == walletIndex }?.let {
@@ -427,6 +419,22 @@ class MainViewModel @Inject constructor(
         }
     }
 
+    fun handleIntent(intent: Intent) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (intent.hasExtra("walletIndex")) {
+                val walletIndex = intent.getIntExtra("walletIndex", -1)
+                onWallet(walletIndex)
+            }
+
+            val data = intent.data ?: return@launch
+
+            when (data.scheme) {
+                "wc" -> addPairing(data.toString())
+                else -> this@MainViewModel.intent.update { intent }
+
+            }
+        }
+    }
 
     data class MainState(
         val initialAuth: AuthState = AuthState.Required,

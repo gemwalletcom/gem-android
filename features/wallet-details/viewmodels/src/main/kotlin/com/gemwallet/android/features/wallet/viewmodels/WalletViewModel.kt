@@ -10,6 +10,7 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.wallet.core.primitives.Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -52,22 +53,8 @@ class WalletViewModel @Inject constructor(
         .map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, WalletUIState.Success)
 
-//    fun init(walletId: String, isPhrase: Boolean) {
-//        viewModelScope.launch {
-//            val wallet = walletsRepository.getWallet(walletId)
-//            if (wallet == null) {
-//                state.update { it.copy(error = "Wallet not found") }
-//            } else {
-//                state.update { it.copy(wallet = wallet) }
-//            }
-//            if (isPhrase) {
-//                handleShowPhrase()
-//            }
-//        }
-//    }
-
     fun setWalletName(name: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             val wallet = wallet.value ?: return@launch
             walletsRepository.updateWallet(wallet.copy(name = name))
             if (wallet.id == sessionRepository.getSession()?.wallet?.id) {

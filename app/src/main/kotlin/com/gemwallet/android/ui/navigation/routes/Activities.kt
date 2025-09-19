@@ -14,7 +14,6 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 const val activitiesRoute = "transactions"
-const val transactionRoute = "transaction"
 const val transactionRouteUri = "gem://transaction"
 
 @Serializable
