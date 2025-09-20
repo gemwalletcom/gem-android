@@ -6,11 +6,7 @@ import uniffi.gemstone.GemTransactionLoadMetadata
 data class StellarChainData(
     val sequence: ULong,
     val isDestinationAddressExist: Boolean,
-) : ChainSignData {
-    companion object {
-        const val tokenAccountCreation = "tokenAccountCreation"
-    }
-}
+) : ChainSignData
 
 fun GemTransactionLoadMetadata.Stellar.toChainData(): StellarChainData {
     return StellarChainData(

@@ -11,6 +11,6 @@ data class XrpChainData(
 fun GemTransactionLoadMetadata.Xrp.toChainData(): XrpChainData {
     return XrpChainData(
         sequence = sequence.toInt(),
-        blockNumber = sequence.toInt(),
+        blockNumber = blockNumber.toInt(),
     )
 }
