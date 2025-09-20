@@ -38,7 +38,7 @@ data class RedelegateData (
 @Serializable
 data class StakeData (
 	val data: String? = null,
-	val to: String? = null
+	val to: String? = null,
 )
 
 @Serializable

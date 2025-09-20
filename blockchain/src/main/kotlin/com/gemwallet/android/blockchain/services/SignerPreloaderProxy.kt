@@ -138,7 +138,7 @@ class SignerPreloaderProxy(
             is ConfirmParams.SwapParams -> GemTransactionInputType.Swap(
                 fromAsset = params.fromAsset.toGem(),
                 toAsset = params.toAsset.toGem(),
-                swapData = params.toGem()
+                swapData = params.toGem(),
             )
             is ConfirmParams.TokenApprovalParams -> GemTransactionInputType.TokenApprove(
                 gemAsset,

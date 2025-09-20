@@ -259,12 +259,13 @@ class EvmSignClient(
             throw Exception("Doesn't support")
         }
         val meta = chainData as EvmChainData
+        val toAddress = meta.stakeData?.to ?: throw java.lang.IllegalArgumentException("No stake data")
+        val stakeData = meta.stakeData.data?.decodeHex() ?: throw java.lang.IllegalArgumentException("No stake data")
         val fee = fee as GasFee
         val valueData = when (params) {
             is ConfirmParams.Stake.DelegateParams -> finalAmount.toByteArray()
             else -> BigInteger.ZERO.toByteArray()
         }
-        val callData = StakeHub.encodeStake(params)
         val input = Ethereum.SigningInput.newBuilder().apply {
             this.txMode = Ethereum.TransactionMode.Enveloped
             this.maxFeePerGas = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
@@ -272,12 +273,12 @@ class EvmSignClient(
             this.gasLimit = ByteString.copyFrom(fee.limit.toByteArray())
             this.chainId = ByteString.copyFrom(meta.chainId.toBigInteger().toByteArray())
             this.nonce = ByteString.copyFrom(meta.nonce.toByteArray())
-            this.toAddress = StakeHub.address
+            this.toAddress = toAddress
             this.privateKey = ByteString.copyFrom(privateKey)
             this.transaction = Ethereum.Transaction.newBuilder().apply {
                 contractGeneric = ContractGeneric.newBuilder().apply {
                     amount = ByteString.copyFrom(valueData)
-                    data = ByteString.copyFrom(callData.decodeHex())
+                    data = ByteString.copyFrom(stakeData)
                 }.build()
             }.build()
         }.build()
