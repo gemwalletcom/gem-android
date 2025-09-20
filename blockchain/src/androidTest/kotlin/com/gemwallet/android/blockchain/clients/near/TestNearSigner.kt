@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.near
 
-import com.gemwallet.android.blockchain.clients.near.NearSignerPreloader.NearChainData
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
 import com.gemwallet.android.ext.asset
@@ -43,15 +42,14 @@ class TestNearSigner {
                 ),
                 chainData = NearChainData(
                     block = "2ADR7pgpkd2uFFkQcAyCxL5YB4d9SewALTLEuFbUUJLe",
-                    sequence = 134180900000002,
-                    fee = Fee(
-                        priority = FeePriority.Normal,
-                        feeAssetId = AssetId(Chain.Near),
-                        amount = BigInteger.TEN
-                    ),
+                    sequence = 134180900000002UL,
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                FeePriority.Normal,
+                fee = Fee(
+                    priority = FeePriority.Normal,
+                    feeAssetId = AssetId(Chain.Near),
+                    amount = BigInteger.TEN
+                ),
                 privateKey.data(),
             )
         }

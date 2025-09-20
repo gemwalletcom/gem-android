@@ -37,5 +37,7 @@ enum class ChainType(val string: String) {
 	Polkadot("polkadot"),
 	@SerialName("cardano")
 	Cardano("cardano"),
+	@SerialName("hypercore")
+	HyperCore("hypercore"),
 }
 

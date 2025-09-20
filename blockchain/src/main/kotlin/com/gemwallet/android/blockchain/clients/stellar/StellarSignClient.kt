@@ -4,9 +4,10 @@ import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.Fee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
+import uniffi.gemstone.GemFeeOption
 import wallet.core.java.AnySigner
 import wallet.core.jni.StellarPassphrase
 import wallet.core.jni.proto.Stellar
@@ -20,22 +21,22 @@ class StellarSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val chainData = (chainData as? StellarSignPreloadClient.StellarChainData)
+        val chainData = (chainData as? StellarChainData)
             ?: throw Exception("bad params")
         val input = Stellar.SigningInput.newBuilder().apply {
             this.passphrase = StellarPassphrase.STELLAR.toString()
-            this.fee = chainData.fee(feePriority).amount.toInt()
-            this.sequence = chainData.sequence
+            this.fee = fee.amount.toInt()
+            this.sequence = chainData.sequence.toLong()
             this.account = params.from.address
             if (!params.memo().isNullOrEmpty()) {
                 this.memoText = Stellar.MemoText.newBuilder().apply {
                     this.text = params.memo()!!
                 }.build()
             }
-            if (chainData.fee(feePriority).options.contains(StellarSignPreloadClient.StellarChainData.tokenAccountCreation)) {
+            if (fee.options.contains(GemFeeOption.TOKEN_ACCOUNT_CREATION.name)) {
                 this.opCreateAccount = Stellar.OperationCreateAccount.newBuilder().apply {
                     this.destination = params.destination().address
                     this.amount = finalAmount.toLong()

@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">%s adresi bir hedef etiketi / notu gerektiriyor</string>
   <string name="common.info">Bilgi</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">24 saatlik Hacim</string>
   <string name="perpetual.entry_price">Giriş Fiyatı</string>
-  <string name="stake.your_staking">Staking’iniz</string>
+  <string name="widget.small.name">Bitcoin Fiyatı</string>
+  <string name="widget.small.description">Bitcoin fiyatını takip edin</string>
+  <string name="widget.medium.name">En İyi Kripto Fiyatı</string>
+  <string name="widget.medium.description">En iyi kripto para birimlerinin fiyatlarını takip edin</string>
+  <string name="wallet.available_balance">Mevcut: %s</string>
+  <string name="lock.footer">Cihazınızda bu uygulamaya erişimi koruyun</string>
+  <string name="errors.wallets.limit.title">Cüzdan Limiti Doldu</string>
+  <string name="errors.wallets.limit.description">İzin verilen maksimum cüzdan sayısına ulaştınız ( %d ). Lütfen yeni bir cüzdan eklemek veya oluşturmak için mevcut bir cüzdanı kaldırın.</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">Çekim ücretlerini ödeyebilmeniz için %s dışarıda bıraktık.</string>
+  <string name="price_alerts.auto_footer">Önemli fiyat hareketlerinde uyarılar tetiklenir.</string>
+  <string name="price_alerts.set_alert.title">Fiyat Uyarısı Ayarla</string>
+  <string name="swap.min_receive">Alınacak minimum</string>
+  <string name="transfer.freeze.title">Donmak</string>
+  <string name="transfer.unfreeze.title">Çözmek</string>
+  <string name="asset.resources">Kaynaklar</string>
+  <string name="stake.resource">Kaynak</string>
+  <string name="stake.resource.energy">Enerji</string>
+  <string name="stake.resource.bandwidth">Bant genişliği</string>
 </resources>

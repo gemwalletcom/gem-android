@@ -3,13 +3,11 @@ package com.gemwallet.android.blockchain.clients.ethereum
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.math.decodeHex
-import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.NFTType
-import uniffi.gemstone.Config
 import wallet.core.jni.AnyAddress
 import wallet.core.jni.EthereumAbi
 import wallet.core.jni.EthereumAbiFunction
@@ -40,10 +38,6 @@ fun EVMChain.Companion.getDestinationAddress(
         AssetSubtype.NATIVE -> destinationAddress
         AssetSubtype.TOKEN -> assetId.tokenId!!
     }
-}
-
-fun EVMChain.isOpStack(): Boolean {
-    return Config().getEvmChainConfig(string).isOpstack
 }
 
 fun EVMChain.Companion.encodeNFT(params: ConfirmParams.NftParams): String {

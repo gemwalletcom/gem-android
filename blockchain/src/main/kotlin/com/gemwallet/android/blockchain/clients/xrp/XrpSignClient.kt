@@ -6,9 +6,9 @@ import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.Fee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.SwapProvider
 import wallet.core.java.AnySigner
 import wallet.core.jni.proto.Ripple
@@ -23,7 +23,7 @@ class XrpSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         val operation = OperationPayment.newBuilder().apply {
@@ -31,14 +31,14 @@ class XrpSignClient(
             this.amount = finalAmount.toLong()
             this.destinationTag = try { params.memo()?.toLong() ?: 0 } catch (_: Throwable) { 0 }
         }.build()
-        return sign(params, chainData, feePriority, operation, privateKey)
+        return sign(params, chainData, fee, operation, privateKey)
     }
 
     override suspend fun signTokenTransfer(
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         val operation = OperationPayment.newBuilder().apply {
@@ -50,14 +50,14 @@ class XrpSignClient(
             }.build()
             this.destinationTag = try { params.memo()?.toLong() ?: 0 } catch (_: Throwable) { 0L }
         }.build()
-        return sign(params, chainData, feePriority, operation, privateKey)
+        return sign(params, chainData, fee, operation, privateKey)
     }
 
     override suspend fun signActivate(
         params: ConfirmParams.Activate,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         val operation = OperationTrustSet.newBuilder().apply {
@@ -67,14 +67,14 @@ class XrpSignClient(
                 this.issuer = params.assetId.tokenId!!
             }.build()
         }.build()
-        return sign(params, chainData, feePriority, operation, privateKey)
+        return sign(params, chainData, fee, operation, privateKey)
     }
 
     override suspend fun signSwap(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         when (params.protocolId) {
@@ -93,7 +93,7 @@ class XrpSignClient(
                     ]
                 }
                 """
-                return sign(params, chainData, feePriority, json, privateKey)
+                return sign(params, chainData, fee, json, privateKey)
             }
             else -> throw Exception("Provider doesn't support")
         }
@@ -102,13 +102,13 @@ class XrpSignClient(
     private fun sign(
         params: ConfirmParams,
         chainData: ChainSignData,
-        feePriority: FeePriority,
+        fee: Fee,
         operation: Any,
         privateKey: ByteArray,
     ): List<ByteArray> {
-        val metadata = chainData as XrpSignerPreloader.XrpChainData
+        val metadata = chainData as XrpChainData
         val signInput = Ripple.SigningInput.newBuilder().apply {
-            this.fee = metadata.fee(feePriority).amount.toLong()
+            this.fee = fee.amount.toLong()
             this.sequence = metadata.sequence
             this.account = params.from.address
             this.privateKey = ByteString.copyFrom(privateKey)
@@ -120,7 +120,7 @@ class XrpSignClient(
             }
         }.build()
         val output = AnySigner.sign(signInput, WCChainTypeProxy().invoke(chain), Ripple.SigningOutput.parser())
-        return listOf(output.encoded.toByteArray())
+        return listOf(output.encoded.toByteArray().toHexString("").toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

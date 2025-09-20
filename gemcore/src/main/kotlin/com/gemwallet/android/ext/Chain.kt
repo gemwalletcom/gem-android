@@ -47,6 +47,7 @@ fun Chain.assetType(): AssetType? {
         Chain.Monad,
         Chain.World -> AssetType.ERC20
 
+        Chain.HyperCore,
         Chain.Cosmos,
         Chain.Osmosis,
         Chain.Celestia,
@@ -103,7 +104,7 @@ fun Chain.Companion.findByString(value: String): Chain? {
     return Chain.entries.firstOrNull{ it.string == value}
 }
 
-fun Chain.Companion.exclude() = setOf(Chain.Celo)
+fun Chain.Companion.exclude() = setOf(Chain.Celo, Chain.HyperCore)
 
 fun Chain.Companion.available() = (Chain.entries.toSet() - exclude())
 
@@ -118,6 +119,7 @@ fun List<Chain>.filter(query: String): List<Chain> {
 
 fun Chain.toChainType(): ChainType {
     return when (this) {
+        Chain.HyperCore -> ChainType.HyperCore
         Chain.Solana -> ChainType.Solana
         Chain.Ton -> ChainType.Ton
         Chain.Tron -> ChainType.Tron
@@ -206,3 +208,7 @@ val Chain.keyEncodingTypes: List<EncodingType>
         Chain.Stellar -> listOf(EncodingType.Base32, EncodingType.Hex)
         else -> listOf(EncodingType.Hex)
     }
+
+fun uniffi.gemstone.Chain.toChain(): Chain? {
+    return Chain.entries.firstOrNull { it.string == this }
+}

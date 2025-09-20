@@ -14,6 +14,12 @@ data class TransactionNFTTransferMetadata (
 )
 
 @Serializable
+data class TransactionPerpetualMetadata (
+	val pnl: Double,
+	val price: Double
+)
+
+@Serializable
 data class TransactionSwapMetadata (
 	val fromAsset: AssetId,
 	val fromValue: String,

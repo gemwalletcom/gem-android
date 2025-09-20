@@ -6,6 +6,7 @@ package com.wallet.core.primitives.swap
 
 import com.wallet.core.primitives.SwapProvider
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class ApprovalData (
@@ -52,4 +53,16 @@ data class SwapData (
 	val quote: SwapQuote,
 	val data: SwapQuoteData
 )
+
+@Serializable
+enum class SwapStatus(val string: String) {
+	@SerialName("pending")
+	Pending("pending"),
+	@SerialName("completed")
+	Completed("completed"),
+	@SerialName("failed")
+	Failed("failed"),
+	@SerialName("refunded")
+	Refunded("refunded"),
+}
 

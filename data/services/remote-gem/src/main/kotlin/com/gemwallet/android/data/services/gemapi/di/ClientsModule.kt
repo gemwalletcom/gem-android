@@ -3,20 +3,7 @@ package com.gemwallet.android.data.services.gemapi.di
 import android.content.Context
 import com.gemwallet.android.blockchain.Mime
 import com.gemwallet.android.blockchain.RpcClientAdapter
-import com.gemwallet.android.blockchain.clients.algorand.services.AlgorandService
-import com.gemwallet.android.blockchain.clients.aptos.services.AptosServices
-import com.gemwallet.android.blockchain.clients.bitcoin.services.BitcoinRpcClient
-import com.gemwallet.android.blockchain.clients.cardano.services.CardanoServices
-import com.gemwallet.android.blockchain.clients.cosmos.services.CosmosRpcClient
-import com.gemwallet.android.blockchain.clients.ethereum.services.EvmRpcClient
-import com.gemwallet.android.blockchain.clients.near.NearRpcClient
-import com.gemwallet.android.blockchain.clients.polkadot.services.PolkadotServices
-import com.gemwallet.android.blockchain.clients.solana.services.SolanaRpcClient
-import com.gemwallet.android.blockchain.clients.stellar.services.StellarService
-import com.gemwallet.android.blockchain.clients.sui.SuiRpcClient
-import com.gemwallet.android.blockchain.clients.ton.TonRpcClient
 import com.gemwallet.android.blockchain.clients.tron.TronRpcClient
-import com.gemwallet.android.blockchain.clients.xrp.XrpRpcClient
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.cases.nodes.GetNodesCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
@@ -128,39 +115,56 @@ object ClientsModule {
         @NodeHttpClient httpClient: OkHttpClient,
     ): RpcClientAdapter {
         val gson = Gson()
-        val converter = jsonEncoder.asConverterFactory(Mime.Json.value)
-        val ethConverter = GsonConverterFactory.create(
-            gson.newBuilder()
-                .registerTypeAdapter(EvmRpcClient.EvmNumber::class.java, EvmRpcClient.BalanceDeserializer())
-                .registerTypeAdapter(EvmRpcClient.TokenBalance::class.java, EvmRpcClient.TokenBalanceDeserializer())
-                .create()
-        )
-        val tonConverter = GsonConverterFactory.create(
-            gson.newBuilder()
-                .registerTypeAdapter(TonRpcClient.JetonAddress::class.java, TonRpcClient.JetonAddressSerializer())
-                .create()
-        )
+//        val converter = jsonEncoder.asConverterFactory(Mime.Json.value)
+//        val ethConverter = GsonConverterFactory.create(
+//            gson.newBuilder()
+//                .registerTypeAdapter(EvmRpcClient.EvmNumber::class.java, EvmRpcClient.BalanceDeserializer())
+//                .registerTypeAdapter(EvmRpcClient.TokenBalance::class.java, EvmRpcClient.TokenBalanceDeserializer())
+//                .create()
+//        )
+//        val tonConverter = GsonConverterFactory.create(
+//            gson.newBuilder()
+//                .registerTypeAdapter(TonRpcClient.JetonAddress::class.java, TonRpcClient.JetonAddressSerializer())
+//                .create()
+//        )
         val gsonConverter = GsonConverterFactory.create(gson)
         val adapter = RpcClientAdapter()
-        Chain.available().map {
-            val url = "https://${it.string}"
-            val rpc: Any = when (it.toChainType()) {
-                ChainType.Bitcoin -> buildClient(url, BitcoinRpcClient::class.java, converter, httpClient)
-                ChainType.Ethereum -> buildClient(url, EvmRpcClient::class.java, ethConverter, httpClient)
-                ChainType.Solana -> buildClient(url, SolanaRpcClient::class.java, gsonConverter, httpClient)
-                ChainType.Cosmos -> buildClient(url, CosmosRpcClient::class.java, converter, httpClient)
-                ChainType.Ton -> buildClient(url, TonRpcClient::class.java, tonConverter, httpClient)
+        Chain.available().forEach { chain ->
+            val url = "https://${chain.string}"
+            when (chain.toChainType()) {
                 ChainType.Tron -> buildClient(url, TronRpcClient::class.java, gsonConverter, httpClient)
-                ChainType.Aptos -> buildClient(url, AptosServices::class.java, converter, httpClient)
-                ChainType.Sui -> buildClient(url, SuiRpcClient::class.java, gsonConverter, httpClient)
-                ChainType.Xrp -> buildClient(url, XrpRpcClient::class.java, gsonConverter, httpClient)
-                ChainType.Near -> buildClient(url, NearRpcClient::class.java, gsonConverter, httpClient)
-                ChainType.Algorand -> buildClient(url, AlgorandService::class.java, converter, httpClient)
-                ChainType.Stellar -> buildClient(url, StellarService::class.java, converter, httpClient)
-                ChainType.Polkadot -> buildClient(url, PolkadotServices::class.java, converter, httpClient)
-                ChainType.Cardano -> buildClient(url, CardanoServices::class.java, converter, httpClient)
+//                ChainType.Bitcoin -> buildClient(url, BitcoinRpcClient::class.java, converter, httpClient)
+//                ChainType.Ethereum -> buildClient(url, EvmRpcClient::class.java, ethConverter, httpClient)
+//                ChainType.Solana -> return@forEach
+//                ChainType.Cosmos -> buildClient(url, CosmosRpcClient::class.java, converter, httpClient)
+//                ChainType.Ton -> buildClient(url, TonRpcClient::class.java, tonConverter, httpClient)
+                
+//                ChainType.Aptos -> buildClient(url, AptosServices::class.java, converter, httpClient)
+//                ChainType.Sui -> buildClient(url, SuiRpcClient::class.java, gsonConverter, httpClient)
+//                ChainType.Xrp -> buildClient(url, XrpRpcClient::class.java, gsonConverter, httpClient)
+//                ChainType.Near -> buildClient(url, NearRpcClient::class.java, gsonConverter, httpClient)
+//                ChainType.Algorand -> buildClient(url, AlgorandService::class.java, converter, httpClient)
+//                ChainType.Stellar -> buildClient(url, StellarService::class.java, converter, httpClient)
+//                ChainType.Polkadot -> buildClient(url, PolkadotServices::class.java, converter, httpClient)
+//                ChainType.Cardano -> buildClient(url, CardanoServices::class.java, converter, httpClient)
+//                ChainType.HyperCore -> null
+                ChainType.Ethereum,
+                ChainType.Bitcoin,
+                ChainType.Solana,
+                ChainType.Cosmos,
+                ChainType.Ton,
+                ChainType.Aptos,
+                ChainType.Sui,
+                ChainType.Xrp,
+                ChainType.Near,
+                ChainType.Stellar,
+                ChainType.Algorand,
+                ChainType.Polkadot,
+                ChainType.Cardano,
+                ChainType.HyperCore -> null
+            }?.let { rpc ->
+                adapter.add(chain, rpc)
             }
-            adapter.add(it, rpc)
         }
         return adapter
     }

@@ -54,44 +54,44 @@ data class WalletConnectionSessionProposal (
 @Serializable
 enum class WalletConnectionEvents(val string: String) {
 	@SerialName("connect")
-	connect("connect"),
+	Connect("connect"),
 	@SerialName("disconnect")
-	disconnect("disconnect"),
+	Disconnect("disconnect"),
 	@SerialName("accountsChanged")
-	accounts_changed("accountsChanged"),
+	AccountsChanged("accountsChanged"),
 	@SerialName("chainChanged")
-	chain_changed("chainChanged"),
+	ChainChanged("chainChanged"),
 }
 
 @Serializable
 enum class WalletConnectionMethods(val string: String) {
 	@SerialName("eth_chainId")
-	eth_chain_id("eth_chainId"),
+	EthChainId("eth_chainId"),
 	@SerialName("eth_sign")
-	eth_sign("eth_sign"),
+	EthSign("eth_sign"),
 	@SerialName("personal_sign")
-	personal_sign("personal_sign"),
+	PersonalSign("personal_sign"),
 	@SerialName("eth_signTypedData")
-	eth_sign_typed_data("eth_signTypedData"),
+	EthSignTypedData("eth_signTypedData"),
 	@SerialName("eth_signTypedData_v4")
-	eth_sign_typed_data_v4("eth_signTypedData_v4"),
+	EthSignTypedDataV4("eth_signTypedData_v4"),
 	@SerialName("eth_signTransaction")
-	eth_sign_transaction("eth_signTransaction"),
+	EthSignTransaction("eth_signTransaction"),
 	@SerialName("eth_sendTransaction")
-	eth_send_transaction("eth_sendTransaction"),
+	EthSendTransaction("eth_sendTransaction"),
 	@SerialName("eth_sendRawTransaction")
-	eth_send_raw_transaction("eth_sendRawTransaction"),
+	EthSendRawTransaction("eth_sendRawTransaction"),
 	@SerialName("wallet_switchEthereumChain")
-	wallet_switch_ethereum_chain("wallet_switchEthereumChain"),
+	WalletSwitchEthereumChain("wallet_switchEthereumChain"),
 	@SerialName("wallet_addEthereumChain")
-	wallet_add_ethereum_chain("wallet_addEthereumChain"),
+	WalletAddEthereumChain("wallet_addEthereumChain"),
 	@SerialName("solana_signMessage")
-	solana_sign_message("solana_signMessage"),
+	SolanaSignMessage("solana_signMessage"),
 	@SerialName("solana_signTransaction")
-	solana_sign_transaction("solana_signTransaction"),
+	SolanaSignTransaction("solana_signTransaction"),
 	@SerialName("solana_signAndSendTransaction")
-	solana_sign_and_send_transaction("solana_signAndSendTransaction"),
+	SolanaSignAndSendTransaction("solana_signAndSendTransaction"),
 	@SerialName("solana_signAllTransactions")
-	solana_sign_all_transactions("solana_signAllTransactions"),
+	SolanaSignAllTransactions("solana_signAllTransactions"),
 }
 

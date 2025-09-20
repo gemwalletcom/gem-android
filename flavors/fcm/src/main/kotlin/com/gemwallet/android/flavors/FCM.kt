@@ -69,6 +69,7 @@ class FCM : FirebaseMessagingService() {
                     PushNotificationTypes.BuyAsset,
                     PushNotificationTypes.Asset -> jsonEncoder.decodeFromString<PushNotificationAsset>(rawData).assetId
                     PushNotificationTypes.Test,
+                    PushNotificationTypes.Support,
                     PushNotificationTypes.SwapAsset -> null
                 }
             } catch (_: Throwable) {

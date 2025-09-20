@@ -83,6 +83,8 @@ fun BannersScene(
                     stringResource(R.string.transfer_activate_asset_title),
                     stringResource(R.string.banner_activate_asset_description, asset?.name ?: "", asset?.id?.chain?.asset()?.name ?: ""),
                 )
+
+                BannerEvent.SuspiciousAsset -> TODO()
             }
             BannerText(
                 title = title,

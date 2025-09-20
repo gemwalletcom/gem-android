@@ -149,7 +149,7 @@
   <string name="stake.validator">Validator</string>
   <string name="stake.validators">Validators</string>
   <string name="stake.apr">APR %s</string>
-  <string name="asset.balances.reserved">Reserved</string>
+  <string name="asset.balances.reserved">Nakareserba</string>
   <string name="wallet.receive.no_memo_required">No memo required</string>
   <string name="wallet.receive.no_destination_tag_required">No destination tag required</string>
   <string name="stake.available_in">Available In</string>
@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">Activating</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">Mag-withdraw</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Message</string>
@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">Nangangailangan ang %s address ng patutunguhang tag / memo</string>
   <string name="common.info">Impormasyon</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">24h Volume</string>
   <string name="perpetual.entry_price">Entry Price</string>
-  <string name="stake.your_staking">Ang iyong Staking</string>
+  <string name="widget.small.name">Presyo ng Bitcoin</string>
+  <string name="widget.small.description">Subaybayan ang presyo ng Bitcoin</string>
+  <string name="widget.medium.name">Nangungunang Presyo ng Crypto</string>
+  <string name="widget.medium.description">Subaybayan ang mga presyo ng mga nangungunang cryptocurrencies</string>
+  <string name="wallet.available_balance">Available: %s</string>
+  <string name="lock.footer">Protektahan ang access sa app na ito sa iyong device</string>
+  <string name="errors.wallets.limit.title">Naabot na ang Limitasyon ng Wallets</string>
+  <string name="errors.wallets.limit.description">Naabot mo na ang maximum na bilang ng mga wallet na pinapayagan ( %d ). Mangyaring alisin ang isang umiiral na wallet upang magdagdag o gumawa ng bago.</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">Iniwan namin %s upang mabayaran mo ang mga bayarin sa pag-withdraw.</string>
+  <string name="price_alerts.auto_footer">Nagti-trigger ang mga alerto sa mga makabuluhang galaw ng presyo.</string>
+  <string name="price_alerts.set_alert.title">Itakda ang Alerto sa Presyo</string>
+  <string name="swap.min_receive">Pinakamababang Pagtanggap</string>
+  <string name="transfer.freeze.title">I-freeze</string>
+  <string name="transfer.unfreeze.title">I-unfreeze</string>
+  <string name="asset.resources">Mga mapagkukunan</string>
+  <string name="stake.resource">mapagkukunan</string>
+  <string name="stake.resource.energy">Enerhiya</string>
+  <string name="stake.resource.bandwidth">Bandwidth</string>
 </resources>

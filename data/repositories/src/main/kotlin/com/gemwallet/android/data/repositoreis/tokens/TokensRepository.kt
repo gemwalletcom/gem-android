@@ -1,6 +1,6 @@
 package com.gemwallet.android.data.repositoreis.tokens
 
-import com.gemwallet.android.blockchain.clients.GetTokenClient
+import com.gemwallet.android.blockchain.services.TokenService
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.AssetsPriorityDao
@@ -12,15 +12,13 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetProperties
 import com.wallet.core.primitives.AssetScore
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 
 class TokensRepository (
     private val assetsDao: AssetsDao,
     private val assetsPriorityDao: AssetsPriorityDao,
     private val gemApiClient: GemApiClient,
-    private val getTokenClients: List<GetTokenClient>,
+    private val tokenService: TokenService,
 ) : SearchTokensCase {
 
     override suspend fun search(query: String): Boolean = withContext(Dispatchers.IO) {
@@ -33,28 +31,7 @@ class TokensRepository (
             return@withContext false
         }
         val assets = if (tokens.isEmpty()) {
-            val assets = getTokenClients.map {
-                async {
-                    try {
-                        if (it.isTokenQuery(query)) {
-                            it.getTokenData(query)
-                        } else {
-                            null
-                        }
-                    } catch (_: Throwable) {
-                        null
-                    }
-                }
-            }
-            .awaitAll()
-            .mapNotNull { it }
-            .map { AssetBasic(asset = it, score = AssetScore(0), properties = AssetProperties(
-                isEnabled = false,
-                isBuyable = false,
-                isSellable = false,
-                isSwapable = false,
-                isStakeable = false
-            )) }
+            val assets = tokenService.search(query)
             runCatching { assetsDao.insert(assets.map { it.toRecord() }) }
             assets
         } else {
@@ -67,9 +44,7 @@ class TokensRepository (
 
     override suspend fun search(assetId: AssetId): Boolean {
         val tokenId = assetId.tokenId ?: return false
-        val asset = getTokenClients
-            .firstOrNull { it.supported(assetId.chain) && it.isTokenQuery(tokenId) }
-            ?.getTokenData(tokenId)
+        val asset = tokenService.getTokenData(assetId)
         if (asset == null) {
             return search(tokenId)
         }
@@ -80,7 +55,7 @@ class TokensRepository (
             isSwapable = false,
             isStakeable = false
         ))
-            .toRecord()
+        .toRecord()
         runCatching { assetsDao.insert(record) }
         return true
     }

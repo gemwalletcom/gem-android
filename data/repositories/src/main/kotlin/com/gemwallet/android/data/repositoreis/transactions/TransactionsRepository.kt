@@ -2,9 +2,9 @@ package com.gemwallet.android.data.repositoreis.transactions
 
 import android.text.format.DateUtils
 import android.util.Log
-import com.gemwallet.android.blockchain.clients.ServiceUnavailable
-import com.gemwallet.android.blockchain.clients.TransactionStateRequest
-import com.gemwallet.android.blockchain.clients.TransactionStatusClient
+import com.gemwallet.android.blockchain.model.ServiceUnavailable
+import com.gemwallet.android.blockchain.model.TransactionStateRequest
+import com.gemwallet.android.blockchain.services.TransactionStatusService
 import com.gemwallet.android.cases.transactions.ClearPendingTransactions
 import com.gemwallet.android.cases.transactions.CreateTransaction
 import com.gemwallet.android.cases.transactions.GetTransaction
@@ -51,9 +51,9 @@ import java.util.concurrent.ConcurrentHashMap
 @OptIn(ExperimentalCoroutinesApi::class)
 class TransactionsRepository(
     private val transactionsDao: TransactionsDao,
-    assetsDao: AssetsDao,
-    private val stateClients: List<TransactionStatusClient>,
+    private val transactionStatusService: TransactionStatusService,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
+    assetsDao: AssetsDao,
 )
 : GetTransactions,
     GetTransaction,
@@ -246,16 +246,14 @@ class TransactionsRepository(
 
     private suspend fun checkTx(tx: DbTransactionExtended): DbTransactionExtended? {
         val assetId = tx.assetId.toAssetId() ?: return null
-        val stateClient = stateClients.firstOrNull { it.supported(assetId.chain) } ?: return null
+        val request = TransactionStateRequest(
+            chain = assetId.chain,
+            sender = tx.owner,
+            hash = tx.hash,
+            block = tx.blockNumber,
+        )
         val state = try {
-            stateClient.getStatus(
-                TransactionStateRequest(
-                    chain = assetId.chain,
-                    sender = tx.owner,
-                    hash = tx.hash,
-                    block = tx.blockNumber,
-                )
-            )
+            transactionStatusService.getStatus(request) ?: TransactionChanges(tx.state)
         } catch (_: ServiceUnavailable) {
             return tx.copy(updatedAt = System.currentTimeMillis())
         } catch (_: Throwable) {

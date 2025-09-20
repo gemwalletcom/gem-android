@@ -149,7 +149,7 @@
   <string name="stake.validator">Validator</string>
   <string name="stake.validators">Validators</string>
   <string name="stake.apr">APR %s</string>
-  <string name="asset.balances.reserved">Reserved</string>
+  <string name="asset.balances.reserved">Terpelihara</string>
   <string name="wallet.receive.no_memo_required">No memo required</string>
   <string name="wallet.receive.no_destination_tag_required">No destination tag required</string>
   <string name="stake.available_in">Available In</string>
@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">Activating</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">Menarik diri</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Message</string>
@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">Alamat %s memerlukan teg / memo destinasi</string>
   <string name="common.info">info</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">Kelantangan 24j</string>
   <string name="perpetual.entry_price">Harga Kemasukan</string>
-  <string name="stake.your_staking">Staking Anda</string>
+  <string name="widget.small.name">Harga Bitcoin</string>
+  <string name="widget.small.description">Jejaki harga Bitcoin</string>
+  <string name="widget.medium.name">Harga Kripto Tertinggi</string>
+  <string name="widget.medium.description">Jejaki harga mata wang kripto teratas</string>
+  <string name="wallet.available_balance">Tersedia: %s</string>
+  <string name="lock.footer">Lindungi akses kepada apl ini pada peranti anda</string>
+  <string name="errors.wallets.limit.title">Had Dompet Dicapai</string>
+  <string name="errors.wallets.limit.description">Anda telah mencapai bilangan maksimum dompet yang dibenarkan ( %d ). Sila alih keluar dompet sedia ada untuk menambah atau membuat yang baharu.</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">Kami telah meninggalkan %s supaya anda boleh membayar yuran pengeluaran.</string>
+  <string name="price_alerts.auto_footer">Makluman mencetuskan pergerakan harga yang ketara.</string>
+  <string name="price_alerts.set_alert.title">Tetapkan Makluman Harga</string>
+  <string name="swap.min_receive">Penerimaan Minimum</string>
+  <string name="transfer.freeze.title">bekukan</string>
+  <string name="transfer.unfreeze.title">Nyahbekukan</string>
+  <string name="asset.resources">Sumber</string>
+  <string name="stake.resource">sumber</string>
+  <string name="stake.resource.energy">Tenaga</string>
+  <string name="stake.resource.bandwidth">Lebar jalur</string>
 </resources>

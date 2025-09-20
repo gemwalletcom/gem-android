@@ -55,7 +55,7 @@ internal fun NodeItem(
             )
         },
         subtitle = {
-            val blockNumber = nodeStatus?.blockNumber?.takeIf { !it.isEmpty() }?.let {
+            val blockNumber = nodeStatus?.blockNumber?.takeIf { it > 0UL }?.let {
                 DecimalFormat.getInstance().format(nodeStatus.blockNumber.toLong())
             } ?: ""
 
@@ -89,8 +89,8 @@ private fun NodeItemStatus(nodeStatus: NodeStatus?) {
     val color = when {
         nodeStatus?.loading == true -> Color.Transparent
         nodeStatus?.inSync == true -> when {
-            nodeStatus.latency < 1024 -> MaterialTheme.colorScheme.tertiary
-            nodeStatus.latency < 2048 -> Color(0xffff9314)
+            nodeStatus.latency < 1024UL -> MaterialTheme.colorScheme.tertiary
+            nodeStatus.latency < 2048UL -> Color(0xffff9314)
             else -> MaterialTheme.colorScheme.error
         }
         else -> MaterialTheme.colorScheme.error
@@ -102,7 +102,7 @@ private fun NodeItemStatus(nodeStatus: NodeStatus?) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         val text = if (nodeStatus?.inSync == true) {
-            stringResource(R.string.common_latency_in_ms, nodeStatus.latency)
+            stringResource(R.string.common_latency_in_ms, nodeStatus.latency.toLong())
         } else {
             stringResource(R.string.errors_error)
         }
@@ -132,9 +132,9 @@ fun NodeItemPreview() {
             nodeStatus = NodeStatus(
                 url = "",
                 chainId = Chain.Ethereum.string,
-                blockNumber = "123902302938",
+                blockNumber = 123902302938UL,
                 inSync = true,
-                latency = 440,
+                latency = 440UL,
                 loading = false,
             )
         ) { }

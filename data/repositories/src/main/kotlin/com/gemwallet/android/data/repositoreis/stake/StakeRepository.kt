@@ -1,6 +1,6 @@
 package com.gemwallet.android.data.repositoreis.stake
 
-import com.gemwallet.android.blockchain.clients.StakeClient
+import com.gemwallet.android.blockchain.services.StakeService
 import com.gemwallet.android.data.service.store.database.StakeDao
 import com.gemwallet.android.data.service.store.database.entities.toModel
 import com.gemwallet.android.data.service.store.database.entities.toRecord
@@ -15,12 +15,8 @@ import com.wallet.core.primitives.DelegationBase
 import com.wallet.core.primitives.DelegationValidator
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
 import java.math.BigInteger
@@ -28,10 +24,11 @@ import java.math.BigInteger
 class StakeRepository(
     private val gemApiStaticClient: GemApiStaticClient,
     private val gemApiClient: GemApiClient,
-    private val stakeClients: List<StakeClient>,
+    private val stakeService: StakeService,
     private val stakeDao: StakeDao,
 ) {
     private val recommendedValidators = Config().getValidators()
+
 
     suspend fun sync(chain: Chain, address: String) = withContext(Dispatchers.IO) {
         val apr = try {
@@ -40,12 +37,12 @@ class StakeRepository(
             return@withContext
         }
         syncValidators(chain, apr)
-        syncDelegations(chain, address, apr)
+        syncDelegations(chain, address)
     }
 
-    private suspend fun syncDelegations(chain: Chain, address: String, apr: Double) = withContext(Dispatchers.IO) {
+    private suspend fun syncDelegations(chain: Chain, address: String) = withContext(Dispatchers.IO) {
         val delegations = try {
-            stakeClients.firstOrNull { it.supported(chain) }?.getStakeDelegations(chain, address, apr) ?: return@withContext
+            stakeService.getStakeDelegations(chain, address)
         } catch (_: Throwable) {
             return@withContext
         }
@@ -61,18 +58,7 @@ class StakeRepository(
         } catch (_: Throwable) {
             emptyMap()
         }
-        val validators = stakeClients.filter { it.supported(chain) }
-            .asFlow()
-            .mapNotNull {
-                try {
-                    it.getValidators(chain, apr)
-                } catch (_: Throwable) {
-                    null
-                }
-            }
-            .flowOn(Dispatchers.IO)
-            .toList()
-            .flatten()
+        val validators = stakeService.getValidators(chain, apr)
             .map {
                 if (it.name.isEmpty()) {
                     it.copy(name = validatorsInfo[it.id]?.name ?: "")

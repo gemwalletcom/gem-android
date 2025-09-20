@@ -1,11 +1,5 @@
 package wallet.android.app.tokens
 
-import com.gemwallet.android.blockchain.clients.aptos.AptosGetTokenClient
-import com.gemwallet.android.blockchain.clients.ethereum.EvmGetTokenClient
-import com.gemwallet.android.blockchain.clients.solana.SolanaTokenClient
-import com.gemwallet.android.blockchain.clients.sui.SuiGetTokenClient
-import com.gemwallet.android.blockchain.clients.ton.TonGetTokenClient
-import com.gemwallet.android.blockchain.clients.tron.TronGetTokenClient
 import junit.framework.TestCase.assertFalse
 import junit.framework.TestCase.assertTrue
 import org.junit.Test

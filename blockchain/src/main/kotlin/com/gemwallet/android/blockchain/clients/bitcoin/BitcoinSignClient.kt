@@ -6,12 +6,12 @@ import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.google.protobuf.ByteString
-import com.wallet.core.blockchain.bitcoin.BitcoinUTXO
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.SwapProvider
+import com.wallet.core.primitives.UTXO
 import wallet.core.java.AnySigner
 import wallet.core.jni.BitcoinScript
 import wallet.core.jni.CoinType
@@ -29,14 +29,14 @@ class BitcoinSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         val signingInput = getSigningInput(
             params,
             chainData,
             finalAmount,
-            feePriority,
+            fee,
             privateKey
         )
         return sign(signingInput.build())
@@ -46,7 +46,7 @@ class BitcoinSignClient(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         val providers = setOf(SwapProvider.Thorchain, SwapProvider.Chainflip)
@@ -61,7 +61,7 @@ class BitcoinSignClient(
             params,
             chainData,
             finalAmount,
-            feePriority,
+            fee,
             privateKey,
         )
         when(params.protocolId) {
@@ -85,11 +85,11 @@ class BitcoinSignClient(
         params: ConfirmParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): Bitcoin.SigningInput.Builder {
-        val chainData = chainData as BitcoinSignerPreloader.BitcoinChainData
-        val gasFee = chainData.fee(feePriority) as GasFee
+        val chainData = chainData as BitcoinChainData
+        val gasFee = fee as GasFee
         val coinType = coinType
 
         return Bitcoin.SigningInput.newBuilder().apply {
@@ -102,7 +102,7 @@ class BitcoinSignClient(
             this.useMaxAmount = params.isMax()
             this.addPrivateKey(ByteString.copyFrom(privateKey))
             this.addAllUtxo(chainData.utxo.getUtxoTransactions(params.from.address, coinType))
-            chainData.utxo.forEach {
+            chainData.utxo.forEach { _ ->
                 val redeemScript = BitcoinScript.lockScriptForAddress(params.from.address, coinType)
                 val scriptData = redeemScript.data()
                 if (coinType == CoinType.BITCOIN || scriptData?.isNotEmpty() == true) {
@@ -126,16 +126,16 @@ class BitcoinSignClient(
         if (output.errorMessage.isNotEmpty()) {
             throw IllegalStateException(output.errorMessage)
         }
-        return listOf(output.encoded.toByteArray())
+        return listOf(output.encoded.toByteArray().toHexString("").toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain
 }
 
-fun List<BitcoinUTXO>.getUtxoTransactions(address: String, coinType: CoinType): List<Bitcoin.UnspentTransaction> {
+fun List<UTXO>.getUtxoTransactions(address: String, coinType: CoinType): List<Bitcoin.UnspentTransaction> {
     return map { utxo ->
         Bitcoin.UnspentTransaction.newBuilder().apply {
-            val hash = utxo.txid.decodeHex()
+            val hash = utxo.transaction_id.decodeHex()
             hash.reverse()
             this.outPoint = Bitcoin.OutPoint.newBuilder().apply {
                 this.hash = ByteString.copyFrom(hash)

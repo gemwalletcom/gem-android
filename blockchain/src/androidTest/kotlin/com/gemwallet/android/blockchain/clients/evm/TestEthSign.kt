@@ -1,8 +1,8 @@
 package com.gemwallet.android.blockchain.clients.evm
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.gemwallet.android.blockchain.clients.ethereum.EvmChainData
 import com.gemwallet.android.blockchain.clients.ethereum.EvmSignClient
-import com.gemwallet.android.blockchain.clients.ethereum.EvmSignerPreloader
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
 import com.gemwallet.android.ext.asset
@@ -46,22 +46,19 @@ class TestEthSign {
                     destination = DestinationAddress("0x9b1DB81180c31B1b428572Be105E209b5A6222b7"),
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
                 ),
-                chainData = EvmSignerPreloader.EvmChainData(
+                chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
-                    fees = listOf(
-                        GasFee(
-                            maxGasPrice = BigInteger.TEN,
-                            limit = BigInteger("21000"),
-                            minerFee = BigInteger.TEN,
-                            relay = BigInteger.TEN,
-                            priority = FeePriority.Normal,
-                            feeAssetId = Chain.Ethereum.asset().id,
-                        )
-                    )
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                feePriority = FeePriority.Normal,
+                fee = GasFee(
+                    maxGasPrice = BigInteger.TEN,
+                    limit = BigInteger("21000"),
+                    minerFee = BigInteger.TEN,
+                    relay = BigInteger.TEN,
+                    priority = FeePriority.Normal,
+                    feeAssetId = Chain.Ethereum.asset().id,
+                ),
                 privateKey,
             )
         }
@@ -89,22 +86,19 @@ class TestEthSign {
                     destination = DestinationAddress("0x9b1DB81180c31B1b428572Be105E209b5A6222b7"),
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
                 ),
-                chainData = EvmSignerPreloader.EvmChainData(
+                chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
-                    fees = listOf(
-                        GasFee(
-                            maxGasPrice = BigInteger.TEN,
-                            limit = BigInteger("91000"),
-                            minerFee = BigInteger.TEN,
-                            relay = BigInteger.TEN,
-                            priority = FeePriority.Normal,
-                            feeAssetId = Chain.Ethereum.asset().id,
-                        )
-                    )
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                feePriority = FeePriority.Normal,
+                fee = GasFee(
+                    maxGasPrice = BigInteger.TEN,
+                    limit = BigInteger("91000"),
+                    minerFee = BigInteger.TEN,
+                    relay = BigInteger.TEN,
+                    priority = FeePriority.Normal,
+                    feeAssetId = Chain.Ethereum.asset().id,
+                ),
                 privateKey,
             )
         }
@@ -140,22 +134,19 @@ class TestEthSign {
                     value = "10",
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
                 ),
-                chainData = EvmSignerPreloader.EvmChainData(
+                chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
-                    fees = listOf(
-                        GasFee(
-                            maxGasPrice = BigInteger.TEN,
-                            limit = BigInteger("91000"),
-                            minerFee = BigInteger.TEN,
-                            relay = BigInteger.TEN,
-                            priority = FeePriority.Normal,
-                            feeAssetId = Chain.Ethereum.asset().id,
-                        )
-                    )
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                feePriority = FeePriority.Normal,
+                fee = GasFee(
+                    maxGasPrice = BigInteger.TEN,
+                    limit = BigInteger("91000"),
+                    minerFee = BigInteger.TEN,
+                    relay = BigInteger.TEN,
+                    priority = FeePriority.Normal,
+                    feeAssetId = Chain.Ethereum.asset().id,
+                ),
                 privateKey,
             )
         }
@@ -177,22 +168,19 @@ class TestEthSign {
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
                     validatorId = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8"
                 ),
-                chainData = EvmSignerPreloader.EvmChainData(
+                chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
-                    fees = listOf(
-                        GasFee(
-                            maxGasPrice = BigInteger.TEN,
-                            limit = BigInteger("91000"),
-                            minerFee = BigInteger.TEN,
-                            relay = BigInteger.TEN,
-                            priority = FeePriority.Normal,
-                            feeAssetId = Chain.Ethereum.asset().id,
-                        )
-                    )
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                feePriority = FeePriority.Normal,
+                fee = GasFee(
+                    maxGasPrice = BigInteger.TEN,
+                    limit = BigInteger("91000"),
+                    minerFee = BigInteger.TEN,
+                    relay = BigInteger.TEN,
+                    priority = FeePriority.Normal,
+                    feeAssetId = Chain.Ethereum.asset().id,
+                ),
                 privateKey,
             )
         }
@@ -220,22 +208,19 @@ class TestEthSign {
                     share = "991645728829172501",
                     balance = "1002901689671695193",
                 ),
-                chainData = EvmSignerPreloader.EvmChainData(
+                chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
-                    fees = listOf(
-                        GasFee(
-                            maxGasPrice = BigInteger.TEN,
-                            limit = BigInteger("91000"),
-                            minerFee = BigInteger.TEN,
-                            relay = BigInteger.TEN,
-                            priority = FeePriority.Normal,
-                            feeAssetId = Chain.Ethereum.asset().id,
-                        )
-                    )
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                feePriority = FeePriority.Normal,
+                fee = GasFee(
+                    maxGasPrice = BigInteger.TEN,
+                    limit = BigInteger("91000"),
+                    minerFee = BigInteger.TEN,
+                    relay = BigInteger.TEN,
+                    priority = FeePriority.Normal,
+                    feeAssetId = Chain.Ethereum.asset().id,
+                ),
                 privateKey,
             )
         }
@@ -268,22 +253,19 @@ class TestEthSign {
                     provider = "Uniswap v3",
                     contract = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                 ),
-                chainData = EvmSignerPreloader.EvmChainData(
+                chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
-                    fees = listOf(
-                        GasFee(
-                            maxGasPrice = BigInteger.TEN,
-                            limit = BigInteger("91000"),
-                            minerFee = BigInteger.TEN,
-                            relay = BigInteger.TEN,
-                            priority = FeePriority.Normal,
-                            feeAssetId = Chain.SmartChain.asset().id,
-                        )
-                    )
                 ),
                 finalAmount = BigInteger.ZERO,
-                feePriority = FeePriority.Normal,
+                fee = GasFee(
+                    maxGasPrice = BigInteger.TEN,
+                    limit = BigInteger("91000"),
+                    minerFee = BigInteger.TEN,
+                    relay = BigInteger.TEN,
+                    priority = FeePriority.Normal,
+                    feeAssetId = Chain.SmartChain.asset().id,
+                ),
                 privateKey,
             )
         }

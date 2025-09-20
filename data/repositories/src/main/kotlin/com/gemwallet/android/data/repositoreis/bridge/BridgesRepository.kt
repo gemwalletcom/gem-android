@@ -283,10 +283,10 @@ class BridgesRepository(
                     chains = chain.value.map { "${it.namespace}:${it.reference}" },
                     methods = chain.value.map { it.methods }.toSet().flatten().toList(),
                     events = if (chain.key == Chain.Solana.string) emptyList() else listOf(
-                        WalletConnectionEvents.connect.string,
-                        WalletConnectionEvents.disconnect.string,
-                        WalletConnectionEvents.chain_changed.string,
-                        WalletConnectionEvents.accounts_changed.string
+                        WalletConnectionEvents.Connect.string,
+                        WalletConnectionEvents.Disconnect.string,
+                        WalletConnectionEvents.ChainChanged.string,
+                        WalletConnectionEvents.AccountsChanged.string
                     ),
                     accounts = chain.value.map { "${it.namespace}:${it.reference}:${it.address}" },
                 )

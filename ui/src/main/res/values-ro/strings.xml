@@ -149,7 +149,7 @@
   <string name="stake.validator">Validator</string>
   <string name="stake.validators">Validators</string>
   <string name="stake.apr">APR %s</string>
-  <string name="asset.balances.reserved">Reserved</string>
+  <string name="asset.balances.reserved">Rezervat</string>
   <string name="wallet.receive.no_memo_required">No memo required</string>
   <string name="wallet.receive.no_destination_tag_required">No destination tag required</string>
   <string name="stake.available_in">Available In</string>
@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">Activating</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">Retrage</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Message</string>
@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">Adresa %s necesită o etichetă/notă de destinație</string>
   <string name="common.info">Informații</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">Volum 24h</string>
   <string name="perpetual.entry_price">Preț de intrare</string>
-  <string name="stake.your_staking">Staking-ul tău</string>
+  <string name="widget.small.name">Prețul Bitcoinului</string>
+  <string name="widget.small.description">Urmărește prețul Bitcoinului</string>
+  <string name="widget.medium.name">Preț maxim al criptomonedelor</string>
+  <string name="widget.medium.description">Urmărește prețurile criptomonedelor de top</string>
+  <string name="wallet.available_balance">Disponibil: %s</string>
+  <string name="lock.footer">Protejați accesul la această aplicație pe dispozitivul dvs.</string>
+  <string name="errors.wallets.limit.title">Limita de portofele a fost atinsă</string>
+  <string name="errors.wallets.limit.description">Ați atins numărul maxim de portofele permise ( %d ). Vă rugăm să eliminați un portofel existent pentru a adăuga sau a crea unul nou.</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">Am omis %s pentru a putea plăti comisioanele de retragere.</string>
+  <string name="price_alerts.auto_footer">Alertele se declanșează la mișcări semnificative ale prețurilor.</string>
+  <string name="price_alerts.set_alert.title">Setați alertă de preț</string>
+  <string name="swap.min_receive">Primire minimă</string>
+  <string name="transfer.freeze.title">Îngheţa</string>
+  <string name="transfer.unfreeze.title">Dezghețare</string>
+  <string name="asset.resources">Resurse</string>
+  <string name="stake.resource">Resursă</string>
+  <string name="stake.resource.energy">Energie</string>
+  <string name="stake.resource.bandwidth">Lățime de bandă</string>
 </resources>

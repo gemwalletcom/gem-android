@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-data class TransactionInput (
+data class TransactionUtxoInput (
 	val address: String,
 	val value: String
 )

@@ -6,6 +6,7 @@ import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.ext.toChain
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
@@ -75,7 +76,7 @@ class SwapSelectSearch(
             assetsRepository.swapSearch(
                 params.wallet,
                 params.query,
-                supported.chains.mapNotNull { item -> Chain.entries.firstOrNull { it.string == item } },
+                supported.chains.mapNotNull { item -> item.toChain() },
                 supported.assetIds.mapNotNull { it.toAssetId() }
             )
         }

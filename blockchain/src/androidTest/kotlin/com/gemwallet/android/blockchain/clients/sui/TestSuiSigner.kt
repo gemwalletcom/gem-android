@@ -42,21 +42,20 @@ class TestSuiSigner {
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
                 ),
-                chainData = SuiSignerPreloader.SuiChainData(
+                chainData = SuiChainData(
                     messageBytes = "AAACAAgAypo7AAAAAAAgLuHnHoVlKe7YHnpDy6mnmWueg/fpbWoPf2pUAO0b" +
                             "wWgCAgABAQAAAQEDAAAAAAEBAC7h5x6FZSnu2B56Q8upp5lrnoP36W1qD39qVADtG8F" +
                             "oAS2bHegcizOpgucdlh7PdMz4cCyV89Xv8+pSQHYdUVM07UIbGgAAAAAgbiAG3TMqRi" +
                             "5eRLenwRl5FY6EUk6/RG4a4cjnsc8KNU0u4ecehWUp7tgeekPLqaeZa56D9+ltag9/a" +
                             "lQA7RvBaO4CAAAAAAAAQHh9AQAAAAAA_0xc6af5cd37f2bab89411aff2a642522f88" +
                             "6e3a8bdfea1d0549729e99f3a241bd5",
-                    fee = Fee(
-                        priority = FeePriority.Normal,
-                        feeAssetId = AssetId(Chain.Sui),
-                        amount = BigInteger.TEN
-                    ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                FeePriority.Normal,
+                fee = Fee(
+                    priority = FeePriority.Normal,
+                    feeAssetId = AssetId(Chain.Sui),
+                    amount = BigInteger.TEN
+                ),
                 privateKey.data(),
             )
         }
@@ -89,7 +88,7 @@ class TestSuiSigner {
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
                 ),
-                chainData = SuiSignerPreloader.SuiChainData(
+                chainData = SuiChainData(
                     messageBytes = "AAAEAQA+cu/kqxz/pp3Qmo6eoLJz+so76TaSloB1SmEUVhWCaUYoGhwAAAAAI" +
                             "BtZ+Y3WbB+PQtHrS7YgMDZGLzVxrT20trS/6hpbAEmBAQC01EdV46fEpnMdgod7BT2jJ" +
                             "F0uO3bB4vxKQwUM5D5LgUYoGhwAAAAAIG7IzS1+nt9AlH/Ky7M7uvu/hnOkXUjbo13FT" +
@@ -99,14 +98,13 @@ class TestSuiSigner {
                             "+S2gTgAQzNMurZ1aIQOw24OKmyO5LC3mt0mBR+cLuHnHoVlKe7YHnpDy6mnmWueg/fpb" +
                             "WoPf2pUAO0bwWjuAgAAAAAAAEB4fQEAAAAAAA==_0xd3877ebdd9f50a6d7d919d6e28" +
                             "a26dd62ec43db0986466a35fa78c84394d3046",
-                    fee = Fee(
-                        priority = FeePriority.Normal,
-                        feeAssetId = AssetId(Chain.Sui),
-                        amount = BigInteger.TEN
-                    ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                FeePriority.Normal,
+                fee = Fee(
+                    priority = FeePriority.Normal,
+                    feeAssetId = AssetId(Chain.Sui),
+                    amount = BigInteger.TEN
+                ),
                 privateKey.data(),
             )
         }

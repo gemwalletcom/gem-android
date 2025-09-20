@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">활성화</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">철회하다</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">메시지</string>
@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">%s 주소에는 목적지 태그/메모가 필요합니다.</string>
   <string name="common.info">정보</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">24시간 볼륨</string>
   <string name="perpetual.entry_price">입장료</string>
-  <string name="stake.your_staking">귀하의 스테이킹</string>
+  <string name="widget.small.name">비트코인 가격</string>
+  <string name="widget.small.description">비트코인 가격 추적</string>
+  <string name="widget.medium.name">최고 암호화폐 가격</string>
+  <string name="widget.medium.description">주요 암호화폐 가격 추적</string>
+  <string name="wallet.available_balance">사용 가능: %s</string>
+  <string name="lock.footer">기기에서 이 앱에 대한 액세스를 보호하세요</string>
+  <string name="errors.wallets.limit.title">지갑 한도에 도달했습니다</string>
+  <string name="errors.wallets.limit.description">허용된 최대 지갑 수( %d )에 도달했습니다. 기존 지갑을 제거한 후 추가하거나 새 지갑을 만드세요.</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">출금 수수료를 지불할 수 있도록 %s 제외했습니다.</string>
+  <string name="price_alerts.auto_footer">가격이 크게 변동하면 알림이 울립니다.</string>
+  <string name="price_alerts.set_alert.title">가격 설정 알림</string>
+  <string name="swap.min_receive"> 최소 수령</string>
+  <string name="transfer.freeze.title">꼭 매달리게 하다</string>
+  <string name="transfer.unfreeze.title">녹이다</string>
+  <string name="asset.resources">자원</string>
+  <string name="stake.resource">의지</string>
+  <string name="stake.resource.energy">에너지</string>
+  <string name="stake.resource.bandwidth">대역폭</string>
 </resources>

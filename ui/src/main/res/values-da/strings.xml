@@ -149,7 +149,7 @@
   <string name="stake.validator">Validator</string>
   <string name="stake.validators">Validators</string>
   <string name="stake.apr">APR %s</string>
-  <string name="asset.balances.reserved">Reserved</string>
+  <string name="asset.balances.reserved">Reserveret</string>
   <string name="wallet.receive.no_memo_required">No memo required</string>
   <string name="wallet.receive.no_destination_tag_required">No destination tag required</string>
   <string name="stake.available_in">Available In</string>
@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">Activating</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">Hæv</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Message</string>
@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">%s adresse kræver et destinationstag / memo</string>
   <string name="common.info">Info</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">24-timers volumen</string>
   <string name="perpetual.entry_price">Indgangspris</string>
-  <string name="stake.your_staking">Din indsats</string>
+  <string name="widget.small.name">Bitcoin-pris</string>
+  <string name="widget.small.description">Spor Bitcoin-prisen</string>
+  <string name="widget.medium.name">Top Kryptopris</string>
+  <string name="widget.medium.description">Spor priserne på de bedste kryptovalutaer</string>
+  <string name="wallet.available_balance">Tilgængelig: %s</string>
+  <string name="lock.footer">Beskyt adgangen til denne app på din enhed</string>
+  <string name="errors.wallets.limit.title">Grænsen for tegnebøger er nået</string>
+  <string name="errors.wallets.limit.description">Du har nået det maksimale antal tilladte tegnebøger ( %d ). Fjern venligst en eksisterende tegnebog for at tilføje eller oprette en ny.</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">Vi har udeladt %s så du kan betale for udbetalingsgebyrer.</string>
+  <string name="price_alerts.auto_footer">Advarsler udløses ved betydelige prisbevægelser.</string>
+  <string name="price_alerts.set_alert.title">Indstil prisalarm</string>
+  <string name="swap.min_receive">Minimumsmodtagelse</string>
+  <string name="transfer.freeze.title">Fryse</string>
+  <string name="transfer.unfreeze.title">Optø</string>
+  <string name="asset.resources">Ressourcer</string>
+  <string name="stake.resource">Ressource</string>
+  <string name="stake.resource.energy">Energi</string>
+  <string name="stake.resource.bandwidth">Båndbredde</string>
 </resources>

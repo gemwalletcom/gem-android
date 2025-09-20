@@ -427,7 +427,7 @@
   <string name="info.asset_status.suspicious.description">Verdächtige oder Spam-Token werden als potenzieller Betrug oder schädliche Vermögenswerte identifiziert. Sie können aufgrund von Airdrops, Transfers oder manuellen Importen in Ihrer Wallet erscheinen.</string>
   <string name="errors.insufficient_funds">Unzureichende Mittel</string>
   <string name="info.insufficient_network_fee_balance.title">%s erforderlich</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Für diese Transaktion werden %s benötigt, um die an %s Miner gezahlte Netzwerkgebühr zu decken, nicht Gem Wallet. Stellen Sie sicher, dass Sie über genügend %s verfügen.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Für diese Transaktion sind %s erforderlich, um die an %s Miner gezahlte Netzwerkgebühr zu decken, nicht Gem Wallet. Stellen Sie sicher, dass Sie über genügend %s verfügen.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Unzureichendes Guthaben</string>
   <string name="info.insufficient_balance.description">Sie haben nicht genügend %s, um diese Transaktion abzuschließen. Bitte laden Sie Ihr Wallet auf, empfangen Sie es oder tauschen Sie es um und versuchen Sie es erneut.</string>
@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">%s Adresse erfordert ein Ziel-Tag/Memo</string>
   <string name="common.info">Info</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">24-Stunden-Volumen</string>
   <string name="perpetual.entry_price">Eintrittspreis</string>
-  <string name="stake.your_staking">Ihr Einsatz</string>
+  <string name="widget.small.name">Bitcoin-Preis</string>
+  <string name="widget.small.description">Bitcoin-Preis verfolgen</string>
+  <string name="widget.medium.name">Top-Krypto-Preis</string>
+  <string name="widget.medium.description">Verfolgen Sie die Preise der wichtigsten Kryptowährungen</string>
+  <string name="wallet.available_balance">Verfügbar: %s</string>
+  <string name="lock.footer">Schützen Sie den Zugriff auf diese App auf Ihrem Gerät</string>
+  <string name="errors.wallets.limit.title">Wallet-Limit erreicht</string>
+  <string name="errors.wallets.limit.description">Sie haben die maximal zulässige Anzahl an Wallets erreicht ( %d ). Bitte entfernen Sie ein vorhandenes Wallet, um ein neues hinzuzufügen oder zu erstellen.</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">Wir haben %s weggelassen, damit Sie die Abhebungsgebühren bezahlen können.</string>
+  <string name="price_alerts.auto_footer">Bei erheblichen Preisbewegungen werden Warnungen ausgelöst.</string>
+  <string name="price_alerts.set_alert.title">Preisalarm einstellen</string>
+  <string name="swap.min_receive">Mindestbetrag erhalten</string>
+  <string name="transfer.freeze.title">Einfrieren</string>
+  <string name="transfer.unfreeze.title">Auftauen</string>
+  <string name="asset.resources">Ressourcen</string>
+  <string name="stake.resource">Ressource</string>
+  <string name="stake.resource.energy">Energie</string>
+  <string name="stake.resource.bandwidth">Bandbreite</string>
 </resources>

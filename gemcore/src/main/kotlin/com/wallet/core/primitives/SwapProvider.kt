@@ -21,8 +21,6 @@ enum class SwapProvider(val string: String) {
 	PancakeswapAptosV2("pancakeswap_aptos_v2"),
 	@SerialName("thorchain")
 	Thorchain("thorchain"),
-	@SerialName("orca")
-	Orca("orca"),
 	@SerialName("jupiter")
 	Jupiter("jupiter"),
 	@SerialName("across")

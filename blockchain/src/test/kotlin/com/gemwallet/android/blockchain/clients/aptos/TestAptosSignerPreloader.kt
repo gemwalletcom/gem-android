@@ -1,8 +1,6 @@
 package com.gemwallet.android.blockchain.clients.aptos
 
 import com.gemwallet.android.blockchain.clients.aptos.models.AptosAccount
-import com.gemwallet.android.blockchain.clients.aptos.services.AptosAccountsService
-import com.gemwallet.android.blockchain.clients.aptos.services.AptosFeeService
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.ConfirmParams
@@ -69,7 +67,7 @@ class TestAptosSignerPreloader {
         assertEquals(BigInteger.valueOf(9), (result.chainData.fee() as GasFee).limit)
         assertEquals(AssetId(Chain.Aptos).toIdentifier(), result.chainData.fee().feeAssetId.toIdentifier())
         assertEquals(FeePriority.Normal, result.chainData.fee().priority)
-        assertEquals(8L, (result.chainData as AptosSignerPreloader.AptosChainData).sequence)
+        assertEquals(8L, (result.chainData as AptosChainData).sequence)
     }
 
     @Test
@@ -108,7 +106,7 @@ class TestAptosSignerPreloader {
         assertEquals(BigInteger.valueOf(9L), (result.chainData.fee() as GasFee).limit)
         assertEquals(AssetId(Chain.Aptos).toIdentifier(), result.chainData.fee().feeAssetId.toIdentifier())
         assertEquals(FeePriority.Normal, result.chainData.fee().priority)
-        assertEquals(0L, (result.chainData as AptosSignerPreloader.AptosChainData).sequence)
+        assertEquals(0L, (result.chainData as AptosChainData).sequence)
     }
 
     @Test

@@ -42,7 +42,7 @@ data class AssetBalance(
             reserved: String = "0",
             isActive: Boolean = true,
         ): AssetBalance {
-            val balance = Balance(
+            val balance = Balance(  // TODO: Check number is correct
                 available = available,
                 frozen = frozen,
                 locked = locked,

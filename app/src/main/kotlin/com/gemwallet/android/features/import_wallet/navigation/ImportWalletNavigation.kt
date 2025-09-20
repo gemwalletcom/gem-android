@@ -8,10 +8,10 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
+import com.gemwallet.android.ext.toChain
 import com.gemwallet.android.features.import_wallet.views.ImportScreen
 import com.gemwallet.android.features.import_wallet.views.SelectImportTypeScreen
 import com.gemwallet.android.model.ImportType
-import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
 
 internal const val walletTypeArg = "wallet_type"
@@ -56,7 +56,7 @@ fun NavGraphBuilder.importWalletScreen(
             val walletTypeString = entry.arguments?.getString(walletTypeArg)
             val chainString = entry.arguments?.getString(chainArg)
             val walletType = WalletType.entries.firstOrNull { it.string == walletTypeString }
-            val chain = Chain.entries.firstOrNull { it.string == chainString }
+            val chain = chainString?.toChain()
             if (walletType == null || (walletType != WalletType.multicoin && chain == null)) {
                 onSelectType(null)
             } else {

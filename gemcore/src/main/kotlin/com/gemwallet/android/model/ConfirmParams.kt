@@ -11,6 +11,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Delegation
+import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.TransactionType
 import kotlinx.serialization.Serializable
@@ -60,16 +61,15 @@ sealed class ConfirmParams {
             return TokenApprovalParams(asset, from, approvalData, provider, contract)
         }
 
-        fun delegate(validatorId: String) = Stake.DelegateParams(asset, from, amount, validatorId)
+        fun delegate(validator: DelegationValidator) = Stake.DelegateParams(asset, from, amount, validator)
 
-        fun rewards(validatorsId: List<String>) = Stake.RewardsParams(asset, from, validatorsId, amount)
+        fun rewards(validators: List<DelegationValidator>) = Stake.RewardsParams(asset, from, validators, amount)
 
         fun withdraw(delegation: Delegation) = Stake.WithdrawParams(
             asset = asset,
             from = from,
             amount = amount,
-            validatorId = delegation.validator.id,
-            delegationId = delegation.base.delegationId,
+            delegation = delegation,
         )
 
         fun undelegate(delegation: Delegation): Stake.UndelegateParams {
@@ -77,20 +77,17 @@ sealed class ConfirmParams {
                 asset,
                 from,
                 amount,
-                delegation.validator.id,
-                delegation.base.delegationId,
-                delegation.base.shares,
-                delegation.base.balance
+                delegation,
             )
         }
 
-        fun redelegate(dstValidatorId: String, delegation: Delegation): Stake.RedelegateParams {
+        fun redelegate(dstValidator: DelegationValidator, delegation: Delegation): Stake.RedelegateParams {
             return Stake.RedelegateParams(
                 asset,
                 from = from,
                 amount,
-                delegation.validator.id,
-                dstValidatorId,
+                delegation,
+                dstValidator,
                 delegation.base.shares,
                 delegation.base.balance,
             )
@@ -129,6 +126,14 @@ sealed class ConfirmParams {
             override val memo: String? = null,
             override val isMaxAmount: Boolean = false,
             override val inputType: InputType? = null,
+            val name: String,
+            val description: String,
+            val url: String,
+            val icon: String,
+            val redirectNative: String?,
+            val redirectUniversal: String?,
+            val gasLimit: String?,
+            val gasPrice: String?,
         ) : TransferParams()
 
         @Serializable
@@ -172,6 +177,10 @@ sealed class ConfirmParams {
             get() = BigInteger.ZERO
 
         override fun memo(): String? = data
+
+        override fun destination(): DestinationAddress? {
+            return DestinationAddress(contract)
+        }
     }
 
     @Serializable
@@ -179,25 +188,33 @@ sealed class ConfirmParams {
         override val from: Account,
         val fromAsset: Asset,
         @Serializable(BigIntegerSerializer::class) val fromAmount: BigInteger,
-        val toAssetId: AssetId,
+        val toAsset: Asset,
         @Serializable(BigIntegerSerializer::class) val toAmount: BigInteger,
         val swapData: String,
         val provider: String,
+        val providerName: String,
         val protocolId: String,
         val to: String,
         val value: String,
         val approval: ApprovalData? = null,
+        val slippageBps: UInt,
+        val etaInSeconds: UInt?,
+        val walletAddress: String,
         @Serializable(BigIntegerSerializer::class) val gasLimit: BigInteger? = null,
         val maxFrom: Boolean = false,
     ) : ConfirmParams() {
 
         override val asset: Asset
             get() = fromAsset
+
         override val amount: BigInteger
             get() = fromAmount
+
         override fun destination(): DestinationAddress = DestinationAddress(to)
 
         override fun isMax(): Boolean = maxFrom
+
+        override fun memo(): String? = swapData
 
         @Serializable
         data class ApprovalData(
@@ -212,7 +229,11 @@ sealed class ConfirmParams {
         override val asset: Asset,
         override val from: Account,
         @Serializable(BigIntegerSerializer::class) override val amount: BigInteger = BigInteger.ZERO,
-    ) : ConfirmParams()
+    ) : ConfirmParams() {
+        override fun destination(): DestinationAddress? {
+            return DestinationAddress(from.address)
+        }
+    }
 
     @Serializable
     class NftParams(
@@ -230,57 +251,68 @@ sealed class ConfirmParams {
 
     @Serializable
     sealed class Stake : ConfirmParams() {
-        abstract val validatorId: String
 
         @Serializable
         class DelegateParams(
             override val asset: Asset,
             override val from: Account,
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
-            override val validatorId: String,
-        ) : Stake()
+            val validator: DelegationValidator,
+        ) : Stake() {
+            override fun destination(): DestinationAddress? {
+                return DestinationAddress(validator.id)
+            }
+        }
 
         @Serializable
         class WithdrawParams(
             override val asset: Asset,
             override val from: Account,
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
-            override val validatorId: String,
-            val delegationId: String,
-        ) : Stake()
+            val delegation: Delegation,
+        ) : Stake() {
+            override fun destination(): DestinationAddress? {
+                return DestinationAddress(delegation.validator.id)
+            }
+        }
 
         @Serializable
         class UndelegateParams(
             override val asset: Asset,
             override val from: Account,
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
-            override val validatorId: String,
-            val delegationId: String,
-            val share: String?,
-            val balance: String?
-        ) : Stake()
+            val delegation: Delegation,
+        ) : Stake() {
+            override fun destination(): DestinationAddress? {
+                return DestinationAddress(delegation.validator.id)
+            }
+        }
 
         @Serializable
         class RedelegateParams(
             override val asset: Asset,
             override val from: Account,
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
-            val srcValidatorId: String,
-            val dstValidatorId: String,
+            val delegation: Delegation,
+            val dstValidator: DelegationValidator,
             val share: String?,
             val balance: String?,
         ) : Stake() {
-            override val validatorId: String = ""
+            override fun destination(): DestinationAddress? {
+                return DestinationAddress("")
+            }
         }
 
         @Serializable
         class RewardsParams(
             override val asset: Asset,
             override val from: Account,
-            val validatorsId: List<String>,
+            val validators: List<DelegationValidator>,
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
         ) : Stake() {
-            override val validatorId: String = ""
+            override fun destination(): DestinationAddress? {
+                return DestinationAddress("")
+            }
         }
     }
 
@@ -305,7 +337,7 @@ sealed class ConfirmParams {
         }
     }
 
-    open fun destination(): DestinationAddress? = null
+    open  fun destination(): DestinationAddress? = null
 
     open fun memo(): String? = null
 
