@@ -81,6 +81,7 @@ class ProposalSceneViewModel @Inject constructor(
 
 
     fun onProposal(proposal: Wallet.Model.SessionProposal) {
+        state.update { ProposalSceneState.Init }
         _proposal.update { proposal }
     }
 
@@ -119,6 +120,7 @@ class ProposalSceneViewModel @Inject constructor(
     }
 
     fun reset() {
+        state.update { ProposalSceneState.Init }
         _proposal.value = null
     }
 }
