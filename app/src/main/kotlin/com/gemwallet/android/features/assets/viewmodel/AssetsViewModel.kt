@@ -2,6 +2,8 @@ package com.gemwallet.android.features.assets.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.banners.GetBannersCase
+import com.gemwallet.android.cases.banners.GetWalletOperationsEnabled
 import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
@@ -20,6 +22,7 @@ import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.models.PriceState
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
@@ -51,6 +54,7 @@ class AssetsViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
     private val syncTransactions: SyncTransactions,
     private val userConfig: UserConfig,
+    private val getWalletOperationsEnabled: GetWalletOperationsEnabled,
 ) : ViewModel() {
     val refreshingState = MutableStateFlow<RefresingState>(RefresingState.OnOpen)
     val screenState = refreshingState.map { refreshingState ->
@@ -96,7 +100,7 @@ class AssetsViewModel @Inject constructor(
         val currency = session.currency
         calcWalletInfo(wallet, currency, assets, isHideBalances)
     }
-    .flowOn(Dispatchers.Default)
+    .flowOn(Dispatchers.IO)
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, WalletInfoUIState())
 
@@ -123,7 +127,7 @@ class AssetsViewModel @Inject constructor(
         }
     }
 
-    private fun calcWalletInfo(
+    private suspend fun calcWalletInfo(
         wallet: Wallet,
         currency: Currency,
         assets: List<AssetInfo>,
@@ -143,6 +147,8 @@ class AssetsViewModel @Inject constructor(
             WalletType.multicoin -> R.drawable.multicoin_wallet
             else -> wallet.accounts.firstOrNull()?.chain?.asset()
         }
+        val operationsEnabled = getWalletOperationsEnabled.walletOperationsEnabled(wallet)
+
         return if (isHideBalances) {
             WalletInfoUIState(
                 name = wallet.name,
@@ -152,6 +158,7 @@ class AssetsViewModel @Inject constructor(
                 changedPercentages = "",
                 priceState = PriceState.None,
                 type = wallet.type,
+                operationsEnabled = operationsEnabled,
             )
         } else {
             WalletInfoUIState(
@@ -162,6 +169,7 @@ class AssetsViewModel @Inject constructor(
                 changedPercentages = PriceUIState.formatPercentage(changedPercentages),
                 priceState = PriceUIState.getState(changedPercentages),
                 type = wallet.type,
+                operationsEnabled = operationsEnabled,
             )
         }
     }

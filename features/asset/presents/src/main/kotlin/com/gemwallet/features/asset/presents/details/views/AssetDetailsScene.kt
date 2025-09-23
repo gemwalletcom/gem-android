@@ -1,6 +1,5 @@
 package com.gemwallet.features.asset.presents.details.views
 
-import android.content.Intent
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -11,16 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.NotificationsNone
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -29,10 +20,7 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -81,7 +69,6 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.WalletType
-import kotlinx.coroutines.launch
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl
 
@@ -103,6 +90,7 @@ fun AssetDetailsScene(
     val transactions by viewModel.transactions.collectAsStateWithLifecycle()
     val priceAlertEnabled by viewModel.priceAlertEnabled.collectAsStateWithLifecycle()
     val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
+    val isOperationEnabled by viewModel.isOperationEnabled.collectAsStateWithLifecycle()
 
     when {
         uiState is AssetInfoUIState.Fatal -> FatalStateScene(
@@ -117,6 +105,7 @@ fun AssetDetailsScene(
             transactions = transactions,
             priceAlertEnabled = priceAlertEnabled,
             syncState = (uiState as AssetInfoUIState.Idle).sync,
+            isOperationEnabled = isOperationEnabled,
             onRefresh = viewModel::refresh,
             onTransfer = onTransfer,
             onBuy = onBuy,
@@ -153,30 +142,11 @@ private fun Success(
     onStake: (AssetId) -> Unit,
     onPriceAlert: (AssetId) -> Unit,
     onConfirm: (ConfirmParams) -> Unit,
+    isOperationEnabled: Boolean,
 ) {
-    val scope = rememberCoroutineScope()
-
     val pullToRefreshState = rememberPullToRefreshState()
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
-
-    val snackBar = remember { SnackbarHostState() }
-    val priceAlertToastRes = if (priceAlertEnabled) R.string.price_alerts_disabled_for else R.string.price_alerts_enabled_for
-    val priceAlertToastMessage = stringResource(priceAlertToastRes, uiState.asset.name)
-    var menuExpanded by remember { mutableStateOf(false) }
-    val shareTitle = stringResource(id = R.string.common_share)
-
-    val onShare = fun () {
-        val type = "text/plain"
-        val subject = "${uiState.assetInfo.owner?.chain}\n${uiState.assetInfo.asset.symbol}"
-
-        val intent = Intent(Intent.ACTION_SEND)
-        intent.type = type
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject)
-        intent.putExtra(Intent.EXTRA_TEXT, uiState.assetInfo.owner?.address)
-
-        context.startActivity(Intent.createChooser(intent, shareTitle))
-    }
 
     Scene(
         title = {
@@ -185,49 +155,15 @@ private fun Success(
             }
         },
         actions = {
-            IconButton(
-                onClick = {
-                    onPriceAlert(uiState.asset.id)
-                    scope.launch { snackBar.showSnackbar(message = priceAlertToastMessage) }
-                }
-            ) {
-                if (priceAlertEnabled) {
-                    Icon(Icons.Default.Notifications, "")
-                } else {
-                    Icon(Icons.Default.NotificationsNone, "")
-                }
-            }
-            IconButton(onClick = { menuExpanded = !menuExpanded }) {
-                Icon(
-                    imageVector = Icons.Filled.MoreVert,
-                    contentDescription = "More",
-                )
-            }
-            DropdownMenu(
-                expanded = menuExpanded,
-                onDismissRequest = { menuExpanded = false },
-                containerColor = MaterialTheme.colorScheme.background,
-            ) {
-                uiState.explorerAddressUrl?.let {
-                    DropdownMenuItem(
-                        text = {
-                            Text(stringResource(R.string.asset_view_address_on, uiState.explorerName))
-                        },
-                        onClick = { uriHandler.open(context, it) },
-                    )
-
-                }
-                DropdownMenuItem(
-                    text = {
-                        Text(stringResource(R.string.common_share))
-                    },
-                    onClick = onShare,
-                )
-            }
+            AssetDetailsMenu(
+                uiState = uiState,
+                priceAlertEnabled = priceAlertEnabled,
+                onPriceAlert = onPriceAlert,
+            )
         },
         onClose = onCancel,
         contentPadding = PaddingValues(0.dp),
-        snackbar = snackBar,
+        snackbar = remember { SnackbarHostState() },
     ) {
         val isRefreshing = syncState == AssetInfoUIState.SyncState.Loading
         PullToRefreshBox(
@@ -247,7 +183,7 @@ private fun Success(
             LazyColumn(
                 modifier = Modifier.fillMaxSize()
             ) {
-                head(uiState, onTransfer, onReceive, onBuy, onSwap)
+                head(uiState, isOperationEnabled, onTransfer, onReceive, onBuy, onSwap)
                 banner(uiState.assetInfo, onStake, onConfirm)
                 status(uiState.asset, uiState.assetInfo.rank)
                 price(uiState, onChart)
@@ -282,6 +218,7 @@ private fun Success(
 
 private fun LazyListScope.head(
     uiState: AssetInfoUIModel,
+    isOperationEnabled: Boolean,
     onTransfer: AssetIdAction,
     onReceive: (AssetId) -> Unit,
     onBuy: (AssetId) -> Unit,
@@ -295,8 +232,9 @@ private fun LazyListScope.head(
         ) {
             AssetHeadActions(
                 walletType = uiState.accountInfoUIModel.walletType,
-                onTransfer = { onTransfer(uiState.asset.id) },
                 transferEnabled = uiState.accountInfoUIModel.walletType != WalletType.view,
+                operationsEnabled = isOperationEnabled,
+                onTransfer = { onTransfer(uiState.asset.id) },
                 onReceive = { onReceive(uiState.asset.id) },
                 onBuy = if (uiState.isBuyEnabled) {
                     { onBuy(uiState.asset.id) }

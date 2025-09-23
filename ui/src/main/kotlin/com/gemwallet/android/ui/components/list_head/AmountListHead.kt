@@ -131,8 +131,9 @@ internal fun HeaderIcon(
 @Composable
 fun AssetHeadActions(
     walletType: WalletType,
-    onTransfer: (() -> Unit)?,
     transferEnabled: Boolean,
+    operationsEnabled: Boolean,
+    onTransfer: (() -> Unit)?,
     onReceive: (() -> Unit)?,
     onBuy: (() -> Unit)?,
     onSwap: (() -> Unit)?,
@@ -155,8 +156,8 @@ fun AssetHeadActions(
                 },
                 title = stringResource(id = R.string.wallet_send),
                 imageVector = Icons.Default.ArrowUpward,
+                enabled = transferEnabled && operationsEnabled,
                 contentDescription = "send",
-                enabled = transferEnabled,
                 onClick = onTransfer,
             )
         }
@@ -169,6 +170,7 @@ fun AssetHeadActions(
                 },
                 title = stringResource(id = R.string.wallet_receive),
                 imageVector = Icons.Default.ArrowDownward,
+                enabled = operationsEnabled,
                 contentDescription = "receive",
                 onClick = onReceive,
             )
@@ -183,6 +185,7 @@ fun AssetHeadActions(
                 .testTag("assetBuy"),
                 title = stringResource(id = R.string.wallet_buy),
                 imageVector = Icons.Default.Add,
+                enabled = operationsEnabled,
                 contentDescription = "buy",
                 onClick = onBuy,
             )
@@ -196,6 +199,7 @@ fun AssetHeadActions(
                 },
                 title = stringResource(id = R.string.wallet_swap),
                 imageVector = Icons.Default.SwapVert,
+                enabled = operationsEnabled,
                 contentDescription = "swap",
                 onClick = onSwap,
             )
@@ -289,6 +293,7 @@ fun PreviewAssetHeadActions() {
             walletType = WalletType.multicoin,
             onTransfer = { },
             transferEnabled = true,
+            operationsEnabled = true,
             onReceive = { },
             onBuy = {}
         ) {

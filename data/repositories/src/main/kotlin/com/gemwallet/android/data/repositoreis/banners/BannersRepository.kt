@@ -3,6 +3,7 @@ package com.gemwallet.android.data.repositoreis.banners
 import com.gemwallet.android.cases.banners.AddBanner
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
+import com.gemwallet.android.cases.banners.GetWalletOperationsEnabled
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.service.store.database.BannersDao
@@ -10,6 +11,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbBanner
 import com.gemwallet.android.data.service.store.database.entities.toModel
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.domains.asset.isStackable
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.Asset
@@ -21,12 +23,13 @@ import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
+import kotlin.collections.firstOrNull
 
 class BannersRepository(
     private val assetRepository: AssetsRepository,
     private val bannersDao: BannersDao,
     private val userConfig: UserConfig,
-) : GetBannersCase, CancelBannerCase, AddBanner {
+) : GetBannersCase, CancelBannerCase, GetWalletOperationsEnabled, AddBanner {
 
     override suspend fun getActiveBanners(wallet: Wallet?, asset: Asset?): List<Banner> = withContext(Dispatchers.IO) {
         val assetInfo = asset?.id?.let { assetRepository.getAssetInfo(it).firstOrNull() }
@@ -92,5 +95,12 @@ class BannersRepository(
         }
         val dbBanner = bannersDao.getBanner(wallet?.id ?: "", asset?.id?.toIdentifier() ?: "", asset?.id?.chain?.string, event)
         return dbBanner == null || dbBanner.state != BannerState.Cancelled
+    }
+
+    override suspend fun walletOperationsEnabled(wallet: Wallet): Boolean {
+        return wallet.accounts.firstOrNull {
+            getActiveBanners(wallet, it.chain.asset())
+                .firstOrNull { it.event == BannerEvent.AccountBlockedMultiSignature } != null
+        } == null
     }
 }

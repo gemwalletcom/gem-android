@@ -156,8 +156,9 @@ private fun LazyListScope.assetsHead(
             actions = {
                 AssetHeadActions(
                     walletType = walletInfo.type,
-                    onTransfer = onSendClick,
                     transferEnabled = true,
+                    operationsEnabled = walletInfo.operationsEnabled,
+                    onTransfer = onSendClick,
                     onReceive = onReceiveClick,
                     onBuy = onBuyClick,
                     onSwap = null, // if (swapEnabled) onSwapClick else null
