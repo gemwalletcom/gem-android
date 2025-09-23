@@ -1,14 +1,9 @@
 package com.gemwallet.android.blockchain.clients.polkadot
 
-import com.gemwallet.android.blockchain.services.mapper.toUtxo
 import com.gemwallet.android.math.append0x
-import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.google.protobuf.ByteString
-import com.wallet.core.blockchain.polkadot.PolkadotTransactionPayload
-import com.wallet.core.primitives.UTXO
 import uniffi.gemstone.Chain
-import uniffi.gemstone.GemFeeOptions
 import uniffi.gemstone.GemGatewayEstimateFee
 import uniffi.gemstone.GemTransactionLoadFee
 import uniffi.gemstone.GemTransactionLoadInput
@@ -16,7 +11,6 @@ import uniffi.gemstone.GemTransactionLoadMetadata
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
 import wallet.core.jni.PrivateKey
-import wallet.core.jni.proto.Cardano
 import wallet.core.jni.proto.Polkadot
 import java.math.BigInteger
 

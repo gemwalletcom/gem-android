@@ -2,7 +2,6 @@ package com.gemwallet.android.blockchain.services.mapper
 
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
-import com.wallet.core.blockchain.bitcoin.BitcoinUTXO
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.UTXO

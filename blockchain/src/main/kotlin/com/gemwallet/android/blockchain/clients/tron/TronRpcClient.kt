@@ -9,7 +9,6 @@ import com.wallet.core.blockchain.tron.TronAccountUsage
 import com.wallet.core.blockchain.tron.TronBlock
 import com.wallet.core.blockchain.tron.TronChainParameters
 import com.wallet.core.blockchain.tron.TronSmartContractResult
-import com.wallet.core.blockchain.tron.TronTransactionReceipt
 import com.wallet.core.primitives.Chain
 import retrofit2.http.Body
 import retrofit2.http.GET

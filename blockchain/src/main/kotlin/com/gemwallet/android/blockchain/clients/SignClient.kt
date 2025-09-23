@@ -4,7 +4,6 @@ import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
 import java.math.BigInteger
 
 interface SignClient : BlockchainClient {

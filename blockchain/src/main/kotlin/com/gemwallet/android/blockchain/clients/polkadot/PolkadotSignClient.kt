@@ -1,7 +1,6 @@
 package com.gemwallet.android.blockchain.clients.polkadot
 
 import com.gemwallet.android.blockchain.clients.SignClient
-import com.gemwallet.android.math.append0x
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
@@ -11,7 +10,6 @@ import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
-import wallet.core.jni.PrivateKey
 import wallet.core.jni.proto.Polkadot
 import java.math.BigInteger
 
