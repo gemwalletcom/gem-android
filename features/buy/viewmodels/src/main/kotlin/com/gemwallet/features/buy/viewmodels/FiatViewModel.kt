@@ -9,13 +9,13 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.math.parseNumber
+import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.features.buy.viewmodels.models.AmountValidator
 import com.gemwallet.features.buy.viewmodels.models.BuyError
 import com.gemwallet.features.buy.viewmodels.models.FiatSceneState
 import com.gemwallet.features.buy.viewmodels.models.FiatSuggestion
 import com.gemwallet.features.buy.viewmodels.models.toProviderUIModel
-import com.gemwallet.android.math.parseNumber
-import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.FiatProvider
 import com.wallet.core.primitives.FiatQuote

@@ -10,10 +10,10 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
-import com.gemwallet.features.add_asset.viewmodels.models.AddAssetUIState
-import com.gemwallet.features.add_asset.viewmodels.AddAssetViewModel
 import com.gemwallet.android.ui.components.QrCodeRequest
 import com.gemwallet.android.ui.components.screen.SelectChain
+import com.gemwallet.features.add_asset.viewmodels.AddAssetViewModel
+import com.gemwallet.features.add_asset.viewmodels.models.AddAssetUIState
 
 @Composable
 fun AddAssetScree(

@@ -149,7 +149,7 @@
   <string name="stake.validator">Validator</string>
   <string name="stake.validators">Validators</string>
   <string name="stake.apr">APR %s</string>
-  <string name="asset.balances.reserved">Reserved</string>
+  <string name="asset.balances.reserved">सुरक्षित</string>
   <string name="wallet.receive.no_memo_required">No memo required</string>
   <string name="wallet.receive.no_destination_tag_required">No destination tag required</string>
   <string name="stake.available_in">Available In</string>
@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">Activating</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">निकालना</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Message</string>
@@ -427,7 +427,7 @@
   <string name="info.asset_status.suspicious.description">संदिग्ध या स्पैम टोकन को संभावित घोटाले या हानिकारक संपत्ति के रूप में पहचाना जाता है। वे एयरड्रॉप, ट्रांसफ़र या मैन्युअल आयात के कारण आपके वॉलेट में दिखाई दे सकते हैं।</string>
   <string name="errors.insufficient_funds">अपर्याप्त कोष</string>
   <string name="info.insufficient_network_fee_balance.title">%s आवश्यक</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">इस लेनदेन के लिए %s माइनर्स को भुगतान किए गए नेटवर्क शुल्क को कवर करने के लिए %s की आवश्यकता है, न कि Gem Wallet । सुनिश्चित करें कि आपके पास पर्याप्त %s है।</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">इस लेन-देन के लिए %s माइनर्स को दिए गए नेटवर्क शुल्क को कवर करने के लिए %s की आवश्यकता है, न कि Gem Wallet । सुनिश्चित करें कि आपके पास पर्याप्त %s हैं।</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">अपर्याप्त शेषराशि</string>
   <string name="info.insufficient_balance.description">इस लेनदेन को पूरा करने के लिए आपके पास पर्याप्त %s नहीं है। कृपया अपने वॉलेट में टॉप अप करें, प्राप्त करें या स्वैप करें और फिर से प्रयास करें।</string>
@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">%s पते के लिए गंतव्य टैग / मेमो आवश्यक है</string>
   <string name="common.info">जानकारी</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">24 घंटे की मात्रा</string>
   <string name="perpetual.entry_price">प्रवेश मूल्य</string>
-  <string name="stake.your_staking">आपका दांव</string>
+  <string name="widget.small.name">बिटकॉइन की कीमत</string>
+  <string name="widget.small.description">बिटकॉइन की कीमत पर नज़र रखें</string>
+  <string name="widget.medium.name">शीर्ष क्रिप्टो मूल्य</string>
+  <string name="widget.medium.description">शीर्ष क्रिप्टोकरेंसी की कीमतों पर नज़र रखें</string>
+  <string name="wallet.available_balance">उपलब्ध: %s</string>
+  <string name="lock.footer">अपने डिवाइस पर इस ऐप तक पहुंच सुरक्षित रखें</string>
+  <string name="errors.wallets.limit.title">वॉलेट की सीमा पूरी हो गई</string>
+  <string name="errors.wallets.limit.description">आप अनुमत वॉलेट की अधिकतम संख्या ( %d ) तक पहुँच गए हैं। कृपया नया वॉलेट जोड़ने या बनाने के लिए मौजूदा वॉलेट हटाएँ।</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">हमने %s को छोड़ दिया है ताकि आप निकासी शुल्क का भुगतान कर सकें।</string>
+  <string name="price_alerts.auto_footer">महत्वपूर्ण मूल्य परिवर्तन पर अलर्ट सक्रिय हो जाते हैं।</string>
+  <string name="price_alerts.set_alert.title">मूल्य अलर्ट सेट करें</string>
+  <string name="swap.min_receive">न्यूनतम प्राप्ति राशि</string>
+  <string name="transfer.freeze.title">जमाना</string>
+  <string name="transfer.unfreeze.title">अनफ़्रीज़</string>
+  <string name="asset.resources">संसाधन</string>
+  <string name="stake.resource">संसाधन</string>
+  <string name="stake.resource.energy">ऊर्जा</string>
+  <string name="stake.resource.bandwidth">बैंडविड्थ</string>
 </resources>

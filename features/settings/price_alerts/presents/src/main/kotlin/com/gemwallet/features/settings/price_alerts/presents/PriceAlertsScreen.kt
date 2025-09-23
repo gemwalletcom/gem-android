@@ -10,8 +10,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.features.settings.price_alerts.viewmodels.PriceAlertViewModel
 import com.gemwallet.android.ui.R
+import com.gemwallet.features.settings.price_alerts.viewmodels.PriceAlertViewModel
 import com.wallet.core.primitives.AssetId
 
 @Composable

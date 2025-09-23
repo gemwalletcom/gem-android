@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">آدرس %s به یک برچسب / یادداشت مقصد نیاز دارد.</string>
   <string name="common.info">اطلاعات</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">حجم ۲۴ ساعته</string>
   <string name="perpetual.entry_price">قیمت ورودی</string>
-  <string name="stake.your_staking">استیکینگ شما</string>
+  <string name="widget.small.name">قیمت بیت کوین</string>
+  <string name="widget.small.description">قیمت بیت کوین را پیگیری کنید</string>
+  <string name="widget.medium.name">بالاترین قیمت کریپتو</string>
+  <string name="widget.medium.description">قیمت ارزهای دیجیتال برتر را پیگیری کنید</string>
+  <string name="wallet.available_balance">موجود: %s</string>
+  <string name="lock.footer">دسترسی به این برنامه را در دستگاه خود محافظت کنید</string>
+  <string name="errors.wallets.limit.title">محدودیت کیف پول‌ها تکمیل شد</string>
+  <string name="errors.wallets.limit.description">شما به حداکثر تعداد کیف پول مجاز ( %d ) رسیده‌اید. لطفاً برای اضافه کردن یا ایجاد کیف پول جدید، کیف پول موجود را حذف کنید.</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">ما %s را حذف کرده‌ایم تا بتوانید کارمزد برداشت را پرداخت کنید.</string>
+  <string name="price_alerts.auto_footer">هشدارها در صورت حرکت قابل توجه قیمت فعال می‌شوند.</string>
+  <string name="price_alerts.set_alert.title">تنظیم هشدار قیمت</string>
+  <string name="swap.min_receive">حداقل دریافت</string>
+  <string name="transfer.freeze.title">فریز کردن</string>
+  <string name="transfer.unfreeze.title">یخ‌زدایی</string>
+  <string name="asset.resources">منابع</string>
+  <string name="stake.resource">منبع</string>
+  <string name="stake.resource.energy">انرژی</string>
+  <string name="stake.resource.bandwidth">پهنای باند</string>
 </resources>

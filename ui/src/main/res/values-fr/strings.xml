@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">Activation</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">Retirer</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Message</string>
@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">L\'adresse %s nécessite une balise de destination / un mémo</string>
   <string name="common.info">Informations</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">Volume 24h</string>
   <string name="perpetual.entry_price">Prix d\'entrée</string>
-  <string name="stake.your_staking">Votre jalonnement</string>
+  <string name="widget.small.name">Prix du Bitcoin</string>
+  <string name="widget.small.description">Suivre le prix du Bitcoin</string>
+  <string name="widget.medium.name">Meilleur prix des cryptomonnaies</string>
+  <string name="widget.medium.description">Suivez les prix des principales crypto-monnaies</string>
+  <string name="wallet.available_balance">Disponible : %s</string>
+  <string name="lock.footer">Protégez l\'accès à cette application sur votre appareil</string>
+  <string name="errors.wallets.limit.title">Limite de portefeuilles atteinte</string>
+  <string name="errors.wallets.limit.description">Vous avez atteint le nombre maximal de portefeuilles autorisés ( %d ). Veuillez supprimer un portefeuille existant pour en ajouter ou en créer un nouveau.</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">Nous avons laissé %s de côté pour que vous puissiez payer les frais de retrait.</string>
+  <string name="price_alerts.auto_footer">Les alertes se déclenchent en cas de mouvements de prix importants.</string>
+  <string name="price_alerts.set_alert.title">Définir une alerte de prix</string>
+  <string name="swap.min_receive">Minimum à recevoir</string>
+  <string name="transfer.freeze.title">Geler</string>
+  <string name="transfer.unfreeze.title">Dégeler</string>
+  <string name="asset.resources">Ressources</string>
+  <string name="stake.resource">Ressource</string>
+  <string name="stake.resource.energy">Énergie</string>
+  <string name="stake.resource.bandwidth">Bande passante</string>
 </resources>

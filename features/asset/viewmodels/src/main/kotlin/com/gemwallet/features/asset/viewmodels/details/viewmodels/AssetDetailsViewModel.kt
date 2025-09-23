@@ -3,7 +3,6 @@ package com.gemwallet.features.asset.viewmodels.details.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.banners.GetBannersCase
 import com.gemwallet.android.cases.banners.GetWalletOperationsEnabled
 import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
@@ -32,7 +31,6 @@ import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIState
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
-import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.StakeChain
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,7 +43,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn

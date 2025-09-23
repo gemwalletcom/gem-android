@@ -112,6 +112,13 @@ sealed class InfoSheetEntity(
         infoUrl = Config().getDocsUrl(DocsUrl.PRICE_IMPACT),
     )
 
+    object Slippage : InfoSheetEntity(
+        icon = R.drawable.ic_splash,
+        title = R.string.swap_slippage,
+        description = R.string.info_slippage_description,
+        infoUrl = Config().getDocsUrl(DocsUrl.SLIPPAGE),
+    )
+
     object AssetStatusSuspiciousInfo : InfoSheetEntity(
         icon = R.drawable.ic_splash,
         title = R.string.asset_verification_suspicious,

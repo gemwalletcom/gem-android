@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">%s address requires a destination tag / memo</string>
   <string name="common.info">Info</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">24h Volume</string>
   <string name="perpetual.entry_price">Entry Price</string>
-  <string name="stake.your_staking">Your Staking</string>
+  <string name="widget.small.name">Bitcoin Price</string>
+  <string name="widget.small.description">Track Bitcoin price</string>
+  <string name="widget.medium.name">Top Crypto Price</string>
+  <string name="widget.medium.description">Track prices of top cryptocurrencies</string>
+  <string name="wallet.available_balance">Available: %s</string>
+  <string name="lock.footer">Protect access to this app on your device</string>
+  <string name="errors.wallets.limit.title">Wallets Limit Reached</string>
+  <string name="errors.wallets.limit.description">You’ve reached the maximum number of wallets allowed (%d). Please remove an existing wallet to add or create a new one.</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">We\'ve left %s out so you can pay for withdrawal fees.</string>
+  <string name="price_alerts.auto_footer">Alerts trigger on significant price moves.</string>
+  <string name="price_alerts.set_alert.title">Set Price Alert</string>
+  <string name="swap.min_receive">Minimum Receive</string>
+  <string name="transfer.freeze.title">Freeze</string>
+  <string name="transfer.unfreeze.title">Unfreeze</string>
+  <string name="asset.resources">Resources</string>
+  <string name="stake.resource">Resource</string>
+  <string name="stake.resource.energy">Energy</string>
+  <string name="stake.resource.bandwidth">Bandwidth</string>
 </resources>

@@ -13,6 +13,7 @@ import com.gemwallet.features.swap.viewmodels.models.SwapState
 import com.gemwallet.features.swap.views.dialogs.PriceImpactWarningDialog
 import com.gemwallet.features.swap.views.dialogs.ProviderListDialog
 import com.gemwallet.features.swap.views.dialogs.SelectSwapAssetDialog
+import com.gemwallet.features.swap.views.dialogs.SwapDetailsDialog
 
 @Composable
 fun SwapScreen(
@@ -30,10 +31,13 @@ fun SwapScreen(
     val priceImpact by viewModel.priceImpact.collectAsStateWithLifecycle()
     val rate by viewModel.rate.collectAsStateWithLifecycle()
     val estimateTime by viewModel.estimateTime.collectAsStateWithLifecycle()
+    val slippage by viewModel.slippage.collectAsStateWithLifecycle()
+    val minReceive by viewModel.minReceive.collectAsStateWithLifecycle()
 
     val selectState = remember { mutableStateOf<SwapItemType?>(null) }
     val isShowProviderSelect = remember { mutableStateOf(false) }
     val isShowPriceImpactAlert = remember { mutableStateOf(false) }
+    val isShowDetails = remember { mutableStateOf(false) }
 
     val onSwap: () -> Unit =  {
         when (swapState) {
@@ -51,16 +55,13 @@ fun SwapScreen(
         payEquivalent = fromEquivalent,
         receiveEquivalent = toEquivalent,
         rate = rate,
-        estimateTime = estimateTime,
-        provider = currentProvider,
-        providers = providers,
-        isShowProviderSelect = isShowProviderSelect,
         isShowPriceImpactAlert = isShowPriceImpactAlert,
         selectState = selectState,
         switchSwap = viewModel::switchSwap,
         payValue = viewModel.payValue,
         receiveValue = viewModel.receiveValue,
         onCancel = onCancel,
+        onDetails = { isShowDetails.value = true },
     ) {
         when (swapState) {
             SwapState.Ready -> viewModel.swap(onConfirm)
@@ -81,6 +82,19 @@ fun SwapScreen(
         payAssetId = pay?.id(),
         receiveAssetId = receive?.id(),
         onSelect = viewModel::onSelect,
+    )
+
+    SwapDetailsDialog(
+        estimateTime = estimateTime,
+        provider = currentProvider,
+        providers = providers,
+        priceImpact = priceImpact,
+        rate = rate,
+        slippage = slippage,
+        minReceive = minReceive,
+        isShowProviderSelect = isShowProviderSelect,
+        isShow = isShowDetails,
+        isUpdated = swapState == SwapState.GetQuote,
     )
 
     ProviderListDialog(

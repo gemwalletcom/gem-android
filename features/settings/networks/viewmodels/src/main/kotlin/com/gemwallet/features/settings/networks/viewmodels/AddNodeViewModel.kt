@@ -8,8 +8,8 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
 import com.gemwallet.android.cases.nodes.AddNodeCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
-import com.gemwallet.features.settings.networks.viewmodels.models.AddNodeUIModel
 import com.gemwallet.android.model.NodeStatus
+import com.gemwallet.features.settings.networks.viewmodels.models.AddNodeUIModel
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeState

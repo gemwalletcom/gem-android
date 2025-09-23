@@ -6,6 +6,7 @@ import com.gemwallet.features.swap.viewmodels.models.PriceImpact
 import com.gemwallet.features.swap.viewmodels.models.PriceImpactType
 import com.gemwallet.features.swap.viewmodels.models.QuoteState
 import com.gemwallet.features.swap.viewmodels.models.QuotesState
+import com.gemwallet.features.swap.viewmodels.models.SlippageModel
 import com.gemwallet.features.swap.viewmodels.models.SwapProviderItem
 import com.gemwallet.features.swap.viewmodels.models.SwapRate
 import com.gemwallet.features.swap.viewmodels.models.payEquivalent
@@ -82,6 +83,10 @@ internal fun calculatePriceImpact(quote: QuoteState): PriceImpact? = calculatePr
     quote.payEquivalent,
     quote.receiveEquivalent,
 )
+
+internal fun getSlippage(quote: QuoteState): SlippageModel? {
+    return SlippageModel(quote.quote.data.slippageBps.toDouble() / 100.0)
+}
 
 internal fun calculatePriceImpact(pay: BigDecimal, receive: BigDecimal): PriceImpact? {
     return calculatePriceImpactCore(pay, receive) { impact ->

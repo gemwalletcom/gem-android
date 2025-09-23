@@ -22,6 +22,7 @@ import com.gemwallet.android.model.toModel
 import com.gemwallet.features.swap.viewmodels.cases.QuoteRequester
 import com.gemwallet.features.swap.viewmodels.cases.calculatePriceImpact
 import com.gemwallet.features.swap.viewmodels.cases.getProviders
+import com.gemwallet.features.swap.viewmodels.cases.getSlippage
 import com.gemwallet.features.swap.viewmodels.cases.tickerFlow
 import com.gemwallet.features.swap.viewmodels.models.QuoteState
 import com.gemwallet.features.swap.viewmodels.models.SwapError
@@ -151,23 +152,44 @@ class SwapViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val toEquivalentFormatted = quote.mapLatest { quote ->
-        quote?.receive?.formatFiat(quote.receiveEquivalent)
-        quote?.receive
-            ?.price?.takeIf { it.price.price > 0 }
-            ?.currency?.format(quote.receiveEquivalent)
-            ?: ""
-    }
-    .flowOn(Dispatchers.Default)
-    .stateIn(viewModelScope, SharingStarted.Eagerly, "")
+            quote?.receive?.formatFiat(quote.receiveEquivalent)
+            quote?.receive
+                ?.price?.takeIf { it.price.price > 0 }
+                ?.currency?.format(quote.receiveEquivalent)
+                ?: ""
+        }
+        .flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     val priceImpact = combine( quote, swapScreenState) { quote, state ->
-        if (quote == null || state != SwapState.Ready) {
-            return@combine null
+            if (quote == null || state != SwapState.Ready) {
+                return@combine null
+            }
+            calculatePriceImpact(quote)
         }
-        calculatePriceImpact(quote)
-    }
-    .flowOn(Dispatchers.Default)
-    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        .flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val minReceive = combine( quote, swapScreenState) { quote, state ->
+            if (quote == null || state != SwapState.Ready) {
+                return@combine null
+            }
+            val minReceive = Crypto(quote.quote.toValue).atomicValue.toBigDecimal().let {
+                it - (it * BigDecimal.valueOf(quote.quote.data.slippageBps.toDouble() / 100.0 / 100.0))
+            }.toBigInteger()
+            quote.receive.asset.format(Crypto(minReceive), 2, dynamicPlace = true)
+        }
+        .flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val slippage = combine( quote, swapScreenState) { quote, state ->
+            if (quote == null || state != SwapState.Ready) {
+                return@combine null
+            }
+            getSlippage(quote)
+        }
+        .flowOn(Dispatchers.Default)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val uiSwapScreenState = swapScreenState
         .onEach {

@@ -24,9 +24,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.gemwallet.features.buy.viewmodels.models.BuyFiatProviderUIModel
-import com.gemwallet.features.buy.viewmodels.models.FiatSceneState
-import com.gemwallet.features.buy.viewmodels.models.FiatSuggestion
 import com.gemwallet.android.model.hasAvailable
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.Container
@@ -46,6 +43,9 @@ import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.features.buy.viewmodels.models.BuyFiatProviderUIModel
+import com.gemwallet.features.buy.viewmodels.models.FiatSceneState
+import com.gemwallet.features.buy.viewmodels.models.FiatSuggestion
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.FiatProvider
 import com.wallet.core.primitives.FiatQuoteType

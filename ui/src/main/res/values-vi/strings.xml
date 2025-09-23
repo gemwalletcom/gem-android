@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">Kích hoạt</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">Rút</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Tin nhắn</string>
@@ -427,7 +427,7 @@
   <string name="info.asset_status.suspicious.description">Mã thông báo đáng ngờ hoặc thư rác được xác định là lừa đảo tiềm ẩn hoặc tài sản có hại. Chúng có thể xuất hiện trong ví của bạn do airdrop, chuyển khoản hoặc nhập thủ công.</string>
   <string name="errors.insufficient_funds">Không đủ tiền</string>
   <string name="info.insufficient_network_fee_balance.title">%s bắt buộc</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Giao dịch này yêu cầu %s phải trả phí mạng cho %s thợ đào, không phải Gem Wallet. Đảm bảo bạn có đủ %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Giao dịch này yêu cầu %s phải trả phí mạng lưới cho %s thợ đào, chứ không phải Gem Wallet. Hãy đảm bảo bạn có đủ %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Số dư không đủ</string>
   <string name="info.insufficient_balance.description">Bạn không có đủ %s để hoàn tất giao dịch này. Vui lòng nạp tiền, nhận hoặc đổi trong ví của bạn và thử lại.</string>
@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">%s địa chỉ yêu cầu thẻ đích / ghi nhớ</string>
   <string name="common.info">Thông tin</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">Khối lượng 24 giờ</string>
   <string name="perpetual.entry_price">Giá nhập cảnh</string>
-  <string name="stake.your_staking">Staking của bạn</string>
+  <string name="widget.small.name">Giá Bitcoin</string>
+  <string name="widget.small.description">Theo dõi giá Bitcoin</string>
+  <string name="widget.medium.name">Giá tiền điện tử hàng đầu</string>
+  <string name="widget.medium.description">Theo dõi giá của các loại tiền điện tử hàng đầu</string>
+  <string name="wallet.available_balance">Có sẵn: %s</string>
+  <string name="lock.footer">Bảo vệ quyền truy cập vào ứng dụng này trên thiết bị của bạn</string>
+  <string name="errors.wallets.limit.title">Đã đạt đến giới hạn ví</string>
+  <string name="errors.wallets.limit.description">Bạn đã đạt đến số lượng ví tối đa được phép ( %d ). Vui lòng xóa ví hiện có để thêm hoặc tạo ví mới.</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">Chúng tôi đã bỏ %s ra để bạn có thể trả phí rút tiền.</string>
+  <string name="price_alerts.auto_footer">Cảnh báo sẽ được kích hoạt khi giá biến động đáng kể.</string>
+  <string name="price_alerts.set_alert.title">Đặt cảnh báo giá</string>
+  <string name="swap.min_receive">Nhận tối thiểu</string>
+  <string name="transfer.freeze.title">Đông cứng</string>
+  <string name="transfer.unfreeze.title">Giải đông</string>
+  <string name="asset.resources">Tài nguyên</string>
+  <string name="stake.resource">Tài nguyên</string>
+  <string name="stake.resource.energy">Năng lượng</string>
+  <string name="stake.resource.bandwidth">Băng thông</string>
 </resources>

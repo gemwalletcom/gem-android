@@ -7,13 +7,13 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.Modifier
-import com.gemwallet.features.buy.viewmodels.models.BuyFiatProviderUIModel
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
+import com.gemwallet.features.buy.viewmodels.models.BuyFiatProviderUIModel
 import com.wallet.core.primitives.FiatProvider
 
 @OptIn(ExperimentalMaterial3Api::class)

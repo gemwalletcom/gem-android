@@ -35,14 +35,14 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.features.settings.currency.presents.components.emojiFlags
 import com.gemwallet.android.features.settings.settings.components.LinkItem
-import com.gemwallet.features.settings.settings.viewmodels.SettingsViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.features.settings.currency.presents.components.emojiFlags
+import com.gemwallet.features.settings.settings.viewmodels.SettingsViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState

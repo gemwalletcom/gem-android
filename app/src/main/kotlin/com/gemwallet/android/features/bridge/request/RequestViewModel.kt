@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.bridge.request
 
+import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -34,6 +35,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
+import uniffi.gemstone.SignDigestType
+import uniffi.gemstone.SignMessage
+import uniffi.gemstone.SignMessageDecoder
 import wallet.core.jni.Hash
 import java.math.BigInteger
 import javax.inject.Inject
@@ -75,7 +79,11 @@ class RequestViewModel @Inject constructor(
             }
             WalletConnectionMethods.eth_sign_typed_data_v4.string,
             WalletConnectionMethods.eth_sign_typed_data.string -> {
-                JSONArray(request.request.params).getString(1)
+                val data = JSONArray(request.request.params).getString(1)
+                val decoder = SignMessageDecoder(SignMessage(SignDigestType.EIP712, data.toByteArray()))
+                Log.d("WALLET_CONNECT", "Preview: ${decoder.plainPreview()}")
+                data
+
             }
             WalletConnectionMethods.personal_sign.string -> {
                 val data = JSONArray(request.request.params).getString(0)
@@ -145,9 +153,12 @@ class RequestViewModel @Inject constructor(
                     WalletConnectionMethods.eth_sign,
                     WalletConnectionMethods.personal_sign -> {
                         val data = state.value.params.toByteArray()
-                        val messagePrefix = "\u0019Ethereum Signed Message:\n${data.size}"
-                        val prefix = messagePrefix.toByteArray()
-                        val param = Hash.keccak256(prefix + data)
+                        val decoder = SignMessageDecoder(SignMessage(SignDigestType.EIP191, data))
+
+//                        val messagePrefix = "\u0019Ethereum Signed Message:\n${data.size}"
+//                        val prefix = messagePrefix.toByteArray()
+//                        val param = Hash.keccak256(prefix + data)
+                        val param = decoder.hash()
                         signClient.signMessage(chain, param, privateKey).toHexString()
                     }
                     WalletConnectionMethods.eth_sign_typed_data,

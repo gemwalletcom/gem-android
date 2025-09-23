@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">Aktywacja</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">Wycofać</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Wiadomość</string>
@@ -427,7 +427,7 @@
   <string name="info.asset_status.suspicious.description">Podejrzane lub spamowe tokeny są identyfikowane jako potencjalne oszustwa lub szkodliwe aktywa. Mogą pojawić się w Twoim portfelu z powodu airdropów, transferów lub ręcznych importów.</string>
   <string name="errors.insufficient_funds">Niewystarczające fundusze</string>
   <string name="info.insufficient_network_fee_balance.title">%s wymagane</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Ta transakcja wymaga %s do pokrycia opłaty sieciowej uiszczanej na rzecz %s górników, a nie Gem Wallet. Upewnij się, że masz wystarczająco dużo %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Ta transakcja wymaga %s do pokrycia opłaty sieciowej płaconej %s górnikom, a nie Gem Wallet. Upewnij się, że masz wystarczającą ilość %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Niewystarczające saldo</string>
   <string name="info.insufficient_balance.description">Nie masz wystarczająco %s aby ukończyć tę transakcję. Doładuj, odbierz lub wymień w swoim portfelu i spróbuj ponownie.</string>
@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">Adres %s wymaga znacznika/notatki docelowej</string>
   <string name="common.info">Informacje</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">Objętość 24h</string>
   <string name="perpetual.entry_price">Cena wejścia</string>
-  <string name="stake.your_staking">Twoje stakowanie</string>
+  <string name="widget.small.name">Cena Bitcoina</string>
+  <string name="widget.small.description">Śledź cenę Bitcoina</string>
+  <string name="widget.medium.name">Najwyższa cena kryptowaluty</string>
+  <string name="widget.medium.description">Śledź ceny najlepszych kryptowalut</string>
+  <string name="wallet.available_balance">Dostępne: %s</string>
+  <string name="lock.footer">Chroń dostęp do tej aplikacji na swoim urządzeniu</string>
+  <string name="errors.wallets.limit.title">Osiągnięto limit portfeli</string>
+  <string name="errors.wallets.limit.description">Osiągnięto maksymalną liczbę dozwolonych portfeli ( %d ). Usuń istniejący portfel, aby dodać lub utworzyć nowy.</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">Pozostawiliśmy %s abyś mógł zapłacić opłaty za wypłatę.</string>
+  <string name="price_alerts.auto_footer">Alerty uruchamiają się w przypadku znacznych wahań cen.</string>
+  <string name="price_alerts.set_alert.title">Ustaw alert cenowy</string>
+  <string name="swap.min_receive">Minimalny odbiór</string>
+  <string name="transfer.freeze.title">Zamrażać</string>
+  <string name="transfer.unfreeze.title">Odmrozić</string>
+  <string name="asset.resources">Zasoby</string>
+  <string name="stake.resource">Ratunek</string>
+  <string name="stake.resource.energy">Energia</string>
+  <string name="stake.resource.bandwidth">Przepustowość łącza</string>
 </resources>

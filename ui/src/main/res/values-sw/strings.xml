@@ -149,7 +149,7 @@
   <string name="stake.validator">Validator</string>
   <string name="stake.validators">Validators</string>
   <string name="stake.apr">APR %s</string>
-  <string name="asset.balances.reserved">Reserved</string>
+  <string name="asset.balances.reserved">Imehifadhiwa</string>
   <string name="wallet.receive.no_memo_required">No memo required</string>
   <string name="wallet.receive.no_destination_tag_required">No destination tag required</string>
   <string name="stake.available_in">Available In</string>
@@ -159,7 +159,7 @@
   <string name="transfer.redelegate.title">Redelegate</string>
   <string name="stake.activating">Activating</string>
   <string name="stake.deactivating">Deactivating</string>
-  <string name="transfer.withdraw.title">Withdraw</string>
+  <string name="transfer.withdraw.title">Ondoa</string>
   <string name="transfer.step">Step %d</string>
   <string name="sign_message.title">Sign Message</string>
   <string name="sign_message.message">Message</string>
@@ -444,7 +444,7 @@
   <string name="errors.scan_transaction.memo_required">%s anwani inahitaji lebo/memo lengwa</string>
   <string name="common.info">Habari</string>
   <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw"></string>
+  <string name="wallet.withdraw">Withdraw</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -464,5 +464,25 @@
   <string name="perpetual.short">Short</string>
   <string name="markets.daily_volume">Sauti ya 24h</string>
   <string name="perpetual.entry_price">Bei ya Kuingia</string>
-  <string name="stake.your_staking">Staking yako</string>
+  <string name="widget.small.name">Bei ya Bitcoin</string>
+  <string name="widget.small.description">Fuatilia bei ya Bitcoin</string>
+  <string name="widget.medium.name">Bei ya Juu ya Crypto</string>
+  <string name="widget.medium.description">Fuatilia bei za sarafu-fiche za juu</string>
+  <string name="wallet.available_balance">Inapatikana: %s</string>
+  <string name="lock.footer">Linda ufikiaji wa programu hii kwenye kifaa chako</string>
+  <string name="errors.wallets.limit.title">Kikomo cha Wallet Kimefikiwa</string>
+  <string name="errors.wallets.limit.description">Umefikia idadi ya juu zaidi ya pochi inayoruhusiwa ( %d ). Tafadhali ondoa pochi iliyopo ili kuongeza au kuunda mpya.</string>
+  <string name="banner.asset_status.title">Suspicious Asset</string>
+  <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
+  <string name="transfer.maximum_amount">Maximum Amount is %s</string>
+  <string name="transfer.reserved_fees">Tumeacha %s nje ili uweze kulipia ada za kujiondoa.</string>
+  <string name="price_alerts.auto_footer">Arifa huanzisha hatua muhimu za bei.</string>
+  <string name="price_alerts.set_alert.title">Weka Arifa ya Bei</string>
+  <string name="swap.min_receive">Kiasi cha chini cha kupokea</string>
+  <string name="transfer.freeze.title">Kuganda</string>
+  <string name="transfer.unfreeze.title">Ondoa kuganda</string>
+  <string name="asset.resources">Rasilimali</string>
+  <string name="stake.resource">Rasilimali</string>
+  <string name="stake.resource.energy">Nishati</string>
+  <string name="stake.resource.bandwidth">Bandwidth</string>
 </resources>

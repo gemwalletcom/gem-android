@@ -34,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ext.asset
-import com.gemwallet.features.settings.networks.viewmodels.models.NetworksUIState
 import com.gemwallet.android.model.NodeStatus
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
@@ -42,6 +41,7 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.padding8
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.features.settings.networks.viewmodels.models.NetworksUIState
 import com.wallet.core.primitives.Node
 
 @Composable

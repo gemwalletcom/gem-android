@@ -13,9 +13,9 @@ import com.gemwallet.android.cases.nodes.SetBlockExplorerCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
 import com.gemwallet.android.data.repositoreis.chains.ChainInfoRepository
 import com.gemwallet.android.ext.filter
+import com.gemwallet.android.model.NodeStatus
 import com.gemwallet.features.settings.networks.viewmodels.models.AddSourceType
 import com.gemwallet.features.settings.networks.viewmodels.models.NetworksUIState
-import com.gemwallet.android.model.NodeStatus
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Node
 import dagger.hilt.android.lifecycle.HiltViewModel

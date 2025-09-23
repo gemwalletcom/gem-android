@@ -23,11 +23,11 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.features.add_asset.viewmodels.AddressChainViewModel
 import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.fields.TransferTextFieldActions
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.theme.space4
+import com.gemwallet.features.add_asset.viewmodels.AddressChainViewModel
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NameRecord
 
