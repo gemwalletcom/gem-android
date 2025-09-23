@@ -244,7 +244,9 @@ private fun Success(
                 )
             }
         ) {
-            LazyColumn {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
                 head(uiState, onTransfer, onReceive, onBuy, onSwap)
                 banner(uiState.assetInfo, onStake, onConfirm)
                 status(uiState.asset, uiState.assetInfo.rank)
