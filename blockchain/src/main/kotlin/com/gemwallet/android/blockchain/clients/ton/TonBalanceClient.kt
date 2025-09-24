@@ -5,11 +5,6 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.mapNotNull
-import kotlinx.coroutines.flow.toList
 import java.math.BigInteger
 
 class TonBalanceClient(
@@ -23,20 +18,12 @@ class TonBalanceClient(
     }
 
     override suspend fun getTokenBalances(chain: Chain, address: String, tokens: List<Asset>): List<AssetBalance> {
-        return tokens.asFlow()
-            .mapNotNull {
-                val tokenId = it.id.tokenId ?: return@mapNotNull null
-                val jettonAddress = jettonAddress(rpcClient, tokenId, address) ?: return@mapNotNull null
-                val isActive = rpcClient.addressState(jettonAddress).getOrNull()?.result == "active"
-
-                if (isActive) {
-                    AssetBalance.create(it, available = tokenBalance(jettonAddress).toString())
-                } else {
-                    AssetBalance.create(it)
-                }
-            }
-            .flowOn(Dispatchers.IO)
-            .toList()
+        val jettonWallets = rpcClient.getJettonWallets(address)
+        return jettonWallets.jetton_wallets.mapNotNull { wallet ->
+            val jettonTokenId = uniffi.gemstone.tonHexToBase64Address(wallet.jetton)
+            val tokenAsset = tokens.firstOrNull { it.id.tokenId == jettonTokenId } ?: return@mapNotNull null
+            AssetBalance.create(tokenAsset, available = wallet.balance)
+        }
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

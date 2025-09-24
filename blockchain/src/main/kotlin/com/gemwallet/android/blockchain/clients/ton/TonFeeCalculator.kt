@@ -19,9 +19,11 @@ class TonFeeCalculator(
 
     suspend fun calculateToken(assetId: AssetId, destinationAddress: String, memo: String?): Fee = withContext(Dispatchers.IO) {
         val tokenId = assetId.tokenId!!
-        val jetonAddress = jettonAddress(rpcClient, tokenId, destinationAddress)
-            ?: throw Exception("can't get jetton address")
-        val state = rpcClient.addressState(jetonAddress).getOrNull()?.result == "active"
+        val hexTokenId = uniffi.gemstone.tonBase64ToHexAddress(tokenId)
+        val jetonAddress = rpcClient.getJettonWallets(destinationAddress)
+            .jetton_wallets.firstOrNull { it.jetton == hexTokenId }?.address
+
+        val state = jetonAddress?.let { true } ?: false
         val tokenAccountFee = if (state) {
             if (memo.isNullOrEmpty()) {
                 BigInteger.valueOf(100_000_000)

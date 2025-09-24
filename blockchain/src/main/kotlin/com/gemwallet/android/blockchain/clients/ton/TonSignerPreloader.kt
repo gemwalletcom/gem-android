@@ -32,12 +32,20 @@ class TonSignerPreloader(
     }
 
     override suspend fun preloadTokenTransfer(params: ConfirmParams.TransferParams.Token): SignerParams = withContext(Dispatchers.IO) {
+        val hexTokenId = uniffi.gemstone.tonBase64ToHexAddress(params.assetId.tokenId ?: throw IllegalArgumentException("No token id"))
+        val getJettonAddress = async { rpcClient.getJettonWallets(params.from.address) }
+
+
+            //uniffi.gemstone.tonBase64ToHexAddress(params.assetId.tokenId!!)
+//            async { jettonAddress(rpcClient, params.assetId.tokenId!!, params.from.address) }
         val getWalletInfo = async { rpcClient.walletInfo(params.from.address).getOrNull() }
-        val getJettonAddress = async { jettonAddress(rpcClient, params.assetId.tokenId!!, params.from.address) }
         val getFee = async { feeCalculator.calculateToken(params.assetId, params.destination().address, params.memo()) }
 
         val seqno = getWalletInfo.await()?.result?.seqno ?: 0
-        val jettonAddress = getJettonAddress.await() ?: throw Exception("can't get jetton address. check internet.")
+        val jettonWallets = getJettonAddress.await()
+        val jettonAddress = jettonWallets.jetton_wallets.firstOrNull { it.jetton.lowercase() == hexTokenId }?.address
+            ?: throw IllegalArgumentException("Not load jetton wallet")
+
         val fee = getFee.await()
 
         SignerParams(

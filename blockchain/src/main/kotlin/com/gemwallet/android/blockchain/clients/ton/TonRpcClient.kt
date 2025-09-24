@@ -1,6 +1,5 @@
 package com.gemwallet.android.blockchain.clients.ton
 
-import com.gemwallet.android.blockchain.rpc.model.JSONRpcRequest
 import com.google.gson.JsonDeserializationContext
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
@@ -11,6 +10,7 @@ import com.wallet.core.blockchain.ton.TonMasterchainInfo
 import com.wallet.core.blockchain.ton.TonMessageTransactions
 import com.wallet.core.blockchain.ton.TonResult
 import com.wallet.core.blockchain.ton.TonWalletInfo
+import kotlinx.serialization.SerialName
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -30,17 +30,14 @@ interface TonRpcClient {
     @POST("/api/v2/sendBocReturnHash")
     suspend fun broadcast(@Body boc: Boc): Result<TonResult<TonBroadcastTransaction>>
 
-//    @GET("/api/index/v1/getTransactionsByInMessageHash")
-//    suspend fun transaction(@Query("msg_hash") hash: String): Result<List<TonTransactionMessage>>
-
     @GET("/api/v3/transactionsByMessage")
     suspend fun transaction(@Query("msg_hash") hash: String): Result<TonMessageTransactions>
 
     @GET("/api/v2/getTokenData")
     suspend fun tokenData(@Query("address") address: String): Result<TonResult<TonJettonToken>>
 
-    @POST("/api/v2/jsonRPC")
-    suspend fun getJetonAddress(@Body request: JSONRpcRequest<Any>): Result<JetonAddress?>
+    @GET("/api/v3/jetton/wallets?limit=100&offset=0")
+    suspend fun getJettonWallets(@Query("owner_address") ownerAddress: String): JettonWalletsResponse
 
     @GET("/api/v2/getTokenData")
     suspend fun tokenBalance(@Query("address") address: String): Result<TonResult<TonJettonBalance>>
@@ -58,6 +55,16 @@ interface TonRpcClient {
     data class JetonAddress(
         val b64: String,
         val len: Long,
+    )
+
+    data class JettonWalletsResponse(
+        val jetton_wallets: List<JettonWallet>
+    )
+
+    data class JettonWallet(
+        val address: String,
+        @SerialName("deserialize_biguint_from_str") val balance: String,
+        val jetton: String,
     )
 
     class JetonAddressSerializer : JsonDeserializer<JetonAddress?> {
