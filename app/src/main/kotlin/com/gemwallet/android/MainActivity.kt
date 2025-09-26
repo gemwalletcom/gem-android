@@ -5,6 +5,7 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.makeText
 import androidx.activity.compose.setContent
@@ -45,11 +46,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.compose.rememberNavController
+import com.gemwallet.android.cases.parseNotificatrionData
 import com.gemwallet.android.cases.security.AuthRequester
 import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
@@ -65,9 +68,12 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.WalletApp
 import com.gemwallet.android.ui.components.RootWarningDialog
 import com.gemwallet.android.ui.components.isDeviceRooted
+import com.gemwallet.android.ui.navigation.routes.assetRouteUri
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.wallet.core.primitives.PushNotificationAsset
+import com.wallet.core.primitives.PushNotificationTransaction
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -106,6 +112,8 @@ class MainActivity : FragmentActivity(), AuthRequester {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         prepareBiometricAuth()
+
+        viewModel.handleIntent(this@MainActivity.intent)
 
         setContent {
             RootWarning()
@@ -420,10 +428,30 @@ class MainViewModel @Inject constructor(
     }
 
     fun handleIntent(intent: Intent) {
+        Log.d("NOTIFICATIONS", "Intent extra: ${intent.extras}")
         viewModelScope.launch(Dispatchers.IO) {
-            if (intent.hasExtra("walletIndex")) {
+            val intent = if (intent.hasExtra("walletIndex")) {
                 val walletIndex = intent.getIntExtra("walletIndex", -1)
                 onWallet(walletIndex)
+                intent
+            } else if (intent.extras != null) {
+                val data = parseNotificatrionData(intent.getStringExtra("type"), intent.getStringExtra("data"))
+                when (data) {
+                    is PushNotificationAsset -> {
+                        Intent().apply {
+                            setData("$assetRouteUri/${data.assetId}".toUri())
+                        }
+                    }
+                    is PushNotificationTransaction -> {
+                        onWallet(data.walletIndex)
+                        Intent().apply {
+                            setData("$assetRouteUri/${data.assetId}".toUri())
+                        }
+                    }
+                    else -> intent
+                }
+            } else {
+                intent
             }
 
             val data = intent.data ?: return@launch
@@ -431,7 +459,6 @@ class MainViewModel @Inject constructor(
             when (data.scheme) {
                 "wc" -> addPairing(data.toString())
                 else -> this@MainViewModel.intent.update { intent }
-
             }
         }
     }
