@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.bridge.request
 
-import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -38,7 +37,6 @@ import org.json.JSONObject
 import uniffi.gemstone.SignDigestType
 import uniffi.gemstone.SignMessage
 import uniffi.gemstone.SignMessageDecoder
-import wallet.core.jni.Hash
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -80,14 +78,15 @@ class RequestViewModel @Inject constructor(
             WalletConnectionMethods.eth_sign_typed_data_v4.string,
             WalletConnectionMethods.eth_sign_typed_data.string -> {
                 val data = JSONArray(request.request.params).getString(1)
-                val decoder = SignMessageDecoder(SignMessage(SignDigestType.EIP712, data.toByteArray()))
-                Log.d("WALLET_CONNECT", "Preview: ${decoder.plainPreview()}")
                 data
-
             }
             WalletConnectionMethods.personal_sign.string -> {
                 val data = JSONArray(request.request.params).getString(0)
-                String(data.decodeHex()) // TODO: Crashed with IllegalArgumentException
+                try {
+                    String(data.decodeHex())
+                } catch (_: Throwable) {
+                    data
+                }
             }
             WalletConnectionMethods.eth_send_transaction.string -> request.request.params
             WalletConnectionMethods.solana_sign_and_send_transaction.string,
@@ -96,18 +95,7 @@ class RequestViewModel @Inject constructor(
                 params
             }
             WalletConnectionMethods.wallet_switch_ethereum_chain.string -> {
-                WalletKit.respondSessionRequest(
-                    params = Wallet.Params.SessionRequestResponse(
-                        sessionTopic = request.topic,
-                        jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
-                            request.request.id,
-                            null,
-                        )
-                    ),
-                    onSuccess = {  },
-                    onError = { error -> }
-                )
-                onCancel()
+                onSwitch(request, onCancel)
                 return@launch
             }
             else -> {
@@ -135,6 +123,21 @@ class RequestViewModel @Inject constructor(
                 onError = { error -> state.update { it.copy(error = error.throwable.message ?: "Can't sent data to WalletConnect") } }
             )
         }
+    }
+
+    fun onSwitch(request: Wallet.Model.SessionRequest, onCancel: () -> Unit) {
+        WalletKit.respondSessionRequest(
+            params = Wallet.Params.SessionRequestResponse(
+                sessionTopic = request.topic,
+                jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
+                    request.request.id,
+                    null,
+                )
+            ),
+            onSuccess = {  },
+            onError = { error -> }
+        )
+        onCancel()
     }
 
     fun onSign() {
@@ -240,7 +243,6 @@ private data class RequestViewModelState(
             WalletConnectionMethods.eth_sign_typed_data_v4.string,
             WalletConnectionMethods.solana_sign_message.string,
             WalletConnectionMethods.eth_sign_typed_data.string -> RequestSceneState.SignMessage(
-                account = account,
                 walletName = wallet.name,
                 chain = chain,
                 method = sessionRequest.request.method,
@@ -302,7 +304,6 @@ sealed interface RequestSceneState {
         val chain: Chain,
         val method: String,
         val walletName: String,
-        val account: Account,
         val session: SessionUI,
         val params: String,
     ) : RequestSceneState
