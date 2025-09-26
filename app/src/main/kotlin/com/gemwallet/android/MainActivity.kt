@@ -52,7 +52,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.compose.rememberNavController
-import com.gemwallet.android.cases.parseNotificatrionData
+import com.gemwallet.android.cases.parseNotificationData
 import com.gemwallet.android.cases.security.AuthRequester
 import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
@@ -62,6 +62,7 @@ import com.gemwallet.android.features.bridge.proposal.ProposalScene
 import com.gemwallet.android.features.bridge.request.RequestScene
 import com.gemwallet.android.model.AuthRequest
 import com.gemwallet.android.model.AuthState
+import com.gemwallet.android.model.PushNotificationData
 import com.gemwallet.android.services.CheckAccountsService
 import com.gemwallet.android.services.SyncService
 import com.gemwallet.android.ui.R
@@ -72,8 +73,6 @@ import com.gemwallet.android.ui.navigation.routes.assetRouteUri
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
-import com.wallet.core.primitives.PushNotificationAsset
-import com.wallet.core.primitives.PushNotificationTransaction
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -423,20 +422,20 @@ class MainViewModel @Inject constructor(
                 onWallet(walletIndex)
                 intent
             } else if (intent.extras != null) {
-                val data = parseNotificatrionData(intent.getStringExtra("type"), intent.getStringExtra("data"))
+                val data = parseNotificationData(intent.getStringExtra("type"), intent.getStringExtra("data"))
                 when (data) {
-                    is PushNotificationAsset -> {
-                        Intent().apply {
-                            setData("$assetRouteUri/${data.assetId}".toUri())
-                        }
+                    is PushNotificationData.Asset -> Intent().apply {
+                        setData("$assetRouteUri/${data.assetId}".toUri())
                     }
-                    is PushNotificationTransaction -> {
+                    is PushNotificationData.Transaction -> {
                         onWallet(data.walletIndex)
                         Intent().apply {
                             setData("$assetRouteUri/${data.assetId}".toUri())
                         }
                     }
-                    else -> intent
+                    is PushNotificationData.PushNotificationPayloadType,
+                    is PushNotificationData.Swap,
+                    null -> intent
                 }
             } else {
                 intent

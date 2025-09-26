@@ -3,8 +3,9 @@ package com.gemwallet.android.flavors
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.SetPushToken
 import com.gemwallet.android.cases.device.SyncDeviceInfo
-import com.gemwallet.android.cases.parseNotificatrionData
+import com.gemwallet.android.cases.parseNotificationData
 import com.gemwallet.android.cases.pushes.ShowSystemNotification
+import com.gemwallet.android.model.PushNotificationData
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.wallet.core.primitives.PushNotificationAsset
@@ -36,14 +37,16 @@ class FCM : FirebaseMessagingService() {
         scope.launch {
             val rawType = message.data["type"]
             val rawData = message.data["data"]
-            val data = parseNotificatrionData(rawType, rawData)
+            val data = parseNotificationData(rawType, rawData)
             val title = message.notification?.title
             val subtitle = message.notification?.body
             val channelId = message.data["type"]
             when (data) {
-                is PushNotificationAsset -> showSystemNotification.showNotification(title, subtitle, channelId, data)
-                is PushNotificationTransaction -> showSystemNotification.showNotification(title, subtitle, channelId, data)
-                else -> showSystemNotification.showNotification(title, subtitle, channelId)
+                is PushNotificationData.Transaction -> showSystemNotification.showNotification(title, subtitle, channelId, data)
+                is PushNotificationData.Asset -> showSystemNotification.showNotification(title, subtitle, channelId, data)
+                is PushNotificationData.PushNotificationPayloadType,
+                is PushNotificationData.Swap,
+                null -> showSystemNotification.showNotification(title, subtitle, channelId)
             }
         }
     }
