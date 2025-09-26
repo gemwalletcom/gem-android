@@ -1,7 +1,7 @@
 package com.gemwallet.android.blockchain.clients.Stellar
 
+import com.gemwallet.android.blockchain.clients.stellar.StellarChainData
 import com.gemwallet.android.blockchain.clients.stellar.StellarSignClient
-import com.gemwallet.android.blockchain.clients.stellar.StellarSignPreloadClient
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
 import com.gemwallet.android.ext.asset
@@ -42,18 +42,16 @@ class TestStellarSigner {
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
                 ),
-                chainData = StellarSignPreloadClient.StellarChainData(
-                    sequence = 1,
-                    fees = listOf(
-                        Fee(
-                            priority = FeePriority.Normal,
-                            feeAssetId = AssetId(Chain.Stellar),
-                            amount = BigInteger.TEN
-                        ),
-                    ),
+                chainData = StellarChainData(
+                    sequence = 1UL,
+                    isDestinationAddressExist = true,
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                FeePriority.Normal,
+                Fee(
+                    priority = FeePriority.Normal,
+                    feeAssetId = AssetId(Chain.Stellar),
+                    amount = BigInteger.TEN
+                ),
                 privateKey.data(),
             )
         }

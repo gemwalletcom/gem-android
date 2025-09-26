@@ -84,6 +84,7 @@ class BannersRepository(
                 BannerEvent.EnableNotifications,
                 BannerEvent.AccountBlockedMultiSignature -> BannerState.Active
                 BannerEvent.ActivateAsset -> BannerState.AlwaysActive
+                BannerEvent.SuspiciousAsset -> throw IllegalArgumentException() // TODO: HyperCore
             },
             event = event,
         )

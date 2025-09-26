@@ -99,6 +99,8 @@ enum class Chain(val string: String) {
 	Unichain("unichain"),
 	@SerialName("hyperliquid")
 	Hyperliquid("hyperliquid"),
+	@SerialName("hypercore")
+	HyperCore("hypercore"),
 	@SerialName("monad")
 	Monad("monad"),
 }

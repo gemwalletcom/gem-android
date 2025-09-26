@@ -271,17 +271,22 @@ class SwapViewModel @Inject constructor(
         return ConfirmParams.SwapParams(
             from = quote.pay.owner!!,
             fromAsset = quote.pay.asset,
-            toAssetId = quote.receive.id(),
+            toAsset = quote.receive.asset,
             fromAmount = Crypto(fromAmount, quote.pay.asset.decimals).atomicValue,
             toAmount = BigInteger(quote.quote.toValue),
             swapData = swapData.data,
             provider = quote.quote.data.provider.protocol,
+            providerName = quote.quote.data.provider.name,
             protocolId = quote.quote.data.provider.protocolId,
             to = swapData.to,
             value = swapData.value,
             approval = swapData.approval?.toModel(),
             gasLimit = swapData.gasLimit?.toBigIntegerOrNull(),
-            maxFrom = BigInteger(quote.pay.balance.balance.available) == Crypto(fromAmount, quote.pay.asset.decimals).atomicValue
+            maxFrom = BigInteger(quote.pay.balance.balance.available) == Crypto(fromAmount, quote.pay.asset.decimals).atomicValue,
+            etaInSeconds = quote.quote.etaInSeconds,
+            slippageBps = quote.quote.data.slippageBps,
+            walletAddress = quote.pay.owner?.address!!,
+
         )
     }
 

@@ -42,22 +42,21 @@ class TestTronSigner {
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
                 ),
-                chainData = TronSignerPreloader.TronChainData(
-                    number = 69501435,
-                    version = 31,
+                chainData = TronChainData(
+                    blockNumber = 69501435UL,
+                    blockVersion = 31UL,
                     txTrieRoot = "fe35cfe51299075978398390271d3f09bdc34e6f43fe8b76eb469314b32ceaff",
                     witnessAddress = "41456798cb4ab28109d8cc643cd7da7bd6069ceae9",
                     parentHash = "00000000042481fa52ef745a31aa66fc2acf8d156b6116bc5b3ede2aebbb894c",
-                    timestamp = 1739156280000,
+                    blockTimestamp = 1739156280000UL,
                     votes = emptyMap(),
-                    fee = Fee(
-                        priority = FeePriority.Normal,
-                        feeAssetId = AssetId(Chain.Tron),
-                        amount = BigInteger.TEN
-                    ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                FeePriority.Normal,
+                fee = Fee(
+                    priority = FeePriority.Normal,
+                    feeAssetId = AssetId(Chain.Tron),
+                    amount = BigInteger.TEN
+                ),
                 privateKey.data(),
             )
         }
@@ -96,22 +95,21 @@ class TestTronSigner {
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
                 ),
-                chainData = TronSignerPreloader.TronChainData(
-                    number = 69501435,
-                    version = 31,
+                chainData = TronChainData(
+                    blockNumber = 69501435UL,
+                    blockVersion = 31UL,
                     txTrieRoot = "fe35cfe51299075978398390271d3f09bdc34e6f43fe8b76eb469314b32ceaff",
                     witnessAddress = "41456798cb4ab28109d8cc643cd7da7bd6069ceae9",
                     parentHash = "00000000042481fa52ef745a31aa66fc2acf8d156b6116bc5b3ede2aebbb894c",
-                    timestamp = 1739156280000,
+                    blockTimestamp = 1739156280000UL,
                     votes = emptyMap(),
-                    fee = Fee(
-                        priority = FeePriority.Normal,
-                        feeAssetId = AssetId(Chain.Tron),
-                        amount = BigInteger.TEN
-                    ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                FeePriority.Normal,
+                fee = Fee(
+                    priority = FeePriority.Normal,
+                    feeAssetId = AssetId(Chain.Tron),
+                    amount = BigInteger.TEN
+                ),
                 privateKey.data(),
             )
         }
@@ -154,25 +152,24 @@ class TestTronSigner {
                     BigInteger.valueOf(10_000),
                     validatorId = "TCEo1hMAdaJrQmvnGTCcGT2LqrGU4N7Jqf",
                 ),
-                chainData = TronSignerPreloader.TronChainData(
-                    number = 69501435,
-                    version = 31,
+                chainData = TronChainData(
+                    blockNumber = 69501435UL,
+                    blockVersion = 31UL,
                     txTrieRoot = "fe35cfe51299075978398390271d3f09bdc34e6f43fe8b76eb469314b32ceaff",
                     witnessAddress = "41456798cb4ab28109d8cc643cd7da7bd6069ceae9",
                     parentHash = "00000000042481fa52ef745a31aa66fc2acf8d156b6116bc5b3ede2aebbb894c",
-                    timestamp = 1739156280000,
+                    blockTimestamp = 1739156280000UL,
                     votes = mapOf(
-                        "TLyqzVGLV1srkB7dToTAEqgDSfPtXRJZYH" to 1,
-                        "TCEo1hMAdaJrQmvnGTCcGT2LqrGU4N7Jqf" to 1,
-                    ),
-                    fee = Fee(
-                        priority = FeePriority.Normal,
-                        feeAssetId = AssetId(Chain.Tron),
-                        amount = BigInteger.TEN
+                        "TLyqzVGLV1srkB7dToTAEqgDSfPtXRJZYH" to 1UL,
+                        "TCEo1hMAdaJrQmvnGTCcGT2LqrGU4N7Jqf" to 1UL,
                     ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                FeePriority.Normal,
+                fee = Fee(
+                    priority = FeePriority.Normal,
+                    feeAssetId = AssetId(Chain.Tron),
+                    amount = BigInteger.TEN
+                ),
                 privateKey.data(),
             )
         }

@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.repositoreis.bridge
 
+import com.gemwallet.android.ext.toChain
 import com.gemwallet.android.ext.toChainType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
@@ -10,23 +11,23 @@ enum class ChainNamespace(val string: String, val methods: List<WalletConnection
     Eip155(
         "eip155",
         listOf(
-            WalletConnectionMethods.eth_chain_id,
-            WalletConnectionMethods.eth_sign,
-            WalletConnectionMethods.personal_sign,
-            WalletConnectionMethods.eth_sign_typed_data,
-            WalletConnectionMethods.eth_sign_typed_data_v4,
-            WalletConnectionMethods.eth_sign_transaction,
-            WalletConnectionMethods.eth_send_transaction,
-            WalletConnectionMethods.wallet_add_ethereum_chain,
-            WalletConnectionMethods.wallet_switch_ethereum_chain,
-            WalletConnectionMethods.eth_send_raw_transaction,
+            WalletConnectionMethods.EthChainId,
+            WalletConnectionMethods.EthSign,
+            WalletConnectionMethods.PersonalSign,
+            WalletConnectionMethods.EthSignTypedData,
+            WalletConnectionMethods.EthSignTypedDataV4,
+            WalletConnectionMethods.EthSendTransaction,
+            WalletConnectionMethods.EthSendTransaction,
+            WalletConnectionMethods.WalletAddEthereumChain,
+            WalletConnectionMethods.WalletSwitchEthereumChain,
+            WalletConnectionMethods.EthSendRawTransaction,
         )
     ),
     Solana(
         Chain.Solana.string,
         listOf(
-            WalletConnectionMethods.solana_sign_transaction,
-            WalletConnectionMethods.solana_sign_message,
+            WalletConnectionMethods.SolanaSignTransaction,
+            WalletConnectionMethods.SolanaSignMessage,
         )
     )
 }
@@ -50,9 +51,7 @@ fun Chain.getReference(): String? {
 fun Chain.Companion.getNamespace(walletConnectChainId: String?): Chain? { // TODO: Use Reown call for parse
     val chainId = walletConnectChainId?.split(":")
     return if (!chainId.isNullOrEmpty() && chainId.size >= 2) {
-        WalletConnectNamespace().getChain(chainId[0], chainId[1])?.let { namespace ->
-            Chain.entries.firstOrNull { it.string == namespace }
-        }
+        WalletConnectNamespace().getChain(chainId[0], chainId[1])?.toChain()
     } else {
         null
     }

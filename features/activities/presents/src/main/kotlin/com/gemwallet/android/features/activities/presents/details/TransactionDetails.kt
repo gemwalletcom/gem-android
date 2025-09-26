@@ -111,8 +111,13 @@ private fun LazyListScope.transactionItemHead(model: TxDetailsScreenModel) {
                     TransactionType.TransferNFT,
                     TransactionType.Transfer -> model.cryptoAmount
                     TransactionType.AssetActivation,
+                    TransactionType.SmartContractCall,
+                    TransactionType.PerpetualOpenPosition,
+                    TransactionType.PerpetualClosePosition,
+                    TransactionType.StakeFreeze,
+                    TransactionType.StakeUnfreeze,
                     TransactionType.TokenApproval -> model.asset.symbol
-                    TransactionType.SmartContractCall -> TODO()
+                    
                 },
                 equivalent = when (model.type) {
                     TransactionType.StakeDelegate,
@@ -124,8 +129,13 @@ private fun LazyListScope.transactionItemHead(model: TxDetailsScreenModel) {
                     TransactionType.Transfer -> model.fiatAmount
                     TransactionType.AssetActivation,
                     TransactionType.TransferNFT,
+                    TransactionType.SmartContractCall,
+                    TransactionType.PerpetualOpenPosition,
+                    TransactionType.PerpetualClosePosition,
+                    TransactionType.StakeFreeze,
+                    TransactionType.StakeUnfreeze,
                     TransactionType.TokenApproval -> null
-                    TransactionType.SmartContractCall -> TODO()
+
                 },
             )
         }
@@ -181,6 +191,10 @@ private fun LazyListScope.transactionRecipientItem(model: TxDetailsScreenModel) 
         TransactionType.StakeRedelegate,
         TransactionType.AssetActivation,
         TransactionType.SmartContractCall,
+        TransactionType.PerpetualOpenPosition,
+        TransactionType.PerpetualClosePosition,
+        TransactionType.StakeFreeze,
+        TransactionType.StakeUnfreeze,
         TransactionType.StakeWithdraw -> return
 
         TransactionType.Transfer,

@@ -4,9 +4,9 @@ import com.gemwallet.android.serializer.DateSerializer
 import com.gemwallet.android.serializer.JsonAsStringSerializer
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.TransactionDirection
-import com.wallet.core.primitives.TransactionInput
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
+import com.wallet.core.primitives.TransactionUtxoInput
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -26,10 +26,9 @@ data class Transaction (
     val value: String,
     val memo: String? = null,
     val direction: TransactionDirection,
-    val utxoInputs: List<TransactionInput>,
-    val utxoOutputs: List<TransactionInput>,
-    @Serializable(with = JsonAsStringSerializer::class)
-    val metadata: String? = null,
+    val utxoInputs: List<TransactionUtxoInput>,
+    val utxoOutputs: List<TransactionUtxoInput>,
+    @Serializable(with = JsonAsStringSerializer::class) val metadata: String? = null,
     @Serializable(with = DateSerializer::class)
     val createdAt: Long,
 )

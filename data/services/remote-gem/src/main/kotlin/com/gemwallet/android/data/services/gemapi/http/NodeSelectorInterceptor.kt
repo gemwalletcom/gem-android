@@ -4,6 +4,7 @@ import android.util.Log
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.cases.nodes.GetNodesCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
+import com.gemwallet.android.ext.toChain
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.runBlocking
@@ -21,18 +22,8 @@ class NodeSelectorInterceptor(
     
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalRequest = chain.request()
-        val blockchain = Chain.entries.firstOrNull { it.string == originalRequest.url.host }
-            ?: return chain.proceed(originalRequest)
-        val currentNode = getCurrentNodeCase.getCurrentNode(blockchain)
-        val url = if (currentNode == null) {
-            val node = runBlocking { getNodesCase.getNodes(blockchain).firstOrNull()?.firstOrNull() }
-            if (node != null) {
-                setCurrentNodeCase.setCurrentNode(blockchain, node)
-            }
-            node
-        } else {
-            currentNode
-        }?.url
+        val blockchain = originalRequest.url.host.toChain() ?: return chain.proceed(originalRequest)
+        val url = blockchain.getNodeUrl(getNodesCase, getCurrentNodeCase, setCurrentNodeCase)
 
         if (url != null) {
             val httpUrl = url.toHttpUrlOrNull()!!

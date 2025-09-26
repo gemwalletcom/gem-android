@@ -3,7 +3,6 @@ package com.gemwallet.android.blockchain.clients.xrp
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.Fee
@@ -40,19 +39,16 @@ class TestXrpSigner {
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
                 ),
-                chainData = XrpSignerPreloader.XrpChainData(
+                chainData = XrpChainData(
                     sequence = 1,
                     blockNumber = 1,
-                    fees = listOf(
-                        Fee(
-                            priority = FeePriority.Normal,
-                            feeAssetId = AssetId(Chain.Xrp),
-                            amount = BigInteger.TEN,
-                        )
-                    ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                FeePriority.Normal,
+                fee = Fee(
+                    priority = FeePriority.Normal,
+                    feeAssetId = AssetId(Chain.Xrp),
+                    amount = BigInteger.TEN,
+                ),
                 privateKey.data(),
             )
         }
@@ -63,7 +59,7 @@ class TestXrpSigner {
                     "d5b18dd75818a07d4b4ed5846b07604e48607789d393691334f59d3761f6874c02205ac35c8b" +
                     "cadb9fdbd81022f3629bfa0aac0b80afa655628c8ddbfee030f1bb178114dd10693e412bff78" +
                     "9ebf6baa9714036c9ae214bb8314dd10693e412bff789ebf6baa9714036c9ae214bb",
-            sign.first().toHexString()
+            String(sign.first())
         )
     }
 }

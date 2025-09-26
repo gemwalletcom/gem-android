@@ -42,17 +42,16 @@ class TestTonSigner {
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
                 ),
-                chainData = TonSignerPreloader.TonChainData(
-                    sequence = 1,
-                    fee = Fee(
-                        priority = FeePriority.Normal,
-                        feeAssetId = AssetId(Chain.Ton),
-                        amount = BigInteger.TEN
-                    ),
+                chainData = TonChainData(
+                    sequence = 1UL,
                     expireAt = 1000000000,
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                FeePriority.Normal,
+                fee = Fee(
+                    priority = FeePriority.Normal,
+                    feeAssetId = AssetId(Chain.Ton),
+                    amount = BigInteger.TEN
+                ),
                 privateKey.data(),
             )
         }
@@ -81,18 +80,17 @@ class TestTonSigner {
                     BigInteger.valueOf(10_000),
                     DestinationAddress(from),
                 ),
-                chainData = TonSignerPreloader.TonChainData(
-                    sequence = 1,
+                chainData = TonChainData(
+                    sequence = 1UL,
                     jettonAddress = "EQAlgB03OjJKdXrlwZiGJD5snSzPKF2VL5bErJn_cqJANGH9",
                     expireAt = 1000000000,
-                    fee = Fee(
-                        priority = FeePriority.Normal,
-                        feeAssetId = AssetId(Chain.Ton),
-                        amount = BigInteger.TEN
-                    ),
                 ),
                 finalAmount = BigInteger.valueOf(10_000),
-                FeePriority.Normal,
+                fee = Fee(
+                    priority = FeePriority.Normal,
+                    feeAssetId = AssetId(Chain.Ton),
+                    amount = BigInteger.TEN
+                ),
                 privateKey.data(),
             )
         }

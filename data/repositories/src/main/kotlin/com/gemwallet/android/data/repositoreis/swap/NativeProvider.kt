@@ -1,7 +1,10 @@
 package com.gemwallet.android.data.repositoreis.swap
 
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
-import com.wallet.core.primitives.Chain
+import com.gemwallet.android.cases.nodes.GetNodesCase
+import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
+import com.gemwallet.android.data.services.gemapi.http.getNodeUrl
+import com.gemwallet.android.ext.toChain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -13,14 +16,15 @@ import uniffi.gemstone.AlienProvider
 import uniffi.gemstone.AlienTarget
 
 class NativeProvider(
+    private val getNodesCase: GetNodesCase,
     private val getCurrentNodeCase: GetCurrentNodeCase,
+    private val setCurrentNodeCase: SetCurrentNodeCase,
     private val httpClient: OkHttpClient = OkHttpClient(),
 ): AlienProvider {
 
     override fun getEndpoint(chain: uniffi.gemstone.Chain): String {
-        return Chain.entries.firstOrNull { it.string == chain }?.let {
-            getCurrentNodeCase.getCurrentNode(it)?.url
-        } ?: throw IllegalArgumentException("Can't found node url for chain: $chain")
+        return chain.toChain()?.getNodeUrl(getNodesCase, getCurrentNodeCase, setCurrentNodeCase)
+            ?: throw IllegalArgumentException("Can't found node url for chain: $chain")
     }
 
     override suspend fun batchRequest(targets: List<AlienTarget>): List<ByteArray> = withContext(Dispatchers.IO) {

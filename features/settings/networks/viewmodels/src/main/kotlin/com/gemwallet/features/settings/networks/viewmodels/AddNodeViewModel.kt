@@ -5,7 +5,7 @@ import android.webkit.URLUtil
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.blockchain.clients.NodeStatusClientProxy
+import com.gemwallet.android.blockchain.services.NodeStatusService
 import com.gemwallet.android.cases.nodes.AddNodeCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
 import com.gemwallet.android.model.NodeStatus
@@ -24,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddNodeViewModel @Inject constructor(
-    private val nodeStatusClient: NodeStatusClientProxy,
+    private val nodeStatusClient: NodeStatusService,
     private val addNodeCase: AddNodeCase,
     private val setCurrentNodeCase: SetCurrentNodeCase,
 ) : ViewModel() {

@@ -4,11 +4,12 @@ import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.CosmosDenom
-import com.wallet.core.primitives.FeePriority
+import com.wallet.core.primitives.DelegationValidator
 import wallet.core.java.AnySigner
 import wallet.core.jni.AnyAddress
 import wallet.core.jni.CoinType
@@ -30,7 +31,7 @@ class CosmosSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = CosmosDenom.from(chain)
@@ -40,7 +41,7 @@ class CosmosSignClient(
             coin = coin,
             amount = getAmount(finalAmount, denom = denom)
         )
-        return sign(chainData, message, params.memo() ?: "", privateKey)
+        return sign(chainData, fee, message, params.memo() ?: "", privateKey)
     }
 
 
@@ -48,7 +49,7 @@ class CosmosSignClient(
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = params.asset.id.tokenId!!
@@ -59,14 +60,14 @@ class CosmosSignClient(
             coin = coin,
             amount = getAmount(finalAmount, denom = denom)
         )
-        return sign(chainData, message, params.memo() ?: "", privateKey)
+        return sign(chainData, fee, message, params.memo() ?: "", privateKey)
     }
 
     override suspend fun signSwap(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = CosmosDenom.from(chain)
@@ -80,14 +81,14 @@ class CosmosSignClient(
             )
         }
         val memo = params.swapData ?: throw IllegalArgumentException("No swap data")
-        return sign(chainData, message, memo, privateKey)
+        return sign(chainData, fee, message, memo, privateKey)
     }
 
     override suspend fun signTokenApproval(
         params: ConfirmParams.TokenApprovalParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         throw IllegalArgumentException()
@@ -97,59 +98,59 @@ class CosmosSignClient(
         params: ConfirmParams.Stake.DelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = CosmosDenom.from(chain)
-        val message = getStakeMessage(params.from.address, params.validatorId, getAmount(finalAmount, denom))
-        return sign(chainData, message, "Stake via Gem Wallet", privateKey)
+        val message = getStakeMessage(params.from.address, params.validator.id, getAmount(finalAmount, denom))
+        return sign(chainData, fee, message, "Stake via Gem Wallet", privateKey)
     }
 
     override suspend fun signRedelegate(
         params: ConfirmParams.Stake.RedelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = CosmosDenom.from(chain)
         val message = getRedelegateMessage(
             delegatorAddress = params.from.address,
-            validatorSrcAddress = params.srcValidatorId,
-            validatorDstAddress = params.dstValidatorId,
+            validatorSrcAddress = params.delegation.validator.id,
+            validatorDstAddress = params.dstValidator.id,
             amount = getAmount(params.amount, denom),
         )
-        return sign(chainData, message, "Stake via Gem Wallet", privateKey)
+        return sign(chainData, fee, message, "Stake via Gem Wallet", privateKey)
     }
 
     override suspend fun signRewards(
         params: ConfirmParams.Stake.RewardsParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val message = getRewardsMessage(params.from.address, params.validatorsId)
-        return sign(chainData, message, "Stake via Gem Wallet", privateKey)
+        val message = getRewardsMessage(params.from.address, params.validators)
+        return sign(chainData, fee, message, "Stake via Gem Wallet", privateKey)
     }
 
     override suspend fun signUndelegate(
         params: ConfirmParams.Stake.UndelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         val denom = CosmosDenom.from(chain)
-        val message = getUnstakeMessage(params.from.address, params.validatorId, getAmount(params.amount, denom))
-        return sign(chainData, message, "Stake via Gem Wallet", privateKey)
+        val message = getUnstakeMessage(params.from.address, params.delegation.validator.id, getAmount(params.amount, denom))
+        return sign(chainData, fee, message, "Stake via Gem Wallet", privateKey)
     }
 
     override suspend fun signWithdraw(
         params: ConfirmParams.Stake.WithdrawParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         throw IllegalArgumentException()
@@ -220,12 +221,12 @@ class CosmosSignClient(
         return listOf(message)
     }
 
-    fun getRewardsMessage(delegatorAddress: String, validators: List<String>): List<Message> {
+    fun getRewardsMessage(delegatorAddress: String, validators: List<DelegationValidator>): List<Message> {
         return validators.map { validator ->
             Message.newBuilder().apply {
                 withdrawStakeRewardMessage = WithdrawDelegationReward.newBuilder().apply {
                     this.delegatorAddress = delegatorAddress
-                    this.validatorAddress = validator
+                    this.validatorAddress = validator.id
                 }.build()
             }.build()
         }
@@ -268,12 +269,13 @@ class CosmosSignClient(
 
     private fun sign(
         chainData: ChainSignData,
+        fee: Fee,
         messages: List<Message>,
         memo: String,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val meta = chainData as CosmosSignerPreloader.CosmosChainData
-        val fee = meta.fee() as GasFee
+        val meta = chainData as CosmosChainData
+        val fee = fee as GasFee
         val feeAmount = fee.amount
         val gas = fee.limit.toLong() * messages.size
         val coin = WCChainTypeProxy().invoke(chain)
@@ -295,8 +297,8 @@ class CosmosSignClient(
             this.mode = Cosmos.BroadcastMode.SYNC
             this.signingMode = Cosmos.SigningMode.Protobuf
             this.chainId = meta.chainId
-            this.accountNumber = meta.accountNumber
-            this.sequence = meta.sequence
+            this.accountNumber = meta.accountNumber.toLong()
+            this.sequence = meta.sequence.toLong()
             this.fee = cosmosFee
             this.memo = memo
             this.privateKey = ByteString.copyFrom(privateKey)

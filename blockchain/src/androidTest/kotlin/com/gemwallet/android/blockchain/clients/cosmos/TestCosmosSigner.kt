@@ -39,21 +39,26 @@ class TestCosmosSigner {
     fun testSignNativeTransfer() {
         val transfer = ConfirmParams.Builder(Chain.Osmosis.asset(), osmoAccount, BigInteger.TEN)
             .transfer(DestinationAddress("osmo1rcjvzz8wzktqfz8qjf0l9q45kzxvd0z0n7l5cf")) as ConfirmParams.TransferParams.Native
-        val chainData = CosmosSignerPreloader.CosmosChainData(
+        val chainData = CosmosChainData(
             chainId = "osmosis-1",
-            accountNumber = 2913388L,
-            sequence = 10L,
-            fee = GasFee(
-                feeAssetId = AssetId(Chain.Osmosis),
-                maxGasPrice = BigInteger.valueOf(10000L),
-                limit = BigInteger.valueOf(200000L),
-                amount = BigInteger.valueOf(10000L),
-                priority = FeePriority.Normal,
-            )
+            accountNumber = 2913388UL,
+            sequence = 10UL,
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.signNativeTransfer(transfer, chainData, finalAmount, FeePriority.Normal, privateKey)
+            signer.signNativeTransfer(
+                transfer,
+                chainData,
+                finalAmount,
+                fee = GasFee(
+                    feeAssetId = AssetId(Chain.Osmosis),
+                    maxGasPrice = BigInteger.valueOf(10000L),
+                    limit = BigInteger.valueOf(200000L),
+                    amount = BigInteger.valueOf(10000L),
+                    priority = FeePriority.Normal,
+                ),
+                privateKey
+            )
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -77,21 +82,26 @@ class TestCosmosSigner {
     fun testSignStake() {
         val transfer = ConfirmParams.Builder(Chain.Osmosis.asset(), osmoAccount, BigInteger.TEN)
             .delegate("osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm")
-        val chainData = CosmosSignerPreloader.CosmosChainData(
+        val chainData = CosmosChainData(
             chainId = "osmosis-1",
-            accountNumber = 2913388L,
-            sequence = 10L,
-            fee = GasFee(
-                feeAssetId = AssetId(Chain.Osmosis),
-                maxGasPrice = BigInteger.valueOf(10000L),
-                limit = BigInteger.valueOf(200000L),
-                amount = BigInteger.valueOf(10000L),
-                priority = FeePriority.Normal,
-            )
+            accountNumber = 2913388UL,
+            sequence = 10UL,
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.signDelegate(transfer, chainData, finalAmount, FeePriority.Normal, privateKey)
+            signer.signDelegate(
+                transfer,
+                chainData,
+                finalAmount,
+                fee = GasFee(
+                    feeAssetId = AssetId(Chain.Osmosis),
+                    maxGasPrice = BigInteger.valueOf(10000L),
+                    limit = BigInteger.valueOf(200000L),
+                    amount = BigInteger.valueOf(10000L),
+                    priority = FeePriority.Normal,
+                ),
+                privateKey
+            )
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -137,21 +147,26 @@ class TestCosmosSigner {
                     )
                 )
             )
-        val chainData = CosmosSignerPreloader.CosmosChainData(
+        val chainData = CosmosChainData(
             chainId = "osmosis-1",
-            accountNumber = 2913388L,
-            sequence = 10L,
-            fee = GasFee(
-                feeAssetId = AssetId(Chain.Osmosis),
-                maxGasPrice = BigInteger.valueOf(10000L),
-                limit = BigInteger.valueOf(200000L),
-                amount = BigInteger.valueOf(10000L),
-                priority = FeePriority.Normal,
-            )
+            accountNumber = 2913388UL,
+            sequence = 10UL,
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.signUndelegate(transfer, chainData, finalAmount, FeePriority.Normal, privateKey)
+            signer.signUndelegate(
+                transfer,
+                chainData,
+                finalAmount,
+                fee = GasFee(
+                    feeAssetId = AssetId(Chain.Osmosis),
+                    maxGasPrice = BigInteger.valueOf(10000L),
+                    limit = BigInteger.valueOf(200000L),
+                    amount = BigInteger.valueOf(10000L),
+                    priority = FeePriority.Normal,
+                ),
+                privateKey
+            )
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -199,21 +214,26 @@ class TestCosmosSigner {
                     )
                 )
             )
-        val chainData = CosmosSignerPreloader.CosmosChainData(
+        val chainData = CosmosChainData(
             chainId = "osmosis-1",
-            accountNumber = 2913388L,
-            sequence = 10L,
-            fee = GasFee(
-                feeAssetId = AssetId(Chain.Osmosis),
-                maxGasPrice = BigInteger.valueOf(10000L),
-                limit = BigInteger.valueOf(200000L),
-                amount = BigInteger.valueOf(10000L),
-                priority = FeePriority.Normal,
-            )
+            accountNumber = 2913388UL,
+            sequence = 10UL,
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.signRedelegate(transfer, chainData, finalAmount, FeePriority.Normal, privateKey)
+            signer.signRedelegate(
+                transfer,
+                chainData,
+                finalAmount,
+                fee = GasFee(
+                    feeAssetId = AssetId(Chain.Osmosis),
+                    maxGasPrice = BigInteger.valueOf(10000L),
+                    limit = BigInteger.valueOf(200000L),
+                    amount = BigInteger.valueOf(10000L),
+                    priority = FeePriority.Normal,
+                ),
+                privateKey
+            )
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +
@@ -245,21 +265,26 @@ class TestCosmosSigner {
                     "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm",
                 ),
             )
-        val chainData = CosmosSignerPreloader.CosmosChainData(
+        val chainData = CosmosChainData(
             chainId = "osmosis-1",
-            accountNumber = 2913388L,
-            sequence = 10L,
-            fee = GasFee(
-                feeAssetId = AssetId(Chain.Osmosis),
-                maxGasPrice = BigInteger.valueOf(10000L),
-                limit = BigInteger.valueOf(200000L),
-                amount = BigInteger.valueOf(10000L),
-                priority = FeePriority.Normal,
-            )
+            accountNumber = 2913388UL,
+            sequence = 10UL,
         )
         val finalAmount = BigInteger.TEN
         val result = runBlocking {
-            signer.signRewards(transfer, chainData, finalAmount, FeePriority.Normal, privateKey)
+            signer.signRewards(
+                transfer,
+                chainData,
+                finalAmount,
+                fee = GasFee(
+                    feeAssetId = AssetId(Chain.Osmosis),
+                    maxGasPrice = BigInteger.valueOf(10000L),
+                    limit = BigInteger.valueOf(200000L),
+                    amount = BigInteger.valueOf(10000L),
+                    priority = FeePriority.Normal,
+                ),
+                privateKey
+            )
         }.first().toHexString()
         assertEquals(
             "0x7b226d6f6465223a2242524f4144434153545f4d4f44455f53594e43222c2274785f6279746573223" +

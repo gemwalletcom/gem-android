@@ -47,5 +47,7 @@ enum class NameProvider(val string: String) {
 	Basenames("basenames"),
 	@SerialName("hyperliquid")
 	Hyperliquid("hyperliquid"),
+	@SerialName("alldomains")
+	AllDomains("alldomains"),
 }
 

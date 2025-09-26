@@ -63,7 +63,6 @@ fun SwapperProvider.getSwapProviderIcon(): String {
         SwapperProvider.PANCAKESWAP_V3,
         SwapperProvider.PANCAKESWAP_APTOS_V2 -> "pancakeswap"
         SwapperProvider.THORCHAIN -> "thorchain"
-        SwapperProvider.ORCA -> "orca"
         SwapperProvider.JUPITER -> "jupiter"
         SwapperProvider.ACROSS -> "across"
         SwapperProvider.OKU -> "oku"

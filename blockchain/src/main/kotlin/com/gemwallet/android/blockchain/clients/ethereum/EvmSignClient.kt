@@ -6,12 +6,12 @@ import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EVMChain
-import com.wallet.core.primitives.FeePriority
 import com.wallet.core.primitives.NFTType
 import wallet.core.java.AnySigner
 import wallet.core.jni.AnyAddress
@@ -46,14 +46,14 @@ class EvmSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val meta = chainData as EvmSignerPreloader.EvmChainData
+        val meta = chainData as EvmChainData
         val transfer = buildTransfer(finalAmount, finalAmount, params)
         val input = buildSignInput(
             assetId = params.assetId,
-            fee = meta.gasFee(feePriority),
+            fee = fee as GasFee,
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.destination().address,
@@ -67,15 +67,15 @@ class EvmSignClient(
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val meta = chainData as EvmSignerPreloader.EvmChainData
+        val meta = chainData as EvmChainData
         val amount = BigInteger.ZERO
         val transfer = buildTransfer(amount, finalAmount, params)
         val input = buildSignInput(
             assetId = params.assetId,
-            fee = meta.gasFee(feePriority),
+            fee = fee as GasFee,
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.destination().address,
@@ -89,15 +89,15 @@ class EvmSignClient(
         params: ConfirmParams.TokenApprovalParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val meta = chainData as EvmSignerPreloader.EvmChainData
+        val meta = chainData as EvmChainData
         val amount = BigInteger.ZERO
         val transfer = buildTransfer(amount, finalAmount, params)
         val input = buildSignInput(
             assetId = params.assetId,
-            fee = meta.gasFee(feePriority),
+            fee = fee as GasFee,
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.destination()?.address ?: "",
@@ -111,11 +111,12 @@ class EvmSignClient(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
+        val fee = fee as GasFee
         val approvalData = params.approval
-        val chainData = chainData as EvmSignerPreloader.EvmChainData
+        val chainData = chainData as EvmChainData
         val amount = BigInteger(params.value)
 
         val approvalSign = if (approvalData != null) {
@@ -128,12 +129,12 @@ class EvmSignClient(
                     ),
                 chainData = chainData,
                 finalAmount = BigInteger.ZERO,
-                feePriority = feePriority,
+                fee = fee,
                 privateKey = privateKey
             )
         } else emptyList()
 
-        val fee = chainData.gasFee(feePriority).let {
+        val transferFee = fee.let {
             if (approvalData == null) {
                 it
             } else {
@@ -150,7 +151,7 @@ class EvmSignClient(
         val transfer = buildTransfer(amount, finalAmount, params)
         val swapInput = buildSignInput(
             assetId = AssetId(params.assetId.chain),
-            fee = fee,
+            fee = transferFee,
             chainId = chainData.chainId.toBigInteger(),
             nonce = chainData.nonce + if (approvalSign.isEmpty()) BigInteger.ZERO else BigInteger.ONE,
             destinationAddress = params.destination().address,
@@ -166,60 +167,60 @@ class EvmSignClient(
         params: ConfirmParams.Stake.DelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        return stakeSmartchain(params, chainData, finalAmount, feePriority, privateKey)
+        return stakeSmartchain(params, chainData, finalAmount, fee, privateKey)
     }
 
     override suspend fun signRedelegate(
         params: ConfirmParams.Stake.RedelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        return stakeSmartchain(params, chainData, finalAmount, feePriority, privateKey)
+        return stakeSmartchain(params, chainData, finalAmount, fee, privateKey)
     }
 
     override suspend fun signRewards(
         params: ConfirmParams.Stake.RewardsParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        return stakeSmartchain(params, chainData, finalAmount, feePriority, privateKey)
+        return stakeSmartchain(params, chainData, finalAmount, fee, privateKey)
     }
 
     override suspend fun signUndelegate(
         params: ConfirmParams.Stake.UndelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        return stakeSmartchain(params, chainData, finalAmount, feePriority, privateKey)
+        return stakeSmartchain(params, chainData, finalAmount, fee, privateKey)
     }
 
     override suspend fun signWithdraw(
         params: ConfirmParams.Stake.WithdrawParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        return stakeSmartchain(params, chainData, finalAmount, feePriority, privateKey)
+        return stakeSmartchain(params, chainData, finalAmount, fee, privateKey)
     }
 
     override suspend fun signNft(
         params: ConfirmParams.NftParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val meta = chainData as EvmSignerPreloader.EvmChainData
+        val meta = chainData as EvmChainData
         val transfer = when (params.nftAsset.tokenType) {
             NFTType.ERC721 -> ERC721Transfer.newBuilder().apply {
                 this.from = params.from.address
@@ -237,7 +238,7 @@ class EvmSignClient(
 
         val input = buildSignInput(
             assetId = AssetId(chain, params.nftAsset.contractAddress),
-            fee = meta.gasFee(feePriority),
+            fee = fee as GasFee,
             chainId = meta.chainId.toBigInteger(),
             nonce = meta.nonce,
             destinationAddress = params.destination.address,
@@ -251,19 +252,20 @@ class EvmSignClient(
         params: ConfirmParams.Stake,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
         if (params.assetId.chain != Chain.SmartChain) {
             throw Exception("Doesn't support")
         }
-        val meta = chainData as EvmSignerPreloader.EvmChainData
-        val fee = meta.gasFee(feePriority)
+        val meta = chainData as EvmChainData
+        val toAddress = meta.stakeData?.to ?: throw java.lang.IllegalArgumentException("No stake data")
+        val stakeData = meta.stakeData.data?.decodeHex() ?: throw java.lang.IllegalArgumentException("No stake data")
+        val fee = fee as GasFee
         val valueData = when (params) {
             is ConfirmParams.Stake.DelegateParams -> finalAmount.toByteArray()
             else -> BigInteger.ZERO.toByteArray()
         }
-        val callData = StakeHub.encodeStake(params)
         val input = Ethereum.SigningInput.newBuilder().apply {
             this.txMode = Ethereum.TransactionMode.Enveloped
             this.maxFeePerGas = ByteString.copyFrom(fee.maxGasPrice.toByteArray())
@@ -271,12 +273,12 @@ class EvmSignClient(
             this.gasLimit = ByteString.copyFrom(fee.limit.toByteArray())
             this.chainId = ByteString.copyFrom(meta.chainId.toBigInteger().toByteArray())
             this.nonce = ByteString.copyFrom(meta.nonce.toByteArray())
-            this.toAddress = StakeHub.address
+            this.toAddress = toAddress
             this.privateKey = ByteString.copyFrom(privateKey)
             this.transaction = Ethereum.Transaction.newBuilder().apply {
                 contractGeneric = ContractGeneric.newBuilder().apply {
                     amount = ByteString.copyFrom(valueData)
-                    data = ByteString.copyFrom(callData.decodeHex())
+                    data = ByteString.copyFrom(stakeData)
                 }.build()
             }.build()
         }.build()
@@ -318,7 +320,7 @@ class EvmSignClient(
         val output = AnySigner.sign(input, coinType, Ethereum.SigningOutput.parser())
             .encoded
             .toByteArray()
-        return listOf(output)
+        return listOf(output.toHexString("").toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

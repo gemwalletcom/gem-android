@@ -126,7 +126,7 @@ private fun Render(
             }
             item { PropertyItem("Method", request.method) }
             when (request.method) {
-                WalletConnectionMethods.solana_sign_transaction.string -> {}
+                WalletConnectionMethods.SolanaSignTransaction.string -> {}
                 else -> item {
                     Spacer(modifier = Modifier.size(24.dp))
                     Surface(shadowElevation = 16.dp, color = MaterialTheme.colorScheme.background) {

@@ -4,9 +4,10 @@ import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.Fee
+import com.gemwallet.android.model.GasFee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
 import wallet.core.java.AnySigner
 import wallet.core.jni.proto.Aptos
 import wallet.core.jni.proto.Aptos.TokenTransferCoinsMessage
@@ -23,35 +24,34 @@ class AptosSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        return sign(params, chainData, privateKey, buildTransferMessage(params, finalAmount))
+        return sign(params, chainData, fee as GasFee, privateKey, buildTransferMessage(params, finalAmount))
     }
 
     override suspend fun signTokenTransfer(
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        return sign(params, chainData, privateKey, buildTokenCoinMessage(params, finalAmount))
+        return sign(params, chainData, fee as GasFee, privateKey, buildTokenCoinMessage(params, finalAmount))
     }
 
     override suspend fun signSwap(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        return sign(params, chainData, privateKey, params.swapData)
+        return sign(params, chainData, fee as GasFee, privateKey, params.swapData)
     }
 
-    private fun sign(params: ConfirmParams, chainData: ChainSignData, privateKey: ByteArray, message: Any): List<ByteArray> {
-        val metadata = chainData as AptosSignerPreloader.AptosChainData
-        val fee = metadata.gasFee()
+    private fun sign(params: ConfirmParams, chainData: ChainSignData, fee: GasFee, privateKey: ByteArray, message: Any): List<ByteArray> {
+        val metadata = chainData as AptosChainData
         val signInput = Aptos.SigningInput.newBuilder().apply {
             this.chainId = 1
             when (message) {
@@ -63,7 +63,7 @@ class AptosSignClient(
             this.expirationTimestampSecs = 3664390082
             this.gasUnitPrice = fee.maxGasPrice.toLong()
             this.maxGasAmount = fee.limit.toLong()
-            this.sequenceNumber = metadata.sequence
+            this.sequenceNumber = metadata.sequence.toLong()
             this.sender = params.from.address
             this.privateKey = ByteString.copyFrom(privateKey)
         }.build()

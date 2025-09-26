@@ -4,8 +4,8 @@ import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.Fee
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
 import wallet.core.jni.Base64
 import wallet.core.jni.Curve
 import wallet.core.jni.PrivateKey
@@ -19,10 +19,10 @@ class SuiSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val metadata = chainData as SuiSignerPreloader.SuiChainData
+        val metadata = chainData as SuiChainData
         return signTxDataDigest(metadata.messageBytes, privateKey)
     }
 
@@ -30,10 +30,10 @@ class SuiSignClient(
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val metadata = chainData as SuiSignerPreloader.SuiChainData
+        val metadata = chainData as SuiChainData
         return signTxDataDigest(metadata.messageBytes, privateKey)
     }
 
@@ -41,10 +41,10 @@ class SuiSignClient(
         params: ConfirmParams.Stake.DelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val metadata = chainData as SuiSignerPreloader.SuiChainData
+        val metadata = chainData as SuiChainData
         return signTxDataDigest(metadata.messageBytes, privateKey)
     }
 
@@ -52,10 +52,10 @@ class SuiSignClient(
         params: ConfirmParams.Stake.UndelegateParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val metadata = chainData as SuiSignerPreloader.SuiChainData
+        val metadata = chainData as SuiChainData
         return signTxDataDigest(metadata.messageBytes, privateKey)
     }
 
@@ -63,10 +63,10 @@ class SuiSignClient(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val metadata = chainData as SuiSignerPreloader.SuiChainData
+        val metadata = chainData as SuiChainData
         return signTxDataDigest(metadata.messageBytes, privateKey)
     }
 

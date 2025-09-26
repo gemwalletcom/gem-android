@@ -2,11 +2,12 @@ package com.gemwallet.android.blockchain.clients.algorand
 
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
+import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.Fee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.FeePriority
 import wallet.core.java.AnySigner
 import wallet.core.jni.Base64
 import wallet.core.jni.proto.Algorand
@@ -20,10 +21,10 @@ class AlgorandSignClient(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,
         finalAmount: BigInteger,
-        feePriority: FeePriority,
+        fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val chainData = (chainData as? AlgorandSignPreloadClient.AlgorandChainData)
+        val chainData = (chainData as? AlgorandChainData)
             ?: throw Exception("bad params")
         val input = Algorand.SigningInput.newBuilder().apply {
             this.genesisId = chainData.chainId
@@ -33,7 +34,7 @@ class AlgorandSignClient(
             }
             this.firstRound = chainData.sequence.toLong()
             this.lastRound = chainData.sequence.toLong() + 1000
-            this.fee = chainData.fee().amount.toLong()
+            this.fee = fee.amount.toLong()
             this.privateKey = ByteString.copyFrom(privateKey)
             this.transfer = Algorand.Transfer.newBuilder().apply {
                 this.toAddress = params.destination().address
@@ -44,7 +45,7 @@ class AlgorandSignClient(
         if (!output.errorMessage.isNullOrEmpty()) {
             throw Exception(output.errorMessage)
         }
-        return listOf(output.encoded.toByteArray())
+        return listOf(output.encoded.toByteArray().toHexString("").toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

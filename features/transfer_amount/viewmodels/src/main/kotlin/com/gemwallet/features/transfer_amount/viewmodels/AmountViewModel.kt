@@ -129,10 +129,14 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeUndelegate,
             TransactionType.StakeRedelegate,
             TransactionType.StakeWithdraw -> Crypto(BigInteger(delegation?.base?.balance ?: "0"))
+            TransactionType.PerpetualOpenPosition -> throw IllegalArgumentException() // TODO: HyperCore
+            TransactionType.PerpetualClosePosition -> throw IllegalArgumentException() // TODO: HyperCore
             TransactionType.AssetActivation,
             TransactionType.TransferNFT,
             TransactionType.SmartContractCall,
             TransactionType.TokenApproval,
+            TransactionType.StakeFreeze,
+            TransactionType.StakeUnfreeze,
             null -> Crypto(BigInteger.ZERO)
         }
         assetInfo.asset.format(value, 8)
@@ -247,20 +251,24 @@ class AmountViewModel @Inject constructor(
         val builder = ConfirmParams.Builder(asset, owner, amount.atomicValue)
         val nextParams = when (params.txType) {
             TransactionType.Transfer -> builder.transfer(destination!!, memo, maxAmount.value,)
-            TransactionType.StakeDelegate -> builder.delegate(validator?.id ?: return)
+            TransactionType.StakeDelegate -> builder.delegate(validator ?: return)
             TransactionType.StakeUndelegate -> builder.undelegate(delegation ?: return)
             TransactionType.StakeRewards -> {
                 val validators = stakeRepository.getRewards(asset.id, owner.address)
-                    .map { it.validator.id }
+                    .map { it.validator }
                 builder.rewards(validators)
             }
-            TransactionType.StakeRedelegate -> builder.redelegate(validator?.id!!, delegation!!)
+            TransactionType.StakeRedelegate -> builder.redelegate(validator!!, delegation!!)
             TransactionType.StakeWithdraw -> builder.withdraw(delegation!!)
             TransactionType.AssetActivation -> builder.activate()
             TransactionType.Swap,
             TransactionType.TransferNFT,
             TransactionType.SmartContractCall,
-            TransactionType.TokenApproval -> throw IllegalArgumentException()
+            TransactionType.TokenApproval,
+            TransactionType.PerpetualOpenPosition,
+            TransactionType.StakeFreeze,
+            TransactionType.StakeUnfreeze,
+            TransactionType.PerpetualClosePosition -> throw IllegalArgumentException()
         }
         onConfirm(nextParams)
     }
@@ -335,6 +343,10 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeWithdraw -> Crypto(BigInteger(delegation?.base?.balance ?: "0"))
             TransactionType.AssetActivation,
             TransactionType.TransferNFT,
+            TransactionType.PerpetualOpenPosition,
+            TransactionType.PerpetualClosePosition,
+            TransactionType.StakeFreeze,
+            TransactionType.StakeUnfreeze,
             TransactionType.SmartContractCall -> throw IllegalArgumentException()
         }
         if (amount.atomicValue > availableAmount.atomicValue) {
