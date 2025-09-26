@@ -15,13 +15,10 @@ import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.domains.asset.isMemoSupport
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
-import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.confirm.models.AmountUIModel
 import com.gemwallet.android.features.confirm.models.ConfirmError
 import com.gemwallet.android.features.confirm.models.ConfirmState
-import com.gemwallet.android.ui.navigation.routes.paramsArg
-import com.gemwallet.android.ui.navigation.routes.txTypeArg
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
@@ -37,13 +34,14 @@ import com.gemwallet.android.ui.components.image.getIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
 import com.gemwallet.android.ui.navigation.routes.assetRoutePath
+import com.gemwallet.android.ui.navigation.routes.paramsArg
 import com.gemwallet.android.ui.navigation.routes.stakeRoute
 import com.gemwallet.android.ui.navigation.routes.swapRoute
+import com.gemwallet.android.ui.navigation.routes.txTypeArg
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.FeePriority
-import com.wallet.core.primitives.SwapProvider
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
@@ -430,11 +428,7 @@ class ConfirmViewModel @Inject constructor(
     }
 
     private fun AssetInfo.getFromCell(input: ConfirmParams): CellEntity<Int> {
-        val fromData = when (input.getTxType()) {
-            TransactionType.Swap -> walletName
-            else -> "$walletName (${owner?.address?.getAddressEllipsisText() ?: ""})"
-        }
-        return CellEntity(label = R.string.transfer_from, data = fromData)
+        return CellEntity(label = R.string.transfer_from, data = walletName)
     }
 
     private fun ConfirmParams.getMemoCell(): CellEntity<Int>? {
