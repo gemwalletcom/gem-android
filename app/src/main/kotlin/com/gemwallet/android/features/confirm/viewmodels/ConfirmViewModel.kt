@@ -16,7 +16,6 @@ import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.domains.asset.isMemoSupport
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
-import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.confirm.models.AmountUIModel
 import com.gemwallet.android.features.confirm.models.ConfirmError
@@ -422,11 +421,7 @@ class ConfirmViewModel @Inject constructor(
     }
 
     private fun AssetInfo.getFromCell(input: ConfirmParams): CellEntity<Int> {
-        val fromData = when (input.getTxType()) {
-            TransactionType.Swap -> walletName
-            else -> "$walletName (${owner?.address?.getAddressEllipsisText() ?: ""})"
-        }
-        return CellEntity(label = R.string.transfer_from, data = fromData)
+        return CellEntity(label = R.string.transfer_from, data = walletName)
     }
 
     private fun ConfirmParams.getMemoCell(): CellEntity<Int>? {

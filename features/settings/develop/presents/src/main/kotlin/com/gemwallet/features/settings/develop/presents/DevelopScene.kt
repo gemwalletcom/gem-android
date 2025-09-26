@@ -6,11 +6,11 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.gemwallet.features.settings.develop.viewmodels.DevelopViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.features.settings.develop.viewmodels.DevelopViewModel
 
 @Composable
 fun DevelopScene(

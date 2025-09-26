@@ -23,8 +23,7 @@ object WalletConnectDelegate : WalletKit.WalletDelegate, CoreClient.CoreDelegate
         WalletKit.setWalletDelegate(this)
     }
 
-    override val onSessionAuthenticate: ((Wallet.Model.SessionAuthenticate, Wallet.Model.VerifyContext) -> Unit)? =
-        { sessionAuth, verifyContext ->
+    override val onSessionAuthenticate: ((Wallet.Model.SessionAuthenticate, Wallet.Model.VerifyContext) -> Unit)? = { sessionAuth, verifyContext ->
             scope.launch {
                 _walletEvents.emit(sessionAuth)
             }

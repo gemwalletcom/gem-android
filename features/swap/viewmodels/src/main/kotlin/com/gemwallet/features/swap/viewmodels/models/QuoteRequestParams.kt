@@ -1,6 +1,5 @@
 package com.gemwallet.features.swap.viewmodels.models
 
-import com.gemwallet.android.math.parseNumber
 import com.gemwallet.android.model.AssetInfo
 import java.math.BigDecimal
 

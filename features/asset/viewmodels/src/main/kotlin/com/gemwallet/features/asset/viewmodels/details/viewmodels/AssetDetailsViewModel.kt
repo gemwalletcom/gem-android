@@ -3,6 +3,7 @@ package com.gemwallet.features.asset.viewmodels.details.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.banners.GetWalletOperationsEnabled
 import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
 import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
@@ -42,9 +43,11 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
@@ -62,18 +65,26 @@ class AssetDetailsViewModel @Inject constructor(
     private val getPriceAlerts: GetPriceAlerts,
     private val enablePriceAlert: EnablePriceAlert,
     private val getCurrentBlockExplorer: GetCurrentBlockExplorer,
+    private val getWalletOperationsEnabled: GetWalletOperationsEnabled,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     private val assetId = savedStateHandle.getStateFlow(assetIdArg, "").map { it.toAssetId() }
+    private val assetInfo = assetId
+        .onEach { uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process) } }
+        .flatMapLatest { assetId ->
+            assetId?.let { id -> assetsRepository.getAssetInfo(id).mapNotNull { it } } ?: emptyFlow()
+        }
+
+    val isOperationEnabled = sessionRepository.session().filterNotNull().mapLatest {
+        getWalletOperationsEnabled.walletOperationsEnabled(it.wallet)
+    }
+    .flowOn(Dispatchers.IO)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     val uiState = MutableStateFlow<AssetInfoUIState>(AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process))
 
-    private val model = assetId
-        .onEach { uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process) } }
-        .flatMapLatest { assetId ->
-            assetId?.let { assetsRepository.getAssetInfo(it).mapNotNull { it } } ?: emptyFlow()
-        }
+    private val model = assetInfo
         .map {
             val explorerName = getCurrentBlockExplorer.getCurrentBlockExplorer(it.asset.chain)
             Model(
@@ -153,6 +164,7 @@ class AssetDetailsViewModel @Inject constructor(
             val total = balances.totalAmount
             val fiatTotal = currency.format(balances.fiatTotalAmount)
             val stakeBalance = balances.balanceAmount.getStackedAmount()
+
             return AssetInfoUIModel(
                 assetInfo = assetInfo,
                 name = if (asset.type == AssetType.NATIVE) {
@@ -163,7 +175,8 @@ class AssetDetailsViewModel @Inject constructor(
                 iconUrl = asset.id.getIconUrl(),
                 priceValue = if (price == 0.0) "" else currency.format(price, dynamicPlace = true),
                 priceDayChanges = PriceUIState.formatPercentage(
-                    assetInfo.price?.price?.priceChangePercentage24h ?: 0.0
+                    value = assetInfo.price?.price?.priceChangePercentage24h ?: 0.0,
+                    showZero = true,
                 ),
                 priceChangedType = PriceUIState.getState(
                     assetInfo.price?.price?.priceChangePercentage24h ?: 0.0

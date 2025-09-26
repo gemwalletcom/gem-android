@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
-import com.gemwallet.features.settings.networks.viewmodels.AddNodeViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.QrCodeRequest
 import com.gemwallet.android.ui.components.buttons.MainActionButton
@@ -41,6 +40,7 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.features.settings.networks.viewmodels.AddNodeViewModel
 import com.wallet.core.primitives.Chain
 import java.text.NumberFormat
 

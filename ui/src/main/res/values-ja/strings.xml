@@ -17,7 +17,7 @@
   <string name="welcome.legal.concent" formatted="false">Gemを使用すると、私たちの\n[利用規約](%s)と[プライバシーポリシー](%s)に同意します</string>
   <string name="wallet.import.secret_phrase">シークレットリカバリーフレーズ</string>
   <string name="wallet.name">名前</string>
-  <string name="wallet.import.action">輸入</string>
+  <string name="wallet.import.action">インポート</string>
   <string name="common.next">次へ</string>
   <string name="common.copy">コピー</string>
   <string name="common.share">共有</string>
@@ -60,7 +60,7 @@
   <string name="settings.community">コミュニティ</string>
   <string name="common.hide">隠れる</string>
   <string name="wallet.scan">スキャン</string>
-  <string name="settings.aboutus">私たちについて</string>
+  <string name="settings.aboutus">当社について</string>
   <string name="common.wallet">ウォレット</string>
   <string name="common.show">%sを表示</string>
   <string name="transfer.network">ネットワーク</string>
@@ -218,7 +218,7 @@
   <string name="wallet.import.private_key">%sエンコードされたプライベートキー</string>
   <string name="errors.invalid_network_id">無効なネットワークID</string>
   <string name="common.private_key">プライベートキー</string>
-  <string name="nodes.import_node.latency">レイテンシー</string>
+  <string name="nodes.import_node.latency">遅延</string>
   <string name="common.latency_in_ms">%d ミリ秒</string>
   <string name="stake.viagem">Stake via Gem Wallet</string>
   <string name="stake.no_active_staking">アクティブなステーキングはまだありません。</string>
@@ -246,8 +246,8 @@
   <string name="social.coingecko">CoinGecko</string>
   <string name="errors.unable_estimate_network_fee">現在、ネットワーク料金を計算することができません。</string>
   <string name="errors.invalid_asset_address">無効な %s アドレス</string>
-  <string name="transaction.title.received">受け取った</string>
-  <string name="transaction.title.sent">送信済み</string>
+  <string name="transaction.title.received">受け</string>
+  <string name="transaction.title.sent">送金</string>
   <string name="stake.stake">ステーク</string>
   <string name="banner.account_activation.title">アカウントの有効化手数料</string>
   <string name="banner.account_activation.description" formatted="false">%sネットワークは、一回限りの料金が%s必要です。</string>
@@ -408,7 +408,7 @@
   <string name="onboarding.accept_terms.item1.message">ウォレットのセキュリティとバックアップは自己責任であり、Gemは一切関与しないことを理解しています。</string>
   <string name="onboarding.accept_terms.item2.message">Gemは銀行や取引所ではなく、違法目的での使用は禁止されていることを理解しています。</string>
   <string name="onboarding.accept_terms.item3.message">ウォレットへのアクセスを失った場合、Gemは責任を負わず、支援もできないことを理解しています。</string>
-  <string name="onboarding.accept_terms.continue">理解しました。続行します。</string>
+  <string name="onboarding.accept_terms.continue">同意して続行</string>
   <string name="errors.required">%sは必須です</string>
   <string name="update_app.permission.title">インストールを許可</string>
   <string name="update_app.permission.description">設定に移動して外部ソースからのインストールを許可します</string>
@@ -437,7 +437,7 @@
   <string name="info.stake_minimum_amount.title">最低金額</string>
   <string name="info.stake_minimum_amount.description" formatted="false">%sネットワークでは、最小ステーキング要件は ** %s ** です。</string>
   <string name="asset.add_to_wallet">ウォレットに追加</string>
-  <string name="asset.hide_from_wallet">財布から隠す</string>
+  <string name="asset.hide_from_wallet">ウォレットから隠す</string>
   <string name="common.details">ディテール</string>
   <string name="transaction.swap_again">再度スワップ</string>
   <string name="errors.scan_transaction.malicious">疑わしい取引として特定された</string>
@@ -447,11 +447,11 @@
   <string name="wallet.withdraw">出金</string>
   <string name="info.funding_payments.title">ファンディングペイメント</string>
   <string name="info.funding_payments.description">ファンディングペイメントは、永久契約の価格を基礎資産のスポット価格に近づけるためにトレーダー間で定期的に行われる支払いです。プラスのファンディングではロングポジションがショートポジションに支払い、マイナスのファンディングではショートポジションがロングポジションに支払います。</string>
-  <string name="info.funding_rate.title">ファンディングレート</string>
+  <string name="info.funding_rate.title">資金調達率</string>
   <string name="info.funding_rate.description">ファンディングレートは永久ポジションの保有コストを決定します。これは毎時計算され、永久契約と基礎資産のスポット価格の価格均衡を維持するのに役立ちます。</string>
   <string name="info.liquidation_price.title">清算価格</string>
   <string name="info.liquidation_price.description">清算価格は、損失拡大を防ぐためにポジションが自動的に決済される価格水準です。市場価格がこの水準に達するとポジションは清算され、証拠金を失います。</string>
-  <string name="info.open_interest.title">オープンインタレスト</string>
+  <string name="info.open_interest.title">未決済建玉</string>
   <string name="info.open_interest.description">オープンインタレストは、未決済のすべての永久契約の合計価値を表します。市場の活動状況や流動性の指標となります。</string>
   <string name="info.no_quote.description">選択したトークン ペアの見積もりを返すことができません。金額が少ない、流動性がない、または技術的な制限がある可能性があります。</string>
   <string name="perpetual.positions">ポジション</string>
@@ -463,7 +463,7 @@
   <string name="perpetual.long">ロング</string>
   <string name="perpetual.short">ショート</string>
   <string name="markets.daily_volume">24時間取引量</string>
-  <string name="perpetual.entry_price">入場料</string>
+  <string name="perpetual.entry_price">エントリー価格</string>
   <string name="widget.small.name">ビットコイン価格</string>
   <string name="widget.small.description">ビットコインの価格を追跡する</string>
   <string name="widget.medium.name">トップ暗号通貨価格</string>
@@ -480,9 +480,9 @@
   <string name="price_alerts.set_alert.title">価格アラートを設定する</string>
   <string name="swap.min_receive">最小受取額</string>
   <string name="transfer.freeze.title">フリーズ</string>
-  <string name="transfer.unfreeze.title">解凍</string>
+  <string name="transfer.unfreeze.title">凍結解除</string>
   <string name="asset.resources">リソース</string>
   <string name="stake.resource">リソース</string>
   <string name="stake.resource.energy">エネルギー</string>
-  <string name="stake.resource.bandwidth">帯域幅</string>
+  <string name="stake.resource.bandwidth">帯域</string>
 </resources>

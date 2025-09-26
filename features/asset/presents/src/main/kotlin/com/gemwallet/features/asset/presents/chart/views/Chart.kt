@@ -65,11 +65,10 @@ fun Chart(
     val uiModel by viewModel.chartUIModel.collectAsStateWithLifecycle()
     val state by viewModel.chartUIState.collectAsStateWithLifecycle()
 
-    val points = uiModel.chartPoints.map { it.y }
+    val chartPoints = uiModel.chartPoints
+    val points = chartPoints.map { it.y }
     val min = points.minOrNull() ?: 0f
     val max = points.maxOrNull() ?: 0f
-    val minIndex = points.indexOf(min)
-    val maxIndex = points.indexOf(max)
     val modelProducer = remember { CartesianChartModelProducer() }
     var price by remember { mutableStateOf<PricePoint?>(null) }
 
@@ -77,20 +76,22 @@ fun Chart(
         color = MaterialTheme.colorScheme.secondary.toArgb(),
         margins = Insets(4f, 4f)
     )
-
-    val persistentMarkers = if (points.isNotEmpty()) {
+    val minIndex = if (uiModel.chartPoints.isNotEmpty()) uiModel.chartPoints.indexOfFirst { it.y == min } else 0
+    val maxIndex = if (uiModel.chartPoints.isNotEmpty()) uiModel.chartPoints.indexOfFirst { it.y == max } else 0
+    
+    val persistentMarkers = if (points.isNotEmpty() && chartPoints.isNotEmpty()) {
         mapOf(
             minIndex to rememberDefaultCartesianMarker(
                 persistentLabel,
                 labelPosition = DefaultCartesianMarker.LabelPosition.Bottom,
                 valueFormatter = { _, targets ->
-                    uiModel.chartPoints[minIndex].yLabel ?: "~"
+                    chartPoints[minIndex].yLabel ?: "~"
                 }
             ),
             maxIndex to rememberDefaultCartesianMarker(
                 persistentLabel,
                 valueFormatter = { _, targets ->
-                    uiModel.chartPoints[maxIndex].yLabel ?: "~"
+                    chartPoints[maxIndex].yLabel ?: "~"
                 }
             )
         )
@@ -124,19 +125,20 @@ fun Chart(
                 )
             }
             Spacer16()
-            Box(modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+            ) {
                 when {
                     state.loading || state.period != uiModel.period -> CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center),
                         strokeWidth = 1.dp
                     )
-
                     state.empty -> ChartError()
                     points.isEmpty() -> Spacer16()
                     else -> {
-                        LaunchedEffect(uiModel.period) {
+                        LaunchedEffect(uiModel.period, chartPoints) {
                             withContext(Dispatchers.Default) {
                                 modelProducer.runTransaction {
                                     lineSeries {
@@ -158,7 +160,11 @@ fun Chart(
                             chart = rememberCartesianChart(
                                 rememberLineCartesianLayer(
                                     pointSpacing = 0.1.dp,
-                                    rangeProvider = CartesianLayerRangeProvider.fixed(minY = min.toDouble(), maxY = max.toDouble())
+                                    rangeProvider = if (min.isFinite() && max.isFinite() && min != max) {
+                                        CartesianLayerRangeProvider.fixed(minY = min.toDouble(), maxY = max.toDouble())
+                                    } else {
+                                        CartesianLayerRangeProvider.auto()
+                                    }
                                 ),
                                 marker = rememberMarker(labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint),
                                 persistentMarkers = { extraStore ->
@@ -176,8 +182,8 @@ fun Chart(
                                         targets: List<CartesianMarker.Target>
                                     ) {
                                         val index = targets.first().x.toInt()
-                                        if (index > 0 && index < uiModel.chartPoints.size) {
-                                            price = uiModel.chartPoints[index]
+                                        if (index > 0 && index < chartPoints.size) {
+                                            price = chartPoints[index]
                                         }
                                     }
 
@@ -185,9 +191,9 @@ fun Chart(
                                         marker: CartesianMarker,
                                         targets: List<CartesianMarker.Target>
                                     ) {
-                                        price = uiModel.chartPoints[
+                                        price = chartPoints[
                                             min(
-                                                uiModel.chartPoints.size - 1,
+                                                chartPoints.size - 1,
                                                 targets.first().x.toInt()
                                             )
                                         ]

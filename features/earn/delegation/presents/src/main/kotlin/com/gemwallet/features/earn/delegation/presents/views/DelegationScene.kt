@@ -9,8 +9,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.redelegated
-import com.gemwallet.features.earn.delegation.viewmodels.DelegationSceneState
-import com.gemwallet.features.earn.delegation.viewmodels.DelegationViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.formatApr
@@ -20,6 +18,8 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.gemwallet.android.ui.models.actions.ConfirmTransactionAction
 import com.gemwallet.android.ui.theme.pendingColor
+import com.gemwallet.features.earn.delegation.viewmodels.DelegationSceneState
+import com.gemwallet.features.earn.delegation.viewmodels.DelegationViewModel
 import com.wallet.core.primitives.DelegationState
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.StakeChain

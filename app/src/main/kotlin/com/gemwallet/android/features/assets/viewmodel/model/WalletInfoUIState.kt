@@ -11,4 +11,5 @@ data class WalletInfoUIState(
     val changedPercentages: String = "0.0%",
     val priceState: PriceState = PriceState.Up,
     val type: WalletType = WalletType.view,
+    val operationsEnabled: Boolean = true,
 )

@@ -12,12 +12,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.features.buy.viewmodels.models.BuyError
-import com.gemwallet.features.buy.viewmodels.models.FiatSuggestion
-import com.gemwallet.features.buy.viewmodels.FiatViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.features.buy.viewmodels.FiatViewModel
+import com.gemwallet.features.buy.viewmodels.models.BuyError
+import com.gemwallet.features.buy.viewmodels.models.FiatSuggestion
 import com.wallet.core.primitives.FiatQuoteType
 
 @Composable

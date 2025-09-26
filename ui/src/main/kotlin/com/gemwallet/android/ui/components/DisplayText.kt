@@ -17,7 +17,7 @@ fun DisplayText(
         text = text,
         overflow = TextOverflow.MiddleEllipsis,
         maxLines = 1,
-        style = MaterialTheme.typography.displaySmall,
+        style = if ("✱✱✱✱✱✱" == text) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.displaySmall,
         color = MaterialTheme.colorScheme.onSurface,
         textAlign = TextAlign.Center
     )

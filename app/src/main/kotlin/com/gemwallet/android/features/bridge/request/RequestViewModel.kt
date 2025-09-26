@@ -34,7 +34,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
-import wallet.core.jni.Hash
+import uniffi.gemstone.SignDigestType
+import uniffi.gemstone.SignMessage
+import uniffi.gemstone.SignMessageDecoder
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -73,13 +75,18 @@ class RequestViewModel @Inject constructor(
                 val data = JSONArray(request.request.params).getString(1)
                 String(data.decodeHex())
             }
-            WalletConnectionMethods.EthSignTypedDataV4.string,
-            WalletConnectionMethods.EthSignTypedData.string -> {
-                JSONArray(request.request.params).getString(1)
+            WalletConnectionMethods.eth_sign_typed_data_v4.string,
+            WalletConnectionMethods.eth_sign_typed_data.string -> {
+                val data = JSONArray(request.request.params).getString(1)
+                data
             }
             WalletConnectionMethods.PersonalSign.string -> {
                 val data = JSONArray(request.request.params).getString(0)
-                String(data.decodeHex()) // TODO: Crashed with IllegalArgumentException
+                try {
+                    String(data.decodeHex())
+                } catch (_: Throwable) {
+                    data
+                }
             }
             WalletConnectionMethods.EthSendTransaction.string -> request.request.params
             WalletConnectionMethods.SolanaSignAndSendTransaction.string,
@@ -87,19 +94,8 @@ class RequestViewModel @Inject constructor(
                 val params = JSONObject(request.request.params).getString("transaction")
                 params
             }
-            WalletConnectionMethods.WalletSwitchEthereumChain.string -> {
-                WalletKit.respondSessionRequest(
-                    params = Wallet.Params.SessionRequestResponse(
-                        sessionTopic = request.topic,
-                        jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
-                            request.request.id,
-                            null,
-                        )
-                    ),
-                    onSuccess = {  },
-                    onError = { error -> }
-                )
-                onCancel()
+            WalletConnectionMethods.wallet_switch_ethereum_chain.string -> {
+                onSwitch(request, onCancel)
                 return@launch
             }
             else -> {
@@ -129,6 +125,21 @@ class RequestViewModel @Inject constructor(
         }
     }
 
+    fun onSwitch(request: Wallet.Model.SessionRequest, onCancel: () -> Unit) {
+        WalletKit.respondSessionRequest(
+            params = Wallet.Params.SessionRequestResponse(
+                sessionTopic = request.topic,
+                jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
+                    request.request.id,
+                    null,
+                )
+            ),
+            onSuccess = {  },
+            onError = { error -> }
+        )
+        onCancel()
+    }
+
     fun onSign() {
         val sessionRequest = state.value.sessionRequest ?: return
         val wallet = state.value.wallet ?: return
@@ -145,9 +156,12 @@ class RequestViewModel @Inject constructor(
                     WalletConnectionMethods.EthSign,
                     WalletConnectionMethods.PersonalSign -> {
                         val data = state.value.params.toByteArray()
-                        val messagePrefix = "\u0019Ethereum Signed Message:\n${data.size}"
-                        val prefix = messagePrefix.toByteArray()
-                        val param = Hash.keccak256(prefix + data)
+                        val decoder = SignMessageDecoder(SignMessage(SignDigestType.EIP191, data))
+
+//                        val messagePrefix = "\u0019Ethereum Signed Message:\n${data.size}"
+//                        val prefix = messagePrefix.toByteArray()
+//                        val param = Hash.keccak256(prefix + data)
+                        val param = decoder.hash()
                         signClient.signMessage(chain, param, privateKey).toHexString()
                     }
                     WalletConnectionMethods.EthSignTypedData,
@@ -224,12 +238,11 @@ private data class RequestViewModelState(
         }
         val account = wallet?.getAccount(chain!!)!!
         return when (sessionRequest.request.method) {
-            WalletConnectionMethods.EthSign.string,
-            WalletConnectionMethods.PersonalSign.string,
-            WalletConnectionMethods.EthSignTypedDataV4.string,
-            WalletConnectionMethods.SolanaSignMessage.string,
-            WalletConnectionMethods.EthSignTypedData.string -> RequestSceneState.SignMessage(
-                account = account,
+            WalletConnectionMethods.eth_sign.string,
+            WalletConnectionMethods.personal_sign.string,
+            WalletConnectionMethods.eth_sign_typed_data_v4.string,
+            WalletConnectionMethods.solana_sign_message.string,
+            WalletConnectionMethods.eth_sign_typed_data.string -> RequestSceneState.SignMessage(
                 walletName = wallet.name,
                 chain = chain,
                 method = sessionRequest.request.method,
@@ -307,7 +320,6 @@ sealed interface RequestSceneState {
         val chain: Chain,
         val method: String,
         val walletName: String,
-        val account: Account,
         val session: SessionUI,
         val params: String,
     ) : RequestSceneState

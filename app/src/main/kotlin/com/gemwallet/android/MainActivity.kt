@@ -5,6 +5,7 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
+import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.makeText
 import androidx.activity.compose.setContent
@@ -45,11 +46,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.compose.rememberNavController
+import com.gemwallet.android.cases.parseNotificationData
 import com.gemwallet.android.cases.security.AuthRequester
 import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
@@ -59,12 +62,14 @@ import com.gemwallet.android.features.bridge.proposal.ProposalScene
 import com.gemwallet.android.features.bridge.request.RequestScene
 import com.gemwallet.android.model.AuthRequest
 import com.gemwallet.android.model.AuthState
+import com.gemwallet.android.model.PushNotificationData
 import com.gemwallet.android.services.CheckAccountsService
 import com.gemwallet.android.services.SyncService
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.WalletApp
 import com.gemwallet.android.ui.components.RootWarningDialog
 import com.gemwallet.android.ui.components.isDeviceRooted
+import com.gemwallet.android.ui.navigation.routes.assetRouteUri
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
@@ -106,6 +111,8 @@ class MainActivity : FragmentActivity(), AuthRequester {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         prepareBiometricAuth()
+
+        viewModel.handleIntent(this@MainActivity.intent)
 
         setContent {
             RootWarning()
@@ -300,18 +307,6 @@ class MainActivity : FragmentActivity(), AuthRequester {
             onSuccess()
         }
     }
-
-//    companion object {
-//        fun requestAuth(context: Context, auth: AuthRequest, onSuccess: () -> Unit) {
-//            val activity = context.getActivity() ?: exitProcess(0)
-//            if (activity.enabledSysAuth()) {
-//                activity.onSuccessAuth = onSuccess
-//                activity.auth(auth)
-//            } else {
-//                onSuccess()
-//            }
-//        }
-//    }
 }
 
 @OptIn(ExperimentalAtomicApi::class)
@@ -420,10 +415,30 @@ class MainViewModel @Inject constructor(
     }
 
     fun handleIntent(intent: Intent) {
+        Log.d("NOTIFICATIONS", "Intent extra: ${intent.extras}")
         viewModelScope.launch(Dispatchers.IO) {
-            if (intent.hasExtra("walletIndex")) {
+            val intent = if (intent.hasExtra("walletIndex")) {
                 val walletIndex = intent.getIntExtra("walletIndex", -1)
                 onWallet(walletIndex)
+                intent
+            } else if (intent.extras != null) {
+                val data = parseNotificationData(intent.getStringExtra("type"), intent.getStringExtra("data"))
+                when (data) {
+                    is PushNotificationData.Asset -> Intent().apply {
+                        setData("$assetRouteUri/${data.assetId}".toUri())
+                    }
+                    is PushNotificationData.Transaction -> {
+                        onWallet(data.walletIndex)
+                        Intent().apply {
+                            setData("$assetRouteUri/${data.assetId}".toUri())
+                        }
+                    }
+                    is PushNotificationData.PushNotificationPayloadType,
+                    is PushNotificationData.Swap,
+                    null -> intent
+                }
+            } else {
+                intent
             }
 
             val data = intent.data ?: return@launch
@@ -431,7 +446,6 @@ class MainViewModel @Inject constructor(
             when (data.scheme) {
                 "wc" -> addPairing(data.toString())
                 else -> this@MainViewModel.intent.update { intent }
-
             }
         }
     }

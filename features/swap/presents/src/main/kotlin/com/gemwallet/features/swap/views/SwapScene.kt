@@ -11,19 +11,14 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
-import com.gemwallet.android.ui.components.list_item.property.PropertyItem
-import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.features.swap.viewmodels.models.PriceImpact
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
-import com.gemwallet.features.swap.viewmodels.models.SwapProviderItem
 import com.gemwallet.features.swap.viewmodels.models.SwapRate
 import com.gemwallet.features.swap.viewmodels.models.SwapState
-import com.gemwallet.features.swap.views.components.CurrentSwapProvider
-import com.gemwallet.features.swap.views.components.PriceImpact
 import com.gemwallet.features.swap.views.components.SwapAction
+import com.gemwallet.features.swap.views.components.SwapDetailItem
 import com.gemwallet.features.swap.views.components.SwapError
 import com.gemwallet.features.swap.views.components.SwapItem
 
@@ -36,15 +31,12 @@ internal fun SwapScene(
     receiveEquivalent: String,
     priceImpact: PriceImpact?,
     rate: SwapRate?,
-    estimateTime: String?,
-    providers: List<SwapProviderItem?>,
-    provider: SwapProviderItem?,
     isShowPriceImpactAlert: MutableState<Boolean>,
     selectState: MutableState<SwapItemType?>,
-    isShowProviderSelect: MutableState<Boolean>,
     payValue: TextFieldState,
     receiveValue: TextFieldState,
     switchSwap: () -> Unit,
+    onDetails: () -> Unit,
     onCancel: () -> Unit,
     onSwap: () -> Unit,
 ) {
@@ -90,18 +82,8 @@ internal fun SwapScene(
                 selectState.value = SwapItemType.Receive
             }
         )
-        provider?.let { provider ->
-            CurrentSwapProvider(provider, providers.size > 1, isShowProviderSelect)
-        }
-        estimateTime?.let {
-            PropertyItem(
-                title = { PropertyTitleText(R.string.swap_estimated_time_title) },
-                data = { PropertyDataText("\u2248 $it min") }
-            )
-        }
-        com.gemwallet.features.swap.views.components.SwapRate(rate)
-        PriceImpact(priceImpact)
         Spacer16()
+        SwapDetailItem(rate, onDetails)
         SwapError(swapState)
     }
 }

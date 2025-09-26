@@ -15,7 +15,7 @@ interface PercentageFormattedUIModel {
             } else {
                 val df = DecimalFormat("#.##")
                 df.roundingMode = RoundingMode.DOWN
-                df.minimumFractionDigits = 2
+                df.minimumFractionDigits = minimumFractionDigits
                 val formattedValue = df.format(percents.absoluteValue)
                 val afterFormat = df.parse(df.format(percents))?.toDouble() ?: 0.0
                 return (if (percentageShowSign) if (afterFormat > 0) "+" else if (afterFormat < 0) "-" else "" else "") +
@@ -26,4 +26,6 @@ interface PercentageFormattedUIModel {
     val percentageShowZero: Boolean get() =  true
 
     val percentageShowSign: Boolean get() =  true
+
+    val minimumFractionDigits: Int get() =  2
 }

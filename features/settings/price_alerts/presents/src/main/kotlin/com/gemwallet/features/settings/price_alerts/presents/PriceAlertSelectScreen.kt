@@ -5,11 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import com.gemwallet.features.settings.price_alerts.viewmodels.PriceAlertsSelectViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.PriceInfo
 import com.gemwallet.features.asset_select.presents.views.AssetSelectScreen
 import com.gemwallet.features.asset_select.presents.views.getAssetBadge
+import com.gemwallet.features.settings.price_alerts.viewmodels.PriceAlertsSelectViewModel
 import com.wallet.core.primitives.AssetId
 
 @Composable

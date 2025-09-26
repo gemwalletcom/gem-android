@@ -2,6 +2,8 @@ package com.gemwallet.android.ui.components.image
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
@@ -48,9 +50,10 @@ fun IconWithBadge(
         supportIcon?.let {
             AsyncImage(
                 modifier = Modifier
+                    .offset(2.dp, 2.dp)
                     .size(supportSize)
                     .align(Alignment.Companion.BottomEnd)
-                    .border(0.5.dp, MaterialTheme.colorScheme.surface, CircleShape),
+                    .border(1.5.dp, MaterialTheme.colorScheme.surface, CircleShape),
                 model = supportIcon,
                 contentDescription = "list_item_support_icon",
             )
