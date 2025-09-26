@@ -211,12 +211,12 @@ fun AssetHeadActions(
 private fun AssetWatchOnly() {
     var showInfoSheet by remember { mutableStateOf<InfoSheetEntity?>(null) }
     Button(
-        onClick = {},
-        enabled = false,
+        onClick = { showInfoSheet = InfoSheetEntity.WatchWalletInfo },
+        enabled = true,
         colors = ButtonDefaults
             .buttonColors(
-                disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                disabledContainerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.07f)
+                contentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.07f)
             )
     ) {
         Row(
@@ -235,7 +235,7 @@ private fun AssetWatchOnly() {
             Spacer8()
             IconButton(
                 modifier = Modifier.size(24.dp),
-                onClick = { showInfoSheet = InfoSheetEntity.WatchWalletInfo }
+                onClick = {  }
             ) {
                 Icon(
                     imageVector = Icons.Default.Info,
