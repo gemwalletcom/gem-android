@@ -175,7 +175,8 @@ class AssetDetailsViewModel @Inject constructor(
                 iconUrl = asset.id.getIconUrl(),
                 priceValue = if (price == 0.0) "" else currency.format(price, dynamicPlace = true),
                 priceDayChanges = PriceUIState.formatPercentage(
-                    assetInfo.price?.price?.priceChangePercentage24h ?: 0.0
+                    value = assetInfo.price?.price?.priceChangePercentage24h ?: 0.0,
+                    showZero = true,
                 ),
                 priceChangedType = PriceUIState.getState(
                     assetInfo.price?.price?.priceChangePercentage24h ?: 0.0
