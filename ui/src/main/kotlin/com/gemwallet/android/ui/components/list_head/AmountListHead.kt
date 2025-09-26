@@ -84,9 +84,11 @@ fun AmountListHead(
                 HeaderIcon(it)
                 Spacer16()
             }
-            DisplayText(text = amount, modifier = Modifier
-                .fillMaxWidth()
-                .clickable(onHideBalances != null, onClick = { onHideBalances?.invoke() })
+            DisplayText(
+                text = amount,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable(onHideBalances != null, onClick = { onHideBalances?.invoke() })
             )
             if (!equivalent.isNullOrEmpty()) {
                 Spacer4()

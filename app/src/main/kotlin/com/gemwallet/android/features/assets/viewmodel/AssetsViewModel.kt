@@ -153,7 +153,7 @@ class AssetsViewModel @Inject constructor(
             WalletInfoUIState(
                 name = wallet.name,
                 icon = icon,
-                totalValue = "*****",
+                totalValue = "✱✱✱✱✱✱",
                 changedValue = "",
                 changedPercentages = "",
                 priceState = PriceState.None,
