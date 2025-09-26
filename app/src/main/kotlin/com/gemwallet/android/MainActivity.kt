@@ -308,18 +308,6 @@ class MainActivity : FragmentActivity(), AuthRequester {
             onSuccess()
         }
     }
-
-//    companion object {
-//        fun requestAuth(context: Context, auth: AuthRequest, onSuccess: () -> Unit) {
-//            val activity = context.getActivity() ?: exitProcess(0)
-//            if (activity.enabledSysAuth()) {
-//                activity.onSuccessAuth = onSuccess
-//                activity.auth(auth)
-//            } else {
-//                onSuccess()
-//            }
-//        }
-//    }
 }
 
 @OptIn(ExperimentalAtomicApi::class)
