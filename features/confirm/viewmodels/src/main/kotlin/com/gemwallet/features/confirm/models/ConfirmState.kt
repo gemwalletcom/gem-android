@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.confirm.models
+package com.gemwallet.features.confirm.models
 
 sealed interface ConfirmState {
     data object Prepare : ConfirmState

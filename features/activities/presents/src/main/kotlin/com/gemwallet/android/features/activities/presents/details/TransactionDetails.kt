@@ -1,11 +1,8 @@
 package com.gemwallet.android.features.activities.presents.details
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
@@ -24,7 +21,6 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.domains.asset.chain
@@ -35,7 +31,7 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.getRelativeDate
-import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.ui.components.list_head.AmountListHead
 import com.gemwallet.android.ui.components.list_head.NftHead
 import com.gemwallet.android.ui.components.list_head.SwapListHead
@@ -43,6 +39,7 @@ import com.gemwallet.android.ui.components.list_item.getTransactionTitle
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkFee
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.LoadingScene
@@ -79,7 +76,7 @@ fun TransactionDetails(
                 item { PropertyNetwork(model.asset.chain) }
                 transactionProviderItem(model.provider)
                 model.asset.chain.asset().let {
-                    transactionNetworkFeeItem(it.name, it.symbol, model.feeCrypto, model.feeFiat)
+                    item { PropertyNetworkFee(it.name, it.symbol, model.feeCrypto, model.feeFiat) }
                 }
 
                 transactionExplorer(model.explorerName, model.explorerUrl)
@@ -255,23 +252,6 @@ private fun LazyListScope.transactionProviderItem(provider: SwapProvider?) {
             },
             data = {
                 PropertyDataText(provider.name)
-            }
-        )
-    }
-}
-
-private fun LazyListScope.transactionNetworkFeeItem(networkTitle: String, networkSymbol: String, feeCrypto: String, feeFiat: String) {
-    item {
-        PropertyItem(
-            modifier = Modifier.height(72.dp),
-            title = {
-                PropertyTitleText(R.string.transfer_network_fee, info = InfoSheetEntity.NetworkFeeInfo(networkTitle, networkSymbol))
-            },
-            data = {
-                Column(horizontalAlignment = Alignment.End) {
-                    Row(horizontalArrangement = Arrangement.End) { PropertyDataText(feeCrypto) }
-                    Row(horizontalArrangement = Arrangement.End) { PropertyDataText(feeFiat) }
-                }
             }
         )
     }

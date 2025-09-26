@@ -6,10 +6,10 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.features.earn.delegation.presents.views.DelegationScene
-import com.gemwallet.features.stake.presents.views.StakeScreen
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
+import com.gemwallet.features.earn.delegation.presents.views.DelegationScene
+import com.gemwallet.features.stake.presents.views.StakeScreen
 import com.wallet.core.primitives.AssetId
 import kotlinx.serialization.Serializable
 
@@ -18,8 +18,6 @@ data class StakeRoute(val assetId: String)
 
 @Serializable
 data class DelegationRoute(val validatorId: String, val delegationId: String)
-
-const val stakeRoute = "stake"
 
 fun NavController.navigateToStake(assetId: AssetId, navOptions: NavOptions? = null) {
     navigate(StakeRoute(assetId.toIdentifier()), navOptions ?: navOptions { launchSingleTop = true })

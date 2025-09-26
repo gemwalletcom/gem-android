@@ -15,8 +15,6 @@ import com.wallet.core.primitives.AssetId
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-
-const val assetRoutePath = "asset"
 const val assetRouteUri = "gem://asset"
 
 @Serializable

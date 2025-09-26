@@ -75,8 +75,8 @@ class RequestViewModel @Inject constructor(
                 val data = JSONArray(request.request.params).getString(1)
                 String(data.decodeHex())
             }
-            WalletConnectionMethods.eth_sign_typed_data_v4.string,
-            WalletConnectionMethods.eth_sign_typed_data.string -> {
+            WalletConnectionMethods.EthSignTypedData.string,
+            WalletConnectionMethods.EthSignTypedDataV4.string -> {
                 val data = JSONArray(request.request.params).getString(1)
                 data
             }
@@ -94,7 +94,7 @@ class RequestViewModel @Inject constructor(
                 val params = JSONObject(request.request.params).getString("transaction")
                 params
             }
-            WalletConnectionMethods.wallet_switch_ethereum_chain.string -> {
+            WalletConnectionMethods.WalletSwitchEthereumChain.string -> {
                 onSwitch(request, onCancel)
                 return@launch
             }
@@ -238,11 +238,11 @@ private data class RequestViewModelState(
         }
         val account = wallet?.getAccount(chain!!)!!
         return when (sessionRequest.request.method) {
-            WalletConnectionMethods.eth_sign.string,
-            WalletConnectionMethods.personal_sign.string,
-            WalletConnectionMethods.eth_sign_typed_data_v4.string,
-            WalletConnectionMethods.solana_sign_message.string,
-            WalletConnectionMethods.eth_sign_typed_data.string -> RequestSceneState.SignMessage(
+            WalletConnectionMethods.EthSign.string,
+            WalletConnectionMethods.PersonalSign.string,
+            WalletConnectionMethods.EthSignTypedData.string,
+            WalletConnectionMethods.EthSignTypedDataV4.string,
+            WalletConnectionMethods.SolanaSignMessage.string -> RequestSceneState.SignMessage(
                 walletName = wallet.name,
                 chain = chain,
                 method = sessionRequest.request.method,

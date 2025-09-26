@@ -5,14 +5,14 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
+import com.gemwallet.android.ui.components.animation.enterTabScreenTransition
+import com.gemwallet.android.ui.components.animation.exitTabScreenTransition
 import com.gemwallet.features.settings.aboutus.presents.AboutUsScreen
 import com.gemwallet.features.settings.currency.presents.CurrenciesScene
 import com.gemwallet.features.settings.develop.presents.DevelopScene
 import com.gemwallet.features.settings.networks.presents.NetworksScreen
 import com.gemwallet.features.settings.price_alerts.presents.PriceAlertsScreen
 import com.gemwallet.features.settings.security.presents.SecurityScene
-import com.gemwallet.android.ui.components.animation.enterTabScreenTransition
-import com.gemwallet.android.ui.components.animation.exitTabScreenTransition
 import com.gemwallet.features.settings.settings.presents.views.SettingsScene
 import com.wallet.core.primitives.AssetId
 import kotlinx.serialization.Serializable

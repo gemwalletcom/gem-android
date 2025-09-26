@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components.image
+package com.gemwallet.android.domains.asset
 
 import com.gemwallet.android.ext.type
 import com.wallet.core.primitives.Asset

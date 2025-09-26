@@ -1,12 +1,16 @@
-package com.gemwallet.android.features.confirm.views
+package com.gemwallet.features.confirm.views
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -28,22 +32,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
-import com.gemwallet.android.features.confirm.models.ConfirmError
-import com.gemwallet.android.features.confirm.models.ConfirmState
-import com.gemwallet.android.features.confirm.viewmodels.ConfirmViewModel
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.InfoBottomSheet
 import com.gemwallet.android.ui.components.InfoSheetEntity
-import com.gemwallet.android.ui.components.Table
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.list_head.AmountListHead
 import com.gemwallet.android.ui.components.list_head.NftHead
 import com.gemwallet.android.ui.components.list_head.SwapListHead
 import com.gemwallet.android.ui.components.list_item.getTitle
+import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
+import com.gemwallet.android.ui.components.list_item.property.PropertyItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkFee
+import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.models.actions.CancelAction
@@ -53,6 +60,10 @@ import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.defaultPadding
 import com.gemwallet.android.ui.theme.trailingIconMedium
+import com.gemwallet.features.confirm.models.ConfirmError
+import com.gemwallet.features.confirm.models.ConfirmState
+import com.gemwallet.features.confirm.models.FeeUIModel
+import com.gemwallet.features.confirm.viewmodels.ConfirmViewModel
 import com.wallet.core.primitives.TransactionType
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -104,28 +115,53 @@ fun ConfirmScreen(
             )
         }
     ) {
-        when (amountModel?.txType) {
-            TransactionType.Swap -> SwapListHead(
-                fromAsset = amountModel?.fromAsset,
-                fromValue = amountModel?.fromAmount!!,
-                toAsset = amountModel?.toAsset!!,
-                toValue = amountModel?.toAmount!!,
-                currency = amountModel?.currency,
-            )
-            TransactionType.TransferNFT -> amountModel?.nftAsset?.let { NftHead(it) }
-            else -> AmountListHead(
-                amount = amountModel?.amount ?: "",
-                equivalent = amountModel?.amountEquivalent,
-            )
-        }
-        Table(txInfoUIModel)
-        Table(
-            if (allFee.size > 1) {
-                listOf(feeModel.firstOrNull()?.copy(action = { showSelectTxSpeed = true }))
-            } else {
-                feeModel
+        LazyColumn(modifier = Modifier.fillMaxSize()) {
+            item {
+                when (amountModel?.txType) {
+                    TransactionType.Swap -> SwapListHead(
+                        fromAsset = amountModel?.fromAsset,
+                        fromValue = amountModel?.fromAmount!!,
+                        toAsset = amountModel?.toAsset!!,
+                        toValue = amountModel?.toAmount!!,
+                        currency = amountModel?.currency,
+                    )
+                    TransactionType.TransferNFT -> amountModel?.nftAsset?.let { NftHead(it) }
+                    else -> AmountListHead(
+                        amount = amountModel?.amount ?: "",
+                        equivalent = amountModel?.amountEquivalent,
+                    )
+                }
             }
-        )
+            txInfoUIModel?.let {
+                item { PropertyItem(R.string.common_wallet, it.from) }
+                item { PropertyDestination(it.destination) }
+                it.memo?.let { memo -> item { PropertyItem(R.string.transfer_memo, memo) } }
+                item { PropertyNetwork(it.asset) }
+            }
+            item {
+                feeModel?.let {
+                    when (it) {
+                        FeeUIModel.Calculating -> PropertyItem(
+                            modifier = Modifier.height(72.dp),
+                            title = { PropertyTitleText(R.string.transfer_network_fee) },
+                            data = { Row(horizontalArrangement = Arrangement.End) { CircularProgressIndicator16() } }
+                        )
+                        is FeeUIModel.FeeInfo -> PropertyNetworkFee(
+                            it.feeAsset.name,
+                            it.feeAsset.symbol,
+                            it.cryptoAmount,
+                            it.fiatAmount
+                        )
+                        FeeUIModel.Error -> PropertyItem(
+                            modifier = Modifier.height(72.dp),
+                            title = { PropertyTitleText(R.string.transfer_network_fee) },
+                            data = { PropertyDataText("~") }
+                        )
+                    }
+
+                }
+            }
+        }
         Spacer16()
         ConfirmErrorInfo(state, feeValue = feeValue, isShowBottomSheetInfo, onBuy)
 
@@ -162,12 +198,13 @@ private fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBottom
     if (state !is ConfirmState.Error || state.message == ConfirmError.None) {
         return
     }
-    val infoSheetEntity = when (state.message) {
+    val message = state.message
+    val infoSheetEntity = when (message) {
         is ConfirmError.InsufficientFee -> InfoSheetEntity.NetworkBalanceRequiredInfo(
-            chain = state.message.chain,
+            chain = message.chain,
             value = feeValue,
-            actionLabel = stringResource(R.string.asset_buy_asset, state.message.chain.asset().symbol),
-            action = { onBuy(state.message.chain.asset().id) },
+            actionLabel = stringResource(R.string.asset_buy_asset, message.chain.asset().symbol),
+            action = { onBuy(message.chain.asset().id) },
         )
         is ConfirmError.BroadcastError,
         is ConfirmError.Init,

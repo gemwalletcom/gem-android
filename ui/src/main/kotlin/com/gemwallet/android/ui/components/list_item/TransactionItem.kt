@@ -24,8 +24,8 @@ import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.image.IconWithBadge
-import com.gemwallet.android.ui.components.image.getIconUrl
-import com.gemwallet.android.ui.components.image.getSupportIconUrl
+import com.gemwallet.android.domains.asset.getIconUrl
+import com.gemwallet.android.domains.asset.getSupportIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator10
 import com.gemwallet.android.ui.theme.Spacer2
 import com.gemwallet.android.ui.theme.Spacer8

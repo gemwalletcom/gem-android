@@ -3,12 +3,12 @@ package com.gemwallet.android.data.password
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.math.toHexString
 import java.security.SecureRandom
-import androidx.core.content.edit
 
 class PreferencePasswordStore(
     private val context: Context,

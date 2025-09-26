@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.confirm.views
+package com.gemwallet.features.confirm.views
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -17,12 +17,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.features.confirm.models.FeeRateUIModel
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.defaultPadding
 import com.gemwallet.android.ui.theme.trailingIconSmall
+import com.gemwallet.features.confirm.models.FeeRateUIModel
 import com.wallet.core.primitives.FeePriority
 
 @OptIn(ExperimentalMaterial3Api::class)

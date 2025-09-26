@@ -1,6 +1,6 @@
 package com.gemwallet.features.swap.viewmodels.models
 
-import com.gemwallet.android.ui.components.image.getSwapProviderIcon
+import com.gemwallet.android.domains.asset.getSwapProviderIcon
 import uniffi.gemstone.SwapperProviderType
 
 data class SwapProviderItem(

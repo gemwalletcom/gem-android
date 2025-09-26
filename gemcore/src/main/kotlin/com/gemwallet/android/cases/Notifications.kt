@@ -1,6 +1,7 @@
 package com.gemwallet.android.cases
 
 import com.gemwallet.android.model.PushNotificationData
+import com.gemwallet.android.model.PushNotificationData.*
 import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.PushNotificationAsset
 import com.wallet.core.primitives.PushNotificationSwapAsset
@@ -15,7 +16,7 @@ fun parseNotificationData(rawType: String?, rawData: String?): PushNotificationD
     return try {
         when (type) {
             PushNotificationTypes.Transaction -> jsonEncoder.decodeFromString<PushNotificationTransaction>(rawData).let {
-                PushNotificationData.Transaction(
+                Transaction(
                     transactionId = it.transactionId,
                     assetId = it.assetId,
                     walletIndex = it.walletIndex
@@ -24,16 +25,17 @@ fun parseNotificationData(rawType: String?, rawData: String?): PushNotificationD
             PushNotificationTypes.PriceAlert,
             PushNotificationTypes.BuyAsset,
             PushNotificationTypes.Asset -> jsonEncoder.decodeFromString<PushNotificationAsset>(rawData).let {
-                PushNotificationData.Asset(
+                Asset(
                     assetId = it.assetId
                 )
             }
             PushNotificationTypes.SwapAsset -> jsonEncoder.decodeFromString<PushNotificationSwapAsset>(rawData).let {
-                PushNotificationData.Swap(
+                Swap(
                     fromAssetId = it.fromAssetId,
                     toAssetId = it.toAssetId
                 )
             }
+            PushNotificationTypes.Support,
             PushNotificationTypes.Test -> null
         }
     } catch (_: Throwable) {

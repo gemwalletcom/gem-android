@@ -10,8 +10,6 @@ import com.gemwallet.features.swap.views.SwapScreen
 import com.wallet.core.primitives.AssetId
 import kotlinx.serialization.Serializable
 
-const val swapRoute = "swap"
-
 @Serializable
 data class SwapRoute(val from: String?, val to: String?)
 

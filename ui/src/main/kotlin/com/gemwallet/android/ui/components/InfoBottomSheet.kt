@@ -28,7 +28,7 @@ import coil3.compose.AsyncImage
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.theme.Spacer16

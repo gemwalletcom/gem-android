@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.confirm.viewmodels
+package com.gemwallet.features.confirm.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -14,12 +14,8 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.domains.asset.isMemoSupport
-import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.confirm.models.AmountUIModel
-import com.gemwallet.android.features.confirm.models.ConfirmError
-import com.gemwallet.android.features.confirm.models.ConfirmState
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
@@ -27,17 +23,16 @@ import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.format
 import com.gemwallet.android.serializer.jsonEncoder
-import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.CellEntity
-import com.gemwallet.android.ui.components.InfoSheetEntity
-import com.gemwallet.android.ui.components.image.getIconUrl
-import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
-import com.gemwallet.android.ui.navigation.routes.assetRoutePath
-import com.gemwallet.android.ui.navigation.routes.paramsArg
-import com.gemwallet.android.ui.navigation.routes.stakeRoute
-import com.gemwallet.android.ui.navigation.routes.swapRoute
-import com.gemwallet.android.ui.navigation.routes.txTypeArg
+import com.gemwallet.android.ui.models.navigation.assetRoutePath
+import com.gemwallet.android.ui.models.navigation.stakeRoute
+import com.gemwallet.android.ui.models.navigation.swapRoute
+import com.gemwallet.features.confirm.models.AmountUIModel
+import com.gemwallet.features.confirm.models.ConfirmError
+import com.gemwallet.features.confirm.models.ConfirmState
+import com.gemwallet.features.confirm.models.DestinationUIModel
+import com.gemwallet.features.confirm.models.FeeUIModel
+import com.gemwallet.features.confirm.models.TxUIModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.DelegationValidator
@@ -64,6 +59,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigInteger
 import javax.inject.Inject
+
+internal const val paramsArg = "data"
+internal const val txTypeArg = "tx_type"
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
@@ -173,17 +171,19 @@ class ConfirmViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val txInfoUIModel = combine(request, assetsInfo) { request, assetsInfo ->
-        request ?: return@combine emptyList()
-        val assetInfo = assetsInfo?.getByAssetId(request.assetId) ?: return@combine emptyList()
-        listOf(
-            assetInfo.getFromCell(request),
-            request.getRecipientCell(getValidator(request)),
-            request.getMemoCell(),
-            assetInfo.getNetworkCell(),
-        ).mapNotNull { it }
+        request ?: return@combine null
+        val assetInfo = assetsInfo?.getByAssetId(request.assetId) ?: return@combine null
+        TxUIModel(
+            from = assetInfo.walletName,
+            destination = request.let {
+                DestinationUIModel.map(it, getValidator(it))
+            },
+            memo = request.memo()?.takeIf { request is ConfirmParams.TransferParams && assetInfo.asset.isMemoSupport() },
+            asset = assetInfo.asset
+        )
     }
     .flowOn(Dispatchers.Default)
-    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val feeValue = combine(preloadData, feeAssetInfo, state, feePriority) { signerParams, feeAssetInfo, state, feePriority ->
         val amount = signerParams?.fee(feePriority)?.amount
@@ -199,18 +199,7 @@ class ConfirmViewModel @Inject constructor(
     val feeUIModel = combine(preloadData, feeAssetInfo, state, feePriority) { signerParams, feeAssetInfo, state, priority ->
         val amount = signerParams?.fee(priority)?.amount
         val result = if (amount == null || feeAssetInfo == null) {
-            CellEntity(
-                label = R.string.transfer_network_fee,
-                data = if (state is ConfirmState.Error) "-" else "",
-                trailing = {
-                    if (state !is ConfirmState.Error) {
-                        CircularProgressIndicator16()
-                    }
-                },
-                info = feeAssetInfo?.asset?.let {
-                    InfoSheetEntity.NetworkFeeInfo(it.name, it.symbol)
-                },
-            )
+            if (state is ConfirmState.Error) FeeUIModel.Error else FeeUIModel.Calculating
         } else {
             val feeAmount = Crypto(amount)
             val currency = feeAssetInfo.price?.currency ?: Currency.USD
@@ -235,18 +224,16 @@ class ConfirmViewModel @Inject constructor(
                 this@ConfirmViewModel.state.update { ConfirmState.Error(err) }
             }
 
-            CellEntity(
-                label = R.string.transfer_network_fee,
-                data = feeCrypto,
-                support = feeFiat,
-                info = feeAssetInfo.asset.let { InfoSheetEntity.NetworkFeeInfo(it.name, it.symbol) }
+            FeeUIModel.FeeInfo(
+                cryptoAmount = feeCrypto,
+                fiatAmount = feeFiat,
+                feeAsset = feeAssetInfo.asset
             )
         }
-
-        listOf(result)
+        result
     }
     .flowOn(Dispatchers.Default)
-    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val allFee = preloadData.filterNotNull().map { it.allFee() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -389,60 +376,60 @@ class ConfirmViewModel @Inject constructor(
         return firstOrNull { it.id().toIdentifier() ==  str}
     }
 
-    private fun ConfirmParams.getRecipientCell(validator: DelegationValidator?): CellEntity<Int>? {
-        return when (this) {
-            is ConfirmParams.Activate,
-            is ConfirmParams.Stake.RewardsParams -> null
-            is ConfirmParams.Stake.DelegateParams,
-            is ConfirmParams.Stake.RedelegateParams,
-            is ConfirmParams.Stake.UndelegateParams,
-            is ConfirmParams.Stake.WithdrawParams -> CellEntity(label = R.string.stake_validator, data = validator?.name ?: "")
-            is ConfirmParams.SwapParams -> {
-                // TODO: val swapProvider = SwapProvider.entries.firstOrNull { it.string == protocolId }
-                CellEntity(
-                    label = R.string.common_provider,
-                    data = provider,
-                )
-            }
-            is ConfirmParams.TokenApprovalParams -> CellEntity(label = R.string.common_provider, data = provider)
-            is ConfirmParams.NftParams,
-            is ConfirmParams.TransferParams -> {
-                val destination = destination()
-                if (destination == null) {
-                    state.update { ConfirmState.Error(ConfirmError.RecipientEmpty) }
-                    return null
-                }
-                return when {
-                    destination.domainName.isNullOrEmpty() -> CellEntity(label = R.string.transaction_recipient, data = destination.address)
-                    else -> CellEntity(label = R.string.transaction_recipient, support = destination.address, data = destination.domainName!!)
-                }
-            }
-        }
-    }
+//    private fun ConfirmParams.getRecipientCell(validator: DelegationValidator?): CellEntity<Int>? {
+//        return when (this) {
+//            is ConfirmParams.Activate,
+//            is ConfirmParams.Stake.RewardsParams -> null
+//            is ConfirmParams.Stake.DelegateParams,
+//            is ConfirmParams.Stake.RedelegateParams,
+//            is ConfirmParams.Stake.UndelegateParams,
+//            is ConfirmParams.Stake.WithdrawParams -> CellEntity(label = R.string.stake_validator, data = validator?.name ?: "")
+//            is ConfirmParams.SwapParams -> {
+//                // TODO: val swapProvider = SwapProvider.entries.firstOrNull { it.string == protocolId }
+//                CellEntity(
+//                    label = R.string.common_provider,
+//                    data = provider,
+//                )
+//            }
+//            is ConfirmParams.TokenApprovalParams -> CellEntity(label = R.string.common_provider, data = provider)
+//            is ConfirmParams.NftParams,
+//            is ConfirmParams.TransferParams -> {
+//                val destination = destination()
+//                if (destination == null) {
+//                    state.update { ConfirmState.Error(ConfirmError.RecipientEmpty) }
+//                    return null
+//                }
+//                return when {
+//                    destination.domainName.isNullOrEmpty() -> CellEntity(label = R.string.transaction_recipient, data = destination.address)
+//                    else -> CellEntity(label = R.string.transaction_recipient, support = destination.address, data = destination.domainName!!)
+//                }
+//            }
+//        }
+//    }
+//
+//    private fun AssetInfo.getFromCell(input: ConfirmParams): CellEntity<Int> {
+//        return CellEntity(label = R.string.transfer_from, data = walletName)
+//    }
 
-    private fun AssetInfo.getFromCell(input: ConfirmParams): CellEntity<Int> {
-        return CellEntity(label = R.string.transfer_from, data = walletName)
-    }
+//    private fun ConfirmParams.getMemoCell(): CellEntity<Int>? {
+//        return if (this is ConfirmParams.TransferParams && this.asset.isMemoSupport()) {
+//            val memo = memo()
+//            if (memo.isNullOrEmpty()) {
+//                return null
+//            }
+//            CellEntity(label = R.string.transfer_memo, data = memo)
+//        } else {
+//            null
+//        }
+//    }
 
-    private fun ConfirmParams.getMemoCell(): CellEntity<Int>? {
-        return if (this is ConfirmParams.TransferParams && this.asset.isMemoSupport()) {
-            val memo = memo()
-            if (memo.isNullOrEmpty()) {
-                return null
-            }
-            CellEntity(label = R.string.transfer_memo, data = memo)
-        } else {
-            null
-        }
-    }
-
-    private fun AssetInfo.getNetworkCell(): CellEntity<Int> {
-        return CellEntity(
-            label = R.string.transfer_network,
-            data = owner?.chain?.asset()?.name ?: "",
-            trailingIcon = owner?.chain?.getIconUrl() ?: "",
-        )
-    }
+//    private fun AssetInfo.getNetworkCell(): CellEntity<Int> {
+//        return CellEntity(
+//            label = R.string.transfer_network,
+//            data = owner?.chain?.asset()?.name ?: "",
+//            trailingIcon = owner?.chain?.getIconUrl() ?: "",
+//        )
+//    }
 
     private fun assembleMetadata(signerParams: SignerParams) = when (val input = signerParams.input) {
         is ConfirmParams.SwapParams -> {

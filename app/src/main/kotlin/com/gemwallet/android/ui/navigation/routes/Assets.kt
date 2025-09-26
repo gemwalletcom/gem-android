@@ -11,8 +11,6 @@ import com.gemwallet.android.ui.components.animation.exitTabScreenTransition
 import com.wallet.core.primitives.AssetId
 import kotlinx.serialization.Serializable
 
-const val assetsRoute = "assets"
-
 @Serializable
 object AssetsRoute
 

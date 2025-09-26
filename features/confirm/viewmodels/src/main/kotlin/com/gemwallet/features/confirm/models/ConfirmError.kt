@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.confirm.models
+package com.gemwallet.features.confirm.models
 
 import com.wallet.core.primitives.Chain
 

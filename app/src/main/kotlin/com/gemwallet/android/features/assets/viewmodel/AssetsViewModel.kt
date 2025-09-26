@@ -2,7 +2,6 @@ package com.gemwallet.android.features.assets.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.banners.GetBannersCase
 import com.gemwallet.android.cases.banners.GetWalletOperationsEnabled
 import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
@@ -22,7 +21,6 @@ import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.models.PriceState
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType

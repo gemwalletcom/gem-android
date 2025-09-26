@@ -1,7 +1,7 @@
 package com.gemwallet.features.wallets.viewmodels.cases
 
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.domains.asset.getIconUrl
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 

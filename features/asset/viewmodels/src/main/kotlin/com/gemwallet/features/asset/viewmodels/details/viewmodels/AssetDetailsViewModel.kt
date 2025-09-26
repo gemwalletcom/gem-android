@@ -23,7 +23,7 @@ import com.gemwallet.android.model.getStackedAmount
 import com.gemwallet.android.model.reservedFormatted
 import com.gemwallet.android.model.totalFormatted
 import com.gemwallet.android.model.totalStakeFormatted
-import com.gemwallet.android.ui.components.image.getIconUrl
+import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.ui.models.PriceUIState
 import com.gemwallet.features.asset.viewmodels.assetIdArg
 import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIModel
