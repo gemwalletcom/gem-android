@@ -105,7 +105,7 @@ private fun generateQr(
             newBitmap[x, y] = pixelColor
         }
     }
-    drawLogoOnQR(context, newBitmap)
+//    drawLogoOnQR(context, newBitmap)
     return newBitmap
 }
 
