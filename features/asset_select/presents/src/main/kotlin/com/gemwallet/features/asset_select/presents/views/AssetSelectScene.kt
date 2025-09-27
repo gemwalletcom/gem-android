@@ -42,7 +42,7 @@ import com.gemwallet.android.ui.components.filters.AssetsFilter
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.components.list_item.AssetListItem
-import com.gemwallet.android.ui.components.list_item.pinnedAssetsHeader
+import com.gemwallet.android.ui.components.list_item.PinnedAssetsHeaderItem
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.Spacer16
@@ -151,7 +151,7 @@ private fun LazyListScope.assets(
     if (items.isEmpty()) return
 
     if (isPinned) {
-        pinnedAssetsHeader()
+        item { PinnedAssetsHeaderItem() }
     }
 
     items(items.size, key = { items[it].asset.id.toIdentifier() }) { index ->

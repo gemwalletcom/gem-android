@@ -11,6 +11,7 @@ import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.domains.asset.chain
+import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.isStaked
@@ -23,7 +24,6 @@ import com.gemwallet.android.model.getStackedAmount
 import com.gemwallet.android.model.reservedFormatted
 import com.gemwallet.android.model.totalFormatted
 import com.gemwallet.android.model.totalStakeFormatted
-import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.ui.models.PriceUIState
 import com.gemwallet.features.asset.viewmodels.assetIdArg
 import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIModel

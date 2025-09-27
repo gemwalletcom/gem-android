@@ -1,131 +1,49 @@
 package com.gemwallet.features.asset.presents.details.views
 
-import androidx.annotation.StringRes
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.domains.asset.chain
-import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getReserveBalanceUrl
-import com.gemwallet.android.ext.type
-import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.InfoSheetEntity
-import com.gemwallet.android.ui.components.list_head.AmountListHead
-import com.gemwallet.android.ui.components.list_head.AssetHeadActions
-import com.gemwallet.android.ui.components.list_item.SubheaderItem
-import com.gemwallet.android.ui.components.list_item.priceColor
-import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
-import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
-import com.gemwallet.android.ui.components.list_item.property.PropertyItem
-import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
-import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.list_item.transactionsList
-import com.gemwallet.android.ui.components.screen.FatalStateScene
-import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.open
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.padding32
-import com.gemwallet.android.ui.theme.pendingColor
+import com.gemwallet.features.asset.presents.details.views.components.AssetDetailsMenu
+import com.gemwallet.features.asset.presents.details.views.components.AssetHeadItem
+import com.gemwallet.features.asset.presents.details.views.components.BannerItem
+import com.gemwallet.features.asset.presents.details.views.components.EmptyTransactionsItem
+import com.gemwallet.features.asset.presents.details.views.components.additionBalance
+import com.gemwallet.features.asset.presents.details.views.components.availableBalance
+import com.gemwallet.features.asset.presents.details.views.components.balancesHeader
+import com.gemwallet.features.asset.presents.details.views.components.network
+import com.gemwallet.features.asset.presents.details.views.components.price
+import com.gemwallet.features.asset.presents.details.views.components.status
 import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIModel
 import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIState
-import com.gemwallet.features.asset.viewmodels.details.models.AssetStateError
-import com.gemwallet.features.asset.viewmodels.details.viewmodels.AssetDetailsViewModel
-import com.gemwallet.features.banner.views.BannersScene
-import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.AssetSubtype
-import com.wallet.core.primitives.AssetType
-import com.wallet.core.primitives.BannerEvent
-import com.wallet.core.primitives.WalletType
-import uniffi.gemstone.Config
-import uniffi.gemstone.DocsUrl
-
-@Composable
-fun AssetDetailsScene(
-    onCancel: () -> Unit,
-    onTransfer: AssetIdAction,
-    onReceive: (AssetId) -> Unit,
-    onBuy: (AssetId) -> Unit,
-    onSwap: (AssetId, AssetId?) -> Unit,
-    onTransaction: (txId: String) -> Unit,
-    onChart: (AssetId) -> Unit,
-    openNetwork: AssetIdAction,
-    onStake: (AssetId) -> Unit,
-    onConfirm: (ConfirmParams) -> Unit
-) {
-    val viewModel: AssetDetailsViewModel = hiltViewModel()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val transactions by viewModel.transactions.collectAsStateWithLifecycle()
-    val priceAlertEnabled by viewModel.priceAlertEnabled.collectAsStateWithLifecycle()
-    val uiModel by viewModel.uiModel.collectAsStateWithLifecycle()
-    val isOperationEnabled by viewModel.isOperationEnabled.collectAsStateWithLifecycle()
-
-    when {
-        uiState is AssetInfoUIState.Fatal -> FatalStateScene(
-            title = "Asset",
-            message = when ((uiState as AssetInfoUIState.Fatal).error) {
-                AssetStateError.AssetNotFound -> "Asset not found"
-            },
-            onCancel = onCancel
-        )
-        uiState is AssetInfoUIState.Idle && uiModel != null -> Success(
-            uiState = uiModel ?: return,
-            transactions = transactions,
-            priceAlertEnabled = priceAlertEnabled,
-            syncState = (uiState as AssetInfoUIState.Idle).sync,
-            isOperationEnabled = isOperationEnabled,
-            onRefresh = viewModel::refresh,
-            onTransfer = onTransfer,
-            onBuy = onBuy,
-            onSwap = onSwap,
-            onReceive = onReceive,
-            onTransaction = onTransaction,
-            onChart = onChart,
-            openNetwork = openNetwork,
-            onStake = onStake,
-            onPriceAlert = viewModel::enablePriceAlert,
-            onConfirm = onConfirm,
-            onCancel = onCancel,
-        )
-        uiState is AssetInfoUIState.Loading || uiModel == null -> LoadingScene(stringResource(R.string.common_loading), onCancel)
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun Success(
+internal fun AssetDetailsScene(
     uiState: AssetInfoUIModel,
     transactions: List<TransactionExtended>,
     priceAlertEnabled: Boolean,
@@ -147,33 +65,40 @@ private fun Success(
     val pullToRefreshState = rememberPullToRefreshState()
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
+    val snackBar = remember { SnackbarHostState() }
 
     Scene(
         title = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = uiState.name, maxLines = 1, overflow = TextOverflow.MiddleEllipsis)
+            Row(verticalAlignment = Alignment.Companion.CenterVertically) {
+                Text(
+                    text = uiState.name,
+                    maxLines = 1,
+                    overflow = TextOverflow.Companion.MiddleEllipsis
+                )
             }
         },
         actions = {
             AssetDetailsMenu(
                 uiState = uiState,
                 priceAlertEnabled = priceAlertEnabled,
+                snackBar = snackBar,
                 onPriceAlert = onPriceAlert,
             )
         },
         onClose = onCancel,
         contentPadding = PaddingValues(0.dp),
-        snackbar = remember { SnackbarHostState() },
+        snackbar = snackBar,
     ) {
         val isRefreshing = syncState == AssetInfoUIState.SyncState.Loading
+
         PullToRefreshBox(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.Companion.fillMaxSize(),
             isRefreshing = isRefreshing,
             onRefresh = onRefresh,
             state = pullToRefreshState,
             indicator = {
-                Indicator(
-                    modifier = Modifier.align(Alignment.TopCenter),
+                PullToRefreshDefaults.Indicator(
+                    modifier = Modifier.Companion.align(Alignment.Companion.TopCenter),
                     isRefreshing = isRefreshing,
                     state = pullToRefreshState,
                     containerColor = MaterialTheme.colorScheme.background
@@ -181,10 +106,19 @@ private fun Success(
             }
         ) {
             LazyColumn(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.Companion.fillMaxSize()
             ) {
-                head(uiState, isOperationEnabled, onTransfer, onReceive, onBuy, onSwap)
-                banner(uiState.assetInfo, onStake, onConfirm)
+                item {
+                    AssetHeadItem(
+                        uiState,
+                        isOperationEnabled,
+                        onTransfer,
+                        onReceive,
+                        onBuy,
+                        onSwap
+                    )
+                }
+                item { BannerItem(uiState.assetInfo, onStake, onConfirm) }
                 status(uiState.asset, uiState.assetInfo.rank)
                 price(uiState, onChart)
                 network(uiState, openNetwork)
@@ -193,233 +127,16 @@ private fun Success(
                 additionBalance(R.string.wallet_stake, uiState.accountInfoUIModel.stake) {
                     onStake(uiState.asset.id)
                 }
-                additionBalance(R.string.asset_balances_reserved, uiState.accountInfoUIModel.reserved) {
-                    uiState.asset.id.chain.getReserveBalanceUrl()?.let { uriHandler.open(context, it) }
+                additionBalance(
+                    R.string.asset_balances_reserved,
+                    uiState.accountInfoUIModel.reserved
+                ) {
+                    uiState.asset.id.chain.getReserveBalanceUrl()
+                        ?.let { uriHandler.open(context, it) }
                 }
-                if (transactions.isEmpty()) {
-                    item {
-                        Box(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = padding32)) {
-                            Text(
-                                modifier = Modifier.align(Alignment.Center),
-                                color = MaterialTheme.colorScheme.secondary,
-                                text = stringResource(R.string.asset_state_empty_title)
-                            )
-                            // TODO: Add empty description
-                        }
-                    }
-                }
+                item { EmptyTransactionsItem(transactions.size) }
                 transactionsList(transactions, onTransaction)
             }
         }
-    }
-}
-
-private fun LazyListScope.head(
-    uiState: AssetInfoUIModel,
-    isOperationEnabled: Boolean,
-    onTransfer: AssetIdAction,
-    onReceive: (AssetId) -> Unit,
-    onBuy: (AssetId) -> Unit,
-    onSwap: (AssetId, AssetId?) -> Unit,
-) {
-    item {
-        AmountListHead(
-            amount = uiState.accountInfoUIModel.totalBalance,
-            equivalent = uiState.accountInfoUIModel.totalFiat,
-            icon = uiState.asset,
-        ) {
-            AssetHeadActions(
-                walletType = uiState.accountInfoUIModel.walletType,
-                transferEnabled = uiState.accountInfoUIModel.walletType != WalletType.view,
-                operationsEnabled = isOperationEnabled,
-                onTransfer = { onTransfer(uiState.asset.id) },
-                onReceive = { onReceive(uiState.asset.id) },
-                onBuy = if (uiState.isBuyEnabled) {
-                    { onBuy(uiState.asset.id) }
-                } else {
-                    null
-                },
-                onSwap = if (uiState.isSwapEnabled && uiState.accountInfoUIModel.walletType != WalletType.view) {
-                    {
-                        val toAssetId = if (uiState.asset.type == AssetType.NATIVE) {
-                            null
-                        } else {
-                            uiState.asset.id.chain.asset().id
-                        }
-                        onSwap(uiState.asset.id, toAssetId)
-                    }
-                } else {
-                    null
-                },
-            )
-        }
-    }
-}
-
-private fun LazyListScope.banner(
-    assetInfo: AssetInfo,
-    onStake: (AssetId) -> Unit,
-    onConfirm: (ConfirmParams) -> Unit
-) {
-    item {
-        val context = LocalContext.current
-        val uriHandler = LocalUriHandler.current
-        BannersScene(
-            asset = assetInfo.asset,
-            onClick = {
-                when (it.event) {
-                    BannerEvent.Stake -> onStake(assetInfo.asset.id)
-                    BannerEvent.AccountBlockedMultiSignature ->
-                        uriHandler.open(context, Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
-                    BannerEvent.ActivateAsset -> {
-                        val params = ConfirmParams.Builder(
-                            asset = assetInfo.asset,
-                            from = assetInfo.owner ?: return@BannersScene
-                        ).activate()
-                        onConfirm(params)
-                    }
-                    BannerEvent.AccountActivation -> assetInfo.asset.chain
-                        .getReserveBalanceUrl()?.let { uri -> uriHandler.open(context, uri) }
-                    else -> {}
-                }
-            },
-            false
-        )
-        HorizontalDivider(thickness = 0.dp)
-    }
-}
-
-private fun LazyListScope.status(asset: Asset, rank: Int) {
-    val status = rank.getVerificationStatus()
-    if (asset.id.type() == AssetSubtype.NATIVE || status == null) {
-        return
-    }
-    item {
-        val context = LocalContext.current
-        val uriHandler = LocalUriHandler.current
-        PropertyItem(
-            modifier = Modifier.clickable { uriHandler.open(context, Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION)) },
-            title = {
-                PropertyTitleText(
-                    text = R.string.transaction_status,
-                    info = when (status) {
-                        AssetVerification.Suspicious -> InfoSheetEntity.AssetStatusSuspiciousInfo
-                        AssetVerification.Unverified -> InfoSheetEntity.AssetStatusUnverifiedInfo
-                    }
-                )
-            },
-            data = {
-                PropertyDataText(
-                    stringResource(
-                        when (status) {
-                            AssetVerification.Suspicious ->  R.string.asset_verification_suspicious
-                            AssetVerification.Unverified -> R.string.asset_verification_unverified
-                        }
-                    ),
-                    color = when (status) {
-                        AssetVerification.Suspicious -> MaterialTheme.colorScheme.error
-                        AssetVerification.Unverified -> pendingColor
-                    },
-                    badge = {
-                        DataBadgeChevron(
-                            when (status) {
-                                AssetVerification.Suspicious -> R.drawable.suspicious
-                                AssetVerification.Unverified -> R.drawable.unverified
-                            }
-                        )
-                    }
-                )
-            },
-        )
-        Spacer16()
-    }
-}
-
-private fun LazyListScope.price(
-    uiState: AssetInfoUIModel,
-    onChart: (AssetId) -> Unit,
-) {
-    item {
-        PropertyItem(
-            modifier = Modifier.clickable { onChart(uiState.asset.id) }
-                .testTag("assetChart"),
-            title = { PropertyTitleText(R.string.asset_price) },
-            data = {
-                PropertyDataText(
-                    text = uiState.priceValue,
-                    badge = {
-                        DataBadgeChevron {
-                            Text(
-                                text = uiState.priceDayChanges,
-                                color = priceColor(uiState.priceChangedType),
-                                style = MaterialTheme.typography.bodyLarge,
-                            )
-                        }
-                    }
-                )
-            }
-        )
-    }
-}
-
-private fun LazyListScope.network(
-    uiState: AssetInfoUIModel,
-    openNetwork: AssetIdAction,
-) {
-    if (uiState.tokenType == AssetType.NATIVE) {
-        return
-    }
-    item { PropertyNetwork(uiState.asset, openNetwork) }
-}
-
-private fun LazyListScope.balancesHeader(model: AssetInfoUIModel.AccountInfoUIModel) {
-    if (model.available.isEmpty() && model.stake.isEmpty() && model.reserved.isEmpty()) {
-        return
-    }
-    item {
-        SubheaderItem(title = stringResource(id = R.string.asset_balances))
-    }
-}
-
-private fun LazyListScope.availableBalance(balance: String?) {
-    if (balance.isNullOrEmpty()) {
-        return
-    }
-    item {
-        PropertyItem(R.string.asset_balances_available, balance)
-    }
-}
-
-private fun LazyListScope.additionBalance(
-    @StringRes title: Int,
-    balance: String?,
-    onAction:() -> Unit,
-) {
-    if (balance.isNullOrEmpty()) {
-        return
-    }
-    item {
-        PropertyItem(
-            modifier = Modifier.clickable(onClick = onAction).testTag("assetStake"),
-            title = { PropertyTitleText(title) },
-            data = { PropertyDataText(balance, badge = { DataBadgeChevron() }) },
-        )
-    }
-}
-
-private enum class AssetVerification(val min: Int) {
-    Suspicious(5),
-    Unverified(15),
-}
-
-private fun Int.getVerificationStatus(): AssetVerification? {
-    return if (this < AssetVerification.Suspicious.min) {
-        AssetVerification.Suspicious
-    } else if (this < AssetVerification.Unverified.min) {
-        AssetVerification.Unverified
-    } else {
-        null
     }
 }

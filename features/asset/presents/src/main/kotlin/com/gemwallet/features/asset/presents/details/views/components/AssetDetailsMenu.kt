@@ -1,4 +1,4 @@
-package com.gemwallet.features.asset.presents.details.views
+package com.gemwallet.features.asset.presents.details.views.components
 
 import android.content.Intent
 import androidx.compose.foundation.layout.RowScope
@@ -32,12 +32,12 @@ import kotlinx.coroutines.launch
 fun RowScope.AssetDetailsMenu(
     uiState: AssetInfoUIModel,
     priceAlertEnabled: Boolean,
+    snackBar: SnackbarHostState,
     onPriceAlert: (AssetId) -> Unit,
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    val snackBar = remember { SnackbarHostState() }
     val priceAlertToastRes = if (priceAlertEnabled) R.string.price_alerts_disabled_for else R.string.price_alerts_enabled_for
     val priceAlertToastMessage = stringResource(priceAlertToastRes, uiState.asset.name)
     var menuExpanded by remember { mutableStateOf(false) }
