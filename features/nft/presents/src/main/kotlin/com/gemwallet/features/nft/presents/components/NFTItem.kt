@@ -1,7 +1,8 @@
-package com.gemwallet.features.nft.presents
+package com.gemwallet.features.nft.presents.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -35,8 +36,6 @@ fun NFTItem(
     collectionIdAction: NftCollectionIdAction,
     assetIdAction: NftAssetIdAction,
 ) {
-    var imgHeight by remember { mutableStateOf(0.dp) }
-    val density = LocalDensity.current
     Card(
         modifier = Modifier
             .clickable(onClick = { model.onClick(collectionIdAction, assetIdAction) })
@@ -52,9 +51,8 @@ fun NFTItem(
                 transformation = RoundedCornersTransformation(24f, 24f, 24f, 24f),
                 size = null,
                 modifier = Modifier
+                    .aspectRatio(1f)
                     .widthIn(min = 150.dp)
-                    .height(imgHeight)
-                    .onGloballyPositioned { imgHeight = with(density) { it.size.width.toDp() } }
             )
             Text(
                 modifier = Modifier.fillMaxWidth(),
