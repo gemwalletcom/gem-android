@@ -244,6 +244,8 @@ dependencies {
     implementation(project(":features:wallet-details:presents"))
     implementation(project(":features:bridge:presents"))
     implementation(project(":features:bridge:viewmodels"))
+    implementation(project(":features:assets:presents"))
+    implementation(project(":features:assets:viewmodels"))
 
     implementation(libs.ktx.core)
 

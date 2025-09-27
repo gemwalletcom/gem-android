@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.assets.views
+package com.gemwallet.features.assets.views
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
