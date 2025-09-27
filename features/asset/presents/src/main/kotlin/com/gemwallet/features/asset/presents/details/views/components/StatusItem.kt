@@ -31,7 +31,7 @@ internal fun LazyListScope.status(asset: Asset, rank: Int) {
         val context = LocalContext.current
         val uriHandler = LocalUriHandler.current
         PropertyItem(
-            modifier = Modifier.Companion.clickable {
+            modifier = Modifier.clickable {
                 uriHandler.open(
                     context,
                     Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION)

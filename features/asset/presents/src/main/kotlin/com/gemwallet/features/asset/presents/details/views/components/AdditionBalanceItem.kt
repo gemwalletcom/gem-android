@@ -20,7 +20,7 @@ internal fun LazyListScope.additionBalance(
     }
     item {
         PropertyItem(
-            modifier = Modifier.Companion.clickable(onClick = onAction).testTag("assetStake"),
+            modifier = Modifier.clickable(onClick = onAction).testTag("assetStake"),
             title = { PropertyTitleText(title) },
             data = { PropertyDataText(balance, badge = { DataBadgeChevron() }) },
         )

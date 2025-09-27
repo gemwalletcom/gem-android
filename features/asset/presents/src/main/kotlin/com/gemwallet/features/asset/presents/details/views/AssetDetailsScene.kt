@@ -69,11 +69,11 @@ internal fun AssetDetailsScene(
 
     Scene(
         title = {
-            Row(verticalAlignment = Alignment.Companion.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = uiState.name,
                     maxLines = 1,
-                    overflow = TextOverflow.Companion.MiddleEllipsis
+                    overflow = TextOverflow.MiddleEllipsis
                 )
             }
         },
@@ -92,13 +92,13 @@ internal fun AssetDetailsScene(
         val isRefreshing = syncState == AssetInfoUIState.SyncState.Loading
 
         PullToRefreshBox(
-            modifier = Modifier.Companion.fillMaxSize(),
+            modifier = Modifier.fillMaxSize(),
             isRefreshing = isRefreshing,
             onRefresh = onRefresh,
             state = pullToRefreshState,
             indicator = {
                 PullToRefreshDefaults.Indicator(
-                    modifier = Modifier.Companion.align(Alignment.Companion.TopCenter),
+                    modifier = Modifier.align(Alignment.TopCenter),
                     isRefreshing = isRefreshing,
                     state = pullToRefreshState,
                     containerColor = MaterialTheme.colorScheme.background
@@ -106,7 +106,7 @@ internal fun AssetDetailsScene(
             }
         ) {
             LazyColumn(
-                modifier = Modifier.Companion.fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             ) {
                 item {
                     AssetHeadItem(

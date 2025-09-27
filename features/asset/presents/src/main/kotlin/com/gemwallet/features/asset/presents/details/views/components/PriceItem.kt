@@ -21,7 +21,7 @@ internal fun LazyListScope.price(
 ) {
     item {
         PropertyItem(
-            modifier = Modifier.Companion.clickable { onChart(uiState.asset.id) }
+            modifier = Modifier.clickable { onChart(uiState.asset.id) }
                 .testTag("assetChart"),
             title = { PropertyTitleText(R.string.asset_price) },
             data = {
