@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.bridge.viewmodel
+package com.gemwallet.features.bridge.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

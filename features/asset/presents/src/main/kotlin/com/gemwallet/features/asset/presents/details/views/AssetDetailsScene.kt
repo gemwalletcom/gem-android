@@ -62,7 +62,7 @@ import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIModel
 import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIState
 import com.gemwallet.features.asset.viewmodels.details.models.AssetStateError
 import com.gemwallet.features.asset.viewmodels.details.viewmodels.AssetDetailsViewModel
-import com.gemwallet.features.banner.presents.views.BannersScene
+import com.gemwallet.features.banner.views.BannersScene
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype

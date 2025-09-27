@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.notifications
+package com.gemwallet.android.services
 
 import android.Manifest
 import android.app.NotificationChannel
@@ -21,7 +21,8 @@ import com.gemwallet.android.ui.navigation.routes.assetRouteUri
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 
-class ShowSystemNotification @Inject constructor(@ApplicationContext val applicationContext: Context) : ShowSystemNotification {
+class ShowSystemNotification @Inject constructor(@ApplicationContext val applicationContext: Context) :
+    ShowSystemNotification {
 
     override fun showNotification(
         title: String?,
@@ -40,7 +41,7 @@ class ShowSystemNotification @Inject constructor(@ApplicationContext val applica
         val extra = Bundle().apply {
             putInt("walletIndex", data.walletIndex)
         }
-        showNotification(title, subtitle, channelId, extra, "$assetRouteUri/${data.assetId}".toUri())
+        showNotification(title, subtitle, channelId, extra, "${assetRouteUri}/${data.assetId}".toUri())
     }
 
     override fun showNotification(
@@ -49,7 +50,7 @@ class ShowSystemNotification @Inject constructor(@ApplicationContext val applica
         channelId: String?,
         data: PushNotificationData.Asset,
     ) {
-        showNotification(title, subtitle, channelId, Bundle.EMPTY, "$assetRouteUri/${data.assetId}".toUri())
+        showNotification(title, subtitle, channelId, Bundle.EMPTY, "${assetRouteUri}/${data.assetId}".toUri())
     }
 
     private fun showNotification(

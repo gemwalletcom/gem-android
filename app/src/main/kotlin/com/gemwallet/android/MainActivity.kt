@@ -58,8 +58,8 @@ import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.features.bridge.presents.ProposalScene
-import com.gemwallet.android.features.bridge.presents.RequestScene
+import com.gemwallet.features.bridge.views.ProposalScene
+import com.gemwallet.features.bridge.views.RequestScene
 import com.gemwallet.android.model.AuthRequest
 import com.gemwallet.android.model.AuthState
 import com.gemwallet.android.model.PushNotificationData

@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.bridge.viewmodel
+package com.gemwallet.features.bridge.viewmodels
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.bridge.viewmodel
+package com.gemwallet.features.bridge.viewmodels
 
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
@@ -11,7 +11,7 @@ import com.gemwallet.android.data.repositoreis.bridge.getNamespace
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
-import com.gemwallet.android.features.bridge.viewmodel.model.SessionUI
+import com.gemwallet.features.bridge.viewmodels.model.SessionUI
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.toHexString

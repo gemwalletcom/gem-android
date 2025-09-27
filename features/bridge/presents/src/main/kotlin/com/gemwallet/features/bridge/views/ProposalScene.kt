@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.bridge.presents
+package com.gemwallet.features.bridge.views
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
@@ -18,9 +18,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.features.bridge.viewmodel.model.SessionUI
-import com.gemwallet.android.features.bridge.viewmodel.ProposalSceneState
-import com.gemwallet.android.features.bridge.viewmodel.ProposalSceneViewModel
+import com.gemwallet.features.bridge.viewmodels.model.SessionUI
+import com.gemwallet.features.bridge.viewmodels.ProposalSceneState
+import com.gemwallet.features.bridge.viewmodels.ProposalSceneViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.image.AsyncImage

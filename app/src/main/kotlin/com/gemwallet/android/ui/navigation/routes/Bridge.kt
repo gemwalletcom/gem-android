@@ -5,8 +5,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
-import com.gemwallet.android.features.bridge.presents.ConnectionScene
-import com.gemwallet.android.features.bridge.presents.ConnectionsScene
+import com.gemwallet.features.bridge.views.ConnectionScene
+import com.gemwallet.features.bridge.views.ConnectionsScene
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -123,11 +123,11 @@ fun PhraseField(
         )
     }
 }
-
-@Composable
-@Preview
-fun PreviewPhraseTextField() {
-    WalletTheme {
-        PhraseField(value = "", onValueChange = {})
-    }
-}
+//
+//@Composable
+//@Preview
+//fun PreviewPhraseTextField() {
+//    WalletTheme {
+//        PhraseField(value = "", onValueChange = {})
+//    }
+//}

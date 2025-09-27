@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.bridge.viewmodel
+package com.gemwallet.features.bridge.viewmodels
 
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModel
@@ -8,7 +8,7 @@ import com.gemwallet.android.data.repositoreis.bridge.getChainNameSpace
 import com.gemwallet.android.data.repositoreis.bridge.getReference
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.features.bridge.viewmodel.model.SessionUI
+import com.gemwallet.features.bridge.viewmodels.model.SessionUI
 import com.reown.walletkit.client.Wallet
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel

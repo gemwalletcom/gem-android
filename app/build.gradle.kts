@@ -242,6 +242,8 @@ dependencies {
     implementation(project(":features:nft:presents"))
     implementation(project(":features:update_app:presents"))
     implementation(project(":features:wallet-details:presents"))
+    implementation(project(":features:bridge:presents"))
+    implementation(project(":features:bridge:viewmodels"))
 
     implementation(libs.ktx.core)
 
