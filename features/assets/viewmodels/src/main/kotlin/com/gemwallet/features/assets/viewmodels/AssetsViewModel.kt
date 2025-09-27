@@ -10,8 +10,6 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.features.assets.viewmodels.model.PriceUIState
-import com.gemwallet.features.assets.viewmodels.model.WalletInfoUIState
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SyncState
@@ -20,6 +18,8 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.models.PriceState
+import com.gemwallet.features.assets.viewmodels.model.PriceUIState
+import com.gemwallet.features.assets.viewmodels.model.WalletInfoUIState
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet

@@ -21,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.gemwallet.features.assets.viewmodels.model.WalletInfoUIState
 import com.gemwallet.android.ui.components.image.AsyncImage
+import com.gemwallet.features.assets.viewmodels.model.WalletInfoUIState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

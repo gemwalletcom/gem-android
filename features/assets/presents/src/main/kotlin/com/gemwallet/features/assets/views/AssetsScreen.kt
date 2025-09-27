@@ -1,35 +1,19 @@
 package com.gemwallet.features.assets.views
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Tune
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -38,20 +22,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.features.assets.viewmodels.AssetsViewModel
-import com.gemwallet.features.assets.viewmodels.model.WalletInfoUIState
 import com.gemwallet.android.features.update_app.presents.InAppUpdateBanner
-import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.list_head.AmountListHead
-import com.gemwallet.android.ui.components.list_head.AssetHeadActions
-import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
-import com.gemwallet.android.ui.components.list_item.pinnedAssetsHeader
 import com.gemwallet.android.ui.open
+import com.gemwallet.features.assets.viewmodels.AssetsViewModel
+import com.gemwallet.features.assets.views.components.AssetsHead
+import com.gemwallet.features.assets.views.components.AssetsListFooter
+import com.gemwallet.features.assets.views.components.assets
 import com.gemwallet.features.banner.views.BannersScene
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.BannerEvent
@@ -104,13 +83,21 @@ fun AssetsScreen(
                     .testTag("assets_list"),
                 state = listState
             ) {
-                assetsHead(walletInfo, onSendClick, onReceiveClick, onBuyClick, viewModel::hideBalances)
+                item {
+                    AssetsHead(
+                        walletInfo = walletInfo,
+                        onSendClick = onSendClick,
+                        onReceiveClick = onReceiveClick,
+                        onBuyClick = onBuyClick,
+                        onHideBalances = viewModel::hideBalances
+                    )
+                }
                 item {
                     InAppUpdateBanner()
                     BannersScene(
                         asset = null,
-                        onClick = {
-                            when (it.event) {
+                        onClick = { banner ->
+                            when (banner.event) {
                                 BannerEvent.AccountBlockedMultiSignature ->
                                     uriHandler.open(context, Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
                                 else -> {}
@@ -136,95 +123,8 @@ fun AssetsScreen(
                     onAssetHide = viewModel::hideAsset,
                     onTogglePin = viewModel::togglePin,
                 )
-                assetsListFooter(onShowAssetManage)
+                item { AssetsListFooter(onShowAssetManage) }
             }
         }
-    }
-}
-
-private fun LazyListScope.assetsHead(
-    walletInfo: WalletInfoUIState,
-    onSendClick: () -> Unit,
-    onReceiveClick: () -> Unit,
-    onBuyClick: () -> Unit,
-    onHideBalances: () -> Unit,
-) {
-    item {
-        AmountListHead(
-            amount = walletInfo.totalValue,
-            onHideBalances = onHideBalances,
-            actions = {
-                AssetHeadActions(
-                    walletType = walletInfo.type,
-                    transferEnabled = true,
-                    operationsEnabled = walletInfo.operationsEnabled,
-                    onTransfer = onSendClick,
-                    onReceive = onReceiveClick,
-                    onBuy = onBuyClick,
-                    onSwap = null, // if (swapEnabled) onSwapClick else null
-                )
-            }
-        )
-    }
-}
-
-private fun LazyListScope.assetsListFooter(
-    onShowAssetManage: () -> Unit,
-) {
-    item {
-        Box(
-            modifier = Modifier
-                .clickable(onClick = onShowAssetManage)
-                .fillMaxWidth()
-        ) {
-            Row(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Tune,
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = "asset_manager",
-                )
-                Spacer(modifier = Modifier.size(ButtonDefaults.IconSize))
-                Text(
-                    text = stringResource(id = R.string.wallet_manage_token_list),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.titleMedium,
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-private fun LazyListScope.assets(
-    assets: List<AssetItemUIModel>,
-    longPressState: MutableState<AssetId?>,
-    isPinned: Boolean = false,
-    onAssetClick: (AssetId) -> Unit,
-    onAssetHide: (AssetId) -> Unit,
-    onTogglePin: (AssetId) -> Unit,
-) {
-    if (assets.isEmpty()) return
-
-    if (isPinned) {
-        pinnedAssetsHeader()
-    }
-
-    items(items = assets, key = { "${it.asset.id.toIdentifier()}-$isPinned" }) { item ->
-        AssetItem(
-            modifier = Modifier.testTag(item.asset.id.toIdentifier()),
-            item = item,
-            longPressState = longPressState,
-            isPinned = isPinned,
-            onAssetClick = onAssetClick,
-            onAssetHide = onAssetHide,
-            onTogglePin = onTogglePin,
-        )
-    }
-    if (isPinned) {
-        item { Spacer(modifier = Modifier.height(32.dp)) }
     }
 }
