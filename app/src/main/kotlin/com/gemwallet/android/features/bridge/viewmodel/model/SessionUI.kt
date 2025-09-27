@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.bridge.model
+package com.gemwallet.android.features.bridge.viewmodel.model
 
 data class SessionUI(
     val id: String = "",

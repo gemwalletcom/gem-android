@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.bridge.connections.viewmodels
+package com.gemwallet.android.features.bridge.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -16,7 +16,7 @@ class ConnectionsViewModel @Inject constructor(
 ) : ViewModel() {
 
     val connections = bridgesRepository.getConnections()
-        .stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
+        .stateIn(viewModelScope, SharingStarted.Companion.Lazily, emptyList())
 
     fun addPairing(uri: String, onSuccess: () -> Unit, onError: (String) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {

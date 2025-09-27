@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.bridge.connection.views
+package com.gemwallet.android.features.bridge.presents
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -16,8 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.features.bridge.connection.viewmodels.ConnectionViewModel
-import com.gemwallet.android.features.bridge.connections.views.ConnectionItem
+import com.gemwallet.android.features.bridge.viewmodel.ConnectionViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText

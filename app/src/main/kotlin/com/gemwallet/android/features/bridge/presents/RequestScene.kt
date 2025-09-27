@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.bridge.request
+package com.gemwallet.android.features.bridge.presents
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.features.bridge.viewmodel.RequestSceneState
+import com.gemwallet.android.features.bridge.viewmodel.RequestViewModel
 import com.gemwallet.android.model.ConfirmParams.TransferParams.Native
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.R

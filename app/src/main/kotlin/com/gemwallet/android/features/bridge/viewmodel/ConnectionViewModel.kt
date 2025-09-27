@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.bridge.connection.viewmodels
+package com.gemwallet.android.features.bridge.viewmodel
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -23,7 +23,7 @@ class ConnectionViewModel @Inject constructor(
     private val request = savedState.getStateFlow("connectionId", "")
 
     val connection = request.flatMapLatest { bridgesRepository.getConnections(it) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        .stateIn(viewModelScope, SharingStarted.Companion.Eagerly, null)
 
     fun disconnect(onSuccess: () -> Unit) {
         connection.value?.session?.id?.let {
