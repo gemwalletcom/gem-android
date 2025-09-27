@@ -38,13 +38,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.gemwallet.android.features.activities.presents.list.TransactionsScreen
 import com.gemwallet.android.features.assets.views.AssetsScreen
-import com.gemwallet.android.features.bridge.navigation.navigateToBridgesScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToBridgesScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsManageScreen
 import com.gemwallet.android.features.main.models.BottomNavItem
 import com.gemwallet.android.features.main.viewmodels.MainScreenViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.models.navigation.assetsRoute
-import com.gemwallet.android.ui.navigation.routes.activitiesRoute
+import com.gemwallet.android.ui.navigation.routes.transactionsRoute
 import com.gemwallet.android.ui.navigation.routes.navigateToAboutUsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToActivitiesScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAssetScreen
@@ -76,7 +76,7 @@ fun MainScreen(
 ) {
     val pendingCount by viewModel.pendingTxCount.collectAsStateWithLifecycle()
 
-    BackHandler(currentTab.value == activitiesRoute || currentTab.value == settingsRoute) {
+    BackHandler(currentTab.value == transactionsRoute || currentTab.value == settingsRoute) {
         currentTab.value = assetsRoute
     }
     val context = LocalContext.current
@@ -105,7 +105,7 @@ fun MainScreen(
             BottomNavItem(
                 label = context.getString(R.string.activity_title),
                 icon = Icons.Default.ElectricBolt,
-                route = activitiesRoute,
+                route = transactionsRoute,
                 badge = pendingCount,
                 testTag = "activitiesTab",
                 navigate = { navigateToActivitiesScreen(navOptions = it) }
@@ -134,7 +134,7 @@ fun MainScreen(
                             coroutineScope.launch {
                                 when (prevRoute) {
                                     assetsRoute -> assetsListState.animateScrollToItem(0)
-                                    activitiesRoute -> activitiesListState.animateScrollToItem(0)
+                                    transactionsRoute -> activitiesListState.animateScrollToItem(0)
                                     nftRoute -> nftListState.animateScrollToItem(0)
                                     settingsRoute -> settingsScrollState.animateScrollTo(0)
                                     else -> null
@@ -194,7 +194,7 @@ fun MainScreen(
                     onAssetClick = navController::navigateToAssetScreen,
                     listState = assetsListState,
                 )
-                activitiesRoute -> TransactionsScreen(
+                transactionsRoute -> TransactionsScreen(
                     listState = activitiesListState,
                     onTransaction = navController::navigateToTransactionScreen,
                 )

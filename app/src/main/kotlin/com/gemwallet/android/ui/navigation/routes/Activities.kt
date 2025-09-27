@@ -13,7 +13,7 @@ import com.gemwallet.android.ui.components.animation.exitTabScreenTransition
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
-const val activitiesRoute = "transactions"
+const val transactionsRoute = "transactions"
 const val transactionRouteUri = "gem://transaction"
 
 @Serializable

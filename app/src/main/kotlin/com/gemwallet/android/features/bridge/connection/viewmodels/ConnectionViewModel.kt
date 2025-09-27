@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
-import com.gemwallet.android.features.bridge.navigation.connectionIdArg
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -21,7 +20,7 @@ class ConnectionViewModel @Inject constructor(
     savedState: SavedStateHandle
 ) : ViewModel() {
 
-    private val request = savedState.getStateFlow(connectionIdArg, "")
+    private val request = savedState.getStateFlow("connectionId", "")
 
     val connection = request.flatMapLatest { bridgesRepository.getConnections(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
