@@ -15,6 +15,10 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.Delegation
+import com.wallet.core.primitives.DelegationBase
+import com.wallet.core.primitives.DelegationState
+import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
@@ -49,6 +53,7 @@ class TestEthSign {
                 chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
+                    stakeData = null,
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                 fee = GasFee(
@@ -89,6 +94,7 @@ class TestEthSign {
                 chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
+                    stakeData = null,
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                 fee = GasFee(
@@ -124,7 +130,13 @@ class TestEthSign {
                         decimals = 8,
                         type = AssetType.ERC20,
                     ),
-                    toAssetId = AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+                    toAsset = Asset(
+                        AssetId(Chain.Ethereum, "0xdAC17F958D2ee523a2206206994597C13D831ec7"),
+                        name = "SMT",
+                        symbol = "SMT",
+                        decimals = 8,
+                        type = AssetType.ERC20,
+                    ),
                     fromAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                     toAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                     swapData = "0xbc",
@@ -132,11 +144,16 @@ class TestEthSign {
                     protocolId = "some_provide",
                     to = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                     value = "10",
-                    from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", "")
+                    from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
+                    providerName = "",
+                    slippageBps = 0U,
+                    etaInSeconds = 0U,
+                    walletAddress = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                 ),
                 chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
+                    stakeData = null,
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                 fee = GasFee(
@@ -166,11 +183,19 @@ class TestEthSign {
                     asset = Chain.SmartChain.asset(),
                     amount = BigInteger.TEN,
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
-                    validatorId = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8"
+                    validator = DelegationValidator(
+                        chain = Chain.Ethereum,
+                        id = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8",
+                        name = "",
+                        isActive = true,
+                        commision = 0.0,
+                        apr = 0.9
+                    ),
                 ),
                 chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
+                    stakeData = null,
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                 fee = GasFee(
@@ -203,14 +228,30 @@ class TestEthSign {
                     asset = Chain.SmartChain.asset(),
                     amount = BigInteger("1002901689671695193"),
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
-                    validatorId = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8",
-                    delegationId = "",
-                    share = "991645728829172501",
-                    balance = "1002901689671695193",
+                    delegation = Delegation(
+                        base = DelegationBase(
+                            assetId = Chain.SmartChain.asset().id,
+                            delegationId = "",
+                            shares = "991645728829172501",
+                            balance = "1002901689671695193",
+                            state = DelegationState.Active,
+                            rewards = "",
+                            validatorId = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8",
+                        ),
+                        validator = DelegationValidator(
+                            chain = Chain.Ethereum,
+                            id = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8",
+                            name = "",
+                            isActive = true,
+                            commision = 0.0,
+                            apr = 0.9,
+                        ),
+                    )
                 ),
                 chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
+                    stakeData = null,
                 ),
                 finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                 fee = GasFee(
@@ -256,6 +297,7 @@ class TestEthSign {
                 chainData = EvmChainData(
                     chainId = 1,
                     nonce = BigInteger.ONE,
+                    stakeData = null,
                 ),
                 finalAmount = BigInteger.ZERO,
                 fee = GasFee(

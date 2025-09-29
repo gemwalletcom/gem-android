@@ -22,6 +22,7 @@ class BalancesService(
                 isActive = result.isActive,
             )
         } catch (_: GatewayException) {
+//            AssetBalance.create(account.chain.asset())
             null
         } catch (_: Throwable) {
             null
@@ -41,6 +42,7 @@ class BalancesService(
                 rewards = result.balance.rewards,
             )
         } catch (_: GatewayException) {
+            // AssetBalance.create(account.chain.asset())
             null
         } catch (_: Throwable) {
             null

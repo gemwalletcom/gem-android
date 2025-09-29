@@ -72,7 +72,7 @@ class CosmosSignClient(
     ): List<ByteArray> {
         val denom = CosmosDenom.from(chain)
         val message = when (chain) {
-            Chain.Thorchain -> listOf(getThorChainSwapMessage(params, coin))
+            Chain.Thorchain -> listOf(getThorChainSwapMessage(params, finalAmount, coin))
             else -> getTransferMessage(
                 from = params.from.address,
                 recipient = params.destination().address,
@@ -80,7 +80,7 @@ class CosmosSignClient(
                 amount = getAmount(finalAmount, denom = denom)
             )
         }
-        val memo = params.swapData ?: throw IllegalArgumentException("No swap data")
+        val memo = params.swapData.takeIf { it.isNotEmpty() } ?: throw IllegalArgumentException("No swap data")
         return sign(chainData, fee, message, memo, privateKey)
     }
 
@@ -156,13 +156,13 @@ class CosmosSignClient(
         throw IllegalArgumentException()
     }
 
-    private fun getThorChainSwapMessage(params: ConfirmParams.SwapParams, coinType: CoinType): Message {
+    private fun getThorChainSwapMessage(params: ConfirmParams.SwapParams, finalAmount: BigInteger, coinType: CoinType): Message {
         val message = Message.newBuilder().apply {
             this.setThorchainDepositMessage(
                 Message.THORChainDeposit.newBuilder().apply {
                     addCoins(
                         Cosmos.THORChainCoin.newBuilder().apply {
-                            this.amount = params.amount.toString()
+                            this.amount = finalAmount.toString()
                             this.asset = Cosmos.THORChainAsset.newBuilder().apply {
                                 this.chain = "THOR"
                                 this.symbol = "RUNE"

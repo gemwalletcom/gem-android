@@ -151,7 +151,9 @@ class MainActivity : FragmentActivity(), AuthRequester {
             }
         }
         LaunchedEffect(intent) {
-            navController.handleDeepLink(intent)
+            try {
+                navController.handleDeepLink(intent)
+            } catch (_: Throwable) {}
         }
         WalletTheme {
             if (state.initialAuth == AuthState.Success || !enableSysAuth) {

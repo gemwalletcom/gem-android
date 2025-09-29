@@ -12,6 +12,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.runBlocking
@@ -150,7 +151,14 @@ class TestTronSigner {
                     Chain.Tron.asset(),
                     Account(Chain.Tron, from, ""),
                     BigInteger.valueOf(10_000),
-                    validatorId = "TCEo1hMAdaJrQmvnGTCcGT2LqrGU4N7Jqf",
+                    validator = DelegationValidator(
+                        chain = Chain.Tron,
+                        id = "TCEo1hMAdaJrQmvnGTCcGT2LqrGU4N7Jqf",
+                        name = "",
+                        isActive = true,
+                        commision = 0.0,
+                        apr = 0.9,
+                    ),
                 ),
                 chainData = TronChainData(
                     blockNumber = 69501435UL,
