@@ -32,7 +32,7 @@ internal fun SwapScene(
     priceImpact: PriceImpact?,
     rate: SwapRate?,
     isShowPriceImpactAlert: MutableState<Boolean>,
-    selectState: MutableState<SwapItemType?>,
+    selectState: (SwapItemType?) -> Unit,
     payValue: TextFieldState,
     receiveValue: TextFieldState,
     switchSwap: () -> Unit,
@@ -62,7 +62,7 @@ internal fun SwapScene(
             state = payValue,
             onAssetSelect = {
                 keyboardController?.hide()
-                selectState.value = SwapItemType.Pay
+                selectState(SwapItemType.Pay)
             }
         )
         IconButton(onClick = switchSwap) {
@@ -79,7 +79,7 @@ internal fun SwapScene(
             calculating = swapState == SwapState.GetQuote,
             onAssetSelect = {
                 keyboardController?.hide()
-                selectState.value = SwapItemType.Receive
+                selectState(SwapItemType.Receive)
             }
         )
         Spacer16()

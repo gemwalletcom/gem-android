@@ -1,6 +1,8 @@
 package com.gemwallet.features.swap.viewmodels
 
 import androidx.compose.foundation.text.input.clearText
+import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.swap.GetSwapSupported
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
@@ -14,31 +16,59 @@ import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.gemwallet.features.asset_select.viewmodels.models.SelectSearch
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SwapSelectViewModel @Inject constructor(
     sessionRepository: SessionRepository,
     assetsRepository: AssetsRepository,
     searchTokensCase: SearchTokensCase,
     getSwapSupported: GetSwapSupported,
+    val savedStateHandle: SavedStateHandle,
 ) : BaseAssetSelectViewModel(
     sessionRepository = sessionRepository,
     assetsRepository = assetsRepository,
     searchTokensCase = searchTokensCase,
     search = SwapSelectSearch(assetsRepository, getSwapSupported)
 ) {
+
+    val payAssetId = savedStateHandle.getStateFlow<String?>("payAssetId", null)
+        .mapLatest { it?.toAssetId() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val receiveAssetId = savedStateHandle.getStateFlow<String?>("receiveAssetId", null)
+        .mapLatest { it?.toAssetId() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val select = savedStateHandle.getStateFlow<SwapItemType?>("select", null)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val state = combine(payAssetId, receiveAssetId, select.filterNotNull()) { pay, receive, select ->
+        setPair(select, pay, receive)
+    }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    fun onSelect(assetId: AssetId) {
+        when (select.value) {
+            SwapItemType.Pay -> savedStateHandle.set("from", assetId.toIdentifier())
+            SwapItemType.Receive -> savedStateHandle.set("to", assetId.toIdentifier())
+            null -> return
+        }
+    }
+
     fun setPair(type: SwapItemType, payId: AssetId?, receiveId: AssetId?) {
         queryState.clearText()
         (search as? SwapSelectSearch)?.apply {

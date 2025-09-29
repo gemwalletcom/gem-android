@@ -69,6 +69,7 @@ import com.gemwallet.android.ui.navigation.routes.navigateToSecurityScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToSendScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToStake
 import com.gemwallet.android.ui.navigation.routes.navigateToSwap
+import com.gemwallet.android.ui.navigation.routes.navigateToSwapSelect
 import com.gemwallet.android.ui.navigation.routes.navigateToTransactionScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToWalletScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToWalletsScreen
@@ -79,6 +80,7 @@ import com.gemwallet.android.ui.navigation.routes.settingsRoute
 import com.gemwallet.android.ui.navigation.routes.settingsScreen
 import com.gemwallet.android.ui.navigation.routes.stake
 import com.gemwallet.android.ui.navigation.routes.swap
+import com.gemwallet.android.ui.navigation.routes.swapSelect
 import com.gemwallet.android.ui.navigation.routes.transactionDetailsScreen
 import com.gemwallet.android.ui.navigation.routes.walletScreen
 import com.gemwallet.android.ui.navigation.routes.walletsScreen
@@ -156,7 +158,13 @@ fun WalletNavGraph(
         navigation<Transfer>(startDestination = SendSelect) {
             swap(
                 onConfirm = navController::navigateToConfirmScreen,
-                onCancel = onCancel
+                onSelect = navController::navigateToSwapSelect,
+                onCancel = onCancel,
+            )
+
+            swapSelect(
+                navController = navController,
+                onCancel = onCancel,
             )
 
             recipientInput(

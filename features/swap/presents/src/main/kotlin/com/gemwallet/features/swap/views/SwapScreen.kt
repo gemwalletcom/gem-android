@@ -1,6 +1,7 @@
 package com.gemwallet.features.swap.views
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -12,12 +13,16 @@ import com.gemwallet.features.swap.viewmodels.models.SwapItemType
 import com.gemwallet.features.swap.viewmodels.models.SwapState
 import com.gemwallet.features.swap.views.dialogs.PriceImpactWarningDialog
 import com.gemwallet.features.swap.views.dialogs.ProviderListDialog
-import com.gemwallet.features.swap.views.dialogs.SelectSwapAssetDialog
 import com.gemwallet.features.swap.views.dialogs.SwapDetailsDialog
+import com.wallet.core.primitives.AssetId
 
 @Composable
 fun SwapScreen(
+    payId: AssetId?,
+    receiveId: AssetId?,
+    select: SwapItemType?,
     viewModel: SwapViewModel = hiltViewModel(),
+    onSelect: (select: SwapItemType, payAssetId: AssetId?, receiveAssetId: AssetId?) -> Unit,
     onConfirm: (ConfirmParams) -> Unit,
     onCancel: () -> Unit,
 ) {
@@ -34,10 +39,20 @@ fun SwapScreen(
     val slippage by viewModel.slippage.collectAsStateWithLifecycle()
     val minReceive by viewModel.minReceive.collectAsStateWithLifecycle()
 
-    val selectState = remember { mutableStateOf<SwapItemType?>(null) }
     val isShowProviderSelect = remember { mutableStateOf(false) }
     val isShowPriceImpactAlert = remember { mutableStateOf(false) }
     val isShowDetails = remember { mutableStateOf(false) }
+
+    LaunchedEffect(payId, receiveId, select) {
+        select ?: return@LaunchedEffect
+        viewModel.onSelect(
+            select,
+            when (select) {
+                SwapItemType.Pay -> payId ?: return@LaunchedEffect
+                SwapItemType.Receive -> receiveId ?: return@LaunchedEffect
+            }
+        )
+    }
 
     val onSwap: () -> Unit =  {
         when (swapState) {
@@ -56,7 +71,10 @@ fun SwapScreen(
         receiveEquivalent = toEquivalent,
         rate = rate,
         isShowPriceImpactAlert = isShowPriceImpactAlert,
-        selectState = selectState,
+        selectState = {
+            val select = it ?: return@SwapScene
+            onSelect(select, pay?.id(), receive?.id())
+        },
         switchSwap = viewModel::switchSwap,
         payValue = viewModel.payValue,
         receiveValue = viewModel.receiveValue,
@@ -75,13 +93,6 @@ fun SwapScreen(
         priceImpact = priceImpact,
         asset = pay?.asset,
         onContinue = onSwap,
-    )
-
-    SelectSwapAssetDialog(
-        select = selectState,
-        payAssetId = pay?.id(),
-        receiveAssetId = receive?.id(),
-        onSelect = viewModel::onSelect,
     )
 
     SwapDetailsDialog(
