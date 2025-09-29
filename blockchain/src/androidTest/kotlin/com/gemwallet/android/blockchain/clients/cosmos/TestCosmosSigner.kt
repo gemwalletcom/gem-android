@@ -20,7 +20,6 @@ import junit.framework.TestCase.assertTrue
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import org.junit.Ignore
 import wallet.core.jni.CoinType
 import wallet.core.jni.HDWallet
 import java.math.BigInteger
@@ -34,7 +33,7 @@ class TestCosmosSigner {
 
     val osmoAccount = Account(Chain.Osmosis, "osmo1kglemumu8mn658j6g4z9jzn3zef2qdyyvklwa3", "")
     val signer = CosmosSignClient(Chain.Osmosis)
-    val privateKey = HDWallet(testPhrase, "").getKeyForCoin(CoinType.OSMOSIS).data()
+    val privateKey = HDWallet(testPhrase, "").getKeyForCoin(CoinType.OSMOSIS).data()!!
 
     @Test
     fun testSignSwap() {
