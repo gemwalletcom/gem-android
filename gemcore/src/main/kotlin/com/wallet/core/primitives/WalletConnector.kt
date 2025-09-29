@@ -22,9 +22,7 @@ data class WalletConnectionSessionAppMetadata (
 	val name: String,
 	val description: String,
 	val url: String,
-	val icon: String,
-	val redirectNative: String? = null,
-	val redirectUniversal: String? = null
+	val icon: String
 )
 
 @Serializable

@@ -3,7 +3,7 @@ package com.gemwallet.android.blockchain.services
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionType
-import uniffi.gemstone.GemBroadcastOptions
+import uniffi.gemstone.BroadcastOptions
 import uniffi.gemstone.GemGateway
 
 class BroadcastService(
@@ -18,7 +18,7 @@ class BroadcastService(
         val hash = gateway.transactionBroadcast(
             chain = account.chain.string,
             data = String(signedMessage),
-            options = GemBroadcastOptions(
+            options = BroadcastOptions(
                 when (account.chain) {
                     Chain.Solana -> type == TransactionType.Swap
                     else -> false

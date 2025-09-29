@@ -18,6 +18,7 @@ fun StakeChain.redelegated(): Boolean = when (this) {
     StakeChain.Sui,
     StakeChain.SmartChain,
     StakeChain.Tron,
+    StakeChain.Ethereum,
     StakeChain.HyperCore -> false
 }
 
@@ -28,6 +29,7 @@ fun StakeChain.withdraw(): Boolean = when (this) {
     StakeChain.Celestia,
     StakeChain.Osmosis,
     StakeChain.SmartChain,
+    StakeChain.Ethereum,
     StakeChain.Tron,
     StakeChain.HyperCore,
     StakeChain.Sui-> false
@@ -43,6 +45,7 @@ fun StakeChain.claimed(): Boolean = when (this) {
     StakeChain.Solana,
     StakeChain.Sui,
     StakeChain.SmartChain,
+    StakeChain.Ethereum,
     StakeChain.HyperCore,
     StakeChain.Tron -> false
 }

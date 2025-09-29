@@ -7,7 +7,7 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
-import uniffi.gemstone.GemFeeOption
+import uniffi.gemstone.FeeOption
 import wallet.core.java.AnySigner
 import wallet.core.jni.StellarPassphrase
 import wallet.core.jni.proto.Stellar
@@ -36,7 +36,7 @@ class StellarSignClient(
                     this.text = params.memo()!!
                 }.build()
             }
-            if (fee.options.contains(GemFeeOption.TOKEN_ACCOUNT_CREATION.name)) {
+            if (fee.options.contains(FeeOption.TOKEN_ACCOUNT_CREATION.name)) {
                 this.opCreateAccount = Stellar.OperationCreateAccount.newBuilder().apply {
                     this.destination = params.destination().address
                     this.amount = finalAmount.toLong()

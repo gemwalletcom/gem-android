@@ -24,8 +24,8 @@ data class Transaction (
 	val value: String,
 	val memo: String? = null,
 	val direction: TransactionDirection,
-	val utxoInputs: List<TransactionUtxoInput>,
-	val utxoOutputs: List<TransactionUtxoInput>,
+	val utxoInputs: List<TransactionUtxoInput>? = null,
+	val utxoOutputs: List<TransactionUtxoInput>? = null,
 	val metadata: String?? = null,
 	val createdAt: SerializedDate
 )

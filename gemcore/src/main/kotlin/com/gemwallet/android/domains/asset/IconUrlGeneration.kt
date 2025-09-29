@@ -75,6 +75,7 @@ fun SwapperProvider.getSwapProviderIcon(): String {
         SwapperProvider.CHAINFLIP -> "chainflip"
         SwapperProvider.RELAY -> "relay"
         SwapperProvider.AERODROME -> "aerodrome"
+        SwapperProvider.HYPERLIQUID -> "hyperliquid"
     }
     return "file:///android_asset/swap/${iconName.lowercase()}.svg"
 }

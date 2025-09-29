@@ -69,7 +69,7 @@ fun PreviewValidatorsScene() {
                         id = "some_validator_id",
                         name = "Castlenode",
                         isActive = true,
-                        commision = 0.5,
+                        commission = 0.5,
                         apr = 9.10,
                     ),
                     DelegationValidator(
@@ -77,7 +77,7 @@ fun PreviewValidatorsScene() {
                         id = "some_validator_id_1",
                         name = "Ubik Capital 0%Fee",
                         isActive = true,
-                        commision = 0.5,
+                        commission = 0.5,
                         apr = 10.000,
                     ),
                     DelegationValidator(
@@ -85,7 +85,7 @@ fun PreviewValidatorsScene() {
                         id = "some_validator_id_2",
                         name = "Virtual Hive",
                         isActive = true,
-                        commision = 0.5,
+                        commission = 0.5,
                         apr = 9.50,
                     ),
                 ),

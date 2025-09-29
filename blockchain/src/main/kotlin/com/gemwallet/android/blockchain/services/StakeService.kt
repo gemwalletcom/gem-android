@@ -6,6 +6,7 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.DelegationBase
 import com.wallet.core.primitives.DelegationState
 import com.wallet.core.primitives.DelegationValidator
+import uniffi.gemstone.GemDelegationState
 import uniffi.gemstone.GemGateway
 
 class StakeService(
@@ -26,7 +27,7 @@ class StakeService(
                     id = item.id,
                     name = item.name,
                     isActive = item.isActive,
-                    commision = item.commission,
+                    commission = item.commission,
                     apr = item.apr,
                 )
             }
@@ -47,7 +48,15 @@ class StakeService(
             result.mapNotNull { item ->
                 DelegationBase(
                     assetId = item.assetId.toAssetId() ?: return@mapNotNull  null,
-                    state = DelegationState.entries.firstOrNull { it.string == item.delegationState } ?: return@mapNotNull null,
+                    state = when (item.state) {
+                        GemDelegationState.ACTIVE -> DelegationState.Active
+                        GemDelegationState.PENDING -> DelegationState.Pending
+                        GemDelegationState.UNDELEGATING -> DelegationState.Undelegating
+                        GemDelegationState.INACTIVE -> DelegationState.Inactive
+                        GemDelegationState.ACTIVATING -> DelegationState.Activating
+                        GemDelegationState.DEACTIVATING -> DelegationState.Deactivating
+                        GemDelegationState.AWAITING_WITHDRAWAL -> DelegationState.AwaitingWithdrawal
+                    },
                     balance = item.balance,
                     rewards = item.rewards,
                     completionDate = item.completionDate?.toLong(),

@@ -22,9 +22,6 @@ data class PriceTarget (
 )
 
 @Serializable
-enum class PerpetualDirection // TODO: It's stub wait fix
-
-@Serializable
 data class PerpetualPosition (
 	val id: String,
 	val perpetualId: String,
@@ -43,3 +40,5 @@ data class PerpetualPosition (
 	val funding: Float? = null
 )
 
+@Serializable
+enum class PerpetualDirection

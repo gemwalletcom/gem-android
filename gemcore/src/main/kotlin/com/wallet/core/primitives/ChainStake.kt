@@ -19,6 +19,8 @@ enum class StakeChain(val string: String) {
 	Sei("sei"),
 	@SerialName("celestia")
 	Celestia("celestia"),
+	@SerialName("ethereum")
+	Ethereum("ethereum"),
 	@SerialName("solana")
 	Solana("solana"),
 	@SerialName("sui")

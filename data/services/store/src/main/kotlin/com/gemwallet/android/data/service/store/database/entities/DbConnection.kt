@@ -40,8 +40,6 @@ fun DbConnection.toModel(wallet: Wallet): WalletConnection {
                 description = appDescription,
                 icon = appIcon,
                 url = appUrl,
-                redirectNative = redirectNative,
-                redirectUniversal = redirectUniversal,
             ),
         )
     )
@@ -58,8 +56,8 @@ fun WalletConnection.toRecord(): DbConnection {
         appDescription = session.metadata.description,
         appIcon = session.metadata.icon,
         appUrl = session.metadata.url,
-        redirectNative = session.metadata.redirectNative,
-        redirectUniversal = session.metadata.redirectUniversal,
+        redirectNative = null,
+        redirectUniversal = null,
         walletId = wallet.id,
     )
 }

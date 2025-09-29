@@ -9,10 +9,10 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 enum class FreezeType(val string: String) {
-	@SerialName("Freeze")
-	Freeze("Freeze"),
-	@SerialName("Unfreeze")
-	Unfreeze("Unfreeze"),
+	@SerialName("freeze")
+	Freeze("freeze"),
+	@SerialName("unfreeze")
+	Unfreeze("unfreeze"),
 }
 
 @Serializable
@@ -38,7 +38,7 @@ data class RedelegateData (
 @Serializable
 data class StakeData (
 	val data: String? = null,
-	val to: String? = null,
+	val to: String? = null
 )
 
 @Serializable

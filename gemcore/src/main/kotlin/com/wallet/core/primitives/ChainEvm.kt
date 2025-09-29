@@ -15,6 +15,8 @@ enum class EVMChain(val string: String) {
 	SmartChain("smartchain"),
 	@SerialName("polygon")
 	Polygon("polygon"),
+	@SerialName("plasma")
+	Plasma("plasma"),
 	@SerialName("arbitrum")
 	Arbitrum("arbitrum"),
 	@SerialName("optimism")

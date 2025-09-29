@@ -39,6 +39,11 @@ data class WCSolanaTransaction (
 )
 
 @Serializable
+data class WCSolanaTransactions (
+	val transactions: List<String>
+)
+
+@Serializable
 enum class WalletConnectCAIP2(val string: String) {
 	@SerialName("eip155")
 	Eip155("eip155"),

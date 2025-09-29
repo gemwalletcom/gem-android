@@ -21,6 +21,8 @@ enum class BannerEvent(val string: String) {
 	ActivateAsset("activateAsset"),
 	@SerialName("suspiciousAsset")
 	SuspiciousAsset("suspiciousAsset"),
+	@SerialName("onboarding")
+	Onboarding("onboarding"),
 }
 
 @Serializable

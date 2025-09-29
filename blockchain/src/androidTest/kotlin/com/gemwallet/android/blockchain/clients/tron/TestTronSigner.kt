@@ -156,7 +156,7 @@ class TestTronSigner {
                         id = "TCEo1hMAdaJrQmvnGTCcGT2LqrGU4N7Jqf",
                         name = "",
                         isActive = true,
-                        commision = 0.0,
+                        commission = 0.0,
                         apr = 0.9,
                     ),
                 ),

@@ -6,7 +6,7 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.Chain
-import uniffi.gemstone.GemFeeOption
+import uniffi.gemstone.FeeOption
 import wallet.core.java.AnySigner
 import wallet.core.jni.CoinType
 import wallet.core.jni.proto.TheOpenNetwork
@@ -65,7 +65,7 @@ class TonSignClient(
 
         val message = TheOpenNetwork.Transfer.newBuilder().apply {
             this.dest = meta.jettonAddress
-            this.amount = ByteString.copyFrom((fee.options[GemFeeOption.TOKEN_ACCOUNT_CREATION.name] ?: BigInteger.ZERO).toByteArray())
+            this.amount = ByteString.copyFrom((fee.options[FeeOption.TOKEN_ACCOUNT_CREATION.name] ?: BigInteger.ZERO).toByteArray())
             if (!params.memo().isNullOrEmpty()) {
                 this.comment = params.memo()
             }

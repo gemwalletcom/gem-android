@@ -31,12 +31,16 @@ data class AssetLink (
 )
 
 @Serializable
+class PerpetualBasic
+
+@Serializable
 data class AssetFull (
 	val asset: Asset,
 	val properties: AssetProperties,
 	val score: AssetScore,
 	val tags: List<String>,
-	val links: List<AssetLink>
+	val links: List<AssetLink>,
+	val perpetuals: List<PerpetualBasic>
 )
 
 @Serializable

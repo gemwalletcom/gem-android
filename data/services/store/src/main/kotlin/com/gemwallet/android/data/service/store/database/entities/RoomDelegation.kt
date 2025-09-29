@@ -33,7 +33,7 @@ data class RoomDelegation(
                 chain = chain,
                 name = name,
                 isActive = isActive,
-                commision = commission,
+                commission = commission,
                 apr = apr
             ),
             base = DelegationBase(

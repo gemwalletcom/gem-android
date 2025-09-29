@@ -9,12 +9,12 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 enum class LatencyType(val string: String) {
-	@SerialName("Fast")
-	Fast("Fast"),
-	@SerialName("Normal")
-	Normal("Normal"),
-	@SerialName("Slow")
-	Slow("Slow"),
+	@SerialName("fast")
+	Fast("fast"),
+	@SerialName("normal")
+	Normal("normal"),
+	@SerialName("slow")
+	Slow("slow"),
 }
 
 @Serializable

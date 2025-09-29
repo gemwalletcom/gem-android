@@ -9,7 +9,7 @@ fun DelegationValidator.toGem(chain: uniffi.gemstone.Chain): GemDelegationValida
         id = id,
         name = name,
         isActive = isActive,
-        commission = commision,
+        commission = commission,
         apr = apr,
     )
 }

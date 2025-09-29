@@ -188,7 +188,7 @@ class TestEthSign {
                         id = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8",
                         name = "",
                         isActive = true,
-                        commision = 0.0,
+                        commission = 0.0,
                         apr = 0.9
                     ),
                 ),
@@ -243,7 +243,7 @@ class TestEthSign {
                             id = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8",
                             name = "",
                             isActive = true,
-                            commision = 0.0,
+                            commission = 0.0,
                             apr = 0.9,
                         ),
                     )

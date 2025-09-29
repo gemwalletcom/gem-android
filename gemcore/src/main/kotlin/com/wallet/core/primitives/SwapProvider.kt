@@ -45,5 +45,7 @@ enum class SwapProvider(val string: String) {
 	CetusAggregator("cetus_aggregator"),
 	@SerialName("relay")
 	Relay("relay"),
+	@SerialName("hyperliquid")
+	Hyperliquid("hyperliquid"),
 }
 

@@ -42,9 +42,10 @@ import uniffi.gemstone.GemTransactionLoadInput
 import uniffi.gemstone.GemTransactionLoadMetadata
 import uniffi.gemstone.GemTransactionPreloadInput
 import uniffi.gemstone.GemTransferDataExtra
-import uniffi.gemstone.GemTransferDataOutputType
+import uniffi.gemstone.TransferDataOutputType
 import uniffi.gemstone.GemWalletConnectionSessionAppMetadata
 import uniffi.gemstone.SwapperException
+import uniffi.gemstone.TransferDataOutputAction
 
 class SignerPreloaderProxy(
     private val gateway: GemGateway,
@@ -155,18 +156,17 @@ class SignerPreloaderProxy(
                     description = params.description,
                     url = params.url,
                     icon = params.icon,
-                    redirectNative = params.redirectNative,
-                    redirectUniversal = params.redirectUniversal, // TODO: Remove not used data
                 ),
                 extra = GemTransferDataExtra(
                     gasLimit = null,
                     gasPrice = null,
                     data = params.memo?.toByteArray(),
                     outputType = when (params.inputType) {
-                        ConfirmParams.TransferParams.InputType.Signature -> GemTransferDataOutputType.SIGNATURE
-                        ConfirmParams.TransferParams.InputType.EncodeTransaction -> GemTransferDataOutputType.ENCODED_TRANSACTION
+                        ConfirmParams.TransferParams.InputType.Signature -> TransferDataOutputType.SIGNATURE
+                        ConfirmParams.TransferParams.InputType.EncodeTransaction -> TransferDataOutputType.ENCODED_TRANSACTION
                         null -> throw IllegalArgumentException("Not supported ${params.inputType}")
                     },
+                    outputAction = TransferDataOutputAction.SEND
                 ),
             )
             is ConfirmParams.Activate,

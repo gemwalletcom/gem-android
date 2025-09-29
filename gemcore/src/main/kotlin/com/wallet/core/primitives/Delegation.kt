@@ -43,7 +43,7 @@ data class DelegationValidator (
 	val id: String,
 	val name: String,
 	val isActive: Boolean,
-	val commision: Double,
+	val commission: Double,
 	val apr: Double
 )
 

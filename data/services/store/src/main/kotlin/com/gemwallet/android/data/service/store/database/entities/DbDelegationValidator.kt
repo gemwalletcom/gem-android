@@ -24,7 +24,7 @@ fun DbDelegationValidator.toModel(): DelegationValidator {
         chain = chain,
         name = name,
         isActive = isActive,
-        commision = commission,
+        commission = commission,
         apr = apr,
     )
 }
@@ -35,7 +35,7 @@ fun DelegationValidator.toRecord(): DbDelegationValidator {
         chain = chain,
         name = name,
         isActive = isActive,
-        commission = commision,
+        commission = commission,
         apr = apr,
     )
 }

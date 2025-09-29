@@ -20,6 +20,7 @@ import junit.framework.TestCase.assertTrue
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import org.junit.Ignore
 import wallet.core.jni.CoinType
 import wallet.core.jni.HDWallet
 import java.math.BigInteger
@@ -82,8 +83,11 @@ class TestCosmosSigner {
     @Test
     fun testSignSwapThorChain() {
         val thorSigner = CosmosSignClient(Chain.Thorchain)
-        val thorAccount = Account(Chain.Thorchain, "thor1kglemumu8mn658j6g4z9jzn3zef2qdyyvklwa3", "")
-        val thorPrivateKey = HDWallet(testPhrase, "").getKeyForCoin(CoinType.THORCHAIN).data()
+        val wallet = HDWallet(testPhrase, "")
+        val thorPrivateKey = wallet.getKeyForCoin(CoinType.THORCHAIN).data()
+        // Use a known valid ThorChain address format
+        val thorAddress = "thor1z53wwe7md6cewz9sqwqzn0aavpaun0gw0exn2r"
+        val thorAccount = Account(Chain.Thorchain, thorAddress, "")
         
         val swapParams = ConfirmParams.SwapParams(
             from = thorAccount,
@@ -95,7 +99,7 @@ class TestCosmosSigner {
             provider = "thorchain",
             providerName = "THORChain",
             protocolId = "thorchain",
-            to = "thor1rcjvzz8wzktqfz8qjf0l9q45kzxvd0z0n7l5cf",
+            to = thorAddress,
             value = "1000000",
             slippageBps = 500u,
             etaInSeconds = 60u,
@@ -220,7 +224,7 @@ class TestCosmosSigner {
     @Test
     fun testSignStake() {
         val transfer = ConfirmParams.Builder(Chain.Osmosis.asset(), osmoAccount, BigInteger.TEN)
-            .delegate(DelegationValidator(Chain.Osmosis, id = "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm", name = "", isActive = true, commision = 1.0, apr = 9.0))
+            .delegate(DelegationValidator(Chain.Osmosis, id = "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm", name = "", isActive = true, commission = 1.0, apr = 9.0))
         val chainData = CosmosChainData(
             chainId = "osmosis-1",
             accountNumber = 2913388UL,
@@ -281,7 +285,7 @@ class TestCosmosSigner {
                         id = "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm",
                         name = "",
                         isActive = true,
-                        commision = 0.05,
+                        commission = 0.05,
                         apr = 5.11
                     )
                 )
@@ -331,7 +335,7 @@ class TestCosmosSigner {
     fun testSignRedelegate() {
         val transfer = ConfirmParams.Builder(Chain.Osmosis.asset(), osmoAccount, BigInteger.TEN)
             .redelegate(
-                dstValidator = DelegationValidator(Chain.Osmosis, id = "osmovaloper1z0sh4s80u99l6y9d3vfy582p8jejeeu6tcucs2", name = "", isActive = true, commision = 1.0, apr = 9.0),
+                dstValidator = DelegationValidator(Chain.Osmosis, id = "osmovaloper1z0sh4s80u99l6y9d3vfy582p8jejeeu6tcucs2", name = "", isActive = true, commission = 1.0, apr = 9.0),
                 delegation = Delegation(
                     base = DelegationBase(
                         assetId = AssetId(Chain.Osmosis),
@@ -348,7 +352,7 @@ class TestCosmosSigner {
                         id = "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm",
                         name = "",
                         isActive = true,
-                        commision = 0.05,
+                        commission = 0.05,
                         apr = 5.11
                     )
                 )
@@ -400,8 +404,8 @@ class TestCosmosSigner {
         val transfer = ConfirmParams.Builder(Chain.Osmosis.asset(), osmoAccount, BigInteger.TEN)
             .rewards(
                 listOf(
-                    DelegationValidator(Chain.Osmosis, id = "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm", name = "", isActive = true, commision = 1.0, apr = 9.0),
-                    DelegationValidator(Chain.Osmosis, id = "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm", name = "", isActive = true, commision = 1.0, apr = 9.0),
+                    DelegationValidator(Chain.Osmosis, id = "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm", name = "", isActive = true, commission = 1.0, apr = 9.0),
+                    DelegationValidator(Chain.Osmosis, id = "osmovaloper1pxphtfhqnx9ny27d53z4052e3r76e7qq495ehm", name = "", isActive = true, commission = 1.0, apr = 9.0),
                 ),
             )
         val chainData = CosmosChainData(

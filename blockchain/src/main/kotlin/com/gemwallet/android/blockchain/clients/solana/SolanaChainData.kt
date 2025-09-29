@@ -2,7 +2,6 @@ package com.gemwallet.android.blockchain.clients.solana
 
 import com.gemwallet.android.model.ChainSignData
 import com.wallet.core.primitives.SolanaTokenProgramId
-import uniffi.gemstone.GemSolanaTokenProgramId
 import uniffi.gemstone.GemTransactionLoadMetadata
 
 data class SolanaChainData(
@@ -18,8 +17,8 @@ fun GemTransactionLoadMetadata.Solana.toChainData(): SolanaChainData {
         senderTokenAddress = senderTokenAddress,
         recipientTokenAddress = recipientTokenAddress,
         tokenProgram = when (tokenProgram) {
-            GemSolanaTokenProgramId.TOKEN -> SolanaTokenProgramId.Token
-            GemSolanaTokenProgramId.TOKEN2022 -> SolanaTokenProgramId.Token2022
+            uniffi.gemstone.SolanaTokenProgramId.TOKEN -> SolanaTokenProgramId.Token
+            uniffi.gemstone.SolanaTokenProgramId.TOKEN2022 -> SolanaTokenProgramId.Token2022
             null -> null
         },
     )

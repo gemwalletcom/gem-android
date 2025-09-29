@@ -9,6 +9,7 @@ import com.wallet.core.primitives.EVMChain
 import com.wallet.core.primitives.EncodingType
 import com.wallet.core.primitives.FeeUnitType
 import uniffi.gemstone.Config
+import uniffi.gemstone.GemAssetType
 import java.math.BigInteger
 
 fun Chain.assetType(): AssetType? {
@@ -45,6 +46,7 @@ fun Chain.assetType(): AssetType? {
         Chain.Unichain,
         Chain.Hyperliquid,
         Chain.Monad,
+        Chain.Plasma,
         Chain.World -> AssetType.ERC20
 
         Chain.HyperCore,
@@ -96,7 +98,20 @@ fun Chain.asset(): Asset {
         name = wrapper.name,
         symbol = wrapper.symbol,
         decimals = wrapper.decimals,
-        type = AssetType.entries.firstOrNull { string == wrapper.assetType } ?: AssetType.NATIVE
+        type = when (wrapper.assetType) {
+            GemAssetType.NATIVE -> AssetType.NATIVE
+            GemAssetType.ERC20 -> AssetType.ERC20
+            GemAssetType.BEP20 -> AssetType.BEP20
+            GemAssetType.SPL -> AssetType.SPL
+            GemAssetType.SPL2022 -> AssetType.SPL2022
+            GemAssetType.TRC20 -> AssetType.TRC20
+            GemAssetType.TOKEN -> AssetType.TOKEN
+            GemAssetType.IBC -> AssetType.IBC
+            GemAssetType.JETTON -> AssetType.JETTON
+            GemAssetType.SYNTH -> AssetType.SYNTH
+            GemAssetType.ASA -> AssetType.ASA
+            GemAssetType.PERPETUAL -> AssetType.PERPETUAL
+        } 
     )
 }
 
@@ -165,6 +180,7 @@ fun Chain.toChainType(): ChainType {
         Chain.Ink,
         Chain.Hyperliquid,
         Chain.Monad,
+        Chain.Plasma,
         Chain.Ethereum -> ChainType.Ethereum
     }
 }
