@@ -376,61 +376,6 @@ class ConfirmViewModel @Inject constructor(
         return firstOrNull { it.id().toIdentifier() ==  str}
     }
 
-//    private fun ConfirmParams.getRecipientCell(validator: DelegationValidator?): CellEntity<Int>? {
-//        return when (this) {
-//            is ConfirmParams.Activate,
-//            is ConfirmParams.Stake.RewardsParams -> null
-//            is ConfirmParams.Stake.DelegateParams,
-//            is ConfirmParams.Stake.RedelegateParams,
-//            is ConfirmParams.Stake.UndelegateParams,
-//            is ConfirmParams.Stake.WithdrawParams -> CellEntity(label = R.string.stake_validator, data = validator?.name ?: "")
-//            is ConfirmParams.SwapParams -> {
-//                // TODO: val swapProvider = SwapProvider.entries.firstOrNull { it.string == protocolId }
-//                CellEntity(
-//                    label = R.string.common_provider,
-//                    data = provider,
-//                )
-//            }
-//            is ConfirmParams.TokenApprovalParams -> CellEntity(label = R.string.common_provider, data = provider)
-//            is ConfirmParams.NftParams,
-//            is ConfirmParams.TransferParams -> {
-//                val destination = destination()
-//                if (destination == null) {
-//                    state.update { ConfirmState.Error(ConfirmError.RecipientEmpty) }
-//                    return null
-//                }
-//                return when {
-//                    destination.domainName.isNullOrEmpty() -> CellEntity(label = R.string.transaction_recipient, data = destination.address)
-//                    else -> CellEntity(label = R.string.transaction_recipient, support = destination.address, data = destination.domainName!!)
-//                }
-//            }
-//        }
-//    }
-//
-//    private fun AssetInfo.getFromCell(input: ConfirmParams): CellEntity<Int> {
-//        return CellEntity(label = R.string.transfer_from, data = walletName)
-//    }
-
-//    private fun ConfirmParams.getMemoCell(): CellEntity<Int>? {
-//        return if (this is ConfirmParams.TransferParams && this.asset.isMemoSupport()) {
-//            val memo = memo()
-//            if (memo.isNullOrEmpty()) {
-//                return null
-//            }
-//            CellEntity(label = R.string.transfer_memo, data = memo)
-//        } else {
-//            null
-//        }
-//    }
-
-//    private fun AssetInfo.getNetworkCell(): CellEntity<Int> {
-//        return CellEntity(
-//            label = R.string.transfer_network,
-//            data = owner?.chain?.asset()?.name ?: "",
-//            trailingIcon = owner?.chain?.getIconUrl() ?: "",
-//        )
-//    }
-
     private fun assembleMetadata(signerParams: SignerParams) = when (val input = signerParams.input) {
         is ConfirmParams.SwapParams -> {
             jsonEncoder.encodeToString(

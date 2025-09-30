@@ -19,7 +19,7 @@ sealed class DestinationUIModel(val data: String) {
                 is ConfirmParams.Stake.RedelegateParams,
                 is ConfirmParams.Stake.UndelegateParams,
                 is ConfirmParams.Stake.WithdrawParams -> Stake(data = validator?.name ?: "")
-                is ConfirmParams.SwapParams -> Provider(data = params.provider)// TODO: val swapProvider = SwapProvider.entries.firstOrNull { it.string == protocolId }
+                is ConfirmParams.SwapParams -> Provider(data = params.providerName)
                 is ConfirmParams.TokenApprovalParams -> Provider(data = params.provider)
                 is ConfirmParams.NftParams,
                 is ConfirmParams.TransferParams -> {
