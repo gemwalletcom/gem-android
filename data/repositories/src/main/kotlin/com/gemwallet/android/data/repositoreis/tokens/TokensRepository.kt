@@ -11,6 +11,7 @@ import com.wallet.core.primitives.AssetBasic
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetProperties
 import com.wallet.core.primitives.AssetScore
+import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -21,12 +22,17 @@ class TokensRepository (
     private val tokenService: TokenService,
 ) : SearchTokensCase {
 
-    override suspend fun search(query: String): Boolean = withContext(Dispatchers.IO) {
+    override suspend fun search(query: String, chains: List<Chain>): Boolean = withContext(Dispatchers.IO) {
         if (query.isEmpty()) {
             return@withContext false
         }
         val tokens = try {
-            gemApiClient.search(query)
+            val chainsQuery = if (chains.isEmpty()) {
+                ""
+            } else {
+                chains.joinToString(",") { it.string }
+            }
+            gemApiClient.search(query, chainsQuery)
         } catch (_: Throwable) {
             return@withContext false
         }

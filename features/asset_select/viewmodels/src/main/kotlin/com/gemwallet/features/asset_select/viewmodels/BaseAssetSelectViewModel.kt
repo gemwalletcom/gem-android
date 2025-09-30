@@ -51,7 +51,7 @@ open class BaseAssetSelectViewModel(
             searchState.update { if (it != SearchState.Init) SearchState.Searching else it }
             viewModelScope.launch(Dispatchers.IO) {
                 delay(250)
-                searchTokensCase.search(it)
+                searchTokensCase.search(it, sessionRepository.getSession()?.wallet?.accounts?.map { it.chain } ?: emptyList())
             }
         }
         .mapLatest { query -> query }

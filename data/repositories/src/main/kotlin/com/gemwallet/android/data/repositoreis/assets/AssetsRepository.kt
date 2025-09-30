@@ -296,7 +296,7 @@ class AssetsRepository @Inject constructor(
             availableAssetsId.mapNotNull { it.toAssetId() }.filter { it.tokenId != null }
                 .map { assetId ->
                     async {
-                        searchTokensCase.search(assetId.tokenId!!)
+                        searchTokensCase.search(assetId.tokenId!!, wallet.accounts.map { it.chain })
                         val asset = assetsDao.getAsset(assetId.toIdentifier())?.toModel() ?: return@async null
                         add(
                             walletId = wallet.id,
