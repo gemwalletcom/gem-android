@@ -18,6 +18,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
+import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.navigation.routes.bridgesScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToBridgeScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToBridgesScreen
@@ -38,6 +39,7 @@ import com.gemwallet.android.ui.models.navigation.assetRoutePath
 import com.gemwallet.android.ui.models.navigation.assetsRoute
 import com.gemwallet.android.ui.models.navigation.stakeRoute
 import com.gemwallet.android.ui.models.navigation.swapRoute
+import com.gemwallet.android.ui.navigation.routes.AssetRoute
 import com.gemwallet.android.ui.navigation.routes.SendSelect
 import com.gemwallet.android.ui.navigation.routes.Transfer
 import com.gemwallet.android.ui.navigation.routes.activitiesScreen
@@ -354,7 +356,7 @@ sealed interface NavigateAfterConfirm {
                 assetId,
                 navOptions {
                     launchSingleTop = true
-                    popUpTo(Transfer) {
+                    popUpTo(AssetRoute(assetId.toIdentifier())) {
                         inclusive = true
                     }
                 }
