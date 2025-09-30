@@ -14,6 +14,7 @@ import com.gemwallet.android.domains.asset.isStackable
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.model.getStackedAmount
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Banner
 import com.wallet.core.primitives.BannerEvent
@@ -23,7 +24,7 @@ import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
-import kotlin.collections.firstOrNull
+import java.math.BigInteger
 
 class BannersRepository(
     private val assetRepository: AssetsRepository,
@@ -70,7 +71,7 @@ class BannersRepository(
         val event = when {
             wallet == null && assetInfo == null -> BannerEvent.EnableNotifications
 //            asset?.id?.chain?.getReserveBalance()?.let { it != BigInteger.ZERO } == true -> BannerEvent.AccountActivation
-            assetInfo?.asset?.isStackable == true -> BannerEvent.Stake
+            assetInfo?.let { it.asset.isStackable && it.balance.balance.getStackedAmount() <= BigInteger.ZERO } ?: false -> BannerEvent.Stake
             assetInfo?.balance?.isActive == false -> BannerEvent.ActivateAsset
             else -> return null
         }
