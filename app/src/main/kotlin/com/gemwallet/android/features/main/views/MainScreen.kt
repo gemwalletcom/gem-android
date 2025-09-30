@@ -22,6 +22,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -123,6 +124,7 @@ fun MainScreen(
         bottomBar = {
             NavigationBar(
                 containerColor = MaterialTheme.colorScheme.background,
+                contentColor = MaterialTheme.colorScheme.primary,
             ) {
                 navItems.forEach { item ->
                     NavigationBarItem(
@@ -172,11 +174,11 @@ fun MainScreen(
                         },
                         label = { Text(item.label) },
                         colors = NavigationBarItemDefaults.colors().copy(
-                            selectedIconColor = MaterialTheme.colorScheme.onSurface,
+                            selectedIconColor = MaterialTheme.colorScheme.primary,
                             selectedTextColor = MaterialTheme.colorScheme.onSurface,
                             unselectedIconColor = MaterialTheme.colorScheme.secondary,
-                            unselectedTextColor = MaterialTheme.colorScheme.secondary,
-                            selectedIndicatorColor = Color.Transparent,
+                            unselectedTextColor = MaterialTheme.colorScheme.onSurface,
+                            selectedIndicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
                         )
                     )
                 }
