@@ -136,7 +136,7 @@ class SwapViewModel @Inject constructor(
             quotes?.getQuote(provider)?.let { QuoteState(it, quotes.pay, quotes.receive) }
         }
         .onEach { state -> setReceive(state?.formattedToAmount ?: "") }
-        .onEach { state -> swapScreenState.update { state?.validate() ?: SwapState.None } }
+        .onEach { state -> swapScreenState.update { state?.validate() ?: it.takeIf { it is SwapState.Error } ?: SwapState.None } }
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

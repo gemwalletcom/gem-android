@@ -24,7 +24,7 @@ internal fun SwapAction(swapState: SwapState, pay: AssetInfo?, onSwap: () -> Uni
     Button(
         modifier = Modifier.fillMaxWidth().heightIn(mainActionHeight),
         onClick = onSwap,
-        enabled = (swapState == SwapState.Ready || swapState !is SwapState.Error)
+        enabled = (swapState == SwapState.Ready || (swapState is SwapState.Error && swapState.error !is SwapError.InsufficientBalance))
     ) {
         when (swapState) {
             SwapState.None,
