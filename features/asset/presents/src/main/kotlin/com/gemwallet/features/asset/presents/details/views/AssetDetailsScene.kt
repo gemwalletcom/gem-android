@@ -110,12 +110,12 @@ internal fun AssetDetailsScene(
             ) {
                 item {
                     AssetHeadItem(
-                        uiState,
-                        isOperationEnabled,
-                        onTransfer,
-                        onReceive,
-                        onBuy,
-                        onSwap
+                        uiState = uiState,
+                        isOperationEnabled = isOperationEnabled,
+                        onTransfer = onTransfer,
+                        onReceive = onReceive,
+                        onBuy = onBuy,
+                        onSwap = onSwap
                     )
                 }
                 item { BannerItem(uiState.assetInfo, onStake, onConfirm) }
