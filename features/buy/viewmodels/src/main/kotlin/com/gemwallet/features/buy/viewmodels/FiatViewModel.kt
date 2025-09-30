@@ -129,6 +129,9 @@ class FiatViewModel @Inject constructor(
                 asset.assetInfo.owner?.address ?: ""
             )
             _state.value = null
+            if (quotes.isEmpty()) {
+                throw Exception()
+            }
             quotes.sortedByDescending { quote -> quote.cryptoAmount }
         } catch (_: Exception) {
             _state.value = FiatSceneState.Error(BuyError.QuoteNotAvailable)
