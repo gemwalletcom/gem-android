@@ -1,5 +1,6 @@
 package com.gemwallet.features.assets.views
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -19,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
@@ -59,7 +61,8 @@ fun AssetsScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { AssetsTopBar(walletInfo, onShowWallets, onShowAssetManage) }
+        topBar = { AssetsTopBar(walletInfo, onShowWallets, onShowAssetManage) },
+        containerColor = MaterialTheme.colorScheme.surface,
     ) {
         val pullToRefreshState = rememberPullToRefreshState()
         PullToRefreshBox(
@@ -105,10 +108,9 @@ fun AssetsScreen(
                         },
                         false
                     )
-                    HorizontalDivider(thickness = 0.dp)
                 }
                 assets(
-                    assets = pinnedAssets,
+                    items = pinnedAssets,
                     longPressState = longPressedAsset,
                     isPinned = true,
                     onAssetClick = onAssetClick,
@@ -116,7 +118,7 @@ fun AssetsScreen(
                     onTogglePin = viewModel::togglePin,
                 )
                 assets(
-                    assets = unpinnedAssets,
+                    items = unpinnedAssets,
                     longPressState = longPressedAsset,
                     isPinned = false,
                     onAssetClick = onAssetClick,

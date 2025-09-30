@@ -22,13 +22,13 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.fields.AmountField
 import com.gemwallet.android.ui.components.keyboardAsState
 import com.gemwallet.android.ui.components.list_item.ValidatorItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.AmountInputType
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.features.transfer_amount.viewmodels.models.AmountError
 import com.wallet.core.primitives.Asset
@@ -97,7 +97,7 @@ fun AmountScene(
             }
             validatorView(txType, validatorState, onValidator)
             item {
-                AssetInfoCard(
+                AssetInfoCard( // TODO: Refactor for correct list position
                     asset = asset,
                     availableAmount = availableBalance,
                     onMaxAmount = onMaxAmount
@@ -120,25 +120,23 @@ private fun LazyListScope.validatorView(
 ) {
     validatorState ?: return
     item {
-        Container {
-            ValidatorItem(
-                data = validatorState,
-                inContainer = true,
-                trailingIcon = {
-                    Icon(
-                        Icons.Default.ChevronRight,
-                        contentDescription = "select_validator",
-                        tint = MaterialTheme.colorScheme.secondary
-                    )
-                },
-                onClick = when (txType) {
-                    TransactionType.StakeUndelegate -> null
-                    else -> {
-                        { onValidator() }
-                    }
+        ValidatorItem(
+            data = validatorState,
+            listPosition = ListPosition.Single,
+            trailingIcon = {
+                Icon(
+                    Icons.Default.ChevronRight,
+                    contentDescription = "select_validator",
+                    tint = MaterialTheme.colorScheme.secondary
+                )
+            },
+            onClick = when (txType) {
+                TransactionType.StakeUndelegate -> null
+                else -> {
+                    { onValidator() }
                 }
-            )
-        }
+            }
+        )
     }
 }
 

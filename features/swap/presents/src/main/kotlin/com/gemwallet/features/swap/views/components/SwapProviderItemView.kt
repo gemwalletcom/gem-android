@@ -18,6 +18,7 @@ import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.features.swap.viewmodels.models.SwapProviderItem
 import uniffi.gemstone.SwapperProvider
@@ -25,6 +26,7 @@ import uniffi.gemstone.SwapperProvider
 @Composable
 internal fun SwapProviderItemView(
     swapProvider: SwapProviderItem,
+    listPosition: ListPosition,
     isSelected: Boolean,
     onProviderSelect: (SwapperProvider) -> Unit
 ) {
@@ -50,7 +52,7 @@ internal fun SwapProviderItemView(
                 }
             }
         },
-        dividerShowed = false,
+        listPosition = listPosition,
         trailing = {
             swapProvider.price?.let { price ->
                 Column(horizontalAlignment = Alignment.End) {

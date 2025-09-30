@@ -2,6 +2,7 @@ package com.gemwallet.android.features.main.views
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -15,6 +16,7 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Wallet
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -121,66 +123,70 @@ fun MainScreen(
         )
     }
     Scaffold(
+        containerColor = MaterialTheme.colorScheme.surface,
         bottomBar = {
-            NavigationBar(
-                containerColor = MaterialTheme.colorScheme.background,
-                contentColor = MaterialTheme.colorScheme.primary,
-            ) {
-                navItems.forEach { item ->
-                    NavigationBarItem(
-                        modifier = Modifier.testTag(item.testTag),
-                        selected = item.route == currentTab.value,
-                        onClick = {
-                            val prevRoute = currentTab.value
-                            currentTab.value = item.route
-                            coroutineScope.launch {
-                                when (prevRoute) {
-                                    assetsRoute -> assetsListState.animateScrollToItem(0)
-                                    transactionsRoute -> activitiesListState.animateScrollToItem(0)
-                                    nftRoute -> nftListState.animateScrollToItem(0)
-                                    settingsRoute -> settingsScrollState.animateScrollTo(0)
-                                    else -> null
-                                }
-                            }
-                        },
-                        icon = {
-                            val modifier = Modifier.size(24.dp)
-                            if (item.route == assetsRoute) {
-                                Icon(
-                                    modifier = modifier,
-                                    painter = painterResource(R.drawable.wallets),
-                                    contentDescription = item.label,
-                                )
-                            } else {
-                                BadgedBox(
-                                    badge = {
-                                        if (!item.badge.isNullOrEmpty()) {
-                                            Badge(
-                                                modifier = Modifier.offset(x = 6.dp, y = 0.dp)
-                                            ) {
-                                                Text(text = item.badge)
-                                            }
-                                        }
+            Column {
+                HorizontalDivider(thickness = 0.5.dp)
+                NavigationBar(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.primary,
+                ) {
+                    navItems.forEach { item ->
+                        NavigationBarItem(
+                            modifier = Modifier.testTag(item.testTag),
+                            selected = item.route == currentTab.value,
+                            onClick = {
+                                val prevRoute = currentTab.value
+                                currentTab.value = item.route
+                                coroutineScope.launch {
+                                    when (prevRoute) {
+                                        assetsRoute -> assetsListState.animateScrollToItem(0)
+                                        transactionsRoute -> activitiesListState.animateScrollToItem(0)
+                                        nftRoute -> nftListState.animateScrollToItem(0)
+                                        settingsRoute -> settingsScrollState.animateScrollTo(0)
+                                        else -> null
                                     }
-                                ) {
+                                }
+                            },
+                            icon = {
+                                val modifier = Modifier.size(24.dp)
+                                if (item.route == assetsRoute) {
                                     Icon(
                                         modifier = modifier,
-                                        imageVector = item.icon,
+                                        painter = painterResource(R.drawable.wallets),
                                         contentDescription = item.label,
                                     )
+                                } else {
+                                    BadgedBox(
+                                        badge = {
+                                            if (!item.badge.isNullOrEmpty()) {
+                                                Badge(
+                                                    modifier = Modifier.offset(x = 6.dp, y = 0.dp)
+                                                ) {
+                                                    Text(text = item.badge)
+                                                }
+                                            }
+                                        }
+                                    ) {
+                                        Icon(
+                                            modifier = modifier,
+                                            imageVector = item.icon,
+                                            contentDescription = item.label,
+                                        )
 
+                                    }
                                 }
-                            }
-                        },
-                        label = { Text(item.label) },
-                        colors = NavigationBarItemDefaults.colors().copy(
-                            selectedIconColor = MaterialTheme.colorScheme.primary,
-                            selectedTextColor = MaterialTheme.colorScheme.onSurface,
-                            unselectedIconColor = MaterialTheme.colorScheme.secondary,
-                            unselectedTextColor = MaterialTheme.colorScheme.onSurface,
-                            selectedIndicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                            },
+                            label = { Text(item.label) },
+                            colors = NavigationBarItemDefaults.colors().copy(
+                                selectedIconColor = MaterialTheme.colorScheme.primary,
+                                selectedTextColor = MaterialTheme.colorScheme.onSurface,
+                                unselectedIconColor = MaterialTheme.colorScheme.secondary,
+                                unselectedTextColor = MaterialTheme.colorScheme.onSurface,
+                                selectedIndicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.15f),
+                            )
                         )
-                    )
+                    }
                 }
             }
         }

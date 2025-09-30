@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Done
@@ -38,6 +39,7 @@ import com.gemwallet.android.model.NodeStatus
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.padding8
 import com.gemwallet.android.ui.theme.paddingDefault
@@ -89,10 +91,12 @@ fun NetworkScene(
                         title = stringResource(id = R.string.settings_networks_source),
                     )
                 }
-                items(nodes) { node: Node ->
+                val size = nodes.size
+                itemsIndexed(nodes) { index, node: Node ->
                     NodeItem(
                         chain = state.chain!!,
                         node = node,
+                        listPosition = ListPosition.getPosition(index, size),
                         selected = state.currentNode?.url == node.url,
                         nodeStatus = nodeStates.firstOrNull { it?.url == node.url },
                         onSelect = onSelectNode,

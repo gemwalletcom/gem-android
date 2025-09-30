@@ -10,6 +10,7 @@ import com.gemwallet.android.ext.assetType
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.ChainItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
+import com.gemwallet.android.ui.models.ListPosition
 import com.wallet.core.primitives.Chain
 
 fun LazyListScope.selectFilterChain(
@@ -24,18 +25,21 @@ fun LazyListScope.selectFilterChain(
     item {
         SubheaderItem(stringResource(R.string.settings_networks_title))
     }
-    availableChains.map { it.asset() }.filter { asset ->
+    val items = availableChains.map { it.asset() }.filter { asset ->
         val query = query.lowercase()
         asset.name.lowercase().contains(query)
                 || asset.symbol.lowercase().contains(query)
                 || (asset.id.chain.assetType()?.string?.lowercase()
             ?.contains(query) == true)
-    }.forEach {
-        val chain = it.id.chain
+    }
+    val size = items.size
+    items.forEachIndexed { index, item ->
+        val chain = item.id.chain
         item {
             ChainItem(
                 title = chain.asset().name,
                 icon = chain,
+                listPosition = ListPosition.getPosition(index, size),
                 trailing = {
                     if (chainFilter.contains(chain)) {
                         Icon(Icons.Default.CheckCircleOutline, contentDescription = "")

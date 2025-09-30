@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
@@ -22,17 +23,16 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ext.getReserveBalanceUrl
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.TransactionExtended
-import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.transactionsList
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.open
 import com.gemwallet.features.asset.presents.details.views.components.AssetDetailsMenu
 import com.gemwallet.features.asset.presents.details.views.components.AssetHeadItem
+import com.gemwallet.features.asset.presents.details.views.components.BalanceItem
 import com.gemwallet.features.asset.presents.details.views.components.BannerItem
 import com.gemwallet.features.asset.presents.details.views.components.EmptyTransactionsItem
-import com.gemwallet.features.asset.presents.details.views.components.additionBalance
-import com.gemwallet.features.asset.presents.details.views.components.availableBalance
 import com.gemwallet.features.asset.presents.details.views.components.balancesHeader
 import com.gemwallet.features.asset.presents.details.views.components.network
 import com.gemwallet.features.asset.presents.details.views.components.price
@@ -123,17 +123,37 @@ internal fun AssetDetailsScene(
                 price(uiState, onChart)
                 network(uiState, openNetwork)
                 balancesHeader(uiState.accountInfoUIModel)
-                availableBalance(uiState.accountInfoUIModel.available)
-                additionBalance(R.string.wallet_stake, uiState.accountInfoUIModel.stake) {
-                    onStake(uiState.asset.id)
+                val balances = uiState.accountInfoUIModel.balances
+                itemsIndexed(balances) { index, item ->
+                    BalanceItem(
+                        title = item.type.label,
+                        balance = item.value,
+                        listPosition = ListPosition.getPosition(index, balances.size),
+                        onAction = when (item.type) {
+                            AssetInfoUIModel.BalanceViewType.Available -> null
+                            AssetInfoUIModel.BalanceViewType.Stake -> {
+                                { onStake(uiState.asset.id) }
+                            }
+                            AssetInfoUIModel.BalanceViewType.Reserved -> {
+                                {
+                                    uiState.asset.id.chain.getReserveBalanceUrl()
+                                        ?.let { uriHandler.open(context, it) }
+                                }
+                            }
+                        }
+                    )
                 }
-                additionBalance(
-                    R.string.asset_balances_reserved,
-                    uiState.accountInfoUIModel.reserved
-                ) {
-                    uiState.asset.id.chain.getReserveBalanceUrl()
-                        ?.let { uriHandler.open(context, it) }
-                }
+//                availableBalance(uiState.accountInfoUIModel.available)
+//                additionBalance(R.string.wallet_stake, uiState.accountInfoUIModel.stake) {
+//                    onStake(uiState.asset.id)
+//                }
+//                additionBalance(
+//                    R.string.asset_balances_reserved,
+//                    uiState.accountInfoUIModel.reserved
+//                ) {
+//                    uiState.asset.id.chain.getReserveBalanceUrl()
+//                        ?.let { uriHandler.open(context, it) }
+//                }
                 item { EmptyTransactionsItem(transactions.size) }
                 transactionsList(transactions, onTransaction)
             }

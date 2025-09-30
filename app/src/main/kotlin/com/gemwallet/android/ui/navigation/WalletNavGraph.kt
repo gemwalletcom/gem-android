@@ -101,7 +101,7 @@ fun WalletNavGraph(
 
     NavHost(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
+//            .background(MaterialTheme.colorScheme.background)
             .semantics { testTagsAsResourceId = true },
         navController = navController,
         startDestination = startDestination,

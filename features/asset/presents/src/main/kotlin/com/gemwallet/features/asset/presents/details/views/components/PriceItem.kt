@@ -12,8 +12,10 @@ import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIModel
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetType
 
 internal fun LazyListScope.price(
     uiState: AssetInfoUIModel,
@@ -37,6 +39,11 @@ internal fun LazyListScope.price(
                         }
                     }
                 )
+            },
+            listPosition = if (uiState.tokenType == AssetType.NATIVE) {
+                ListPosition.Single
+            } else {
+                ListPosition.First
             }
         )
     }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -33,6 +34,7 @@ import com.gemwallet.android.ui.components.screen.FatalStateScene
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.reown.walletkit.client.Wallet
 
 @Composable
@@ -117,12 +119,13 @@ private fun Proposal(
             onDismissRequest = { isShowSelectWallets = false },
         ) {
             LazyColumn {
-                items(availableWallets) {
+                itemsIndexed(availableWallets) { index, item ->
                     WalletItem(
-                        wallet = it,
-                        isCurrent = it.id == selectedWallet?.id,
+                        wallet = item,
+                        isCurrent = item.id == selectedWallet?.id,
+                        listPosition = ListPosition.getPosition(index, availableWallets.size),
                         modifier = Modifier.clickable {
-                            onWalletSelected(it.id)
+                            onWalletSelected(item.id)
                             isShowSelectWallets = false
                         }
                     )

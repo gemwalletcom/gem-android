@@ -36,7 +36,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.wallet.viewmodels.WalletUIState
 import com.gemwallet.android.features.wallet.viewmodels.WalletViewModel
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
@@ -116,23 +115,21 @@ private fun Wallet(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Container {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .defaultPadding()
-                        .fillMaxWidth(),
-                    label = { Text(text = stringResource(id = R.string.wallet_name)) },
-                    value = walletName,
-                    onValueChange = {
-                        onWalletName(it)
-                        walletName = it
-                    },
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                    )
+            OutlinedTextField(
+                modifier = Modifier
+                    .defaultPadding()
+                    .fillMaxWidth(),
+                label = { Text(text = stringResource(id = R.string.wallet_name)) },
+                value = walletName,
+                onValueChange = {
+                    onWalletName(it)
+                    walletName = it
+                },
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
                 )
-            }
+            )
             ShowSecretData(wallet, onAuthRequest, onPhraseShow)
             WalletAddress(wallet)
 

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -45,6 +46,7 @@ import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.list_item.PinnedAssetsHeaderItem
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.defaultPadding
 import com.gemwallet.android.ui.theme.paddingDefault
@@ -153,22 +155,18 @@ private fun LazyListScope.assets(
     if (isPinned) {
         item { PinnedAssetsHeaderItem() }
     }
-
-    items(items.size, key = { items[it].asset.id.toIdentifier() }) { index ->
-        val item = items[index]
+    val size = items.size
+    itemsIndexed(items, key = { index, item -> item.asset.id.toIdentifier() }) { index, item ->
         AssetListItem(
             modifier = Modifier
                 .heightIn(74.dp)
                 .clickable { onSelect?.invoke(item.asset.id) },
-            uiModel = item,
+            listPosition = ListPosition.getPosition(index, size),
+            asset = item,
             support = support?.invoke(item),
             badge = titleBadge.invoke(item),
             trailing = { itemTrailing?.invoke(item) },
         )
-    }
-
-    if (isPinned) {
-        item { Spacer(modifier = Modifier.height(32.dp)) }
     }
 }
 

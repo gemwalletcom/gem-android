@@ -39,6 +39,7 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.features.settings.networks.viewmodels.AddNodeViewModel
 import com.wallet.core.primitives.Chain
@@ -79,7 +80,7 @@ fun AddNodeScene(chain: Chain, onCancel: () -> Unit) {
         AssetListItem(
             modifier = Modifier.height(74.dp),
             asset = asset,
-            dividerShowed = false,
+            listPosition = ListPosition.Single,
         )
         UrlField(
             value = viewModel.url,

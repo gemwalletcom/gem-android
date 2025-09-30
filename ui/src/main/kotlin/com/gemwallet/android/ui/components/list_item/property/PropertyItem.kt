@@ -25,6 +25,7 @@ import com.gemwallet.android.ui.components.InfoButton
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.ListItem
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.trailingIconMedium
 
@@ -33,9 +34,16 @@ fun PropertyItem(
     @StringRes action: Int,
     actionIconModel: Any? = null,
     data: String? = null,
+    listPosition: ListPosition = ListPosition.Middle,
     onClick: () -> Unit,
 ) {
-    PropertyItem(stringResource(action), actionIconModel, data, onClick)
+    PropertyItem(
+        action = stringResource(action),
+        actionIconModel = actionIconModel,
+        data = data,
+        listPosition = listPosition,
+        onClick = onClick
+    )
 }
 
 @Composable
@@ -43,6 +51,7 @@ fun PropertyItem(
     action: String,
     actionIconModel: Any? = null,
     data: String? = null,
+    listPosition: ListPosition = ListPosition.Middle,
     onClick: () -> Unit,
 ) {
     PropertyItem(
@@ -59,7 +68,8 @@ fun PropertyItem(
                     )
                 }
             )
-        }
+        },
+        listPosition = listPosition,
     )
 }
 
@@ -69,8 +79,15 @@ fun PropertyItem(
     data: String? = null,
     info: InfoSheetEntity? = null,
     dataColor: Color = MaterialTheme.colorScheme.secondary,
+    listPosition: ListPosition = ListPosition.Middle,
 ) {
-    PropertyItem(stringResource(title), data, dataColor, info)
+    PropertyItem(
+        title = stringResource(title),
+        data = data,
+        dataColor = dataColor,
+        info = info,
+        listPosition = listPosition,
+    )
 }
 
 @Composable
@@ -79,8 +96,15 @@ fun PropertyItem(
     @StringRes data: Int,
     info: InfoSheetEntity? = null,
     dataColor: Color = MaterialTheme.colorScheme.secondary,
+    listPosition: ListPosition = ListPosition.Middle,
 ) {
-    PropertyItem(stringResource(title), stringResource(data), dataColor, info)
+    PropertyItem(
+        title =stringResource(title),
+        data =stringResource(data),
+        dataColor = dataColor,
+        info = info,
+        listPosition = listPosition,
+    )
 }
 
 @Composable
@@ -89,10 +113,12 @@ fun PropertyItem(
     data: String? = null,
     dataColor: Color = MaterialTheme.colorScheme.secondary,
     info: InfoSheetEntity? = null,
+    listPosition: ListPosition = ListPosition.Middle,
 ) {
     PropertyItem(
         title = { PropertyTitleText(title, info = info) },
         data = data?.let{ { PropertyDataText(data, color = dataColor) } },
+        listPosition = listPosition,
     )
 }
 
@@ -101,11 +127,13 @@ fun PropertyItem(
     title: @Composable () -> Unit,
     data: @Composable (RowScope.() -> Unit)?,
     modifier: Modifier = Modifier,
+    listPosition: ListPosition = ListPosition.Middle,
 ) {
     ListItem(
         modifier = modifier.then(Modifier.height(56.dp)),
         title = title,
         trailing = data,
+        listPosition = listPosition,
     )
 }
 

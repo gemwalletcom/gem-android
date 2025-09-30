@@ -127,7 +127,6 @@ private fun List(
                             text = stringResource(id = R.string.activity_state_empty_title),
                             textAlign = TextAlign.Center,
                         )
-                        // TODO: Add empty description
                     }
                 }
                 else -> {

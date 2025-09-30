@@ -43,6 +43,7 @@ import com.gemwallet.android.ui.components.list_item.PriceInfo
 import com.gemwallet.android.ui.components.list_item.SwipeableItemWithActions
 import com.gemwallet.android.ui.components.list_item.SwitchRow
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
@@ -157,7 +158,8 @@ private fun LazyListScope.assets(
                     }
             ) {
                 AssetListItem(
-                    uiModel = item,
+                    asset = item,
+                    listPosition = ListPosition.Middle,
                     support = {
                         PriceInfo(
                             price = item.price,

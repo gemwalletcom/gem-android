@@ -48,7 +48,4 @@ internal fun BannerItem(
         },
         false
     )
-    HorizontalDivider(thickness = 0.dp)
-//    item {
-//    }
 }

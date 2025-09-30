@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.padding8
 import com.wallet.core.primitives.Currency
 
@@ -19,6 +20,7 @@ import com.wallet.core.primitives.Currency
 fun CurrencyItem(
     currency: Currency,
     selectedCurrency: Currency,
+    listPosition: ListPosition,
     onSelect: (Currency) -> Unit,
 ) {
     val title = android.icu.util.Currency.getInstance(currency.string).displayName
@@ -26,6 +28,7 @@ fun CurrencyItem(
     ListItem(
         modifier = Modifier.clickable { onSelect(currency) },
         title = { ListItemTitleText("${emojiFlags[currency.string] ?: ""}  ${currency.string} - $title") },
+        listPosition = listPosition,
         trailing = if (currency == selectedCurrency) {
             @Composable {
                 Icon(

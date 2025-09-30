@@ -19,7 +19,6 @@ fun SubheaderItem(
     Text(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.background)
             .padding(paddings),
         text = title,
         style = MaterialTheme.typography.labelLarge,

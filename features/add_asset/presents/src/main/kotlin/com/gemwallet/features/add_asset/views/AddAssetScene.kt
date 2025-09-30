@@ -28,6 +28,7 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.defaultPadding
 import com.gemwallet.features.add_asset.viewmodels.models.TokenSearchState
 import com.wallet.core.primitives.Asset
@@ -59,7 +60,7 @@ fun AddAssetScene(
             title = network.name,
             icon = network.chain,
             onClick = onChainSelect,
-            dividerShowed = true,
+            listPosition = ListPosition.Single,
             trailing = if (onChainSelect != null) {
                 {
                     Icon(

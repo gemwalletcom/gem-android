@@ -18,23 +18,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer2
-import com.gemwallet.android.ui.theme.Stub
 import com.gemwallet.android.ui.theme.padding12
 import com.gemwallet.android.ui.theme.paddingDefault
 
 @Composable
 fun ListItem(
     modifier: Modifier = Modifier,
-    dividerShowed: Boolean = true,
+    listPosition: ListPosition,
     leading: (@Composable RowScope.() -> Unit)? = null,
     title: (@Composable () -> Unit)? = null,
     subtitle: (@Composable () -> Unit)? = null,
     trailing: (@Composable RowScope.() -> Unit)? = null,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = Modifier
+            .listItem(position = listPosition)
+            .then(modifier.fillMaxWidth()),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Spacer16()
@@ -71,9 +73,6 @@ fun ListItem(
                     }
                 }
             }
-            if (dividerShowed) {
-                HorizontalDivider(Modifier.align(Alignment.BottomStart), thickness = 0.4.dp)
-            }
         }
     }
 }
@@ -91,6 +90,7 @@ fun PreviewListItem() {
                     maxLines = 1,
                 )
             },
+            listPosition = ListPosition.Single,
             trailing = {
                 Text(
                     "Some_data_Some_data_Some_data_Some_data_Some_data_Some_data_Some_data_Some_data!",

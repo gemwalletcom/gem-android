@@ -115,8 +115,6 @@ fun AmountListHead(
                 actions()
             }
         }
-        Spacer(modifier = Modifier.size(0.dp))
-        HorizontalDivider(thickness = 0.4.dp)
     }
 }
 
@@ -264,14 +262,14 @@ private fun AssetAction(
             Icon(
                 modifier = Modifier
                     .background(
-                        color = MaterialTheme.colorScheme.scrim.copy(
+                        color = MaterialTheme.colorScheme.primary.copy(
                             alpha = if (enabled) 1f else 0.4f,
                         ),
                         shape = CircleShape
                     )
                     .padding(16.dp),
                 imageVector = imageVector,
-                tint = MaterialTheme.colorScheme.onSurface.copy(
+                tint = MaterialTheme.colorScheme.onPrimary.copy(
                     alpha = if (enabled) 1f else 0.4f,
                 ),
                 contentDescription = contentDescription,

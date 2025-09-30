@@ -32,9 +32,6 @@ internal fun AssetsTopBar(
     onShowAssetManage: () -> Unit,
 ) {
     CenterAlignedTopAppBar(
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.background
-        ),
         title = {
             Box {
                 TextButton(onClick = onShowWallets) {

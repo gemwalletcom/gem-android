@@ -1,6 +1,5 @@
 package com.gemwallet.android.ui.components.list_item
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -21,12 +20,7 @@ import com.gemwallet.android.ui.theme.Spacer4
 @Composable
 fun PinnedAssetsHeaderItem() {
     Row(
-        modifier = Modifier.Companion.padding(
-            start = 16.dp,
-            end = 16.dp,
-            top = 24.dp,
-            bottom = 8.dp
-        ),
+        modifier = Modifier.Companion.padding(horizontal = 16.dp),
         verticalAlignment = Alignment.Companion.CenterVertically,
     ) {
         Icon(
@@ -38,8 +32,7 @@ fun PinnedAssetsHeaderItem() {
         Spacer4()
         Text(
             modifier = Modifier.Companion
-                .fillMaxWidth()
-                .background(color = MaterialTheme.colorScheme.background),
+                .fillMaxWidth(),
             text = stringResource(R.string.common_pinned),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.secondary,

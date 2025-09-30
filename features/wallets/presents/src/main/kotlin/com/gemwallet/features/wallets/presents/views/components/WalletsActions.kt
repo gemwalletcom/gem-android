@@ -21,7 +21,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.Container
+import com.gemwallet.android.ui.components.list_item.listItem
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.defaultPadding
 import com.gemwallet.android.ui.theme.smallPadding
@@ -31,23 +32,19 @@ internal fun WalletsActions(
     onCreate: () -> Unit,
     onImport: () -> Unit,
 ) {
-    Container {
-        Column {
-            WalletsAction(
-                text = R.string.wallet_create_new_wallet,
-                Icons.Default.Add,
-                onClick = onCreate,
-            )
-            HorizontalDivider(
-                modifier = Modifier.padding(start = 58.dp),
-                thickness = 0.4.dp
-            )
-            WalletsAction(
-                text = R.string.wallet_import_existing_wallet,
-                Icons.Default.ArrowDownward,
-                onClick = onImport,
-            )
-        }
+    Column {
+        WalletsAction(
+            text = R.string.wallet_create_new_wallet,
+            Icons.Default.Add,
+            listPosition = ListPosition.First,
+            onClick = onCreate,
+        )
+        WalletsAction(
+            text = R.string.wallet_import_existing_wallet,
+            Icons.Default.ArrowDownward,
+            listPosition = ListPosition.Last,
+            onClick = onImport,
+        )
     }
 }
 
@@ -55,10 +52,12 @@ internal fun WalletsActions(
 private fun WalletsAction(
     @StringRes text: Int,
     icon: ImageVector,
+    listPosition: ListPosition,
     onClick: () -> Unit,
 ) {
     Row(
         modifier = Modifier
+            .listItem(listPosition)
             .clickable(onClick = onClick)
             .fillMaxWidth()
             .defaultPadding(),
