@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components
+package com.gemwallet.android.math
 
 import android.text.format.DateUtils
 import java.text.DateFormat

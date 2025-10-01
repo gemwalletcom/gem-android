@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.getRelativeDate
+import com.gemwallet.android.math.getRelativeDate
 import com.gemwallet.android.ui.components.list_item.PriceInfo
 import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.theme.Spacer16
