@@ -40,14 +40,16 @@ internal fun PeriodsPanel(
 
 @Composable
 private fun RowScope.PeriodButton(title: String, isSelected: Boolean, onClick: () -> Unit) {
-    Box(modifier = Modifier
-        .weight(0.16f)
-        .padding(bottom = 8.dp)) {
+    Box(
+        modifier = Modifier
+            .weight(0.16f)
+            .padding(bottom = 8.dp)
+    ) {
         if (isSelected) {
             Button(
                 onClick = onClick,
                 colors = ButtonDefaults.buttonColors().copy(
-                    containerColor = MaterialTheme.colorScheme.secondary.copy(alpha = 0.09f),
+                    containerColor = MaterialTheme.colorScheme.background.copy(alpha = 0.9f),
                     contentColor = MaterialTheme.colorScheme.onSurface,
                 ),
                 contentPadding = PaddingValues(0.dp)
