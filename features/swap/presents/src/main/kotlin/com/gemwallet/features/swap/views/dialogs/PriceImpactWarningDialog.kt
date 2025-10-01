@@ -8,13 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.ui.R
-import com.gemwallet.features.swap.viewmodels.models.PriceImpact
+import com.gemwallet.features.swap.viewmodels.models.SwapProperty
 import com.wallet.core.primitives.Asset
 
 @Composable
 internal fun PriceImpactWarningDialog(
     isShowPriceImpactAlert: MutableState<Boolean>,
-    priceImpact: PriceImpact?,
+    priceImpact: SwapProperty.PriceImpact?,
     asset: Asset?,
     onContinue: () -> Unit,
 ) {

@@ -27,6 +27,7 @@ import com.gemwallet.features.swap.viewmodels.cases.tickerFlow
 import com.gemwallet.features.swap.viewmodels.models.QuoteState
 import com.gemwallet.features.swap.viewmodels.models.SwapError
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
+import com.gemwallet.features.swap.viewmodels.models.SwapProperty
 import com.gemwallet.features.swap.viewmodels.models.SwapProviderItem
 import com.gemwallet.features.swap.viewmodels.models.SwapState
 import com.gemwallet.features.swap.viewmodels.models.create
@@ -144,7 +145,7 @@ class SwapViewModel @Inject constructor(
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val estimateTime = quote.mapLatest { it?.estimateTime }
+    val estimateTime = quote.mapLatest { it?.estimateTime?.let { SwapProperty.Estimate(it) } }
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -177,7 +178,8 @@ class SwapViewModel @Inject constructor(
             val minReceive = Crypto(quote.quote.toValue).atomicValue.toBigDecimal().let {
                 it - (it * BigDecimal.valueOf(quote.quote.data.slippageBps.toDouble() / 100.0 / 100.0))
             }.toBigInteger()
-            quote.receive.asset.format(Crypto(minReceive), 2, dynamicPlace = true)
+            val data = quote.receive.asset.format(Crypto(minReceive), 2, dynamicPlace = true)
+            SwapProperty.MinReceive(data)
         }
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -190,6 +192,11 @@ class SwapViewModel @Inject constructor(
         }
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val details = combine(priceImpact, minReceive, slippage, rate, estimateTime) { data ->
+            data.filterNotNull().toList()
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val uiSwapScreenState = swapScreenState
         .onEach {

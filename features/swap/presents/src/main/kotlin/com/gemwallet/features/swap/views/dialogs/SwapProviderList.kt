@@ -3,7 +3,6 @@ package com.gemwallet.features.swap.views.dialogs
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,10 +41,10 @@ internal fun ProviderListDialog(
         LazyColumn {
             itemsIndexed(providers) { index, item ->
                 SwapProviderItemView(
-                    item,
+                    swapProvider = item,
                     listPosition = ListPosition.getPosition(index, providers.size),
-                    item.swapProvider.id == currentProvider,
-                    {
+                    isSelected = item.swapProvider.id == currentProvider,
+                    onProviderSelect = {
                         isShow.value = false
                         onProviderSelect(it)
                     }

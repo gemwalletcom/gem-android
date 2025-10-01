@@ -13,12 +13,11 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.features.swap.viewmodels.models.PriceImpact
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
-import com.gemwallet.features.swap.viewmodels.models.SwapRate
+import com.gemwallet.features.swap.viewmodels.models.SwapProperty
 import com.gemwallet.features.swap.viewmodels.models.SwapState
 import com.gemwallet.features.swap.views.components.SwapAction
-import com.gemwallet.features.swap.views.components.SwapDetailItem
+import com.gemwallet.features.swap.views.components.SwapDetailPropertyItem
 import com.gemwallet.features.swap.views.components.SwapError
 import com.gemwallet.features.swap.views.components.SwapItem
 
@@ -29,8 +28,8 @@ internal fun SwapScene(
     receive: AssetInfo?,
     payEquivalent: String,
     receiveEquivalent: String,
-    priceImpact: PriceImpact?,
-    rate: SwapRate?,
+    priceImpact: SwapProperty.PriceImpact?,
+    rate: SwapProperty.Rate?,
     isShowPriceImpactAlert: MutableState<Boolean>,
     selectState: (SwapItemType?) -> Unit,
     payValue: TextFieldState,
@@ -83,7 +82,7 @@ internal fun SwapScene(
             }
         )
         Spacer16()
-        SwapDetailItem(rate, onDetails)
+        SwapDetailPropertyItem(rate, onDetails)
         SwapError(swapState)
     }
 }

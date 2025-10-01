@@ -2,13 +2,11 @@ package com.gemwallet.features.swap.viewmodels.cases
 
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
-import com.gemwallet.features.swap.viewmodels.models.PriceImpact
 import com.gemwallet.features.swap.viewmodels.models.PriceImpactType
 import com.gemwallet.features.swap.viewmodels.models.QuoteState
 import com.gemwallet.features.swap.viewmodels.models.QuotesState
-import com.gemwallet.features.swap.viewmodels.models.SlippageModel
+import com.gemwallet.features.swap.viewmodels.models.SwapProperty
 import com.gemwallet.features.swap.viewmodels.models.SwapProviderItem
-import com.gemwallet.features.swap.viewmodels.models.SwapRate
 import com.gemwallet.features.swap.viewmodels.models.payEquivalent
 import com.gemwallet.features.swap.viewmodels.models.receiveEquivalent
 import com.wallet.core.primitives.Asset
@@ -41,7 +39,7 @@ internal fun estimateSwapRate(
     receive: Asset,
     payValue: String,
     receiveValue: String,
-): SwapRate? {
+): SwapProperty.Rate? {
     return try {
         val fromAmount = Crypto(payValue).value(pay.decimals)
         val toAmount = Crypto(receiveValue).value(receive.decimals)
@@ -50,7 +48,7 @@ internal fun estimateSwapRate(
         val forwardRate = receive.format(toAmount / fromAmount, 2, dynamicPlace = true)
         val reverseRate = pay.format(reverse, 4, dynamicPlace = true)
 
-        SwapRate(
+        SwapProperty.Rate(
             forward = "1 ${pay.symbol} \u2248 $forwardRate",
             reverse = "1 ${receive.symbol} \u2248 $reverseRate"
         )
@@ -79,16 +77,16 @@ internal fun getProviders(items: List<SwapperQuote>, priceValue: Double, currenc
     )
 }
 
-internal fun calculatePriceImpact(quote: QuoteState): PriceImpact? = calculatePriceImpact(
+internal fun calculatePriceImpact(quote: QuoteState): SwapProperty.PriceImpact? = calculatePriceImpact(
     quote.payEquivalent,
     quote.receiveEquivalent,
 )
 
-internal fun getSlippage(quote: QuoteState): SlippageModel? {
-    return SlippageModel(quote.quote.data.slippageBps.toDouble() / 100.0)
+internal fun getSlippage(quote: QuoteState): SwapProperty.Slippage? {
+    return SwapProperty.Slippage(quote.quote.data.slippageBps.toDouble() / 100.0)
 }
 
-internal fun calculatePriceImpact(pay: BigDecimal, receive: BigDecimal): PriceImpact? {
+internal fun calculatePriceImpact(pay: BigDecimal, receive: BigDecimal): SwapProperty.PriceImpact? {
     return calculatePriceImpactCore(pay, receive) { impact ->
         val isHigh = impact.absoluteValue > Config().getSwapConfig().highPriceImpactPercent.toDouble()
         isHigh
@@ -99,7 +97,7 @@ internal fun calculatePriceImpactCore(
     pay: BigDecimal, 
     receive: BigDecimal, 
     isHighProvider: (Double) -> Boolean = { false }
-): PriceImpact? {
+): SwapProperty.PriceImpact? {
     if (pay.compareTo(BigDecimal.ZERO) == 0 || receive.compareTo(BigDecimal.ZERO) == 0) {
         return null
     }
@@ -107,9 +105,9 @@ internal fun calculatePriceImpactCore(
     val isHigh = isHighProvider(impact)
 
     return when {
-        impact * -1 < 0 -> PriceImpact(impact, PriceImpactType.Positive, isHigh)
+        impact * -1 < 0 -> SwapProperty.PriceImpact(impact, PriceImpactType.Positive, isHigh)
         impact * -1 < 1 -> null
-        impact * -1 < 5 -> PriceImpact(impact, PriceImpactType.Medium, isHigh)
-        else -> PriceImpact(impact, PriceImpactType.High, isHigh)
+        impact * -1 < 5 -> SwapProperty.PriceImpact(impact, PriceImpactType.Medium, isHigh)
+        else -> SwapProperty.PriceImpact(impact, PriceImpactType.High, isHigh)
     }
 }

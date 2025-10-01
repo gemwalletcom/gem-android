@@ -18,13 +18,12 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
-import com.gemwallet.features.swap.viewmodels.models.SwapRate
+import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.features.swap.viewmodels.models.SwapProperty
 
 @Composable
-internal fun SwapRate(rate: SwapRate?) {
+internal fun SwapRatePropertyItem(rate: SwapProperty.Rate, listPosition: ListPosition) {
     var direction by remember { mutableStateOf(false) }
-
-    rate ?: return
 
     PropertyItem(
         title = { PropertyTitleText(R.string.buy_rate) },
@@ -49,6 +48,7 @@ internal fun SwapRate(rate: SwapRate?) {
                     )
                 }
             )
-        }
+        },
+        listPosition = listPosition,
     )
 }

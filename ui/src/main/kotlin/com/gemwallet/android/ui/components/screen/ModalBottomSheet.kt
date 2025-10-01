@@ -21,7 +21,7 @@ fun ModalBottomSheet(
         onDismissRequest = onDismissRequest,
         sheetState = sheetState,
         scrimColor = MaterialTheme.colorScheme.scrim.copy(alpha = 0.7f),
-        containerColor = MaterialTheme.colorScheme.background,
+        containerColor = MaterialTheme.colorScheme.surface,
         dragHandle = dragHandle,
         content = content
     )

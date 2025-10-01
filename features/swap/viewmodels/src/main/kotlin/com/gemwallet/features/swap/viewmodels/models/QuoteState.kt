@@ -28,7 +28,7 @@ internal fun QuoteState.validate(): SwapState {
     }
 }
 
-internal val QuoteState.rates: SwapRate?
+internal val QuoteState.rates: SwapProperty.Rate?
     get() = estimateSwapRate(pay.asset, receive.asset, quote.fromValue, quote.toValue)
 
 internal val QuoteState.estimateTime: String?

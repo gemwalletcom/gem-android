@@ -9,16 +9,15 @@ import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
-import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.features.swap.viewmodels.models.SwapProviderItem
 
 @Composable
-internal fun CurrentSwapProvider(
+internal fun CurrentSwapProviderPropertyItem(
     provider: SwapProviderItem,
     isAvailableChoose: Boolean,
     isShowProviderSelect: MutableState<Boolean>,
 ) {
-    Spacer16()
     val modifier = if (isAvailableChoose) {
         Modifier.clickable { isShowProviderSelect.value = true }
     } else {
@@ -32,6 +31,7 @@ internal fun CurrentSwapProvider(
                 text = provider.swapProvider.name,
                 badge = { DataBadgeChevron(provider.icon, isAvailableChoose) }
             )
-        }
+        },
+        listPosition = ListPosition.Single,
     )
 }
