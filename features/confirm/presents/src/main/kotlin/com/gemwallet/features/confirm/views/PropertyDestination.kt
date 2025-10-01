@@ -12,23 +12,28 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
-import com.gemwallet.features.confirm.models.DestinationUIModel
+import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.features.confirm.models.ConfirmProperty
 
 @Composable
-fun PropertyDestination(model: DestinationUIModel?) {
+fun PropertyDestination(
+    model: ConfirmProperty.Destination?,
+    listPosition: ListPosition,
+) {
     model ?: return
+
     val title = when (model) {
-        is DestinationUIModel.Provider -> R.string.common_provider
-        is DestinationUIModel.Stake -> R.string.stake_validator
-        is DestinationUIModel.Transfer -> R.string.transaction_recipient
+        is ConfirmProperty.Destination.Provider -> R.string.common_provider
+        is ConfirmProperty.Destination.Stake -> R.string.stake_validator
+        is ConfirmProperty.Destination.Transfer -> R.string.transaction_recipient
     }
     val domain = when (model) {
-        is DestinationUIModel.Provider,
-        is DestinationUIModel.Stake -> null
-        is DestinationUIModel.Transfer -> model.domain
+        is ConfirmProperty.Destination.Provider,
+        is ConfirmProperty.Destination.Stake -> null
+        is ConfirmProperty.Destination.Transfer -> model.domain
     }
     PropertyItem(
-        modifier = Modifier.height(72.dp),
+        modifier = Modifier.height(if (domain.isNullOrEmpty()) 56.dp else 72.dp),
         title = {
             PropertyTitleText(title)
         },
@@ -39,6 +44,7 @@ fun PropertyDestination(model: DestinationUIModel?) {
                 }
                 Row(horizontalArrangement = Arrangement.End) { PropertyDataText(model.data) }
             }
-        }
+        },
+        listPosition = listPosition,
     )
 }
