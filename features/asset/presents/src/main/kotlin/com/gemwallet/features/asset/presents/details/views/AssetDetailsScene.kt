@@ -25,12 +25,12 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.components.list_item.transactionsList
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AssetIdAction
+import com.gemwallet.android.ui.models.getListPosition
 import com.gemwallet.android.ui.open
 import com.gemwallet.features.asset.presents.details.views.components.AssetDetailsMenu
 import com.gemwallet.features.asset.presents.details.views.components.AssetHeadItem
-import com.gemwallet.features.asset.presents.details.views.components.BalanceItem
+import com.gemwallet.features.asset.presents.details.views.components.BalancePropertyItem
 import com.gemwallet.features.asset.presents.details.views.components.BannerItem
 import com.gemwallet.features.asset.presents.details.views.components.EmptyTransactionsItem
 import com.gemwallet.features.asset.presents.details.views.components.balancesHeader
@@ -123,12 +123,11 @@ internal fun AssetDetailsScene(
                 price(uiState, onChart)
                 network(uiState, openNetwork)
                 balancesHeader(uiState.accountInfoUIModel)
-                val balances = uiState.accountInfoUIModel.balances
-                itemsIndexed(balances) { index, item ->
-                    BalanceItem(
+                itemsIndexed(uiState.accountInfoUIModel.balances) { index, item ->
+                    BalancePropertyItem(
                         title = item.type.label,
                         balance = item.value,
-                        listPosition = ListPosition.getPosition(index, balances.size),
+                        listPosition = uiState.accountInfoUIModel.balances.getListPosition(index),
                         onAction = when (item.type) {
                             AssetInfoUIModel.BalanceViewType.Available -> null
                             AssetInfoUIModel.BalanceViewType.Stake -> {
@@ -143,17 +142,6 @@ internal fun AssetDetailsScene(
                         }
                     )
                 }
-//                availableBalance(uiState.accountInfoUIModel.available)
-//                additionBalance(R.string.wallet_stake, uiState.accountInfoUIModel.stake) {
-//                    onStake(uiState.asset.id)
-//                }
-//                additionBalance(
-//                    R.string.asset_balances_reserved,
-//                    uiState.accountInfoUIModel.reserved
-//                ) {
-//                    uiState.asset.id.chain.getReserveBalanceUrl()
-//                        ?.let { uriHandler.open(context, it) }
-//                }
                 item { EmptyTransactionsItem(transactions.size) }
                 transactionsList(transactions, onTransaction)
             }

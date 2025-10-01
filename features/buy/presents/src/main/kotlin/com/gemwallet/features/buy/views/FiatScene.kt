@@ -196,9 +196,14 @@ fun BuyScene(
                                 )
                             }
                         )
-                    }
+                    },
+                    listPosition = ListPosition.First,
                 )
-                PropertyItem(R.string.buy_rate, selectedProvider.rate)
+                PropertyItem(
+                    title = R.string.buy_rate,
+                    data = selectedProvider.rate,
+                    listPosition = ListPosition.Last,
+                )
             }
         }
     }
