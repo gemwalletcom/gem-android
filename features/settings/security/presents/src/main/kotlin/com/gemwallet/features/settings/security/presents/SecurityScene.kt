@@ -35,6 +35,7 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.requestAuth
 import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.features.settings.security.viewmodels.SecurityViewModel
@@ -83,6 +84,7 @@ private fun LazyListScope.enablePasscode(
                     }
                 )
             },
+            listPosition = if (authRequired) ListPosition.First else ListPosition.Single,
         )
     }
 }
@@ -143,6 +145,7 @@ private fun LazyListScope.requiredAuthDelay(
                     }
                 }
             },
+            listPosition = ListPosition.Last,
         )
     }
 }
@@ -160,6 +163,7 @@ private fun LazyListScope.hideBalanceItem(
                     onCheckedChange = { onHide() }
                 )
             },
+            listPosition = ListPosition.Single,
         )
     }
 }
