@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -42,8 +41,8 @@ import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.list_item.PriceInfo
 import com.gemwallet.android.ui.components.list_item.SwipeableItemWithActions
 import com.gemwallet.android.ui.components.list_item.SwitchRow
+import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
@@ -62,7 +61,7 @@ fun PriceAlertScene(
     onRefresh: () -> Unit,
     onCancel: () -> Unit,
 ) {
-    var reveableAssetId = remember { mutableStateOf<AssetId?>(null) }
+    val reveableAssetId = remember { mutableStateOf<AssetId?>(null) }
     val pullToRefreshState = rememberPullToRefreshState()
     Scene(
         title = stringResource(R.string.settings_price_alerts_title),
@@ -132,7 +131,7 @@ private fun LazyListScope.assets(
     onChart: (AssetId) -> Unit,
     onExclude: (AssetId) -> Unit,
 ) {
-    items(assets, key = { it.asset.id.toIdentifier()}) { item ->
+    itemsPositioned(assets, key = { index, item -> item.asset.id.toIdentifier()}) { position, item ->
         var minActionWidth by remember { mutableStateOf(0.dp) }
         val density = LocalDensity.current
 
@@ -159,7 +158,7 @@ private fun LazyListScope.assets(
             ) {
                 AssetListItem(
                     asset = item,
-                    listPosition = ListPosition.Middle,
+                    listPosition = position,
                     support = {
                         PriceInfo(
                             price = item.price,

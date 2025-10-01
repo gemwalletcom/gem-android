@@ -1,11 +1,8 @@
 package com.gemwallet.features.buy.views
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,10 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clickable
 import com.gemwallet.android.ui.models.actions.CancelAction
-import com.gemwallet.android.ui.theme.padding16
-import com.gemwallet.android.ui.theme.padding4
 import com.gemwallet.android.ui.theme.padding8
-import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.features.buy.viewmodels.FiatViewModel
 import com.gemwallet.features.buy.viewmodels.models.BuyError
 import com.gemwallet.features.buy.viewmodels.models.FiatSuggestion

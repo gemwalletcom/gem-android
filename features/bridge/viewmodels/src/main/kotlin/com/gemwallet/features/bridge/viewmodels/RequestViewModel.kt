@@ -11,12 +11,12 @@ import com.gemwallet.android.data.repositoreis.bridge.getNamespace
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
-import com.gemwallet.features.bridge.viewmodels.model.SessionUI
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.serializer.jsonEncoder
+import com.gemwallet.features.bridge.viewmodels.model.SessionUI
 import com.reown.walletkit.client.Wallet
 import com.reown.walletkit.client.WalletKit
 import com.wallet.core.primitives.Account

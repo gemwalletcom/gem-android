@@ -16,13 +16,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.features.bridge.viewmodels.ConnectionViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.features.bridge.viewmodels.ConnectionViewModel
 import java.text.DateFormat
 import java.util.Date
 
@@ -59,7 +59,7 @@ fun ConnectionScene(
                     ListItem(
                         title = { ListItemTitleText(stringResource(id = R.string.common_wallet)) },
                         trailing = { ListItemSupportText(it.wallet.name) },
-                        listPosition = ListPosition.Middle,
+                        listPosition = ListPosition.First,
                     )
                 }
                 item {
@@ -69,7 +69,7 @@ fun ConnectionScene(
                             val expire = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(it.session.expireAt))
                             ListItemSupportText(expire)
                         },
-                        listPosition = ListPosition.Middle,
+                        listPosition = ListPosition.Last,
                     )
                 }
             }
