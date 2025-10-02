@@ -59,6 +59,7 @@ internal fun LazyListScope.wallets(
                     type = item.type,
                     listPosition = ListPosition.getPosition(index, wallets.size),
                     onEdit = { walletId -> onEdit(walletId) },
+                    modifier = it
                 )
             },
             menuItems = {
