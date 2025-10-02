@@ -72,7 +72,7 @@ class BannersRepository(
         val event = when {
             wallet == null && assetInfo == null -> BannerEvent.EnableNotifications
 //            asset?.id?.chain?.getReserveBalance()?.let { it != BigInteger.ZERO } == true -> BannerEvent.AccountActivation
-            assetInfo?.let { it.asset.isStackable && it.balance.balance.getStackedAmount() <= BigInteger.ZERO && it.asset.chain != Chain.Ethereum } ?: false -> BannerEvent.Stake
+            assetInfo?.let { it.asset.isStackable && it.balance.balance.getStackedAmount() <= BigInteger.ZERO } ?: false -> BannerEvent.Stake
             assetInfo?.balance?.isActive == false -> BannerEvent.ActivateAsset
             else -> return null
         }
