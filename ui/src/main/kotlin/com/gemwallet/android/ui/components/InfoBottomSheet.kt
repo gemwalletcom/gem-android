@@ -148,9 +148,10 @@ fun InfoBottomSheet(
     val scope = rememberCoroutineScope()
     ModalBottomSheet(
         sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.background,
         onDismissRequest = {
             scope.launch { sheetState.hide() }.invokeOnCompletion { onClose.invoke() }
-        }
+        },
     ) {
         Column(
             modifier = Modifier .fillMaxWidth(),
