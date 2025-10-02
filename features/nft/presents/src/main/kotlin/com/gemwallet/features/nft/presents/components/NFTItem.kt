@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.transform.RoundedCornersTransformation
 import com.gemwallet.android.ui.components.image.AsyncImage
@@ -33,7 +34,7 @@ fun NFTItem(
         modifier = Modifier
             .clickable(onClick = { model.onClick(collectionIdAction, assetIdAction) })
             .padding(start = padding8, bottom = paddingDefault, end = padding8),
-        colors = CardDefaults.cardColors().copy(containerColor = MaterialTheme.colorScheme.background)
+        colors = CardDefaults.cardColors().copy(containerColor = MaterialTheme.colorScheme.surface)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -50,6 +51,8 @@ fun NFTItem(
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 textAlign = TextAlign.Center,
+                maxLines = 1,
+                overflow = TextOverflow.MiddleEllipsis,
                 text = model.name,
             )
         }

@@ -118,7 +118,7 @@ fun Scene(
         }
     ) {
         Box(
-            modifier = if (navigationBarPadding) Modifier.navigationBarsPadding() else Modifier
+            modifier = (if (navigationBarPadding) Modifier.navigationBarsPadding() else Modifier)
                 .padding(top = it.calculateTopPadding())
                 .fillMaxSize(),
         ) {
