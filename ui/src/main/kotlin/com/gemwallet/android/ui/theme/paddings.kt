@@ -27,7 +27,7 @@ val padding8 = 8.dp
 val padding16 = 16.dp
 val padding12 = 12.dp
 val paddingDefault = 16.dp
-val padding32 = 32.dp
+val paddingLarge = 32.dp
 
 val mainActionHeight = 48.dp
 

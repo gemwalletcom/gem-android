@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.SearchBar
-import com.gemwallet.android.ui.components.list_item.SwitchRow
+import com.gemwallet.android.ui.components.list_item.SwitchProperty
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.Chain
@@ -45,7 +45,7 @@ private fun ColumnScope.HasBalances(
     onBalanceFilter: (Boolean) -> Unit,
 ) {
     Spacer16()
-    SwitchRow(
+    SwitchProperty(
         text = stringResource(R.string.filter_has_balance),
         checked = isActive,
         onCheckedChange = onBalanceFilter,

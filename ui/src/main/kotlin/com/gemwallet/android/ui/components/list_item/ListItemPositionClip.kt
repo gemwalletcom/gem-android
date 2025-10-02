@@ -7,6 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.models.ListPosition
 
@@ -20,7 +21,7 @@ private val middleItemShape = RoundedCornerShape(smallRound)
 private val singleItemShape = RoundedCornerShape(bigRound)
 
 @Composable
-fun Modifier.listItem(position: ListPosition): Modifier =
+fun Modifier.listItem(position: ListPosition, background: Color = MaterialTheme.colorScheme.background): Modifier =
     padding(horizontal = bigRound) then
     when (position) {
         ListPosition.First -> this.padding(top = bigRound).clip(firstItemShape)
@@ -28,4 +29,4 @@ fun Modifier.listItem(position: ListPosition): Modifier =
         ListPosition.Single -> this.padding(vertical = bigRound).clip(singleItemShape)
         ListPosition.Last -> this.padding(top = smallRound, bottom = bigRound).clip(lastItemShape)
     }
-    .background(MaterialTheme.colorScheme.background)
+    .background(background)
