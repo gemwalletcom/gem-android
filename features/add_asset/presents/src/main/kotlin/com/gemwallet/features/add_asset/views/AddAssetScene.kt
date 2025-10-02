@@ -71,7 +71,7 @@ fun AddAssetScene(
                 }
             } else null
         )
-        Column(modifier = Modifier.defaultPadding()) {
+        Column {
             AddressChainField(
                 chain = network.chain,
                 label = stringResource(R.string.wallet_import_contract_address_field),

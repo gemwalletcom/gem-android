@@ -25,7 +25,7 @@ fun LazyListScope.destinationView(
     onQrScan: (QrScanField) -> Unit,
 ) {
     item {
-        Column(modifier = Modifier.defaultPadding()) {
+        Column {
             AddressChainField(
                 chain = asset.asset.chain,
                 value = addressState.value,

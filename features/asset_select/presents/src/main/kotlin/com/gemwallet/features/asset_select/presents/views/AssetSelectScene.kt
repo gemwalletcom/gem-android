@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -45,9 +44,7 @@ import com.gemwallet.android.ui.components.list_item.PinnedAssetsHeaderItem
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.defaultPadding
-import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -117,8 +114,7 @@ fun AssetSelectScene(
         },
         onClose = onCancel
     ) {
-        SearchBar(modifier = Modifier.padding(horizontal = paddingDefault), query = query)
-        Spacer16()
+        SearchBar(query = query)
         LazyColumn(state = listState) {
             assets(pinned, true, onSelect, support, titleBadge, itemTrailing)
             assets(unpinned, false, onSelect, support, titleBadge, itemTrailing)

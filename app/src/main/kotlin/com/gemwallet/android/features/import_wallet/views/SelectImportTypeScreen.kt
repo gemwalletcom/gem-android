@@ -22,8 +22,6 @@ import com.gemwallet.android.ui.components.SearchBar
 import com.gemwallet.android.ui.components.list_item.ChainItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.defaultPadding
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WalletType
 
@@ -57,7 +55,7 @@ private fun SelectImportTypeScene(
     ) {
         LazyColumn(modifier = Modifier) {
             item {
-                SearchBar(query = chainFilter, modifier = Modifier.defaultPadding())
+                SearchBar(query = chainFilter)
             }
             item {
                 ChainItem(
@@ -68,7 +66,6 @@ private fun SelectImportTypeScene(
                 ) {
                     onSelect(ImportType(WalletType.multicoin))
                 }
-                Spacer16()
             }
             itemsIndexed(chains) { index, item ->
                 ChainItem(

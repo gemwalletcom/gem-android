@@ -3,7 +3,6 @@ package com.gemwallet.android.ui.components.filters
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -29,7 +28,6 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.TransactionTypeFilter
 import com.gemwallet.android.ui.theme.listItemIconSize
-import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.Chain
 
 @Composable
@@ -121,7 +119,7 @@ fun TransactionsFilter(
             onClearFilters = onClearChainsFilter.takeIf { chainsFilter.isNotEmpty() },
         ) {
             val query = rememberTextFieldState()
-            SearchBar(query, Modifier.Companion.padding(horizontal = paddingDefault))
+            SearchBar(query)
             LazyColumn(modifier = Modifier.Companion.fillMaxSize()) {
                 selectFilterChain(availableChains, chainsFilter, query.text.toString(), onChainFilter)
             }

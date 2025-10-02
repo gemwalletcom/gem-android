@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -25,7 +26,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.fields.TransferTextFieldActions
+import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
+import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.android.ui.theme.outlinedTextFieldColors
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.space4
 import com.gemwallet.features.add_asset.viewmodels.AddressChainViewModel
 import com.wallet.core.primitives.Chain
@@ -58,13 +63,16 @@ fun ColumnScope.AddressChainField(
 
     OutlinedTextField(
         modifier = Modifier
+            .listItem(ListPosition.Single)
             .fillMaxWidth()
             .onFocusChanged {
                 if (it.hasFocus) keyboardController?.show() else keyboardController?.hide()
-            },
+            }
+            .padding(vertical = paddingDefault),
         value = value,
         singleLine = true,
         readOnly = !editable,
+        colors = outlinedTextFieldColors(),
         label = { Text(label) },
         onValueChange = { newValue ->
             if (searchName) {
