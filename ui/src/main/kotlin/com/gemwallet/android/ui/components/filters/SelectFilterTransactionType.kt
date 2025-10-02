@@ -11,6 +11,7 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
+import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.models.TransactionTypeFilter
 
 fun LazyListScope.selectFilterTransactionType(
@@ -20,18 +21,17 @@ fun LazyListScope.selectFilterTransactionType(
     item {
         SubheaderItem(stringResource(R.string.filter_types))
     }
-    TransactionTypeFilter.entries.forEach { type ->
-        item {
-            PropertyItem(
-                modifier = Modifier.clickable { onFilter(type) },
-                title = { PropertyTitleText(type.getLabel()) },
-                data = {
-                    if (filter.contains(type)) {
-                        Icon(Icons.Default.CheckCircleOutline, contentDescription = "")
-                    }
-                },
-            )
-        }
+    itemsPositioned(TransactionTypeFilter.entries) { position, item ->
+        PropertyItem(
+            modifier = Modifier.clickable { onFilter(item) },
+            title = { PropertyTitleText(item.getLabel()) },
+            data = {
+                if (filter.contains(item)) {
+                    Icon(Icons.Default.CheckCircleOutline, contentDescription = "")
+                }
+            },
+            listPosition = position,
+        )
     }
 }
 

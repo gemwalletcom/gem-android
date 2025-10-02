@@ -26,6 +26,7 @@ import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.TransactionTypeFilter
 import com.gemwallet.android.ui.theme.listItemIconSize
 import com.gemwallet.android.ui.theme.paddingDefault
@@ -76,7 +77,8 @@ fun TransactionsFilter(
                             },
                             badge = { IconWithBadge(null) }
                         )
-                    }
+                    },
+                    listPosition = ListPosition.First,
                 )
             }
             item {
@@ -105,7 +107,8 @@ fun TransactionsFilter(
                             },
                             badge = { IconWithBadge(null) }
                         )
-                    }
+                    },
+                    listPosition = ListPosition.Last,
                 )
             }
         }
