@@ -98,7 +98,8 @@ private fun List(
                     contentDescription = "Filter by networks",
                 )
             }
-        }
+        },
+        navigationBarPadding = false,
     ) {
         PullToRefreshBox(
             modifier = Modifier,

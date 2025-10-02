@@ -71,7 +71,7 @@ fun BuyScene(
     val isShowProviders = remember { mutableStateOf(false) }
 
     Scene(
-        title = {
+        titleContent = {
             if (asset.assetInfo.metadata?.isSellEnabled == true && asset.assetInfo.balance.balance.hasAvailable()) {
                 SingleChoiceSegmentedButtonRow {
                     FiatQuoteType.entries.forEachIndexed { index, entry ->

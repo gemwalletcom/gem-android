@@ -68,7 +68,7 @@ internal fun AssetDetailsScene(
     val snackBar = remember { SnackbarHostState() }
 
     Scene(
-        title = {
+        titleContent = {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
                     text = uiState.name,
