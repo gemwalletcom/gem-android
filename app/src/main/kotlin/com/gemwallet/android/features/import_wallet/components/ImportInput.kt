@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
@@ -20,10 +21,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -82,22 +86,8 @@ internal fun ImportInput(
     val clipboardManager = LocalClipboard.current.nativeClipboard
     val interactionSource = remember { MutableInteractionSource() }
 
-    val indicatorColor = OutlinedTextFieldDefaults.colors().indicatorColor(
-        enabled = true,
-        isError = false,
-        interactionSource = interactionSource
-    )
-    val focused by interactionSource.collectIsFocusedAsState()
-    val targetThickness = if (focused) OutlinedTextFieldDefaults.FocusedBorderThickness else OutlinedTextFieldDefaults.UnfocusedBorderThickness
-    val animatedThickness = animateDpAsState(targetThickness, tween(durationMillis = 150), "")
-    val borderStroke by rememberUpdatedState(
-        BorderStroke(animatedThickness.value, SolidColor(indicatorColor.value))
-    )
-
     Column(
-        modifier = Modifier
-            .border(borderStroke, OutlinedTextFieldDefaults.shape)
-            .defaultPadding(),
+        modifier = Modifier.fillMaxSize()
     ) {
         Box(modifier = Modifier.fillMaxWidth()) {
             BasicTextField(
@@ -179,19 +169,33 @@ internal fun ImportInput(
         Box(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            FieldBottomAction(
+            TextButton(
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
-                    .align(Alignment.CenterEnd)
+                    .align(Alignment.Center)
                     .testTag("paste"),
-                imageVector = Icons.Default.ContentPaste,
-                contentDescription = "paste",
-                text = stringResource(id = R.string.common_paste),
+                onClick = {
+                    val newValue = clipboardManager.getPlainText() ?: ""
+                    onValueChange(
+                        TextFieldValue("$newValue ", TextRange(newValue.length + 1))
+                    )
+                },
             ) {
-                val newValue = clipboardManager.getPlainText() ?: ""
-                onValueChange(
-                    TextFieldValue("$newValue ", TextRange(newValue.length + 1))
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.ContentPaste,
+                        contentDescription = "paste",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Spacer(modifier = Modifier.size(10.dp))
+                    Text(
+                        text = stringResource(id = R.string.common_paste),
+                        maxLines = 1,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
             }
         }
     }
@@ -227,25 +231,4 @@ private fun highlightErrors(text: String, errorColor: Color): AnnotatedString {
         emptyList()
     }
     return AnnotatedString(text, spans)
-}
-
-@Composable
-private fun TextFieldColors.indicatorColor(
-    enabled: Boolean,
-    isError: Boolean,
-    interactionSource: InteractionSource
-): State<Color> {
-    val focused by interactionSource.collectIsFocusedAsState()
-
-    val targetValue = when {
-        !enabled -> disabledIndicatorColor
-        isError -> errorIndicatorColor
-        focused -> focusedIndicatorColor
-        else -> unfocusedIndicatorColor
-    }
-    return if (enabled) {
-        animateColorAsState(targetValue, tween(durationMillis = 150), label = "")
-    } else {
-        rememberUpdatedState(targetValue)
-    }
 }

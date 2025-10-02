@@ -57,9 +57,9 @@ fun RowScope.PhraseWordItem(
 ) {
     Surface(
         modifier = Modifier.weight(0.5f),
-        shadowElevation = 2.dp,
+        shadowElevation = 1.dp,
         shape = MaterialTheme.shapes.small,
-        color = MaterialTheme.colorScheme.scrim,
+        color = MaterialTheme.colorScheme.background,
         border = if (isNextToEnter) BorderStroke(0.5.dp, MaterialTheme.colorScheme.primary) else null
     ) {
         Row(

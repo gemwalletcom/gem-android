@@ -3,13 +3,13 @@ package com.gemwallet.android.features.import_wallet.views
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -55,9 +55,11 @@ import com.gemwallet.android.ui.BuildConfig
 import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
+import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.components.parseMarkdownToAnnotatedString
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
@@ -172,7 +174,6 @@ private fun ImportScene(
 
     Scene(
         title = stringResource(id = R.string.wallet_import_title),
-        padding = PaddingValues(paddingDefault),
         onClose = onCancel,
         mainAction = {
             MainActionButton(
@@ -185,134 +186,146 @@ private fun ImportScene(
     ) {
         LazyColumn {
             item {
-                WalletNameTextField(
-                    value = nameState,
-                    onValueChange = { newValue -> nameState = newValue },
-                    placeholder = stringResource(id = R.string.wallet_name),
-                    error = walletNameError,
-                )
-                Spacer16()
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .listItem(ListPosition.Single)
+                        .padding(vertical = paddingDefault),
+                ) {
+                    WalletNameTextField(
+                        value = nameState,
+                        onValueChange = { newValue -> nameState = newValue },
+                        placeholder = stringResource(id = R.string.wallet_name),
+                        error = walletNameError,
+                    )
+                }
             }
-            typeSelection(importType) {
-                onTypeChange(it)
-                inputState.value = TextFieldValue()
+            item {
+                Column (
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .listItem(ListPosition.Single)
+                        .padding(paddingDefault).padding(bottom = 0.dp),
+                ) {
+                    TypeSelection(importType) {
+                        onTypeChange(it)
+                        inputState.value = TextFieldValue()
+                    }
+                    DataInput(importType, inputState, nameRecordState) {
+                        dataErrorState = null
+                    }
+                    ErrorMessage(dataErrorState)
+                }
             }
-            dataInput(importType, inputState, nameRecordState) {
-                dataErrorState = null
-            }
-            errorMessage(dataErrorState)
         }
     }
 }
 
-private fun LazyListScope.dataInput(
+@Composable
+private fun DataInput(
     importType: ImportType,
     inputState: MutableState<TextFieldValue>,
     nameRecordState: MutableState<NameRecord?>,
     onChange: () -> Unit,
 ) {
-    item {
-        val suggestions = remember { mutableStateListOf<String>() }
+    val suggestions = remember { mutableStateListOf<String>() }
 
-        ImportInput(
-            inputState = inputState.value,
-            importType = importType,
-            onValueChange = { query ->
-                inputState.value = query
-                suggestions.clear()
+    ImportInput(
+        inputState = inputState.value,
+        importType = importType,
+        onValueChange = { query ->
+            inputState.value = query
+            suggestions.clear()
 
-                onChange()
+            onChange()
 
-                if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
-                    return@ImportInput
-                }
-
-                val cursorPosition = query.selection.start
-                if (query.text.isEmpty()) {
-                    return@ImportInput
-                }
-                val word = query.text.substring(0..<cursorPosition).split(" ")
-                    .lastOrNull()
-                if (word.isNullOrEmpty()) {
-                    return@ImportInput
-                }
-                val result = WCFindPhraseWord().invoke(word)
-                suggestions.addAll(result)
+            if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
+                return@ImportInput
             }
-        ) {
-            nameRecordState.value = it
+
+            val cursorPosition = query.selection.start
+            if (query.text.isEmpty()) {
+                return@ImportInput
+            }
+            val word = query.text.substring(0..<cursorPosition).split(" ")
+                .lastOrNull()
+            if (word.isNullOrEmpty()) {
+                return@ImportInput
+            }
+            val result = WCFindPhraseWord().invoke(word)
+            suggestions.addAll(result)
         }
-        if (importType.walletType == WalletType.view) {
-            Spacer4()
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = parseMarkdownToAnnotatedString(
-                    stringResource(R.string.wallet_import_address_warning)
-                ),
-                color = MaterialTheme.colorScheme.secondary,
-                style = MaterialTheme.typography.bodySmall,
-            )
-        }
-        if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
-            Spacer8()
-            LazyRow {
-                items(suggestions) { word ->
-                    SuggestionChip(
-                        onClick = {
-                            val processed = setSuggestion(inputState.value, word)
-                            inputState.value = processed
-                            suggestions.clear()
-                            onChange()
-                        },
-                        label = { Text(text = word) }
-                    )
-                    Spacer8()
-                }
+    ) {
+        nameRecordState.value = it
+    }
+
+    if (importType.walletType == WalletType.view) {
+        Spacer4()
+        Text(
+            modifier = Modifier.fillMaxWidth(),
+            text = parseMarkdownToAnnotatedString(
+                stringResource(R.string.wallet_import_address_warning)
+            ),
+            color = MaterialTheme.colorScheme.secondary,
+            style = MaterialTheme.typography.bodySmall,
+        )
+    }
+    if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
+        LazyRow {
+            items(suggestions) { word ->
+                SuggestionChip(
+                    onClick = {
+                        val processed = setSuggestion(inputState.value, word)
+                        inputState.value = processed
+                        suggestions.clear()
+                        onChange()
+                    },
+                    label = { Text(text = word) }
+                )
+                Spacer8()
             }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-private fun LazyListScope.typeSelection(
+@Composable
+private fun TypeSelection(
     importType: ImportType,
     onTypeChange: (WalletType) -> Unit,
 ) {
     if (importType.walletType == WalletType.multicoin) {
         return
     }
-    item {
-        PrimaryTabRow(
-            modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)),
-            selectedTabIndex = 0,
-            indicator = { Box {} },
-            containerColor = Color.Transparent,//(0xFFEBEBEB),
-            divider = {}
-        ) {
-            WalletTypeTab(WalletType.single, importType.walletType, onTypeChange)
-            WalletTypeTab(WalletType.private_key, importType.walletType, onTypeChange)
-            WalletTypeTab(WalletType.view, importType.walletType, onTypeChange)
-        }
-        Spacer16()
+    PrimaryTabRow(
+        modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(4.dp)),
+        selectedTabIndex = 0,
+        indicator = { Box {} },
+        containerColor = Color.Transparent,//(0xFFEBEBEB),
+        divider = {}
+    ) {
+        WalletTypeTab(WalletType.single, importType.walletType, onTypeChange)
+        WalletTypeTab(WalletType.private_key, importType.walletType, onTypeChange)
+        WalletTypeTab(WalletType.view, importType.walletType, onTypeChange)
     }
+    Spacer16()
 }
 
-fun LazyListScope.errorMessage(error: ImportError?) {
-    item {
-        Spacer(modifier = Modifier.size(space4))
-        val text = when (error) {
-            is ImportError.CreateError -> stringResource(R.string.errors_create_wallet, error.message ?: "")
-            is ImportError.InvalidWords -> stringResource(
-                R.string.errors_import_invalid_secret_phrase_word,
-                error.words.joinToString()
-            )
-            ImportError.InvalidationSecretPhrase -> stringResource(R.string.errors_import_invalid_secret_phrase)
-            ImportError.InvalidAddress -> stringResource(R.string.errors_invalid_address_name)
-            ImportError.InvalidationPrivateKey -> "Invalid private key"
-            null -> return@item
-        }
-        Text(text = text, color = MaterialTheme.colorScheme.error)
+@Composable
+fun ErrorMessage(error: ImportError?) {
+    Spacer(modifier = Modifier.size(space4))
+    val text = when (error) {
+        is ImportError.CreateError -> stringResource(R.string.errors_create_wallet, error.message ?: "")
+        is ImportError.InvalidWords -> stringResource(
+            R.string.errors_import_invalid_secret_phrase_word,
+            error.words.joinToString()
+        )
+        ImportError.InvalidationSecretPhrase -> stringResource(R.string.errors_import_invalid_secret_phrase)
+        ImportError.InvalidAddress -> stringResource(R.string.errors_invalid_address_name)
+        ImportError.InvalidationPrivateKey -> "Invalid private key"
+        null -> return
     }
+    Text(text = text, color = MaterialTheme.colorScheme.error)
 }
 
 private fun setSuggestion(inputState: TextFieldValue, word: String): TextFieldValue {
