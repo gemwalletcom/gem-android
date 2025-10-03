@@ -13,11 +13,12 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.list_item.availableIn
+import com.gemwallet.android.ui.models.RewardsInfoUIModel
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.gemwallet.android.ui.models.actions.ConfirmTransactionAction
 import com.gemwallet.features.earn.delegation.models.DelegationActions
-import com.gemwallet.features.earn.delegation.models.DelegationBalances
 import com.gemwallet.features.earn.delegation.models.DelegationProperty
+import com.gemwallet.features.earn.delegation.models.HeadDelegationInfo
 import com.wallet.core.primitives.DelegationState
 import com.wallet.core.primitives.StakeChain
 import com.wallet.core.primitives.TransactionType
@@ -84,8 +85,7 @@ class DelegationViewModel @Inject constructor(
         }
 
         listOfNotNull(
-            DelegationBalances.Stake(assetInfo.asset.format(Crypto(delegation.base.balance))),
-            DelegationBalances.Rewards(assetInfo.asset.format(Crypto(delegation.base.rewards)))
+            RewardsInfoUIModel(assetInfo, delegation.base.rewards),
         )
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -112,6 +112,18 @@ class DelegationViewModel @Inject constructor(
         }
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val delegationInfo = combine(
+        delegation,
+        assetInfo,
+        sessionRepository.session().filterNotNull(),
+    ) { delegation, assetInfo, session ->
+        if (assetInfo == null || delegation == null) {
+            return@combine null
+        }
+        HeadDelegationInfo(delegation, assetInfo)
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val uiState = combine(
         delegation,

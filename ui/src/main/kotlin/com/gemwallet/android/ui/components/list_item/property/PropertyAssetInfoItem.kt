@@ -1,4 +1,4 @@
-package com.gemwallet.features.transfer_amount.presents.views
+package com.gemwallet.android.ui.components.list_item.property
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.Button
@@ -13,11 +13,13 @@ import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
+import com.gemwallet.android.ui.components.list_item.getBalanceInfo
+import com.gemwallet.android.ui.models.BalanceInfoUIModel
 import com.gemwallet.android.ui.models.ListPosition
 import com.wallet.core.primitives.Asset
 
 @Composable
-fun AssetInfoCard(
+fun PropertyAssetInfoItem(
     asset: Asset,
     availableAmount: String,
     onMaxAmount: () -> Unit,
@@ -38,6 +40,22 @@ fun AssetInfoCard(
             ) {
                 Text(text = stringResource(id = R.string.transfer_max))
             }
+        }
+    )
+}
+
+@Composable
+fun PropertyAssetBalanceItem(
+    model: BalanceInfoUIModel,
+    title: String?,
+    listPosition: ListPosition = ListPosition.Single,
+) {
+    ListItem(
+        leading = { IconWithBadge(model.asset) },
+        title = { ListItemTitleText(title ?: model.asset.name) },
+        listPosition = listPosition,
+        trailing = {
+            getBalanceInfo(model, model)()
         }
     )
 }

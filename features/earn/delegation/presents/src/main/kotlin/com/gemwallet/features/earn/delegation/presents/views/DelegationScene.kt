@@ -7,11 +7,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.list_head.AmountListHead
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyAssetBalanceItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.RewardsInfoUIModel
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.gemwallet.android.ui.models.actions.ConfirmTransactionAction
 import com.gemwallet.features.earn.delegation.models.DelegationActions
@@ -27,6 +30,7 @@ fun DelegationScene(
     viewModel: DelegationViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val delegationInfo by viewModel.delegationInfo.collectAsStateWithLifecycle()
     val properties by viewModel.properties.collectAsStateWithLifecycle()
     val balances by viewModel.balances.collectAsStateWithLifecycle()
     val actions by viewModel.actions.collectAsStateWithLifecycle()
@@ -35,12 +39,20 @@ fun DelegationScene(
         LoadingScene(title = stringResource(id = R.string.transfer_stake_title), onCancel = onCancel)
         return
     }
-    val state = uiState!!
     Scene(
         title = stringResource(R.string.transfer_stake_title),
         onClose = onCancel,
     ) {
         LazyColumn {
+            delegationInfo?.let { info ->
+                item {
+                    AmountListHead(
+                        amount = info.cryptoFormatted,
+                        equivalent = info.fiatFormatted,
+                        icon = info.iconUrl,
+                    )
+                }
+            }
             itemsPositioned(properties) { position, item ->
                 when (item) {
                     is DelegationProperty.Apr -> StakeApr(item.data, position)
@@ -50,10 +62,9 @@ fun DelegationScene(
                 }
             }
 
-            item { SubheaderItem(title = stringResource(id = R.string.asset_balances)) }
             itemsPositioned(balances) { position, item ->
                 when (item) {
-                    is DelegationBalances.Rewards -> PropertyItem(R.string.stake_rewards, item.data, listPosition = position)
+                    is RewardsInfoUIModel -> PropertyAssetBalanceItem(item, title = stringResource(R.string.stake_rewards), listPosition = position)
                     is DelegationBalances.Stake -> PropertyItem(R.string.transfer_stake_title, item.data, listPosition = position)
                 }
             }

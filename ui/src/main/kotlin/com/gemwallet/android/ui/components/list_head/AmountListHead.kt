@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -82,8 +81,10 @@ fun AmountListHead(
         ) {
             (icon as? Asset)?.let {
                 HeaderIcon(it)
-                Spacer16()
-            }
+            } ?: IconWithBadge(icon = icon, size = headerIconSize)
+
+            icon?.let { Spacer16() }
+
             DisplayText(
                 text = amount,
                 modifier = Modifier

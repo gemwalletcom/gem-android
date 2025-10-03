@@ -26,6 +26,7 @@ import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.fields.AmountField
 import com.gemwallet.android.ui.components.keyboardAsState
 import com.gemwallet.android.ui.components.list_item.ValidatorItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyAssetInfoItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.AmountInputType
 import com.gemwallet.android.ui.models.ListPosition
@@ -97,7 +98,7 @@ fun AmountScene(
             }
             validatorView(txType, validatorState, onValidator)
             item {
-                AssetInfoCard( // TODO: Refactor for correct list position
+                PropertyAssetInfoItem(
                     asset = asset,
                     availableAmount = availableBalance,
                     onMaxAmount = onMaxAmount

@@ -20,6 +20,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.models.CryptoFormattedUIModel
+import com.gemwallet.android.ui.models.FiatFormattedUIModel
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.models.PriceUIModel
@@ -146,19 +148,22 @@ fun PriceInfo(
     }
 }
 
-fun getBalanceInfo(uiModel: AssetItemUIModel): @Composable () -> Unit {
+fun getBalanceInfo(uiModel: AssetItemUIModel): @Composable () -> Unit
+        = getBalanceInfo(uiModel, uiModel)
+
+fun getBalanceInfo(crypto: CryptoFormattedUIModel, fiatFormattedUIModel: FiatFormattedUIModel): @Composable () -> Unit {
     return (@Composable {
         val color = MaterialTheme.colorScheme.let {
-            if (uiModel.isZeroAmount) it.secondary else it.onSurface
+            if (crypto.isZeroAmount) it.secondary else it.onSurface
         }
         Column(
             modifier = Modifier.defaultMinSize(40.dp),
             horizontalAlignment = Alignment.End
         ) {
-            ListItemTitleText(uiModel.cryptoFormatted, color = color)
-            if (!uiModel.isZeroAmount && uiModel.fiatFormatted.isNotEmpty()) {
+            ListItemTitleText(crypto.cryptoFormatted, color = color)
+            if (!crypto.isZeroAmount && fiatFormattedUIModel.fiatFormatted.isNotEmpty()) {
                 Spacer2()
-                ListItemSupportText(uiModel.fiatFormatted)
+                ListItemSupportText(fiatFormattedUIModel.fiatFormatted)
             }
         }
     })
