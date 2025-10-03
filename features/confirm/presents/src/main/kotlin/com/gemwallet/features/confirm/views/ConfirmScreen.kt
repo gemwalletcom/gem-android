@@ -161,9 +161,12 @@ fun ConfirmScreen(
 
                 }
             }
+
+            item {
+                Spacer16()
+                ConfirmErrorInfo(state, feeValue = feeValue, isShowBottomSheetInfo, onBuy)
+            }
         }
-        Spacer16()
-        ConfirmErrorInfo(state, feeValue = feeValue, isShowBottomSheetInfo, onBuy)
 
         if (showSelectTxSpeed) {
             SelectFeePriority(
