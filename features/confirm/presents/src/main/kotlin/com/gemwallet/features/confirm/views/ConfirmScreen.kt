@@ -49,8 +49,8 @@ import com.gemwallet.android.ui.components.list_head.SwapListHead
 import com.gemwallet.android.ui.components.list_item.getTitle
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
-import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkFee
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
@@ -58,7 +58,6 @@ import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
-import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.defaultPadding
