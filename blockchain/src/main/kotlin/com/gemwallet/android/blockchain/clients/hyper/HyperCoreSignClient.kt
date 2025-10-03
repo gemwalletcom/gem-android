@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.hyper
 
 import com.gemwallet.android.blockchain.clients.SignClient
+import com.gemwallet.android.blockchain.services.WalletCoreSigner
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
@@ -20,7 +21,7 @@ class HyperCoreSignClient(
     val chain: Chain,
 ) : SignClient {
 
-    private val hyperCore = HyperCore()
+    private val hyperCore = HyperCore(WalletCoreSigner())
     private val factory = HyperCoreModelFactory()
 //    private val agentNamePrefix = "gemwallet_"
 //    private val referralCode = "GEMWALLET"

@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 fun SubheaderItem(
     title: String,
     modifier: Modifier = Modifier,
-    paddings: PaddingValues = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 0.dp)
+    paddings: PaddingValues = PaddingValues(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 0.dp)
 ) {
     Text(
         modifier = modifier
