@@ -22,7 +22,7 @@ import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
-import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkItem
 import com.gemwallet.android.ui.components.screen.FatalStateScene
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
@@ -109,7 +109,7 @@ private fun Render(
             item { PropertyItem(R.string.wallet_connect_app, request.session.name, listPosition = ListPosition.First) }
             item { PropertyItem(R.string.wallet_connect_website, request.session.uri, listPosition = ListPosition.Middle) }
             item { PropertyItem(R.string.transfer_from, request.walletName, listPosition = ListPosition.Middle) }
-            item { PropertyNetwork(request.chain, listPosition = ListPosition.Middle) }
+            item { PropertyNetworkItem(request.chain, listPosition = ListPosition.Middle) }
             item { PropertyItem("Method", request.method, listPosition = ListPosition.Last) }
             when (request.method) {
                 WalletConnectionMethods.SolanaSignTransaction.string -> {}

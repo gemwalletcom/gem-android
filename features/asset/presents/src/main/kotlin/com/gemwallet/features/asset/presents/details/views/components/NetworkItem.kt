@@ -1,7 +1,7 @@
 package com.gemwallet.features.asset.presents.details.views.components
 
 import androidx.compose.foundation.lazy.LazyListScope
-import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkItem
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.features.asset.viewmodels.details.models.AssetInfoUIModel
@@ -15,7 +15,7 @@ internal fun LazyListScope.network(
         return
     }
     item {
-        PropertyNetwork(
+        PropertyNetworkItem(
             asset = uiState.asset,
             onOpenNetwork = openNetwork,
             listPosition = ListPosition.Last

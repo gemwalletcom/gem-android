@@ -7,14 +7,18 @@ import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.domains.asset.getIconUrl
+import com.gemwallet.android.domains.asset.isMemoSupport
+import com.gemwallet.android.domains.asset.subtype
+import com.gemwallet.android.ext.type
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 
 @Composable
-fun PropertyNetwork(
+fun PropertyNetworkItem(
     chain: Chain,
     value: String = chain.asset().name,
     listPosition: ListPosition = ListPosition.Single,
@@ -37,14 +41,17 @@ fun PropertyNetwork(
 }
 
 @Composable
-fun PropertyNetwork(
+fun PropertyNetworkItem(
     asset: Asset,
     listPosition: ListPosition = ListPosition.Single,
     onOpenNetwork: AssetIdAction? = null
 ) {
-    PropertyNetwork(
+    PropertyNetworkItem(
         chain = asset.chain,
-        value = "${asset.id.chain.asset().name} (${asset.type.string})",
+        value = when (asset.subtype) {
+            AssetSubtype.NATIVE -> asset.id.chain.asset().name
+            AssetSubtype.TOKEN -> "${asset.id.chain.asset().name} (${asset.type.string})"
+        },
         listPosition = listPosition,
         onOpenNetwork = onOpenNetwork
     )

@@ -24,3 +24,6 @@ val Asset.stakeChain: StakeChain?
     get() = StakeChain.byChain(id.chain)
 
 fun Asset.isMemoSupport() = chain.isMemoSupport()
+
+val Asset.subtype: AssetSubtype
+    get() = id.type()

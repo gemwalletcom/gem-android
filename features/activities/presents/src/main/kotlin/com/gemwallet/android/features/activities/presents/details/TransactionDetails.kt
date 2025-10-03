@@ -31,7 +31,7 @@ import com.gemwallet.android.ui.components.list_head.SwapListHead
 import com.gemwallet.android.ui.components.list_item.getTransactionTitle
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
-import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkFee
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.LoadingScene
@@ -64,7 +64,7 @@ fun TransactionDetails(
                         is TxDetailsProperty.Date -> PropertyItem(R.string.transaction_date, item.data, listPosition = position)
                         is TxDetailsProperty.Destination -> DestinationPropertyItem(item, position)
                         is TxDetailsProperty.Memo -> PropertyItem(R.string.transfer_memo, item.data, listPosition = position)
-                        is TxDetailsProperty.Network -> PropertyNetwork(item.data.chain, listPosition = position)
+                        is TxDetailsProperty.Network -> PropertyNetworkItem(item.data.chain, listPosition = position)
                         is TxDetailsProperty.Provider -> PropertyItem(R.string.common_provider, item.data.name, listPosition = position)
                         is TxDetailsProperty.Status -> TxStatusPropertyItem(item, position)
                     }

@@ -1,13 +1,11 @@
 package com.gemwallet.features.nft.presents
 
-import android.R.attr.name
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowUpward
@@ -25,12 +23,11 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
-import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkItem
 import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.CancelAction
-import com.gemwallet.android.ui.theme.listSpacerBig
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.features.nft.viewmodels.NftAssetDetailsUIModel
 import com.gemwallet.features.nft.viewmodels.NftDetailsViewModel
@@ -85,7 +82,7 @@ fun NFTDetailsScene(
 private fun LazyListScope.generalInfo(model: NftAssetDetailsUIModel) {
     item {
         PropertyItem(R.string.nft_collection, model.collection.name, listPosition = ListPosition.First)
-        PropertyNetwork(model.collection.chain, listPosition = ListPosition.Middle)
+        PropertyNetworkItem(model.collection.chain, listPosition = ListPosition.Middle)
         model.asset.contractAddress?.let {
             PropertyItem(R.string.asset_contract, it, listPosition = ListPosition.Middle)
         }

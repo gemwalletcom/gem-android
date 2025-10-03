@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -48,7 +49,7 @@ import com.gemwallet.android.ui.components.list_head.SwapListHead
 import com.gemwallet.android.ui.components.list_item.getTitle
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
-import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkFee
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
@@ -61,6 +62,7 @@ import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.defaultPadding
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.trailingIconMedium
 import com.gemwallet.features.confirm.models.ConfirmError
 import com.gemwallet.features.confirm.models.ConfirmProperty
@@ -140,7 +142,7 @@ fun ConfirmScreen(
                 when (item) {
                     is ConfirmProperty.Destination -> PropertyDestination(item, listPosition)
                     is ConfirmProperty.Memo -> PropertyItem(R.string.transfer_memo, item.data, listPosition = listPosition)
-                    is ConfirmProperty.Network -> PropertyNetwork(item.data, listPosition)
+                    is ConfirmProperty.Network -> PropertyNetworkItem(item.data, listPosition)
                     is ConfirmProperty.Source -> PropertyItem(R.string.common_wallet, item.data, listPosition = listPosition)
                 }
             }
@@ -169,9 +171,10 @@ fun ConfirmScreen(
 
                 }
             }
+            item {
+                ConfirmErrorInfo(state, feeValue = feeValue, isShowBottomSheetInfo, onBuy)
+            }
         }
-        Spacer16()
-        ConfirmErrorInfo(state, feeValue = feeValue, isShowBottomSheetInfo, onBuy)
 
         if (showSelectTxSpeed) {
             SelectFeePriority(
@@ -227,9 +230,9 @@ private fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBottom
     var isShowInfoSheet by remember(isShowBottomSheetInfo) { mutableStateOf(isShowBottomSheetInfo) }
     Column(
         modifier = Modifier
-            .defaultPadding()
+            .padding(horizontal = paddingDefault)
             .background(
-                MaterialTheme.colorScheme.errorContainer.copy(0.2f),
+                MaterialTheme.colorScheme.errorContainer.copy(0.3f),
                 shape = MaterialTheme.shapes.medium
             )
             .fillMaxWidth()
