@@ -262,7 +262,7 @@ class EvmSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        if (params.assetId.chain != Chain.SmartChain || params.assetId.chain != Chain.Ethereum) {
+        if (params.assetId.chain != Chain.SmartChain && params.assetId.chain != Chain.Ethereum) {
             throw Exception("Doesn't support")
         }
         val meta = chainData as EvmChainData
