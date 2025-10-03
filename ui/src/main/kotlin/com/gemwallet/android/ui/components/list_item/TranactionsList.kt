@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.android.ui.theme.paddingDefault
 import java.text.DateFormat
 import java.util.Date
 
@@ -44,7 +45,7 @@ fun LazyListScope.transactionsList(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surface)
                     .fillMaxWidth()
-                    .padding(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 0.dp),
+                    .padding(start = paddingDefault, end = paddingDefault, top = 0.dp, bottom = 0.dp),
                 text = title
             )
         }

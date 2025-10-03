@@ -27,6 +27,6 @@ fun Modifier.listItem(position: ListPosition, background: Color = MaterialTheme.
         ListPosition.First -> this.padding(top = bigRound).clip(firstItemShape)
         ListPosition.Middle -> this.padding(top = smallRound).clip(middleItemShape)
         ListPosition.Single -> this.padding(top = bigRound, bottom = bigRound).clip(singleItemShape)
-        ListPosition.Last -> this.padding(top = smallRound, bottom = smallRound).clip(lastItemShape)
+        ListPosition.Last -> this.padding(top = smallRound, bottom = bigRound).clip(lastItemShape)
     }
     .background(background)

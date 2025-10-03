@@ -143,7 +143,7 @@ fun Scene(
                         Spacer16()
                     }
                 }
-                Spacer(modifier = Modifier.size(it.calculateBottomPadding()))
+//                Spacer(modifier = Modifier.size(it.calculateBottomPadding()))
             }
         }
     }
