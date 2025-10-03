@@ -23,7 +23,7 @@ data class ConfigVersions (
 
 @Serializable
 data class SwapConfig (
-	val enabledProviders: List<SwapProvider>
+	val enabledProviders: List<String>
 )
 
 @Serializable

@@ -2,17 +2,15 @@ package com.gemwallet.android.blockchain.clients.tron
 
 import android.text.format.DateUtils
 import com.gemwallet.android.blockchain.clients.SignClient
-import com.gemwallet.android.blockchain.clients.ethereum.encodeApprove
+import com.gemwallet.android.domains.asset.subtype
 import com.gemwallet.android.math.decodeHex
-import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.google.protobuf.ByteString
+import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import wallet.core.java.AnySigner
-import wallet.core.jni.AnyAddress
-import wallet.core.jni.Base58
 import wallet.core.jni.CoinType
 import wallet.core.jni.proto.Tron
 import wallet.core.jni.proto.Tron.TransferContract
@@ -38,7 +36,7 @@ class TronSignClient(
             this.ownerAddress = params.from.address
             this.toAddress = params.destination().address
         }.build()
-        return signTransfer(chainData, contract, fee, privateKey)
+        return signTransfer(chainData, contract, params.memo, fee, privateKey)
     }
 
     override suspend fun signTokenTransfer(
@@ -55,12 +53,13 @@ class TronSignClient(
             this.toAddress = params.destination().address
             this.amount = ByteString.copyFrom(finalAmount.toByteArray())
         }.build()
-        return signTransfer(chainData, contract, fee, privateKey)
+        return signTransfer(chainData, contract, params.memo, fee,  privateKey)
     }
 
     private fun signTransfer(
         chainData: TronChainData,
         contract: Any,
+        memo: String?,
         fee: Fee,
         privateKey: ByteArray,
     ): List<ByteArray> {
@@ -80,6 +79,9 @@ class TronSignClient(
             this.expiration = chainData.blockTimestamp.toLong() + 10 * DateUtils.HOUR_IN_MILLIS
             this.timestamp = chainData.blockTimestamp.toLong()
             this.feeLimit = fee.amount.toLong()
+            if (!memo.isNullOrEmpty()) {
+                this.memo = memo
+            }
         }
         val signInput = Tron.SigningInput.newBuilder().apply {
             this.transaction = transaction.build()
@@ -175,23 +177,6 @@ class TronSignClient(
         )
     }
 
-    override suspend fun signTokenApproval(
-        params: ConfirmParams.TokenApprovalParams,
-        chainData: ChainSignData,
-        finalAmount: BigInteger,
-        fee: Fee,
-        privateKey: ByteArray
-    ): List<ByteArray> {
-        val spender = Base58.decodeNoCheck(params.data).drop(0).toByteArray()
-        val callData = encodeApprove(spender)
-        val approvalContract = Tron.TriggerSmartContract.newBuilder().apply {
-            ownerAddress = params.from.address
-            contractAddress = params.contract
-            data = ByteString.copyFrom(callData)
-        }
-        return listOf(sign(chainData as TronChainData, approvalContract, fee, privateKey))
-    }
-
     override suspend fun signSwap(
         params: ConfirmParams.SwapParams,
         chainData: ChainSignData,
@@ -200,30 +185,29 @@ class TronSignClient(
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronChainData
-        val data = params.swapData
-        val callValue = params.value.toLong()
-        val contract = Tron.TriggerSmartContract.newBuilder().apply {
-            this.ownerAddress = params.from.address
-            this.contractAddress = params.to
-            this.data = ByteString.copyFrom(data.toByteArray())
-            this.callValue = callValue
+        val fromAsset = params.fromAsset
+        val toAddress = params.to
+        val memo = params.swapData
+        val amount = params.value
+        val contract = when (fromAsset.subtype) {
+            AssetSubtype.NATIVE -> {
+                TransferContract.newBuilder().apply {
+                    this.amount = amount.toLong()
+                    this.ownerAddress = params.from.address
+                    this.toAddress = toAddress
+
+                }.build()
+            }
+            AssetSubtype.TOKEN -> {
+                TransferTRC20Contract.newBuilder().apply {
+                    this.contractAddress = fromAsset.id.tokenId
+                    this.ownerAddress = params.from.address
+                    this.toAddress = toAddress
+                    this.amount = ByteString.copyFrom(BigInteger(amount).toByteArray())
+                }.build()
+            }
         }
-        val approvalData = params.approval
-        val approval = approvalData?.let {
-            signTokenApproval(
-                params = ConfirmParams.Builder(params.asset, params.from)
-                    .approval(
-                        approvalData = encodeApprove(AnyAddress(approvalData.spender, CoinType.ETHEREUM).data()).toHexString(),
-                        provider = "",
-                        contract = approvalData.token,
-                    ),
-                chainData = chainData,
-                finalAmount = BigInteger.ZERO,
-                fee = fee,
-                privateKey = privateKey
-            )
-        } ?: emptyList()
-        return listOf(sign(chainData, contract, fee, privateKey)) + approval
+        return signTransfer(chainData, contract, memo, fee,  privateKey)
     }
 
     private fun createVoteContract(chainData: TronChainData, owner: String) = Tron.VoteWitnessContract.newBuilder().apply {
