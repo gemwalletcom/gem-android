@@ -2,19 +2,14 @@ package com.gemwallet.android.blockchain.clients.hyper
 
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.services.WalletCoreSigner
-import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.format
-import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.Chain
 import uniffi.gemstone.HyperCore
 import uniffi.gemstone.HyperCoreModelFactory
-import wallet.core.jni.Curve
-import wallet.core.jni.EthereumAbi
-import wallet.core.jni.PrivateKey
 import java.math.BigInteger
 
 class HyperCoreSignClient(
@@ -35,11 +30,29 @@ class HyperCoreSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val amount = params.asset.format(Crypto(finalAmount), decimalPlace = -1)
+        val amount = params.asset.format(Crypto(finalAmount), decimalPlace = params.asset.decimals, showSymbol = false)
         return signSpotSend(
             amount = amount,
             destination = params.destination.address,
             token = nativeSpotToken,
+            privateKey = privateKey
+        )
+    }
+
+    override suspend fun signTokenTransfer(
+        params: ConfirmParams.TransferParams.Token,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        fee: Fee,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val amount = params.asset.format(Crypto(finalAmount), decimalPlace = params.asset.decimals, showSymbol = false) // TODO: Out to fun
+        val (symbol, tokenId) = params.asset.id.tokenId?.split("::")?.takeIf { it.size >= 2 }
+            ?.let { Pair(it[0], it[1]) } ?: throw IllegalArgumentException("Bad token")
+        return signSpotSend(
+            amount = amount,
+            destination = params.destination.address,
+            token = "$symbol:$tokenId",
             privateKey = privateKey
         )
     }
@@ -57,25 +70,8 @@ class HyperCoreSignClient(
             time = timestamp,
             token = token
         )
-        val eip712Message = hyperCore.sendSpotTokenToAddressTypedData(spotSend)
-        val signature = signEIP712(eip712Message, privateKey)
-        return listOf(actionMessage(signature, eip712Message, timestamp).toByteArray())
-    }
-
-    private fun signEIP712(messageJson: String, privateKey: ByteArray): String {
-        val hash = EthereumAbi.encodeTyped(messageJson)
-        val signature = PrivateKey(privateKey).sign(hash, Curve.SECP256K1)
-        if (signature == null || signature.isEmpty()) throw Exception("Failed to sign")
-        return signature.toHexString()
-    }
-
-    private fun actionMessage(signature: String, eip712Message: String, timestamp: ULong): String {
-        val eip712Json = jsonEncoder.decodeFromString<Map<String, String>>(eip712Message)
-        return factory.buildSignedRequest(
-            signature = signature,
-            action = eip712Json["message"] ?: throw IllegalStateException("Sign error"),
-            timestamp = timestamp
-        )
+        val signature = hyperCore.signSpotSend(spotSend, privateKey)
+        return listOf(signature.toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

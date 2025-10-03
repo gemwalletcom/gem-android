@@ -8,6 +8,8 @@ import com.gemwallet.android.blockchain.clients.cardano.CardanoGatewayEstimateFe
 import com.gemwallet.android.blockchain.clients.cardano.toChainData
 import com.gemwallet.android.blockchain.clients.cosmos.toChainData
 import com.gemwallet.android.blockchain.clients.ethereum.toChainData
+import com.gemwallet.android.blockchain.clients.hyper.HyperCoreChainData
+import com.gemwallet.android.blockchain.clients.hyper.toChainData
 import com.gemwallet.android.blockchain.clients.near.toChainData
 import com.gemwallet.android.blockchain.clients.polkadot.PolkadotGatewayEstimateFee
 import com.gemwallet.android.blockchain.clients.polkadot.toChainData
@@ -46,6 +48,7 @@ import uniffi.gemstone.TransferDataOutputType
 import uniffi.gemstone.GemWalletConnectionSessionAppMetadata
 import uniffi.gemstone.SwapperException
 import uniffi.gemstone.TransferDataOutputAction
+import kotlin.Boolean
 
 class SignerPreloaderProxy(
     private val gateway: GemGateway,
@@ -326,6 +329,13 @@ private fun GemTransactionLoadMetadata.toChainData() = when (this) {
     is GemTransactionLoadMetadata.Ton -> toChainData()
     is GemTransactionLoadMetadata.Tron -> toChainData()
     is GemTransactionLoadMetadata.Xrp -> toChainData()
-    is GemTransactionLoadMetadata.Hyperliquid -> throw SwapperException.NotSupportedChain()
-    GemTransactionLoadMetadata.None -> throw SwapperException.NotSupportedChain()
+    is GemTransactionLoadMetadata.Hyperliquid -> toChainData()
+    GemTransactionLoadMetadata.None -> HyperCoreChainData(
+        approveAgentRequired = true,
+        approveReferralRequired = true,
+        approveBuilderRequired = true,
+        builderFeeBps = 0U,
+        agentAddress = "",
+        agentPrivateKey = "",
+    )// TODO: throw SwapperException.NotSupportedChain()
 }

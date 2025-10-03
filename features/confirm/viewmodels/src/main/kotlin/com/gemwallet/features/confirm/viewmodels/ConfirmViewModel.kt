@@ -319,7 +319,7 @@ class ConfirmViewModel @Inject constructor(
         }
     }
 
-    private suspend fun sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo, feePriority: FeePriority): List<ByteArray> {
+    private suspend fun  sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo, feePriority: FeePriority): List<ByteArray> {
         val sign = try {
             signClient.signTransaction(
                 params = signerParams,
