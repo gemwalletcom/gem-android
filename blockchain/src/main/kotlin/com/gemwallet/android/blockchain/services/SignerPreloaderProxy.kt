@@ -44,11 +44,9 @@ import uniffi.gemstone.GemTransactionLoadInput
 import uniffi.gemstone.GemTransactionLoadMetadata
 import uniffi.gemstone.GemTransactionPreloadInput
 import uniffi.gemstone.GemTransferDataExtra
-import uniffi.gemstone.TransferDataOutputType
 import uniffi.gemstone.GemWalletConnectionSessionAppMetadata
-import uniffi.gemstone.SwapperException
 import uniffi.gemstone.TransferDataOutputAction
-import kotlin.Boolean
+import uniffi.gemstone.TransferDataOutputType
 
 class SignerPreloaderProxy(
     private val gateway: GemGateway,

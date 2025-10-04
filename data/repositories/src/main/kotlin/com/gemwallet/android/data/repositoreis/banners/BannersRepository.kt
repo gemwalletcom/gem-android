@@ -10,7 +10,6 @@ import com.gemwallet.android.data.service.store.database.BannersDao
 import com.gemwallet.android.data.service.store.database.entities.DbBanner
 import com.gemwallet.android.data.service.store.database.entities.toModel
 import com.gemwallet.android.data.service.store.database.entities.toRecord
-import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.domains.asset.isStackable
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.toIdentifier

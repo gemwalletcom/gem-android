@@ -5,7 +5,6 @@ import uniffi.gemstone.AlienSigner
 import wallet.core.jni.Curve
 import wallet.core.jni.EthereumAbi
 import wallet.core.jni.PrivateKey
-import kotlin.collections.isEmpty
 
 class WalletCoreSigner : AlienSigner {
     override fun signEip712(

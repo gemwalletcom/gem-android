@@ -1,8 +1,8 @@
 package com.gemwallet.android.data.repositoreis.config
 
 import android.content.SharedPreferences
-import uniffi.gemstone.GemPreferences
 import androidx.core.content.edit
+import uniffi.gemstone.GemPreferences
 
 class SharedGemPreferences(
     private val sharedPreferences: SharedPreferences

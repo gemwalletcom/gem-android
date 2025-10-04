@@ -4,12 +4,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.gemwallet.android.domains.asset.chain
+import com.gemwallet.android.domains.asset.getIconUrl
+import com.gemwallet.android.domains.asset.subtype
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.domains.asset.getIconUrl
-import com.gemwallet.android.domains.asset.isMemoSupport
-import com.gemwallet.android.domains.asset.subtype
-import com.gemwallet.android.ext.type
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.wallet.core.primitives.Asset

@@ -1,6 +1,5 @@
 package com.gemwallet.android.data.repositoreis.transactions
 
-import android.util.Log
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.transactions.GetTransactionUpdateTime
 import com.gemwallet.android.cases.transactions.PutTransactions

@@ -9,7 +9,6 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.StakeChain
-import uniffi.gemstone.Config
 
 val Asset.chain: Chain
     get() = id.chain

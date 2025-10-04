@@ -2,7 +2,6 @@ package com.gemwallet.features.settings.aboutus.presents
 
 import android.content.pm.PackageManager
 import android.os.Build
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -12,8 +11,8 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import com.gemwallet.android.ui.components.list_item.LinkItem
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.list_item.LinkItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.open

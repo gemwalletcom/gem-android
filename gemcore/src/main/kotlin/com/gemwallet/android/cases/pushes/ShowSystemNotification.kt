@@ -1,8 +1,6 @@
 package com.gemwallet.android.cases.pushes
 
 import com.gemwallet.android.model.PushNotificationData
-import com.wallet.core.primitives.PushNotificationAsset
-import com.wallet.core.primitives.PushNotificationTransaction
 
 interface ShowSystemNotification {
     fun showNotification(

@@ -1,17 +1,15 @@
 package com.gemwallet.android.ui.components.list_item
 
 import androidx.compose.runtime.Stable
-import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.domains.asset.getSupportIconUrl
-import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.models.CryptoFormattedUIModel
 import com.gemwallet.android.ui.models.FiatFormattedUIModel
 import com.gemwallet.android.ui.models.PriceUIModel
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.Currency
-import java.time.temporal.TemporalAmount
 
 
 // TODO: Move to ui-models

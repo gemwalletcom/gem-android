@@ -1,7 +1,9 @@
 package com.gemwallet.android.cases
 
 import com.gemwallet.android.model.PushNotificationData
-import com.gemwallet.android.model.PushNotificationData.*
+import com.gemwallet.android.model.PushNotificationData.Asset
+import com.gemwallet.android.model.PushNotificationData.Swap
+import com.gemwallet.android.model.PushNotificationData.Transaction
 import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.PushNotificationAsset
 import com.wallet.core.primitives.PushNotificationSwapAsset

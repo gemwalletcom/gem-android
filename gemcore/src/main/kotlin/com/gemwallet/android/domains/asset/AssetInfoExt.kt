@@ -1,13 +1,10 @@
 package com.gemwallet.android.domains.asset
 
 import android.text.format.DateUtils
-import com.gemwallet.android.ext.byChain
-import com.gemwallet.android.ext.isMemoSupport
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.availableFormatted
 import com.gemwallet.android.model.format
-import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.StakeChain
 import uniffi.gemstone.Config
 import java.math.BigDecimal
