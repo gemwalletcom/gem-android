@@ -2,6 +2,7 @@ package com.gemwallet.android.blockchain.clients.ethereum
 
 import com.gemwallet.android.blockchain.clients.SignClient
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ChainSignData
@@ -180,6 +181,9 @@ class EvmSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
+        if (params.asset.chain == Chain.Ethereum) {
+            throw IllegalArgumentException("Ethereum doesn't support this stake type")
+        }
         return stakeSmartchain(params, chainData, finalAmount, fee, privateKey)
     }
 
@@ -190,6 +194,9 @@ class EvmSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
+        if (params.asset.chain == Chain.Ethereum) {
+            throw IllegalArgumentException("Ethereum doesn't support this stake type")
+        }
         return stakeSmartchain(params, chainData, finalAmount, fee, privateKey)
     }
 
@@ -255,7 +262,7 @@ class EvmSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        if (params.assetId.chain != Chain.SmartChain) {
+        if (params.assetId.chain != Chain.SmartChain && params.assetId.chain != Chain.Ethereum) {
             throw Exception("Doesn't support")
         }
         val meta = chainData as EvmChainData

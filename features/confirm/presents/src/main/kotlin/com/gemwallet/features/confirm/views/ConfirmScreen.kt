@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Info
@@ -47,20 +49,22 @@ import com.gemwallet.android.ui.components.list_head.SwapListHead
 import com.gemwallet.android.ui.components.list_item.getTitle
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
-import com.gemwallet.android.ui.components.list_item.property.PropertyNetwork
 import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkFee
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
-import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.defaultPadding
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.trailingIconMedium
 import com.gemwallet.features.confirm.models.ConfirmError
+import com.gemwallet.features.confirm.models.ConfirmProperty
 import com.gemwallet.features.confirm.models.ConfirmState
 import com.gemwallet.features.confirm.models.FeeUIModel
 import com.gemwallet.features.confirm.viewmodels.ConfirmViewModel
@@ -76,7 +80,7 @@ fun ConfirmScreen(
     viewModel: ConfirmViewModel = hiltViewModel(),
 ) {
     val amountModel by viewModel.amountUIModel.collectAsStateWithLifecycle()
-    val txInfoUIModel by viewModel.txInfoUIModel.collectAsStateWithLifecycle()
+    val txProperties by viewModel.txProperties.collectAsStateWithLifecycle()
     val feeModel by viewModel.feeUIModel.collectAsStateWithLifecycle()
     val feeValue by viewModel.feeValue.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -132,11 +136,14 @@ fun ConfirmScreen(
                     )
                 }
             }
-            txInfoUIModel?.let {
-                item { PropertyItem(R.string.common_wallet, it.from) }
-                item { PropertyDestination(it.destination) }
-                it.memo?.let { memo -> item { PropertyItem(R.string.transfer_memo, memo) } }
-                item { PropertyNetwork(it.asset) }
+            itemsIndexed(txProperties) { index, item ->
+                val listPosition = ListPosition.getPosition(index, txProperties.size)
+                when (item) {
+                    is ConfirmProperty.Destination -> PropertyDestination(item, listPosition)
+                    is ConfirmProperty.Memo -> PropertyItem(R.string.transfer_memo, item.data, listPosition = listPosition)
+                    is ConfirmProperty.Network -> PropertyNetworkItem(item.data, listPosition)
+                    is ConfirmProperty.Source -> PropertyItem(R.string.common_wallet, item.data, listPosition = listPosition)
+                }
             }
             item {
                 feeModel?.let {
@@ -144,7 +151,8 @@ fun ConfirmScreen(
                         FeeUIModel.Calculating -> PropertyItem(
                             modifier = Modifier.height(72.dp),
                             title = { PropertyTitleText(R.string.transfer_network_fee) },
-                            data = { Row(horizontalArrangement = Arrangement.End) { CircularProgressIndicator16() } }
+                            data = { Row(horizontalArrangement = Arrangement.End) { CircularProgressIndicator16() } },
+                            listPosition = ListPosition.Single,
                         )
                         is FeeUIModel.FeeInfo -> PropertyNetworkFee(
                             it.feeAsset.name,
@@ -155,15 +163,14 @@ fun ConfirmScreen(
                         FeeUIModel.Error -> PropertyItem(
                             modifier = Modifier.height(72.dp),
                             title = { PropertyTitleText(R.string.transfer_network_fee) },
-                            data = { PropertyDataText("~") }
+                            data = { PropertyDataText("~") },
+                            listPosition = ListPosition.Single,
                         )
                     }
 
                 }
             }
-
             item {
-                Spacer16()
                 ConfirmErrorInfo(state, feeValue = feeValue, isShowBottomSheetInfo, onBuy)
             }
         }
@@ -222,9 +229,9 @@ private fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBottom
     var isShowInfoSheet by remember(isShowBottomSheetInfo) { mutableStateOf(isShowBottomSheetInfo) }
     Column(
         modifier = Modifier
-            .defaultPadding()
+            .padding(horizontal = paddingDefault)
             .background(
-                MaterialTheme.colorScheme.errorContainer.copy(0.2f),
+                MaterialTheme.colorScheme.errorContainer.copy(0.3f),
                 shape = MaterialTheme.shapes.medium
             )
             .fillMaxWidth()

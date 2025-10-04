@@ -3,6 +3,7 @@ package com.gemwallet.android.ui.theme
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.dynamicDarkColorScheme
 import androidx.compose.material3.dynamicLightColorScheme
@@ -35,7 +36,7 @@ private val LightColorScheme = lightColorScheme(
     secondary = Color(0xFF999999), //Color(0xFF818181),
     tertiary = Color(0xFF1B9A6D),
     background = Color(0xFFFFFFFF),
-//    surface = Color(0xFFFFFFFF),
+    surface = Color(0xFFF0F0F5),
 //    onPrimary = Color.White,
 //    onSecondary = Color.White,
 //    onTertiary = Color.White,
@@ -43,6 +44,18 @@ private val LightColorScheme = lightColorScheme(
     onSurface = Color(0xFF1C1B1F),
     error = Color(0xFFF84E4E),
     scrim = Color(0xffededed),//from #f2f2f2
+)
+
+@Composable
+fun outlinedTextFieldColors() = OutlinedTextFieldDefaults.colors().copy(
+    focusedContainerColor = MaterialTheme.colorScheme.background,
+    errorContainerColor = MaterialTheme.colorScheme.background,
+    disabledContainerColor = MaterialTheme.colorScheme.background,
+    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+    errorIndicatorColor = MaterialTheme.colorScheme.background,
+    focusedIndicatorColor = MaterialTheme.colorScheme.background,
+    disabledIndicatorColor = MaterialTheme.colorScheme.background,
+    unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
 )
 
 @Composable

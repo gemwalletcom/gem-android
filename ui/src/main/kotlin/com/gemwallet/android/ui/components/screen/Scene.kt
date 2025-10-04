@@ -22,7 +22,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,10 +45,11 @@ fun Scene(
         PaddingValues(start = paddingDefault, top = paddingDefault, end = paddingDefault, bottom = paddingDefault)
     },
     snackbar: SnackbarHostState? = null,
+    navigationBarPadding: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     Scene(
-        title = {
+        titleContent = {
             Text(
                 modifier = Modifier,
                 text = title,
@@ -57,21 +57,22 @@ fun Scene(
                 overflow = TextOverflow.Ellipsis
             )
         },
-        backHandle,
-        padding,
-        onClose,
-        actions,
-        mainAction,
-        mainActionPadding,
-        snackbar,
-        content
+        backHandle = backHandle,
+        contentPadding = padding,
+        onClose = onClose,
+        actions = actions,
+        mainAction = mainAction,
+        mainActionPadding = mainActionPadding,
+        snackbar = snackbar,
+        navigationBarPadding = navigationBarPadding,
+        content = content,
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Scene(
-    title: @Composable () -> Unit,
+    titleContent: @Composable () -> Unit,
     backHandle: Boolean = false,
     contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp),
     onClose: (() -> Unit)? = null,
@@ -79,6 +80,7 @@ fun Scene(
     mainAction: (@Composable () -> Unit)? = null,
     mainActionPadding: PaddingValues = PaddingValues(paddingDefault),
     snackbar: SnackbarHostState? = null,
+    navigationBarPadding: Boolean = true,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     BackHandler(backHandle) {
@@ -86,10 +88,10 @@ fun Scene(
     }
     Scaffold(
         modifier = Modifier.imePadding(),
+        containerColor = MaterialTheme.colorScheme.surface,
         topBar = {
             CenterAlignedTopAppBar(
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
-                title = title,
+                title = titleContent,
                 navigationIcon = {
                     if (onClose != null) {
                         IconButton(onClick = onClose) {
@@ -116,8 +118,7 @@ fun Scene(
         }
     ) {
         Box(
-            modifier = Modifier
-                .navigationBarsPadding()
+            modifier = (if (navigationBarPadding) Modifier.navigationBarsPadding() else Modifier)
                 .padding(top = it.calculateTopPadding())
                 .fillMaxSize(),
         ) {
@@ -140,6 +141,7 @@ fun Scene(
                         Spacer16()
                     }
                 }
+//                Spacer(modifier = Modifier.size(it.calculateBottomPadding()))
             }
         }
     }

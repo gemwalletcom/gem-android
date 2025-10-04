@@ -35,9 +35,7 @@ fun SwapScreen(
     val providers by viewModel.providers.collectAsStateWithLifecycle()
     val priceImpact by viewModel.priceImpact.collectAsStateWithLifecycle()
     val rate by viewModel.rate.collectAsStateWithLifecycle()
-    val estimateTime by viewModel.estimateTime.collectAsStateWithLifecycle()
-    val slippage by viewModel.slippage.collectAsStateWithLifecycle()
-    val minReceive by viewModel.minReceive.collectAsStateWithLifecycle()
+    val swapDetailsProperties by viewModel.details.collectAsStateWithLifecycle()
 
     val isShowProviderSelect = remember { mutableStateOf(false) }
     val isShowPriceImpactAlert = remember { mutableStateOf(false) }
@@ -96,13 +94,9 @@ fun SwapScreen(
     )
 
     SwapDetailsDialog(
-        estimateTime = estimateTime,
         provider = currentProvider,
         providers = providers,
-        priceImpact = priceImpact,
-        rate = rate,
-        slippage = slippage,
-        minReceive = minReceive,
+        properties = swapDetailsProperties,
         isShowProviderSelect = isShowProviderSelect,
         isShow = isShowDetails,
         isUpdated = swapState == SwapState.GetQuote,

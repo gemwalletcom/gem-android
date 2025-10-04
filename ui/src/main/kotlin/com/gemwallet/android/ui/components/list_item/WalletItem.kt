@@ -14,9 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.image.IconWithBadge
-import com.gemwallet.android.domains.asset.getIconUrl
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.wallet.core.primitives.Wallet
@@ -27,6 +28,7 @@ fun WalletItem(
     wallet: Wallet,
     isCurrent: Boolean,
     modifier: Modifier = Modifier,
+    listPosition: ListPosition,
     onEdit: ((String) -> Unit)? = null,
 ) {
     WalletItem(
@@ -46,6 +48,7 @@ fun WalletItem(
         },
         isCurrent = isCurrent,
         type = wallet.type,
+        listPosition = listPosition,
         onEdit = onEdit
     )
 }
@@ -59,6 +62,7 @@ fun WalletItem(
     isCurrent: Boolean,
     type: WalletType,
     modifier: Modifier = Modifier,
+    listPosition: ListPosition,
     onEdit: ((String) -> Unit)? = null,
 ) {
     ListItem(
@@ -82,6 +86,7 @@ fun WalletItem(
             )
         },
         subtitle = { ListItemSupportText(typeLabel) },
+        listPosition = listPosition,
         trailing = {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -119,6 +124,7 @@ fun PreviewWalletItem() {
             icon = "",
             typeLabel = "Multi-coin",
             type = WalletType.multicoin,
+            listPosition = ListPosition.Single,
             isCurrent = true,
             onEdit = {},
         )

@@ -21,10 +21,12 @@ import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.list_item.DropDownContextItem
+import com.gemwallet.android.ui.models.ListPosition
 import com.wallet.core.primitives.AssetId
 
 @Composable
 internal fun AssetItem(
+    listPosition: ListPosition,
     item: AssetItemUIModel,
     longPressState: MutableState<AssetId?>,
     modifier: Modifier = Modifier,
@@ -40,7 +42,7 @@ internal fun AssetItem(
         isExpanded = longPressState.value == item.asset.id,
         imeCompensate = false,
         onDismiss = { longPressState.value = null },
-        content = { AssetListItem(item) },
+        content = { AssetListItem(asset = item, listPosition = listPosition, modifier = it) },
         menuItems = {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = if (isPinned) R.string.common_unpin else R.string.common_pin)) },

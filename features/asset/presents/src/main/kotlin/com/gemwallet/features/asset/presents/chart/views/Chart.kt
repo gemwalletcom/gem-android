@@ -24,9 +24,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.math.getRelativeDate
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.Container
-import com.gemwallet.android.ui.components.getRelativeDate
 import com.gemwallet.android.ui.components.list_item.PriceInfo
 import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.theme.Spacer16
@@ -99,114 +98,112 @@ fun Chart(
         emptyMap()
     }
 
-    Container {
-        Column {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                val point = if (state.loading || state.period != uiModel.period) {
-                    null
-                } else {
-                    if (price == null) uiModel.currentPoint else price
-                }
-                PriceInfo(
-                    priceValue = point?.yLabel ?: "",
-                    changedPercentages = point?.percentage ?: "",
-                    state = point?.priceState ?: PriceState.None,
-                    style = MaterialTheme.typography.headlineSmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    internalPadding = space8
-                )
-                Text(
-                    text = getRelativeDate(price?.timestamp ?: 0L),
-                    color = MaterialTheme.colorScheme.secondary,
-                    style = MaterialTheme.typography.bodyLarge,
-                )
+    Column {
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            val point = if (state.loading || state.period != uiModel.period) {
+                null
+            } else {
+                if (price == null) uiModel.currentPoint else price
             }
-            Spacer16()
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-            ) {
-                when {
-                    state.loading || state.period != uiModel.period -> CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.Center),
-                        strokeWidth = 1.dp
-                    )
-                    state.empty -> ChartError()
-                    points.isEmpty() -> Spacer16()
-                    else -> {
-                        LaunchedEffect(uiModel.period, chartPoints) {
-                            withContext(Dispatchers.Default) {
-                                modelProducer.runTransaction {
-                                    lineSeries {
-                                        series(
-                                            x = List(points.size) { index -> index },
-                                            y = points,
-                                        )
-                                    }
+            PriceInfo(
+                priceValue = point?.yLabel ?: "",
+                changedPercentages = point?.percentage ?: "",
+                state = point?.priceState ?: PriceState.None,
+                style = MaterialTheme.typography.headlineSmall,
+                color = MaterialTheme.colorScheme.onSurface,
+                internalPadding = space8
+            )
+            Text(
+                text = getRelativeDate(price?.timestamp ?: 0L),
+                color = MaterialTheme.colorScheme.secondary,
+                style = MaterialTheme.typography.bodyLarge,
+            )
+        }
+        Spacer16()
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+        ) {
+            when {
+                state.loading || state.period != uiModel.period -> CircularProgressIndicator(
+                    modifier = Modifier.align(Alignment.Center),
+                    strokeWidth = 1.dp
+                )
+                state.empty -> ChartError()
+                points.isEmpty() -> Spacer16()
+                else -> {
+                    LaunchedEffect(uiModel.period, chartPoints) {
+                        withContext(Dispatchers.Default) {
+                            modelProducer.runTransaction {
+                                lineSeries {
+                                    series(
+                                        x = List(points.size) { index -> index },
+                                        y = points,
+                                    )
                                 }
                             }
                         }
-                        CartesianChartHost(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp)
-                                .padding(end = padding4),
-                            animateIn = false,
-                            modelProducer = modelProducer,
-                            chart = rememberCartesianChart(
-                                rememberLineCartesianLayer(
-                                    pointSpacing = 0.1.dp,
-                                    rangeProvider = if (min.isFinite() && max.isFinite() && min != max) {
-                                        CartesianLayerRangeProvider.fixed(minY = min.toDouble(), maxY = max.toDouble())
-                                    } else {
-                                        CartesianLayerRangeProvider.auto()
-                                    }
-                                ),
-                                marker = rememberMarker(labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint),
-                                persistentMarkers = { extraStore ->
-                                    persistentMarkers.forEach { index, marker ->
-                                        marker at index
-                                    }
-                                },
-                                markerVisibilityListener = object : CartesianMarkerVisibilityListener {
-                                    override fun onHidden(marker: CartesianMarker) {
-                                        price = null
-                                    }
-
-                                    override fun onShown(
-                                        marker: CartesianMarker,
-                                        targets: List<CartesianMarker.Target>
-                                    ) {
-                                        val index = targets.first().x.toInt()
-                                        if (index > 0 && index < chartPoints.size) {
-                                            price = chartPoints[index]
-                                        }
-                                    }
-
-                                    override fun onUpdated(
-                                        marker: CartesianMarker,
-                                        targets: List<CartesianMarker.Target>
-                                    ) {
-                                        price = chartPoints[
-                                            min(
-                                                chartPoints.size - 1,
-                                                targets.first().x.toInt()
-                                            )
-                                        ]
-                                    }
-                                },
-                            ),
-                        )
                     }
+                    CartesianChartHost(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                            .padding(end = padding4),
+                        animateIn = false,
+                        modelProducer = modelProducer,
+                        chart = rememberCartesianChart(
+                            rememberLineCartesianLayer(
+                                pointSpacing = 0.1.dp,
+                                rangeProvider = if (min.isFinite() && max.isFinite() && min != max) {
+                                    CartesianLayerRangeProvider.fixed(minY = min.toDouble(), maxY = max.toDouble())
+                                } else {
+                                    CartesianLayerRangeProvider.auto()
+                                }
+                            ),
+                            marker = rememberMarker(labelPosition = DefaultCartesianMarker.LabelPosition.AroundPoint),
+                            persistentMarkers = { extraStore ->
+                                persistentMarkers.forEach { index, marker ->
+                                    marker at index
+                                }
+                            },
+                            markerVisibilityListener = object : CartesianMarkerVisibilityListener {
+                                override fun onHidden(marker: CartesianMarker) {
+                                    price = null
+                                }
+
+                                override fun onShown(
+                                    marker: CartesianMarker,
+                                    targets: List<CartesianMarker.Target>
+                                ) {
+                                    val index = targets.first().x.toInt()
+                                    if (index > 0 && index < chartPoints.size) {
+                                        price = chartPoints[index]
+                                    }
+                                }
+
+                                override fun onUpdated(
+                                    marker: CartesianMarker,
+                                    targets: List<CartesianMarker.Target>
+                                ) {
+                                    price = chartPoints[
+                                        min(
+                                            chartPoints.size - 1,
+                                            targets.first().x.toInt()
+                                        )
+                                    ]
+                                }
+                            },
+                        ),
+                    )
                 }
             }
-            Spacer16()
-            PeriodsPanel(state.period, viewModel::setPeriod)
         }
+        Spacer16()
+        PeriodsPanel(state.period, viewModel::setPeriod)
     }
 }
 

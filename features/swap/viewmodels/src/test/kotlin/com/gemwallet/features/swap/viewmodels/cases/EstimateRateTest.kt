@@ -1,6 +1,5 @@
 package com.gemwallet.features.swap.viewmodels.cases
 
-import com.gemwallet.features.swap.viewmodels.models.SwapRate
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType

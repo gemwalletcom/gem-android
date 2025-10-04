@@ -98,7 +98,8 @@ private fun List(
                     contentDescription = "Filter by networks",
                 )
             }
-        }
+        },
+        navigationBarPadding = false,
     ) {
         PullToRefreshBox(
             modifier = Modifier,
@@ -127,7 +128,6 @@ private fun List(
                             text = stringResource(id = R.string.activity_state_empty_title),
                             textAlign = TextAlign.Center,
                         )
-                        // TODO: Add empty description
                     }
                 }
                 else -> {

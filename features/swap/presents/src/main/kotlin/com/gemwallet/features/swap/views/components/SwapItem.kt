@@ -44,7 +44,9 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clickable
 import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.smallPadding
@@ -69,7 +71,12 @@ internal fun SwapItem(
         }
     }
 
-    Column(modifier = Modifier.padding(horizontal = paddingDefault).fillMaxWidth()) {
+    Column(
+        modifier = Modifier
+            .listItem(ListPosition.Single)
+            .padding(paddingDefault)
+            .fillMaxWidth()
+    ) {
         Text(text = stringResource(title), style = MaterialTheme.typography.labelMedium)
         Spacer8()
         Row(

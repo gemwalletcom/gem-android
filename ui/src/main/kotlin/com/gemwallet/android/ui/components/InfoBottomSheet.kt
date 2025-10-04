@@ -25,10 +25,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.theme.Spacer16
@@ -148,9 +148,10 @@ fun InfoBottomSheet(
     val scope = rememberCoroutineScope()
     ModalBottomSheet(
         sheetState = sheetState,
+        containerColor = MaterialTheme.colorScheme.background,
         onDismissRequest = {
             scope.launch { sheetState.hide() }.invokeOnCompletion { onClose.invoke() }
-        }
+        },
     ) {
         Column(
             modifier = Modifier .fillMaxWidth(),

@@ -12,6 +12,7 @@ import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.gemwallet.android.ui.theme.Spacer16
 import com.wallet.core.primitives.AssetId
@@ -47,6 +48,11 @@ internal fun LazyListScope.stakeActions(
             },
             title = { PropertyTitleText(R.string.transfer_stake_title) },
             data = { PropertyDataText("", badge = { DataBadgeChevron() }) },
+            listPosition = if (!hasRewards || !stakeChain.claimed()) {
+                ListPosition.Single
+            } else {
+                ListPosition.First
+            }
         )
     }
     item {
@@ -57,6 +63,7 @@ internal fun LazyListScope.stakeActions(
             modifier = Modifier.clickable(onClick = onConfirm),
             title = { PropertyTitleText(R.string.transfer_claim_rewards_title) },
             data = { PropertyDataText(rewardsAmount, badge = { DataBadgeChevron() }) },
+            listPosition = ListPosition.Last,
         )
     }
 }

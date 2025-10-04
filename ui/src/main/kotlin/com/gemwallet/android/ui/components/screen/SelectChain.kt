@@ -2,6 +2,7 @@ package com.gemwallet.android.ui.components.screen
 
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.Composable
@@ -11,7 +12,7 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.SearchBar
 import com.gemwallet.android.ui.components.list_item.ChainItem
-import com.gemwallet.android.ui.theme.defaultPadding
+import com.gemwallet.android.ui.models.ListPosition
 import com.wallet.core.primitives.Chain
 
 @Composable
@@ -28,15 +29,16 @@ fun SelectChain(
     ) {
         LazyColumn(modifier = Modifier, state = listState) {
             item {
-                SearchBar(query = chainFilter, modifier = Modifier.defaultPadding())
+                SearchBar(query = chainFilter)
             }
-            items(chains.size) {
-                val chain = chains[it]
+            val size = chains.size
+            itemsIndexed(chains) { index, item ->
                 ChainItem(
-                    title = chain.asset().name,
-                    icon = chain,
+                    title = item.asset().name,
+                    icon = item,
+                    listPosition = ListPosition.getPosition(index, size)
                 ) {
-                    onSelect(chain)
+                    onSelect(item)
                 }
             }
         }

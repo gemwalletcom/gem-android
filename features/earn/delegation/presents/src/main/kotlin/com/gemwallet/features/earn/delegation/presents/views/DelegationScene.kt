@@ -1,29 +1,26 @@
 package com.gemwallet.features.earn.delegation.presents.views
 
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.ext.redelegated
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.list_head.AmountListHead
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
-import com.gemwallet.android.ui.components.list_item.formatApr
+import com.gemwallet.android.ui.components.list_item.property.PropertyAssetBalanceItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
+import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.RewardsInfoUIModel
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.gemwallet.android.ui.models.actions.ConfirmTransactionAction
-import com.gemwallet.android.ui.theme.pendingColor
-import com.gemwallet.features.earn.delegation.viewmodels.DelegationSceneState
+import com.gemwallet.features.earn.delegation.models.DelegationActions
+import com.gemwallet.features.earn.delegation.models.DelegationBalances
+import com.gemwallet.features.earn.delegation.models.DelegationProperty
 import com.gemwallet.features.earn.delegation.viewmodels.DelegationViewModel
-import com.wallet.core.primitives.DelegationState
-import com.wallet.core.primitives.DelegationValidator
-import com.wallet.core.primitives.StakeChain
-import com.wallet.core.primitives.WalletType
 
 @Composable
 fun DelegationScene(
@@ -33,146 +30,54 @@ fun DelegationScene(
     viewModel: DelegationViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val delegationInfo by viewModel.delegationInfo.collectAsStateWithLifecycle()
+    val properties by viewModel.properties.collectAsStateWithLifecycle()
+    val balances by viewModel.balances.collectAsStateWithLifecycle()
+    val actions by viewModel.actions.collectAsStateWithLifecycle()
 
     if (uiState == null) {
         LoadingScene(title = stringResource(id = R.string.transfer_stake_title), onCancel = onCancel)
         return
     }
-    val state = uiState!!
     Scene(
         title = stringResource(R.string.transfer_stake_title),
         onClose = onCancel,
     ) {
         LazyColumn {
-            validatorNameItem(state.validator.name)
-            stakeApr(state.validator)
-            transactionStatus(state)
-            delegationState(state)
-            delegationBalances(state.stakeBalance, state.rewardsBalance)
-            delegationActions(
-                walletType = state.walletType,
-                stakeChain = state.stakeChain,
-                state = state.state,
-                onStake = { viewModel.onStake(onAmount) },
-                onUnstake = { viewModel.onUnstake(onAmount) },
-                onRedelegate = { viewModel.onRedelegate(onAmount) },
-                onWithdraw = { viewModel.onWithdraw(onConfirm) },
-            )
-        }
-    }
-}
-
-private fun LazyListScope.delegationBalances(stakeBalance: String, rewardsBalance: String) {
-    item {
-        SubheaderItem(title = stringResource(id = R.string.asset_balances))
-        PropertyItem(R.string.transfer_stake_title, stakeBalance)
-        PropertyItem(R.string.stake_rewards, rewardsBalance)
-    }
-}
-
-private fun LazyListScope.delegationState(state: DelegationSceneState) {
-    if ((state.state == DelegationState.Pending
-                || state.state == DelegationState.Activating
-                || state.state == DelegationState.Deactivating)
-        && state.availableIn.isNotEmpty()
-    ) {
-        item {
-            PropertyItem(
-                when (state.state) {
-                    DelegationState.Activating -> R.string.stake_active_in
-                    else -> R.string.stake_available_in
-                },
-                state.availableIn
-            )
-        }
-    }
-}
-
-private fun LazyListScope.transactionStatus(state: DelegationSceneState) {
-    item {
-        PropertyItem(
-            title = R.string.transaction_status,
-            data = when (state.state) {
-                DelegationState.Active -> when (state.validator.isActive) {
-                    true -> R.string.stake_active
-                    false -> R.string.stake_inactive
+            delegationInfo?.let { info ->
+                item {
+                    AmountListHead(
+                        amount = info.cryptoFormatted,
+                        equivalent = info.fiatFormatted,
+                        icon = info.iconUrl,
+                    )
                 }
-                DelegationState.Pending -> R.string.stake_pending
-                DelegationState.Undelegating -> R.string.transfer_unstake_title
-                DelegationState.Inactive -> R.string.stake_inactive
-                DelegationState.Activating -> R.string.stake_activating
-                DelegationState.Deactivating -> R.string.stake_deactivating
-                DelegationState.AwaitingWithdrawal -> R.string.stake_awaiting_withdrawal
-            },
-            dataColor = when (state.state) {
-                DelegationState.Active -> MaterialTheme.colorScheme.tertiary
-                DelegationState.Activating,
-                DelegationState.Deactivating,
-                DelegationState.Pending,
-                DelegationState.Undelegating -> pendingColor
-                DelegationState.AwaitingWithdrawal,
-                DelegationState.Inactive -> MaterialTheme.colorScheme.error
-            },
-        )
-    }
-}
-
-private fun LazyListScope.stakeApr(validator: DelegationValidator) {
-    item {
-        PropertyItem(
-            stringResource(R.string.stake_apr, ""),
-            validator.formatApr(),
-            dataColor = when (validator.isActive) {
-                true -> MaterialTheme.colorScheme.tertiary
-                false -> MaterialTheme.colorScheme.secondary
             }
-        )
-    }
-}
+            itemsPositioned(properties) { position, item ->
+                when (item) {
+                    is DelegationProperty.Apr -> StakeApr(item.data, position)
+                    is DelegationProperty.Name -> PropertyItem(R.string.stake_validator, item.data, listPosition = position)
+                    is DelegationProperty.State -> DelegationState(item.state,item.availableIn, position)
+                    is DelegationProperty.TransactionStatus -> TransactionStatus(item.state, item.isActive, position)
+                }
+            }
 
-private fun LazyListScope.delegationActions(
-    walletType: WalletType,
-    state: DelegationState,
-    stakeChain: StakeChain,
-    onStake: () -> Unit,
-    onUnstake: () -> Unit,
-    onRedelegate: () -> Unit,
-    onWithdraw: () -> Unit,
-) {
-    if (walletType == WalletType.view) {
-        return
-    }
-    item {
-        state.takeIf { it == DelegationState.Active }?.let {
-            DelegationActiveAction(stakeChain, onStake, onUnstake, onRedelegate)
+            itemsPositioned(balances) { position, item ->
+                when (item) {
+                    is RewardsInfoUIModel -> PropertyAssetBalanceItem(item, title = stringResource(R.string.stake_rewards), listPosition = position)
+                    is DelegationBalances.Stake -> PropertyItem(R.string.transfer_stake_title, item.data, listPosition = position)
+                }
+            }
+
+            item { SubheaderItem(title = stringResource(id = R.string.common_manage)) }
+            itemsPositioned(actions) { position, item ->
+                when (item) {
+                    DelegationActions.RedelegateAction -> PropertyItem(R.string.transfer_redelegate_title, onClick = { viewModel.onRedelegate(onAmount) }, listPosition = position)
+                    DelegationActions.StakeAction -> PropertyItem(R.string.transfer_stake_title, onClick = { viewModel.onStake(onAmount) }, listPosition = position)
+                    DelegationActions.UnstakeAction -> PropertyItem(R.string.transfer_unstake_title, onClick = { viewModel.onUnstake(onAmount) }, listPosition = position)
+                    DelegationActions.WithdrawalAction -> PropertyItem(R.string.transfer_withdraw_title, onClick = { viewModel.onWithdraw(onConfirm) }, listPosition = position)
+                }
+            }
         }
-        state.takeIf { it == DelegationState.AwaitingWithdrawal }?.let {
-            DelegationWithdrawAction(onWithdraw)
-        }
     }
-}
-
-@Composable
-private fun DelegationActiveAction(
-    stakeChain: StakeChain,
-    onStake: () -> Unit,
-    onUnstake: () -> Unit,
-    onRedelegate: () -> Unit,
-) {
-    SubheaderItem(title = stringResource(id = R.string.common_manage))
-    PropertyItem(R.string.transfer_stake_title, onClick = onStake)
-    PropertyItem(R.string.transfer_unstake_title, onClick = onUnstake)
-    if (stakeChain.redelegated()) {
-        PropertyItem(R.string.transfer_redelegate_title, onClick = onRedelegate)
-    }
-}
-
-@Composable
-private fun DelegationWithdrawAction(onWithdraw: () -> Unit) {
-    SubheaderItem(title = stringResource(id = R.string.common_manage))
-    PropertyItem(R.string.transfer_withdraw_title, onClick = onWithdraw)
-}
-
-private fun LazyListScope.validatorNameItem(name: String) {
-    item { PropertyItem(R.string.stake_validator, name) }
 }

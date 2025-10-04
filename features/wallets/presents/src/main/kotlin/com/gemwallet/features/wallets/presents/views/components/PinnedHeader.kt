@@ -1,6 +1,5 @@
 package com.gemwallet.features.wallets.presents.views.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -41,8 +40,7 @@ internal fun LazyListScope.pinnedHeader() {
             Spacer4()
             Text(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = MaterialTheme.colorScheme.background),
+                    .fillMaxWidth(),
                 text = stringResource(R.string.common_pinned),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.secondary,

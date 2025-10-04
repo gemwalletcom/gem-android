@@ -7,7 +7,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -22,7 +21,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.update_app.presents.InAppUpdateBanner
@@ -59,7 +57,8 @@ fun AssetsScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { AssetsTopBar(walletInfo, onShowWallets, onShowAssetManage) }
+        topBar = { AssetsTopBar(walletInfo, onShowWallets, onShowAssetManage) },
+        containerColor = MaterialTheme.colorScheme.surface,
     ) {
         val pullToRefreshState = rememberPullToRefreshState()
         PullToRefreshBox(
@@ -105,10 +104,9 @@ fun AssetsScreen(
                         },
                         false
                     )
-                    HorizontalDivider(thickness = 0.dp)
                 }
                 assets(
-                    assets = pinnedAssets,
+                    items = pinnedAssets,
                     longPressState = longPressedAsset,
                     isPinned = true,
                     onAssetClick = onAssetClick,
@@ -116,7 +114,7 @@ fun AssetsScreen(
                     onTogglePin = viewModel::togglePin,
                 )
                 assets(
-                    assets = unpinnedAssets,
+                    items = unpinnedAssets,
                     longPressState = longPressedAsset,
                     isPinned = false,
                     onAssetClick = onAssetClick,

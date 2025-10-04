@@ -5,21 +5,17 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideIn
 import androidx.compose.animation.slideOut
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -36,11 +32,13 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.NodeStatus
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.list_item.ListItem
+import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
+import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.padding8
-import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.features.settings.networks.viewmodels.models.NetworksUIState
 import com.wallet.core.primitives.Node
 
@@ -89,23 +87,24 @@ fun NetworkScene(
                         title = stringResource(id = R.string.settings_networks_source),
                     )
                 }
-                items(nodes) { node: Node ->
+                val size = nodes.size
+                itemsIndexed(nodes) { index, node: Node ->
                     NodeItem(
                         chain = state.chain!!,
                         node = node,
+                        listPosition = ListPosition.getPosition(index, size),
                         selected = state.currentNode?.url == node.url,
                         nodeStatus = nodeStates.firstOrNull { it?.url == node.url },
                         onSelect = onSelectNode,
                     )
                 }
                 item {
-                    Spacer16()
                     SubheaderItem(
                         title = stringResource(id = R.string.settings_networks_explorer),
                     )
                 }
-                items(state.blockExplorers) {
-                    BlockExplorerItem(state.currentExplorer, it, onSelectBlockExplorer)
+                itemsPositioned(state.blockExplorers) { position, item ->
+                    BlockExplorerItem(state.currentExplorer, item, position, onSelectBlockExplorer)
                 }
             }
         }
@@ -129,32 +128,24 @@ fun NetworkScene(
 private fun BlockExplorerItem(
     current: String?,
     explorerName: String,
+    listPosition: ListPosition,
     onSelect: (String) -> Unit,
 ) {
-    Box(
-        modifier = Modifier
-            .clickable { onSelect(explorerName) }
-            .padding(start = paddingDefault, end = 0.dp)
-    ) {
-        Row(modifier = Modifier.padding(vertical = paddingDefault).padding(end = paddingDefault)) {
-            Text(
-                modifier = Modifier.weight(1f),
-                text = explorerName,
-                maxLines = 1,
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.bodyLarge,
-            )
-            if (explorerName == current) {
-                Spacer16()
+    ListItem(
+        modifier = Modifier.clickable { onSelect(explorerName) },
+        title = {
+            ListItemTitleText(text = explorerName)
+        },
+        listPosition = listPosition,
+        trailing = if (explorerName == current) {
+            @Composable {
                 Icon(
-                    modifier = Modifier
-                        .padding(end = padding8)
-                        .size(20.dp),
-                    imageVector = Icons.Default.Done,
-                    contentDescription = ""
+                    modifier = Modifier.Companion.padding(end = padding8).size(20.dp),
+                    imageVector = Icons.Default.CheckCircle,
+                    contentDescription = "",
+                    tint = MaterialTheme.colorScheme.primary,
                 )
             }
-        }
-        HorizontalDivider(Modifier.align(Alignment.BottomStart), thickness = 0.4.dp)
-    }
+        } else null
+    )
 }

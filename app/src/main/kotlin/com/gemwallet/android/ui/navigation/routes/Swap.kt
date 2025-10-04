@@ -1,6 +1,5 @@
 package com.gemwallet.android.ui.navigation.routes
 
-import android.util.Log
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable

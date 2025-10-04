@@ -1,7 +1,5 @@
 package com.gemwallet.android.ui.navigation
 
-import androidx.compose.foundation.background
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -19,9 +17,6 @@ import androidx.navigation.navArgument
 import androidx.navigation.navOptions
 import androidx.navigation.navigation
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.ui.navigation.routes.bridgesScreen
-import com.gemwallet.android.ui.navigation.routes.navigateToBridgeScreen
-import com.gemwallet.android.ui.navigation.routes.navigateToBridgesScreen
 import com.gemwallet.android.features.create_wallet.navigation.assetsManageScreen
 import com.gemwallet.android.features.create_wallet.navigation.createWalletScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsManageScreen
@@ -48,6 +43,7 @@ import com.gemwallet.android.ui.navigation.routes.amount
 import com.gemwallet.android.ui.navigation.routes.assetChartScreen
 import com.gemwallet.android.ui.navigation.routes.assetScreen
 import com.gemwallet.android.ui.navigation.routes.assetsScreen
+import com.gemwallet.android.ui.navigation.routes.bridgesScreen
 import com.gemwallet.android.ui.navigation.routes.confirm
 import com.gemwallet.android.ui.navigation.routes.fiatScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAboutUsScreen
@@ -55,6 +51,8 @@ import com.gemwallet.android.ui.navigation.routes.navigateToAddAssetScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAmountScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAssetChartScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAssetScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToBridgeScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToBridgesScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToBuyScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToConfirmScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToCurrenciesScreen
@@ -101,7 +99,7 @@ fun WalletNavGraph(
 
     NavHost(
         modifier = modifier
-            .background(MaterialTheme.colorScheme.background)
+//            .background(MaterialTheme.colorScheme.background)
             .semantics { testTagsAsResourceId = true },
         navController = navController,
         startDestination = startDestination,

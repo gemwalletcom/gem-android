@@ -14,6 +14,7 @@ import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer2
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Asset
@@ -31,10 +32,12 @@ fun DelegationItem(
     asset: Asset,
     delegation: Delegation,
     completedAt: String,
+    listPosition: ListPosition,
     onClick: () -> Unit
 ) {
     ListItem(
         modifier = Modifier.clickable(onClick = onClick),
+        listPosition = listPosition,
         leading = {
             IconWithBadge(
                 icon = "https://assets.gemwallet.com/blockchains/${delegation.validator.chain.string}/validators/${delegation.validator.id}/logo.png",

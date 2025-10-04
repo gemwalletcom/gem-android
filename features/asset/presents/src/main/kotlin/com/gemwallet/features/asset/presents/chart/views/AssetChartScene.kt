@@ -5,7 +5,7 @@ import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -29,9 +29,11 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.theme.trailingIconMedium
 import com.gemwallet.features.asset.viewmodels.chart.models.AssetMarketUIModel
+import com.gemwallet.features.asset.viewmodels.chart.models.MarketInfoUIModel
 import com.gemwallet.features.asset.viewmodels.chart.viewmodels.AssetChartViewModel
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetMarket
@@ -57,32 +59,6 @@ fun AssetChartScene(
         onClose = onCancel,
     ) {
         LazyColumn {
-//            item {
-//                LineChart(
-//                    modifier = Modifier.fillMaxWidth().height(200.dp),
-//                    labelHelperProperties = LabelHelperProperties(enabled = false),
-//                    gridProperties = GridProperties(enabled = false),
-//                    indicatorProperties = HorizontalIndicatorProperties(enabled = false),
-//                    zeroLineProperties = ZeroLineProperties(enabled = false),
-//                    dividerProperties = DividerProperties(enabled = false),
-//                    data = remember {
-//                        listOf(
-//                            Line(
-//                                label = "price",
-//                                values = listOf(28.0, 41.0, 5.0, 10.0, 35.0),
-//                                color = SolidColor(Color(0xFF23af92)),
-////                                firstGradientFillColor = Color(0xFF2BC0A1).copy(alpha = .5f),
-////                                secondGradientFillColor = Color.Transparent,
-//                                strokeAnimationSpec = tween(500, easing = EaseInOutCubic),
-//                                drawStyle = DrawStyle.Stroke(width = 2.dp),
-//                            )
-//                        )
-//                    },
-//                    minValue = 5.0,
-//                    maxValue = 41.0,
-//                    animationMode = AnimationMode.Together(delayBuilder = { it * 500L }),
-//                )
-//            }
             item { Chart() }
             assetMarket(marketModel.currency, marketModel.asset, marketModel.marketInfo, marketModel.explorerName)
             links(marketModel.assetLinks)
@@ -93,60 +69,95 @@ fun AssetChartScene(
 private fun LazyListScope.links(links: List<AssetMarketUIModel.Link>) {
     if (links.isEmpty()) return
     item { SubheaderItem(title = "LINKS") }
-    items(links) {
+    itemsIndexed(links) { index, item ->
         val uriHandler = LocalUriHandler.current
         val context = LocalContext.current
         PropertyItem(
-            modifier = Modifier.clickable { uriHandler.open(context, it.url) },
-            title = { PropertyTitleText(it.label, trailing = { AsyncImage(it.icon, trailingIconMedium) }) },
-            data = { PropertyDataText("", badge = { DataBadgeChevron() }) }
+            modifier = Modifier.clickable { uriHandler.open(context, item.url) },
+            title = { PropertyTitleText(item.label, trailing = { AsyncImage(item.icon, trailingIconMedium) }) },
+            data = { PropertyDataText("", badge = { DataBadgeChevron() }) },
+            listPosition = ListPosition.getPosition(index, links.size)
         )
     }
 }
 
 private fun LazyListScope.assetMarket(currency: Currency, asset: Asset, marketInfo: AssetMarket?, explorerName: String) {
-    marketInfo?.marketCap?.let { cap ->
-        item {
-            PropertyItem(
+    val items = marketInfo?.let {
+        mutableListOf<MarketInfoUIModel>().apply {
+            it.marketCap?.let {
+                add(
+                    MarketInfoUIModel(
+                        type = MarketInfoUIModel.MarketInfoTypeUIModel.MarketCap,
+                        value = currency.compactFormatter(it),
+                        badge = marketInfo.marketCapRank?.takeIf { it > 0 }
+                            .let { "#${marketInfo.marketCapRank}" }
+                    )
+                )
+            }
+            it.circulatingSupply?.let {
+                add(
+                    MarketInfoUIModel(
+                        type = MarketInfoUIModel.MarketInfoTypeUIModel.CirculatingSupply,
+                        value = currency.compactFormatter(it),
+                    )
+                )
+            }
+            it.totalSupply?.let {
+                add(
+                    MarketInfoUIModel(
+                        type = MarketInfoUIModel.MarketInfoTypeUIModel.TotalSupply,
+                        value = currency.compactFormatter(it),
+                    )
+                )
+            }
+            asset.id.tokenId?.let {
+                add(
+                    MarketInfoUIModel(
+                        type = MarketInfoUIModel.MarketInfoTypeUIModel.Contract,
+                        value = it,
+                    )
+                )
+            }
+        }
+    } ?: emptyList()
+    itemsIndexed(items) { index, item ->
+        val position = ListPosition.getPosition(index, items.size)
+        when (item.type) {
+            MarketInfoUIModel.MarketInfoTypeUIModel.MarketCap -> PropertyItem(
                 title = {
                     PropertyTitleText(
-                        text = R.string.asset_market_cap,
-                        badge = marketInfo.marketCapRank?.takeIf { it > 0 }
-                            .let { { Badge("#${marketInfo.marketCapRank}") } }
+                        text = item.type.label,
+                        badge = item.badge?.let { { Badge(it) } }
                     )
                 },
-                data = { PropertyDataText(currency.compactFormatter(cap)) }
+                data = { PropertyDataText(item.value) },
+                listPosition = position
             )
-        }
-    }
-    marketInfo?.circulatingSupply?.let {
-        item { PropertyItem(R.string.asset_circulating_supply, asset.compactFormatter(it)) }
-    }
-    marketInfo?.totalSupply?.let {
-        item { PropertyItem(R.string.asset_total_supply, asset.compactFormatter(it)) }
-    }
-    asset.id.tokenId?.let {
-        item {
-            val context = LocalContext.current
-            val clipboardManager = LocalClipboard.current.nativeClipboard
-            val uriHandler = LocalUriHandler.current
-            PropertyItem(
-                modifier = Modifier.combinedClickable(
-                    onLongClick = {
-                        clipboardManager.setPlainText(context, it)
+            MarketInfoUIModel.MarketInfoTypeUIModel.CirculatingSupply -> PropertyItem(item.type.label, item.value, listPosition = position)
+            MarketInfoUIModel.MarketInfoTypeUIModel.TotalSupply -> PropertyItem(item.type.label, item.value, listPosition = position)
+            MarketInfoUIModel.MarketInfoTypeUIModel.Contract -> {
+                val context = LocalContext.current
+                val clipboardManager = LocalClipboard.current.nativeClipboard
+                val uriHandler = LocalUriHandler.current
+                PropertyItem(
+                    modifier = Modifier.combinedClickable(
+                        onLongClick = {
+                            clipboardManager.setPlainText(context, item.value)
+                        },
+                        onClick = {
+                            uriHandler.open(context, Explorer(asset.chain.string).getTokenUrl(explorerName, item.value) ?: return@combinedClickable)
+                        }
+                    ),
+                    title = { PropertyTitleText(R.string.asset_contract) },
+                    data = {
+                        PropertyDataText(
+                            modifier = Modifier.weight(1f).padding(top = 0.dp, bottom = 2.dp),
+                            text = item.value,
+                        )
                     },
-                    onClick = {
-                        uriHandler.open(context, Explorer(asset.chain.string).getTokenUrl(explorerName, it) ?: return@combinedClickable)
-                    }
-                ),
-                title = { PropertyTitleText(R.string.asset_contract) },
-                data = {
-                    PropertyDataText(
-                        modifier = Modifier.weight(1f).padding(top = 0.dp, bottom = 2.dp),
-                        text = it,
-                    )
-                }
-            )
+                    listPosition = position
+                )
+            }
         }
     }
 }

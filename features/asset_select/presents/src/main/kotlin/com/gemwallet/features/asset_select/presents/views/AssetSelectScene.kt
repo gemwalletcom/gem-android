@@ -4,13 +4,11 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -45,9 +43,8 @@ import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.list_item.PinnedAssetsHeaderItem
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.defaultPadding
-import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
@@ -117,8 +114,7 @@ fun AssetSelectScene(
         },
         onClose = onCancel
     ) {
-        SearchBar(modifier = Modifier.padding(horizontal = paddingDefault), query = query)
-        Spacer16()
+        SearchBar(query = query)
         LazyColumn(state = listState) {
             assets(pinned, true, onSelect, support, titleBadge, itemTrailing)
             assets(unpinned, false, onSelect, support, titleBadge, itemTrailing)
@@ -153,22 +149,18 @@ private fun LazyListScope.assets(
     if (isPinned) {
         item { PinnedAssetsHeaderItem() }
     }
-
-    items(items.size, key = { items[it].asset.id.toIdentifier() }) { index ->
-        val item = items[index]
+    val size = items.size
+    itemsIndexed(items, key = { index, item -> item.asset.id.toIdentifier() }) { index, item ->
         AssetListItem(
             modifier = Modifier
                 .heightIn(74.dp)
                 .clickable { onSelect?.invoke(item.asset.id) },
-            uiModel = item,
+            listPosition = ListPosition.getPosition(index, size),
+            asset = item,
             support = support?.invoke(item),
             badge = titleBadge.invoke(item),
             trailing = { itemTrailing?.invoke(item) },
         )
-    }
-
-    if (isPinned) {
-        item { Spacer(modifier = Modifier.height(32.dp)) }
     }
 }
 

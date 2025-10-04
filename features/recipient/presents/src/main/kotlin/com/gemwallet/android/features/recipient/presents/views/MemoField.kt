@@ -2,6 +2,7 @@ package com.gemwallet.android.features.recipient.presents.views
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -13,6 +14,10 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.gemwallet.android.features.recipient.viewmodel.models.RecipientError
 import com.gemwallet.android.ui.components.clipboard.getPlainText
+import com.gemwallet.android.ui.components.list_item.listItem
+import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.android.ui.theme.outlinedTextFieldColors
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.space4
 
 @Composable
@@ -27,10 +32,13 @@ fun MemoTextField(
     val clipboardManager = LocalClipboard.current.nativeClipboard
     OutlinedTextField(
         modifier = Modifier
+            .listItem(ListPosition.Single)
             .fillMaxWidth()
+            .padding(vertical = paddingDefault)
             .onFocusChanged {
                 if (it.hasFocus) keyboardController?.show() else keyboardController?.hide()
             },
+        colors = outlinedTextFieldColors(),
         value = value,
         singleLine = true,
         label = { Text(label) },

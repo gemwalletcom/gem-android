@@ -3,7 +3,7 @@ package com.gemwallet.features.transfer_amount.presents.views
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -13,6 +13,7 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.ValidatorItem
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.features.transfer_amount.viewmodels.models.ValidatorsUIState
 import com.wallet.core.primitives.Chain
@@ -34,10 +35,12 @@ fun ValidatorsScene(
                 item {
                     SubheaderItem(title = stringResource(id = R.string.common_recommended))
                 }
-                items(uiState.recomended, key = { "recomended-${it.id}" }) {
+                val recommendedSize = uiState.recomended.size
+                itemsIndexed(uiState.recomended, key = { index, item -> "recomended-${item.id}" }) { index, item ->
                     ValidatorItem(
-                        data = it,
-                        isSelected = selectedValidatorId == it.id,
+                        data = item,
+                        listPosition = ListPosition.getPosition(index, recommendedSize),
+                        isSelected = selectedValidatorId == item.id,
                         onClick = onSelect
                     )
                 }
@@ -49,8 +52,14 @@ fun ValidatorsScene(
                 }
                 SubheaderItem(title = stringResource(id = R.string.stake_active))
             }
-            items(uiState.validators, key = { it.id }) {
-                ValidatorItem(data = it, isSelected = selectedValidatorId == it.id, onClick = onSelect)
+            val validatorsSize = uiState.validators.size
+            itemsIndexed(uiState.validators, key = { index, item -> item.id }) { index, item ->
+                ValidatorItem(
+                    data = item,
+                    listPosition = ListPosition.getPosition(index, validatorsSize),
+                    isSelected = selectedValidatorId == item.id,
+                    onClick = onSelect
+                )
             }
         }
     }

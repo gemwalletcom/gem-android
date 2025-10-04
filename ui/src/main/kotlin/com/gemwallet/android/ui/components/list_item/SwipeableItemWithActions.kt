@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,6 +29,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.unit.IntOffset
+import com.gemwallet.android.ui.models.ListPosition
 import kotlinx.coroutines.launch
 import kotlin.math.roundToInt
 
@@ -39,10 +39,12 @@ fun SwipeableItemWithActions(
     isRevealed: Boolean,
     actions: @Composable RowScope.() -> Unit,
     modifier: Modifier = Modifier,
+    listPosition: ListPosition = ListPosition.Middle,
     onExpanded: () -> Unit = {},
     onCollapsed: () -> Unit = {},
-    content: @Composable () -> Unit
+    content: @Composable (ListPosition) -> Unit
 ) {
+
     var contextMenuWidth by remember { mutableFloatStateOf(0f) }
     val offset = remember { Animatable(initialValue = 0f) }
     val scope = rememberCoroutineScope()
@@ -56,13 +58,12 @@ fun SwipeableItemWithActions(
     }
 
     Box(modifier = modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
-        Box(modifier = Modifier.fillMaxWidth()) {
+        Box(modifier = Modifier.fillMaxWidth().listItem(listPosition, Color.Transparent)) {
             Row(
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
                     .onSizeChanged { contextMenuWidth = -it.width.toFloat() },
                 verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.End,
             ) {
                 actions()
             }
@@ -99,9 +100,8 @@ fun SwipeableItemWithActions(
                         }
                     )
                 },
-            color = MaterialTheme.colorScheme.background,
         ) {
-            content()
+            content(listPosition)
         }
     }
 }
@@ -117,12 +117,14 @@ fun ActionIcon(
 ) {
     IconButton(
         onClick = onClick,
-        modifier = modifier.fillMaxHeight().background(backgroundColor)
+        modifier = modifier
+            .fillMaxHeight()
+            .background(Color.Transparent)
     ) {
         Icon(
             imageVector = icon,
             contentDescription = contentDescription,
-            tint = tint
+            tint = backgroundColor,
         )
     }
 }

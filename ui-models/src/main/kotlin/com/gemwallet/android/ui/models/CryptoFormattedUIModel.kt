@@ -14,6 +14,8 @@ interface CryptoFormattedUIModel : CryptoAmountUIModel, AssetUIModel {
         )
 
     val fraction: Int
+        get() = 2
 
     val maxFraction: Int
+        get() = 4
 }

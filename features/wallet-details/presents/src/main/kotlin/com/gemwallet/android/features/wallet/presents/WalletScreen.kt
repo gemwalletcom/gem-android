@@ -36,7 +36,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.wallet.viewmodels.WalletUIState
 import com.gemwallet.android.features.wallet.viewmodels.WalletViewModel
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
@@ -44,6 +43,7 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.FatalStateScene
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.defaultPadding
 import com.gemwallet.android.ui.theme.padding8
@@ -116,23 +116,21 @@ private fun Wallet(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Container {
-                OutlinedTextField(
-                    modifier = Modifier
-                        .defaultPadding()
-                        .fillMaxWidth(),
-                    label = { Text(text = stringResource(id = R.string.wallet_name)) },
-                    value = walletName,
-                    onValueChange = {
-                        onWalletName(it)
-                        walletName = it
-                    },
-                    singleLine = true,
-                    colors = OutlinedTextFieldDefaults.colors(
-                        unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                    )
+            OutlinedTextField(
+                modifier = Modifier
+                    .defaultPadding()
+                    .fillMaxWidth(),
+                label = { Text(text = stringResource(id = R.string.wallet_name)) },
+                value = walletName,
+                onValueChange = {
+                    onWalletName(it)
+                    walletName = it
+                },
+                singleLine = true,
+                colors = OutlinedTextFieldDefaults.colors(
+                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
                 )
-            }
+            )
             ShowSecretData(wallet, onAuthRequest, onPhraseShow)
             WalletAddress(wallet)
 
@@ -179,6 +177,7 @@ private fun WalletAddress(
         ),
         title = { PropertyTitleText(R.string.common_address) },
         data = { PropertyDataText(modifier = Modifier.weight(1f), text = account.address) },
+        listPosition = ListPosition.Single,
     )
     Box(modifier = Modifier.fillMaxWidth()) {
         DropdownMenu(
@@ -222,6 +221,7 @@ private fun ShowSecretData(
                 )
             )
         },
-        data = { PropertyDataText("", badge = { DataBadgeChevron() })}
+        data = { PropertyDataText("", badge = { DataBadgeChevron() })},
+        listPosition = ListPosition.Single,
     )
 }

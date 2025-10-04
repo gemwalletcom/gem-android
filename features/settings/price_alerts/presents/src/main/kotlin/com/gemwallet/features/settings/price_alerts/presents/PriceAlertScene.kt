@@ -1,14 +1,12 @@
 package com.gemwallet.features.settings.price_alerts.presents
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
@@ -41,11 +39,12 @@ import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.list_item.PriceInfo
 import com.gemwallet.android.ui.components.list_item.SwipeableItemWithActions
-import com.gemwallet.android.ui.components.list_item.SwitchRow
+import com.gemwallet.android.ui.components.list_item.SwitchProperty
+import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
-import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingLarge
 import com.wallet.core.primitives.AssetId
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,7 +60,7 @@ fun PriceAlertScene(
     onRefresh: () -> Unit,
     onCancel: () -> Unit,
 ) {
-    var reveableAssetId = remember { mutableStateOf<AssetId?>(null) }
+    val reveableAssetId = remember { mutableStateOf<AssetId?>(null) }
     val pullToRefreshState = rememberPullToRefreshState()
     Scene(
         title = stringResource(R.string.settings_price_alerts_title),
@@ -89,9 +88,13 @@ fun PriceAlertScene(
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 item {
-                    SwitchRow(stringResource(R.string.settings_enable_value, ""), enabled, onEnablePriceAlerts)
+                    SwitchProperty(
+                        text = stringResource(R.string.settings_enable_value, ""),
+                        checked = enabled,
+                        onCheckedChange = onEnablePriceAlerts
+                    )
                     Text(
-                        modifier = Modifier.padding(horizontal = paddingDefault),
+                        modifier = Modifier.padding(horizontal = paddingLarge),
                         text = stringResource(R.string.price_alerts_get_notified_explain_message),
                         style = MaterialTheme.typography.bodySmall,
                     )
@@ -131,7 +134,7 @@ private fun LazyListScope.assets(
     onChart: (AssetId) -> Unit,
     onExclude: (AssetId) -> Unit,
 ) {
-    items(assets, key = { it.asset.id.toIdentifier()}) { item ->
+    itemsPositioned(assets, key = { index, item -> item.asset.id.toIdentifier()}) { position, item ->
         var minActionWidth by remember { mutableStateOf(0.dp) }
         val density = LocalDensity.current
 
@@ -148,25 +151,24 @@ private fun LazyListScope.assets(
             modifier = Modifier.fillMaxWidth(),
             onExpanded = { reveableAssetId.value = item.asset.id },
             onCollapsed = { reveableAssetId.value = null },
-        ) {
-            Box(
+            listPosition = position,
+        ) { position ->
+            AssetListItem(
                 modifier = Modifier
                     .clickable(onClick = { onChart(item.asset.id) })
                     .onSizeChanged {
                         minActionWidth = with (density) { it.height.toDp() }
-                    }
-            ) {
-                AssetListItem(
-                    uiModel = item,
-                    support = {
-                        PriceInfo(
-                            price = item.price,
-                            style = MaterialTheme.typography.bodyMedium,
-                            internalPadding = 4.dp
-                        )
-                    }
-                )
-            }
+                    },
+                asset = item,
+                listPosition = position,
+                support = {
+                    PriceInfo(
+                        price = item.price,
+                        style = MaterialTheme.typography.bodyMedium,
+                        internalPadding = 4.dp
+                    )
+                }
+            )
         }
     }
 }

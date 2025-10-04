@@ -3,7 +3,6 @@ package com.gemwallet.android.features.recipient.presents.views
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.runtime.MutableState
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.features.recipient.viewmodel.models.QrScanField
@@ -11,7 +10,6 @@ import com.gemwallet.android.features.recipient.viewmodel.models.RecipientError
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.theme.Spacer4
-import com.gemwallet.android.ui.theme.defaultPadding
 import com.wallet.core.primitives.NameRecord
 
 fun LazyListScope.destinationView(
@@ -25,7 +23,7 @@ fun LazyListScope.destinationView(
     onQrScan: (QrScanField) -> Unit,
 ) {
     item {
-        Column(modifier = Modifier.defaultPadding()) {
+        Column {
             AddressChainField(
                 chain = asset.asset.chain,
                 value = addressState.value,

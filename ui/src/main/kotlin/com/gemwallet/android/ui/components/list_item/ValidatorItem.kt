@@ -17,6 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.PriceUIState
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.space4
@@ -27,12 +28,13 @@ import com.wallet.core.primitives.DelegationValidator
 @Composable
 fun ValidatorItem(
     data: DelegationValidator,
+    listPosition: ListPosition,
     isSelected: Boolean = false,
-    inContainer: Boolean = false,
     onClick: ((String) -> Unit)?
 ) {
     ValidatorItem(
-        data,
+        data = data,
+        listPosition = listPosition,
         trailingIcon = {
             if (isSelected) {
                 Spacer(modifier = Modifier.size(space4))
@@ -42,16 +44,15 @@ fun ValidatorItem(
                 )
             }
         },
-        inContainer,
-        onClick
+        onClick = onClick
     )
 }
 
 @Composable
 fun ValidatorItem(
     data: DelegationValidator,
+    listPosition: ListPosition,
     trailingIcon: @Composable () -> Unit,
-    inContainer: Boolean = false,
     onClick: ((String) -> Unit)?
 ) {
     ListItem(
@@ -62,8 +63,8 @@ fun ValidatorItem(
                 placeholder = data.name.firstOrNull()?.toString() ?: data.id.firstOrNull()?.toString() ?: "V",
             )
         },
-        dividerShowed = !inContainer,
         title = { ListItemTitleText(data.name) },
+        listPosition = listPosition,
         trailing = {
             Row (verticalAlignment = Alignment.CenterVertically) {
                 ListItemSupportText(R.string.stake_apr, " ${data.formatApr()}")
@@ -113,6 +114,7 @@ fun PreviewValidatorItem() {
                 apr = 9.10,
             ),
             isSelected = false,
+            listPosition = ListPosition.Middle,
             onClick = {},
         )
     }
@@ -131,6 +133,7 @@ fun PreviewValidatorItemSelected() {
                 commission = 0.5,
                 apr = 9.10,
             ),
+            listPosition = ListPosition.Single,
             isSelected = true,
             onClick = {},
         )

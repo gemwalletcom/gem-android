@@ -1,9 +1,9 @@
 package com.gemwallet.android.ui.components.list_item
 
 import androidx.compose.runtime.Stable
-import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.domains.asset.getSupportIconUrl
+import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.models.CryptoFormattedUIModel
 import com.gemwallet.android.ui.models.FiatFormattedUIModel
 import com.gemwallet.android.ui.models.PriceUIModel
@@ -23,13 +23,12 @@ interface AssetItemUIModel : CryptoFormattedUIModel, FiatFormattedUIModel {
         get() = asset.getSupportIconUrl()
     val price: PriceUIModel
     val owner: String?
-    val isZeroAmount: Boolean
     val position: Int
     val metadata: AssetMetaData?
 }
 
 @Stable
-class AssetInfoUIModel(
+open class AssetInfoUIModel(
     val assetInfo: AssetInfo,
     val hideBalances: Boolean = false,
     override val fraction: Int = 2,
@@ -65,8 +64,6 @@ class AssetInfoUIModel(
         get() = assetInfo.price?.currency ?: Currency.USD
 
     override val owner: String? by lazy { assetInfo.owner?.address }
-
-    override val isZeroAmount: Boolean by lazy { cryptoAmount == 0.0 }
 
     override val position: Int by lazy { assetInfo.position }
 

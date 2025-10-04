@@ -12,11 +12,12 @@ import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
-import com.gemwallet.features.swap.viewmodels.models.SwapRate
+import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.features.swap.viewmodels.models.SwapProperty
 
 @Composable
-fun SwapDetailItem(
-    rate: SwapRate?,
+fun SwapDetailPropertyItem(
+    rate: SwapProperty.Rate?,
     onClick: () -> Unit,
 ) {
     var direction by remember { mutableStateOf(false) }
@@ -34,6 +35,7 @@ fun SwapDetailItem(
                 },
                 badge = { DataBadgeChevron() }
             )
-        }
+        },
+        listPosition = ListPosition.Single,
     )
 }

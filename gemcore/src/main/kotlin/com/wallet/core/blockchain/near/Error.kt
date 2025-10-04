@@ -5,7 +5,6 @@
 package com.wallet.core.blockchain.near
 
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.SerialName
 
 @Serializable
 data class NearError (

@@ -58,6 +58,7 @@ fun NftListScene(
 
     Scene(
         title = stringResource(R.string.nft_collections),
+        navigationBarPadding = false,
         onClose = if (cancelAction == null) null else { { cancelAction() } } // TODO: Replace to action in scene
     ) {
         val isRefreshing = isLoading && !items.isEmpty()

@@ -24,13 +24,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.domains.asset.getFiatProviderIcon
 import com.gemwallet.android.model.hasAvailable
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.Container
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.buttons.RandomGradientButton
 import com.gemwallet.android.ui.components.fields.AmountField
-import com.gemwallet.android.domains.asset.getFiatProviderIcon
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
@@ -39,6 +38,7 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.theme.Spacer16
@@ -71,7 +71,7 @@ fun BuyScene(
     val isShowProviders = remember { mutableStateOf(false) }
 
     Scene(
-        title = {
+        titleContent = {
             if (asset.assetInfo.metadata?.isSellEnabled == true && asset.assetInfo.balance.balance.hasAvailable()) {
                 SingleChoiceSegmentedButtonRow {
                     FiatQuoteType.entries.forEachIndexed { index, entry ->
@@ -129,33 +129,31 @@ fun BuyScene(
             textStyle = MaterialTheme.typography.displayMedium,
             onNext = { },
         )
-        Container {
-            AssetListItem(
-                modifier = Modifier.Companion.height(74.dp),
-                uiModel = asset,
-                support = { ListItemSupportText(asset.cryptoFormatted) },
-                dividerShowed = false,
-                trailing = {
-                    Row(verticalAlignment = Alignment.Companion.CenterVertically) {
-                        suggestedAmounts.forEach { suggestion ->
-                            when (suggestion) {
-                                FiatSuggestion.RandomAmount -> RandomGradientButton(
-                                    onClick = { onLotSelect(FiatSuggestion.RandomAmount) }
-                                )
-                                is FiatSuggestion.SuggestionAmount,
-                                is FiatSuggestion.SuggestionPercent -> {
-                                    LotButton(suggestion, onLotSelect)
-                                    Spacer8()
-                                }
-                                FiatSuggestion.MaxAmount -> {
-                                    LotButton(suggestion, onLotSelect)
-                                }
+        AssetListItem(
+            modifier = Modifier.Companion.height(74.dp),
+            asset = asset,
+            listPosition = ListPosition.Single,
+            support = { ListItemSupportText(asset.cryptoFormatted) },
+            trailing = {
+                Row(verticalAlignment = Alignment.Companion.CenterVertically) {
+                    suggestedAmounts.forEach { suggestion ->
+                        when (suggestion) {
+                            FiatSuggestion.RandomAmount -> RandomGradientButton(
+                                onClick = { onLotSelect(FiatSuggestion.RandomAmount) }
+                            )
+                            is FiatSuggestion.SuggestionAmount,
+                            is FiatSuggestion.SuggestionPercent -> {
+                                LotButton(suggestion, onLotSelect)
+                                Spacer8()
+                            }
+                            FiatSuggestion.MaxAmount -> {
+                                LotButton(suggestion, onLotSelect)
                             }
                         }
                     }
-                },
-            )
-        }
+                }
+            },
+        )
 
         when (state) {
             is FiatSceneState.Error -> {
@@ -198,9 +196,14 @@ fun BuyScene(
                                 )
                             }
                         )
-                    }
+                    },
+                    listPosition = ListPosition.First,
                 )
-                PropertyItem(R.string.buy_rate, selectedProvider.rate)
+                PropertyItem(
+                    title = R.string.buy_rate,
+                    data = selectedProvider.rate,
+                    listPosition = ListPosition.Last,
+                )
             }
         }
     }

@@ -1,8 +1,8 @@
 package com.gemwallet.android.data.repositoreis.di
 
-import com.gemwallet.android.blockchain.services.SignClientProxy
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
+import com.gemwallet.android.blockchain.services.SignClientProxy
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.cases.nodes.GetNodesCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase

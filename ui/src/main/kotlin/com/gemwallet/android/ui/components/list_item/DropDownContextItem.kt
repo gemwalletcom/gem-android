@@ -31,7 +31,7 @@ fun DropDownContextItem(
     isExpanded: Boolean,
     imeCompensate: Boolean, // TODO: Compose bug relative with bottom bar.
     onDismiss: () -> Unit,
-    content: @Composable () -> Unit,
+    content: @Composable (modifier: Modifier) -> Unit,
     menuItems: @Composable ColumnScope.() -> Unit,
     onLongClick: () -> Unit,
     onClick: () -> Unit,
@@ -54,26 +54,27 @@ fun DropDownContextItem(
             .onSizeChanged {
                 itemHeight = with(density) { it.height.toDp() }
             }
-            .indication(interactionSource, LocalIndication.current)
-            .pointerInput(true) {
-                detectTapGestures(
-                    onLongPress = {
-                        gesturePoint = DpOffset(it.x.toDp(), it.y.toDp())
-                        onLongClick()
-                    },
-                    onTap = {
-                        onClick()
-                    },
-                    onPress = {
-                        val press = PressInteraction.Press(it)
-                        interactionSource.emit(press)
-                        tryAwaitRelease()
-                        interactionSource.emit(PressInteraction.Release(press))
-                    }
-                )
-        }
     ) {
-        content()
+        content(
+            modifier.indication(interactionSource, LocalIndication.current)
+                .pointerInput(true) {
+                    detectTapGestures(
+                        onLongPress = {
+                            gesturePoint = DpOffset(it.x.toDp(), it.y.toDp())
+                            onLongClick()
+                        },
+                        onTap = {
+                            onClick()
+                        },
+                        onPress = {
+                            val press = PressInteraction.Press(it)
+                            interactionSource.emit(press)
+                            tryAwaitRelease()
+                            interactionSource.emit(PressInteraction.Release(press))
+                        }
+                    )
+                }
+        )
         DropdownMenu(
             modifier = Modifier
                 .onSizeChanged {

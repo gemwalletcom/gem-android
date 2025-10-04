@@ -26,6 +26,7 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator14
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer6
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.padding4
@@ -40,6 +41,7 @@ internal fun NodeItem(
     node: Node,
     selected: Boolean,
     nodeStatus: NodeStatus?,
+    listPosition: ListPosition,
     onSelect: (Node) -> Unit,
 ) {
     ListItem(
@@ -66,6 +68,7 @@ internal fun NodeItem(
                 style = MaterialTheme.typography.bodyMedium,
             )
         },
+        listPosition = listPosition,
         trailing = if (selected) {
             @Composable {
                 Icon(
@@ -129,6 +132,7 @@ fun NodeItemPreview() {
                 priority = 0,
             ),
             selected = true,
+            listPosition = ListPosition.Middle,
             nodeStatus = NodeStatus(
                 url = "",
                 chainId = Chain.Ethereum.string,

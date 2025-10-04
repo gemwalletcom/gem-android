@@ -1,10 +1,8 @@
 package com.gemwallet.features.asset.presents.details.views.components
 
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.unit.dp
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.getReserveBalanceUrl
 import com.gemwallet.android.model.AssetInfo
@@ -48,7 +46,4 @@ internal fun BannerItem(
         },
         false
     )
-    HorizontalDivider(thickness = 0.dp)
-//    item {
-//    }
 }

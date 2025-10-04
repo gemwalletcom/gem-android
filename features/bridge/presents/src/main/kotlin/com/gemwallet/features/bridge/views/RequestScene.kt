@@ -17,22 +17,19 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
-import com.gemwallet.features.bridge.viewmodels.RequestSceneState
-import com.gemwallet.features.bridge.viewmodels.RequestViewModel
 import com.gemwallet.android.model.ConfirmParams.TransferParams.Native
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
-import com.gemwallet.android.ui.components.image.AsyncImage
-import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
-import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
+import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkItem
 import com.gemwallet.android.ui.components.screen.FatalStateScene
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AssetIdAction
-import com.gemwallet.android.ui.theme.Spacer4
-import com.gemwallet.android.ui.theme.trailingIconMedium
+import com.gemwallet.features.bridge.viewmodels.RequestSceneState
+import com.gemwallet.features.bridge.viewmodels.RequestViewModel
 import com.gemwallet.features.confirm.views.ConfirmScreen
 import com.reown.walletkit.client.Wallet
 import com.wallet.core.primitives.WalletConnectionMethods
@@ -109,24 +106,11 @@ private fun Render(
         onClose = onReject,
     ) {
         LazyColumn {
-            item { PropertyItem(R.string.wallet_connect_app, request.session.name) }
-            item { PropertyItem(R.string.wallet_connect_website, request.session.uri) }
-            item { PropertyItem(R.string.transfer_from, request.walletName) }
-            item {
-                PropertyItem(
-                    title = { PropertyTitleText(R.string.transfer_network) },
-                    data = {
-                        PropertyDataText(
-                            request.chain.asset().name,
-                            badge = {
-                                Spacer4()
-                                AsyncImage(request.chain.asset(), trailingIconMedium)
-                            }
-                        )
-                   },
-                )
-            }
-            item { PropertyItem("Method", request.method) }
+            item { PropertyItem(R.string.wallet_connect_app, request.session.name, listPosition = ListPosition.First) }
+            item { PropertyItem(R.string.wallet_connect_website, request.session.uri, listPosition = ListPosition.Middle) }
+            item { PropertyItem(R.string.transfer_from, request.walletName, listPosition = ListPosition.Middle) }
+            item { PropertyNetworkItem(request.chain, listPosition = ListPosition.Middle) }
+            item { PropertyItem("Method", request.method, listPosition = ListPosition.Last) }
             when (request.method) {
                 WalletConnectionMethods.SolanaSignTransaction.string -> {}
                 else -> item {

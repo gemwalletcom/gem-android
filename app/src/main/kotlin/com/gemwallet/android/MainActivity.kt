@@ -58,8 +58,6 @@ import com.gemwallet.android.data.repositoreis.bridge.BridgesRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.features.bridge.views.ProposalScene
-import com.gemwallet.features.bridge.views.RequestScene
 import com.gemwallet.android.model.AuthRequest
 import com.gemwallet.android.model.AuthState
 import com.gemwallet.android.model.PushNotificationData
@@ -73,6 +71,8 @@ import com.gemwallet.android.ui.navigation.routes.assetRouteUri
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.features.bridge.views.ProposalScene
+import com.gemwallet.features.bridge.views.RequestScene
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

@@ -4,7 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -18,9 +18,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.features.bridge.viewmodels.model.SessionUI
-import com.gemwallet.features.bridge.viewmodels.ProposalSceneState
-import com.gemwallet.features.bridge.viewmodels.ProposalSceneViewModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.image.AsyncImage
@@ -33,6 +30,10 @@ import com.gemwallet.android.ui.components.screen.FatalStateScene
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.features.bridge.viewmodels.ProposalSceneState
+import com.gemwallet.features.bridge.viewmodels.ProposalSceneViewModel
+import com.gemwallet.features.bridge.viewmodels.model.SessionUI
 import com.reown.walletkit.client.Wallet
 
 @Composable
@@ -104,11 +105,11 @@ private fun Proposal(
         PropertyItem(
             modifier = Modifier.clickable { isShowSelectWallets = true },
             title = { PropertyTitleText(R.string.common_wallet) },
-            data = { PropertyDataText(selectedWallet?.name ?: "", badge = { DataBadgeChevron() })}
+            data = { PropertyDataText(selectedWallet?.name ?: "", badge = { DataBadgeChevron() })},
+            listPosition = ListPosition.First,
         )
-        PropertyItem(R.string.wallet_connect_app, peer.name)
-        PropertyItem(R.string.wallet_connect_website, peer.uri)
-        Spacer(modifier = Modifier.size(24.dp))
+        PropertyItem(R.string.wallet_connect_app, peer.name, listPosition = ListPosition.Middle)
+        PropertyItem(R.string.wallet_connect_website, peer.uri, listPosition = ListPosition.Last)
     }
 
     if (isShowSelectWallets) {
@@ -117,12 +118,13 @@ private fun Proposal(
             onDismissRequest = { isShowSelectWallets = false },
         ) {
             LazyColumn {
-                items(availableWallets) {
+                itemsIndexed(availableWallets) { index, item ->
                     WalletItem(
-                        wallet = it,
-                        isCurrent = it.id == selectedWallet?.id,
+                        wallet = item,
+                        isCurrent = item.id == selectedWallet?.id,
+                        listPosition = ListPosition.getPosition(index, availableWallets.size),
                         modifier = Modifier.clickable {
-                            onWalletSelected(it.id)
+                            onWalletSelected(item.id)
                             isShowSelectWallets = false
                         }
                     )

@@ -8,8 +8,6 @@ import com.gemwallet.android.cases.pushes.ShowSystemNotification
 import com.gemwallet.android.model.PushNotificationData
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.wallet.core.primitives.PushNotificationAsset
-import com.wallet.core.primitives.PushNotificationTransaction
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

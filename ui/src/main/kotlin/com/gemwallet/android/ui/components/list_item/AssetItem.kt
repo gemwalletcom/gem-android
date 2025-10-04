@@ -20,6 +20,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.models.CryptoFormattedUIModel
+import com.gemwallet.android.ui.models.FiatFormattedUIModel
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.models.PriceUIModel
 import com.gemwallet.android.ui.theme.Spacer2
@@ -27,43 +30,45 @@ import com.wallet.core.primitives.Asset
 
 @Composable
 fun AssetListItem(
-    uiModel: AssetItemUIModel,
+    asset: AssetItemUIModel,
     modifier: Modifier = Modifier,
+    listPosition: ListPosition,
 ) {
     ListItem(
         modifier = modifier,
-        leading = @Composable { IconWithBadge(uiModel.asset) },
-        title = @Composable { ListItemTitleText(uiModel.name) },
-        subtitle = if (uiModel.price.fiatFormatted.isEmpty()) {
+        listPosition = listPosition,
+        leading = @Composable { IconWithBadge(asset.asset) },
+        title = @Composable { ListItemTitleText(asset.name) },
+        subtitle = if (asset.price.fiatFormatted.isEmpty()) {
             null
         } else {
             {
                 PriceInfo(
-                    price = uiModel.price,
+                    price = asset.price,
                     style = MaterialTheme.typography.bodyMedium,
                     internalPadding = 4.dp
                 )
             }
         },
-        trailing = { getBalanceInfo(uiModel).invoke() },
+        trailing = { getBalanceInfo(asset).invoke() },
     )
 }
 
 @Composable
 fun AssetListItem(
-    uiModel: AssetItemUIModel,
+    asset: AssetItemUIModel,
     support: @Composable (() -> Unit)?,
     modifier: Modifier = Modifier,
-    dividerShowed: Boolean = true,
+    listPosition: ListPosition,
     badge: String? = null,
     trailing: (@Composable () -> Unit)? = null,
 ) {
     ListItem(
         modifier = modifier,
-        leading = @Composable { IconWithBadge(uiModel.asset) },
-        title = @Composable { ListItemTitleText(uiModel.name, { Badge(text = badge) }) },
+        listPosition = listPosition,
+        leading = @Composable { IconWithBadge(asset.asset) },
+        title = @Composable { ListItemTitleText(asset.name, { Badge(text = badge) }) },
         subtitle = support,
-        dividerShowed = dividerShowed,
         trailing = if (trailing == null) null else {
             { trailing.invoke() }
         }
@@ -74,19 +79,19 @@ fun AssetListItem(
 fun AssetListItem(
     asset: Asset,
     modifier: Modifier = Modifier,
-    dividerShowed: Boolean = true,
+    listPosition: ListPosition,
     support: String? = null,
     badge: String? = null,
     trailing: (@Composable () -> Unit)? = null,
 ) {
     ListItem(
         modifier = modifier,
+        listPosition = listPosition,
         leading = @Composable { IconWithBadge(asset) },
         title = @Composable { ListItemTitleText(asset.name, { Badge(text = badge) }) },
         subtitle = if (support.isNullOrEmpty()) null else {
             { ListItemSupportText(support) }
         },
-        dividerShowed = dividerShowed,
         trailing = if (trailing == null) null else {
             { trailing.invoke() }
         }
@@ -143,19 +148,22 @@ fun PriceInfo(
     }
 }
 
-fun getBalanceInfo(uiModel: AssetItemUIModel): @Composable () -> Unit {
+fun getBalanceInfo(uiModel: AssetItemUIModel): @Composable () -> Unit
+        = getBalanceInfo(uiModel, uiModel)
+
+fun getBalanceInfo(crypto: CryptoFormattedUIModel, fiatFormattedUIModel: FiatFormattedUIModel): @Composable () -> Unit {
     return (@Composable {
         val color = MaterialTheme.colorScheme.let {
-            if (uiModel.isZeroAmount) it.secondary else it.onSurface
+            if (crypto.isZeroAmount) it.secondary else it.onSurface
         }
         Column(
             modifier = Modifier.defaultMinSize(40.dp),
             horizontalAlignment = Alignment.End
         ) {
-            ListItemTitleText(uiModel.cryptoFormatted, color = color)
-            if (!uiModel.isZeroAmount && uiModel.fiatFormatted.isNotEmpty()) {
+            ListItemTitleText(crypto.cryptoFormatted, color = color)
+            if (!crypto.isZeroAmount && fiatFormattedUIModel.fiatFormatted.isNotEmpty()) {
                 Spacer2()
-                ListItemSupportText(uiModel.fiatFormatted)
+                ListItemSupportText(fiatFormattedUIModel.fiatFormatted)
             }
         }
     })

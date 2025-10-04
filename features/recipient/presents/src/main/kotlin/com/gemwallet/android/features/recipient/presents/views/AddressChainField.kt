@@ -1,9 +1,11 @@
 package com.gemwallet.android.features.recipient.presents.views
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
@@ -29,7 +31,11 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.recipient.viewmodel.AddressChainViewModel
 import com.gemwallet.android.ui.components.clipboard.getPlainText
+import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
+import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.android.ui.theme.outlinedTextFieldColors
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.space4
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NameRecord
@@ -59,60 +65,63 @@ fun ColumnScope.AddressChainField(
         onValueChange(uiState.nameRecord?.name ?: value, uiState.nameRecord)
     }
 
-    OutlinedTextField(
-        modifier = Modifier
-            .fillMaxWidth()
-            .onFocusChanged {
-                if (it.hasFocus) keyboardController?.show() else keyboardController?.hide()
+    Box(modifier = Modifier.listItem(ListPosition.Single).padding(vertical = paddingDefault)) {
+        OutlinedTextField(
+            modifier = Modifier
+                .fillMaxWidth()
+                .onFocusChanged {
+                    if (it.hasFocus) keyboardController?.show() else keyboardController?.hide()
+                },
+            value = value,
+            singleLine = true,
+            readOnly = !editable,
+            label = { Text(label) },
+            onValueChange = { newValue ->
+                if (searchName) {
+                    viewModel.onInput(newValue, chain)
+                }
+                onValueChange(newValue, uiState.nameRecord)
             },
-        value = value,
-        singleLine = true,
-        readOnly = !editable,
-        label = { Text(label) },
-        onValueChange = { newValue ->
-            if (searchName) {
-                viewModel.onInput(newValue, chain)
-            }
-            onValueChange(newValue, uiState.nameRecord)
-        },
-        trailingIcon = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                if (uiState.isLoading) {
-                    CircularProgressIndicator16()
-                    Spacer(modifier = Modifier.size(8.dp))
-                }
-                if (uiState.isResolve) {
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "Name is resolved",
-                        tint = MaterialTheme.colorScheme.tertiary,
-                    )
-                    Spacer(modifier = Modifier.size(8.dp))
-                }
-                if (uiState.isFail) {
-                    Icon(
-                        modifier = Modifier.size(24.dp),
-                        imageVector = Icons.Default.Error,
-                        contentDescription = "Name is fail",
-                        tint = MaterialTheme.colorScheme.error,
-                    )
-                    Spacer(modifier = Modifier.size(8.dp))
-                }
-                TransferTextFieldActions(
-                    value = value,
-                    paste = { onValueChange(clipboardManager.getPlainText() ?: "", uiState.nameRecord) },
-                    qrScanner = onQrScanner,
-                    onClean = {
-                        onValueChange("", null)
-                        viewModel.onInput("", null)
+            colors = outlinedTextFieldColors(),
+            trailingIcon = {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (uiState.isLoading) {
+                        CircularProgressIndicator16()
+                        Spacer(modifier = Modifier.size(8.dp))
                     }
-                )
+                    if (uiState.isResolve) {
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "Name is resolved",
+                            tint = MaterialTheme.colorScheme.tertiary,
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                    }
+                    if (uiState.isFail) {
+                        Icon(
+                            modifier = Modifier.size(24.dp),
+                            imageVector = Icons.Default.Error,
+                            contentDescription = "Name is fail",
+                            tint = MaterialTheme.colorScheme.error,
+                        )
+                        Spacer(modifier = Modifier.size(8.dp))
+                    }
+                    TransferTextFieldActions(
+                        value = value,
+                        paste = { onValueChange(clipboardManager.getPlainText() ?: "", uiState.nameRecord) },
+                        qrScanner = onQrScanner,
+                        onClean = {
+                            onValueChange("", null)
+                            viewModel.onInput("", null)
+                        }
+                    )
+                }
             }
-        }
-    )
+        )
+    }
     if (error.isNotEmpty()) {
         Spacer(modifier = Modifier.size(space4))
         Text(

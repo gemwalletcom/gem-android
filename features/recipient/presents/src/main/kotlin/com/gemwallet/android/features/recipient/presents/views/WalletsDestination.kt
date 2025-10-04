@@ -3,7 +3,7 @@ package com.gemwallet.android.features.recipient.presents.views
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -14,7 +14,7 @@ import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
-import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.models.ListPosition
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet
@@ -64,11 +64,12 @@ private fun LazyListScope.walletsSection(
         .takeIf { it.isNotEmpty() }
         ?.let { wallets ->
             item {
-                Spacer8()
                 SubheaderItem(stringResource(header))
             }
-            items(wallets) { wallet ->
-                WalletRecipient(wallet) { onSelect(wallet.getAccount(toChain) ?: return@WalletRecipient) }
+            itemsIndexed(wallets) { index, item ->
+                WalletRecipient(item, ListPosition.getPosition(index, wallets.size)) {
+                    onSelect(item.getAccount(toChain) ?: return@WalletRecipient)
+                }
             }
         }
 }
@@ -76,11 +77,13 @@ private fun LazyListScope.walletsSection(
 @Composable
 private fun WalletRecipient(
     wallet: Wallet,
+    listPosition: ListPosition,
     onClick: () -> Unit
 ) {
     PropertyItem(
         modifier = Modifier.clickable(onClick = onClick),
         title = { PropertyTitleText(wallet.name) },
-        data = { PropertyDataText("", badge = { DataBadgeChevron() }) }
+        data = { PropertyDataText("", badge = { DataBadgeChevron() }) },
+        listPosition = listPosition,
     )
 }

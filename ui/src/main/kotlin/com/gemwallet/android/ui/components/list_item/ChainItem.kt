@@ -10,22 +10,24 @@ import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.domains.asset.getIconUrl
+import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.models.ListPosition
 import com.wallet.core.primitives.Chain
 
 @Composable
 fun ChainItem(
     title: String,
     modifier: Modifier = Modifier,
+    listPosition: ListPosition,
     icon: Any? = null,
-    dividerShowed: Boolean = true,
     trailing: @Composable (() -> Unit)? = null,
     onClick: (() -> Unit)? = {},
 ) {
     val modifier = onClick?.let { modifier.clickable(onClick = it) } ?: modifier
     ListItem(
         modifier = modifier.heightIn(64.dp),
+        listPosition = listPosition,
         leading = @Composable {
             IconWithBadge(
                 icon = (icon as? Chain)?.getIconUrl() ?: icon,
@@ -41,7 +43,6 @@ fun ChainItem(
         trailing = if (trailing != null) {
             @Composable { trailing.invoke() }
         } else null,
-        dividerShowed = dividerShowed,
     )
 }
 
@@ -49,6 +50,6 @@ fun ChainItem(
 @Composable
 fun PreviewChainSelectItem() {
     MaterialTheme {
-        ChainItem(icon = Chain.Polygon, title = "Foo title") {}
+        ChainItem(icon = Chain.Polygon, listPosition = ListPosition.Middle, title = "Foo title") {}
     }
 }

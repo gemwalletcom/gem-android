@@ -1,18 +1,20 @@
 package com.gemwallet.features.buy.views
 
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.clickable
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.theme.padding8
 import com.gemwallet.features.buy.viewmodels.FiatViewModel
@@ -52,19 +54,17 @@ fun FiatScreen(
 
 @Composable
 fun LotButton(fiatSuggestion: FiatSuggestion, onLotClick: (FiatSuggestion) -> Unit) {
-    Button(
-        modifier = Modifier,
-        colors = ButtonDefaults.buttonColors()
-            .copy(containerColor = MaterialTheme.colorScheme.scrim),
-        contentPadding = PaddingValues(padding8),
-        onClick = { onLotClick(fiatSuggestion) }
-    ) {
         Text(
+            modifier = Modifier
+                .clip(RoundedCornerShape(padding8))
+                .clickable { onLotClick(fiatSuggestion) }
+                .background(MaterialTheme.colorScheme.scrim)
+                .padding(padding8)
+            ,
             text = fiatSuggestion.text,
             color = MaterialTheme.colorScheme.onSurface,
-            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.W400),
+            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.W500),
         )
-    }
 }
 
 @Composable

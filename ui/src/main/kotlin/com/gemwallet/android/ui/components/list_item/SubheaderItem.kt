@@ -1,6 +1,5 @@
 package com.gemwallet.android.ui.components.list_item
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -14,12 +13,11 @@ import androidx.compose.ui.unit.dp
 fun SubheaderItem(
     title: String,
     modifier: Modifier = Modifier,
-    paddings: PaddingValues = PaddingValues(start = 16.dp, end = 16.dp, top = 24.dp, bottom = 8.dp)
+    paddings: PaddingValues = PaddingValues(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 0.dp)
 ) {
     Text(
         modifier = modifier
             .fillMaxWidth()
-            .background(color = MaterialTheme.colorScheme.background)
             .padding(paddings),
         text = title,
         style = MaterialTheme.typography.labelLarge,

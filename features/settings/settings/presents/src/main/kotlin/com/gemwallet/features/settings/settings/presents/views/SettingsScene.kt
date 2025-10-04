@@ -18,7 +18,6 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
@@ -35,12 +34,12 @@ import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.features.settings.settings.components.LinkItem
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.list_item.LinkItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.open
-import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.features.settings.currency.presents.components.emojiFlags
 import com.gemwallet.features.settings.settings.viewmodels.SettingsViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -83,6 +82,7 @@ fun SettingsScene(
     Scene(
         title = stringResource(id = R.string.settings_title),
         mainActionPadding = PaddingValues(0.dp),
+        navigationBarPadding = false,
     ) {
         Column(
             modifier = Modifier
@@ -92,18 +92,20 @@ fun SettingsScene(
             LinkItem(
                 title = stringResource(id = R.string.wallets_title),
                 icon = R.drawable.settings_wallets,
+                listPosition = ListPosition.First,
                 onClick = onWallets
             )
             LinkItem(
                 title = stringResource(id = R.string.settings_security),
                 icon = R.drawable.settings_security,
+                listPosition = ListPosition.Last,
                 onClick = onSecurity
             )
-            HorizontalDivider(modifier = Modifier, thickness = 0.4.dp)
             if (viewModel.isNotificationsAvailable()) {
                 LinkItem(
                     title = stringResource(id = R.string.settings_notifications_title),
                     icon = R.drawable.settings_notifications,
+                    listPosition = ListPosition.First,
                     trailingContent = @Composable {
                         Switch(
                             checked = uiState.pushEnabled,
@@ -117,6 +119,7 @@ fun SettingsScene(
                 LinkItem(
                     title = stringResource(id = R.string.settings_price_alerts_title),
                     icon = R.drawable.settings_pricealert,
+                    listPosition = ListPosition.Last,
 //                    trailingContent = @Composable {
 //                        Switch(
 //                            checked = uiState.pushEnabled,
@@ -132,6 +135,7 @@ fun SettingsScene(
             LinkItem(
                 title = stringResource(R.string.settings_currency),
                 icon = R.drawable.settings_currency,
+                listPosition = ListPosition.First,
                 supportingContent = {
                     Text(text = "${emojiFlags[uiState.currency.string]}  ${uiState.currency.string}")
                 },
@@ -154,16 +158,15 @@ fun SettingsScene(
                     }
                 )
             }
-            LinkItem(title = stringResource(id = R.string.settings_networks_title), icon = R.drawable.settings_networks) {
+            LinkItem(title = stringResource(id = R.string.settings_networks_title), icon = R.drawable.settings_networks, listPosition = ListPosition.Last) {
                 onNetworks()
             }
-            LinkItem(title = stringResource(id = R.string.wallet_connect_title), icon = R.drawable.settings_wc) {
+            LinkItem(title = stringResource(id = R.string.wallet_connect_title), icon = R.drawable.settings_wc, listPosition = ListPosition.Single) {
                 onBridges()
             }
-            HorizontalDivider(modifier = Modifier, thickness = 0.4.dp)
 
             SubheaderItem(title = stringResource(id = R.string.settings_community))
-            LinkItem(title = stringResource(id = R.string.social_x), icon = R.drawable.twitter) {
+            LinkItem(title = stringResource(id = R.string.social_x), icon = R.drawable.twitter, listPosition = ListPosition.First) {
                 uriHandler.open(context, Config().getSocialUrl(SocialUrl.X) ?: "")
             }
             LinkItem(title = stringResource(id = R.string.social_discord), icon = R.drawable.discord) {
@@ -178,11 +181,11 @@ fun SettingsScene(
             LinkItem(title = stringResource(id = R.string.social_youtube), icon = R.drawable.youtube) {
                 uriHandler.open(context, Config().getSocialUrl(SocialUrl.YOU_TUBE) ?: "")
             }
-            HorizontalDivider(modifier = Modifier, thickness = 0.4.dp)
 
             LinkItem(
                 title = stringResource(id = R.string.settings_help_center),
                 icon = R.drawable.settings_help_center,
+                listPosition = ListPosition.Last,
             ) {
                 uriHandler.open(
                     context,
@@ -196,6 +199,7 @@ fun SettingsScene(
             LinkItem(
                 title = stringResource(id = R.string.settings_support),
                 icon = R.drawable.settings_support,
+                listPosition = ListPosition.First,
             ) {
                 uriHandler.open(
                     context,
@@ -210,6 +214,7 @@ fun SettingsScene(
                 LinkItem(
                     title = stringResource(id = R.string.settings_aboutus),
                     icon = R.drawable.settings_about_us,
+                    listPosition = ListPosition.Last,
                     onClick = onAboutUs,
                     onLongClick = { isShowDevelopEnable = true }
                 )
@@ -234,11 +239,10 @@ fun SettingsScene(
 //                }
 //            )
             if (uiState.developEnabled) {
-                LinkItem(title = stringResource(id = R.string.settings_developer), icon = R.drawable.settings_developer) {
+                LinkItem(title = stringResource(id = R.string.settings_developer), icon = R.drawable.settings_developer, listPosition = ListPosition.Single,) {
                     onDevelop()
                 }
             }
-            Spacer16()
         }
     }
 

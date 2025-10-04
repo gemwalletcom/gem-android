@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentPaste
 import androidx.compose.material.icons.filled.QrCodeScanner
@@ -31,8 +31,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.features.bridge.viewmodels.ConnectionsViewModel
-import com.gemwallet.features.bridge.viewmodels.model.SessionUI
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.QrCodeRequest
 import com.gemwallet.android.ui.components.clipboard.getPlainText
@@ -41,7 +39,10 @@ import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.screen.Scene
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.open
+import com.gemwallet.features.bridge.viewmodels.ConnectionsViewModel
+import com.gemwallet.features.bridge.viewmodels.model.SessionUI
 import com.wallet.core.primitives.WalletConnection
 import kotlinx.coroutines.launch
 import uniffi.gemstone.Config
@@ -99,8 +100,8 @@ fun ConnectionsScene(
             }
         } else {
             LazyColumn {
-                items(connections) { connection ->
-                    ConnectionItem(connection, onConnection)
+                itemsIndexed(connections) { index, item ->
+                    ConnectionItem(item, ListPosition.getPosition(index, connections.size), onConnection)
                 }
             }
         }
@@ -127,6 +128,7 @@ fun ConnectionsScene(
 @Composable
 fun ConnectionItem(
     connection: WalletConnection,
+    listPosition: ListPosition,
     onClick: ((String) -> Unit)? = null,
 ) {
     ConnectionItem(
@@ -137,6 +139,7 @@ fun ConnectionItem(
             id = connection.session.id,
             expire = DateFormat.getDateInstance(DateFormat.MEDIUM).format(Date(connection.session.expireAt)),
         ),
+        listPosition,
         onClick,
     )
 }
@@ -144,6 +147,7 @@ fun ConnectionItem(
 @Composable
 fun ConnectionItem(
     connection: SessionUI,
+    listPosition: ListPosition,
     onClick: ((String) -> Unit)? = null,
 ) {
     ListItem(
@@ -154,6 +158,6 @@ fun ConnectionItem(
         },
         title = { ListItemTitleText(connection.name) },
         subtitle = { ListItemSupportText(connection.uri) },
-        dividerShowed = onClick != null,
+        listPosition = listPosition
     )
 }

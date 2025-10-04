@@ -29,10 +29,9 @@ import com.gemwallet.android.ui.models.navigation.stakeRoute
 import com.gemwallet.android.ui.models.navigation.swapRoute
 import com.gemwallet.features.confirm.models.AmountUIModel
 import com.gemwallet.features.confirm.models.ConfirmError
+import com.gemwallet.features.confirm.models.ConfirmProperty
 import com.gemwallet.features.confirm.models.ConfirmState
-import com.gemwallet.features.confirm.models.DestinationUIModel
 import com.gemwallet.features.confirm.models.FeeUIModel
-import com.gemwallet.features.confirm.models.TxUIModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.DelegationValidator
@@ -170,20 +169,18 @@ class ConfirmViewModel @Inject constructor(
     .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val txInfoUIModel = combine(request, assetsInfo) { request, assetsInfo ->
-        request ?: return@combine null
-        val assetInfo = assetsInfo?.getByAssetId(request.assetId) ?: return@combine null
-        TxUIModel(
-            from = assetInfo.walletName,
-            destination = request.let {
-                DestinationUIModel.map(it, getValidator(it))
-            },
-            memo = request.memo()?.takeIf { request is ConfirmParams.TransferParams && assetInfo.asset.isMemoSupport() },
-            asset = assetInfo.asset
-        )
+    val txProperties = combine(request, assetsInfo) { request, assetsInfo ->
+        request ?: return@combine emptyList()
+        val assetInfo = assetsInfo?.getByAssetId(request.assetId) ?: return@combine emptyList()
+        mutableListOf<ConfirmProperty?>().apply {
+            add(ConfirmProperty.Source(assetInfo.walletName))
+            add(ConfirmProperty.Destination.map(request, getValidator(request)))
+            add(request.memo()?.takeIf { request is ConfirmParams.TransferParams && assetInfo.asset.isMemoSupport() }?.let { ConfirmProperty.Memo(it) })
+            add(ConfirmProperty.Network(assetInfo.asset))
+        }.filterNotNull()
     }
     .flowOn(Dispatchers.Default)
-    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val feeValue = combine(preloadData, feeAssetInfo, state, feePriority) { signerParams, feeAssetInfo, state, feePriority ->
         val amount = signerParams?.fee(feePriority)?.amount
@@ -322,7 +319,7 @@ class ConfirmViewModel @Inject constructor(
         }
     }
 
-    private suspend fun sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo, feePriority: FeePriority): List<ByteArray> {
+    private suspend fun  sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo, feePriority: FeePriority): List<ByteArray> {
         val sign = try {
             signClient.signTransaction(
                 params = signerParams,

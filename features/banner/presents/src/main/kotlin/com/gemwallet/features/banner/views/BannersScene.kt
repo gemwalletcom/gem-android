@@ -29,11 +29,13 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.domains.asset.chain
+import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.image.IconWithBadge
-import com.gemwallet.android.domains.asset.getIconUrl
+import com.gemwallet.android.ui.components.list_item.listItem
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.padding12
@@ -60,7 +62,7 @@ fun BannersScene(
 
     HorizontalPager(pageState, pageSpacing = paddingDefault) { page ->
         val banner = banners[page]
-        Box(modifier = Modifier.clickable { onClick(banner) }) {
+        Box(modifier = Modifier.listItem(ListPosition.Single).clickable { onClick(banner) }) {
             val (title, description) = when (banner.event) {
                 BannerEvent.Stake -> Pair(
                     stringResource(R.string.banner_stake_title, asset?.name ?: ""),

@@ -17,6 +17,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.domains.asset.getIconUrl
+import com.gemwallet.android.domains.asset.getSupportIconUrl
 import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.model.Crypto
@@ -24,9 +26,8 @@ import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.image.IconWithBadge
-import com.gemwallet.android.domains.asset.getIconUrl
-import com.gemwallet.android.domains.asset.getSupportIconUrl
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator10
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer2
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.padding4
@@ -42,7 +43,11 @@ import com.wallet.core.primitives.TransactionType
 import java.math.BigDecimal
 
 @Composable
-fun TransactionItem(item: TransactionExtended, isLast: Boolean, onTransaction: (String) -> Unit) {
+fun TransactionItem(
+    item: TransactionExtended,
+    listPosition: ListPosition,
+    onTransaction: (String) -> Unit
+) {
     val value = Crypto(item.transaction.value.toBigInteger())
     TransactionItem(
         assetIcon = item.asset.getIconUrl(),
@@ -60,7 +65,7 @@ fun TransactionItem(item: TransactionExtended, isLast: Boolean, onTransaction: (
         ),
         metadata = item.transaction.getSwapMetadata(),
         assets = item.assets,
-        isLast = isLast
+        listPosition = listPosition,
     ) { onTransaction(item.transaction.id) }
 }
 
@@ -76,8 +81,8 @@ fun TransactionItem(
     direction: TransactionDirection,
     metadata: Any?,
     assets: List<Asset>,
+    listPosition: ListPosition,
     supportIcon: String? = null,
-    isLast: Boolean = false,
     onClick: () -> Unit,
 ) {
     ListItem(
@@ -142,7 +147,7 @@ fun TransactionItem(
                 { ListItemSupportText(it) }
             } else null
         },
-        dividerShowed = !isLast,
+        listPosition = listPosition,
         trailing = {
             Column(horizontalAlignment = Alignment.End) {
                 ListItemTitleText(
@@ -322,6 +327,7 @@ fun PreviewTransactionItem() {
             value = "0.9998888999 BTC",
             metadata = null,
             assets = emptyList(),
+            listPosition = ListPosition.Single,
             onClick = {},
         )
     }
@@ -362,6 +368,7 @@ fun PreviewSwapTransactionItem() {
                 fromValue = "90000000000000000",
                 toValue = "19000000000000",
             ),
+            listPosition = ListPosition.Single,
             onClick = {},
         )
     }

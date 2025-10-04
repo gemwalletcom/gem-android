@@ -8,15 +8,19 @@ import com.gemwallet.android.cases.transactions.GetTransaction
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.domains.asset.chain
-import com.gemwallet.android.domains.asset.isMemoSupport
 import com.gemwallet.android.ext.getAssociatedAssetIds
 import com.gemwallet.android.ext.getNftMetadata
 import com.gemwallet.android.ext.getSwapMetadata
+import com.gemwallet.android.features.activities.models.TxDetailsProperty
+import com.gemwallet.android.math.getRelativeDate
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.Transaction
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.SwapProvider
+import com.wallet.core.primitives.TransactionDirection
+import com.wallet.core.primitives.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -76,15 +80,21 @@ class TransactionDetailsViewModel @Inject constructor(
         val swapExplorerUrl = provider?.let { explorer.getTransactionSwapUrl(blockExplorerName, tx.hash, provider) }
         val explorerUrl = swapExplorerUrl?.url ?: explorer.getTransactionUrl(blockExplorerName, tx.hash)
 
+        val properties = listOfNotNull(
+            TxDetailsProperty.Date(getRelativeDate(tx.createdAt)),
+            TxDetailsProperty.Status(asset, tx.state),
+            getDestination(tx),
+            tx.memo?.takeIf { it.isNotEmpty() }?.let { TxDetailsProperty.Memo(it) },
+            SwapProvider.entries.firstOrNull { it.string == provider }
+                ?.let { TxDetailsProperty.Provider(it) },
+            TxDetailsProperty.Network(asset),
+        )
+
         TxDetailsScreenModel(
             asset = asset,
             cryptoAmount = asset.format(value),
             fiatAmount = fiat,
-            createdAt = tx.createdAt,
             direction = tx.direction,
-            from = tx.from,
-            to = tx.to,
-            memo = tx.memo.takeIf { asset.isMemoSupport() },
             state = tx.state,
             feeCrypto = feeCrypto,
             feeFiat = feeFiat,
@@ -95,11 +105,36 @@ class TransactionDetailsViewModel @Inject constructor(
             toAsset = assets.firstOrNull { it.id() == toId },
             fromValue = swapMetadata?.fromValue,
             toValue = swapMetadata?.toValue,
-            provider = SwapProvider.entries.firstOrNull { it.string == provider },
             currency = currency,
             nftAsset = nftMetadata,
+            properties = properties,
         )
     }
     .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, started = SharingStarted.Eagerly, null)
+
+    private fun getDestination(tx: Transaction): TxDetailsProperty.Destination? {
+        return when (tx.type) {
+            TransactionType.Swap,
+            TransactionType.TokenApproval,
+            TransactionType.StakeDelegate,
+            TransactionType.StakeUndelegate,
+            TransactionType.StakeRewards,
+            TransactionType.StakeRedelegate,
+            TransactionType.AssetActivation,
+            TransactionType.SmartContractCall,
+            TransactionType.PerpetualOpenPosition,
+            TransactionType.PerpetualClosePosition,
+            TransactionType.StakeFreeze,
+            TransactionType.StakeUnfreeze,
+            TransactionType.StakeWithdraw -> return null
+
+            TransactionType.Transfer,
+            TransactionType.TransferNFT -> when (tx.direction) {
+                TransactionDirection.SelfTransfer,
+                TransactionDirection.Outgoing -> TxDetailsProperty.Destination.Recipient(tx.to)
+                TransactionDirection.Incoming -> TxDetailsProperty.Destination.Sender(tx.from)
+            }
+        }
+    }
 }

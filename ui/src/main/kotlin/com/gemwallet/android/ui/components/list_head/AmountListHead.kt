@@ -19,7 +19,6 @@ import androidx.compose.material.icons.filled.SwapVert
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -82,8 +81,10 @@ fun AmountListHead(
         ) {
             (icon as? Asset)?.let {
                 HeaderIcon(it)
-                Spacer16()
-            }
+            } ?: IconWithBadge(icon = icon, size = headerIconSize)
+
+            icon?.let { Spacer16() }
+
             DisplayText(
                 text = amount,
                 modifier = Modifier
@@ -115,8 +116,6 @@ fun AmountListHead(
                 actions()
             }
         }
-        Spacer(modifier = Modifier.size(0.dp))
-        HorizontalDivider(thickness = 0.4.dp)
     }
 }
 
@@ -264,14 +263,14 @@ private fun AssetAction(
             Icon(
                 modifier = Modifier
                     .background(
-                        color = MaterialTheme.colorScheme.scrim.copy(
+                        color = MaterialTheme.colorScheme.primary.copy(
                             alpha = if (enabled) 1f else 0.4f,
                         ),
                         shape = CircleShape
                     )
                     .padding(16.dp),
                 imageVector = imageVector,
-                tint = MaterialTheme.colorScheme.onSurface.copy(
+                tint = MaterialTheme.colorScheme.onPrimary.copy(
                     alpha = if (enabled) 1f else 0.4f,
                 ),
                 contentDescription = contentDescription,
