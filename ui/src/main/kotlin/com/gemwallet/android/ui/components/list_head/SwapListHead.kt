@@ -43,7 +43,6 @@ fun SwapListHead(
                 .padding(start = paddingDefault, end = paddingDefault, bottom = paddingDefault),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Spacer8()
             SwapItem(assetInfo = fromAsset, value = fromValue, currency = currency)
             Box(modifier = Modifier.fillMaxWidth()) {
                 Icon(
@@ -57,8 +56,6 @@ fun SwapListHead(
             Spacer16()
             SwapItem(assetInfo = toAsset, value = toValue, currency = currency)
         }
-        Spacer8()
-        HorizontalDivider(thickness = 0.4.dp)
     }
 }
 
