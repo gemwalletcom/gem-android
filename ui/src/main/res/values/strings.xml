@@ -14,7 +14,6 @@
   <string name="wallet.new.title">New Wallet</string>
   <string name="receive.title">Receive %s</string>
   <string name="buy.title">Buy %s</string>
-  <string name="welcome.legal.concent" formatted="false">By using Gem, you agree to accept our\n [Terms of Use](%s) and [Privacy Policy](%s)</string>
   <string name="wallet.import.secret_phrase">Secret Phrase</string>
   <string name="wallet.name">Name</string>
   <string name="wallet.import.action">Import</string>
@@ -485,4 +484,13 @@
   <string name="stake.resource">Resource</string>
   <string name="stake.resource.energy">Energy</string>
   <string name="stake.resource.bandwidth">Bandwidth</string>
+  <string name="perpetual.modify">Modify</string>
+  <string name="perpetual.reduce_position">Reduce Position</string>
+  <string name="perpetual.increase_position">Increase Position</string>
+  <string name="banner.onboarding.title">Welcome to the Gem Family</string>
+  <string name="banner.onboarding.description">Buy or Receive crypto to your wallet to get started</string>
+  <string name="info.stake.reserved.title">Reserved for Network Fee</string>
+  <string name="info.stake.reserved.description">A small amount stays in your wallet to cover fees for operations like unstaking or claiming rewards.</string>
+  <string name="perpetual.open_direction">Open %s</string>
+  <string name="perpetual.close_direction">Close %s</string>
 </resources>

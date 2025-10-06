@@ -14,7 +14,6 @@
   <string name="wallet.new.title">新建錢包</string>
   <string name="receive.title">接收%s</string>
   <string name="buy.title">購買%s</string>
-  <string name="welcome.legal.concent" formatted="false">開始使用Gem ，表示您接受我們的【使用條款】（ %s ）和【隱私政策】（ %s ）。</string>
   <string name="wallet.import.secret_phrase">秘密助記詞</string>
   <string name="wallet.name">名字</string>
   <string name="wallet.import.action">導入</string>
@@ -41,9 +40,9 @@
   <string name="settings.title">設置</string>
   <string name="settings.developer">開發者</string>
   <string name="settings.version">版本</string>
-  <string name="errors.transfer">轉賬錯誤： %s</string>
+  <string name="errors.transfer">傳輸錯誤： %s</string>
   <string name="errors.validation">驗證錯誤： %s</string>
-  <string name="errors.create_wallet">創建錢包錯誤： %s</string>
+  <string name="errors.create_wallet">建立錢包錯誤： %s</string>
   <string name="wallet.manage_token_list">管理代幣</string>
   <string name="wallet.scan_qr_code">掃描二維碼</string>
   <string name="buy.providers.title">服務商</string>
@@ -435,7 +434,7 @@
   <string name="asset.buy_asset">購買%s</string>
   <string name="wallet.import_address_warning">您可以查看此地址的餘額和交易，但**不能發送或出售資金**。</string>
   <string name="info.stake_minimum_amount.title">最低金額</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">在%s網路上，最低質押要求為 ** %s **。</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">在%s網路上，最低質押要求為 **%s**。</string>
   <string name="asset.add_to_wallet">加入錢包</string>
   <string name="asset.hide_from_wallet">隱藏錢包</string>
   <string name="common.details">詳情</string>
@@ -485,4 +484,13 @@
   <string name="stake.resource">資源</string>
   <string name="stake.resource.energy">活力</string>
   <string name="stake.resource.bandwidth">頻寬</string>
+  <string name="perpetual.modify">調整</string>
+  <string name="perpetual.reduce_position">減倉</string>
+  <string name="perpetual.increase_position">增加職位</string>
+  <string name="banner.onboarding.title">歡迎加入 Gem 家庭</string>
+  <string name="banner.onboarding.description">購買或接收加密貨幣到您的錢包即可開始使用</string>
+  <string name="info.stake.reserved.title">預留網路費用</string>
+  <string name="info.stake.reserved.description">您的錢包中會留有少量資金，用於支付取消質押或領取獎勵等操作的費用。</string>
+  <string name="perpetual.open_direction">打開%s</string>
+  <string name="perpetual.close_direction">關閉%s</string>
 </resources>

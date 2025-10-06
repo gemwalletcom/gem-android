@@ -12,9 +12,8 @@
   <string name="wallets.title">Wallets</string>
   <string name="wallet.import.title">Import Wallet</string>
   <string name="wallet.new.title">New Wallet</string>
-  <string name="receive.title">Receive %s</string>
-  <string name="buy.title">Buy %s</string>
-  <string name="welcome.legal.concent" formatted="false">By using Gem, you agree to accept our\n [Terms of Use](%s) and [Privacy Policy](%s)</string>
+  <string name="receive.title">Ontvang %s</string>
+  <string name="buy.title">Koop %s</string>
   <string name="wallet.import.secret_phrase">Secret Phrase</string>
   <string name="wallet.name">Name</string>
   <string name="wallet.import.action">Import</string>
@@ -41,9 +40,9 @@
   <string name="settings.title">Settings</string>
   <string name="settings.developer">Developer</string>
   <string name="settings.version">Version</string>
-  <string name="errors.transfer">Transfer Error: %s</string>
-  <string name="errors.validation">Validation Error: %s</string>
-  <string name="errors.create_wallet">Create Wallet Error: %s</string>
+  <string name="errors.transfer">Overdrachtsfout: %s</string>
+  <string name="errors.validation">Validatiefout: %s</string>
+  <string name="errors.create_wallet">Fout bij het aanmaken van een portemonnee: %s</string>
   <string name="wallet.manage_token_list">Tokens beheren</string>
   <string name="wallet.scan_qr_code">Scan QR Code</string>
   <string name="buy.providers.title">Providers</string>
@@ -56,7 +55,7 @@
   <string name="common.paste">Paste</string>
   <string name="transfer.max">Max</string>
   <string name="common.delete">Delete</string>
-  <string name="common.delete_confirmation">Are sure you want to delete %s?</string>
+  <string name="common.delete_confirmation">Weet u zeker dat u %s wilt verwijderen?</string>
   <string name="settings.community">Community</string>
   <string name="common.hide">Hide</string>
   <string name="wallet.scan">Scan</string>
@@ -283,7 +282,7 @@
   <string name="warnings.multi_signature_blocked">Do not transfer funds to this %s Multi-Signature wallet unless you are certain you control the private keys. Failure to do so could expose you to scams, and you may permanently lose your assets.</string>
   <string name="swap.price_impact">Price Impact</string>
   <string name="wallet.sell">Sell</string>
-  <string name="sell.title">Sell %s</string>
+  <string name="sell.title">Verkoop %s</string>
   <string name="common.learn_more">Learn More</string>
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
@@ -435,7 +434,7 @@
   <string name="asset.buy_asset">Koop %s</string>
   <string name="wallet.import_address_warning">U kunt het saldo en de transacties voor dit adres bekijken, maar u kunt geen geld verzenden of verkopen.</string>
   <string name="info.stake_minimum_amount.title">Minimumbedrag</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">Op het %s netwerk is de minimale inzetvereiste ** %s **.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Op het %s netwerk is de minimale inzetvereiste **%s**.</string>
   <string name="asset.add_to_wallet">Toevoegen aan portemonnee</string>
   <string name="asset.hide_from_wallet">Verbergen voor portemonnee</string>
   <string name="common.details">Details</string>
@@ -449,7 +448,7 @@
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
   <string name="info.funding_rate.description">The funding rate determines the cost of holding a perpetual position. It is calculated hourly and helps maintain price equilibrium between the perpetual contract and the underlying asset\'s spot price.</string>
-  <string name="info.liquidation_price.title">Liquidation Price</string>
+  <string name="info.liquidation_price.title">Liquidatieprijs</string>
   <string name="info.liquidation_price.description">The liquidation price is the price level at which your position will be automatically closed to prevent further losses. When the market price reaches this level, your position is liquidated and you lose your margin.</string>
   <string name="info.open_interest.title">Open Interest</string>
   <string name="info.open_interest.description">Open interest represents the total value of all outstanding perpetual contracts that have not been settled. It provides insight into market activity and liquidity.</string>
@@ -485,4 +484,13 @@
   <string name="stake.resource">Hulpbron</string>
   <string name="stake.resource.energy">Energie</string>
   <string name="stake.resource.bandwidth">Bandbreedte</string>
+  <string name="perpetual.modify">Bewerken</string>
+  <string name="perpetual.reduce_position">Positie verkleinen</string>
+  <string name="perpetual.increase_position">Positie verhogen</string>
+  <string name="banner.onboarding.title">Welkom bij de Gem-familie</string>
+  <string name="banner.onboarding.description">Koop of ontvang crypto in uw portemonnee om te beginnen</string>
+  <string name="info.stake.reserved.title">Gereserveerd voor netwerkkosten</string>
+  <string name="info.stake.reserved.description">Een klein bedrag blijft in uw portemonnee staan om de kosten voor handelingen zoals unstaking of het claimen van beloningen te dekken.</string>
+  <string name="perpetual.open_direction">Open %s</string>
+  <string name="perpetual.close_direction">Sluiten %s</string>
 </resources>

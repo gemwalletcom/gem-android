@@ -14,7 +14,6 @@
   <string name="wallet.new.title">新建钱包</string>
   <string name="receive.title">接收%s</string>
   <string name="buy.title">购买%s</string>
-  <string name="welcome.legal.concent" formatted="false">开始使用 Gem，表示您接受我们的【使用条款】（%s）和【隐私政策】（%s）。</string>
   <string name="wallet.import.secret_phrase">助记词</string>
   <string name="wallet.name">名称</string>
   <string name="wallet.import.action">导入</string>
@@ -41,9 +40,9 @@
   <string name="settings.title">设置</string>
   <string name="settings.developer">开发者</string>
   <string name="settings.version">版本</string>
-  <string name="errors.transfer">转账错误：%s</string>
-  <string name="errors.validation">验证错误：%s</string>
-  <string name="errors.create_wallet">创建钱包错误: %s</string>
+  <string name="errors.transfer">传输错误： %s</string>
+  <string name="errors.validation">验证错误： %s</string>
+  <string name="errors.create_wallet">创建钱包错误： %s</string>
   <string name="wallet.manage_token_list">管理代币</string>
   <string name="wallet.scan_qr_code">扫描二维码</string>
   <string name="buy.providers.title">服务商</string>
@@ -56,7 +55,7 @@
   <string name="common.paste">粘贴</string>
   <string name="transfer.max">最大值</string>
   <string name="common.delete">删除</string>
-  <string name="common.delete_confirmation">确认删除%s吗？</string>
+  <string name="common.delete_confirmation">确定要删除%s吗？</string>
   <string name="settings.community">社区</string>
   <string name="common.hide">隐藏</string>
   <string name="wallet.scan">扫码</string>
@@ -435,7 +434,7 @@
   <string name="asset.buy_asset">购买%s</string>
   <string name="wallet.import_address_warning">您可以查看此地址的余额和交易，但**不能发送或出售资金**。</string>
   <string name="info.stake_minimum_amount.title">最低金额</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">在%s网络上，最低质押要求为 ** %s **。</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">在%s网络上，最低质押要求为 **%s**。</string>
   <string name="asset.add_to_wallet">添加到钱包</string>
   <string name="asset.hide_from_wallet">隐藏钱包</string>
   <string name="common.details">详情</string>
@@ -485,4 +484,13 @@
   <string name="stake.resource">资源</string>
   <string name="stake.resource.energy">活力</string>
   <string name="stake.resource.bandwidth">带宽</string>
+  <string name="perpetual.modify">调整</string>
+  <string name="perpetual.reduce_position">减仓</string>
+  <string name="perpetual.increase_position">增加职位</string>
+  <string name="banner.onboarding.title">欢迎加入 Gem 家庭</string>
+  <string name="banner.onboarding.description">购买或接收加密货币到您的钱包即可开始使用</string>
+  <string name="info.stake.reserved.title">预留网络费</string>
+  <string name="info.stake.reserved.description">您的钱包中会留有少量资金，用于支付取消质押或领取奖励等操作的费用。</string>
+  <string name="perpetual.open_direction">打开%s</string>
+  <string name="perpetual.close_direction">关闭%s</string>
 </resources>

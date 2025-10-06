@@ -8,6 +8,7 @@ import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetBalance
 import com.gemwallet.android.model.Balance
+import com.wallet.core.primitives.BalanceMetadata
 
 @Entity(
     tableName = "balances",
@@ -45,6 +46,11 @@ data class DbBalance(
 
     @ColumnInfo("total_amount") var totalAmount: Double = 0.0,
     @ColumnInfo("is_active") var isActive: Boolean = true,
+    @ColumnInfo("votes", defaultValue = "0") var votes: Long = 0L,
+    @ColumnInfo("energy_available", defaultValue = "0") var energyAvailable: Long = 0L,
+    @ColumnInfo("energy_total", defaultValue = "0") var energyTotal: Long = 0L,
+    @ColumnInfo("bandwidth_available", defaultValue = "0") var bandwidthAvailable: Long = 0L,
+    @ColumnInfo("bandwidth_total", defaultValue = "0") var bandwidthTotal: Long = 0L,
     @ColumnInfo("updated_at") var updatedAt: Long?,
 ) {
     companion object
@@ -70,6 +76,11 @@ fun AssetBalance.toRecord(walletId: String, accountAddress: String, updateAt: Lo
         reserved = this.balance.reserved,
         reservedAmount = this.balanceAmount.reserved,
         totalAmount = this.totalAmount,
+        energyAvailable = this.metadata?.energyAvailable?.toLong() ?: 0L,
+        energyTotal = this.metadata?.energyAvailable?.toLong() ?: 0L,
+        bandwidthAvailable = this.metadata?.bandwidthAvailable?.toLong() ?: 0L,
+        bandwidthTotal = this.metadata?.bandwidthTotal?.toLong() ?: 0L,
+        votes = this.metadata?.votes?.toLong() ?: 0L,
         updatedAt = updateAt,
         isActive = isActive,
     )
@@ -98,6 +109,13 @@ fun DbBalance.toModel(): AssetBalance? {
         ),
         totalAmount = totalAmount,
         isActive = isActive,
+        metadata = BalanceMetadata(
+            votes = votes.toUInt(),
+            energyAvailable = energyAvailable.toUInt(),
+            energyTotal = energyTotal.toUInt(),
+            bandwidthAvailable = bandwidthAvailable.toUInt(),
+            bandwidthTotal = bandwidthTotal.toUInt(),
+        )
     )
 }
 
@@ -133,6 +151,7 @@ fun DbBalance.Companion.mergeDelegation(old: DbBalance?, current: DbBalance?): D
                 + newBalance.stakedAmount
                 + newBalance.pendingAmount
                 + newBalance.rewardsAmount
-                + newBalance.reservedAmount
+                + newBalance.reservedAmount,
+
     )
 }

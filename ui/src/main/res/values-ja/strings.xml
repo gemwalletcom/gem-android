@@ -12,9 +12,8 @@
   <string name="wallets.title">ウォレット</string>
   <string name="wallet.import.title">ウォレットをインポート</string>
   <string name="wallet.new.title">新しいウォレット</string>
-  <string name="receive.title">%sを受け取る</string>
-  <string name="buy.title">%s を購入</string>
-  <string name="welcome.legal.concent" formatted="false">Gemを使用すると、私たちの\n[利用規約](%s)と[プライバシーポリシー](%s)に同意します</string>
+  <string name="receive.title">%sを受信</string>
+  <string name="buy.title">%sを購入</string>
   <string name="wallet.import.secret_phrase">シークレットリカバリーフレーズ</string>
   <string name="wallet.name">名前</string>
   <string name="wallet.import.action">インポート</string>
@@ -41,9 +40,9 @@
   <string name="settings.title">設定</string>
   <string name="settings.developer">開発者</string>
   <string name="settings.version">バージョン</string>
-  <string name="errors.transfer">送金エラー：%s</string>
+  <string name="errors.transfer">転送エラー: %s</string>
   <string name="errors.validation">検証エラー: %s</string>
-  <string name="errors.create_wallet">ウォレット作成エラー：%s</string>
+  <string name="errors.create_wallet">ウォレット作成エラー: %s</string>
   <string name="wallet.manage_token_list">トークンの管理</string>
   <string name="wallet.scan_qr_code">QRコードをスキャン</string>
   <string name="buy.providers.title">プロバイダー</string>
@@ -56,7 +55,7 @@
   <string name="common.paste">ペースト</string>
   <string name="transfer.max">マックス</string>
   <string name="common.delete">消去</string>
-  <string name="common.delete_confirmation">本当に%s削除してもよろしいですか?</string>
+  <string name="common.delete_confirmation">%sを削除してもよろしいですか?</string>
   <string name="settings.community">コミュニティ</string>
   <string name="common.hide">隠れる</string>
   <string name="wallet.scan">スキャン</string>
@@ -283,7 +282,7 @@
   <string name="warnings.multi_signature_blocked">秘密鍵を確実に管理していない限り、この%sマルチ署名ウォレットに資金を送金しないでください。そうしないと、詐欺に遭う可能性があり、資産を永久に失う可能性があります。</string>
   <string name="swap.price_impact">価格の影響</string>
   <string name="wallet.sell">売却する</string>
-  <string name="sell.title">売却する%s</string>
+  <string name="sell.title">%sを売る</string>
   <string name="common.learn_more">もっと詳しく知る</string>
   <string name="info.network_fee.title">ネットワーク料金</string>
   <string name="info.watch_wallet.title">ウォッチ</string>
@@ -435,7 +434,7 @@
   <string name="asset.buy_asset">%sを購入</string>
   <string name="wallet.import_address_warning">このアドレスの残高と取引は表示できますが、**資金を送信または売却することはできません**。</string>
   <string name="info.stake_minimum_amount.title">最低金額</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">%sネットワークでは、最小ステーキング要件は ** %s ** です。</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">%sネットワークでは、最小ステーキング要件は **%s** です。</string>
   <string name="asset.add_to_wallet">ウォレットに追加</string>
   <string name="asset.hide_from_wallet">ウォレットから隠す</string>
   <string name="common.details">ディテール</string>
@@ -485,4 +484,13 @@
   <string name="stake.resource">リソース</string>
   <string name="stake.resource.energy">エネルギー</string>
   <string name="stake.resource.bandwidth">帯域</string>
+  <string name="perpetual.modify">修正する</string>
+  <string name="perpetual.reduce_position">位置を減らす</string>
+  <string name="perpetual.increase_position">ポジションを上げる</string>
+  <string name="banner.onboarding.title">Gemファミリーへようこそ</string>
+  <string name="banner.onboarding.description">始めるにはウォレットで暗号通貨を購入または受け取りましょう</string>
+  <string name="info.stake.reserved.title">ネットワーク料金用に予約</string>
+  <string name="info.stake.reserved.description">ステーキング解除や報酬の請求などの操作にかかる手数料をカバーするために、少額がウォレットに残ります。</string>
+  <string name="perpetual.open_direction">%sを開く</string>
+  <string name="perpetual.close_direction">%sを閉じる</string>
 </resources>

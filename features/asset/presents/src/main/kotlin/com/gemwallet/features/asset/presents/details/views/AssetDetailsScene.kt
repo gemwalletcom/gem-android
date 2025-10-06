@@ -33,6 +33,7 @@ import com.gemwallet.features.asset.presents.details.views.components.AssetHeadI
 import com.gemwallet.features.asset.presents.details.views.components.BalancePropertyItem
 import com.gemwallet.features.asset.presents.details.views.components.BannerItem
 import com.gemwallet.features.asset.presents.details.views.components.EmptyTransactionsItem
+import com.gemwallet.features.asset.presents.details.views.components.energyItem
 import com.gemwallet.features.asset.presents.details.views.components.balancesHeader
 import com.gemwallet.features.asset.presents.details.views.components.network
 import com.gemwallet.features.asset.presents.details.views.components.price
@@ -142,6 +143,7 @@ internal fun AssetDetailsScene(
                         }
                     )
                 }
+                energyItem(uiState.accountInfoUIModel.balanceMetadata)
                 item { EmptyTransactionsItem(transactions.size) }
                 transactionsList(transactions, onTransaction)
             }

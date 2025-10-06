@@ -193,6 +193,7 @@ class AssetDetailsViewModel @Inject constructor(
                     totalBalance = balances.totalFormatted(),
                     totalFiat = fiatTotal,
                     owner = assetInfo.owner?.address ?: "",
+                    balanceMetadata = assetInfo.balance.metadata,
                     hasBalanceDetails = StakeChain.isStaked(asset.id.chain) || balances.balanceAmount.reserved != 0.0,
                     available = if (balances.balanceAmount.available != total) {
                         balances.availableFormatted()

@@ -6,6 +6,7 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.models.PriceState
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
+import com.wallet.core.primitives.BalanceMetadata
 import com.wallet.core.primitives.WalletType
 
 class AssetInfoUIModel(
@@ -35,6 +36,7 @@ class AssetInfoUIModel(
         val available: String = "0",
         val stake: String = "0",
         val reserved: String = "0",
+        val balanceMetadata: BalanceMetadata? = null,
     ) {
         val balances: List<BalanceUIModel>
             get() = mutableListOf<BalanceUIModel>().apply {

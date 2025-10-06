@@ -12,9 +12,8 @@
   <string name="wallets.title">Ví</string>
   <string name="wallet.import.title">Nhập ví</string>
   <string name="wallet.new.title">Ví mới</string>
-  <string name="receive.title">Receive %s</string>
-  <string name="buy.title">Buy %s</string>
-  <string name="welcome.legal.concent" formatted="false">By using Gem, you agree to accept our\n [Terms of Use](%s) and [Privacy Policy](%s)</string>
+  <string name="receive.title">Nhận %s</string>
+  <string name="buy.title">Mua %s</string>
   <string name="wallet.import.secret_phrase">Secret Phrase</string>
   <string name="wallet.name">Name</string>
   <string name="wallet.import.action">Import</string>
@@ -41,9 +40,9 @@
   <string name="settings.title">Settings</string>
   <string name="settings.developer">Developer</string>
   <string name="settings.version">Version</string>
-  <string name="errors.transfer">Transfer Error: %s</string>
-  <string name="errors.validation">Validation Error: %s</string>
-  <string name="errors.create_wallet">Create Wallet Error: %s</string>
+  <string name="errors.transfer">Lỗi chuyển giao: %s</string>
+  <string name="errors.validation">Lỗi xác thực: %s</string>
+  <string name="errors.create_wallet">Lỗi tạo ví: %s</string>
   <string name="wallet.manage_token_list">Quản lý mã thông báo</string>
   <string name="wallet.scan_qr_code">Scan QR Code</string>
   <string name="buy.providers.title">Providers</string>
@@ -283,7 +282,7 @@
   <string name="warnings.multi_signature_blocked">Không chuyển tiền vào ví Đa chữ ký %s này trừ khi bạn chắc chắn mình kiểm soát được khóa riêng. Nếu không làm như vậy, bạn có thể bị lừa đảo và có thể mất vĩnh viễn tài sản của mình.</string>
   <string name="swap.price_impact">Tác động giá</string>
   <string name="wallet.sell">Bán</string>
-  <string name="sell.title">Sell %s</string>
+  <string name="sell.title">Bán %s</string>
   <string name="common.learn_more">Tìm hiểu thêm</string>
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
@@ -435,7 +434,7 @@
   <string name="asset.buy_asset">Mua %s</string>
   <string name="wallet.import_address_warning">Bạn có thể xem số dư và giao dịch của địa chỉ này, nhưng **không thể gửi hoặc bán tiền**.</string>
   <string name="info.stake_minimum_amount.title">Số tiền tối thiểu</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">Trên mạng %s, yêu cầu đặt cược tối thiểu là ** %s **.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Trên mạng %s, yêu cầu đặt cược tối thiểu là **%s**.</string>
   <string name="asset.add_to_wallet">Thêm vào ví</string>
   <string name="asset.hide_from_wallet">Ẩn khỏi ví</string>
   <string name="common.details">Chi tiết</string>
@@ -449,7 +448,7 @@
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
   <string name="info.funding_rate.description">The funding rate determines the cost of holding a perpetual position. It is calculated hourly and helps maintain price equilibrium between the perpetual contract and the underlying asset\'s spot price.</string>
-  <string name="info.liquidation_price.title">Liquidation Price</string>
+  <string name="info.liquidation_price.title">Giá thanh lý</string>
   <string name="info.liquidation_price.description">The liquidation price is the price level at which your position will be automatically closed to prevent further losses. When the market price reaches this level, your position is liquidated and you lose your margin.</string>
   <string name="info.open_interest.title">Open Interest</string>
   <string name="info.open_interest.description">Open interest represents the total value of all outstanding perpetual contracts that have not been settled. It provides insight into market activity and liquidity.</string>
@@ -485,4 +484,13 @@
   <string name="stake.resource">Tài nguyên</string>
   <string name="stake.resource.energy">Năng lượng</string>
   <string name="stake.resource.bandwidth">Băng thông</string>
+  <string name="perpetual.modify">Biến đổi</string>
+  <string name="perpetual.reduce_position">Giảm vị trí</string>
+  <string name="perpetual.increase_position">Tăng vị trí</string>
+  <string name="banner.onboarding.title">Chào mừng đến với gia đình Gem</string>
+  <string name="banner.onboarding.description">Mua hoặc nhận tiền điện tử vào ví của bạn để bắt đầu</string>
+  <string name="info.stake.reserved.title">Dành riêng cho Phí mạng</string>
+  <string name="info.stake.reserved.description">Một số tiền nhỏ sẽ được giữ lại trong ví của bạn để trang trải phí cho các hoạt động như hủy đặt cọc hoặc nhận phần thưởng.</string>
+  <string name="perpetual.open_direction">Mở %s</string>
+  <string name="perpetual.close_direction">Đóng %s</string>
 </resources>

@@ -13,6 +13,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetMetaData
 import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.AssetType
+import com.wallet.core.primitives.BalanceMetadata
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.WalletType
@@ -65,7 +66,12 @@ import kotlinx.coroutines.flow.map
             balances.total_amount AS balanceTotalAmount,
             (balances.total_amount * prices.value) AS balanceFiatTotalAmount,
             balances.updated_at AS balanceUpdatedAt,
-            balances.is_active AS assetIsActive
+            balances.is_active AS assetIsActive,
+            balances.votes AS votes,
+            balances.energy_available as energyAvailable,
+            balances.energy_total as energyTotal,
+            balances.bandwidth_available as bandwidthAvailable, 
+            balances.bandwidth_total as bandwidthTotal
         FROM asset
         LEFT JOIN asset_wallet ON asset.id = asset_wallet.asset_id
         LEFT JOIN session ON asset_wallet.wallet_id = session.wallet_id
@@ -122,6 +128,11 @@ data class DbAssetInfo(
     val balanceReservedAmount: Double?,
     val balanceTotalAmount: Double?,
     val balanceFiatTotalAmount: Double?,
+    val votes: Long?,
+    val energyAvailable: Long?,
+    val energyTotal: Long?,
+    val bandwidthAvailable: Long?,
+    val bandwidthTotal: Long?,
     val assetIsActive: Boolean?,
 
     val balanceUpdatedAt: Long?,
@@ -163,8 +174,17 @@ fun DbAssetInfo.toModel(): AssetInfo? {
         ),
         totalAmount = entity.balanceTotalAmount ?: 0.0,
         fiatTotalAmount = entity.balanceFiatTotalAmount ?: 0.0,
+        metadata = if ((entity.energyTotal ?: 0) > 0 || (entity.bandwidthTotal ?: 0) > 0) {
+            BalanceMetadata(
+                votes = entity.votes?.toUInt() ?: 0U,
+                energyAvailable = entity.energyAvailable?.toUInt() ?: 0U,
+                energyTotal = entity.energyTotal?.toUInt() ?: 0U,
+                bandwidthAvailable = entity.bandwidthAvailable?.toUInt() ?: 0U,
+                bandwidthTotal = entity.bandwidthTotal?.toUInt() ?: 0U,
+            )
+        } else null,
         isActive = when (assetId.chain) {
-            Chain.Xrp -> assetIsActive != false // TODO: Fast fix removed in price websockets. Idea: Some users have inconsistent database.
+            Chain.Xrp -> assetIsActive != false
             else -> true
         },
     )

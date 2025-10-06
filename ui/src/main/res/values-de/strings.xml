@@ -13,8 +13,7 @@
   <string name="wallet.import.title">Wallet importieren</string>
   <string name="wallet.new.title">Neue Wallet</string>
   <string name="receive.title">Empfangen %s</string>
-  <string name="buy.title">%s kaufen</string>
-  <string name="welcome.legal.concent" formatted="false">Durch die Nutzung von Gem erklären Sie sich mit unseren [Nutzungsbedingungen](%s) und [Datenschutzbestimmungen](%s) einverstanden.</string>
+  <string name="buy.title">Kaufen %s</string>
   <string name="wallet.import.secret_phrase">Geheimen Sicherheitsschlüssel</string>
   <string name="wallet.name">Name</string>
   <string name="wallet.import.action">Importieren</string>
@@ -41,9 +40,9 @@
   <string name="settings.title">Einstellungen</string>
   <string name="settings.developer">Entwickler</string>
   <string name="settings.version">Version</string>
-  <string name="errors.transfer">Transfer Fehler: %s</string>
+  <string name="errors.transfer">Übertragungsfehler: %s</string>
   <string name="errors.validation">Validierungsfehler: %s</string>
-  <string name="errors.create_wallet">Fehler beim Erstellen der Wallet: %s</string>
+  <string name="errors.create_wallet">Fehler beim Erstellen der Brieftasche: %s</string>
   <string name="wallet.manage_token_list">Token verwalten</string>
   <string name="wallet.scan_qr_code">QR-Code scannen</string>
   <string name="buy.providers.title">Anbieter</string>
@@ -56,7 +55,7 @@
   <string name="common.paste">Einfügen</string>
   <string name="transfer.max">Max</string>
   <string name="common.delete">Löschen</string>
-  <string name="common.delete_confirmation">Sind Sie sicher, dass Sie %s löschen wollen?</string>
+  <string name="common.delete_confirmation">Möchten Sie %s wirklich löschen?</string>
   <string name="settings.community">Community</string>
   <string name="common.hide">Ausblenden</string>
   <string name="wallet.scan">Scannen</string>
@@ -283,7 +282,7 @@
   <string name="warnings.multi_signature_blocked">Überweisen Sie kein Geld auf dieses %s Multi-Signature-Wallet, es sei denn, Sie sind sicher, dass Sie die privaten Schlüssel kontrollieren. Andernfalls könnten Sie Opfer von Betrug werden und Ihr Vermögen dauerhaft verlieren.</string>
   <string name="swap.price_impact">Preisauswirkungen</string>
   <string name="wallet.sell">Verkaufen</string>
-  <string name="sell.title">Sell %s</string>
+  <string name="sell.title">Verkaufen %s</string>
   <string name="common.learn_more">Mehr erfahren</string>
   <string name="info.network_fee.title">Netzwerk-Gebühr</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
@@ -435,7 +434,7 @@
   <string name="asset.buy_asset">Kaufen %s</string>
   <string name="wallet.import_address_warning">Sie können Guthaben und Transaktionen für diese Adresse anzeigen, aber **kein Geld senden oder verkaufen**.</string>
   <string name="info.stake_minimum_amount.title">Mindestbetrag</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">Im %s -Netzwerk beträgt die Mindesteinsatzanforderung ** %s **.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">Im %s -Netzwerk beträgt die Mindesteinsatzanforderung **%s**.</string>
   <string name="asset.add_to_wallet">Zum Wallet hinzufügen</string>
   <string name="asset.hide_from_wallet">Vor der Brieftasche verstecken</string>
   <string name="common.details">Details</string>
@@ -449,7 +448,7 @@
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
   <string name="info.funding_rate.description">The funding rate determines the cost of holding a perpetual position. It is calculated hourly and helps maintain price equilibrium between the perpetual contract and the underlying asset\'s spot price.</string>
-  <string name="info.liquidation_price.title">Liquidation Price</string>
+  <string name="info.liquidation_price.title">Liquidationspreis</string>
   <string name="info.liquidation_price.description">The liquidation price is the price level at which your position will be automatically closed to prevent further losses. When the market price reaches this level, your position is liquidated and you lose your margin.</string>
   <string name="info.open_interest.title">Open Interest</string>
   <string name="info.open_interest.description">Open interest represents the total value of all outstanding perpetual contracts that have not been settled. It provides insight into market activity and liquidity.</string>
@@ -485,4 +484,13 @@
   <string name="stake.resource">Ressource</string>
   <string name="stake.resource.energy">Energie</string>
   <string name="stake.resource.bandwidth">Bandbreite</string>
+  <string name="perpetual.modify">Ändern</string>
+  <string name="perpetual.reduce_position">Position reduzieren</string>
+  <string name="perpetual.increase_position">Position erhöhen</string>
+  <string name="banner.onboarding.title">Willkommen in der Gem-Familie</string>
+  <string name="banner.onboarding.description">Kaufen oder erhalten Sie Kryptowährungen in Ihr Wallet, um loszulegen</string>
+  <string name="info.stake.reserved.title">Reserviert für Netzwerkgebühr</string>
+  <string name="info.stake.reserved.description">Ein kleiner Betrag verbleibt in Ihrem Wallet, um Gebühren für Vorgänge wie das Aufheben der Absteckung oder das Einfordern von Prämien zu decken.</string>
+  <string name="perpetual.open_direction">Öffnen %s</string>
+  <string name="perpetual.close_direction">Schließen %s</string>
 </resources>

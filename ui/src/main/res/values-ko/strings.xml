@@ -12,9 +12,8 @@
   <string name="wallets.title">지갑</string>
   <string name="wallet.import.title">지갑 가져오기</string>
   <string name="wallet.new.title">새로운 지갑</string>
-  <string name="receive.title">Receive %s</string>
-  <string name="buy.title">Buy %s</string>
-  <string name="welcome.legal.concent" formatted="false">By using Gem, you agree to accept our\n [Terms of Use](%s) and [Privacy Policy](%s)</string>
+  <string name="receive.title">%s 받습니다.</string>
+  <string name="buy.title">%s 구매</string>
   <string name="wallet.import.secret_phrase">Secret Phrase</string>
   <string name="wallet.name">Name</string>
   <string name="wallet.import.action">Import</string>
@@ -41,9 +40,9 @@
   <string name="settings.title">Settings</string>
   <string name="settings.developer">Developer</string>
   <string name="settings.version">Version</string>
-  <string name="errors.transfer">Transfer Error: %s</string>
-  <string name="errors.validation">Validation Error: %s</string>
-  <string name="errors.create_wallet">Create Wallet Error: %s</string>
+  <string name="errors.transfer">전송 오류: %s</string>
+  <string name="errors.validation">유효성 검사 오류: %s</string>
+  <string name="errors.create_wallet">지갑 생성 오류: %s</string>
   <string name="wallet.manage_token_list">토큰 관리</string>
   <string name="wallet.scan_qr_code">Scan QR Code</string>
   <string name="buy.providers.title">Providers</string>
@@ -56,7 +55,7 @@
   <string name="common.paste">반죽</string>
   <string name="transfer.max">맥스</string>
   <string name="common.delete">삭제</string>
-  <string name="common.delete_confirmation">%s 삭제하시겠습니까?</string>
+  <string name="common.delete_confirmation">%s (를) 삭제하시겠습니까?</string>
   <string name="settings.community">지역 사회</string>
   <string name="common.hide">숨다</string>
   <string name="wallet.scan">주사</string>
@@ -283,7 +282,7 @@
   <string name="warnings.multi_signature_blocked">개인 키를 제어하고 있다는 확신이 없다면 이 %s 다중 서명 지갑으로 자금을 이체하지 마십시오. 그렇지 않으면 사기에 노출될 수 있으며 자산을 영구적으로 잃을 수 있습니다.</string>
   <string name="swap.price_impact">가격 영향</string>
   <string name="wallet.sell">팔다</string>
-  <string name="sell.title">Sell %s</string>
+  <string name="sell.title">%s 판매</string>
   <string name="common.learn_more">더 알아보기</string>
   <string name="info.network_fee.title">Network Fee</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
@@ -435,7 +434,7 @@
   <string name="asset.buy_asset">%s 구매</string>
   <string name="wallet.import_address_warning">이 주소에 대한 잔액과 거래 내역은 볼 수 있지만, **자금을 보내거나 판매할 수는 없습니다**.</string>
   <string name="info.stake_minimum_amount.title">최소 금액</string>
-  <string name="info.stake_minimum_amount.description" formatted="false">%s 네트워크에서 최소 스테이킹 요구 사항은 ** %s **입니다.</string>
+  <string name="info.stake_minimum_amount.description" formatted="false">%s 네트워크에서 최소 스테이킹 요구 사항은 **%s**입니다.</string>
   <string name="asset.add_to_wallet">지갑에 추가</string>
   <string name="asset.hide_from_wallet">지갑에서 숨기기</string>
   <string name="common.details">세부</string>
@@ -449,7 +448,7 @@
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
   <string name="info.funding_rate.description">The funding rate determines the cost of holding a perpetual position. It is calculated hourly and helps maintain price equilibrium between the perpetual contract and the underlying asset\'s spot price.</string>
-  <string name="info.liquidation_price.title">Liquidation Price</string>
+  <string name="info.liquidation_price.title">청산 가격</string>
   <string name="info.liquidation_price.description">The liquidation price is the price level at which your position will be automatically closed to prevent further losses. When the market price reaches this level, your position is liquidated and you lose your margin.</string>
   <string name="info.open_interest.title">Open Interest</string>
   <string name="info.open_interest.description">Open interest represents the total value of all outstanding perpetual contracts that have not been settled. It provides insight into market activity and liquidity.</string>
@@ -485,4 +484,13 @@
   <string name="stake.resource">의지</string>
   <string name="stake.resource.energy">에너지</string>
   <string name="stake.resource.bandwidth">대역폭</string>
+  <string name="perpetual.modify">수정하다</string>
+  <string name="perpetual.reduce_position">위치 줄이기</string>
+  <string name="perpetual.increase_position">위치 증가</string>
+  <string name="banner.onboarding.title">Gem 패밀리에 오신 것을 환영합니다</string>
+  <string name="banner.onboarding.description">시작하려면 암호화폐를 구매하거나 지갑으로 받으세요</string>
+  <string name="info.stake.reserved.title">네트워크 수수료로 예약됨</string>
+  <string name="info.stake.reserved.description">스테이킹 해제나 보상 청구 등의 수수료를 충당하기 위해 소액이 지갑에 남아 있습니다.</string>
+  <string name="perpetual.open_direction">%s 열기</string>
+  <string name="perpetual.close_direction">%s 닫기</string>
 </resources>

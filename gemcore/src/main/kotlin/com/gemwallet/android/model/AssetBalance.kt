@@ -1,6 +1,7 @@
 package com.gemwallet.android.model
 
 import com.wallet.core.primitives.Asset
+import com.wallet.core.primitives.BalanceMetadata
 import java.math.BigInteger
 
 data class AssetBalance(
@@ -9,6 +10,7 @@ data class AssetBalance(
     val balanceAmount: Balance<Double> = Balance(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
     val totalAmount: Double = 0.0,
     val fiatTotalAmount: Double = 0.0,
+    val metadata: BalanceMetadata? = null,
     val isActive: Boolean = true,
 ) {
 
@@ -40,6 +42,7 @@ data class AssetBalance(
             pending: String = "0",
             rewards: String = "0",
             reserved: String = "0",
+            metadata: BalanceMetadata? = null,
             isActive: Boolean = true,
         ): AssetBalance {
             val balance = Balance(  // TODO: Check number is correct
@@ -58,6 +61,7 @@ data class AssetBalance(
                 balanceAmount = balanceAmount,
                 totalAmount = balanceAmount.getTotalAmount(),
                 fiatTotalAmount = 0.0,
+                metadata = metadata,
                 isActive = isActive,
             )
         }
