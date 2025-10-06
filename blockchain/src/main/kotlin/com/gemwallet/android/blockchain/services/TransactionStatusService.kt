@@ -7,8 +7,8 @@ import com.gemwallet.android.model.TransactionChanges
 import com.wallet.core.primitives.TransactionState
 import okhttp3.internal.toLongOrDefault
 import uniffi.gemstone.GemGateway
-import uniffi.gemstone.GemTransactionChange
 import uniffi.gemstone.GemTransactionStateRequest
+import uniffi.gemstone.TransactionChange
 
 class TransactionStatusService(
     private val gateway: GemGateway,
@@ -24,9 +24,9 @@ class TransactionStatusService(
                     blockNumber = request.block.toLongOrDefault(0L) ,
                 )
             )
-            val fee = result.changes.firstNotNullOfOrNull { it as? GemTransactionChange.NetworkFee }
+            val fee = result.changes.firstNotNullOfOrNull { it as? TransactionChange.NetworkFee }
                 ?.v1?.toBigIntegerOrNull()
-            val hashChanges = result.changes.firstNotNullOfOrNull { it as? GemTransactionChange.HashChange }
+            val hashChanges = result.changes.firstNotNullOfOrNull { it as? TransactionChange.HashChange }
 
             TransactionChanges(
                 state = TransactionState.entries.firstOrNull { it.string == result.state } ?: throw ServiceUnavailable,
