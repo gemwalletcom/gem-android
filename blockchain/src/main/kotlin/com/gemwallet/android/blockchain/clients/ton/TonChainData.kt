@@ -12,6 +12,6 @@ data class TonChainData(
 fun GemTransactionLoadMetadata.Ton.toChainData(): TonChainData {
     return TonChainData(
         sequence = sequence,
-        jettonAddress = recipientTokenAddress,
+        jettonAddress = senderTokenAddress,
     )
 }
