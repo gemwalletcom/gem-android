@@ -99,14 +99,8 @@ class TronSignClient(
         privateKey: ByteArray
     ): List<ByteArray> {
         val chainData = chainData as TronChainData
-        val freezContract = Tron.FreezeBalanceV2Contract.newBuilder().apply {
-            this.ownerAddress = params.from.address
-            this.frozenBalance = params.amount.toLong()
-            this.resource = "BANDWIDTH"
-        }.build()
         val voteContract = createVoteContract(chainData, params.from.address)
         return listOf(
-            sign(chainData, freezContract, fee, privateKey),
             sign(chainData, voteContract, fee, privateKey),
         )
     }
@@ -121,11 +115,6 @@ class TronSignClient(
         val chainData = chainData as TronChainData
         val votes = chainData.votes
         return listOfNotNull(
-            Tron.UnfreezeBalanceV2Contract.newBuilder().apply {
-                this.ownerAddress = params.from.address
-                this.unfreezeBalance = params.amount.toLong()
-                this.resource = "BANDWIDTH"
-            }.build(),
             if (votes.isEmpty()) null else createVoteContract(chainData, params.from.address),
         )
         .map {
@@ -175,6 +164,38 @@ class TronSignClient(
         return listOf(
             sign(chainData, contract, fee, privateKey)
         )
+    }
+
+    override suspend fun signFreeze(
+        params: ConfirmParams.Stake.Freeze,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        fee: Fee,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val chainData = chainData as TronChainData
+        val freezeContract = Tron.FreezeBalanceV2Contract.newBuilder().apply {
+            this.ownerAddress = params.from.address
+            this.frozenBalance = params.amount.toLong()
+            this.resource = params.resource.string.uppercase()
+        }.build()
+        return listOf(sign(chainData, freezeContract, fee, privateKey))
+    }
+
+    override suspend fun signUnfreeze(
+        params: ConfirmParams.Stake.Unfreeze,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        fee: Fee,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val chainData = chainData as TronChainData
+        val unfreezeContract = Tron.UnfreezeBalanceV2Contract.newBuilder().apply {
+            this.ownerAddress = params.from.address
+            this.unfreezeBalance = params.amount.toLong()
+            this.resource = params.resource.string.uppercase()
+        }.build()
+        return listOf(sign(chainData, unfreezeContract, fee, privateKey))
     }
 
     override suspend fun signSwap(

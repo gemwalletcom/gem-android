@@ -8,7 +8,7 @@ import androidx.navigation.navOptions
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.features.asset_select.presents.views.SelectSendScreen
-import com.gemwallet.features.transfer_amount.presents.views.AmountScreen
+import com.gemwallet.features.transfer_amount.presents.AmountScreen
 import com.wallet.core.primitives.AssetId
 import kotlinx.serialization.Serializable
 

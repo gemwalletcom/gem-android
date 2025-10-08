@@ -32,7 +32,7 @@ room = "2.8.1"
 securityCrypto = "1.1.0"
 compose = "1.9.2"
 materialIcons = "1.7.8"
-material3 = "1.4.0"
+material3 = "1.5.0-alpha04"
 navigationCompose = "2.9.5"
 uiTestJunit4 = "1.9.2"
 testRunner = "1.7.0"
@@ -43,7 +43,7 @@ google-services = "4.4.3"
 material3AdaptiveAndroid = "1.0.0-alpha06"
 turbine = "1.2.1"
 reorderable = "3.0.0"
-mockkVersion = "1.14.5"
+mockkVersion = "1.14.6"
 datastore = "1.1.7"
 wallet-core = "4.3.5"
 gemstone = "0.33.9"
@@ -51,6 +51,7 @@ ktor = "3.3.0"
 appcompat = "1.7.1"
 material = "1.13.0"
 constraint = "1.1.1"
+composeMaterial3 = "1.5.2"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -161,6 +162,7 @@ turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 androidx-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiautomator" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockkVersion" }
 mockk-agent =  { module = "io.mockk:mockk-agent", version.ref = "mockkVersion" }
+androidx-compose-material3 = { group = "androidx.wear.compose", name = "compose-material3", version.ref = "composeMaterial3" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}

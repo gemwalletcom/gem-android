@@ -280,10 +280,7 @@ private data class RequestViewModelState(
                     description = sessionRequest.peerMetaData?.description ?: "",
                     url = sessionRequest.peerMetaData?.url ?: "",
                     icon = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
-                    redirectNative = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
-                    redirectUniversal = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
                     gasLimit = "",
-                    gasPrice = "",
                     inputType = ConfirmParams.TransferParams.InputType.Signature
                 )
             )
@@ -296,10 +293,7 @@ private data class RequestViewModelState(
                     description = sessionRequest.peerMetaData?.description ?: "",
                     url = sessionRequest.peerMetaData?.url ?: "",
                     icon = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
-                    redirectNative = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
-                    redirectUniversal = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
                     gasLimit = "",
-                    gasPrice = "",
                     inputType = ConfirmParams.TransferParams.InputType.EncodeTransaction
                 )
             )

@@ -30,12 +30,16 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
 import com.wallet.core.primitives.FeePriority
+import com.wallet.core.primitives.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.GemApprovalData
+import uniffi.gemstone.GemFreezeData
+import uniffi.gemstone.GemFreezeType
 import uniffi.gemstone.GemGasPriceType
 import uniffi.gemstone.GemGateway
 import uniffi.gemstone.GemGatewayEstimateFee
+import uniffi.gemstone.GemResource
 import uniffi.gemstone.GemStakeType
 import uniffi.gemstone.GemTransactionInputType
 import uniffi.gemstone.GemTransactionLoadFee
@@ -136,6 +140,30 @@ class SignerPreloaderProxy(
             is ConfirmParams.Stake.WithdrawParams -> GemTransactionInputType.Stake(
                 asset = gemAsset,
                 stakeType = GemStakeType.Withdraw(params.delegation.toGem(chain))
+            )
+            is ConfirmParams.Stake.Freeze -> GemTransactionInputType.Stake(
+                asset = gemAsset,
+                stakeType = GemStakeType.Freeze(
+                    freezeData = GemFreezeData(
+                        freezeType = GemFreezeType.FREEZE,
+                        resource = when (params.resource) {
+                            Resource.Energy -> GemResource.ENERGY
+                            Resource.Bandwidth -> GemResource.BANDWIDTH
+                        }
+                    )
+                )
+            )
+            is ConfirmParams.Stake.Unfreeze -> GemTransactionInputType.Stake(
+                asset = gemAsset,
+                stakeType = GemStakeType.Freeze(
+                    freezeData = GemFreezeData(
+                        freezeType = GemFreezeType.UNFREEZE,
+                        resource = when (params.resource) {
+                            Resource.Energy -> GemResource.ENERGY
+                            Resource.Bandwidth -> GemResource.BANDWIDTH
+                        }
+                    )
+                )
             )
             is ConfirmParams.SwapParams -> GemTransactionInputType.Swap(
                 fromAsset = params.fromAsset.toGem(),

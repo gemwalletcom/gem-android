@@ -9,8 +9,8 @@ import androidx.navigation.navOptions
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.models.actions.AssetIdAction
-import com.gemwallet.features.asset.presents.chart.views.AssetChartScene
-import com.gemwallet.features.asset.presents.details.views.AssetDetailsScreen
+import com.gemwallet.features.asset.presents.chart.AssetChartScene
+import com.gemwallet.features.asset.presents.details.AssetDetailsScreen
 import com.wallet.core.primitives.AssetId
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

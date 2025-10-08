@@ -22,6 +22,8 @@ sealed interface ConfirmProperty {
             fun map(params: ConfirmParams, validator: DelegationValidator?): Destination? {
                 return when (params) {
                     is ConfirmParams.Activate,
+                    is ConfirmParams.Stake.Freeze,
+                    is ConfirmParams.Stake.Unfreeze,
                     is ConfirmParams.Stake.RewardsParams -> null
                     is ConfirmParams.Stake.DelegateParams,
                     is ConfirmParams.Stake.RedelegateParams,
@@ -33,6 +35,7 @@ sealed interface ConfirmProperty {
                     is ConfirmParams.TransferParams -> {
                         return params.destination()?.let {
                             Transfer(domain = it.domainName, address = it.address)
+
                         } ?: throw ConfirmError.RecipientEmpty
                     }
                 }

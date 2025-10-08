@@ -1,14 +1,24 @@
 package com.gemwallet.features.stake.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
+import com.gemwallet.android.domains.asset.chain
+import com.gemwallet.android.domains.asset.stakeChain
+import com.gemwallet.android.ext.claimed
+import com.gemwallet.android.ext.freezed
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.format
+import com.gemwallet.features.stake.models.StakeAction
+import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,6 +34,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import uniffi.gemstone.Config
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -70,6 +81,24 @@ class StakeViewModel @Inject constructor(
                 .reduceOrNull { acc, delegation -> acc + delegation } ?: BigInteger.ZERO
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, BigInteger.ZERO)
+
+    val actions = combine(
+        session.mapLatest { it?.wallet?.type }.filterNotNull(),
+        rewardsAmount,
+        assetInfo,
+    ) { walletType, rewardsAmount, assetInfo ->
+        if (walletType == WalletType.view) {
+            return@combine emptyList()
+        }
+        listOfNotNull(
+            StakeAction.Stake,
+            StakeAction.Freeze.takeIf { assetInfo?.stakeChain?.freezed() == true },
+            StakeAction.Unfreeze.takeIf { assetInfo?.stakeChain?.freezed() == true },
+            rewardsAmount
+                .takeIf { assetInfo?.stakeChain?.claimed() == true && rewardsAmount > BigInteger.ZERO }
+                ?.let { StakeAction.Rewards(assetInfo?.asset?.format(Crypto(rewardsAmount)) ?: "") },
+        )
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     private val sync = MutableStateFlow<Boolean>(true)
 

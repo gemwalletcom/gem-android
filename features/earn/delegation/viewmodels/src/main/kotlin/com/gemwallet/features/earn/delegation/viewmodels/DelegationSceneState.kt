@@ -8,9 +8,4 @@ import com.wallet.core.primitives.WalletType
 class DelegationSceneState(
     val walletType: WalletType,
     val state: DelegationState,
-    val validator: DelegationValidator,
-    val stakeBalance: String,
-    val rewardsBalance: String,
-    val availableIn: String,
-    val stakeChain: StakeChain,
 )

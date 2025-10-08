@@ -14,6 +14,8 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.domains.asset.isMemoSupport
+import com.gemwallet.android.domains.asset.stakeChain
+import com.gemwallet.android.ext.freezed
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
@@ -22,6 +24,7 @@ import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.format
+import com.gemwallet.android.model.getDelegatePreparedAmount
 import com.gemwallet.android.serializer.jsonEncoder
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
 import com.gemwallet.android.ui.models.navigation.assetRoutePath
@@ -36,6 +39,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.FeePriority
+import com.wallet.core.primitives.Resource
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
@@ -343,7 +347,17 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.TokenApprovalParams,
             is ConfirmParams.Activate,
             is ConfirmParams.NftParams,
-            is ConfirmParams.Stake.DelegateParams -> assetInfo.balance.balance.available.toBigInteger()
+            is ConfirmParams.Stake.Freeze -> assetInfo.balance.balance.available.toBigInteger()
+            is ConfirmParams.Stake.DelegateParams -> if (assetInfo.stakeChain?.freezed() == true) {
+                 assetInfo.balance.balance.getDelegatePreparedAmount()
+            } else {
+                assetInfo.balance.balance.available.toBigInteger()
+            }
+            is ConfirmParams.Stake.Unfreeze -> if (params.resource == Resource.Energy) {
+                assetInfo.balance.balance.locked.toBigInteger()
+            } else {
+                assetInfo.balance.balance.frozen.toBigInteger()
+            }
             is ConfirmParams.Stake.RedelegateParams -> BigInteger(stakeRepository.getDelegation(params.delegation.validator.id).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.Stake.UndelegateParams -> BigInteger(stakeRepository.getDelegation(params.delegation.validator.id, params.delegation.base.delegationId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.Stake.WithdrawParams -> BigInteger(stakeRepository.getDelegation(params.delegation.validator.id, params.delegation.base.delegationId).firstOrNull()?.base?.balance ?: "0")
@@ -360,6 +374,8 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.Stake.WithdrawParams -> params.delegation.base.validatorId
             is ConfirmParams.Activate,
             is ConfirmParams.Stake.RewardsParams,
+            is ConfirmParams.Stake.Freeze,
+            is ConfirmParams.Stake.Unfreeze,
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams,
             is ConfirmParams.NftParams,
@@ -433,17 +449,21 @@ class ConfirmViewModel @Inject constructor(
                 TransactionType.Swap,
                 TransactionType.TokenApproval,
                 TransactionType.AssetActivation,
-                TransactionType.StakeDelegate -> amount + if (assetInfo == feeAssetInfo) feeAmount else BigInteger.ZERO
+                TransactionType.StakeFreeze -> amount + if (assetInfo == feeAssetInfo) feeAmount else BigInteger.ZERO
+                TransactionType.StakeDelegate -> if (assetInfo.stakeChain?.freezed() == true) {
+                    amount
+                } else {
+                    amount + if (assetInfo == feeAssetInfo) feeAmount else BigInteger.ZERO
+                }
                 TransactionType.StakeUndelegate,
                 TransactionType.StakeRewards,
                 TransactionType.StakeRedelegate,
                 TransactionType.StakeWithdraw,
+                TransactionType.StakeUnfreeze,
                 TransactionType.TransferNFT -> amount
                 TransactionType.SmartContractCall -> TODO()
                 TransactionType.PerpetualOpenPosition -> TODO()
                 TransactionType.PerpetualClosePosition -> TODO()
-                TransactionType.StakeFreeze -> TODO()
-                TransactionType.StakeUnfreeze -> TODO()
             }
 
             if (assetBalance < totalAmount) {

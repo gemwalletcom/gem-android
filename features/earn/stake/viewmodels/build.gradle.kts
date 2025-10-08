@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.gemwallet.features.stake.viewmodels"
+    namespace = "com.gemwallet.features.stake"
     compileSdk = 36
 
     defaultConfig {

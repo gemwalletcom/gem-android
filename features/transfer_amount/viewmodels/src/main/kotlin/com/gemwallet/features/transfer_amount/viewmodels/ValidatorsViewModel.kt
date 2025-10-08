@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
-import com.gemwallet.features.transfer_amount.viewmodels.models.ValidatorsUIState
+import com.gemwallet.features.transfer_amount.models.ValidatorsUIState
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import dagger.hilt.android.lifecycle.HiltViewModel

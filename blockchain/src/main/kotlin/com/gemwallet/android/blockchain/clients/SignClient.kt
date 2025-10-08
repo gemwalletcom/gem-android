@@ -111,4 +111,20 @@ interface SignClient : BlockchainClient {
         fee: Fee,
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
+
+    suspend fun signFreeze(
+        params: ConfirmParams.Stake.Freeze,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        fee: Fee,
+        privateKey: ByteArray,
+    ): List<ByteArray> = emptyList()
+
+    suspend fun signUnfreeze(
+        params: ConfirmParams.Stake.Unfreeze,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        fee: Fee,
+        privateKey: ByteArray,
+    ): List<ByteArray> = emptyList()
 }

@@ -46,6 +46,8 @@ class SignClientProxy(
             is ConfirmParams.Stake.RewardsParams -> client.signRewards(input, chainData, params.finalAmount, fee, privateKey)
             is ConfirmParams.Stake.UndelegateParams -> client.signUndelegate(input, chainData, params.finalAmount, fee, privateKey)
             is ConfirmParams.Stake.WithdrawParams -> client.signWithdraw(input, chainData, params.finalAmount, fee, privateKey)
+            is ConfirmParams.Stake.Freeze -> client.signFreeze(input, chainData, params.finalAmount, fee, privateKey)
+            is ConfirmParams.Stake.Unfreeze -> client.signUnfreeze(input, chainData, params.finalAmount, fee, privateKey)
             is ConfirmParams.SwapParams -> client.signSwap(input, chainData, params.finalAmount, fee, privateKey)
             is ConfirmParams.TokenApprovalParams -> client.signTokenApproval(input, chainData, params.finalAmount, fee, privateKey)
             is ConfirmParams.TransferParams.Generic -> client.signGenericTransfer(input, chainData, params.finalAmount, fee, privateKey)

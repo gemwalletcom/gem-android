@@ -101,3 +101,5 @@ fun Balance<String>.getStackedAmount() = BigInteger(frozen) +
         BigInteger(pending) +
         BigInteger(rewards) +
         BigInteger(locked)
+
+fun Balance<String>.getDelegatePreparedAmount() = BigInteger(locked) + BigInteger(staked)

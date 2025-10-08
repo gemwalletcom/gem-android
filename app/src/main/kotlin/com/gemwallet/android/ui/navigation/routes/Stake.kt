@@ -8,8 +8,8 @@ import androidx.navigation.navOptions
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
-import com.gemwallet.features.earn.delegation.presents.views.DelegationScene
-import com.gemwallet.features.stake.presents.views.StakeScreen
+import com.gemwallet.features.earn.delegation.presents.DelegationScene
+import com.gemwallet.features.stake.presents.StakeScreen
 import com.wallet.core.primitives.AssetId
 import kotlinx.serialization.Serializable
 

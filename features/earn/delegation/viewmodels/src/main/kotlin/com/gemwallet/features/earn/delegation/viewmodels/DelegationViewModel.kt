@@ -11,7 +11,6 @@ import com.gemwallet.android.ext.redelegated
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
-import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.components.list_item.availableIn
 import com.gemwallet.android.ui.models.RewardsInfoUIModel
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
@@ -68,10 +67,14 @@ class DelegationViewModel @Inject constructor(
             DelegationProperty.Name(delegation.validator.name),
             DelegationProperty.Apr(delegation.validator),
             DelegationProperty.TransactionStatus(delegation.base.state, delegation.validator.isActive),
-            delegation.base.state.takeIf { (it == DelegationState.Pending
+            delegation.base.state
+                .takeIf {
+                    (it == DelegationState.Pending
                         || it == DelegationState.Activating
                         || it == DelegationState.Deactivating)
-                && availableIn.isNotEmpty() }?.let { DelegationProperty.State(it, availableIn) }
+                        && availableIn.isNotEmpty()
+                }
+                ?.let { DelegationProperty.State(it, availableIn) }
         )
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -85,7 +88,9 @@ class DelegationViewModel @Inject constructor(
         }
 
         listOfNotNull(
-            RewardsInfoUIModel(assetInfo, delegation.base.rewards),
+            delegation.base.rewards
+                .takeIf { it.toBigInteger() > BigInteger.ZERO }
+                ?.let { RewardsInfoUIModel(assetInfo, it) },
         )
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -99,16 +104,18 @@ class DelegationViewModel @Inject constructor(
             return@combine emptyList()
         }
         val stakeChain = StakeChain.byChain(assetInfo.asset.id.chain)!!
-        if (delegation.base.state == DelegationState.Active) {
-            listOfNotNull(
+        when (delegation.base.state) {
+            DelegationState.Inactive,
+            DelegationState.Active -> listOfNotNull(
                 DelegationActions.StakeAction,
                 DelegationActions.UnstakeAction,
                 stakeChain.takeIf { it.redelegated() }?.let { DelegationActions.RedelegateAction }
             )
-        } else {
-            listOf(
-                DelegationActions.WithdrawalAction
-            )
+            DelegationState.AwaitingWithdrawal -> listOf( DelegationActions.WithdrawalAction )
+            DelegationState.Pending,
+            DelegationState.Undelegating,
+            DelegationState.Activating,
+            DelegationState.Deactivating -> emptyList()
         }
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -133,15 +140,9 @@ class DelegationViewModel @Inject constructor(
         if (assetInfo == null || delegation == null) {
             return@combine null
         }
-        val stakeChain = StakeChain.byChain(assetInfo.asset.id.chain)!!
         DelegationSceneState(
             walletType = session.wallet.type,
             state = delegation.base.state,
-            validator = delegation.validator,
-            stakeBalance = assetInfo.asset.format(Crypto(delegation.base.balance)),
-            rewardsBalance = assetInfo.asset.format(Crypto(delegation.base.rewards)),
-            availableIn = availableIn(delegation),
-            stakeChain = stakeChain,
         )
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)

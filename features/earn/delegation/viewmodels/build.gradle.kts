@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = "com.gemwallet.features.earn.delegation.viewmodels"
+    namespace = "com.gemwallet.features.earn.delegation"
     compileSdk = 36
 
     defaultConfig {

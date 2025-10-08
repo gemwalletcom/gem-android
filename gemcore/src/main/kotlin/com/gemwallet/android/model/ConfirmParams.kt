@@ -13,6 +13,7 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.NFTAsset
+import com.wallet.core.primitives.Resource
 import com.wallet.core.primitives.TransactionType
 import kotlinx.serialization.Serializable
 import org.json.JSONObject
@@ -96,6 +97,14 @@ sealed class ConfirmParams {
         fun activate(): Activate {
             return Activate(asset, from)
         }
+
+        fun freeze(resource: Resource): Stake.Freeze {
+            return Stake.Freeze(asset, from, amount, resource)
+        }
+
+        fun unfreeze(resource: Resource): Stake.Unfreeze {
+            return Stake.Unfreeze(asset, from, amount, resource)
+        }
     }
 
     @Serializable
@@ -130,10 +139,7 @@ sealed class ConfirmParams {
             val description: String,
             val url: String,
             val icon: String,
-            val redirectNative: String?,
-            val redirectUniversal: String?,
             val gasLimit: String?,
-            val gasPrice: String?,
         ) : TransferParams()
 
         @Serializable
@@ -314,6 +320,30 @@ sealed class ConfirmParams {
                 return DestinationAddress("")
             }
         }
+
+        @Serializable
+        class Freeze(
+            override val asset: Asset,
+            override val from: Account,
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
+            val resource: Resource,
+        ) : Stake() {
+            override fun destination(): DestinationAddress? {
+                return DestinationAddress("")
+            }
+        }
+
+        @Serializable
+        class Unfreeze(
+            override val asset: Asset,
+            override val from: Account,
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
+            val resource: Resource,
+        ) : Stake() {
+            override fun destination(): DestinationAddress? {
+                return DestinationAddress("")
+            }
+        }
     }
 
     fun pack(): String? {
@@ -333,6 +363,8 @@ sealed class ConfirmParams {
             is Stake.RedelegateParams -> TransactionType.StakeRedelegate
             is Stake.UndelegateParams -> TransactionType.StakeUndelegate
             is Stake.WithdrawParams -> TransactionType.StakeWithdraw
+            is Stake.Freeze -> TransactionType.StakeFreeze
+            is Stake.Unfreeze -> TransactionType.StakeUnfreeze
             is Stake -> throw IllegalArgumentException("Invalid stake parameter")
         }
     }
@@ -366,6 +398,8 @@ sealed class ConfirmParams {
                 Stake.RewardsParams::class.qualifiedName -> jsonEncoder.decodeFromString<Stake.RewardsParams>(json)
                 Stake.RedelegateParams::class.qualifiedName -> jsonEncoder.decodeFromString<Stake.RedelegateParams>(json)
                 Stake.WithdrawParams::class.qualifiedName -> jsonEncoder.decodeFromString<Stake.WithdrawParams>(json)
+                Stake.Freeze::class.qualifiedName -> jsonEncoder.decodeFromString<Stake.Freeze>(json)
+                Stake.Unfreeze::class.qualifiedName -> jsonEncoder.decodeFromString<Stake.Unfreeze>(json)
                 Activate::class.qualifiedName -> jsonEncoder.decodeFromString<Activate>(json)
                 NftParams::class.qualifiedName -> jsonEncoder.decodeFromString<NftParams>(json)
 //                SmartContractCallParams::class.qualifiedName -> TODO()

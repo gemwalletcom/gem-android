@@ -85,9 +85,9 @@ fun DelegationValidator.getIconUrl(): String {
 }
 
 fun availableIn(delegation: Delegation?): String {
-    val completionDate = (delegation?.base?.completionDate ?: return "") - System.currentTimeMillis()
+    val completionDate = ((delegation?.base?.completionDate ?: return "") - System.currentTimeMillis() / 1000) * 1000
     if (completionDate < 0) {
-        return "0"
+        return ""
     }
     val days = completionDate / DateUtils.DAY_IN_MILLIS
     val hours = (completionDate % DateUtils.DAY_IN_MILLIS) / DateUtils.HOUR_IN_MILLIS

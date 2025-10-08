@@ -41,11 +41,25 @@ fun StakeChain.claimed(): Boolean = when (this) {
     StakeChain.Injective,
     StakeChain.Sei,
     StakeChain.Celestia,
-    StakeChain.Osmosis -> true
+    StakeChain.Osmosis,
+    StakeChain.Tron -> true
     StakeChain.Solana,
     StakeChain.Sui,
     StakeChain.SmartChain,
     StakeChain.Ethereum,
-    StakeChain.HyperCore,
-    StakeChain.Tron -> false
+    StakeChain.HyperCore -> false
+}
+
+fun StakeChain.freezed(): Boolean = when (this) {
+    StakeChain.Tron -> true
+    StakeChain.Cosmos,
+    StakeChain.Injective,
+    StakeChain.Sei,
+    StakeChain.Celestia,
+    StakeChain.Osmosis,
+    StakeChain.Solana,
+    StakeChain.Sui,
+    StakeChain.SmartChain,
+    StakeChain.Ethereum,
+    StakeChain.HyperCore -> false
 }
