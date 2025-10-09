@@ -1,6 +1,7 @@
 package com.gemwallet.android.ui.components.list_item
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -125,6 +126,7 @@ fun PriceInfo(
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(internalPadding)
     ) {
         Text(
             modifier = Modifier.weight(1f, false),
@@ -134,13 +136,12 @@ fun PriceInfo(
             color = if (isHighlightPercentage) color else MaterialTheme.colorScheme.secondary,
             style = style,
         )
-        Spacer(modifier = Modifier.width(internalPadding))
         Text(
             modifier = if (isHighlightPercentage) {
                 Modifier.background(color.copy(alpha = 0.15f), MaterialTheme.shapes.small)
             } else {
                 Modifier
-            }.padding(4.dp),
+            }.padding(horizontal = 4.dp),
             text = price.percentageFormatted,
             color = color,
             style = style,

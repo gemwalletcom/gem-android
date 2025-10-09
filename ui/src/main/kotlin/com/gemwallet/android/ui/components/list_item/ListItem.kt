@@ -1,7 +1,6 @@
 package com.gemwallet.android.ui.components.list_item
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -14,12 +13,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.Spacer2
 import com.gemwallet.android.ui.theme.padding12
 import com.gemwallet.android.ui.theme.paddingDefault
 
@@ -35,47 +34,97 @@ fun ListItem(
     Row(
         modifier = Modifier
             .listItem(position = listPosition)
-            .then(modifier.fillMaxWidth()),
+            .then(modifier.fillMaxWidth().padding(start = paddingDefault)),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(paddingDefault)
     ) {
-        Spacer16()
-        leading?.let {
-            it()
-            Spacer16()
-        }
-        Box(modifier = Modifier.heightIn(72.dp).weight(1f)) { // Used to show correct divider
-            Row(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(top = padding12, end = paddingDefault, bottom = padding12)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
+        leading?.invoke(this)
+        ListItemLayout(
+            modifier = Modifier
+                .heightIn(max = 72.dp)
+                .padding(top = padding12, end = paddingDefault, bottom = padding12)
+                .fillMaxWidth(),
+        ) {
+            Column(
+                modifier = Modifier.fillMaxHeight(),
+                verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
+                horizontalAlignment = Alignment.Start,
             ) {
-                Column(
-                    modifier = Modifier.fillMaxHeight().weight(1f),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.Start,
-                ) {
-                    title?.invoke()
-                    subtitle?.let {
-                        Spacer2()
-                        it()
-                    }
-                }
-                Row(
-                    modifier = Modifier,//.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    trailing?.let {
-                        Spacer16()
-                        it()
-                    }
+                title?.invoke()
+                subtitle?.invoke()
+            }
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.End,
+            ) {
+                trailing?.let {
+                    Spacer16()
+                    it()
                 }
             }
         }
     }
 }
 
+@Composable
+private fun ListItemLayout(
+    modifier: Modifier = Modifier,
+    content: @Composable () -> Unit,
+) {
+    Layout(
+        modifier = modifier,
+        content = content
+    ) { measurables, constraints ->
+
+        val placeable = if (measurables.size != 2) {
+            measurables.map { it.measure(constraints) }
+        } else {
+            val widths = measurables.map { measurable -> measurable.maxIntrinsicWidth(constraints.maxHeight) }
+            val totalWidth = widths.sum()
+            if (totalWidth > constraints.maxWidth) {
+                val (firstItemWidth, lastItemWidth) = if (widths.last() < constraints.maxWidth / 2) {
+                    Pair(constraints.maxWidth - widths.last(), widths.last())
+                } else {
+                    Pair(widths.first(), constraints.maxWidth - widths.first())
+                }
+
+                listOf(
+                    measurables.first().measure(
+                        constraints.copy(
+                            minWidth = firstItemWidth,
+                            maxWidth = firstItemWidth
+                        )
+                    ),
+                    measurables.last().measure(
+                        constraints.copy(
+                            minWidth = lastItemWidth,
+                            maxWidth = lastItemWidth
+                        )
+                    )
+                )
+            } else {
+                val remainder = (constraints.maxWidth - totalWidth) / measurables.size
+                measurables.mapIndexed { index, measurable ->
+                    val width = widths[index] + remainder
+                    measurable.measure(
+                        constraints = constraints.copy(
+                            minWidth = width,
+                            maxWidth = width,
+                        )
+                    )
+                }
+            }
+        }
+
+        layout(constraints.maxWidth, constraints.maxHeight) {
+            var xPosition = 0
+            placeable.forEach { placeable ->
+                placeable.place(x = xPosition, y = (constraints.maxHeight - placeable.height) / 2)
+                xPosition += placeable.width
+            }
+        }
+    }
+}
 
 @Preview
 @Composable
