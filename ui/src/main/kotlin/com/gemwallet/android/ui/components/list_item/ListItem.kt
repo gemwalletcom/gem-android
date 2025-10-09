@@ -52,7 +52,7 @@ fun ListItem(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Column(
-                    modifier = Modifier.fillMaxHeight(),
+                    modifier = Modifier.fillMaxHeight().weight(1f),
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.Start,
                 ) {
@@ -63,7 +63,7 @@ fun ListItem(
                     }
                 }
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier,//.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End,
                 ) {
                     trailing?.let {
