@@ -13,6 +13,7 @@ import com.gemwallet.android.ui.models.ListPosition
 
 private val bigRound = 16.dp
 private val smallRound = 2.dp
+private val itemPadding = 1.dp
 
 private val firstItemShape = RoundedCornerShape(topStart = bigRound, topEnd = bigRound, bottomStart = smallRound, bottomEnd = smallRound)
 private val lastItemShape = RoundedCornerShape(bottomStart = bigRound, bottomEnd = bigRound, topStart = smallRound, topEnd = smallRound)
@@ -25,8 +26,8 @@ fun Modifier.listItem(position: ListPosition, background: Color = MaterialTheme.
     padding(horizontal = bigRound) then
     when (position) {
         ListPosition.First -> this.padding(top = bigRound).clip(firstItemShape)
-        ListPosition.Middle -> this.padding(top = smallRound).clip(middleItemShape)
+        ListPosition.Middle -> this.padding(top = itemPadding).clip(middleItemShape)
         ListPosition.Single -> this.padding(top = bigRound, bottom = bigRound).clip(singleItemShape)
-        ListPosition.Last -> this.padding(top = smallRound, bottom = bigRound).clip(lastItemShape)
+        ListPosition.Last -> this.padding(top = itemPadding, bottom = bigRound).clip(lastItemShape)
     }
     .background(background)
