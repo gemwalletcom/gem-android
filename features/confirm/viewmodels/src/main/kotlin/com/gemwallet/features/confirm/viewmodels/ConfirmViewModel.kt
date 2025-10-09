@@ -179,7 +179,11 @@ class ConfirmViewModel @Inject constructor(
         mutableListOf<ConfirmProperty?>().apply {
             add(ConfirmProperty.Source(assetInfo.walletName))
             add(ConfirmProperty.Destination.map(request, getValidator(request)))
-            add(request.memo()?.takeIf { request is ConfirmParams.TransferParams && assetInfo.asset.isMemoSupport() }?.let { ConfirmProperty.Memo(it) })
+            add(request.memo()?.takeIf {
+                request is ConfirmParams.TransferParams
+                        && assetInfo.asset.isMemoSupport()
+                        && it.isNotEmpty()
+            }?.let { ConfirmProperty.Memo(it) })
             add(ConfirmProperty.Network(assetInfo.asset))
         }.filterNotNull()
     }

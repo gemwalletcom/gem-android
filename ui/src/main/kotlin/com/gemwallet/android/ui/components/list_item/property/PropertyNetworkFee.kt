@@ -10,19 +10,37 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.InfoSheetEntity
+import com.gemwallet.android.ui.components.clickable
 import com.gemwallet.android.ui.models.ListPosition
 
 @Composable
-fun PropertyNetworkFee(networkTitle: String, networkSymbol: String, feeCrypto: String, feeFiat: String) {
+fun PropertyNetworkFee(
+    networkTitle: String,
+    networkSymbol: String,
+    feeCrypto: String,
+    feeFiat: String,
+    variantsAvailable: Boolean = false,
+    onSelectFee: (() -> Unit)? = null,
+) {
     PropertyItem(
         modifier = Modifier.height(72.dp),
         title = {
             PropertyTitleText(R.string.transfer_network_fee, info = InfoSheetEntity.NetworkFeeInfo(networkTitle, networkSymbol))
         },
         data = {
-            Column(horizontalAlignment = Alignment.End) {
-                Row(horizontalArrangement = Arrangement.End) { PropertyDataText(feeCrypto) }
-                Row(horizontalArrangement = Arrangement.End) { PropertyDataText(feeFiat) }
+            val dataModifier = if (variantsAvailable && onSelectFee != null) {
+                Modifier.clickable(onClick = onSelectFee)
+            } else {
+                Modifier
+            }
+            Row(modifier = dataModifier, verticalAlignment = Alignment.CenterVertically) {
+                Column(horizontalAlignment = Alignment.End) {
+                    Row(horizontalArrangement = Arrangement.End) { PropertyDataText(feeCrypto) }
+                    Row(horizontalArrangement = Arrangement.End) { PropertyDataText(feeFiat) }
+                }
+                if (variantsAvailable) {
+                    DataBadgeChevron()
+                }
             }
         },
         listPosition = ListPosition.Single,

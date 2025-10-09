@@ -18,14 +18,6 @@ data class FeeRateUIModel(
     val fee: Fee,
 ) {
 
-    val speedLabel: String @Composable get() {
-        return when (fee.priority) {
-            FeePriority.Fast -> "\uD83D\uDE80  ${stringResource(R.string.fee_rates_fast)}"
-            FeePriority.Normal -> "\uD83D\uDC8E  ${stringResource(R.string.fee_rates_normal)}"
-            FeePriority.Slow -> "\uD83D\uDC22  ${stringResource(R.string.fee_rates_slow)}"
-        }
-    }
-
     val price: String get() {
         val asset = fee.feeAssetId.chain.asset()
         val feeUnitType = asset.chain.feeUnitType()
@@ -47,4 +39,6 @@ data class FeeRateUIModel(
         val formattedValue = Crypto(value).format(decimals, symbol, 8, -1, SignMode.NoSign, true)
         return formattedValue
     }
+
+    val priority = fee.priority
 }

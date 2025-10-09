@@ -158,8 +158,9 @@ fun ConfirmScreen(
                             it.feeAsset.name,
                             it.feeAsset.symbol,
                             it.cryptoAmount,
-                            it.fiatAmount
-                        )
+                            it.fiatAmount,
+                            allFee.size > 1,
+                        ) { showSelectTxSpeed = true }
                         FeeUIModel.Error -> PropertyItem(
                             modifier = Modifier.height(72.dp),
                             title = { PropertyTitleText(R.string.transfer_network_fee) },
