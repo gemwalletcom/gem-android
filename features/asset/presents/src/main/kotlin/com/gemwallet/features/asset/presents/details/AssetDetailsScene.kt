@@ -1,6 +1,5 @@
 package com.gemwallet.features.asset.presents.details
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,10 +18,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ext.getReserveBalanceUrl
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.TransactionExtended
+import com.gemwallet.android.ui.components.list_item.energyItem
 import com.gemwallet.android.ui.components.list_item.transactionsList
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.AssetIdAction
@@ -34,7 +33,6 @@ import com.gemwallet.features.asset.presents.details.components.BalancePropertyI
 import com.gemwallet.features.asset.presents.details.components.BannerItem
 import com.gemwallet.features.asset.presents.details.components.EmptyTransactionsItem
 import com.gemwallet.features.asset.presents.details.components.balancesHeader
-import com.gemwallet.android.ui.components.list_item.energyItem
 import com.gemwallet.features.asset.presents.details.components.network
 import com.gemwallet.features.asset.presents.details.components.price
 import com.gemwallet.features.asset.presents.details.components.status
@@ -87,7 +85,6 @@ internal fun AssetDetailsScene(
             )
         },
         onClose = onCancel,
-        contentPadding = PaddingValues(0.dp),
         snackbar = snackBar,
     ) {
         val isRefreshing = syncState == AssetInfoUIState.SyncState.Loading

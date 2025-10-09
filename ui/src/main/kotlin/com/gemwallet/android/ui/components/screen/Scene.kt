@@ -74,7 +74,7 @@ fun Scene(
 fun Scene(
     titleContent: @Composable () -> Unit,
     backHandle: Boolean = false,
-    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp),
+    contentPadding: PaddingValues = PaddingValues(horizontal = 0.dp),
     onClose: (() -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
     mainAction: (@Composable () -> Unit)? = null,
