@@ -16,7 +16,7 @@ fun SwitchProperty(
     onCheckedChange: (Boolean) -> Unit,
 ) {
     PropertyItem(
-        title = { PropertyTitleText(stringResource(R.string.settings_enable_value, "")) },
+        title = { PropertyTitleText(text) },
         data = {
             Switch(
                 checked = checked,
