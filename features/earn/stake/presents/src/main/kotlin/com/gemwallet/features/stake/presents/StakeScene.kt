@@ -25,6 +25,7 @@ import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.InfoSheetEntity
+import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.android.ui.components.list_item.DelegationItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.availableIn
@@ -92,7 +93,7 @@ fun StakeScene(
 
                 itemsIndexed(delegations) { index, item ->
                     DelegationItem(
-                        asset = assetInfo.asset,
+                        assetInfo = assetInfo,
                         delegation = item,
                         completedAt = availableIn(item),
                         listPosition = ListPosition.getPosition(index, delegations.size),
