@@ -16,7 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clickable
 import com.gemwallet.android.ui.models.actions.CancelAction
-import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.features.buy.viewmodels.FiatViewModel
 import com.gemwallet.features.buy.viewmodels.models.BuyError
 import com.gemwallet.features.buy.viewmodels.models.FiatSuggestion
@@ -56,10 +56,10 @@ fun FiatScreen(
 fun LotButton(fiatSuggestion: FiatSuggestion, onLotClick: (FiatSuggestion) -> Unit) {
         Text(
             modifier = Modifier
-                .clip(RoundedCornerShape(padding8))
+                .clip(RoundedCornerShape(paddingSmall))
                 .clickable { onLotClick(fiatSuggestion) }
                 .background(MaterialTheme.colorScheme.scrim)
-                .padding(padding8)
+                .padding(paddingSmall)
             ,
             text = fiatSuggestion.text,
             color = MaterialTheme.colorScheme.onSurface,

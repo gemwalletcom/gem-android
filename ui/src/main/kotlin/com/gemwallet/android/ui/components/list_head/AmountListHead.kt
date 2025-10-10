@@ -58,7 +58,7 @@ import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.headerIconSize
 import com.gemwallet.android.ui.theme.headerSupportIconSize
-import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.WalletType
@@ -266,10 +266,10 @@ private fun AssetAction(
         modifier = modifier
             .clip(RoundedCornerShape(paddingDefault))
             .clickable(onClick = onClick, enabled = enabled)
-            .padding(vertical = padding8)
+            .padding(vertical = paddingSmall)
         ,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(padding8)
+        verticalArrangement = Arrangement.spacedBy(paddingSmall)
     ) {
         Icon(
             modifier = Modifier

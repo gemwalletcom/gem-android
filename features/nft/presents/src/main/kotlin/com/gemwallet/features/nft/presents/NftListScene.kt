@@ -35,7 +35,7 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.NftAssetIdAction
 import com.gemwallet.android.ui.models.actions.NftCollectionIdAction
-import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.features.nft.presents.components.NFTItem
 import com.gemwallet.features.nft.viewmodels.NftListViewModels
@@ -119,7 +119,7 @@ fun NftListScene(
                 modifier = Modifier.padding(/*horizontal = 8.dp*/),
                 columns = GridCells.Adaptive(minSize = 150.dp),
                 state = listState,
-                contentPadding = PaddingValues(padding8, paddingDefault)
+                contentPadding = PaddingValues(paddingSmall, paddingDefault)
             ) {
                 items(items) { item -> NFTItem(item, collectionAction, assetAction) }
             }

@@ -43,7 +43,7 @@ import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.defaultPadding
 import com.gemwallet.android.ui.theme.isSmallScreen
-import com.gemwallet.android.ui.theme.padding4
+import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.paddingDefault
 import uniffi.gemstone.Config
 import uniffi.gemstone.PublicUrl
@@ -131,7 +131,7 @@ private fun LazyListScope.termItem(
         Card(
             modifier = Modifier.clickable(onClick = onClick),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.background),
-            elevation = CardDefaults.cardElevation(padding4)
+            elevation = CardDefaults.cardElevation(paddingHalfSmall)
         ) {
             Row(modifier = Modifier.defaultPadding()) {
                 Icon(

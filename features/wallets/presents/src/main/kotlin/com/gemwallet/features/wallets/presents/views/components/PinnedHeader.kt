@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.padding16
-import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.android.ui.theme.trailingIconSmall
 
 internal fun LazyListScope.pinnedHeader() {
@@ -27,7 +27,7 @@ internal fun LazyListScope.pinnedHeader() {
                 start = padding16,
                 end = padding16,
                 top = 24.dp,
-                bottom = padding8
+                bottom = paddingSmall
             ),
             verticalAlignment = Alignment.CenterVertically,
         ) {

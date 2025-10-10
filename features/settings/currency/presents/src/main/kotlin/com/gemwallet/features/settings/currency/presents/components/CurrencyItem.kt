@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.wallet.core.primitives.Currency
 
 @Composable
@@ -32,7 +32,7 @@ fun CurrencyItem(
         trailing = if (currency == selectedCurrency) {
             @Composable {
                 Icon(
-                    modifier = Modifier.Companion.padding(end = padding8).size(20.dp),
+                    modifier = Modifier.Companion.padding(end = paddingSmall).size(20.dp),
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = "selected_currency",
                     tint = MaterialTheme.colorScheme.primary,

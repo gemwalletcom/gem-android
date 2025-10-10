@@ -30,7 +30,7 @@ import com.gemwallet.android.ui.components.list_item.PriceInfo
 import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.defaultPadding
-import com.gemwallet.android.ui.theme.padding4
+import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.space8
 import com.gemwallet.features.asset.viewmodels.chart.models.PricePoint
 import com.gemwallet.features.asset.viewmodels.chart.viewmodels.ChartViewModel
@@ -152,7 +152,7 @@ fun Chart(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(200.dp)
-                            .padding(end = padding4),
+                            .padding(end = paddingHalfSmall),
                         animateIn = false,
                         modelProducer = modelProducer,
                         chart = rememberCartesianChart(

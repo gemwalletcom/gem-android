@@ -22,10 +22,11 @@ val space4 = 4.dp
 val space8 = 8.dp
 private val space16 = 16.dp
 
-val padding4 = 4.dp
-val padding8 = 8.dp
+//val paddingHalfSmall = 4.dp
+val paddingHalfSmall = 4.dp
+val paddingSmall = 8.dp
 val padding16 = 16.dp
-val padding12 = 12.dp
+val paddingMiddle = 12.dp
 val paddingDefault = 16.dp
 val paddingLarge = 32.dp
 

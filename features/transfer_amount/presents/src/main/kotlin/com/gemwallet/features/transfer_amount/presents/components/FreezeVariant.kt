@@ -21,7 +21,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.theme.WalletTheme
-import com.gemwallet.android.ui.theme.padding4
+import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.Resource
 import com.wallet.core.primitives.TransactionType
@@ -38,7 +38,7 @@ fun LazyListScope.resourceSelect(
     item {
         Row(
             Modifier.padding(horizontal = paddingDefault),
-            horizontalArrangement = Arrangement.spacedBy(padding4),
+            horizontalArrangement = Arrangement.spacedBy(paddingHalfSmall),
         ) {
             listOf(Resource.Bandwidth, Resource.Energy).forEachIndexed { index, item ->
                 ToggleButton(

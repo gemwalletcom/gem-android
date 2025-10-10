@@ -6,16 +6,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
@@ -34,6 +30,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -47,8 +44,8 @@ import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.ui.theme.Spacer8
-import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.defaultPadding
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.android.ui.theme.smallPadding
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
 import com.wallet.core.primitives.Asset
@@ -73,12 +70,12 @@ internal fun SwapItem(
 
     Column(
         modifier = Modifier
-            .listItem(ListPosition.Single)
-            .padding(paddingDefault)
-            .fillMaxWidth()
+            .listItem(ListPosition.Single, padding = 0.dp)
+            .defaultPadding()
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(text = stringResource(title), style = MaterialTheme.typography.labelMedium)
-        Spacer8()
         Row(
             modifier = Modifier.height(44.dp).fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
@@ -86,10 +83,11 @@ internal fun SwapItem(
             SwapItemInput(calculating, type, state)
             SwapItemLotInfo(item?.asset) { onAssetSelect(type) }
         }
-        Spacer8()
         SwapValues(type, calculating, equivalent, item?.availableBalanceFormatted) {
-            state.clearText()
-            state.edit { append(item?.availableBalance) }
+            state.edit {
+                append(item?.availableBalance)
+                selection = TextRange(0)
+            }
         }
     }
 }
@@ -129,13 +127,12 @@ private fun AssetInfo(
     Row(
         modifier = Modifier.clickable(onClick).smallPadding(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End,
+        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.End),
     ) {
         IconWithBadge(asset)
-        Spacer(modifier = Modifier.size(8.dp))
         Text(
             text = asset.symbol,
-            style = MaterialTheme.typography.bodyLarge,
+            style = MaterialTheme.typography.titleMedium,
         )
         Icon(imageVector = Icons.Default.KeyboardArrowDown, contentDescription = "")
     }
@@ -152,13 +149,13 @@ private fun SwapValues(
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(paddingSmall)
     ) {
         Text(
             modifier = Modifier.fillMaxWidth(0.5f),
             text = if (calculating) "" else equivalent,
             style = MaterialTheme.typography.bodySmall,
         )
-        Spacer(modifier = Modifier.size(8.dp))
         Box(modifier = Modifier.fillMaxWidth(1f)) {
             Text(
                 modifier = Modifier
@@ -200,7 +197,7 @@ private fun RowScope.SwapItemInput(
             BasicTextField(
                 modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
                 state = state,
-                textStyle = MaterialTheme.typography.headlineLarge.copy(
+                textStyle = MaterialTheme.typography.headlineSmall.copy(
                     color = MaterialTheme.colorScheme.onSurface
                 ),
                 lineLimits = TextFieldLineLimits.SingleLine,

@@ -46,7 +46,7 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.defaultPadding
-import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
@@ -183,7 +183,7 @@ private fun WalletAddress(
         DropdownMenu(
             modifier = Modifier.align(Alignment.BottomEnd),
             expanded = isDropDownShow,
-            offset = DpOffset(paddingDefault, padding8),
+            offset = DpOffset(paddingDefault, paddingSmall),
             containerColor = MaterialTheme.colorScheme.background,
             onDismissRequest = { isDropDownShow = false },
         ) {

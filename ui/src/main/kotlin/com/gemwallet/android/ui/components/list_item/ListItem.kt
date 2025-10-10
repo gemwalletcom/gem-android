@@ -19,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.padding12
+import com.gemwallet.android.ui.theme.paddingMiddle
 import com.gemwallet.android.ui.theme.paddingDefault
 
 @Composable
@@ -42,7 +42,7 @@ fun ListItem(
         ListItemLayout(
             modifier = Modifier
                 .heightIn(max = 72.dp)
-                .padding(top = padding12, end = paddingDefault, bottom = padding12)
+                .padding(top = paddingMiddle, end = paddingDefault, bottom = paddingMiddle)
                 .fillMaxWidth(),
         ) {
             Column(

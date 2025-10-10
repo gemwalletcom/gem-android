@@ -30,7 +30,7 @@ import com.gemwallet.android.ui.components.progress.CircularProgressIndicator10
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer2
 import com.gemwallet.android.ui.theme.Spacer8
-import com.gemwallet.android.ui.theme.padding4
+import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
@@ -124,7 +124,7 @@ fun TransactionItem(
                                 modifier = Modifier.padding(
                                     start = 5.dp,
                                     top = 2.dp,
-                                    end = padding4,
+                                    end = paddingHalfSmall,
                                     bottom = 2.dp
                                 ),
                                 text = badge,

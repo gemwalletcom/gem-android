@@ -38,7 +38,7 @@ import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
-import com.gemwallet.android.ui.theme.padding12
+import com.gemwallet.android.ui.theme.paddingMiddle
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.features.banner.viewmodels.BannersViewModel
 import com.wallet.core.primitives.Asset
@@ -116,7 +116,7 @@ private fun BannerText(
         IconWithBadge(icon = iconUrl, placeholder = iconUrl, size = 36.dp)
         Spacer16()
         Column(
-            modifier = Modifier.weight(1f).padding(top = 14.dp, end = 0.dp, bottom = padding12),
+            modifier = Modifier.weight(1f).padding(top = 14.dp, end = 0.dp, bottom = paddingMiddle),
             verticalArrangement = Arrangement.Center,
         ) {
             Text(

@@ -29,8 +29,8 @@ import com.gemwallet.android.ui.components.progress.CircularProgressIndicator14
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer6
 import com.gemwallet.android.ui.theme.WalletTheme
-import com.gemwallet.android.ui.theme.padding4
-import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingHalfSmall
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeState
@@ -72,7 +72,7 @@ internal fun NodeItem(
         trailing = if (selected) {
             @Composable {
                 Icon(
-                    modifier = Modifier.Companion.padding(end = padding8).size(20.dp),
+                    modifier = Modifier.Companion.padding(end = paddingSmall).size(20.dp),
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = "",
                     tint = MaterialTheme.colorScheme.primary,
@@ -110,7 +110,7 @@ private fun NodeItemStatus(nodeStatus: NodeStatus?) {
             stringResource(R.string.errors_error)
         }
         Text(
-            modifier = Modifier.padding(start = 5.dp, top = 2.dp, end = padding4, bottom = 2.dp),
+            modifier = Modifier.padding(start = 5.dp, top = 2.dp, end = paddingHalfSmall, bottom = 2.dp),
             text = text,
             color = color,
             maxLines = 1,

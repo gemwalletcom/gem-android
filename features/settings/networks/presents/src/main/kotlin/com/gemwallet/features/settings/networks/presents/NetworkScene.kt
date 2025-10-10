@@ -38,7 +38,7 @@ import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.ui.theme.padding8
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.features.settings.networks.viewmodels.models.NetworksUIState
 import com.wallet.core.primitives.Node
 
@@ -140,7 +140,7 @@ private fun BlockExplorerItem(
         trailing = if (explorerName == current) {
             @Composable {
                 Icon(
-                    modifier = Modifier.Companion.padding(end = padding8).size(20.dp),
+                    modifier = Modifier.Companion.padding(end = paddingSmall).size(20.dp),
                     imageVector = Icons.Default.CheckCircle,
                     contentDescription = "",
                     tint = MaterialTheme.colorScheme.primary,
