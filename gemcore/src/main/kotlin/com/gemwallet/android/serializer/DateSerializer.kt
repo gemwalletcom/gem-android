@@ -12,10 +12,13 @@ import java.time.format.DateTimeFormatter
 object DateSerializer {
 
     override fun deserialize(decoder: Decoder): Long {
-        return ZonedDateTime.parse(decoder.decodeString(), DateTimeFormatter.ISO_ZONED_DATE_TIME)
-            .toInstant()
-            .toEpochMilli()
-
+        return try {
+            ZonedDateTime.parse(decoder.decodeString(), DateTimeFormatter.ISO_ZONED_DATE_TIME)
+                .toInstant()
+                .toEpochMilli()
+        } catch (_: Throwable) {
+            0
+        }
     }
 
     override fun serialize(encoder: Encoder, value: Long) {

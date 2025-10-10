@@ -120,7 +120,7 @@ fun AddNodeScene(chain: Chain, onCancel: () -> Unit) {
                 },
             )
             PropertyItem(R.string.nodes_import_node_latest_block, nf.format(uiModel.status?.blockNumber?.toLong() ?: ""))
-            PropertyItem(R.string.nodes_import_node_latency, stringResource(R.string.common_latency_in_ms, uiModel.status?.latency ?: 0))
+            PropertyItem(R.string.nodes_import_node_latency, stringResource(R.string.common_latency_in_ms, uiModel.status?.latency?.toLong() ?: 0))
         }
     }
 
