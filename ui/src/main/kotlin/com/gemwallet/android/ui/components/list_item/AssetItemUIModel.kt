@@ -1,14 +1,18 @@
 package com.gemwallet.android.ui.components.list_item
 
 import androidx.compose.runtime.Stable
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.domains.asset.getSupportIconUrl
+import com.gemwallet.android.domains.asset.subtype
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.models.CryptoFormattedUIModel
 import com.gemwallet.android.ui.models.FiatFormattedUIModel
 import com.gemwallet.android.ui.models.PriceUIModel
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetMetaData
+import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Currency
 
 
@@ -17,10 +21,6 @@ import com.wallet.core.primitives.Currency
 interface AssetItemUIModel : CryptoFormattedUIModel, FiatFormattedUIModel {
     val name: String
     val symbol: String
-    val assetIconUrl: String
-        get() = asset.getIconUrl()
-    val assetNetworkIconUrl: String?
-        get() = asset.getSupportIconUrl()
     val price: PriceUIModel
     val owner: String?
     val position: Int
@@ -38,7 +38,12 @@ open class AssetInfoUIModel(
     override val asset: Asset
         get() =  assetInfo.asset
 
-    override val name: String by lazy { asset.name }
+    override val name: String by lazy {
+        when (asset.subtype) {
+            AssetSubtype.NATIVE -> asset.chain.asset().name
+            AssetSubtype.TOKEN -> asset.name
+        }
+    }
 
     override val symbol: String by lazy { asset.symbol }
 
