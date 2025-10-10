@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDownward
@@ -23,7 +24,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
@@ -34,6 +34,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -57,6 +58,7 @@ import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.headerIconSize
 import com.gemwallet.android.ui.theme.headerSupportIconSize
+import com.gemwallet.android.ui.theme.padding8
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.WalletType
@@ -249,6 +251,7 @@ private fun AssetWatchOnly() {
     InfoBottomSheet(item = showInfoSheet, onClose = { showInfoSheet = null })
 }
 
+@OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 private fun AssetAction(
     title: String,
@@ -258,35 +261,50 @@ private fun AssetAction(
     enabled: Boolean = true,
     onClick: () -> Unit
 ) {
-    TextButton(modifier = modifier, onClick = onClick, enabled = enabled) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Icon(
-                modifier = Modifier
-                    .background(
-                        color = MaterialTheme.colorScheme.primary.copy(
-                            alpha = if (enabled) 1f else 0.4f,
-                        ),
-                        shape = CircleShape
-                    )
-                    .padding(16.dp),
-                imageVector = imageVector,
-                tint = MaterialTheme.colorScheme.onPrimary.copy(
-                    alpha = if (enabled) 1f else 0.4f,
-                ),
-                contentDescription = contentDescription,
-            )
-            Spacer(modifier = Modifier.size(8.dp))
-            Text(
-                text = title,
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.W400, fontSize = 12.sp),
-                maxLines = 1,
-            )
-        }
+    val windowSizeClass: WindowWidthSizeClass = currentWindowAdaptiveInfo().windowSizeClass.widthSizeClass
+    Column(
+        modifier = modifier
+            .clip(RoundedCornerShape(paddingDefault))
+            .clickable(onClick = onClick, enabled = enabled)
+            .padding(vertical = padding8)
+        ,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(padding8)
+    ) {
+        Icon(
+            modifier = Modifier
+                .background(
+                    color = MaterialTheme.colorScheme.primary.copy(
+                        alpha = if (enabled) 1f else 0.4f,
+                    ),
+                    shape = CircleShape
+                )
+                .padding(16.dp),
+            imageVector = imageVector,
+            tint = MaterialTheme.colorScheme.onPrimary.copy(
+                alpha = if (enabled) 1f else 0.4f,
+            ),
+            contentDescription = contentDescription,
+        )
+        Text(
+            text = title,
+            color = MaterialTheme.colorScheme.onSurface,
+            style = MaterialTheme.typography.titleMedium.copy(
+                fontWeight = FontWeight.W400,
+                fontSize = if (windowSizeClass == WindowWidthSizeClass.Compact) {
+                    12.sp
+                } else {
+                    16.sp
+                }
+            ),
+            maxLines = 1,
+        )
     }
 }
 
-@Preview(locale = "ru", device = Devices.PIXEL_3A)
+@Preview(locale = "ru", device = Devices.PIXEL)
+@Preview(locale = "ru", device = Devices.PIXEL_8)
+@Preview(locale = "ru", device = Devices.PIXEL_9)
 @Composable
 fun PreviewAssetHeadActions() {
     WalletTheme {
