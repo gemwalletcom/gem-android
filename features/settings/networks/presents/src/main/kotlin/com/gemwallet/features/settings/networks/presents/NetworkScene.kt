@@ -138,7 +138,7 @@ private fun BlockExplorerItem(
         },
         listPosition = listPosition,
         trailing = if (explorerName == current) {
-            @Composable {
+            {
                 Icon(
                     modifier = Modifier.Companion.padding(end = paddingSmall).size(20.dp),
                     imageVector = Icons.Default.CheckCircle,

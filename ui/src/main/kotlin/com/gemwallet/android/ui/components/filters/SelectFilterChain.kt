@@ -1,16 +1,23 @@
 package com.gemwallet.android.ui.components.filters
 
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.assetType
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.ChainItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.wallet.core.primitives.Chain
 
 fun LazyListScope.selectFilterChain(
@@ -42,7 +49,12 @@ fun LazyListScope.selectFilterChain(
                 listPosition = ListPosition.getPosition(index, size),
                 trailing = {
                     if (chainFilter.contains(chain)) {
-                        Icon(Icons.Default.CheckCircleOutline, contentDescription = "")
+                        Icon(
+                            modifier = Modifier.Companion.padding(end = paddingSmall).size(20.dp),
+                            imageVector = Icons.Default.CheckCircle,
+                            contentDescription = "",
+                            tint = MaterialTheme.colorScheme.primary,
+                        )
                     }
                 }
             ) { onFilter(chain) }
