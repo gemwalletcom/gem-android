@@ -96,7 +96,7 @@ fun TransactionItem(
         },
         title = {
             ListItemTitleText(
-                type.getTransactionTitle(direction, state),
+                text = type.getTransactionTitle(direction, state),
                 titleBadge = {
                     val badge = when (state) {
                         TransactionState.Pending -> stringResource(id = R.string.transaction_status_pending)
@@ -271,6 +271,8 @@ fun TransactionType.getValue(direction: TransactionDirection, value: String): St
         TransactionType.StakeWithdraw,
         TransactionType.StakeDelegate,
         TransactionType.PerpetualOpenPosition,
+        TransactionType.StakeFreeze,
+        TransactionType.StakeUnfreeze,
         TransactionType.PerpetualClosePosition -> value
         TransactionType.Transfer,
         TransactionType.Swap -> when (direction) {
@@ -281,8 +283,6 @@ fun TransactionType.getValue(direction: TransactionDirection, value: String): St
         TransactionType.TokenApproval,
         TransactionType.TransferNFT,
         TransactionType.AssetActivation,
-        TransactionType.StakeFreeze,
-        TransactionType.StakeUnfreeze,
         TransactionType.SmartContractCall -> ""
     }
 }

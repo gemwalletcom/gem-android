@@ -20,6 +20,7 @@ fun PropertyNetworkFee(
     feeCrypto: String,
     feeFiat: String,
     variantsAvailable: Boolean = false,
+    showedCryptoAmount: Boolean = false,
     onSelectFee: (() -> Unit)? = null,
 ) {
     PropertyItem(
@@ -35,7 +36,9 @@ fun PropertyNetworkFee(
             }
             Row(modifier = dataModifier, verticalAlignment = Alignment.CenterVertically) {
                 Column(horizontalAlignment = Alignment.End) {
-                    Row(horizontalArrangement = Arrangement.End) { PropertyDataText(feeCrypto) }
+                    if (showedCryptoAmount) {
+                        Row(horizontalArrangement = Arrangement.End) { PropertyDataText(feeCrypto) }
+                    }
                     Row(horizontalArrangement = Arrangement.End) { PropertyDataText(feeFiat) }
                 }
                 if (variantsAvailable) {
