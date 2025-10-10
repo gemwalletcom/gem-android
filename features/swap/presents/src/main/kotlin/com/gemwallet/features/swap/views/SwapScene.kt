@@ -97,7 +97,7 @@ internal fun SwapScene(
                 )
             }
             item {
-                SwapDetailPropertyItem(rate, onDetails)
+                SwapDetailPropertyItem(rate, priceImpact, swapState, onDetails)
             }
 
             item {

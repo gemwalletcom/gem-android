@@ -62,7 +62,7 @@ class NodesRepository(
 
     override fun setCurrentNode(chain: Chain, node: Node) {
         configStore.putString(
-            ConfigKey.CurrentNode.string,
+            ConfigKey.UsageNode.string,
             jsonEncoder.encodeToString(node),
             chain.string
         )
@@ -70,7 +70,7 @@ class NodesRepository(
 
     override fun getCurrentNode(chain: Chain): Node? {
         val data = configStore.getString(
-            ConfigKey.CurrentNode.string,
+            ConfigKey.UsageNode.string,
             postfix = chain.string
         )
         val node = try {
@@ -127,7 +127,7 @@ class NodesRepository(
     }
 
     private enum class ConfigKey(val string: String) {
-        CurrentNode("current_node"),
+        UsageNode("usage_node"),
         CurrentExplorer("current_explorer"),
         ;
     }

@@ -57,8 +57,8 @@ class FiatViewModel @Inject constructor(
     private val _amount = MutableStateFlow("")
     val amount: StateFlow<String> get() = _amount
 
-    val asset = assetId.flatMapLatest {
-        assetsRepository.getTokenInfo(it).mapNotNull { it }
+    val asset = assetId.flatMapLatest { assetId ->
+        assetsRepository.getTokenInfo(assetId).mapNotNull { it }
     }
     .flowOn(Dispatchers.IO)
     .map {
@@ -68,7 +68,7 @@ class FiatViewModel @Inject constructor(
             it
         }
     }
-    .map { AssetInfoUIModel(it, false, 6, -1) }
+    .map { AssetInfoUIModel(it, false, 2, 4) }
     .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

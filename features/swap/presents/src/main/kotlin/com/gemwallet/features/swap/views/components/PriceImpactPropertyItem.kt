@@ -16,12 +16,15 @@ fun PriceImpactPropertyItem(priceImpact: SwapProperty.PriceImpact, listPosition:
         title = R.string.swap_price_impact,
         info = InfoSheetEntity.PriceImpactInfo,
         data = priceImpact.percentageFormatted,
-        dataColor = when (priceImpact.type) {
-            PriceImpactType.Positive,
-            PriceImpactType.Low -> MaterialTheme.colorScheme.tertiary
-            PriceImpactType.Medium -> pendingColor
-            PriceImpactType.High -> MaterialTheme.colorScheme.error
-        },
+        dataColor = priceImpact.getColor(),
         listPosition = listPosition,
     )
+}
+
+@Composable
+fun SwapProperty.PriceImpact.getColor() = when (type) {
+    PriceImpactType.Positive,
+    PriceImpactType.Low -> MaterialTheme.colorScheme.tertiary
+    PriceImpactType.Medium -> pendingColor
+    PriceImpactType.High -> MaterialTheme.colorScheme.error
 }

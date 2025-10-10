@@ -133,7 +133,7 @@ class SwapViewModel @Inject constructor(
         .flowOn(Dispatchers.Default)
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val quote = quotes.combine(selectedProvider) { quotes, provider ->
+    val quote = combine(quotes, selectedProvider) { quotes, provider ->
             quotes?.getQuote(provider)?.let { QuoteState(it, quotes.pay, quotes.receive) }
         }
         .onEach { state -> setReceive(state?.formattedToAmount ?: "") }

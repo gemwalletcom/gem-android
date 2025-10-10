@@ -18,6 +18,8 @@ interface DelegationInfoUIModel {
 class HeadDelegationInfo(
     private val delegation: Delegation,
     private val assetInfo: AssetInfo,
+    override val maxFraction: Int = -1,
+    override val fraction: Int = -1,
 ) : DelegationInfoUIModel, CryptoFormattedUIModel, FiatFormattedUIModel {
 
     override val iconUrl: String
