@@ -8,6 +8,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.ext.available
+import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.WalletType
@@ -40,13 +41,14 @@ class CheckAccountsService @Inject constructor(
             }
 
             val availableChains = nativeAssets.map { it.id.chain }.toSet()
-            val newChains = getChainsToAdd(availableChains)
+            val newChains = getChainsToAdd(availableChains, wallet.accounts)
 
             if (newChains.isNotEmpty()) {
                 val data = loadPrivateDataOperator(wallet, passwordStore.getPassword(wallet.id))
                 val newAccounts = newChains.map { createAccountOperator(wallet.type, data, it) }
                 val newWallet = wallet.copy(accounts = wallet.accounts + newAccounts)
                 walletsRepository.updateWallet(newWallet)
+                walletsRepository.updateAccounts(newWallet)
                 if (newAccounts.isNotEmpty()) {
                     assetsRepository.invalidateDefault(newWallet)
                 }
@@ -55,11 +57,12 @@ class CheckAccountsService @Inject constructor(
         }
     }
 
-    private fun getChainsToAdd(available: Set<Chain>): List<Chain> {
+    private fun getChainsToAdd(available: Set<Chain>, accounts: List<Account>): List<Chain> {
         val allChains = Chain.available().toSet()
+        val accountChains = accounts.map { it.chain }
         val toAdd = mutableListOf<Chain>()
         for (i in allChains) {
-            if (!available.contains(i)) {
+            if (!available.contains(i) || !accountChains.contains(i)) {
                 toAdd.add(i)
             }
         }

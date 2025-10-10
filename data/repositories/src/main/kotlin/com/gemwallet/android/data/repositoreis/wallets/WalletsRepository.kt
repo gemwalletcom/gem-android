@@ -73,6 +73,10 @@ class WalletsRepository @Inject constructor(
         walletsDao.update(wallet.toRecord())
     }
 
+    suspend fun updateAccounts(wallet: Wallet) {
+        accountsDao.insert(wallet.accounts.map { it.toRecord(wallet.id) })
+    }
+
     suspend fun removeWallet(walletId: String) = withContext(Dispatchers.IO) {
         val wallet = walletsDao.getById(walletId).firstOrNull() ?: return@withContext false
         accountsDao.deleteByWalletId(wallet.id)

@@ -10,17 +10,17 @@ import com.gemwallet.android.data.service.store.database.entities.DbAccount
 @Dao
 interface AccountsDao {
     @Query("SELECT * FROM accounts WHERE wallet_id = :walletId")
-    fun getByWalletId(walletId: String): List<DbAccount>
+    suspend fun getByWalletId(walletId: String): List<DbAccount>
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
-    fun insert(account: DbAccount)
+    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    suspend fun insert(account: DbAccount)
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
-    fun insert(account: List<DbAccount>)
+    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    suspend fun insert(account: List<DbAccount>)
 
     @Delete
-    fun delete(account: DbAccount)
+    suspend fun delete(account: DbAccount)
 
     @Query("DELETE FROM accounts WHERE wallet_id=:walletId")
-    fun deleteByWalletId(walletId: String)
+    suspend fun deleteByWalletId(walletId: String)
 }
