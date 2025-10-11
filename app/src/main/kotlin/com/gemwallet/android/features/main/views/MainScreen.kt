@@ -33,7 +33,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
@@ -175,7 +177,7 @@ fun MainScreen(
                                     }
                                 }
                             },
-                            label = { Text(item.label) },
+                            label = { Text(item.label, maxLines = 1, overflow = TextOverflow.MiddleEllipsis) },
                             colors = NavigationBarItemDefaults.colors().copy(
                                 selectedIconColor = MaterialTheme.colorScheme.primary,
                                 selectedTextColor = MaterialTheme.colorScheme.onSurface,
