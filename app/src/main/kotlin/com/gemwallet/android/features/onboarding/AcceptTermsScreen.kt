@@ -118,6 +118,8 @@ fun AcceptTermsScreen(
                 isUnderstand3,
                 R.string.onboarding_accept_terms_item3_message,
             ) { isUnderstand3 = !isUnderstand3 }
+
+            item { Spacer(modifier = Modifier.size(it.calculateBottomPadding())) }
         }
     }
 }

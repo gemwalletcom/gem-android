@@ -111,8 +111,17 @@ private fun ColumnScope.AssetInfoTable(asset: Asset?) {
     }
     PropertyItem(
         title = { PropertyTitleText(R.string.asset_name) },
-        data = { PropertyDataText(asset.name, badge = { DataBadgeChevron(asset, false) }) }
+        data = { PropertyDataText(asset.name, badge = { DataBadgeChevron(asset, false) }) },
+        listPosition = ListPosition.First,
     )
-    PropertyItem(R.string.asset_symbol, asset.symbol)
-    PropertyItem(R.string.asset_decimals, asset.decimals.toString())
+    PropertyItem(
+        R.string.asset_symbol,
+        asset.symbol,
+        listPosition = ListPosition.Middle,
+    )
+    PropertyItem(
+        R.string.asset_decimals,
+        asset.decimals.toString(),
+        listPosition = ListPosition.Last,
+    )
 }

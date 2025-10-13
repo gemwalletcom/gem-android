@@ -46,7 +46,7 @@ fun Scene(
     },
     snackbar: SnackbarHostState? = null,
     navigationBarPadding: Boolean = true,
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable ColumnScope.(PaddingValues) -> Unit,
 ) {
     Scene(
         titleContent = {
@@ -81,7 +81,7 @@ fun Scene(
     mainActionPadding: PaddingValues = PaddingValues(paddingDefault),
     snackbar: SnackbarHostState? = null,
     navigationBarPadding: Boolean = true,
-    content: @Composable ColumnScope.() -> Unit,
+    content: @Composable ColumnScope.(PaddingValues) -> Unit,
 ) {
     BackHandler(backHandle) {
         onClose?.invoke()
@@ -116,10 +116,10 @@ fun Scene(
                 SnackbarHost(hostState = snackbar)
             }
         }
-    ) {
+    ) { paddingValues ->
         Box(
             modifier = (if (navigationBarPadding) Modifier.navigationBarsPadding() else Modifier)
-                .padding(top = it.calculateTopPadding())
+                .padding(top = paddingValues.calculateTopPadding())
                 .fillMaxSize(),
         ) {
             Column(
@@ -137,11 +137,10 @@ fun Scene(
                             .imePadding(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        content()
+                        content(paddingValues)
                         Spacer16()
                     }
                 }
-//                Spacer(modifier = Modifier.size(it.calculateBottomPadding()))
             }
         }
     }

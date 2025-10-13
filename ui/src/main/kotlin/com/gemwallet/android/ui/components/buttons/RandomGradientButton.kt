@@ -40,8 +40,8 @@ fun RandomGradientButton(
     Box(
         modifier = modifier
             .size(38.dp)
-            .background(Color.Transparent)
             .clip(RoundedCornerShape(cornerRadius.dp))
+            .background(MaterialTheme.colorScheme.background)
             .border(
                 width = borderWidth.dp,
                 brush = gradientBrush,

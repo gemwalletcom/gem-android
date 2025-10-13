@@ -45,10 +45,10 @@ fun FilterDialog(
                     .fillMaxWidth()
                     .normalPadding(),
             ) {
-                Box(modifier = Modifier.weight(0.3f)) {
+                Box(modifier = Modifier.weight(0.5f)) {
                     onClearFilters?.let {
                         TextButton(
-                            modifier = Modifier.align(Alignment.CenterEnd),
+                            modifier = Modifier.align(Alignment.CenterStart),
                             onClick = it,
                         ) {
                             Text(stringResource(R.string.filter_clear))
@@ -57,7 +57,7 @@ fun FilterDialog(
 
                 }
                 Column(
-                    modifier = Modifier.weight(1f),
+//                    modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center,
                 ) {
@@ -75,7 +75,7 @@ fun FilterDialog(
                         modifier = Modifier,
                     )
                 }
-                Box(modifier = Modifier.weight(0.3f)) {
+                Box(modifier = Modifier.weight(0.5f)) {
                     TextButton(
                         modifier = Modifier.align(Alignment.CenterEnd),
                         onClick = onDismissRequest,

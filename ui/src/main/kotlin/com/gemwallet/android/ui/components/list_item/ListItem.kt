@@ -19,8 +19,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.paddingMiddle
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingMiddle
 
 @Composable
 fun ListItem(
@@ -34,14 +34,18 @@ fun ListItem(
     Row(
         modifier = Modifier
             .listItem(position = listPosition)
-            .then(modifier.fillMaxWidth().padding(start = paddingDefault)),
+            .then(
+                modifier
+                    .fillMaxWidth()
+                    .padding(start = paddingDefault)
+            ),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(paddingDefault)
     ) {
         leading?.invoke(this)
         ListItemLayout(
             modifier = Modifier
-                .heightIn(max = 72.dp)
+                .heightIn(min = 72.dp)
                 .padding(top = paddingMiddle, end = paddingDefault, bottom = paddingMiddle)
                 .fillMaxWidth(),
         ) {
@@ -54,8 +58,9 @@ fun ListItem(
                 subtitle?.invoke()
             }
             Row(
-                modifier = Modifier,
+                modifier = Modifier.fillMaxHeight(),
                 horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 trailing?.let {
                     Spacer16()
@@ -79,8 +84,11 @@ private fun ListItemLayout(
         val placeable = if (measurables.size != 2) {
             measurables.map { it.measure(constraints) }
         } else {
-            val widths = measurables.map { measurable -> measurable.maxIntrinsicWidth(constraints.maxHeight) }
+            val height = measurables.maxOfOrNull { measurable -> measurable.maxIntrinsicHeight(constraints.minWidth) }
+                ?: constraints.minHeight
+            val widths = measurables.map { measurable -> measurable.maxIntrinsicWidth(height) }
             val totalWidth = widths.sum()
+
             if (totalWidth > constraints.maxWidth) {
                 val (firstItemWidth, lastItemWidth) = if (widths.last() < constraints.maxWidth / 2) {
                     Pair(constraints.maxWidth - widths.last(), widths.last())
@@ -110,16 +118,18 @@ private fun ListItemLayout(
                         constraints = constraints.copy(
                             minWidth = width,
                             maxWidth = width,
+                            minHeight = height,
+                            maxHeight = height,
                         )
                     )
                 }
             }
         }
 
-        layout(constraints.maxWidth, constraints.maxHeight) {
+        layout(constraints.maxWidth, constraints.minHeight) {
             var xPosition = 0
             placeable.forEach { placeable ->
-                placeable.place(x = xPosition, y = (constraints.maxHeight - placeable.height) / 2)
+                placeable.place(x = xPosition, y = (constraints.minHeight - placeable.height) / 2)
                 xPosition += placeable.width
             }
         }

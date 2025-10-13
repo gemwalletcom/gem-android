@@ -58,7 +58,7 @@ fun LotButton(fiatSuggestion: FiatSuggestion, onLotClick: (FiatSuggestion) -> Un
             modifier = Modifier
                 .clip(RoundedCornerShape(paddingSmall))
                 .clickable { onLotClick(fiatSuggestion) }
-                .background(MaterialTheme.colorScheme.scrim)
+                .background(MaterialTheme.colorScheme.background)
                 .padding(paddingSmall)
             ,
             text = fiatSuggestion.text,

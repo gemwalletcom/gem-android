@@ -6,11 +6,16 @@ import androidx.compose.animation.AnimatedContentTransitionScope
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -135,20 +140,27 @@ fun UI(
             )
         }
     ) {
-        if (dataError.isNotEmpty()) {
-            Text(text = dataError)
-        } else {
-            Text(
-                text = stringResource(id = R.string.secret_phrase_save_phrase_safely),
-                textAlign = TextAlign.Center,
-                color = MaterialTheme.colorScheme.secondary,
-            )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            if (dataError.isNotEmpty()) {
+                Text(text = dataError)
+            } else {
+                Text(
+                    text = stringResource(id = R.string.secret_phrase_save_phrase_safely),
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.secondary,
+                )
+                Spacer16()
+                PhraseLayout(words = data)
+            }
             Spacer16()
-            PhraseLayout(words = data)
-        }
-        Spacer16()
-        TextButton(onClick = { clipboardManager.setPlainText(context, data.joinToString(" ")) }) {
-            Text(text = stringResource(id = R.string.common_copy))
+            TextButton(onClick = { clipboardManager.setPlainText(context, data.joinToString(" ")) }) {
+                Text(text = stringResource(id = R.string.common_copy))
+            }
         }
     }
 }

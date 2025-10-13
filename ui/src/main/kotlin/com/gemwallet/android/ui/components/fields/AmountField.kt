@@ -65,7 +65,7 @@ fun ColumnScope.AmountField(
 
     BasicTextField(
         modifier = modifier,
-        value = TextFieldValue(
+        value = TextFieldValue( // TODO: Change to textfieldstate
             text = amount,
             selection = TextRange(if (amount.isNotEmpty()) amount.length else 0)
         ),
@@ -100,10 +100,12 @@ fun ColumnScope.AmountField(
             }
         }
     }
-    Text(
-        text = error,
-        color = MaterialTheme.colorScheme.error,
-    )
+    error.takeIf { it.isNotEmpty() }?.run {
+        Text(
+            text = error,
+            color = MaterialTheme.colorScheme.error,
+        )
+    }
 }
 
 class CryptoAmountTransformation(symbol: String, inputType: AmountInputType, color: Color) : AmountTransformation(inputType, symbol, color) {

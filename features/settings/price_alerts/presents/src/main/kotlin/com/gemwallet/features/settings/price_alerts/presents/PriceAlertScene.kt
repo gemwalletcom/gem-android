@@ -1,8 +1,10 @@
 package com.gemwallet.features.settings.price_alerts.presents
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
@@ -142,13 +144,12 @@ private fun LazyListScope.assets(
             isRevealed = reveableAssetId.value == item.asset.id,
             actions = @Composable {
                 ActionIcon(
-                    modifier = Modifier.widthIn(min = minActionWidth),
+                    modifier = Modifier.widthIn(min = minActionWidth).heightIn(minActionWidth),
                     onClick = { onExclude(item.asset.id) },
                     backgroundColor = MaterialTheme.colorScheme.error,
                     icon = Icons.Default.Delete,
                 )
             },
-            modifier = Modifier.fillMaxWidth(),
             onExpanded = { reveableAssetId.value = item.asset.id },
             onCollapsed = { reveableAssetId.value = null },
             listPosition = position,
@@ -158,16 +159,17 @@ private fun LazyListScope.assets(
                     .clickable(onClick = { onChart(item.asset.id) })
                     .onSizeChanged {
                         minActionWidth = with (density) { it.height.toDp() }
+                        Log.d("PRICE_ALER", "Min width: $minActionWidth")
                     },
                 asset = item,
-                listPosition = position,
                 support = {
                     PriceInfo(
                         price = item.price,
                         style = MaterialTheme.typography.bodyMedium,
                         internalPadding = 4.dp
                     )
-                }
+                },
+                listPosition = position
             )
         }
     }

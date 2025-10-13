@@ -4,13 +4,11 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -57,7 +55,7 @@ fun SwipeableItemWithActions(
         }
     }
 
-    Box(modifier = modifier.fillMaxWidth().height(IntrinsicSize.Min)) {
+    Box(modifier = modifier.fillMaxWidth()) {
         Box(modifier = Modifier.fillMaxWidth().listItem(listPosition, Color.Transparent)) {
             Row(
                 modifier = Modifier

@@ -1,9 +1,13 @@
 package com.gemwallet.android.features.wallet.presents
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -56,45 +60,51 @@ fun PhraseScreen(
     ) {
         Column(
             modifier = Modifier
-                .background(
-                    color = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
-                    shape = MaterialTheme.shapes.small
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(paddingDefault)
+        ) {
+            Column(
+                modifier = Modifier
+                    .background(
+                        color = MaterialTheme.colorScheme.error.copy(alpha = 0.1f),
+                        shape = MaterialTheme.shapes.small
+                    )
+                    .padding(16.dp)
+                ,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.secret_phrase_do_not_share_title),
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center,
                 )
-                .padding(16.dp)
-            ,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(id = R.string.secret_phrase_do_not_share_title),
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center,
-            )
-            Spacer8()
-            Text(
-                text = stringResource(id = R.string.secret_phrase_do_not_share_description),
-                color = MaterialTheme.colorScheme.error,
-                textAlign = TextAlign.Center,
-            )
-        }
-        Spacer16()
-        Spacer16()
-        when (walletType) {
-            WalletType.multicoin,
-            WalletType.single -> PhraseLayout(words = phrase?.split(" ") ?: emptyList())
-            WalletType.private_key -> Text(
-                text = phrase ?: "",
-                style = MaterialTheme.typography.titleMedium,
-                textAlign = TextAlign.Center,
-            )
-            else -> {}
-        }
+                Text(
+                    text = stringResource(id = R.string.secret_phrase_do_not_share_description),
+                    color = MaterialTheme.colorScheme.error,
+                    textAlign = TextAlign.Center,
+                )
+            }
 
-        Spacer16()
-        TextButton(
-            onClick = { clipboardManager.setPlainText(context, phrase ?: "") }
-        ) {
-            Text(text = stringResource(id = R.string.common_copy))
+            when (walletType) {
+                WalletType.multicoin,
+                WalletType.single -> PhraseLayout(words = phrase?.split(" ") ?: emptyList())
+                WalletType.private_key -> Text(
+                    text = phrase ?: "",
+                    style = MaterialTheme.typography.titleMedium,
+                    textAlign = TextAlign.Center,
+                )
+                else -> {}
+            }
+
+            TextButton(
+                onClick = { clipboardManager.setPlainText(context, phrase ?: "") }
+            ) {
+                Text(text = stringResource(id = R.string.common_copy))
+            }
         }
     }
 }

@@ -2,11 +2,15 @@ package com.gemwallet.android.features.create_wallet.views
 
 import android.content.Context
 import androidx.annotation.StringRes
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Diamond
 import androidx.compose.material.icons.filled.Edit
@@ -46,8 +50,8 @@ import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.defaultPadding
 import com.gemwallet.android.ui.theme.isSmallScreen
-import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingHalfSmall
 import uniffi.gemstone.Config
 import uniffi.gemstone.PublicUrl
 
@@ -96,32 +100,32 @@ fun PhraseAlertDialog(
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .defaultPadding(),
+            verticalArrangement = Arrangement.spacedBy(if (isSmallScreen) paddingDefault else 24.dp),
         ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = stringResource(R.string.onboarding_security_create_wallet_intro_title),
                 textAlign = TextAlign.Center,
             )
-            Spacer(Modifier.size(if (isSmallScreen) paddingDefault else 24.dp))
             InfoBlock(
                 Icons.Default.Edit,
                 R.string.onboarding_security_create_wallet_keep_safe_title,
                 R.string.onboarding_security_create_wallet_keep_safe_subtitle,
             )
-            Spacer(Modifier.size(if (isSmallScreen) paddingDefault else 24.dp))
             InfoBlock(
                 Icons.Default.WarningAmber,
                 R.string.secret_phrase_do_not_share_title,
                 R.string.onboarding_security_create_wallet_do_not_share_subtitle,
             )
-            Spacer(Modifier.size(if (isSmallScreen) paddingDefault else 24.dp))
             InfoBlock(
                 Icons.Default.Diamond,
                 R.string.onboarding_security_create_wallet_no_recovery_title,
                 R.string.onboarding_security_create_wallet_no_recovery_subtitle,
             )
+            Spacer(modifier = Modifier.size(it.calculateBottomPadding()))
         }
     }
 

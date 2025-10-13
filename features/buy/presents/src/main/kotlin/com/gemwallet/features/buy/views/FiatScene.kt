@@ -129,30 +129,29 @@ fun BuyScene(
             textStyle = MaterialTheme.typography.displayMedium,
             onNext = { },
         )
+        Spacer16()
+        Row(verticalAlignment = Alignment.Companion.CenterVertically) {
+            suggestedAmounts.forEach { suggestion ->
+                when (suggestion) {
+                    FiatSuggestion.RandomAmount -> RandomGradientButton(
+                        onClick = { onLotSelect(FiatSuggestion.RandomAmount) }
+                    )
+                    is FiatSuggestion.SuggestionAmount,
+                    is FiatSuggestion.SuggestionPercent -> {
+                        LotButton(suggestion, onLotSelect)
+                        Spacer8()
+                    }
+                    FiatSuggestion.MaxAmount -> {
+                        LotButton(suggestion, onLotSelect)
+                    }
+                }
+            }
+        }
         AssetListItem(
-            modifier = Modifier.Companion.height(74.dp),
             asset = asset,
             listPosition = ListPosition.Single,
             support = { ListItemSupportText(asset.cryptoFormatted) },
-            trailing = {
-                Row(verticalAlignment = Alignment.Companion.CenterVertically) {
-                    suggestedAmounts.forEach { suggestion ->
-                        when (suggestion) {
-                            FiatSuggestion.RandomAmount -> RandomGradientButton(
-                                onClick = { onLotSelect(FiatSuggestion.RandomAmount) }
-                            )
-                            is FiatSuggestion.SuggestionAmount,
-                            is FiatSuggestion.SuggestionPercent -> {
-                                LotButton(suggestion, onLotSelect)
-                                Spacer8()
-                            }
-                            FiatSuggestion.MaxAmount -> {
-                                LotButton(suggestion, onLotSelect)
-                            }
-                        }
-                    }
-                }
-            },
+            trailing = {},
         )
 
         when (state) {
