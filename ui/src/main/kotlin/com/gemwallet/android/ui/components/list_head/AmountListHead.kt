@@ -62,6 +62,7 @@ import com.gemwallet.android.ui.theme.headerIconSize
 import com.gemwallet.android.ui.theme.headerSupportIconSize
 import com.gemwallet.android.ui.theme.isSmallScreen
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingLarge
 import com.gemwallet.android.ui.theme.paddingSmall
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.WalletType
@@ -84,7 +85,6 @@ fun AmountListHead(
         Column(
             modifier = Modifier
                 .width(IntrinsicSize.Min)
-//                .fillMaxWidth()
                 .padding(start = paddingDefault, end = paddingDefault, bottom = paddingDefault),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -154,7 +154,7 @@ fun AssetHeadActions(
         return
     }
     Row(
-        horizontalArrangement = Arrangement.spacedBy(if (isSmallScreen) paddingSmall else paddingDefault, Alignment.CenterHorizontally),
+        horizontalArrangement = Arrangement.spacedBy(if (isSmallScreen) paddingSmall else paddingLarge, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (onTransfer != null) {
