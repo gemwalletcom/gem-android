@@ -4,11 +4,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -58,8 +60,9 @@ import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.headerIconSize
 import com.gemwallet.android.ui.theme.headerSupportIconSize
-import com.gemwallet.android.ui.theme.paddingSmall
+import com.gemwallet.android.ui.theme.isSmallScreen
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.WalletType
 
@@ -74,10 +77,14 @@ fun AmountListHead(
     changeState: PriceState = PriceState.None,
     actions: (@Composable () -> Unit)? = null,
 ) {
-    Column {
+    Column(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
+                .width(IntrinsicSize.Min)
+//                .fillMaxWidth()
                 .padding(start = paddingDefault, end = paddingDefault, bottom = paddingDefault),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -141,22 +148,18 @@ fun AssetHeadActions(
     onBuy: (() -> Unit)?,
     onSwap: (() -> Unit)?,
 ) {
+    val isSmallScreen = isSmallScreen()
     if (walletType == WalletType.view) {
         AssetWatchOnly()
         return
     }
-    val windowSizeClass: WindowWidthSizeClass = currentWindowAdaptiveInfo().windowSizeClass.widthSizeClass
     Row(
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.spacedBy(if (isSmallScreen) paddingSmall else paddingDefault, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (onTransfer != null) {
             AssetAction(
-                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                    Modifier.weight(1f)
-                } else {
-                    Modifier
-                },
+                modifier = Modifier.weight(1f),
                 title = stringResource(id = R.string.wallet_send),
                 imageVector = Icons.Default.ArrowUpward,
                 enabled = transferEnabled && operationsEnabled,
@@ -166,11 +169,7 @@ fun AssetHeadActions(
         }
         if (onReceive != null) {
             AssetAction(
-                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                    Modifier.weight(1f)
-                } else {
-                    Modifier
-                },
+                modifier = Modifier.weight(1f),
                 title = stringResource(id = R.string.wallet_receive),
                 imageVector = Icons.Default.ArrowDownward,
                 enabled = operationsEnabled,
@@ -180,11 +179,7 @@ fun AssetHeadActions(
         }
         if (onBuy != null) {
             AssetAction(
-                modifier = (if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                    Modifier.weight(1f)
-                } else {
-                    Modifier
-                })
+                modifier = Modifier.weight(1f)
                 .testTag("assetBuy"),
                 title = stringResource(id = R.string.wallet_buy),
                 imageVector = Icons.Default.Add,
@@ -195,11 +190,7 @@ fun AssetHeadActions(
         }
         if (onSwap != null) {
             AssetAction(
-                modifier = if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                    Modifier.weight(1f)
-                } else {
-                    Modifier
-                },
+                modifier = Modifier.weight(1f),
                 title = stringResource(id = R.string.wallet_swap),
                 imageVector = Icons.Default.SwapVert,
                 enabled = operationsEnabled,
@@ -262,6 +253,7 @@ private fun AssetAction(
     onClick: () -> Unit
 ) {
     val windowSizeClass: WindowWidthSizeClass = currentWindowAdaptiveInfo().windowSizeClass.widthSizeClass
+    val isSmallScreen = isSmallScreen()
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(paddingDefault))
@@ -291,8 +283,8 @@ private fun AssetAction(
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.W400,
-                fontSize = if (windowSizeClass == WindowWidthSizeClass.Compact) {
-                    12.sp
+                fontSize = if (isSmallScreen || windowSizeClass == WindowWidthSizeClass.Compact) {
+                    11.sp
                 } else {
                     16.sp
                 }
