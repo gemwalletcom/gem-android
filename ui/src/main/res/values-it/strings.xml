@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
-  <string name="transfer.reserved_fees">Abbiamo omesso %s per consentirti di pagare le commissioni di prelievo.</string>
+  <string name="transfer.reserved_fees">Abbiamo lasciato %s nel tuo saldo per coprire le future commissioni di rete.</string>
   <string name="price_alerts.auto_footer">Gli avvisi vengono attivati in caso di movimenti significativi dei prezzi.</string>
   <string name="price_alerts.set_alert.title">Imposta avviso prezzo</string>
   <string name="swap.min_receive">Minimo da ricevere</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">Una piccola somma rimane nel tuo portafoglio per coprire le commissioni per operazioni come l\'annullamento dello staking o la richiesta di premi.</string>
   <string name="perpetual.open_direction">Apri %s</string>
   <string name="perpetual.close_direction">Chiudi %s</string>
+  <string name="perpetuals.title">Perpetui</string>
+  <string name="settings.preferences.title">Preferenze</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">Nessun mercato trovato</string>
+  <string name="assets.title">Attività</string>
 </resources>

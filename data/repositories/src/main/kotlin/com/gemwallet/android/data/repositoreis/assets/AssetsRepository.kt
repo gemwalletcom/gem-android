@@ -6,6 +6,7 @@ import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.tokens.toPriorityQuery
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.AssetsPriorityDao
 import com.gemwallet.android.data.service.store.database.BalancesDao
@@ -40,6 +41,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.AssetMarket
+import com.wallet.core.primitives.AssetTag
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
@@ -226,8 +228,8 @@ class AssetsRepository @Inject constructor(
         return assetsDao.getAssetsInfoByAllWallets(assetsId).toAssetInfoModel()
     }
 
-    fun search(query: String, byAllWallets: Boolean): Flow<List<AssetInfo>> {
-        val query = query.trim()
+    fun search(query: String, tags: List<AssetTag>, byAllWallets: Boolean): Flow<List<AssetInfo>> {
+        val query = tags.toPriorityQuery(query)
         return if (byAllWallets) {
             assetsPriorityDao.hasPriorities(query).map { it > 0 }.flatMapLatest {
                 if (it) {
@@ -236,7 +238,6 @@ class AssetsRepository @Inject constructor(
                     assetsDao.searchByAllWallets(query)
                 }
             }
-
         } else {
             assetsPriorityDao.hasPriorities(query).map { it > 0 }.flatMapLatest {
                 if (it) {

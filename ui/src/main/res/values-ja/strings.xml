@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">不審資産</string>
   <string name="banner.asset_status.description">トークンは安全でないか、誤解を招く可能性がある。完全に信頼できる場合のみ手続きを行ってください。</string>
   <string name="transfer.maximum_amount">最大金額は%s</string>
-  <string name="transfer.reserved_fees">出金手数料をお支払いいただけるよう、 %sを省略しました。</string>
+  <string name="transfer.reserved_fees">将来のネットワーク手数料をカバーするために、残高に%sを残しておきました。</string>
   <string name="price_alerts.auto_footer">大幅な価格変動が発生するとアラートが発動します。</string>
   <string name="price_alerts.set_alert.title">価格アラートを設定する</string>
   <string name="swap.min_receive">最小受取額</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">ステーキング解除や報酬の請求などの操作にかかる手数料をカバーするために、少額がウォレットに残ります。</string>
   <string name="perpetual.open_direction">%sを開く</string>
   <string name="perpetual.close_direction">%sを閉じる</string>
+  <string name="perpetuals.title">パーペチュアル</string>
+  <string name="settings.preferences.title">設定</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">市場が見つかりません</string>
+  <string name="assets.title">資産</string>
 </resources>

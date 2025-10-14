@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
-  <string name="transfer.reserved_fees">আমরা %s বাদ দিয়েছি যাতে আপনি টাকা তোলার ফি পরিশোধ করতে পারেন।</string>
+  <string name="transfer.reserved_fees">ভবিষ্যতের নেটওয়ার্ক ফি মেটানোর জন্য আমরা আপনার ব্যালেন্সে %s রেখে দিয়েছি।</string>
   <string name="price_alerts.auto_footer">উল্লেখযোগ্য মূল্য পরিবর্তনের সময় সতর্কতাগুলি ট্রিগার করে।</string>
   <string name="price_alerts.set_alert.title">মূল্য সতর্কতা সেট করুন</string>
   <string name="swap.min_receive">প্রাপ্তির সর্বনিম্ন</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">পুরষ্কার দাবি করা বা স্টক খোলার মতো ক্রিয়াকলাপের ফি মেটাতে আপনার ওয়ালেটে অল্প পরিমাণ টাকা থেকে যায়।</string>
   <string name="perpetual.open_direction">%s খুলুন</string>
   <string name="perpetual.close_direction">%s বন্ধ করুন</string>
+  <string name="perpetuals.title">চিরস্থায়ী</string>
+  <string name="settings.preferences.title">পছন্দসমূহ</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">কোন বাজার খুঁজে পাওয়া যায়নি</string>
+  <string name="assets.title">সম্পদ</string>
 </resources>

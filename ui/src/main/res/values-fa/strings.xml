@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
-  <string name="transfer.reserved_fees">ما %s را حذف کرده‌ایم تا بتوانید کارمزد برداشت را پرداخت کنید.</string>
+  <string name="transfer.reserved_fees">ما %s را برای پوشش هزینه‌های شبکه در آینده در موجودی شما باقی گذاشته‌ایم.</string>
   <string name="price_alerts.auto_footer">هشدارها در صورت حرکت قابل توجه قیمت فعال می‌شوند.</string>
   <string name="price_alerts.set_alert.title">تنظیم هشدار قیمت</string>
   <string name="swap.min_receive">حداقل دریافت</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">مقدار کمی در کیف پول شما باقی می‌ماند تا هزینه‌های عملیاتی مانند برداشت از حساب یا دریافت پاداش را پوشش دهد.</string>
   <string name="perpetual.open_direction">باز کردن %s</string>
   <string name="perpetual.close_direction">بستن %s</string>
+  <string name="perpetuals.title">دائمی‌ها</string>
+  <string name="settings.preferences.title">تنظیمات برگزیده</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">هیچ بازاری یافت نشد</string>
+  <string name="assets.title">دارایی‌ها</string>
 </resources>

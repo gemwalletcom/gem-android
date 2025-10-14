@@ -93,6 +93,7 @@ interface GemApiClient {
     suspend fun search(
         @Query("query") query: String,
         @Query("chains") chains: String,
+        @Query("tags") tags: String,
     ): List<AssetBasic>
 
     @GET("/v1/assets/device/{device_id}")

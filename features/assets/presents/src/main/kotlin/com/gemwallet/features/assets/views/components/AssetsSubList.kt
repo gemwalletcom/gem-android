@@ -9,6 +9,8 @@ import androidx.compose.ui.platform.testTag
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.components.list_item.PinnedAssetsHeaderItem
+import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
+import com.gemwallet.android.ui.models.AssetsGroupType
 import com.gemwallet.android.ui.models.ListPosition
 import com.wallet.core.primitives.AssetId
 
@@ -16,24 +18,22 @@ import com.wallet.core.primitives.AssetId
 internal fun LazyListScope.assets(
     items: List<AssetItemUIModel>,
     longPressState: MutableState<AssetId?>,
-    isPinned: Boolean = false,
+    group: AssetsGroupType,
     onAssetClick: (AssetId) -> Unit,
     onAssetHide: (AssetId) -> Unit,
     onTogglePin: (AssetId) -> Unit,
 ) {
     if (items.isEmpty()) return
 
-    if (isPinned) {
-        item { PinnedAssetsHeaderItem() }
-    }
-    val size = items.size
-    itemsIndexed(items = items, key = { index, item -> "${item.asset.id.toIdentifier()}-$isPinned" }) { index, item ->
+    item { PinnedAssetsHeaderItem(group) }
+
+    itemsPositioned(items = items, key = { index, item -> "${item.asset.id.toIdentifier()}-${group.name}" }) { position, item ->
         AssetItem(
-            modifier = Modifier.testTag(item.asset.id.toIdentifier()),
-            listPosition = ListPosition.getPosition(index, size),
+            modifier = Modifier,//.testTag(item.asset.id.toIdentifier()),
+            listPosition = position,
             item = item,
             longPressState = longPressState,
-            isPinned = isPinned,
+            group = group,
             onAssetClick = onAssetClick,
             onAssetHide = onAssetHide,
             onTogglePin = onTogglePin,

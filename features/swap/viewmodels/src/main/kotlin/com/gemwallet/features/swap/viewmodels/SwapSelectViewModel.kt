@@ -16,6 +16,7 @@ import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.gemwallet.features.asset_select.viewmodels.models.SelectSearch
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetTag
 import com.wallet.core.primitives.Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -91,11 +92,18 @@ class SwapSelectSearch(
 
     override fun invoke(
         session: Flow<Session?>,
-        query: Flow<String>
+        query: Flow<String>,
+        tag: Flow<AssetTag?>,
     ): Flow<List<AssetInfo>> {
-        return combine(session, query, swapItemType, payId, receiveId) { session, query, type, payId, receiveId ->
+        return combine(session, query, swapItemType, payId, receiveId, tag) { params/*session, query, type, payId, receiveId, tag*/ ->
+            val session: Session? = params[0] as? Session?
+            val query: String = params[1] as? String ?: ""
+            val type: SwapItemType? = params[2] as? SwapItemType?
+            val payId: AssetId? = params[3] as? AssetId?
+            val receiveId: AssetId? = params[4] as? AssetId?
+            val tag: AssetTag? = params[5] as? AssetTag?
             val oppositeId = getOppositeAssetId(type, payId, receiveId)
-            SearchParams(session?.wallet, query, oppositeId)
+            SearchParams(session?.wallet, query, oppositeId, tag)
         }
         .flatMapLatest { params ->
             if (params.oppositeAssetId == null || params.wallet == null) {
@@ -132,6 +140,7 @@ class SwapSelectSearch(
     private class SearchParams(
         val wallet: Wallet?,
         val query: String,
-        val oppositeAssetId: AssetId?
+        val oppositeAssetId: AssetId?,
+        val tag: AssetTag?
     )
 }

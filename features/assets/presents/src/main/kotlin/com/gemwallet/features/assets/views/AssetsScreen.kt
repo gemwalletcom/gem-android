@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.update_app.presents.InAppUpdateBanner
+import com.gemwallet.android.ui.models.AssetsGroupType
 import com.gemwallet.android.ui.open
 import com.gemwallet.features.assets.viewmodels.AssetsViewModel
 import com.gemwallet.features.assets.views.components.AssetsHead
@@ -108,7 +109,7 @@ fun AssetsScreen(
                 assets(
                     items = pinnedAssets,
                     longPressState = longPressedAsset,
-                    isPinned = true,
+                    group = AssetsGroupType.Pined,
                     onAssetClick = onAssetClick,
                     onAssetHide = viewModel::hideAsset,
                     onTogglePin = viewModel::togglePin,
@@ -116,7 +117,7 @@ fun AssetsScreen(
                 assets(
                     items = unpinnedAssets,
                     longPressState = longPressedAsset,
-                    isPinned = false,
+                    group = AssetsGroupType.None,
                     onAssetClick = onAssetClick,
                     onAssetHide = viewModel::hideAsset,
                     onTogglePin = viewModel::togglePin,

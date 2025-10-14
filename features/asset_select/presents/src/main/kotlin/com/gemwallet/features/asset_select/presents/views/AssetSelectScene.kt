@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
@@ -41,12 +40,16 @@ import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.list_item.PinnedAssetsHeaderItem
+import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.defaultPadding
 import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
+import com.gemwallet.android.ui.models.AssetsGroupType
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer8
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetTag
 import com.wallet.core.primitives.Chain
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
@@ -55,12 +58,15 @@ import kotlinx.coroutines.launch
 @Composable
 fun AssetSelectScene(
     title: String,
+    popular: ImmutableList<AssetItemUIModel>,
     pinned: ImmutableList<AssetItemUIModel>,
     unpinned: ImmutableList<AssetItemUIModel>,
     state: BaseAssetSelectViewModel.UIState,
     titleBadge: (AssetItemUIModel) -> String?,
     support: ((AssetItemUIModel) -> (@Composable () -> Unit)?)?,
     query: TextFieldState,
+    tags: List<AssetTag?>,
+    selectedTag: AssetTag?,
     isAddAvailable: Boolean = false,
     availableChains: List<Chain> = emptyList(),
     chainsFilter: List<Chain> = emptyList(),
@@ -69,6 +75,7 @@ fun AssetSelectScene(
     onBalanceFilter: (Boolean) -> Unit,
     onClearFilters: () -> Unit,
     onSelect: ((AssetId) -> Unit)?,
+    onTagSelect: (AssetTag?) -> Unit,
     onCancel: () -> Unit,
     itemTrailing: (@Composable (AssetItemUIModel) -> Unit)? = null,
     actions: @Composable RowScope.() -> Unit = {},
@@ -116,8 +123,15 @@ fun AssetSelectScene(
     ) {
         SearchBar(query = query)
         LazyColumn(state = listState) {
-            assets(pinned, true, onSelect, support, titleBadge, itemTrailing)
-            assets(unpinned, false, onSelect, support, titleBadge, itemTrailing)
+            item {
+                Box {
+                    TagsBar(selectedTag, tags, onTagSelect)
+                }
+                Spacer16()
+            }
+            assets(popular, AssetsGroupType.Popular, onSelect, support, titleBadge, itemTrailing)
+            assets(pinned, AssetsGroupType.Pined, onSelect, support, titleBadge, itemTrailing)
+            assets(unpinned, AssetsGroupType.None, onSelect, support, titleBadge, itemTrailing)
             loading(state)
             notFound(state = state, onAddAsset = onAddAsset, isAddAvailable = isAddAvailable)
         }
@@ -138,7 +152,7 @@ fun AssetSelectScene(
 
 private fun LazyListScope.assets(
     items: List<AssetItemUIModel>,
-    isPinned: Boolean,
+    group: AssetsGroupType,
     onSelect: ((AssetId) -> Unit)?,
     support: ((AssetItemUIModel) -> (@Composable () -> Unit)?)?,
     titleBadge: (AssetItemUIModel) -> String?,
@@ -146,16 +160,14 @@ private fun LazyListScope.assets(
 ) {
     if (items.isEmpty()) return
 
-    if (isPinned) {
-        item { PinnedAssetsHeaderItem() }
-    }
-    val size = items.size
-    itemsIndexed(items, key = { index, item -> item.asset.id.toIdentifier() }) { index, item ->
+    item { PinnedAssetsHeaderItem(group) }
+
+    itemsPositioned(items, key = { index, item -> "${item.asset.id.toIdentifier()}-${group.name}" }) { position, item ->
         AssetListItem(
             modifier = Modifier
                 .heightIn(74.dp)
                 .clickable { onSelect?.invoke(item.asset.id) },
-            listPosition = ListPosition.getPosition(index, size),
+            listPosition = position,
             asset = item,
             support = support?.invoke(item),
             badge = titleBadge.invoke(item),
@@ -217,10 +229,13 @@ fun PreviewAssetScreenUI() {
         AssetSelectScene(
             pinned = emptyList<AssetInfoUIModel>().toImmutableList(),
             unpinned = emptyList<AssetInfoUIModel>().toImmutableList(),
+            popular = emptyList<AssetInfoUIModel>().toImmutableList(),
             state = BaseAssetSelectViewModel.UIState.Idle,
             title = "Send",
             titleBadge = { it.asset.symbol },
             support = null,
+            tags = AssetTag.entries,
+            selectedTag = null,
             query = rememberTextFieldState(),
             onSelect = {},
             onAddAsset = {},
@@ -228,6 +243,7 @@ fun PreviewAssetScreenUI() {
             onBalanceFilter = {},
             onClearFilters = {},
             onCancel = {},
+            onTagSelect = {},
         )
     }
 }

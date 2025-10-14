@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
-  <string name="transfer.reserved_fees">हमने %s को छोड़ दिया है ताकि आप निकासी शुल्क का भुगतान कर सकें।</string>
+  <string name="transfer.reserved_fees">हमने भविष्य में नेटवर्क शुल्क को कवर करने के लिए आपके बैलेंस में %s छोड़ दिया है।</string>
   <string name="price_alerts.auto_footer">महत्वपूर्ण मूल्य परिवर्तन पर अलर्ट सक्रिय हो जाते हैं।</string>
   <string name="price_alerts.set_alert.title">मूल्य अलर्ट सेट करें</string>
   <string name="swap.min_receive">न्यूनतम प्राप्ति राशि</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">आपके वॉलेट में एक छोटी राशि रहती है, जो अनस्टेकिंग या पुरस्कार का दावा करने जैसे कार्यों के लिए शुल्क को कवर करती है।</string>
   <string name="perpetual.open_direction">%s खोलें</string>
   <string name="perpetual.close_direction">बंद करें %s</string>
+  <string name="perpetuals.title">स्थाई</string>
+  <string name="settings.preferences.title">प्राथमिकताएँ</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">कोई बाज़ार नहीं मिला</string>
+  <string name="assets.title">संपत्ति</string>
 </resources>

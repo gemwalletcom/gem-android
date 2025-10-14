@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
-  <string name="transfer.reserved_fees">Deixamos %s de fora para que você possa pagar as taxas de retirada.</string>
+  <string name="transfer.reserved_fees">Deixamos %s em seu saldo para cobrir futuras taxas de rede.</string>
   <string name="price_alerts.auto_footer">Alertas são acionados em movimentos significativos de preços.</string>
   <string name="price_alerts.set_alert.title">Definir alerta de preço</string>
   <string name="swap.min_receive">Recepção mínima</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">Uma pequena quantia fica na sua carteira para cobrir taxas de operações como retirada de stake ou reivindicação de recompensas.</string>
   <string name="perpetual.open_direction">Abrir %s</string>
   <string name="perpetual.close_direction">Fechar %s</string>
+  <string name="perpetuals.title">Perpétuos</string>
+  <string name="settings.preferences.title">Preferências</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">Nenhum mercado encontrado</string>
+  <string name="assets.title">Ativos</string>
 </resources>

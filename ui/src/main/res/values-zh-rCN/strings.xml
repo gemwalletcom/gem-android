@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">可疑资产</string>
   <string name="banner.asset_status.description">代币可能不安全或具有误导性。请仅在完全信任的情况下继续操作。</string>
   <string name="transfer.maximum_amount">最高金额为%s</string>
-  <string name="transfer.reserved_fees">我们省略了%s以便您可以支付提款费用。</string>
+  <string name="transfer.reserved_fees">我们已在您的余额中留下%s以支付未来的网络费用。</string>
   <string name="price_alerts.auto_footer">当价格发生重大变动时，警报就会触发。</string>
   <string name="price_alerts.set_alert.title">设置价格提醒</string>
   <string name="swap.min_receive">最少接收</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">您的钱包中会留有少量资金，用于支付取消质押或领取奖励等操作的费用。</string>
   <string name="perpetual.open_direction">打开%s</string>
   <string name="perpetual.close_direction">关闭%s</string>
+  <string name="perpetuals.title">永久</string>
+  <string name="settings.preferences.title">偏好设置</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">未找到任何市场</string>
+  <string name="assets.title">资产</string>
 </resources>

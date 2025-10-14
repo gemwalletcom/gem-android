@@ -9,6 +9,7 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
 import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.gemwallet.features.asset_select.viewmodels.models.SelectSearch
+import com.wallet.core.primitives.AssetTag
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,12 +43,13 @@ open class PriceAlertSelectSearch(
 
     override fun invoke(
         session: Flow<Session?>,
-        query: Flow<String>
+        query: Flow<String>,
+        tag: Flow<AssetTag?>,
     ): Flow<List<AssetInfo>> {
-        return combine(query, addedPriceAlerts) { query, alerts -> Pair(query, alerts) }
+        return combine(query, tag, addedPriceAlerts) { query, tag, alerts -> Triple(query, tag,alerts) }
             .flatMapLatest {
-                val (query, alerts) = it
-                assetsRepository.search(query, true)
+                val (query, tag, alerts) = it
+                assetsRepository.search(query, tag?.let { listOf(it) } ?: emptyList(), true)
             }
             .map { it.distinctBy { it.asset.id.toIdentifier() } }
             .flowOn(Dispatchers.IO)

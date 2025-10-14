@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
-  <string name="transfer.reserved_fees">Wir haben %s weggelassen, damit Sie die Abhebungsgebühren bezahlen können.</string>
+  <string name="transfer.reserved_fees">Wir haben %s auf Ihrem Guthaben belassen, um zukünftige Netzwerkgebühren abzudecken.</string>
   <string name="price_alerts.auto_footer">Bei erheblichen Preisbewegungen werden Warnungen ausgelöst.</string>
   <string name="price_alerts.set_alert.title">Preisalarm einstellen</string>
   <string name="swap.min_receive">Mindestbetrag erhalten</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">Ein kleiner Betrag verbleibt in Ihrem Wallet, um Gebühren für Vorgänge wie das Aufheben der Absteckung oder das Einfordern von Prämien zu decken.</string>
   <string name="perpetual.open_direction">Öffnen %s</string>
   <string name="perpetual.close_direction">Schließen %s</string>
+  <string name="perpetuals.title">Dauerhafte</string>
+  <string name="settings.preferences.title">Einstellungen</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">Keine Märkte gefunden</string>
+  <string name="assets.title">Vermögenswerte</string>
 </resources>

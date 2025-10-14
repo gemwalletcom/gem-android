@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
-  <string name="transfer.reserved_fees">We hebben %s weggelaten zodat u de opnamekosten kunt betalen.</string>
+  <string name="transfer.reserved_fees">We hebben %s op uw saldo laten staan om toekomstige netwerkkosten te dekken.</string>
   <string name="price_alerts.auto_footer">Waarschuwingen worden geactiveerd bij aanzienlijke prijsbewegingen.</string>
   <string name="price_alerts.set_alert.title">Prijswaarschuwing instellen</string>
   <string name="swap.min_receive">Minimale ontvangst</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">Een klein bedrag blijft in uw portemonnee staan om de kosten voor handelingen zoals unstaking of het claimen van beloningen te dekken.</string>
   <string name="perpetual.open_direction">Open %s</string>
   <string name="perpetual.close_direction">Sluiten %s</string>
+  <string name="perpetuals.title">Perpetuals</string>
+  <string name="settings.preferences.title">Voorkeuren</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">Geen markten gevonden</string>
+  <string name="assets.title">Activa</string>
 </resources>

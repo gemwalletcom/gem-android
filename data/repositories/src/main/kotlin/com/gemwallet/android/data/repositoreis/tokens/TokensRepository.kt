@@ -11,6 +11,7 @@ import com.wallet.core.primitives.AssetBasic
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetProperties
 import com.wallet.core.primitives.AssetScore
+import com.wallet.core.primitives.AssetTag
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -22,17 +23,18 @@ class TokensRepository (
     private val tokenService: TokenService,
 ) : SearchTokensCase {
 
-    override suspend fun search(query: String, chains: List<Chain>): Boolean = withContext(Dispatchers.IO) {
-        if (query.isEmpty()) {
+    override suspend fun search(query: String, chains: List<Chain>, tags: List<AssetTag>): Boolean = withContext(Dispatchers.IO) {
+        if (query.isEmpty() && tags.isEmpty()) {
             return@withContext false
         }
+        val tagsQuery = tags.toGemQuery()
         val tokens = try {
             val chainsQuery = if (chains.isEmpty()) {
                 ""
             } else {
                 chains.joinToString(",") { it.string }
             }
-            gemApiClient.search(query, chainsQuery)
+            gemApiClient.search(query, chainsQuery, tagsQuery)
         } catch (_: Throwable) {
             return@withContext false
         }
@@ -42,7 +44,7 @@ class TokensRepository (
             assets
         } else {
             runCatching { assetsDao.insert(tokens.map { it.toRecord() }) }
-            assetsPriorityDao.put(tokens.toRecordPriority(query))
+            assetsPriorityDao.put(tokens.toRecordPriority(tags.toPriorityQuery(query)))
             tokens
         }
         assets.isNotEmpty()
@@ -66,3 +68,11 @@ class TokensRepository (
         return true
     }
 }
+
+private fun List<AssetTag>.toGemQuery() = if (isEmpty()) {
+    ""
+} else {
+    joinToString(",") { it.string }
+}
+
+fun List<AssetTag>.toPriorityQuery(query: String) = if (isEmpty()) query.trim() else "${query.trim()}::${toGemQuery()}"

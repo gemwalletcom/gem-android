@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
-  <string name="transfer.reserved_fees">Kami tidak menyertakan %s agar Anda dapat membayar biaya penarikan.</string>
+  <string name="transfer.reserved_fees">Kami telah meninggalkan %s di saldo Anda untuk menutupi biaya jaringan di masa mendatang.</string>
   <string name="price_alerts.auto_footer">Peringatan dipicu pada pergerakan harga yang signifikan.</string>
   <string name="price_alerts.set_alert.title">Tetapkan Peringatan Harga</string>
   <string name="swap.min_receive">Penerimaan Minimum</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">Sejumlah kecil dana disimpan di dompet Anda untuk menutupi biaya operasi seperti unstaking atau klaim hadiah.</string>
   <string name="perpetual.open_direction">Buka %s</string>
   <string name="perpetual.close_direction">Tutup %s</string>
+  <string name="perpetuals.title">Abadi</string>
+  <string name="settings.preferences.title">Preferensi</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">Tidak ada pasar yang ditemukan</string>
+  <string name="assets.title">Aktiva</string>
 </resources>

@@ -14,6 +14,7 @@ import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.features.asset_select.viewmodels.models.SelectSearch
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetTag
 import com.wallet.core.primitives.Chain
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
@@ -39,29 +40,38 @@ open class BaseAssetSelectViewModel(
 ) : ViewModel() {
 
     val queryState = TextFieldState()
+    val selectedTag = MutableStateFlow<AssetTag?>(null)
+
     private val searchState = MutableStateFlow<SearchState>(SearchState.Init)
     val availableChains = sessionRepository.session()
         .map { session -> session?.wallet?.accounts?.map { it.chain } ?: emptyList() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     val chainFilter = MutableStateFlow<List<Chain>>(emptyList())
-    val balanceFilter = MutableStateFlow<Boolean>(false)
+    val balanceFilter = MutableStateFlow(false)
 
-    private val queryFlow = snapshotFlow<String> { queryState.text.toString() }
+    private val queryFlow = snapshotFlow { queryState.text.toString() }
+        .combine(selectedTag) { query, tag ->
+            Pair(query, tag)
+        }
         .onEach {
             searchState.update { if (it != SearchState.Init) SearchState.Searching else it }
             viewModelScope.launch(Dispatchers.IO) {
                 delay(250)
-                searchTokensCase.search(it, sessionRepository.getSession()?.wallet?.accounts?.map { it.chain } ?: emptyList())
+                searchTokensCase.search(
+                    query = it.first,
+                    chains = sessionRepository.getSession()?.wallet?.accounts?.map { it.chain } ?: emptyList(),
+                    tags = it.second?.let { listOf(it) } ?: emptyList(),
+                )
             }
         }
-        .mapLatest { query -> query }
+        .mapLatest { query -> query.first }
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     private val assets = combine(
         chainFilter,
         balanceFilter,
-        search(sessionRepository.session(), queryFlow)
+        search(sessionRepository.session(), queryFlow, selectedTag)
     ) { chainFilter, balanceFilter, items ->
         val hasChainFilter = chainFilter.isNotEmpty()
         items.filter { // TODO: Move to model
@@ -73,6 +83,19 @@ open class BaseAssetSelectViewModel(
     .onEach { searchState.update { SearchState.Idle } }
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>())
+
+    val popular = assets.map { items ->
+        items.filter {
+            listOf(
+                AssetId(Chain.Ethereum),
+                AssetId(Chain.Bitcoin),
+                AssetId(Chain.Solana),
+            ).contains(it.asset.id)
+//            (it.metadata?.rankScore ?: 0) >= 80
+        }.toImmutableList()
+    }
+    .flowOn(Dispatchers.Default)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>().toImmutableList())
 
     val pinned = assets.map { items: List<AssetItemUIModel> ->
         items.filter { it.metadata?.isPinned == true }.toImmutableList()
@@ -114,6 +137,16 @@ open class BaseAssetSelectViewModel(
             chains.toList()
         }
     }
+
+    fun onTagSelect(tag: AssetTag?) {
+        selectedTag.update { tag }
+    }
+
+    open fun getTags(): List<AssetTag?> = listOf(
+        null,
+        AssetTag.Trending,
+        AssetTag.Stablecoins,
+    )
 
     fun onBalanceFilter(onlyWithBalance: Boolean) {
         balanceFilter.update { onlyWithBalance }

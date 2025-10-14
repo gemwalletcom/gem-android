@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
-  <string name="transfer.reserved_fees">Am omis %s pentru a putea plăti comisioanele de retragere.</string>
+  <string name="transfer.reserved_fees">Am lăsat %s în soldul dumneavoastră pentru a acoperi viitoarele taxe de rețea.</string>
   <string name="price_alerts.auto_footer">Alertele se declanșează la mișcări semnificative ale prețurilor.</string>
   <string name="price_alerts.set_alert.title">Setați alertă de preț</string>
   <string name="swap.min_receive">Primire minimă</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">O sumă mică rămâne în portofelul tău pentru a acoperi comisioanele aferente operațiunilor precum unstaking-ul sau revendicarea recompenselor.</string>
   <string name="perpetual.open_direction">Deschis %s</string>
   <string name="perpetual.close_direction">Închide %s</string>
+  <string name="perpetuals.title">Perpetuals</string>
+  <string name="settings.preferences.title">Preferințe</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">Nu s-au găsit piețe</string>
+  <string name="assets.title">Active</string>
 </resources>

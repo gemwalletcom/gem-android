@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
-  <string name="transfer.reserved_fees">Vynechali jsme %s, abyste mohli uhradit poplatky za výběr.</string>
+  <string name="transfer.reserved_fees">Na vašem zůstatku jsme nechali %s na pokrytí budoucích poplatků za síť.</string>
   <string name="price_alerts.auto_footer">Upozornění se spouštějí při významných cenových pohybech.</string>
   <string name="price_alerts.set_alert.title">Nastavit cenové upozornění</string>
   <string name="swap.min_receive">Minimální příjem</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">Malá částka vám zůstane v peněžence na pokrytí poplatků za operace, jako je odstraňování sázek nebo nárokování odměn.</string>
   <string name="perpetual.open_direction">Otevřít %s</string>
   <string name="perpetual.close_direction">Zavřít %s</string>
+  <string name="perpetuals.title">Věčné</string>
+  <string name="settings.preferences.title">Předvolby</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">Nenalezeny žádné trhy</string>
+  <string name="assets.title">Aktiva</string>
 </resources>

@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
-  <string name="transfer.reserved_fees">השמטנו את %s כדי שתוכל לשלם עבור עמלות משיכה.</string>
+  <string name="transfer.reserved_fees">השארנו %s ביתרה שלך לכיסוי עמלות רשת עתידיות.</string>
   <string name="price_alerts.auto_footer">התראות מופעלות על תנודות משמעותיות במחיר.</string>
   <string name="price_alerts.set_alert.title">הגדר התראת מחיר</string>
   <string name="swap.min_receive">סכום מינימום לקבל</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">סכום קטן נשאר בארנק שלך כדי לכסות עמלות עבור פעולות כמו ביטול הפקדה או תביעת תגמולים.</string>
   <string name="perpetual.open_direction">פתח %s</string>
   <string name="perpetual.close_direction">סגור %s</string>
+  <string name="perpetuals.title">נצחיים</string>
+  <string name="settings.preferences.title">העדפות</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">לא נמצאו שווקים</string>
+  <string name="assets.title">נכסים</string>
 </resources>

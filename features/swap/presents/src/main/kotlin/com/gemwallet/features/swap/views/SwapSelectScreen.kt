@@ -8,6 +8,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.android.ui.components.list_item.getBalanceInfo
 import com.gemwallet.features.asset_select.presents.views.AssetSelectScene
@@ -15,6 +16,8 @@ import com.gemwallet.features.swap.viewmodels.SwapSelectViewModel
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
+import kotlinx.collections.immutable.ImmutableList
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun SwapSelectScreen(
@@ -31,6 +34,7 @@ fun SwapSelectScreen(
     val select by viewModel.select.collectAsStateWithLifecycle()
     val payId by viewModel.payAssetId.collectAsStateWithLifecycle()
     val receiveId by viewModel.receiveAssetId.collectAsStateWithLifecycle()
+    val selectedTag by viewModel.selectedTag.collectAsStateWithLifecycle()
 
     AssetSelectScene(
         title = when (select) {
@@ -40,6 +44,9 @@ fun SwapSelectScreen(
         },
         titleBadge = { null },
         query = viewModel.queryState,
+        tags = viewModel.getTags(),
+        selectedTag = selectedTag,
+        popular = emptyList<AssetItemUIModel>().toImmutableList(),
         pinned = pinned,
         unpinned = unpinned,
         state = uiStates,
@@ -64,5 +71,6 @@ fun SwapSelectScreen(
                 @Composable { ListItemSupportText(it.asset.id.chain.asset().name) }
             }
         },
+        onTagSelect = viewModel::onTagSelect
     )
 }

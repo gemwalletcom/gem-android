@@ -21,6 +21,7 @@ import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.list_item.DropDownContextItem
+import com.gemwallet.android.ui.models.AssetsGroupType
 import com.gemwallet.android.ui.models.ListPosition
 import com.wallet.core.primitives.AssetId
 
@@ -30,7 +31,7 @@ internal fun AssetItem(
     item: AssetItemUIModel,
     longPressState: MutableState<AssetId?>,
     modifier: Modifier = Modifier,
-    isPinned: Boolean = false,
+    group: AssetsGroupType = AssetsGroupType.None,
     onAssetClick: (AssetId) -> Unit,
     onAssetHide: (AssetId) -> Unit,
     onTogglePin: (AssetId) -> Unit,
@@ -45,9 +46,9 @@ internal fun AssetItem(
         content = { AssetListItem(asset = item, listPosition = listPosition, modifier = it) },
         menuItems = {
             DropdownMenuItem(
-                text = { Text(text = stringResource(id = if (isPinned) R.string.common_unpin else R.string.common_pin)) },
+                text = { Text(text = stringResource(id = if (group == AssetsGroupType.Pined) R.string.common_unpin else R.string.common_pin)) },
                 trailingIcon = {
-                    if (isPinned) Icon(painterResource(R.drawable.keep_off), "unpin")
+                    if (group == AssetsGroupType.Pined) Icon(painterResource(R.drawable.keep_off), "unpin")
                     else Icon(Icons.Default.PushPin, "pin")
 
                 },

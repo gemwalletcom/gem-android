@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
-  <string name="transfer.reserved_fees">Ми залишили %s, щоб ви могли сплатити комісію за зняття коштів.</string>
+  <string name="transfer.reserved_fees">Ми залишили на вашому балансі %s для покриття майбутніх мережевих платежів.</string>
   <string name="price_alerts.auto_footer">Сповіщення спрацьовують у разі значних змін цін.</string>
   <string name="price_alerts.set_alert.title">Встановити сповіщення про ціну</string>
   <string name="swap.min_receive">Мінімум до отримання</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">Невелика сума залишається у вашому гаманці для покриття комісій за такі операції, як зняття коштів зі стейкінгу або отримання винагород.</string>
   <string name="perpetual.open_direction">Відкрити %s</string>
   <string name="perpetual.close_direction">Закрити %s</string>
+  <string name="perpetuals.title">Перпетуали</string>
+  <string name="settings.preferences.title">Налаштування</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">Ринків не знайдено</string>
+  <string name="assets.title">Активи</string>
 </resources>

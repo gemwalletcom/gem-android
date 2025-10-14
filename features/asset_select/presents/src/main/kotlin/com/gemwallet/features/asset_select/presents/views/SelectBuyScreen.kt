@@ -18,6 +18,7 @@ fun SelectBuyScreen(
     AssetSelectScreen(
         title = stringResource(id = R.string.wallet_buy),
         titleBadge = { null },
+        populartShowed = true,
         itemTrailing = { getBalanceInfo(it)() },
         onSelect = onSelect,
         onCancel = { cancelAction.invoke() },

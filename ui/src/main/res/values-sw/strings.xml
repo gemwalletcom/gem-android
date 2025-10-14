@@ -474,7 +474,7 @@
   <string name="banner.asset_status.title">Suspicious Asset</string>
   <string name="banner.asset_status.description">Token may be unsafe or misleading. Proceed only if you fully trust it.</string>
   <string name="transfer.maximum_amount">Maximum Amount is %s</string>
-  <string name="transfer.reserved_fees">Tumeacha %s nje ili uweze kulipia ada za kujiondoa.</string>
+  <string name="transfer.reserved_fees">Tumeacha %s katika salio lako ili kulipia ada za mtandao za siku zijazo.</string>
   <string name="price_alerts.auto_footer">Arifa huanzisha hatua muhimu za bei.</string>
   <string name="price_alerts.set_alert.title">Weka Arifa ya Bei</string>
   <string name="swap.min_receive">Kiasi cha chini cha kupokea</string>
@@ -493,4 +493,10 @@
   <string name="info.stake.reserved.description">Kiasi kidogo husalia kwenye mkoba wako ili kulipia ada za shughuli kama vile kutoweka au kudai zawadi.</string>
   <string name="perpetual.open_direction">Fungua %s</string>
   <string name="perpetual.close_direction">Funga %s</string>
+  <string name="perpetuals.title">Milele</string>
+  <string name="settings.preferences.title">Mapendeleo</string>
+  <string name="perpetuals.markets">Markets</string>
+  <string name="perpetuals.empty_state.no_markets">No markets</string>
+  <string name="perpetuals.empty_state.no_markets_found">Hakuna masoko yaliyopatikana</string>
+  <string name="assets.title">Mali</string>
 </resources>

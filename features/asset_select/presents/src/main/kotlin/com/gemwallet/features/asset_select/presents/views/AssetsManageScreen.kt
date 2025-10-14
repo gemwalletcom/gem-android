@@ -17,6 +17,7 @@ import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.features.asset_select.viewmodels.AssetSelectViewModel
 import com.wallet.core.primitives.AssetSubtype
+import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun AssetsManageScreen(
@@ -32,6 +33,7 @@ fun AssetsManageScreen(
     val availableChains by viewModel.availableChains.collectAsStateWithLifecycle()
     val chainsFilter by viewModel.chainFilter.collectAsStateWithLifecycle()
     val balanceFilter by viewModel.balanceFilter.collectAsStateWithLifecycle()
+    val selectedTag by viewModel.selectedTag.collectAsStateWithLifecycle()
 
     AssetSelectScene(
         title = stringResource(id = R.string.wallet_manage_token_list),
@@ -42,7 +44,10 @@ fun AssetsManageScreen(
             }
         },
         query = viewModel.queryState,
+        selectedTag = selectedTag,
+        tags = viewModel.getTags(),
         pinned = pinned,
+        popular = emptyList<AssetItemUIModel>().toImmutableList(),
         unpinned = unpinned,
         state = uiStates,
         isAddAvailable = isAddAssetAvailable,
@@ -62,6 +67,7 @@ fun AssetsManageScreen(
                 }
             }
         },
+        onTagSelect = viewModel::onTagSelect,
         itemTrailing = {asset ->
             Switch(
                 checked = asset.metadata?.isEnabled == true,
