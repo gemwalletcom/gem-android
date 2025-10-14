@@ -35,8 +35,8 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.NftAssetIdAction
 import com.gemwallet.android.ui.models.actions.NftCollectionIdAction
-import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.features.nft.presents.components.NFTItem
 import com.gemwallet.features.nft.viewmodels.NftListViewModels
 

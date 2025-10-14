@@ -21,8 +21,8 @@ import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.models.NftItemUIModel
 import com.gemwallet.android.ui.models.actions.NftAssetIdAction
 import com.gemwallet.android.ui.models.actions.NftCollectionIdAction
-import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingSmall
 
 @Composable
 fun NFTItem(

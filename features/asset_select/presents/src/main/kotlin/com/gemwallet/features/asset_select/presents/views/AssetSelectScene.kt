@@ -43,11 +43,10 @@ import com.gemwallet.android.ui.components.list_item.PinnedAssetsHeaderItem
 import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.theme.defaultPadding
-import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.gemwallet.android.ui.models.AssetsGroupType
 import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.theme.defaultPadding
+import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetTag
 import com.wallet.core.primitives.Chain

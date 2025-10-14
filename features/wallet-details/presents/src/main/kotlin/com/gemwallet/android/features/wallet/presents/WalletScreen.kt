@@ -46,8 +46,8 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.defaultPadding
-import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
 

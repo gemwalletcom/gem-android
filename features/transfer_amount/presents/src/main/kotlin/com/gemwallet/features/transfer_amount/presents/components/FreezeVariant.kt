@@ -21,8 +21,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.theme.WalletTheme
-import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.wallet.core.primitives.Resource
 import com.wallet.core.primitives.TransactionType
 

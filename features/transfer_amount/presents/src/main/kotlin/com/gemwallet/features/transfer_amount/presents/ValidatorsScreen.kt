@@ -9,8 +9,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.screen.FatalStateScene
 import com.gemwallet.android.ui.components.screen.LoadingScene
-import com.gemwallet.features.transfer_amount.viewmodels.ValidatorsViewModel
 import com.gemwallet.features.transfer_amount.models.ValidatorsUIState
+import com.gemwallet.features.transfer_amount.viewmodels.ValidatorsViewModel
 import com.wallet.core.primitives.Chain
 
 @Composable

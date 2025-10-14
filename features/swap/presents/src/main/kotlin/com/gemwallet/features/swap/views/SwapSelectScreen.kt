@@ -16,7 +16,6 @@ import com.gemwallet.features.swap.viewmodels.SwapSelectViewModel
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
-import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable

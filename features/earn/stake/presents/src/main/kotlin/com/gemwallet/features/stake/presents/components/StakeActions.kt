@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import com.gemwallet.android.ext.claimed
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
@@ -13,14 +12,10 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
-import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.features.stake.models.StakeAction
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.StakeChain
-import com.wallet.core.primitives.TransactionType
-import com.wallet.core.primitives.WalletType
 
 internal fun LazyListScope.stakeActions(
     actions: List<StakeAction>,
