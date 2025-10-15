@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class DestinationAddress(
     val address: String,
-    val domainName: String? = null,
+    val name: String? = null,
 )

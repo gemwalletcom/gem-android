@@ -3,6 +3,7 @@ package com.gemwallet.android.ui.components.list_head
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -84,7 +85,7 @@ fun AmountListHead(
     ) {
         Column(
             modifier = Modifier
-                .width(IntrinsicSize.Min)
+                .fillMaxWidth()
                 .padding(start = paddingDefault, end = paddingDefault, bottom = paddingDefault),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
@@ -122,7 +123,11 @@ fun AmountListHead(
             }
             if (actions != null) {
                 Spacer(modifier = Modifier.size(10.dp))
-                actions()
+                Box(
+                    modifier = Modifier.width(IntrinsicSize.Min)
+                ) {
+                    actions()
+                }
             }
         }
     }

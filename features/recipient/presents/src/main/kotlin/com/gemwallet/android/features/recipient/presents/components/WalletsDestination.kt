@@ -23,7 +23,7 @@ import com.wallet.core.primitives.WalletType
 fun LazyListScope.walletsDestination(
     toChain: Chain,
     items: List<Wallet>,
-    onSelect: (Account) -> Unit,
+    onSelect: (Wallet, Account) -> Unit,
 ) {
     walletsSection(
         header = R.string.common_pinned,
@@ -56,7 +56,7 @@ private fun LazyListScope.walletsSection(
     @StringRes header: Int,
     toChain: Chain,
     items: List<Wallet>,
-    onSelect: (Account) -> Unit,
+    onSelect: (Wallet, Account) -> Unit,
     isPinned: Boolean = false,
     vararg types: WalletType
 ) {
@@ -68,7 +68,7 @@ private fun LazyListScope.walletsSection(
             }
             itemsIndexed(wallets) { index, item ->
                 WalletRecipient(item, ListPosition.getPosition(index, wallets.size)) {
-                    onSelect(item.getAccount(toChain) ?: return@WalletRecipient)
+                    onSelect(item, item.getAccount(toChain) ?: return@WalletRecipient)
                 }
             }
         }

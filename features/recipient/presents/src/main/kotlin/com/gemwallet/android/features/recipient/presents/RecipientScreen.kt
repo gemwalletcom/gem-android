@@ -26,6 +26,7 @@ import com.gemwallet.android.features.recipient.viewmodel.RecipientViewModel
 import com.gemwallet.android.features.recipient.viewmodel.models.QrScanField
 import com.gemwallet.android.features.recipient.viewmodel.models.RecipientError
 import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.QrCodeRequest
 import com.gemwallet.android.ui.components.buttons.MainActionButton
@@ -63,7 +64,7 @@ fun RecipientScreen(
     }
 
     RecipientScreen(
-        assetInfo = assetInfo ?: return, // TODO: Improve it.
+        assetInfo = assetInfo ?: return,
         hasMemo = viewModel.hasMemo(),
         addressState = viewModel.addressState, // TODO: Change it to textfieldstate
         memoState = viewModel.memoState,
@@ -72,7 +73,7 @@ fun RecipientScreen(
         memoError = memoError,
         wallets = wallets,
         onQrScan = { scan = it },
-        onNext = { viewModel.onNext(amountAction, confirmAction) },
+        onNext = { viewModel.onNext(it, amountAction, confirmAction) },
         onCancel = cancelAction,
     )
 }
@@ -88,7 +89,7 @@ fun RecipientScreen(
     memoError: RecipientError,
     wallets: List<Wallet>,
     onQrScan: (QrScanField) -> Unit,
-    onNext: () -> Unit,
+    onNext: (DestinationAddress?) -> Unit,
     onCancel: CancelAction,
 ) {
     val isKeyBoardOpen by keyboardAsState()
@@ -101,12 +102,12 @@ fun RecipientScreen(
             if (!isKeyBoardOpen || !isSmallScreen) {
                 MainActionButton(
                     title = stringResource(id = R.string.common_continue),
-                    onClick = onNext,
+                    onClick = { onNext(null) },
                 )
             }
         },
         actions = {
-            TextButton(onClick = onNext,
+            TextButton(onClick = { onNext(null) },
                 colors = ButtonDefaults.textButtonColors()
                     .copy(contentColor = MaterialTheme.colorScheme.primary)
             ) {
@@ -128,9 +129,13 @@ fun RecipientScreen(
                 nameRecordState = nameRecordState,
                 onQrScan = onQrScan,
             )
-            walletsDestination(toChain = assetInfo.asset.chain, items = wallets) {
-                addressState.value = it.address
-                onNext()
+            walletsDestination(toChain = assetInfo.asset.chain, items = wallets) { wallet, account ->
+                onNext(
+                    DestinationAddress(
+                        address = account.address,
+                        name = wallet.name,
+                    )
+                )
             }
         }
     }

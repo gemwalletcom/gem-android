@@ -114,7 +114,7 @@ class ConfirmViewModel @Inject constructor(
         val preload = try {
             signerPreload.preload(params = request)
         } catch (err: Throwable) {
-            state.update { ConfirmState.Error(ConfirmError.PreloadError(err.message ?: "Preload error")) }
+            state.update { ConfirmState.Error(ConfirmError.PreloadError(err.message ?: "Unknown error: $err")) }
             return@map null
         }
         preload
@@ -162,6 +162,7 @@ class ConfirmViewModel @Inject constructor(
             txType = request.getTxType(),
             amount = amount.format(decimals, symbol, -1),
             amountEquivalent = currency.format(amount.convert(decimals, price).atomicValue),
+            asset = assetInfo,
             fromAsset = assetInfo,
             fromAmount = amount.atomicValue.toString(),
             toAsset = toAssetInfo,

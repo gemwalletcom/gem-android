@@ -34,7 +34,7 @@ sealed interface ConfirmProperty {
                     is ConfirmParams.NftParams,
                     is ConfirmParams.TransferParams -> {
                         return params.destination()?.let {
-                            Transfer(domain = it.domainName, address = it.address)
+                            Transfer(domain = it.name, address = it.address)
 
                         } ?: throw ConfirmError.RecipientEmpty
                     }

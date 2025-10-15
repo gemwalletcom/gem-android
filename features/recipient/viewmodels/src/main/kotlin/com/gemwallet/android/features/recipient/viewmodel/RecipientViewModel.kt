@@ -90,11 +90,11 @@ class RecipientViewModel @Inject constructor(
 
     fun hasMemo(): Boolean = asset.value?.asset?.chain?.isMemoSupport() == true
 
-    fun onNext(amountAction: AmountTransactionAction, confirmAction: ConfirmTransactionAction) = viewModelScope.launch {
+    fun onNext(destination: DestinationAddress?, amountAction: AmountTransactionAction, confirmAction: ConfirmTransactionAction) = viewModelScope.launch {
         val assetId = asset.value?.id() ?: return@launch
-        val destination = DestinationAddress(
+        val destination = destination ?: DestinationAddress(
             address = nameRecordState.value?.address ?: addressState.value,
-            domainName = nameRecordState.value?.name,
+            name = nameRecordState.value?.name,
         )
         val memo = memoState.value
         val addressError = validateDestination(assetId.chain, destination)
