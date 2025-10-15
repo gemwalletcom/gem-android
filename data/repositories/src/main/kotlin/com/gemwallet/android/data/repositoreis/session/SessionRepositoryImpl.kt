@@ -27,12 +27,10 @@ class SessionRepositoryImpl(
         record.toModel(wallet)
     }
 
-    override fun getSession(): Session? {
-        val entity = runBlocking(Dispatchers.IO) { sessionDao.getSession() } ?: return null
-        val wallet = runBlocking(Dispatchers.IO) {
-            walletsRepository.getWallet(entity.walletId).firstOrNull()
-        } ?: return null
-        return entity.toModel(wallet)
+    override fun getSession(): Session? = runBlocking(Dispatchers.IO) {
+        val entity = sessionDao.getSession() ?: return@runBlocking null
+        val wallet = walletsRepository.getWallet(entity.walletId).firstOrNull() ?: return@runBlocking null
+        entity.toModel(wallet)
     }
 
     override fun hasSession(): Boolean = getSession() != null
