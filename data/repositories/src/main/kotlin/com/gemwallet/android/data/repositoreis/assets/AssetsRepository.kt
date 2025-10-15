@@ -15,9 +15,6 @@ import com.gemwallet.android.data.service.store.database.entities.DbAsset
 import com.gemwallet.android.data.service.store.database.entities.DbAssetConfig
 import com.gemwallet.android.data.service.store.database.entities.DbAssetMarket
 import com.gemwallet.android.data.service.store.database.entities.DbAssetWallet
-import com.gemwallet.android.data.service.store.database.entities.DbBalance
-import com.gemwallet.android.data.service.store.database.entities.mergeDelegation
-import com.gemwallet.android.data.service.store.database.entities.mergeNative
 import com.gemwallet.android.data.service.store.database.entities.toAssetInfoModel
 import com.gemwallet.android.data.service.store.database.entities.toAssetLinkRecord
 import com.gemwallet.android.data.service.store.database.entities.toAssetLinksModel
@@ -79,6 +76,7 @@ class AssetsRepository @Inject constructor(
     private val searchTokensCase: SearchTokensCase,
     private val getDeviceIdCase: GetDeviceIdCase,
     private val priceClient: PriceWebSocketClient,
+    private val updateBalances: UpdateBalances = UpdateBalances(balancesDao, balancesService),
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : GetAsset {
 
@@ -313,7 +311,7 @@ class AssetsRepository @Inject constructor(
                 .groupBy { it.id.chain }
                 .map {
                     async {
-                        updateBalances(
+                        updateBalances.updateBalances(
                             wallet.id,
                             wallet.getAccount(it.key) ?: return@async,
                             it.value
@@ -324,7 +322,7 @@ class AssetsRepository @Inject constructor(
         }
         wallet.accounts.filter { !Chain.exclude().contains(it.chain) }.map {
             async {
-                val balances = updateBalances(wallet.id, it, emptyList()).firstOrNull()
+                val balances = updateBalances.updateBalances(wallet.id, it, emptyList()).firstOrNull()
                 if ((balances?.totalAmount ?: 0.0) > 0.0) {
                     setVisibility(wallet.id, it.chain.asset().id, true)
                 }
@@ -344,7 +342,7 @@ class AssetsRepository @Inject constructor(
                 async {
                     if (assets[account.chain.string] == null) {
                         add(wallet.id, account.address, asset, false)
-                        val balances = updateBalances(wallet.id, account, emptyList()).firstOrNull()
+                        val balances = updateBalances.updateBalances(wallet.id, account, emptyList()).firstOrNull()
                         if ((balances?.totalAmount ?: 0.0) > 0.0) {
                             setVisibility(wallet.id, asset.id, true)
                         }
@@ -456,46 +454,7 @@ class AssetsRepository @Inject constructor(
         assetsDao.resetSwapable()
         assetsDao.setSwapable(Chain.swapSupport())
     }
-
-    private suspend fun updateBalances(walletId: String, account: Account, tokens: List<Asset>): List<AssetBalance>  = withContext(Dispatchers.IO) {
-        val updatedAt = System.currentTimeMillis()
-
-        val getNative = async {
-            val prevBalance = balancesDao.getByAccount(walletId, account.address, account.chain.string)
-            val nativeBalance = balancesService.getNativeBalances(account)
-            val dbNativeBalance = DbBalance.mergeNative(
-                prevBalance,
-                nativeBalance?.toRecord(walletId, account.address, updatedAt),
-            )
-            dbNativeBalance?.let { runCatching { balancesDao.insert(it) } }
-
-            val delegationBalances = balancesService.getDelegationBalances(account)
-            val dbFullBalance = DbBalance.mergeDelegation(dbNativeBalance, delegationBalances
-                ?.toRecord(walletId, account.address, updatedAt))
-            dbFullBalance?.let { runCatching { balancesDao.insert(it) } }
-            dbFullBalance?.toModel()
-        }
-
-        val getTokens = async {
-            val balances = balancesService.getTokensBalances(account, tokens)
-            runCatching {
-                balancesDao.insert(
-                    balances.map {
-                        it.toRecord(
-                            walletId,
-                            account.address,
-                            updatedAt
-                        )
-                    }
-                )
-            }
-            balances
-        }
-        val native = getNative.await()
-        val tokens = getTokens.await()
-        listOfNotNull(native) + tokens
-    }
-
+    
     private suspend fun List<AssetInfo>.updateBalances(): List<Deferred<List<AssetBalance>>> = withContext(Dispatchers.IO) {
         groupBy { it.walletId }
             .mapValues { wallet ->
@@ -509,7 +468,7 @@ class AssetsRepository @Inject constructor(
                             return@mapNotNull null
                         }
                         async {
-                            updateBalances(walletId, account, entry.value)
+                            updateBalances.updateBalances(walletId, account, entry.value)
                         }
                     }
             }
