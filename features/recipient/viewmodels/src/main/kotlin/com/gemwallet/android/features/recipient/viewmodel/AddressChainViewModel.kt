@@ -1,5 +1,6 @@
 package com.gemwallet.android.features.recipient.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.services.gemapi.GemApiClient
@@ -56,7 +57,9 @@ class AddressChainViewModel @Inject constructor(
             delay(500L)
             val nameRecord = try {
                 gemClient.resolve(input.lowercase(Locale.getDefault()), chain.string)
-            } catch (_: Throwable) { null }
+            } catch (_: Throwable) {
+                null
+            }
             setNameRecord(nameRecord, input)
         }
     }

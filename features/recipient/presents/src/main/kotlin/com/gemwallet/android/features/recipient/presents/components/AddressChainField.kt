@@ -1,6 +1,8 @@
 package com.gemwallet.android.features.recipient.presents.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -36,6 +38,7 @@ import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.outlinedTextFieldColors
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.space4
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NameRecord
@@ -65,7 +68,12 @@ fun ColumnScope.AddressChainField(
         onValueChange(uiState.nameRecord?.name ?: value, uiState.nameRecord)
     }
 
-    Box(modifier = Modifier.listItem(ListPosition.Single).padding(vertical = paddingDefault)) {
+    Column(
+        modifier = Modifier
+            .listItem(ListPosition.Single)
+            .padding(vertical = paddingDefault),
+        verticalArrangement = Arrangement.spacedBy(paddingHalfSmall),
+    ) {
         OutlinedTextField(
             modifier = Modifier
                 .fillMaxWidth()
@@ -121,15 +129,14 @@ fun ColumnScope.AddressChainField(
                 }
             }
         )
-    }
-    if (error.isNotEmpty()) {
-        Spacer(modifier = Modifier.size(space4))
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = error,
-            color = MaterialTheme.colorScheme.error,
-            style = MaterialTheme.typography.labelMedium,
-        )
+        if (error.isNotEmpty()) {
+            Text(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = paddingDefault),
+                text = error,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.labelMedium,
+            )
+        }
     }
 }
 
