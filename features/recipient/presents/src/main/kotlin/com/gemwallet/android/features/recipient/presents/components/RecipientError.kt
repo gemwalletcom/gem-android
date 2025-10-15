@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.recipient.presents.views
+package com.gemwallet.android.features.recipient.presents.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource

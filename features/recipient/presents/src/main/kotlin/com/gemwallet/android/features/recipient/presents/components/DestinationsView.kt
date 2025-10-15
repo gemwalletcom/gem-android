@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.recipient.presents.views
+package com.gemwallet.android.features.recipient.presents.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyListScope

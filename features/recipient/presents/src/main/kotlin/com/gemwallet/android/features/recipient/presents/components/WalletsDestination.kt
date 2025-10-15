@@ -1,4 +1,4 @@
-package com.gemwallet.android.features.recipient.presents.views
+package com.gemwallet.android.features.recipient.presents.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.clickable

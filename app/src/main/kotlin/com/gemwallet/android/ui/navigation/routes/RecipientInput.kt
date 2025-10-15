@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import com.gemwallet.android.ext.toIdentifier
-import com.gemwallet.android.features.recipient.presents.RecipientScene
+import com.gemwallet.android.features.recipient.presents.RecipientScreen
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.models.actions.CancelAction
@@ -44,7 +44,7 @@ fun NavGraphBuilder.recipientInput(
     }
 
     composable<RecipientInput> {
-        RecipientScene(
+        RecipientScreen(
             cancelAction = cancelAction,
             amountAction = amountAction,
             confirmAction = confirmAction,

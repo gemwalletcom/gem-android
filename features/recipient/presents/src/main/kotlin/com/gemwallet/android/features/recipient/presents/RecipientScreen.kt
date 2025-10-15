@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.domains.asset.chain
-import com.gemwallet.android.features.recipient.presents.views.destinationView
-import com.gemwallet.android.features.recipient.presents.views.walletsDestination
+import com.gemwallet.android.features.recipient.presents.components.destinationView
+import com.gemwallet.android.features.recipient.presents.components.walletsDestination
 import com.gemwallet.android.features.recipient.viewmodel.RecipientViewModel
 import com.gemwallet.android.features.recipient.viewmodel.models.QrScanField
 import com.gemwallet.android.features.recipient.viewmodel.models.RecipientError
@@ -38,13 +38,12 @@ import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.Wallet
 
 @Composable
-fun RecipientScene(
+fun RecipientScreen(
     cancelAction: CancelAction,
     amountAction: AmountTransactionAction,
     confirmAction: ConfirmTransactionAction,
+    viewModel: RecipientViewModel = hiltViewModel()
 ) {
-    val viewModel: RecipientViewModel = hiltViewModel()
-
     val assetInfo by viewModel.asset.collectAsStateWithLifecycle()
     val wallets by viewModel.wallets.collectAsStateWithLifecycle()
     val addressError by viewModel.addressError.collectAsStateWithLifecycle()
@@ -63,7 +62,7 @@ fun RecipientScene(
         return
     }
 
-    RecipientScene(
+    RecipientScreen(
         assetInfo = assetInfo ?: return, // TODO: Improve it.
         hasMemo = viewModel.hasMemo(),
         addressState = viewModel.addressState, // TODO: Change it to textfieldstate
@@ -79,7 +78,7 @@ fun RecipientScene(
 }
 
 @Composable
-fun RecipientScene(
+fun RecipientScreen(
     assetInfo: AssetInfo,
     hasMemo: Boolean,
     addressState: MutableState<String>,
