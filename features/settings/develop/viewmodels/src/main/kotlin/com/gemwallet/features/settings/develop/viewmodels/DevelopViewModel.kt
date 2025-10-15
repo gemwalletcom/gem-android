@@ -9,6 +9,7 @@ import com.wallet.core.primitives.PlatformStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +25,9 @@ class DevelopViewModel @Inject constructor(
     }
 
     fun getPushToken(): String {
-        return getPushTokenCase.getPushToken()
+        return runBlocking {
+            getPushTokenCase.getPushToken()
+        }
     }
 
     fun resetTransactions() {

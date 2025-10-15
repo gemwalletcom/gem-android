@@ -50,6 +50,13 @@ class TokensRepository (
         assets.isNotEmpty()
     }
 
+    override suspend fun search(assetIds: List<AssetId>): Boolean {
+        val result = gemApiClient.search(assetIds)
+        val record = result.map { it.toRecord() }
+        runCatching { assetsDao.insert(record) }
+        return true
+    }
+
     override suspend fun search(assetId: AssetId): Boolean {
         val tokenId = assetId.tokenId ?: return false
         val asset = tokenService.getTokenData(assetId)

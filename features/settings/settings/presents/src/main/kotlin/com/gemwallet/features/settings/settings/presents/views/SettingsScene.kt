@@ -1,6 +1,5 @@
 package com.gemwallet.features.settings.settings.presents.views
 
-import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -14,8 +13,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
@@ -35,6 +32,7 @@ import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.PushRequest
 import com.gemwallet.android.ui.components.list_item.LinkItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
@@ -42,9 +40,6 @@ import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.open
 import com.gemwallet.features.settings.currency.presents.components.emojiFlags
 import com.gemwallet.features.settings.settings.viewmodels.SettingsViewModel
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.isGranted
-import com.google.accompanist.permissions.rememberPermissionState
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl
 import uniffi.gemstone.PublicUrl
@@ -66,6 +61,7 @@ fun SettingsScene(
 ) {
     val viewModel: SettingsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val pushEnabled by viewModel.pushEnabled.collectAsStateWithLifecycle()
     val context = LocalContext.current
 //    val reviewManager = remember { ReviewManager() }
 //    val version = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -108,7 +104,7 @@ fun SettingsScene(
                     listPosition = ListPosition.First,
                     trailingContent = @Composable {
                         Switch(
-                            checked = uiState.pushEnabled,
+                            checked = pushEnabled,
                             onCheckedChange = {
                                 if (it) requestPushGrant = true else viewModel.notificationEnable()
                             }
@@ -248,40 +244,5 @@ fun SettingsScene(
 
     if (requestPushGrant) {
         PushRequest(viewModel::notificationEnable) { requestPushGrant = false }
-    }
-}
-
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-private fun PushRequest(
-    onNotificationEnable: () -> Unit,
-    onDismiss: () -> Unit,
-) {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-        onNotificationEnable()
-        return
-    }
-    val permissionState =
-        rememberPermissionState(permission = Manifest.permission.POST_NOTIFICATIONS)
-    if (permissionState.status.isGranted) {
-        onNotificationEnable()
-        onDismiss()
-    } else {
-        AlertDialog(
-            onDismissRequest = onDismiss,
-            text = {
-                Text(text = stringResource(id = R.string.notifications_permission_request_notification))
-            },
-            confirmButton = {
-                Button(onClick = { permissionState.launchPermissionRequest() }) {
-                    Text(text = stringResource(id = R.string.common_grant_permission))
-                }
-            },
-            dismissButton = {
-                Button(onClick = onDismiss) {
-                    Text(text = stringResource(id = R.string.common_no_thanks))
-                }
-            }
-        )
     }
 }

@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.PushRequest
 import com.gemwallet.features.settings.price_alerts.viewmodels.PriceAlertViewModel
 import com.wallet.core.primitives.AssetId
 
@@ -26,8 +27,9 @@ fun PriceAlertsScreen(
     val alertingAssets by viewModel.alertingAssets.collectAsStateWithLifecycle()
     val enabled by viewModel.enabled.collectAsStateWithLifecycle()
     val syncState by viewModel.forceSync.collectAsStateWithLifecycle()
+    val pushEnabled by viewModel.pushEnabled.collectAsStateWithLifecycle()
 
-//    val toastMessage by remember { stringResource(R.string.price_alerts_enabled_for, "") }
+    var requestPushGrant by remember { mutableStateOf(false) }
 
     AnimatedContent(selectingAsset, label = "") { selecting ->
         when (selecting) {
@@ -49,7 +51,13 @@ fun PriceAlertsScreen(
                 alertingPrice = alertingAssets,
                 enabled = enabled,
                 syncState = syncState,
-                onEnablePriceAlerts = viewModel::onEnablePriceAlerts,
+                onEnablePriceAlerts = {
+                    if (it && !pushEnabled) {
+                        requestPushGrant = true
+                    } else {
+                        viewModel.onEnablePriceAlerts(it)
+                    }
+                },
                 onChart = onChart,
                 onExclude = viewModel::excludeAsset,
                 onRefresh = viewModel::refresh,
@@ -57,5 +65,8 @@ fun PriceAlertsScreen(
                 onAdd = { selectingAsset = true }
             )
         }
+    }
+    if (requestPushGrant) {
+        PushRequest(viewModel::notificationEnable) { requestPushGrant = false }
     }
 }

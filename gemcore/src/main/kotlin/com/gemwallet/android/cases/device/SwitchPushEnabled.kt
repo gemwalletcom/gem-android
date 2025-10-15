@@ -1,5 +1,7 @@
 package com.gemwallet.android.cases.device
 
+import com.wallet.core.primitives.Wallet
+
 interface SwitchPushEnabled {
-    fun switchPushEnabledCase(enabled: Boolean)
+    suspend fun switchPushEnabledCase(enabled: Boolean, wallets: List<Wallet>)
 }

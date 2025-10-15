@@ -43,6 +43,7 @@ object DeviceModule {
         getCurrentCurrencyCase: GetCurrentCurrencyCase,
     ): DeviceRepository {
         return DeviceRepository(
+            context = context,
             gemApiClient = gemApiClient,
             configStore = ConfigStore(context.getSharedPreferences("device-info", Context.MODE_PRIVATE)),
             requestPushToken = buildInfo.requestPushToken,

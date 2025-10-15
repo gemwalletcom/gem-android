@@ -30,6 +30,7 @@ import com.gemwallet.android.ext.isSwapSupport
 import com.gemwallet.android.ext.swapSupport
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.AssetBalance
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.TransactionExtended
@@ -38,6 +39,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetLink
 import com.wallet.core.primitives.AssetMarket
+import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetTag
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
@@ -49,7 +51,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
@@ -285,49 +286,67 @@ class AssetsRepository @Inject constructor(
     }
 
     fun importAssets(wallet: Wallet) = scope.launch(Dispatchers.IO) {
-        launch(Dispatchers.IO) {
-            delay(2000) // Wait subscription - token processing
-            val availableAssetsId = try {
-                gemApi.getAssets(getDeviceIdCase.getDeviceId(), wallet.index)
-            } catch (_: Throwable) {
-                return@launch
-            }
-            availableAssetsId.mapNotNull { it.toAssetId() }.filter { it.tokenId != null }
-                .map { assetId ->
-                    async {
-                        searchTokensCase.search(assetId.tokenId!!, wallet.accounts.map { it.chain })
-                        val asset = assetsDao.getAsset(assetId.toIdentifier())?.toModel() ?: return@async null
-                        add(
-                            walletId = wallet.id,
-                            accountAddress = wallet.getAccount(assetId.chain)?.address ?: return@async null,
-                            asset = asset,
-                            visible = true
-                        )
-                        asset
-                    }
-                }
-                .awaitAll()
-                .filterNotNull()
-                .groupBy { it.id.chain }
-                .map {
-                    async {
-                        updateBalances.updateBalances(
-                            wallet.id,
-                            wallet.getAccount(it.key) ?: return@async,
-                            it.value
-                        )
-                    }
-                }
-                .awaitAll()
+        val availableAssetsId = try {
+            gemApi.getAssets(getDeviceIdCase.getDeviceId(), wallet.index)
+        } catch (_: Throwable) {
+            return@launch
         }
-        wallet.accounts.filter { !Chain.exclude().contains(it.chain) }.map {
+        val assetIds = availableAssetsId.mapNotNull { it.toAssetId() }
+        val tokenIds = assetIds.filter { it.type() != AssetSubtype.NATIVE }
+
+        searchTokensCase.search(tokenIds)
+        assetIds.map { assetId ->
             async {
-                val balances = updateBalances.updateBalances(wallet.id, it, emptyList()).firstOrNull()
-                if ((balances?.totalAmount ?: 0.0) > 0.0) {
-                    setVisibility(wallet.id, it.chain.asset().id, true)
-                }
+                val asset = assetsDao.getAsset(assetId.toIdentifier())?.toModel() ?: return@async null
+                add(
+                    walletId = wallet.id,
+                    accountAddress = wallet.getAccount(assetId.chain)?.address ?: return@async null,
+                    asset = asset,
+                    visible = true
+                )
+                asset
             }
         }.awaitAll()
+        sync()
+//        launch(Dispatchers.IO) {
+////            delay(2000) // Wait subscription - token processing
+//
+//            availableAssetsId.mapNotNull { it.toAssetId() }.filter { it.tokenId != null }
+//                .map { assetId ->
+//                    async {
+//                        searchTokensCase.search(assetId.tokenId!!, wallet.accounts.map { it.chain })
+//                        val asset = assetsDao.getAsset(assetId.toIdentifier())?.toModel() ?: return@async null
+//                        add(
+//                            walletId = wallet.id,
+//                            accountAddress = wallet.getAccount(assetId.chain)?.address ?: return@async null,
+//                            asset = asset,
+//                            visible = true
+//                        )
+//                        asset
+//                    }
+//                }
+//                .awaitAll()
+//                .filterNotNull()
+//                .groupBy { it.id.chain }
+//                .map {
+//                    async {
+//                        updateBalances.updateBalances(
+//                            wallet.id,
+//                            wallet.getAccount(it.key) ?: return@async,
+//                            it.value
+//                        )
+//                    }
+//                }
+//                .awaitAll()
+//        }
+//        wallet.accounts.filter { !Chain.exclude().contains(it.chain) }.map {
+//            async {
+//                val balances = updateBalances.updateBalances(wallet.id, it, emptyList()).firstOrNull()
+//                if ((balances?.totalAmount ?: 0.0) > 0.0) {
+//                    setVisibility(wallet.id, it.chain.asset().id, true)
+//                }
+//            }
+//        }.awaitAll()
     }
 
     /**
@@ -454,7 +473,7 @@ class AssetsRepository @Inject constructor(
         assetsDao.resetSwapable()
         assetsDao.setSwapable(Chain.swapSupport())
     }
-    
+
     private suspend fun List<AssetInfo>.updateBalances(): List<Deferred<List<AssetBalance>>> = withContext(Dispatchers.IO) {
         groupBy { it.walletId }
             .mapValues { wallet ->

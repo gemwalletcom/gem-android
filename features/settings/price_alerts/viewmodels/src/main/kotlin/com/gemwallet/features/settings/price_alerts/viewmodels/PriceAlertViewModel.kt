@@ -2,12 +2,15 @@ package com.gemwallet.features.settings.price_alerts.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.device.GetPushEnabled
+import com.gemwallet.android.cases.device.SwitchPushEnabled
 import com.gemwallet.android.cases.device.SyncDeviceInfo
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
 import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
 import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.wallet.core.primitives.Asset
@@ -37,7 +40,14 @@ class PriceAlertViewModel @Inject constructor(
     private val enablePriceAlert: EnablePriceAlert,
     private val putPriceAlertCase: PutPriceAlertCase,
     private val syncDeviceInfo: SyncDeviceInfo,
+    private val getPushEnabled: GetPushEnabled,
+    private val switchPushEnabled: SwitchPushEnabled,
+    private val walletsRepository: WalletsRepository,
 ) : ViewModel() {
+
+    val pushEnabled = getPushEnabled.getPushEnabled()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
 
     val forceSync = MutableStateFlow(false)
 
@@ -46,18 +56,18 @@ class PriceAlertViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     val alertingAssets = getPriceAlerts.getPriceAlerts().flatMapLatest { alerts ->
         val ids = alerts.map { it.assetId }
-        refreshPrices(ids)
-        assetsRepository.getTokensInfo(ids.map { it.toIdentifier() }).map { it.distinctBy { it.id() } }
+        assetsRepository.getTokensInfo(ids.map { it.toIdentifier() })
+            .map { it.distinctBy { it.id() } }
     }
-    .map { it.map { AssetInfoUIModel(it) } }
-    .combine(forceSync) { items, sync ->
-        viewModelScope.launch(Dispatchers.IO) {
-            delay(300)
-            forceSync.update { false }
+        .map { it.map { AssetInfoUIModel(it) } }
+        .combine(forceSync) { items, sync ->
+            viewModelScope.launch(Dispatchers.IO) {
+                delay(300)
+                forceSync.update { false }
+            }
+            items
         }
-        items
-    }
-    .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     init {
         refresh(false)
@@ -75,24 +85,34 @@ class PriceAlertViewModel @Inject constructor(
         this.enabled.update { enabled }
     }
 
+    fun notificationEnable() {
+        onEnablePriceAlerts(true)
+        viewModelScope.launch(Dispatchers.IO) {
+            switchPushEnabled.switchPushEnabledCase(
+                true,
+                walletsRepository.getAll().firstOrNull() ?: emptyList()
+            )
+        }
+    }
+
     fun excludeAsset(assetId: AssetId) = viewModelScope.launch {
         enablePriceAlert.setAssetPriceAlertEnabled(assetId, false)
     }
 
-    fun addAsset(assetId: AssetId, callback: (Asset) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
-//        assetsRepository.updatePrices(sessionRepository.getSession()?.currency ?: return@launch, assetId)
-        putPriceAlertCase.putPriceAlert(PriceAlert(assetId, Currency.USD.string)) // TODO: Add user selected currency
-        val assetInfo = assetsRepository.getAssetsInfo(listOf(assetId)).firstOrNull()?.firstOrNull() ?: return@launch
+    fun addAsset(assetId: AssetId, callback: (Asset) -> Unit) =
+        viewModelScope.launch(Dispatchers.IO) {
+            putPriceAlertCase.putPriceAlert(
+                PriceAlert(
+                    assetId,
+                    Currency.USD.string
+                )
+            ) // TODO: Add user selected currency
+            val assetInfo =
+                assetsRepository.getAssetsInfo(listOf(assetId)).firstOrNull()?.firstOrNull()
+                    ?: return@launch
 
-        viewModelScope.launch {
-            callback(assetInfo.asset)
+            viewModelScope.launch {
+                callback(assetInfo.asset)
+            }
         }
-    }
-
-    private fun refreshPrices(ids: List<AssetId>) = viewModelScope.launch(Dispatchers.IO) {
-//        assetsRepository.updatePrices(
-//            sessionRepository.getSession()?.currency ?: Currency.USD,
-//            *ids.toTypedArray(),
-//        )
-    }
 }

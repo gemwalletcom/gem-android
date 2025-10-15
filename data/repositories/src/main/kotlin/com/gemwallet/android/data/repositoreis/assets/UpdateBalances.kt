@@ -64,9 +64,9 @@ class UpdateBalances(
         return balances
     }
 
-    private suspend fun mergeNativeBalances(native: DbBalance?, delegation: DbBalance?): AssetBalance? {
+    private suspend fun mergeNativeBalances(native: DbBalance?, delegation: DbBalance?): AssetBalance? = withContext(Dispatchers.IO) {
         val dbFullBalance = DbBalance.mergeDelegation(native, delegation)
         dbFullBalance?.let { runCatching { balancesDao.insert(it) } }
-        return dbFullBalance?.toModel()
+        dbFullBalance?.toModel()
     }
 }

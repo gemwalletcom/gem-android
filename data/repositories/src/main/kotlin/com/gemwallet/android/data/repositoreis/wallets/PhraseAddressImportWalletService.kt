@@ -88,10 +88,7 @@ class PhraseAddressImportWalletService(
     private suspend fun setupWallet(wallet: Wallet) {
         assetsRepository.createAssets(wallet)
         sessionRepository.setWallet(wallet)
-
-        scope.launch(Dispatchers.IO) {
-            syncSubscription.syncSubscription(listOf(wallet))
-        }
+        syncSubscription.syncSubscription(listOf(wallet))
     }
 
     private suspend fun handlePhrase(importType: ImportType, walletName: String, rawData: String): Result<Wallet> {

@@ -1,6 +1,10 @@
 package com.gemwallet.android.data.repositoreis.device
 
+import android.content.Context
 import android.util.Log
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.preferencesDataStore
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.device.GetPushEnabled
@@ -24,12 +28,16 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import wallet.core.jni.AnyAddress
 import java.util.Locale
 import kotlin.math.max
 
 class DeviceRepository(
+    private val context: Context,
     private val gemApiClient: GemApiClient,
     private val configStore: ConfigStore,
     private val requestPushToken: RequestPushToken,
@@ -48,13 +56,29 @@ class DeviceRepository(
     SetPushToken,
     SyncSubscription
 {
+    private val Context.dataStore by preferencesDataStore(name = "device_config")
+
     init {
-        coroutineScope.launch { syncDeviceInfo() }
+        coroutineScope.launch {
+            migration()
+
+            syncDeviceInfo()
+        }
+    }
+
+    private suspend fun migration() {
+        val hasNewValue = context.dataStore.data
+            .map { preferences -> preferences[Key.PushEnabled] }.firstOrNull() != null
+        if (!hasNewValue) {
+            context.dataStore.edit { preferences ->
+                preferences[Key.PushEnabled] = configStore.getBoolean(ConfigKey.PushEnabled.string)
+            }
+        }
     }
 
     override suspend fun syncDeviceInfo() {
         val pushToken = getPushToken()
-        val pushEnabled = getPushEnabled()
+        val pushEnabled = getPushEnabled().firstOrNull() ?: false
         val deviceId = getDeviceIdCase.getDeviceId()
         val device = Device(
             id = deviceId,
@@ -106,18 +130,23 @@ class DeviceRepository(
         }
     }
 
-    override fun switchPushEnabledCase(enabled: Boolean) {
-        configStore.putBoolean(ConfigKey.PushEnabled.string, enabled)
+    override suspend fun switchPushEnabledCase(enabled: Boolean, wallets: List<Wallet>) {
+        context.dataStore.edit { preferences ->
+            preferences[Key.PushEnabled] = enabled
+        }
+        syncDeviceInfo()
+        syncSubscription(wallets)
     }
 
-    override fun getPushEnabled(): Boolean = configStore.getBoolean(ConfigKey.PushEnabled.string)
+    override fun getPushEnabled(): Flow<Boolean> = context.dataStore.data
+        .map { preferences -> preferences[Key.PushEnabled] == true }
 
     override fun setPushToken(token: String) {
         configStore.putString(ConfigKey.PushToken.string, token)
     }
 
-    override fun getPushToken(): String {
-        return if (getPushEnabled()) {
+    override suspend fun getPushToken(): String {
+        return if (getPushEnabled().firstOrNull() == true) {
             configStore.getString(ConfigKey.PushToken.string)
         } else {
             ""
@@ -226,6 +255,10 @@ class DeviceRepository(
         PushEnabled("push_enabled"),
         PushToken("push_token"),
         ;
+    }
+
+    private object Key {
+        val PushEnabled = booleanPreferencesKey("push_enabled")
     }
 
     companion object {

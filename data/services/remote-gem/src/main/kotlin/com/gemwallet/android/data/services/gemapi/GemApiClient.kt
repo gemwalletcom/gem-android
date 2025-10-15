@@ -4,6 +4,7 @@ import com.gemwallet.android.data.services.gemapi.models.PricesResponse
 import com.gemwallet.android.model.Transaction
 import com.wallet.core.primitives.AssetBasic
 import com.wallet.core.primitives.AssetFull
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetMarketPrice
 import com.wallet.core.primitives.AssetPricesRequest
 import com.wallet.core.primitives.Charts
@@ -94,6 +95,11 @@ interface GemApiClient {
         @Query("query") query: String,
         @Query("chains") chains: String,
         @Query("tags") tags: String,
+    ): List<AssetBasic>
+
+    @POST("/v1/assets")
+    suspend fun search(
+        @Body data: List<AssetId>,
     ): List<AssetBasic>
 
     @GET("/v1/assets/device/{device_id}")

@@ -8,4 +8,6 @@ interface SearchTokensCase {
     suspend fun search(query: String, chains: List<Chain> = emptyList(), tags: List<AssetTag> = emptyList()): Boolean
 
     suspend fun search(assetId: AssetId): Boolean
+
+    suspend fun search(assetIds: List<AssetId>): Boolean
 }

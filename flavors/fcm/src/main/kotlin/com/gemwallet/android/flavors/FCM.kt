@@ -11,7 +11,9 @@ import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -29,7 +31,8 @@ class FCM : FirebaseMessagingService() {
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 
     override fun onMessageReceived(message: RemoteMessage) {
-        if (!getPushEnabled.getPushEnabled()) {
+        val pushEnabled = runBlocking { getPushEnabled.getPushEnabled().firstOrNull() == true }
+        if (pushEnabled) {
             return
         }
         scope.launch {
