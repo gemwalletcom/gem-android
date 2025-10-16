@@ -233,7 +233,8 @@ class ConfirmViewModel @Inject constructor(
             FeeUIModel.FeeInfo(
                 cryptoAmount = feeCrypto,
                 fiatAmount = feeFiat,
-                feeAsset = feeAssetInfo.asset
+                feeAsset = feeAssetInfo.asset,
+                priority = priority,
             )
         }
         result

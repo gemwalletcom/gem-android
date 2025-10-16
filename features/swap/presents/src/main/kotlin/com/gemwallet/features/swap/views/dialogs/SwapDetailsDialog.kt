@@ -34,11 +34,6 @@ internal fun SwapDetailsDialog(
     isUpdated: Boolean,
     providers: List<SwapProviderItem?>,
     provider: SwapProviderItem?,
-//    estimateTime: String?,
-//    priceImpact: PriceImpact?,
-//    slippage: SlippageModel?,
-//    minReceive: String?,
-//    rate: SwapRate?,
     properties: List<SwapProperty>,
     isShowProviderSelect: MutableState<Boolean>,
 ) {
@@ -80,19 +75,6 @@ internal fun SwapDetailsDialog(
                         is SwapProperty.Slippage -> SwapSlippage(item, position)
                     }
                 }
-//                item {
-//                    com.gemwallet.features.swap.views.components.SwapRate(rate)
-//                    estimateTime?.let {
-//                        PropertyItem(
-//                            title = { PropertyTitleText(R.string.swap_estimated_time_title) },
-//                            data = { PropertyDataText("\u2248 $it min") }
-//                        )
-//                    }
-//                    PriceImpact(priceImpact)
-//                    SwapMinReceive(minReceive)
-//                    SwapSlippage(slippage)
-//                    Spacer16()
-//                }
             }
         }
     }

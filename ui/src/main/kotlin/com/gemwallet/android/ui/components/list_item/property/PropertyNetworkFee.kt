@@ -24,17 +24,16 @@ fun PropertyNetworkFee(
     onSelectFee: (() -> Unit)? = null,
 ) {
     PropertyItem(
-        modifier = Modifier.height(72.dp),
+        modifier = if (variantsAvailable && onSelectFee != null) {
+            Modifier.clickable(onClick = onSelectFee)
+        } else {
+            Modifier
+        },
         title = {
             PropertyTitleText(R.string.transfer_network_fee, info = InfoSheetEntity.NetworkFeeInfo(networkTitle, networkSymbol))
         },
         data = {
-            val dataModifier = if (variantsAvailable && onSelectFee != null) {
-                Modifier.clickable(onClick = onSelectFee)
-            } else {
-                Modifier
-            }
-            Row(modifier = dataModifier, verticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(horizontalAlignment = Alignment.End) {
                     if (showedCryptoAmount) {
                         Row(horizontalArrangement = Arrangement.End) { PropertyDataText(feeCrypto) }

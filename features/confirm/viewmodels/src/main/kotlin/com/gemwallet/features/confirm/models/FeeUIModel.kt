@@ -1,6 +1,7 @@
 package com.gemwallet.features.confirm.models
 
 import com.wallet.core.primitives.Asset
+import com.wallet.core.primitives.FeePriority
 
 sealed interface FeeUIModel {
     object Calculating : FeeUIModel
@@ -11,5 +12,6 @@ sealed interface FeeUIModel {
         val cryptoAmount: String,
         val fiatAmount: String,
         val feeAsset: Asset,
+        val priority: FeePriority,
     ) : FeeUIModel
 }
