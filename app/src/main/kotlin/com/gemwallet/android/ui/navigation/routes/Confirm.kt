@@ -8,7 +8,7 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
-import com.gemwallet.features.confirm.views.ConfirmScreen
+import com.gemwallet.features.confirm.presents.ConfirmScreen
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -30,7 +30,7 @@ import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.features.bridge.viewmodels.RequestSceneState
 import com.gemwallet.features.bridge.viewmodels.RequestViewModel
-import com.gemwallet.features.confirm.views.ConfirmScreen
+import com.gemwallet.features.confirm.presents.ConfirmScreen
 import com.reown.walletkit.client.Wallet
 import com.wallet.core.primitives.WalletConnectionMethods
 

@@ -1,4 +1,4 @@
-package com.gemwallet.features.confirm.views
+package com.gemwallet.features.confirm.presents
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

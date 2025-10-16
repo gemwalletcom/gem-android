@@ -1,4 +1,4 @@
-package com.gemwallet.features.confirm.views
+package com.gemwallet.features.confirm.presents
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -67,6 +67,7 @@ import com.gemwallet.features.confirm.models.ConfirmError
 import com.gemwallet.features.confirm.models.ConfirmProperty
 import com.gemwallet.features.confirm.models.ConfirmState
 import com.gemwallet.features.confirm.models.FeeUIModel
+import com.gemwallet.features.confirm.presents.components.PropertyDestination
 import com.gemwallet.features.confirm.viewmodels.ConfirmViewModel
 import com.wallet.core.primitives.TransactionType
 

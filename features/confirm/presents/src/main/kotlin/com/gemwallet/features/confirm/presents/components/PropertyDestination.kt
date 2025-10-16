@@ -1,4 +1,4 @@
-package com.gemwallet.features.confirm.views
+package com.gemwallet.features.confirm.presents.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
