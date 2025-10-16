@@ -51,7 +51,7 @@ class TokensRepository (
     }
 
     override suspend fun search(assetIds: List<AssetId>): Boolean {
-        val result = gemApiClient.search(assetIds)
+        val result = gemApiClient.getAssets(assetIds)
         val record = result.map { it.toRecord() }
         runCatching { assetsDao.insert(record) }
         return true

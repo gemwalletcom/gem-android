@@ -73,10 +73,10 @@ interface GemApiClient {
     suspend fun getSubscriptions(@Path("device_id") deviceId: String): List<Subscription>?
 
     @HTTP(method = "DELETE", path = "/v1/subscriptions/{device_id}", hasBody = true)
-    suspend fun deleteSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): String
+    suspend fun deleteSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Int
 
     @POST("/v1/subscriptions/{device_id}")
-    suspend fun addSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): String
+    suspend fun addSubscriptions(@Path("device_id") deviceId: String, @Body request: List<Subscription>): Int
 
     @GET("/v1/charts/{asset_id}")
     suspend fun getChart(@Path("asset_id") assetId: String, @Query("currency") currency: String, @Query("period") period: String): Charts
@@ -88,18 +88,13 @@ interface GemApiClient {
     suspend fun getMarket(@Path("asset_id") assetId: String, @Query("currency") currency: String): AssetMarketPrice
 
     @POST("/v1/assets")
-    suspend fun getAssets(@Body ids: List<String>): List<AssetFull>
+    suspend fun getAssets(@Body ids: List<AssetId>): List<AssetBasic>
 
     @GET("/v1/assets/search")
     suspend fun search(
         @Query("query") query: String,
         @Query("chains") chains: String,
         @Query("tags") tags: String,
-    ): List<AssetBasic>
-
-    @POST("/v1/assets")
-    suspend fun search(
-        @Body data: List<AssetId>,
     ): List<AssetBasic>
 
     @GET("/v1/assets/device/{device_id}")

@@ -153,7 +153,7 @@ class DeviceRepository(
         }
     }
 
-    override suspend fun syncSubscription(wallets: List<Wallet>) {
+    override suspend fun syncSubscription(wallets: List<Wallet>, added: Boolean) {
         val deviceId = getDeviceIdCase.getDeviceId()
         val subscriptionsIndex = buildSubscriptionIndex(wallets)
         val remoteSubscriptions = getRemoteSubscriptions(deviceId)
@@ -163,14 +163,18 @@ class DeviceRepository(
             toAddSubscriptions.remove("${it.chain.string}_${it.address}_${it.wallet_index}")
         }
 
-        val toRemoveSubscription = remoteSubscriptions.filter {
-            !subscriptionsIndex.contains("${it.chain.string}_${it.address}_${it.wallet_index}")
+        val toRemoveSubscription = if (added) {
+            emptyList()
+        } else {
+            remoteSubscriptions.filter {
+                !subscriptionsIndex.contains("${it.chain.string}_${it.address}_${it.wallet_index}")
+            }
         }
 
         addSubscriptions(deviceId, toAddSubscriptions.values.toList())
         removeSubscriptions(deviceId, toRemoveSubscription)
 
-        if (toAddSubscriptions.isNotEmpty()) {
+        if (toAddSubscriptions.isNotEmpty() || toRemoveSubscription.isNotEmpty()) {
             increaseSubscriptionVersion()
             syncDeviceInfo()
         }

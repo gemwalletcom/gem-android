@@ -64,11 +64,8 @@ class PhraseAddressImportWalletService(
         val wallet = result.getOrNull() ?: return Result.failure(Exception("Unknown error"))
 
         setupWallet(wallet)
-
-        scope.launch(Dispatchers.IO) {
-            assetsRepository.importAssets(wallet)
-            checkAddresses(wallet)
-        }
+        assetsRepository.importAssets(wallet)
+        checkAddresses(wallet)
 
         return Result.success(wallet)
     }
@@ -88,7 +85,7 @@ class PhraseAddressImportWalletService(
     private suspend fun setupWallet(wallet: Wallet) {
         assetsRepository.createAssets(wallet)
         sessionRepository.setWallet(wallet)
-        syncSubscription.syncSubscription(listOf(wallet))
+        syncSubscription.syncSubscription(listOf(wallet), true)
     }
 
     private suspend fun handlePhrase(importType: ImportType, walletName: String, rawData: String): Result<Wallet> {

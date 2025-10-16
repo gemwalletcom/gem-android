@@ -270,10 +270,9 @@ class AssetsRepository @Inject constructor(
     suspend fun resolve(wallet: Wallet, assetsId: List<AssetId>) = withContext(Dispatchers.IO) {
         if (assetsId.isEmpty()) return@withContext
         try {
-            gemApi.getAssets(assetsId.map { it.toIdentifier() }).forEach {
+            gemApi.getAssets(assetsId).forEach {
                 val asset = it.asset
                 add(wallet.id, wallet.getAccount(asset.chain)?.address ?: return@forEach, asset, true)
-                runCatching { assetsDao.addLinks(it.links.toAssetLinkRecord(asset.id)) }
             }
         } catch (_: Throwable) {
             return@withContext
@@ -308,45 +307,6 @@ class AssetsRepository @Inject constructor(
             }
         }.awaitAll()
         sync()
-//        launch(Dispatchers.IO) {
-////            delay(2000) // Wait subscription - token processing
-//
-//            availableAssetsId.mapNotNull { it.toAssetId() }.filter { it.tokenId != null }
-//                .map { assetId ->
-//                    async {
-//                        searchTokensCase.search(assetId.tokenId!!, wallet.accounts.map { it.chain })
-//                        val asset = assetsDao.getAsset(assetId.toIdentifier())?.toModel() ?: return@async null
-//                        add(
-//                            walletId = wallet.id,
-//                            accountAddress = wallet.getAccount(assetId.chain)?.address ?: return@async null,
-//                            asset = asset,
-//                            visible = true
-//                        )
-//                        asset
-//                    }
-//                }
-//                .awaitAll()
-//                .filterNotNull()
-//                .groupBy { it.id.chain }
-//                .map {
-//                    async {
-//                        updateBalances.updateBalances(
-//                            wallet.id,
-//                            wallet.getAccount(it.key) ?: return@async,
-//                            it.value
-//                        )
-//                    }
-//                }
-//                .awaitAll()
-//        }
-//        wallet.accounts.filter { !Chain.exclude().contains(it.chain) }.map {
-//            async {
-//                val balances = updateBalances.updateBalances(wallet.id, it, emptyList()).firstOrNull()
-//                if ((balances?.totalAmount ?: 0.0) > 0.0) {
-//                    setVisibility(wallet.id, it.chain.asset().id, true)
-//                }
-//            }
-//        }.awaitAll()
     }
 
     /**

@@ -60,6 +60,7 @@ class ImportViewModel @Inject constructor(
         onImported: () -> Unit
     ) = viewModelScope.launch {
         state.update { it.copy(loading = true) }
+
         withContext(Dispatchers.IO) {
             importWalletService.importWallet(
                 importType = state.value.importType,
