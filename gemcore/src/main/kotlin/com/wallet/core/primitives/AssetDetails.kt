@@ -5,6 +5,7 @@
 package com.wallet.core.primitives
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class AssetProperties (
@@ -28,9 +29,6 @@ data class AssetLink (
 	val name: String,
 	val url: String
 )
-
-@Serializable
-class PerpetualBasic
 
 @Serializable
 data class AssetFull (

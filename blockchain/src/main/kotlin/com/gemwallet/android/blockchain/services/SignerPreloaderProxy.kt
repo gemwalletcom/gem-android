@@ -49,6 +49,7 @@ import uniffi.gemstone.GemTransactionPreloadInput
 import uniffi.gemstone.GemTransferDataExtra
 import uniffi.gemstone.GemWalletConnectionSessionAppMetadata
 import uniffi.gemstone.SwapperException
+import uniffi.gemstone.SwapperException.*
 import uniffi.gemstone.TransferDataOutputAction
 import uniffi.gemstone.TransferDataOutputType
 
@@ -344,6 +345,7 @@ private fun GemTransactionLoadMetadata.toChainData() = when (this) {
     is GemTransactionLoadMetadata.Algorand -> toChainData()
     is GemTransactionLoadMetadata.Aptos -> toChainData()
     is GemTransactionLoadMetadata.Bitcoin -> toChainData()
+    is GemTransactionLoadMetadata.Zcash -> toChainData()
     is GemTransactionLoadMetadata.Cardano -> toChainData()
     is GemTransactionLoadMetadata.Cosmos -> toChainData()
     is GemTransactionLoadMetadata.Evm -> toChainData()
@@ -356,5 +358,5 @@ private fun GemTransactionLoadMetadata.toChainData() = when (this) {
     is GemTransactionLoadMetadata.Tron -> toChainData()
     is GemTransactionLoadMetadata.Xrp -> toChainData()
     is GemTransactionLoadMetadata.Hyperliquid -> toChainData()
-    GemTransactionLoadMetadata.None -> throw SwapperException.NotSupportedChain()
+    GemTransactionLoadMetadata.None -> throw NotSupportedChain()
 }

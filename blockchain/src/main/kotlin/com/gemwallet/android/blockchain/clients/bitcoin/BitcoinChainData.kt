@@ -9,8 +9,20 @@ data class BitcoinChainData(
     val utxo: List<UTXO>,
 ) : ChainSignData
 
+data class ZCashChainData(
+    val utxo: List<UTXO>,
+    val branchId: String,
+) : ChainSignData
+
 fun GemTransactionLoadMetadata.Bitcoin.toChainData(): BitcoinChainData {
     return BitcoinChainData(
-        utxo = utxos.toUtxo()
+        utxo = utxos.toUtxo(),
+    )
+}
+
+fun GemTransactionLoadMetadata.Zcash.toChainData(): ZCashChainData {
+    return ZCashChainData(
+        utxo = utxos.toUtxo(),
+        branchId = branchId,
     )
 }

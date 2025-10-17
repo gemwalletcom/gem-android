@@ -185,7 +185,7 @@ fun SettingsScene(
             ) {
                 uriHandler.open(
                     context,
-                    Config().getDocsUrl(DocsUrl.START).toUri()
+                    Config().getDocsUrl(DocsUrl.Start).toUri()
                         .buildUpon()
                         .appendQueryParameter("utm_source", "gemwallet_android")
                         .build()

@@ -34,7 +34,7 @@ fun RootWarningDialog(onCancel: () -> Unit, onIgnore: () -> Unit) {
                 Spacer8()
                 Text(
                     modifier = Modifier.clickable {
-                        uriHandler.open(context, Config().getDocsUrl(DocsUrl.ROOTED_DEVICE))
+                        uriHandler.open(context, Config().getDocsUrl(DocsUrl.RootedDevice))
                     },
                     text = stringResource(R.string.common_learn_more),
                     color = MaterialTheme.colorScheme.primary

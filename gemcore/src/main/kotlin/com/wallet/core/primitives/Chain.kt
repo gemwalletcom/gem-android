@@ -4,8 +4,8 @@
 
 package com.wallet.core.primitives
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 enum class Chain(val string: String) {
@@ -37,6 +37,8 @@ enum class Chain(val string: String) {
 	Tron("tron"),
 	@SerialName("doge")
 	Doge("doge"),
+	@SerialName("zcash")
+	Zcash("zcash"),
 	@SerialName("optimism")
 	Optimism("optimism"),
 	@SerialName("aptos")

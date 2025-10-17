@@ -34,7 +34,7 @@ internal fun LazyListScope.status(asset: Asset, rank: Int) {
             modifier = Modifier.clickable {
                 uriHandler.open(
                     context,
-                    Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION)
+                    Config().getDocsUrl(DocsUrl.TokenVerification)
                 )
             },
             title = {

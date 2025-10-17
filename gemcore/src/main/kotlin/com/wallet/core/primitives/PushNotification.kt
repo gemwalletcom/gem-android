@@ -4,8 +4,8 @@
 
 package com.wallet.core.primitives
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class PushNotificationAsset (
@@ -48,6 +48,7 @@ data class PushNotificationSwapAsset (
 data class PushNotificationTransaction (
 	val walletIndex: Int,
 	val assetId: String,
-	val transactionId: String
+	val transactionId: String,
+	val transaction: Transaction
 )
 

@@ -5,19 +5,20 @@
 package com.wallet.core.primitives
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class Transaction (
 	val id: String,
-	val hash: String,
+	val hash: String? = null,
 	val assetId: AssetId,
 	val from: String,
 	val to: String,
 	val contract: String? = null,
 	val type: TransactionType,
 	val state: TransactionState,
-	val blockNumber: String,
-	val sequence: String,
+	val blockNumber: String? = null,
+	val sequence: String? = null,
 	val fee: String,
 	val feeAssetId: AssetId,
 	val value: String,

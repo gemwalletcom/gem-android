@@ -71,11 +71,12 @@ fun SwapperProvider.getSwapProviderIcon(): String {
         SwapperProvider.STONFI_V2 -> "stonfi"
         SwapperProvider.MAYAN -> "mayan"
         SwapperProvider.RESERVOIR -> "reservoir"
-        SwapperProvider.SYMBIOSIS -> "symbiosis"
         SwapperProvider.CHAINFLIP -> "chainflip"
         SwapperProvider.RELAY -> "relay"
         SwapperProvider.AERODROME -> "aerodrome"
         SwapperProvider.HYPERLIQUID -> "hyperliquid"
+        SwapperProvider.NEAR_INTENTS -> "near_intents"
+        SwapperProvider.ORCA -> "orca"
     }
     return "file:///android_asset/swap/${iconName.lowercase()}.svg"
 }

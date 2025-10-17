@@ -53,7 +53,7 @@ sealed class InfoSheetEntity(
         icon = R.drawable.ic_network_fee,
         title = R.string.transfer_network_fee,
         description = R.string.info_network_fee_description,
-        infoUrl = Config().getDocsUrl(DocsUrl.NETWORK_FEES),
+        infoUrl = Config().getDocsUrl(DocsUrl.NetworkFees),
         descriptionArgs = listOf(networkTitle, networkSymbol),
     )
 
@@ -73,7 +73,7 @@ sealed class InfoSheetEntity(
         badgeIcon = null,
         title = R.string.stake_lock_time,
         description = R.string.info_lock_time_description,
-        infoUrl = Config().getDocsUrl(DocsUrl.STAKING_LOCK_TIME),
+        infoUrl = Config().getDocsUrl(DocsUrl.StakingLockTime),
     )
 
     class TransactionInfo(icon: Any, state: TransactionState) : InfoSheetEntity(
@@ -94,7 +94,7 @@ sealed class InfoSheetEntity(
             TransactionState.Confirmed -> R.string.info_transaction_success_description
             TransactionState.Failed, TransactionState.Reverted -> R.string.info_transaction_error_description
         },
-        infoUrl = Config().getDocsUrl(DocsUrl.TRANSACTION_STATUS),
+        infoUrl = Config().getDocsUrl(DocsUrl.TransactionStatus),
     )
 
     object WatchWalletInfo : InfoSheetEntity(
@@ -102,35 +102,35 @@ sealed class InfoSheetEntity(
         badgeIcon = R.drawable.watch_badge,
         title = R.string.info_watch_wallet_title,
         description = R.string.info_watch_wallet_description,
-        infoUrl = Config().getDocsUrl(DocsUrl.WHAT_IS_WATCH_WALLET),
+        infoUrl = Config().getDocsUrl(DocsUrl.WhatIsWatchWallet),
     )
 
     object PriceImpactInfo : InfoSheetEntity(
         icon = R.drawable.ic_splash,
         title = R.string.info_price_impact_title,
         description = R.string.info_price_impact_description,
-        infoUrl = Config().getDocsUrl(DocsUrl.PRICE_IMPACT),
+        infoUrl = Config().getDocsUrl(DocsUrl.PriceImpact),
     )
 
     object Slippage : InfoSheetEntity(
         icon = R.drawable.ic_splash,
         title = R.string.swap_slippage,
         description = R.string.info_slippage_description,
-        infoUrl = Config().getDocsUrl(DocsUrl.SLIPPAGE),
+        infoUrl = Config().getDocsUrl(DocsUrl.Slippage),
     )
 
     object AssetStatusSuspiciousInfo : InfoSheetEntity(
         icon = R.drawable.ic_splash,
         title = R.string.asset_verification_suspicious,
         description = R.string.info_asset_status_suspicious_description,
-        infoUrl = Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION),
+        infoUrl = Config().getDocsUrl(DocsUrl.TokenVerification),
     )
 
     object AssetStatusUnverifiedInfo : InfoSheetEntity(
         icon = R.drawable.ic_splash,
         title = R.string.asset_verification_unverified,
         description = R.string.info_asset_status_unverified_description,
-        infoUrl = Config().getDocsUrl(DocsUrl.TOKEN_VERIFICATION),
+        infoUrl = Config().getDocsUrl(DocsUrl.TokenVerification),
     )
 }
 

@@ -4,8 +4,8 @@
 
 package com.wallet.core.primitives
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 enum class PerpetualMarginType(val string: String) {
@@ -16,9 +16,18 @@ enum class PerpetualMarginType(val string: String) {
 }
 
 @Serializable
-data class PriceTarget (
-	val price: Double? = null,
-	val percentage: Double? = null
+enum class PerpetualOrderType(val string: String) {
+	@SerialName("market")
+	Market("market"),
+	@SerialName("limit")
+	Limit("limit"),
+}
+
+@Serializable
+data class PerpetualTriggerOrder (
+	val price: Double,
+	val order_type: PerpetualOrderType,
+	val order_id: String
 )
 
 @Serializable
@@ -34,11 +43,9 @@ data class PerpetualPosition (
 	val marginType: PerpetualMarginType,
 	val direction: PerpetualDirection,
 	val marginAmount: Double,
-	val takeProfit: PriceTarget? = null,
-	val stopLoss: PriceTarget? = null,
+	val takeProfit: PerpetualTriggerOrder? = null,
+	val stopLoss: PerpetualTriggerOrder? = null,
 	val pnl: Double,
 	val funding: Float? = null
 )
 
-@Serializable
-enum class PerpetualDirection

@@ -4,8 +4,8 @@
 
 package com.wallet.core.primitives
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 enum class SwapProvider(val string: String) {
@@ -37,15 +37,17 @@ enum class SwapProvider(val string: String) {
 	Mayan("mayan"),
 	@SerialName("reservoir")
 	Reservoir("reservoir"),
-	@SerialName("symbiosis")
-	Symbiosis("symbiosis"),
 	@SerialName("chainflip")
 	Chainflip("chainflip"),
+	@SerialName("near_intents")
+	NearIntents("near_intents"),
 	@SerialName("cetus_aggregator")
 	CetusAggregator("cetus_aggregator"),
 	@SerialName("relay")
 	Relay("relay"),
 	@SerialName("hyperliquid")
 	Hyperliquid("hyperliquid"),
+	@SerialName("orca")
+	Orca("orca"),
 }
 

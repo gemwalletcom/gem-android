@@ -29,7 +29,12 @@ class TransactionStatusService(
             val hashChanges = result.changes.firstNotNullOfOrNull { it as? TransactionChange.HashChange }
 
             TransactionChanges(
-                state = TransactionState.entries.firstOrNull { it.string == result.state } ?: throw ServiceUnavailable,
+                state = when (result.state) {
+                    uniffi.gemstone.TransactionState.PENDING -> TransactionState.Pending
+                    uniffi.gemstone.TransactionState.CONFIRMED -> TransactionState.Confirmed
+                    uniffi.gemstone.TransactionState.FAILED -> TransactionState.Failed
+                    uniffi.gemstone.TransactionState.REVERTED -> TransactionState.Reverted
+                },
                 fee = fee,
                 hashChanges = hashChanges?.let { HashChanges(it.old, it.new) }
             )

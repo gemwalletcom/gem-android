@@ -28,7 +28,7 @@ internal fun BannerItem(
             when (it.event) {
                 BannerEvent.Stake -> onStake(assetInfo.asset.id)
                 BannerEvent.AccountBlockedMultiSignature ->
-                    uriHandler.open(context, Config().getDocsUrl(DocsUrl.TRON_MULTI_SIGNATURE))
+                    uriHandler.open(context, Config().getDocsUrl(DocsUrl.TronMultiSignature))
 
                 BannerEvent.ActivateAsset -> {
                     val params = ConfirmParams.Builder(

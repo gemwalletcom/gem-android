@@ -10,6 +10,7 @@ class WCChainTypeProxy : ChainTypeProxy<CoinType> {
         Chain.Litecoin -> CoinType.LITECOIN
         Chain.BitcoinCash -> CoinType.BITCOINCASH
         Chain.Doge -> CoinType.DOGECOIN
+        Chain.Zcash -> CoinType.ZCASH
         Chain.Ethereum,
         Chain.World,
         Chain.Sonic,

@@ -67,7 +67,9 @@ fun Chain.assetType(): AssetType? {
         Chain.Stellar,
         Chain.Polkadot,
         Chain.Cardano,
-        Chain.Near -> null
+        Chain.Zcash,
+        Chain.Near
+             -> null
     }
 }
 
@@ -149,6 +151,7 @@ fun Chain.toChainType(): ChainType {
         Chain.Bitcoin,
         Chain.Doge,
         Chain.BitcoinCash,
+        Chain.Zcash,
         Chain.Litecoin -> ChainType.Bitcoin
         Chain.Thorchain,
         Chain.Osmosis,

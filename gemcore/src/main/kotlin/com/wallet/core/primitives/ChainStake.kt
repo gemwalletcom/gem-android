@@ -4,8 +4,8 @@
 
 package com.wallet.core.primitives
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 enum class StakeChain(val string: String) {
@@ -29,6 +29,8 @@ enum class StakeChain(val string: String) {
 	SmartChain("smartchain"),
 	@SerialName("tron")
 	Tron("tron"),
+	@SerialName("aptos")
+	Aptos("aptos"),
 	@SerialName("hypercore")
 	HyperCore("hypercore"),
 }
