@@ -69,7 +69,7 @@ data class AssetBalance(
 }
 
 
-private fun Balance<String>.createAmount(decimals: Int) = Balance<Double>(
+private fun Balance<String>.createAmount(decimals: Int) = Balance(
     available = Crypto(available).value(decimals).stripTrailingZeros().toDouble(),
     frozen = Crypto(frozen).value(decimals).stripTrailingZeros().toDouble(),
     locked = Crypto(locked).value(decimals).stripTrailingZeros().toDouble(),

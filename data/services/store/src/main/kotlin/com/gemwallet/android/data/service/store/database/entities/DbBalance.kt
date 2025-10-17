@@ -135,7 +135,6 @@ fun DbBalance.Companion.mergeNative(old: DbBalance?, current: DbBalance?): DbBal
                 + newBalance.stakedAmount
                 + newBalance.pendingAmount
                 + newBalance.rewardsAmount
-                + newBalance.reservedAmount
     )
 }
 
