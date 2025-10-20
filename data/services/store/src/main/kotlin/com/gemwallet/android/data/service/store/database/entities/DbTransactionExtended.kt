@@ -101,7 +101,6 @@ fun DbTransactionExtended.toModel(): TransactionExtended? {
     return TransactionExtended(
         transaction = Transaction(
             id = this.id,
-            hash = this.hash,
             assetId = this.assetId.toAssetId() ?: return null,
             from = this.owner,
             to = this.recipient,

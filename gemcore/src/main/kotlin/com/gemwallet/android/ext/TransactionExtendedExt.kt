@@ -12,6 +12,9 @@ fun Transaction.getAssociatedAssetIds(): List<AssetId> {
     return (swapAssets + setOf(assetId, feeAssetId)).toList()
 }
 
+val Transaction.hash: String
+    get() = id.removePrefix("${assetId.chain.string}_")
+
 fun Transaction.getSwapMetadata(): TransactionSwapMetadata? {
     if (type != TransactionType.Swap ||  metadata.isNullOrEmpty()) {
         return null

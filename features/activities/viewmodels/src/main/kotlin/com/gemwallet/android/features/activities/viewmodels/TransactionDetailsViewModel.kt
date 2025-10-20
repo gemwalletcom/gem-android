@@ -11,6 +11,7 @@ import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.getAssociatedAssetIds
 import com.gemwallet.android.ext.getNftMetadata
 import com.gemwallet.android.ext.getSwapMetadata
+import com.gemwallet.android.ext.hash
 import com.gemwallet.android.features.activities.models.TxDetailsProperty
 import com.gemwallet.android.math.getRelativeDate
 import com.gemwallet.android.model.Crypto
@@ -77,7 +78,12 @@ class TransactionDetailsViewModel @Inject constructor(
         val blockExplorerName = getCurrentBlockExplorer.getCurrentBlockExplorer(transaction.asset.chain)
         val explorer = Explorer(asset.chain.string)
         val provider = swapMetadata?.provider
-        val swapExplorerUrl = provider?.let { explorer.getTransactionSwapUrl(blockExplorerName, tx.hash, provider) }
+        val swapProvider = SwapProvider.entries.firstOrNull { it.string == provider }
+        val identifier = when (swapProvider) {
+            SwapProvider.NearIntents -> tx.to
+            else -> tx.hash
+        }
+        val swapExplorerUrl = provider?.let { explorer.getTransactionSwapUrl(blockExplorerName, identifier, provider) }
         val explorerUrl = swapExplorerUrl?.url ?: explorer.getTransactionUrl(blockExplorerName, tx.hash)
 
         val properties = listOfNotNull(
@@ -85,8 +91,7 @@ class TransactionDetailsViewModel @Inject constructor(
             TxDetailsProperty.Status(asset, tx.state),
             getDestination(tx),
             tx.memo?.takeIf { it.isNotEmpty() }?.let { TxDetailsProperty.Memo(it) },
-            SwapProvider.entries.firstOrNull { it.string == provider }
-                ?.let { TxDetailsProperty.Provider(it) },
+            swapProvider?.let { TxDetailsProperty.Provider(it) },
             TxDetailsProperty.Network(asset),
         )
 

@@ -17,6 +17,7 @@ import com.wallet.core.primitives.Resource
 import com.wallet.core.primitives.TransactionType
 import kotlinx.serialization.Serializable
 import org.json.JSONObject
+import uniffi.gemstone.SwapperProvider
 import java.math.BigInteger
 import java.util.Base64
 
@@ -197,6 +198,7 @@ sealed class ConfirmParams {
         val toAsset: Asset,
         @Serializable(BigIntegerSerializer::class) val toAmount: BigInteger,
         val swapData: String,
+        val providerId: SwapperProvider,
         val provider: String,
         val providerName: String,
         val protocolId: String,

@@ -282,6 +282,7 @@ class SwapViewModel @Inject constructor(
             fromAmount = Crypto(fromAmount, quote.pay.asset.decimals).atomicValue,
             toAmount = BigInteger(quote.quote.toValue),
             swapData = swapData.data,
+            providerId = quote.quote.data.provider.id,
             provider = quote.quote.data.provider.protocol,
             providerName = quote.quote.data.provider.name,
             protocolId = quote.quote.data.provider.protocolId,

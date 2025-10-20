@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.service.store.database.entities
 
 import androidx.room.Entity
+import com.gemwallet.android.ext.hash
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.Transaction
@@ -43,8 +44,8 @@ fun Transaction.toRecord(walletId: String): DbTransaction {
         contract = this.contract,
         type = this.type,
         state = this.state,
-        blockNumber = this.blockNumber,
-        sequence = this.sequence,
+        blockNumber = this.blockNumber ?: "",
+        sequence = this.sequence ?: "",
         fee = this.fee,
         value = this.value,
         payload = this.memo,
@@ -58,7 +59,6 @@ fun Transaction.toRecord(walletId: String): DbTransaction {
 fun DbTransaction.toModel(): Transaction {
     return Transaction(
         id = this.id,
-        hash = this.hash,
         assetId = this.assetId.toAssetId() ?: throw IllegalArgumentException(),
         from = this.owner,
         to = this.recipient,

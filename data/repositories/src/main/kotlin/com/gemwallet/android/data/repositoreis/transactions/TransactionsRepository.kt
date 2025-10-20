@@ -148,7 +148,6 @@ class TransactionsRepository(
     ): Transaction = withContext(Dispatchers.IO) {
         val transaction = Transaction(
             id = "${assetId.chain.string}_$hash",
-            hash = hash,
             assetId = assetId,
             feeAssetId = fee.feeAssetId,
             from = owner.address,

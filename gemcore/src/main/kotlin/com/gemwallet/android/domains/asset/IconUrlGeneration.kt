@@ -75,7 +75,7 @@ fun SwapperProvider.getSwapProviderIcon(): String {
         SwapperProvider.RELAY -> "relay"
         SwapperProvider.AERODROME -> "aerodrome"
         SwapperProvider.HYPERLIQUID -> "hyperliquid"
-        SwapperProvider.NEAR_INTENTS -> "near_intents"
+        SwapperProvider.NEAR_INTENTS -> "near"
         SwapperProvider.ORCA -> "orca"
     }
     return "file:///android_asset/swap/${iconName.lowercase()}.svg"
