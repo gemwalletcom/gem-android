@@ -10,9 +10,9 @@ interface SessionRepository : GetCurrentCurrencyCase {
 
     fun session(): Flow<Session?>
 
-    fun getSession(): Session?
+    suspend fun getSession(): Session?
 
-    fun hasSession(): Boolean
+    suspend fun hasSession(): Boolean
 
     suspend fun setWallet(wallet: Wallet)
 

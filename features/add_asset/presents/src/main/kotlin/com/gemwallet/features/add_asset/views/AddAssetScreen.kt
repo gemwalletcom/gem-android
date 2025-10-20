@@ -22,8 +22,9 @@ fun AddAssetScree(
     viewModel: AddAssetViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val availableChains by viewModel.availableChains.collectAsStateWithLifecycle()
     val chains by viewModel.chains.collectAsStateWithLifecycle()
-    val network by viewModel.chain.collectAsStateWithLifecycle()
+    val network by viewModel.selectedChain.collectAsStateWithLifecycle()
     val token by viewModel.token.collectAsStateWithLifecycle()
     val searchState by viewModel.searchState.collectAsStateWithLifecycle()
 
@@ -65,7 +66,7 @@ fun AddAssetScree(
                     onCancel = onCancel,
                     onScan = viewModel::onQrScan,
                     onAddAsset = { viewModel.addAsset(onFinish) },
-                    onChainSelect = uiState.onSelectChain,
+                    onChainSelect = if ((availableChains?.size ?: 0) > 1) viewModel::selectChain else null,
                 )
             }
             AddAssetUIState.Scene.QrScanner -> {

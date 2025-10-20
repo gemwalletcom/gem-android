@@ -27,13 +27,13 @@ class SessionRepositoryImpl(
         record.toModel(wallet)
     }
 
-    override fun getSession(): Session? = runBlocking(Dispatchers.IO) {
-        val entity = sessionDao.getSession() ?: return@runBlocking null
-        val wallet = walletsRepository.getWallet(entity.walletId).firstOrNull() ?: return@runBlocking null
-        entity.toModel(wallet)
+    override suspend fun getSession(): Session? {
+        val entity = sessionDao.getSession() ?: return null
+        val wallet = walletsRepository.getWallet(entity.walletId).firstOrNull() ?: return null
+        return entity.toModel(wallet)
     }
 
-    override fun hasSession(): Boolean = getSession() != null
+    override suspend fun hasSession(): Boolean = getSession() != null
 
     override suspend fun setWallet(wallet: Wallet) {
         val oldSession = runBlocking(Dispatchers.IO) { sessionDao.getSession() }
@@ -59,7 +59,7 @@ class SessionRepositoryImpl(
         sessionDao.clear()
     }
 
-    override fun getCurrentCurrency(): Currency = getSession()?.currency ?: Currency.USD
+    override suspend fun getCurrentCurrency(): Currency = getSession()?.currency ?: Currency.USD
 
     override fun getCurrency(): Flow<Currency> = session().map { it?.currency ?: Currency.USD }
 }

@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -51,8 +52,6 @@ class AppViewModel @Inject constructor(
     fun onCancelUpdate() {
         state.update { it.copy(intent = AppIntent.None) }
     }
-
-    private fun hasSession(): Boolean = sessionRepository.hasSession()
 
     private suspend fun handleAppVersion() = withContext(Dispatchers.IO) {
         if (BuildConfig.DEBUG) {
@@ -97,7 +96,7 @@ class AppViewModel @Inject constructor(
         }
     }
 
-    fun getStartDestination(): String = if (hasSession()) {
+    suspend fun getStartDestination(): String = if (sessionRepository.getSession() != null) {
         "/"
     } else {
         OnboardingDest.route

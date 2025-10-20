@@ -42,33 +42,38 @@ class AddAssetViewModel @Inject constructor(
     private val assetsRepository: AssetsRepository,
 ) : ViewModel() {
 
-    private val state = MutableStateFlow(
-        State(
-            onSelectChain = this::selectChain,
-            isSelectChainAvailable = isSelectChainAvailable()
-        )
-    )
+    private val state = MutableStateFlow(State())
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, AddAssetUIState())
-    var input by mutableStateOf("")
+//    var input by mutableStateOf("")
 
     val chainFilter = TextFieldState()
-    val chains = snapshotFlow { chainFilter.text }.mapLatest { query ->
-        getAvailableChains().filter(query.toString().lowercase())
+
+    val availableChains = sessionRepository.session().mapLatest { session ->
+        session?.wallet?.accounts?.map { it.chain }?.filter { it.assetType() != null }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val chains = snapshotFlow { chainFilter.text }.combine(availableChains) { query, availableChains ->
+        availableChains?.filter(query.toString().lowercase()) ?: emptyList()
     }
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val chain = MutableStateFlow(
-        getAvailableChains().let {
-            it.firstOrNull { chain -> chain == Chain.Ethereum } ?: it.firstOrNull() ?: Chain.Ethereum
+    val defaultChain = availableChains.map {
+        it.let {
+            it?.firstOrNull { chain -> chain == Chain.Ethereum } ?: it?.firstOrNull() ?: Chain.Ethereum
         }
-    )
+    }
+    private val chain = MutableStateFlow<Chain?>(null)
+    val selectedChain = defaultChain.combine(chain) {defaultChain, chain ->
+        chain ?: defaultChain
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, Chain.Ethereum)
 
     val addressState = mutableStateOf("")
-    val addressQuery = snapshotFlow { addressState.value.toString() }
+    val addressQuery = snapshotFlow { addressState.value }
 
-    val searchState = addressQuery.combine(chain) { address, chain ->
+    val searchState = addressQuery.combine(selectedChain) { address, chain ->
         Pair(address, chain)
     }.flatMapLatest {
         val (address, chain) = it
@@ -94,8 +99,8 @@ class AddAssetViewModel @Inject constructor(
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, TokenSearchState.Idle)
 
-    val token = combine(addressQuery, chain) { address, chain ->
-        Pair(address.toString().trim(), chain)
+    val token = combine(addressQuery, selectedChain) { address, chain ->
+        Pair(address.trim(), chain)
     }
     .flatMapLatest {
         val (address, chain) = it
@@ -143,25 +148,16 @@ class AddAssetViewModel @Inject constructor(
             val session = sessionRepository.getSession() ?: return@async
             assetsRepository.switchVisibility(
                 walletId = session.wallet.id,
-                owner = session.wallet.getAccount(chain.value) ?: return@async,
+                owner = session.wallet.getAccount(selectedChain.value) ?: return@async,
                 assetId = token.value?.id ?: return@async,
                 visibility = true,
             )
         }.await()
     }
 
-    private fun getAvailableChains(): List<Chain> {
-        val wallet = sessionRepository.getSession()?.wallet ?: return emptyList()
-        return wallet.accounts.map { it.chain }.filter { it.assetType() != null }
-    }
-
-    fun isSelectChainAvailable(): Boolean = getAvailableChains().size > 1
-
     private data class State(
         val isQrScan: Boolean = false,
         val isSelectChain: Boolean = false,
-        val isSelectChainAvailable: Boolean = true,
-        val onSelectChain: (() -> Unit)?,
     ) {
         fun toUIState(): AddAssetUIState {
             return AddAssetUIState(
@@ -170,7 +166,6 @@ class AddAssetViewModel @Inject constructor(
                     isSelectChain -> AddAssetUIState.Scene.SelectChain
                     else -> AddAssetUIState.Scene.Form
                 },
-                onSelectChain = if (isSelectChainAvailable) onSelectChain else null,
             )
         }
     }

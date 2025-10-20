@@ -298,7 +298,7 @@ class SwapViewModel @Inject constructor(
         )
     }
 
-    private fun updateBalance(id: AssetId) {
+    private suspend fun updateBalance(id: AssetId) {
         val session = sessionRepository.getSession() ?: return
         val account = session.wallet.getAccount(id.chain) ?: return
         viewModelScope.launch(Dispatchers.IO) {

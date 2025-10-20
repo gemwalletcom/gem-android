@@ -11,6 +11,7 @@ import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Banner
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -27,12 +28,12 @@ class BannersViewModel @Inject constructor(
     val banners = MutableStateFlow<List<Banner>>(emptyList())
 
     fun init(asset: Asset?, isGlobal: Boolean) {
-        val wallet = if (isGlobal) {
-            null
-        } else {
-            sessionRepository.getSession()?.wallet
-        }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
+            val wallet = if (isGlobal) {
+                null
+            } else {
+                sessionRepository.getSession()?.wallet
+            }
             val banners = getBannersCase.getActiveBanners(wallet, asset)
             this@BannersViewModel.banners.update { banners }
         }

@@ -43,7 +43,9 @@ open class BaseAssetSelectViewModel(
     val selectedTag = MutableStateFlow<AssetTag?>(null)
 
     private val searchState = MutableStateFlow<SearchState>(SearchState.Init)
-    val availableChains = sessionRepository.session()
+    private val session = sessionRepository.session()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val availableChains = session
         .map { session -> session?.wallet?.accounts?.map { it.chain } ?: emptyList() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
     val chainFilter = MutableStateFlow<List<Chain>>(emptyList())
@@ -158,7 +160,7 @@ open class BaseAssetSelectViewModel(
     }
 
     fun getAccount(assetId: AssetId): Account? {
-        return sessionRepository.getSession()?.wallet?.getAccount(assetId)
+        return session.value?.wallet?.getAccount(assetId)
     }
 
     enum class SearchState {

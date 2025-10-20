@@ -26,10 +26,12 @@ fun SelectReceiveScreen(
         title = stringResource(id = R.string.wallet_receive),
         titleBadge = ::getAssetBadge,
         itemTrailing = {
-            IconButton(onClick = {
-                viewModel.onChangeVisibility(it.asset.id, true)
+            IconButton(
+                onClick = {
+                    viewModel.onChangeVisibility(it.asset.id, true)
                     clipboardManager.setPlainText(context, viewModel.getAccount(it.asset.id)?.address ?: "")
-            }) {
+                }
+            ) {
                 Icon(imageVector = Icons.Default.ContentCopy, contentDescription = "")
             }
         },

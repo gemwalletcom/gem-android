@@ -143,7 +143,7 @@ class RecipientViewModel @Inject constructor(
         }
     }
 
-    private fun onNftConfirm(nftAsset: NFTAsset, destination: DestinationAddress, confirmAction: ConfirmTransactionAction) {
+    private suspend fun onNftConfirm(nftAsset: NFTAsset, destination: DestinationAddress, confirmAction: ConfirmTransactionAction) {
         val params = ConfirmParams.NftParams(
             asset = nftAsset.chain.asset(),
             from = sessionRepository.getSession()?.wallet?.getAccount(nftAsset.chain) ?: return,

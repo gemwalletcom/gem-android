@@ -5,10 +5,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
@@ -21,17 +23,18 @@ fun CurrenciesScene(
     onCancel: () -> Unit,
     viewModel: CurrenciesViewModel = hiltViewModel()
 ) {
+    val currentCurrency by viewModel.currency.collectAsStateWithLifecycle()
+    val defaultCurrencies by viewModel.defaultCurrencies.collectAsStateWithLifecycle()
+
     Scene(
         title = stringResource(id = R.string.settings_currency),
         onClose = onCancel,
     ) {
-        val currentCurrency = viewModel.getCurrency()
         LazyColumn {
             item {
                 SubheaderItem(title = stringResource(id = R.string.common_recommended))
             }
 
-            val defaultCurrencies = viewModel.getDefaultCurrencies()
             val defaultCurrenciesSize = defaultCurrencies.size
             itemsIndexed(defaultCurrencies) { index, item ->
                 CurrencyItem(

@@ -41,11 +41,10 @@ class ReceiveViewModel @Inject constructor(
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     fun setVisible() {
-        val assetId = asset.value?.asset?.id ?: return
-        val session = sessionRepository.getSession() ?: return
-        val account = session.wallet.getAccount(assetId.chain) ?: return
-
         viewModelScope.launch(Dispatchers.IO) {
+            val assetId = asset.value?.asset?.id ?: return@launch
+            val session = sessionRepository.getSession() ?: return@launch
+            val account = session.wallet.getAccount(assetId.chain) ?: return@launch
             assetsRepository.switchVisibility(session.wallet.id, account, assetId, true)
         }
     }

@@ -103,9 +103,11 @@ class AssetsViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.Eagerly, WalletInfoUIState())
 
     fun onRefresh() {
-        val session = sessionRepository.getSession() ?: return
-        refreshingState.update { RefresingState.OnForce }
-        updateAssetData(session)
+        viewModelScope.launch {
+            val session = sessionRepository.getSession() ?: return@launch
+            refreshingState.update { RefresingState.OnForce }
+            updateAssetData(session)
+        }
     }
 
     private fun updateAssetData(session: Session) { // TODO: Out to case

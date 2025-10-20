@@ -2,7 +2,6 @@ package com.gemwallet.features.add_asset.viewmodels.models
 
 class AddAssetUIState(
     val scene: Scene = Scene.Form,
-    val onSelectChain: (() -> Unit)? = null,
 ) {
     enum class Scene {
         QrScanner,
