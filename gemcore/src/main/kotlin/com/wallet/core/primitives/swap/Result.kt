@@ -6,6 +6,7 @@ package com.wallet.core.primitives.swap
 
 import com.wallet.core.primitives.Chain
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class SwapResult (

@@ -91,5 +91,11 @@ enum class WalletConnectionMethods(val string: String) {
 	SolanaSignAndSendTransaction("solana_signAndSendTransaction"),
 	@SerialName("solana_signAllTransactions")
 	SolanaSignAllTransactions("solana_signAllTransactions"),
+	@SerialName("sui_signPersonalMessage")
+	SuiSignPersonalMessage("sui_signPersonalMessage"),
+	@SerialName("sui_signTransaction")
+	SuiSignTransaction("sui_signTransaction"),
+	@SerialName("sui_signAndExecuteTransaction")
+	SuiSignAndExecuteTransaction("sui_signAndExecuteTransaction"),
 }
 

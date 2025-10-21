@@ -19,7 +19,6 @@ internal fun TransactionStatus(state: DelegationState, active: Boolean, listPosi
             }
 
             DelegationState.Pending -> R.string.stake_pending
-            DelegationState.Undelegating -> R.string.transfer_unstake_title
             DelegationState.Inactive -> R.string.stake_inactive
             DelegationState.Activating -> R.string.stake_activating
             DelegationState.Deactivating -> R.string.stake_deactivating
@@ -29,9 +28,7 @@ internal fun TransactionStatus(state: DelegationState, active: Boolean, listPosi
             DelegationState.Active -> MaterialTheme.colorScheme.tertiary
             DelegationState.Activating,
             DelegationState.Deactivating,
-            DelegationState.Pending,
-            DelegationState.Undelegating -> pendingColor
-
+            DelegationState.Pending -> pendingColor
             DelegationState.AwaitingWithdrawal,
             DelegationState.Inactive -> MaterialTheme.colorScheme.error
         },

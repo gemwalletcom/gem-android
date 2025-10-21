@@ -27,6 +27,7 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.NameRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -90,7 +91,7 @@ class RecipientViewModel @Inject constructor(
 
     fun hasMemo(): Boolean = asset.value?.asset?.chain?.isMemoSupport() == true
 
-    fun onNext(destination: DestinationAddress?, amountAction: AmountTransactionAction, confirmAction: ConfirmTransactionAction) = viewModelScope.launch {
+    fun onNext(destination: DestinationAddress?, amountAction: AmountTransactionAction, confirmAction: ConfirmTransactionAction) = viewModelScope.launch(Dispatchers.IO) {
         val assetId = asset.value?.id() ?: return@launch
         val destination = destination ?: DestinationAddress(
             address = nameRecordState.value?.address ?: addressState.value,

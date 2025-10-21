@@ -5,7 +5,6 @@ import android.content.ContextWrapper
 import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
-import android.util.Log
 import android.widget.Toast
 import android.widget.Toast.makeText
 import androidx.activity.compose.setContent
@@ -417,7 +416,6 @@ class MainViewModel @Inject constructor(
     }
 
     fun handleIntent(intent: Intent) {
-        Log.d("NOTIFICATIONS", "Intent extra: ${intent.extras}")
         viewModelScope.launch(Dispatchers.IO) {
             val intent = if (intent.hasExtra("walletIndex")) {
                 val walletIndex = intent.getIntExtra("walletIndex", -1)

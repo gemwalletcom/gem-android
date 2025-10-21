@@ -82,7 +82,7 @@ class XrpSignClient(
                 val json = """
                 {
                     "TransactionType": "Payment",
-                    "Destination": "${params.to}",
+                    "Destination": "${params.toAddress}",
                     "Amount": "${params.value}",
                     "Memos": [
                         {

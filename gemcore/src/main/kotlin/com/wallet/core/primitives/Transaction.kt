@@ -10,7 +10,6 @@ import kotlinx.serialization.SerialName
 @Serializable
 data class Transaction (
 	val id: String,
-	val hash: String? = null,
 	val assetId: AssetId,
 	val from: String,
 	val to: String,

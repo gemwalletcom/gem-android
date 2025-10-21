@@ -28,7 +28,6 @@ import com.wallet.core.primitives.DelegationState.AwaitingWithdrawal
 import com.wallet.core.primitives.DelegationState.Deactivating
 import com.wallet.core.primitives.DelegationState.Inactive
 import com.wallet.core.primitives.DelegationState.Pending
-import com.wallet.core.primitives.DelegationState.Undelegating
 
 @Composable
 fun DelegationItem(
@@ -51,7 +50,6 @@ fun DelegationItem(
             val color = when (delegation.base.state) {
                 Active -> MaterialTheme.colorScheme.tertiary
                 Pending,
-                Undelegating,
                 Activating,
                 Deactivating -> pendingColor
                 AwaitingWithdrawal,
@@ -79,7 +77,6 @@ fun DelegationItem(
                             text = when (delegation.base.state) {
                                 Active -> stringResource(if (delegation.validator.isActive) R.string.stake_active else R.string.stake_inactive)
                                 Pending -> stringResource(id = R.string.stake_pending)
-                                Undelegating -> stringResource(id = R.string.transfer_unstake_title)
                                 Inactive -> stringResource(id = R.string.stake_inactive)
                                 Activating -> stringResource(id = R.string.stake_activating)
                                 Deactivating -> stringResource(id = R.string.stake_deactivating)
@@ -103,7 +100,6 @@ fun DelegationItem(
                     ListItemSupportText(completedAt)
                 }
                 Active,
-                Undelegating,
                 Inactive,
                 AwaitingWithdrawal -> null
             }

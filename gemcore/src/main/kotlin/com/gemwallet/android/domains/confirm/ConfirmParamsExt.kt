@@ -10,19 +10,21 @@ import uniffi.gemstone.GemSwapQuoteData
 fun ConfirmParams.SwapParams.toGem(): GemSwapData {
     return GemSwapData(
         quote = GemSwapQuote(
+            fromAddress = from.address,
+            toAddress = toAddress,
             fromValue = fromAmount.toString(),
             toValue = toAmount.toString(),
             providerData = GemSwapProviderData(
-                provider = provider,
+                provider = providerId,
                 protocolName = protocolId,
                 name = providerName,
             ),
-            walletAddress = walletAddress,
             slippageBps = slippageBps,
             etaInSeconds = etaInSeconds,
+            useMaxAmount = useMaxAmount
         ),
         data = GemSwapQuoteData(
-            to = to,
+            to = toAddress,
             data = swapData,
             approval = approval?.let {
                 GemApprovalData(
@@ -32,7 +34,9 @@ fun ConfirmParams.SwapParams.toGem(): GemSwapData {
                 )
             },
             value = value,
-            gasLimit = gasLimit?.toString()
+            gasLimit = gasLimit?.toString(),
+            dataType = dataType,
+            memo = memo()
         )
     )
 }

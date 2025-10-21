@@ -10,5 +10,6 @@ interface GetSwapQuotes {
         from: Asset,
         to: Asset,
         amount: String,
+        useMaxAmount: Boolean,
     ): List<SwapperQuote>?
 }

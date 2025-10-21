@@ -5,8 +5,8 @@
 package com.wallet.core.primitives.swap
 
 import com.wallet.core.primitives.SwapProvider
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class ApprovalData (
@@ -31,19 +31,31 @@ data class SwapProviderData (
 
 @Serializable
 data class SwapQuote (
+	val fromAddress: String,
 	val fromValue: String,
+	val toAddress: String,
 	val toValue: String,
 	val providerData: SwapProviderData,
-	val walletAddress: String,
 	val slippageBps: UInt,
-	val etaInSeconds: UInt? = null
+	val etaInSeconds: UInt? = null,
+	val useMaxAmount: Boolean? = null
 )
+
+@Serializable
+enum class SwapQuoteDataType(val string: String) {
+	@SerialName("contract")
+	Contract("contract"),
+	@SerialName("transfer")
+	Transfer("transfer"),
+}
 
 @Serializable
 data class SwapQuoteData (
 	val to: String,
+	val dataType: SwapQuoteDataType,
 	val value: String,
 	val data: String,
+	val memo: String? = null,
 	val approval: ApprovalData? = null,
 	val gasLimit: String? = null
 )

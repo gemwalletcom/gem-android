@@ -19,7 +19,7 @@ fun parseNotificationData(rawType: String?, rawData: String?): PushNotificationD
         when (type) {
             PushNotificationTypes.Transaction -> jsonEncoder.decodeFromString<PushNotificationTransaction>(rawData).let {
                 Transaction(
-                    transactionId = it.transactionId,
+                    transactionId = it.transaction.id,
                     assetId = it.assetId,
                     walletIndex = it.walletIndex
                 )

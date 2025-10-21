@@ -251,11 +251,13 @@ class SwapViewModel @Inject constructor(
 
         swapScreenState.update { SwapState.Swapping }
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val params = swap() ?: return@launch
                 swapScreenState.update { SwapState.Ready }
-                onConfirm(params)
+                withContext(Dispatchers.Main) {
+                    onConfirm(params)
+                }
             } catch (err: SwapError) {
                 swapScreenState.update { SwapState.Error(err) }
             } catch (err: Throwable) {
@@ -283,25 +285,25 @@ class SwapViewModel @Inject constructor(
             toAmount = BigInteger(quote.quote.toValue),
             swapData = swapData.data,
             providerId = quote.quote.data.provider.id,
-            provider = quote.quote.data.provider.protocol,
+            protocol = quote.quote.data.provider.protocol,
             providerName = quote.quote.data.provider.name,
             protocolId = quote.quote.data.provider.protocolId,
-            to = swapData.to,
+            toAddress = swapData.to,
             value = swapData.value,
             approval = swapData.approval?.toModel(),
             gasLimit = swapData.gasLimit?.toBigIntegerOrNull(),
-            maxFrom = BigInteger(quote.pay.balance.balance.available) == Crypto(fromAmount, quote.pay.asset.decimals).atomicValue,
+            useMaxAmount = quote.quote.request.options.useMaxAmount/* BigInteger(quote.pay.balance.balance.available) == Crypto(fromAmount, quote.pay.asset.decimals).atomicValue*/,
             etaInSeconds = quote.quote.etaInSeconds,
             slippageBps = quote.quote.data.slippageBps,
-            walletAddress = quote.pay.owner?.address!!,
-
+            memo = swapData.memo,
+            dataType = swapData.dataType,
         )
     }
 
-    private suspend fun updateBalance(id: AssetId) {
-        val session = sessionRepository.getSession() ?: return
-        val account = session.wallet.getAccount(id.chain) ?: return
+    private fun updateBalance(id: AssetId) {
         viewModelScope.launch(Dispatchers.IO) {
+            val session = sessionRepository.getSession() ?: return@launch
+            val account = session.wallet.getAccount(id.chain) ?: return@launch
             assetsRepository.switchVisibility(session.wallet.id, account, id, true)
         }
     }

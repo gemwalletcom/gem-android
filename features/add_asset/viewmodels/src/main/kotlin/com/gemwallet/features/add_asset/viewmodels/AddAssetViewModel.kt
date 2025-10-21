@@ -142,7 +142,7 @@ class AddAssetViewModel @Inject constructor(
         state.update { it.copy(isSelectChain = false) }
     }
 
-    fun addAsset(onFinish: () -> Unit) = viewModelScope.launch {
+    fun addAsset(onFinish: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
         onFinish()
         async {
             val session = sessionRepository.getSession() ?: return@async

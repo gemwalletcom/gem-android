@@ -51,7 +51,6 @@ class StakeService(
                     state = when (item.state) {
                         GemDelegationState.ACTIVE -> DelegationState.Active
                         GemDelegationState.PENDING -> DelegationState.Pending
-                        GemDelegationState.UNDELEGATING -> DelegationState.Undelegating
                         GemDelegationState.INACTIVE -> DelegationState.Inactive
                         GemDelegationState.ACTIVATING -> DelegationState.Activating
                         GemDelegationState.DEACTIVATING -> DelegationState.Deactivating

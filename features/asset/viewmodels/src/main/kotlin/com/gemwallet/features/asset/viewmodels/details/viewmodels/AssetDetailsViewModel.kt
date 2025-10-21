@@ -134,7 +134,7 @@ class AssetDetailsViewModel @Inject constructor(
                 }
             )
         }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             assetsRepository.syncAssetInfo(
                 assetId = assetId,
                 account = sessionRepository.getSession()?.wallet?.getAccount(assetId.chain) ?: return@launch

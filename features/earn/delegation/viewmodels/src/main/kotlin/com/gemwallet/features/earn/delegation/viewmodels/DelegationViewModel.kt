@@ -113,7 +113,6 @@ class DelegationViewModel @Inject constructor(
             )
             DelegationState.AwaitingWithdrawal -> listOf( DelegationActions.WithdrawalAction )
             DelegationState.Pending,
-            DelegationState.Undelegating,
             DelegationState.Activating,
             DelegationState.Deactivating -> emptyList()
         }

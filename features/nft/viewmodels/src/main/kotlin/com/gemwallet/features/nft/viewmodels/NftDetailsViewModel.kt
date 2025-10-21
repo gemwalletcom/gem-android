@@ -12,11 +12,13 @@ import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.NFTAttribute
 import com.wallet.core.primitives.NFTCollection
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
@@ -39,6 +41,7 @@ class NftDetailsViewModel @Inject constructor(
         .catch { Log.d("NFT-DETAILS", "Error on get nft: ", it) }
         .filterNotNull()
         .map { NftAssetDetailsUIModel(it.collection, it.assets.first(), sessionRepository.getSession()?.wallet?.getAccount(it.assets.first().chain)!!) }
+        .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 }
 

@@ -44,6 +44,34 @@ data class WCSolanaTransactions (
 )
 
 @Serializable
+data class WCSuiSignAndExecuteTransactionResult (
+	val digest: String
+)
+
+@Serializable
+data class WCSuiSignMessage (
+	val message: String,
+	val account: String
+)
+
+@Serializable
+data class WCSuiSignMessageResult (
+	val signature: String
+)
+
+@Serializable
+data class WCSuiSignTransactionResult (
+	val signature: String,
+	val transactionBytes: String
+)
+
+@Serializable
+data class WCSuiTransaction (
+	val transaction: String,
+	val account: String
+)
+
+@Serializable
 enum class WalletConnectCAIP2(val string: String) {
 	@SerialName("eip155")
 	Eip155("eip155"),
@@ -53,5 +81,7 @@ enum class WalletConnectCAIP2(val string: String) {
 	Cosmos("cosmos"),
 	@SerialName("algorand")
 	Algorand("algorand"),
+	@SerialName("sui")
+	Sui("sui"),
 }
 

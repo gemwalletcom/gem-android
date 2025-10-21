@@ -196,7 +196,8 @@ class SignerPreloaderProxy(
                         ConfirmParams.TransferParams.InputType.EncodeTransaction -> TransferDataOutputType.ENCODED_TRANSACTION
                         null -> throw IllegalArgumentException("Not supported ${params.inputType}")
                     },
-                    outputAction = TransferDataOutputAction.SEND
+                    outputAction = TransferDataOutputAction.SEND,
+                    to = params.destination().address
                 ),
             )
             is ConfirmParams.Activate,

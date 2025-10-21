@@ -13,6 +13,7 @@ import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Wallet
 import uniffi.gemstone.Config
 import uniffi.gemstone.FetchQuoteData
+import uniffi.gemstone.GemSwapQuoteData
 import uniffi.gemstone.GemSwapper
 import uniffi.gemstone.Permit2Data
 import uniffi.gemstone.Permit2Detail
@@ -22,7 +23,6 @@ import uniffi.gemstone.SwapperMode
 import uniffi.gemstone.SwapperOptions
 import uniffi.gemstone.SwapperQuote
 import uniffi.gemstone.SwapperQuoteAsset
-import uniffi.gemstone.SwapperQuoteData
 import uniffi.gemstone.SwapperQuoteRequest
 import uniffi.gemstone.getDefaultSlippage
 import uniffi.gemstone.permit2DataToEip712Json
@@ -35,7 +35,13 @@ class SwapRepository(
     private val loadPrivateKeyOperator: LoadPrivateKeyOperator,
 ) : GetSwapSupported, GetSwapQuotes {
 
-    override suspend fun getQuotes(ownerAddress: String, destination: String, from: Asset, to: Asset, amount: String): List<SwapperQuote>? {
+    override suspend fun getQuotes(
+        ownerAddress: String,
+        destination: String,
+        from: Asset,
+        to: Asset, amount: String,
+        useMaxAmount: Boolean,
+    ): List<SwapperQuote>? {
         val swapRequest = SwapperQuoteRequest(
             fromAsset = SwapperQuoteAsset(
                 id = from.id.toIdentifier(),
@@ -55,6 +61,7 @@ class SwapRepository(
                 slippage = getDefaultSlippage(from.chain.string),
                 fee = Config().getSwapConfig().referralFee,
                 preferredProviders = emptyList(),
+                useMaxAmount = useMaxAmount,
             )
         )
         val quote = gemSwapper.fetchQuote(swapRequest)
@@ -62,7 +69,7 @@ class SwapRepository(
         return quote
     }
 
-    suspend fun getQuoteData(quote: SwapperQuote, wallet: Wallet): SwapperQuoteData {
+    suspend fun getQuoteData(quote: SwapperQuote, wallet: Wallet): GemSwapQuoteData {
         val permit = gemSwapper.fetchPermit2ForQuote(quote = quote)
 
         if (permit == null) {

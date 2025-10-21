@@ -13,8 +13,6 @@ enum class DelegationState(val string: String) {
 	Active("active"),
 	@SerialName("pending")
 	Pending("pending"),
-	@SerialName("undelegating")
-	Undelegating("undelegating"),
 	@SerialName("inactive")
 	Inactive("inactive"),
 	@SerialName("activating")

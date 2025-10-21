@@ -135,7 +135,7 @@ class SignClientProxy(
 
     private fun getSwapDestinationAddress(params: ConfirmParams.SwapParams): String {
         if (params.fromAsset.id.tokenId == null) {
-            return params.to
+            return params.toAddress
         }
         return when (params.fromAsset.chain) {
             Chain.Ethereum,
@@ -148,7 +148,7 @@ class SignClientProxy(
                     throw IllegalArgumentException("Invalid call data")
                 }
             }
-            else -> return params.to
+            else -> return params.toAddress
         }
     }
 

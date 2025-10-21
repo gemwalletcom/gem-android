@@ -19,7 +19,6 @@ fun Delegation.toGem(chain: uniffi.gemstone.Chain): GemDelegation {
             state = when (base.state) {
                 DelegationState.Active -> GemDelegationState.ACTIVE
                 DelegationState.Pending -> GemDelegationState.PENDING
-                DelegationState.Undelegating -> GemDelegationState.UNDELEGATING
                 DelegationState.Inactive -> GemDelegationState.INACTIVE
                 DelegationState.Activating -> GemDelegationState.ACTIVATING
                 DelegationState.Deactivating -> GemDelegationState.DEACTIVATING

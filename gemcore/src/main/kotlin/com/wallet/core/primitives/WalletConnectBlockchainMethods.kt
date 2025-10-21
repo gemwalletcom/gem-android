@@ -43,3 +43,13 @@ enum class WalletConnectSolanaMethods(val string: String) {
 	sign_all_transactions("signAllTransactions"),
 }
 
+@Serializable
+enum class WalletConnectSuiMethods(val string: String) {
+	@SerialName("signPersonalMessage")
+	sign_personal_message("signPersonalMessage"),
+	@SerialName("signTransaction")
+	sign_transaction("signTransaction"),
+	@SerialName("signAndExecuteTransaction")
+	sign_and_execute_transaction("signAndExecuteTransaction"),
+}
+

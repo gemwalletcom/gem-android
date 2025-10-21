@@ -48,7 +48,6 @@ data class PushNotificationSwapAsset (
 data class PushNotificationTransaction (
 	val walletIndex: Int,
 	val assetId: String,
-	val transactionId: String,
 	val transaction: Transaction
 )
 

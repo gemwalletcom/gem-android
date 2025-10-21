@@ -207,7 +207,7 @@ class TronSignClient(
     ): List<ByteArray> {
         val chainData = chainData as TronChainData
         val fromAsset = params.fromAsset
-        val toAddress = params.to
+        val toAddress = params.toAddress
         val memo = params.swapData
         val amount = params.value
         val contract = when (fromAsset.subtype) {

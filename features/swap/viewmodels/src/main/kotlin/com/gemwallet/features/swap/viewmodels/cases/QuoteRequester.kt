@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import java.math.BigDecimal
+import java.math.BigInteger
 import javax.inject.Inject
 
 class QuoteRequester @Inject constructor(
@@ -53,12 +54,14 @@ class QuoteRequester @Inject constructor(
     }
 
     private suspend fun requestQuotes(params: QuoteRequestParams): QuotesState = try {
+        val amount = Crypto(params.value, params.pay.asset.decimals).atomicValue
         val quotes = getSwapQuotes.getQuotes(
             from = params.pay.asset,
             to = params.receive.asset,
             ownerAddress = params.pay.owner!!.address,
             destination = params.receive.owner!!.address,
-            amount = Crypto(params.value, params.pay.asset.decimals).atomicValue.toString(),
+            amount = amount.toString(),
+            useMaxAmount = BigInteger(params.pay.balance.balance.available) == amount,
         ) ?: emptyList()
         QuotesState(quotes, params.pay, params.receive)
     } catch (err: Throwable) {

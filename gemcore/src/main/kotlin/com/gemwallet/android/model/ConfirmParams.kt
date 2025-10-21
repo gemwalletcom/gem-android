@@ -17,6 +17,7 @@ import com.wallet.core.primitives.Resource
 import com.wallet.core.primitives.TransactionType
 import kotlinx.serialization.Serializable
 import org.json.JSONObject
+import uniffi.gemstone.GemSwapQuoteDataType
 import uniffi.gemstone.SwapperProvider
 import java.math.BigInteger
 import java.util.Base64
@@ -198,18 +199,19 @@ sealed class ConfirmParams {
         val toAsset: Asset,
         @Serializable(BigIntegerSerializer::class) val toAmount: BigInteger,
         val swapData: String,
+        val memo: String?,
         val providerId: SwapperProvider,
-        val provider: String,
         val providerName: String,
+        val protocol: String,
         val protocolId: String,
-        val to: String,
+        val toAddress: String,
         val value: String,
         val approval: ApprovalData? = null,
         val slippageBps: UInt,
         val etaInSeconds: UInt?,
-        val walletAddress: String,
+        val dataType: GemSwapQuoteDataType,
         @Serializable(BigIntegerSerializer::class) val gasLimit: BigInteger? = null,
-        val maxFrom: Boolean = false,
+        val useMaxAmount: Boolean = false,
     ) : ConfirmParams() {
 
         override val asset: Asset
@@ -218,11 +220,11 @@ sealed class ConfirmParams {
         override val amount: BigInteger
             get() = fromAmount
 
-        override fun destination(): DestinationAddress = DestinationAddress(to)
+        override fun destination(): DestinationAddress = DestinationAddress(toAddress)
 
-        override fun isMax(): Boolean = maxFrom
+        override fun isMax(): Boolean = useMaxAmount
 
-        override fun memo(): String? = swapData
+        override fun memo(): String? = memo
 
         @Serializable
         data class ApprovalData(

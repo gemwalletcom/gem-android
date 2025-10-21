@@ -54,7 +54,7 @@ class SettingsViewModel @Inject constructor(
     }
 
     private fun refresh() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             state.update {
                 it.copy(
                     currency = sessionRepository.getSession()?.currency ?: Currency.USD,
