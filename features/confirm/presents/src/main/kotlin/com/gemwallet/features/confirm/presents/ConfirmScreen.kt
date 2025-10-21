@@ -191,7 +191,7 @@ fun ConfirmState.buttonLabel(): String {
     return when (this) {
         is ConfirmState.BroadcastError,
         is ConfirmState.Error -> stringResource(R.string.common_try_again)
-        ConfirmState.FatalError -> ""
+        is ConfirmState.FatalError -> message
         ConfirmState.Prepare,
         ConfirmState.Ready,
         ConfirmState.Sending ->  stringResource(id = R.string.transfer_confirm)

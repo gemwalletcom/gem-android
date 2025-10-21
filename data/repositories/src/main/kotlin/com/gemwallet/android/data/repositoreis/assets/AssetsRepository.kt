@@ -352,7 +352,7 @@ class AssetsRepository @Inject constructor(
         }
     }
 
-    suspend fun togglePin(walletId: String, assetId: AssetId) {
+    suspend fun togglePin(walletId: String, assetId: AssetId) = withContext(Dispatchers.IO) {
         val config = assetsDao.getConfig(walletId, assetId.toIdentifier()) ?: DbAssetConfig(
             walletId = walletId,
             assetId = assetId.toIdentifier(),

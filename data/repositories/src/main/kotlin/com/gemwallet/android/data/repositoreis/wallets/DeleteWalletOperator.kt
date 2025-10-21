@@ -20,11 +20,11 @@ class DeleteWalletOperator @Inject constructor(
 ) : DeleteWallet {
 
     override suspend fun deleteWallet(
+        currentWalletId: String?,
         walletId: String,
         onBoard: () -> Unit,
         onComplete: () -> Unit
     ) = withContext(Dispatchers.IO) {
-        val session = sessionRepository.getSession() ?: return@withContext
         val wallet = walletsRepository.getWallet(walletId).firstOrNull() ?: return@withContext
         if (!walletsRepository.removeWallet(walletId = walletId)) {
             return@withContext
@@ -34,7 +34,7 @@ class DeleteWalletOperator @Inject constructor(
                 return@withContext
             }
         }
-        if (session.wallet.id == walletId) {
+        if (currentWalletId == walletId) {
             val wallets = walletsRepository.getAll().firstOrNull() ?: emptyList()
             val wallet = wallets.sortedBy { it.type }.minByOrNull { it.index }
 

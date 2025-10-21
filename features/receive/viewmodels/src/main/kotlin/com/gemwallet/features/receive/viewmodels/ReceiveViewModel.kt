@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
@@ -28,26 +29,34 @@ class ReceiveViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val asset = savedStateHandle.getStateFlow("assetId", "")
-        .map { it.toAssetId() }
-        .filterNotNull()
-        .flatMapLatest { assetsRepository.getTokenInfo(it) }
-        .map {
-            if (it?.owner == null) {
-                it?.copy(owner = sessionRepository.getSession()?.wallet?.getAccount(it.asset.chain))
+    val session = sessionRepository.session()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val assetId = savedStateHandle.getStateFlow("assetId", "").map { it.toAssetId() }
+
+    val asset = combine(session, assetId) { session, assetId ->
+        Pair(
+            session ?: return@combine null,
+            assetId ?: return@combine null
+        )
+    }
+    .filterNotNull()
+    .flatMapLatest {
+        val (session, assetId) = it
+        assetsRepository.getTokenInfo(assetId).map { info ->
+            if (info?.owner == null) {
+                info?.copy(owner = session.wallet.getAccount(info.asset.chain))
             } else {
-                it
+                info
             }
         }
-        .flowOn(Dispatchers.IO)
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    }
+    .flowOn(Dispatchers.IO)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    fun setVisible() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val assetId = asset.value?.asset?.id ?: return@launch
-            val session = sessionRepository.getSession() ?: return@launch
-            val account = session.wallet.getAccount(assetId.chain) ?: return@launch
-            assetsRepository.switchVisibility(session.wallet.id, account, assetId, true)
-        }
+    fun setVisible() = viewModelScope.launch {
+        val assetId = asset.value?.asset?.id ?: return@launch
+        val session = session.value ?: return@launch
+        val account = session.wallet.getAccount(assetId.chain) ?: return@launch
+        assetsRepository.switchVisibility(session.wallet.id, account, assetId, true)
     }
 }

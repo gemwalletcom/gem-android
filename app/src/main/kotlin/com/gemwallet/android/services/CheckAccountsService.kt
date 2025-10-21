@@ -12,7 +12,9 @@ import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.WalletType
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -26,9 +28,8 @@ class CheckAccountsService @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val syncSubscription: SyncSubscription,
 ) {
-    suspend operator fun invoke() {
+    suspend operator fun invoke() = withContext(Dispatchers.IO) {
         val wallets = walletsRepository.getAll().firstOrNull() ?: emptyList()
-        val currency = sessionRepository.getSession()?.currency ?: Currency.USD
 
         wallets.forEach { wallet ->
             val nativeAssets = assetsRepository.getNativeAssets(wallet)

@@ -44,6 +44,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
@@ -246,30 +247,28 @@ class SwapViewModel @Inject constructor(
         refresh.update { System.currentTimeMillis() }
     }
 
-    fun swap(onConfirm: (ConfirmParams) -> Unit) {
-        if (swapScreenState.value == SwapState.Swapping) return
+    fun swap(onConfirm: (ConfirmParams) -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+        if (swapScreenState.value == SwapState.Swapping) return@launch
 
         swapScreenState.update { SwapState.Swapping }
 
-        viewModelScope.launch(Dispatchers.IO) {
-            try {
-                val params = swap() ?: return@launch
-                swapScreenState.update { SwapState.Ready }
-                withContext(Dispatchers.Main) {
-                    onConfirm(params)
-                }
-            } catch (err: SwapError) {
-                swapScreenState.update { SwapState.Error(err) }
-            } catch (err: Throwable) {
-                swapScreenState.update { SwapState.Error(SwapError.Unknown(err.message ?: "")) }
+        try {
+            val params = swap() ?: return@launch
+            swapScreenState.update { SwapState.Ready }
+            withContext(Dispatchers.Main) {
+                onConfirm(params)
             }
+        } catch (err: SwapError) {
+            swapScreenState.update { SwapState.Error(err) }
+        } catch (err: Throwable) {
+            swapScreenState.update { SwapState.Error(SwapError.Unknown(err.message ?: "")) }
         }
     }
 
     private suspend fun swap(): ConfirmParams? {
         val fromAmount = payValue.text.toString().parseNumberOrNull() ?: throw SwapError.IncorrectInput
         val quote = quote.value ?: throw SwapError.NoQuote
-        val wallet = sessionRepository.getSession()?.wallet ?: return null
+        val wallet = sessionRepository.session().firstOrNull()?.wallet ?: return null
 
         val swapData = try {
             swapRepository.getQuoteData(quote.quote, wallet)
@@ -300,21 +299,17 @@ class SwapViewModel @Inject constructor(
         )
     }
 
-    private fun updateBalance(id: AssetId) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val session = sessionRepository.getSession() ?: return@launch
-            val account = session.wallet.getAccount(id.chain) ?: return@launch
-            assetsRepository.switchVisibility(session.wallet.id, account, id, true)
-        }
+    private fun updateBalance(id: AssetId) = viewModelScope.launch(Dispatchers.IO) {
+        val session = sessionRepository.session().firstOrNull() ?: return@launch
+        val account = session.wallet.getAccount(id.chain) ?: return@launch
+        assetsRepository.switchVisibility(session.wallet.id, account, id, true)
     }
 
     private fun resetReceive() = viewModelScope.launch(Dispatchers.Main) {
         receiveValue.edit { replace(0, length, "0") }
     }
 
-    private suspend fun setReceive(amount: String) {
-        withContext(Dispatchers.Main) {
-            receiveValue.edit { replace(0, length, amount) }
-        }
+    private suspend fun setReceive(amount: String) = withContext(Dispatchers.Main) {
+        receiveValue.edit { replace(0, length, amount) }
     }
 }

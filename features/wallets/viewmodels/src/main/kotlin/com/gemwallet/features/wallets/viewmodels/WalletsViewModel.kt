@@ -32,6 +32,7 @@ class WalletsViewModel @Inject constructor(
             multi + single + privateKey + watch
         }
     private val session = sessionRepository.session()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val currentWallet = session.map { it?.wallet }.filterNotNull()
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
@@ -48,7 +49,8 @@ class WalletsViewModel @Inject constructor(
     }
 
     fun deleteWallet(walletId: String, onBoard: () -> Unit) = viewModelScope.launch {
-        deleteWallet.deleteWallet(walletId, onBoard) {}
+        val currentWalletId = session.value?.wallet?.id
+        deleteWallet.deleteWallet(currentWalletId, walletId, onBoard) {}
     }
 
     fun togglePin(walletId: String) = viewModelScope.launch {

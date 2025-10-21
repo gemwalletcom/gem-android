@@ -69,7 +69,7 @@ internal const val txTypeArg = "tx_type"
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class ConfirmViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
+    sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val signerPreload: SignerPreloaderProxy,
     private val passwordStore: PasswordStore,
@@ -94,6 +94,9 @@ class ConfirmViewModel @Inject constructor(
         }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    val session = sessionRepository.session()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
     private val assetsInfo = request.filterNotNull().mapNotNull {
         if (it is ConfirmParams.SwapParams) {
             listOf(it.fromAsset.id, it.toAsset.id)
@@ -104,21 +107,26 @@ class ConfirmViewModel @Inject constructor(
     .flatMapLatest { assetsRepository.getAssetsInfo(it) }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    private val preloadData = request.filterNotNull().map { request ->
-        val owner = sessionRepository.getSession()?.wallet?.getAccount(request.assetId.chain)
+    private val preloadData = combine(
+        session,
+        request.filterNotNull()
+    ) { session, request ->
+        val owner = session?.wallet?.getAccount(request.assetId.chain)
         if (owner == null) {
-            state.update { ConfirmState.FatalError }
-            return@map null
+            state.update { ConfirmState.FatalError("Session not found") }
+            return@combine null
         }
 
         val preload = try {
             signerPreload.preload(params = request)
         } catch (err: Throwable) {
             state.update { ConfirmState.Error(ConfirmError.PreloadError(err.message ?: "Unknown error: $err")) }
-            return@map null
+            return@combine null
         }
         preload
-    }.filterNotNull().combine(feePriority) { params, feePriority ->
+    }
+    .filterNotNull()
+    .combine(feePriority) { params, feePriority ->
         val finalAmount = when {
             params.input is ConfirmParams.Stake.RewardsParams -> stakeRepository.getRewards(params.input.assetId, params.input.from.address)
                 .map { BigInteger(it.base.rewards) }
@@ -271,7 +279,7 @@ class ConfirmViewModel @Inject constructor(
         val assetInfo = assetsInfo.value?.getByAssetId(signerParams?.input?.assetId ?: return@launch)
         val account = assetInfo?.owner
         val feeAssetInfo = feeAssetInfo.value
-        val session = sessionRepository.getSession()
+        val session = session.value
         val feePriority = this@ConfirmViewModel.feePriority.value
 
         try {
@@ -414,7 +422,7 @@ class ConfirmViewModel @Inject constructor(
     private suspend fun addTransaction(txHash: String) {
         val signerParams = preloadData.value
         val assetInfo = assetsInfo.value?.getByAssetId(signerParams?.input?.assetId ?: return) ?: return
-        val session = sessionRepository.getSession()
+        val session = session.value
         val destinationAddress =  signerParams.input.destination()?.address ?: ""
         val priority = feePriority.value
 

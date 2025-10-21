@@ -27,7 +27,6 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.NameRecord
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -38,7 +37,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -59,7 +57,8 @@ class RecipientViewModel @Inject constructor(
     val addressState = mutableStateOf("")
     val memoState = mutableStateOf("")
     val nameRecordState = mutableStateOf<NameRecord?>(null)
-
+    val session = sessionRepository.session()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
     val assetId = savedStateHandle.getStateFlow(assetIdArg, "")
         .mapNotNull { it.toAssetId() }
     val nftAssetId = savedStateHandle.getStateFlow(nftAssetIdArg, "")
@@ -70,7 +69,7 @@ class RecipientViewModel @Inject constructor(
         .map { it.assets.firstOrNull() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val wallets = sessionRepository.session().combine(walletsRepository.getAll()) { session, wallets ->
+    val wallets = session.combine(walletsRepository.getAll()) { session, wallets ->
         wallets.filter { it.id != session?.wallet?.id }
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
@@ -91,8 +90,8 @@ class RecipientViewModel @Inject constructor(
 
     fun hasMemo(): Boolean = asset.value?.asset?.chain?.isMemoSupport() == true
 
-    fun onNext(destination: DestinationAddress?, amountAction: AmountTransactionAction, confirmAction: ConfirmTransactionAction) = viewModelScope.launch(Dispatchers.IO) {
-        val assetId = asset.value?.id() ?: return@launch
+    fun onNext(destination: DestinationAddress?, amountAction: AmountTransactionAction, confirmAction: ConfirmTransactionAction)  {
+        val assetId = asset.value?.id() ?: return
         val destination = destination ?: DestinationAddress(
             address = nameRecordState.value?.address ?: addressState.value,
             name = nameRecordState.value?.name,
@@ -101,7 +100,7 @@ class RecipientViewModel @Inject constructor(
         val addressError = validateDestination(assetId.chain, destination)
         if (addressError != RecipientError.None) {
             this@RecipientViewModel.addressError.update { addressError }
-            return@launch
+            return
         }
         val nftAsset = nftAsset.value
         when {
@@ -144,10 +143,10 @@ class RecipientViewModel @Inject constructor(
         }
     }
 
-    private suspend fun onNftConfirm(nftAsset: NFTAsset, destination: DestinationAddress, confirmAction: ConfirmTransactionAction) {
+    private fun onNftConfirm(nftAsset: NFTAsset, destination: DestinationAddress, confirmAction: ConfirmTransactionAction) {
         val params = ConfirmParams.NftParams(
             asset = nftAsset.chain.asset(),
-            from = sessionRepository.getSession()?.wallet?.getAccount(nftAsset.chain) ?: return,
+            from = session.value?.wallet?.getAccount(nftAsset.chain) ?: return,
             destination = destination,
             nftAsset = nftAsset,
         )

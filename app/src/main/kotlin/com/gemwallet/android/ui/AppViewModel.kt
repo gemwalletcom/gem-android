@@ -96,10 +96,12 @@ class AppViewModel @Inject constructor(
         }
     }
 
-    suspend fun getStartDestination(): String = if (sessionRepository.getSession() != null) {
-        "/"
-    } else {
-        OnboardingDest.route
+    suspend fun getStartDestination(): String = withContext(Dispatchers.IO) {
+        if (sessionRepository.session().firstOrNull() != null) {
+            "/"
+        } else {
+            OnboardingDest.route
+        }
     }
 
     fun onReviewOpen() {

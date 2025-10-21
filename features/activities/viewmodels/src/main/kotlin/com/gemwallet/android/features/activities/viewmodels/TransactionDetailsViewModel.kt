@@ -51,18 +51,20 @@ class TransactionDetailsViewModel @Inject constructor(
         .flatMapLatest { getTransaction.getTransaction(it) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
+    private val session = sessionRepository.session()
+
     private val assets = tx.flatMapLatest { tx ->
         val ids = tx?.transaction?.getAssociatedAssetIds() ?: return@flatMapLatest emptyFlow()
         assetsRepository.getAssetsInfo(ids)
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val screenModel = tx.combine(assets) { transaction, assets ->
+    val screenModel = combine(session, tx, assets) { session, transaction, assets ->
         transaction ?: return@combine null
         val swapMetadata = transaction.transaction.getSwapMetadata()
         val nftMetadata = transaction.transaction.getNftMetadata()
         val fromId = swapMetadata?.fromAsset
         val toId = swapMetadata?.toAsset
-        val currency = sessionRepository.getSession()?.currency ?: Currency.USD
+        val currency = session?.currency ?: Currency.USD
         val tx = transaction.transaction
         val asset = transaction.asset
         val feeAsset = transaction.feeAsset

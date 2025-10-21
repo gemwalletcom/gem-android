@@ -53,16 +53,14 @@ class SettingsViewModel @Inject constructor(
         refresh()
     }
 
-    private fun refresh() {
-        viewModelScope.launch(Dispatchers.IO) {
-            state.update {
-                it.copy(
-                    currency = sessionRepository.getSession()?.currency ?: Currency.USD,
-                    developEnabled = userConfig.developEnabled(),
-                    deviceId = getDeviceIdCase.getDeviceId(),
-                    pushToken = getPushToken.getPushToken()
-                )
-            }
+    private fun refresh() = viewModelScope.launch(Dispatchers.IO) {
+        state.update {
+            it.copy(
+                currency = sessionRepository.session().firstOrNull()?.currency ?: Currency.USD,
+                developEnabled = userConfig.developEnabled(),
+                deviceId = getDeviceIdCase.getDeviceId(),
+                pushToken = getPushToken.getPushToken()
+            )
         }
     }
 

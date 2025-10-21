@@ -33,7 +33,7 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalCoroutinesApi::class)
 open class BaseAssetSelectViewModel(
-    private val sessionRepository: SessionRepository,
+    sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val searchTokensCase: SearchTokensCase,
     val search: SelectSearch,
@@ -51,9 +51,12 @@ open class BaseAssetSelectViewModel(
     val chainFilter = MutableStateFlow<List<Chain>>(emptyList())
     val balanceFilter = MutableStateFlow(false)
 
-    private val queryFlow = snapshotFlow { queryState.text.toString() }
-        .combine(selectedTag) { query, tag ->
-            Pair(query, tag)
+    private val queryFlow = combine(
+        snapshotFlow { queryState.text.toString() },
+        selectedTag,
+        session
+    ) { query, tag, session ->
+            Triple(query, tag, session)
         }
         .onEach {
             searchState.update { if (it != SearchState.Init) SearchState.Searching else it }
@@ -61,7 +64,7 @@ open class BaseAssetSelectViewModel(
                 delay(250)
                 searchTokensCase.search(
                     query = it.first,
-                    chains = sessionRepository.getSession()?.wallet?.accounts?.map { it.chain } ?: emptyList(),
+                    chains = it.third?.wallet?.accounts?.map { it.chain } ?: emptyList(),
                     tags = it.second?.let { listOf(it) } ?: emptyList(),
                 )
             }
@@ -124,8 +127,8 @@ open class BaseAssetSelectViewModel(
         session?.wallet?.accounts?.any { it.chain.assetType() != null } == true
     }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
-    fun onChangeVisibility(assetId: AssetId, visible: Boolean) = viewModelScope.launch(Dispatchers.IO) {
-        val session = sessionRepository.getSession() ?: return@launch
+    fun onChangeVisibility(assetId: AssetId, visible: Boolean) = viewModelScope.launch {
+        val session = session.value ?: return@launch
         val account = session.wallet.getAccount(assetId.chain) ?: return@launch
         assetsRepository.switchVisibility(session.wallet.id, account, assetId, visible)
     }

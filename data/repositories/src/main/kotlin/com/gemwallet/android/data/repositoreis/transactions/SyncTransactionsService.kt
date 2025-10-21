@@ -16,7 +16,6 @@ import javax.inject.Inject
 
 class SyncTransactionsService @Inject constructor(
     private val gemApiClient: GemApiClient,
-    private val sessionRepository: SessionRepository,
     private val getDeviceIdCase: GetDeviceIdCase,
     private val putTransactions: PutTransactions,
     private val getTransactionUpdateTime: GetTransactionUpdateTime,
@@ -35,16 +34,15 @@ class SyncTransactionsService @Inject constructor(
             result
         }
         val txs: List<Transaction> = response.getOrNull() ?: return@withContext
-        prefetchAssets(txs)
+        prefetchAssets(wallet, txs)
 
         putTransactions.putTransactions(walletId = wallet.id, txs.toList())
     }
 
-    private suspend fun prefetchAssets(txs: List<Transaction>) {
-        val session = sessionRepository.getSession() ?: return
+    private suspend fun prefetchAssets(wallet: Wallet, txs: List<Transaction>) {
         val notAvailableAssetIds = txs.map { txs ->
             txs.getAssociatedAssetIds().filter { assetsRepository.getAsset(it) == null }.toSet()
         }.flatten()
-        assetsRepository.resolve(session.wallet, notAvailableAssetIds)
+        assetsRepository.resolve(wallet, notAvailableAssetIds)
     }
 }

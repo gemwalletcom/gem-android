@@ -83,7 +83,6 @@ object TransactionsModule {
     @Provides
     fun syncTransactionsService(
         gemApiClient: GemApiClient,
-        sessionRepository: SessionRepository,
         getDeviceIdCase: GetDeviceIdCase,
         putTransactions: PutTransactions,
         getTransactionUpdateTime: GetTransactionUpdateTime,
@@ -91,7 +90,6 @@ object TransactionsModule {
     ): SyncTransactions {
         return SyncTransactionsService(
             gemApiClient = gemApiClient,
-            sessionRepository = sessionRepository,
             getDeviceIdCase = getDeviceIdCase,
             putTransactions = putTransactions,
             getTransactionUpdateTime = getTransactionUpdateTime,

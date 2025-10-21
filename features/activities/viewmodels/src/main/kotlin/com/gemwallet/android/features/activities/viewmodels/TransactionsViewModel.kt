@@ -33,12 +33,15 @@ class TransactionsViewModel @Inject constructor(
 
     val chainsFilter = MutableStateFlow<List<Chain>>(emptyList())
     val typeFilter = MutableStateFlow<List<TransactionTypeFilter>>(emptyList())
+    val session = sessionRepository.session()
+        .stateIn(viewModelScope, started = SharingStarted.Eagerly, null)
 
     private val txState = combine(
         chainsFilter,
         typeFilter,
         getTransactions.getTransactions(),
-    ) { chainsFilter, typeFilter, transactions ->
+        session,
+    ) { chainsFilter, typeFilter, transactions, session ->
 
         val transactions = transactions.filter { tx ->
             val byChain = if (chainsFilter.isEmpty()) {
@@ -58,7 +61,7 @@ class TransactionsViewModel @Inject constructor(
         State(
             loading = false,
             transactions = transactions,
-            currency = sessionRepository.getSession()?.currency ?: Currency.USD
+            currency = session?.currency ?: Currency.USD
         )
     }
     .flowOn(Dispatchers.IO)
@@ -72,9 +75,9 @@ class TransactionsViewModel @Inject constructor(
         refresh()
     }
 
-    fun refresh() = viewModelScope.launch(Dispatchers.IO) {
+    fun refresh() = viewModelScope.launch {
         txState.update { it.copy(loading = true) }
-        syncTransactions.syncTransactions(sessionRepository.getSession()?.wallet ?: return@launch)
+        syncTransactions.syncTransactions(session.value?.wallet ?: return@launch)
         txState.update { it.copy(loading = false) }
     }
 

@@ -66,7 +66,7 @@ class PriceWebSocketClient(
 
     fun start() = scope.launch(Dispatchers.IO) {
         try {
-            started.set(sessionRepository.getSession()?.wallet != null)
+            started.set(sessionRepository.session().firstOrNull()?.wallet != null)
             if (!started.get()) {
                 return@launch
             }

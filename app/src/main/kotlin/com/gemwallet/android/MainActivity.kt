@@ -342,9 +342,11 @@ class MainViewModel @Inject constructor(
         authRequest == AuthRequest.Enable || userConfig.authRequired()
 
     private fun maintain() {
-        viewModelScope.launch(Dispatchers.IO) {
-            withContext(Dispatchers.IO) { syncService.sync() }
-            withContext(Dispatchers.IO) { checkAccountsService() }
+        viewModelScope.launch {
+            syncService.sync()
+        }
+        viewModelScope.launch {
+            checkAccountsService()
         }
     }
 
@@ -407,7 +409,7 @@ class MainViewModel @Inject constructor(
 
     suspend fun onWallet(walletIndex: Int) {
         walletIndex.takeIf { it > 0 }?.let { walletIndex ->
-            if (sessionRepository.getSession()?.wallet?.index != walletIndex) {
+            if (sessionRepository.session().firstOrNull()?.wallet?.index != walletIndex) {
                 walletsRepository.getAll().firstOrNull()?.firstOrNull { it.index == walletIndex }?.let {
                     sessionRepository.setWallet(it)
                 }
@@ -415,38 +417,36 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun handleIntent(intent: Intent) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val intent = if (intent.hasExtra("walletIndex")) {
-                val walletIndex = intent.getIntExtra("walletIndex", -1)
-                onWallet(walletIndex)
-                intent
-            } else if (intent.extras != null) {
-                val data = parseNotificationData(intent.getStringExtra("type"), intent.getStringExtra("data"))
-                when (data) {
-                    is PushNotificationData.Asset -> Intent().apply {
+    fun handleIntent(intent: Intent) = viewModelScope.launch(Dispatchers.IO) {
+        val intent = if (intent.hasExtra("walletIndex")) {
+            val walletIndex = intent.getIntExtra("walletIndex", -1)
+            onWallet(walletIndex)
+            intent
+        } else if (intent.extras != null) {
+            val data = parseNotificationData(intent.getStringExtra("type"), intent.getStringExtra("data"))
+            when (data) {
+                is PushNotificationData.Asset -> Intent().apply {
+                    setData("$assetRouteUri/${data.assetId}".toUri())
+                }
+                is PushNotificationData.Transaction -> {
+                    onWallet(data.walletIndex)
+                    Intent().apply {
                         setData("$assetRouteUri/${data.assetId}".toUri())
                     }
-                    is PushNotificationData.Transaction -> {
-                        onWallet(data.walletIndex)
-                        Intent().apply {
-                            setData("$assetRouteUri/${data.assetId}".toUri())
-                        }
-                    }
-                    is PushNotificationData.PushNotificationPayloadType,
-                    is PushNotificationData.Swap,
-                    null -> intent
                 }
-            } else {
-                intent
+                is PushNotificationData.PushNotificationPayloadType,
+                is PushNotificationData.Swap,
+                null -> intent
             }
+        } else {
+            intent
+        }
 
-            val data = intent.data ?: return@launch
+        val data = intent.data ?: return@launch
 
-            when (data.scheme) {
-                "wc" -> addPairing(data.toString())
-                else -> this@MainViewModel.intent.update { intent }
-            }
+        when (data.scheme) {
+            "wc" -> addPairing(data.toString())
+            else -> this@MainViewModel.intent.update { intent }
         }
     }
 

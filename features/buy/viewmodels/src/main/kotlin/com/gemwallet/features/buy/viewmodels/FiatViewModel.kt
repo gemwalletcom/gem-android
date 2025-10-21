@@ -53,21 +53,28 @@ class FiatViewModel @Inject constructor(
 
     val type = MutableStateFlow(FiatQuoteType.Buy)
     val assetId = savedStateHandle.getStateFlow("assetId", "").mapNotNull { it.toAssetId() }
+    val session = sessionRepository.session()
 
     private val _amount = MutableStateFlow("")
     val amount: StateFlow<String> get() = _amount
 
-    val asset = assetId.flatMapLatest { assetId ->
-        assetsRepository.getTokenInfo(assetId).mapNotNull { it }
+    val asset = combine(session, assetId) { session, assetId ->
+        Pair(session, assetId)
+    }
+    .flatMapLatest {
+        val (session, assetId) = it
+        assetsRepository
+            .getTokenInfo(assetId)
+            .mapNotNull { it }
+            .map {
+                if (it.owner == null) {
+                    it.copy(owner = session?.wallet?.getAccount(it.asset.chain))
+                } else {
+                    it
+                }
+            }
     }
     .flowOn(Dispatchers.IO)
-    .map {
-        if (it.owner == null) {
-            it.copy(owner = sessionRepository.getSession()?.wallet?.getAccount(it.asset.chain))
-        } else {
-            it
-        }
-    }
     .map { AssetInfoUIModel(it, false, 2, 4) }
     .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)

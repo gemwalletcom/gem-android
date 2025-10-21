@@ -75,8 +75,10 @@ class AssetDetailsViewModel @Inject constructor(
         .flatMapLatest { assetId ->
             assetId?.let { id -> assetsRepository.getAssetInfo(id).mapNotNull { it } } ?: emptyFlow()
         }
+    val session = sessionRepository.session()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val isOperationEnabled = sessionRepository.session().filterNotNull().mapLatest {
+    val isOperationEnabled = session.filterNotNull().mapLatest {
         getWalletOperationsEnabled.walletOperationsEnabled(it.wallet)
     }
     .flowOn(Dispatchers.IO)
@@ -134,10 +136,10 @@ class AssetDetailsViewModel @Inject constructor(
                 }
             )
         }
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             assetsRepository.syncAssetInfo(
                 assetId = assetId,
-                account = sessionRepository.getSession()?.wallet?.getAccount(assetId.chain) ?: return@launch
+                account = session.value?.wallet?.getAccount(assetId.chain) ?: return@launch
             )
         }
         viewModelScope.launch {

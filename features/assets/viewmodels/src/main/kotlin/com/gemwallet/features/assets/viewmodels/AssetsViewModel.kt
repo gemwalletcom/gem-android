@@ -48,17 +48,20 @@ import javax.inject.Inject
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class AssetsViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
+    sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val syncTransactions: SyncTransactions,
     private val userConfig: UserConfig,
     private val getWalletOperationsEnabled: GetWalletOperationsEnabled,
 ) : ViewModel() {
-    val refreshingState = MutableStateFlow<RefresingState>(RefresingState.OnOpen)
+
+    val session = sessionRepository.session()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val refreshingState = MutableStateFlow<RefreshingState>(RefreshingState.OnOpen)
     val screenState = refreshingState.map { refreshingState ->
             when (refreshingState) {
-                RefresingState.OnOpen -> SyncState.Idle
-                RefresingState.OnForce -> SyncState.InSync
+                RefreshingState.OnOpen -> SyncState.Idle
+                RefreshingState.OnForce -> SyncState.InSync
             }
         }
         .flatMapLatest { state ->
@@ -69,7 +72,7 @@ class AssetsViewModel @Inject constructor(
             }
         }
         .map { it == SyncState.InSync }
-        .flowOn(Dispatchers.Default)
+        .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     private val assetsState: Flow<List<AssetInfo>> = assetsRepository.getAssetsInfo()
@@ -81,16 +84,16 @@ class AssetsViewModel @Inject constructor(
     private val assets: StateFlow<List<AssetItemUIModel>> = assetsState.combine(isHideBalances) { assets, isHideBalances ->
         assets.map { AssetInfoUIModel(it, isHideBalances) }.distinctBy { it.asset.id.toIdentifier() }
     }
-    .flowOn(Dispatchers.Default)
+    .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val pinnedAssets = assets
         .map { items -> items.filter { asset -> asset.metadata?.isPinned == true } }
-        .flowOn(Dispatchers.Default)
+        .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val unpinnedAssets = assets.map { it.filter { asset -> asset.metadata?.isPinned != true } }
-        .flowOn(Dispatchers.Default)
+        .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val walletInfo: StateFlow<WalletInfoUIState> = combine(sessionRepository.session(), assetsState, isHideBalances) {session, assets, isHideBalances ->
@@ -103,28 +106,23 @@ class AssetsViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.Eagerly, WalletInfoUIState())
 
     fun onRefresh() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val session = sessionRepository.getSession() ?: return@launch
-            refreshingState.update { RefresingState.OnForce }
+        session.value?.let { session ->
+            refreshingState.update { RefreshingState.OnForce }
             updateAssetData(session)
         }
     }
 
-    private fun updateAssetData(session: Session) { // TODO: Out to case
-        viewModelScope.launch(Dispatchers.IO) {
-            val syncAssets = async { assetsRepository.sync() }
-            val syncTxs = async { syncTransactions.syncTransactions(session.wallet) }
-            syncAssets.await()
-            syncTxs.await()
-        }
+    private fun updateAssetData(session: Session) = viewModelScope.launch(Dispatchers.IO) {
+        val syncAssets = async { assetsRepository.sync() }
+        val syncTxs = async { syncTransactions.syncTransactions(session.wallet) }
+        syncAssets.await()
+        syncTxs.await()
     }
 
-    fun hideAsset(assetId: AssetId) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val session = sessionRepository.getSession() ?: return@launch
-            val account = session.wallet.getAccount(assetId.chain) ?: return@launch
-            assetsRepository.switchVisibility(session.wallet.id, account, assetId, false)
-        }
+    fun hideAsset(assetId: AssetId) = viewModelScope.launch {
+        val session = session.value ?: return@launch
+        val account = session.wallet.getAccount(assetId.chain) ?: return@launch
+        assetsRepository.switchVisibility(session.wallet.id, account, assetId, false)
     }
 
     private suspend fun calcWalletInfo(
@@ -174,18 +172,16 @@ class AssetsViewModel @Inject constructor(
         }
     }
 
-    fun togglePin(assetId: AssetId) = viewModelScope.launch(Dispatchers.IO) {
-        val session = sessionRepository.getSession() ?: return@launch
+    fun togglePin(assetId: AssetId) = viewModelScope.launch {
+        val session = session.value ?: return@launch
         assetsRepository.togglePin(session.wallet.id, assetId)
     }
 
-    fun hideBalances() {
-        viewModelScope.launch {
-            userConfig.hideBalances()
-        }
+    fun hideBalances() = viewModelScope.launch {
+        userConfig.hideBalances()
     }
 
-    enum class RefresingState {
+    enum class RefreshingState {
         OnOpen,
         OnForce,
     }

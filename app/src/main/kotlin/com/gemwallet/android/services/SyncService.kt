@@ -20,13 +20,11 @@ class SyncService @Inject constructor(
     private val syncSubscription: SyncSubscription,
 ) {
 
-    suspend fun sync() {
-        withContext(Dispatchers.IO) {
-            listOf(
-                async { syncTransactions.syncTransactions(sessionRepository.getSession()?.wallet ?: return@async) },
-                async { buyRepository.sync() }
-            ).awaitAll()
-            syncSubscription.syncSubscription(walletsRepository.getAll().firstOrNull() ?: emptyList())
-        }
+    suspend fun sync() = withContext(Dispatchers.IO) {
+        listOf(
+            async { syncTransactions.syncTransactions(sessionRepository.session().firstOrNull()?.wallet ?: return@async) },
+            async { buyRepository.sync() }
+        ).awaitAll()
+        syncSubscription.syncSubscription(walletsRepository.getAll().firstOrNull() ?: emptyList())
     }
 }

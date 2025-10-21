@@ -15,7 +15,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
@@ -30,7 +29,7 @@ class WalletViewModel @Inject constructor(
     private val walletsRepository: WalletsRepository,
     private val passwordStore: PasswordStore,
     private val loadPrivateDataOperator: LoadPrivateDataOperator,
-    private val sessionRepository: SessionRepository,
+    sessionRepository: SessionRepository,
     private val deleteWallet: DeleteWallet,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
@@ -40,13 +39,13 @@ class WalletViewModel @Inject constructor(
 
     val wallet = walletId.flatMapLatest { walletsRepository.getWallet(it ?: return@flatMapLatest flowOf(null)) }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    val session = sessionRepository.session()
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val phrase = savedStateHandle.getStateFlow("inPhrase", false).combine(wallet) { inPhrase, wallet ->
         if (inPhrase) handleShowPhrase(wallet) else null
     }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
-
-
 
     private val state = MutableStateFlow(WalletViewModelState())
     val uiState = state
@@ -57,17 +56,11 @@ class WalletViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val wallet = wallet.value ?: return@launch
             walletsRepository.updateWallet(wallet.copy(name = name))
-            if (wallet.id == sessionRepository.getSession()?.wallet?.id) {
-                val newWallet = walletsRepository.getWallet(wallet.id).firstOrNull() ?: return@launch
-                sessionRepository.setWallet(newWallet)
-            }
         }
     }
 
-    fun delete(onBoard: () -> Unit, onComplete: () -> Unit) {
-        viewModelScope.launch {
-            deleteWallet.deleteWallet(wallet.value?.id ?: return@launch, onBoard, onComplete)
-        }
+    fun delete(onBoard: () -> Unit, onComplete: () -> Unit) = viewModelScope.launch {
+        deleteWallet.deleteWallet(session.value?.wallet?.id, wallet.value?.id ?: return@launch, onBoard, onComplete)
     }
 
     private suspend fun handleShowPhrase(wallet: Wallet?): String? {

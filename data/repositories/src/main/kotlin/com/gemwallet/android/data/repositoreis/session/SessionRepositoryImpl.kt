@@ -27,13 +27,13 @@ class SessionRepositoryImpl(
         record.toModel(wallet)
     }
 
-    override suspend fun getSession(): Session? {
-        val entity = sessionDao.getSession() ?: return null
-        val wallet = walletsRepository.getWallet(entity.walletId).firstOrNull() ?: return null
-        return entity.toModel(wallet)
-    }
+//    override suspend fun getSession(): Session? {
+//        val entity = sessionDao.getSession() ?: return null
+//        val wallet = walletsRepository.getWallet(entity.walletId).firstOrNull() ?: return null
+//        return entity.toModel(wallet)
+//    }
 
-    override suspend fun hasSession(): Boolean = getSession() != null
+//    override suspend fun hasSession(): Boolean = getSession() != null
 
     override suspend fun setWallet(wallet: Wallet) {
         val oldSession = runBlocking(Dispatchers.IO) { sessionDao.getSession() }
@@ -51,15 +51,18 @@ class SessionRepositoryImpl(
     }
 
     override suspend fun setCurrency(currency: Currency) = withContext(Dispatchers.IO) {
-        val session = getSession() ?: return@withContext
-        sessionDao.update(session.copy(currency = currency).toRecord())
+        sessionDao.setCurrency(currency.string)
     }
 
     override suspend fun reset() = withContext(Dispatchers.IO) {
         sessionDao.clear()
     }
 
-    override suspend fun getCurrentCurrency(): Currency = getSession()?.currency ?: Currency.USD
+    override suspend fun getCurrentCurrency(): Currency = withContext(Dispatchers.IO) {
+        val currency = sessionDao.getCurrency()
+        val result = Currency.entries.firstOrNull { it.string == currency } ?: Currency.USD
+        result
+    }
 
     override fun getCurrency(): Flow<Currency> = session().map { it?.currency ?: Currency.USD }
 }

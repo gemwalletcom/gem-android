@@ -13,6 +13,7 @@ import com.wallet.core.primitives.Banner
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigInteger
@@ -32,7 +33,7 @@ class BannersViewModel @Inject constructor(
             val wallet = if (isGlobal) {
                 null
             } else {
-                sessionRepository.getSession()?.wallet
+                sessionRepository.session().firstOrNull()?.wallet
             }
             val banners = getBannersCase.getActiveBanners(wallet, asset)
             this@BannersViewModel.banners.update { banners }

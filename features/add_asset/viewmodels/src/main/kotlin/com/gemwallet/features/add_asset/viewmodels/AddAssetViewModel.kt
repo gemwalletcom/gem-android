@@ -24,6 +24,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -142,10 +143,10 @@ class AddAssetViewModel @Inject constructor(
         state.update { it.copy(isSelectChain = false) }
     }
 
-    fun addAsset(onFinish: () -> Unit) = viewModelScope.launch(Dispatchers.IO) {
+    fun addAsset(onFinish: () -> Unit) = viewModelScope.launch {
         onFinish()
-        async {
-            val session = sessionRepository.getSession() ?: return@async
+        async(Dispatchers.IO) {
+            val session = sessionRepository.session().firstOrNull() ?: return@async
             assetsRepository.switchVisibility(
                 walletId = session.wallet.id,
                 owner = session.wallet.getAccount(selectedChain.value) ?: return@async,
