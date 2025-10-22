@@ -18,26 +18,6 @@ import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-@Entity(tableName = "assets", primaryKeys = ["owner_address", "id"])
-data class DbAssetOld(
-    @ColumnInfo("owner_address") val address: String,
-    val id: String,
-    val name: String,
-    val symbol: String,
-    val decimals: Int,
-    val type: AssetType,
-    val chain: Chain,
-    @ColumnInfo("is_buy_enabled") val isBuyEnabled: Boolean = false,
-    @ColumnInfo("is_swap_enabled") val isSwapEnabled: Boolean = false,
-    @ColumnInfo("is_stake_enabled") val isStakeEnabled: Boolean = false,
-    @ColumnInfo("staking_apr") val stakingApr: Double? = null,
-    @ColumnInfo("links") val links: String? = null,
-    @ColumnInfo("market") val market: String? = null,
-    @ColumnInfo("rank") val rank: Int = 0,
-    @ColumnInfo("created_at") val createdAt: Long = 0,
-    @ColumnInfo("updated_at") val updatedAt: Long = 0,
-)
-
 @Entity(tableName = "asset", primaryKeys = ["id"])
 data class DbAsset(
     val id: String,

@@ -3,7 +3,7 @@ package com.gemwallet.android.data.repositoreis.banners
 import com.gemwallet.android.cases.banners.AddBanner
 import com.gemwallet.android.cases.banners.CancelBannerCase
 import com.gemwallet.android.cases.banners.GetBannersCase
-import com.gemwallet.android.cases.banners.GetWalletOperationsEnabled
+import com.gemwallet.android.cases.banners.HasMultiSign
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.service.store.database.BannersDao
@@ -22,15 +22,19 @@ import com.wallet.core.primitives.BannerState
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.withContext
 import java.math.BigInteger
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class BannersRepository(
     private val assetRepository: AssetsRepository,
     private val bannersDao: BannersDao,
     private val userConfig: UserConfig,
-) : GetBannersCase, CancelBannerCase, GetWalletOperationsEnabled, AddBanner {
+) : GetBannersCase, CancelBannerCase, HasMultiSign, AddBanner {
 
     override suspend fun getActiveBanners(wallet: Wallet?, asset: Asset?): List<Banner> = withContext(Dispatchers.IO) {
         val assetInfo = asset?.id?.let { assetRepository.getAssetInfo(it).firstOrNull() }
@@ -100,10 +104,7 @@ class BannersRepository(
         return dbBanner == null || dbBanner.state != BannerState.Cancelled
     }
 
-    override suspend fun walletOperationsEnabled(wallet: Wallet): Boolean {
-        return wallet.accounts.firstOrNull {
-            getActiveBanners(wallet, it.chain.asset())
-                .firstOrNull { it.event == BannerEvent.AccountBlockedMultiSignature } != null
-        } == null
+    override fun hasMultiSign(wallet: Wallet): Flow<Boolean> {
+        return bannersDao.getMultisign(wallet.id).mapLatest { it.isNotEmpty() }
     }
 }

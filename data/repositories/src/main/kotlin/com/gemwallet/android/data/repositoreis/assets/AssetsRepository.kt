@@ -189,7 +189,6 @@ class AssetsRepository @Inject constructor(
 
     fun getAssetsInfo(): Flow<List<AssetInfo>> = assetsDao.getAssetsInfo()
         .toAssetInfoModel()
-        .flowOn(Dispatchers.IO)
 
     fun getAssetsInfo(assetsId: List<AssetId>): Flow<List<AssetInfo>> = assetsDao
         .getAssetsInfo(assetsId.map { it.toIdentifier() })

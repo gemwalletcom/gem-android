@@ -196,7 +196,7 @@ fun DbAssetInfo.toModel(): AssetInfo? {
         derivationPath = entity.derivationPath ?: "",
         extendedPublicKey = entity.extendedPublicKey,
     )
-
+    val currentTime = System.currentTimeMillis()
     return AssetInfo(
         owner = account,
         asset = asset,
@@ -208,7 +208,7 @@ fun DbAssetInfo.toModel(): AssetInfo? {
                     assetId = assetId,
                     price = entity.priceValue,
                     priceChangePercentage24h = entity.priceDayChanges ?: 0.0,
-                    updatedAt = System.currentTimeMillis()
+                    updatedAt = currentTime
                 )
             )
         } else null,

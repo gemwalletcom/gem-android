@@ -3,7 +3,7 @@ package com.gemwallet.features.asset.viewmodels.details.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.cases.banners.GetWalletOperationsEnabled
+import com.gemwallet.android.cases.banners.HasMultiSign
 import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
 import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
@@ -65,7 +65,7 @@ class AssetDetailsViewModel @Inject constructor(
     private val getPriceAlerts: GetPriceAlerts,
     private val enablePriceAlert: EnablePriceAlert,
     private val getCurrentBlockExplorer: GetCurrentBlockExplorer,
-    private val getWalletOperationsEnabled: GetWalletOperationsEnabled,
+    private val hasMultiSign: HasMultiSign,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -78,10 +78,9 @@ class AssetDetailsViewModel @Inject constructor(
     val session = sessionRepository.session()
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
-    val isOperationEnabled = session.filterNotNull().mapLatest {
-        getWalletOperationsEnabled.walletOperationsEnabled(it.wallet)
+    val isOperationEnabled = session.filterNotNull().flatMapLatest {
+        hasMultiSign.hasMultiSign(it.wallet).mapLatest { !it }
     }
-    .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     val uiState = MutableStateFlow<AssetInfoUIState>(AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process))
