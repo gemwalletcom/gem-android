@@ -82,7 +82,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.concurrent.Executor
 import javax.inject.Inject
 import kotlin.concurrent.atomics.AtomicLong
@@ -112,10 +111,10 @@ class MainActivity : FragmentActivity(), AuthRequester {
         prepareBiometricAuth()
 
         viewModel.handleIntent(this@MainActivity.intent)
-
+        viewModel.maintain()
         setContent {
-            RootWarning()
             MainContent()
+            RootWarning()
         }
     }
 
@@ -141,7 +140,6 @@ class MainActivity : FragmentActivity(), AuthRequester {
         val intent by viewModel.intent.collectAsStateWithLifecycle()
         val enableSysAuth = enabledSysAuth()
         val authState = (state.initialAuth == AuthState.Required || state.authState == AuthState.Required)
-
         if (authState && enableSysAuth) {
             biometricPrompt.authenticate(promptInfo)
         } else {
@@ -334,18 +332,14 @@ class MainViewModel @Inject constructor(
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, MainUIState())
 
-    init {
-        maintain()
-    }
-
     fun isAuthRequired(authRequest: AuthRequest): Boolean =
         authRequest == AuthRequest.Enable || userConfig.authRequired()
 
-    private fun maintain() {
-        viewModelScope.launch {
+    internal fun maintain() {
+        viewModelScope.launch(Dispatchers.IO) {
             syncService.sync()
         }
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             checkAccountsService()
         }
     }

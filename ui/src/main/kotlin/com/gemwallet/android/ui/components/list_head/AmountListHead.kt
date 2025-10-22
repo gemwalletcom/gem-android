@@ -43,6 +43,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -288,13 +289,9 @@ private fun AssetAction(
             color = MaterialTheme.colorScheme.onSurface,
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.W400,
-                fontSize = if (isSmallScreen || windowSizeClass == WindowWidthSizeClass.Compact) {
-                    11.sp
-                } else {
-                    16.sp
-                }
             ),
             maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
         )
     }
 }

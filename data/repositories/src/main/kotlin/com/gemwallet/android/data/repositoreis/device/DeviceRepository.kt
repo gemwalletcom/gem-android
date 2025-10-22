@@ -215,7 +215,7 @@ class DeviceRepository(
         wallets.forEach { wallet ->
             wallet.accounts.forEach { account ->
                 val checksum = AnyAddress(account.address, WCChainTypeProxy().invoke(account.chain)).description()
-                subscriptionsIndex["${account.chain.string}_${account.address}_${wallet.index}"] = Subscription(
+                subscriptionsIndex["${account.chain.string}_${checksum}_${wallet.index}"] = Subscription(
                     chain = account.chain,
                     address = checksum,
                     wallet_index = wallet.index,

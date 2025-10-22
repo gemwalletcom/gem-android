@@ -1,6 +1,7 @@
 package com.gemwallet.android.ui
 
 import android.content.Context
+import android.util.Log
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.Row
 import androidx.compose.material3.AlertDialog
@@ -33,9 +34,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun WalletApp(
     navController: NavHostController = rememberNavController(),
+    viewModel: AppViewModel = hiltViewModel()
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val viewModel: AppViewModel = hiltViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     var startDestination by remember { mutableStateOf<String?>(null) }
 
@@ -44,7 +45,6 @@ fun WalletApp(
             startDestination = viewModel.getStartDestination()
         }
     }
-
 
     WalletNavGraph(
         navController = navController,
