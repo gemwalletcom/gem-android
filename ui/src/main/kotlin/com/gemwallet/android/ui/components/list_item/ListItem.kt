@@ -21,6 +21,7 @@ import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.paddingMiddle
+import kotlin.math.max
 
 @Composable
 fun ListItem(
@@ -91,9 +92,14 @@ private fun ListItemLayout(
 
             if (totalWidth > constraints.maxWidth) {
                 val (firstItemWidth, lastItemWidth) = if (widths.last() < constraints.maxWidth / 2) {
-                    Pair(constraints.maxWidth - widths.last(), widths.last())
+                    Pair(
+                        max(0, constraints.maxWidth - widths.last()),
+                        max(0, widths.last())
+                    )
                 } else {
-                    Pair(widths.first(), constraints.maxWidth - widths.first())
+                    Pair(
+                        max(0, widths.first()),
+                        max(0, constraints.maxWidth - widths.first()))
                 }
 
                 listOf(
