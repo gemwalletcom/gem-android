@@ -62,6 +62,7 @@ dependencies {
     implementation(libs.hilt.navigation.compose)
 
     implementation(libs.compose.navigation)
+    implementation(libs.webview)
 
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)

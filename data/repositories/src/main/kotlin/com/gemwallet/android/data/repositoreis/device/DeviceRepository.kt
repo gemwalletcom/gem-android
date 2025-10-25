@@ -4,11 +4,13 @@ import android.content.Context
 import android.util.Log
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.device.GetPushEnabled
 import com.gemwallet.android.cases.device.GetPushToken
+import com.gemwallet.android.cases.device.GetSupportId
 import com.gemwallet.android.cases.device.RequestPushToken
 import com.gemwallet.android.cases.device.SetPushToken
 import com.gemwallet.android.cases.device.SwitchPushEnabled
@@ -23,6 +25,7 @@ import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
 import com.wallet.core.primitives.Subscription
+import com.wallet.core.primitives.SupportDevice
 import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -34,6 +37,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import wallet.core.jni.AnyAddress
 import java.util.Locale
+import java.util.UUID
 import kotlin.math.max
 
 class DeviceRepository(
@@ -54,7 +58,8 @@ class DeviceRepository(
     GetPushEnabled,
     GetPushToken,
     SetPushToken,
-    SyncSubscription
+    SyncSubscription,
+    GetSupportId
 {
     private val Context.dataStore by preferencesDataStore(name = "device_config")
 
@@ -63,6 +68,8 @@ class DeviceRepository(
             migration()
 
             syncDeviceInfo()
+
+            syncSupportInfo()
         }
     }
 
@@ -107,27 +114,9 @@ class DeviceRepository(
         }
     }
 
-    private suspend fun callRegisterDevice(device: Device) {
-        val remoteDeviceInfo = try {
-            gemApiClient.getDevice(device.id)
-        } catch (_: Throwable) {
-            null
-        }
-        try {
-            when {
-                remoteDeviceInfo == null -> gemApiClient.registerDevice(device)
-                remoteDeviceInfo.hasChanges(device) -> {
-                    val subVersion = max(device.subscriptionsVersion, remoteDeviceInfo.subscriptionsVersion) + 1
-                    setSubscriptionVersion(subVersion)
-                    gemApiClient.updateDevice(
-                        device.id,
-                        device.copy(subscriptionsVersion = subVersion)
-                    )
-                }
-            }
-        } catch (err: Throwable) {
-            Log.d("REGISTER-DEVICE", "Error", err)
-        }
+    override fun getSupportId(): Flow<String?> {
+        return context.dataStore.data
+            .map { preferences -> preferences[Key.SupportId] }
     }
 
     override suspend fun switchPushEnabledCase(enabled: Boolean, wallets: List<Wallet>) {
@@ -177,6 +166,46 @@ class DeviceRepository(
         if (toAddSubscriptions.isNotEmpty() || toRemoveSubscription.isNotEmpty()) {
             increaseSubscriptionVersion()
             syncDeviceInfo()
+        }
+    }
+
+    private suspend fun syncSupportInfo() {
+        if (!getSupportId().firstOrNull().isNullOrEmpty()) {
+            return
+        }
+        val supportId = UUID.randomUUID().toString().substring(0, 31)
+        context.dataStore.edit { it[Key.SupportId] = supportId }
+        try {
+            gemApiClient.registerSupport(
+                SupportDevice(
+                    supportId = supportId,
+                    deviceId = getDeviceIdCase.getDeviceId(),
+                    unread = 0,
+                )
+            )
+        } catch (_: Throwable) { }
+    }
+
+    private suspend fun callRegisterDevice(device: Device) {
+        val remoteDeviceInfo = try {
+            gemApiClient.getDevice(device.id)
+        } catch (_: Throwable) {
+            null
+        }
+        try {
+            when {
+                remoteDeviceInfo == null -> gemApiClient.registerDevice(device)
+                remoteDeviceInfo.hasChanges(device) -> {
+                    val subVersion = max(device.subscriptionsVersion, remoteDeviceInfo.subscriptionsVersion) + 1
+                    setSubscriptionVersion(subVersion)
+                    gemApiClient.updateDevice(
+                        device.id,
+                        device.copy(subscriptionsVersion = subVersion)
+                    )
+                }
+            }
+        } catch (err: Throwable) {
+            Log.d("REGISTER-DEVICE", "Error", err)
         }
     }
 
@@ -263,6 +292,7 @@ class DeviceRepository(
 
     private object Key {
         val PushEnabled = booleanPreferencesKey("push_enabled")
+        val SupportId = stringPreferencesKey("support-id")
     }
 
     companion object {

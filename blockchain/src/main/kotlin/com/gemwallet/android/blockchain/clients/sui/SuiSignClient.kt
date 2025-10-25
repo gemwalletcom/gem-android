@@ -6,6 +6,8 @@ import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.wallet.core.primitives.Chain
+import uniffi.gemstone.GemstoneSigner
+import uniffi.gemstone.GemstoneSignerInterface
 import wallet.core.jni.Base64
 import wallet.core.jni.Curve
 import wallet.core.jni.PrivateKey
@@ -14,6 +16,14 @@ import java.math.BigInteger
 class SuiSignClient(
     private val chain: Chain,
 ) : SignClient {
+
+    override suspend fun signMessage(
+        chain: Chain,
+        input: ByteArray,
+        privateKey: ByteArray
+    ): ByteArray {
+        return GemstoneSigner().signSuiPersonalMessage(input, privateKey).toByteArray()
+    }
 
     override suspend fun signNativeTransfer(
         params: ConfirmParams.TransferParams.Native,
@@ -28,6 +38,17 @@ class SuiSignClient(
 
     override suspend fun signTokenTransfer(
         params: ConfirmParams.TransferParams.Token,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        fee: Fee,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val metadata = chainData as SuiChainData
+        return signTxDataDigest(metadata.messageBytes, privateKey)
+    }
+
+    override suspend fun signGenericTransfer(
+        params: ConfirmParams.TransferParams.Generic,
         chainData: ChainSignData,
         finalAmount: BigInteger,
         fee: Fee,

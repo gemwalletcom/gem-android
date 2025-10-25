@@ -29,6 +29,14 @@ enum class ChainNamespace(val string: String, val methods: List<WalletConnection
             WalletConnectionMethods.SolanaSignTransaction,
             WalletConnectionMethods.SolanaSignMessage,
         )
+    ),
+    Sui(
+        Chain.Sui.string,
+        listOf(
+            WalletConnectionMethods.SuiSignPersonalMessage,
+            WalletConnectionMethods.SuiSignTransaction,
+            WalletConnectionMethods.SuiSignAndExecuteTransaction,
+        )
     )
 }
 
@@ -40,6 +48,7 @@ fun Chain.getNameSpace(): ChainNamespace? {
     return when (this.toChainType()) {
         ChainType.Ethereum -> ChainNamespace.Eip155
         ChainType.Solana -> ChainNamespace.Solana
+        ChainType.Sui -> ChainNamespace.Sui
         else -> return null
     }
 }

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
+
 package com.gemwallet.features.settings.settings.presents.views
 
 import android.content.Intent
@@ -15,9 +17,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -35,6 +39,7 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.PushRequest
 import com.gemwallet.android.ui.components.list_item.LinkItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
+import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.open
@@ -42,7 +47,6 @@ import com.gemwallet.features.settings.currency.presents.components.emojiFlags
 import com.gemwallet.features.settings.settings.viewmodels.SettingsViewModel
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl
-import uniffi.gemstone.PublicUrl
 import uniffi.gemstone.SocialUrl
 import java.util.Locale
 
@@ -63,6 +67,7 @@ fun SettingsScene(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val pushEnabled by viewModel.pushEnabled.collectAsStateWithLifecycle()
     val context = LocalContext.current
+    val supportState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 //    val reviewManager = remember { ReviewManager() }
 //    val version = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 //        context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
@@ -70,6 +75,7 @@ fun SettingsScene(
 //        context.packageManager.getPackageInfo(context.packageName, 0)
 //    }.versionName
     var isShowDevelopEnable by remember { mutableStateOf(false) }
+    var isShowSupportChat by remember { mutableStateOf(false) }
 
     val uriHandler = LocalUriHandler.current
     var requestPushGrant by remember {
@@ -197,14 +203,15 @@ fun SettingsScene(
                 icon = R.drawable.settings_support,
                 listPosition = ListPosition.First,
             ) {
-                uriHandler.open(
-                    context,
-                    Config().getPublicUrl(PublicUrl.SUPPORT).toUri()
-                        .buildUpon()
-                        .appendQueryParameter("utm_source", "gemwallet_android")
-                        .build()
-                        .toString()
-                )
+                isShowSupportChat = true
+//                uriHandler.open(
+//                    context,
+//                    Config().getPublicUrl(PublicUrl.SUPPORT).toUri()
+//                        .buildUpon()
+//                        .appendQueryParameter("utm_source", "gemwallet_android")
+//                        .build()
+//                        .toString()
+//                )
             }
             Box(modifier = Modifier.fillMaxWidth()) {
                 LinkItem(
@@ -244,5 +251,11 @@ fun SettingsScene(
 
     if (requestPushGrant) {
         PushRequest(viewModel::notificationEnable) { requestPushGrant = false }
+    }
+
+    if (isShowSupportChat) {
+        ModalBottomSheet({ isShowSupportChat = false }, sheetState = supportState) {
+            SupportChatScreen({ isShowSupportChat = false })
+        }
     }
 }

@@ -18,6 +18,7 @@ import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.ScanTransaction
 import com.wallet.core.primitives.ScanTransactionPayload
 import com.wallet.core.primitives.Subscription
+import com.wallet.core.primitives.SupportDevice
 import kotlinx.serialization.Serializable
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -65,6 +66,9 @@ interface GemApiClient {
 
     @GET("/v1/devices/{device_id}")
     suspend fun getDevice(@Path("device_id") deviceId: String): Device?
+
+    @POST("/v1/support")
+    suspend fun registerSupport(@Body request: SupportDevice): SupportDevice
 
     @PUT("/v1/devices/{device_id}")
     suspend fun updateDevice(@Path("device_id") deviceId: String, @Body request: Device): Device

@@ -52,6 +52,7 @@ appcompat = "1.7.1"
 material = "1.13.0"
 constraint = "1.1.1"
 composeMaterial3 = "1.5.3"
+web-view = "0.33.6"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }
@@ -78,6 +79,7 @@ compose-material3 = { module = "androidx.compose.material3:material3", version.r
 compose-material3-window-size = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3" }
 browser = { module = "androidx.browser:browser", version.ref = "browser"}
 constraint-layout = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraint" }
+webview = { module = "io.github.kevinnzou:compose-webview", version.ref = "web-view"}
 
 # Sqlite room
 room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }

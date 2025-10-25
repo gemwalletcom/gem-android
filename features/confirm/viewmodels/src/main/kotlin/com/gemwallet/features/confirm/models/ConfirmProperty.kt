@@ -18,6 +18,8 @@ sealed interface ConfirmProperty {
 
         class Transfer(val domain: String?, val address: String) : Destination(address)
 
+        class App(val name: String) : Destination(name)
+
         companion object {
             fun map(params: ConfirmParams, validator: DelegationValidator?): Destination? {
                 return when (params) {
@@ -32,12 +34,14 @@ sealed interface ConfirmProperty {
                     is ConfirmParams.SwapParams -> Provider(data = params.providerName)
                     is ConfirmParams.TokenApprovalParams -> Provider(data = params.provider)
                     is ConfirmParams.NftParams,
-                    is ConfirmParams.TransferParams -> {
+                    is ConfirmParams.TransferParams.Token,
+                    is ConfirmParams.TransferParams.Native -> {
                         return params.destination()?.let {
                             Transfer(domain = it.name, address = it.address)
 
                         } ?: throw ConfirmError.RecipientEmpty
                     }
+                    is ConfirmParams.TransferParams.Generic -> App(params.name)
                 }
             }
         }

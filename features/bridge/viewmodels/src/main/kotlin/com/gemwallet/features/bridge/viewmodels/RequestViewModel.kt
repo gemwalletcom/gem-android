@@ -22,6 +22,9 @@ import com.reown.walletkit.client.WalletKit
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.WCSolanaSignMessageResult
+import com.wallet.core.primitives.WCSuiSignAndExecuteTransactionResult
+import com.wallet.core.primitives.WCSuiSignMessageResult
+import com.wallet.core.primitives.WCSuiSignTransactionResult
 import com.wallet.core.primitives.WalletConnectionMethods
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +40,7 @@ import org.json.JSONObject
 import uniffi.gemstone.SignDigestType
 import uniffi.gemstone.SignMessage
 import uniffi.gemstone.SignMessageDecoder
+import wallet.core.jni.Base64
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -98,6 +102,17 @@ class RequestViewModel @Inject constructor(
                 onSwitch(request, onCancel)
                 return@launch
             }
+            WalletConnectionMethods.SuiSignPersonalMessage.string -> {
+                val data = JSONObject(request.request.params).getString("message")
+                data
+            }
+            WalletConnectionMethods.SuiSignTransaction.string -> {
+                val data = JSONObject(request.request.params).getString("transaction")
+                data
+            }
+            WalletConnectionMethods.SuiSignAndExecuteTransaction.string -> {
+                return@launch
+            }
             else -> {
                 state.update { it.copy(error = "Unsupported method: ${request.request.method}") }
                 return@launch
@@ -110,6 +125,9 @@ class RequestViewModel @Inject constructor(
         val sessionRequest = state.value.sessionRequest ?: return
         val data = when (state.value.sessionRequest?.request?.method) {
             WalletConnectionMethods.SolanaSignTransaction.string -> jsonEncoder.encodeToString(WCSolanaSignMessageResult(signature = hash))
+            WalletConnectionMethods.SuiSignAndExecuteTransaction.string -> {
+                jsonEncoder.encodeToString(WCSuiSignAndExecuteTransactionResult(hash))
+            }
             else -> hash
         }
 
@@ -140,6 +158,48 @@ class RequestViewModel @Inject constructor(
         onCancel()
     }
 
+    fun onSigned(data: String) {
+        val sessionRequest = state.value.sessionRequest ?: return
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val method = WalletConnectionMethods.entries
+                .firstOrNull { it.string == sessionRequest.request.method }
+
+            val sign = try {
+                when (method) {
+                    WalletConnectionMethods.SuiSignTransaction -> {
+                        val (signature, bytes) = data.split("_").takeIf { it.size > 1 }?.let {
+                            Pair(it[1], it[0])
+                        } ?: throw IllegalStateException("Incorrect sign: not found transactionBytes")
+                        val result = WCSuiSignTransactionResult(
+                            signature = signature,
+                            transactionBytes = bytes,
+                        )
+                        jsonEncoder.encodeToString(result)
+                    }
+                    else -> return@launch
+                }
+            } catch (err: Throwable) {
+                state.update { it.copy(error = err.message ?: "Sign error") }
+                return@launch
+            }
+
+            WalletKit.respondSessionRequest(
+                params = Wallet.Params.SessionRequestResponse(
+                    sessionTopic = sessionRequest.topic,
+                    jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
+                        sessionRequest.request.id,
+                        sign
+                    )
+                ),
+                onSuccess = { state.update { it.copy(canceled = true) } },
+                onError = { error ->
+                    state.update { it.copy(error = error.throwable.message ?: "Can't sent sign to WalletConnect") }
+                }
+            )
+        }
+    }
+
     fun onSign() {
         val sessionRequest = state.value.sessionRequest ?: return
         val wallet = state.value.wallet ?: return
@@ -157,10 +217,6 @@ class RequestViewModel @Inject constructor(
                     WalletConnectionMethods.PersonalSign -> {
                         val data = state.value.params.toByteArray()
                         val decoder = SignMessageDecoder(SignMessage(SignDigestType.EIP191, data))
-
-//                        val messagePrefix = "\u0019Ethereum Signed Message:\n${data.size}"
-//                        val prefix = messagePrefix.toByteArray()
-//                        val param = Hash.keccak256(prefix + data)
                         val param = decoder.hash()
                         signClient.signMessage(chain, param, privateKey).toHexString()
                     }
@@ -171,6 +227,17 @@ class RequestViewModel @Inject constructor(
                     WalletConnectionMethods.SolanaSignMessage -> {
                         val param = state.value.params.toByteArray()
                         signClient.signMessage(chain, param, privateKey).toHexString()
+                    }
+                    WalletConnectionMethods.SuiSignPersonalMessage -> {
+                        val data = Base64.decode(state.value.params)
+                        val input = if (data == null || data.isEmpty()) {
+                            state.value.params.toByteArray()
+                        } else {
+                            data
+                        }
+                        val signature = String(signClient.signMessage(chain, input, privateKey))
+                        val result = WCSuiSignMessageResult(signature)
+                        jsonEncoder.encodeToString(result)
                     }
                     else -> return@launch
                 }
@@ -242,6 +309,7 @@ private data class RequestViewModelState(
             WalletConnectionMethods.PersonalSign.string,
             WalletConnectionMethods.EthSignTypedData.string,
             WalletConnectionMethods.EthSignTypedDataV4.string,
+            WalletConnectionMethods.SuiSignPersonalMessage.string,
             WalletConnectionMethods.SolanaSignMessage.string -> RequestSceneState.SignMessage(
                 walletName = wallet.name,
                 chain = chain,
@@ -284,7 +352,7 @@ private data class RequestViewModelState(
                     inputType = ConfirmParams.TransferParams.InputType.Signature
                 )
             )
-            WalletConnectionMethods.SolanaSignAndSendTransaction.string -> RequestSceneState.SignGeneric(
+            WalletConnectionMethods.SolanaSignAndSendTransaction.string -> RequestSceneState.SendGeneric(
                 ConfirmParams.TransferParams.Generic(
                     asset = chain.asset(),
                     from = account,
@@ -295,6 +363,19 @@ private data class RequestViewModelState(
                     icon = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
                     gasLimit = "",
                     inputType = ConfirmParams.TransferParams.InputType.EncodeTransaction
+                )
+            )
+            WalletConnectionMethods.SuiSignTransaction.string -> RequestSceneState.SignGeneric(
+                ConfirmParams.TransferParams.Generic(
+                    asset = chain.asset(),
+                    from = account,
+                    memo = params,
+                    name = sessionRequest.peerMetaData?.name ?: "",
+                    description = sessionRequest.peerMetaData?.description ?: "",
+                    url = sessionRequest.peerMetaData?.url ?: "",
+                    icon = sessionRequest.peerMetaData?.icons?.firstOrNull() ?: "",
+                    gasLimit = "",
+                    inputType = ConfirmParams.TransferParams.InputType.Signature
                 )
             )
             else -> RequestSceneState.Error("Unsupported method")

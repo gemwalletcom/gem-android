@@ -77,14 +77,14 @@ fun RequestScene(
             )
         }
         is RequestSceneState.SendGeneric -> ConfirmScreen(
-            (sceneState as RequestSceneState.SendGeneric).params,
+            params = (sceneState as RequestSceneState.SendGeneric).params,
             finishAction = { assetId, hash, route -> viewModel.onSent(hash) },
             onBuy = onBuy,
             cancelAction = viewModel::onReject
         )
         is RequestSceneState.SignGeneric -> ConfirmScreen(
-            (sceneState as RequestSceneState.SignGeneric).params,
-            finishAction = { assetId, hash, route -> viewModel.onSent(hash) },
+            params = (sceneState as RequestSceneState.SignGeneric).params,
+            finishAction = { assetId, hash, route -> viewModel.onSigned(hash) },
             onBuy = onBuy,
             cancelAction = viewModel::onReject
         )
