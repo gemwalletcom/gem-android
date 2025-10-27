@@ -1,6 +1,5 @@
 package com.gemwallet.android.features.recipient.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.services.gemapi.GemApiClient

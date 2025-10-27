@@ -7,7 +7,6 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.wallet.core.primitives.Chain
 import uniffi.gemstone.GemstoneSigner
-import uniffi.gemstone.GemstoneSignerInterface
 import wallet.core.jni.Base64
 import wallet.core.jni.Curve
 import wallet.core.jni.PrivateKey

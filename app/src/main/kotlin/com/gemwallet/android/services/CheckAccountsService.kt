@@ -10,7 +10,6 @@ import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.ext.available
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull

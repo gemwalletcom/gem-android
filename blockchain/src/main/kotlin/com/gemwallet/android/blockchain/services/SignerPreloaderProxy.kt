@@ -48,8 +48,7 @@ import uniffi.gemstone.GemTransactionLoadMetadata
 import uniffi.gemstone.GemTransactionPreloadInput
 import uniffi.gemstone.GemTransferDataExtra
 import uniffi.gemstone.GemWalletConnectionSessionAppMetadata
-import uniffi.gemstone.SwapperException
-import uniffi.gemstone.SwapperException.*
+import uniffi.gemstone.SwapperException.NotSupportedChain
 import uniffi.gemstone.TransferDataOutputAction
 import uniffi.gemstone.TransferDataOutputType
 

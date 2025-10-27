@@ -4,7 +4,6 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency
-import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.DelegationBase
 import java.math.BigInteger
 

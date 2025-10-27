@@ -11,7 +11,6 @@ import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.cases.transactions.PutTransactions
 import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
-import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.transactions.SyncTransactionsService
 import com.gemwallet.android.data.repositoreis.transactions.TransactionsRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao

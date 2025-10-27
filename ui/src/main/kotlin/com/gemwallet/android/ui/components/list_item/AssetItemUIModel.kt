@@ -2,8 +2,6 @@ package com.gemwallet.android.ui.components.list_item
 
 import androidx.compose.runtime.Stable
 import com.gemwallet.android.domains.asset.chain
-import com.gemwallet.android.domains.asset.getIconUrl
-import com.gemwallet.android.domains.asset.getSupportIconUrl
 import com.gemwallet.android.domains.asset.subtype
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.model.AssetInfo

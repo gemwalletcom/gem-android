@@ -1,7 +1,6 @@
 package com.gemwallet.features.confirm.models
 
 import com.gemwallet.android.model.AssetInfo
-import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.NFTAsset
 import com.wallet.core.primitives.TransactionType

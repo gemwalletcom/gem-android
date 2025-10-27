@@ -5,7 +5,6 @@ import com.gemwallet.android.cases.transactions.GetTransactionUpdateTime
 import com.gemwallet.android.cases.transactions.PutTransactions
 import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
-import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.getAssociatedAssetIds
 import com.gemwallet.android.model.Transaction

@@ -27,8 +27,8 @@ import com.gemwallet.android.ui.models.AmountInputType
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.features.transfer_amount.models.AmountError
 import com.gemwallet.features.transfer_amount.presents.components.amountErrorString
-import com.gemwallet.features.transfer_amount.presents.components.transactionTypeTitle
 import com.gemwallet.features.transfer_amount.presents.components.resourceSelect
+import com.gemwallet.features.transfer_amount.presents.components.transactionTypeTitle
 import com.gemwallet.features.transfer_amount.presents.components.validatorView
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency

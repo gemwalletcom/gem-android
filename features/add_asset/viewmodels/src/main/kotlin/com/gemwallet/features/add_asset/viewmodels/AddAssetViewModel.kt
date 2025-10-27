@@ -1,9 +1,7 @@
 package com.gemwallet.features.add_asset.viewmodels
 
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

@@ -43,8 +43,8 @@ import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.defaultPadding
 import com.gemwallet.android.ui.theme.isSmallScreen
-import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingHalfSmall
 import uniffi.gemstone.Config
 import uniffi.gemstone.PublicUrl
 

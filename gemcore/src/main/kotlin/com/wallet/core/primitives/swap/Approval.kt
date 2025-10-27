@@ -5,8 +5,8 @@
 package com.wallet.core.primitives.swap
 
 import com.wallet.core.primitives.SwapProvider
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Serializable
 data class ApprovalData (
