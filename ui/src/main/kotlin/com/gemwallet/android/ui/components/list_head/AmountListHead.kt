@@ -14,12 +14,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.TextAutoSize
+import androidx.compose.foundation.text.modifiers.TextAutoSizeLayoutScope
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDownward
-import androidx.compose.material.icons.filled.ArrowUpward
+import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.AttachMoney
+import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.SwapVert
+import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -28,8 +30,6 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
-import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
-import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,16 +38,22 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.DisplayText
 import com.gemwallet.android.ui.components.InfoBottomSheet
@@ -61,12 +67,11 @@ import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.headerIconSize
 import com.gemwallet.android.ui.theme.headerSupportIconSize
-import com.gemwallet.android.ui.theme.isSmallScreen
 import com.gemwallet.android.ui.theme.paddingDefault
-import com.gemwallet.android.ui.theme.paddingLarge
 import com.gemwallet.android.ui.theme.paddingSmall
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.WalletType
+import kotlin.math.floor
 
 @Composable
 fun AmountListHead(
@@ -153,22 +158,26 @@ fun AssetHeadActions(
     onBuy: (() -> Unit)?,
     onSwap: (() -> Unit)?,
 ) {
-    val isSmallScreen = isSmallScreen()
+    var actionFontSize by remember { mutableStateOf(16.sp) }
     if (walletType == WalletType.view) {
         AssetWatchOnly()
         return
     }
     Row(
-        horizontalArrangement = Arrangement.spacedBy(if (isSmallScreen) paddingSmall else paddingLarge, Alignment.CenterHorizontally),
+        horizontalArrangement = Arrangement.spacedBy(paddingDefault),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (onTransfer != null) {
             AssetAction(
                 modifier = Modifier.weight(1f),
                 title = stringResource(id = R.string.wallet_send),
-                imageVector = Icons.Default.ArrowUpward,
+                imageVector = Icons.AutoMirrored.Default.Send,
                 enabled = transferEnabled && operationsEnabled,
                 contentDescription = "send",
+                fontSize = actionFontSize,
+                onNextFontSize = {
+                    if (actionFontSize > it) actionFontSize = it
+                },
                 onClick = onTransfer,
             )
         }
@@ -176,9 +185,13 @@ fun AssetHeadActions(
             AssetAction(
                 modifier = Modifier.weight(1f),
                 title = stringResource(id = R.string.wallet_receive),
-                imageVector = Icons.Default.ArrowDownward,
+                imageVector = Icons.Default.QrCode2,
                 enabled = operationsEnabled,
                 contentDescription = "receive",
+                fontSize = actionFontSize,
+                onNextFontSize = {
+                    if (actionFontSize > it) actionFontSize = it
+                },
                 onClick = onReceive,
             )
         }
@@ -187,9 +200,13 @@ fun AssetHeadActions(
                 modifier = Modifier.weight(1f)
                 .testTag("assetBuy"),
                 title = stringResource(id = R.string.wallet_buy),
-                imageVector = Icons.Default.Add,
+                imageVector = Icons.Default.AttachMoney,
                 enabled = operationsEnabled,
                 contentDescription = "buy",
+                fontSize = actionFontSize,
+                onNextFontSize = {
+                    if (actionFontSize > it) actionFontSize = it
+                },
                 onClick = onBuy,
             )
         }
@@ -197,9 +214,13 @@ fun AssetHeadActions(
             AssetAction(
                 modifier = Modifier.weight(1f),
                 title = stringResource(id = R.string.wallet_swap),
-                imageVector = Icons.Default.SwapVert,
+                imageVector = Icons.Default.Autorenew,
                 enabled = operationsEnabled,
                 contentDescription = "swap",
+                fontSize = actionFontSize,
+                onNextFontSize = {
+                    if (actionFontSize > it) actionFontSize = it
+                },
                 onClick = onSwap,
             )
         }
@@ -251,14 +272,14 @@ private fun AssetWatchOnly() {
 @Composable
 private fun AssetAction(
     title: String,
+    fontSize: TextUnit,
     imageVector: ImageVector,
     contentDescription: String,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    onNextFontSize: (TextUnit) -> Unit,
     onClick: () -> Unit
 ) {
-    val windowSizeClass: WindowWidthSizeClass = currentWindowAdaptiveInfo().windowSizeClass.widthSizeClass
-    val isSmallScreen = isSmallScreen()
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(paddingDefault))
@@ -266,7 +287,7 @@ private fun AssetAction(
             .padding(vertical = paddingSmall)
         ,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(paddingSmall)
+        verticalArrangement = Arrangement.spacedBy(paddingSmall / (fontSize.value * 0.5f))
     ) {
         Icon(
             modifier = Modifier
@@ -276,7 +297,10 @@ private fun AssetAction(
                     ),
                     shape = CircleShape
                 )
-                .padding(16.dp),
+                .padding(16.dp)
+                .size(22.dp)
+                .rotate(if (contentDescription == "send") -45f else 0f )
+            ,
             imageVector = imageVector,
             tint = MaterialTheme.colorScheme.onPrimary.copy(
                 alpha = if (enabled) 1f else 0.4f,
@@ -289,10 +313,116 @@ private fun AssetAction(
             style = MaterialTheme.typography.titleMedium.copy(
                 fontWeight = FontWeight.W400,
             ),
+            autoSize = ActionTextAutoSize(
+                minFontSize = 8.sp,
+                maxFontSize = 16.sp,
+                layoutSize = fontSize,
+                stepSize = 0.25.sp,
+                onNewLayoutSize = onNextFontSize,
+            ),
+            fontSize = fontSize,
             maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
         )
     }
+}
+
+private class ActionTextAutoSize(
+    private var minFontSize: TextUnit,
+    private val maxFontSize: TextUnit,
+    private val layoutSize: TextUnit,
+    private val stepSize: TextUnit,
+    private val onNewLayoutSize: (TextUnit) -> Unit,
+) : TextAutoSize {
+
+
+    override fun TextAutoSizeLayoutScope.getFontSize(
+        constraints: Constraints,
+        text: AnnotatedString
+    ): TextUnit {
+        val stepSize = stepSize.toPx()
+        val smallest = minFontSize.toPx()
+        val largest = maxFontSize.toPx()
+        var min = smallest
+        var max = largest
+
+        if (layoutSize.toPx() > 0) {
+            val layoutResult = performLayout(constraints, text, layoutSize)
+            if (!layoutResult.didOverflow()) {
+                return layoutSize
+            }
+        }
+        var current = ((min + max) / 2)
+
+        while ((max - min) >= stepSize) {
+            val layoutResult = performLayout(constraints, text, current.toSp())
+            if (layoutResult.didOverflow()) {
+                max = current
+            } else {
+                min = current
+            }
+            current = (min + max) / 2
+        }
+        current = (floor((min - smallest) / stepSize) * stepSize + smallest)
+
+        if ((current + stepSize) <= largest) {
+            val layoutResult = performLayout(constraints, text, (current + stepSize).toSp())
+            if (!layoutResult.didOverflow()) {
+                current += stepSize
+            }
+        }
+        onNewLayoutSize(current.toSp())
+        return current.toSp()
+    }
+
+    private fun TextLayoutResult.didOverflow() =
+        when (layoutInput.overflow) {
+            TextOverflow.Clip,
+            TextOverflow.Visible -> didOverflowBounds()
+            TextOverflow.StartEllipsis,
+            TextOverflow.MiddleEllipsis,
+            TextOverflow.Ellipsis -> didOverflowByEllipsize()
+            else ->
+                throw IllegalArgumentException(
+                    "TextOverflow type ${layoutInput.overflow} is not supported."
+                )
+        }
+
+    private fun TextLayoutResult.didOverflowBounds() = didOverflowWidth || didOverflowHeight
+
+    private fun TextLayoutResult.didOverflowByEllipsize(): Boolean =
+        when (lineCount) {
+            0 -> false
+            1 -> isLineEllipsized(0)
+            else ->
+                when (layoutInput.overflow) {
+                    TextOverflow.StartEllipsis,
+                    TextOverflow.MiddleEllipsis -> didOverflowBounds()
+                    TextOverflow.Ellipsis -> isLineEllipsized(lineCount - 1)
+                    else -> false
+                }
+        }
+
+    override fun equals(other: Any?): Boolean {
+        if (other === this) return true
+        if (other == null) return false
+        if (other !is ActionTextAutoSize) return false
+
+        if (other.minFontSize != minFontSize) return false
+        if (other.maxFontSize != maxFontSize) return false
+        if (other.stepSize != stepSize) return false
+        if (other.layoutSize != layoutSize) return false
+
+        return true
+    }
+
+    override fun hashCode(): Int {
+        var result = minFontSize.hashCode()
+        result = 31 * result + maxFontSize.hashCode()
+        result = 31 * result + stepSize.hashCode()
+        result = 31 * result + layoutSize.hashCode()
+        return result
+    }
+
 }
 
 @Preview(locale = "ru", device = Devices.PIXEL)
