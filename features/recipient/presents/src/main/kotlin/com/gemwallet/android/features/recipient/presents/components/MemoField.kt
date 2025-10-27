@@ -2,10 +2,8 @@ package com.gemwallet.android.features.recipient.presents.components
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -13,11 +11,8 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import com.gemwallet.android.features.recipient.viewmodel.models.RecipientError
+import com.gemwallet.android.ui.components.GemTextField
 import com.gemwallet.android.ui.components.clipboard.getPlainText
-import com.gemwallet.android.ui.components.list_item.listItem
-import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.ui.theme.outlinedTextFieldColors
-import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.space4
 
 @Composable
@@ -30,20 +25,17 @@ fun MemoTextField(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
-    OutlinedTextField(
+    GemTextField(
         modifier = Modifier
-            .listItem(ListPosition.Single)
             .fillMaxWidth()
-            .padding(vertical = paddingDefault)
             .onFocusChanged {
                 if (it.hasFocus) keyboardController?.show() else keyboardController?.hide()
             },
-        colors = outlinedTextFieldColors(),
         value = value,
         singleLine = true,
-        label = { Text(label) },
+        label = label,
         onValueChange = onValueChange,
-        trailingIcon = {
+        trailing = {
             TransferTextFieldActions(
                 value = value,
                 paste = { onValueChange(clipboardManager.getPlainText() ?: "") },

@@ -6,7 +6,7 @@ import com.gemwallet.android.ui.R
 import com.wallet.core.primitives.TransactionType
 
 @Composable
-internal fun getTitle(txType: TransactionType) = when (txType) {
+internal fun transactionTypeTitle(txType: TransactionType) = when (txType) {
     TransactionType.Transfer -> stringResource(id = R.string.transfer_send_title)
     TransactionType.StakeDelegate -> stringResource(id = R.string.transfer_stake_title)
     TransactionType.StakeUndelegate -> stringResource(id = R.string.transfer_unstake_title)

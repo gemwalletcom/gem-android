@@ -16,8 +16,6 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -36,6 +34,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.wallet.viewmodels.WalletUIState
 import com.gemwallet.android.features.wallet.viewmodels.WalletViewModel
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.GemTextField
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.list_item.property.DataBadgeChevron
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
@@ -116,20 +115,15 @@ private fun Wallet(
                 .verticalScroll(rememberScrollState()),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            OutlinedTextField(
-                modifier = Modifier
-                    .defaultPadding()
-                    .fillMaxWidth(),
-                label = { Text(text = stringResource(id = R.string.wallet_name)) },
+            GemTextField(
+                modifier = Modifier.fillMaxWidth(),
+                label = stringResource(id = R.string.wallet_name),
                 value = walletName,
                 onValueChange = {
                     onWalletName(it)
                     walletName = it
                 },
                 singleLine = true,
-                colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedBorderColor = MaterialTheme.colorScheme.secondary,
-                )
             )
             ShowSecretData(wallet, onAuthRequest, onPhraseShow)
             WalletAddress(wallet)

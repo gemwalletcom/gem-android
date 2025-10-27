@@ -1,17 +1,13 @@
 package com.gemwallet.features.settings.networks.presents
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.MutableState
@@ -19,7 +15,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalClipboard
@@ -30,6 +25,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.GemTextField
 import com.gemwallet.android.ui.components.QrCodeRequest
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.clipboard.getPlainText
@@ -141,34 +137,29 @@ private fun UrlField(
 ) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
-    OutlinedTextField(
+    GemTextField(
         modifier = Modifier
-            .padding(16.dp)
             .fillMaxWidth()
             .onFocusChanged {
                 if (it.hasFocus) keyboardController?.show() else keyboardController?.hide()
             },
         value = value.value,
         singleLine = true,
-        label = { Text("URL") },
+        label = stringResource(R.string.common_url),
         onValueChange = { newValue ->
             value.value = newValue
             onValueChange()
         },
-        trailingIcon = {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                TransferTextFieldActions(
-                    value = value.value,
-                    paste = {
-                        value.value = clipboardManager.getPlainText() ?: ""
-                        onValueChange()
-                    },
-                    onClean = { value.value = "" },
-                    qrScanner = onQRScan
-                )
-            }
+        trailing = {
+            TransferTextFieldActions(
+                value = value.value,
+                paste = {
+                    value.value = clipboardManager.getPlainText() ?: ""
+                    onValueChange()
+                },
+                onClean = { value.value = "" },
+                qrScanner = onQRScan
+            )
         }
     )
 }

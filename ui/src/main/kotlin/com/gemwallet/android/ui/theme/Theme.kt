@@ -47,18 +47,6 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun outlinedTextFieldColors() = OutlinedTextFieldDefaults.colors().copy(
-    focusedContainerColor = MaterialTheme.colorScheme.background,
-    errorContainerColor = MaterialTheme.colorScheme.background,
-    disabledContainerColor = MaterialTheme.colorScheme.background,
-    unfocusedContainerColor = MaterialTheme.colorScheme.background,
-    errorIndicatorColor = MaterialTheme.colorScheme.background,
-    focusedIndicatorColor = MaterialTheme.colorScheme.background,
-    disabledIndicatorColor = MaterialTheme.colorScheme.background,
-    unfocusedIndicatorColor = MaterialTheme.colorScheme.background,
-)
-
-@Composable
 fun isSmallScreen(): Boolean {
     val density = LocalDensity.current
     val container = LocalWindowInfo.current.containerSize

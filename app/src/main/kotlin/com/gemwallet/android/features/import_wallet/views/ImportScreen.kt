@@ -47,7 +47,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.blockchain.operators.walletcore.WCFindPhraseWord
 import com.gemwallet.android.cases.wallet.ImportError
 import com.gemwallet.android.features.import_wallet.components.ImportInput
-import com.gemwallet.android.features.import_wallet.components.WalletNameTextField
 import com.gemwallet.android.features.import_wallet.components.WalletTypeTab
 import com.gemwallet.android.features.import_wallet.viewmodels.ImportViewModel
 import com.gemwallet.android.features.onboarding.AcceptTermsScreen
@@ -55,6 +54,7 @@ import com.gemwallet.android.model.ImportType
 import com.gemwallet.android.ui.BuildConfig
 import com.gemwallet.android.ui.DisableScreenShooting
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.GemTextField
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.components.parseMarkdownToAnnotatedString
@@ -186,19 +186,12 @@ private fun ImportScene(
             modifier = Modifier.fillMaxSize(),
         ) {
             item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .listItem(ListPosition.Single)
-                        .padding(vertical = paddingDefault),
-                ) {
-                    WalletNameTextField(
-                        value = nameState,
-                        onValueChange = { newValue -> nameState = newValue },
-                        placeholder = stringResource(id = R.string.wallet_name),
-                        error = walletNameError,
-                    )
-                }
+                GemTextField(
+                    value = nameState,
+                    onValueChange = { newValue -> nameState = newValue },
+                    label = stringResource(id = R.string.wallet_name),
+                    error = walletNameError,
+                )
             }
             item {
                 Column (

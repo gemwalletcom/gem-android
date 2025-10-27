@@ -1,11 +1,9 @@
 package com.gemwallet.android.features.recipient.presents.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,7 +16,6 @@ import androidx.compose.material.icons.filled.QrCodeScanner
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -32,14 +29,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.recipient.viewmodel.AddressChainViewModel
+import com.gemwallet.android.ui.components.GemTextField
 import com.gemwallet.android.ui.components.clipboard.getPlainText
-import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
-import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.ui.theme.outlinedTextFieldColors
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.paddingHalfSmall
-import com.gemwallet.android.ui.theme.space4
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NameRecord
 
@@ -69,12 +64,10 @@ fun ColumnScope.AddressChainField(
     }
 
     Column(
-        modifier = Modifier
-            .listItem(ListPosition.Single)
-            .padding(vertical = paddingDefault),
+        modifier = Modifier,
         verticalArrangement = Arrangement.spacedBy(paddingHalfSmall),
     ) {
-        OutlinedTextField(
+        GemTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .onFocusChanged {
@@ -83,21 +76,20 @@ fun ColumnScope.AddressChainField(
             value = value,
             singleLine = true,
             readOnly = !editable,
-            label = { Text(label) },
+            label = label,
             onValueChange = { newValue ->
                 if (searchName) {
                     viewModel.onInput(newValue, chain)
                 }
                 onValueChange(newValue, uiState.nameRecord)
             },
-            colors = outlinedTextFieldColors(),
-            trailingIcon = {
+            trailing = {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(paddingSmall),
                 ) {
                     if (uiState.isLoading) {
                         CircularProgressIndicator16()
-                        Spacer(modifier = Modifier.size(8.dp))
                     }
                     if (uiState.isResolve) {
                         Icon(
@@ -106,7 +98,6 @@ fun ColumnScope.AddressChainField(
                             contentDescription = "Name is resolved",
                             tint = MaterialTheme.colorScheme.tertiary,
                         )
-                        Spacer(modifier = Modifier.size(8.dp))
                     }
                     if (uiState.isFail) {
                         Icon(
@@ -115,7 +106,6 @@ fun ColumnScope.AddressChainField(
                             contentDescription = "Name is fail",
                             tint = MaterialTheme.colorScheme.error,
                         )
-                        Spacer(modifier = Modifier.size(8.dp))
                     }
                     TransferTextFieldActions(
                         value = value,

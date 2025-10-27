@@ -20,6 +20,8 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
+import com.gemwallet.android.ui.components.list_item.listItem
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.paddingDefault
@@ -39,8 +41,9 @@ fun SwapListHead(
     Column {
         Column(
             modifier = Modifier
+                .listItem(ListPosition.Single)
                 .fillMaxWidth()
-                .padding(start = paddingDefault, end = paddingDefault, bottom = paddingDefault),
+                .padding(paddingDefault),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             SwapItem(assetInfo = fromAsset, value = fromValue, currency = currency)
