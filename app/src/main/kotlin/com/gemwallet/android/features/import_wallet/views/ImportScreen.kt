@@ -2,6 +2,7 @@ package com.gemwallet.android.features.import_wallet.views
 
 import android.content.Context
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -61,11 +62,8 @@ import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.Spacer4
-import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
-import com.gemwallet.android.ui.theme.space4
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.WalletType
@@ -184,7 +182,9 @@ private fun ImportScene(
             )
         },
     ) {
-        LazyColumn {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+        ) {
             item {
                 Box(
                     modifier = Modifier
@@ -206,9 +206,10 @@ private fun ImportScene(
                         .fillMaxWidth()
                         .listItem(ListPosition.Single)
                         .padding(paddingDefault).padding(bottom = 0.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    TypeSelection(importType) {
-                        onTypeChange(it)
+                    TypeSelection(importType) { walletType ->
+                        onTypeChange(walletType)
                         inputState.value = TextFieldValue()
                     }
                     DataInput(importType, inputState, nameRecordState) {
@@ -217,6 +218,7 @@ private fun ImportScene(
                     ErrorMessage(dataErrorState)
                 }
             }
+            item { Spacer(modifier = Modifier.size(it.calculateBottomPadding())) }
         }
     }
 }
@@ -260,7 +262,6 @@ private fun DataInput(
     }
 
     if (importType.walletType == WalletType.view) {
-        Spacer4()
         Text(
             modifier = Modifier.fillMaxWidth(),
             text = parseMarkdownToAnnotatedString(
@@ -271,7 +272,9 @@ private fun DataInput(
         )
     }
     if (suggestions.isNotEmpty() && importType.walletType != WalletType.view) {
-        LazyRow {
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             items(suggestions) { word ->
                 SuggestionChip(
                     onClick = {
@@ -282,7 +285,6 @@ private fun DataInput(
                     },
                     label = { Text(text = word) }
                 )
-                Spacer8()
             }
         }
     }
@@ -313,7 +315,6 @@ private fun TypeSelection(
 
 @Composable
 fun ErrorMessage(error: ImportError?) {
-    Spacer(modifier = Modifier.size(space4))
     val text = when (error) {
         is ImportError.CreateError -> stringResource(R.string.errors_create_wallet, error.message ?: "")
         is ImportError.InvalidWords -> stringResource(

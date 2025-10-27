@@ -1,6 +1,7 @@
 package com.gemwallet.android.features.import_wallet.components
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,7 +18,6 @@ import androidx.compose.material.icons.filled.Error
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -44,6 +44,7 @@ import com.gemwallet.android.blockchain.operators.InvalidWords
 import com.gemwallet.android.blockchain.operators.walletcore.WCValidatePhraseOperator
 import com.gemwallet.android.model.ImportType
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.clickable
 import com.gemwallet.android.ui.components.clipboard.getPlainText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.theme.Spacer16
@@ -87,7 +88,7 @@ internal fun ImportInput(
                 textStyle = MaterialTheme.typography.bodyLarge.copy(
                     color = MaterialTheme.colorScheme.onSurface
                 ),
-                minLines = 3,
+                minLines = 2,
                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                 visualTransformation = {
                     if (importType.walletType == WalletType.view  || importType.walletType == WalletType.private_key) {
@@ -154,33 +155,29 @@ internal fun ImportInput(
         Box(
             modifier = Modifier.fillMaxWidth(),
         ) {
-            TextButton(
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth(0.5f)
                     .align(Alignment.Center)
+                    .clickable {
+                        val newValue = clipboardManager.getPlainText() ?: ""
+                        onValueChange(
+                            TextFieldValue("$newValue ", TextRange(newValue.length + 1))
+                        )
+                    }
                     .testTag("paste"),
-                onClick = {
-                    val newValue = clipboardManager.getPlainText() ?: ""
-                    onValueChange(
-                        TextFieldValue("$newValue ", TextRange(newValue.length + 1))
-                    )
-                },
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.ContentPaste,
-                        contentDescription = "paste",
-                        tint = MaterialTheme.colorScheme.onSurface,
-                    )
-                    Spacer(modifier = Modifier.size(10.dp))
-                    Text(
-                        text = stringResource(id = R.string.common_paste),
-                        maxLines = 1,
-                        color = MaterialTheme.colorScheme.onSurface,
-                    )
-                }
+                Icon(
+                    imageVector = Icons.Default.ContentPaste,
+                    contentDescription = "paste",
+                    tint = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    text = stringResource(id = R.string.common_paste),
+                    maxLines = 1,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
             }
         }
     }
