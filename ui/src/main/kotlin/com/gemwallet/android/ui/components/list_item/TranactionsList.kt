@@ -45,7 +45,7 @@ fun LazyListScope.transactionsList(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surface)
                     .fillMaxWidth()
-                    .padding(start = paddingDefault, end = paddingDefault, top = 0.dp, bottom = 0.dp),
+                    .padding(start = paddingDefault, end = paddingDefault, top = paddingDefault, bottom = 0.dp),
                 text = title
             )
         }

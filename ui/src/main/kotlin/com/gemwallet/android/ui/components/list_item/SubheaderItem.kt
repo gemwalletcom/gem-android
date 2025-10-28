@@ -8,12 +8,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.ui.theme.paddingDefault
 
 @Composable
 fun SubheaderItem(
     title: String,
     modifier: Modifier = Modifier,
-    paddings: PaddingValues = PaddingValues(start = 16.dp, end = 16.dp, top = 0.dp, bottom = 0.dp)
+    paddings: PaddingValues = PaddingValues(start = paddingDefault, end = paddingDefault, top = paddingDefault, bottom = 0.dp)
 ) {
     Text(
         modifier = modifier

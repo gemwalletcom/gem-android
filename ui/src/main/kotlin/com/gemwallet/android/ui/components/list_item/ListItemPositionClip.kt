@@ -33,6 +33,6 @@ fun Modifier.listItem(
         ListPosition.First -> this.padding(top = padding ?: bigRound).clip(firstItemShape)
         ListPosition.Middle -> this.padding(top = padding ?: itemPadding).clip(middleItemShape)
         ListPosition.Single -> this.padding(top = padding ?: bigRound, bottom = padding ?: bigRound).clip(singleItemShape)
-        ListPosition.Last -> this.padding(top = padding ?: itemPadding, bottom = padding ?: bigRound).clip(lastItemShape)
+        ListPosition.Last -> this.padding(top = padding ?: itemPadding, bottom = 0.dp).clip(lastItemShape)
     }
     .background(background)
