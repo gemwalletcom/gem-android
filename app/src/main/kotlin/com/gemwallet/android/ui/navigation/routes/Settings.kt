@@ -14,6 +14,7 @@ import com.gemwallet.features.settings.networks.presents.NetworksScreen
 import com.gemwallet.features.settings.price_alerts.presents.PriceAlertsScreen
 import com.gemwallet.features.settings.security.presents.SecurityScene
 import com.gemwallet.features.settings.settings.presents.views.SettingsScene
+import com.gemwallet.features.settings.settings.presents.views.SupportChatScreen
 import com.wallet.core.primitives.AssetId
 import kotlinx.serialization.Serializable
 
@@ -39,6 +40,9 @@ object NetworksRoute
 
 @Serializable
 object PriceAlertsRoute
+
+@Serializable
+object SupportRoute
 
 fun NavController.navigateToSettingsScreen(navOptions: NavOptions? = null) {
     navigate(SettingsRoute, navOptions ?: navOptions { launchSingleTop = true })
@@ -68,6 +72,10 @@ fun NavController.navigateToPriceAlertsScreen(navOptions: NavOptions? = null) {
     navigate(PriceAlertsRoute, navOptions ?: navOptions { launchSingleTop = true })
 }
 
+fun NavController.navigateToSupport(navOptions: NavOptions? = null) {
+    navigate(SupportRoute, navOptions ?: navOptions { launchSingleTop = true })
+}
+
 fun NavGraphBuilder.settingsScreen(
     onSecurity: () -> Unit,
     onCurrencies: () -> Unit,
@@ -78,6 +86,7 @@ fun NavGraphBuilder.settingsScreen(
     onNetworks: () -> Unit,
     onPriceAlerts: () -> Unit,
     onChart: (AssetId) -> Unit,
+    onSupport: () -> Unit,
     onCancel: () -> Unit,
 ) {
     composable<SettingsRoute>(
@@ -92,6 +101,7 @@ fun NavGraphBuilder.settingsScreen(
             onAboutUs = onAboutUs,
             onWallets = onWallets,
             onNetworks = onNetworks,
+            onSupport = onSupport,
             onPriceAlerts = onPriceAlerts,
         )
     }
@@ -118,5 +128,9 @@ fun NavGraphBuilder.settingsScreen(
 
     composable<PriceAlertsRoute> {
         PriceAlertsScreen(onChart = onChart, onCancel = onCancel)
+    }
+
+    composable<SupportRoute> {
+        SupportChatScreen(onCancel = onCancel)
     }
 }

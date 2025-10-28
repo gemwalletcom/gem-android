@@ -39,7 +39,6 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.PushRequest
 import com.gemwallet.android.ui.components.list_item.LinkItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
-import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.open
@@ -61,6 +60,7 @@ fun SettingsScene(
     onAboutUs: () -> Unit,
     onNetworks: () -> Unit,
     onPriceAlerts: () -> Unit,
+    onSupport: () -> Unit,
     scrollState: ScrollState = rememberScrollState()
 ) {
     val viewModel: SettingsViewModel = hiltViewModel()
@@ -68,19 +68,10 @@ fun SettingsScene(
     val pushEnabled by viewModel.pushEnabled.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val supportState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-//    val reviewManager = remember { ReviewManager() }
-//    val version = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-//        context.packageManager.getPackageInfo(context.packageName, PackageManager.PackageInfoFlags.of(0))
-//    } else {
-//        context.packageManager.getPackageInfo(context.packageName, 0)
-//    }.versionName
     var isShowDevelopEnable by remember { mutableStateOf(false) }
-    var isShowSupportChat by remember { mutableStateOf(false) }
 
     val uriHandler = LocalUriHandler.current
-    var requestPushGrant by remember {
-        mutableStateOf(false)
-    }
+    var requestPushGrant by remember { mutableStateOf<(() -> Unit)?>(null) }
     Scene(
         title = stringResource(id = R.string.settings_title),
         mainActionPadding = PaddingValues(0.dp),
@@ -112,7 +103,7 @@ fun SettingsScene(
                         Switch(
                             checked = pushEnabled,
                             onCheckedChange = {
-                                if (it) requestPushGrant = true else viewModel.notificationEnable()
+                                if (it) requestPushGrant = viewModel::notificationEnable else viewModel.notificationEnable()
                             }
                         )
                     },
@@ -122,14 +113,6 @@ fun SettingsScene(
                     title = stringResource(id = R.string.settings_price_alerts_title),
                     icon = R.drawable.settings_pricealert,
                     listPosition = ListPosition.Last,
-//                    trailingContent = @Composable {
-//                        Switch(
-//                            checked = uiState.pushEnabled,
-//                            onCheckedChange = {
-//                                if (it) requestPushGrant = true else viewModel.notificationEnable()
-//                            }
-//                        )
-//                    },
                     onClick = onPriceAlerts
                 )
             }
@@ -203,15 +186,14 @@ fun SettingsScene(
                 icon = R.drawable.settings_support,
                 listPosition = ListPosition.First,
             ) {
-                isShowSupportChat = true
-//                uriHandler.open(
-//                    context,
-//                    Config().getPublicUrl(PublicUrl.SUPPORT).toUri()
-//                        .buildUpon()
-//                        .appendQueryParameter("utm_source", "gemwallet_android")
-//                        .build()
-//                        .toString()
-//                )
+                if (!pushEnabled) {
+                    requestPushGrant = {
+                        viewModel.notificationEnable()
+                        onSupport()
+                    }
+                } else {
+                    onSupport()
+                }
             }
             Box(modifier = Modifier.fillMaxWidth()) {
                 LinkItem(
@@ -234,13 +216,6 @@ fun SettingsScene(
                     )
                 }
             }
-//            LinkItem(
-//                title = stringResource(id = R.string.settings_rate_app),
-//                icon = R.drawable.settings_rate,
-//                onClick = {
-//                    reviewManager.open()
-//                }
-//            )
             if (uiState.developEnabled) {
                 LinkItem(title = stringResource(id = R.string.settings_developer), icon = R.drawable.settings_developer, listPosition = ListPosition.Single,) {
                     onDevelop()
@@ -249,13 +224,7 @@ fun SettingsScene(
         }
     }
 
-    if (requestPushGrant) {
-        PushRequest(viewModel::notificationEnable) { requestPushGrant = false }
-    }
-
-    if (isShowSupportChat) {
-        ModalBottomSheet({ isShowSupportChat = false }, sheetState = supportState) {
-            SupportChatScreen({ isShowSupportChat = false })
-        }
+    requestPushGrant?.let {
+        PushRequest(it) { requestPushGrant = null }
     }
 }

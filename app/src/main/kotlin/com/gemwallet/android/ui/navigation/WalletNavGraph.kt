@@ -68,6 +68,7 @@ import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
 import com.gemwallet.android.ui.navigation.routes.navigateToSecurityScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToSendScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToStake
+import com.gemwallet.android.ui.navigation.routes.navigateToSupport
 import com.gemwallet.android.ui.navigation.routes.navigateToSwap
 import com.gemwallet.android.ui.navigation.routes.navigateToSwapSelect
 import com.gemwallet.android.ui.navigation.routes.navigateToTransactionScreen
@@ -277,6 +278,7 @@ fun WalletNavGraph(
                 onNetworks = navController::navigateToNetworksScreen,
                 onChart = navController::navigateToAssetChartScreen,
                 onPriceAlerts = navController::navigateToPriceAlertsScreen,
+                onSupport = navController::navigateToSupport,
                 onCancel = onCancel,
             )
         }

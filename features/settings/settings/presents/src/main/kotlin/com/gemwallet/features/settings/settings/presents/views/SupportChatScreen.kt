@@ -15,6 +15,8 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -28,6 +30,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.features.settings.settings.viewmodels.SupportCharViewModel
+import com.kevinnzou.web.AccompanistWebChromeClient
 import com.kevinnzou.web.AccompanistWebViewClient
 import com.kevinnzou.web.WebView
 import com.kevinnzou.web.rememberWebViewNavigator
@@ -52,7 +55,13 @@ fun SupportChatScreen(
         .build()
         .toString()
     val navigator = rememberWebViewNavigator()
+    val isCancel = remember { mutableStateOf(false) }
 
+    LaunchedEffect(isCancel.value) {
+        if (isCancel.value) {
+            onCancel()
+        }
+    }
 
     Scene(
         titleContent = {
@@ -91,13 +100,6 @@ fun SupportChatScreen(
             }
         }
     ) {
-        if (!isReady && selectedType == SupportType.Chat) {
-            Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
-                )
-            }
-        }
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
@@ -108,10 +110,11 @@ fun SupportChatScreen(
                 onCreated = { webView ->
                     webView.settings.javaScriptEnabled = true
                     webView.addJavascriptInterface(
-                        JSInterface({ isReady = true }, onCancel),
+                        JSInterface({ isReady = true }, isCancel),
                         "Gem"
                     )
                 },
+                captureBackPresses = false,
                 client = object : AccompanistWebViewClient() {
                     override fun onReceivedError(
                         view: WebView,
@@ -121,7 +124,27 @@ fun SupportChatScreen(
                         super.onReceivedError(view, request, error)
                     }
                 },
+                chromeClient = object : AccompanistWebChromeClient() {
+                    override fun onProgressChanged(view: WebView, newProgress: Int) {
+                        super.onProgressChanged(view, newProgress)
+
+                        if (selectedType == SupportType.HelpCenter) {
+                            if (newProgress == 100) {
+                                isReady = true
+                            } else {
+                                isReady = false
+                            }
+                        }
+                    }
+                }
             )
+            if (!isReady/* && selectedType == SupportType.Chat*/) {
+                Box(modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            }
         }
     }
 
@@ -129,12 +152,12 @@ fun SupportChatScreen(
 
 private class JSInterface(
     private val onReady: () -> Unit,
-    private val onCancel: () -> Unit,
+    private val isCancel: MutableState<Boolean>,
 ) {
 
     @JavascriptInterface
     fun closed() {
-        onCancel()
+        isCancel.value = true
     }
 
     @JavascriptInterface
