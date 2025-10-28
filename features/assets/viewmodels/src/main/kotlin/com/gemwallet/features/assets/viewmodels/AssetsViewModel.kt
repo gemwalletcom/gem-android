@@ -55,6 +55,12 @@ class AssetsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val session = sessionRepository.session()
+
+    val importInProgress = session.filterNotNull().flatMapLatest {
+        assetsRepository.importInProgress(it.wallet.id)
+    }
+    .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
     private val operationsEnabled = session.filterNotNull()
         .flatMapLatest { hasMultiSign.hasMultiSign(it.wallet) }
         .mapLatest { !it }

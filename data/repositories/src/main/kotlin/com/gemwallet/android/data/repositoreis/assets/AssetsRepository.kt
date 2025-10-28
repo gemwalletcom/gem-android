@@ -52,16 +52,21 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
+
+private typealias WalletId = String
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Singleton
@@ -88,6 +93,8 @@ class AssetsRepository @Inject constructor(
         Chain.Solana,
         Chain.Tron,
     )
+
+    private val importStatus = MutableStateFlow<Map<WalletId, Boolean>>(emptyMap())
 
     init {
         scope.launch(Dispatchers.IO) {
@@ -284,6 +291,10 @@ class AssetsRepository @Inject constructor(
     }
 
     fun importAssets(wallet: Wallet) = scope.launch(Dispatchers.IO) {
+        importStatus.update { items ->
+            items.toMutableMap().apply { put(wallet.id, true) }
+        }
+
         val availableAssetsId = try {
             gemApi.getAssets(getDeviceIdCase.getDeviceId(), wallet.index)
         } catch (_: Throwable) {
@@ -306,6 +317,14 @@ class AssetsRepository @Inject constructor(
             }
         }.awaitAll()
         sync()
+
+        importStatus.update { items ->
+            items.toMutableMap().apply { remove(wallet.id) }
+        }
+    }
+
+    fun importInProgress(walletId: String): Flow<Boolean> {
+        return importStatus.mapLatest { it[walletId] == true }
     }
 
     /**
