@@ -75,7 +75,7 @@ class TransactionDetailsViewModel @Inject constructor(
         val fee = Crypto(tx.fee.toBigInteger())
         val feeCrypto = feeAsset.format(fee)
         val feeFiat = transaction.feePrice?.price?.let {
-            currency.format(fee.convert(feeAsset.decimals, it).atomicValue)
+            currency.format(fee.convert(feeAsset.decimals, it).atomicValue, decimalPlace = 4)
         } ?: ""
         val blockExplorerName = getCurrentBlockExplorer.getCurrentBlockExplorer(transaction.asset.chain)
         val explorer = Explorer(asset.chain.string)

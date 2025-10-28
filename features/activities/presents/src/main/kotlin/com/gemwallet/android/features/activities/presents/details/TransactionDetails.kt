@@ -7,10 +7,14 @@ import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
@@ -25,6 +29,7 @@ import com.gemwallet.android.features.activities.presents.details.components.TxS
 import com.gemwallet.android.features.activities.viewmodels.TransactionDetailsViewModel
 import com.gemwallet.android.features.activities.viewmodels.TxDetailsScreenModel
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.dialog.DialogBar
 import com.gemwallet.android.ui.components.list_head.AmountListHead
 import com.gemwallet.android.ui.components.list_head.NftHead
 import com.gemwallet.android.ui.components.list_head.SwapListHead
@@ -35,6 +40,7 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkFee
 import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.LoadingScene
+import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.getListPosition
@@ -48,6 +54,7 @@ fun TransactionDetails(
 ) {
     val uiState by viewModel.screenModel.collectAsStateWithLifecycle()
     val model = uiState
+    var isShowFeeDetails by remember { mutableStateOf(false) }
 
     if (model == null) {
         LoadingScene(title = "", onCancel)
@@ -70,12 +77,25 @@ fun TransactionDetails(
                     }
                 }
                 model.asset.chain.asset().let {
-                    item { PropertyNetworkFee(it.name, it.symbol, model.feeCrypto, model.feeFiat) }
+                    item {
+                        PropertyNetworkFee(
+                            networkTitle = it.name,
+                            networkSymbol = it.symbol,
+                            feeCrypto = model.feeCrypto,
+                            feeFiat = model.feeFiat,
+                            variantsAvailable = true
+                        ) {
+                            isShowFeeDetails = true
+                        }
+                    }
                 }
 
                 transactionExplorer(model.explorerName, model.explorerUrl)
             }
         }
+    }
+    if (isShowFeeDetails) {
+        FeeDetails(model) { isShowFeeDetails = false }
     }
 }
 
@@ -146,5 +166,30 @@ private fun LazyListScope.transactionExplorer(explorerName: String, uri: String)
             },
             listPosition = ListPosition.Single
         )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FeeDetails(
+    model: TxDetailsScreenModel?,
+    onCancel: () -> Unit,
+) {
+    model ?: return
+    ModalBottomSheet(
+        onDismissRequest = onCancel,
+        dragHandle = {
+            DialogBar(stringResource(R.string.common_done), onCancel)
+        }
+    ) {
+        model.asset.chain.asset().let {
+            PropertyNetworkFee(
+                networkTitle = it.name,
+                networkSymbol = it.symbol,
+                feeCrypto = model.feeCrypto,
+                feeFiat = model.feeFiat,
+                showedCryptoAmount = true
+            )
+        }
     }
 }
