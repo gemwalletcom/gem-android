@@ -10,10 +10,9 @@ import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.SignerParams
-import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FeePriority
-import uniffi.gemstone.SwapperProvider
+import uniffi.gemstone.GemSwapQuoteDataType
 import java.math.BigInteger
 
 class SignClientProxy(
@@ -80,15 +79,15 @@ class SignClientProxy(
         client: SignClient,
     ): List<ByteArray> {
 
-        return when (params.providerId) {
-            SwapperProvider.NEAR_INTENTS -> signSwapTransfer(
+        return when (params.dataType) {
+            GemSwapQuoteDataType.CONTRACT -> client.signSwap(params, chainData, finalAmount, fee, privateKey)
+            GemSwapQuoteDataType.TRANSFER -> signSwapTransfer(
                 params,
                 chainData,
                 fee,
                 client,
                 privateKey,
             )
-            else -> client.signSwap(params, chainData, finalAmount, fee, privateKey)
         }
     }
 
@@ -99,8 +98,8 @@ class SignClientProxy(
         client: SignClient,
         privateKey: ByteArray,
     ): List<ByteArray> {
-        val memo = getSwapMemo(params.fromAsset, params.swapData)
-        val destinationAddress = getSwapDestinationAddress(params)
+        val memo = params.memo()
+        val destinationAddress = params.toAddress//getSwapDestinationAddress(params)
         val transferParams = ConfirmParams.Builder(params.fromAsset, params.from, params.fromAmount)
             .transfer(
                 destination = DestinationAddress(destinationAddress),
@@ -126,13 +125,6 @@ class SignClientProxy(
         }
     }
 
-    private fun getSwapMemo(from: Asset, swapData: String): String? {
-        return when (from.chain) {
-            Chain.Stellar -> swapData
-            else -> null
-        }
-    }
-
     private fun getSwapDestinationAddress(params: ConfirmParams.SwapParams): String {
         if (params.fromAsset.id.tokenId == null) {
             return params.toAddress
@@ -151,21 +143,4 @@ class SignClientProxy(
             else -> return params.toAddress
         }
     }
-
-//    func transferSwapInput(input: SignerInput, fromAsset: Asset, swapData: SwapData) throws -> SignerInput {
-//        let memo = getMemo(fromAsset: fromAsset, swapData: swapData)
-//        let destinationAddress = try getDestinationAddress(fromAsset: fromAsset, swapData: swapData)
-//
-//        return SignerInput(
-//            type: .transfer(fromAsset),
-//            asset: fromAsset,
-//            value: swapData.quote.fromValueBigInt,
-//            fee: input.fee,
-//            isMaxAmount: input.useMaxAmount,
-//            memo: memo,
-//            senderAddress: input.senderAddress,
-//            destinationAddress: destinationAddress,
-//            metadata: input.metadata
-//        )
-//    }
 }

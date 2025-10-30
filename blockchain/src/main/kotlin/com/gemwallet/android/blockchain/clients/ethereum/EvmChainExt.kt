@@ -26,7 +26,13 @@ fun EVMChain.Companion.encodeTransactionData(
         }
         EthereumAbi.encode(abiFn)
     } else {
-        memo?.decodeHex() ?: byteArrayOf()
+        memo?.let {
+            try {
+                it.decodeHex()
+            } catch (_: Throwable) {
+                it.toByteArray()
+            }
+        } ?: byteArrayOf()
     }
 }
 

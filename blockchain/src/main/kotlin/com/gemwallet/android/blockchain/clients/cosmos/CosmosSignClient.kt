@@ -44,7 +44,6 @@ class CosmosSignClient(
         return sign(chainData, fee, message, params.memo() ?: "", privateKey)
     }
 
-
     override suspend fun signTokenTransfer(
         params: ConfirmParams.TransferParams.Token,
         chainData: ChainSignData,
@@ -61,27 +60,6 @@ class CosmosSignClient(
             amount = getAmount(finalAmount, denom = denom)
         )
         return sign(chainData, fee, message, params.memo() ?: "", privateKey)
-    }
-
-    override suspend fun signSwap(
-        params: ConfirmParams.SwapParams,
-        chainData: ChainSignData,
-        finalAmount: BigInteger,
-        fee: Fee,
-        privateKey: ByteArray
-    ): List<ByteArray> {
-        val denom = CosmosDenom.from(chain)
-        val message = when (chain) {
-            Chain.Thorchain -> listOf(getThorChainSwapMessage(params, finalAmount, coin))
-            else -> getTransferMessage(
-                from = params.from.address,
-                recipient = params.destination().address,
-                coin = coin,
-                amount = getAmount(finalAmount, denom = denom)
-            )
-        }
-        val memo = params.swapData.takeIf { it.isNotEmpty() } ?: throw IllegalArgumentException("No swap data")
-        return sign(chainData, fee, message, memo, privateKey)
     }
 
     override suspend fun signTokenApproval(
@@ -185,28 +163,13 @@ class CosmosSignClient(
         amount: Amount,
     ): List<Message> {
         val message = Message.newBuilder()
-        when (chain) {
-            Chain.Thorchain -> message.setThorchainSendMessage(
-                Message.THORChainSend.newBuilder().apply {
-                    fromAddress = ByteString.copyFrom(AnyAddress(from, coin).data())
-                    toAddress = ByteString.copyFrom(AnyAddress(recipient, coin).data())
-                    addAmounts(amount)
-                }
-            )
-            Chain.Cosmos,
-            Chain.Celestia,
-            Chain.Injective,
-            Chain.Sei,
-            Chain.Noble,
-            Chain.Osmosis -> message.setSendCoinsMessage(
-                Message.Send.newBuilder().apply {
-                    fromAddress = from
-                    toAddress = recipient
-                    addAmounts(amount)
-                }
-            )
-            else -> throw IllegalArgumentException()
-        }
+        message.setSendCoinsMessage(
+            Message.Send.newBuilder().apply {
+                fromAddress = from
+                toAddress = recipient
+                addAmounts(amount)
+            }
+        )
         return listOf(message.build())
     }
 
