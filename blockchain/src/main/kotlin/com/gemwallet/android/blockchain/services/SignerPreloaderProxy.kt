@@ -90,7 +90,7 @@ class SignerPreloaderProxy(
                         value = params.amount.toString(),
                         gasPrice = feeRate.gasPriceType,
                         memo = params.memo(),
-                        isMaxValue = params.isMax(),
+                        isMaxValue = params.useMaxAmount,
                         metadata = metadata,
                     ),
                     provider = getEstimateFee(chain)

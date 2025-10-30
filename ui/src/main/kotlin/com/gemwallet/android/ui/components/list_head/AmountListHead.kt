@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -284,7 +285,7 @@ private fun AssetAction(
         modifier = modifier
             .clip(RoundedCornerShape(paddingDefault))
             .clickable(onClick = onClick, enabled = enabled)
-            .padding(vertical = paddingSmall)
+            .padding(paddingSmall)
         ,
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(paddingSmall / (fontSize.value * 0.5f))
@@ -299,7 +300,6 @@ private fun AssetAction(
                 )
                 .padding(16.dp)
                 .size(22.dp)
-                .rotate(if (contentDescription == "send") -45f else 0f )
             ,
             imageVector = imageVector,
             tint = MaterialTheme.colorScheme.onPrimary.copy(

@@ -100,11 +100,10 @@ class SignClientProxy(
     ): List<ByteArray> {
         val memo = params.memo()
         val destinationAddress = params.toAddress//getSwapDestinationAddress(params)
-        val transferParams = ConfirmParams.Builder(params.fromAsset, params.from, params.fromAmount)
+        val transferParams = ConfirmParams.Builder(params.fromAsset, params.from, params.fromAmount, params.useMaxAmount)
             .transfer(
                 destination = DestinationAddress(destinationAddress),
                 memo = memo,
-                isMax = params.isMax()
             )
         return when (transferParams) {
             is ConfirmParams.TransferParams.Native -> client.signNativeTransfer(

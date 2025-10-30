@@ -127,12 +127,16 @@ class ConfirmViewModel @Inject constructor(
     }
     .filterNotNull()
     .combine(feePriority) { params, feePriority ->
+        val energyAsset = params.input.assetId == params.fee(feePriority).feeAssetId
         val finalAmount = when {
             params.input is ConfirmParams.Stake.RewardsParams -> stakeRepository.getRewards(params.input.assetId, params.input.from.address)
                 .map { BigInteger(it.base.rewards) }
                 .fold(BigInteger.ZERO) { acc, value -> acc + value }
-            params.input.isMax() && params.input.assetId == params.fee(feePriority).feeAssetId ->
-                params.input.amount - params.fee(feePriority).amount
+
+            params.input.useMaxAmount && energyAsset -> {
+                val result = params.input.amount - params.fee(feePriority).amount
+                result
+            }
             else -> params.input.amount
         }
         state.update { ConfirmState.Ready }

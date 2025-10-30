@@ -32,7 +32,7 @@ class TonSignClient(
             this.dest = params.destination().address
             this.amount = ByteString.copyFrom(finalAmount.toByteArray())
             this.comment = params.memo() ?: ""
-            this.mode = if (params.isMax()) {
+            this.mode = if (params.useMaxAmount) {
                 transferAllTonMode
             } else {
                 defaultMode

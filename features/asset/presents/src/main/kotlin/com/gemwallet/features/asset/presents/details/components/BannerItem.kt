@@ -33,7 +33,8 @@ internal fun BannerItem(
                 BannerEvent.ActivateAsset -> {
                     val params = ConfirmParams.Builder(
                         asset = assetInfo.asset,
-                        from = assetInfo.owner ?: return@BannersScene
+                        from = assetInfo.owner ?: return@BannersScene,
+                        useMaxAmount = false,
                     ).activate()
                     onConfirm(params)
                 }

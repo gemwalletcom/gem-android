@@ -5,8 +5,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.res.stringResource
+import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.ValidatorItem
 import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.android.ui.R
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.TransactionType
 
@@ -16,6 +19,9 @@ internal fun LazyListScope.validatorView(
     onValidator: () -> Unit
 ) {
     validatorState ?: return
+    item {
+        SubheaderItem(stringResource(R.string.stake_validator))
+    }
     item {
         ValidatorItem(
             data = validatorState,

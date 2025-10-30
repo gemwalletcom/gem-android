@@ -31,6 +31,7 @@ fun AmountScreen(
     val error by viewModel.errorUIState.collectAsStateWithLifecycle()
     val equivalent by viewModel.equivalentState.collectAsStateWithLifecycle()
     val availableBalance by viewModel.availableBalance.collectAsStateWithLifecycle()
+    val reserveForFee by viewModel.reserveForFee.collectAsStateWithLifecycle()
     val amountPrefill by viewModel.prefillAmount.collectAsStateWithLifecycle()
     val amountInputType by viewModel.amountInputType.collectAsStateWithLifecycle()
     val resources by viewModel.resource.collectAsStateWithLifecycle()
@@ -92,6 +93,7 @@ fun AmountScreen(
                 error = error,
                 equivalent = equivalent,
                 availableBalance = availableBalance,
+                reserveForFee = reserveForFee,
                 resource = resources,
                 onNext = { viewModel.onNext(onConfirm) },
                 onInputAmount = viewModel::updateAmount,

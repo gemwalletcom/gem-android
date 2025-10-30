@@ -32,7 +32,7 @@ class CardanoSignClient(
                 this.toAddress = params.destination().address
                 this.changeAddress = params.from.address
                 this.amount = params.amount.toLong()
-                this.useMaxAmount = params.isMax()
+                this.useMaxAmount = params.useMaxAmount
             }.build()
             this.ttl = 190000000
             this.addAllUtxos(

@@ -104,7 +104,6 @@ fun Badge(text: String?) {
     if (text.isNullOrEmpty()) {
         return
     }
-    Spacer(modifier = Modifier.size(4.dp))
     Text(
         modifier = Modifier,
         text = text,

@@ -68,6 +68,12 @@ sealed class InfoSheetEntity(
         descriptionArgs = listOf(value, chain.asset().name, chain.asset().symbol),
     )
 
+    class ReserveForFee(icon: Any) : InfoSheetEntity(
+        icon = icon,
+        title = R.string.info_stake_reserved_title,
+        description = R.string.info_stake_reserved_description,
+    )
+
     class StakeLockTimeInfo(icon: Any) : InfoSheetEntity(
         icon = icon,
         badgeIcon = null,

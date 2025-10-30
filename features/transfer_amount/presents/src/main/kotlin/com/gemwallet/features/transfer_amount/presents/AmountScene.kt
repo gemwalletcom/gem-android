@@ -1,6 +1,9 @@
 package com.gemwallet.features.transfer_amount.presents
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
@@ -17,14 +20,22 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.InfoButton
+import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.fields.AmountField
 import com.gemwallet.android.ui.components.keyboardAsState
+import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyAssetInfoItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.AmountInputType
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingHalfSmall
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.features.transfer_amount.models.AmountError
 import com.gemwallet.features.transfer_amount.presents.components.amountErrorString
 import com.gemwallet.features.transfer_amount.presents.components.resourceSelect
@@ -49,6 +60,7 @@ fun AmountScene(
     error: AmountError,
     equivalent: String,
     availableBalance: String,
+    reserveForFee: String?,
     onNext: () -> Unit,
     onInputAmount: (String) -> Unit,
     onInputTypeClick: () -> Unit,
@@ -98,7 +110,6 @@ fun AmountScene(
                     onNext = onNext
                 )
             }
-            validatorView(txType, validatorState, onValidator)
             item {
                 PropertyAssetInfoItem(
                     asset = asset,
@@ -106,6 +117,22 @@ fun AmountScene(
                     onMaxAmount = onMaxAmount
                 )
             }
+            reserveForFee?.let {
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth().listItem().padding(paddingDefault),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(paddingSmall),
+                    ) {
+                        InfoButton(InfoSheetEntity.ReserveForFee(asset.getIconUrl()))
+                        Text(
+                            text = stringResource(R.string.transfer_reserved_fees, it)
+                        )
+                    }
+
+                }
+            }
+            validatorView(txType, validatorState, onValidator)
             resourceSelect(txType, resource, onResourceSelect)
         }
     }

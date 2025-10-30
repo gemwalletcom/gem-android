@@ -163,7 +163,7 @@ class DelegationViewModel @Inject constructor(
         val from = assetInfo.owner ?: return
         val delegation = delegation.value ?: return
         val balance = Crypto(delegation.base.balance.toBigIntegerOrNull() ?: BigInteger.ZERO)
-        val params = ConfirmParams.Builder(assetInfo.asset, from, balance.atomicValue)
+        val params = ConfirmParams.Builder(assetInfo.asset, from, balance.atomicValue, false)
             .withdraw(delegation)
         call(params)
     }

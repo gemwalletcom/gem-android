@@ -21,7 +21,7 @@ fun ConfirmParams.SwapParams.toGem(): GemSwapData {
             ),
             slippageBps = slippageBps,
             etaInSeconds = etaInSeconds,
-            useMaxAmount = useMaxAmount
+            useMaxAmount = this@toGem.useMaxAmount
         ),
         data = GemSwapQuoteData(
             to = toAddress,

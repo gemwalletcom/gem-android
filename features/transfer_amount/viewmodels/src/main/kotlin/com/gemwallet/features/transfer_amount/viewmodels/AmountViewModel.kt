@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.domains.asset.stakeChain
 import com.gemwallet.android.ext.freezed
 import com.gemwallet.android.math.parseNumber
@@ -78,6 +79,18 @@ class AmountViewModel @Inject constructor(
         it?.assetId?.let { assetId -> assetsRepository.getAssetInfo(assetId).filterNotNull() } ?: emptyFlow()
     }
     .flowOn(Dispatchers.IO)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
+    val reserveForFee = combine(params.filterNotNull(), assetInfo.filterNotNull(), maxAmount) { params, assetInfo, maxAmount ->
+        if (!maxAmount) {
+            return@combine null
+        }
+        val value = getReserveForFee(params.txType, assetInfo.asset.chain)
+        if (value == BigInteger.ZERO) {
+            return@combine null
+        }
+        assetInfo.asset.format(value, decimalPlace = 4)
+    }
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     private val delegation: StateFlow<Delegation?> = params.flatMapMerge {
@@ -206,7 +219,10 @@ class AmountViewModel @Inject constructor(
 
     fun onMaxAmount() = viewModelScope.launch {
         val assetInfo = this@AmountViewModel.assetInfo.value ?: return@launch
-        val balance = when (params.value?.txType) {
+        val txType = params.value?.txType ?: return@launch
+        val reserveForFee = getReserveForFee(txType = txType, assetInfo.asset.chain)
+
+        val balance = when (txType) {
             TransactionType.StakeUndelegate,
             TransactionType.StakeRedelegate -> Crypto(delegation.value?.base?.balance?.toBigIntegerOrNull() ?: BigInteger.ZERO)
             TransactionType.StakeUnfreeze -> when (resource.value) {
@@ -216,20 +232,19 @@ class AmountViewModel @Inject constructor(
             TransactionType.StakeDelegate -> if (assetInfo.stakeChain?.freezed() == true) {
                 Crypto(assetInfo.balance.balance.getDelegatePreparedAmount())
             } else {
-                Crypto(assetInfo.balance.balance.available)
+                Crypto(assetInfo.balance.balance.available.toBigInteger() - reserveForFee)
             }
+            TransactionType.StakeFreeze -> Crypto(assetInfo.balance.balance.available.toBigInteger() - reserveForFee)
             TransactionType.Transfer,
             TransactionType.TransferNFT,
             TransactionType.Swap,
             TransactionType.TokenApproval,
             TransactionType.StakeRewards,
             TransactionType.StakeWithdraw,
-            TransactionType.StakeFreeze,
             TransactionType.AssetActivation,
             TransactionType.SmartContractCall,
             TransactionType.PerpetualOpenPosition,
             TransactionType.PerpetualClosePosition -> Crypto(assetInfo.balance.balance.available)
-            null -> Crypto(BigInteger.ZERO)
         }
 
         updateAmount(balance.value(assetInfo.asset.decimals).stripTrailingZeros().toPlainString(), true)
@@ -287,9 +302,9 @@ class AmountViewModel @Inject constructor(
 
         errorUIState.update { AmountError.None }
 
-        val builder = ConfirmParams.Builder(asset, owner, amount.atomicValue)
+        val builder = ConfirmParams.Builder(asset, owner, amount.atomicValue, maxAmount.value)
         val nextParams = when (params.txType) {
-            TransactionType.Transfer -> builder.transfer(destination!!, memo, maxAmount.value,)
+            TransactionType.Transfer -> builder.transfer(destination!!, memo)
             TransactionType.StakeDelegate -> builder.delegate(validator ?: return)
             TransactionType.StakeUndelegate -> builder.undelegate(delegation ?: return)
             TransactionType.StakeRewards -> {
@@ -415,5 +430,14 @@ class AmountViewModel @Inject constructor(
             )
             else -> BigInteger.ZERO
         }
+    }
+
+    private fun getReserveForFee(txType: TransactionType, chain: Chain) = when (txType) {
+        TransactionType.StakeFreeze -> BigInteger.valueOf(Config().getStakeConfig(chain.string).reservedForFees.toLong())
+        TransactionType.StakeDelegate -> when (chain) {
+            Chain.Tron -> BigInteger.ZERO
+            else -> BigInteger.valueOf(Config().getStakeConfig(chain.string).reservedForFees.toLong())
+        }
+        else -> BigInteger.ZERO
     }
 }

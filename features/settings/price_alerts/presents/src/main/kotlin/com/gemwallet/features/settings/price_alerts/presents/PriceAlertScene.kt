@@ -1,6 +1,5 @@
 package com.gemwallet.features.settings.price_alerts.presents
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -159,7 +158,6 @@ private fun LazyListScope.assets(
                     .clickable(onClick = { onChart(item.asset.id) })
                     .onSizeChanged {
                         minActionWidth = with (density) { it.height.toDp() }
-                        Log.d("PRICE_ALER", "Min width: $minActionWidth")
                     },
                 asset = item,
                 support = {

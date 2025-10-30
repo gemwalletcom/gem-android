@@ -26,7 +26,9 @@ import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.image.AsyncImage
 import com.gemwallet.android.ui.components.list_item.ListItem
 import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.android.ui.theme.trailingIconMedium
 
 @Composable
@@ -156,10 +158,12 @@ fun PropertyTitleText(
     color: Color = MaterialTheme.colorScheme.onSurface,
     info: InfoSheetEntity? = null,
 ) {
-    Row(verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(paddingSmall)
+    ) {
         trailing?.let {
             it()
-            Spacer8()
         }
         Text(
             modifier = Modifier.weight(1f, false),
@@ -170,7 +174,9 @@ fun PropertyTitleText(
             color = color,
         )
         badge?.invoke()
-        info?.let { InfoButton(it) }
+        info?.let {
+            InfoButton(it)
+        }
     }
 }
 

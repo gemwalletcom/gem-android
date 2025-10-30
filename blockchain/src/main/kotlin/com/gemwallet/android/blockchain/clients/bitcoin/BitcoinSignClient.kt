@@ -55,7 +55,7 @@ class BitcoinSignClient(
         if (!providers.contains(params.protocolId)) {
             throw Exception("Invalid signing input type or not supported provider id")
         }
-        if (params.isMax() && params.protocolId == SwapProvider.Chainflip.string) {
+        if (params.useMaxAmount && params.protocolId == SwapProvider.Chainflip.string) {
             throw Exception("Invalid signing input type or not supported provider id")
         }
         val signingInput = getSigningInput(
@@ -113,7 +113,7 @@ class BitcoinSignClient(
             this.byteFee = gasFee.maxGasPrice.toLong()
             this.toAddress = params.destination()?.address
             this.changeAddress = params.from.address
-            this.useMaxAmount = params.isMax()
+            this.useMaxAmount = params.useMaxAmount
             this.addPrivateKey(ByteString.copyFrom(privateKey))
             this.addAllUtxo(chainData.utxo.getUtxoTransactions(params.from.address, coinType))
             chainData.utxo.forEach { _ ->
@@ -148,7 +148,7 @@ class BitcoinSignClient(
             this.byteFee = 0
             this.toAddress = params.destination()?.address
             this.changeAddress = params.from.address
-            this.useMaxAmount = params.isMax()
+            this.useMaxAmount = params.useMaxAmount
             this.addAllUtxo(chainData.utxo.getUtxoTransactions(params.from.address, coinType))
             chainData.utxo.forEach { _ ->
                 val redeemScript = BitcoinScript.lockScriptForAddress(params.from.address, coinType)
@@ -168,7 +168,7 @@ class BitcoinSignClient(
         val totalAvailable = chainData.utxo.fold(BigInteger.ZERO) { acc, uTXO -> acc + (uTXO.value.toBigIntegerOrNull() ?: BigInteger.ZERO) }.toLong()
         val fee = fee.amount.toLong()
         val requestAmount = finalAmount.toLong()
-        val targetAmount = if (params.isMax()) max(totalAvailable - fee, 0) else requestAmount
+        val targetAmount = if (params.useMaxAmount) max(totalAvailable - fee, 0) else requestAmount
         if ((totalAvailable - fee) < targetAmount) {
             throw IllegalStateException()
         }

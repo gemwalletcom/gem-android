@@ -20,7 +20,6 @@ import com.gemwallet.android.ui.theme.trailingIconMedium
 @Composable
 fun InfoButton(entity: InfoSheetEntity) {
     var showBottomSheet by remember { mutableStateOf(false) }
-    Spacer4()
     Icon(
         modifier = Modifier
             .clip(RoundedCornerShape(percent = 50))

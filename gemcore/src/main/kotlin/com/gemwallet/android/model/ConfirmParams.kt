@@ -23,7 +23,7 @@ import java.math.BigInteger
 import java.util.Base64
 
 @Serializable
-sealed class ConfirmParams {
+sealed class ConfirmParams() {
 
     abstract val asset: Asset
 
@@ -32,14 +32,17 @@ sealed class ConfirmParams {
     @Serializable(BigIntegerSerializer::class)
     abstract val amount: BigInteger
 
+    abstract val useMaxAmount: Boolean
+
     val assetId: AssetId get() = asset.id
 
     class Builder(
         val asset: Asset,
         val from: Account,
         val amount: BigInteger = BigInteger.ZERO,
+        val useMaxAmount: Boolean = false,
     ) {
-        fun transfer(destination: DestinationAddress, memo: String? = null, isMax: Boolean = false): TransferParams {
+        fun transfer(destination: DestinationAddress, memo: String? = null): TransferParams {
             return when (asset.id.type()) {
                 AssetSubtype.NATIVE -> TransferParams.Native(
                     asset = asset,
@@ -47,7 +50,7 @@ sealed class ConfirmParams {
                     amount = amount,
                     destination = destination,
                     memo = memo,
-                    isMaxAmount = isMax
+                    useMaxAmount = useMaxAmount
                 )
                 AssetSubtype.TOKEN -> TransferParams.Token(
                     asset = asset,
@@ -55,7 +58,7 @@ sealed class ConfirmParams {
                     amount = amount,
                     destination = destination,
                     memo = memo,
-                    isMaxAmount = isMax
+                    useMaxAmount = useMaxAmount
                 )
             }
         }
@@ -64,7 +67,7 @@ sealed class ConfirmParams {
             return TokenApprovalParams(asset, from, approvalData, provider, contract)
         }
 
-        fun delegate(validator: DelegationValidator) = Stake.DelegateParams(asset, from, amount, validator)
+        fun delegate(validator: DelegationValidator) = Stake.DelegateParams(asset, from, amount, validator, useMaxAmount)
 
         fun rewards(validators: List<DelegationValidator>) = Stake.RewardsParams(asset, from, validators, amount)
 
@@ -101,7 +104,7 @@ sealed class ConfirmParams {
         }
 
         fun freeze(resource: Resource): Stake.Freeze {
-            return Stake.Freeze(asset, from, amount, resource)
+            return Stake.Freeze(asset, from, amount, resource, useMaxAmount)
         }
 
         fun unfreeze(resource: Resource): Stake.Unfreeze {
@@ -113,12 +116,7 @@ sealed class ConfirmParams {
     sealed class TransferParams : ConfirmParams() {
         abstract val destination: DestinationAddress
         abstract val memo: String?
-        abstract val isMaxAmount: Boolean
         abstract val inputType: InputType?
-
-        override fun isMax(): Boolean {
-            return isMaxAmount
-        }
 
         override fun destination(): DestinationAddress {
             return destination
@@ -135,7 +133,7 @@ sealed class ConfirmParams {
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger = BigInteger.ZERO,
             override val destination: DestinationAddress = DestinationAddress(""),
             override val memo: String? = null,
-            override val isMaxAmount: Boolean = false,
+            override val useMaxAmount: Boolean = false,
             override val inputType: InputType? = null,
             val name: String,
             val description: String,
@@ -151,8 +149,8 @@ sealed class ConfirmParams {
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
             override val destination: DestinationAddress,
             override val memo: String? = null,
-            override val isMaxAmount: Boolean = false,
             override val inputType: InputType? = null,
+            override val useMaxAmount: Boolean = false,
         ) : TransferParams()
 
         @Serializable
@@ -162,7 +160,7 @@ sealed class ConfirmParams {
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
             override val destination: DestinationAddress,
             override val memo: String? = null,
-            override val isMaxAmount: Boolean = false,
+            override val useMaxAmount: Boolean = false,
             override val inputType: InputType? = null,
         ) : TransferParams()
 
@@ -179,8 +177,10 @@ sealed class ConfirmParams {
         override val from: Account,
         val data: String,
         val provider: String,
-        val contract: String
+        val contract: String,
     ) : ConfirmParams() {
+        override val useMaxAmount: Boolean = false
+
         override val amount: BigInteger
             get() = BigInteger.ZERO
 
@@ -211,7 +211,7 @@ sealed class ConfirmParams {
         val etaInSeconds: UInt?,
         val dataType: GemSwapQuoteDataType,
         @Serializable(BigIntegerSerializer::class) val gasLimit: BigInteger? = null,
-        val useMaxAmount: Boolean = false,
+        override val useMaxAmount: Boolean = false,
     ) : ConfirmParams() {
 
         override val asset: Asset
@@ -221,8 +221,6 @@ sealed class ConfirmParams {
             get() = fromAmount
 
         override fun destination(): DestinationAddress = DestinationAddress(toAddress)
-
-        override fun isMax(): Boolean = useMaxAmount
 
         override fun memo(): String? = memo
 
@@ -240,6 +238,9 @@ sealed class ConfirmParams {
         override val from: Account,
         @Serializable(BigIntegerSerializer::class) override val amount: BigInteger = BigInteger.ZERO,
     ) : ConfirmParams() {
+        override val useMaxAmount: Boolean
+            get() = false
+
         override fun destination(): DestinationAddress? {
             return DestinationAddress(from.address)
         }
@@ -252,6 +253,9 @@ sealed class ConfirmParams {
         val destination: DestinationAddress,
         val nftAsset: NFTAsset,
     ) : ConfirmParams() {
+        override val useMaxAmount: Boolean
+            get() = false
+
         @Serializable(BigIntegerSerializer::class) override val amount: BigInteger = BigInteger.ZERO
 
         override fun destination(): DestinationAddress {
@@ -268,6 +272,7 @@ sealed class ConfirmParams {
             override val from: Account,
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
             val validator: DelegationValidator,
+            override val useMaxAmount: Boolean = false,
         ) : Stake() {
             override fun destination(): DestinationAddress? {
                 return DestinationAddress(validator.id)
@@ -281,6 +286,9 @@ sealed class ConfirmParams {
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
             val delegation: Delegation,
         ) : Stake() {
+            override val useMaxAmount: Boolean
+                get() = false
+
             override fun destination(): DestinationAddress? {
                 return DestinationAddress(delegation.validator.id)
             }
@@ -293,6 +301,9 @@ sealed class ConfirmParams {
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
             val delegation: Delegation,
         ) : Stake() {
+            override val useMaxAmount: Boolean
+                get() = false
+
             override fun destination(): DestinationAddress? {
                 return DestinationAddress(delegation.validator.id)
             }
@@ -308,6 +319,9 @@ sealed class ConfirmParams {
             val share: String?,
             val balance: String?,
         ) : Stake() {
+            override val useMaxAmount: Boolean
+                get() = false
+
             override fun destination(): DestinationAddress? {
                 return DestinationAddress("")
             }
@@ -320,6 +334,9 @@ sealed class ConfirmParams {
             val validators: List<DelegationValidator>,
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
         ) : Stake() {
+            override val useMaxAmount: Boolean
+                get() = false
+
             override fun destination(): DestinationAddress? {
                 return DestinationAddress("")
             }
@@ -331,6 +348,7 @@ sealed class ConfirmParams {
             override val from: Account,
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
             val resource: Resource,
+            override val useMaxAmount: Boolean = false,
         ) : Stake() {
             override fun destination(): DestinationAddress? {
                 return DestinationAddress("")
@@ -344,6 +362,9 @@ sealed class ConfirmParams {
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
             val resource: Resource,
         ) : Stake() {
+            override val useMaxAmount: Boolean
+                get() = false
+
             override fun destination(): DestinationAddress? {
                 return DestinationAddress("")
             }
@@ -377,14 +398,12 @@ sealed class ConfirmParams {
 
     open fun memo(): String? = null
 
-    open fun isMax(): Boolean = false
-
     override fun hashCode(): Int {
         return asset.id.toIdentifier().hashCode() +
                 destination().hashCode() +
                 memo().hashCode() +
                 amount.hashCode() +
-                isMax().hashCode()
+                useMaxAmount.hashCode()
     }
 
     companion object {

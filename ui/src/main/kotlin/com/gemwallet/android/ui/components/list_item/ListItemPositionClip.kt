@@ -24,7 +24,7 @@ private val singleItemShape = RoundedCornerShape(bigRound)
 
 @Composable
 fun Modifier.listItem(
-    position: ListPosition,
+    position: ListPosition = ListPosition.Single,
     background: Color = MaterialTheme.colorScheme.background,
     padding: Dp? = null,
 ): Modifier =
