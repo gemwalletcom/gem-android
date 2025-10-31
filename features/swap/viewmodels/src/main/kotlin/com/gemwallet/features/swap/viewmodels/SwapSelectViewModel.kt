@@ -115,7 +115,8 @@ class SwapSelectSearch(
                 params.wallet,
                 params.query,
                 supported.chains.mapNotNull { item -> item.toChain() },
-                supported.assetIds.mapNotNull { it.toAssetId() }
+                supported.assetIds.mapNotNull { it.toAssetId() },
+                params.tag?.let { listOf(params.tag) } ?: emptyList(),
             )
         }
         .map { items ->

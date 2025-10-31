@@ -259,18 +259,23 @@ class AssetsRepository @Inject constructor(
         }
     }
 
-    fun swapSearch(wallet: Wallet, query: String, byChains: List<Chain>, byAssets: List<AssetId>): Flow<List<AssetInfo>> {
-        val query = query.trim()
+    fun swapSearch(wallet: Wallet, query: String, byChains: List<Chain>, byAssets: List<AssetId>, tags: List<AssetTag>): Flow<List<AssetInfo>> {
+        val query = tags.toPriorityQuery(query)
         val walletChains = wallet.accounts.map { it.chain }
         val includeChains = byChains.filter { walletChains.contains(it) }
         val includeAssetIds = byAssets.filter { walletChains.contains(it.chain) }
-
-        return assetsDao.swapSearch(query, includeChains, includeAssetIds.map { it.toIdentifier() })
-            .toAssetInfoModel()
-            .map { assets ->
-                assets.filter { !Chain.exclude().contains(it.asset.id.chain) }
-                    .distinctBy { it.asset.id.toIdentifier() }
+        return assetsPriorityDao.hasPriorities(query).map { it > 0 }.flatMapLatest {
+            if (it) {
+                assetsDao.swapSearchWithPriority(query, includeChains, includeAssetIds.map { it.toIdentifier() })
+            } else {
+                assetsDao.swapSearch(query, includeChains, includeAssetIds.map { it.toIdentifier() })
             }
+        }
+        .toAssetInfoModel()
+        .map { assets ->
+            assets.filter { !Chain.exclude().contains(it.asset.id.chain) }
+                .distinctBy { it.asset.id.toIdentifier() }
+        }
     }
 
     suspend fun resolve(wallet: Wallet, assetsId: List<AssetId>) = withContext(Dispatchers.IO) {

@@ -156,6 +156,20 @@ interface AssetsDao {
         """)
     fun swapSearch(query: String, byChains: List<Chain>, byAssets: List<String>): Flow<List<DbAssetInfo>>
 
+    @Query("""
+        SELECT
+            *,
+            MAX(address)
+        FROM asset_info
+        JOIN assets_priority ON id IN (assets_priority.asset_id)
+        WHERE
+            (chain IN (:byChains) OR id IN (:byAssets) )
+            AND `query` = :query
+            GROUP BY id
+            ORDER BY balanceFiatTotalAmount DESC, assetRank DESC
+        """)
+    fun swapSearchWithPriority(query: String, byChains: List<Chain>, byAssets: List<String>): Flow<List<DbAssetInfo>>
+
     @Query("SELECT * FROM asset_config WHERE wallet_id=:walletId AND asset_id=:assetId")
     suspend fun getConfig(walletId: String, assetId: String): DbAssetConfig?
 
