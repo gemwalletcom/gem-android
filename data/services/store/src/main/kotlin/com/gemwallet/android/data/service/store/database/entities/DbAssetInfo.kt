@@ -221,6 +221,7 @@ fun DbAssetInfo.toModel(): AssetInfo? {
             isPinned = entity.pinned == true,
             rankScore = entity.assetRank,
             isActive = true,
+            isBalanceEnabled = true,// TODO: Add to db
         ),
         rank = entity.assetRank,
         walletName = entity.walletName ?: "",

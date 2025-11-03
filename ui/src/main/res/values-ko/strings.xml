@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">시장을 찾을 수 없습니다</string>
   <string name="assets.title">자산</string>
+  <string name="stake.delegations">위임</string>
+  <string name="info.stake.apr.description">연이율(APR)은 암호화폐를 스테이킹할 때 매년 지급되는 보상률입니다.</string>
+  <string name="receive.warning" formatted="false">** %s ** 네트워크의 ** %s **만 이 주소로 보내세요.</string>
+  <string name="perpetual.leverage">레버리지</string>
+  <string name="perpetual.direction">방향</string>
+  <string name="perpetual.auto_close">자동 닫기</string>
+  <string name="info.perpetual.auto_close.description">설정된 가격 수준에서 자동으로 포지션을 청산합니다. 이익실현(Take Profit)은 수익을 확정하고, 손절매(Stop Loss)는 손실을 제한합니다.</string>
+  <string name="perpetual.auto_close.trigger_price">트리거 가격</string>
+  <string name="perpetual.auto_close.take_profit">이익 실현</string>
+  <string name="perpetual.auto_close.stop_loss">손절매</string>
+  <string name="perpetual.market_price">시장 가격</string>
+  <string name="perpetual.auto_close.estimed_pnl">예상 손익</string>
+  <string name="perpetual.increase_direction">%s 증가</string>
+  <string name="perpetual.reduce_direction">%s 줄이기</string>
 </resources>

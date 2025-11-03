@@ -128,6 +128,7 @@ sealed class ConfirmParams() {
 
         @Serializable
         class Generic(
+            val requestId: String,
             override val asset: Asset,
             override val from: Account,
             @Serializable(BigIntegerSerializer::class) override val amount: BigInteger = BigInteger.ZERO,
@@ -140,7 +141,23 @@ sealed class ConfirmParams() {
             val url: String,
             val icon: String,
             val gasLimit: String?,
-        ) : TransferParams()
+        ) : TransferParams() {
+            override fun hashCode(): Int {
+                var result = asset.hashCode()
+                result = 31 * result + requestId.hashCode()
+                result = 31 * result + from.hashCode()
+                result = 31 * result + amount.hashCode()
+                result = 31 * result + destination.hashCode()
+                result = 31 * result + memo.hashCode()
+                result = 31 * result + useMaxAmount.hashCode()
+                result = 31 * result + name.hashCode()
+                result = 31 * result + destination.hashCode()
+                result = 31 * result + url.hashCode()
+                result = 31 * result + icon.hashCode()
+                result = 31 * result + (gasLimit?.hashCode() ?: 0)
+                return result
+            }
+        }
 
         @Serializable
         class Native(

@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Ingen markeder fundet</string>
   <string name="assets.title">Aktiver</string>
+  <string name="stake.delegations">Delegationer</string>
+  <string name="info.stake.apr.description">Årlig procentsats (ÅOP) er den årlige belønningssats for at satse din kryptovaluta.</string>
+  <string name="receive.warning" formatted="false">Send kun ** %s ** på ** %s **-netværket til denne adresse.</string>
+  <string name="perpetual.leverage">Gearing</string>
+  <string name="perpetual.direction">Retning</string>
+  <string name="perpetual.auto_close">Automatisk lukning</string>
+  <string name="info.perpetual.auto_close.description">Luk automatisk din position ved fastsatte prisniveauer. Take Profit låser gevinster, Stop Loss begrænser tab.</string>
+  <string name="perpetual.auto_close.trigger_price">Udløserpris</string>
+  <string name="perpetual.auto_close.take_profit">Tag profit</string>
+  <string name="perpetual.auto_close.stop_loss">Stop-loss</string>
+  <string name="perpetual.market_price">Markedspris</string>
+  <string name="perpetual.auto_close.estimed_pnl">Estimeret PNL</string>
+  <string name="perpetual.increase_direction">Forøgelse %s</string>
+  <string name="perpetual.reduce_direction">Reducer %s</string>
 </resources>

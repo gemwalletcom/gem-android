@@ -4,8 +4,8 @@
 
 package com.wallet.core.primitives
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class WCEthereumTransaction (
@@ -51,7 +51,7 @@ data class WCSuiSignAndExecuteTransactionResult (
 @Serializable
 data class WCSuiSignMessage (
 	val message: String,
-	val account: String
+	val address: String
 )
 
 @Serializable
@@ -68,7 +68,8 @@ data class WCSuiSignTransactionResult (
 @Serializable
 data class WCSuiTransaction (
 	val transaction: String,
-	val account: String
+	val account: String? = null,
+	val address: String? = null
 )
 
 @Serializable

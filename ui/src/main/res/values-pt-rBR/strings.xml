@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Nenhum mercado encontrado</string>
   <string name="assets.title">Ativos</string>
+  <string name="stake.delegations">Delegações</string>
+  <string name="info.stake.apr.description">Taxa Percentual Anual (APR) é a taxa de recompensa anual para apostar sua criptomoeda.</string>
+  <string name="receive.warning" formatted="false">Enviar somente ** %s ** na rede ** %s ** para este endereço.</string>
+  <string name="perpetual.leverage">Alavancagem</string>
+  <string name="perpetual.direction">Direção</string>
+  <string name="perpetual.auto_close">Fechamento automático</string>
+  <string name="info.perpetual.auto_close.description">Feche sua posição automaticamente em níveis de preço definidos. O Take Profit garante os ganhos, o Stop Loss limita as perdas.</string>
+  <string name="perpetual.auto_close.trigger_price">Preço de gatilho</string>
+  <string name="perpetual.auto_close.take_profit">Obter lucro</string>
+  <string name="perpetual.auto_close.stop_loss">Stop Loss</string>
+  <string name="perpetual.market_price">Preço de mercado</string>
+  <string name="perpetual.auto_close.estimed_pnl">PNL estimado</string>
+  <string name="perpetual.increase_direction">Aumentar %s</string>
+  <string name="perpetual.reduce_direction">Reduzir %s</string>
 </resources>

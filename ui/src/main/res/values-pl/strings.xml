@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Nie znaleziono rynków</string>
   <string name="assets.title">Aktywa</string>
+  <string name="stake.delegations">Delegacje</string>
+  <string name="info.stake.apr.description">Roczna stopa procentowa (APR) to roczna stopa nagrody za stakowanie kryptowaluty.</string>
+  <string name="receive.warning" formatted="false">Wyślij tylko ** %s ** w sieci ** %s ** na ten adres.</string>
+  <string name="perpetual.leverage">Dźwignia finansowa</string>
+  <string name="perpetual.direction">Kierunek</string>
+  <string name="perpetual.auto_close">Automatyczne zamykanie</string>
+  <string name="info.perpetual.auto_close.description">Automatycznie zamykaj pozycje po ustalonych cenach. Take Profit zabezpiecza zyski, Stop Loss ogranicza straty.</string>
+  <string name="perpetual.auto_close.trigger_price">Cena wyzwalająca</string>
+  <string name="perpetual.auto_close.take_profit">Weź zysk</string>
+  <string name="perpetual.auto_close.stop_loss">Stop Loss</string>
+  <string name="perpetual.market_price">Cena rynkowa</string>
+  <string name="perpetual.auto_close.estimed_pnl">Szacowany PNL</string>
+  <string name="perpetual.increase_direction">Zwiększ %s</string>
+  <string name="perpetual.reduce_direction">Zmniejsz %s</string>
 </resources>

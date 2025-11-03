@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">未找到任何市场</string>
   <string name="assets.title">资产</string>
+  <string name="stake.delegations">委托</string>
+  <string name="info.stake.apr.description">年利率（APR）是质押加密货币的年度回报率。</string>
+  <string name="receive.warning" formatted="false">仅通过 ** %s ** 网络向此地址发送 ** %s **。</string>
+  <string name="perpetual.leverage">杠杆作用</string>
+  <string name="perpetual.direction">方向</string>
+  <string name="perpetual.auto_close">自动关闭</string>
+  <string name="info.perpetual.auto_close.description">以设定的价格自动平仓。止盈锁定收益，止损限制损失。</string>
+  <string name="perpetual.auto_close.trigger_price">触发价格</string>
+  <string name="perpetual.auto_close.take_profit">获利</string>
+  <string name="perpetual.auto_close.stop_loss">止损</string>
+  <string name="perpetual.market_price">市价</string>
+  <string name="perpetual.auto_close.estimed_pnl">预计盈亏</string>
+  <string name="perpetual.increase_direction">增加%s</string>
+  <string name="perpetual.reduce_direction">减少%s</string>
 </resources>

@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">未找到任何市場</string>
   <string name="assets.title">資產</string>
+  <string name="stake.delegations">委託</string>
+  <string name="info.stake.apr.description">年利率（APR）是質押加密貨幣的年度報酬率。</string>
+  <string name="receive.warning" formatted="false">僅透過 ** %s ** 網路向此位址發送 ** %s **。</string>
+  <string name="perpetual.leverage">槓桿作用</string>
+  <string name="perpetual.direction">方向</string>
+  <string name="perpetual.auto_close">自動關閉</string>
+  <string name="info.perpetual.auto_close.description">以設定的價格自動平倉。停盈鎖定收益，停損限制損失。</string>
+  <string name="perpetual.auto_close.trigger_price">觸發價格</string>
+  <string name="perpetual.auto_close.take_profit">獲利</string>
+  <string name="perpetual.auto_close.stop_loss">停損</string>
+  <string name="perpetual.market_price">市價</string>
+  <string name="perpetual.auto_close.estimed_pnl">預計盈虧</string>
+  <string name="perpetual.increase_direction">增加%s</string>
+  <string name="perpetual.reduce_direction">減少%s</string>
 </resources>

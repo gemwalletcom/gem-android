@@ -22,6 +22,8 @@ import com.gemwallet.android.blockchain.services.mapper.toGem
 import com.gemwallet.android.domains.confirm.toGem
 import com.gemwallet.android.domains.stake.toGem
 import com.gemwallet.android.ext.toChainType
+import com.gemwallet.android.math.decodeHex
+import com.gemwallet.android.math.has0xPrefix
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.gemwallet.android.model.GasFee
@@ -189,13 +191,24 @@ class SignerPreloaderProxy(
                 extra = GemTransferDataExtra(
                     gasLimit = null,
                     gasPrice = null,
-                    data = params.memo?.toByteArray(),
+                    data = params.memo?.let { data ->
+                        if (data.has0xPrefix()) {
+                            try {
+                                return@let data.decodeHex()
+                            } catch (_: Error) { }
+                        }
+                        data.toByteArray()
+                    },
                     outputType = when (params.inputType) {
                         ConfirmParams.TransferParams.InputType.Signature -> TransferDataOutputType.SIGNATURE
                         ConfirmParams.TransferParams.InputType.EncodeTransaction -> TransferDataOutputType.ENCODED_TRANSACTION
                         null -> throw IllegalArgumentException("Not supported ${params.inputType}")
                     },
-                    outputAction = TransferDataOutputAction.SEND,
+                    outputAction = when (params.inputType) {
+                        ConfirmParams.TransferParams.InputType.Signature -> TransferDataOutputAction.SIGN
+                        ConfirmParams.TransferParams.InputType.EncodeTransaction -> TransferDataOutputAction.SEND
+                        null -> throw IllegalArgumentException("Not supported ${params.inputType}")
+                    },
                     to = params.destination().address
                 ),
             )

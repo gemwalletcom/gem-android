@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">هیچ بازاری یافت نشد</string>
   <string name="assets.title">دارایی‌ها</string>
+  <string name="stake.delegations">واگذاری‌ها</string>
+  <string name="info.stake.apr.description">نرخ درصد سالانه (APR) نرخ پاداش سالانه برای سپرده‌گذاری ارز دیجیتال شما است.</string>
+  <string name="receive.warning" formatted="false">فقط ** %s ** را در شبکه ** %s ** به این آدرس ارسال کنید.</string>
+  <string name="perpetual.leverage">اهرم مالی</string>
+  <string name="perpetual.direction">جهت</string>
+  <string name="perpetual.auto_close">بستن خودکار</string>
+  <string name="info.perpetual.auto_close.description">موقعیت خود را به طور خودکار در سطوح قیمت تعیین شده ببندید. برداشت سود، سود را قفل می‌کند، و توقف ضرر، ضرر را محدود می‌کند.</string>
+  <string name="perpetual.auto_close.trigger_price">قیمت ماشه</string>
+  <string name="perpetual.auto_close.take_profit">سود ببرید</string>
+  <string name="perpetual.auto_close.stop_loss">حد ضرر</string>
+  <string name="perpetual.market_price">قیمت بازار</string>
+  <string name="perpetual.auto_close.estimed_pnl">سود هر سهم (PNL) تخمینی</string>
+  <string name="perpetual.increase_direction">افزایش %s</string>
+  <string name="perpetual.reduce_direction">کاهش %s</string>
 </resources>

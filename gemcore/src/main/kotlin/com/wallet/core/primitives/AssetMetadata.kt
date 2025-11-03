@@ -5,10 +5,12 @@
 package com.wallet.core.primitives
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class AssetMetaData (
 	val isEnabled: Boolean,
+	val isBalanceEnabled: Boolean,
 	val isBuyEnabled: Boolean,
 	val isSellEnabled: Boolean,
 	val isSwapEnabled: Boolean,

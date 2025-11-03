@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Tidak ada pasar yang ditemukan</string>
   <string name="assets.title">Aktiva</string>
+  <string name="stake.delegations">Delegasi</string>
+  <string name="info.stake.apr.description">Tingkat Persentase Tahunan (APR) adalah tingkat imbalan tahunan untuk mempertaruhkan mata uang kripto Anda.</string>
+  <string name="receive.warning" formatted="false">Kirim hanya ** %s ** di jaringan ** %s ** ke alamat ini.</string>
+  <string name="perpetual.leverage">Daya ungkit keuangan</string>
+  <string name="perpetual.direction">Arah</string>
+  <string name="perpetual.auto_close">Tutup Otomatis</string>
+  <string name="info.perpetual.auto_close.description">Tutup posisi Anda secara otomatis pada level harga yang ditentukan. Take Profit mengunci keuntungan, Stop Loss membatasi kerugian.</string>
+  <string name="perpetual.auto_close.trigger_price">Harga pemicu</string>
+  <string name="perpetual.auto_close.take_profit">Ambil untung</string>
+  <string name="perpetual.auto_close.stop_loss">Hentikan Kerugian</string>
+  <string name="perpetual.market_price">Harga Pasar</string>
+  <string name="perpetual.auto_close.estimed_pnl">Perkiraan PNL</string>
+  <string name="perpetual.increase_direction">Peningkatan %s</string>
+  <string name="perpetual.reduce_direction">Kurangi %s</string>
 </resources>

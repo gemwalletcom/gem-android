@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Không tìm thấy thị trường</string>
   <string name="assets.title">Tài sản</string>
+  <string name="stake.delegations">Ủy quyền</string>
+  <string name="info.stake.apr.description">Tỷ lệ phần trăm hàng năm (APR) là tỷ lệ phần thưởng hàng năm cho việc đặt cược tiền điện tử của bạn.</string>
+  <string name="receive.warning" formatted="false">Chỉ gửi ** %s ** trên mạng ** %s ** đến địa chỉ này.</string>
+  <string name="perpetual.leverage">Đòn bẩy</string>
+  <string name="perpetual.direction">Phương hướng</string>
+  <string name="perpetual.auto_close">Tự động đóng</string>
+  <string name="info.perpetual.auto_close.description">Tự động đóng vị thế của bạn ở mức giá đã đặt. Chốt lời khóa lợi nhuận, Cắt lỗ hạn chế thua lỗ.</string>
+  <string name="perpetual.auto_close.trigger_price">Giá kích hoạt</string>
+  <string name="perpetual.auto_close.take_profit">Kiếm lợi nhuận</string>
+  <string name="perpetual.auto_close.stop_loss">Dừng lỗ</string>
+  <string name="perpetual.market_price">Giá thị trường</string>
+  <string name="perpetual.auto_close.estimed_pnl">PNL ước tính</string>
+  <string name="perpetual.increase_direction">Tăng %s</string>
+  <string name="perpetual.reduce_direction">Giảm %s</string>
 </resources>

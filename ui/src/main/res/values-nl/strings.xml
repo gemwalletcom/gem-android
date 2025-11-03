@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Geen markten gevonden</string>
   <string name="assets.title">Activa</string>
+  <string name="stake.delegations">Delegaties</string>
+  <string name="info.stake.apr.description">Jaarlijks percentage (APR) is het jaarlijkse beloningspercentage voor het staken van uw cryptocurrency.</string>
+  <string name="receive.warning" formatted="false">Stuur alleen ** %s ** op het ** %s ** netwerk naar dit adres.</string>
+  <string name="perpetual.leverage">Hefboom</string>
+  <string name="perpetual.direction">Richting</string>
+  <string name="perpetual.auto_close">Automatisch sluiten</string>
+  <string name="info.perpetual.auto_close.description">Sluit uw positie automatisch op ingestelde prijsniveaus. Take Profit vergrendelt winsten, Stop Loss beperkt verliezen.</string>
+  <string name="perpetual.auto_close.trigger_price">Triggerprijs</string>
+  <string name="perpetual.auto_close.take_profit">Winst nemen</string>
+  <string name="perpetual.auto_close.stop_loss">Stop-loss</string>
+  <string name="perpetual.market_price">Marktprijs</string>
+  <string name="perpetual.auto_close.estimed_pnl">Geschatte PNL</string>
+  <string name="perpetual.increase_direction">Verhogen %s</string>
+  <string name="perpetual.reduce_direction">Verminder %s</string>
 </resources>

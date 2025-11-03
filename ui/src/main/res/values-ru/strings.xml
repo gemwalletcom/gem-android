@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Рынки не найдены</string>
   <string name="assets.title">Ресурсы</string>
+  <string name="stake.delegations">Делегации</string>
+  <string name="info.stake.apr.description">Годовая процентная ставка (APR) — это годовая ставка вознаграждения за стейкинг вашей криптовалюты.</string>
+  <string name="receive.warning" formatted="false">Отправлять только ** %s ** в сети ** %s ** на этот адрес.</string>
+  <string name="perpetual.leverage">Кредитное плечо</string>
+  <string name="perpetual.direction">Направление</string>
+  <string name="perpetual.auto_close">Автоматическое закрытие</string>
+  <string name="info.perpetual.auto_close.description">Автоматически закрывает позицию по достижении заданного уровня цены. Тейк-профит фиксирует прибыль, стоп-лосс ограничивает убытки.</string>
+  <string name="perpetual.auto_close.trigger_price">Цена триггера</string>
+  <string name="perpetual.auto_close.take_profit">Тейк-профит</string>
+  <string name="perpetual.auto_close.stop_loss">Стоп-лосс</string>
+  <string name="perpetual.market_price">Рыночная цена</string>
+  <string name="perpetual.auto_close.estimed_pnl">Расчетная PNL</string>
+  <string name="perpetual.increase_direction">Увеличение %s</string>
+  <string name="perpetual.reduce_direction">Уменьшить %s</string>
 </resources>

@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Hakuna masoko yaliyopatikana</string>
   <string name="assets.title">Mali</string>
+  <string name="stake.delegations">Uwakilishi</string>
+  <string name="info.stake.apr.description">Kiwango cha Asilimia cha Mwaka (APR) ni kiwango cha tuzo cha kila mwaka cha kuweka sarafu yako ya cryptocurrency.</string>
+  <string name="receive.warning" formatted="false">Tuma tu ** %s ** kwenye mtandao wa ** %s ** kwa anwani hii.</string>
+  <string name="perpetual.leverage">Uvunjaji wa kifedh</string>
+  <string name="perpetual.direction">Mwelekeo</string>
+  <string name="perpetual.auto_close">Funga Kiotomatiki</string>
+  <string name="info.perpetual.auto_close.description">Funga msimamo wako kiotomatiki katika viwango vya bei vilivyowekwa. Chukua kufuli za Faida katika faida, Stop Loss mipaka hasara.</string>
+  <string name="perpetual.auto_close.trigger_price">Anzisha bei</string>
+  <string name="perpetual.auto_close.take_profit">Chukua faida</string>
+  <string name="perpetual.auto_close.stop_loss">Acha Hasara</string>
+  <string name="perpetual.market_price">Bei ya Soko</string>
+  <string name="perpetual.auto_close.estimed_pnl">PNL iliyokadiriwa</string>
+  <string name="perpetual.increase_direction">Ongeza %s</string>
+  <string name="perpetual.reduce_direction">Punguza %s</string>
 </resources>

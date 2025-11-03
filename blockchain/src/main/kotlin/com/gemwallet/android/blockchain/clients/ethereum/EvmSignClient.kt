@@ -43,6 +43,27 @@ class EvmSignClient(
         return EthereumMessageSigner.signTypedMessage(privateKey, json).decodeHex()
     }
 
+    override suspend fun signGenericTransfer(
+        params: ConfirmParams.TransferParams.Generic,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        fee: Fee,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val meta = chainData as EvmChainData
+        val transfer = buildTransfer(finalAmount, finalAmount, params)
+        val input = buildSignInput(
+            assetId = params.assetId,
+            fee = fee as GasFee,
+            chainId = meta.chainId.toBigInteger(),
+            nonce = meta.nonce,
+            destinationAddress = params.destination().address,
+            transfer = transfer,
+            privateKey = privateKey,
+        )
+        return sign(input)
+    }
+
     override suspend fun signNativeTransfer(
         params: ConfirmParams.TransferParams.Native,
         chainData: ChainSignData,

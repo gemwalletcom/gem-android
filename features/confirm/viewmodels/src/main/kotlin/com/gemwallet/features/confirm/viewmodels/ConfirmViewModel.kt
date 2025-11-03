@@ -259,6 +259,11 @@ class ConfirmViewModel @Inject constructor(
 
     fun init(params: ConfirmParams) {
         viewModelScope.launch(Dispatchers.IO) {
+            state.update { ConfirmState.Prepare }
+            // reset
+            savedStateHandle[txTypeArg] = null
+            savedStateHandle[paramsArg] = null
+            // load
             savedStateHandle[txTypeArg] = params.getTxType().string
             savedStateHandle[paramsArg] = params.pack()
         }

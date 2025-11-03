@@ -30,16 +30,8 @@ class SolanaSignClient(
 ) : SignClient {
 
     override suspend fun signMessage(chain: Chain, input: ByteArray, privateKey: ByteArray): ByteArray {
-        val str = String(input)
-        val bytes = Base64.decode(str)
-        if (bytes[0].toInt() != 1) {
-            throw IllegalArgumentException("only support one signature")
-        }
-
-        val message = bytes.copyOfRange(65, bytes.size - 1)
-        val signature = PrivateKey(privateKey).sign(message, Curve.ED25519)
-        val signed = byteArrayOf(0x1) + signature + message
-        return Base64.encode(signed).toByteArray()
+        val signature = PrivateKey(privateKey).sign(input, Curve.ED25519)
+        return signature
     }
 
     override suspend fun signGenericTransfer(

@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Keine Märkte gefunden</string>
   <string name="assets.title">Vermögenswerte</string>
+  <string name="stake.delegations">Delegationen</string>
+  <string name="info.stake.apr.description">Der effektive Jahreszins (APR) ist der jährliche Belohnungssatz für das Staking Ihrer Kryptowährung.</string>
+  <string name="receive.warning" formatted="false">Senden Sie nur ** %s ** im ** %s **-Netzwerk an diese Adresse.</string>
+  <string name="perpetual.leverage">Hebelwirkung</string>
+  <string name="perpetual.direction">Richtung</string>
+  <string name="perpetual.auto_close">Automatisches Schließen</string>
+  <string name="info.perpetual.auto_close.description">Schließen Sie Ihre Position automatisch bei festgelegten Preisniveaus. Take Profit sichert Gewinne, Stop Loss begrenzt Verluste.</string>
+  <string name="perpetual.auto_close.trigger_price">Auslösepreis</string>
+  <string name="perpetual.auto_close.take_profit">Gewinn mitnehmen</string>
+  <string name="perpetual.auto_close.stop_loss">Stop-Loss</string>
+  <string name="perpetual.market_price">Marktpreis</string>
+  <string name="perpetual.auto_close.estimed_pnl">Geschätzter Gewinn/Verlust</string>
+  <string name="perpetual.increase_direction">Erhöhung %s</string>
+  <string name="perpetual.reduce_direction">Reduzieren %s</string>
 </resources>

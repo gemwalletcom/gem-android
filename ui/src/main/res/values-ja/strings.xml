@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">市場が見つかりません</string>
   <string name="assets.title">資産</string>
+  <string name="stake.delegations">委任</string>
+  <string name="info.stake.apr.description">年率 (APR) は、暗号通貨をステーキングした場合の年間報酬率です。</string>
+  <string name="receive.warning" formatted="false">** %s ** ネットワーク上の ** %s ** のみをこのアドレスに送信します。</string>
+  <string name="perpetual.leverage">てこの作用</string>
+  <string name="perpetual.direction">方向</string>
+  <string name="perpetual.auto_close">自動閉じる</string>
+  <string name="info.perpetual.auto_close.description">設定した価格レベルでポジションを自動的に決済します。テイクプロフィットで利益を確定し、ストップロスで損失を制限します。</string>
+  <string name="perpetual.auto_close.trigger_price">トリガー価格</string>
+  <string name="perpetual.auto_close.take_profit">利益確定</string>
+  <string name="perpetual.auto_close.stop_loss">ストップロス</string>
+  <string name="perpetual.market_price">市場価格</string>
+  <string name="perpetual.auto_close.estimed_pnl">推定損益</string>
+  <string name="perpetual.increase_direction">%sを増やす</string>
+  <string name="perpetual.reduce_direction">%sを減らす</string>
 </resources>

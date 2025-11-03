@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Tiada pasaran ditemui</string>
   <string name="assets.title">Aset</string>
+  <string name="stake.delegations">Delegasi</string>
+  <string name="info.stake.apr.description">Kadar Peratusan Tahunan (APR) ialah kadar ganjaran tahunan untuk mempertaruhkan mata wang kripto anda.</string>
+  <string name="receive.warning" formatted="false">Hantar hanya ** %s ** pada rangkaian ** %s ** ke alamat ini.</string>
+  <string name="perpetual.leverage">Leverage</string>
+  <string name="perpetual.direction">Arah</string>
+  <string name="perpetual.auto_close">Auto Tutup</string>
+  <string name="info.perpetual.auto_close.description">Tutup kedudukan anda secara automatik pada tahap harga yang ditetapkan. Ambil Untung mengunci keuntungan, Henti Kerugian menghadkan kerugian.</string>
+  <string name="perpetual.auto_close.trigger_price">Harga pencetus</string>
+  <string name="perpetual.auto_close.take_profit">Ambil untung</string>
+  <string name="perpetual.auto_close.stop_loss">Hentikan Kehilangan</string>
+  <string name="perpetual.market_price">Harga Pasaran</string>
+  <string name="perpetual.auto_close.estimed_pnl">Anggaran PNL</string>
+  <string name="perpetual.increase_direction">Tingkatkan %s</string>
+  <string name="perpetual.reduce_direction">Kurangkan %s</string>
 </resources>

@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Hiçbir pazar bulunamadı</string>
   <string name="assets.title">Varlıklar</string>
+  <string name="stake.delegations">Yetkilendirmeler</string>
+  <string name="info.stake.apr.description">Yıllık Yüzde Oranı (APR), kripto paranızı stake etmeniz durumunda ödeyeceğiniz yıllık ödül oranıdır.</string>
+  <string name="receive.warning" formatted="false">Bu adrese yalnızca ** %s ** ağında ** %s ** gönderin.</string>
+  <string name="perpetual.leverage">Kaldıraç</string>
+  <string name="perpetual.direction">Yön</string>
+  <string name="perpetual.auto_close">Otomatik Kapatma</string>
+  <string name="info.perpetual.auto_close.description">Pozisyonunuzu belirlenen fiyat seviyelerinde otomatik olarak kapatın. Kâr Al özelliği kazançlarınızı sabitler, Zarar Durdur özelliği ise kayıplarınızı sınırlar.</string>
+  <string name="perpetual.auto_close.trigger_price">Tetikleyici fiyat</string>
+  <string name="perpetual.auto_close.take_profit">Kar al</string>
+  <string name="perpetual.auto_close.stop_loss">Zarar Durdurma</string>
+  <string name="perpetual.market_price">Piyasa Fiyatı</string>
+  <string name="perpetual.auto_close.estimed_pnl">Tahmini Kâr/Zarar</string>
+  <string name="perpetual.increase_direction">%s yi artırın</string>
+  <string name="perpetual.reduce_direction">%s azalt</string>
 </resources>

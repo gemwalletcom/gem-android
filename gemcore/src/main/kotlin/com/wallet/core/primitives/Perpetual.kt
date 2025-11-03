@@ -4,8 +4,8 @@
 
 package com.wallet.core.primitives
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
 
 @Serializable
 data class Perpetual (
@@ -51,7 +51,13 @@ data class PerpetualConfirmData (
 	val assetIndex: Int,
 	val price: String,
 	val fiatValue: Double,
-	val size: String
+	val size: String,
+	val slippage: Double,
+	val leverage: UByte,
+	val pnl: Double? = null,
+	val entryPrice: Double? = null,
+	val marketPrice: Double,
+	val marginAmount: Double
 )
 
 @Serializable
@@ -80,6 +86,12 @@ data class PerpetualPositionsSummary (
 )
 
 @Serializable
+data class PerpetualReduceData (
+	val data: PerpetualConfirmData,
+	val positionDirection: PerpetualDirection
+)
+
+@Serializable
 enum class AccountDataType(val string: String) {
 	@SerialName("activate")
 	Activate("activate"),
@@ -93,5 +105,11 @@ sealed class PerpetualType {
 	@Serializable
 	@SerialName("Close")
 	data class Close(val content: PerpetualConfirmData): PerpetualType()
+	@Serializable
+	@SerialName("Increase")
+	data class Increase(val content: PerpetualConfirmData): PerpetualType()
+	@Serializable
+	@SerialName("Reduce")
+	data class Reduce(val content: PerpetualReduceData): PerpetualType()
 }
 

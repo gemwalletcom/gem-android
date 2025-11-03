@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">کوئی بازار نہیں ملا</string>
   <string name="assets.title">اثاثے</string>
+  <string name="stake.delegations">تفویضات</string>
+  <string name="info.stake.apr.description">سالانہ فیصدی شرح (APR) آپ کی کریپٹو کرنسی کو داغدار کرنے کے لیے سالانہ انعام کی شرح ہے۔</string>
+  <string name="receive.warning" formatted="false">اس ایڈریس پر ** %s ** نیٹ ورک پر صرف ** %s ** بھیجیں۔</string>
+  <string name="perpetual.leverage">مالی فائدہ اٹھانا</string>
+  <string name="perpetual.direction">سمت</string>
+  <string name="perpetual.auto_close">آٹو بند</string>
+  <string name="info.perpetual.auto_close.description">اپنی پوزیشن کو سیٹ قیمت کی سطحوں پر خودکار طور پر بند کریں۔ منافع میں منافع کے تالے لیں، نقصان کو روکیں نقصانات کو محدود کریں۔</string>
+  <string name="perpetual.auto_close.trigger_price">ٹرگر قیمت</string>
+  <string name="perpetual.auto_close.take_profit">منافع لے لو</string>
+  <string name="perpetual.auto_close.stop_loss">نقصان کو روکیں۔</string>
+  <string name="perpetual.market_price">بازاری قیمت</string>
+  <string name="perpetual.auto_close.estimed_pnl">تخمینہ شدہ PNL</string>
+  <string name="perpetual.increase_direction">اضافہ کریں %s</string>
+  <string name="perpetual.reduce_direction">کم کریں %s</string>
 </resources>

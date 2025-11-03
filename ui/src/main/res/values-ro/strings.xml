@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Nu s-au găsit piețe</string>
   <string name="assets.title">Active</string>
+  <string name="stake.delegations">Delegații</string>
+  <string name="info.stake.apr.description">Rata anuală procentuală (DAE) este rata anuală de recompensă pentru plasarea criptomonedei tale.</string>
+  <string name="receive.warning" formatted="false">Trimiteți doar ** %s ** prin rețeaua ** %s ** către această adresă.</string>
+  <string name="perpetual.leverage">Efect de levier</string>
+  <string name="perpetual.direction">Direcţie</string>
+  <string name="perpetual.auto_close">Închidere automată</string>
+  <string name="info.perpetual.auto_close.description">Închide automat poziția la nivelurile de preț stabilite. Funcția Take Profit blochează câștigurile, iar funcția Stop Loss limitează pierderile.</string>
+  <string name="perpetual.auto_close.trigger_price">Preț de declanșare</string>
+  <string name="perpetual.auto_close.take_profit">Ia profit</string>
+  <string name="perpetual.auto_close.stop_loss">Stop Loss</string>
+  <string name="perpetual.market_price">Prețul de piață</string>
+  <string name="perpetual.auto_close.estimed_pnl">PNL estimat</string>
+  <string name="perpetual.increase_direction">Creștere %s</string>
+  <string name="perpetual.reduce_direction">Reduceți %s</string>
 </resources>

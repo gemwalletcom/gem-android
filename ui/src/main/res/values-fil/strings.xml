@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Walang nakitang mga merkado</string>
   <string name="assets.title">Mga asset</string>
+  <string name="stake.delegations">Mga delegasyon</string>
+  <string name="info.stake.apr.description">Ang Annual Percentage Rate (APR) ay ang taunang reward rate para sa staking ng iyong cryptocurrency.</string>
+  <string name="receive.warning" formatted="false">Ipadala lamang ang ** %s ** sa ** %s ** network sa address na ito.</string>
+  <string name="perpetual.leverage">Leverage</string>
+  <string name="perpetual.direction">Direksyon</string>
+  <string name="perpetual.auto_close">Auto Close</string>
+  <string name="info.perpetual.auto_close.description">Awtomatikong isara ang iyong posisyon sa nakatakdang antas ng presyo. Kumuha ng Profit lock sa mga nadagdag, Stop Loss limitahan pagkalugi.</string>
+  <string name="perpetual.auto_close.trigger_price">Presyo ng trigger</string>
+  <string name="perpetual.auto_close.take_profit">Kumuha ng tubo</string>
+  <string name="perpetual.auto_close.stop_loss">Stop Loss</string>
+  <string name="perpetual.market_price">Presyo ng Market</string>
+  <string name="perpetual.auto_close.estimed_pnl">Tinatayang PNL</string>
+  <string name="perpetual.increase_direction">Dagdagan %s</string>
+  <string name="perpetual.reduce_direction">Bawasan ang %s</string>
 </resources>

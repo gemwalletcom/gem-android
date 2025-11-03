@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">ไม่พบตลาด</string>
   <string name="assets.title">สินทรัพย์</string>
+  <string name="stake.delegations">การมอบหมาย</string>
+  <string name="info.stake.apr.description">อัตราเปอร์เซ็นต์ต่อปี (APR) คืออัตราผลตอบแทนรายปีสำหรับการเดิมพันสกุลเงินดิจิทัลของคุณ</string>
+  <string name="receive.warning" formatted="false">ส่งเฉพาะ ** %s ** บนเครือข่าย ** %s ** ไปยังที่อยู่นี้</string>
+  <string name="perpetual.leverage">อัตราทดทางการเงิน</string>
+  <string name="perpetual.direction">ทิศทาง</string>
+  <string name="perpetual.auto_close">ปิดอัตโนมัติ</string>
+  <string name="info.perpetual.auto_close.description">ปิดสถานะของคุณโดยอัตโนมัติเมื่อถึงระดับราคาที่กำหนด Take Profit ล็อกกำไร Stop Loss จำกัดการขาดทุน</string>
+  <string name="perpetual.auto_close.trigger_price">ราคาทริกเกอร์</string>
+  <string name="perpetual.auto_close.take_profit">รับผลกำไร</string>
+  <string name="perpetual.auto_close.stop_loss">สต็อปลอส</string>
+  <string name="perpetual.market_price">ราคาตลาด</string>
+  <string name="perpetual.auto_close.estimed_pnl">PNL โดยประมาณ</string>
+  <string name="perpetual.increase_direction">เพิ่ม %s</string>
+  <string name="perpetual.reduce_direction">ลด %s</string>
 </resources>

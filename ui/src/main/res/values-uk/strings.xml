@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">Ринків не знайдено</string>
   <string name="assets.title">Активи</string>
+  <string name="stake.delegations">Делегації</string>
+  <string name="info.stake.apr.description">Річна процентна ставка (APR) – це річна ставка винагороди за стейкінг вашої криптовалюти.</string>
+  <string name="receive.warning" formatted="false">Надсилати лише ** %s ** через мережу ** %s ** на цю адресу.</string>
+  <string name="perpetual.leverage">Кредитне плече</string>
+  <string name="perpetual.direction">Напрямок</string>
+  <string name="perpetual.auto_close">Автоматичне закриття</string>
+  <string name="info.perpetual.auto_close.description">Автоматично закривайте свою позицію за встановленими ціновими рівнями. Тейк-профіт фіксує прибутки, а стоп-лос обмежує збитки.</string>
+  <string name="perpetual.auto_close.trigger_price">Тригерна ціна</string>
+  <string name="perpetual.auto_close.take_profit">Зафіксуйте прибуток</string>
+  <string name="perpetual.auto_close.stop_loss">Стоп-лосс</string>
+  <string name="perpetual.market_price">Ринкова ціна</string>
+  <string name="perpetual.auto_close.estimed_pnl">Очікуваний PNL</string>
+  <string name="perpetual.increase_direction">Збільшити %s</string>
+  <string name="perpetual.reduce_direction">Зменшити %s</string>
 </resources>

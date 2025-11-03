@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">No markets found</string>
   <string name="assets.title">Assets</string>
+  <string name="stake.delegations">Delegations</string>
+  <string name="info.stake.apr.description">Annual Percentage Rate (APR) is the yearly reward rate for staking your cryptocurrency.</string>
+  <string name="receive.warning" formatted="false">Send only **%s** on the **%s** network to this address.</string>
+  <string name="perpetual.leverage">Leverage</string>
+  <string name="perpetual.direction">Direction</string>
+  <string name="perpetual.auto_close">Auto Close</string>
+  <string name="info.perpetual.auto_close.description">Automatically close your position at set price levels. Take Profit locks in gains, Stop Loss limits losses.</string>
+  <string name="perpetual.auto_close.trigger_price">Trigger price</string>
+  <string name="perpetual.auto_close.take_profit">Take profit</string>
+  <string name="perpetual.auto_close.stop_loss">Stop Loss</string>
+  <string name="perpetual.market_price">Market Price</string>
+  <string name="perpetual.auto_close.estimed_pnl">Estimated Pnl</string>
+  <string name="perpetual.increase_direction">Increase %s</string>
+  <string name="perpetual.reduce_direction">Reduce %s</string>
 </resources>

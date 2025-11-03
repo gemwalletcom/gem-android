@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">कोई बाज़ार नहीं मिला</string>
   <string name="assets.title">संपत्ति</string>
+  <string name="stake.delegations">प्रतिनियोजन</string>
+  <string name="info.stake.apr.description">वार्षिक प्रतिशत दर (एपीआर) आपकी क्रिप्टोकरेंसी को दांव पर लगाने के लिए वार्षिक पुरस्कार दर है।</string>
+  <string name="receive.warning" formatted="false">इस पते पर केवल ** %s ** नेटवर्क पर ** %s ** भेजें।</string>
+  <string name="perpetual.leverage">उत्तोलन</string>
+  <string name="perpetual.direction">दिशा</string>
+  <string name="perpetual.auto_close">स्वतः बंद</string>
+  <string name="info.perpetual.auto_close.description">निर्धारित मूल्य स्तरों पर अपनी पोजीशन स्वचालित रूप से बंद करें। टेक प्रॉफिट लाभ को लॉक करता है, स्टॉप लॉस नुकसान को सीमित करता है।</string>
+  <string name="perpetual.auto_close.trigger_price">ट्रिगर मूल्य</string>
+  <string name="perpetual.auto_close.take_profit">लाभ लेने के</string>
+  <string name="perpetual.auto_close.stop_loss">झड़ने बंद</string>
+  <string name="perpetual.market_price">बाजार कीमत</string>
+  <string name="perpetual.auto_close.estimed_pnl">अनुमानित पीएनएल</string>
+  <string name="perpetual.increase_direction">%s बढ़ाएँ</string>
+  <string name="perpetual.reduce_direction">%s कम करें</string>
 </resources>

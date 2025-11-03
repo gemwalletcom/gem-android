@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">לא נמצאו שווקים</string>
   <string name="assets.title">נכסים</string>
+  <string name="stake.delegations">האצלות</string>
+  <string name="info.stake.apr.description">שיעור אחוז שנתי (APR) הוא שיעור התגמול השנתי עבור הפקדת מטבע הקריפטו שלך.</string>
+  <string name="receive.warning" formatted="false">שלח רק ** %s ** ברשת ** %s ** לכתובת זו.</string>
+  <string name="perpetual.leverage">מינוף</string>
+  <string name="perpetual.direction">כיוון</string>
+  <string name="perpetual.auto_close">סגירה אוטומטית</string>
+  <string name="info.perpetual.auto_close.description">סגור אוטומטית את הפוזיציה שלך ברמות מחיר קבועות. Take Profit נועל רווחים, Stop Loss מגביל הפסדים.</string>
+  <string name="perpetual.auto_close.trigger_price">מחיר טריגר</string>
+  <string name="perpetual.auto_close.take_profit">קח רווח</string>
+  <string name="perpetual.auto_close.stop_loss">סטופ לוס</string>
+  <string name="perpetual.market_price">מחיר שוק</string>
+  <string name="perpetual.auto_close.estimed_pnl">PNL משוער</string>
+  <string name="perpetual.increase_direction">הגדלה %s</string>
+  <string name="perpetual.reduce_direction">צמצום %s</string>
 </resources>

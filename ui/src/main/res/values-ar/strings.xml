@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">لم يتم العثور على الأسواق</string>
   <string name="assets.title">أصول</string>
+  <string name="stake.delegations">التفويضات</string>
+  <string name="info.stake.apr.description">معدل النسبة السنوية (APR) هو معدل المكافأة السنوي لمراهنة العملة المشفرة الخاصة بك.</string>
+  <string name="receive.warning" formatted="false">أرسل فقط ** %s ** على شبكة ** %s ** إلى هذا العنوان.</string>
+  <string name="perpetual.leverage">الرافعة المالية</string>
+  <string name="perpetual.direction">اتجاه</string>
+  <string name="perpetual.auto_close">إغلاق تلقائي</string>
+  <string name="info.perpetual.auto_close.description">أغلق مركزك تلقائيًا عند مستويات الأسعار المحددة. جني الأرباح يُثبّت الأرباح، ووقف الخسارة يحدّ من الخسائر.</string>
+  <string name="perpetual.auto_close.trigger_price">سعر الزناد</string>
+  <string name="perpetual.auto_close.take_profit">جني الأرباح</string>
+  <string name="perpetual.auto_close.stop_loss">وقف الخسارة</string>
+  <string name="perpetual.market_price">سعر السوق</string>
+  <string name="perpetual.auto_close.estimed_pnl">الربح والخسارة التقديرية</string>
+  <string name="perpetual.increase_direction">زيادة %s</string>
+  <string name="perpetual.reduce_direction">تقليل %s</string>
 </resources>

@@ -165,7 +165,7 @@ class MainActivity : FragmentActivity(), AuthRequester {
                             .size(100.dp)
                             .align(Alignment.Center),
                         painter = painterResource(id = R.drawable.ic_splash),
-                        contentDescription = "splash"
+                        contentDescription = "splash",
                     )
                 }
             }
@@ -377,9 +377,7 @@ class MainViewModel @Inject constructor(
 
     fun resetWCPairing(): Boolean {
         val showWCPairing = state.value.showWCPairing
-        state.update {
-            it.copy(showWCPairing = false)
-        }
+        state.update { it.copy(showWCPairing = false) }
         return showWCPairing
     }
 

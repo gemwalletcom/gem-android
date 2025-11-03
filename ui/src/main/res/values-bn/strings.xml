@@ -499,4 +499,18 @@
   <string name="perpetuals.empty_state.no_markets">No markets</string>
   <string name="perpetuals.empty_state.no_markets_found">কোন বাজার খুঁজে পাওয়া যায়নি</string>
   <string name="assets.title">সম্পদ</string>
+  <string name="stake.delegations">ডেলিগেশনসমূহ</string>
+  <string name="info.stake.apr.description">বার্ষিক শতাংশ হার (এপিআর) হল আপনার ক্রিপ্টোকারেন্সি শেয়ার করার জন্য বার্ষিক পুরষ্কারের হার।</string>
+  <string name="receive.warning" formatted="false">** %s ** নেটওয়ার্কে শুধুমাত্র ** %s ** এই ঠিকানায় পাঠান।</string>
+  <string name="perpetual.leverage">লিভারেজ</string>
+  <string name="perpetual.direction">দিকনির্দেশনা</string>
+  <string name="perpetual.auto_close">স্বয়ংক্রিয়ভাবে বন্ধ করুন</string>
+  <string name="info.perpetual.auto_close.description">নির্ধারিত মূল্য স্তরে আপনার পজিশন স্বয়ংক্রিয়ভাবে বন্ধ করুন। টেক প্রফিট লাভকে আটকে রাখে, স্টপ লস লোকসানকে সীমাবদ্ধ করে।</string>
+  <string name="perpetual.auto_close.trigger_price">ট্রিগার মূল্য</string>
+  <string name="perpetual.auto_close.take_profit">লাভ নিন</string>
+  <string name="perpetual.auto_close.stop_loss">স্টপ লস</string>
+  <string name="perpetual.market_price">বাজার মূল্য</string>
+  <string name="perpetual.auto_close.estimed_pnl">আনুমানিক পিএনএল</string>
+  <string name="perpetual.increase_direction">%s বৃদ্ধি করুন</string>
+  <string name="perpetual.reduce_direction">%s কমাও</string>
 </resources>
