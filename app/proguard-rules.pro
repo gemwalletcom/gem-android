@@ -64,6 +64,10 @@
 -keep class com.gemwallet.android.** { *; }
 -keep class com.wallet.core.** { *; }
 -keep class com.sun.jna.** { *; }
+-keep class * extends com.sun.jna.Structure { *; }
+-keepattributes *Annotation*,InnerClasses,EnclosingMethod,Signature
+-keep @androidx.annotation.Keep class ** { *; }
+-keepclassmembers class ** { @androidx.annotation.Keep *; }
 -keep class java.nio.** { *; }
 -keep class * implements java.nio.** { *; }
 -keep class uniffi.** { *; }

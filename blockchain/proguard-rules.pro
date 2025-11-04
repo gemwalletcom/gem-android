@@ -87,6 +87,10 @@
 -keep class uniffi.** { *; }
 -keep class uniffi.Gemstone.** { *; }
 -keep class com.sun.jna.** { *; }
+-keep class * extends com.sun.jna.Structure { *; }
+-keepattributes *Annotation*,InnerClasses,EnclosingMethod,Signature
+-keep @androidx.annotation.Keep class ** { *; }
+-keepclassmembers class ** { @androidx.annotation.Keep *; }
 -keep class * implements java.nio.** { *; }
 -keep class java.nio.** { *; }
 
