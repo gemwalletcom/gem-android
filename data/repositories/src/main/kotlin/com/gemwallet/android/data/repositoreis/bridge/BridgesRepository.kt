@@ -56,6 +56,8 @@ class BridgesRepository(
             if ((getConnections().firstOrNull() ?: emptyList()).isNotEmpty()) {
                 initWalletConnect()
                 sync()
+                pingActiveSessions()
+                handlePendingRequests()
                 WalletConnectDelegate.walletEvents.collectLatest { event ->
                     withContext(Dispatchers.IO) {
                         when (event) {
@@ -141,6 +143,27 @@ class BridgesRepository(
         if (unknownSessions.isNotEmpty()) {
             sessions.forEach { disconnect(it.pairingTopic) }
             connectionsDao.deleteAll(unknownSessions.map { it.toRecord() })
+        }
+    }
+
+    private fun handlePendingRequests() {
+        val sessions = runCatching { WalletKit.getListOfActiveSessions().filter { wcSession -> wcSession.metaData != null } }
+            .getOrNull() ?: return
+        for (session in sessions) {
+            val request = WalletKit.getPendingListOfSessionRequests(session.topic)
+                .firstOrNull() ?: continue
+
+            val verifyContext = WalletKit.getVerifyContext(request.request.id) ?: continue
+            WalletConnectDelegate.onSessionRequest(request, verifyContext)
+        }
+    }
+
+    private fun pingActiveSessions() {
+        val sessions = runCatching { WalletKit.getListOfActiveSessions().filter { wcSession -> wcSession.metaData != null } }
+            .getOrNull() ?: return
+
+        for (session in sessions) {
+            WalletKit.pingSession(Wallet.Params.Ping(session.topic), null)
         }
     }
 
