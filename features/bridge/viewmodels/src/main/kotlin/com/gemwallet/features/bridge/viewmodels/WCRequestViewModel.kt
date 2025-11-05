@@ -57,7 +57,7 @@ class WCRequestViewModel @Inject constructor(
             val request = sessionRequest.map(wallet)
 
             if  (request is WCRequest.WalletSwitchEthereumChain) {
-                onSwitch(sessionRequest, onCancel)
+                onSwitch(sessionRequest)
                 return@launch
             }
             state.update {
@@ -87,30 +87,12 @@ class WCRequestViewModel @Inject constructor(
         }
 
         viewModelScope.launch(Dispatchers.IO) {
-            WalletKit.respondSessionRequest(
-                params = Wallet.Params.SessionRequestResponse(
-                    sessionTopic = sessionRequest.topic,
-                    jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(sessionRequest.request.id, data)
-                ),
-                onSuccess = { state.update { it.copy(canceled = true) } },
-                onError = { error -> state.update { it.copy(error = error.throwable.message ?: "Can't sent data to WalletConnect") } }
-            )
+            response(sessionRequest.topic, sessionRequest.request.id, data)
         }
     }
 
-    fun onSwitch(request: Wallet.Model.SessionRequest, onCancel: () -> Unit) {
-        WalletKit.respondSessionRequest(
-            params = Wallet.Params.SessionRequestResponse(
-                sessionTopic = request.topic,
-                jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
-                    request.request.id,
-                    "null",
-                )
-            ),
-            onSuccess = {  },
-            onError = { error -> }
-        )
-        onCancel()
+    fun onSwitch(request: Wallet.Model.SessionRequest) {
+        response(request.topic, request.request.id, "null")
     }
 
     fun onSigned(data: String) {
@@ -145,19 +127,7 @@ class WCRequestViewModel @Inject constructor(
                 return@launch
             }
 
-            WalletKit.respondSessionRequest(
-                params = Wallet.Params.SessionRequestResponse(
-                    sessionTopic = sessionRequest.topic,
-                    jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
-                        sessionRequest.request.id,
-                        sign
-                    )
-                ),
-                onSuccess = { state.update { it.copy(canceled = true) } },
-                onError = { error ->
-                    state.update { it.copy(error = error.throwable.message ?: "Can't sent sign to WalletConnect") }
-                }
-            )
+            response(sessionRequest.topic, sessionRequest.request.id, sign)
         }
     }
 
@@ -175,20 +145,21 @@ class WCRequestViewModel @Inject constructor(
                 state.update { it.copy(error = err.message ?: "Sign error") }
                 return@launch
             }
-            WalletKit.respondSessionRequest(
-                params = Wallet.Params.SessionRequestResponse(
-                    sessionTopic = request.data.topic,
-                    jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(
-                        request.data.request.id,
-                        sign
-                    )
-                ),
-                onSuccess = { state.update { it.copy(canceled = true) } },
-                onError = { error ->
-                    state.update { it.copy(error = error.throwable.message ?: "Can't sent sign to WalletConnect") }
-                }
-            )
+            response(request.data.topic, request.data.request.id, sign)
         }
+    }
+
+    private fun response(topic: String, id: Long, payload: String) {
+        WalletKit.respondSessionRequest(
+            params = Wallet.Params.SessionRequestResponse(
+                sessionTopic = topic,
+                jsonRpcResponse = Wallet.Model.JsonRpcResponse.JsonRpcResult(id, payload)
+            ),
+            onSuccess = { state.update { it.copy(canceled = true) } },
+            onError = { error ->
+                state.update { it.copy(error = error.throwable.message ?: "On response error") }
+            }
+        )
     }
 
     fun onReject() {

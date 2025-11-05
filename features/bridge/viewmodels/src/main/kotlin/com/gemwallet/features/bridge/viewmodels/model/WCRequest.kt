@@ -5,6 +5,7 @@ import com.gemwallet.android.blockchain.services.SignClientProxy
 import com.gemwallet.android.data.repositoreis.bridge.getNamespace
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
+import com.gemwallet.android.ext.getShortUrl
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.math.toHexString
@@ -37,7 +38,7 @@ sealed class WCRequest(
 
     val icon: String get() = data.peerMetaData?.icons?.firstOrNull() ?: ""
     val description: String get() = data.peerMetaData?.description ?: ""
-    val uri: String get() = data.peerMetaData?.url?.toUri()?.host ?: ""
+    val uri: String get() = data.peerMetaData?.url?.getShortUrl() ?: ""
     val method: String get() = data.request.method
     abstract val params: String
 
