@@ -16,7 +16,7 @@ class BalancesService(
     suspend fun getNativeBalances(account: Account): AssetBalance? {
         return try {
             val result = gateway.getBalanceCoin(account.chain.string, account.address)
-            val balance = AssetBalance.Companion.create(
+            val balance = AssetBalance.create(
                 asset = account.chain.asset(),
                 available = result.balance.available,
                 reserved = result.balance.reserved,
