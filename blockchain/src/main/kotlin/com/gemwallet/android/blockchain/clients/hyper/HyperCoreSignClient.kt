@@ -1,23 +1,23 @@
 package com.gemwallet.android.blockchain.clients.hyper
 
 import com.gemwallet.android.blockchain.clients.SignClient
-import com.gemwallet.android.blockchain.services.WalletCoreSigner
+import com.gemwallet.android.blockchain.services.mapper.toGem
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fee
-import com.gemwallet.android.model.format
 import com.wallet.core.primitives.Chain
-import uniffi.gemstone.HyperCore
-import uniffi.gemstone.HyperCoreModelFactory
+import uniffi.gemstone.GemChainSigner
+import uniffi.gemstone.GemGasPriceType
+import uniffi.gemstone.GemTransactionInputType
+import uniffi.gemstone.GemTransactionLoadInput
 import java.math.BigInteger
 
 class HyperCoreSignClient(
     val chain: Chain,
 ) : SignClient {
 
-    private val hyperCore = HyperCore(WalletCoreSigner())
-    private val factory = HyperCoreModelFactory()
+    private val hyperCore = GemChainSigner(chain.string)
+//    private val factory = HyperCoreModelFactory()
 //    private val agentNamePrefix = "gemwallet_"
 //    private val referralCode = "GEMWALLET"
 //    private val builderAddress = "0x0d9dab1a248f63b0a48965ba8435e4de7497a3dc"
@@ -30,13 +30,19 @@ class HyperCoreSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val amount = params.asset.format(Crypto(finalAmount), decimalPlace = params.asset.decimals, showSymbol = false)
-        return signSpotSend(
-            amount = amount,
-            destination = params.destination.address,
-            token = nativeSpotToken,
-            privateKey = privateKey
+//        val amount = params.asset.format(Crypto(finalAmount), decimalPlace = params.asset.decimals, showSymbol = false)
+        val metadata = (chainData as HyperCoreChainData).toGem()
+        val gemLoadInput = GemTransactionLoadInput(
+            inputType = GemTransactionInputType.Transfer(params.asset.toGem()),
+            senderAddress = params.from.address,
+            destinationAddress = params.destination.address,
+            value = finalAmount.toString(),
+            gasPrice = GemGasPriceType.Regular("0"),
+            memo = params.memo,
+            isMaxValue = params.useMaxAmount,
+            metadata = metadata,
         )
+        return listOf(hyperCore.signTransfer(gemLoadInput, privateKey).toByteArray())
     }
 
     override suspend fun signTokenTransfer(
@@ -46,32 +52,18 @@ class HyperCoreSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val amount = params.asset.format(Crypto(finalAmount), decimalPlace = params.asset.decimals, showSymbol = false) // TODO: Out to fun
-        val (symbol, tokenId) = params.asset.id.tokenId?.split("::")?.takeIf { it.size >= 2 }
-            ?.let { Pair(it[0], it[1]) } ?: throw IllegalArgumentException("Bad token")
-        return signSpotSend(
-            amount = amount,
-            destination = params.destination.address,
-            token = "$symbol:$tokenId",
-            privateKey = privateKey
+        val metadata = (chainData as HyperCoreChainData).toGem()
+        val gemLoadInput = GemTransactionLoadInput(
+            inputType = GemTransactionInputType.Transfer(params.asset.toGem()),
+            senderAddress = params.from.address,
+            destinationAddress = params.destination.address,
+            value = finalAmount.toString(),
+            gasPrice = GemGasPriceType.Regular("0"),
+            memo = params.memo,
+            isMaxValue = params.useMaxAmount,
+            metadata = metadata,
         )
-    }
-
-    private fun signSpotSend(
-        amount: String,
-        destination: String,
-        token: String,
-        privateKey: ByteArray
-    ): List<ByteArray> {
-        val timestamp = System.currentTimeMillis().toULong()
-        val spotSend = factory.sendSpotTokenToAddress(
-            amount = amount,
-            destination = destination,
-            time = timestamp,
-            token = token
-        )
-        val signature = hyperCore.signSpotSend(spotSend, privateKey)
-        return listOf(signature.toByteArray())
+        return listOf(hyperCore.signTokenTransfer(gemLoadInput, privateKey).toByteArray())
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

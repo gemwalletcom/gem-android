@@ -1,6 +1,7 @@
 package com.gemwallet.android.blockchain.clients.hyper
 
 import com.gemwallet.android.model.ChainSignData
+import uniffi.gemstone.GemHyperliquidOrder
 import uniffi.gemstone.GemTransactionLoadMetadata
 
 class HyperCoreChainData(
@@ -29,3 +30,16 @@ fun GemTransactionLoadMetadata.Hyperliquid.toChainData(): HyperCoreChainData {
     }
     return HyperCoreChainData(order)
 }
+
+fun HyperCoreChainData.toGem() = GemTransactionLoadMetadata.Hyperliquid(
+    order = order?.let {
+        GemHyperliquidOrder(
+            approveAgentRequired = it.approveAgentRequired,
+            approveReferralRequired = it.approveReferralRequired,
+            approveBuilderRequired = it.approveBuilderRequired,
+            builderFeeBps = it.builderFeeBps,
+            agentAddress = it.agentAddress,
+            agentPrivateKey = it.agentPrivateKey,
+        )
+    }
+)
