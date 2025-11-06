@@ -101,7 +101,8 @@ class AssetsViewModel @Inject constructor(
         .map { items -> items.filter { asset -> asset.metadata?.isPinned == true } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val unpinnedAssets = assets.map { it.filter { asset -> asset.metadata?.isPinned != true } }
+    val unpinnedAssets = assets
+        .map { it.filter { asset -> asset.metadata?.isPinned != true } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val walletInfo: StateFlow<WalletInfoUIState> = combine(
