@@ -32,6 +32,7 @@ class PolkadotSignClient(
             this.specVersion = chainData.specVersion.toInt()
             this.network = CoinType.POLKADOT.ss58Prefix()
             this.transactionVersion = chainData.transactionVersion.toInt()
+            this.chargeNativeAsAssetTxPayment = true
             this.privateKey = ByteString.copyFrom(privateKey)
             this.era = Polkadot.Era.newBuilder().apply {
                 this.blockNumber = chainData.blockNumber.toLong()
@@ -41,6 +42,16 @@ class PolkadotSignClient(
                 transfer = Polkadot.Balance.Transfer.newBuilder().apply {
                     this.toAddress = params.destination().address
                     this.value = ByteString.copyFrom(finalAmount.toByteArray())
+                    this.setCallIndices(
+                        Polkadot.CallIndices.newBuilder().apply {
+                            setCustom(
+                                Polkadot.CustomCallIndices.newBuilder().apply {
+                                    moduleIndex = 0x0A
+                                    methodIndex = 0x00
+                                }.build()
+                            )
+                        }.build()
+                    )
                 }.build()
             }.build()
         }.build()

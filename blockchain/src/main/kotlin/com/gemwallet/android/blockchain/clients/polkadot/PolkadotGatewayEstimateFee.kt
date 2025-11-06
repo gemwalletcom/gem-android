@@ -23,7 +23,7 @@ class PolkadotGatewayEstimateFee : GemGatewayEstimateFee {
     override suspend fun getFeeData(
         chain: Chain,
         input: GemTransactionLoadInput
-    ): String? {
+    ): String {
         val metadata = (input.metadata as? GemTransactionLoadMetadata.Polkadot)
             ?.toChainData()
             ?: throw IllegalArgumentException("Incorrect metadata: wait polkadot")
@@ -44,6 +44,7 @@ class PolkadotGatewayEstimateFee : GemGatewayEstimateFee {
             this.specVersion = data.specVersion.toInt()
             this.network = CoinType.POLKADOT.ss58Prefix()
             this.transactionVersion = data.transactionVersion.toInt()
+            this.chargeNativeAsAssetTxPayment = true
             this.privateKey = ByteString.copyFrom(PrivateKey().data())
             this.era = Polkadot.Era.newBuilder().apply {
                 this.blockNumber = data.blockNumber.toLong()
@@ -53,6 +54,16 @@ class PolkadotGatewayEstimateFee : GemGatewayEstimateFee {
                 transfer = Polkadot.Balance.Transfer.newBuilder().apply {
                     this.toAddress = toAdresss
                     this.value = ByteString.copyFrom(value.toByteArray())
+                    this.setCallIndices(
+                        Polkadot.CallIndices.newBuilder().apply {
+                            setCustom(
+                                Polkadot.CustomCallIndices.newBuilder().apply {
+                                    moduleIndex = 0x0A
+                                    methodIndex = 0x00
+                                }.build()
+                            )
+                        }.build()
+                    )
                 }.build()
             }.build()
         }.build()
