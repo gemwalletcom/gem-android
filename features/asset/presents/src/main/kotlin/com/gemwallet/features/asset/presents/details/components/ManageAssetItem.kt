@@ -40,7 +40,7 @@ fun LazyListScope.manageAssetItem(
         )
         PropertyItem(
             modifier = Modifier.clickable(onClick = onAdd),
-            title = { PropertyTitleText(R.string.asset_add_to_wallet, trailing = { Icon(Icons.Default.AddCircleOutline, "") }) },
+            title = { PropertyTitleText(R.string.asset_add_to_wallet, trailing = { Icon(Icons.Default.AddCircleOutline, stringResource(R.string.asset_add_to_wallet)) }) },
             data = {
                 PropertyDataText(
                     text = "",
