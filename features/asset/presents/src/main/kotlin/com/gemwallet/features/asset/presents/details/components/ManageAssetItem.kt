@@ -27,7 +27,7 @@ fun LazyListScope.manageAssetItem(
     item {
         PropertyItem(
             modifier = Modifier.clickable(onClick = onPin),
-            title = { PropertyTitleText(R.string.common_pin, trailing = { Icon(Icons.Default.PushPin, "") }) },
+            title = { PropertyTitleText(R.string.common_pin, trailing = { Icon(Icons.Default.PushPin, stringResource(R.string.common_pin)) }) },
             data = {
                 PropertyDataText(
                     text = "",
