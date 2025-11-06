@@ -73,8 +73,9 @@ class AssetDetailsViewModel @Inject constructor(
     private val assetInfo = assetId
         .onEach { uiState.update { AssetInfoUIState.Idle(AssetInfoUIState.SyncState.Process) } }
         .flatMapLatest { assetId ->
-            assetId?.let { id -> assetsRepository.getAssetInfo(id).mapNotNull { it } } ?: emptyFlow()
+            assetId?.let { id -> assetsRepository.getTokenInfo(id).mapNotNull { it } } ?: emptyFlow()
         }
+
     val session = sessionRepository.session()
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -149,6 +150,20 @@ class AssetDetailsViewModel @Inject constructor(
 
     fun enablePriceAlert(assetId: AssetId) = viewModelScope.launch {
         enablePriceAlert.setAssetPriceAlertEnabled(assetId, priceAlertEnabled.value != true)
+    }
+
+    fun pin() = viewModelScope.launch(Dispatchers.IO) {
+        val wallet = session.value?.wallet ?: return@launch
+        val assetInfo = model.value?.assetInfo ?: return@launch
+        add()
+        assetsRepository.togglePin(wallet.id, assetInfo.id())
+    }
+
+    fun add() = viewModelScope.launch(Dispatchers.IO) {
+        val session = session.value ?: return@launch
+        val assetInfo = model.value?.assetInfo ?: return@launch
+        val account = session.wallet.getAccount(assetInfo.id()) ?: return@launch
+        assetsRepository.add(session.wallet.id, account.address, assetInfo.asset, true)
     }
 
     private data class Model(

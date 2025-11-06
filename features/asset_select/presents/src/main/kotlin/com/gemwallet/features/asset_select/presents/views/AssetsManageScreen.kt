@@ -16,12 +16,14 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.components.list_item.ListItemSupportText
 import com.gemwallet.features.asset_select.viewmodels.AssetSelectViewModel
+import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
 import kotlinx.collections.immutable.toImmutableList
 
 @Composable
 fun AssetsManageScreen(
     onAddAsset: () -> Unit,
+    onAssetClick: (AssetId) -> Unit,
     onCancel: () -> Unit,
     viewModel: AssetSelectViewModel = hiltViewModel()
 ) {
@@ -59,7 +61,7 @@ fun AssetsManageScreen(
         onClearFilters = viewModel::onClearFilres,
         onCancel = onCancel,
         onAddAsset = if (isAddAssetAvailable) onAddAsset else null,
-        onSelect = {},
+        onSelect = onAssetClick,
         actions = {
             if (isAddAssetAvailable) {
                 IconButton(onClick = onAddAsset) {

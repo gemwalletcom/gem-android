@@ -60,6 +60,8 @@ fun AssetDetailsScreen(
             onStake = onStake,
             onPriceAlert = viewModel::enablePriceAlert,
             onConfirm = onConfirm,
+            onPin = viewModel::pin,
+            onAdd = viewModel::add,
             onCancel = onCancel,
         )
         uiState is AssetInfoUIState.Loading || uiModel == null -> LoadingScene(stringResource(R.string.common_loading), onCancel)

@@ -33,6 +33,7 @@ import com.gemwallet.features.asset.presents.details.components.BalancePropertyI
 import com.gemwallet.features.asset.presents.details.components.BannerItem
 import com.gemwallet.features.asset.presents.details.components.EmptyTransactionsItem
 import com.gemwallet.features.asset.presents.details.components.balancesHeader
+import com.gemwallet.features.asset.presents.details.components.manageAssetItem
 import com.gemwallet.features.asset.presents.details.components.network
 import com.gemwallet.features.asset.presents.details.components.price
 import com.gemwallet.features.asset.presents.details.components.status
@@ -59,6 +60,8 @@ internal fun AssetDetailsScene(
     onStake: (AssetId) -> Unit,
     onPriceAlert: (AssetId) -> Unit,
     onConfirm: (ConfirmParams) -> Unit,
+    onPin: () -> Unit,
+    onAdd: () -> Unit,
     isOperationEnabled: Boolean,
 ) {
     val pullToRefreshState = rememberPullToRefreshState()
@@ -117,6 +120,7 @@ internal fun AssetDetailsScene(
                     )
                 }
                 item { BannerItem(uiState.assetInfo, onStake, onConfirm) }
+                manageAssetItem(uiState.assetInfo, onPin, onAdd)
                 status(uiState.asset, uiState.assetInfo.rank)
                 price(uiState, onChart)
                 network(uiState, openNetwork)

@@ -152,6 +152,7 @@ fun WalletNavGraph(
 
         assetsManageScreen(
             onAddAsset = navController::navigateToAddAssetScreen,
+            onAssetClick = navController::navigateToAssetScreen,
             onCancel = onCancel,
         )
 
