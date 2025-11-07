@@ -33,6 +33,7 @@ import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.StakeChain
+import com.wallet.core.primitives.Wallet
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.Dispatchers
@@ -139,7 +140,7 @@ class AssetDetailsViewModel @Inject constructor(
         viewModelScope.launch {
             assetsRepository.syncAssetInfo(
                 assetId = assetId,
-                account = session.value?.wallet?.getAccount(assetId.chain) ?: return@launch
+                wallet = session.value?.wallet ?: return@launch,
             )
         }
         viewModelScope.launch {
@@ -155,15 +156,25 @@ class AssetDetailsViewModel @Inject constructor(
     fun pin() = viewModelScope.launch(Dispatchers.IO) {
         val wallet = session.value?.wallet ?: return@launch
         val assetInfo = model.value?.assetInfo ?: return@launch
-        add()
+        add(wallet, assetInfo.id())
         assetsRepository.togglePin(wallet.id, assetInfo.id())
     }
 
     fun add() = viewModelScope.launch(Dispatchers.IO) {
         val session = session.value ?: return@launch
         val assetInfo = model.value?.assetInfo ?: return@launch
-        val account = session.wallet.getAccount(assetInfo.id()) ?: return@launch
-        assetsRepository.add(session.wallet.id, account.address, assetInfo.asset, true)
+
+        add(session.wallet, assetInfo.id())
+    }
+
+    private suspend fun add(wallet: Wallet, assetId: AssetId) {
+        val account = wallet.getAccount(assetId) ?: return
+        assetsRepository.switchVisibility(
+            walletId = wallet.id,
+            owner = account,
+            assetId = assetId,
+            true
+        )
     }
 
     private data class Model(

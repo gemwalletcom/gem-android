@@ -21,7 +21,7 @@ fun LazyListScope.manageAssetItem(
     onPin: () -> Unit,
     onAdd: () -> Unit,
 ) {
-    if (assetInfo.owner != null) {
+    if (assetInfo.metadata?.isEnabled == true) {
         return
     }
 

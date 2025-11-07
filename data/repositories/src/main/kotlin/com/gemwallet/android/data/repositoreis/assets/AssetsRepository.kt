@@ -117,9 +117,13 @@ class AssetsRepository @Inject constructor(
         getAssetsInfo().firstOrNull()?.updateBalances()?.awaitAll()
     }
 
-    suspend fun syncAssetInfo(assetId: AssetId, account: Account) = withContext(Dispatchers.IO) {
+    suspend fun syncAssetInfo(assetId: AssetId, wallet: Wallet) = withContext(Dispatchers.IO) {
+        val account = wallet.getAccount(assetId) ?: return@withContext
+        val asset = getTokenInfo(assetId).firstOrNull()?.asset ?: return@withContext
+        add(walletId = wallet.id, accountAddress = account.address, asset = asset, false)
         val updateBalancesJob = async { updateBalances(assetId) }
         val getAssetFull = async { syncMarketInfo(assetId, account) }
+        priceClient.addAssetId(assetId)
         updateBalancesJob.await()
         getAssetFull.await()
     }
@@ -387,7 +391,7 @@ class AssetsRepository @Inject constructor(
         getAssetsInfo(tokens.toList()).firstOrNull()?.updateBalances()?.awaitAll()
     }
 
-    suspend fun add(walletId: String, accountAddress: String, asset: Asset, visible: Boolean) = withContext(Dispatchers.IO) {
+    suspend fun add(walletId: String, accountAddress: String, asset: Asset, visible: Boolean) {
         val link = DbAssetWallet(
             assetId = asset.id.toIdentifier(),
             walletId = walletId,
@@ -463,7 +467,7 @@ class AssetsRepository @Inject constructor(
                 val walletId = wallet.key ?: return@mapValues null
                 wallet.value.groupBy { it.asset.chain }
                     .mapKeys { it.value.firstOrNull()?.owner }
-                    .mapValues { entry -> entry.value.filter { it.metadata?.isEnabled == true }.map { it.asset } }
+                    .mapValues { entry -> entry.value.map { it.asset } }
                     .mapNotNull { entry ->
                         val account: Account = entry.key ?: return@mapNotNull null
                         if (entry.value.isEmpty()) {
