@@ -113,7 +113,10 @@ fun BuyScene(
             MainActionButton(
                 title = stringResource(id = R.string.common_continue),
                 enabled = state == null,
-                onClick = { uriHandler.open(context, selectedProvider?.redirectUrl ?: "") }
+                onClick = {
+                    uriHandler.openUri(selectedProvider?.redirectUrl ?: "")
+//                    uriHandler.open(context, selectedProvider?.redirectUrl ?: "")
+                }
             )
         }
     ) {
