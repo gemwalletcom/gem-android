@@ -24,6 +24,12 @@ build-test:
 test:
     @./gradlew connectedGoogleDebugAndroidTest
 
+mobsfscan:
+    @command -v uv >/dev/null || { \
+        echo "uv is not installed. Install it via 'curl -LsSf https://astral.sh/uv/install.sh | sh'."; \
+        exit 1; }
+    uv tool run mobsfscan -- --type android --config .mobsf --exit-warning
+
 unsigned-release:
     SKIP_SIGN=true ./gradlew :app:bundleGoogleRelease
 

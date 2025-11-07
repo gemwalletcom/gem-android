@@ -75,6 +75,15 @@ gpr.token=<your-github-personal-token>
 
 Optionally, you can generate models and kotlin bindgen by running `just generate`, Gem Android consumes wallet core library as a local module, if you need to update it, ping us or create an issue on [here](https://github.com/gemwalletcom/wallet-core-release).
 
+## 🔐 Security Scanning
+
+We run [MobSF mobsfscan](https://github.com/MobSF/mobsfscan) to catch insecure patterns in our Kotlin/Java sources.
+
+- **Local usage**: Install [`uv`](https://docs.astral.sh/uv/getting-started/installation/) and run `uv tool install mobsfscan` once. After that, `just mobsfscan` (internally `uv tool run mobsfscan -- --type android --config .mobsf --exit-warning`) scans the Android codebase with the repo-wide configuration and fails on `WARNING` and `ERROR` findings.
+- **CI enforcement**: `.github/workflows/mobsfscan.yml` runs the same command on every push/PR to `main`, uploads a SARIF report to GitHub code scanning, and fails the workflow if issues remain.
+
+Only suppress detections when you fully understand the risk—ideally fix the code; otherwise, add a targeted `// mobsf-ignore: rule_id` comment with context.
+
 ## 👨‍👧‍👦 Contributors
 
 We love contributors! Feel free to contribute to this project but please read the [Contributing Guidelines](CONTRIBUTING.md) first!

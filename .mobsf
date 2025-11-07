@@ -1,0 +1,14 @@
+---
+- ignore-paths:
+  - build
+  - .gradle
+  - app/build
+  - blockchain/build
+  - features/build
+  - ui/build
+  - ui-models/build
+  - data/build
+  - core
+  severity-filter:
+  - WARNING
+  - ERROR
