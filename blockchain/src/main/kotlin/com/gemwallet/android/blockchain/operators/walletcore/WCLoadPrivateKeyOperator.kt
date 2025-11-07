@@ -25,6 +25,6 @@ class WCLoadPrivateKeyOperator(
                 }
             }
         }
-        return privateKey.data()
+        return privateKey.data().copyOf()
     }
 }
