@@ -29,7 +29,7 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.features.settings.settings.viewmodels.SupportCharViewModel
+import com.gemwallet.features.settings.settings.viewmodels.SupportChatViewModel
 import com.kevinnzou.web.AccompanistWebChromeClient
 import com.kevinnzou.web.AccompanistWebViewClient
 import com.kevinnzou.web.WebView
@@ -42,7 +42,7 @@ import uniffi.gemstone.PublicUrl
 @Composable
 fun SupportChatScreen(
     onCancel: () -> Unit,
-    viewModel: SupportCharViewModel = hiltViewModel(),
+    viewModel: SupportChatViewModel = hiltViewModel(),
 ) {
     CookieManager.getInstance().setAcceptCookie(true);
     val html by viewModel.html.collectAsStateWithLifecycle()

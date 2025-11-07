@@ -6,7 +6,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.device.DeviceRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.ext.model
+import com.gemwallet.android.ext.os
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.Platform
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.SharingStarted
@@ -16,7 +19,7 @@ import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 @HiltViewModel
-class SupportCharViewModel @Inject constructor(
+class SupportChatViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val sessionRepository: SessionRepository,
     private val deviceRepository: DeviceRepository,
@@ -62,10 +65,10 @@ class SupportCharViewModel @Inject constructor(
     private val toggleChatScript = "window.\$chatwoot.toggle(open);"
 
     private fun getDeviceIdScript(supportDeviceId: String, currency: Currency,): String {
-        val os = Build.VERSION.RELEASE
-        val device = "${Build.MANUFACTURER} ${Build.MODEL}"
+        val os = Platform.os
+        val model = Platform.model
         val appVersion = try {
-            context.packageManager.getPackageInfo(context.getPackageName(), 0).versionName;
+            context.packageManager.getPackageInfo(context.packageName, 0).versionName;
         } catch (_: Throwable) {
             "Unknown"
         }
@@ -76,7 +79,7 @@ class SupportCharViewModel @Inject constructor(
                 supportDeviceId: '$supportDeviceId',
                 platform: 'android',
                 os: '$os',
-                device: '$device',
+                device: '$model',
                 currency: '${currency.string}',
                 app_version: '$appVersion'
               });

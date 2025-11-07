@@ -21,6 +21,8 @@ import com.gemwallet.android.cases.session.GetCurrentCurrencyCase
 import com.gemwallet.android.data.repositoreis.config.UserConfig.Keys
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.ext.model
+import com.gemwallet.android.ext.os
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
@@ -91,6 +93,8 @@ class DeviceRepository(
             id = deviceId,
             platform = Platform.Android,
             platformStore = platformStore,
+            os = Platform.os,
+            model = Platform.model,
             token = pushToken,
             locale = getLocale(Locale.getDefault()),
             isPushEnabled = pushEnabled,
