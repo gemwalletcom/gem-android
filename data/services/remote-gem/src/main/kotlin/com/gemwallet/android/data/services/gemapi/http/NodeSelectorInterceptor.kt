@@ -1,6 +1,5 @@
 package com.gemwallet.android.data.services.gemapi.http
 
-import android.util.Log
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.cases.nodes.GetNodesCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
@@ -27,9 +26,7 @@ class NodeSelectorInterceptor(
             val request = setBaseUrl(originalRequest, httpUrl)
             try {
                 return chain.proceed(request)
-            } catch (err: Throwable) {
-                Log.d("SelectNode", "Error", err)
-            }
+            } catch (_: Throwable) { }
         }
         return chain.proceed(originalRequest)
     }

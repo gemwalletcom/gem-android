@@ -24,6 +24,16 @@ fun NativeClipboard.setPlainText(context: Context, data: String, isSensitive: Bo
         }
     }
     setPrimaryClip(clip)
+
+// No plans to support this for now
+//    Executors.newSingleThreadScheduledExecutor().schedule({
+//        val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+//        clipboard.clearPrimaryClip()
+//    }, 30, TimeUnit.SECONDS)
+
+    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
+        Toast.makeText(context, "Copied", Toast.LENGTH_SHORT).show()
+    }
 }
 
 fun NativeClipboard.getPlainText(): String? {

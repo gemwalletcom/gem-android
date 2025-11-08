@@ -2,7 +2,6 @@ package com.gemwallet.android.data.repositoreis.bridge
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import androidx.core.net.toUri
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.data.service.store.database.ConnectionsDao
@@ -93,7 +92,6 @@ class BridgesRepository(
             connectionType = connectionType,
             telemetryEnabled = false,
         ) {
-            Log.d("WalletConnect", "Err", it.throwable)
         }
         val initParams = Wallet.Params.Init(core = CoreClient)
         WalletKit.initialize(

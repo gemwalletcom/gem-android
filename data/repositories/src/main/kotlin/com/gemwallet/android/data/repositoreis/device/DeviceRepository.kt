@@ -1,7 +1,6 @@
 package com.gemwallet.android.data.repositoreis.device
 
 import android.content.Context
-import android.util.Log
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -53,7 +52,7 @@ class DeviceRepository(
     private val enablePriceAlert: EnablePriceAlert,
     private val getCurrentCurrencyCase: GetCurrentCurrencyCase,
     coroutineScope: CoroutineScope = CoroutineScope(
-        SupervisorJob() + CoroutineExceptionHandler { _, err -> Log.e("DEVICE", "Err:", err) } + Dispatchers.IO
+        SupervisorJob() + CoroutineExceptionHandler { _, err -> /*Log.e("DEVICE", "Err:", err)*/ } + Dispatchers.IO
     ),
 ) : SyncDeviceInfo,
     SwitchPushEnabled,
@@ -208,9 +207,7 @@ class DeviceRepository(
                     )
                 }
             }
-        } catch (err: Throwable) {
-            Log.d("REGISTER-DEVICE", "Error", err)
-        }
+        } catch (_: Throwable) { }
     }
 
     private suspend fun getRemoteSubscriptions(deviceId: String): List<Subscription> {
@@ -227,9 +224,7 @@ class DeviceRepository(
         }
         try {
             gemApiClient.addSubscriptions(deviceId, subscriptions)
-        } catch (err: Throwable) {
-            Log.d("GEM_API", "Add subscription error: ", err)
-        }
+        } catch (_: Throwable) { }
     }
 
     private suspend fun removeSubscriptions(deviceId: String, subscriptions: List<Subscription>) {
@@ -238,9 +233,7 @@ class DeviceRepository(
         }
         try {
             gemApiClient.deleteSubscriptions(deviceId, subscriptions)
-        } catch (err: Throwable) {
-            Log.d("GEM_API", "Remove subscription error: ", err)
-        }
+        } catch (_: Throwable) { }
     }
 
     private fun buildSubscriptionIndex(wallets: List<Wallet>): Map<String, Subscription> {

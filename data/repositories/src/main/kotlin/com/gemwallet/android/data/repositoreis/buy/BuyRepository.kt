@@ -1,6 +1,5 @@
 package com.gemwallet.android.data.repositoreis.buy
 
-import android.util.Log
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.toIdentifier
@@ -23,18 +22,16 @@ class BuyRepository @Inject constructor(
 
     suspend fun sync() {
         try {
-        val fiatVersion = gemApi.getConfig().versions.fiatOnRampAssets
-        val currentVersion = configStore.getInt(ConfigKey.FiatAssetsVersion.string)
-        if (currentVersion > 0 && currentVersion >= fiatVersion) return
-        val availableToBuyIds = gemApi.getOnRampAssets()
-        val availableToSellIds = gemApi.getOffRampAssets()
-        val latestVersion = availableToBuyIds.version.toInt()
-        assetsRepository.updateBuyAvailable(availableToBuyIds.assetIds)
-        assetsRepository.updateSellAvailable(availableToSellIds.assetIds)
-        configStore.putInt(ConfigKey.FiatAssetsVersion.string, latestVersion)
-        } catch (err: Throwable) {
-            Log.d("BUY_SYNC", "Error: ", err)
-        }
+            val fiatVersion = gemApi.getConfig().versions.fiatOnRampAssets
+            val currentVersion = configStore.getInt(ConfigKey.FiatAssetsVersion.string)
+            if (currentVersion > 0 && currentVersion >= fiatVersion) return
+            val availableToBuyIds = gemApi.getOnRampAssets()
+            val availableToSellIds = gemApi.getOffRampAssets()
+            val latestVersion = availableToBuyIds.version.toInt()
+            assetsRepository.updateBuyAvailable(availableToBuyIds.assetIds)
+            assetsRepository.updateSellAvailable(availableToSellIds.assetIds)
+            configStore.putInt(ConfigKey.FiatAssetsVersion.string, latestVersion)
+        } catch (_: Throwable) { }
     }
 
     suspend fun getQuotes(

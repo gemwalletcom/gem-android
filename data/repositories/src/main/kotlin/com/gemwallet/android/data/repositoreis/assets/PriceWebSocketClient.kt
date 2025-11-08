@@ -1,6 +1,5 @@
 package com.gemwallet.android.data.repositoreis.assets
 
-import android.util.Log
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
@@ -76,8 +75,7 @@ class PriceWebSocketClient(
                 port = 443,
                 path = "/v1/ws/prices",
             ) { webSocketBlock() }
-        } catch (err: Throwable) {
-            Log.d("WEB-SOCKETS", "Error", err)
+        } catch (_: Throwable) {
         }
     }
 
@@ -139,9 +137,7 @@ class PriceWebSocketClient(
             priceActionFlow.collectLatest {
                 try {
                     sendSerialized(it)
-                } catch (err: Throwable) {
-                    Log.d("WEBSOCKET", "Error: ", err)
-                }
+                } catch (_: Throwable) { }
             }
         }
         val wss = this
@@ -152,17 +148,14 @@ class PriceWebSocketClient(
                         started.set(false)
                         wss.cancel()
                     }
-                } catch (err: Throwable) {
-                    Log.d("WEBSOCKET", "Error: ", err)
-                }
+                } catch (_: Throwable) { }
             }
         }
         runCatching { reinit() }
         while (started.get()) {
             val pricePayload = try {
                 receiveDeserialized<WebSocketPricePayload>()
-            } catch (err: Throwable) {
-                Log.d("WEBSOCKET", "Error: ", err)
+            } catch (_: Throwable) {
                 delay(15_000)
                 continue
             }

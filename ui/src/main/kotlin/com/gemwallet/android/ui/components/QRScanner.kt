@@ -5,7 +5,6 @@ import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.graphics.ImageFormat
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -296,9 +295,7 @@ fun QRScanner(listener: (String) -> Unit) {
                     preview,
                     imageAnalyzer,
                 )
-            } catch (err: Throwable) {
-                Log.d("QR_CODE_SCANNER", "Error", err)
-            }
+            } catch (_: Throwable) { }
             previewView
         }, modifier = Modifier.fillMaxSize())
         Box(modifier = Modifier

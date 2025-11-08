@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.os.Environment
-import android.util.Log
 import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -77,8 +76,7 @@ class InAppUpdateViewModels @Inject constructor(
             try {
                 download()
                 installApk()
-            } catch (err: Throwable) {
-                Log.d("DOWNLOAD", "Error", err)
+            } catch (_: Throwable) {
                 downloadState.update { DownloadState.Error }
             }
         }

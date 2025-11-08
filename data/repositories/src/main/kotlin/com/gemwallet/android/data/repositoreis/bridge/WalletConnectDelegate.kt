@@ -1,6 +1,5 @@
 package com.gemwallet.android.data.repositoreis.bridge
 
-import android.util.Log
 import com.reown.android.CoreClient
 import com.reown.walletkit.client.Wallet
 import com.reown.walletkit.client.WalletKit
@@ -30,14 +29,12 @@ object WalletConnectDelegate : WalletKit.WalletDelegate, CoreClient.CoreDelegate
         }
 
     override fun onConnectionStateChange(state: Wallet.Model.ConnectionState) {
-        Log.d("WALLET-CONNECT", "Connection state change")
         scope.launch {
             _walletEvents.emit(state)
         }
     }
 
     override fun onError(error: Wallet.Model.Error) {
-        Log.d("WALLET-CONNECT", "On erro: ", error.throwable)
         scope.launch {
             _walletEvents.emit(error)
         }
@@ -50,21 +47,18 @@ object WalletConnectDelegate : WalletKit.WalletDelegate, CoreClient.CoreDelegate
     }
 
     override fun onSessionDelete(sessionDelete: Wallet.Model.SessionDelete) {
-        Log.d("WALLET-CONNECT", "On session delete")
         scope.launch {
             _walletEvents.emit(sessionDelete)
         }
     }
 
     override fun onSessionExtend(session: Wallet.Model.Session) {
-        Log.d("WALLET-CONNECT", "On session extended")
     }
 
     override fun onSessionProposal(
         sessionProposal: Wallet.Model.SessionProposal,
         verifyContext: Wallet.Model.VerifyContext
     ) {
-        Log.d("WALLET-CONNECT", "On session proposal")
         scope.launch {
             _walletEvents.emit(sessionProposal)
         }
@@ -74,21 +68,18 @@ object WalletConnectDelegate : WalletKit.WalletDelegate, CoreClient.CoreDelegate
         sessionRequest: Wallet.Model.SessionRequest,
         verifyContext: Wallet.Model.VerifyContext
     ) {
-        Log.d("WALLET-CONNECT", "On session request: $sessionRequest")
         scope.launch {
             _walletEvents.emit(sessionRequest)
         }
     }
 
     override fun onSessionSettleResponse(settleSessionResponse: Wallet.Model.SettledSessionResponse) {
-        Log.d("WALLET-CONNECT", "On session settle response")
         scope.launch {
             _walletEvents.emit(settleSessionResponse)
         }
     }
 
     override fun onSessionUpdateResponse(sessionUpdateResponse: Wallet.Model.SessionUpdateResponse) {
-        Log.d("WALLET-CONNECT", "On session update response")
         scope.launch {
             _walletEvents.emit(sessionUpdateResponse)
         }

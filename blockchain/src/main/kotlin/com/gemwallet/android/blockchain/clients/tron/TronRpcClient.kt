@@ -1,20 +1,14 @@
 package com.gemwallet.android.blockchain.clients.tron
 
-import android.util.Log
-import com.gemwallet.android.ext.asset
-import com.gemwallet.android.math.toHexString
 import com.wallet.core.blockchain.tron.TronAccount
 import com.wallet.core.blockchain.tron.TronAccountRequest
 import com.wallet.core.blockchain.tron.TronAccountUsage
 import com.wallet.core.blockchain.tron.TronBlock
 import com.wallet.core.blockchain.tron.TronChainParameters
 import com.wallet.core.blockchain.tron.TronSmartContractResult
-import com.wallet.core.primitives.Chain
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
-import wallet.core.jni.Base58
-import java.math.BigInteger
 
 interface TronRpcClient {
     @GET("/wallet/getchainparameters")
@@ -31,12 +25,6 @@ interface TronRpcClient {
 
     @POST("/wallet/getaccountnet")
     suspend fun getAccountUsage(@Body addressRequest: TronAccountRequest): Result<TronAccountUsage>
-}
-
-fun TronAccount.staked(chain: Chain): BigInteger {
-    val votes = votes ?: emptyList()
-    val totalVotes = votes.fold(0L) { acc, item -> acc + item.vote_count }
-    return BigInteger.valueOf(totalVotes) * BigInteger.TEN.pow(chain.asset().decimals)
 }
 
 suspend fun TronRpcClient.triggerSmartContract(
@@ -70,16 +58,6 @@ suspend fun TronRpcClient.getAccount(address: String, visible: Boolean = false):
         )
         result.getOrThrow()
     } catch (err: Throwable) {
-        Log.d("TRON-ACCOUNT", "Error: ", err)
         null
     }
-}
-
-suspend fun TronRpcClient.getAccountUsage(address: String): TronAccountUsage? {
-    return getAccountUsage(
-        TronAccountRequest(
-            address = Base58.decode(address).toHexString(""),
-            visible = false
-        )
-    ).getOrNull()
 }

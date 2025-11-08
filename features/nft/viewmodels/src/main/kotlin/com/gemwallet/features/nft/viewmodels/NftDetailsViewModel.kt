@@ -1,6 +1,5 @@
 package com.gemwallet.features.nft.viewmodels
 
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -48,7 +47,7 @@ class NftDetailsViewModel @Inject constructor(
             .filterNotNull()
             .map { NftAssetDetailsUIModel(it.collection, it.assets.first(), session?.wallet?.getAccount(it.assets.first().chain)!!) }
     }
-    .catch { Log.d("NFT-DETAILS", "Error on get nft: ", it) }
+    .catch { }
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 }

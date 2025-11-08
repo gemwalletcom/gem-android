@@ -139,13 +139,11 @@ class MainActivity : FragmentActivity(), AuthRequester {
         val state by viewModel.uiState.collectAsStateWithLifecycle()
         val intent by viewModel.intent.collectAsStateWithLifecycle()
         val enableSysAuth = enabledSysAuth()
-        val authState = (state.initialAuth == AuthState.Required || state.authState == AuthState.Required)
+        val authState = state.initialAuth == AuthState.Required || state.authState == AuthState.Required
         if (authState && enableSysAuth) {
             biometricPrompt.authenticate(promptInfo)
-        } else {
-            if (state.authState == AuthState.Success) {
-                onSuccessAuth?.invoke()
-            }
+        } else if (state.authState == AuthState.Success) {
+            onSuccessAuth?.invoke()
         }
         LaunchedEffect(intent) {
             try {

@@ -1,7 +1,6 @@
 package com.gemwallet.android.data.repositoreis.transactions
 
 import android.text.format.DateUtils
-import android.util.Log
 import com.gemwallet.android.blockchain.model.ServiceUnavailable
 import com.gemwallet.android.blockchain.model.TransactionStateRequest
 import com.gemwallet.android.blockchain.services.TransactionStatusService
@@ -209,7 +208,6 @@ class TransactionsRepository(
         val timeout = chainConfig.transactionTimeout.toLong() * 1000L
 
         while (true) {
-            Log.d("TRANSACTIONS", "Iteration: $iteration; Hash: ${tx.hash}")
             transactionCheckDelay(delay, iteration)
             iteration++
 
