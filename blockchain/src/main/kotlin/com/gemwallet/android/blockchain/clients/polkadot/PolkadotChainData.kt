@@ -11,7 +11,9 @@ data class PolkadotChainData(
     val specVersion: ULong,
     val transactionVersion: ULong,
     val period: Long,
-) : ChainSignData
+) : ChainSignData {
+    override fun blockNumber(): String = blockNumber.toString()
+}
 
 fun GemTransactionLoadMetadata.Polkadot.toChainData(): PolkadotChainData {
     return PolkadotChainData(
