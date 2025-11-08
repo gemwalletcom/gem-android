@@ -1,0 +1,48 @@
+name: MobSF Scan
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  mobsfscan:
+    name: mobsfscan static analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        run: |
+          curl -LsSf https://astral.sh/uv/install.sh | sh
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Install mobsfscan
+        run: uv tool install mobsfscan
+
+      - name: Run mobsfscan
+        run: |
+          set +e
+          uv tool run mobsfscan -- --type android --config .mobsf --sarif --output results.sarif --exit-warning
+          EXIT_CODE=$?
+          echo "MOBSF_EXIT=${EXIT_CODE}" >> "$GITHUB_ENV"
+          exit 0
+
+      - name: Upload mobsfscan SARIF
+        if: always() && hashFiles('results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
+
+      - name: Fail when mobsfscan finds issues
+        if: ${{ env.MOBSF_EXIT != '' && env.MOBSF_EXIT != '0' }}
+        run: |
+          echo "mobsfscan reported security findings. Review the SARIF upload for details."
+          exit 1
