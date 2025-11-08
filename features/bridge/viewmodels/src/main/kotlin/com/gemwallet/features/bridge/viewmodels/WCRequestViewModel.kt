@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Arrays
 import javax.inject.Inject
 
 @HiltViewModel
@@ -144,6 +145,8 @@ class WCRequestViewModel @Inject constructor(
             } catch (err: Throwable) {
                 state.update { it.copy(error = err.message ?: "Sign error") }
                 return@launch
+            } finally {
+                Arrays.fill(privateKey, 0)
             }
             response(request.data.topic, request.data.request.id, sign)
         }

@@ -61,6 +61,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigInteger
+import java.util.Arrays
 import javax.inject.Inject
 
 internal const val paramsArg = "data"
@@ -347,18 +348,21 @@ class ConfirmViewModel @Inject constructor(
     }
 
     private suspend fun  sign(signerParams: SignerParams, session: Session, assetInfo: AssetInfo, feePriority: FeePriority): List<ByteArray> {
+        val key = loadPrivateKeyOperator(
+            session.wallet,
+            assetInfo.id().chain,
+            passwordStore.getPassword(session.wallet.id)
+        )
         val sign = try {
             signClient.signTransaction(
                 params = signerParams,
                 feePriority = feePriority,
-                privateKey = loadPrivateKeyOperator(
-                    session.wallet,
-                    assetInfo.id().chain,
-                    passwordStore.getPassword(session.wallet.id)
-                )
+                privateKey = key
             )
         } catch (ex: Throwable) {
             throw ConfirmError.SignFail(ex.message ?: "Can't sign transfer")
+        } finally {
+            Arrays.fill(key, 0)
         }
         return sign
     }

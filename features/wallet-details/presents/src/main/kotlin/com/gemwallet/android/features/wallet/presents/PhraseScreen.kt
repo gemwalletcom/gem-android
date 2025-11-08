@@ -99,7 +99,7 @@ fun PhraseScreen(
             }
 
             TextButton(
-                onClick = { clipboardManager.setPlainText(context, phrase ?: "") }
+                onClick = { clipboardManager.setPlainText(context, phrase ?: "", true) }
             ) {
                 Text(text = stringResource(id = R.string.common_copy))
             }

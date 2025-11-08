@@ -156,7 +156,7 @@ fun UI(
                 PhraseLayout(words = data)
             }
             Spacer16()
-            TextButton(onClick = { clipboardManager.setPlainText(context, data.joinToString(" ")) }) {
+            TextButton(onClick = { clipboardManager.setPlainText(context, data.joinToString(" "), true) }) {
                 Text(text = stringResource(id = R.string.common_copy))
             }
         }

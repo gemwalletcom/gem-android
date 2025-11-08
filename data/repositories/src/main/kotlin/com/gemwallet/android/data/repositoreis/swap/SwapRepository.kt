@@ -27,6 +27,7 @@ import uniffi.gemstone.SwapperQuoteRequest
 import uniffi.gemstone.getDefaultSlippage
 import uniffi.gemstone.permit2DataToEip712Json
 import java.math.BigInteger
+import java.util.Arrays
 
 class SwapRepository(
     private val gemSwapper: GemSwapper,
@@ -88,11 +89,16 @@ class SwapRepository(
             data = permit2Single,
             contract = permit.permit2Contract
         )
-        val signature = signClient.signTypedMessage(
-            chain = chain,
-            input = permit2Json.toByteArray(),
-            privateKey = loadPrivateKeyOperator.invoke(wallet, chain, passwordStore.getPassword(walletId = wallet.id)),
-        )
+        val key = loadPrivateKeyOperator.invoke(wallet, chain, passwordStore.getPassword(walletId = wallet.id))
+        val signature = try {
+            signClient.signTypedMessage(
+                chain = chain,
+                input = permit2Json.toByteArray(),
+                privateKey = key,
+            )
+        } finally {
+            Arrays.fill(key, 0)
+        }
         val permitData = Permit2Data(permit2Single, signature)
         return gemSwapper.fetchQuoteData(quote, FetchQuoteData.Permit2(permitData))
     }
