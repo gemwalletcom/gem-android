@@ -119,7 +119,7 @@ class BitcoinSignClient(
             chainData.utxo.forEach { _ ->
                 val redeemScript = BitcoinScript.lockScriptForAddress(params.from.address, coinType)
                 val scriptData = redeemScript.data()
-                if (coinType == CoinType.BITCOIN || scriptData?.isNotEmpty() == true) {
+                if (coinType == CoinType.BITCOIN || scriptData?.isEmpty() != false) {
                     return@forEach
                 }
                 val keyHash = if (redeemScript.isPayToWitnessPublicKeyHash) {
@@ -144,16 +144,17 @@ class BitcoinSignClient(
         val signingInput = Bitcoin.SigningInput.newBuilder().apply {
             this.coinType = coinType.value()
             this.hashType = BitcoinScript.hashTypeForCoin(coinType)
-//            this.amount = finalAmount.toLong()
+            this.amount = finalAmount.toLong()
             this.byteFee = 0
             this.toAddress = params.destination()?.address
             this.changeAddress = params.from.address
-            this.useMaxAmount = params.useMaxAmount
             this.addAllUtxo(chainData.utxo.getUtxoTransactions(params.from.address, coinType))
+            this.useMaxAmount = params.useMaxAmount
+            this.zip0317 = false
             chainData.utxo.forEach { _ ->
                 val redeemScript = BitcoinScript.lockScriptForAddress(params.from.address, coinType)
                 val scriptData = redeemScript.data()
-                if (coinType == CoinType.BITCOIN || scriptData?.isNotEmpty() == true) {
+                if (scriptData.isEmpty()) {
                     return@forEach
                 }
                 val keyHash = if (redeemScript.isPayToWitnessPublicKeyHash) {
@@ -180,7 +181,7 @@ class BitcoinSignClient(
             this.fee = fee
             this.change = change
             this.addAllUtxos(chainData.utxo.getUtxoTransactions(params.from.address, coinType))
-            this.branchId = ByteString.copyFrom(chainData.branchId.toByteArray())
+            this.branchId = ByteString.copyFrom(chainData.branchId.decodeHex().apply { reverse() })
         }.build()
 
         return signingInput
