@@ -2,23 +2,25 @@ package com.gemwallet.features.confirm.models
 
 import com.wallet.core.primitives.Chain
 
-sealed class ConfirmError(message: String) : Exception(message){
+sealed class ConfirmError : Exception(){
 
-    object None : ConfirmError("")
+    object None : ConfirmError()
 
-    class Init(message: String) : ConfirmError(message)
+    object Init : ConfirmError()
 
-    class PreloadError(message: String) : ConfirmError(message)
+    object PreloadError : ConfirmError()
 
-    object TransactionIncorrect : ConfirmError("Transaction data incorrect")
+    object TransactionIncorrect : ConfirmError()
 
-    object RecipientEmpty : ConfirmError("Recipient can't empty")
+    object RecipientEmpty : ConfirmError()
 
-    class InsufficientBalance(val chainTitle: String) : ConfirmError("Insufficient Balance")
+    class InsufficientBalance(val chainTitle: String) : ConfirmError()
 
-    class InsufficientFee(val chain: Chain) : ConfirmError("Insufficient Fee")
+    class InsufficientFee(val chain: Chain) : ConfirmError()
 
-    class SignFail(message: String) : ConfirmError(message)
+    object SignFail : ConfirmError()
 
-    class BroadcastError(message: String) : ConfirmError(message)
+    object BroadcastError : ConfirmError()
+
+    class DustThreshold(val chainTitle: String) : ConfirmError()
 }

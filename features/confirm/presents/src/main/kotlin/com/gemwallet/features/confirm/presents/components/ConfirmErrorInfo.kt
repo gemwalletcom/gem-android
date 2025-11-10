@@ -61,10 +61,11 @@ internal fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBotto
         is ConfirmError.PreloadError,
         ConfirmError.RecipientEmpty,
         is ConfirmError.SignFail,
+        is ConfirmError.DustThreshold,
         ConfirmError.TransactionIncorrect -> null
     }
     Column(
-        modifier = Modifier.Companion
+        modifier = Modifier
             .padding(horizontal = paddingDefault)
             .background(
                 MaterialTheme.colorScheme.errorContainer.copy(0.3f),
@@ -78,10 +79,10 @@ internal fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBotto
             ),
     ) {
         Row(
-            verticalAlignment = Alignment.Companion.CenterVertically
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                modifier = Modifier.Companion.size(trailingIconMedium),
+                modifier = Modifier.size(trailingIconMedium),
                 imageVector = Icons.Outlined.Warning,
                 tint = MaterialTheme.colorScheme.error,
                 contentDescription = ""
@@ -89,14 +90,14 @@ internal fun ConfirmErrorInfo(state: ConfirmState, feeValue: String, isShowBotto
             Spacer8()
             Text(
                 text = stringResource(R.string.errors_error_occured),
-                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Companion.W500),
+                style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.W500),
             )
         }
         Spacer4()
         Row {
             infoSheetEntity?.let {
                 Icon(
-                    modifier = Modifier.Companion
+                    modifier = Modifier
                         .clip(RoundedCornerShape(percent = 50))
                         .size(trailingIconMedium)
                         .clickable(onClick = { isShowInfoSheet = true }),

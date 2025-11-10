@@ -3,6 +3,7 @@ package com.gemwallet.features.confirm.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.blockchain.clients.BlockchainError
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.blockchain.services.BroadcastService
@@ -15,6 +16,7 @@ import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.domains.asset.isMemoSupport
 import com.gemwallet.android.domains.asset.stakeChain
+import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.freezed
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toIdentifier
@@ -121,7 +123,14 @@ class ConfirmViewModel @Inject constructor(
         val preload = try {
             signerPreload.preload(params = request)
         } catch (err: Throwable) {
-            state.update { ConfirmState.Error(ConfirmError.PreloadError(err.message ?: "Unknown error: $err")) }
+            state.update {
+                ConfirmState.Error(
+                    when (err.message?.contains("DustError")) {
+                        true -> ConfirmError.DustThreshold("${owner.chain.asset().name} (${owner.chain.asset().symbol})")
+                        else -> ConfirmError.PreloadError
+                    }
+                )
+            }
             return@combine null
         }
         preload
@@ -343,7 +352,7 @@ class ConfirmViewModel @Inject constructor(
         } catch (err: ConfirmError) {
             state.update { ConfirmState.BroadcastError(err) }
         } catch (err: Throwable) {
-            state.update { ConfirmState.BroadcastError(ConfirmError.BroadcastError(err.message ?: "Can't send asset")) }
+            state.update { ConfirmState.BroadcastError(ConfirmError.BroadcastError) }
         }
     }
 
@@ -360,7 +369,7 @@ class ConfirmViewModel @Inject constructor(
                 privateKey = key
             )
         } catch (ex: Throwable) {
-            throw ConfirmError.SignFail(ex.message ?: "Can't sign transfer")
+            throw ConfirmError.SignFail
         } finally {
             Arrays.fill(key, 0)
         }

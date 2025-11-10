@@ -1,5 +1,6 @@
 package com.gemwallet.android.blockchain.clients.bitcoin
 
+import com.gemwallet.android.blockchain.clients.BlockchainError
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
 import com.gemwallet.android.blockchain.services.mapper.toUtxo
 import com.gemwallet.android.ext.toChain
@@ -24,8 +25,13 @@ class BitcoinGatewayEstimateFee : GemGatewayEstimateFee {
     ): GemTransactionLoadFee? {
         val chain = chain.toChain() ?: throw IllegalArgumentException("Incorrect chain")
 
-        val utxos = (input.metadata as? GemTransactionLoadMetadata.Bitcoin)?.utxos?.toUtxo()
-            ?: throw IllegalArgumentException("Incorrect UTXO")
+        val utxos = input.metadata.let { metadata ->
+            when (metadata) {
+                is GemTransactionLoadMetadata.Zcash -> metadata.utxos.toUtxo()
+                is GemTransactionLoadMetadata.Bitcoin -> metadata.utxos.toUtxo()
+                else -> throw IllegalArgumentException("Incorrect UTXO")
+            }
+        }
 
         val bytePrice = (input.gasPrice as? GemGasPriceType.Regular)?.gasPrice?.toLongOrNull()
             ?: throw IllegalArgumentException("Incorrect Byte Price")
@@ -87,7 +93,7 @@ class BitcoinGatewayEstimateFee : GemGatewayEstimateFee {
             Common.SigningError.OK -> { /* continue */ }
             Common.SigningError.Error_not_enough_utxos,
             Common.SigningError.Error_dust_amount_requested,
-            Common.SigningError.Error_missing_input_utxos -> throw IllegalStateException("Dust Error: $bytePrice")
+            Common.SigningError.Error_missing_input_utxos -> throw BlockchainError.DustError//("Dust Error: $bytePrice")
             else -> throw IllegalStateException(plan.error.name)
         }
 
