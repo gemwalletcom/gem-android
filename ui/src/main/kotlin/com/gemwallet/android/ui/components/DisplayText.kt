@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun DisplayText(
@@ -17,7 +18,11 @@ fun DisplayText(
         text = text,
         overflow = TextOverflow.MiddleEllipsis,
         maxLines = 1,
-        style = if ("✱✱✱✱✱✱" == text) MaterialTheme.typography.headlineSmall else MaterialTheme.typography.displaySmall,
+        style = if ("✱✱✱✱✱✱" == text) {
+            MaterialTheme.typography.headlineSmall.copy(lineHeight = 44.0.sp)
+        } else {
+            MaterialTheme.typography.displaySmall.copy(lineHeight = 44.0.sp)
+        },
         color = MaterialTheme.colorScheme.onSurface,
         textAlign = TextAlign.Center
     )

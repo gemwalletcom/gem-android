@@ -105,6 +105,7 @@ fun AmountListHead(
                 text = amount,
                 modifier = Modifier
                     .fillMaxWidth()
+                    .clip(RoundedCornerShape(paddingDefault))
                     .clickable(onHideBalances != null, onClick = { onHideBalances?.invoke() })
             )
             if (!equivalent.isNullOrEmpty()) {
