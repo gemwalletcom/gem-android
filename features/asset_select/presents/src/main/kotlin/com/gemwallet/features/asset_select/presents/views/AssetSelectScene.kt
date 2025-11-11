@@ -30,6 +30,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ext.toIdentifier
@@ -70,6 +71,68 @@ fun AssetSelectScene(
     availableChains: List<Chain> = emptyList(),
     chainsFilter: List<Chain> = emptyList(),
     balanceFilter: Boolean = false,
+    searchable: Boolean = true,
+    onChainFilter: (Chain) -> Unit,
+    onBalanceFilter: (Boolean) -> Unit,
+    onClearFilters: () -> Unit,
+    onSelect: ((AssetId) -> Unit)?,
+    onTagSelect: (AssetTag?) -> Unit,
+    onCancel: () -> Unit,
+    itemTrailing: (@Composable (AssetItemUIModel) -> Unit)? = null,
+    actions: @Composable RowScope.() -> Unit = {},
+    onAddAsset: (() -> Unit)? = null,
+) {
+    AssetSelectScene(
+        title = {
+            Text(
+                modifier = Modifier,
+                text = title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        popular = popular,
+        pinned = pinned,
+        unpinned = unpinned,
+        state = state,
+        titleBadge = titleBadge,
+        support = support,
+        query = query,
+        tags = tags,
+        selectedTag = selectedTag,
+        isAddAvailable = isAddAvailable,
+        availableChains = availableChains,
+        chainsFilter = chainsFilter,
+        balanceFilter = balanceFilter,
+        onChainFilter = onChainFilter,
+        onBalanceFilter = onBalanceFilter,
+        onClearFilters = onClearFilters,
+        onSelect = onSelect,
+        onTagSelect = onTagSelect,
+        onCancel = onCancel,
+        itemTrailing = itemTrailing,
+        actions = actions,
+        onAddAsset = onAddAsset,
+    )
+}
+
+@Composable
+fun AssetSelectScene(
+    title: @Composable () -> Unit,
+    popular: ImmutableList<AssetItemUIModel>,
+    pinned: ImmutableList<AssetItemUIModel>,
+    unpinned: ImmutableList<AssetItemUIModel>,
+    state: BaseAssetSelectViewModel.UIState,
+    titleBadge: (AssetItemUIModel) -> String?,
+    support: ((AssetItemUIModel) -> (@Composable () -> Unit)?)?,
+    query: TextFieldState,
+    tags: List<AssetTag?>,
+    selectedTag: AssetTag?,
+    isAddAvailable: Boolean = false,
+    availableChains: List<Chain> = emptyList(),
+    chainsFilter: List<Chain> = emptyList(),
+    balanceFilter: Boolean = false,
+    searchable: Boolean = true,
     onChainFilter: (Chain) -> Unit,
     onBalanceFilter: (Boolean) -> Unit,
     onClearFilters: () -> Unit,
@@ -104,7 +167,7 @@ fun AssetSelectScene(
     }
 
     Scene(
-        title = title,
+        titleContent = title,
         actions = {
             IconButton(onClick = { showSelectNetworks = !showSelectNetworks }) {
                 Icon(
@@ -120,7 +183,9 @@ fun AssetSelectScene(
         },
         onClose = onCancel
     ) {
-        SearchBar(query = query)
+        if (searchable) {
+            SearchBar(query = query)
+        }
         LazyColumn(state = listState) {
             item {
                 Box {

@@ -56,7 +56,8 @@ import uniffi.gemstone.DocsUrl
 @Composable
 fun AssetsScreen(
     onShowWallets: () -> Unit,
-    onShowAssetManage: () -> Unit,
+    onManage: () -> Unit,
+    onSearch: () -> Unit,
     onSendClick: () -> Unit,
     onReceiveClick: () -> Unit,
     onBuyClick: () -> Unit,
@@ -75,7 +76,7 @@ fun AssetsScreen(
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
-        topBar = { AssetsTopBar(walletInfo, onShowWallets, onShowAssetManage) },
+        topBar = { AssetsTopBar(walletInfo, onShowWallets, onSearch) },
         containerColor = MaterialTheme.colorScheme.surface,
     ) {
         val pullToRefreshState = rememberPullToRefreshState()
@@ -163,7 +164,7 @@ fun AssetsScreen(
                     onAssetHide = viewModel::hideAsset,
                     onTogglePin = viewModel::togglePin,
                 )
-                item { AssetsListFooter(onShowAssetManage) }
+                item { AssetsListFooter(onManage) }
             }
         }
     }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -34,9 +35,9 @@ internal fun AssetsTopBar(
         title = {
             Box {
                 TextButton(onClick = onShowWallets) {
-                    Row(verticalAlignment = Alignment.Companion.CenterVertically) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         AsyncImage(model = walletInfo.icon, size = 24.dp)
-                        Spacer(modifier = Modifier.Companion.size(8.dp))
+                        Spacer(modifier = Modifier.size(8.dp))
                         Text(
                             text = walletInfo.name,
                             maxLines = 1,
@@ -56,12 +57,12 @@ internal fun AssetsTopBar(
         actions = {
             IconButton(
                 onClick = onShowAssetManage,
-                Modifier.Companion.testTag("assetsManageAction")
+                Modifier.testTag("assetsManageAction")
             ) {
                 Icon(
-                    imageVector = Icons.Default.Tune,
+                    imageVector = Icons.Default.Search,
                     tint = MaterialTheme.colorScheme.onSurface,
-                    contentDescription = "asset_manager",
+                    contentDescription = "asset_select",
                 )
             }
         }

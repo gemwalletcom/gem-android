@@ -70,7 +70,7 @@ internal fun SwapItem(
 
     Column(
         modifier = Modifier
-            .listItem(ListPosition.Single, padding = 0.dp)
+            .listItem(ListPosition.Single, paddingVertical = 0.dp)
             .defaultPadding()
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(4.dp)

@@ -20,6 +20,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.features.create_wallet.navigation.assetsManageScreen
 import com.gemwallet.android.features.create_wallet.navigation.createWalletScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsManageScreen
+import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsSearchScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateWalletRulesScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateWalletScreen
 import com.gemwallet.android.features.import_wallet.navigation.importWalletScreen
@@ -126,7 +127,8 @@ fun WalletNavGraph(
 
         assetsScreen(
             onShowWallets = navController::navigateToWalletsScreen,
-            onShowAssetManage = navController::navigateToAssetsManageScreen,
+            onManage = navController::navigateToAssetsManageScreen,
+            onSearch = navController::navigateToAssetsSearchScreen,
             onSendClick = navController::navigateToRecipientInput,
             onReceiveClick = navController::navigateToReceiveScreen,
             onBuyClick = navController::navigateToBuyScreen,

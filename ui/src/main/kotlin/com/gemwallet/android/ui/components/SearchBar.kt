@@ -35,11 +35,11 @@ import com.gemwallet.android.ui.models.ListPosition
 @Composable
 fun SearchBar(
     query: TextFieldState,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier.listItem(ListPosition.Single),
 ) {
     val focusRequester = remember { FocusRequester() }
 
-    Row(modifier = modifier.listItem(ListPosition.Single).fillMaxWidth().height(42.dp)) {
+    Row(modifier = modifier.fillMaxWidth().height(42.dp)) {
         Box(modifier = Modifier.fillMaxWidth()) {
             BasicTextField(
                 modifier = Modifier

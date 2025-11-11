@@ -40,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.gemwallet.android.features.activities.presents.list.TransactionsScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsManageScreen
+import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsSearchScreen
 import com.gemwallet.android.features.main.models.BottomNavItem
 import com.gemwallet.android.features.main.viewmodels.MainScreenViewModel
 import com.gemwallet.android.ui.R
@@ -195,7 +196,8 @@ fun MainScreen(
             when (currentTab.value) {
                 assetsRoute -> AssetsScreen(
                     onShowWallets = navController::navigateToWalletsScreen,
-                    onShowAssetManage = navController::navigateToAssetsManageScreen,
+                    onManage = navController::navigateToAssetsManageScreen,
+                    onSearch = navController::navigateToAssetsSearchScreen,
                     onSendClick = navController::navigateToRecipientInput,
                     onReceiveClick = navController::navigateToReceiveScreen,
                     onBuyClick = navController::navigateToBuyScreen,
