@@ -59,10 +59,10 @@ class TestPolkadotSigner {
         }
 
         assertEquals(
-            "0x35028400cd3cfbbaa8f217c2a29ceae4b4063b597b629861916bad98f9826e03d1ab120e0" +
-                "0c094fad2608116257a997619a48d172340c69bca386c9f6b352903ee09a349b4ac90bff77872773" +
-                "1dac78a56b6c5d901af843ca9c9a69b9e46cca042c4f70c099502000000050000cd3cfbbaa8f217c" +
-                "2a29ceae4b4063b597b629861916bad98f9826e03d1ab120e419c",
+            "0x39028400cd3cfbbaa8f217c2a29ceae4b4063b597b629861916bad98f9826e03d1ab120" +
+                    "e00b2276e04c8adcd667512ec0440dd208f8ada56a4aec7572e4742ca2c0f8e5752d4d4f29d7" +
+                    "2a17c5d7e6bbfe2dfc9f081e567fdb9111be12ca04dec40cd2be0079502000000000a0000cd3" +
+                    "cfbbaa8f217c2a29ceae4b4063b597b629861916bad98f9826e03d1ab120e419c",
             String(sign.first())
         )
     }

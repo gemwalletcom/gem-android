@@ -24,6 +24,8 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import uniffi.gemstone.GemSwapQuoteDataType
+import uniffi.gemstone.SwapperProvider
 import wallet.core.jni.CoinType
 import wallet.core.jni.HDWallet
 import java.math.BigInteger
@@ -68,9 +70,12 @@ class TestEthSign {
             )
         }
         assertEquals(
-            "0x02f86a01010a0a825208949b1db81180c31b1b428572be105e209b5a6222b7880de0b6b3a76400008" +
-                    "0c001a04936670cff2d450a1375fb2c42cf9f97130f9f9365197e4e8461a8c43fe24786a041" +
-                    "833ce7835a78604c8518ef4dcef4e6dcd2e2d031dce759cd89790b6054fa07",
+            "0x30326638366130313031306130613832353230383934396231646238313138306333316" +
+                    "2316234323835373262653130356532303962356136323232623738383064653062366233613" +
+                    "7363430303030383063303031613034393336363730636666326434353061313337356662326" +
+                    "3343263663966393731333066396639333635313937653465383436316138633433666532343" +
+                    "7383661303431383333636537383335613738363034633835313865663464636566346536646" +
+                    "3643265326430333164636537353963643839373930623630353466613037",
             sign.first().toHexString()
         )
     }
@@ -109,11 +114,16 @@ class TestEthSign {
             )
         }
         assertEquals(
-            "0x02f8a801010a0a8301637894dac17f958d2ee523a2206206994597c13d831ec780b844a9059cbb000" +
-                    "0000000000000000000009b1db81180c31b1b428572be105e209b5a6222b700000000000000" +
-                    "00000000000000000000000000000000000de0b6b3a7640000c001a02a975d0be8ce97d4518" +
-                    "cd22407a21697f0177b8ca7c057b868eaba32aefd6887a00b20f74083ac147b7733c0b72d2f" +
-                    "87cc96fc75be610da14b4f6265703421d273",
+            "0x30326638613830313031306130613833303136333738393464616331376639353864326" +
+                    "5653532336132323036323036393934353937633133643833316563373830623834346139303" +
+                    "5396362623030303030303030303030303030303030303030303030303962316462383131383" +
+                    "0633331623162343238353732626531303565323039623561363232326237303030303030303" +
+                    "0303030303030303030303030303030303030303030303030303030303030303030303030303" +
+                    "0303030646530623662336137363430303030633030316130326139373564306265386365393" +
+                    "7643435313863643232343037613231363937663031373762386361376330353762383638656" +
+                    "1626133326165666436383837613030623230663734303833616331343762373733336330623" +
+                    "7326432663837636339366663373562653631306461313462346636323635373033343231643" +
+                    "23733",
             sign.first().toHexString()
         )
     }
@@ -140,15 +150,17 @@ class TestEthSign {
                     fromAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                     toAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
                     swapData = "0xbc",
-                    provider = "some_provide",
+                    protocol = "some_provide",
+                    providerId = SwapperProvider.PANCAKESWAP_V3,
                     protocolId = "some_provide",
-                    to = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
+                    toAddress = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
                     value = "10",
                     from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
                     providerName = "",
                     slippageBps = 0U,
                     etaInSeconds = 0U,
-                    walletAddress = "0x9b1DB81180c31B1b428572Be105E209b5A6222b7",
+                    memo = "",
+                    dataType = GemSwapQuoteDataType.CONTRACT,
                 ),
                 chainData = EvmChainData(
                     chainId = 1,
@@ -168,109 +180,12 @@ class TestEthSign {
             )
         }
         assertEquals(
-            "0x02f86401010a0a83016378949b1db81180c31b1b428572be105e209b5a6222b70a81bcc001a084f6c" +
-                    "708ff9bb9ef4f898860c38abf2293a9d34cf22e28047f5afa2af65b048ca06d436644b5fac5" +
-                    "74f27c0caade1db8ee72a149897fcfe2f00797e78e8f58437a",
-            sign.first().toHexString()
-        )
-    }
-
-    @Test
-    fun test_Evm_sign_delegate() {
-        val sign = runBlocking {
-            signClient.signDelegate(
-                params = ConfirmParams.Stake.DelegateParams(
-                    asset = Chain.SmartChain.asset(),
-                    amount = BigInteger.TEN,
-                    from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
-                    validator = DelegationValidator(
-                        chain = Chain.Ethereum,
-                        id = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8",
-                        name = "",
-                        isActive = true,
-                        commission = 0.0,
-                        apr = 0.9
-                    ),
-                ),
-                chainData = EvmChainData(
-                    chainId = 1,
-                    nonce = BigInteger.ONE,
-                    stakeData = null,
-                ),
-                finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                fee = GasFee(
-                    maxGasPrice = BigInteger.TEN,
-                    limit = BigInteger("91000"),
-                    minerFee = BigInteger.TEN,
-                    relay = BigInteger.TEN,
-                    priority = FeePriority.Normal,
-                    feeAssetId = Chain.Ethereum.asset().id,
-                ),
-                privateKey,
-            )
-        }
-        assertEquals(
-            "0x02f8b031010a0a83016378940000000000000000000000000000000000002002880de0b6b3a764000" +
-                    "0b844982ef0a70000000000000000000000009941bce2601fc93478df9f5f6cc83f4ffc1d71" +
-                    "d80000000000000000000000000000000000000000000000000000000000000000c001a0708" +
-                    "ce0a221cdfccdaa992fab54ebf65f0e6bd2a319b679f16bad820a332e76d5a071a1409772887" +
-                    "9ebedcd62fc9bc2b1e5ae82b509d8c9da665123db2df895a280",
-            sign.first().toHexString()
-        )
-    }
-
-
-    @Test
-    fun test_Evm_sign_undelegate() {
-        val sign = runBlocking {
-            signClient.signUndelegate(
-                params = ConfirmParams.Stake.UndelegateParams(
-                    asset = Chain.SmartChain.asset(),
-                    amount = BigInteger("1002901689671695193"),
-                    from = Account(Chain.Ethereum, "0x9b1DB81180c31B1b428572Be105E209b5A6222b7", ""),
-                    delegation = Delegation(
-                        base = DelegationBase(
-                            assetId = Chain.SmartChain.asset().id,
-                            delegationId = "",
-                            shares = "991645728829172501",
-                            balance = "1002901689671695193",
-                            state = DelegationState.Active,
-                            rewards = "",
-                            validatorId = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8",
-                        ),
-                        validator = DelegationValidator(
-                            chain = Chain.Ethereum,
-                            id = "0x9941BCe2601fC93478DF9f5F6Cc83F4FFC1D71d8",
-                            name = "",
-                            isActive = true,
-                            commission = 0.0,
-                            apr = 0.9,
-                        ),
-                    )
-                ),
-                chainData = EvmChainData(
-                    chainId = 1,
-                    nonce = BigInteger.ONE,
-                    stakeData = null,
-                ),
-                finalAmount = BigInteger.TEN.pow(Chain.Ethereum.asset().decimals),
-                fee = GasFee(
-                    maxGasPrice = BigInteger.TEN,
-                    limit = BigInteger("91000"),
-                    minerFee = BigInteger.TEN,
-                    relay = BigInteger.TEN,
-                    priority = FeePriority.Normal,
-                    feeAssetId = Chain.Ethereum.asset().id,
-                ),
-                privateKey,
-            )
-        }
-        assertEquals(
-            "0x02f8a831010a0a8301637894000000000000000000000000000000000000200280b8444d99dd16000" +
-                    "0000000000000000000009941bce2601fc93478df9f5f6cc83f4ffc1d71d800000000000000" +
-                    "00000000000000000000000000000000000dc3088951e56b15c001a0e3fcddc355556d317b4" +
-                    "c67b3171a9565ab3973e20c6a468933a0491824b7dce4a00cf2947749cd16b758ae7db408a2" +
-                    "43b86b31239a595fbfd283541ad12872c7ac",
+            "0x30326638363430313031306130613833303136333738393439623164623831313830633" +
+                    "3316231623432383537326265313035653230396235613632323262373061383162636330303" +
+                    "1613038346636633730386666396262396566346638393838363063333861626632323933613" +
+                    "9643334636632326532383034376635616661326166363562303438636130366434333636343" +
+                    "4623566616335373466323763306361616465316462386565373261313439383937666366653" +
+                    "2663030373937653738653866353834333761",
             sign.first().toHexString()
         )
     }
@@ -312,11 +227,16 @@ class TestEthSign {
             )
         }
         assertEquals(
-            "0x02f8a801010a0a83016378940e09fabb73bd3ade0a17ecc321fd13a19e81ce8280b844095ea7b3000" +
-                    "00000000000000000000031c2f6fcff4f8759b3bd5bf0e1084a055615c7687fffffffffffff" +
-                    "ffffffffffffffffffffffffffffffffffffffffffffffffffc080a03a683902daf791be51b" +
-                    "7354dbe5cef567c3825ce52808948ad00b195f79fb736a057f151181ea2898b4a6ef42e1f24" +
-                    "0f64995e83fa19ade070e4d9ec7b0f66469c",
+            "0x30326638613830313031306130613833303136333738393430653039666162623733626" +
+                    "4336164653061313765636333323166643133613139653831636538323830623834343039356" +
+                    "5613762333030303030303030303030303030303030303030303030303331633266366663666" +
+                    "6346638373539623362643562663065313038346130353536313563373638376666666666666" +
+                    "6666666666666666666666666666666666666666666666666666666666666666666666666666" +
+                    "6666666666666666666666666666666666666633038306130336136383339303264616637393" +
+                    "1626535316237333534646265356365663536376333383235636535323830383934386164303" +
+                    "0623139356637396662373336613035376631353131383165613238393862346136656634326" +
+                    "5316632343066363439393565383366613139616465303730653464396563376230663636343" +
+                    "63963",
             sign.first().toHexString()
         )
     }

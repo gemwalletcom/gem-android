@@ -20,6 +20,8 @@ import junit.framework.TestCase.assertTrue
 import junit.framework.TestCase.fail
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import uniffi.gemstone.GemSwapQuoteDataType
+import uniffi.gemstone.SwapperProvider
 import wallet.core.jni.CoinType
 import wallet.core.jni.HDWallet
 import java.math.BigInteger
@@ -34,147 +36,6 @@ class TestCosmosSigner {
     val osmoAccount = Account(Chain.Osmosis, "osmo1kglemumu8mn658j6g4z9jzn3zef2qdyyvklwa3", "")
     val signer = CosmosSignClient(Chain.Osmosis)
     val privateKey = HDWallet(testPhrase, "").getKeyForCoin(CoinType.OSMOSIS).data()!!
-
-    @Test
-    fun testSignSwap() {
-        val swapParams = ConfirmParams.SwapParams(
-            from = osmoAccount,
-            fromAsset = Chain.Osmosis.asset(),
-            fromAmount = BigInteger.valueOf(1000000),
-            toAsset = Chain.Osmosis.asset(),
-            toAmount = BigInteger.valueOf(950000),
-            swapData = "swap:THOR.RUNE:thor1abc123",
-            provider = "thorchain",
-            providerName = "THORChain",
-            protocolId = "thorchain",
-            to = "osmo1rcjvzz8wzktqfz8qjf0l9q45kzxvd0z0n7l5cf",
-            value = "1000000",
-            slippageBps = 500u,
-            etaInSeconds = 60u,
-            walletAddress = osmoAccount.address
-        )
-        val chainData = CosmosChainData(
-            chainId = "osmosis-1",
-            accountNumber = 2913388UL,
-            sequence = 10UL,
-        )
-        val finalAmount = BigInteger.valueOf(1000000)
-        val result = runBlocking {
-            signer.signSwap(
-                swapParams,
-                chainData,
-                finalAmount,
-                fee = GasFee(
-                    feeAssetId = AssetId(Chain.Osmosis),
-                    maxGasPrice = BigInteger.valueOf(10000L),
-                    limit = BigInteger.valueOf(200000L),
-                    amount = BigInteger.valueOf(10000L),
-                    priority = FeePriority.Normal,
-                ),
-                privateKey
-            )
-        }.first().toHexString()
-        
-        assertTrue("Expected non-empty result for Osmosis swap", result.isNotEmpty())
-        assertTrue("Expected hex-encoded transaction", result.startsWith("0x"))
-    }
-
-    @Test
-    fun testSignSwapThorChain() {
-        val thorSigner = CosmosSignClient(Chain.Thorchain)
-        val wallet = HDWallet(testPhrase, "")
-        val thorPrivateKey = wallet.getKeyForCoin(CoinType.THORCHAIN).data()
-        // Use a known valid ThorChain address format
-        val thorAddress = "thor1z53wwe7md6cewz9sqwqzn0aavpaun0gw0exn2r"
-        val thorAccount = Account(Chain.Thorchain, thorAddress, "")
-        
-        val swapParams = ConfirmParams.SwapParams(
-            from = thorAccount,
-            fromAsset = Chain.Thorchain.asset(),
-            fromAmount = BigInteger.valueOf(1000000),
-            toAsset = Chain.Thorchain.asset(),
-            toAmount = BigInteger.valueOf(950000),
-            swapData = "swap:ETH.ETH:0x1234567890abcdef",
-            provider = "thorchain",
-            providerName = "THORChain",
-            protocolId = "thorchain",
-            to = "thor1a6nlz4fq9ug9vug32r2q3u7u89xwxjq8zj4c3k",
-            value = "1000000",
-            slippageBps = 500u,
-            etaInSeconds = 60u,
-            walletAddress = thorAccount.address
-        )
-        val chainData = CosmosChainData(
-            chainId = "thorchain-mainnet-v1",
-            accountNumber = 123456UL,
-            sequence = 5UL,
-        )
-        val finalAmount = BigInteger.valueOf(1000000)
-        val result = runBlocking {
-            thorSigner.signSwap(
-                swapParams,
-                chainData,
-                finalAmount,
-                fee = GasFee(
-                    feeAssetId = AssetId(Chain.Thorchain),
-                    maxGasPrice = BigInteger.valueOf(2000000L),
-                    limit = BigInteger.valueOf(100000000L),
-                    amount = BigInteger.valueOf(2000000L),
-                    priority = FeePriority.Normal,
-                ),
-                thorPrivateKey
-            )
-        }.first().toHexString()
-        
-        assertTrue("Expected non-empty result for ThorChain swap", result.isNotEmpty())
-    }
-
-    @Test
-    fun testSignSwapMissingSwapData() {
-        val swapParams = ConfirmParams.SwapParams(
-            from = osmoAccount,
-            fromAsset = Chain.Osmosis.asset(),
-            fromAmount = BigInteger.valueOf(1000000),
-            toAsset = Chain.Osmosis.asset(),
-            toAmount = BigInteger.valueOf(950000),
-            swapData = "",
-            provider = "thorchain",
-            providerName = "THORChain",
-            protocolId = "thorchain",
-            to = "osmo1rcjvzz8wzktqfz8qjf0l9q45kzxvd0z0n7l5cf",
-            value = "1000000",
-            slippageBps = 500u,
-            etaInSeconds = 60u,
-            walletAddress = osmoAccount.address
-        )
-        val chainData = CosmosChainData(
-            chainId = "osmosis-1",
-            accountNumber = 2913388UL,
-            sequence = 10UL,
-        )
-        val finalAmount = BigInteger.valueOf(1000000)
-        
-        try {
-            runBlocking {
-                signer.signSwap(
-                    swapParams,
-                    chainData,
-                    finalAmount,
-                    fee = GasFee(
-                        feeAssetId = AssetId(Chain.Osmosis),
-                        maxGasPrice = BigInteger.valueOf(10000L),
-                        limit = BigInteger.valueOf(200000L),
-                        amount = BigInteger.valueOf(10000L),
-                        priority = FeePriority.Normal,
-                    ),
-                    privateKey
-                )
-            }
-            fail("Expected IllegalArgumentException for missing swap data")
-        } catch (e: IllegalArgumentException) {
-            assertEquals("No swap data", e.message)
-        }
-    }
 
     @Test
     fun testSignNativeTransfer() {

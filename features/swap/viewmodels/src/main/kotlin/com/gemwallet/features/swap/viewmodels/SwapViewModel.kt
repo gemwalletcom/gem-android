@@ -67,7 +67,7 @@ class SwapViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val swapRepository: SwapRepository,
-    private val quoteRequester: QuoteRequester,
+    quoteRequester: QuoteRequester,
     private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
