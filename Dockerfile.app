@@ -1,13 +1,12 @@
+# syntax=docker/dockerfile:1.4
 # This Dockerfile is used to build the Android app (no signing).
 ARG BASE_IMAGE_TAG=latest
 FROM gem-android-base:${BASE_IMAGE_TAG}
 
-# Arguments for current tag, skip sign, and bundle task
 ARG TAG=main
 ARG SKIP_SIGN
 ARG BUNDLE_TASK=":app:assembleUniversalRelease"
 
-# Check if branch/tag exists and clone accordingly
 RUN REPO_URL="https://github.com/gemwalletcom/gem-android.git" && \
     if git ls-remote --exit-code --heads "$REPO_URL" "$TAG" >/dev/null 2>&1; then \
         echo "Branch $TAG exists, cloning it..." && \
@@ -22,10 +21,12 @@ RUN REPO_URL="https://github.com/gemwalletcom/gem-android.git" && \
 
 WORKDIR $HOME/gem-android
 
-# Copy local.properties from the build context. For local builds, this is your local file. CI builds, this file is created by a previous workflow step.
 COPY --chown=root:root local.properties ./local.properties
 
-# Build the application
-RUN export SKIP_SIGN=${SKIP_SIGN} && ./gradlew ${BUNDLE_TASK}
+RUN --mount=type=cache,target=/root/.gradle \
+    --mount=type=cache,target=/root/.m2 \
+    --mount=type=cache,target=/root/.cargo \
+    export SKIP_SIGN=${SKIP_SIGN} && \
+    ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache
 
 CMD ["bash"]

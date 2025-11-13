@@ -52,6 +52,8 @@ jobs:
           tags: ${{ env.BASE_IMAGE_NAME }}:${{ steps.meta.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64
+          cache-from: type=gha,scope=base-image
+          cache-to: type=gha,mode=max,scope=base-image
           build-args: |
             BUILDKIT_INLINE_CACHE=1
 
@@ -82,13 +84,19 @@ jobs:
         with:
           name: base-image-artifact
 
-      - name: Load base image from tarball
-        run: docker load -i base_image.tar
-
       - name: Set up Docker Buildx
+        id: buildx
         uses: docker/setup-buildx-action@v3
-        with:
-          driver: docker
+
+      - name: Load base image from tarball
+        run: |
+          docker load -i base_image.tar
+          docker tag ${{ env.BASE_IMAGE_NAME }}:${{ needs.build_base_image.outputs.image_tag }} \
+            ${{ env.BASE_IMAGE_NAME }}:buildcache
+          docker buildx imagetools create \
+            --tag ${{ env.BASE_IMAGE_NAME }}:${{ needs.build_base_image.outputs.image_tag }} \
+            ${{ env.BASE_IMAGE_NAME }}:buildcache 2>/dev/null || \
+          echo "Base image loaded into daemon, will be used directly"
 
       - name: Create local.properties for CI
         run: |
@@ -97,18 +105,19 @@ jobs:
           echo "# Automatically generated for CI build" >> local.properties
 
       - name: Build Dockerfile.app
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile.app
-          build-args: |
-            TAG=${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
-            BASE_IMAGE_TAG=${{ needs.build_base_image.outputs.image_tag }}
-            SKIP_SIGN=true
-          push: false
-          load: true
-          tags: gem-android-app:latest
-          platforms: linux/amd64
+        env:
+          DOCKER_BUILDKIT: 1
+        run: |
+          docker buildx build \
+            --build-arg TAG=${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }} \
+            --build-arg BASE_IMAGE_TAG=${{ needs.build_base_image.outputs.image_tag }} \
+            --build-arg SKIP_SIGN=true \
+            --cache-from type=gha,scope=app-image \
+            --cache-to type=gha,mode=max,scope=app-image \
+            --load \
+            --tag gem-android-app:latest \
+            --file ./Dockerfile.app \
+            .
 
       - name: Extract Universal APK from Docker container
         run: |
