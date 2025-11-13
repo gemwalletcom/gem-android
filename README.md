@@ -86,11 +86,11 @@ Only suppress detections when you fully understand the risk—ideally fix the co
 
 ## ♻️ Reproducible Release Verification
 
-Use the root-level helper to rebuild a tagged release in Docker and compare it against an APK you downloaded from a trusted endpoint:
+Use the helper script to rebuild a tagged release in Docker and compare it against an APK you downloaded from a trusted endpoint (e.g., the GitHub release assets):
 
 ```bash
 curl -L --fail -o official.apk https://apk.gemwallet.com/gem_wallet_latest.apk
-./verify.sh v1.7.0 official.apk
+./scripts/verify_apk.sh v1.7.0 official.apk
 ```
 
 The script will:
@@ -100,7 +100,7 @@ The script will:
 - extract the universal APK via bundletool; and
 - store the rebuilt + official APKs plus their hashes in `artifacts/reproducible/<tag>/`.
 
-If the bytes match, the script exits with success; otherwise it returns status code `2`. Set `VERIFY_ALLOW_MISMATCH=true` when you only need the artifacts/hashes (our CI job uses this to avoid red builds while still surfacing the comparison result).
+If the bytes match, the script exits with success; otherwise it returns status code `2`. Set `VERIFY_ALLOW_MISMATCH=true` when you only need the artifacts/hashes (our CI job uses this to avoid red builds while still surfacing the comparison result). When [`diffoscope`](https://diffoscope.org/) is available, the script also unzips both APKs (stripping signing metadata) and writes an HTML diff report to `artifacts/reproducible/<tag>/diffoscope.html`; set `VERIFY_SKIP_DIFFOSCOPE=true` to skip generating this report.
 
 ## 👨‍👧‍👦 Contributors
 

@@ -1,0 +1,141 @@
+name: Reproducible APK Verification
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Git tag or branch to build (example: 1.3.48 or v1.3.48)"
+        required: true
+      official_apk_url:
+        description: "Optional URL to the official universal APK (defaults to GitHub release asset heuristics)"
+        required: false
+        default: ""
+
+concurrency:
+  group: reproducible-${{ github.ref || github.run_id }}
+  cancel-in-progress: false
+
+env:
+  BASE_IMAGE_NAME: gem-android-base
+  DOCKER_BUILDKIT: 1
+
+jobs:
+  build_base_image:
+    name: Build Base Docker Image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      image_tag: ${{ steps.meta.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Extract Docker metadata for base image
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.BASE_IMAGE_NAME }}
+          tags: |
+            type=sha,format=long,prefix=
+
+      - name: Build and load Dockerfile.base
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: ./Dockerfile.base
+          push: false
+          load: true
+          tags: ${{ env.BASE_IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+          labels: ${{ steps.meta.outputs.labels }}
+          platforms: linux/amd64
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+
+      - name: Save base image to tarball
+        run: docker save ${{ env.BASE_IMAGE_NAME }}:${{ steps.meta.outputs.version }} -o base_image.tar
+
+      - name: Upload base image artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: base-image-artifact
+          path: base_image.tar
+          retention-days: 1
+
+  verify_apk:
+    name: Verify Reproducibility
+    needs: build_base_image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      VERIFY_TAG: ${{ inputs.tag }}
+      OFFICIAL_APK_URL: ${{ inputs.official_apk_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Download base image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: base-image-artifact
+
+      - name: Load base image from tarball
+        run: docker load -i base_image.tar
+
+      - name: Create local.properties for CI
+        run: |
+          echo "gpr.username=${{ github.actor }}" > local.properties
+          echo "gpr.token=${{ secrets.GITHUB_TOKEN }}" >> local.properties
+          echo "# Automatically generated for reproducible verification" >> local.properties
+
+      - name: Install diffoscope
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y diffoscope
+
+      - name: Download official APK
+        run: |
+          set -euo pipefail
+          if [[ -n "$OFFICIAL_APK_URL" ]]; then
+            echo "Downloading official APK from provided URL: $OFFICIAL_APK_URL"
+            curl -L --fail -o official.apk "$OFFICIAL_APK_URL"
+            exit 0
+          fi
+          TAG="$VERIFY_TAG"
+          TAG_NOPREFIX="${TAG#v}"
+          declare -a urls=(
+            "https://github.com/gemwalletcom/gem-android/releases/download/${TAG}/gem_wallet_universal_v${TAG_NOPREFIX}.apk"
+            "https://github.com/gemwalletcom/gem-android/releases/download/${TAG}/gem_wallet_universal_${TAG_NOPREFIX}.apk"
+            "https://github.com/gemwalletcom/gem-android/releases/download/${TAG}/gem_wallet_universal_${TAG}.apk"
+            "https://github.com/gemwalletcom/gem-android/releases/download/${TAG}/gem_wallet_universal.apk"
+          )
+          for url in "${urls[@]}"; do
+            echo "Attempting download from ${url}"
+            if curl -L --fail -o official.apk "$url"; then
+              echo "Downloaded official APK from ${url}"
+              exit 0
+            fi
+          done
+          echo "Failed to download official APK for tag ${TAG}. Provide the URL explicitly via workflow input." >&2
+          exit 1
+
+      - name: Verify reproducible build
+        env:
+          VERIFY_ALLOW_MISMATCH: "true"
+          VERIFY_BASE_TAG: ${{ needs.build_base_image.outputs.image_tag }}
+        run: |
+          chmod +x scripts/verify_apk.sh
+          ./scripts/verify_apk.sh "$VERIFY_TAG" official.apk
+
+      - name: Upload reproducible artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: reproducible-artifacts
+          path: artifacts/reproducible/
+          retention-days: 7

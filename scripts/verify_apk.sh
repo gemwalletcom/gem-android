@@ -48,7 +48,9 @@ TAG_SAFE="$(sanitize "$TAG")"
 WORK_DIR="${ROOT_DIR}/artifacts/reproducible/${TAG_SAFE}"
 rm -rf "$WORK_DIR"
 mkdir -p "$WORK_DIR"
-cp "$abs_official" "${WORK_DIR}/official.apk"
+OFFICIAL_COPY="${WORK_DIR}/official.apk"
+REBUILT_APK="${WORK_DIR}/rebuilt.apk"
+cp "$abs_official" "$OFFICIAL_COPY"
 
 sha256_file() {
   local file="$1"
@@ -100,10 +102,53 @@ ensure_bundletool() {
   local version="1.18.1"
   local jar="${ROOT_DIR}/scripts/bundletool-all-${version}.jar"
   if [[ ! -f "$jar" ]]; then
-    echo "Downloading bundletool-all-${version}.jar..."
+    echo "Downloading bundletool-all-${version}.jar..." >&2
     curl -L --fail -o "$jar" "https://github.com/google/bundletool/releases/download/${version}/bundletool-all-${version}.jar"
   fi
   echo "$jar"
+}
+
+strip_signing_artifacts() {
+  local dir="$1"
+  local meta="${dir}/META-INF"
+  if [[ -d "$meta" ]]; then
+    rm -f "${meta}"/*.RSA "${meta}"/*.DSA "${meta}"/*.EC "${meta}"/*.SF "${meta}"/*.MF "${meta}"/*.DSIG \
+      "${meta}"/CERT.* "${meta}"/CHANGES.* "${meta}"/MANIFEST.MF "${meta}"/SIGNATURE.SF 2>/dev/null || true
+    rm -f "${meta}/com/android/metadata" 2>/dev/null || true
+  fi
+  find "$dir" -name "stamp-cert-sha256" -delete >/dev/null 2>&1 || true
+  find "$dir" -name "*.idsig" -delete >/dev/null 2>&1 || true
+}
+
+run_diffoscope_report() {
+  if [[ "${VERIFY_SKIP_DIFFOSCOPE:-false}" == "true" ]]; then
+    echo "Skipping diffoscope because VERIFY_SKIP_DIFFOSCOPE=true." >&2
+    return
+  fi
+  if ! command -v diffoscope >/dev/null 2>&1; then
+    echo "diffoscope not found; install it or set VERIFY_SKIP_DIFFOSCOPE=true to silence this message." >&2
+    return
+  fi
+  local diff_dir="${WORK_DIR}/diffoscope"
+  local rebuilt_dir="${diff_dir}/rebuilt"
+  local official_dir="${diff_dir}/official"
+  rm -rf "$diff_dir"
+  mkdir -p "$rebuilt_dir" "$official_dir"
+  unzip -qq "$REBUILT_APK" -d "$rebuilt_dir"
+  unzip -qq "$OFFICIAL_COPY" -d "$official_dir"
+  strip_signing_artifacts "$rebuilt_dir"
+  strip_signing_artifacts "$official_dir"
+  local report="${WORK_DIR}/diffoscope.html"
+  if diffoscope --html "$report" "$rebuilt_dir" "$official_dir"; then
+    echo "diffoscope report (no differences) written to ${report}"
+  else
+    local status=$?
+    if [[ $status -eq 1 ]]; then
+      echo "diffoscope detected differences; see ${report}" >&2
+    else
+      echo "diffoscope exited with status ${status}. Report (if any): ${report}" >&2
+    fi
+  fi
 }
 
 ensure_base_image
@@ -130,18 +175,19 @@ if [[ ! -f "${WORK_DIR}/rebuilt_apks/universal.apk" ]]; then
 fi
 cp "${WORK_DIR}/rebuilt_apks/universal.apk" "${WORK_DIR}/rebuilt.apk"
 
-REBUILT_HASH="$(sha256_file "${WORK_DIR}/rebuilt.apk")"
-OFFICIAL_HASH="$(sha256_file "${WORK_DIR}/official.apk")"
+REBUILT_HASH="$(sha256_file "$REBUILT_APK")"
+OFFICIAL_HASH="$(sha256_file "$OFFICIAL_COPY")"
 
 echo "Rebuilt APK SHA-256 : ${REBUILT_HASH}"
 echo "Official APK SHA-256: ${OFFICIAL_HASH}"
 
-if cmp -s "${WORK_DIR}/rebuilt.apk" "${WORK_DIR}/official.apk"; then
+if cmp -s "$REBUILT_APK" "$OFFICIAL_COPY"; then
   echo "Success: APKs match."
   exit 0
 fi
 
 echo "Mismatch: APKs differ." >&2
+run_diffoscope_report
 if [[ "${VERIFY_ALLOW_MISMATCH:-false}" == "true" ]]; then
   exit 0
 fi
