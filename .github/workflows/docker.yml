@@ -16,6 +16,7 @@ concurrency:
 
 env:
   BASE_IMAGE_NAME: gem-android-base
+  BASE_IMAGE_FULL_NAME: ghcr.io/${{ github.repository_owner }}/gem-android-base
   DOCKER_BUILDKIT: 1
 
 jobs:
@@ -24,6 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: write
     outputs:
       image_tag: ${{ steps.meta.outputs.version }}
     steps:
@@ -33,37 +35,35 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Extract Docker metadata for base image
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.BASE_IMAGE_NAME }}
+          images: ${{ env.BASE_IMAGE_FULL_NAME }}
           # Generate a version tag based on commit SHA. This will be unique.
           tags: |
             type=sha,format=long,prefix=
 
-      - name: Build and load Dockerfile.base
+      - name: Build and push Dockerfile.base
         uses: docker/build-push-action@v5
         with:
           context: .
           file: ./Dockerfile.base
-          push: false
-          load: true
-          tags: ${{ env.BASE_IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+          push: true
+          tags: ${{ env.BASE_IMAGE_FULL_NAME }}:${{ steps.meta.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
           platforms: linux/amd64
+          cache-from: type=gha,scope=base-image
+          cache-to: type=gha,mode=max,scope=base-image
           build-args: |
             BUILDKIT_INLINE_CACHE=1
-
-      - name: Save base image to tarball
-        run: docker save ${{ env.BASE_IMAGE_NAME }}:${{ steps.meta.outputs.version }} -o base_image.tar
-
-      - name: Upload base image artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: base-image-artifact
-          path: base_image.tar
-          retention-days: 1
 
   build_app_image:
     name: Build App Docker Image
@@ -71,24 +71,22 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
 
-      - name: Download base image artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: base-image-artifact
-
-      - name: Load base image from tarball
-        run: docker load -i base_image.tar
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          driver: docker
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create local.properties for CI
         run: |
@@ -97,36 +95,32 @@ jobs:
           echo "# Automatically generated for CI build" >> local.properties
 
       - name: Build Dockerfile.app
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: ./Dockerfile.app
-          build-args: |
-            TAG=${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
-            BASE_IMAGE_TAG=${{ needs.build_base_image.outputs.image_tag }}
-            SKIP_SIGN=true
-          push: false
-          load: true
-          tags: gem-android-app:latest
-          platforms: linux/amd64
-
-      - name: Extract AAB from Docker container
+        env:
+          DOCKER_BUILDKIT: 1
         run: |
-          # Create container from the built image
-          CONTAINER_ID=$(docker create gem-android-app:latest)
-          
-          # Copy AAB files from container to host
-          docker cp $CONTAINER_ID:/root/gem-android/app/build/outputs/bundle/googleRelease/ ./aab-output/
-          
-          # Clean up container
-          docker rm $CONTAINER_ID
-          
-          # List the extracted files
-          find ./aab-output -name "*.aab"
+          docker buildx build \
+            --build-arg TAG=${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }} \
+            --build-arg BASE_IMAGE=${{ env.BASE_IMAGE_FULL_NAME }} \
+            --build-arg BASE_IMAGE_TAG=${{ needs.build_base_image.outputs.image_tag }} \
+            --build-arg SKIP_SIGN=true \
+            --cache-from type=gha,scope=app-image \
+            --cache-to type=gha,mode=max,scope=app-image \
+            --load \
+            --tag gem-android-app:latest \
+            --file ./Dockerfile.app \
+            .
 
-      - name: Upload AAB artifacts
+      - name: Extract Universal APK from Docker container
+        run: |
+          CONTAINER_ID=$(docker create gem-android-app:latest)
+          mkdir -p apk-output
+          docker cp $CONTAINER_ID:/root/gem-android/app/build/outputs/apk/universal/release/. ./apk-output/
+          docker rm $CONTAINER_ID
+          find ./apk-output -name "*.apk"
+
+      - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: gem-android-aab
-          path: ./aab-output/
+          name: gem-android-apk
+          path: ./apk-output/
           retention-days: 7

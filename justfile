@@ -49,20 +49,34 @@ generate-models: install-typeshare
     @cd core && cargo run --package generate --bin generate android ../gemcore/src/main/kotlin/com/wallet/core
 
 build-base-image:
-	docker build -t gem-android-base -f Dockerfile.base . #&> build.base.log
+	DOCKER_BUILDKIT=1 docker build -t gem-android-base -f Dockerfile.base .
 
 TAG := env("TAG", "main")
 BUILD_MODE := env("BUILD_MODE", "")
 
 build-app:
-	docker build --build-arg TAG={{TAG}} \
+	DOCKER_BUILDKIT=1 docker build --build-arg TAG={{TAG}} \
 	--build-arg SKIP_SIGN=true \
 	--progress=plain \
 	-m 32g \
 	-t gem-android-app \
-	-f Dockerfile.app . #&> build.app.log
+	-f Dockerfile.app .
 
 core-upgrade:
 	@git submodule update --recursive --remote
+
+
+generate-verification-metadata:
+	#!/usr/bin/env bash
+	set -euo pipefail
+	GPR_USERNAME=${GPR_USERNAME:-$(grep "gpr.username=" local.properties 2>/dev/null | cut -d'=' -f2 || echo "")}
+	GPR_TOKEN=${GPR_TOKEN:-$(grep "gpr.token=" local.properties 2>/dev/null | cut -d'=' -f2 || echo "")}
+	docker run --rm \
+		-v {{justfile_directory()}}:/workspace \
+		-w /workspace \
+		-e GPR_USERNAME=${GPR_USERNAME} \
+		-e GPR_TOKEN=${GPR_TOKEN} \
+		gem-android-base \
+		bash -lc "./gradlew :app:assembleGoogleDebug --write-verification-metadata sha256"
 
 mod core

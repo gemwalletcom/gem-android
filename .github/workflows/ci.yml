@@ -8,6 +8,7 @@ on:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   UNIT_TESTS: "true"
@@ -39,13 +40,30 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Install just
-        run: cargo install just
+        uses: extractions/setup-just@v2
+
+      - name: Cache NDK
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.ANDROID_HOME }}/ndk/28.1.13356709
+          key: ndk-28.1.13356709-${{ runner.os }}
 
       - name: Setup NDK
         run: just install-ndk
 
+      - name: Cache AVD
+        uses: actions/cache@v4
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+          key: avd-29-${{ runner.os }}
+
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Build tests
         run: just build-test
@@ -58,4 +76,10 @@ jobs:
         with:
           api-level: 29
           arch: x86_64
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
           script: just test
+        env:
+          GPR_USERNAME: ${{ github.actor }}
+          GPR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
