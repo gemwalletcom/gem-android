@@ -10,6 +10,14 @@ on:
         description: "Optional URL to the official universal APK (defaults to GitHub release asset heuristics)"
         required: false
         default: ""
+      gradle_task:
+        description: "Gradle task to run (default :app:assembleUniversalRelease)"
+        required: false
+        default: ":app:assembleUniversalRelease"
+      apk_subdir:
+        description: "Directory inside the repo that holds the generated APK (default app/build/outputs/apk/universal/release)"
+        required: false
+        default: "app/build/outputs/apk/universal/release"
 
 concurrency:
   group: reproducible-${{ github.ref || github.run_id }}
@@ -74,6 +82,8 @@ jobs:
     env:
       VERIFY_TAG: ${{ inputs.tag }}
       OFFICIAL_APK_URL: ${{ inputs.official_apk_url }}
+      VERIFY_GRADLE_TASK: ${{ inputs.gradle_task }}
+      VERIFY_APK_SUBDIR: ${{ inputs.apk_subdir }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

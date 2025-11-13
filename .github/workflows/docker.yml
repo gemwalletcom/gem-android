@@ -110,23 +110,17 @@ jobs:
           tags: gem-android-app:latest
           platforms: linux/amd64
 
-      - name: Extract AAB from Docker container
+      - name: Extract Universal APK from Docker container
         run: |
-          # Create container from the built image
           CONTAINER_ID=$(docker create gem-android-app:latest)
-          
-          # Copy AAB files from container to host
-          docker cp $CONTAINER_ID:/root/gem-android/app/build/outputs/bundle/googleRelease/ ./aab-output/
-          
-          # Clean up container
+          mkdir -p apk-output
+          docker cp $CONTAINER_ID:/root/gem-android/app/build/outputs/apk/universal/release/. ./apk-output/
           docker rm $CONTAINER_ID
-          
-          # List the extracted files
-          find ./aab-output -name "*.aab"
+          find ./apk-output -name "*.apk"
 
-      - name: Upload AAB artifacts
+      - name: Upload APK artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: gem-android-aab
-          path: ./aab-output/
+          name: gem-android-apk
+          path: ./apk-output/
           retention-days: 7

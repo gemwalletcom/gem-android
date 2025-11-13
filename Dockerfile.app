@@ -2,9 +2,10 @@
 ARG BASE_IMAGE_TAG=latest
 FROM gem-android-base:${BASE_IMAGE_TAG}
 
-# Arguments for current tag and skip sign
+# Arguments for current tag, skip sign, and bundle task
 ARG TAG=main
 ARG SKIP_SIGN
+ARG BUNDLE_TASK=":app:assembleUniversalRelease"
 
 # Check if branch/tag exists and clone accordingly
 RUN REPO_URL="https://github.com/gemwalletcom/gem-android.git" && \
@@ -25,6 +26,6 @@ WORKDIR $HOME/gem-android
 COPY --chown=root:root local.properties ./local.properties
 
 # Build the application
-RUN export SKIP_SIGN=${SKIP_SIGN} && just unsigned-release
+RUN export SKIP_SIGN=${SKIP_SIGN} && ./gradlew ${BUNDLE_TASK}
 
 CMD ["bash"]

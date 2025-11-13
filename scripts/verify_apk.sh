@@ -63,6 +63,8 @@ sha256_file() {
 
 BASE_IMAGE="${VERIFY_BASE_IMAGE:-gem-android-base}"
 BASE_TAG="${VERIFY_BASE_TAG:-latest}"
+GRADLE_TASK="${VERIFY_GRADLE_TASK:-:app:assembleUniversalRelease}"
+APK_SUBDIR="${VERIFY_APK_SUBDIR:-app/build/outputs/apk/universal/release}"
 APP_IMAGE_TAG="$(echo "$TAG" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_.-]/-/g')"
 [[ -n "$APP_IMAGE_TAG" ]] || APP_IMAGE_TAG="latest"
 APP_IMAGE="${VERIFY_APP_IMAGE:-gem-android-app-verify}:${APP_IMAGE_TAG}"
@@ -77,35 +79,29 @@ ensure_base_image() {
 }
 
 build_app_image() {
-  echo "Building app image for tag ${TAG}..."
+  echo "Building app image for tag ${TAG} using task ${GRADLE_TASK}..."
   docker build \
     -t "${APP_IMAGE}" \
     --build-arg TAG="${TAG}" \
     --build-arg SKIP_SIGN=true \
     --build-arg BASE_IMAGE_TAG="${BASE_TAG}" \
+    --build-arg BUNDLE_TASK="${GRADLE_TASK}" \
     -f Dockerfile.app .
 }
 
-extract_aab() {
+extract_apk_outputs() {
   local container_id
   container_id=$(docker create "${APP_IMAGE}")
   cleanup() {
     docker rm -f "$container_id" >/dev/null 2>&1 || true
   }
   trap cleanup EXIT
-  docker cp "$container_id":/root/gem-android/app/build/outputs/bundle/googleRelease "${WORK_DIR}/googleRelease"
+  local dest="${WORK_DIR}/apk"
+  rm -rf "$dest"
+  mkdir -p "$dest"
+  docker cp "$container_id":/root/gem-android/${APK_SUBDIR}/. "$dest"
   cleanup
   trap - EXIT
-}
-
-ensure_bundletool() {
-  local version="1.18.1"
-  local jar="${ROOT_DIR}/scripts/bundletool-all-${version}.jar"
-  if [[ ! -f "$jar" ]]; then
-    echo "Downloading bundletool-all-${version}.jar..." >&2
-    curl -L --fail -o "$jar" "https://github.com/google/bundletool/releases/download/${version}/bundletool-all-${version}.jar"
-  fi
-  echo "$jar"
 }
 
 strip_signing_artifacts() {
@@ -134,8 +130,8 @@ run_diffoscope_report() {
   local official_dir="${diff_dir}/official"
   rm -rf "$diff_dir"
   mkdir -p "$rebuilt_dir" "$official_dir"
-  unzip -qq "$REBUILT_APK" -d "$rebuilt_dir"
-  unzip -qq "$OFFICIAL_COPY" -d "$official_dir"
+  unzip -qq -o "$REBUILT_APK" -d "$rebuilt_dir"
+  unzip -qq -o "$OFFICIAL_COPY" -d "$official_dir"
   strip_signing_artifacts "$rebuilt_dir"
   strip_signing_artifacts "$official_dir"
   local report="${WORK_DIR}/diffoscope.html"
@@ -153,27 +149,14 @@ run_diffoscope_report() {
 
 ensure_base_image
 build_app_image
-extract_aab
+extract_apk_outputs
 
-AAB_PATH="$(find "${WORK_DIR}/googleRelease" -name "*.aab" -type f -print -quit)"
-if [[ -z "$AAB_PATH" ]]; then
-  echo "Failed to locate AAB file under ${WORK_DIR}/googleRelease" >&2
+APK_FROM_BUILD="$(find "${WORK_DIR}/apk" -name "*.apk" -type f -print -quit)"
+if [[ -z "$APK_FROM_BUILD" ]]; then
+  echo "Failed to locate APK inside ${APK_SUBDIR}" >&2
   exit 1
 fi
-
-BUNDLETOOL_JAR="$(ensure_bundletool)"
-java -jar "$BUNDLETOOL_JAR" build-apks \
-  --bundle="$AAB_PATH" \
-  --output="${WORK_DIR}/rebuilt.apks" \
-  --mode=universal \
-  >/dev/null
-
-unzip -q "${WORK_DIR}/rebuilt.apks" -d "${WORK_DIR}/rebuilt_apks"
-if [[ ! -f "${WORK_DIR}/rebuilt_apks/universal.apk" ]]; then
-  echo "bundletool did not produce a universal APK" >&2
-  exit 1
-fi
-cp "${WORK_DIR}/rebuilt_apks/universal.apk" "${WORK_DIR}/rebuilt.apk"
+cp "$APK_FROM_BUILD" "$REBUILT_APK"
 
 REBUILT_HASH="$(sha256_file "$REBUILT_APK")"
 OFFICIAL_HASH="$(sha256_file "$OFFICIAL_COPY")"
