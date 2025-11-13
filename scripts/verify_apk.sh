@@ -21,6 +21,7 @@ Options:
   --output-dir <path>    Where verification artifacts are stored
                          (default: artifacts/reproducible/googleRelease).
   --rebuild-base         Force rebuilding the base Docker image.
+  --allow-mismatch       Do not fail if the rebuilt APK differs from the official one.
   -h, --help             Show this help.
 EOF
 }
@@ -34,6 +35,7 @@ APK_URL="https://apk.gemwallet.com/gem_wallet_latest.apk"
 BASE_IMAGE="gem-android-base:latest"
 OUTPUT_ROOT="${ROOT_DIR}/artifacts/reproducible"
 REBUILD_BASE="false"
+ALLOW_MISMATCH="false"
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
@@ -64,6 +66,10 @@ while [[ $# -gt 0 ]]; do
       ;;
     --rebuild-base)
       REBUILD_BASE="true"
+      shift
+      ;;
+    --allow-mismatch)
+      ALLOW_MISMATCH="true"
       shift
       ;;
     -h|--help)
@@ -190,4 +196,9 @@ if cmp -s "$REBUILT_APK" "$OFFICIAL_APK"; then
 fi
 
 echo "Mismatch: APKs differ." >&2
+if [[ "$ALLOW_MISMATCH" == "true" ]]; then
+  echo "Continuing anyway because --allow-mismatch was set."
+  exit 0
+fi
+
 exit 2

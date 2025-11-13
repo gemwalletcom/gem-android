@@ -108,7 +108,7 @@ Artifacts (rebuilt + official APKs) are stored in `artifacts/reproducible/<varia
   --apk-url https://apk.gemwallet.com/gem_wallet_universal_v1.7.0.apk
 ```
 
-Use `--rebuild-base` whenever you modify `Dockerfile.base` and want a clean image.
+Use `--rebuild-base` whenever you modify `Dockerfile.base` and want a clean image. By default the script exits with status code `2` when the APKs differ; add `--allow-mismatch` (as CI does) if you only want to collect artifacts and hashes without treating a mismatch as a failure.
 
 ## 👨‍👧‍👦 Contributors
 
