@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1.4
 # This Dockerfile is used to build the Android app (no signing).
+ARG BASE_IMAGE=gem-android-base
 ARG BASE_IMAGE_TAG=latest
-FROM gem-android-base:${BASE_IMAGE_TAG}
+FROM ${BASE_IMAGE}:${BASE_IMAGE_TAG}
 
 ARG TAG=main
 ARG SKIP_SIGN

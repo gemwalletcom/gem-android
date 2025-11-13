@@ -61,14 +61,16 @@ ensure_base_image() {
 build_app_image() {
   local app_image="$1"
   local tag="$2"
-  local base_tag="$3"
-  local gradle_task="$4"
+  local base_image="$3"
+  local base_tag="$4"
+  local gradle_task="$5"
 
   echo "Building app image for tag ${tag} using task ${gradle_task}..."
   docker build \
     -t "${app_image}" \
     --build-arg TAG="${tag}" \
     --build-arg SKIP_SIGN=true \
+    --build-arg BASE_IMAGE="${base_image}" \
     --build-arg BASE_IMAGE_TAG="${base_tag}" \
     --build-arg BUNDLE_TASK="${gradle_task}" \
     -f Dockerfile.app .
@@ -202,7 +204,7 @@ main() {
 
   # Build Docker images
   ensure_base_image "$base_image" "$base_tag"
-  build_app_image "$app_image" "$tag" "$base_tag" "$gradle_task"
+  build_app_image "$app_image" "$tag" "$base_image" "$base_tag" "$gradle_task"
 
   # Extract APK from Docker image
   extract_apk_outputs "$app_image" "$work_dir" "$apk_subdir"
