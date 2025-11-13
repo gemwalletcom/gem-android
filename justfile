@@ -70,7 +70,7 @@ mod core
 # Regenerate Gradle dependency verification metadata inside the Docker toolchain.
 verify-deps:
 	docker run --rm \
-	-v {{PWD}}:/workspace \
+	-v {{justfile_directory()}}:/workspace \
 	-w /workspace \
 	-e GPR_USERNAME=${GPR_USERNAME} \
 	-e GPR_TOKEN=${GPR_TOKEN} \
