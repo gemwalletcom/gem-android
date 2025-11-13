@@ -86,29 +86,21 @@ Only suppress detections when you fully understand the risk—ideally fix the co
 
 ## ♻️ Reproducible Release Verification
 
-We ship a Docker toolchain (`Dockerfile.base`) so anyone can rebuild the public APK and confirm it matches the file hosted on [apk.gemwallet.com](https://apk.gemwallet.com). Run the helper script from the repo root:
+Use the root-level helper to rebuild a tagged release in Docker and compare it against an APK you downloaded from a trusted endpoint:
 
 ```bash
-./scripts/verify_apk.sh
+curl -L --fail -o official.apk https://apk.gemwallet.com/gem_wallet_latest.apk
+./verify.sh v1.7.0 official.apk
 ```
 
 The script will:
 
-- build (or reuse) the `gem-android-base` image;
-- run the Gradle bundle task inside the container (`bundleGoogleRelease` by default);
-- use `bundletool` to extract the universal APK; and
-- download `https://apk.gemwallet.com/gem_wallet_latest.apk` and compare SHA-256 hashes as well as the raw bytes.
+- (re)build the `gem-android-base` image if necessary;
+- build `Dockerfile.app` for the requested git tag/branch, which clones the repo and runs the Gradle bundle task;
+- extract the universal APK via bundletool; and
+- store the rebuilt + official APKs plus their hashes in `artifacts/reproducible/<tag>/`.
 
-Artifacts (rebuilt + official APKs) are stored in `artifacts/reproducible/<variant>/`. Pass different variants/URLs as needed, for example:
-
-```bash
-./scripts/verify_apk.sh \
-  --bundle-task bundleUniversalRelease \
-  --variant universalRelease \
-  --apk-url https://apk.gemwallet.com/gem_wallet_universal_v1.7.0.apk
-```
-
-Use `--rebuild-base` whenever you modify `Dockerfile.base` and want a clean image. By default the script exits with status code `2` when the APKs differ; add `--allow-mismatch` (as CI does) if you only want to collect artifacts and hashes without treating a mismatch as a failure.
+If the bytes match, the script exits with success; otherwise it returns status code `2`. Set `VERIFY_ALLOW_MISMATCH=true` when you only need the artifacts/hashes (our CI job uses this to avoid red builds while still surfacing the comparison result).
 
 ## 👨‍👧‍👦 Contributors
 

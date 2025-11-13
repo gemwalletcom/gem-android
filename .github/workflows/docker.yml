@@ -139,6 +139,7 @@ jobs:
       contents: read
     env:
       DOCKER_BUILDKIT: 1
+      VERIFY_TAG: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -160,10 +161,16 @@ jobs:
           echo "gpr.token=${{ secrets.GITHUB_TOKEN }}" >> local.properties
           echo "# Automatically generated for CI build" >> local.properties
 
+      - name: Download official APK
+        run: curl -L --fail -o official.apk https://apk.gemwallet.com/gem_wallet_latest.apk
+
       - name: Verify reproducible build
+        env:
+          VERIFY_ALLOW_MISMATCH: "true"
+          VERIFY_BASE_TAG: ${{ needs.build_base_image.outputs.image_tag }}
         run: |
-          chmod +x scripts/verify_apk.sh
-          ./scripts/verify_apk.sh --base-image gem-android-base:${{ needs.build_base_image.outputs.image_tag }} --allow-mismatch
+          chmod +x verify.sh scripts/verify_apk.sh
+          ./verify.sh "$VERIFY_TAG" official.apk
 
       - name: Upload reproducible artifacts
         uses: actions/upload-artifact@v4
