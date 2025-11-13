@@ -130,3 +130,44 @@ jobs:
           name: gem-android-aab
           path: ./aab-output/
           retention-days: 7
+
+  reproducible_check:
+    name: Reproducible APK Check
+    needs: build_base_image
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      DOCKER_BUILDKIT: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Download base image artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: base-image-artifact
+
+      - name: Load base image from tarball
+        run: |
+          docker load -i base_image.tar
+
+      - name: Create local.properties for CI
+        run: |
+          echo "gpr.username=${{ github.actor }}" > local.properties
+          echo "gpr.token=${{ secrets.GITHUB_TOKEN }}" >> local.properties
+          echo "# Automatically generated for CI build" >> local.properties
+
+      - name: Verify reproducible build
+        run: |
+          chmod +x scripts/verify_apk.sh
+          ./scripts/verify_apk.sh --base-image gem-android-base:${{ needs.build_base_image.outputs.image_tag }}
+
+      - name: Upload reproducible artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: reproducible-artifacts
+          path: artifacts/reproducible/
+          retention-days: 7

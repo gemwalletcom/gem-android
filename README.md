@@ -84,6 +84,32 @@ We run [MobSF mobsfscan](https://github.com/MobSF/mobsfscan) to catch insecure p
 
 Only suppress detections when you fully understand the risk—ideally fix the code; otherwise, add a targeted `// mobsf-ignore: rule_id` comment with context.
 
+## ♻️ Reproducible Release Verification
+
+We ship a Docker toolchain (`Dockerfile.base`) so anyone can rebuild the public APK and confirm it matches the file hosted on [apk.gemwallet.com](https://apk.gemwallet.com). Run the helper script from the repo root:
+
+```bash
+./scripts/verify_apk.sh
+```
+
+The script will:
+
+- build (or reuse) the `gem-android-base` image;
+- run the Gradle bundle task inside the container (`bundleGoogleRelease` by default);
+- use `bundletool` to extract the universal APK; and
+- download `https://apk.gemwallet.com/gem_wallet_latest.apk` and compare SHA-256 hashes as well as the raw bytes.
+
+Artifacts (rebuilt + official APKs) are stored in `artifacts/reproducible/<variant>/`. Pass different variants/URLs as needed, for example:
+
+```bash
+./scripts/verify_apk.sh \
+  --bundle-task bundleUniversalRelease \
+  --variant universalRelease \
+  --apk-url https://apk.gemwallet.com/gem_wallet_universal_v1.7.0.apk
+```
+
+Use `--rebuild-base` whenever you modify `Dockerfile.base` and want a clean image.
+
 ## 👨‍👧‍👦 Contributors
 
 We love contributors! Feel free to contribute to this project but please read the [Contributing Guidelines](CONTRIBUTING.md) first!
