@@ -89,8 +89,8 @@ Only suppress detections when you fully understand the risk—ideally fix the co
 Use the helper script to rebuild a tagged release in Docker and compare it against an APK you downloaded from a trusted endpoint (e.g., the GitHub release assets). By default it runs `:app:assembleUniversalRelease` and copies the resulting APK from `app/build/outputs/apk/universal/release`; override `VERIFY_GRADLE_TASK` / `VERIFY_APK_SUBDIR` if you need another flavor.
 
 ```bash
-curl -L --fail -o official.apk https://apk.gemwallet.com/gem_wallet_latest.apk
-./scripts/verify_apk.sh v1.7.0 official.apk
+curl -L --fail -o official.apk http://apk.gemwallet.com/gem_wallet_universal_v1.3.48.apk
+./scripts/verify_apk.sh v1.3.48 official.apk
 ```
 
 The script will:

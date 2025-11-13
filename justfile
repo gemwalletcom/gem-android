@@ -65,14 +65,18 @@ build-app:
 core-upgrade:
 	@git submodule update --recursive --remote
 
-mod core
 
-# Regenerate Gradle dependency verification metadata inside the Docker toolchain.
-verify-deps:
+generate-verification-metadata:
+	#!/usr/bin/env bash
+	set -euo pipefail
+	GPR_USERNAME=${GPR_USERNAME:-$(grep "gpr.username=" local.properties 2>/dev/null | cut -d'=' -f2 || echo "")}
+	GPR_TOKEN=${GPR_TOKEN:-$(grep "gpr.token=" local.properties 2>/dev/null | cut -d'=' -f2 || echo "")}
 	docker run --rm \
-	-v {{justfile_directory()}}:/workspace \
-	-w /workspace \
-	-e GPR_USERNAME=${GPR_USERNAME} \
-	-e GPR_TOKEN=${GPR_TOKEN} \
-	gem-android-base \
-	bash -lc "./gradlew :app:assembleUniversalRelease --write-verification-metadata sha256 --refresh-dependencies"
+		-v {{justfile_directory()}}:/workspace \
+		-w /workspace \
+		-e GPR_USERNAME=${GPR_USERNAME} \
+		-e GPR_TOKEN=${GPR_TOKEN} \
+		gem-android-base \
+		bash -lc "./gradlew :app:assembleGoogleDebug --write-verification-metadata sha256"
+
+mod core
