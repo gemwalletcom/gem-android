@@ -9,9 +9,7 @@ if [[ -z "${GRADLE_VERSION}" ]]; then
   exit 1
 fi
 
-./gradlew --no-daemon \
-  --write-verification-metadata sha256 \
-  --dependency "gradle:gradle:${GRADLE_VERSION}:bin@zip" \
-  --dependency "gradle:gradle:${GRADLE_VERSION}:src@zip"
+./scripts/add_verification_dependency.sh "gradle:gradle:${GRADLE_VERSION}:bin@zip"
+./scripts/add_verification_dependency.sh "gradle:gradle:${GRADLE_VERSION}:src@zip"
 
 ./gradlew :app:assembleGoogleDebug --write-verification-metadata sha256
