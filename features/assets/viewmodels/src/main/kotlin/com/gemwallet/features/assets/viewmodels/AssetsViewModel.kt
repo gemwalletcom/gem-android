@@ -124,6 +124,10 @@ class AssetsViewModel @Inject constructor(
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, WalletInfoUIState())
 
+    val isWelcomeBannerHidden = session.filterNotNull()
+        .flatMapLatest { userConfig.isWelcomeBannerHidden(it.wallet.id) }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, true)
+
     fun onRefresh() {
         session.value?.let { session ->
             refreshingState.update { RefreshingState.OnForce }
@@ -153,6 +157,10 @@ class AssetsViewModel @Inject constructor(
         userConfig.hideBalances()
     }
 
+    fun onHideWelcomeBanner() = viewModelScope.launch {
+        userConfig.hideWelcomeBanner(session.value?.wallet?.id ?: return@launch)
+    }
+
     private fun calcWalletInfo(
         wallet: Wallet,
         currency: Currency,
@@ -174,12 +182,16 @@ class AssetsViewModel @Inject constructor(
             WalletType.multicoin -> R.drawable.multicoin_wallet
             else -> wallet.accounts.firstOrNull()?.chain?.asset()
         }
+        val cryptoTotal = assets.fold(0.0) { acc, asset ->
+            acc + asset.balance.totalAmount
+        }
 
         return if (isHideBalances) {
             WalletInfoUIState(
                 name = wallet.name,
                 icon = icon,
-                totalValue = "✱✱✱✱✱✱",
+                cryptoTotalValue = cryptoTotal,
+                totalValueFormatted = "✱✱✱✱✱✱",
                 changedValue = "",
                 changedPercentages = "",
                 priceState = PriceState.None,
@@ -190,7 +202,8 @@ class AssetsViewModel @Inject constructor(
             WalletInfoUIState(
                 name = wallet.name,
                 icon = icon,
-                totalValue = currency.format(totalValue),
+                cryptoTotalValue = cryptoTotal,
+                totalValueFormatted = currency.format(totalValue),
                 changedValue = currency.format(changedValue),
                 changedPercentages = PriceUIState.formatPercentage(changedPercentages),
                 priceState = PriceUIState.getState(changedPercentages),

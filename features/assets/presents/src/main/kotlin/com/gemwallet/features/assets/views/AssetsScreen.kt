@@ -47,6 +47,7 @@ import com.gemwallet.features.assets.views.components.AssetsHead
 import com.gemwallet.features.assets.views.components.AssetsListFooter
 import com.gemwallet.features.assets.views.components.assets
 import com.gemwallet.features.banner.views.BannersScene
+import com.gemwallet.features.banner.views.WelcomeBanner
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.BannerEvent
 import uniffi.gemstone.Config
@@ -70,6 +71,7 @@ fun AssetsScreen(
     val unpinnedAssets by viewModel.unpinnedAssets.collectAsStateWithLifecycle()
     val walletInfo by viewModel.walletInfo.collectAsStateWithLifecycle()
     val screenState by viewModel.screenState.collectAsStateWithLifecycle()
+    val isWelcomeBannerHidden by viewModel.isWelcomeBannerHidden.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
     val uriHandler = LocalUriHandler.current
@@ -108,6 +110,16 @@ fun AssetsScreen(
                         onReceiveClick = onReceiveClick,
                         onBuyClick = onBuyClick,
                         onHideBalances = viewModel::hideBalances
+                    )
+                }
+                item {
+                    WelcomeBanner(
+                        isHidden = isWelcomeBannerHidden,
+                        isSynced = importing,
+                        cryptoTotal = walletInfo.cryptoTotalValue,
+                        onBuy = onBuyClick,
+                        onReceive = onReceiveClick,
+                        onClose = viewModel::onHideWelcomeBanner
                     )
                 }
                 item {

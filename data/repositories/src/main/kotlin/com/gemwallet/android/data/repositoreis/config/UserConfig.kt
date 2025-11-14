@@ -6,9 +6,12 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import com.gemwallet.android.cases.config.GetLatestVersion
 import com.gemwallet.android.cases.config.GetLockInterval
+import com.gemwallet.android.cases.config.HideWelcomeBanner
+import com.gemwallet.android.cases.config.IsWelcomeBannerHidden
 import com.gemwallet.android.cases.config.SetLatestVersion
 import com.gemwallet.android.cases.config.SetLockInterval
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +22,9 @@ class UserConfig(
 ) : GetLatestVersion,
         SetLatestVersion,
         GetLockInterval,
-        SetLockInterval
+        SetLockInterval,
+        IsWelcomeBannerHidden,
+        HideWelcomeBanner
 {
 
     private lateinit var store: SharedPreferences
@@ -85,6 +90,19 @@ class UserConfig(
         }
     }
 
+    override fun isWelcomeBannerHidden(walletId: String): Flow<Boolean> = context.dataStore.data
+        .map { preferences -> preferences[Key.IsWelcomeBannerHidden]?.contains(walletId) ?: false }
+
+    override suspend fun hideWelcomeBanner(walletId: String) {
+        context.dataStore.edit { preferences ->
+            val value = preferences[Key.IsWelcomeBannerHidden]?.let {
+                it.toMutableSet().apply { add(walletId) }
+            } ?: emptySet()
+
+            preferences[Key.IsWelcomeBannerHidden] = value
+        }
+    }
+
     private fun getStore(): SharedPreferences {
         if (!::store.isInitialized) {
             store = context.getSharedPreferences("config", Context.MODE_PRIVATE)
@@ -126,5 +144,6 @@ class UserConfig(
         val LatestVersion = stringPreferencesKey("latest_version")
         val LockInterval = intPreferencesKey("lock_interval")
         val AppVersionSkip = stringPreferencesKey("app-version-skip")
+        val IsWelcomeBannerHidden = stringSetPreferencesKey("is_welcome_banner_state")
     }
 }

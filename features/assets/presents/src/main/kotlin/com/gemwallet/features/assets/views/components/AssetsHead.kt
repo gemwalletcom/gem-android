@@ -14,7 +14,7 @@ internal fun AssetsHead(
     onHideBalances: () -> Unit,
 ) {
     AmountListHead(
-        amount = walletInfo.totalValue,
+        amount = walletInfo.totalValueFormatted,
         onHideBalances = onHideBalances,
         actions = {
             AssetHeadActions(
