@@ -31,14 +31,18 @@ fi
 
 cat > "${INIT_SCRIPT}" <<EOF
 gradle.rootProject {
+    def dep = findProperty("additionalDependency")
+    if (!dep) {
+        throw new GradleException("The -PadditionalDependency property is required.")
+    }
     def additional = configurations.maybeCreate("dependencyVerificationAdditional")
     additional.canBeConsumed = false
     additional.canBeResolved = true
 ${GRADLE_REPO_SNIPPET}
-    dependencies.add(additional.name, "${DEPENDENCY}")
+    dependencies.add(additional.name, dep)
     tasks.register("resolveDependencyVerificationAdditional") {
         group = "verification"
-        description = "Resolves ${DEPENDENCY} so it is written to verification metadata."
+        description = "Resolves \$dep so it is written to verification metadata."
         doLast {
             additional.files
         }
@@ -47,6 +51,7 @@ ${GRADLE_REPO_SNIPPET}
 EOF
 
 ./gradlew --no-daemon \
+  -PadditionalDependency="${DEPENDENCY}" \
   --init-script "${INIT_SCRIPT}" \
   --write-verification-metadata sha256 \
   resolveDependencyVerificationAdditional
