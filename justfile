@@ -77,6 +77,20 @@ generate-verification-metadata:
 		-e GPR_USERNAME=${GPR_USERNAME} \
 		-e GPR_TOKEN=${GPR_TOKEN} \
 		gem-android-base \
-		bash -lc "./gradlew :app:assembleGoogleDebug --write-verification-metadata sha256"
+		bash -lc './scripts/generate_verification_metadata.sh'
+
+add-verification-dependency dependency:
+	#!/usr/bin/env bash
+	set -euo pipefail
+	GPR_USERNAME=${GPR_USERNAME:-$(grep "gpr.username=" local.properties 2>/dev/null | cut -d'=' -f2 || echo "")}
+	GPR_TOKEN=${GPR_TOKEN:-$(grep "gpr.token=" local.properties 2>/dev/null | cut -d'=' -f2 || echo "")}
+	docker run --rm \
+		-v {{justfile_directory()}}:/workspace \
+		-w /workspace \
+		-e GPR_USERNAME=${GPR_USERNAME} \
+		-e GPR_TOKEN=${GPR_TOKEN} \
+		-e ADDITIONAL_DEPENDENCY={{dependency}} \
+		gem-android-base \
+		bash -lc './scripts/add_verification_dependency.sh "$ADDITIONAL_DEPENDENCY"'
 
 mod core
