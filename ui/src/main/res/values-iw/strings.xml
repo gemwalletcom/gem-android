@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">אסימונים חשודים או ספאם מזוהים כתרמיות פוטנציאליות או נכסים מזיקים. הם עשויים להופיע בארנק שלך עקב הטלות אוויר, העברות או ייבוא ידני.</string>
   <string name="errors.insufficient_funds">חוסר כספים</string>
   <string name="info.insufficient_network_fee_balance.title">נדרש %s</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">עסקה זו דורשת מ %s לכסות את דמי הרשת ששולמו לכורי %s, לא ל Gem Wallet. ודא שיש לך מספיק %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">עסקה זו דורשת ** %s ** כדי לכסות את דמי הרשת ששולמו לכורי ** %s **, ולא ל- Gem Wallet. ודא שיש לך מספיק %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">יתרה לא מספקת</string>
   <string name="info.insufficient_balance.description">אין לך מספיק %s כדי להשלים עסקה זו. אנא טען, קבל או החלף בארנק שלך ונסה שוב.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">הסתר מהארנק</string>
   <string name="common.details">פרטים</string>
   <string name="transaction.swap_again">החלפה נוספת</string>
-  <string name="errors.scan_transaction.malicious">עסקה זוהתה כחשודה</string>
-  <string name="errors.scan_transaction.memo_required">כתובת %s דורשת תגית יעד / תזכיר</string>
+  <string name="errors.scan_transaction.malicious.description">לא ניתן להשלים עסקה זו - כתובת ארנק היעד מקושרת לפעילות חשודה או מזיקה.</string>
+  <string name="errors.scan_transaction.memo_required">כתובת ארנק היעד %s דורשת תגית יעד / תזכיר</string>
   <string name="common.info">מידע</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">כיוון</string>
   <string name="perpetual.auto_close">סגירה אוטומטית</string>
   <string name="info.perpetual.auto_close.description">סגור אוטומטית את הפוזיציה שלך ברמות מחיר קבועות. Take Profit נועל רווחים, Stop Loss מגביל הפסדים.</string>
-  <string name="perpetual.auto_close.trigger_price">מחיר טריגר</string>
   <string name="perpetual.auto_close.take_profit">קח רווח</string>
-  <string name="perpetual.auto_close.stop_loss">סטופ לוס</string>
   <string name="perpetual.market_price">מחיר שוק</string>
-  <string name="perpetual.auto_close.estimed_pnl">PNL משוער</string>
   <string name="perpetual.increase_direction">הגדלה %s</string>
   <string name="perpetual.reduce_direction">צמצום %s</string>
+  <string name="perpetual.auto_close.expected_profit">רווח צפוי</string>
+  <string name="perpetual.auto_close.expected_loss">הפסד צפוי</string>
+  <string name="perpetual.modify_position">שינוי מיקום</string>
+  <string name="perpetual.auto_close.stop_loss">עצירת הפסד</string>
+  <string name="errors.scan_transaction.malicious.title">פעילות חשודה</string>
 </resources>

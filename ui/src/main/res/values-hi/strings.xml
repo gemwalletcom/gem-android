@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">संदिग्ध या स्पैम टोकन को संभावित घोटाले या हानिकारक संपत्ति के रूप में पहचाना जाता है। वे एयरड्रॉप, ट्रांसफ़र या मैन्युअल आयात के कारण आपके वॉलेट में दिखाई दे सकते हैं।</string>
   <string name="errors.insufficient_funds">अपर्याप्त कोष</string>
   <string name="info.insufficient_network_fee_balance.title">%s आवश्यक</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">इस लेन-देन के लिए %s माइनर्स को दिए गए नेटवर्क शुल्क को कवर करने के लिए %s की आवश्यकता है, न कि Gem Wallet । सुनिश्चित करें कि आपके पास पर्याप्त %s हैं।</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">इस लेन-देन के लिए ** [ %s %s ** माइनर्स को दिए गए नेटवर्क शुल्क को कवर करना आवश्यक है, न कि Gem Wallet । सुनिश्चित करें कि आपके पास पर्याप्त %s हैं।</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">अपर्याप्त शेषराशि</string>
   <string name="info.insufficient_balance.description">इस लेनदेन को पूरा करने के लिए आपके पास पर्याप्त %s नहीं है। कृपया अपने वॉलेट में टॉप अप करें, प्राप्त करें या स्वैप करें और फिर से प्रयास करें।</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">बटुए से छिपाएँ</string>
   <string name="common.details">विवरण</string>
   <string name="transaction.swap_again">फिर से स्वैप करें</string>
-  <string name="errors.scan_transaction.malicious">लेनदेन को संदिग्ध माना गया</string>
-  <string name="errors.scan_transaction.memo_required">%s पते के लिए गंतव्य टैग / मेमो आवश्यक है</string>
+  <string name="errors.scan_transaction.malicious.description">यह लेनदेन पूरा नहीं किया जा सकता - गंतव्य वॉलेट पता संदिग्ध या हानिकारक गतिविधि से जुड़ा हुआ है।</string>
+  <string name="errors.scan_transaction.memo_required">%s गंतव्य वॉलेट पते के लिए गंतव्य टैग / मेमो की आवश्यकता है</string>
   <string name="common.info">जानकारी</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">दिशा</string>
   <string name="perpetual.auto_close">स्वतः बंद</string>
   <string name="info.perpetual.auto_close.description">निर्धारित मूल्य स्तरों पर अपनी पोजीशन स्वचालित रूप से बंद करें। टेक प्रॉफिट लाभ को लॉक करता है, स्टॉप लॉस नुकसान को सीमित करता है।</string>
-  <string name="perpetual.auto_close.trigger_price">ट्रिगर मूल्य</string>
   <string name="perpetual.auto_close.take_profit">लाभ लेने के</string>
-  <string name="perpetual.auto_close.stop_loss">झड़ने बंद</string>
   <string name="perpetual.market_price">बाजार कीमत</string>
-  <string name="perpetual.auto_close.estimed_pnl">अनुमानित पीएनएल</string>
   <string name="perpetual.increase_direction">%s बढ़ाएँ</string>
   <string name="perpetual.reduce_direction">%s कम करें</string>
+  <string name="perpetual.auto_close.expected_profit">अपेक्षित लाभ</string>
+  <string name="perpetual.auto_close.expected_loss">अपेक्षित हानि</string>
+  <string name="perpetual.modify_position">स्थिति संशोधित करें</string>
+  <string name="perpetual.auto_close.stop_loss">झड़ने बंद</string>
+  <string name="errors.scan_transaction.malicious.title">संदिग्ध गतिविधि</string>
 </resources>

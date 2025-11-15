@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Mã thông báo đáng ngờ hoặc thư rác được xác định là lừa đảo tiềm ẩn hoặc tài sản có hại. Chúng có thể xuất hiện trong ví của bạn do airdrop, chuyển khoản hoặc nhập thủ công.</string>
   <string name="errors.insufficient_funds">Không đủ tiền</string>
   <string name="info.insufficient_network_fee_balance.title">%s bắt buộc</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Giao dịch này yêu cầu %s phải trả phí mạng lưới cho %s thợ đào, chứ không phải Gem Wallet. Hãy đảm bảo bạn có đủ %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Giao dịch này yêu cầu ** %s ** để trang trải phí mạng lưới trả cho ** %s ** thợ đào, không phải Gem Wallet. Hãy đảm bảo bạn có đủ %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Số dư không đủ</string>
   <string name="info.insufficient_balance.description">Bạn không có đủ %s để hoàn tất giao dịch này. Vui lòng nạp tiền, nhận hoặc đổi trong ví của bạn và thử lại.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">Ẩn khỏi ví</string>
   <string name="common.details">Chi tiết</string>
   <string name="transaction.swap_again">Hoán đổi lần nữa</string>
-  <string name="errors.scan_transaction.malicious">Giao dịch được xác định là đáng ngờ</string>
-  <string name="errors.scan_transaction.memo_required">%s địa chỉ yêu cầu thẻ đích / ghi nhớ</string>
+  <string name="errors.scan_transaction.malicious.description">Giao dịch này không thể hoàn tất — địa chỉ ví đích được liên kết với hoạt động đáng ngờ hoặc có hại.</string>
+  <string name="errors.scan_transaction.memo_required">%s địa chỉ ví đích yêu cầu thẻ đích / ghi nhớ</string>
   <string name="common.info">Thông tin</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">Phương hướng</string>
   <string name="perpetual.auto_close">Tự động đóng</string>
   <string name="info.perpetual.auto_close.description">Tự động đóng vị thế của bạn ở mức giá đã đặt. Chốt lời khóa lợi nhuận, Cắt lỗ hạn chế thua lỗ.</string>
-  <string name="perpetual.auto_close.trigger_price">Giá kích hoạt</string>
   <string name="perpetual.auto_close.take_profit">Kiếm lợi nhuận</string>
-  <string name="perpetual.auto_close.stop_loss">Dừng lỗ</string>
   <string name="perpetual.market_price">Giá thị trường</string>
-  <string name="perpetual.auto_close.estimed_pnl">PNL ước tính</string>
   <string name="perpetual.increase_direction">Tăng %s</string>
   <string name="perpetual.reduce_direction">Giảm %s</string>
+  <string name="perpetual.auto_close.expected_profit">Lợi nhuận dự kiến</string>
+  <string name="perpetual.auto_close.expected_loss">Dự kiến mất mát</string>
+  <string name="perpetual.modify_position">Sửa đổi vị trí</string>
+  <string name="perpetual.auto_close.stop_loss">Dừng lỗ</string>
+  <string name="errors.scan_transaction.malicious.title">Hoạt động đáng ngờ</string>
 </resources>

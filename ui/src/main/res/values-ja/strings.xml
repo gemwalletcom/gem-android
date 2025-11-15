@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">疑わしいトークンやスパムトークンは、詐欺や有害な資産の可能性があると判断されます。エアドロップ、送金、または手動インポートによってウォレットに表示される場合があります。</string>
   <string name="errors.insufficient_funds">資金不足</string>
   <string name="info.insufficient_network_fee_balance.title">%sが必要です</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">このトランザクションでは%s %sに支払うネットワーク手数料を賄うためにGem Walletではなく %s が必要です。十分な%sがあることを確認してください。</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">このトランザクションでは、マイナーへのネットワーク手数料として%s Gem Walletではなく [ %s s] が必要です。十分な%sがあることを確認してください。</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">残高不足</string>
   <string name="info.insufficient_balance.description">この取引を完了するには%sが足りません。ウォレットにチャージ、受け取り、または交換して、もう一度お試しください。</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">ウォレットから隠す</string>
   <string name="common.details">ディテール</string>
   <string name="transaction.swap_again">再度スワップ</string>
-  <string name="errors.scan_transaction.malicious">疑わしい取引として特定された</string>
-  <string name="errors.scan_transaction.memo_required">%sアドレスには宛先タグ/メモが必要です</string>
+  <string name="errors.scan_transaction.malicious.description">この取引は完了できません。送信先のウォレット アドレスが疑わしいまたは有害なアクティビティにリンクされています。</string>
+  <string name="errors.scan_transaction.memo_required">%s宛先ウォレットアドレスには宛先タグ/メモが必要です</string>
   <string name="common.info">情報</string>
   <string name="wallet.deposit">入金</string>
   <string name="wallet.withdraw">出金</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">方向</string>
   <string name="perpetual.auto_close">自動閉じる</string>
   <string name="info.perpetual.auto_close.description">設定した価格レベルでポジションを自動的に決済します。テイクプロフィットで利益を確定し、ストップロスで損失を制限します。</string>
-  <string name="perpetual.auto_close.trigger_price">トリガー価格</string>
   <string name="perpetual.auto_close.take_profit">利益確定</string>
-  <string name="perpetual.auto_close.stop_loss">ストップロス</string>
   <string name="perpetual.market_price">市場価格</string>
-  <string name="perpetual.auto_close.estimed_pnl">推定損益</string>
   <string name="perpetual.increase_direction">%sを増やす</string>
   <string name="perpetual.reduce_direction">%sを減らす</string>
+  <string name="perpetual.auto_close.expected_profit">予想利益</string>
+  <string name="perpetual.auto_close.expected_loss">予想損失</string>
+  <string name="perpetual.modify_position">位置の変更</string>
+  <string name="perpetual.auto_close.stop_loss">ストップロス</string>
+  <string name="errors.scan_transaction.malicious.title">不審な活動</string>
 </resources>

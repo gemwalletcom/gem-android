@@ -30,7 +30,7 @@ data class ScanAddress (
 
 @Serializable
 data class ScanAddressTarget (
-	val chain: Chain,
+	val assetId: AssetId,
 	val address: String
 )
 
@@ -42,8 +42,6 @@ data class ScanTransaction (
 
 @Serializable
 data class ScanTransactionPayload (
-	val deviceId: String,
-	val walletIndex: UInt,
 	val origin: ScanAddressTarget,
 	val target: ScanAddressTarget,
 	val website: String? = null,

@@ -41,5 +41,7 @@ enum class AssetType(val string: String) {
 	ASA("ASA"),
 	@SerialName("PERPETUAL")
 	PERPETUAL("PERPETUAL"),
+	@SerialName("SPOT")
+	SPOT("SPOT"),
 }
 

@@ -278,7 +278,7 @@
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Confirm</string>
   <string name="common.skip">Skip</string>
-  <string name="common.warning">Warning</string>
+  <string name="common.warning">Varování</string>
   <string name="warnings.multi_signature_blocked">Do not transfer funds to this %s Multi-Signature wallet unless you are certain you control the private keys. Failure to do so could expose you to scams, and you may permanently lose your assets.</string>
   <string name="swap.price_impact">Price Impact</string>
   <string name="wallet.sell">Sell</string>
@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Podezřelé nebo spamové tokeny jsou identifikovány jako potenciální podvody nebo škodlivá aktiva. Mohou se objevit ve vaší peněžence v důsledku airdropů, převodů nebo ručního importu.</string>
   <string name="errors.insufficient_funds">Nedostatek finančních prostředků</string>
   <string name="info.insufficient_network_fee_balance.title">%s je vyžadováno</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Tato transakce vyžaduje %s k pokrytí síťového poplatku zaplaceného %s těžařům, nikoli Gem Wallet. Ujistěte se, že máte dostatek %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Tato transakce vyžaduje ** %s ** k pokrytí síťového poplatku zaplaceného ** %s ** těžařům, nikoli Gem Wallet. Ujistěte se, že máte dostatek %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Nedostatečný zůstatek</string>
   <string name="info.insufficient_balance.description">Nemáte dostatek %s k dokončení této transakce. Dobijte si prosím peněženku, přijměte ji nebo ji vyměňte a zkuste to znovu.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">Skrýt z peněženky</string>
   <string name="common.details">Podrobnosti</string>
   <string name="transaction.swap_again">Znovu vyměnit</string>
-  <string name="errors.scan_transaction.malicious">Transakce označena jako podezřelá</string>
-  <string name="errors.scan_transaction.memo_required">Adresa %s vyžaduje tag / poznámku cíle</string>
+  <string name="errors.scan_transaction.malicious.description">Tuto transakci nelze dokončit – cílová adresa peněženky je spojena s podezřelou nebo škodlivou aktivitou.</string>
+  <string name="errors.scan_transaction.memo_required">Cílová adresa peněženky %s vyžaduje cílovou značku / poznámku</string>
   <string name="common.info">Informace</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">Směr</string>
   <string name="perpetual.auto_close">Automatické zavření</string>
   <string name="info.perpetual.auto_close.description">Automaticky uzavřete svou pozici na stanovených cenových úrovních. Funkce Take Profit blokuje zisky, Stop Loss omezuje ztráty.</string>
-  <string name="perpetual.auto_close.trigger_price">Spouštěcí cena</string>
   <string name="perpetual.auto_close.take_profit">Zisk z prodeje</string>
-  <string name="perpetual.auto_close.stop_loss">Zastavit ztrátu</string>
   <string name="perpetual.market_price">Tržní cena</string>
-  <string name="perpetual.auto_close.estimed_pnl">Odhadovaný PNL</string>
   <string name="perpetual.increase_direction">Zvýšení %s</string>
   <string name="perpetual.reduce_direction">Snížit %s</string>
+  <string name="perpetual.auto_close.expected_profit">Očekávaný zisk</string>
+  <string name="perpetual.auto_close.expected_loss">Očekávaná ztráta</string>
+  <string name="perpetual.modify_position">Upravit pozici</string>
+  <string name="perpetual.auto_close.stop_loss">Zastavit ztrátu</string>
+  <string name="errors.scan_transaction.malicious.title">Podezřelá aktivita</string>
 </resources>

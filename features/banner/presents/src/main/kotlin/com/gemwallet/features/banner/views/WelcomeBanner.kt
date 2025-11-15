@@ -32,16 +32,10 @@ import com.gemwallet.android.ui.theme.trailingIconSmall
 
 @Composable
 fun WelcomeBanner(
-    isHidden: Boolean,
-    isSynced: Boolean,
-    cryptoTotal: Double,
     onBuy: () -> Unit,
     onReceive: () -> Unit,
     onClose: () -> Unit,
 ) {
-    if (isSynced || cryptoTotal != 0.0 || isHidden) {
-        return
-    }
     Box(
         modifier = Modifier.fillMaxWidth().listItem().padding(paddingDefault),
     ) {

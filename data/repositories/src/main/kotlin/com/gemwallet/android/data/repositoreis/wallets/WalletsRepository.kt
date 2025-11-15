@@ -8,6 +8,7 @@ import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet
+import com.wallet.core.primitives.WalletSource
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -48,10 +49,11 @@ class WalletsRepository @Inject constructor(
                 index = getNextWalletNumber(),
                 order = 0,
                 isPinned = false,
+                source = WalletSource.Import,
             )
         )
 
-    suspend fun addControlled(walletName: String, data: String, type: WalletType, chain: Chain?): Wallet {
+    suspend fun addControlled(walletName: String, data: String, type: WalletType, chain: Chain?, source: WalletSource): Wallet {
         val accounts = mutableListOf<Account>()
         val chains = if ((type == WalletType.single || type == WalletType.private_key) && chain != null) listOf(chain) else Chain.entries
         for (item in chains) {
@@ -65,6 +67,7 @@ class WalletsRepository @Inject constructor(
             index = getNextWalletNumber(),
             order = 0,
             isPinned = false,
+            source = source,
         )
         return putWallet(wallet)
     }

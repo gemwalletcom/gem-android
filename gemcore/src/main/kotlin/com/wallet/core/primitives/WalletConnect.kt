@@ -51,7 +51,7 @@ data class WCSuiSignAndExecuteTransactionResult (
 @Serializable
 data class WCSuiSignMessage (
 	val message: String,
-	val address: String
+	val account: String
 )
 
 @Serializable

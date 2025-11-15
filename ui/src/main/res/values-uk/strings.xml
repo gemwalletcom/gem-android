@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Підозрілі або спам-токени ідентифікуються як потенційні шахрайські або шкідливі активи. Вони можуть з\'явитися у вашому гаманці через аїрдропи, перекази або ручний імпорт.</string>
   <string name="errors.insufficient_funds">Недостатньо коштів</string>
   <string name="info.insufficient_network_fee_balance.title">Потрібно %s</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Для цієї транзакції потрібно %s для покриття мережевої плати, сплаченої %s майнерам, а не Гаманець Gem. Переконайтеся, що у вас достатньо %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Для цієї транзакції потрібно ** %s ** для покриття мережевої плати, сплаченої ** %s ** майнерам, а не Гаманець Gem. Переконайтеся, що у вас достатньо %s.</string>
   <string name="brand_name">Гаманець Gem</string>
   <string name="info.insufficient_balance.title">Недостатній баланс</string>
   <string name="info.insufficient_balance.description">У вас недостатньо %s для завершення цієї транзакції. Будь ласка, поповніть, отримайте або обміняйте свій гаманець і спробуйте ще раз.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">Приховати від гаманця</string>
   <string name="common.details">Деталі</string>
   <string name="transaction.swap_again">Знову обміняти</string>
-  <string name="errors.scan_transaction.malicious">Транзакцію визначено як підозрілу</string>
-  <string name="errors.scan_transaction.memo_required">Адреса %s потребує тегу / примітки призначення</string>
+  <string name="errors.scan_transaction.malicious.description">Цю транзакцію неможливо завершити — адреса гаманця призначення пов’язана з підозрілою або шкідливою активністю.</string>
+  <string name="errors.scan_transaction.memo_required">%s адреса гаманця призначення вимагає тегу / мемо призначення</string>
   <string name="common.info">Інформація</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">Напрямок</string>
   <string name="perpetual.auto_close">Автоматичне закриття</string>
   <string name="info.perpetual.auto_close.description">Автоматично закривайте свою позицію за встановленими ціновими рівнями. Тейк-профіт фіксує прибутки, а стоп-лос обмежує збитки.</string>
-  <string name="perpetual.auto_close.trigger_price">Тригерна ціна</string>
   <string name="perpetual.auto_close.take_profit">Зафіксуйте прибуток</string>
-  <string name="perpetual.auto_close.stop_loss">Стоп-лосс</string>
   <string name="perpetual.market_price">Ринкова ціна</string>
-  <string name="perpetual.auto_close.estimed_pnl">Очікуваний PNL</string>
   <string name="perpetual.increase_direction">Збільшити %s</string>
   <string name="perpetual.reduce_direction">Зменшити %s</string>
+  <string name="perpetual.auto_close.expected_profit">Очікуваний прибуток</string>
+  <string name="perpetual.auto_close.expected_loss">Очікувані втрати</string>
+  <string name="perpetual.modify_position">Змінити позицію</string>
+  <string name="perpetual.auto_close.stop_loss">Стоп-лосс</string>
+  <string name="errors.scan_transaction.malicious.title">Підозріла активність</string>
 </resources>

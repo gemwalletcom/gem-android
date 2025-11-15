@@ -164,6 +164,7 @@ class AmountViewModel @Inject constructor(
             TransactionType.TransferNFT,
             TransactionType.SmartContractCall,
             TransactionType.TokenApproval,
+            TransactionType.PerpetualModifyPosition,
             null -> Crypto(BigInteger.ZERO)
         }
         assetInfo.asset.format(value, 8)
@@ -244,6 +245,7 @@ class AmountViewModel @Inject constructor(
             TransactionType.AssetActivation,
             TransactionType.SmartContractCall,
             TransactionType.PerpetualOpenPosition,
+            TransactionType.PerpetualModifyPosition,
             TransactionType.PerpetualClosePosition -> Crypto(assetInfo.balance.balance.available)
         }
 
@@ -322,6 +324,7 @@ class AmountViewModel @Inject constructor(
             TransactionType.SmartContractCall,
             TransactionType.TokenApproval,
             TransactionType.PerpetualOpenPosition,
+            TransactionType.PerpetualModifyPosition,
             TransactionType.PerpetualClosePosition -> throw IllegalArgumentException()
         }
         onConfirm(nextParams)
@@ -414,6 +417,7 @@ class AmountViewModel @Inject constructor(
             TransactionType.TransferNFT,
             TransactionType.PerpetualOpenPosition,
             TransactionType.PerpetualClosePosition,
+            TransactionType.PerpetualModifyPosition,
             TransactionType.SmartContractCall -> throw IllegalArgumentException()
         }
         if (amount.atomicValue > availableAmount.atomicValue) {

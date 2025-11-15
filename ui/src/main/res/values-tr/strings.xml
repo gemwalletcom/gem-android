@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Şüpheli veya spam token\'lar potansiyel dolandırıcılık veya zararlı varlıklar olarak tanımlanır. Airdrop\'lar, transferler veya manuel ithalatlar nedeniyle cüzdanınızda görünebilirler.</string>
   <string name="errors.insufficient_funds">Yetersiz fon</string>
   <string name="info.insufficient_network_fee_balance.title">%s gerekli</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Bu işlem %s madenciye ödenen ağ ücretini karşılamak için %s gerektirir, Gem Wallet değil. Yeterli %s olduğundan emin olun.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Bu işlem, ** %s ** madencilere ödenen ağ ücretini karşılamak için ** %s ** gerektirir, Gem Wallet değil. Yeterli %s kaynağınız olduğundan emin olun.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Yetersiz Bakiye</string>
   <string name="info.insufficient_balance.description">Bu işlemi tamamlamak için yeterli %s iniz yok. Lütfen cüzdanınıza para yükleyin, alın veya takas edin ve tekrar deneyin.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">Cüzdandan gizle</string>
   <string name="common.details">Detaylar</string>
   <string name="transaction.swap_again">Tekrar Değiştir</string>
-  <string name="errors.scan_transaction.malicious">İşlem şüpheli olarak belirlendi</string>
-  <string name="errors.scan_transaction.memo_required">%s adresi bir hedef etiketi / notu gerektiriyor</string>
+  <string name="errors.scan_transaction.malicious.description">Bu işlem tamamlanamıyor; hedef cüzdan adresi şüpheli veya zararlı bir etkinlikle bağlantılı.</string>
+  <string name="errors.scan_transaction.memo_required">%s hedef cüzdan adresi bir hedef etiketi / notu gerektiriyor</string>
   <string name="common.info">Bilgi</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">Yön</string>
   <string name="perpetual.auto_close">Otomatik Kapatma</string>
   <string name="info.perpetual.auto_close.description">Pozisyonunuzu belirlenen fiyat seviyelerinde otomatik olarak kapatın. Kâr Al özelliği kazançlarınızı sabitler, Zarar Durdur özelliği ise kayıplarınızı sınırlar.</string>
-  <string name="perpetual.auto_close.trigger_price">Tetikleyici fiyat</string>
   <string name="perpetual.auto_close.take_profit">Kar al</string>
-  <string name="perpetual.auto_close.stop_loss">Zarar Durdurma</string>
   <string name="perpetual.market_price">Piyasa Fiyatı</string>
-  <string name="perpetual.auto_close.estimed_pnl">Tahmini Kâr/Zarar</string>
   <string name="perpetual.increase_direction">%s yi artırın</string>
   <string name="perpetual.reduce_direction">%s azalt</string>
+  <string name="perpetual.auto_close.expected_profit">Beklenen kar</string>
+  <string name="perpetual.auto_close.expected_loss">Beklenen kayıp</string>
+  <string name="perpetual.modify_position">Pozisyonu Değiştir</string>
+  <string name="perpetual.auto_close.stop_loss">Zarar durdurma</string>
+  <string name="errors.scan_transaction.malicious.title">Şüpheli Etkinlik</string>
 </resources>

@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Подозрительные или спам‑токены помечаются как потенциальные мошеннические или вредоносные активы. Они могут появиться в вашем кошельке в результате airdrop‑раздач, переводов или ручного добавления.</string>
   <string name="errors.insufficient_funds">Недостаточно средств</string>
   <string name="info.insufficient_network_fee_balance.title">Требуется %s</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Для этой транзакции требуется %s для покрытия сетевой комиссии, выплачиваемой майнерам %s, а не Кошелек Gem. Убедитесь, что у вас достаточно %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Для этой транзакции требуется ** %s ** для покрытия сетевой комиссии, выплачиваемой майнерам ** %s **, а не Кошелек Gem. Убедитесь, что у вас достаточно %s.</string>
   <string name="brand_name">Кошелек Gem</string>
   <string name="info.insufficient_balance.title">Недостаточный баланс</string>
   <string name="info.insufficient_balance.description">У вас недостаточно %s для завершения этой транзакции. Пожалуйста, пополните, получите или обменяйте ваш кошелек и попробуйте еще раз.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">Скрыть из кошелька</string>
   <string name="common.details">Детали</string>
   <string name="transaction.swap_again">Поменять снова</string>
-  <string name="errors.scan_transaction.malicious">Транзакция определена как подозрительная</string>
-  <string name="errors.scan_transaction.memo_required">%s адрес требует тега назначения / заметки</string>
+  <string name="errors.scan_transaction.malicious.description">Эту транзакцию невозможно завершить — адрес кошелька назначения связан с подозрительной или вредоносной активностью.</string>
+  <string name="errors.scan_transaction.memo_required">%s адрес кошелька назначения требует тега назначения / заметки</string>
   <string name="common.info">Информация</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">Направление</string>
   <string name="perpetual.auto_close">Автоматическое закрытие</string>
   <string name="info.perpetual.auto_close.description">Автоматически закрывает позицию по достижении заданного уровня цены. Тейк-профит фиксирует прибыль, стоп-лосс ограничивает убытки.</string>
-  <string name="perpetual.auto_close.trigger_price">Цена триггера</string>
   <string name="perpetual.auto_close.take_profit">Тейк-профит</string>
-  <string name="perpetual.auto_close.stop_loss">Стоп-лосс</string>
   <string name="perpetual.market_price">Рыночная цена</string>
-  <string name="perpetual.auto_close.estimed_pnl">Расчетная PNL</string>
   <string name="perpetual.increase_direction">Увеличение %s</string>
   <string name="perpetual.reduce_direction">Уменьшить %s</string>
+  <string name="perpetual.auto_close.expected_profit">Ожидаемая прибыль</string>
+  <string name="perpetual.auto_close.expected_loss">Ожидаемые потери</string>
+  <string name="perpetual.modify_position">Изменить позицию</string>
+  <string name="perpetual.auto_close.stop_loss">Стоп-лосс</string>
+  <string name="errors.scan_transaction.malicious.title">Подозрительная активность</string>
 </resources>

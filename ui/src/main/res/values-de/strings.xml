@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Verdächtige oder Spam-Token werden als potenzieller Betrug oder schädliche Vermögenswerte identifiziert. Sie können aufgrund von Airdrops, Transfers oder manuellen Importen in Ihrer Wallet erscheinen.</string>
   <string name="errors.insufficient_funds">Unzureichende Mittel</string>
   <string name="info.insufficient_network_fee_balance.title">%s erforderlich</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Für diese Transaktion sind %s erforderlich, um die an %s Miner gezahlte Netzwerkgebühr zu decken, nicht Gem Wallet. Stellen Sie sicher, dass Sie über genügend %s verfügen.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Für diese Transaktion werden ** %s ** benötigt, um die an ** %s ** Miner gezahlte Netzwerkgebühr zu decken, nicht Gem Wallet. Stellen Sie sicher, dass Sie über genügend %s verfügen.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Unzureichendes Guthaben</string>
   <string name="info.insufficient_balance.description">Sie haben nicht genügend %s, um diese Transaktion abzuschließen. Bitte laden Sie Ihr Wallet auf, empfangen Sie es oder tauschen Sie es um und versuchen Sie es erneut.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">Vor der Brieftasche verstecken</string>
   <string name="common.details">Details</string>
   <string name="transaction.swap_again">Erneut tauschen</string>
-  <string name="errors.scan_transaction.malicious">Als verdächtig eingestufte Transaktion</string>
-  <string name="errors.scan_transaction.memo_required">%s Adresse erfordert ein Ziel-Tag/Memo</string>
+  <string name="errors.scan_transaction.malicious.description">Diese Transaktion kann nicht abgeschlossen werden – die Ziel-Wallet-Adresse ist mit verdächtigen oder schädlichen Aktivitäten verknüpft.</string>
+  <string name="errors.scan_transaction.memo_required">%s Für die Ziel-Wallet-Adresse wird ein Ziel-Tag/Memo benötigt.</string>
   <string name="common.info">Info</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">Richtung</string>
   <string name="perpetual.auto_close">Automatisches Schließen</string>
   <string name="info.perpetual.auto_close.description">Schließen Sie Ihre Position automatisch bei festgelegten Preisniveaus. Take Profit sichert Gewinne, Stop Loss begrenzt Verluste.</string>
-  <string name="perpetual.auto_close.trigger_price">Auslösepreis</string>
   <string name="perpetual.auto_close.take_profit">Gewinn mitnehmen</string>
-  <string name="perpetual.auto_close.stop_loss">Stop-Loss</string>
   <string name="perpetual.market_price">Marktpreis</string>
-  <string name="perpetual.auto_close.estimed_pnl">Geschätzter Gewinn/Verlust</string>
   <string name="perpetual.increase_direction">Erhöhung %s</string>
   <string name="perpetual.reduce_direction">Reduzieren %s</string>
+  <string name="perpetual.auto_close.expected_profit">Erwarteter Gewinn</string>
+  <string name="perpetual.auto_close.expected_loss">Erwarteter Verlust</string>
+  <string name="perpetual.modify_position">Position ändern</string>
+  <string name="perpetual.auto_close.stop_loss">Stop-Loss</string>
+  <string name="errors.scan_transaction.malicious.title">Verdächtige Aktivitäten</string>
 </resources>

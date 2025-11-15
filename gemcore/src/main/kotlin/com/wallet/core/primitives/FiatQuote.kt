@@ -20,7 +20,7 @@ data class FiatQuote (
 
 @Serializable
 data class FiatQuoteError (
-	val provider: String,
+	val provider: String? = null,
 	val error: String
 )
 

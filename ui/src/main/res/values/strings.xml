@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Suspicious or spam tokens are identified as potential scams or harmful assets. They may appear in your wallet due to airdrops, transfers, or manual imports.</string>
   <string name="errors.insufficient_funds">Insufficient funds</string>
   <string name="info.insufficient_network_fee_balance.title">%s required</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">This transaction requires %s to cover the network fee paid to %s miners, not Gem Wallet. Ensure you have enough %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">This transaction requires **%s** to cover the network fee paid to **%s** miners, not Gem Wallet. Ensure you have enough %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Insufficient Balance</string>
   <string name="info.insufficient_balance.description">You don’t have enough %s to complete this transaction. Please top up, receive, or swap in your wallet and try again.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">Hide from wallet</string>
   <string name="common.details">Details</string>
   <string name="transaction.swap_again">Swap Again</string>
-  <string name="errors.scan_transaction.malicious">Transaction identified as suspicion</string>
-  <string name="errors.scan_transaction.memo_required">%s address requires a destination tag / memo</string>
+  <string name="errors.scan_transaction.malicious.description">This transaction cannot be completed — the destination wallet address is linked to suspicious or harmful activity.</string>
+  <string name="errors.scan_transaction.memo_required">%s destination wallet address requires a destination tag / memo</string>
   <string name="common.info">Info</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">Direction</string>
   <string name="perpetual.auto_close">Auto Close</string>
   <string name="info.perpetual.auto_close.description">Automatically close your position at set price levels. Take Profit locks in gains, Stop Loss limits losses.</string>
-  <string name="perpetual.auto_close.trigger_price">Trigger price</string>
   <string name="perpetual.auto_close.take_profit">Take profit</string>
-  <string name="perpetual.auto_close.stop_loss">Stop Loss</string>
   <string name="perpetual.market_price">Market Price</string>
-  <string name="perpetual.auto_close.estimed_pnl">Estimated Pnl</string>
   <string name="perpetual.increase_direction">Increase %s</string>
   <string name="perpetual.reduce_direction">Reduce %s</string>
+  <string name="perpetual.auto_close.expected_profit">Expected profit</string>
+  <string name="perpetual.auto_close.expected_loss">Expected loss</string>
+  <string name="perpetual.modify_position">Modify Position</string>
+  <string name="perpetual.auto_close.stop_loss">Stop loss</string>
+  <string name="errors.scan_transaction.malicious.title">Suspicious Activity</string>
 </resources>

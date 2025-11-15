@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Token yang mencurigakan atau spam diidentifikasi sebagai potensi penipuan atau aset berbahaya. Token tersebut mungkin muncul di dompet Anda karena airdrop, transfer, atau impor manual.</string>
   <string name="errors.insufficient_funds">Dana tidak mencukupi</string>
   <string name="info.insufficient_network_fee_balance.title">%s diperlukan</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Transaksi ini membutuhkan %s untuk menutupi biaya jaringan yang dibayarkan kepada %s penambang, bukan Gem Wallet. Pastikan Anda memiliki %s yang cukup.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Transaksi ini membutuhkan ** %s ** untuk menutupi biaya jaringan yang dibayarkan kepada ** %s ** penambang, bukan Gem Wallet. Pastikan Anda memiliki %s yang cukup.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Saldo Tidak Cukup</string>
   <string name="info.insufficient_balance.description">Anda tidak memiliki cukup %s untuk menyelesaikan transaksi ini. Harap isi ulang, terima, atau tukarkan di dompet Anda dan coba lagi.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">Sembunyikan dari dompet</string>
   <string name="common.details">Rincian</string>
   <string name="transaction.swap_again">Tukar Lagi</string>
-  <string name="errors.scan_transaction.malicious">Transaksi diidentifikasi sebagai mencurigakan</string>
-  <string name="errors.scan_transaction.memo_required">Alamat %s memerlukan tag / memo tujuan</string>
+  <string name="errors.scan_transaction.malicious.description">Transaksi ini tidak dapat diselesaikan — alamat dompet tujuan terkait dengan aktivitas yang mencurigakan atau berbahaya.</string>
+  <string name="errors.scan_transaction.memo_required">%s alamat dompet tujuan memerlukan tag / memo tujuan</string>
   <string name="common.info">Informasi</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">Arah</string>
   <string name="perpetual.auto_close">Tutup Otomatis</string>
   <string name="info.perpetual.auto_close.description">Tutup posisi Anda secara otomatis pada level harga yang ditentukan. Take Profit mengunci keuntungan, Stop Loss membatasi kerugian.</string>
-  <string name="perpetual.auto_close.trigger_price">Harga pemicu</string>
   <string name="perpetual.auto_close.take_profit">Ambil untung</string>
-  <string name="perpetual.auto_close.stop_loss">Hentikan Kerugian</string>
   <string name="perpetual.market_price">Harga Pasar</string>
-  <string name="perpetual.auto_close.estimed_pnl">Perkiraan PNL</string>
   <string name="perpetual.increase_direction">Peningkatan %s</string>
   <string name="perpetual.reduce_direction">Kurangi %s</string>
+  <string name="perpetual.auto_close.expected_profit">Keuntungan yang diharapkan</string>
+  <string name="perpetual.auto_close.expected_loss">Kerugian yang diharapkan</string>
+  <string name="perpetual.modify_position">Ubah Posisi</string>
+  <string name="perpetual.auto_close.stop_loss">Hentikan kerugian</string>
+  <string name="errors.scan_transaction.malicious.title">Aktivitas Mencurigakan</string>
 </resources>

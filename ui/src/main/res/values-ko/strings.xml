@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">의심스럽거나 스팸 토큰은 잠재적 사기 또는 유해 자산으로 식별됩니다. 이러한 토큰은 에어드랍, 이체 또는 수동 가져오기를 통해 지갑에 나타날 수 있습니다.</string>
   <string name="errors.insufficient_funds">자금이 부족합니다</string>
   <string name="info.insufficient_network_fee_balance.title">%s 이 필요합니다</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">이 거래에는 %s (가) %s 채굴자에게 지불한 네트워크 수수료를 충당해야 하며, Gem Wallet 필요하지 않습니다. 충분한 %s 이(가) 있는지 확인하세요.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">이 거래에는 ** %s ** 채굴자에게 지불된 네트워크 수수료를 충당하기 위해 ** %s **가 필요하며, Gem Wallet 가 필요하지 않습니다. 충분한 %s 가 있는지 확인하세요.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">잔액이 부족합니다</string>
   <string name="info.insufficient_balance.description">이 거래를 완료하기에 %s 잔액이 부족합니다. 지갑에 충전, 수령 또는 스왑한 후 다시 시도해 주세요.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">지갑에서 숨기기</string>
   <string name="common.details">세부</string>
   <string name="transaction.swap_again">다시 바꾸기</string>
-  <string name="errors.scan_transaction.malicious">의심 거래로 확인됨</string>
-  <string name="errors.scan_transaction.memo_required">%s 주소에는 목적지 태그/메모가 필요합니다.</string>
+  <string name="errors.scan_transaction.malicious.description">이 거래를 완료할 수 없습니다. 대상 지갑 주소가 의심스럽거나 유해한 활동과 연결되어 있습니다.</string>
+  <string name="errors.scan_transaction.memo_required">%s 대상 지갑 주소에는 대상 태그/메모가 필요합니다.</string>
   <string name="common.info">정보</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">방향</string>
   <string name="perpetual.auto_close">자동 닫기</string>
   <string name="info.perpetual.auto_close.description">설정된 가격 수준에서 자동으로 포지션을 청산합니다. 이익실현(Take Profit)은 수익을 확정하고, 손절매(Stop Loss)는 손실을 제한합니다.</string>
-  <string name="perpetual.auto_close.trigger_price">트리거 가격</string>
   <string name="perpetual.auto_close.take_profit">이익 실현</string>
-  <string name="perpetual.auto_close.stop_loss">손절매</string>
   <string name="perpetual.market_price">시장 가격</string>
-  <string name="perpetual.auto_close.estimed_pnl">예상 손익</string>
   <string name="perpetual.increase_direction">%s 증가</string>
   <string name="perpetual.reduce_direction">%s 줄이기</string>
+  <string name="perpetual.auto_close.expected_profit">예상 이익</string>
+  <string name="perpetual.auto_close.expected_loss">예상 손실</string>
+  <string name="perpetual.modify_position">위치 수정</string>
+  <string name="perpetual.auto_close.stop_loss">손절매</string>
+  <string name="errors.scan_transaction.malicious.title">의심스러운 활동</string>
 </resources>

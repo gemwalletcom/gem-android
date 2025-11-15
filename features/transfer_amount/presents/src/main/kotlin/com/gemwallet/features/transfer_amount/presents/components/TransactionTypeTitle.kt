@@ -22,4 +22,5 @@ internal fun transactionTypeTitle(txType: TransactionType) = when (txType) {
     TransactionType.PerpetualClosePosition -> stringResource(R.string.perpetual_close_position)
     TransactionType.StakeFreeze -> stringResource(R.string.transfer_freeze_title)
     TransactionType.StakeUnfreeze -> stringResource(R.string.transfer_unfreeze_title)
+    TransactionType.PerpetualModifyPosition -> stringResource(R.string.perpetual_modify)
 }

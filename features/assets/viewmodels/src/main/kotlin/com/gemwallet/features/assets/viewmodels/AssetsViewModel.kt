@@ -22,6 +22,7 @@ import com.gemwallet.features.assets.viewmodels.model.WalletInfoUIState
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
+import com.wallet.core.primitives.WalletSource
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -124,9 +125,16 @@ class AssetsViewModel @Inject constructor(
     .filterNotNull()
     .stateIn(viewModelScope, SharingStarted.Eagerly, WalletInfoUIState())
 
-    val isWelcomeBannerHidden = session.filterNotNull()
-        .flatMapLatest { userConfig.isWelcomeBannerHidden(it.wallet.id) }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, true)
+    val showWelcomeBanner = combine(
+        sessionRepository.session().filterNotNull(),
+        assetsState,
+        session.filterNotNull()
+            .flatMapLatest { userConfig.isWelcomeBannerHidden(it.wallet.id) }
+    ) { session, assets, userConfig ->
+        val empty = assets.fold(0.0) { acc, asset -> acc + asset.balance.totalAmount } == 0.0
+        val created = session.wallet.source == WalletSource.Create
+        empty && created && !userConfig
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     fun onRefresh() {
         session.value?.let { session ->

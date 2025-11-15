@@ -13,6 +13,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.features.wallet.presents.ConfirmWalletDeleteDialog
 import com.gemwallet.features.wallets.viewmodels.WalletsViewModel
 import com.wallet.core.primitives.Wallet
+import com.wallet.core.primitives.WalletSource
 import com.wallet.core.primitives.WalletType
 
 @Composable
@@ -70,21 +71,21 @@ fun PreviewWalletScreen() {
             WalletsScene(
                 unpinnedWallets = listOf(
                     Wallet(
-                        "1", "Foo wallet #1", 1, WalletType.view, emptyList(), 0, false
+                        "1", "Foo wallet #1", 1, WalletType.view, emptyList(), 0, false, source = WalletSource.Import,
                     ),
                     Wallet(
-                        "2", "Foo wallet #2", 2, WalletType.view, emptyList(), 0, false
+                        "2", "Foo wallet #2", 2, WalletType.view, emptyList(), 0, false, source = WalletSource.Import,
                     ),
                     Wallet(
-                        "3", "Foo wallet #3", 3, WalletType.multicoin, emptyList(), 1, false
+                        "3", "Foo wallet #3", 3, WalletType.multicoin, emptyList(), 1, false, source = WalletSource.Import,
                     ),
                     Wallet(
-                        "4", "Foo wallet #4", 4, WalletType.multicoin, emptyList(), 2, false
+                        "4", "Foo wallet #4", 4, WalletType.multicoin, emptyList(), 2, false, source = WalletSource.Import,
                     ),
                 ),
                 pinnedWallets = listOf(
                     Wallet(
-                        "5", "Foo wallet #5", 44, WalletType.multicoin, emptyList(), 2, true
+                        "5", "Foo wallet #5", 44, WalletType.multicoin, emptyList(), 2, true, source = WalletSource.Import,
                     ),
                 ),
                 currentWalletId = "1",

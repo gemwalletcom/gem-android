@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">يتم تحديد الرموز المشبوهة أو غير المرغوب فيها على أنها عمليات احتيال محتملة أو أصول ضارة. قد تظهر في محفظتك نتيجةً لعمليات الإنزال الجوي أو التحويلات أو الاستيراد اليدوي.</string>
   <string name="errors.insufficient_funds">عدم كفاية الأموال</string>
   <string name="info.insufficient_network_fee_balance.title">%s مطلوب</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">تتطلب هذه المعاملة %s لتغطية رسوم الشبكة المدفوعة لـ %s من عمال المناجم، وليس Gem Wallet. تأكد من وجود %s كافٍ لديك.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">تتطلب هذه المعاملة ** %s ** لتغطية رسوم الشبكة المدفوعة لعمال المناجم ** %s **، وليس Gem Wallet. تأكد من وجود مبلغ كافٍ %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">رصيد غير كاف</string>
   <string name="info.insufficient_balance.description">ليس لديك رصيد كافٍ %s لإتمام هذه المعاملة. يُرجى شحن رصيدك أو استلامه أو استبداله في محفظتك والمحاولة مرة أخرى.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">إخفاء من المحفظة</string>
   <string name="common.details">تفاصيل</string>
   <string name="transaction.swap_again">التبديل مرة أخرى</string>
-  <string name="errors.scan_transaction.malicious">تم تحديد المعاملة على أنها اشتباه</string>
-  <string name="errors.scan_transaction.memo_required">يتطلب عنوان %s علامة وجهة/مذكرة</string>
+  <string name="errors.scan_transaction.malicious.description">لا يمكن إكمال هذه المعاملة - عنوان المحفظة الوجهة مرتبط بنشاط مشبوه أو ضار.</string>
+  <string name="errors.scan_transaction.memo_required">يتطلب عنوان محفظة الوجهة %s علامة وجهة/مذكرة</string>
   <string name="common.info">معلومات</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">اتجاه</string>
   <string name="perpetual.auto_close">إغلاق تلقائي</string>
   <string name="info.perpetual.auto_close.description">أغلق مركزك تلقائيًا عند مستويات الأسعار المحددة. جني الأرباح يُثبّت الأرباح، ووقف الخسارة يحدّ من الخسائر.</string>
-  <string name="perpetual.auto_close.trigger_price">سعر الزناد</string>
   <string name="perpetual.auto_close.take_profit">جني الأرباح</string>
-  <string name="perpetual.auto_close.stop_loss">وقف الخسارة</string>
   <string name="perpetual.market_price">سعر السوق</string>
-  <string name="perpetual.auto_close.estimed_pnl">الربح والخسارة التقديرية</string>
   <string name="perpetual.increase_direction">زيادة %s</string>
   <string name="perpetual.reduce_direction">تقليل %s</string>
+  <string name="perpetual.auto_close.expected_profit">الربح المتوقع</string>
+  <string name="perpetual.auto_close.expected_loss">الخسارة المتوقعة</string>
+  <string name="perpetual.modify_position">تعديل الموضع</string>
+  <string name="perpetual.auto_close.stop_loss">وقف الخسارة</string>
+  <string name="errors.scan_transaction.malicious.title">نشاط مشبوه</string>
 </resources>

@@ -278,7 +278,7 @@
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Confirm</string>
   <string name="common.skip">Skip</string>
-  <string name="common.warning">Warning</string>
+  <string name="common.warning">Advarsel</string>
   <string name="warnings.multi_signature_blocked">Do not transfer funds to this %s Multi-Signature wallet unless you are certain you control the private keys. Failure to do so could expose you to scams, and you may permanently lose your assets.</string>
   <string name="swap.price_impact">Price Impact</string>
   <string name="wallet.sell">Sell</string>
@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Mistænkelige eller spam-tokens identificeres som potentielle svindelnumre eller skadelige aktiver. De kan dukke op i din wallet på grund af airdrops, overførsler eller manuelle importer.</string>
   <string name="errors.insufficient_funds">Utilstrækkelige midler</string>
   <string name="info.insufficient_network_fee_balance.title">%s påkrævet</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Denne transaktion kræver, at %s dækker netværksgebyret, der betales til %s minere, ikke Gem Wallet. Sørg for, at du har nok %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Denne transaktion kræver ** %s ** for at dække netværksgebyret betalt til ** %s ** minere, ikke Gem Wallet. Sørg for, at du har nok %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Utilstrækkelig saldo</string>
   <string name="info.insufficient_balance.description">Du har ikke nok %s til at gennemføre denne transaktion. Tank op, modtag eller veksle i din wallet, og prøv igen.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">Skjul fra tegnebogen</string>
   <string name="common.details">Detaljer</string>
   <string name="transaction.swap_again">Byt igen</string>
-  <string name="errors.scan_transaction.malicious">Transaktion identificeret som mistænkelig</string>
-  <string name="errors.scan_transaction.memo_required">%s adresse kræver et destinationstag / memo</string>
+  <string name="errors.scan_transaction.malicious.description">Denne transaktion kan ikke gennemføres — destinationsadressen på tegnebogen er knyttet til mistænkelig eller skadelig aktivitet.</string>
+  <string name="errors.scan_transaction.memo_required">%s destinations-wallet-adresse kræver et destinationstag / en destinations-memo</string>
   <string name="common.info">Info</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">Retning</string>
   <string name="perpetual.auto_close">Automatisk lukning</string>
   <string name="info.perpetual.auto_close.description">Luk automatisk din position ved fastsatte prisniveauer. Take Profit låser gevinster, Stop Loss begrænser tab.</string>
-  <string name="perpetual.auto_close.trigger_price">Udløserpris</string>
   <string name="perpetual.auto_close.take_profit">Tag profit</string>
-  <string name="perpetual.auto_close.stop_loss">Stop-loss</string>
   <string name="perpetual.market_price">Markedspris</string>
-  <string name="perpetual.auto_close.estimed_pnl">Estimeret PNL</string>
   <string name="perpetual.increase_direction">Forøgelse %s</string>
   <string name="perpetual.reduce_direction">Reducer %s</string>
+  <string name="perpetual.auto_close.expected_profit">Forventet fortjeneste</string>
+  <string name="perpetual.auto_close.expected_loss">Forventet tab</string>
+  <string name="perpetual.modify_position">Rediger position</string>
+  <string name="perpetual.auto_close.stop_loss">Stop-loss</string>
+  <string name="errors.scan_transaction.malicious.title">Mistænkelig aktivitet</string>
 </resources>

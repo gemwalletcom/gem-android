@@ -8,6 +8,12 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
+data class CancelOrderData (
+	val assetIndex: Int,
+	val orderId: Long
+)
+
+@Serializable
 data class Perpetual (
 	val id: String,
 	val name: String,
@@ -73,6 +79,25 @@ data class PerpetualData (
 )
 
 @Serializable
+sealed class PerpetualModifyPositionType {
+	@Serializable
+	@SerialName("Tpsl")
+	data class Tpsl(val content: TPSLOrderData): PerpetualModifyPositionType()
+	@Serializable
+	@SerialName("Cancel")
+	data class Cancel(val content: List<CancelOrderData>): PerpetualModifyPositionType()
+}
+
+@Serializable
+data class PerpetualModifyConfirmData (
+	val baseAsset: Asset,
+	val assetIndex: Int,
+	val modifyTypes: List<PerpetualModifyPositionType>,
+	val takeProfitOrderId: Long? = null,
+	val stopLossOrderId: Long? = null
+)
+
+@Serializable
 data class PerpetualPositionData (
 	val perpetual: Perpetual,
 	val asset: Asset,
@@ -92,6 +117,14 @@ data class PerpetualReduceData (
 )
 
 @Serializable
+data class TPSLOrderData (
+	val direction: PerpetualDirection,
+	val takeProfit: String? = null,
+	val stopLoss: String? = null,
+	val size: String
+)
+
+@Serializable
 enum class AccountDataType(val string: String) {
 	@SerialName("activate")
 	Activate("activate"),
@@ -105,6 +138,9 @@ sealed class PerpetualType {
 	@Serializable
 	@SerialName("Close")
 	data class Close(val content: PerpetualConfirmData): PerpetualType()
+	@Serializable
+	@SerialName("Modify")
+	data class Modify(val content: PerpetualModifyConfirmData): PerpetualType()
 	@Serializable
 	@SerialName("Increase")
 	data class Increase(val content: PerpetualConfirmData): PerpetualType()

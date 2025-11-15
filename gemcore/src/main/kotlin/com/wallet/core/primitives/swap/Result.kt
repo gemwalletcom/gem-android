@@ -10,10 +10,10 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 data class SwapResult (
-	val status: SwapStatus,
-	val fromChain: Chain,
-	val fromTxHash: String,
-	val toChain: Chain? = null,
-	val toTxHash: String? = null
+    val status: SwapStatus,
+    val fromChain: Chain,
+    val fromTxHash: String,
+    val toChain: Chain? = null,
+    val toTxHash: String? = null
 )
 

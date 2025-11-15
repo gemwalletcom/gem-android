@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.wallet.core.primitives.Wallet
+import com.wallet.core.primitives.WalletSource
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -17,6 +18,7 @@ data class DbWallet(
     val position: Int,
     val pinned: Boolean,
     val index: Int,
+    @ColumnInfo(defaultValue = "Import") val source: WalletSource,
 )
 
 fun DbWallet.toModel(accounts: List<DbAccount>): Wallet {
@@ -28,6 +30,7 @@ fun DbWallet.toModel(accounts: List<DbAccount>): Wallet {
         index = index,
         order = 0,
         isPinned = pinned,
+        source = source,
     )
 }
 
@@ -40,6 +43,7 @@ fun Wallet.toRecord(): DbWallet {
         position = 0,
         pinned = isPinned,
         index = index,
+        source = source,
     )
 }
 

@@ -13,6 +13,7 @@ import com.gemwallet.android.ext.getNftMetadata
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.hash
 import com.gemwallet.android.features.activities.models.TxDetailsProperty
+import com.gemwallet.android.features.activities.models.TxDetailsProperty.Destination.*
 import com.gemwallet.android.math.getRelativeDate
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Transaction
@@ -134,13 +135,14 @@ class TransactionDetailsViewModel @Inject constructor(
             TransactionType.PerpetualClosePosition,
             TransactionType.StakeFreeze,
             TransactionType.StakeUnfreeze,
+            TransactionType.PerpetualModifyPosition,
             TransactionType.StakeWithdraw -> return null
 
             TransactionType.Transfer,
             TransactionType.TransferNFT -> when (tx.direction) {
                 TransactionDirection.SelfTransfer,
-                TransactionDirection.Outgoing -> TxDetailsProperty.Destination.Recipient(tx.to)
-                TransactionDirection.Incoming -> TxDetailsProperty.Destination.Sender(tx.from)
+                TransactionDirection.Outgoing -> Recipient(tx.to)
+                TransactionDirection.Incoming -> Sender(tx.from)
             }
         }
     }

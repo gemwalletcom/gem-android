@@ -24,6 +24,7 @@ import com.wallet.core.primitives.BannerState
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.EncodingType
 import com.wallet.core.primitives.Wallet
+import com.wallet.core.primitives.WalletSource
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,8 +53,8 @@ class PhraseAddressImportWalletService(
         data: String
     ): Result<Wallet> {
         val result = when (importType.walletType) {
-            WalletType.multicoin -> handlePhrase(importType, walletName, data)
-            WalletType.single -> handlePhrase(importType, walletName, data)
+            WalletType.multicoin -> handlePhrase(importType, walletName, data, WalletSource.Import)
+            WalletType.single -> handlePhrase(importType, walletName, data, WalletSource.Import)
             WalletType.view -> handleAddress(importType.chain!!, walletName, data)
             WalletType.private_key -> handlePrivateKey(importType.chain!!, walletName, data)
         }
@@ -71,7 +72,7 @@ class PhraseAddressImportWalletService(
 
     override suspend fun createWallet(walletName: String, data: String): Result<Wallet> =
         withContext(Dispatchers.IO) {
-            val result = handlePhrase(ImportType(WalletType.multicoin), walletName, data)
+            val result = handlePhrase(ImportType(WalletType.multicoin), walletName, data, WalletSource.Create)
             if (result.isFailure) return@withContext result
             val wallet =
                 result.getOrNull() ?: return@withContext Result.failure(Exception("Unknown error"))
@@ -87,7 +88,7 @@ class PhraseAddressImportWalletService(
         syncSubscription.syncSubscription(listOf(wallet), true)
     }
 
-    private suspend fun handlePhrase(importType: ImportType, walletName: String, rawData: String): Result<Wallet> {
+    private suspend fun handlePhrase(importType: ImportType, walletName: String, rawData: String, source: WalletSource): Result<Wallet> {
         val cleanedData = rawData.trim().split("\\s+".toRegex()).joinToString(" ") { it.trim() }
         val validateResult = phraseValidate(cleanedData)
         if (validateResult.isFailure || validateResult.getOrNull() != true) {
@@ -97,7 +98,7 @@ class PhraseAddressImportWalletService(
                 else -> Result.failure(ImportError.InvalidationSecretPhrase)
             }
         }
-        val wallet = walletsRepository.addControlled(walletName, cleanedData, importType.walletType, importType.chain)
+        val wallet = walletsRepository.addControlled(walletName, cleanedData, importType.walletType, importType.chain, source)
         val password = passwordStore.createPassword(wallet.id)
         val storeResult = storePhraseOperator(wallet, cleanedData, password)
         return if (storeResult.isSuccess) {
@@ -131,7 +132,7 @@ class PhraseAddressImportWalletService(
         } catch (_: Throwable) {
             return Result.failure(ImportError.InvalidationPrivateKey)
         }
-        val wallet = walletsRepository.addControlled(walletName, key, WalletType.private_key, chain)
+        val wallet = walletsRepository.addControlled(walletName, key, WalletType.private_key, chain, source = WalletSource.Import)
         val password = passwordStore.createPassword(wallet.id)
         val storeResult = storePhraseOperator(wallet, key, password)
         return if (storeResult.isSuccess) {

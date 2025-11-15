@@ -39,5 +39,7 @@ enum class TransactionType(val string: String) {
 	PerpetualOpenPosition("perpetualOpenPosition"),
 	@SerialName("perpetualClosePosition")
 	PerpetualClosePosition("perpetualClosePosition"),
+	@SerialName("perpetualModifyPosition")
+	PerpetualModifyPosition("perpetualModifyPosition"),
 }
 

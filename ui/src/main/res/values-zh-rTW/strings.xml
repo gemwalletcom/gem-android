@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">可疑或垃圾代幣會被識別為潛在的詐騙或有害資產。它們可能因空投、轉帳或手動匯入而出現在您的錢包中。</string>
   <string name="errors.insufficient_funds">資金不足</string>
   <string name="info.insufficient_network_fee_balance.title">需要%s</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">此交易需要%s來支付給%s礦工的網路費用，而非Gem Wallet 。請確保您有足夠的%s 。</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">此交易需要 ** %s ** 來支付給 ** %s ** 礦工的網路費用，而不是Gem Wallet 。請確保您有足夠的%s 。</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">餘額不足</string>
   <string name="info.insufficient_balance.description">您的餘額不足%s ，無法完成此交易。請充值、接收或兌換您的錢包，然後重試。</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">隱藏錢包</string>
   <string name="common.details">詳情</string>
   <string name="transaction.swap_again">再次交換</string>
-  <string name="errors.scan_transaction.malicious">交易被認定為可疑</string>
-  <string name="errors.scan_transaction.memo_required">%s地址需要目的地標籤/備忘錄</string>
+  <string name="errors.scan_transaction.malicious.description">此交易無法完成——目標錢包地址與可疑或有害活動有關。</string>
+  <string name="errors.scan_transaction.memo_required">%s目標錢包位址需要目標標籤/備註</string>
   <string name="common.info">資訊</string>
   <string name="wallet.deposit">轉入</string>
   <string name="wallet.withdraw">提領</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">方向</string>
   <string name="perpetual.auto_close">自動關閉</string>
   <string name="info.perpetual.auto_close.description">以設定的價格自動平倉。停盈鎖定收益，停損限制損失。</string>
-  <string name="perpetual.auto_close.trigger_price">觸發價格</string>
   <string name="perpetual.auto_close.take_profit">獲利</string>
-  <string name="perpetual.auto_close.stop_loss">停損</string>
   <string name="perpetual.market_price">市價</string>
-  <string name="perpetual.auto_close.estimed_pnl">預計盈虧</string>
   <string name="perpetual.increase_direction">增加%s</string>
   <string name="perpetual.reduce_direction">減少%s</string>
+  <string name="perpetual.auto_close.expected_profit">預期利潤</string>
+  <string name="perpetual.auto_close.expected_loss">預期損失</string>
+  <string name="perpetual.modify_position">修改位置</string>
+  <string name="perpetual.auto_close.stop_loss">停損</string>
+  <string name="errors.scan_transaction.malicious.title">可疑活動</string>
 </resources>

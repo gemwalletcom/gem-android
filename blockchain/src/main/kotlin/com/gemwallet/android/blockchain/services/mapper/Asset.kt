@@ -29,6 +29,7 @@ fun Asset.toGem() = GemAsset(
         AssetType.SYNTH -> GemAssetType.SYNTH
         AssetType.ASA -> GemAssetType.ASA
         AssetType.PERPETUAL -> GemAssetType.PERPETUAL
+        AssetType.SPOT -> throw IllegalAccessException()
     }
 )
 

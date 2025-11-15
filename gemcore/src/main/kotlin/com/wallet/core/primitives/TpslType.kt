@@ -8,11 +8,10 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
-data class FiatProvider (
-	val id: String,
-	val name: String,
-	val imageUrl: String,
-	val priority: Int? = null,
-	val thresholdBps: Int? = null
-)
+enum class TpslType(val string: String) {
+	@SerialName("takeProfit")
+	TakeProfit("takeProfit"),
+	@SerialName("stopLoss")
+	StopLoss("stopLoss"),
+}
 

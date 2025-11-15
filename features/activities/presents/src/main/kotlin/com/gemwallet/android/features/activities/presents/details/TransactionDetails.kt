@@ -127,6 +127,7 @@ private fun LazyListScope.transactionItemHead(model: TxDetailsScreenModel) {
                     TransactionType.SmartContractCall,
                     TransactionType.PerpetualOpenPosition,
                     TransactionType.PerpetualClosePosition,
+                    TransactionType.PerpetualModifyPosition,
                     TransactionType.TokenApproval -> model.asset.symbol
                 },
                 equivalent = when (model.type) {
@@ -144,6 +145,7 @@ private fun LazyListScope.transactionItemHead(model: TxDetailsScreenModel) {
                     TransactionType.SmartContractCall,
                     TransactionType.PerpetualOpenPosition,
                     TransactionType.PerpetualClosePosition,
+                    TransactionType.PerpetualModifyPosition,
                     TransactionType.TokenApproval -> null
                 },
             )

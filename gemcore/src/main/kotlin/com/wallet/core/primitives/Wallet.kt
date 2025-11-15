@@ -20,6 +20,14 @@ enum class WalletType(val string: String) {
 }
 
 @Serializable
+enum class WalletSource(val string: String) {
+	@SerialName("create")
+	Create("create"),
+	@SerialName("import")
+	Import("import"),
+}
+
+@Serializable
 data class Wallet (
 	val id: String,
 	val name: String,
@@ -28,7 +36,8 @@ data class Wallet (
 	val accounts: List<Account>,
 	val order: Int,
 	val isPinned: Boolean,
-	val imageUrl: String? = null
+	val imageUrl: String? = null,
+	val source: WalletSource
 )
 
 @Serializable

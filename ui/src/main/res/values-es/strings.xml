@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Los tokens sospechosos o spam se identifican como posibles estafas o activos dañinos. Pueden aparecer en tu billetera debido a airdrops, transferencias o importaciones manuales.</string>
   <string name="errors.insufficient_funds">Fondos insuficientes</string>
   <string name="info.insufficient_network_fee_balance.title">%s requerido</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Esta transacción requiere %s para cubrir la comisión de red pagada a %s mineros, no Gem Wallet. Asegúrate de tener suficiente %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Esta transacción requiere ** %s ** para cubrir la comisión de red pagada a ** %s ** mineros, no a Gem Wallet. Asegúrese de tener suficiente %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Saldo insuficiente</string>
   <string name="info.insufficient_balance.description">No tienes suficientes %s para completar esta transacción. Recarga, recibe o intercambia tu billetera y vuelve a intentarlo.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">Ocultar de la billetera</string>
   <string name="common.details">Detalles</string>
   <string name="transaction.swap_again">Intercambiar de nuevo</string>
-  <string name="errors.scan_transaction.malicious">Transacción identificada como sospechosa</string>
-  <string name="errors.scan_transaction.memo_required">La dirección %s requiere una etiqueta/memo de destino</string>
+  <string name="errors.scan_transaction.malicious.description">Esta transacción no se puede completar: la dirección de la billetera de destino está vinculada a actividades sospechosas o dañinas.</string>
+  <string name="errors.scan_transaction.memo_required">%s La dirección de la cartera de destino requiere una etiqueta/nota de destino.</string>
   <string name="common.info">Información</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">Dirección</string>
   <string name="perpetual.auto_close">Cierre automático</string>
   <string name="info.perpetual.auto_close.description">Cierra tu posición automáticamente a precios establecidos. El Take Profit fija las ganancias y el Stop Loss limita las pérdidas.</string>
-  <string name="perpetual.auto_close.trigger_price">Precio de activación</string>
   <string name="perpetual.auto_close.take_profit">Tomar ganancias</string>
-  <string name="perpetual.auto_close.stop_loss">Stop Loss</string>
   <string name="perpetual.market_price">Precio de mercado</string>
-  <string name="perpetual.auto_close.estimed_pnl">PNL estimado</string>
   <string name="perpetual.increase_direction">Incremento %s</string>
   <string name="perpetual.reduce_direction">Reducir %s</string>
+  <string name="perpetual.auto_close.expected_profit">Beneficio esperado</string>
+  <string name="perpetual.auto_close.expected_loss">Pérdida esperada</string>
+  <string name="perpetual.modify_position">Modificar posición</string>
+  <string name="perpetual.auto_close.stop_loss">Stop loss</string>
+  <string name="errors.scan_transaction.malicious.title">Actividad sospechosa</string>
 </resources>

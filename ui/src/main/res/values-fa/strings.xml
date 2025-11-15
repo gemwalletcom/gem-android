@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">توکن‌های مشکوک یا اسپم به عنوان کلاهبرداری‌های بالقوه یا دارایی‌های مضر شناسایی می‌شوند. آنها ممکن است به دلیل ایردراپ‌ها، انتقال‌ها یا واردات دستی در کیف پول شما ظاهر شوند.</string>
   <string name="errors.insufficient_funds">بودجه ناکافی</string>
   <string name="info.insufficient_network_fee_balance.title">%s مورد نیاز</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">این تراکنش مستلزم %s است تا کارمزد شبکه پرداخت شده به %s ماینرها را پوشش دهد، نه Gem Wallet. مطمئن شوید که %s کافی دارید.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">این تراکنش به ** %s ** برای پوشش کارمزد شبکه پرداخت شده به ** %s ** ماینرها نیاز دارد، نه Gem Wallet. مطمئن شوید که %s کافی دارید.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">موجودی ناکافی</string>
   <string name="info.insufficient_balance.description">شما %s کافی برای تکمیل این تراکنش ندارید. لطفاً کیف پول خود را شارژ، دریافت یا مبادله کنید و دوباره امتحان کنید.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">پنهان شدن از کیف پول</string>
   <string name="common.details">جزئیات</string>
   <string name="transaction.swap_again">دوباره مبادله کنید</string>
-  <string name="errors.scan_transaction.malicious">تراکنش مشکوک شناسایی شد</string>
-  <string name="errors.scan_transaction.memo_required">آدرس %s به یک برچسب / یادداشت مقصد نیاز دارد.</string>
+  <string name="errors.scan_transaction.malicious.description">این تراکنش قابل انجام نیست — آدرس کیف پول مقصد به فعالیت مشکوک یا مضر مرتبط است.</string>
+  <string name="errors.scan_transaction.memo_required">%s آدرس کیف پول مقصد به یک برچسب / یادداشت مقصد نیاز دارد.</string>
   <string name="common.info">اطلاعات</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">جهت</string>
   <string name="perpetual.auto_close">بستن خودکار</string>
   <string name="info.perpetual.auto_close.description">موقعیت خود را به طور خودکار در سطوح قیمت تعیین شده ببندید. برداشت سود، سود را قفل می‌کند، و توقف ضرر، ضرر را محدود می‌کند.</string>
-  <string name="perpetual.auto_close.trigger_price">قیمت ماشه</string>
   <string name="perpetual.auto_close.take_profit">سود ببرید</string>
-  <string name="perpetual.auto_close.stop_loss">حد ضرر</string>
   <string name="perpetual.market_price">قیمت بازار</string>
-  <string name="perpetual.auto_close.estimed_pnl">سود هر سهم (PNL) تخمینی</string>
   <string name="perpetual.increase_direction">افزایش %s</string>
   <string name="perpetual.reduce_direction">کاهش %s</string>
+  <string name="perpetual.auto_close.expected_profit">سود مورد انتظار</string>
+  <string name="perpetual.auto_close.expected_loss">ضرر مورد انتظار</string>
+  <string name="perpetual.modify_position">تغییر موقعیت</string>
+  <string name="perpetual.auto_close.stop_loss">حد ضرر</string>
+  <string name="errors.scan_transaction.malicious.title">فعالیت مشکوک</string>
 </resources>

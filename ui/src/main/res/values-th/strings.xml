@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">โทเค็นที่น่าสงสัยหรือเป็นสแปมจะถูกระบุว่าเป็นการหลอกลวงหรือทรัพย์สินที่เป็นอันตราย โทเค็นเหล่านี้อาจปรากฏในกระเป๋าเงินของคุณเนื่องจากการส่งทางอากาศ การโอน หรือการนำเข้าด้วยตนเอง</string>
   <string name="errors.insufficient_funds">เงินไม่เพียงพอ</string>
   <string name="info.insufficient_network_fee_balance.title">%s จำเป็น</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">ธุรกรรมนี้ต้องการให้ %s ครอบคลุมค่าธรรมเนียมเครือข่ายที่จ่ายให้กับนักขุด %s คน ไม่ใช่ Gem Wallet โปรดตรวจสอบให้แน่ใจว่าคุณมี %s เพียงพอ</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">ธุรกรรมนี้ต้องการ ** %s ** เพื่อครอบคลุมค่าธรรมเนียมเครือข่ายที่จ่ายให้กับ ** %s ** นักขุด ไม่ใช่ Gem Wallet โปรดตรวจสอบให้แน่ใจว่าคุณมี %s เพียงพอ</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">ยอดเงินคงเหลือไม่เพียงพอ</string>
   <string name="info.insufficient_balance.description">คุณมี %s ไม่เพียงพอสำหรับการทำธุรกรรมนี้ โปรดเติมเงิน รับ หรือแลกเปลี่ยนในกระเป๋าสตางค์ของคุณแล้วลองอีกครั้ง</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">ซ่อนจากกระเป๋าสตางค์</string>
   <string name="common.details">รายละเอียด</string>
   <string name="transaction.swap_again">สลับอีกครั้ง</string>
-  <string name="errors.scan_transaction.malicious">ธุรกรรมถูกระบุว่าน่าสงสัย</string>
-  <string name="errors.scan_transaction.memo_required">ที่อยู่ %s ต้องมีแท็กปลายทาง / บันทึกช่วยจำ</string>
+  <string name="errors.scan_transaction.malicious.description">ไม่สามารถทำธุรกรรมนี้ให้เสร็จสมบูรณ์ได้ — ที่อยู่กระเป๋าเงินปลายทางเชื่อมโยงกับกิจกรรมที่น่าสงสัยหรือเป็นอันตราย</string>
+  <string name="errors.scan_transaction.memo_required">ที่อยู่กระเป๋าเงินปลายทาง %s ต้องมีแท็กปลายทาง / บันทึกช่วยจำ</string>
   <string name="common.info">ข้อมูล</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">ทิศทาง</string>
   <string name="perpetual.auto_close">ปิดอัตโนมัติ</string>
   <string name="info.perpetual.auto_close.description">ปิดสถานะของคุณโดยอัตโนมัติเมื่อถึงระดับราคาที่กำหนด Take Profit ล็อกกำไร Stop Loss จำกัดการขาดทุน</string>
-  <string name="perpetual.auto_close.trigger_price">ราคาทริกเกอร์</string>
   <string name="perpetual.auto_close.take_profit">รับผลกำไร</string>
-  <string name="perpetual.auto_close.stop_loss">สต็อปลอส</string>
   <string name="perpetual.market_price">ราคาตลาด</string>
-  <string name="perpetual.auto_close.estimed_pnl">PNL โดยประมาณ</string>
   <string name="perpetual.increase_direction">เพิ่ม %s</string>
   <string name="perpetual.reduce_direction">ลด %s</string>
+  <string name="perpetual.auto_close.expected_profit">กำไรที่คาดหวัง</string>
+  <string name="perpetual.auto_close.expected_loss">การสูญเสียที่คาดว่าจะเกิดขึ้น</string>
+  <string name="perpetual.modify_position">ปรับเปลี่ยนตำแหน่ง</string>
+  <string name="perpetual.auto_close.stop_loss">สต็อปลอส</string>
+  <string name="errors.scan_transaction.malicious.title">กิจกรรมที่น่าสงสัย</string>
 </resources>

@@ -278,7 +278,7 @@
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Confirm</string>
   <string name="common.skip">Skip</string>
-  <string name="common.warning">Warning</string>
+  <string name="common.warning">Avertizare</string>
   <string name="warnings.multi_signature_blocked">Do not transfer funds to this %s Multi-Signature wallet unless you are certain you control the private keys. Failure to do so could expose you to scams, and you may permanently lose your assets.</string>
   <string name="swap.price_impact">Price Impact</string>
   <string name="wallet.sell">Sell</string>
@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Tokenurile suspecte sau spam sunt identificate ca potențiale escrocherii sau active dăunătoare. Acestea pot apărea în portofelul dvs. din cauza lansărilor prin airdrop, transferuri sau importuri manuale.</string>
   <string name="errors.insufficient_funds">Fonduri insuficiente</string>
   <string name="info.insufficient_network_fee_balance.title">%s necesar</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Această tranzacție necesită %s pentru a acoperi taxa de rețea plătită minerilor %s, nu Gem Wallet. Asigurați-vă că aveți suficienți %s.</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Această tranzacție necesită ** %s ** pentru a acoperi taxa de rețea plătită minerilor ** %s **, nu Gem Wallet. Asigurați-vă că aveți suficienți %s.</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Sold insuficient</string>
   <string name="info.insufficient_balance.description">Nu aveți suficienți %s pentru a finaliza această tranzacție. Vă rugăm să încărcați, să primiți sau să schimbați contul în portofelul dvs. și să încercați din nou.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">Ascunde din portofel</string>
   <string name="common.details">Detalii</string>
   <string name="transaction.swap_again">Schimbați din nou</string>
-  <string name="errors.scan_transaction.malicious">Tranzacția identificată ca suspectă</string>
-  <string name="errors.scan_transaction.memo_required">Adresa %s necesită o etichetă/notă de destinație</string>
+  <string name="errors.scan_transaction.malicious.description">Această tranzacție nu poate fi finalizată — adresa portofelului de destinație este legată de o activitate suspectă sau dăunătoare.</string>
+  <string name="errors.scan_transaction.memo_required">Adresa portofelului de destinație %s necesită o etichetă/un memo de destinație</string>
   <string name="common.info">Informații</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">Direcţie</string>
   <string name="perpetual.auto_close">Închidere automată</string>
   <string name="info.perpetual.auto_close.description">Închide automat poziția la nivelurile de preț stabilite. Funcția Take Profit blochează câștigurile, iar funcția Stop Loss limitează pierderile.</string>
-  <string name="perpetual.auto_close.trigger_price">Preț de declanșare</string>
   <string name="perpetual.auto_close.take_profit">Ia profit</string>
-  <string name="perpetual.auto_close.stop_loss">Stop Loss</string>
   <string name="perpetual.market_price">Prețul de piață</string>
-  <string name="perpetual.auto_close.estimed_pnl">PNL estimat</string>
   <string name="perpetual.increase_direction">Creștere %s</string>
   <string name="perpetual.reduce_direction">Reduceți %s</string>
+  <string name="perpetual.auto_close.expected_profit">Profit așteptat</string>
+  <string name="perpetual.auto_close.expected_loss">Pierderea așteptată</string>
+  <string name="perpetual.modify_position">Modificare poziție</string>
+  <string name="perpetual.auto_close.stop_loss">Stop loss</string>
+  <string name="errors.scan_transaction.malicious.title">Activitate suspectă</string>
 </resources>

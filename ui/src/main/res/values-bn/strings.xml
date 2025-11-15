@@ -278,7 +278,7 @@
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Confirm</string>
   <string name="common.skip">Skip</string>
-  <string name="common.warning">Warning</string>
+  <string name="common.warning">সতর্কতা</string>
   <string name="warnings.multi_signature_blocked">Do not transfer funds to this %s Multi-Signature wallet unless you are certain you control the private keys. Failure to do so could expose you to scams, and you may permanently lose your assets.</string>
   <string name="swap.price_impact">Price Impact</string>
   <string name="wallet.sell">Sell</string>
@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">সন্দেহজনক বা স্প্যাম টোকেনগুলিকে সম্ভাব্য স্ক্যাম বা ক্ষতিকারক সম্পদ হিসেবে চিহ্নিত করা হয়। এয়ারড্রপ, ট্রান্সফার বা ম্যানুয়াল আমদানির কারণে এগুলি আপনার ওয়ালেটে দেখা দিতে পারে।</string>
   <string name="errors.insufficient_funds">অপর্যাপ্ত তহবিল</string>
   <string name="info.insufficient_network_fee_balance.title">%s প্রয়োজন</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">এই লেনদেনের জন্য %s মাইনারদের প্রদত্ত নেটওয়ার্ক ফি %s কে বহন করতে হবে, Gem Wallet কে নয়। নিশ্চিত করুন যে আপনার কাছে পর্যাপ্ত %s আছে।</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">এই লেনদেনের জন্য ** %s ** মাইনারদের প্রদত্ত নেটওয়ার্ক ফি প্রদানের জন্য ** %s ** প্রয়োজন, Gem Wallet নয়। নিশ্চিত করুন যে আপনার কাছে পর্যাপ্ত %s আছে।</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">অপর্যাপ্ত ব্যালেন্স</string>
   <string name="info.insufficient_balance.description">এই লেনদেনটি সম্পন্ন করার জন্য আপনার কাছে পর্যাপ্ত %s নেই। অনুগ্রহ করে আপনার ওয়ালেটে টাকা টপ আপ করুন, গ্রহণ করুন বা সোয়াপ করুন এবং আবার চেষ্টা করুন।</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">মানিব্যাগ থেকে লুকান</string>
   <string name="common.details">বিস্তারিত</string>
   <string name="transaction.swap_again">আবার অদলবদল করুন</string>
-  <string name="errors.scan_transaction.malicious">লেনদেন সন্দেহজনক হিসেবে চিহ্নিত</string>
-  <string name="errors.scan_transaction.memo_required">%s ঠিকানার জন্য একটি গন্তব্য ট্যাগ / মেমো প্রয়োজন।</string>
+  <string name="errors.scan_transaction.malicious.description">এই লেনদেনটি সম্পন্ন করা যাবে না — গন্তব্যস্থলের ওয়ালেট ঠিকানাটি সন্দেহজনক বা ক্ষতিকারক কার্যকলাপের সাথে যুক্ত।</string>
+  <string name="errors.scan_transaction.memo_required">%s গন্তব্য ওয়ালেট ঠিকানার জন্য একটি গন্তব্য ট্যাগ / মেমো প্রয়োজন।</string>
   <string name="common.info">তথ্য</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">দিকনির্দেশনা</string>
   <string name="perpetual.auto_close">স্বয়ংক্রিয়ভাবে বন্ধ করুন</string>
   <string name="info.perpetual.auto_close.description">নির্ধারিত মূল্য স্তরে আপনার পজিশন স্বয়ংক্রিয়ভাবে বন্ধ করুন। টেক প্রফিট লাভকে আটকে রাখে, স্টপ লস লোকসানকে সীমাবদ্ধ করে।</string>
-  <string name="perpetual.auto_close.trigger_price">ট্রিগার মূল্য</string>
   <string name="perpetual.auto_close.take_profit">লাভ নিন</string>
-  <string name="perpetual.auto_close.stop_loss">স্টপ লস</string>
   <string name="perpetual.market_price">বাজার মূল্য</string>
-  <string name="perpetual.auto_close.estimed_pnl">আনুমানিক পিএনএল</string>
   <string name="perpetual.increase_direction">%s বৃদ্ধি করুন</string>
   <string name="perpetual.reduce_direction">%s কমাও</string>
+  <string name="perpetual.auto_close.expected_profit">প্রত্যাশিত লাভ</string>
+  <string name="perpetual.auto_close.expected_loss">প্রত্যাশিত ক্ষতি</string>
+  <string name="perpetual.modify_position">অবস্থান পরিবর্তন করুন</string>
+  <string name="perpetual.auto_close.stop_loss">স্টপ লস</string>
+  <string name="errors.scan_transaction.malicious.title">সন্দেহজনক কার্যকলাপ</string>
 </resources>

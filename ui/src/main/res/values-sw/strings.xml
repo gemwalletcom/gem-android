@@ -278,7 +278,7 @@
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Confirm</string>
   <string name="common.skip">Skip</string>
-  <string name="common.warning">Warning</string>
+  <string name="common.warning">Onyo</string>
   <string name="warnings.multi_signature_blocked">Do not transfer funds to this %s Multi-Signature wallet unless you are certain you control the private keys. Failure to do so could expose you to scams, and you may permanently lose your assets.</string>
   <string name="swap.price_impact">Price Impact</string>
   <string name="wallet.sell">Sell</string>
@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">Tokeni zinazotiliwa shaka au taka zinatambuliwa kuwa ulaghai au mali hatari. Huenda zikaonekana kwenye mkoba wako kwa sababu ya matone ya hewa, uhamisho, au uagizaji wa mikono.</string>
   <string name="errors.insufficient_funds">Upungufu wa fedha</string>
   <string name="info.insufficient_network_fee_balance.title">%s inahitajika</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Muamala huu unahitaji %s kulipia ada ya mtandao inayolipwa kwa wachimbaji %s, si Gem Wallet. Hakikisha una %s ya kutosha .</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Muamala huu unahitaji ** %s ** kulipia ada ya mtandao inayolipwa kwa ** %s ** wachimbaji, si Gem Wallet. Hakikisha una %s ya kutosha .</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Mizani isiyotosha</string>
   <string name="info.insufficient_balance.description">Huna %s ya kutosha kukamilisha muamala huu. Tafadhali jaza, pokea, au ubadilishe pochi yako na ujaribu tena.</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">Ficha kutoka kwa mkoba</string>
   <string name="common.details">Maelezo</string>
   <string name="transaction.swap_again">Badilika Tena</string>
-  <string name="errors.scan_transaction.malicious">Muamala umetambuliwa kama tuhuma</string>
-  <string name="errors.scan_transaction.memo_required">%s anwani inahitaji lebo/memo lengwa</string>
+  <string name="errors.scan_transaction.malicious.description">Muamala huu hauwezi kukamilika - anwani ya pochi lengwa imeunganishwa na shughuli za kutiliwa shaka au hatari.</string>
+  <string name="errors.scan_transaction.memo_required">%s anwani ya mkoba lengwa inahitaji lebo/memo lengwa</string>
   <string name="common.info">Habari</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">Mwelekeo</string>
   <string name="perpetual.auto_close">Funga Kiotomatiki</string>
   <string name="info.perpetual.auto_close.description">Funga msimamo wako kiotomatiki katika viwango vya bei vilivyowekwa. Chukua kufuli za Faida katika faida, Stop Loss mipaka hasara.</string>
-  <string name="perpetual.auto_close.trigger_price">Anzisha bei</string>
   <string name="perpetual.auto_close.take_profit">Chukua faida</string>
-  <string name="perpetual.auto_close.stop_loss">Acha Hasara</string>
   <string name="perpetual.market_price">Bei ya Soko</string>
-  <string name="perpetual.auto_close.estimed_pnl">PNL iliyokadiriwa</string>
   <string name="perpetual.increase_direction">Ongeza %s</string>
   <string name="perpetual.reduce_direction">Punguza %s</string>
+  <string name="perpetual.auto_close.expected_profit">Faida inayotarajiwa</string>
+  <string name="perpetual.auto_close.expected_loss">Hasara inayotarajiwa</string>
+  <string name="perpetual.modify_position">Rekebisha Nafasi</string>
+  <string name="perpetual.auto_close.stop_loss">Acha hasara</string>
+  <string name="errors.scan_transaction.malicious.title">Shughuli ya kutiliwa shaka</string>
 </resources>

@@ -278,7 +278,7 @@
   <string name="receive.your_address">Your Receiving Address</string>
   <string name="verify_phrase.title">Confirm</string>
   <string name="common.skip">Skip</string>
-  <string name="common.warning">Warning</string>
+  <string name="common.warning">وارننگ</string>
   <string name="warnings.multi_signature_blocked">Do not transfer funds to this %s Multi-Signature wallet unless you are certain you control the private keys. Failure to do so could expose you to scams, and you may permanently lose your assets.</string>
   <string name="swap.price_impact">Price Impact</string>
   <string name="wallet.sell">Sell</string>
@@ -426,7 +426,7 @@
   <string name="info.asset_status.suspicious.description">مشکوک یا سپیم ٹوکنز کی شناخت ممکنہ گھوٹالوں یا نقصان دہ اثاثوں کے طور پر کی جاتی ہے۔ وہ ایئر ڈراپس، ٹرانسفرز، یا دستی درآمدات کی وجہ سے آپ کے بٹوے میں ظاہر ہو سکتے ہیں۔</string>
   <string name="errors.insufficient_funds">ناکافی فنڈز</string>
   <string name="info.insufficient_network_fee_balance.title">%s درکار ہے۔</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">اس لین دین کے لیے %s %s کان کنوں کو ادا کی جانے والی نیٹ ورک فیس کو پورا کرنے کی ضرورت ہے، نہ کہ Gem Wallet ۔ یقینی بنائیں کہ آپ کے پاس کافی ہے %s ۔</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">اس لین دین کے لیے ** %s ** نیٹ ورک فیس کو پورا کرنے کے لیے ** %s ** کان کنوں کو ادا کرنے کی ضرورت ہے، نہ کہ Gem Wallet ۔ یقینی بنائیں کہ آپ کے پاس کافی ہے %s ۔</string>
   <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">ناکافی بیلنس</string>
   <string name="info.insufficient_balance.description">آپ کے پاس اس لین دین کو مکمل کرنے کے لیے کافی %s نہیں ہے۔ براہ کرم اپنے بٹوے میں ٹاپ اپ کریں، وصول کریں یا تبدیل کریں اور دوبارہ کوشش کریں۔</string>
@@ -439,8 +439,8 @@
   <string name="asset.hide_from_wallet">بٹوے سے چھپائیں۔</string>
   <string name="common.details">تفصیلات</string>
   <string name="transaction.swap_again">دوبارہ تبدیل کریں۔</string>
-  <string name="errors.scan_transaction.malicious">لین دین کی شناخت مشتبہ کے طور پر ہوئی۔</string>
-  <string name="errors.scan_transaction.memo_required">%s ایڈریس کے لیے منزل کا ٹیگ / میمو درکار ہے۔</string>
+  <string name="errors.scan_transaction.malicious.description">یہ لین دین مکمل نہیں کیا جا سکتا — منزل مقصود والیٹ کا پتہ مشکوک یا نقصان دہ سرگرمی سے منسلک ہے۔</string>
+  <string name="errors.scan_transaction.memo_required">%s منزل والے بٹوے کے پتے کے لیے منزل کا ٹیگ / میمو درکار ہے۔</string>
   <string name="common.info">معلومات</string>
   <string name="wallet.deposit">Deposit</string>
   <string name="wallet.withdraw">Withdraw</string>
@@ -506,11 +506,13 @@
   <string name="perpetual.direction">سمت</string>
   <string name="perpetual.auto_close">آٹو بند</string>
   <string name="info.perpetual.auto_close.description">اپنی پوزیشن کو سیٹ قیمت کی سطحوں پر خودکار طور پر بند کریں۔ منافع میں منافع کے تالے لیں، نقصان کو روکیں نقصانات کو محدود کریں۔</string>
-  <string name="perpetual.auto_close.trigger_price">ٹرگر قیمت</string>
   <string name="perpetual.auto_close.take_profit">منافع لے لو</string>
-  <string name="perpetual.auto_close.stop_loss">نقصان کو روکیں۔</string>
   <string name="perpetual.market_price">بازاری قیمت</string>
-  <string name="perpetual.auto_close.estimed_pnl">تخمینہ شدہ PNL</string>
   <string name="perpetual.increase_direction">اضافہ کریں %s</string>
   <string name="perpetual.reduce_direction">کم کریں %s</string>
+  <string name="perpetual.auto_close.expected_profit">متوقع منافع</string>
+  <string name="perpetual.auto_close.expected_loss">متوقع نقصان</string>
+  <string name="perpetual.modify_position">پوزیشن میں ترمیم کریں۔</string>
+  <string name="perpetual.auto_close.stop_loss">نقصان کو روکیں۔</string>
+  <string name="errors.scan_transaction.malicious.title">مشکوک سرگرمی</string>
 </resources>
