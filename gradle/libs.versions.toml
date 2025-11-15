@@ -8,8 +8,8 @@ barcodeScanning = "17.3.0"
 biometric = "1.2.0-alpha05"
 cameraCamera2 = "1.5.1"
 coilCompose = "3.3.0"
-vico = "2.3.0"
-core = "3.5.3"
+vico = "2.3.4"
+zxing-core = "3.5.4"
 coreKtx = "1.17.0"
 espressoCore = "3.7.0"
 firebaseMessaging = "25.0.1"
@@ -32,8 +32,8 @@ room = "2.8.3"
 securityCrypto = "1.1.0"
 compose = "1.9.4"
 materialIcons = "1.7.8"
-material3 = "1.5.0-alpha07"
-navigationCompose = "2.9.5"
+material3 = "1.5.0-alpha08"
+navigationCompose = "2.9.6"
 uiTestJunit4 = "1.9.4"
 testRunner = "1.7.0"
 ksp = "2.2.21-2.0.4"
@@ -47,11 +47,10 @@ mockkVersion = "1.14.6"
 datastore = "1.1.7"
 wallet-core = "4.3.22"
 gemstone = "0.34.7"
-ktor = "3.3.1"
+ktor = "3.3.2"
 appcompat = "1.7.1"
 material = "1.13.0"
 constraint = "1.1.1"
-composeMaterial3 = "1.5.4"
 web-view = "0.33.6"
 
 [libraries]
@@ -115,7 +114,7 @@ wallet-core = { module = "com.trustwallet:wallet-core", version.ref = "wallet-co
 gemstone = { module = "com.gemwallet.gemstone:gemstone", version.ref = "gemstone" }
 
 # qr code scanning
-zxing-core = { module = "com.google.zxing:core", version.ref = "core" }
+zxing-core = { module = "com.google.zxing:core", version.ref = "zxing-core" }
 barcode-scanning = { module = "com.google.mlkit:barcode-scanning", version.ref = "barcodeScanning" }
 camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraCamera2" }
 camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "cameraCamera2" }
@@ -164,7 +163,6 @@ turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
 androidx-uiautomator = { module = "androidx.test.uiautomator:uiautomator", version.ref = "uiautomator" }
 mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockkVersion" }
 mockk-agent =  { module = "io.mockk:mockk-agent", version.ref = "mockkVersion" }
-androidx-compose-material3 = { group = "androidx.wear.compose", name = "compose-material3", version.ref = "composeMaterial3" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp"}
