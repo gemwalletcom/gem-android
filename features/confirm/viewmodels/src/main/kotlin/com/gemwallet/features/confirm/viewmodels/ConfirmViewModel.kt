@@ -3,7 +3,6 @@ package com.gemwallet.features.confirm.viewmodels
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.blockchain.clients.BlockchainError
 import com.gemwallet.android.blockchain.operators.LoadPrivateKeyOperator
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.blockchain.services.BroadcastService
@@ -213,7 +212,7 @@ class ConfirmViewModel @Inject constructor(
     .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val feeValue = combine(preloadData, feeAssetInfo, state, feePriority) { signerParams, feeAssetInfo, state, feePriority ->
+    val feeValue = combine(preloadData, feeAssetInfo, state, feePriority) { signerParams, feeAssetInfo, _, feePriority ->
         val amount = signerParams?.fee(feePriority)?.amount
         if (amount == null || feeAssetInfo == null) {
             return@combine ""
@@ -351,7 +350,7 @@ class ConfirmViewModel @Inject constructor(
             }
         } catch (err: ConfirmError) {
             state.update { ConfirmState.BroadcastError(err) }
-        } catch (err: Throwable) {
+        } catch (_: Throwable) {
             state.update { ConfirmState.BroadcastError(ConfirmError.BroadcastError) }
         }
     }
@@ -368,7 +367,7 @@ class ConfirmViewModel @Inject constructor(
                 feePriority = feePriority,
                 privateKey = key
             )
-        } catch (ex: Throwable) {
+        } catch (_: Throwable) {
             throw ConfirmError.SignFail
         } finally {
             Arrays.fill(key, 0)
