@@ -3,12 +3,15 @@ package com.gemwallet.android.data.password
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.core.content.edit
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKey
 import com.gemwallet.android.blockchain.operators.PasswordStore
 import com.gemwallet.android.math.toHexString
 import java.security.SecureRandom
+import javax.crypto.KeyGenerator
 
 class PreferencePasswordStore(
     private val context: Context,
@@ -28,12 +31,18 @@ class PreferencePasswordStore(
     override fun removePassword(walletId: String): Boolean =
         getStore().edit().remove(walletId).commit()
 
-    override fun getPassword(walletId: String): String =
-        getStore().getString(walletId, null) ?: throw IllegalAccessError("Password doesn't found")
+    override fun getPassword(walletId: String): String {
+        val password = getStore().getString(walletId, null)
+            ?: throw IllegalAccessError("Password doesn't found")
+
+        return password
+    }
 
     private fun getStore(): SharedPreferences {
         val masterKey = MasterKey.Builder(context)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+//                .setUserAuthenticationRequired(true, 1)
+            .setRequestStrongBoxBacked(true)
             .build()
         return EncryptedSharedPreferences.create(
             context,
