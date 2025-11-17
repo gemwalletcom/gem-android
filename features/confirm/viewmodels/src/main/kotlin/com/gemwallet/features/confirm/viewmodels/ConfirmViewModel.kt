@@ -203,7 +203,7 @@ class ConfirmViewModel @Inject constructor(
             add(ConfirmProperty.Source(assetInfo.walletName))
             add(ConfirmProperty.Destination.map(request, getValidator(request)))
             add(request.memo()?.takeIf {
-                request is ConfirmParams.TransferParams
+                (request is ConfirmParams.TransferParams.Native || request is ConfirmParams.TransferParams.Token)
                         && assetInfo.asset.isMemoSupport()
                         && it.isNotEmpty()
             }?.let { ConfirmProperty.Memo(it) })
