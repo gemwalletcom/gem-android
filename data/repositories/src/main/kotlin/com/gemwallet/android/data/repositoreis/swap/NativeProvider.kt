@@ -28,7 +28,7 @@ class NativeProvider(
             ?: throw IllegalArgumentException("Can't found node url for chain: $chain")
     }
 
-    override suspend fun request(target: AlienTarget): AlienResponse = withContext(Dispatchers.IO) {
+    override suspend fun request(target: AlienTarget): AlienResponse {
         val requestBuilder = Request.Builder()
             .url(target.url)
             .method(target.method.name, target.body?.toRequestBody())
@@ -41,6 +41,6 @@ class NativeProvider(
             throw Exception("Invalid HTTP status code: ${response.code})")
         }
         val status = response.code.toUShort()
-        AlienResponse(status, data)
+        return AlienResponse(status, data)
     }
 }
