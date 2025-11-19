@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Accesați setările și permiteți instalarea din surse externe</string>
   <string name="update_app.permission.open_settings">Accesați setările</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Neverificat</string>
   <string name="asset.verification.suspicious">Suspect</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Active</string>
   <string name="stake.delegations">Delegații</string>
   <string name="info.stake.apr.description">Rata anuală procentuală (DAE) este rata anuală de recompensă pentru plasarea criptomonedei tale.</string>
-  <string name="receive.warning" formatted="false">Trimiteți doar ** %s ** prin rețeaua ** %s ** către această adresă.</string>
+  <string name="receive.warning" formatted="false">Aceasta este adresa dumneavoastră — trimiteți doar ** %s ** prin rețeaua ** %s **.</string>
   <string name="perpetual.leverage">Efect de levier</string>
   <string name="perpetual.direction">Direcţie</string>
   <string name="perpetual.auto_close">Închidere automată</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Modificare poziție</string>
   <string name="perpetual.auto_close.stop_loss">Stop loss</string>
   <string name="errors.scan_transaction.malicious.title">Activitate suspectă</string>
+  <string name="secret_phrase.screenshot_detected.title">Captură de ecran detectată</string>
+  <string name="secret_phrase.screenshot_detected.description">Capturile de ecran pot fi accesibile altor aplicații, dar pot pune în pericol fraza ta secretă dacă sunt salvate în acest fel.</string>
+  <string name="secret_phrase.content_hidden.description">Conținut ascuns în timpul înregistrării ecranului</string>
+  <string name="asset.verification.verified">Verificat</string>
+  <string name="errors.connections.malicious_origin">Această conexiune provine dintr-o sursă nesigură.</string>
 </resources>

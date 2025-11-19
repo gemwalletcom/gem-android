@@ -501,7 +501,7 @@
   <string name="assets.title">資產</string>
   <string name="stake.delegations">委託</string>
   <string name="info.stake.apr.description">年利率（APR）是質押加密貨幣的年度報酬率。</string>
-  <string name="receive.warning" formatted="false">僅透過 ** %s ** 網路向此位址發送 ** %s **。</string>
+  <string name="receive.warning" formatted="false">這是您的地址——僅在 ** %s ** 網路上發送 ** %s **。</string>
   <string name="perpetual.leverage">槓桿作用</string>
   <string name="perpetual.direction">方向</string>
   <string name="perpetual.auto_close">自動關閉</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">修改位置</string>
   <string name="perpetual.auto_close.stop_loss">停損</string>
   <string name="errors.scan_transaction.malicious.title">可疑活動</string>
+  <string name="secret_phrase.screenshot_detected.title">偵測到螢幕截圖</string>
+  <string name="secret_phrase.screenshot_detected.description">其他應用程式可能可以存取螢幕截圖，如果以這種方式儲存，可能會洩露您的密碼短語。</string>
+  <string name="secret_phrase.content_hidden.description">螢幕錄製過程中隱藏的內容</string>
+  <string name="asset.verification.verified">已驗證</string>
+  <string name="errors.connections.malicious_origin">此連線來自不可信來源。</string>
 </resources>

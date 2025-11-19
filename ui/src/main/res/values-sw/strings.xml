@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Nenda kwa mipangilio na uruhusu usakinishaji kutoka kwa vyanzo vya nje</string>
   <string name="update_app.permission.open_settings">Nenda kwa mipangilio</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Haijathibitishwa</string>
   <string name="asset.verification.suspicious">Inatia shaka</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Mali</string>
   <string name="stake.delegations">Uwakilishi</string>
   <string name="info.stake.apr.description">Kiwango cha Asilimia cha Mwaka (APR) ni kiwango cha tuzo cha kila mwaka cha kuweka sarafu yako ya cryptocurrency.</string>
-  <string name="receive.warning" formatted="false">Tuma tu ** %s ** kwenye mtandao wa ** %s ** kwa anwani hii.</string>
+  <string name="receive.warning" formatted="false">Hii ndiyo anwani yako — tuma tu ** %s ** kwenye mtandao wa ** %s **.</string>
   <string name="perpetual.leverage">Uvunjaji wa kifedh</string>
   <string name="perpetual.direction">Mwelekeo</string>
   <string name="perpetual.auto_close">Funga Kiotomatiki</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Rekebisha Nafasi</string>
   <string name="perpetual.auto_close.stop_loss">Acha hasara</string>
   <string name="errors.scan_transaction.malicious.title">Shughuli ya kutiliwa shaka</string>
+  <string name="secret_phrase.screenshot_detected.title">Picha ya skrini imegunduliwa</string>
+  <string name="secret_phrase.screenshot_detected.description">Picha za skrini zinaweza kupatikana kwa programu zingine, zinaweza kuweka maneno yako ya siri hatarini ikiwa yamehifadhiwa kwa njia hii.</string>
+  <string name="secret_phrase.content_hidden.description">Maudhui yaliyofichwa wakati wa kurekodi skrini</string>
+  <string name="asset.verification.verified">Imethibitishwa</string>
+  <string name="errors.connections.malicious_origin">Muunganisho huu unatoka kwa chanzo kisichoaminika.</string>
 </resources>

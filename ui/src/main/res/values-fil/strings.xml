@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Pumunta sa mga setting at payagan ang pag-install mula sa mga panlabas na mapagkukunan</string>
   <string name="update_app.permission.open_settings">Pumunta sa mga setting</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Hindi na-verify</string>
   <string name="asset.verification.suspicious">kahina-hinala</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Mga asset</string>
   <string name="stake.delegations">Mga delegasyon</string>
   <string name="info.stake.apr.description">Ang Annual Percentage Rate (APR) ay ang taunang reward rate para sa staking ng iyong cryptocurrency.</string>
-  <string name="receive.warning" formatted="false">Ipadala lamang ang ** %s ** sa ** %s ** network sa address na ito.</string>
+  <string name="receive.warning" formatted="false">Ito ang iyong address — magpadala lamang ng ** %s ** sa ** %s ** network.</string>
   <string name="perpetual.leverage">Leverage</string>
   <string name="perpetual.direction">Direksyon</string>
   <string name="perpetual.auto_close">Auto Close</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Baguhin ang Posisyon</string>
   <string name="perpetual.auto_close.stop_loss">Itigil ang pagkawala</string>
   <string name="errors.scan_transaction.malicious.title">Kahina-hinalang Aktibidad</string>
+  <string name="secret_phrase.screenshot_detected.title">Natukoy ang screenshot</string>
+  <string name="secret_phrase.screenshot_detected.description">Maaaring ma-access ang mga screenshot sa iba pang apps, maaari nilang ilagay sa panganib ang iyong sikretong parirala kung ise-save sa ganitong paraan.</string>
+  <string name="secret_phrase.content_hidden.description">Nakatago ang content habang nagre-record ng screen</string>
+  <string name="asset.verification.verified">Na-verify</string>
+  <string name="errors.connections.malicious_origin">Ang koneksyon na ito ay nagmula sa isang hindi pinagkakatiwalaang pinagmulan.</string>
 </resources>

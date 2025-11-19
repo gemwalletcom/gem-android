@@ -59,8 +59,8 @@ class BridgesRepository(
                 handlePendingRequests()
                 WalletConnectDelegate.walletEvents.collectLatest { event ->
                     withContext(Dispatchers.IO) {
-                        when (event) {
-                            is Wallet.Model.Session -> updateSession(event)
+                        when (event.model) {
+                            is Wallet.Model.Session -> updateSession(event.model)
                             is Wallet.Model.SessionDelete -> sync()
                             else -> Unit
                         }

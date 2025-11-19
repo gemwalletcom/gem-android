@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">به تنظیمات بروید و نصب را از منابع خارجی مجاز کنید</string>
   <string name="update_app.permission.open_settings">به تنظیمات بروید</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">تایید نشده</string>
   <string name="asset.verification.suspicious">مشکوک</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">دارایی‌ها</string>
   <string name="stake.delegations">واگذاری‌ها</string>
   <string name="info.stake.apr.description">نرخ درصد سالانه (APR) نرخ پاداش سالانه برای سپرده‌گذاری ارز دیجیتال شما است.</string>
-  <string name="receive.warning" formatted="false">فقط ** %s ** را در شبکه ** %s ** به این آدرس ارسال کنید.</string>
+  <string name="receive.warning" formatted="false">این آدرس شماست — فقط ** %s ** را در شبکه ** %s ** ارسال کنید.</string>
   <string name="perpetual.leverage">اهرم مالی</string>
   <string name="perpetual.direction">جهت</string>
   <string name="perpetual.auto_close">بستن خودکار</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">تغییر موقعیت</string>
   <string name="perpetual.auto_close.stop_loss">حد ضرر</string>
   <string name="errors.scan_transaction.malicious.title">فعالیت مشکوک</string>
+  <string name="secret_phrase.screenshot_detected.title">تصویر صفحه شناسایی شد</string>
+  <string name="secret_phrase.screenshot_detected.description">اسکرین‌شات‌ها ممکن است برای برنامه‌های دیگر قابل دسترسی باشند، اگر به این روش ذخیره شوند، می‌توانند رمز عبور شما را در معرض خطر قرار دهند.</string>
+  <string name="secret_phrase.content_hidden.description">محتوای پنهان شده هنگام ضبط صفحه نمایش</string>
+  <string name="asset.verification.verified">تأیید شده</string>
+  <string name="errors.connections.malicious_origin">این اتصال از یک منبع غیرقابل اعتماد می‌آید.</string>
 </resources>

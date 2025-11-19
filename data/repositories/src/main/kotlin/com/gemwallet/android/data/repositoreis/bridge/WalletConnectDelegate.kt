@@ -14,29 +14,29 @@ import kotlinx.coroutines.launch
 object WalletConnectDelegate : WalletKit.WalletDelegate, CoreClient.CoreDelegate {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private val _walletEvents: MutableSharedFlow<Wallet.Model> = MutableSharedFlow()
-    internal val walletEvents: SharedFlow<Wallet.Model> = _walletEvents.asSharedFlow()
+    private val _walletEvents: MutableSharedFlow<WalletConnectEvent> = MutableSharedFlow()
+    internal val walletEvents: SharedFlow<WalletConnectEvent> = _walletEvents.asSharedFlow()
 
     init {
         CoreClient.setDelegate(this)
         WalletKit.setWalletDelegate(this)
     }
 
-    override val onSessionAuthenticate: ((Wallet.Model.SessionAuthenticate, Wallet.Model.VerifyContext) -> Unit)? = { sessionAuth, verifyContext ->
+    override val onSessionAuthenticate: ((Wallet.Model.SessionAuthenticate, Wallet.Model.VerifyContext) -> Unit) = { sessionAuth, verifyContext ->
             scope.launch {
-                _walletEvents.emit(sessionAuth)
+                _walletEvents.emit(WalletConnectEvent(sessionAuth, verifyContext))
             }
         }
 
     override fun onConnectionStateChange(state: Wallet.Model.ConnectionState) {
         scope.launch {
-            _walletEvents.emit(state)
+            _walletEvents.emit(WalletConnectEvent(state, null))
         }
     }
 
     override fun onError(error: Wallet.Model.Error) {
         scope.launch {
-            _walletEvents.emit(error)
+            _walletEvents.emit(WalletConnectEvent(error, null))
         }
     }
 
@@ -48,7 +48,7 @@ object WalletConnectDelegate : WalletKit.WalletDelegate, CoreClient.CoreDelegate
 
     override fun onSessionDelete(sessionDelete: Wallet.Model.SessionDelete) {
         scope.launch {
-            _walletEvents.emit(sessionDelete)
+            _walletEvents.emit(WalletConnectEvent(sessionDelete, null))
         }
     }
 
@@ -60,7 +60,7 @@ object WalletConnectDelegate : WalletKit.WalletDelegate, CoreClient.CoreDelegate
         verifyContext: Wallet.Model.VerifyContext
     ) {
         scope.launch {
-            _walletEvents.emit(sessionProposal)
+            _walletEvents.emit(WalletConnectEvent(sessionProposal, verifyContext))
         }
     }
 
@@ -69,19 +69,19 @@ object WalletConnectDelegate : WalletKit.WalletDelegate, CoreClient.CoreDelegate
         verifyContext: Wallet.Model.VerifyContext
     ) {
         scope.launch {
-            _walletEvents.emit(sessionRequest)
+            _walletEvents.emit(WalletConnectEvent(sessionRequest, verifyContext))
         }
     }
 
     override fun onSessionSettleResponse(settleSessionResponse: Wallet.Model.SettledSessionResponse) {
         scope.launch {
-            _walletEvents.emit(settleSessionResponse)
+            _walletEvents.emit(WalletConnectEvent(settleSessionResponse, null))
         }
     }
 
     override fun onSessionUpdateResponse(sessionUpdateResponse: Wallet.Model.SessionUpdateResponse) {
         scope.launch {
-            _walletEvents.emit(sessionUpdateResponse)
+            _walletEvents.emit(WalletConnectEvent(sessionUpdateResponse, null))
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.gemwallet.features.bridge.views
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
@@ -14,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -39,8 +41,10 @@ import com.reown.walletkit.client.Wallet
 @Composable
 fun ProposalScene(
     proposal: Wallet.Model.SessionProposal,
+    verifyContext: Wallet.Model.VerifyContext,
     onCancel: () -> Unit,
 ) {
+    val context = LocalContext.current
     val viewModel: ProposalSceneViewModel = hiltViewModel()
     val state by viewModel.state.collectAsStateWithLifecycle()
     val peer by viewModel.proposal.collectAsStateWithLifecycle()
@@ -48,13 +52,21 @@ fun ProposalScene(
     val availableWallets by viewModel.availableWallets.collectAsStateWithLifecycle()
 
     DisposableEffect(key1 = proposal) {
-        viewModel.onProposal(proposal)
+        viewModel.onProposal(proposal, verifyContext)
 
         onDispose { viewModel.reset() }
     }
 
     when {
         state is ProposalSceneState.Canceled -> onCancel()
+        state is ProposalSceneState.ScamCanceled -> {
+            Toast.makeText(
+                context,
+                stringResource(R.string.errors_connections_malicious_origin),
+                Toast.LENGTH_LONG
+            ).show()
+            onCancel()
+        }
         state is ProposalSceneState.Fail -> FatalStateScene(
             title = stringResource(id = R.string.wallet_connect_connect_title),
             message = (state as ProposalSceneState.Fail).message,

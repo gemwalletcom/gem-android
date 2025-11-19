@@ -42,7 +42,11 @@ class WCRequestViewModel @Inject constructor(
     private val state = MutableStateFlow(RequestViewModelState())
     val sceneState = state.map { it.toSceneState() }.stateIn(viewModelScope, SharingStarted.Eagerly, RequestSceneState.Loading)
 
-    fun onRequest(sessionRequest: Wallet.Model.SessionRequest, onCancel: () -> Unit) = viewModelScope.launch {
+    fun onRequest(
+        sessionRequest: Wallet.Model.SessionRequest,
+        verifyContext: Wallet.Model.VerifyContext,
+        onCancel: () -> Unit
+    ) = viewModelScope.launch {
         val connection = bridgeRepository.getConnectionByTopic(sessionRequest.topic)
         if (connection == null) {
             onCancel()

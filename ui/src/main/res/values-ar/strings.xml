@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">انتقل إلى الإعدادات واسمح بالتثبيت من مصادر خارجية</string>
   <string name="update_app.permission.open_settings">انتقل إلى الإعدادات</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">غير مُتحقق</string>
   <string name="asset.verification.suspicious">مثير للشك</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">أصول</string>
   <string name="stake.delegations">التفويضات</string>
   <string name="info.stake.apr.description">معدل النسبة السنوية (APR) هو معدل المكافأة السنوي لمراهنة العملة المشفرة الخاصة بك.</string>
-  <string name="receive.warning" formatted="false">أرسل فقط ** %s ** على شبكة ** %s ** إلى هذا العنوان.</string>
+  <string name="receive.warning" formatted="false">هذا هو عنوانك - أرسل فقط ** %s ** على شبكة ** %s **.</string>
   <string name="perpetual.leverage">الرافعة المالية</string>
   <string name="perpetual.direction">اتجاه</string>
   <string name="perpetual.auto_close">إغلاق تلقائي</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">تعديل الموضع</string>
   <string name="perpetual.auto_close.stop_loss">وقف الخسارة</string>
   <string name="errors.scan_transaction.malicious.title">نشاط مشبوه</string>
+  <string name="secret_phrase.screenshot_detected.title">تم اكتشاف لقطة شاشة</string>
+  <string name="secret_phrase.screenshot_detected.description">قد تكون لقطات الشاشة متاحة لتطبيقات أخرى، ولكنها قد تعرض عبارة المرور الخاصة بك للخطر إذا تم حفظها بهذه الطريقة.</string>
+  <string name="secret_phrase.content_hidden.description">المحتوى المخفي أثناء تسجيل الشاشة</string>
+  <string name="asset.verification.verified">تم التحقق</string>
+  <string name="errors.connections.malicious_origin">يأتي هذا الاتصال من مصدر غير موثوق.</string>
 </resources>

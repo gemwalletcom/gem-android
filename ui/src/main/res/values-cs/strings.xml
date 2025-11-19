@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Přejděte do nastavení a povolte instalaci z externích zdrojů</string>
   <string name="update_app.permission.open_settings">Přejít do nastavení</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Neověřené</string>
   <string name="asset.verification.suspicious">Podezřelý</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Aktiva</string>
   <string name="stake.delegations">Delegace</string>
   <string name="info.stake.apr.description">Roční procentní sazba (RPSN) je roční odměna za staking vaší kryptoměny.</string>
-  <string name="receive.warning" formatted="false">Na tuto adresu odesílejte pouze ** %s ** v síti ** %s **.</string>
+  <string name="receive.warning" formatted="false">Toto je vaše adresa – odesílejte pouze ** %s ** v síti ** %s **.</string>
   <string name="perpetual.leverage">Finanční páka</string>
   <string name="perpetual.direction">Směr</string>
   <string name="perpetual.auto_close">Automatické zavření</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Upravit pozici</string>
   <string name="perpetual.auto_close.stop_loss">Zastavit ztrátu</string>
   <string name="errors.scan_transaction.malicious.title">Podezřelá aktivita</string>
+  <string name="secret_phrase.screenshot_detected.title">Detekován snímek obrazovky</string>
+  <string name="secret_phrase.screenshot_detected.description">Snímky obrazovky mohou být přístupné jiným aplikacím, pokud se uloží tímto způsobem, mohou ohrozit vaši tajnou frázi.</string>
+  <string name="secret_phrase.content_hidden.description">Obsah skrytý během nahrávání obrazovky</string>
+  <string name="asset.verification.verified">Ověřeno</string>
+  <string name="errors.connections.malicious_origin">Toto spojení pochází z nedůvěryhodného zdroje.</string>
 </resources>

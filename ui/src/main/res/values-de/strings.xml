@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Gehen Sie zu den Einstellungen und erlauben Sie die Installation aus externen Quellen</string>
   <string name="update_app.permission.open_settings">Gehe zu den Einstellungen</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Unbestätigt</string>
   <string name="asset.verification.suspicious">Verdächtig</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Vermögenswerte</string>
   <string name="stake.delegations">Delegationen</string>
   <string name="info.stake.apr.description">Der effektive Jahreszins (APR) ist der jährliche Belohnungssatz für das Staking Ihrer Kryptowährung.</string>
-  <string name="receive.warning" formatted="false">Senden Sie nur ** %s ** im ** %s **-Netzwerk an diese Adresse.</string>
+  <string name="receive.warning" formatted="false">Dies ist Ihre Adresse – senden Sie nur ** %s ** im ** %s ** Netzwerk.</string>
   <string name="perpetual.leverage">Hebelwirkung</string>
   <string name="perpetual.direction">Richtung</string>
   <string name="perpetual.auto_close">Automatisches Schließen</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Position ändern</string>
   <string name="perpetual.auto_close.stop_loss">Stop-Loss</string>
   <string name="errors.scan_transaction.malicious.title">Verdächtige Aktivitäten</string>
+  <string name="secret_phrase.screenshot_detected.title">Screenshot erkannt</string>
+  <string name="secret_phrase.screenshot_detected.description">Screenshots können von anderen Apps eingesehen werden und gefährden so Ihre geheime Phrase.</string>
+  <string name="secret_phrase.content_hidden.description">Inhalte, die während der Bildschirmaufnahme ausgeblendet wurden.</string>
+  <string name="asset.verification.verified">Bestätigt</string>
+  <string name="errors.connections.malicious_origin">Diese Verbindung stammt aus einer nicht vertrauenswürdigen Quelle.</string>
 </resources>

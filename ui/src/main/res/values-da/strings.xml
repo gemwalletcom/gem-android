@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Gå til indstillinger og tillad installation fra eksterne kilder</string>
   <string name="update_app.permission.open_settings">Gå til indstillinger</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Ubekræftet</string>
   <string name="asset.verification.suspicious">Mistænksom</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Aktiver</string>
   <string name="stake.delegations">Delegationer</string>
   <string name="info.stake.apr.description">Årlig procentsats (ÅOP) er den årlige belønningssats for at satse din kryptovaluta.</string>
-  <string name="receive.warning" formatted="false">Send kun ** %s ** på ** %s **-netværket til denne adresse.</string>
+  <string name="receive.warning" formatted="false">Dette er din adresse — send kun ** %s ** på ** %s **-netværket.</string>
   <string name="perpetual.leverage">Gearing</string>
   <string name="perpetual.direction">Retning</string>
   <string name="perpetual.auto_close">Automatisk lukning</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Rediger position</string>
   <string name="perpetual.auto_close.stop_loss">Stop-loss</string>
   <string name="errors.scan_transaction.malicious.title">Mistænkelig aktivitet</string>
+  <string name="secret_phrase.screenshot_detected.title">Skærmbillede fundet</string>
+  <string name="secret_phrase.screenshot_detected.description">Skærmbilleder kan være tilgængelige for andre apps, og de kan bringe din hemmelige frase i fare, hvis de gemmes på denne måde.</string>
+  <string name="secret_phrase.content_hidden.description">Indhold skjult under skærmoptagelse</string>
+  <string name="asset.verification.verified">Bekræftet</string>
+  <string name="errors.connections.malicious_origin">Denne forbindelse kommer fra en upålidelig kilde.</string>
 </resources>

@@ -113,7 +113,8 @@ fun Chain.asset(): Asset {
             GemAssetType.SYNTH -> AssetType.SYNTH
             GemAssetType.ASA -> AssetType.ASA
             GemAssetType.PERPETUAL -> AssetType.PERPETUAL
-        } 
+            GemAssetType.SPOT -> AssetType.SPOT
+        }
     )
 }
 

@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Pergi ke tetapan dan benarkan pemasangan daripada sumber luaran</string>
   <string name="update_app.permission.open_settings">Pergi ke tetapan</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Tidak disahkan</string>
   <string name="asset.verification.suspicious">mencurigakan</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Aset</string>
   <string name="stake.delegations">Delegasi</string>
   <string name="info.stake.apr.description">Kadar Peratusan Tahunan (APR) ialah kadar ganjaran tahunan untuk mempertaruhkan mata wang kripto anda.</string>
-  <string name="receive.warning" formatted="false">Hantar hanya ** %s ** pada rangkaian ** %s ** ke alamat ini.</string>
+  <string name="receive.warning" formatted="false">Ini alamat anda — hantar hanya ** %s ** pada rangkaian ** %s **.</string>
   <string name="perpetual.leverage">Leverage</string>
   <string name="perpetual.direction">Arah</string>
   <string name="perpetual.auto_close">Auto Tutup</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Ubahsuai Kedudukan</string>
   <string name="perpetual.auto_close.stop_loss">Hentikan kerugian</string>
   <string name="errors.scan_transaction.malicious.title">Aktiviti Meragukan</string>
+  <string name="secret_phrase.screenshot_detected.title">Tangkapan Skrin Dikesan</string>
+  <string name="secret_phrase.screenshot_detected.description">Tangkapan skrin mungkin boleh diakses oleh apl lain, ia boleh meletakkan frasa rahsia anda pada risiko jika disimpan dengan cara ini.</string>
+  <string name="secret_phrase.content_hidden.description">Kandungan tersembunyi semasa rakaman skrin</string>
+  <string name="asset.verification.verified">Disahkan</string>
+  <string name="errors.connections.malicious_origin">Sambungan ini datang dari sumber yang tidak dipercayai.</string>
 </resources>

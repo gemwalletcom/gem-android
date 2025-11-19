@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">עבור להגדרות ואפשר התקנה ממקורות חיצוניים</string>
   <string name="update_app.permission.open_settings">עבור אל הגדרות</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">לא מאומת</string>
   <string name="asset.verification.suspicious">חָשׁוּד</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">נכסים</string>
   <string name="stake.delegations">האצלות</string>
   <string name="info.stake.apr.description">שיעור אחוז שנתי (APR) הוא שיעור התגמול השנתי עבור הפקדת מטבע הקריפטו שלך.</string>
-  <string name="receive.warning" formatted="false">שלח רק ** %s ** ברשת ** %s ** לכתובת זו.</string>
+  <string name="receive.warning" formatted="false">זוהי הכתובת שלך — שלח רק ** %s ** ברשת ** %s **.</string>
   <string name="perpetual.leverage">מינוף</string>
   <string name="perpetual.direction">כיוון</string>
   <string name="perpetual.auto_close">סגירה אוטומטית</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">שינוי מיקום</string>
   <string name="perpetual.auto_close.stop_loss">עצירת הפסד</string>
   <string name="errors.scan_transaction.malicious.title">פעילות חשודה</string>
+  <string name="secret_phrase.screenshot_detected.title">זוהה צילום מסך</string>
+  <string name="secret_phrase.screenshot_detected.description">צילומי מסך עשויים להיות נגישים לאפליקציות אחרות, והם עלולים לסכן את משפט הסוד שלך אם יישמרו בדרך זו.</string>
+  <string name="secret_phrase.content_hidden.description">תוכן מוסתר במהלך הקלטת מסך</string>
+  <string name="asset.verification.verified">מְאוּמָת</string>
+  <string name="errors.connections.malicious_origin">קשר זה מגיע ממקור לא אמין.</string>
 </resources>

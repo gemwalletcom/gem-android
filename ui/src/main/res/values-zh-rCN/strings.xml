@@ -501,7 +501,7 @@
   <string name="assets.title">资产</string>
   <string name="stake.delegations">委托</string>
   <string name="info.stake.apr.description">年利率（APR）是质押加密货币的年度回报率。</string>
-  <string name="receive.warning" formatted="false">仅通过 ** %s ** 网络向此地址发送 ** %s **。</string>
+  <string name="receive.warning" formatted="false">这是您的地址——仅在 ** %s ** 网络上发送 ** %s **。</string>
   <string name="perpetual.leverage">杠杆作用</string>
   <string name="perpetual.direction">方向</string>
   <string name="perpetual.auto_close">自动关闭</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">修改位置</string>
   <string name="perpetual.auto_close.stop_loss">止损</string>
   <string name="errors.scan_transaction.malicious.title">可疑活动</string>
+  <string name="secret_phrase.screenshot_detected.title">检测到屏幕截图</string>
+  <string name="secret_phrase.screenshot_detected.description">其他应用程序可能可以访问屏幕截图，如果以这种方式保存，可能会泄露您的密码短语。</string>
+  <string name="secret_phrase.content_hidden.description">屏幕录制过程中隐藏的内容</string>
+  <string name="asset.verification.verified">已验证</string>
+  <string name="errors.connections.malicious_origin">此连接来自不可信来源。</string>
 </resources>

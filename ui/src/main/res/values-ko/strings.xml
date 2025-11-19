@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">설정으로 이동하여 외부 소스에서 설치를 허용하세요.</string>
   <string name="update_app.permission.open_settings">설정으로 이동</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">검증되지 않음</string>
   <string name="asset.verification.suspicious">의심스러운</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">자산</string>
   <string name="stake.delegations">위임</string>
   <string name="info.stake.apr.description">연이율(APR)은 암호화폐를 스테이킹할 때 매년 지급되는 보상률입니다.</string>
-  <string name="receive.warning" formatted="false">** %s ** 네트워크의 ** %s **만 이 주소로 보내세요.</string>
+  <string name="receive.warning" formatted="false">이것은 귀하의 주소입니다. ** %s **를 ** %s ** 네트워크로만 보내세요.</string>
   <string name="perpetual.leverage">레버리지</string>
   <string name="perpetual.direction">방향</string>
   <string name="perpetual.auto_close">자동 닫기</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">위치 수정</string>
   <string name="perpetual.auto_close.stop_loss">손절매</string>
   <string name="errors.scan_transaction.malicious.title">의심스러운 활동</string>
+  <string name="secret_phrase.screenshot_detected.title">스크린샷이 감지되었습니다</string>
+  <string name="secret_phrase.screenshot_detected.description">스크린샷은 다른 앱에서 접근할 수 있으며, 이런 방식으로 저장할 경우 비밀번호가 위험에 노출될 수 있습니다.</string>
+  <string name="secret_phrase.content_hidden.description">화면 녹화 중 숨겨진 콘텐츠</string>
+  <string name="asset.verification.verified">검증됨</string>
+  <string name="errors.connections.malicious_origin">이 연결은 신뢰할 수 없는 출처에서 나왔습니다.</string>
 </resources>

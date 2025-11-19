@@ -47,13 +47,14 @@ import uniffi.gemstone.MessagePreview
 @Composable
 fun RequestScene(
     request: Wallet.Model.SessionRequest,
+    verifyContext: Wallet.Model.VerifyContext,
     onBuy: AssetIdAction,
     onCancel: () -> Unit,
 ) {
     val viewModel: WCRequestViewModel = hiltViewModel()
 
     DisposableEffect(request.request.id.toString()) {
-        viewModel.onRequest(request, onCancel)
+        viewModel.onRequest(request, verifyContext, onCancel)
 
         onDispose { viewModel.reset() }
     }

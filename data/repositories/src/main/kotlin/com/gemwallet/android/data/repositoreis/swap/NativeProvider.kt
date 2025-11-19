@@ -9,6 +9,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
+import okhttp3.Cache
+import okhttp3.CacheControl
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -37,9 +39,6 @@ class NativeProvider(
         }
         val response = httpClient.newCall(requestBuilder.build()).execute()
         val data = response.body?.bytes() ?: byteArrayOf()
-        if (response.code != 200 && data.isEmpty()) {
-            throw Exception("Invalid HTTP status code: ${response.code})")
-        }
         val status = response.code.toUShort()
         return AlienResponse(status, data)
     }

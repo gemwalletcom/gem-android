@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Przejdź do ustawień i zezwól na instalację ze źródeł zewnętrznych</string>
   <string name="update_app.permission.open_settings">Przejdź do ustawień</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Niesprawdzony</string>
   <string name="asset.verification.suspicious">Podejrzany</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Aktywa</string>
   <string name="stake.delegations">Delegacje</string>
   <string name="info.stake.apr.description">Roczna stopa procentowa (APR) to roczna stopa nagrody za stakowanie kryptowaluty.</string>
-  <string name="receive.warning" formatted="false">Wyślij tylko ** %s ** w sieci ** %s ** na ten adres.</string>
+  <string name="receive.warning" formatted="false">To jest Twój adres — wysyłaj tylko ** %s ** w sieci ** %s **.</string>
   <string name="perpetual.leverage">Dźwignia finansowa</string>
   <string name="perpetual.direction">Kierunek</string>
   <string name="perpetual.auto_close">Automatyczne zamykanie</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Modyfikuj pozycję</string>
   <string name="perpetual.auto_close.stop_loss">Stop-loss</string>
   <string name="errors.scan_transaction.malicious.title">Podejrzana aktywność</string>
+  <string name="secret_phrase.screenshot_detected.title">Wykryto zrzut ekranu</string>
+  <string name="secret_phrase.screenshot_detected.description">Zrzuty ekranu mogą być dostępne dla innych aplikacji, a zapisanie ich w ten sposób może narazić Twoją tajną frazę na ryzyko.</string>
+  <string name="secret_phrase.content_hidden.description">Zawartość ukryta podczas nagrywania ekranu</string>
+  <string name="asset.verification.verified">Zweryfikowano</string>
+  <string name="errors.connections.malicious_origin">To połączenie pochodzi z niezaufanego źródła.</string>
 </resources>

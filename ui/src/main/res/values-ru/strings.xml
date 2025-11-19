@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Зайдите в настройки и разрешите установку из внешних источников</string>
   <string name="update_app.permission.open_settings">Открыть настройки</string>
   <string name="update_app.downloading">Загрузка...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Непроверено</string>
   <string name="asset.verification.suspicious">Подозрительный</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Ресурсы</string>
   <string name="stake.delegations">Делегации</string>
   <string name="info.stake.apr.description">Годовая процентная ставка (APR) — это годовая ставка вознаграждения за стейкинг вашей криптовалюты.</string>
-  <string name="receive.warning" formatted="false">Отправлять только ** %s ** в сети ** %s ** на этот адрес.</string>
+  <string name="receive.warning" formatted="false">Это ваш адрес — отправляйте только ** %s ** в сети ** %s **.</string>
   <string name="perpetual.leverage">Кредитное плечо</string>
   <string name="perpetual.direction">Направление</string>
   <string name="perpetual.auto_close">Автоматическое закрытие</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Изменить позицию</string>
   <string name="perpetual.auto_close.stop_loss">Стоп-лосс</string>
   <string name="errors.scan_transaction.malicious.title">Подозрительная активность</string>
+  <string name="secret_phrase.screenshot_detected.title">Скриншот обнаружен</string>
+  <string name="secret_phrase.screenshot_detected.description">Скриншоты могут быть доступны другим приложениям, и если сохранить их таким образом, они могут поставить под угрозу вашу секретную фразу.</string>
+  <string name="secret_phrase.content_hidden.description">Контент, скрытый во время записи экрана</string>
+  <string name="asset.verification.verified">Проверено</string>
+  <string name="errors.connections.malicious_origin">Это соединение получено из ненадежного источника.</string>
 </resources>

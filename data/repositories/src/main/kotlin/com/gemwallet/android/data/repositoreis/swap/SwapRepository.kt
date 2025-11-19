@@ -42,7 +42,7 @@ class SwapRepository(
         from: Asset,
         to: Asset, amount: String,
         useMaxAmount: Boolean,
-    ): List<SwapperQuote>? {
+    ): List<SwapperQuote> {
         val swapRequest = SwapperQuoteRequest(
             fromAsset = SwapperQuoteAsset(
                 id = from.id.toIdentifier(),

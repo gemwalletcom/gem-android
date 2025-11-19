@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">সেটিংসে যান এবং বহিরাগত উৎস থেকে ইনস্টলেশনের অনুমতি দিন</string>
   <string name="update_app.permission.open_settings">সেটিংসে যান</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">যাচাই করা হয়নি</string>
   <string name="asset.verification.suspicious">সন্দেহজনক</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">সম্পদ</string>
   <string name="stake.delegations">ডেলিগেশনসমূহ</string>
   <string name="info.stake.apr.description">বার্ষিক শতাংশ হার (এপিআর) হল আপনার ক্রিপ্টোকারেন্সি শেয়ার করার জন্য বার্ষিক পুরষ্কারের হার।</string>
-  <string name="receive.warning" formatted="false">** %s ** নেটওয়ার্কে শুধুমাত্র ** %s ** এই ঠিকানায় পাঠান।</string>
+  <string name="receive.warning" formatted="false">এটি আপনার ঠিকানা — ** %s ** নেটওয়ার্কে শুধুমাত্র ** %s ** পাঠান।</string>
   <string name="perpetual.leverage">লিভারেজ</string>
   <string name="perpetual.direction">দিকনির্দেশনা</string>
   <string name="perpetual.auto_close">স্বয়ংক্রিয়ভাবে বন্ধ করুন</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">অবস্থান পরিবর্তন করুন</string>
   <string name="perpetual.auto_close.stop_loss">স্টপ লস</string>
   <string name="errors.scan_transaction.malicious.title">সন্দেহজনক কার্যকলাপ</string>
+  <string name="secret_phrase.screenshot_detected.title">স্ক্রিনশট সনাক্ত করা হয়েছে</string>
+  <string name="secret_phrase.screenshot_detected.description">স্ক্রিনশটগুলি অন্যান্য অ্যাপের কাছে অ্যাক্সেসযোগ্য হতে পারে, যদি এইভাবে সংরক্ষণ করা হয় তবে এগুলি আপনার গোপন বাক্যাংশকে ঝুঁকির মধ্যে ফেলতে পারে।</string>
+  <string name="secret_phrase.content_hidden.description">স্ক্রিন রেকর্ডিংয়ের সময় লুকানো কন্টেন্ট</string>
+  <string name="asset.verification.verified">যাচাইকৃত</string>
+  <string name="errors.connections.malicious_origin">এই সংযোগটি একটি অবিশ্বস্ত উৎস থেকে আসে।</string>
 </resources>

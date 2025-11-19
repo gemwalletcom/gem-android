@@ -501,7 +501,7 @@
   <string name="assets.title">資産</string>
   <string name="stake.delegations">委任</string>
   <string name="info.stake.apr.description">年率 (APR) は、暗号通貨をステーキングした場合の年間報酬率です。</string>
-  <string name="receive.warning" formatted="false">** %s ** ネットワーク上の ** %s ** のみをこのアドレスに送信します。</string>
+  <string name="receive.warning" formatted="false">これはあなたのアドレスです。** %s ** ネットワーク上の ** %s ** のみを送信します。</string>
   <string name="perpetual.leverage">てこの作用</string>
   <string name="perpetual.direction">方向</string>
   <string name="perpetual.auto_close">自動閉じる</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">位置の変更</string>
   <string name="perpetual.auto_close.stop_loss">ストップロス</string>
   <string name="errors.scan_transaction.malicious.title">不審な活動</string>
+  <string name="secret_phrase.screenshot_detected.title">スクリーンショットが検出されました</string>
+  <string name="secret_phrase.screenshot_detected.description">スクリーンショットは他のアプリからアクセスできる場合があり、この方法で保存すると秘密のフレーズが危険にさらされる可能性があります。</string>
+  <string name="secret_phrase.content_hidden.description">画面録画中にコンテンツが非表示になる</string>
+  <string name="asset.verification.verified">検証済み</string>
+  <string name="errors.connections.malicious_origin">この接続は信頼できないソースからのものです。</string>
 </resources>

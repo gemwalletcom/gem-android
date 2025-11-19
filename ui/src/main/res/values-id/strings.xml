@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Buka pengaturan dan izinkan penginstalan dari sumber eksternal</string>
   <string name="update_app.permission.open_settings">Buka pengaturan</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Belum diverifikasi</string>
   <string name="asset.verification.suspicious">Mencurigakan</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Aktiva</string>
   <string name="stake.delegations">Delegasi</string>
   <string name="info.stake.apr.description">Tingkat Persentase Tahunan (APR) adalah tingkat imbalan tahunan untuk mempertaruhkan mata uang kripto Anda.</string>
-  <string name="receive.warning" formatted="false">Kirim hanya ** %s ** di jaringan ** %s ** ke alamat ini.</string>
+  <string name="receive.warning" formatted="false">Ini adalah alamat Anda — kirim hanya ** %s ** di jaringan ** %s **.</string>
   <string name="perpetual.leverage">Daya ungkit keuangan</string>
   <string name="perpetual.direction">Arah</string>
   <string name="perpetual.auto_close">Tutup Otomatis</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Ubah Posisi</string>
   <string name="perpetual.auto_close.stop_loss">Hentikan kerugian</string>
   <string name="errors.scan_transaction.malicious.title">Aktivitas Mencurigakan</string>
+  <string name="secret_phrase.screenshot_detected.title">Tangkapan Layar Terdeteksi</string>
+  <string name="secret_phrase.screenshot_detected.description">Tangkapan layar mungkin dapat diakses oleh aplikasi lain, namun hal itu dapat membahayakan frasa rahasia Anda jika disimpan dengan cara ini.</string>
+  <string name="secret_phrase.content_hidden.description">Konten tersembunyi selama perekaman layar</string>
+  <string name="asset.verification.verified">Terverifikasi</string>
+  <string name="errors.connections.malicious_origin">Koneksi ini berasal dari sumber yang tidak tepercaya.</string>
 </resources>

@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">ترتیبات پر جائیں اور بیرونی ذرائع سے انسٹالیشن کی اجازت دیں۔</string>
   <string name="update_app.permission.open_settings">ترتیبات پر جائیں۔</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">غیر تصدیق شدہ</string>
   <string name="asset.verification.suspicious">مشکوک</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">اثاثے</string>
   <string name="stake.delegations">تفویضات</string>
   <string name="info.stake.apr.description">سالانہ فیصدی شرح (APR) آپ کی کریپٹو کرنسی کو داغدار کرنے کے لیے سالانہ انعام کی شرح ہے۔</string>
-  <string name="receive.warning" formatted="false">اس ایڈریس پر ** %s ** نیٹ ورک پر صرف ** %s ** بھیجیں۔</string>
+  <string name="receive.warning" formatted="false">یہ آپ کا پتہ ہے — ** %s ** نیٹ ورک پر صرف ** %s ** بھیجیں۔</string>
   <string name="perpetual.leverage">مالی فائدہ اٹھانا</string>
   <string name="perpetual.direction">سمت</string>
   <string name="perpetual.auto_close">آٹو بند</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">پوزیشن میں ترمیم کریں۔</string>
   <string name="perpetual.auto_close.stop_loss">نقصان کو روکیں۔</string>
   <string name="errors.scan_transaction.malicious.title">مشکوک سرگرمی</string>
+  <string name="secret_phrase.screenshot_detected.title">اسکرین شاٹ کا پتہ چلا</string>
+  <string name="secret_phrase.screenshot_detected.description">اسکرین شاٹس دیگر ایپس کے لیے قابل رسائی ہو سکتے ہیں، اگر اس طرح محفوظ کیا جائے تو وہ آپ کے خفیہ جملے کو خطرے میں ڈال سکتے ہیں۔</string>
+  <string name="secret_phrase.content_hidden.description">اسکرین ریکارڈنگ کے دوران چھپا ہوا مواد</string>
+  <string name="asset.verification.verified">تصدیق شدہ</string>
+  <string name="errors.connections.malicious_origin">یہ کنکشن ایک ناقابل اعتماد ذریعہ سے آتا ہے۔</string>
 </resources>

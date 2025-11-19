@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Vào cài đặt và cho phép cài đặt từ các nguồn bên ngoài</string>
   <string name="update_app.permission.open_settings">Đi đến cài đặt</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Chưa được xác minh</string>
   <string name="asset.verification.suspicious">Khả nghi</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Tài sản</string>
   <string name="stake.delegations">Ủy quyền</string>
   <string name="info.stake.apr.description">Tỷ lệ phần trăm hàng năm (APR) là tỷ lệ phần thưởng hàng năm cho việc đặt cược tiền điện tử của bạn.</string>
-  <string name="receive.warning" formatted="false">Chỉ gửi ** %s ** trên mạng ** %s ** đến địa chỉ này.</string>
+  <string name="receive.warning" formatted="false">Đây là địa chỉ của bạn — chỉ gửi ** %s ** trên mạng ** %s **.</string>
   <string name="perpetual.leverage">Đòn bẩy</string>
   <string name="perpetual.direction">Phương hướng</string>
   <string name="perpetual.auto_close">Tự động đóng</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Sửa đổi vị trí</string>
   <string name="perpetual.auto_close.stop_loss">Dừng lỗ</string>
   <string name="errors.scan_transaction.malicious.title">Hoạt động đáng ngờ</string>
+  <string name="secret_phrase.screenshot_detected.title">Đã phát hiện ảnh chụp màn hình</string>
+  <string name="secret_phrase.screenshot_detected.description">Ảnh chụp màn hình có thể được các ứng dụng khác truy cập, nhưng chúng có thể khiến cụm từ bí mật của bạn gặp rủi ro nếu được lưu theo cách này.</string>
+  <string name="secret_phrase.content_hidden.description">Nội dung bị ẩn trong quá trình ghi màn hình</string>
+  <string name="asset.verification.verified">Đã xác minh</string>
+  <string name="errors.connections.malicious_origin">Kết nối này đến từ một nguồn không đáng tin cậy.</string>
 </resources>

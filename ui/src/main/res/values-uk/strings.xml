@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Перейдіть до налаштувань та дозвольте встановлення із зовнішніх джерел</string>
   <string name="update_app.permission.open_settings">Відкрити налаштування</string>
   <string name="update_app.downloading">Завантаження...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Неперевірено</string>
   <string name="asset.verification.suspicious">Підозрілий</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Активи</string>
   <string name="stake.delegations">Делегації</string>
   <string name="info.stake.apr.description">Річна процентна ставка (APR) – це річна ставка винагороди за стейкінг вашої криптовалюти.</string>
-  <string name="receive.warning" formatted="false">Надсилати лише ** %s ** через мережу ** %s ** на цю адресу.</string>
+  <string name="receive.warning" formatted="false">Це ваша адреса — надсилайте лише ** %s ** у мережі ** %s **.</string>
   <string name="perpetual.leverage">Кредитне плече</string>
   <string name="perpetual.direction">Напрямок</string>
   <string name="perpetual.auto_close">Автоматичне закриття</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Змінити позицію</string>
   <string name="perpetual.auto_close.stop_loss">Стоп-лосс</string>
   <string name="errors.scan_transaction.malicious.title">Підозріла активність</string>
+  <string name="secret_phrase.screenshot_detected.title">Виявлено знімок екрана</string>
+  <string name="secret_phrase.screenshot_detected.description">Знімки екрана можуть бути доступні іншим програмам, і якщо їх зберегти таким чином, ваша секретна фраза може бути під загрозою.</string>
+  <string name="secret_phrase.content_hidden.description">Вміст прихований під час запису екрана</string>
+  <string name="asset.verification.verified">Перевірено</string>
+  <string name="errors.connections.malicious_origin">Цей зв\'язок походить з ненадійного джерела.</string>
 </resources>

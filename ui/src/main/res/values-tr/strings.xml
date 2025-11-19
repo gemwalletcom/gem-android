@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Ayarlara gidin ve harici kaynaklardan yüklemeye izin verin</string>
   <string name="update_app.permission.open_settings">Ayarlara git</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Doğrulanmamış</string>
   <string name="asset.verification.suspicious">Şüpheli</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Varlıklar</string>
   <string name="stake.delegations">Yetkilendirmeler</string>
   <string name="info.stake.apr.description">Yıllık Yüzde Oranı (APR), kripto paranızı stake etmeniz durumunda ödeyeceğiniz yıllık ödül oranıdır.</string>
-  <string name="receive.warning" formatted="false">Bu adrese yalnızca ** %s ** ağında ** %s ** gönderin.</string>
+  <string name="receive.warning" formatted="false">Bu sizin adresinizdir — yalnızca ** %s ** ** %s ** ağında gönderim yapın.</string>
   <string name="perpetual.leverage">Kaldıraç</string>
   <string name="perpetual.direction">Yön</string>
   <string name="perpetual.auto_close">Otomatik Kapatma</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Pozisyonu Değiştir</string>
   <string name="perpetual.auto_close.stop_loss">Zarar durdurma</string>
   <string name="errors.scan_transaction.malicious.title">Şüpheli Etkinlik</string>
+  <string name="secret_phrase.screenshot_detected.title">Ekran Görüntüsü Algılandı</string>
+  <string name="secret_phrase.screenshot_detected.description">Ekran görüntüleri diğer uygulamalar tarafından erişilebilir olabilir, bu şekilde kaydedilirse gizli ifadeniz riske girebilir.</string>
+  <string name="secret_phrase.content_hidden.description">Ekran kaydı sırasında içerik gizlendi</string>
+  <string name="asset.verification.verified">Doğrulandı</string>
+  <string name="errors.connections.malicious_origin">Bu bağlantı güvenilir olmayan bir kaynaktan geliyor.</string>
 </resources>

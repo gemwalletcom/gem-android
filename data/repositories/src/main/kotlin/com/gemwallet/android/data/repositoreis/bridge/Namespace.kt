@@ -5,7 +5,7 @@ import com.gemwallet.android.ext.toChainType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainType
 import com.wallet.core.primitives.WalletConnectionMethods
-import uniffi.gemstone.WalletConnectNamespace
+import uniffi.gemstone.WalletConnect
 
 enum class ChainNamespace(val string: String, val methods: List<WalletConnectionMethods>) {
     Eip155(
@@ -41,7 +41,7 @@ enum class ChainNamespace(val string: String, val methods: List<WalletConnection
 }
 
 fun Chain.getChainNameSpace(): String? {
-    return WalletConnectNamespace().getNamespace(string)
+    return WalletConnect().getNamespace(string)
 }
 
 fun Chain.getNameSpace(): ChainNamespace? {
@@ -54,13 +54,13 @@ fun Chain.getNameSpace(): ChainNamespace? {
 }
 
 fun Chain.getReference(): String? {
-    return WalletConnectNamespace().getReference(string)
+    return WalletConnect().getReference(string)
 }
 
 fun Chain.Companion.getNamespace(walletConnectChainId: String?): Chain? { // TODO: Use Reown call for parse
     val chainId = walletConnectChainId?.split(":")
     return if (!chainId.isNullOrEmpty() && chainId.size >= 2) {
-        WalletConnectNamespace().getChain(chainId[0], chainId[1])?.toChain()
+        return WalletConnect().getChain(chainId[0], chainId[1])?.toChain()
     } else {
         null
     }

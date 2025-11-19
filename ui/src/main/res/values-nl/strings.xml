@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">Ga naar instellingen en sta installatie van externe bronnen toe</string>
   <string name="update_app.permission.open_settings">Ga naar instellingen</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">Ongeverifieerd</string>
   <string name="asset.verification.suspicious">Verdacht</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Activa</string>
   <string name="stake.delegations">Delegaties</string>
   <string name="info.stake.apr.description">Jaarlijks percentage (APR) is het jaarlijkse beloningspercentage voor het staken van uw cryptocurrency.</string>
-  <string name="receive.warning" formatted="false">Stuur alleen ** %s ** op het ** %s ** netwerk naar dit adres.</string>
+  <string name="receive.warning" formatted="false">Dit is uw adres: verstuur alleen ** %s ** op het ** %s ** netwerk.</string>
   <string name="perpetual.leverage">Hefboom</string>
   <string name="perpetual.direction">Richting</string>
   <string name="perpetual.auto_close">Automatisch sluiten</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Positie wijzigen</string>
   <string name="perpetual.auto_close.stop_loss">Stop-loss</string>
   <string name="errors.scan_transaction.malicious.title">Verdachte activiteit</string>
+  <string name="secret_phrase.screenshot_detected.title">Schermafbeelding gedetecteerd</string>
+  <string name="secret_phrase.screenshot_detected.description">Schermafbeeldingen zijn mogelijk toegankelijk voor andere apps, maar ze kunnen uw geheime zin in gevaar brengen als u ze op deze manier opslaat.</string>
+  <string name="secret_phrase.content_hidden.description">Inhoud verborgen tijdens schermopname</string>
+  <string name="asset.verification.verified">Geverifieerd</string>
+  <string name="errors.connections.malicious_origin">Deze verbinding komt van een onbetrouwbare bron.</string>
 </resources>

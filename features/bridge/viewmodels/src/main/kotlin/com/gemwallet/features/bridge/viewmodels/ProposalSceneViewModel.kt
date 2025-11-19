@@ -9,6 +9,7 @@ import com.gemwallet.android.data.repositoreis.bridge.getReference
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.features.bridge.viewmodels.model.SessionUI
+import com.gemwallet.features.bridge.viewmodels.model.map
 import com.reown.walletkit.client.Wallet
 import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,6 +26,8 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import uniffi.gemstone.WalletConnect
+import uniffi.gemstone.WalletConnectionVerificationStatus
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -80,9 +83,22 @@ class ProposalSceneViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
 
-    fun onProposal(proposal: Wallet.Model.SessionProposal) {
-        state.update { ProposalSceneState.Init }
-        _proposal.update { proposal }
+    fun onProposal(
+        proposal: Wallet.Model.SessionProposal,
+        verifyContext: Wallet.Model.VerifyContext
+    ) {
+        val validation = WalletConnect().validateOrigin(proposal.url, verifyContext.origin, verifyContext.validation.map())
+        when (validation) {
+            WalletConnectionVerificationStatus.UNKNOWN,
+            WalletConnectionVerificationStatus.VERIFIED -> {
+                state.update { ProposalSceneState.Init }
+                _proposal.update { proposal }
+            }
+            WalletConnectionVerificationStatus.INVALID,
+            WalletConnectionVerificationStatus.MALICIOUS -> {
+                onReject(proposal, ProposalSceneState.ScamCanceled)
+            }
+        }
     }
 
     fun onApprove() {
@@ -106,12 +122,15 @@ class ProposalSceneViewModel @Inject constructor(
         }
     }
 
-    fun onReject() = viewModelScope.launch(Dispatchers.IO) {
-        val proposal = _proposal.value ?: return@launch
+    fun onReject(){
+        onReject(_proposal.value ?: return)
+    }
+
+    fun onReject(proposal: Wallet.Model.SessionProposal, withState: ProposalSceneState = ProposalSceneState.Canceled) = viewModelScope.launch(Dispatchers.IO) {
         bridgesRepository.rejectConnection(
             proposal = proposal,
-            onSuccess = { state.update { ProposalSceneState.Canceled } },
-            onError = { state.update { ProposalSceneState.Canceled } }
+            onSuccess = { state.update { withState } },
+            onError = { state.update { withState } }
         )
     }
 
@@ -129,6 +148,8 @@ sealed interface ProposalSceneState {
     data object Init : ProposalSceneState
 
     data object Canceled : ProposalSceneState
+
+    data object ScamCanceled : ProposalSceneState
 
     class Fail(val message: String) : ProposalSceneState
 }

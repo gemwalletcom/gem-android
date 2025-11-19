@@ -413,7 +413,7 @@
   <string name="update_app.permission.description">ไปที่การตั้งค่าและอนุญาตการติดตั้งจากแหล่งภายนอก</string>
   <string name="update_app.permission.open_settings">ไปที่การตั้งค่า</string>
   <string name="update_app.downloading">Downloading...</string>
-  <string name="asset.verification.unverified">Unverified</string>
+  <string name="asset.verification.unverified">ไม่ได้รับการยืนยัน</string>
   <string name="asset.verification.suspicious">สงสัย</string>
   <string name="asset.verification.warning_title">Know What You’re Adding</string>
   <string name="asset.verification.warning_message">Anyone can create one - including fake or malicious tokens.</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">สินทรัพย์</string>
   <string name="stake.delegations">การมอบหมาย</string>
   <string name="info.stake.apr.description">อัตราเปอร์เซ็นต์ต่อปี (APR) คืออัตราผลตอบแทนรายปีสำหรับการเดิมพันสกุลเงินดิจิทัลของคุณ</string>
-  <string name="receive.warning" formatted="false">ส่งเฉพาะ ** %s ** บนเครือข่าย ** %s ** ไปยังที่อยู่นี้</string>
+  <string name="receive.warning" formatted="false">นี่คือที่อยู่ของคุณ — ส่งเฉพาะ ** %s ** บนเครือข่าย ** %s ** เท่านั้น</string>
   <string name="perpetual.leverage">อัตราทดทางการเงิน</string>
   <string name="perpetual.direction">ทิศทาง</string>
   <string name="perpetual.auto_close">ปิดอัตโนมัติ</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">ปรับเปลี่ยนตำแหน่ง</string>
   <string name="perpetual.auto_close.stop_loss">สต็อปลอส</string>
   <string name="errors.scan_transaction.malicious.title">กิจกรรมที่น่าสงสัย</string>
+  <string name="secret_phrase.screenshot_detected.title">ตรวจพบภาพหน้าจอ</string>
+  <string name="secret_phrase.screenshot_detected.description">ภาพหน้าจออาจเข้าถึงได้จากแอปอื่น แต่หากบันทึกในลักษณะนี้ อาจทำให้รหัสผ่านของคุณตกอยู่ในความเสี่ยง</string>
+  <string name="secret_phrase.content_hidden.description">เนื้อหาที่ซ่อนอยู่ระหว่างการบันทึกหน้าจอ</string>
+  <string name="asset.verification.verified">ได้รับการยืนยันแล้ว</string>
+  <string name="errors.connections.malicious_origin">การเชื่อมต่อนี้มาจากแหล่งที่ไม่น่าเชื่อถือ</string>
 </resources>

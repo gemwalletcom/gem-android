@@ -244,10 +244,12 @@ class MainActivity : FragmentActivity(), AuthRequester {
                 WalletConnectIntent.SessionDelete -> {}
                 is WalletConnectIntent.SessionProposal -> ProposalScene(
                     proposal = (walletConnect as WalletConnectIntent.SessionProposal).sessionProposal,
+                    verifyContext = (walletConnect as WalletConnectIntent.SessionProposal).verifyContext ?: return, // TODO: Show toast
                     onCancel = walletConnectViewModel::onCancel,
                 )
                 is WalletConnectIntent.SessionRequest -> RequestScene(
                     request = (walletConnect as WalletConnectIntent.SessionRequest).request,
+                    verifyContext = (walletConnect as WalletConnectIntent.SessionRequest).verifyContext ?: return,
                     onBuy = {},
                     onCancel = walletConnectViewModel::onCancel,
                 )

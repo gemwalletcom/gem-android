@@ -23,10 +23,11 @@ object GatewayModule {
     ): GemGateway {
         return GemGateway(
             alienProvider,
-            SharedGemPreferences(
-                context.getSharedPreferences("gateway_preferences", Context.MODE_PRIVATE)
+            preferences = SharedGemPreferences(
+                sharedPreferences = context.getSharedPreferences("gateway_preferences", Context.MODE_PRIVATE)
             ),
-            SecurityGemPreferences(context)
+            securePreferences = SecurityGemPreferences(context),
+            apiUrl = "https://api.gemwallet.com"
         )
     }
 }

@@ -501,7 +501,7 @@
   <string name="assets.title">Assets</string>
   <string name="stake.delegations">Delegations</string>
   <string name="info.stake.apr.description">Annual Percentage Rate (APR) is the yearly reward rate for staking your cryptocurrency.</string>
-  <string name="receive.warning" formatted="false">Send only **%s** on the **%s** network to this address.</string>
+  <string name="receive.warning" formatted="false">This is your address — send only **%s** on the **%s** network.</string>
   <string name="perpetual.leverage">Leverage</string>
   <string name="perpetual.direction">Direction</string>
   <string name="perpetual.auto_close">Auto Close</string>
@@ -515,4 +515,9 @@
   <string name="perpetual.modify_position">Modify Position</string>
   <string name="perpetual.auto_close.stop_loss">Stop loss</string>
   <string name="errors.scan_transaction.malicious.title">Suspicious Activity</string>
+  <string name="secret_phrase.screenshot_detected.title">Screenshot Detected</string>
+  <string name="secret_phrase.screenshot_detected.description">Screenshots may be accessible to other apps, they can put your secret phrase at risk if saved this way.</string>
+  <string name="secret_phrase.content_hidden.description">Content hidden during screen recording</string>
+  <string name="asset.verification.verified">Verified</string>
+  <string name="errors.connections.malicious_origin">This connection comes from an untrusted source.</string>
 </resources>
