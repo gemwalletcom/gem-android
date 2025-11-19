@@ -2,7 +2,7 @@ package com.gemwallet.features.transfer_amount.presents.components
 
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.res.stringResource
@@ -28,7 +28,7 @@ internal fun LazyListScope.validatorView(
             listPosition = ListPosition.Single,
             trailingIcon = {
                 Icon(
-                    Icons.Default.ChevronRight,
+                    Icons.AutoMirrored.Default.ArrowForwardIos,
                     contentDescription = "select_validator",
                     tint = MaterialTheme.colorScheme.secondary
                 )

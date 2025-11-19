@@ -1,5 +1,6 @@
 package com.gemwallet.android.ui.components.list_item
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,9 +14,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.Layout
+import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
@@ -52,8 +56,8 @@ fun ListItem(
         ) {
             Column(
                 modifier = Modifier.fillMaxHeight(),
-                verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
                 horizontalAlignment = Alignment.Start,
+                verticalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterVertically),
             ) {
                 title?.invoke()
                 subtitle?.invoke()
@@ -77,6 +81,7 @@ private fun ListItemLayout(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
+    val isRtl = LocalLayoutDirection.current == LayoutDirection.Rtl
     Layout(
         modifier = modifier,
         content = content
@@ -134,7 +139,11 @@ private fun ListItemLayout(
 
         layout(constraints.maxWidth, constraints.minHeight) {
             var xPosition = 0
-            placeable.forEach { placeable ->
+            if (isRtl) {
+                placeable.reversed()
+            } else {
+                placeable
+            }.forEach { placeable ->
                 placeable.place(x = xPosition, y = (constraints.minHeight - placeable.height) / 2)
                 xPosition += placeable.width
             }

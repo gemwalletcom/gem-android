@@ -6,7 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -163,7 +163,7 @@ private fun LazyListScope.transactionExplorer(explorerName: String, uri: String)
             data = {
                 PropertyDataText(
                     text = "",
-                    badge = { Icon(Icons.Default.ChevronRight, contentDescription = "", tint = MaterialTheme.colorScheme.secondary) }
+                    badge = { Icon(Icons.AutoMirrored.Default.ArrowForwardIos, contentDescription = "", tint = MaterialTheme.colorScheme.secondary) }
                 )
             },
             listPosition = ListPosition.Single
