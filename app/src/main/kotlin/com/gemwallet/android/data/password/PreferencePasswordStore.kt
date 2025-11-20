@@ -42,7 +42,7 @@ class PreferencePasswordStore(
         val masterKey = MasterKey.Builder(context)
             .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
 //                .setUserAuthenticationRequired(true, 1)
-            .setRequestStrongBoxBacked(true)
+//            .setRequestStrongBoxBacked(true)
             .build()
         return EncryptedSharedPreferences.create(
             context,
