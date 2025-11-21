@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Ändern</string>
   <string name="perpetual.reduce_position">Position reduzieren</string>
   <string name="perpetual.increase_position">Position erhöhen</string>
-  <string name="banner.onboarding.title">Willkommen in der Gem-Familie</string>
-  <string name="banner.onboarding.description">Kaufen oder erhalten Sie Kryptowährungen in Ihr Wallet, um loszulegen</string>
+  <string name="banner.onboarding.title">Ihre Brieftasche ist bereit</string>
+  <string name="banner.onboarding.description">Kaufen oder empfangen Sie Kryptowährung, um loszulegen</string>
   <string name="info.stake.reserved.title">Reserviert für Netzwerkgebühr</string>
   <string name="info.stake.reserved.description">Ein kleiner Betrag verbleibt in Ihrem Wallet, um Gebühren für Vorgänge wie das Aufheben der Absteckung oder das Einfordern von Prämien zu decken.</string>
   <string name="perpetual.open_direction">Öffnen %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Inhalte, die während der Bildschirmaufnahme ausgeblendet wurden.</string>
   <string name="asset.verification.verified">Bestätigt</string>
   <string name="errors.connections.malicious_origin">Diese Verbindung stammt aus einer nicht vertrauenswürdigen Quelle.</string>
+  <string name="settings.preferences.default_leverage">Standardhebel</string>
 </resources>

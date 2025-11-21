@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
 import android.content.Context
+import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
 import com.gemwallet.android.data.service.store.ConfigStore
@@ -21,15 +22,17 @@ object BuyModule {
         @ApplicationContext context: Context,
         gemFiatQuoteClient: GemApiClient,
         assetsRepository: AssetsRepository,
+        getDeviceId: GetDeviceIdCase
     ): BuyRepository =
         BuyRepository(
-            ConfigStore(
+            configStore = ConfigStore(
                 context.getSharedPreferences(
                     "buy_config",
                     Context.MODE_PRIVATE
                 )
             ),
-            gemFiatQuoteClient,
-            assetsRepository,
+            gemApi = gemFiatQuoteClient,
+            assetsRepository = assetsRepository,
+            getDeviceId = getDeviceId
         )
 }

@@ -1,20 +1,31 @@
 package com.gemwallet.features.buy.views
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clickable
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator20
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.features.buy.viewmodels.FiatViewModel
@@ -28,6 +39,8 @@ fun FiatScreen(
 ) {
     val viewModel: FiatViewModel = hiltViewModel()
 
+    var isShowProgress by remember { mutableStateOf(false) }
+
     val type by viewModel.type.collectAsStateWithLifecycle()
     val suggestedAmounts by viewModel.suggestedAmounts.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -35,6 +48,8 @@ fun FiatScreen(
     val amount by viewModel.amount.collectAsStateWithLifecycle()
     val providers by viewModel.providers.collectAsStateWithLifecycle()
     val selectedProvider by viewModel.selectedProvider.collectAsStateWithLifecycle()
+
+    val uriHandler = LocalUriHandler.current
 
     BuyScene(
         asset = asset,
@@ -49,7 +64,34 @@ fun FiatScreen(
         onLotSelect = viewModel::updateAmount,
         onProviderSelect = viewModel::setProvider,
         onTypeClick = viewModel::setType,
+        onBuy = {
+            isShowProgress = true
+            viewModel.getUrl {
+                it?.let { uriHandler.openUri(it) }
+                isShowProgress = false
+            }
+        }
     )
+
+    if (isShowProgress) {
+        Dialog(
+            onDismissRequest = {},
+            properties = DialogProperties(
+                dismissOnBackPress = false,
+                dismissOnClickOutside = false
+            )
+        ) {
+            Box(
+                contentAlignment = Alignment.Center,
+                modifier = Modifier
+                    .size(100.dp)
+                    .clip(RoundedCornerShape(paddingSmall))
+                    .background(MaterialTheme.colorScheme.background)
+            ) {
+                CircularProgressIndicator20()
+            }
+        }
+    }
 }
 
 @Composable

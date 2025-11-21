@@ -11,6 +11,8 @@ import com.wallet.core.primitives.Charts
 import com.wallet.core.primitives.ConfigResponse
 import com.wallet.core.primitives.Device
 import com.wallet.core.primitives.FiatAssets
+import com.wallet.core.primitives.FiatQuoteUrl
+import com.wallet.core.primitives.FiatQuoteUrlRequest
 import com.wallet.core.primitives.FiatQuotes
 import com.wallet.core.primitives.NFTData
 import com.wallet.core.primitives.NameRecord
@@ -35,15 +37,24 @@ interface GemApiClient {
     @POST("/v1/prices")
     suspend fun prices(@Body request: AssetPricesRequest): PricesResponse
 
-    @GET("/v1/fiat/quotes/{asset_id}")
-    suspend fun getFiatQuotes(
+    @GET("/v1/fiat/quotes/sell/{asset_id}")
+    suspend fun getBuyFiatQuotes(
         @Path("asset_id") assetId: String,
-        @Query("type") type: String,
-        @Query("fiat_amount") fiatAmount: Double?,
-        @Query("crypto_value") cryptoAmount: String?,
+        @Query("amount") amount: Double,
+        @Query("device_id") deviceId: String,
         @Query("currency") currency: String,
-        @Query("wallet_address") walletAddress: String
     ): FiatQuotes
+
+    @GET("/v1/fiat/quotes/sell/{asset_id}")
+    suspend fun getSellFiatQuotes(
+        @Path("asset_id") assetId: String,
+        @Query("amount") amount: Double,
+        @Query("currency") currency: String,
+        @Query("device_id") deviceId: String,
+    ): FiatQuotes
+
+    @POST("/v1/fiat/quotes/url")
+    suspend fun getFiatQuoteUrl(@Body request: FiatQuoteUrlRequest): FiatQuoteUrl
 
     @GET("/v1/fiat/on_ramp/assets")
     suspend fun getOnRampAssets(): FiatAssets

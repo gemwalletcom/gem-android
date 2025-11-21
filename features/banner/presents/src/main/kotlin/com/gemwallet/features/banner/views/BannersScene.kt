@@ -88,6 +88,7 @@ fun BannersScene(
 
                 BannerEvent.SuspiciousAsset -> TODO()
                 BannerEvent.Onboarding -> TODO()
+                BannerEvent.TradePerpetuals -> TODO()
             }
             BannerText(
                 title = title,

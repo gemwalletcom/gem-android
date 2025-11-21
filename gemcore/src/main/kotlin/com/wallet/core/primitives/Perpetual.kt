@@ -25,7 +25,7 @@ data class Perpetual (
 	val openInterest: Double,
 	val volume24h: Double,
 	val funding: Double,
-	val leverage: List<UByte>
+	val maxLeverage: UByte
 )
 
 @Serializable

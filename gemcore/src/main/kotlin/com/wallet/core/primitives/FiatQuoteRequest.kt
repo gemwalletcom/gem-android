@@ -9,11 +9,7 @@ import kotlinx.serialization.SerialName
 
 @Serializable
 data class FiatQuoteRequest (
-	val assetId: String,
-	val type: FiatQuoteType,
-	val fiatCurrency: Currency,
-	val fiatAmount: Double? = null,
-	val cryptoValue: String? = null,
-	val walletAddress: String
+	val amount: Double,
+	val currency: String
 )
 

@@ -487,8 +487,8 @@
   <string name="perpetual.modify">調整</string>
   <string name="perpetual.reduce_position">減倉</string>
   <string name="perpetual.increase_position">增加職位</string>
-  <string name="banner.onboarding.title">歡迎加入 Gem 家庭</string>
-  <string name="banner.onboarding.description">購買或接收加密貨幣到您的錢包即可開始使用</string>
+  <string name="banner.onboarding.title">您的錢包已準備就緒</string>
+  <string name="banner.onboarding.description">購買或接收加密貨幣即可開始</string>
   <string name="info.stake.reserved.title">預留網路費用</string>
   <string name="info.stake.reserved.description">您的錢包中會留有少量資金，用於支付取消質押或領取獎勵等操作的費用。</string>
   <string name="perpetual.open_direction">打開%s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">螢幕錄製過程中隱藏的內容</string>
   <string name="asset.verification.verified">已驗證</string>
   <string name="errors.connections.malicious_origin">此連線來自不可信來源。</string>
+  <string name="settings.preferences.default_leverage">預設槓桿</string>
 </resources>

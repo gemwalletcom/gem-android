@@ -487,8 +487,8 @@
   <string name="perpetual.modify">לְשַׁנוֹת</string>
   <string name="perpetual.reduce_position">הקטן את המיקום</string>
   <string name="perpetual.increase_position">הגדלת מיקום</string>
-  <string name="banner.onboarding.title">ברוך הבא למשפחת Gem</string>
-  <string name="banner.onboarding.description">קנה או קבל קריפטו לארנק שלך כדי להתחיל</string>
+  <string name="banner.onboarding.title">הארנק שלך מוכן</string>
+  <string name="banner.onboarding.description">קנה או קבל קריפטו כדי להתחיל</string>
   <string name="info.stake.reserved.title">שמור עבור דמי רשת</string>
   <string name="info.stake.reserved.description">סכום קטן נשאר בארנק שלך כדי לכסות עמלות עבור פעולות כמו ביטול הפקדה או תביעת תגמולים.</string>
   <string name="perpetual.open_direction">פתח %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">תוכן מוסתר במהלך הקלטת מסך</string>
   <string name="asset.verification.verified">מְאוּמָת</string>
   <string name="errors.connections.malicious_origin">קשר זה מגיע ממקור לא אמין.</string>
+  <string name="settings.preferences.default_leverage">מינוף ברירת מחדל</string>
 </resources>

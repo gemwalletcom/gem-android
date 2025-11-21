@@ -487,8 +487,8 @@
   <string name="perpetual.modify">اصلاح</string>
   <string name="perpetual.reduce_position">کاهش موقعیت</string>
   <string name="perpetual.increase_position">افزایش موقعیت</string>
-  <string name="banner.onboarding.title">به خانواده Gem خوش آمدید</string>
-  <string name="banner.onboarding.description">برای شروع، ارز دیجیتال را در کیف پول خود خریداری یا دریافت کنید</string>
+  <string name="banner.onboarding.title">کیف پول شما آماده است</string>
+  <string name="banner.onboarding.description">برای شروع، کریپتو بخرید یا دریافت کنید</string>
   <string name="info.stake.reserved.title">برای هزینه شبکه رزرو شده است</string>
   <string name="info.stake.reserved.description">مقدار کمی در کیف پول شما باقی می‌ماند تا هزینه‌های عملیاتی مانند برداشت از حساب یا دریافت پاداش را پوشش دهد.</string>
   <string name="perpetual.open_direction">باز کردن %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">محتوای پنهان شده هنگام ضبط صفحه نمایش</string>
   <string name="asset.verification.verified">تأیید شده</string>
   <string name="errors.connections.malicious_origin">این اتصال از یک منبع غیرقابل اعتماد می‌آید.</string>
+  <string name="settings.preferences.default_leverage">اهرم پیش‌فرض</string>
 </resources>

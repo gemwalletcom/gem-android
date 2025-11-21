@@ -38,9 +38,10 @@ class ProposalSceneViewModel @Inject constructor(
     private val walletsRepository: WalletsRepository,
 ) : ViewModel() {
     
-    val state = MutableStateFlow<ProposalSceneState>(ProposalSceneState.Init)
+    val state = MutableStateFlow<ProposalSceneState>(ProposalSceneState.Init(WalletConnectionVerificationStatus.UNKNOWN))
 
     private val _proposal = MutableStateFlow<Wallet.Model.SessionProposal?>(null)
+
     val proposal = _proposal.map {
         it ?: return@map null
         val icons = it.icons.map { it.toString() }
@@ -91,7 +92,7 @@ class ProposalSceneViewModel @Inject constructor(
         when (validation) {
             WalletConnectionVerificationStatus.UNKNOWN,
             WalletConnectionVerificationStatus.VERIFIED -> {
-                state.update { ProposalSceneState.Init }
+                state.update { ProposalSceneState.Init(validation) }
                 _proposal.update { proposal }
             }
             WalletConnectionVerificationStatus.INVALID,
@@ -139,13 +140,13 @@ class ProposalSceneViewModel @Inject constructor(
     }
 
     fun reset() {
-        state.update { ProposalSceneState.Init }
+        state.update { ProposalSceneState.Init(WalletConnectionVerificationStatus.UNKNOWN) }
         _proposal.value = null
     }
 }
 
 sealed interface ProposalSceneState {
-    data object Init : ProposalSceneState
+    class Init(val verificationStatus: WalletConnectionVerificationStatus) : ProposalSceneState
 
     data object Canceled : ProposalSceneState
 

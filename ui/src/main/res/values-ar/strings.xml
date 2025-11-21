@@ -487,8 +487,8 @@
   <string name="perpetual.modify">يُعدِّل</string>
   <string name="perpetual.reduce_position">تقليل الموضع</string>
   <string name="perpetual.increase_position">زيادة الموقف</string>
-  <string name="banner.onboarding.title">مرحبًا بك في عائلة Gem</string>
-  <string name="banner.onboarding.description">قم بشراء أو استلام العملات المشفرة في محفظتك للبدء</string>
+  <string name="banner.onboarding.title">محفظتك جاهزة</string>
+  <string name="banner.onboarding.description">قم بشراء أو استلام العملات المشفرة للبدء</string>
   <string name="info.stake.reserved.title">محجوز لرسوم الشبكة</string>
   <string name="info.stake.reserved.description">يبقى مبلغ صغير في محفظتك لتغطية الرسوم الخاصة بالعمليات مثل إلغاء المراهنة أو المطالبة بالمكافآت.</string>
   <string name="perpetual.open_direction">افتح %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">المحتوى المخفي أثناء تسجيل الشاشة</string>
   <string name="asset.verification.verified">تم التحقق</string>
   <string name="errors.connections.malicious_origin">يأتي هذا الاتصال من مصدر غير موثوق.</string>
+  <string name="settings.preferences.default_leverage">الرافعة المالية الافتراضية</string>
 </resources>

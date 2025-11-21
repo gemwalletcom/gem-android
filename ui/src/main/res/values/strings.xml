@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Modify</string>
   <string name="perpetual.reduce_position">Reduce Position</string>
   <string name="perpetual.increase_position">Increase Position</string>
-  <string name="banner.onboarding.title">Welcome to the Gem Family</string>
-  <string name="banner.onboarding.description">Buy or Receive crypto to your wallet to get started</string>
+  <string name="banner.onboarding.title">Your wallet is ready</string>
+  <string name="banner.onboarding.description">Buy or Receive crypto to get started</string>
   <string name="info.stake.reserved.title">Reserved for Network Fee</string>
   <string name="info.stake.reserved.description">A small amount stays in your wallet to cover fees for operations like unstaking or claiming rewards.</string>
   <string name="perpetual.open_direction">Open %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Content hidden during screen recording</string>
   <string name="asset.verification.verified">Verified</string>
   <string name="errors.connections.malicious_origin">This connection comes from an untrusted source.</string>
+  <string name="settings.preferences.default_leverage">Default Leverage</string>
 </resources>

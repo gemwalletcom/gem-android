@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Upravit</string>
   <string name="perpetual.reduce_position">Snížit pozici</string>
   <string name="perpetual.increase_position">Zvýšit pozici</string>
-  <string name="banner.onboarding.title">Vítejte v rodině Gem</string>
-  <string name="banner.onboarding.description">Kupte si kryptoměny nebo je přijměte do své peněženky a začněte</string>
+  <string name="banner.onboarding.title">Vaše peněženka je připravena</string>
+  <string name="banner.onboarding.description">Kupte si nebo přijměte kryptoměny a začněte</string>
   <string name="info.stake.reserved.title">Rezervováno pro síťový poplatek</string>
   <string name="info.stake.reserved.description">Malá částka vám zůstane v peněžence na pokrytí poplatků za operace, jako je odstraňování sázek nebo nárokování odměn.</string>
   <string name="perpetual.open_direction">Otevřít %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Obsah skrytý během nahrávání obrazovky</string>
   <string name="asset.verification.verified">Ověřeno</string>
   <string name="errors.connections.malicious_origin">Toto spojení pochází z nedůvěryhodného zdroje.</string>
+  <string name="settings.preferences.default_leverage">Výchozí pákový efekt</string>
 </resources>

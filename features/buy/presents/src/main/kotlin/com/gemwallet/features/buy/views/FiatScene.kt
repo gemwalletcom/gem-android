@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gemwallet.android.domains.asset.getFiatProviderIcon
 import com.gemwallet.android.model.hasAvailable
 import com.gemwallet.android.ui.R
@@ -63,10 +64,9 @@ fun BuyScene(
     onAmount: (String) -> Unit,
     onProviderSelect: (FiatProvider) -> Unit,
     onTypeClick: (FiatQuoteType) -> Unit,
+    onBuy: () -> Unit
 ) {
     asset ?: return
-    val context = LocalContext.current
-    val uriHandler = LocalUriHandler.current
     val isShowProviders = remember { mutableStateOf(false) }
 
     Scene(
@@ -113,10 +113,7 @@ fun BuyScene(
             MainActionButton(
                 title = stringResource(id = R.string.common_continue),
                 enabled = state == null,
-                onClick = {
-                    uriHandler.openUri(selectedProvider?.redirectUrl ?: "")
-//                    uriHandler.open(context, selectedProvider?.redirectUrl ?: "")
-                }
+                onClick = onBuy,
             )
         }
     ) {

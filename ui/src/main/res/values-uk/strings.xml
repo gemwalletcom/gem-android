@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Змінити</string>
   <string name="perpetual.reduce_position">Зменшити позицію</string>
   <string name="perpetual.increase_position">Збільшити позицію</string>
-  <string name="banner.onboarding.title">Ласкаво просимо до родини Gem</string>
-  <string name="banner.onboarding.description">Купуйте або отримуйте криптовалюту на свій гаманець, щоб розпочати</string>
+  <string name="banner.onboarding.title">Ваш гаманець готовий</string>
+  <string name="banner.onboarding.description">Купуйте або отримуйте криптовалюту, щоб розпочати</string>
   <string name="info.stake.reserved.title">Зарезервовано для комісії мережі</string>
   <string name="info.stake.reserved.description">Невелика сума залишається у вашому гаманці для покриття комісій за такі операції, як зняття коштів зі стейкінгу або отримання винагород.</string>
   <string name="perpetual.open_direction">Відкрити %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Вміст прихований під час запису екрана</string>
   <string name="asset.verification.verified">Перевірено</string>
   <string name="errors.connections.malicious_origin">Цей зв\'язок походить з ненадійного джерела.</string>
+  <string name="settings.preferences.default_leverage">Кредитне плече за замовчуванням</string>
 </resources>

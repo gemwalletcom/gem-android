@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Modificere</string>
   <string name="perpetual.reduce_position">Reducer position</string>
   <string name="perpetual.increase_position">Øg position</string>
-  <string name="banner.onboarding.title">Velkommen til Gem-familien</string>
-  <string name="banner.onboarding.description">Køb eller modtag krypto til din wallet for at komme i gang</string>
+  <string name="banner.onboarding.title">Din tegnebog er klar</string>
+  <string name="banner.onboarding.description">Køb eller modtag krypto for at komme i gang</string>
   <string name="info.stake.reserved.title">Reserveret til netværksgebyr</string>
   <string name="info.stake.reserved.description">Et lille beløb forbliver i din pung til at dække gebyrer for operationer som at fjerne indsatser eller gøre krav på belønninger.</string>
   <string name="perpetual.open_direction">Åbn %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Indhold skjult under skærmoptagelse</string>
   <string name="asset.verification.verified">Bekræftet</string>
   <string name="errors.connections.malicious_origin">Denne forbindelse kommer fra en upålidelig kilde.</string>
+  <string name="settings.preferences.default_leverage">Standardgearing</string>
 </resources>

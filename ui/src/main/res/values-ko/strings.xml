@@ -487,8 +487,8 @@
   <string name="perpetual.modify">수정하다</string>
   <string name="perpetual.reduce_position">위치 줄이기</string>
   <string name="perpetual.increase_position">위치 증가</string>
-  <string name="banner.onboarding.title">Gem 패밀리에 오신 것을 환영합니다</string>
-  <string name="banner.onboarding.description">시작하려면 암호화폐를 구매하거나 지갑으로 받으세요</string>
+  <string name="banner.onboarding.title">지갑이 준비되었습니다</string>
+  <string name="banner.onboarding.description">시작하려면 암호화폐를 구매하거나 받으세요</string>
   <string name="info.stake.reserved.title">네트워크 수수료로 예약됨</string>
   <string name="info.stake.reserved.description">스테이킹 해제나 보상 청구 등의 수수료를 충당하기 위해 소액이 지갑에 남아 있습니다.</string>
   <string name="perpetual.open_direction">%s 열기</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">화면 녹화 중 숨겨진 콘텐츠</string>
   <string name="asset.verification.verified">검증됨</string>
   <string name="errors.connections.malicious_origin">이 연결은 신뢰할 수 없는 출처에서 나왔습니다.</string>
+  <string name="settings.preferences.default_leverage">기본 레버리지</string>
 </resources>

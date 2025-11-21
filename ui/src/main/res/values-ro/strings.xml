@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Modifica</string>
   <string name="perpetual.reduce_position">Reduceți poziția</string>
   <string name="perpetual.increase_position">Creșteți poziția</string>
-  <string name="banner.onboarding.title">Bine ai venit în familia Gem</string>
-  <string name="banner.onboarding.description">Cumpără sau primește criptomonede în portofelul tău pentru a începe</string>
+  <string name="banner.onboarding.title">Portofelul tău este gata</string>
+  <string name="banner.onboarding.description">Cumpără sau primește criptomonede pentru a începe</string>
   <string name="info.stake.reserved.title">Rezervat pentru comision de rețea</string>
   <string name="info.stake.reserved.description">O sumă mică rămâne în portofelul tău pentru a acoperi comisioanele aferente operațiunilor precum unstaking-ul sau revendicarea recompenselor.</string>
   <string name="perpetual.open_direction">Deschis %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Conținut ascuns în timpul înregistrării ecranului</string>
   <string name="asset.verification.verified">Verificat</string>
   <string name="errors.connections.malicious_origin">Această conexiune provine dintr-o sursă nesigură.</string>
+  <string name="settings.preferences.default_leverage">Levier implicit</string>
 </resources>

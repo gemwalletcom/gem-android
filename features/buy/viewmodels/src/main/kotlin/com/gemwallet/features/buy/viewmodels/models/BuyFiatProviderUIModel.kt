@@ -14,7 +14,6 @@ data class BuyFiatProviderUIModel(
     override val asset: Asset,
     override val cryptoAmount: Double,
     val rate: String,
-    val redirectUrl: String?,
 ) : CryptoFormattedUIModel {
     override val fraction: Int = 6
     override val maxFraction: Int = -1
@@ -31,7 +30,6 @@ fun FiatQuote.toProviderUIModel(
     asset = asset,
     cryptoAmount = cryptoAmount,
     rate = asset.rateText(fiatAmount, cryptoAmount, currency),
-    redirectUrl = redirectUrl
 )
 
 private fun Asset.rateText(fiatAmount: Double, cryptoAmount: Double, currency: Currency) =

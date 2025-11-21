@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Bewerken</string>
   <string name="perpetual.reduce_position">Positie verkleinen</string>
   <string name="perpetual.increase_position">Positie verhogen</string>
-  <string name="banner.onboarding.title">Welkom bij de Gem-familie</string>
-  <string name="banner.onboarding.description">Koop of ontvang crypto in uw portemonnee om te beginnen</string>
+  <string name="banner.onboarding.title">Je portemonnee is klaar</string>
+  <string name="banner.onboarding.description">Koop of ontvang crypto om te beginnen</string>
   <string name="info.stake.reserved.title">Gereserveerd voor netwerkkosten</string>
   <string name="info.stake.reserved.description">Een klein bedrag blijft in uw portemonnee staan om de kosten voor handelingen zoals unstaking of het claimen van beloningen te dekken.</string>
   <string name="perpetual.open_direction">Open %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Inhoud verborgen tijdens schermopname</string>
   <string name="asset.verification.verified">Geverifieerd</string>
   <string name="errors.connections.malicious_origin">Deze verbinding komt van een onbetrouwbare bron.</string>
+  <string name="settings.preferences.default_leverage">Standaard hefboomwerking</string>
 </resources>

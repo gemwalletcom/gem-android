@@ -11,8 +11,6 @@ import kotlinx.serialization.SerialName
 data class FiatProvider (
 	val id: String,
 	val name: String,
-	val imageUrl: String,
-	val priority: Int? = null,
-	val thresholdBps: Int? = null
+	val imageUrl: String? = null
 )
 

@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Değiştir</string>
   <string name="perpetual.reduce_position">Pozisyonu Azalt</string>
   <string name="perpetual.increase_position">Pozisyonu Artır</string>
-  <string name="banner.onboarding.title">Gem ailesine hoş geldiniz</string>
-  <string name="banner.onboarding.description">Başlamak için kripto paranızı cüzdanınıza satın alın veya alın</string>
+  <string name="banner.onboarding.title">Cüzdanınız hazır</string>
+  <string name="banner.onboarding.description">Başlamak için kripto satın alın veya alın</string>
   <string name="info.stake.reserved.title">Ağ ücreti için ayrıldı</string>
   <string name="info.stake.reserved.description">Cüzdanınızda, stake\'lerinizi iptal etme veya ödül talep etme gibi işlemlerin ücretlerini karşılamak için küçük bir miktar kalır.</string>
   <string name="perpetual.open_direction">%s yi aç</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Ekran kaydı sırasında içerik gizlendi</string>
   <string name="asset.verification.verified">Doğrulandı</string>
   <string name="errors.connections.malicious_origin">Bu bağlantı güvenilir olmayan bir kaynaktan geliyor.</string>
+  <string name="settings.preferences.default_leverage">Varsayılan Kaldıraç</string>
 </resources>

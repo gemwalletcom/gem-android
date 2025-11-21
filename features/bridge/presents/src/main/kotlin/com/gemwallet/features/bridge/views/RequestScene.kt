@@ -2,6 +2,7 @@
 
 package com.gemwallet.features.bridge.views
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -39,6 +41,7 @@ import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.features.bridge.viewmodels.RequestSceneState
 import com.gemwallet.features.bridge.viewmodels.WCRequestViewModel
+import com.gemwallet.features.bridge.viewmodels.model.BridgeRequestError
 import com.gemwallet.features.bridge.viewmodels.model.WCRequest
 import com.gemwallet.features.confirm.presents.ConfirmScreen
 import com.reown.walletkit.client.Wallet
@@ -52,9 +55,22 @@ fun RequestScene(
     onCancel: () -> Unit,
 ) {
     val viewModel: WCRequestViewModel = hiltViewModel()
+    val context = LocalContext.current
 
     DisposableEffect(request.request.id.toString()) {
-        viewModel.onRequest(request, verifyContext, onCancel)
+        viewModel.onRequest(request, verifyContext) { error ->
+            error?.let {
+                when (it) {
+                    BridgeRequestError.ScamSession -> Toast.makeText(
+                        context,
+                        R.string.errors_connections_malicious_origin,
+                        Toast.LENGTH_LONG
+                    ).show()
+                    else -> {}
+                }
+            }
+            onCancel()
+        }
 
         onDispose { viewModel.reset() }
     }
@@ -78,7 +94,7 @@ fun RequestScene(
                 )
                 is WCRequest.Transaction -> ConfirmScreen(
                     params = (sceneState.request as WCRequest.Transaction).confirmParams,
-                    finishAction = { assetId, hash, route ->
+                    finishAction = { _, hash, _ ->
                         when (sceneState.request) {
                             is WCRequest.Transaction.SendTransaction -> viewModel.onSent(hash)
                             is WCRequest.Transaction.SignTransaction -> viewModel.onSigned(hash)
@@ -88,7 +104,6 @@ fun RequestScene(
                     onBuy = onBuy,
                     cancelAction = viewModel::onReject
                 )
-                is WCRequest.WalletSwitchEthereumChain -> return
             }
 
 
@@ -123,13 +138,14 @@ private fun SignMessageScene(
             when (preview) {
                 is MessagePreview.Eip712 -> domainMessage(preview) { isShowFullMessage = true }
                 is MessagePreview.Text -> textMessage(preview)
+                is MessagePreview.Siwe -> siweMessage(preview) { isShowFullMessage = true }
             }
         }
 
         if (isShowFullMessage) {
             ModalBottomSheet(
                 onDismissRequest = { isShowFullMessage = false },
-                dragHandle = { DialogBar(stringResource(R.string.common_done), { isShowFullMessage = false }) },
+                dragHandle = { DialogBar(stringResource(R.string.common_done)) { isShowFullMessage = false } },
             ) {
                 Box(
                     modifier = Modifier
@@ -172,6 +188,21 @@ private fun LazyListScope.domainMessage(message: MessagePreview.Eip712, onFullMe
         itemsPositioned(section.values) { position, item ->
             PropertyItem(item.name, item.value, listPosition = position)
         }
+    }
+    item {
+        PropertyItem(
+            R.string.sign_message_view_full_message,
+            listPosition = ListPosition.Single,
+            onClick = onFullMessage,
+        )
+    }
+}
+
+private fun LazyListScope.siweMessage(message: MessagePreview.Siwe, onFullMessage: () -> Unit) {
+    item {
+        SubheaderItem(stringResource(R.string.wallet_connect_domain))
+        PropertyItem(R.string.application_name, message.v1.domain, listPosition = ListPosition.First)
+        PropertyItem(R.string.asset_contract, message.v1.uri, listPosition = ListPosition.Last)
     }
     item {
         PropertyItem(

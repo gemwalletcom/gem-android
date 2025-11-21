@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Modifier</string>
   <string name="perpetual.reduce_position">Réduire la position</string>
   <string name="perpetual.increase_position">Augmenter la position</string>
-  <string name="banner.onboarding.title">Bienvenue dans la famille Gem</string>
-  <string name="banner.onboarding.description">Achetez ou recevez des crypto-monnaies sur votre portefeuille pour commencer</string>
+  <string name="banner.onboarding.title">Votre portefeuille est prêt</string>
+  <string name="banner.onboarding.description">Achetez ou recevez des cryptomonnaies pour commencer.</string>
   <string name="info.stake.reserved.title">Réservé aux frais de réseau</string>
   <string name="info.stake.reserved.description">Une petite somme reste dans votre portefeuille pour couvrir les frais d\'opérations telles que le déblocage ou la réclamation de récompenses.</string>
   <string name="perpetual.open_direction">Ouvrir %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Contenu masqué pendant l\'enregistrement d\'écran</string>
   <string name="asset.verification.verified">Vérifié</string>
   <string name="errors.connections.malicious_origin">Cette connexion provient d\'une source non fiable.</string>
+  <string name="settings.preferences.default_leverage">effet de levier par défaut</string>
 </resources>

@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Rekebisha</string>
   <string name="perpetual.reduce_position">Punguza Nafasi</string>
   <string name="perpetual.increase_position">Ongeza Nafasi</string>
-  <string name="banner.onboarding.title">Karibu kwenye familia ya Gem</string>
-  <string name="banner.onboarding.description">Nunua au Pokea crypto kwenye pochi yako ili uanze</string>
+  <string name="banner.onboarding.title">Pochi yako iko tayari</string>
+  <string name="banner.onboarding.description">Nunua au Upokee crypto ili kuanza</string>
   <string name="info.stake.reserved.title">Imehifadhiwa kwa Ada ya Mtandao</string>
   <string name="info.stake.reserved.description">Kiasi kidogo husalia kwenye mkoba wako ili kulipia ada za shughuli kama vile kutoweka au kudai zawadi.</string>
   <string name="perpetual.open_direction">Fungua %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Maudhui yaliyofichwa wakati wa kurekodi skrini</string>
   <string name="asset.verification.verified">Imethibitishwa</string>
   <string name="errors.connections.malicious_origin">Muunganisho huu unatoka kwa chanzo kisichoaminika.</string>
+  <string name="settings.preferences.default_leverage">Njia Chaguomsingi</string>
 </resources>

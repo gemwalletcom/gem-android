@@ -1,10 +1,13 @@
 package com.gemwallet.features.buy.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
+import com.gemwallet.android.data.repositoreis.device.GetDeviceId
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.getAccount
@@ -36,7 +39,9 @@ import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.security.auth.callback.Callback
 import kotlin.random.Random
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -45,6 +50,7 @@ class FiatViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val buyRepository: BuyRepository,
+    private val getDeviceId: GetDeviceIdCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -140,7 +146,8 @@ class FiatViewModel @Inject constructor(
                 throw Exception()
             }
             quotes.sortedByDescending { quote -> quote.cryptoAmount }
-        } catch (_: Exception) {
+        } catch (err: Exception) {
+            Log.d("FIAT", "Err", err)
             _state.value = FiatSceneState.Error(BuyError.QuoteNotAvailable)
             emptyList()
         }
@@ -171,8 +178,8 @@ class FiatViewModel @Inject constructor(
             FiatSuggestion.RandomAmount -> randomAmount().toString()
             is FiatSuggestion.SuggestionAmount -> suggestion.value.toInt().toString()
             is FiatSuggestion.SuggestionPercent -> {
-                val amount = asset.value?.cryptoAmount ?: 0.0
-                (amount * (suggestion.value / 100.0)).toString()
+                val amount = asset.value?.assetInfo?.balance?.balanceAmount?.available ?: 0.0
+                (amount * (suggestion.value * 0.01)).toString()
             }
 
             is FiatSuggestion.MaxAmount -> asset.value?.cryptoAmount?.toString() ?: ""
@@ -192,6 +199,17 @@ class FiatViewModel @Inject constructor(
         return when (type.value) {
             FiatQuoteType.Buy -> Random.nextInt(defaultAmount.value.toInt(), maxAmount.toInt())
             FiatQuoteType.Sell -> return 0
+        }
+    }
+
+    fun getUrl(callback: (String?) -> Unit) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val url = buyRepository.getQuoteUrl(
+                _selectedQuote.value?.id ?: return@launch,
+                walletAddress = asset.value?.owner ?: return@launch,
+                deviceId = getDeviceId.getDeviceId(),
+            )
+            callback(url)
         }
     }
 

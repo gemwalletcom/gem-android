@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Ubah suai</string>
   <string name="perpetual.reduce_position">Kurangkan Kedudukan</string>
   <string name="perpetual.increase_position">Tingkatkan Kedudukan</string>
-  <string name="banner.onboarding.title">Selamat datang ke keluarga Gem</string>
-  <string name="banner.onboarding.description">Beli atau Terima kripto ke dompet anda untuk bermula</string>
+  <string name="banner.onboarding.title">Dompet anda sudah sedia</string>
+  <string name="banner.onboarding.description">Beli atau Terima crypto untuk bermula</string>
   <string name="info.stake.reserved.title">Dikhaskan untuk Yuran Rangkaian</string>
   <string name="info.stake.reserved.description">Sejumlah kecil kekal dalam dompet anda untuk menampung yuran untuk operasi seperti menanggalkan atau menuntut ganjaran.</string>
   <string name="perpetual.open_direction">Buka %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Kandungan tersembunyi semasa rakaman skrin</string>
   <string name="asset.verification.verified">Disahkan</string>
   <string name="errors.connections.malicious_origin">Sambungan ini datang dari sumber yang tidak dipercayai.</string>
+  <string name="settings.preferences.default_leverage">Leveraj Lalai</string>
 </resources>

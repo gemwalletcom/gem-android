@@ -8,6 +8,40 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
+data class WalletConnectionSessionAppMetadata (
+	val name: String,
+	val description: String,
+	val url: String,
+	val icon: String
+)
+
+@Serializable
+data class WalletConnectionSessionProposal (
+	val defaultWallet: Wallet,
+	val wallets: List<Wallet>,
+	val metadata: WalletConnectionSessionAppMetadata
+)
+
+@Serializable
+enum class WalletConnectionVerificationStatus(val string: String) {
+	@SerialName("verified")
+	Verified("verified"),
+	@SerialName("unknown")
+	Unknown("unknown"),
+	@SerialName("invalid")
+	Invalid("invalid"),
+	@SerialName("malicious")
+	Malicious("malicious"),
+}
+
+@Serializable
+data class WCPairingProposal (
+	val pairingId: String,
+	val proposal: WalletConnectionSessionProposal,
+	val verificationStatus: WalletConnectionVerificationStatus
+)
+
+@Serializable
 enum class WalletConnectionState(val string: String) {
 	@SerialName("started")
 	Started("started"),
@@ -16,14 +50,6 @@ enum class WalletConnectionState(val string: String) {
 	@SerialName("expired")
 	Expired("expired"),
 }
-
-@Serializable
-data class WalletConnectionSessionAppMetadata (
-	val name: String,
-	val description: String,
-	val url: String,
-	val icon: String
-)
 
 @Serializable
 data class WalletConnectionSession (
@@ -43,13 +69,6 @@ data class WalletConnection (
 )
 
 @Serializable
-data class WalletConnectionSessionProposal (
-	val defaultWallet: Wallet,
-	val wallets: List<Wallet>,
-	val metadata: WalletConnectionSessionAppMetadata
-)
-
-@Serializable
 enum class WalletConnectionEvents(val string: String) {
 	@SerialName("connect")
 	Connect("connect"),
@@ -65,8 +84,6 @@ enum class WalletConnectionEvents(val string: String) {
 enum class WalletConnectionMethods(val string: String) {
 	@SerialName("eth_chainId")
 	EthChainId("eth_chainId"),
-	@SerialName("eth_sign")
-	EthSign("eth_sign"),
 	@SerialName("personal_sign")
 	PersonalSign("personal_sign"),
 	@SerialName("eth_signTypedData")

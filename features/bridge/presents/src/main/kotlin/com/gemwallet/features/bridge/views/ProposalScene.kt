@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -33,10 +34,12 @@ import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.android.ui.theme.pendingColor
 import com.gemwallet.features.bridge.viewmodels.ProposalSceneState
 import com.gemwallet.features.bridge.viewmodels.ProposalSceneViewModel
 import com.gemwallet.features.bridge.viewmodels.model.SessionUI
 import com.reown.walletkit.client.Wallet
+import uniffi.gemstone.WalletConnectionVerificationStatus
 
 @Composable
 fun ProposalScene(
@@ -75,6 +78,7 @@ fun ProposalScene(
         peer == null && state is ProposalSceneState.Init -> LoadingScene(stringResource(id = R.string.wallet_connect_connect_title), onCancel)
         else -> Proposal(
             peer = peer!!,
+            verificationStatus = (state as ProposalSceneState.Init).verificationStatus,
             selectedWallet = selectedWallet,
             availableWallets = availableWallets,
             onReject = viewModel::onReject,
@@ -88,6 +92,7 @@ fun ProposalScene(
 @Composable
 private fun Proposal(
     peer: SessionUI,
+    verificationStatus: WalletConnectionVerificationStatus,
     selectedWallet: com.wallet.core.primitives.Wallet?,
     availableWallets: List<com.wallet.core.primitives.Wallet>,
     onReject: () -> Unit,
@@ -121,7 +126,27 @@ private fun Proposal(
             listPosition = ListPosition.First,
         )
         PropertyItem(R.string.wallet_connect_app, peer.name, listPosition = ListPosition.Middle)
-        PropertyItem(R.string.wallet_connect_website, peer.uri, listPosition = ListPosition.Last)
+        PropertyItem(R.string.wallet_connect_website, peer.uri, listPosition = ListPosition.Middle)
+        PropertyItem(
+            title = { PropertyTitleText(R.string.transaction_status) },
+            data = {
+                PropertyDataText(
+                    text = when (verificationStatus) {
+                        WalletConnectionVerificationStatus.VERIFIED -> stringResource(R.string.asset_verification_verified)
+                        WalletConnectionVerificationStatus.UNKNOWN -> stringResource(R.string.errors_unknown)
+                        WalletConnectionVerificationStatus.INVALID,
+                        WalletConnectionVerificationStatus.MALICIOUS -> "Scam"
+                    },
+                    color = when (verificationStatus) {
+                        WalletConnectionVerificationStatus.VERIFIED -> MaterialTheme.colorScheme.tertiary
+                        WalletConnectionVerificationStatus.UNKNOWN -> pendingColor
+                        WalletConnectionVerificationStatus.INVALID,
+                        WalletConnectionVerificationStatus.MALICIOUS -> MaterialTheme.colorScheme.error
+                    }
+                )
+            },
+            listPosition = ListPosition.Middle
+        )
     }
 
     if (isShowSelectWallets) {

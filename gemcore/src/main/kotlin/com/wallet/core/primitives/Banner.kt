@@ -23,6 +23,8 @@ enum class BannerEvent(val string: String) {
 	SuspiciousAsset("suspiciousAsset"),
 	@SerialName("onboarding")
 	Onboarding("onboarding"),
+	@SerialName("tradePerpetuals")
+	TradePerpetuals("tradePerpetuals"),
 }
 
 @Serializable

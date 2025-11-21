@@ -487,8 +487,8 @@
   <string name="perpetual.modify">পরিবর্তন করুন</string>
   <string name="perpetual.reduce_position">অবস্থান হ্রাস করুন</string>
   <string name="perpetual.increase_position">অবস্থান বৃদ্ধি করুন</string>
-  <string name="banner.onboarding.title">Gem পরিবারে স্বাগতম</string>
-  <string name="banner.onboarding.description">শুরু করতে আপনার ওয়ালেটে ক্রিপ্টো কিনুন বা গ্রহণ করুন</string>
+  <string name="banner.onboarding.title">তোমার মানিব্যাগ প্রস্তুত।</string>
+  <string name="banner.onboarding.description">শুরু করতে ক্রিপ্টো কিনুন বা গ্রহণ করুন</string>
   <string name="info.stake.reserved.title">নেটওয়ার্ক ফি এর জন্য সংরক্ষিত</string>
   <string name="info.stake.reserved.description">পুরষ্কার দাবি করা বা স্টক খোলার মতো ক্রিয়াকলাপের ফি মেটাতে আপনার ওয়ালেটে অল্প পরিমাণ টাকা থেকে যায়।</string>
   <string name="perpetual.open_direction">%s খুলুন</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">স্ক্রিন রেকর্ডিংয়ের সময় লুকানো কন্টেন্ট</string>
   <string name="asset.verification.verified">যাচাইকৃত</string>
   <string name="errors.connections.malicious_origin">এই সংযোগটি একটি অবিশ্বস্ত উৎস থেকে আসে।</string>
+  <string name="settings.preferences.default_leverage">ডিফল্ট লিভারেজ</string>
 </resources>

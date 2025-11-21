@@ -487,8 +487,8 @@
   <string name="perpetual.modify">แก้ไข</string>
   <string name="perpetual.reduce_position">ลดตำแหน่ง</string>
   <string name="perpetual.increase_position">เพิ่มตำแหน่ง</string>
-  <string name="banner.onboarding.title">ยินดีต้อนรับสู่ครอบครัว Gem</string>
-  <string name="banner.onboarding.description">ซื้อหรือรับ crypto ลงในกระเป๋าเงินของคุณเพื่อเริ่มต้น</string>
+  <string name="banner.onboarding.title">กระเป๋าเงินของคุณพร้อมแล้ว</string>
+  <string name="banner.onboarding.description">ซื้อหรือรับ crypto เพื่อเริ่มต้น</string>
   <string name="info.stake.reserved.title">สงวนไว้สำหรับค่าธรรมเนียมเครือข่าย</string>
   <string name="info.stake.reserved.description">เงินจำนวนเล็กน้อยจะอยู่ในกระเป๋าเงินของคุณเพื่อชำระค่าธรรมเนียมการดำเนินการ เช่น การยกเลิกการเดิมพันหรือการรับรางวัล</string>
   <string name="perpetual.open_direction">เปิด %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">เนื้อหาที่ซ่อนอยู่ระหว่างการบันทึกหน้าจอ</string>
   <string name="asset.verification.verified">ได้รับการยืนยันแล้ว</string>
   <string name="errors.connections.malicious_origin">การเชื่อมต่อนี้มาจากแหล่งที่ไม่น่าเชื่อถือ</string>
+  <string name="settings.preferences.default_leverage">เลเวอเรจเริ่มต้น</string>
 </resources>

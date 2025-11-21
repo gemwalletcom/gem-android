@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Biến đổi</string>
   <string name="perpetual.reduce_position">Giảm vị trí</string>
   <string name="perpetual.increase_position">Tăng vị trí</string>
-  <string name="banner.onboarding.title">Chào mừng đến với gia đình Gem</string>
-  <string name="banner.onboarding.description">Mua hoặc nhận tiền điện tử vào ví của bạn để bắt đầu</string>
+  <string name="banner.onboarding.title">Ví của bạn đã sẵn sàng</string>
+  <string name="banner.onboarding.description">Mua hoặc nhận tiền điện tử để bắt đầu</string>
   <string name="info.stake.reserved.title">Dành riêng cho Phí mạng</string>
   <string name="info.stake.reserved.description">Một số tiền nhỏ sẽ được giữ lại trong ví của bạn để trang trải phí cho các hoạt động như hủy đặt cọc hoặc nhận phần thưởng.</string>
   <string name="perpetual.open_direction">Mở %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Nội dung bị ẩn trong quá trình ghi màn hình</string>
   <string name="asset.verification.verified">Đã xác minh</string>
   <string name="errors.connections.malicious_origin">Kết nối này đến từ một nguồn không đáng tin cậy.</string>
+  <string name="settings.preferences.default_leverage">Đòn bẩy mặc định</string>
 </resources>

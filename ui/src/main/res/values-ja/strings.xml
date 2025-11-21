@@ -487,8 +487,8 @@
   <string name="perpetual.modify">修正する</string>
   <string name="perpetual.reduce_position">位置を減らす</string>
   <string name="perpetual.increase_position">ポジションを上げる</string>
-  <string name="banner.onboarding.title">Gemファミリーへようこそ</string>
-  <string name="banner.onboarding.description">始めるにはウォレットで暗号通貨を購入または受け取りましょう</string>
+  <string name="banner.onboarding.title">ウォレットの準備ができました</string>
+  <string name="banner.onboarding.description">始めるには暗号通貨を購入または受け取りましょう</string>
   <string name="info.stake.reserved.title">ネットワーク料金用に予約</string>
   <string name="info.stake.reserved.description">ステーキング解除や報酬の請求などの操作にかかる手数料をカバーするために、少額がウォレットに残ります。</string>
   <string name="perpetual.open_direction">%sを開く</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">画面録画中にコンテンツが非表示になる</string>
   <string name="asset.verification.verified">検証済み</string>
   <string name="errors.connections.malicious_origin">この接続は信頼できないソースからのものです。</string>
+  <string name="settings.preferences.default_leverage">デフォルトレバレッジ</string>
 </resources>

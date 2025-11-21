@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Modificar</string>
   <string name="perpetual.reduce_position">Reduzir posição</string>
   <string name="perpetual.increase_position">Aumentar a posição</string>
-  <string name="banner.onboarding.title">Bem-vindo à família Gem</string>
-  <string name="banner.onboarding.description">Compre ou receba criptomoedas em sua carteira para começar</string>
+  <string name="banner.onboarding.title">Sua carteira está pronta.</string>
+  <string name="banner.onboarding.description">Compre ou receba criptomoedas para começar.</string>
   <string name="info.stake.reserved.title">Reservado para taxa de rede</string>
   <string name="info.stake.reserved.description">Uma pequena quantia fica na sua carteira para cobrir taxas de operações como retirada de stake ou reivindicação de recompensas.</string>
   <string name="perpetual.open_direction">Abrir %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Conteúdo oculto durante a gravação de tela</string>
   <string name="asset.verification.verified">Verificado</string>
   <string name="errors.connections.malicious_origin">Esta conexão provém de uma fonte não confiável.</string>
+  <string name="settings.preferences.default_leverage">Alavancagem padrão</string>
 </resources>

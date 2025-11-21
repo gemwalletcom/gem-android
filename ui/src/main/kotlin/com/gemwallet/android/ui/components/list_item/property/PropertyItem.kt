@@ -100,8 +100,8 @@ fun PropertyItem(
     listPosition: ListPosition = ListPosition.Middle,
 ) {
     PropertyItem(
-        title =stringResource(title),
-        data =stringResource(data),
+        title = stringResource(title),
+        data = stringResource(data),
         dataColor = dataColor,
         info = info,
         listPosition = listPosition,

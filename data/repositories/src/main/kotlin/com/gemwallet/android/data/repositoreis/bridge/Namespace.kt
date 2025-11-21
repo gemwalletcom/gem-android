@@ -12,7 +12,6 @@ enum class ChainNamespace(val string: String, val methods: List<WalletConnection
         "eip155",
         listOf(
             WalletConnectionMethods.EthChainId,
-            WalletConnectionMethods.EthSign,
             WalletConnectionMethods.PersonalSign,
             WalletConnectionMethods.EthSignTypedData,
             WalletConnectionMethods.EthSignTypedDataV4,

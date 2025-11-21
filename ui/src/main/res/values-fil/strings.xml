@@ -487,8 +487,8 @@
   <string name="perpetual.modify">Baguhin</string>
   <string name="perpetual.reduce_position">Bawasan ang Posisyon</string>
   <string name="perpetual.increase_position">Taasan ang Posisyon</string>
-  <string name="banner.onboarding.title">Maligayang pagdating sa Gem Family</string>
-  <string name="banner.onboarding.description">Bumili o Tumanggap ng crypto sa iyong wallet para makapagsimula</string>
+  <string name="banner.onboarding.title">Handa na ang iyong wallet</string>
+  <string name="banner.onboarding.description">Bumili o Tumanggap ng crypto para makapagsimula</string>
   <string name="info.stake.reserved.title">Nakalaan para sa Bayad ng Network</string>
   <string name="info.stake.reserved.description">May maliit na halaga ang nananatili sa iyong wallet para mabayaran ang mga bayarin para sa mga operasyon tulad ng pag-unstaking o pag-claim ng mga reward.</string>
   <string name="perpetual.open_direction">Buksan ang %s</string>
@@ -520,4 +520,5 @@
   <string name="secret_phrase.content_hidden.description">Nakatago ang content habang nagre-record ng screen</string>
   <string name="asset.verification.verified">Na-verify</string>
   <string name="errors.connections.malicious_origin">Ang koneksyon na ito ay nagmula sa isang hindi pinagkakatiwalaang pinagmulan.</string>
+  <string name="settings.preferences.default_leverage">Default na Leverage</string>
 </resources>
