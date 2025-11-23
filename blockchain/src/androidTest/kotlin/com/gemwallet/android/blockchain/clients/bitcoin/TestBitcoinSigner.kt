@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.gemwallet.android.blockchain.includeLibs
 import com.gemwallet.android.blockchain.testPhrase
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.math.toHexString
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.android.model.GasFee
@@ -70,5 +71,48 @@ class TestBitcoinSigner {
         }
 
         assertEquals(SIGN_RESULT, String(sign.first()))
+    }
+
+    @Test
+    fun testBitcoinSwapSign() {
+        val privateKey = HDWallet(testPhrase, "").getKeyForCoin(CoinType.DOGECOIN)
+        val signer = BitcoinSignClient(Chain.Doge)
+
+        val params = ConfirmParams.TransferParams.Native(
+            Chain.Doge.asset(),
+            Account(Chain.Doge, "D8UBj4EfNfNWNCdnCSgpY48yZDqPdTZXWW", "", "dgub8rNuTi8ofZu1jVDKpBxW9VFo62kjjx3b6CcameEZnrNNHJ3sKCnWBxQSv6qAP6jrwZEpfT1ZdKsrcBFKGTMV8zgBtjZmvQt29VPnLzbHjjD"),
+            BigInteger.valueOf(10_000_000_000),
+            DestinationAddress("D8UBj4EfNfNWNCdnCSgpY48yZDqPdTZXWW"),
+            memo = "=:s:0xEe7E9CcFb529f2c1Cc02C0Aea8aCed7Ec7e98B5e:0/1/0:g1:50"
+        )
+        val chainData = BitcoinChainData(
+            listOf(
+                UTXO(
+                    transaction_id = "9f47e5d5ae3dac0662766f95d0cdda9c242c08d6baac4ce5d82464cf948abd53",
+                    vout = 1,
+                    value = "86055170",
+                    address = ""
+                )
+            ),
+        )
+        val finalAmount = BigInteger.valueOf(10_000_000_000)
+        val fee = GasFee(
+            AssetId(Chain.Doge),
+            priority = FeePriority.Normal,
+            maxGasPrice = BigInteger.valueOf(150L),
+            limit = BigInteger.valueOf(18L)
+        )
+        val input = signer.getSigningInput(
+            params = params,
+            chainData = chainData,
+            finalAmount = finalAmount,
+            fee = fee,
+            privateKey = privateKey.data(),
+        )
+
+        assertEquals(
+            "0x3d3a733a3078456537453943634662353239663263314363303243304165613861436564374563376539384235653a302f312f303a67313a3530",
+            input.outputOpReturn.toByteArray().toHexString()
+        )
     }
 }

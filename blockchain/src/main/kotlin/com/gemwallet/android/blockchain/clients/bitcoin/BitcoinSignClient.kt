@@ -50,8 +50,7 @@ class BitcoinSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        val providers = setOf(SwapProvider.Thorchain, SwapProvider.Chainflip)
-            .map { it.string }
+        val providers = setOf(SwapProvider.Thorchain, SwapProvider.Chainflip).map { it.string }
         if (!providers.contains(params.protocolId)) {
             throw Exception("Invalid signing input type or not supported provider id")
         }
@@ -82,7 +81,7 @@ class BitcoinSignClient(
         return sign(signingInput.build())
     }
 
-    private fun getSigningInput(
+    fun getSigningInput(
         params: ConfirmParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -92,10 +91,14 @@ class BitcoinSignClient(
         return when (chain) {
             Chain.Zcash -> getSigningInputZcash(params, chainData, finalAmount, fee, privateKey)
             else -> getSigningInputBitcoin(params, chainData, finalAmount, fee, privateKey)
+        }.apply {
+            params.memo()?.let { memo ->
+                outputOpReturn = ByteString.copyFrom(memo.toByteArray())
+            }
         }
     }
 
-    private fun getSigningInputBitcoin(
+    fun getSigningInputBitcoin(
         params: ConfirmParams,
         chainData: ChainSignData,
         finalAmount: BigInteger,
@@ -114,6 +117,7 @@ class BitcoinSignClient(
             this.toAddress = params.destination()?.address
             this.changeAddress = params.from.address
             this.useMaxAmount = params.useMaxAmount
+
             this.addPrivateKey(ByteString.copyFrom(privateKey))
             this.addAllUtxo(chainData.utxo.getUtxoTransactions(params.from.address, coinType))
             chainData.utxo.forEach { _ ->
@@ -151,6 +155,7 @@ class BitcoinSignClient(
             this.addAllUtxo(chainData.utxo.getUtxoTransactions(params.from.address, coinType))
             this.useMaxAmount = params.useMaxAmount
             this.zip0317 = false
+
             chainData.utxo.forEach { _ ->
                 val redeemScript = BitcoinScript.lockScriptForAddress(params.from.address, coinType)
                 val scriptData = redeemScript.data()
