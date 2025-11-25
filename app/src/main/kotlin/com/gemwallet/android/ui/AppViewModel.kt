@@ -3,8 +3,11 @@ package com.gemwallet.android.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.BuildConfig
+import com.gemwallet.android.cases.device.GetPushEnabled
+import com.gemwallet.android.cases.device.SwitchPushEnabled
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.features.onboarding.OnboardingDest
 import com.gemwallet.android.model.Session
@@ -14,6 +17,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
@@ -26,12 +30,23 @@ import javax.inject.Inject
 class AppViewModel @Inject constructor(
     private val sessionRepository: SessionRepository,
     private val userConfig: UserConfig,
+    private val getPushEnabled: GetPushEnabled,
+    private val switchPushEnabled: SwitchPushEnabled,
+    private val walletsRepository: WalletsRepository,
     private val gemApiClient: GemApiClient,
 ) : ViewModel() {
 
     private val state = MutableStateFlow(AppState())
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, AppUIState())
+
+    val notificationRequest = combine(
+        userConfig.isRequestNotificationEnable(),
+        sessionRepository.session(),
+        getPushEnabled.getPushEnabled(),
+    ) { isShow, session, pushEnabled ->
+        isShow && session != null && !pushEnabled
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, false)
 
     init {
         viewModelScope.launch {
@@ -79,6 +94,21 @@ class AppViewModel @Inject constructor(
         userConfig.setLatestVersion(lastVersion)
         if (lastVersion.compareTo(BuildConfig.VERSION_NAME) > 0 && skipVersion != lastVersion/* && current.store != PlatformStore.ApkUniversal*/) {
             state.update { it.copy(intent = AppIntent.ShowUpdate, version = lastVersion) }
+        }
+    }
+
+    fun onHideNotificationRequest() {
+        viewModelScope.launch(Dispatchers.IO) {
+            userConfig.hideRequestNotification()
+        }
+    }
+
+    fun onNotificationsEnable() {
+        viewModelScope.launch(Dispatchers.IO) {
+            switchPushEnabled.switchPushEnabledCase(
+                true,
+                walletsRepository.getAll().firstOrNull() ?: emptyList()
+            )
         }
     }
 

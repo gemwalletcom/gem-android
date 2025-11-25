@@ -25,6 +25,7 @@ import com.gemwallet.android.features.create_wallet.navigation.navigateToCreateW
 import com.gemwallet.android.features.import_wallet.navigation.navigateToImportWalletScreen
 import com.gemwallet.android.features.onboarding.OnboardScreen
 import com.gemwallet.android.flavors.ReviewManager
+import com.gemwallet.android.ui.components.PushRequest
 import com.gemwallet.android.ui.navigation.WalletNavGraph
 import com.gemwallet.android.ui.theme.Spacer16
 import kotlinx.coroutines.Dispatchers
@@ -37,6 +38,7 @@ fun WalletApp(
 ) {
     val coroutineScope = rememberCoroutineScope()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val requestNotification by viewModel.notificationRequest.collectAsStateWithLifecycle()
     var startDestination by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
@@ -66,6 +68,10 @@ fun WalletApp(
     if (state.intent == AppIntent.ShowReview) {
         viewModel.onReviewOpen()
         ReviewManager().open(LocalActivity.current ?: return)
+    }
+
+    if (requestNotification) {
+        PushRequest(viewModel::onNotificationsEnable, viewModel::onHideNotificationRequest)
     }
 }
 

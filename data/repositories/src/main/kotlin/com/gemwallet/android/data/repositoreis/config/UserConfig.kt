@@ -103,6 +103,15 @@ class UserConfig(
         }
     }
 
+    fun isRequestNotificationEnable(): Flow<Boolean> = context.dataStore.data
+        .map { preferences -> preferences[Key.IsRequestNotifications] ?: true }
+
+    suspend fun hideRequestNotification() {
+        context.dataStore.edit { preferences ->
+            preferences[Key.IsRequestNotifications] = false
+        }
+    }
+
     private fun getStore(): SharedPreferences {
         if (!::store.isInitialized) {
             store = context.getSharedPreferences("config", Context.MODE_PRIVATE)
@@ -145,5 +154,6 @@ class UserConfig(
         val LockInterval = intPreferencesKey("lock_interval")
         val AppVersionSkip = stringPreferencesKey("app-version-skip")
         val IsWelcomeBannerHidden = stringSetPreferencesKey("is_welcome_banner_state")
+        val IsRequestNotifications = booleanPreferencesKey("is_request_notifications")
     }
 }
