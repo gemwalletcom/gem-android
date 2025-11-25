@@ -59,5 +59,7 @@ enum class EVMChain(val string: String) {
 	Hyperliquid("hyperliquid"),
 	@SerialName("monad")
 	Monad("monad"),
+	@SerialName("xlayer")
+	XLayer("xlayer"),
 }
 

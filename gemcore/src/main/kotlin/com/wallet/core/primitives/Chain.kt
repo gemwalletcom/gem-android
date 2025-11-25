@@ -107,5 +107,7 @@ enum class Chain(val string: String) {
 	HyperCore("hypercore"),
 	@SerialName("monad")
 	Monad("monad"),
+	@SerialName("xlayer")
+	XLayer("xlayer"),
 }
 

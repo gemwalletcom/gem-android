@@ -21,6 +21,7 @@ class WCChainTypeProxy : ChainTypeProxy<CoinType> {
         Chain.Hyperliquid,
         Chain.Monad,
         Chain.Plasma,
+        Chain.XLayer,
         Chain.Blast -> CoinType.ETHEREUM
         Chain.SmartChain -> CoinType.SMARTCHAIN
         Chain.Solana -> CoinType.SOLANA
