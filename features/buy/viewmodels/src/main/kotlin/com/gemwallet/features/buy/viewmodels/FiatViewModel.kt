@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.buy.BuyRepository
-import com.gemwallet.android.data.repositoreis.device.GetDeviceId
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.getAccount
@@ -41,7 +40,6 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import javax.security.auth.callback.Callback
 import kotlin.random.Random
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -69,8 +67,7 @@ class FiatViewModel @Inject constructor(
     }
     .flatMapLatest {
         val (session, assetId) = it
-        assetsRepository
-            .getTokenInfo(assetId)
+        assetsRepository.getTokenInfo(assetId)
             .mapNotNull { it }
             .map {
                 if (it.owner == null) {
@@ -81,7 +78,12 @@ class FiatViewModel @Inject constructor(
             }
     }
     .flowOn(Dispatchers.IO)
-    .map { AssetInfoUIModel(it, false, 2, 4) }
+    .map {
+        object : AssetInfoUIModel(it, false, 2, 4) {
+            override val cryptoAmount: Double
+                get() = assetInfo.balance.balanceAmount.available
+        }
+    }
     .flowOn(Dispatchers.Default)
     .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

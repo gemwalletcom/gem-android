@@ -13,17 +13,15 @@ import androidx.compose.material3.SegmentedButtonDefaults
 import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gemwallet.android.domains.asset.getFiatProviderIcon
 import com.gemwallet.android.model.hasAvailable
 import com.gemwallet.android.ui.R
@@ -40,7 +38,6 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.CancelAction
-import com.gemwallet.android.ui.open
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.features.buy.viewmodels.models.BuyFiatProviderUIModel
@@ -59,6 +56,7 @@ fun BuyScene(
     selectedProvider: BuyFiatProviderUIModel?,
     fiatAmount: String,
     suggestedAmounts: List<FiatSuggestion>,
+    urlLoading: State<Boolean>,
     cancelAction: CancelAction,
     onLotSelect: (FiatSuggestion) -> Unit,
     onAmount: (String) -> Unit,
@@ -102,7 +100,7 @@ fun BuyScene(
             } else {
                 Text(
                     modifier = Modifier,
-                    text = stringResource(id = R.string.buy_title, asset.asset.name),
+                    text = stringResource(R.string.buy_title, asset.asset.name),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -111,8 +109,9 @@ fun BuyScene(
         onClose = { cancelAction() },
         mainAction = {
             MainActionButton(
-                title = stringResource(id = R.string.common_continue),
+                title = stringResource(R.string.common_continue),
                 enabled = state == null,
+                loading = urlLoading.value,
                 onClick = onBuy,
             )
         }
@@ -129,7 +128,7 @@ fun BuyScene(
             onNext = { },
         )
         Spacer16()
-        Row(verticalAlignment = Alignment.Companion.CenterVertically) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
             suggestedAmounts.forEach { suggestion ->
                 when (suggestion) {
                     FiatSuggestion.RandomAmount -> RandomGradientButton(
@@ -156,10 +155,10 @@ fun BuyScene(
         when (state) {
             is FiatSceneState.Error -> {
                 Text(
-                    modifier = Modifier.Companion
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(20.dp),
-                    textAlign = TextAlign.Companion.Center,
+                    textAlign = TextAlign.Center,
                     text = state.error?.mapError(type) ?: "",
                     style = MaterialTheme.typography.bodyLarge
                 )
@@ -167,14 +166,14 @@ fun BuyScene(
 
             FiatSceneState.Loading -> {
                 Box(
-                    modifier = Modifier.Companion
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(16.dp)
                 ) {
                     CircularProgressIndicator(
-                        modifier = Modifier.Companion
+                        modifier = Modifier
                             .size(30.dp)
-                            .align(Alignment.Companion.Center),
+                            .align(Alignment.Center),
                         strokeWidth = 1.dp,
                     )
                 }

@@ -95,7 +95,7 @@ fun ConfirmScreen(
             MainActionButton(
                 title = state.buttonLabel(),
                 enabled = state !is ConfirmState.Prepare && state !is ConfirmState.Sending,
-                loading = state is ConfirmState.Sending || state is ConfirmState.Prepare,
+                loading = state is ConfirmState.Sending || state is ConfirmState.Prepare || state is ConfirmState.Result,
                 onClick = { viewModel.send(finishAction) },
             )
         }
@@ -194,8 +194,8 @@ fun ConfirmState.buttonLabel(): String {
         is ConfirmState.FatalError -> message
         ConfirmState.Prepare,
         ConfirmState.Ready,
+        is ConfirmState.Result,
         ConfirmState.Sending ->  stringResource(id = R.string.transfer_confirm)
-        is ConfirmState.Result -> ""
     }
 }
 
