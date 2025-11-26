@@ -139,7 +139,7 @@ fun AmountListHead(
 }
 
 @Composable
-internal fun HeaderIcon(
+fun HeaderIcon(
     asset: Asset?,
     iconSize: Dp = headerIconSize,
 ) {

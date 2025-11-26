@@ -2,15 +2,15 @@ package com.gemwallet.features.receive.presents
 
 import android.content.Intent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
@@ -33,19 +33,31 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.domains.asset.chain
+import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.buttons.FieldBottomAction
+import com.gemwallet.android.ui.components.buttons.MainActionButton
+import com.gemwallet.android.ui.components.clickable
 import com.gemwallet.android.ui.components.clipboard.setPlainText
+import com.gemwallet.android.ui.components.list_head.HeaderIcon
+import com.gemwallet.android.ui.components.parseMarkdownToAnnotatedString
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.isSmallScreen
+import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingHalfSmall
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.features.receive.presents.components.rememberQRCodePainter
 import com.gemwallet.features.receive.viewmodels.ReceiveViewModel
+import com.wallet.core.primitives.AssetSubtype
 
 @Composable
 fun ReceiveScreen(onCancel: () -> Unit) {
@@ -69,6 +81,8 @@ private fun ReceiveScene(
     val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
     val shareTitle = stringResource(id = R.string.common_share)
+    val imageSize = if (isSmallScreen()) 220.dp else 300.dp
+    val imagePadding = if (isSmallScreen()) paddingSmall else paddingDefault
 
     val onShare = fun () {
         val type = "text/plain"
@@ -88,11 +102,22 @@ private fun ReceiveScene(
     }
 
     Scene(
-        title = stringResource(id = R.string.receive_title, assetInfo.asset.symbol),
+        title = stringResource(id = R.string.receive_title, ""),
         onClose = onCancel,
         actions = {
             IconButton(onShare) {
                 Icon(Icons.Default.Share, "")
+            }
+        },
+        mainAction = {
+            MainActionButton(onClick = onCopyClick) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(paddingHalfSmall)
+                ) {
+                    Icon(Icons.Default.ContentCopy, "copy")
+                    Text(stringResource(id = R.string.common_copy))
+                }
             }
         }
     ) {
@@ -102,20 +127,42 @@ private fun ReceiveScene(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp)
                 .verticalScroll(rememberScrollState())
         ) {
             Box(
                 modifier = Modifier.weight(1f)
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.Center),
+                    modifier = Modifier.align(Alignment.Center),
                     horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(imagePadding)
                 ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(paddingHalfSmall)
+                    ) {
+                        HeaderIcon(assetInfo.asset)
+                        Row(horizontalArrangement = Arrangement.spacedBy(paddingSmall)) {
+                            Text(
+                                text = assetInfo.asset.name,
+                                overflow = TextOverflow.MiddleEllipsis,
+                                maxLines = 1,
+                                style = MaterialTheme.typography.titleLarge,
+                                color = MaterialTheme.colorScheme.onSurface,
+                                textAlign = TextAlign.Center
+                            )
+                            Text(
+                                text = assetInfo.asset.symbol,
+                                overflow = TextOverflow.MiddleEllipsis,
+                                maxLines = 1,
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
+                                color = MaterialTheme.colorScheme.secondary,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+                    }
                     ElevatedCard(
-                        modifier = Modifier,
+                        modifier = Modifier.width(imageSize),
                         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
                         colors = CardDefaults.cardColors(
                             containerColor = Color.White,
@@ -124,9 +171,10 @@ private fun ReceiveScene(
                     ) {
                         Image(
                             modifier = Modifier
-                                .widthIn(100.dp, 400.dp)
-                                .heightIn(100.dp, 400.dp)
-                                .padding(12.dp),
+                                .widthIn(100.dp, imageSize)
+                                .heightIn(100.dp, imageSize)
+                                .padding(imagePadding)
+                                .clickable(onCopyClick),
                             painter = rememberQRCodePainter(
                                 content = assetInfo.owner?.address ?: "",
                                 cacheName = "${assetInfo.owner?.chain?.string}_${assetInfo.owner?.address}",
@@ -135,42 +183,34 @@ private fun ReceiveScene(
                             contentDescription = "Receive QR",
                             contentScale = ContentScale.FillWidth
                         )
+                        Text(
+                            modifier = Modifier
+                                .width(imageSize)
+                                .padding(horizontal = imagePadding)
+                                .clickable(onCopyClick),
+                            text = assetInfo.owner?.address ?: "",
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.secondary,
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                        Spacer(modifier = Modifier.size(imagePadding))
                     }
-                    Spacer16()
                     Text(
-                        text = assetInfo.walletName,
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.titleLarge,
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        text = assetInfo.owner?.address ?: "",
+                        modifier = Modifier.padding(horizontal = imagePadding),
+                        text = parseMarkdownToAnnotatedString(
+                            stringResource(
+                                R.string.receive_warning,
+                                assetInfo.asset.symbol,
+                                assetInfo.asset.chain.asset().name + if (assetInfo.asset.id.type() == AssetSubtype.TOKEN) " (${assetInfo.asset.type})" else ""
+                            )
+                        ),
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.secondary,
                         style = MaterialTheme.typography.bodyLarge,
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Row {
-                        FieldBottomAction(
-                            modifier = Modifier.weight(1f),
-                            imageVector = Icons.Default.ContentCopy,
-                            contentDescription = "paste",
-                            text = stringResource(id = R.string.common_copy),
-                            onClick = onCopyClick,
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        FieldBottomAction(
-                            modifier = Modifier.weight(1f),
-                            imageVector = Icons.Default.Share,
-                            contentDescription = "share",
-                            text = stringResource(id = R.string.common_share),
-                            onClick = onShare
-                        )
-                    }
-                    Spacer16()
                 }
             }
+            Spacer(modifier = Modifier.size(it.calculateBottomPadding()))
         }
     }
 }
