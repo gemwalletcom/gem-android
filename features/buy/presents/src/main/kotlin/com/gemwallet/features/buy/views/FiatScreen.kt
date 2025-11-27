@@ -23,6 +23,7 @@ import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.features.buy.viewmodels.FiatViewModel
 import com.gemwallet.features.buy.viewmodels.models.BuyError
 import com.gemwallet.features.buy.viewmodels.models.FiatSuggestion
+import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.FiatQuoteType
 
 @Composable
@@ -36,7 +37,7 @@ fun FiatScreen(
     val type by viewModel.type.collectAsStateWithLifecycle()
     val suggestedAmounts by viewModel.suggestedAmounts.collectAsStateWithLifecycle()
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val asset by viewModel.asset.collectAsStateWithLifecycle()
+    val asset by viewModel.assetInfoUIModel.collectAsStateWithLifecycle()
     val amount by viewModel.amount.collectAsStateWithLifecycle()
     val providers by viewModel.providers.collectAsStateWithLifecycle()
     val selectedProvider by viewModel.selectedProvider.collectAsStateWithLifecycle()
@@ -83,7 +84,7 @@ fun LotButton(fiatSuggestion: FiatSuggestion, onLotClick: (FiatSuggestion) -> Un
 }
 
 @Composable
-fun BuyError.mapError(type: FiatQuoteType) = when (this) {
+fun BuyError.mapError(type: FiatQuoteType, asset: Asset) = when (this) {
     BuyError.MinimumAmount -> stringResource(id = R.string.transfer_minimum_amount, "${FiatViewModel.MIN_FIAT_AMOUNT}$")
     BuyError.QuoteNotAvailable -> stringResource(id = R.string.buy_no_results)
     BuyError.ValueIncorrect -> stringResource(id = R.string.errors_invalid_amount)
@@ -93,4 +94,6 @@ fun BuyError.mapError(type: FiatQuoteType) = when (this) {
             FiatQuoteType.Sell -> stringResource(R.string.sell_title, "")
         }
     )
+
+    BuyError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_balance, "${asset.name} (${asset.symbol})")
 }

@@ -8,4 +8,6 @@ sealed interface BuyError {
     data object QuoteNotAvailable : BuyError
 
     data object ValueIncorrect : BuyError
+
+    data object InsufficientBalance : BuyError
 }

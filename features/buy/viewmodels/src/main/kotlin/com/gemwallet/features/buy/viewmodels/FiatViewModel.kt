@@ -25,6 +25,7 @@ import com.wallet.core.primitives.FiatQuoteType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -42,10 +43,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.random.Random
 
-@OptIn(ExperimentalCoroutinesApi::class)
+@OptIn(ExperimentalCoroutinesApi::class, FlowPreview::class)
 @HiltViewModel
 class FiatViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
+    sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val buyRepository: BuyRepository,
     private val getDeviceId: GetDeviceIdCase,
@@ -62,18 +63,18 @@ class FiatViewModel @Inject constructor(
     private val _amount = MutableStateFlow("")
     val amount: StateFlow<String> get() = _amount
 
-    val asset = combine(session, assetId) { session, assetId ->
+    val assetInfoUIModel = combine(session, assetId) { session, assetId ->
         Pair(session, assetId)
     }
-    .flatMapLatest {
-        val (session, assetId) = it
+    .flatMapLatest { data ->
+        val (session, assetId) = data
         assetsRepository.getTokenInfo(assetId)
             .mapNotNull { it }
-            .map {
-                if (it.owner == null) {
-                    it.copy(owner = session?.wallet?.getAccount(it.asset.chain))
+            .map { assetInfo ->
+                if (assetInfo.owner == null) {
+                    assetInfo.copy(owner = session?.wallet?.getAccount(assetInfo.asset.chain))
                 } else {
-                    it
+                    assetInfo
                 }
             }
     }
@@ -127,7 +128,7 @@ class FiatViewModel @Inject constructor(
     private val _selectedQuote = MutableStateFlow<FiatQuote?>(null)
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val quotes = combine(asset, type, amount, amountValidator) { asset, type, amount, validator ->
+    val quotes = combine(assetInfoUIModel, type, amount, amountValidator) { asset, type, amount, validator ->
         asset ?: return@combine emptyList()
         if (!validator.validate(amount)) {
             _state.value = FiatSceneState.Error(validator.error)
@@ -135,12 +136,17 @@ class FiatViewModel @Inject constructor(
         } else {
             _state.value = FiatSceneState.Loading
         }
+        val amountParsed = amount.parseNumber().toDouble()
+        if (type == FiatQuoteType.Sell && amountParsed > asset.assetInfo.balance.balanceAmount.available) {
+            _state.value = FiatSceneState.Error(BuyError.InsufficientBalance)
+            return@combine emptyList()
+        }
         val result = try {
             val quotes = buyRepository.getQuotes(
                 asset.asset,
                 type = type,
                 currency.string,
-                amount.parseNumber().toDouble(),
+                amountParsed,
                 asset.assetInfo.owner?.address ?: ""
             )
             _state.value = null
@@ -161,13 +167,13 @@ class FiatViewModel @Inject constructor(
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
 
-    val providers = combine(asset.filterNotNull(), quotes) { asset, quotes ->
+    val providers = combine(assetInfoUIModel.filterNotNull(), quotes) { asset, quotes ->
         quotes.map { quote ->
             quote.toProviderUIModel(asset.asset, currency)
         }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
-    val selectedProvider = combine(asset, _selectedQuote) { asset, quote ->
+    val selectedProvider = combine(assetInfoUIModel, _selectedQuote) { asset, quote ->
         return@combine asset?.let { quote?.toProviderUIModel(asset.asset, currency) }
     }.stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
@@ -180,11 +186,11 @@ class FiatViewModel @Inject constructor(
             FiatSuggestion.RandomAmount -> randomAmount().toString()
             is FiatSuggestion.SuggestionAmount -> suggestion.value.toInt().toString()
             is FiatSuggestion.SuggestionPercent -> {
-                val amount = asset.value?.assetInfo?.balance?.balanceAmount?.available ?: 0.0
+                val amount = assetInfoUIModel.value?.assetInfo?.balance?.balanceAmount?.available ?: 0.0
                 (amount * (suggestion.value * 0.01)).toString()
             }
 
-            is FiatSuggestion.MaxAmount -> asset.value?.cryptoAmount?.toString() ?: ""
+            is FiatSuggestion.MaxAmount -> assetInfoUIModel.value?.cryptoAmount?.toString() ?: ""
         }
     }
 
@@ -208,7 +214,7 @@ class FiatViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             val url = buyRepository.getQuoteUrl(
                 _selectedQuote.value?.id ?: return@launch,
-                walletAddress = asset.value?.owner ?: return@launch,
+                walletAddress = assetInfoUIModel.value?.owner ?: return@launch,
                 deviceId = getDeviceId.getDeviceId(),
             )
             callback(url)

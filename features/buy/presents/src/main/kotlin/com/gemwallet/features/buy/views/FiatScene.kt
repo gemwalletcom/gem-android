@@ -159,7 +159,8 @@ fun BuyScene(
                         .fillMaxWidth()
                         .padding(20.dp),
                     textAlign = TextAlign.Center,
-                    text = state.error?.mapError(type) ?: "",
+                    color = MaterialTheme.colorScheme.error,
+                    text = state.error?.mapError(type, asset.asset) ?: "",
                     style = MaterialTheme.typography.bodyLarge
                 )
             }
