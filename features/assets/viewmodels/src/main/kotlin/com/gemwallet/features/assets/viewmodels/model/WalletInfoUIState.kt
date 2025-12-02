@@ -1,8 +1,7 @@
 package com.gemwallet.features.assets.viewmodels.model
 
-import com.gemwallet.android.ui.models.PriceState
+import com.gemwallet.android.domains.price.PriceState
 import com.wallet.core.primitives.WalletType
-import java.math.BigDecimal
 
 data class WalletInfoUIState(
     val name: String = "",

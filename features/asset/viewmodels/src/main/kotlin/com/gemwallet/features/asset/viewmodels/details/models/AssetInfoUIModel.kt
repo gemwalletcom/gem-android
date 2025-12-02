@@ -3,7 +3,7 @@ package com.gemwallet.features.asset.viewmodels.details.models
 import androidx.annotation.StringRes
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.models.PriceState
+import com.gemwallet.android.domains.price.PriceState
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.BalanceMetadata

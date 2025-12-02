@@ -36,6 +36,11 @@ android {
             freeCompilerArgs.add("-opt-in=kotlin.RequiresOptIn")
         }
     }
+    testOptions {
+        unitTests {
+            isReturnDefaultValues = true
+        }
+    }
     packaging {
         resources {
             excludes += "META-INF/*"

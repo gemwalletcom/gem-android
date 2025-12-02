@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.models
+package com.gemwallet.android.domains.price
 
 enum class PriceState {
     None,
