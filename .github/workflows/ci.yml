@@ -58,7 +58,7 @@ jobs:
           path: |
             ~/.android/avd/*
             ~/.android/adb*
-          key: avd-29-${{ runner.os }}
+          key: avd-29-2g-${{ runner.os }}
 
       - name: Gradle cache
         uses: gradle/actions/setup-gradle@v3
@@ -76,7 +76,8 @@ jobs:
         with:
           api-level: 29
           arch: x86_64
-          force-avd-creation: false
+          force-avd-creation: true
+          disk-size: 2048M
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: just test
