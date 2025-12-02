@@ -16,6 +16,7 @@ import com.wallet.core.primitives.FiatQuoteUrlRequest
 import com.wallet.core.primitives.FiatQuotes
 import com.wallet.core.primitives.NFTData
 import com.wallet.core.primitives.NameRecord
+import com.wallet.core.primitives.NewSupportDevice
 import com.wallet.core.primitives.PriceAlert
 import com.wallet.core.primitives.ScanTransaction
 import com.wallet.core.primitives.ScanTransactionPayload
@@ -78,8 +79,8 @@ interface GemApiClient {
     @GET("/v1/devices/{device_id}")
     suspend fun getDevice(@Path("device_id") deviceId: String): Device?
 
-    @POST("/v1/support")
-    suspend fun registerSupport(@Body request: SupportDevice): SupportDevice
+    @POST("/v1/support/add_device")
+    suspend fun registerSupport(@Body request: NewSupportDevice): SupportDevice
 
     @PUT("/v1/devices/{device_id}")
     suspend fun updateDevice(@Path("device_id") deviceId: String, @Body request: Device): Device
@@ -124,14 +125,9 @@ interface GemApiClient {
     @GET("/v1/price_alerts/{device_id}")
     suspend fun getPriceAlerts(@Path("device_id") deviceId: String): List<PriceAlert>
 
-    @GET("/v1/nft/assets/device/{device_id}")
-    suspend fun getNFTs(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int): Data<List<NFTData>>
+    @GET("/v2/nft/assets/device/{device_id}")
+    suspend fun getNFTs(@Path("device_id") deviceId: String, @Query("wallet_index") walletIndex: Int): List<NFTData>
 
-    @POST("/v1/scan/transaction")
-    suspend fun getScanTransaction(@Body payload: ScanTransactionPayload): Data<ScanTransaction>
+    @POST("/v2/scan/transaction")
+    suspend fun getScanTransaction(@Body payload: ScanTransactionPayload): ScanTransaction
 }
-
-@Serializable
-data class Data<T>(
-    val data: T
-)

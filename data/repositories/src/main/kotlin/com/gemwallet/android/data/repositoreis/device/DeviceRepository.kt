@@ -23,10 +23,10 @@ import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.model
 import com.gemwallet.android.ext.os
 import com.wallet.core.primitives.Device
+import com.wallet.core.primitives.NewSupportDevice
 import com.wallet.core.primitives.Platform
 import com.wallet.core.primitives.PlatformStore
 import com.wallet.core.primitives.Subscription
-import com.wallet.core.primitives.SupportDevice
 import com.wallet.core.primitives.Wallet
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -52,7 +52,7 @@ class DeviceRepository(
     private val enablePriceAlert: EnablePriceAlert,
     private val getCurrentCurrencyCase: GetCurrentCurrencyCase,
     coroutineScope: CoroutineScope = CoroutineScope(
-        SupervisorJob() + CoroutineExceptionHandler { _, err -> /*Log.e("DEVICE", "Err:", err)*/ } + Dispatchers.IO
+        SupervisorJob() + CoroutineExceptionHandler { _, _ -> /*Log.e("DEVICE", "Err:", err)*/ } + Dispatchers.IO
     ),
 ) : SyncDeviceInfo,
     SwitchPushEnabled,
@@ -180,10 +180,9 @@ class DeviceRepository(
         context.dataStore.edit { it[Key.SupportId] = supportId }
         try {
             gemApiClient.registerSupport(
-                SupportDevice(
-                    supportId = supportId,
+                NewSupportDevice(
+                    supportDeviceId = supportId,
                     deviceId = getDeviceIdCase.getDeviceId(),
-                    unread = 0,
                 )
             )
         } catch (_: Throwable) { }
