@@ -27,7 +27,7 @@ jobs:
       - name: Free disk space
         run: |
           df -h
-          sudo rm -rf /usr/share/dotnet /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/lib/android /usr/local/lib/node_modules
+          sudo rm -rf /usr/share/dotnet /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/lib/node_modules
           sudo apt-get clean
           df -h
 
