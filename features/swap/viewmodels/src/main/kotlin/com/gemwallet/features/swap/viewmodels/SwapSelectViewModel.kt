@@ -132,23 +132,6 @@ class SwapSelectSearch(
                     params.tag?.let { listOf(params.tag) } ?: emptyList(),
                 )
             }
-
-//            val supported = if (params.oppositeAssetId == null) {
-//                val chains = params.wallet.accounts.map { it.chain }.filter { it.isSwapSupport() }
-//                val assetIds = chains
-//                    .map { getSwapSupported.getSwapSupportChains(AssetId(it)).assetIds }
-//                    .fold(listOf<uniffi.gemstone.AssetId>()) { acc, items -> acc + items }
-//                SwapperAssetList(chains.map { it.string }, assetIds)
-//            } else {
-//                getSwapSupported.getSwapSupportChains(params.oppositeAssetId)
-//            }
-//            assetsRepository.swapSearch(
-//                params.wallet,
-//                params.query,
-//                supported.chains.mapNotNull { item -> item.toChain() },
-//                supported.assetIds.mapNotNull { it.toAssetId() },
-//                params.tag?.let { listOf(params.tag) } ?: emptyList(),
-//            )
         }
         .map { items ->
             items.filter { assetInfo ->
