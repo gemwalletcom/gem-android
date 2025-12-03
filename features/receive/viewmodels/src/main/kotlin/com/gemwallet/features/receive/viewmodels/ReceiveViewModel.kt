@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -40,6 +41,10 @@ class ReceiveViewModel @Inject constructor(
         )
     }
     .filterNotNull()
+    .onEach {
+        val (session, assetId) = it
+        assetsRepository.logRecentReceive(assetId, session.wallet.id)
+    }
     .flatMapLatest {
         val (session, assetId) = it
         assetsRepository.getTokenInfo(assetId).map { info ->

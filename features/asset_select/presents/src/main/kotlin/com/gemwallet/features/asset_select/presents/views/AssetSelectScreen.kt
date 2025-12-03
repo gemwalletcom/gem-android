@@ -28,6 +28,7 @@ fun AssetSelectScreen(
     val popular by viewModel.popular.collectAsStateWithLifecycle()
     val pinned by viewModel.pinned.collectAsStateWithLifecycle()
     val unpinned by viewModel.unpinned.collectAsStateWithLifecycle()
+    val recent by viewModel.recent.collectAsStateWithLifecycle()
     val isAddAvailable by viewModel.isAddAssetAvailable.collectAsStateWithLifecycle()
     val availableChains by viewModel.availableChains.collectAsStateWithLifecycle()
     val chainsFilter by viewModel.chainFilter.collectAsStateWithLifecycle()
@@ -54,6 +55,7 @@ fun AssetSelectScreen(
             emptyList<AssetItemUIModel>().toImmutableList()
         },
         unpinned = unpinned,
+        recent = recent,
         state = uiStates,
         isAddAvailable = isAddAvailable && onAddAsset != null,
         availableChains = availableChains,
@@ -61,7 +63,7 @@ fun AssetSelectScreen(
         balanceFilter = balanceFilter,
         onChainFilter = viewModel::onChainFilter,
         onBalanceFilter = viewModel::onBalanceFilter,
-        onClearFilters = viewModel::onClearFilres,
+        onClearFilters = viewModel::onClearFilters,
         onSelect = onSelect,
         onCancel = onCancel,
         onAddAsset = onAddAsset,

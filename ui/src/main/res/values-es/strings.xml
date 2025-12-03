@@ -296,7 +296,7 @@
   <string name="input.transfer">transfer</string>
   <string name="settings.hide_balance">Hide Balance</string>
   <string name="common.popular">Popular</string>
-  <string name="errors.dust_threshold">La transacción falló porque el monto es demasiado pequeño para cumplir con el requisito mínimo de la red %s (umbral de polvo). Este límite garantiza que el valor de la transacción cubra las comisiones y los costos de procesamiento. Aumente el monto o reduzca las comisiones para continuar.</string>
+  <string name="errors.dust_threshold">La transacción falló porque el monto es demasiado pequeño para cumplir con el requisito mínimo de la red %s (umbral de polvo). Este límite garantiza que el valor de la transacción cubra las comisiones y los costos de procesamiento.</string>
   <string name="rootcheck.security_alert">Advertencia de seguridad</string>
   <string name="rootcheck.body">Su dispositivo parece tener acceso root, lo que puede aumentar significativamente los riesgos de seguridad. El uso de esta aplicación en un dispositivo rooteado puede exponer sus activos a acceso no autorizado y a una posible pérdida. Para la seguridad de sus fondos, le recomendamos encarecidamente que utilice un dispositivo no rooteado.</string>
   <string name="rootcheck.ignore">Ignore</string>
@@ -521,4 +521,21 @@
   <string name="asset.verification.verified">Verificado</string>
   <string name="errors.connections.malicious_origin">Esta conexión proviene de una fuente no confiable.</string>
   <string name="settings.preferences.default_leverage">Apalancamiento por defecto</string>
+  <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
+  <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
+  <string name="recent_activity.title">Recent</string>
+  <string name="errors.no_data_available">No hay datos disponibles</string>
+  <string name="errors.dust_threshold_short">La red considera esta cantidad como polvo: la tarifa es más alta que el monto en sí.</string>
+  <string name="charts.take_profit">TP</string>
+  <string name="charts.stop_loss">SL</string>
+  <string name="charts.entry">Entry</string>
+  <string name="charts.liquidation">Liquidation</string>
+  <string name="nft.report.select_report_header">What is wrong with this NFT?</string>
+  <string name="nft.report.title">Report Message</string>
+  <string name="nft.report.placeholder">Please describe the issue</string>
+  <string name="nft.report.reason.spam">Spam</string>
+  <string name="nft.report.reason.scam">Scam</string>
+  <string name="nft.report.reason.inappropriate">Inappropriate Content</string>
+  <string name="nft.report.reason.copyright">Copyright</string>
+  <string name="nft.report.report_button_title">Report</string>
 </resources>

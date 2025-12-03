@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-  <string name="common.cancel">Cancel</string>
+  <string name="common.cancel">취소</string>
   <string name="welcome.title">Welcome to Gem Family</string>
   <string name="common.done">Done</string>
   <string name="wallet.create_new_wallet">새 지갑 만들기</string>
@@ -296,7 +296,7 @@
   <string name="input.transfer">transfer</string>
   <string name="settings.hide_balance">Hide Balance</string>
   <string name="common.popular">인기 있는</string>
-  <string name="errors.dust_threshold">거래 금액이 %s 네트워크의 최소 요구 사항(먼지 임계값)을 충족하기에 너무 적어 거래가 실패했습니다. 이 한도는 거래 금액이 수수료 및 처리 비용을 충당할 수 있도록 보장합니다. 계속 진행하려면 금액을 늘리거나 수수료를 줄이세요.</string>
+  <string name="errors.dust_threshold">거래가 %s 네트워크의 최소 요구 사항(먼지 임계값)을 충족하기에 너무 적어 실패했습니다. 이 한도는 거래 금액이 수수료 및 처리 비용을 충당할 수 있도록 보장합니다.</string>
   <string name="rootcheck.security_alert">보안 경고</string>
   <string name="rootcheck.body">귀하의 기기는 루트 액세스 권한이 있는 것으로 보이며, 이는 보안 위험을 상당히 증가시킬 수 있습니다. 루팅된 기기에서 이 앱을 사용하면 자산이 무단 액세스 및 잠재적 손실에 노출될 수 있습니다. 자금의 안전을 위해 루팅되지 않은 기기를 사용하는 것이 좋습니다.</string>
   <string name="rootcheck.ignore">Ignore</string>
@@ -521,4 +521,21 @@
   <string name="asset.verification.verified">검증됨</string>
   <string name="errors.connections.malicious_origin">이 연결은 신뢰할 수 없는 출처에서 나왔습니다.</string>
   <string name="settings.preferences.default_leverage">기본 레버리지</string>
+  <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
+  <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
+  <string name="recent_activity.title">Recent</string>
+  <string name="errors.no_data_available">사용 가능한 데이터가 없습니다</string>
+  <string name="errors.dust_threshold_short">네트워크는 이 금액을 먼지로 간주합니다. 수수료가 금액 자체보다 높기 때문입니다.</string>
+  <string name="charts.take_profit">TP</string>
+  <string name="charts.stop_loss">SL</string>
+  <string name="charts.entry">Entry</string>
+  <string name="charts.liquidation">Liquidation</string>
+  <string name="nft.report.select_report_header">What is wrong with this NFT?</string>
+  <string name="nft.report.title">Report Message</string>
+  <string name="nft.report.placeholder">Please describe the issue</string>
+  <string name="nft.report.reason.spam">Spam</string>
+  <string name="nft.report.reason.scam">Scam</string>
+  <string name="nft.report.reason.inappropriate">Inappropriate Content</string>
+  <string name="nft.report.reason.copyright">Copyright</string>
+  <string name="nft.report.report_button_title">Report</string>
 </resources>

@@ -11,8 +11,9 @@ import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toChain
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
-import com.gemwallet.android.model.Session
+import com.gemwallet.android.model.RecentType
 import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
+import com.gemwallet.features.asset_select.viewmodels.models.SelectAssetFilters
 import com.gemwallet.features.asset_select.viewmodels.models.SelectSearch
 import com.gemwallet.features.swap.viewmodels.models.SwapItemType
 import com.wallet.core.primitives.AssetId
@@ -60,7 +61,8 @@ class SwapSelectViewModel @Inject constructor(
     val state = combine(payAssetId, receiveAssetId, select.filterNotNull()) { pay, receive, select ->
         setPair(select, pay, receive)
     }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+
 
     fun onSelect(assetId: AssetId) {
         when (select.value) {
@@ -78,6 +80,8 @@ class SwapSelectViewModel @Inject constructor(
             this.receiveId.update { receiveId }
         }
     }
+
+    override fun getRecentType(): RecentType? = null// TODO: Change to RecentType.Swap later. Now just collect data for user
 }
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -90,20 +94,14 @@ class SwapSelectSearch(
     val payId = MutableStateFlow<AssetId?>(null)
     val receiveId = MutableStateFlow<AssetId?>(null)
 
-    override fun invoke(
-        session: Flow<Session?>,
-        query: Flow<String>,
-        tag: Flow<AssetTag?>,
-    ): Flow<List<AssetInfo>> {
-        return combine(session, query, swapItemType, payId, receiveId, tag) { params/*session, query, type, payId, receiveId, tag*/ ->
-            val session: Session? = params[0] as? Session?
-            val query: String = params[1] as? String ?: ""
-            val type: SwapItemType? = params[2] as? SwapItemType?
-            val payId: AssetId? = params[3] as? AssetId?
-            val receiveId: AssetId? = params[4] as? AssetId?
-            val tag: AssetTag? = params[5] as? AssetTag?
+    override fun invoke(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
+        return combine(filters, swapItemType, payId, receiveId) { params/*session, query, type, payId, receiveId, tag*/ ->
+            val filters: SelectAssetFilters? = params[0] as? SelectAssetFilters?
+            val type: SwapItemType? = params[1] as? SwapItemType?
+            val payId: AssetId? = params[2] as? AssetId?
+            val receiveId: AssetId? = params[3] as? AssetId?
             val oppositeId = getOppositeAssetId(type, payId, receiveId)
-            SearchParams(session?.wallet, query, oppositeId, tag)
+            SearchParams(filters?.session?.wallet, filters?.query ?: "", oppositeId, filters?.tag)
         }
         .flatMapLatest { params ->
             if (params.oppositeAssetId == null || params.wallet == null) {

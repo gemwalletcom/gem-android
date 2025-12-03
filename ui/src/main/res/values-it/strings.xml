@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-  <string name="common.cancel">Cancel</string>
+  <string name="common.cancel">Cancellare</string>
   <string name="welcome.title">Welcome to Gem Family</string>
   <string name="common.done">Done</string>
   <string name="wallet.create_new_wallet">Create a New Wallet</string>
@@ -296,7 +296,7 @@
   <string name="input.transfer">transfer</string>
   <string name="settings.hide_balance">Hide Balance</string>
   <string name="common.popular">Popolare</string>
-  <string name="errors.dust_threshold">La transazione non è riuscita perché l\'importo è troppo basso per soddisfare il requisito minimo della rete %s (soglia di dust). Questo limite garantisce che il valore della transazione copra le commissioni e i costi di elaborazione. Aumentare l\'importo o ridurre le commissioni per procedere.</string>
+  <string name="errors.dust_threshold">La transazione non è riuscita perché l’importo è troppo basso per soddisfare il requisito minimo della rete %s (soglia di dust). Questo limite garantisce che il valore della transazione copra le commissioni e i costi di elaborazione.</string>
   <string name="rootcheck.security_alert">Avviso di sicurezza</string>
   <string name="rootcheck.body">Il tuo dispositivo sembra avere accesso root, il che può aumentare significativamente i rischi per la sicurezza. L\'utilizzo di questa app su un dispositivo rooted potrebbe esporre i tuoi asset ad accessi non autorizzati e potenziali perdite. Per la sicurezza dei tuoi fondi, ti consigliamo vivamente di utilizzare un dispositivo non rooted.</string>
   <string name="rootcheck.ignore">Ignore</string>
@@ -521,4 +521,21 @@
   <string name="asset.verification.verified">Verificato</string>
   <string name="errors.connections.malicious_origin">Questa connessione proviene da una fonte non attendibile.</string>
   <string name="settings.preferences.default_leverage">Leva finanziaria predefinita</string>
+  <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
+  <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
+  <string name="recent_activity.title">Recent</string>
+  <string name="errors.no_data_available">Nessun dato disponibile</string>
+  <string name="errors.dust_threshold_short">La rete considera questa cifra come polvere: la commissione è più alta dell\'importo stesso.</string>
+  <string name="charts.take_profit">TP</string>
+  <string name="charts.stop_loss">SL</string>
+  <string name="charts.entry">Entry</string>
+  <string name="charts.liquidation">Liquidation</string>
+  <string name="nft.report.select_report_header">What is wrong with this NFT?</string>
+  <string name="nft.report.title">Report Message</string>
+  <string name="nft.report.placeholder">Please describe the issue</string>
+  <string name="nft.report.reason.spam">Spam</string>
+  <string name="nft.report.reason.scam">Scam</string>
+  <string name="nft.report.reason.inappropriate">Inappropriate Content</string>
+  <string name="nft.report.reason.copyright">Copyright</string>
+  <string name="nft.report.report_button_title">Report</string>
 </resources>
