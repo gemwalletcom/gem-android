@@ -7,6 +7,7 @@ import com.gemwallet.android.cases.swap.GetSwapSupported
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
+import com.gemwallet.android.ext.isSwapSupport
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toChain
 import com.gemwallet.android.ext.toIdentifier
@@ -28,10 +29,12 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import uniffi.gemstone.SwapperAssetList
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -104,18 +107,48 @@ class SwapSelectSearch(
             SearchParams(filters?.session?.wallet, filters?.query ?: "", oppositeId, filters?.tag)
         }
         .flatMapLatest { params ->
-            if (params.oppositeAssetId == null || params.wallet == null) {
+            if (params.wallet == null) {
                 return@flatMapLatest emptyFlow()
             }
 
-            val supported = getSwapSupported.getSwapSupportChains(params.oppositeAssetId)
-            assetsRepository.swapSearch(
-                params.wallet,
-                params.query,
-                supported.chains.mapNotNull { item -> item.toChain() },
-                supported.assetIds.mapNotNull { it.toAssetId() },
-                params.tag?.let { listOf(params.tag) } ?: emptyList(),
-            )
+            flow {
+                if (params.oppositeAssetId == null) {
+                    val chains = params.wallet.accounts.map { it.chain }.filter { it.isSwapSupport() }
+                    emit(SwapperAssetList(chains.map { it.string }, emptyList()))
+                    val assetIds = chains
+                        .map { getSwapSupported.getSwapSupportChains(AssetId(it)).assetIds }
+                        .fold(listOf<uniffi.gemstone.AssetId>()) { acc, items -> acc + items }
+                    emit(SwapperAssetList(chains.map { it.string }, assetIds))
+                } else {
+                    emit(getSwapSupported.getSwapSupportChains(params.oppositeAssetId))
+                }
+
+            }.flatMapLatest { supported ->
+                assetsRepository.swapSearch(
+                    params.wallet,
+                    params.query,
+                    supported.chains.mapNotNull { item -> item.toChain() },
+                    supported.assetIds.mapNotNull { it.toAssetId() },
+                    params.tag?.let { listOf(params.tag) } ?: emptyList(),
+                )
+            }
+
+//            val supported = if (params.oppositeAssetId == null) {
+//                val chains = params.wallet.accounts.map { it.chain }.filter { it.isSwapSupport() }
+//                val assetIds = chains
+//                    .map { getSwapSupported.getSwapSupportChains(AssetId(it)).assetIds }
+//                    .fold(listOf<uniffi.gemstone.AssetId>()) { acc, items -> acc + items }
+//                SwapperAssetList(chains.map { it.string }, assetIds)
+//            } else {
+//                getSwapSupported.getSwapSupportChains(params.oppositeAssetId)
+//            }
+//            assetsRepository.swapSearch(
+//                params.wallet,
+//                params.query,
+//                supported.chains.mapNotNull { item -> item.toChain() },
+//                supported.assetIds.mapNotNull { it.toAssetId() },
+//                params.tag?.let { listOf(params.tag) } ?: emptyList(),
+//            )
         }
         .map { items ->
             items.filter { assetInfo ->

@@ -273,17 +273,17 @@ class AssetsRepository @Inject constructor(
         val includeChains = byChains.filter { walletChains.contains(it) }
         val includeAssetIds = byAssets.filter { walletChains.contains(it.chain) }
         return assetsPriorityDao.hasPriorities(query).map { it > 0 }.flatMapLatest {
-            if (it) {
-                assetsDao.swapSearchWithPriority(query, includeChains, includeAssetIds.map { it.toIdentifier() })
-            } else {
-                assetsDao.swapSearch(query, includeChains, includeAssetIds.map { it.toIdentifier() })
+                if (it) {
+                    assetsDao.swapSearchWithPriority(query, includeChains, includeAssetIds.map { it.toIdentifier() })
+                } else {
+                    assetsDao.swapSearch(query, includeChains, includeAssetIds.map { it.toIdentifier() })
+                }
             }
-        }
-        .toAssetInfoModel()
-        .map { assets ->
-            assets.filter { !Chain.exclude().contains(it.asset.id.chain) }
-                .distinctBy { it.asset.id.toIdentifier() }
-        }
+            .toAssetInfoModel()
+            .map { assets ->
+                assets.filter { !Chain.exclude().contains(it.asset.id.chain) }
+                    .distinctBy { it.asset.id.toIdentifier() }
+            }
     }
 
     suspend fun resolve(wallet: Wallet, assetsId: List<AssetId>) = withContext(Dispatchers.IO) {

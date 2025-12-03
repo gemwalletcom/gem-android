@@ -62,6 +62,7 @@ fun AssetsScreen(
     onSendClick: () -> Unit,
     onReceiveClick: () -> Unit,
     onBuyClick: () -> Unit,
+    onSwapClick: (AssetId?) -> Unit,
     onAssetClick: (AssetId) -> Unit,
     listState: LazyListState = rememberLazyListState(),
     viewModel: AssetsViewModel = hiltViewModel(),
@@ -109,6 +110,7 @@ fun AssetsScreen(
                         onSendClick = onSendClick,
                         onReceiveClick = onReceiveClick,
                         onBuyClick = onBuyClick,
+                        onSwapClick = onSwapClick,
                         onHideBalances = viewModel::hideBalances
                     )
                 }

@@ -3,12 +3,14 @@ package com.gemwallet.features.assets.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.cases.banners.HasMultiSign
+import com.gemwallet.android.cases.swap.GetSwapSupported
 import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getAccount
+import com.gemwallet.android.ext.isSwapSupport
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.Session
@@ -20,6 +22,7 @@ import com.gemwallet.android.ui.models.PriceState
 import com.gemwallet.features.assets.viewmodels.model.PriceUIState
 import com.gemwallet.features.assets.viewmodels.model.WalletInfoUIState
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletSource
@@ -51,6 +54,7 @@ class AssetsViewModel @Inject constructor(
     sessionRepository: SessionRepository,
     private val assetsRepository: AssetsRepository,
     private val syncTransactions: SyncTransactions,
+    private val getSwapSupportedChains: GetSwapSupported,
     private val userConfig: UserConfig,
     private val hasMultiSign: HasMultiSign,
 ) : ViewModel() {
@@ -193,6 +197,18 @@ class AssetsViewModel @Inject constructor(
         val cryptoTotal = assets.fold(0.0) { acc, asset ->
             acc + asset.balance.totalAmount
         }
+        val isSwapEnabled = when (wallet.type) {
+            WalletType.multicoin -> true
+            WalletType.single,
+            WalletType.private_key -> wallet.accounts.firstOrNull()?.chain?.isSwapSupport() == true
+            WalletType.view -> false
+        }
+        val swapPayAsset = when(wallet.type) {
+            WalletType.multicoin -> (wallet.getAccount(Chain.Ethereum) ?: wallet.accounts.firstOrNull())?.chain
+            WalletType.single,
+            WalletType.private_key -> wallet.accounts.firstOrNull()?.chain
+            WalletType.view -> null
+        }?.asset()
 
         return if (isHideBalances) {
             WalletInfoUIState(
@@ -205,6 +221,8 @@ class AssetsViewModel @Inject constructor(
                 priceState = PriceState.None,
                 type = wallet.type,
                 operationsEnabled = operationsEnabled,
+                isSwapEnabled = isSwapEnabled,
+                swapPayAsset = swapPayAsset,
             )
         } else {
             WalletInfoUIState(
@@ -217,6 +235,8 @@ class AssetsViewModel @Inject constructor(
                 priceState = PriceUIState.getState(changedPercentages),
                 type = wallet.type,
                 operationsEnabled = operationsEnabled,
+                isSwapEnabled = isSwapEnabled,
+                swapPayAsset = swapPayAsset,
             )
         }
     }

@@ -197,7 +197,7 @@ fun Chain.getNetworkId(): String {
 }
 
 fun Chain.isSwapSupport(): Boolean {
-    if (this == Chain.Xrp) {
+    if (this == Chain.Xrp) { // TODO: Check and remove, looks like as legacy
         return true
     }
     return try {

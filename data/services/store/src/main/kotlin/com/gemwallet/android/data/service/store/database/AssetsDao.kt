@@ -177,7 +177,7 @@ interface AssetsDao {
             *,
             MAX(address)
         FROM asset_info
-        JOIN recent_log ON id IN (recent_log.asset_id) AND (walletId = (SELECT wallet_id FROM session WHERE session.id = 1))
+        JOIN recent_log ON id IN (recent_log.asset_id) AND (recent_log.wallet_id = (SELECT wallet_id FROM session WHERE session.id = 1))
         WHERE
             recent_log.type = :type
             GROUP BY id
