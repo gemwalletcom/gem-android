@@ -27,6 +27,7 @@ fun SwapSelectScreen(
     val uiStates by viewModel.uiState.collectAsStateWithLifecycle()
     val pinned by viewModel.pinned.collectAsStateWithLifecycle()
     val unpinned by viewModel.unpinned.collectAsStateWithLifecycle()
+    val recent by viewModel.recent.collectAsStateWithLifecycle()
     val availableChains by viewModel.availableChains.collectAsStateWithLifecycle()
     val chainsFilter by viewModel.chainFilter.collectAsStateWithLifecycle()
     val balanceFilter by viewModel.balanceFilter.collectAsStateWithLifecycle()
@@ -48,13 +49,14 @@ fun SwapSelectScreen(
         popular = emptyList<AssetItemUIModel>().toImmutableList(),
         pinned = pinned,
         unpinned = unpinned,
+        recent = recent,
         state = uiStates,
         availableChains = availableChains,
         chainsFilter = chainsFilter,
         balanceFilter = balanceFilter,
         onChainFilter = viewModel::onChainFilter,
         onBalanceFilter = viewModel::onBalanceFilter,
-        onClearFilters = viewModel::onClearFilres,
+        onClearFilters = viewModel::onClearFilters,
         onSelect = {
             when (select) {
                 SwapItemType.Pay -> onSelect(SwapItemType.Pay, it, receiveId)

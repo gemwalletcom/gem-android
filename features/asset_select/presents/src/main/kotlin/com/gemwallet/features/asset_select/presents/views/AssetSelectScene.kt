@@ -1,14 +1,21 @@
 package com.gemwallet.features.asset_select.presents.views
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
@@ -29,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,17 +45,22 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.SearchBar
 import com.gemwallet.android.ui.components.filters.AssetsFilter
+import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.android.ui.components.list_item.AssetItemUIModel
 import com.gemwallet.android.ui.components.list_item.AssetListItem
 import com.gemwallet.android.ui.components.list_item.PinnedAssetsHeaderItem
+import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.AssetsGroupType
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.defaultPadding
-import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
+import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingSmall
+import com.gemwallet.android.ui.theme.trailingIconMedium
+import com.gemwallet.features.asset_select.viewmodels.models.UIState
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetTag
 import com.wallet.core.primitives.Chain
@@ -61,7 +74,8 @@ fun AssetSelectScene(
     popular: ImmutableList<AssetItemUIModel>,
     pinned: ImmutableList<AssetItemUIModel>,
     unpinned: ImmutableList<AssetItemUIModel>,
-    state: BaseAssetSelectViewModel.UIState,
+    recent: ImmutableList<AssetItemUIModel>,
+    state: UIState,
     titleBadge: (AssetItemUIModel) -> String?,
     support: ((AssetItemUIModel) -> (@Composable () -> Unit)?)?,
     query: TextFieldState,
@@ -94,6 +108,7 @@ fun AssetSelectScene(
         popular = popular,
         pinned = pinned,
         unpinned = unpinned,
+        recent = recent,
         state = state,
         titleBadge = titleBadge,
         support = support,
@@ -122,7 +137,8 @@ fun AssetSelectScene(
     popular: ImmutableList<AssetItemUIModel>,
     pinned: ImmutableList<AssetItemUIModel>,
     unpinned: ImmutableList<AssetItemUIModel>,
-    state: BaseAssetSelectViewModel.UIState,
+    recent: ImmutableList<AssetItemUIModel>,
+    state: UIState,
     titleBadge: (AssetItemUIModel) -> String?,
     support: ((AssetItemUIModel) -> (@Composable () -> Unit)?)?,
     query: TextFieldState,
@@ -193,6 +209,7 @@ fun AssetSelectScene(
                 }
                 Spacer16()
             }
+            recent(recent, onSelect)
             assets(popular, AssetsGroupType.Popular, onSelect, support, titleBadge, itemTrailing)
             assets(pinned, AssetsGroupType.Pined, onSelect, support, titleBadge, itemTrailing)
             assets(unpinned, AssetsGroupType.None, onSelect, support, titleBadge, itemTrailing)
@@ -241,11 +258,11 @@ private fun LazyListScope.assets(
 }
 
 private fun LazyListScope.notFound(
-    state: BaseAssetSelectViewModel.UIState,
+    state: UIState,
     isAddAvailable: Boolean = false,
     onAddAsset: (() -> Unit)? = null,
 ) {
-    if (state !is BaseAssetSelectViewModel.UIState.Empty) {
+    if (state !is UIState.Empty) {
         return
     }
     item {
@@ -270,8 +287,8 @@ private fun LazyListScope.notFound(
     }
 }
 
-private fun LazyListScope.loading(state: BaseAssetSelectViewModel.UIState) {
-    if (state !is BaseAssetSelectViewModel.UIState.Loading) {
+private fun LazyListScope.loading(state: UIState) {
+    if (state !is UIState.Loading) {
         return
     }
     item {
@@ -286,6 +303,39 @@ private fun LazyListScope.loading(state: BaseAssetSelectViewModel.UIState) {
     }
 }
 
+private fun LazyListScope.recent(
+    items: List<AssetItemUIModel>,
+    onSelect: ((AssetId) -> Unit)?
+) {
+    if (items.isEmpty()) {
+        return
+    }
+    item {
+        SubheaderItem(stringResource(R.string.recent_activity_title))
+    }
+    item {
+        LazyRow(
+            modifier = Modifier.padding(paddingDefault),
+            horizontalArrangement = Arrangement.spacedBy(paddingSmall),
+        ) {
+            items(items) { item ->
+                Row(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(MaterialTheme.colorScheme.background)
+                        .clickable(onClick = { onSelect?.invoke(item.asset.id) })
+                        .padding(paddingSmall),
+                    horizontalArrangement = Arrangement.spacedBy(paddingSmall),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    IconWithBadge(item.asset, size = trailingIconMedium, supportSize = 14.dp)
+                    Text(item.asset.symbol)
+                }
+            }
+        }
+    }
+}
+
 @Composable
 @Preview
 fun PreviewAssetScreenUI() {
@@ -294,7 +344,8 @@ fun PreviewAssetScreenUI() {
             pinned = emptyList<AssetInfoUIModel>().toImmutableList(),
             unpinned = emptyList<AssetInfoUIModel>().toImmutableList(),
             popular = emptyList<AssetInfoUIModel>().toImmutableList(),
-            state = BaseAssetSelectViewModel.UIState.Idle,
+            recent = emptyList<AssetInfoUIModel>().toImmutableList(),
+            state = UIState.Idle,
             title = "Send",
             titleBadge = { it.asset.symbol },
             support = null,

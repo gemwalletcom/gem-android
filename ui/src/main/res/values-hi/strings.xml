@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-  <string name="common.cancel">Cancel</string>
+  <string name="common.cancel">रद्द करना</string>
   <string name="welcome.title">Welcome to Gem Family</string>
   <string name="common.done">Done</string>
   <string name="wallet.create_new_wallet">Create a New Wallet</string>
@@ -296,7 +296,7 @@
   <string name="input.transfer">transfer</string>
   <string name="settings.hide_balance">Hide Balance</string>
   <string name="common.popular">लोकप्रिय</string>
-  <string name="errors.dust_threshold">लेन-देन विफल हो गया क्योंकि राशि %s नेटवर्क की न्यूनतम आवश्यकता (डस्ट थ्रेशहोल्ड) को पूरा करने के लिए बहुत छोटी है। यह सीमा सुनिश्चित करती है कि लेन-देन मूल्य शुल्क और प्रसंस्करण लागत को कवर करता है। आगे बढ़ने के लिए राशि बढ़ाएँ या शुल्क घटाएँ।</string>
+  <string name="errors.dust_threshold">लेन-देन विफल रहा क्योंकि राशि %s नेटवर्क की न्यूनतम आवश्यकता (डस्ट थ्रेशोल्ड) को पूरा करने के लिए बहुत कम है। यह सीमा सुनिश्चित करती है कि लेन-देन का मूल्य शुल्क और प्रसंस्करण लागत को कवर करता है।</string>
   <string name="rootcheck.security_alert">सुरक्षा चेतावनी</string>
   <string name="rootcheck.body">ऐसा लगता है कि आपके डिवाइस में रूट एक्सेस है, जो सुरक्षा जोखिमों को काफी हद तक बढ़ा सकता है। रूट किए गए डिवाइस पर इस ऐप का उपयोग करने से आपकी संपत्ति अनधिकृत पहुंच और संभावित नुकसान के संपर्क में आ सकती है। आपके फंड की सुरक्षा के लिए, हम दृढ़ता से गैर-रूट किए गए डिवाइस का उपयोग करने की सलाह देते हैं।</string>
   <string name="rootcheck.ignore">Ignore</string>
@@ -521,4 +521,21 @@
   <string name="asset.verification.verified">सत्यापित</string>
   <string name="errors.connections.malicious_origin">यह कनेक्शन एक अविश्वसनीय स्रोत से आता है।</string>
   <string name="settings.preferences.default_leverage">डिफ़ॉल्ट उत्तोलन</string>
+  <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
+  <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
+  <string name="recent_activity.title">Recent</string>
+  <string name="errors.no_data_available">कोई डेटा मौजूद नहीं</string>
+  <string name="errors.dust_threshold_short">नेटवर्क इस राशि को धूल मानता है - शुल्क स्वयं राशि से अधिक है।</string>
+  <string name="charts.take_profit">TP</string>
+  <string name="charts.stop_loss">SL</string>
+  <string name="charts.entry">Entry</string>
+  <string name="charts.liquidation">Liquidation</string>
+  <string name="nft.report.select_report_header">What is wrong with this NFT?</string>
+  <string name="nft.report.title">Report Message</string>
+  <string name="nft.report.placeholder">Please describe the issue</string>
+  <string name="nft.report.reason.spam">Spam</string>
+  <string name="nft.report.reason.scam">Scam</string>
+  <string name="nft.report.reason.inappropriate">Inappropriate Content</string>
+  <string name="nft.report.reason.copyright">Copyright</string>
+  <string name="nft.report.report_button_title">Report</string>
 </resources>

@@ -11,6 +11,8 @@ import com.gemwallet.android.data.service.store.database.entities.DbAssetInfo
 import com.gemwallet.android.data.service.store.database.entities.DbAssetLink
 import com.gemwallet.android.data.service.store.database.entities.DbAssetMarket
 import com.gemwallet.android.data.service.store.database.entities.DbAssetWallet
+import com.gemwallet.android.data.service.store.database.entities.DbRecentActivity
+import com.gemwallet.android.model.RecentType
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
 
@@ -170,6 +172,20 @@ interface AssetsDao {
         """)
     fun swapSearchWithPriority(query: String, byChains: List<Chain>, byAssets: List<String>): Flow<List<DbAssetInfo>>
 
+    @Query("""
+        SELECT
+            *,
+            MAX(address)
+        FROM asset_info
+        JOIN recent_assets ON id IN (recent_assets.asset_id) AND (recent_assets.wallet_id = (SELECT wallet_id FROM session WHERE session.id = 1))
+        WHERE
+            recent_assets.type = :type
+            GROUP BY id
+            ORDER BY recent_assets.addedAt DESC
+            LIMIT 10
+        """)
+    fun getRecentByType(type: RecentType): Flow<List<DbAssetInfo>>
+
     @Query("SELECT * FROM asset_config WHERE wallet_id=:walletId AND asset_id=:assetId")
     suspend fun getConfig(walletId: String, assetId: String): DbAssetConfig?
 
@@ -184,4 +200,7 @@ interface AssetsDao {
 
     @Query("SELECT * FROM asset_market WHERE asset_id = :assetId")
     fun getAssetMarket(assetId: String): Flow<DbAssetMarket?>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun addRecentActivity(record: DbRecentActivity)
 }

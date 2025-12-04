@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-  <string name="common.cancel">Cancel</string>
+  <string name="common.cancel">Hủy bỏ</string>
   <string name="welcome.title">Welcome to Gem Family</string>
   <string name="common.done">Done</string>
   <string name="wallet.create_new_wallet">Tạo một ví mới</string>
@@ -296,7 +296,7 @@
   <string name="input.transfer">transfer</string>
   <string name="settings.hide_balance">Hide Balance</string>
   <string name="common.popular">Phổ biến</string>
-  <string name="errors.dust_threshold">Giao dịch không thành công vì số tiền quá nhỏ để đáp ứng yêu cầu tối thiểu của mạng %s (ngưỡng bụi). Giới hạn này đảm bảo giá trị giao dịch bao gồm phí và chi phí xử lý. Tăng số tiền hoặc giảm phí để tiếp tục.</string>
+  <string name="errors.dust_threshold">Giao dịch không thành công vì số tiền quá nhỏ để đáp ứng yêu cầu tối thiểu của mạng %s (ngưỡng bụi). Giới hạn này đảm bảo giá trị giao dịch bao gồm phí và chi phí xử lý.</string>
   <string name="rootcheck.security_alert">Cảnh báo an ninh</string>
   <string name="rootcheck.body">Thiết bị của bạn có vẻ như có quyền truy cập gốc, điều này có thể làm tăng đáng kể rủi ro bảo mật. Sử dụng ứng dụng này trên thiết bị đã root có thể khiến tài sản của bạn bị truy cập trái phép và có khả năng mất mát. Để đảm bảo an toàn cho tiền của bạn, chúng tôi đặc biệt khuyên bạn nên sử dụng thiết bị không root.</string>
   <string name="rootcheck.ignore">Ignore</string>
@@ -521,4 +521,21 @@
   <string name="asset.verification.verified">Đã xác minh</string>
   <string name="errors.connections.malicious_origin">Kết nối này đến từ một nguồn không đáng tin cậy.</string>
   <string name="settings.preferences.default_leverage">Đòn bẩy mặc định</string>
+  <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
+  <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
+  <string name="recent_activity.title">Recent</string>
+  <string name="errors.no_data_available">Không có dữ liệu có sẵn</string>
+  <string name="errors.dust_threshold_short">Mạng lưới coi số tiền này là bụi — mức phí còn cao hơn cả số tiền thực tế.</string>
+  <string name="charts.take_profit">TP</string>
+  <string name="charts.stop_loss">SL</string>
+  <string name="charts.entry">Entry</string>
+  <string name="charts.liquidation">Liquidation</string>
+  <string name="nft.report.select_report_header">What is wrong with this NFT?</string>
+  <string name="nft.report.title">Report Message</string>
+  <string name="nft.report.placeholder">Please describe the issue</string>
+  <string name="nft.report.reason.spam">Spam</string>
+  <string name="nft.report.reason.scam">Scam</string>
+  <string name="nft.report.reason.inappropriate">Inappropriate Content</string>
+  <string name="nft.report.reason.copyright">Copyright</string>
+  <string name="nft.report.report_button_title">Report</string>
 </resources>

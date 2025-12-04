@@ -296,7 +296,7 @@
   <string name="input.transfer">送金する</string>
   <string name="settings.hide_balance">残高を非表示</string>
   <string name="common.popular">人気</string>
-  <string name="errors.dust_threshold">金額が%sネットワークの最小要件（ダストしきい値）を満たしていないため、取引は失敗しました。この制限は、取引額が手数料と処理コストをカバーすることを保証するものです。続行するには、金額を増やすか、手数料を減らしてください。</string>
+  <string name="errors.dust_threshold">金額が%sネットワークの最小要件（ダストしきい値）を満たしていないため、取引は失敗しました。この制限は、取引額が手数料と処理コストをカバーすることを保証するものです。</string>
   <string name="rootcheck.security_alert">セキュリティ警告</string>
   <string name="rootcheck.body">お使いのデバイスはルート権限を持っているようです。これにより、セキュリティ リスクが大幅に増加する可能性があります。ルート権限を取得したデバイスでこのアプリを使用すると、資産が不正アクセスにさらされ、損失が発生する可能性があります。資金の安全のため、ルート権限を取得したデバイス以外のデバイスを使用することを強くお勧めします。</string>
   <string name="rootcheck.ignore">無視する</string>
@@ -521,4 +521,21 @@
   <string name="asset.verification.verified">検証済み</string>
   <string name="errors.connections.malicious_origin">この接続は信頼できないソースからのものです。</string>
   <string name="settings.preferences.default_leverage">デフォルトレバレッジ</string>
+  <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
+  <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
+  <string name="recent_activity.title">Recent</string>
+  <string name="errors.no_data_available">データなし</string>
+  <string name="errors.dust_threshold_short">ネットワークはこの金額をダストとみなします。つまり、手数料は金額自体よりも高くなります。</string>
+  <string name="charts.take_profit">TP</string>
+  <string name="charts.stop_loss">SL</string>
+  <string name="charts.entry">Entry</string>
+  <string name="charts.liquidation">Liquidation</string>
+  <string name="nft.report.select_report_header">What is wrong with this NFT?</string>
+  <string name="nft.report.title">Report Message</string>
+  <string name="nft.report.placeholder">Please describe the issue</string>
+  <string name="nft.report.reason.spam">Spam</string>
+  <string name="nft.report.reason.scam">Scam</string>
+  <string name="nft.report.reason.inappropriate">Inappropriate Content</string>
+  <string name="nft.report.reason.copyright">Copyright</string>
+  <string name="nft.report.report_button_title">Report</string>
 </resources>

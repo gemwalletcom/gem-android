@@ -296,7 +296,7 @@
   <string name="input.transfer">转账</string>
   <string name="settings.hide_balance">隐藏余额</string>
   <string name="common.popular">热门</string>
-  <string name="errors.dust_threshold">交易失败，因为金额太小，无法满足%s网络的最低要求（粉尘阈值）。此限制可确保交易金额足以覆盖手续费和处理成本。请增加金额或降低手续费以继续操作。</string>
+  <string name="errors.dust_threshold">交易失败，因为金额太小，无法满足%s网络的最低要求（粉尘阈值）。此限制可确保交易金额足以覆盖手续费和处理成本。</string>
   <string name="rootcheck.security_alert">安全警告</string>
   <string name="rootcheck.body">检测到设备已获取 root 权限，可能显著增加安全风险。在已 root 的设备上使用此应用可能导致资产遭到未经授权的访问并造成损失。为保障资金安全，强烈建议使用非 root 设备。</string>
   <string name="rootcheck.ignore">忽略</string>
@@ -521,4 +521,21 @@
   <string name="asset.verification.verified">已验证</string>
   <string name="errors.connections.malicious_origin">此连接来自不可信来源。</string>
   <string name="settings.preferences.default_leverage">默认杠杆</string>
+  <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
+  <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
+  <string name="recent_activity.title">Recent</string>
+  <string name="errors.no_data_available">暂无数据</string>
+  <string name="errors.dust_threshold_short">网络将这笔金额视为微不足道的垃圾——手续费甚至高于金额本身。</string>
+  <string name="charts.take_profit">TP</string>
+  <string name="charts.stop_loss">SL</string>
+  <string name="charts.entry">Entry</string>
+  <string name="charts.liquidation">Liquidation</string>
+  <string name="nft.report.select_report_header">What is wrong with this NFT?</string>
+  <string name="nft.report.title">Report Message</string>
+  <string name="nft.report.placeholder">Please describe the issue</string>
+  <string name="nft.report.reason.spam">Spam</string>
+  <string name="nft.report.reason.scam">Scam</string>
+  <string name="nft.report.reason.inappropriate">Inappropriate Content</string>
+  <string name="nft.report.reason.copyright">Copyright</string>
+  <string name="nft.report.report_button_title">Report</string>
 </resources>

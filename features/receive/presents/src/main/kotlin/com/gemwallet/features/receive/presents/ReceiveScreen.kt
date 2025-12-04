@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -130,7 +131,7 @@ private fun ReceiveScene(
                 .verticalScroll(rememberScrollState())
         ) {
             Box(
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.fillMaxWidth().weight(1f)
             ) {
                 Column(
                     modifier = Modifier.align(Alignment.Center),
@@ -139,7 +140,7 @@ private fun ReceiveScene(
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(paddingHalfSmall)
+                        verticalArrangement = Arrangement.spacedBy(paddingSmall)
                     ) {
                         HeaderIcon(assetInfo.asset)
                         Row(horizontalArrangement = Arrangement.spacedBy(paddingSmall)) {
@@ -196,7 +197,7 @@ private fun ReceiveScene(
                         Spacer(modifier = Modifier.size(imagePadding))
                     }
                     Text(
-                        modifier = Modifier.padding(horizontal = imagePadding),
+                        modifier = Modifier.width(imageSize),
                         text = parseMarkdownToAnnotatedString(
                             stringResource(
                                 R.string.receive_warning,

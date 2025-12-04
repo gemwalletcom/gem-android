@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import com.gemwallet.android.ui.components.list_head.AmountListHead
 import com.gemwallet.android.ui.components.list_head.AssetHeadActions
 import com.gemwallet.features.assets.viewmodels.model.WalletInfoUIState
+import com.wallet.core.primitives.AssetId
 
 @Composable
 internal fun AssetsHead(
@@ -11,6 +12,7 @@ internal fun AssetsHead(
     onSendClick: () -> Unit,
     onReceiveClick: () -> Unit,
     onBuyClick: () -> Unit,
+    onSwapClick: (AssetId?) -> Unit,
     onHideBalances: () -> Unit,
 ) {
     AmountListHead(
@@ -24,7 +26,9 @@ internal fun AssetsHead(
                 onTransfer = onSendClick,
                 onReceive = onReceiveClick,
                 onBuy = onBuyClick,
-                onSwap = null, // if (swapEnabled) onSwapClick else null
+                onSwap = if (walletInfo.isSwapEnabled) {
+                    { onSwapClick(null) }
+                } else null
             )
         }
     )

@@ -6,10 +6,10 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
-import com.gemwallet.android.model.Session
+import com.gemwallet.android.model.RecentType
 import com.gemwallet.features.asset_select.viewmodels.BaseAssetSelectViewModel
+import com.gemwallet.features.asset_select.viewmodels.models.SelectAssetFilters
 import com.gemwallet.features.asset_select.viewmodels.models.SelectSearch
-import com.wallet.core.primitives.AssetTag
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -31,7 +31,9 @@ class PriceAlertsSelectViewModel @Inject constructor(
     assetsRepository,
     searchTokensCase,
     PriceAlertSelectSearch(assetsRepository, getPriceAlerts),
-)
+) {
+    override fun getRecentType(): RecentType? = null
+}
 
 @OptIn(ExperimentalCoroutinesApi::class)
 open class PriceAlertSelectSearch(
@@ -41,17 +43,13 @@ open class PriceAlertSelectSearch(
 
     val addedPriceAlerts = getPriceAlerts.getPriceAlerts().map { it.map { it.assetId } }
 
-    override fun invoke(
-        session: Flow<Session?>,
-        query: Flow<String>,
-        tag: Flow<AssetTag?>,
-    ): Flow<List<AssetInfo>> {
-        return combine(query, tag, addedPriceAlerts) { query, tag, alerts -> Triple(query, tag,alerts) }
+    override fun invoke(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
+        return combine(filters, addedPriceAlerts) { filters, alerts -> Pair(filters,alerts) }
             .flatMapLatest {
-                val (query, tag, alerts) = it
-                assetsRepository.search(query, tag?.let { listOf(it) } ?: emptyList(), true)
+                val (filters, alerts) = it
+                assetsRepository.search(filters?.query ?: "", filters?.tag?.let { listOf(it) } ?: emptyList(), true)
             }
-            .map { it.distinctBy { it.asset.id.toIdentifier() } }
+            .map { items -> items.distinctBy { it.asset.id.toIdentifier() } }
             .flowOn(Dispatchers.IO)
     }
 }

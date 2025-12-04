@@ -78,6 +78,10 @@ class FiatViewModel @Inject constructor(
                 }
             }
     }
+        .onEach {
+            val walletId = it.walletId ?: return@onEach
+            assetsRepository.addRecentBuy(it.id(), walletId)
+        }
     .flowOn(Dispatchers.IO)
     .map {
         object : AssetInfoUIModel(it, false, 2, 4) {

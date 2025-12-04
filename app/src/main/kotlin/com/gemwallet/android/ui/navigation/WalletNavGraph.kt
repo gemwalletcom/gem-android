@@ -132,6 +132,7 @@ fun WalletNavGraph(
             onSendClick = navController::navigateToRecipientInput,
             onReceiveClick = navController::navigateToReceiveScreen,
             onBuyClick = navController::navigateToBuyScreen,
+            onSwapClick = navController::navigateToSwap,
             onAssetClick = navController::navigateToAssetScreen,
         )
 

@@ -7,6 +7,7 @@ import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.isSwapSupport
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
+import com.gemwallet.android.model.RecentType
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetBasic
 import com.wallet.core.primitives.AssetFull
@@ -39,7 +40,7 @@ data class DbAsset(
 @Entity(
     tableName = "asset_links",
     primaryKeys = ["asset_id", "name"],
-    foreignKeys = [ForeignKey(DbAsset::class, ["id"], ["asset_id"], onDelete = ForeignKey.Companion.CASCADE)],
+    foreignKeys = [ForeignKey(DbAsset::class, ["id"], ["asset_id"], onDelete = ForeignKey.CASCADE)],
 )
 data class DbAssetLink(
     @ColumnInfo("asset_id") val assetId: String,
@@ -67,14 +68,30 @@ data class DbAssetMarket(
     tableName = "asset_wallet",
     primaryKeys = ["asset_id", "wallet_id", "account_address"],
     foreignKeys = [
-        ForeignKey(DbAsset::class, ["id"], ["asset_id"], onDelete = ForeignKey.Companion.CASCADE),
-        ForeignKey(DbWallet::class, ["id"], ["wallet_id"], onDelete = ForeignKey.Companion.CASCADE),
+        ForeignKey(DbAsset::class, ["id"], ["asset_id"], onDelete = ForeignKey.CASCADE),
+        ForeignKey(DbWallet::class, ["id"], ["wallet_id"], onDelete = ForeignKey.CASCADE),
     ],
 )
 data class DbAssetWallet(
     @ColumnInfo("asset_id") val assetId: String,
     @ColumnInfo("wallet_id") val walletId: String,
     @ColumnInfo("account_address") val accountAddress: String,
+)
+
+@Entity(
+    tableName = "recent_assets",
+    primaryKeys = ["asset_id", "wallet_id", "type"],
+    foreignKeys = [
+        ForeignKey(DbAsset::class, ["id"], ["asset_id"], onDelete = ForeignKey.CASCADE),
+        ForeignKey(DbWallet::class, ["id"], ["wallet_id"], onDelete = ForeignKey.CASCADE),
+    ],
+)
+data class DbRecentActivity(
+    @ColumnInfo("asset_id") val assetId: String,
+    @ColumnInfo("wallet_id") val walletId: String,
+    @ColumnInfo("to_asset_id") val toAssetId: String? = null,
+    val type: RecentType,
+    val addedAt: Long,
 )
 
 fun List<DbAsset>.toModel() = mapNotNull { it.toModel() }

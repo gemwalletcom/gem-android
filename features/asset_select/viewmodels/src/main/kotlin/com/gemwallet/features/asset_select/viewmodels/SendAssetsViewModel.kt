@@ -4,9 +4,9 @@ import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.model.AssetInfo
-import com.gemwallet.android.model.Session
+import com.gemwallet.android.model.RecentType
 import com.gemwallet.features.asset_select.viewmodels.models.BaseSelectSearch
-import com.wallet.core.primitives.AssetTag
+import com.gemwallet.features.asset_select.viewmodels.models.SelectAssetFilters
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -24,13 +24,15 @@ open class SendSelectViewModel@Inject constructor(
     assetsRepository,
     searchTokensCase,
     SendSelectSearch(assetsRepository)
-)
+) {
+    override fun getRecentType(): RecentType? = RecentType.Send
+}
 
 class SendSelectSearch(
     assetsRepository: AssetsRepository,
 ) : BaseSelectSearch(assetsRepository) {
-    override fun invoke(session: Flow<Session?>, query: Flow<String>, tag: Flow<AssetTag?>): Flow<List<AssetInfo>> {
-        return super.invoke(session, query, tag).map { list ->
+    override fun invoke(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
+        return super.invoke(filters).map { list ->
             list.filter { it.balance.totalAmount != 0.0 }
         }
         .flowOn(Dispatchers.Default)

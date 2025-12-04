@@ -35,9 +35,7 @@ class NftRepository(
         val deviceId = getDeviceId.getDeviceId()
 
         val response = gemApiClient.getNFTs(deviceId, wallet.index)
-        val data = response.data
-
-        val collections = data.map {
+        val collections = response.map {
             DbNFTCollection(
                 id = it.collection.id,
                 name = it.collection.name,
@@ -50,7 +48,7 @@ class NftRepository(
                 isVerified = it.collection.isVerified,
             )
         }
-        val fullAsset = data.map { item ->
+        val fullAsset = response.map { item ->
             item.assets.map { asset ->
                 Pair(
                     DbNFTAsset(
@@ -84,7 +82,7 @@ class NftRepository(
                 it.id
             )
         }
-        val links = data.map { it.collection }
+        val links = response.map { it.collection }
             .map { it.links.map { link -> DbNFTCollectionLink(it.id, link.name, link.url) } }
             .flatten()
         nftDao.updateNft(

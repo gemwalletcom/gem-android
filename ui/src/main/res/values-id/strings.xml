@@ -296,7 +296,7 @@
   <string name="input.transfer">transfer</string>
   <string name="settings.hide_balance">Hide Balance</string>
   <string name="common.popular">Populer</string>
-  <string name="errors.dust_threshold">Transaksi gagal karena jumlahnya terlalu kecil untuk memenuhi persyaratan minimum jaringan %s (ambang batas debu). Batas ini memastikan nilai transaksi mencakup biaya dan ongkos pemrosesan. Tingkatkan jumlah atau kurangi biaya untuk melanjutkan.</string>
+  <string name="errors.dust_threshold">Transaksi gagal karena jumlahnya terlalu kecil untuk memenuhi persyaratan minimum jaringan %s (ambang batas debu). Batas ini memastikan nilai transaksi mencakup biaya dan ongkos pemrosesan.</string>
   <string name="rootcheck.security_alert">Peringatan Keamanan</string>
   <string name="rootcheck.body">Perangkat Anda tampaknya memiliki akses root, yang dapat meningkatkan risiko keamanan secara signifikan. Penggunaan aplikasi ini pada perangkat yang di-root dapat menyebabkan aset Anda rentan terhadap akses tidak sah dan potensi kerugian. Demi keamanan dana Anda, kami sangat menyarankan untuk menggunakan perangkat yang tidak di-root.</string>
   <string name="rootcheck.ignore">Ignore</string>
@@ -521,4 +521,21 @@
   <string name="asset.verification.verified">Terverifikasi</string>
   <string name="errors.connections.malicious_origin">Koneksi ini berasal dari sumber yang tidak tepercaya.</string>
   <string name="settings.preferences.default_leverage">Leverage Default</string>
+  <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
+  <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
+  <string name="recent_activity.title">Recent</string>
+  <string name="errors.no_data_available">Tidak ada data tersedia</string>
+  <string name="errors.dust_threshold_short">Jaringan menganggap jumlah ini sebagai debu — biayanya lebih tinggi daripada jumlahnya sendiri.</string>
+  <string name="charts.take_profit">TP</string>
+  <string name="charts.stop_loss">SL</string>
+  <string name="charts.entry">Entry</string>
+  <string name="charts.liquidation">Liquidation</string>
+  <string name="nft.report.select_report_header">What is wrong with this NFT?</string>
+  <string name="nft.report.title">Report Message</string>
+  <string name="nft.report.placeholder">Please describe the issue</string>
+  <string name="nft.report.reason.spam">Spam</string>
+  <string name="nft.report.reason.scam">Scam</string>
+  <string name="nft.report.reason.inappropriate">Inappropriate Content</string>
+  <string name="nft.report.reason.copyright">Copyright</string>
+  <string name="nft.report.report_button_title">Report</string>
 </resources>

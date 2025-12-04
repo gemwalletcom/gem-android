@@ -2,6 +2,8 @@ package com.gemwallet.android.data.repositoreis.assets
 
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.blockchain.services.BalancesService
+import com.gemwallet.android.cases.assets.GetRecent
+import com.gemwallet.android.cases.assets.AddRecentActivity
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactions
@@ -15,6 +17,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbAsset
 import com.gemwallet.android.data.service.store.database.entities.DbAssetConfig
 import com.gemwallet.android.data.service.store.database.entities.DbAssetMarket
 import com.gemwallet.android.data.service.store.database.entities.DbAssetWallet
+import com.gemwallet.android.data.service.store.database.entities.DbRecentActivity
 import com.gemwallet.android.data.service.store.database.entities.toAssetInfoModel
 import com.gemwallet.android.data.service.store.database.entities.toAssetLinkRecord
 import com.gemwallet.android.data.service.store.database.entities.toAssetLinksModel
@@ -33,6 +36,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.model.AssetBalance
 import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.model.RecentType
 import com.gemwallet.android.model.TransactionExtended
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
@@ -84,7 +88,7 @@ class AssetsRepository @Inject constructor(
     private val priceClient: PriceWebSocketClient,
     private val updateBalances: UpdateBalances = UpdateBalances(balancesDao, balancesService),
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-) : GetAsset {
+) : GetAsset, AddRecentActivity, GetRecent {
 
     private val visibleByDefault = listOf(
         Chain.Ethereum,
@@ -269,17 +273,17 @@ class AssetsRepository @Inject constructor(
         val includeChains = byChains.filter { walletChains.contains(it) }
         val includeAssetIds = byAssets.filter { walletChains.contains(it.chain) }
         return assetsPriorityDao.hasPriorities(query).map { it > 0 }.flatMapLatest {
-            if (it) {
-                assetsDao.swapSearchWithPriority(query, includeChains, includeAssetIds.map { it.toIdentifier() })
-            } else {
-                assetsDao.swapSearch(query, includeChains, includeAssetIds.map { it.toIdentifier() })
+                if (it) {
+                    assetsDao.swapSearchWithPriority(query, includeChains, includeAssetIds.map { it.toIdentifier() })
+                } else {
+                    assetsDao.swapSearch(query, includeChains, includeAssetIds.map { it.toIdentifier() })
+                }
             }
-        }
-        .toAssetInfoModel()
-        .map { assets ->
-            assets.filter { !Chain.exclude().contains(it.asset.id.chain) }
-                .distinctBy { it.asset.id.toIdentifier() }
-        }
+            .toAssetInfoModel()
+            .map { assets ->
+                assets.filter { !Chain.exclude().contains(it.asset.id.chain) }
+                    .distinctBy { it.asset.id.toIdentifier() }
+            }
     }
 
     suspend fun resolve(wallet: Wallet, assetsId: List<AssetId>) = withContext(Dispatchers.IO) {
@@ -487,5 +491,28 @@ class AssetsRepository @Inject constructor(
         pricesDao.getAll().firstOrNull()?.map {
             it.copy(value = (it.usdValue ?: 0.0) * rate.rate, currency = currency.string)
         }?.let { pricesDao.insert(it) }
+    }
+
+    override suspend fun addRecentActivity(
+        assetId: AssetId,
+        walletId: String,
+        type: RecentType,
+        toAssetId: AssetId?,
+    ) {
+        return assetsDao.addRecentActivity(
+            DbRecentActivity(
+                assetId = assetId.toIdentifier(),
+                walletId = walletId,
+                toAssetId = toAssetId?.toIdentifier(),
+                type = type,
+                addedAt = System.currentTimeMillis(),
+            )
+        )
+    }
+
+    override fun getRecentActivities(
+        type: RecentType
+    ): Flow<List<AssetInfo>> {
+        return assetsDao.getRecentByType(type).toAssetInfoModel()
     }
 }

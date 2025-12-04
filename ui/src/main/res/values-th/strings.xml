@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-  <string name="common.cancel">Cancel</string>
+  <string name="common.cancel">ยกเลิก</string>
   <string name="welcome.title">Welcome to Gem Family</string>
   <string name="common.done">Done</string>
   <string name="wallet.create_new_wallet">Create a New Wallet</string>
@@ -521,4 +521,21 @@
   <string name="asset.verification.verified">ได้รับการยืนยันแล้ว</string>
   <string name="errors.connections.malicious_origin">การเชื่อมต่อนี้มาจากแหล่งที่ไม่น่าเชื่อถือ</string>
   <string name="settings.preferences.default_leverage">เลเวอเรจเริ่มต้น</string>
+  <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
+  <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
+  <string name="recent_activity.title">Recent</string>
+  <string name="errors.no_data_available">ไม่มีข้อมูล</string>
+  <string name="errors.dust_threshold_short">เครือข่ายถือว่าจำนวนนี้เป็นแค่ฝุ่น เพราะค่าธรรมเนียมนั้นสูงกว่าจำนวนที่แท้จริง</string>
+  <string name="charts.take_profit">TP</string>
+  <string name="charts.stop_loss">SL</string>
+  <string name="charts.entry">Entry</string>
+  <string name="charts.liquidation">Liquidation</string>
+  <string name="nft.report.select_report_header">What is wrong with this NFT?</string>
+  <string name="nft.report.title">Report Message</string>
+  <string name="nft.report.placeholder">Please describe the issue</string>
+  <string name="nft.report.reason.spam">Spam</string>
+  <string name="nft.report.reason.scam">Scam</string>
+  <string name="nft.report.reason.inappropriate">Inappropriate Content</string>
+  <string name="nft.report.reason.copyright">Copyright</string>
+  <string name="nft.report.report_button_title">Report</string>
 </resources>
