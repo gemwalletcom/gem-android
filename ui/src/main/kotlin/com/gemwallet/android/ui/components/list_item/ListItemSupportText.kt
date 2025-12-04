@@ -6,6 +6,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -16,13 +17,13 @@ fun ListItemSupportText(@StringRes stringId: Int, vararg formatArgs: Any) {
 }
 
 @Composable
-fun ListItemSupportText(text: String) {
+fun ListItemSupportText(text: String, color: Color = MaterialTheme.colorScheme.secondary) {
     Text(
         modifier = Modifier.padding(top = 0.dp, bottom = 2.dp),
         text = text,
         maxLines = 1,
         overflow = TextOverflow.Ellipsis,
-        color = MaterialTheme.colorScheme.secondary,
+        color = color,
         style = MaterialTheme.typography.bodyMedium,
     )
 }
