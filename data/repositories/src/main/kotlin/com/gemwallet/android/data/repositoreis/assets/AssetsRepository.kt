@@ -3,7 +3,7 @@ package com.gemwallet.android.data.repositoreis.assets
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.blockchain.services.BalancesService
 import com.gemwallet.android.cases.assets.GetRecent
-import com.gemwallet.android.cases.assets.LogRecentAction
+import com.gemwallet.android.cases.assets.AddRecentActivity
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactions
@@ -17,7 +17,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbAsset
 import com.gemwallet.android.data.service.store.database.entities.DbAssetConfig
 import com.gemwallet.android.data.service.store.database.entities.DbAssetMarket
 import com.gemwallet.android.data.service.store.database.entities.DbAssetWallet
-import com.gemwallet.android.data.service.store.database.entities.DbRecentLog
+import com.gemwallet.android.data.service.store.database.entities.DbRecentActivity
 import com.gemwallet.android.data.service.store.database.entities.toAssetInfoModel
 import com.gemwallet.android.data.service.store.database.entities.toAssetLinkRecord
 import com.gemwallet.android.data.service.store.database.entities.toAssetLinksModel
@@ -88,7 +88,7 @@ class AssetsRepository @Inject constructor(
     private val priceClient: PriceWebSocketClient,
     private val updateBalances: UpdateBalances = UpdateBalances(balancesDao, balancesService),
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-) : GetAsset, LogRecentAction, GetRecent {
+) : GetAsset, AddRecentActivity, GetRecent {
 
     private val visibleByDefault = listOf(
         Chain.Ethereum,
@@ -493,24 +493,24 @@ class AssetsRepository @Inject constructor(
         }?.let { pricesDao.insert(it) }
     }
 
-    override suspend fun logRecentAction(
+    override suspend fun addRecentActivity(
         assetId: AssetId,
         walletId: String,
         type: RecentType,
         toAssetId: AssetId?,
     ) {
-        return assetsDao.logRecent(
-            DbRecentLog(
+        return assetsDao.addRecentActivity(
+            DbRecentActivity(
                 assetId = assetId.toIdentifier(),
                 walletId = walletId,
                 toAssetId = toAssetId?.toIdentifier(),
                 type = type,
-                loggedAt = System.currentTimeMillis(),
+                addedAt = System.currentTimeMillis(),
             )
         )
     }
 
-    override fun getRecent(
+    override fun getRecentActivities(
         type: RecentType
     ): Flow<List<AssetInfo>> {
         return assetsDao.getRecentByType(type).toAssetInfoModel()

@@ -24,7 +24,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbNFTCollectio
 import com.gemwallet.android.data.service.store.database.entities.DbNode
 import com.gemwallet.android.data.service.store.database.entities.DbPrice
 import com.gemwallet.android.data.service.store.database.entities.DbPriceAlert
-import com.gemwallet.android.data.service.store.database.entities.DbRecentLog
+import com.gemwallet.android.data.service.store.database.entities.DbRecentActivity
 import com.gemwallet.android.data.service.store.database.entities.DbSession
 import com.gemwallet.android.data.service.store.database.entities.DbTransaction
 import com.gemwallet.android.data.service.store.database.entities.DbTransactionExtended
@@ -59,7 +59,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbWallet
         DbAssetMarket::class,
         DbAssetPriority::class,
         DbFiatRate::class,
-        DbRecentLog::class,
+        DbRecentActivity::class,
     ],
     views = [
         DbAssetInfo::class,

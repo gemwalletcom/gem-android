@@ -122,7 +122,7 @@ class SwapViewModel @Inject constructor(
                 swapScreenState.update { SwapState.None }
             } else {
                  viewModelScope.launch(Dispatchers.IO) {
-                     assetsRepository.logRecentSwap(
+                     assetsRepository.addRecentSwap(
                          request.pay.id(),
                          request.receive.id(),
                          request.pay.walletId ?: return@launch

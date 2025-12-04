@@ -129,7 +129,7 @@ open class BaseAssetSelectViewModel(
         val balanceFilter = filters.hasBalance
         val hasChainFilter = chainFilter.isNotEmpty()
 
-        assetsRepository.getRecent(type).map { items ->
+        assetsRepository.getRecentActivities(type).map { items ->
             items.filter {
                 (!hasChainFilter || chainFilter.contains(it.id().chain))
                         && (!balanceFilter || it.balance.totalAmount > 0.0)

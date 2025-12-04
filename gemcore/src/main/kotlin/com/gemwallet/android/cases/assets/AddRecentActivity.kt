@@ -3,32 +3,32 @@ package com.gemwallet.android.cases.assets
 import com.gemwallet.android.model.RecentType
 import com.wallet.core.primitives.AssetId
 
-interface LogRecentAction {
-    suspend fun logRecentAction(
+interface AddRecentActivity {
+    suspend fun addRecentActivity(
         assetId: AssetId,
         walletId: String,
         type: RecentType,
         toAssetId: AssetId? = null,
     )
 
-    suspend fun logRecentReceive(
+    suspend fun addRecentReceive(
         assetId: AssetId,
         walletId: String,
-    ) = logRecentAction(assetId, walletId, RecentType.Receive)
+    ) = addRecentActivity(assetId, walletId, RecentType.Receive)
 
-    suspend fun logRecentSend(
+    suspend fun addRecentSend(
         assetId: AssetId,
         walletId: String,
-    ) = logRecentAction(assetId, walletId, RecentType.Send)
+    ) = addRecentActivity(assetId, walletId, RecentType.Send)
 
-    suspend fun logRecentBuy(
+    suspend fun addRecentBuy(
         assetId: AssetId,
         walletId: String,
-    ) = logRecentAction(assetId, walletId, RecentType.Buy)
+    ) = addRecentActivity(assetId, walletId, RecentType.Buy)
 
-    suspend fun logRecentSwap(
+    suspend fun addRecentSwap(
         assetId: AssetId,
         toAssetId: AssetId,
         walletId: String,
-    ) = logRecentAction(assetId, walletId, RecentType.Swap, toAssetId)
+    ) = addRecentActivity(assetId, walletId, RecentType.Swap, toAssetId)
 }

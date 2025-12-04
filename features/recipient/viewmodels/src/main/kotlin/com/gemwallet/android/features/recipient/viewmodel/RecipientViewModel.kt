@@ -69,7 +69,7 @@ class RecipientViewModel @Inject constructor(
     val asset = assetId.flatMapLatest { assetsRepository.getAssetInfo(it) }
         .onEach {
             val walletId = it?.walletId ?: return@onEach
-            assetsRepository.logRecentAction(it.id(), walletId, RecentType.Send)
+            assetsRepository.addRecentActivity(it.id(), walletId, RecentType.Send)
         }
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)

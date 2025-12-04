@@ -11,7 +11,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbAssetInfo
 import com.gemwallet.android.data.service.store.database.entities.DbAssetLink
 import com.gemwallet.android.data.service.store.database.entities.DbAssetMarket
 import com.gemwallet.android.data.service.store.database.entities.DbAssetWallet
-import com.gemwallet.android.data.service.store.database.entities.DbRecentLog
+import com.gemwallet.android.data.service.store.database.entities.DbRecentActivity
 import com.gemwallet.android.model.RecentType
 import com.wallet.core.primitives.Chain
 import kotlinx.coroutines.flow.Flow
@@ -177,11 +177,11 @@ interface AssetsDao {
             *,
             MAX(address)
         FROM asset_info
-        JOIN recent_log ON id IN (recent_log.asset_id) AND (recent_log.wallet_id = (SELECT wallet_id FROM session WHERE session.id = 1))
+        JOIN recent_assets ON id IN (recent_assets.asset_id) AND (recent_assets.wallet_id = (SELECT wallet_id FROM session WHERE session.id = 1))
         WHERE
-            recent_log.type = :type
+            recent_assets.type = :type
             GROUP BY id
-            ORDER BY recent_log.loggedAt DESC
+            ORDER BY recent_assets.addedAt DESC
             LIMIT 10
         """)
     fun getRecentByType(type: RecentType): Flow<List<DbAssetInfo>>
@@ -202,5 +202,5 @@ interface AssetsDao {
     fun getAssetMarket(assetId: String): Flow<DbAssetMarket?>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun logRecent(record: DbRecentLog)
+    suspend fun addRecentActivity(record: DbRecentActivity)
 }

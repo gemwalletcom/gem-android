@@ -43,7 +43,7 @@ class ReceiveViewModel @Inject constructor(
     .filterNotNull()
     .onEach {
         val (session, assetId) = it
-        assetsRepository.logRecentReceive(assetId, session.wallet.id)
+        assetsRepository.addRecentReceive(assetId, session.wallet.id)
     }
     .flatMapLatest {
         val (session, assetId) = it

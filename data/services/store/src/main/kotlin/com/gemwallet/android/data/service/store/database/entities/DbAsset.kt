@@ -3,7 +3,6 @@ package com.gemwallet.android.data.service.store.database.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.Index
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.isSwapSupport
 import com.gemwallet.android.ext.toAssetId
@@ -80,19 +79,19 @@ data class DbAssetWallet(
 )
 
 @Entity(
-    tableName = "recent_log",
+    tableName = "recent_assets",
     primaryKeys = ["asset_id", "wallet_id", "type"],
     foreignKeys = [
         ForeignKey(DbAsset::class, ["id"], ["asset_id"], onDelete = ForeignKey.CASCADE),
         ForeignKey(DbWallet::class, ["id"], ["wallet_id"], onDelete = ForeignKey.CASCADE),
     ],
 )
-data class DbRecentLog(
+data class DbRecentActivity(
     @ColumnInfo("asset_id") val assetId: String,
     @ColumnInfo("wallet_id") val walletId: String,
     @ColumnInfo("to_asset_id") val toAssetId: String? = null,
     val type: RecentType,
-    val loggedAt: Long,
+    val addedAt: Long,
 )
 
 fun List<DbAsset>.toModel() = mapNotNull { it.toModel() }

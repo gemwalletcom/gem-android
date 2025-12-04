@@ -80,7 +80,7 @@ class FiatViewModel @Inject constructor(
     }
         .onEach {
             val walletId = it.walletId ?: return@onEach
-            assetsRepository.logRecentBuy(it.id(), walletId)
+            assetsRepository.addRecentBuy(it.id(), walletId)
         }
     .flowOn(Dispatchers.IO)
     .map {
