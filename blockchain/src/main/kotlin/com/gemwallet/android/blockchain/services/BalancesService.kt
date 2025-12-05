@@ -43,7 +43,7 @@ class BalancesService(
         return try {
             val result = gateway.getBalanceStaking(account.chain.string, account.address)
                 ?: return null
-            AssetBalance.Companion.create(
+            AssetBalance.create(
                 asset = account.chain.asset(),
                 frozen = result.balance.frozen,
                 locked = result.balance.locked,
