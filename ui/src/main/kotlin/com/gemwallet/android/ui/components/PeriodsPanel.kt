@@ -1,4 +1,4 @@
-package com.gemwallet.features.asset.presents.chart
+package com.gemwallet.android.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,7 +20,7 @@ import com.gemwallet.android.ui.R
 import com.wallet.core.primitives.ChartPeriod
 
 @Composable
-internal fun PeriodsPanel(
+fun PeriodsPanel(
     period: ChartPeriod,
     onSelect: (ChartPeriod) -> Unit
 ) {

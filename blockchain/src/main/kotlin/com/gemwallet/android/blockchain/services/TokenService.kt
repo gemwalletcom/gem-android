@@ -1,6 +1,6 @@
 package com.gemwallet.android.blockchain.services
 
-import com.gemwallet.android.blockchain.services.mapper.toApp
+import com.gemwallet.android.blockchain.services.mapper.toDTO
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetBasic
 import com.wallet.core.primitives.AssetId
@@ -53,7 +53,7 @@ class TokenService(
         return try {
             if (gateway.getIsTokenAddress(chain.string, tokenId)) {
                 val result = gateway.getTokenData(chain.string, tokenId)
-                result.toApp()
+                result.toDTO()
             } else {
                 null
             }

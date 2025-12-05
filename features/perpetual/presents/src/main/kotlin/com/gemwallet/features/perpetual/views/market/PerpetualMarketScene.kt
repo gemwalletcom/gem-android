@@ -31,7 +31,7 @@ import com.wallet.core.primitives.PerpetualDirection
 fun PerpetualMarketScene(
     balance: PerpetualBalance,
     positions: List<PerpetualPositionDataAggregate>,
-    perpetualItems: List<PerpetualDataAggregate>,
+    perpetuals: List<PerpetualDataAggregate>,
     onWithdraw: () -> Unit,
     onDeposit: () -> Unit,
     onClose: () -> Unit,
@@ -63,7 +63,7 @@ fun PerpetualMarketScene(
             item {
                 SubheaderItem(stringResource(R.string.markets_title))
             }
-            itemsPositioned(perpetualItems) { position, item ->
+            itemsPositioned(perpetuals) { position, item ->
                 PerpetualItem(item, listPosition = position)
             }
         }
@@ -116,7 +116,7 @@ fun PreviewPerpetualMarketScene() {
                     override val pnlState: PriceState = PriceState.Down
                 }
             ),
-            perpetualItems = listOf(
+            perpetuals = listOf(
                 object : PerpetualDataAggregate {
                     override val id: String = "BTC-PERP"
                     override val name: String = "BTC/USD"

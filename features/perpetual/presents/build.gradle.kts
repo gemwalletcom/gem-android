@@ -62,6 +62,8 @@ dependencies {
 
     implementation(libs.compose.navigation)
 
+    implementation(libs.vico.m3)
+
     debugImplementation(libs.androidx.ui.tooling)
     implementation(libs.androidx.ui.tooling.preview)
 
