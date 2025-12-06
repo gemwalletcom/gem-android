@@ -65,6 +65,8 @@ build-app:
 core-upgrade:
 	@git submodule update --recursive --remote
 
+bump:
+	@sh ./scripts/bump.sh
 
 generate-verification-metadata:
 	#!/usr/bin/env bash
