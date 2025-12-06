@@ -64,9 +64,7 @@ build_app_image() {
   local base_image="$3"
   local base_tag="$4"
   local gradle_task="$5"
-  local build_number="$6"
-  local build_version="$7"
-  local map_id_seed="$8"
+  local map_id_seed="$6"
 
   echo "Building app image for tag ${tag} using task ${gradle_task}..."
   docker build \
@@ -76,8 +74,6 @@ build_app_image() {
     --build-arg BASE_IMAGE="${base_image}" \
     --build-arg BASE_IMAGE_TAG="${base_tag}" \
     --build-arg BUNDLE_TASK="${gradle_task}" \
-    --build-arg BUILD_NUMBER="${build_number}" \
-    --build-arg BUILD_VERSION="${build_version}" \
     --build-arg R8_MAP_ID_SEED="${map_id_seed}" \
     -f Dockerfile.app .
 }
@@ -189,17 +185,7 @@ main() {
   tag_safe="$(sanitize "$tag")"
   [[ -n "$tag_safe" ]] || tag_safe="latest"
 
-  local version_name
-  version_name="${VERIFY_BUILD_VERSION:-${tag#v}}"
-  [[ -n "$version_name" ]] || version_name="$tag_safe"
-
-  local version_code="${VERIFY_BUILD_NUMBER:-}"
-  if [[ -z "$version_code" ]]; then
-    version_code="$(echo "$version_name" | tr -cd '0-9')"
-    [[ -n "$version_code" ]] || version_code="1"
-  fi
-
-  local map_id_seed="${VERIFY_R8_MAP_ID_SEED:-${version_name}}"
+  local map_id_seed="${VERIFY_R8_MAP_ID_SEED:-${tag#v}}"
 
   local work_dir="${root_dir}/artifacts/reproducible/${tag_safe}"
   rm -rf "$work_dir"
@@ -222,8 +208,8 @@ main() {
 
   # Build Docker images
   ensure_base_image "$base_image" "$base_tag"
-  echo "Version parameters: BUILD_VERSION=${version_name}, BUILD_NUMBER=${version_code}, R8_MAP_ID_SEED=${map_id_seed}"
-  build_app_image "$app_image" "$tag" "$base_image" "$base_tag" "$gradle_task" "$version_code" "$version_name" "$map_id_seed"
+  echo "Build parameters: R8_MAP_ID_SEED=${map_id_seed}"
+  build_app_image "$app_image" "$tag" "$base_image" "$base_tag" "$gradle_task" "$map_id_seed"
 
   # Extract APK from Docker image
   extract_apk_outputs "$app_image" "$work_dir" "$apk_subdir"

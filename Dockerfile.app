@@ -8,8 +8,6 @@ ARG TAG=main
 ARG SKIP_SIGN
 ARG BUNDLE_TASK=":app:assembleUniversalRelease"
 ARG GRADLE_OPTS="-Xmx8g -Dfile.encoding=UTF-8"
-ARG BUILD_NUMBER=1
-ARG BUILD_VERSION="1.0"
 ARG R8_MAP_ID_SEED=""
 
 RUN REPO_URL="https://github.com/gemwalletcom/gem-android.git" && \
@@ -27,8 +25,6 @@ RUN REPO_URL="https://github.com/gemwalletcom/gem-android.git" && \
 WORKDIR $HOME/gem-android
 
 ENV GRADLE_OPTS=${GRADLE_OPTS} \
-    BUILD_NUMBER=${BUILD_NUMBER} \
-    BUILD_VERSION=${BUILD_VERSION} \
     R8_MAP_ID_SEED=${R8_MAP_ID_SEED}
 
 COPY --chown=root:root local.properties ./local.properties
