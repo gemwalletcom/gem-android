@@ -37,6 +37,14 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        splits {
+            abi {
+                isEnable = false
+                include("arm64-v8a", "armeabi-v7a")
+                isUniversalApk = false
+            }
+        }
     }
     productFlavors {
         create("google") {
@@ -107,6 +115,15 @@ android {
                     abiFilters.remove("arm64-v8a")
                     abiFilters.remove("armeabi-v7a")
                     abiFilters.add("x86_64")
+                }
+
+                splits {
+                    abi {
+                        reset()
+                        isEnable = false
+                        include("x86_64")
+                        isUniversalApk = false
+                    }
                 }
             }
 
