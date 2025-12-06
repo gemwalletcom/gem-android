@@ -19,8 +19,8 @@ sed -i '' "s/versionName = \".*\"/versionName = \"$new_version\"/" app/build.gra
 
 git add app/build.gradle.kts
 git commit -S -m "Bump to $new_version ($new_build)"
-#git tag -s "$new_version" -m "$new_version"
-#git push
-#git push origin "$new_version"
+git tag -s "$new_version" -m "$new_version"
+git push
+git push origin "$new_version"
 
 echo "✅ Bumped to $new_version (build $new_build)"
