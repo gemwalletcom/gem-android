@@ -12,9 +12,10 @@ import com.wallet.core.primitives.PerpetualDirection
 import com.wallet.core.primitives.PerpetualPositionData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 import kotlin.math.absoluteValue
 
-class GetPerpetualPositionsImpl(
+class GetPerpetualPositionsImpl @Inject constructor(
     private val perpetualsRepository: PerpetualRepository,
 ) : GetPerpetualPositions {
 
