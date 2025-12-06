@@ -30,20 +30,12 @@ android {
         applicationId = "com.gemwallet.android"
         minSdk = 28
         targetSdk = 36
-        versionCode = Integer.valueOf(System.getenv("BUILD_NUMBER") ?: "1")
-        versionName = System.getenv("BUILD_VERSION") ?: "1.0"
+        versionCode = 648
+        versionName = "1.3.54"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
-        }
-
-        splits {
-            abi {
-                isEnable = false
-                include("arm64-v8a", "armeabi-v7a")
-                isUniversalApk = false
-            }
         }
     }
     productFlavors {
@@ -115,15 +107,6 @@ android {
                     abiFilters.remove("arm64-v8a")
                     abiFilters.remove("armeabi-v7a")
                     abiFilters.add("x86_64")
-                }
-
-                splits {
-                    abi {
-                        reset()
-                        isEnable = false
-                        include("x86_64")
-                        isUniversalApk = false
-                    }
                 }
             }
 
