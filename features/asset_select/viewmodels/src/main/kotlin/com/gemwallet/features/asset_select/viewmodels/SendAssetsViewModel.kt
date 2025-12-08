@@ -31,11 +31,10 @@ open class SendSelectViewModel@Inject constructor(
 class SendSelectSearch(
     assetsRepository: AssetsRepository,
 ) : BaseSelectSearch(assetsRepository) {
-    override fun invoke(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
-        return super.invoke(filters).map { list ->
-            list.filter { it.balance.totalAmount != 0.0 }
-        }
+    override fun items(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
+        return super.items(filters).map { filter(it) }
         .flowOn(Dispatchers.Default)
     }
 
+    override fun filter(items: List<AssetInfo>): List<AssetInfo> = items.filter { it.balance.totalAmount != 0.0 }
 }

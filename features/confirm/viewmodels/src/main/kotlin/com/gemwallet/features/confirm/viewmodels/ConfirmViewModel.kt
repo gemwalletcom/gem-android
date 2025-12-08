@@ -22,6 +22,7 @@ import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.RecentType
 import com.gemwallet.android.model.Session
 import com.gemwallet.android.model.SignerParams
 import com.gemwallet.android.model.format
@@ -334,6 +335,7 @@ class ConfirmViewModel @Inject constructor(
                     delay(500)
                 } else {
                     addTransaction(txHash)
+                    addRecent(assetInfo, signerParams.input)
                     val finishRoute = when (signerParams.input) {
                         is ConfirmParams.Stake -> stakeRoute
                         is ConfirmParams.SwapParams,
@@ -352,6 +354,28 @@ class ConfirmViewModel @Inject constructor(
             state.update { ConfirmState.BroadcastError(err) }
         } catch (_: Throwable) {
             state.update { ConfirmState.BroadcastError(ConfirmError.BroadcastError) }
+        }
+    }
+
+    fun addRecent(
+        assetInfo: AssetInfo,
+        request: ConfirmParams
+    ) {
+        val walletId = assetInfo.walletId ?: return
+        val type = when (request) {
+            is ConfirmParams.SwapParams -> RecentType.Swap
+            is ConfirmParams.TransferParams -> RecentType.Send
+            else -> return
+        }
+        val toAssetId = if (request is ConfirmParams.SwapParams) {
+            request.toAsset.id
+        } else {
+            null
+        }
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                assetsRepository.addRecentActivity(assetInfo.id(), walletId, type, toAssetId)
+            } catch (_: Throwable) {}
         }
     }
 

@@ -31,10 +31,12 @@ class BuySelectViewModel @Inject constructor(
 class BuySelectSearch(
     assetsRepository: AssetsRepository,
 ) : BaseSelectSearch(assetsRepository) {
-    override fun invoke(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
-        return super.invoke(filters).map { list ->
-            list.filter { it.metadata?.isBuyEnabled == true }
-        }
-        .flowOn(Dispatchers.Default)
+
+    override fun items(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
+        return super.items(filters).map { items -> filter(items) }
+            .flowOn(Dispatchers.Default)
     }
+
+    override fun filter(items: List<AssetInfo>): List<AssetInfo>
+        = items.filter { it.metadata?.isBuyEnabled == true }
 }

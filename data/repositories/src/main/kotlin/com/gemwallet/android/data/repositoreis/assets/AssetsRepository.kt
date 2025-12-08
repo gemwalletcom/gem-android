@@ -511,7 +511,7 @@ class AssetsRepository @Inject constructor(
     }
 
     override fun getRecentActivities(
-        type: RecentType
+        type: List<RecentType>
     ): Flow<List<AssetInfo>> {
         return assetsDao.getRecentByType(type).toAssetInfoModel()
     }

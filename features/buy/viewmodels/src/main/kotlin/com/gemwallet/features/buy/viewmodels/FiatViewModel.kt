@@ -12,6 +12,7 @@ import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.math.parseNumber
+import com.gemwallet.android.model.RecentType
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.features.buy.viewmodels.models.AmountValidator
 import com.gemwallet.features.buy.viewmodels.models.BuyError
@@ -78,10 +79,6 @@ class FiatViewModel @Inject constructor(
                 }
             }
     }
-        .onEach {
-            val walletId = it.walletId ?: return@onEach
-            assetsRepository.addRecentBuy(it.id(), walletId)
-        }
     .flowOn(Dispatchers.IO)
     .map {
         object : AssetInfoUIModel(it, false, 2, 4) {
@@ -216,6 +213,7 @@ class FiatViewModel @Inject constructor(
 
     fun getUrl(callback: (String?) -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
+            addRecent()
             val url = buyRepository.getQuoteUrl(
                 _selectedQuote.value?.id ?: return@launch,
                 walletAddress = assetInfoUIModel.value?.owner ?: return@launch,
@@ -223,6 +221,12 @@ class FiatViewModel @Inject constructor(
             )
             callback(url)
         }
+    }
+
+    private fun addRecent() = viewModelScope.launch(Dispatchers.IO) {
+        val assetInfo = assetInfoUIModel.value?.assetInfo ?: return@launch
+        val walletId = assetInfo.walletId ?: return@launch
+        assetsRepository.addRecentActivity(assetInfo.id(), walletId, RecentType.Buy)
     }
 
     companion object {
