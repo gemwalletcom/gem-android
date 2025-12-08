@@ -202,8 +202,8 @@ class EvmSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        if (params.asset.chain == Chain.Ethereum) {
-            throw IllegalArgumentException("Ethereum doesn't support this stake type")
+        if (params.asset.chain == Chain.Ethereum || params.asset.chain == Chain.Monad) {
+            throw IllegalArgumentException("${params.asset.chain.string} doesn't support this stake type")
         }
         return stakeSmartchain(params, chainData, finalAmount, fee, privateKey)
     }
@@ -283,7 +283,7 @@ class EvmSignClient(
         fee: Fee,
         privateKey: ByteArray
     ): List<ByteArray> {
-        if (params.assetId.chain != Chain.SmartChain && params.assetId.chain != Chain.Ethereum) {
+        if (params.assetId.chain != Chain.SmartChain && params.assetId.chain != Chain.Ethereum && params.assetId.chain != Chain.Monad) {
             throw Exception("Doesn't support")
         }
         val meta = chainData as EvmChainData
