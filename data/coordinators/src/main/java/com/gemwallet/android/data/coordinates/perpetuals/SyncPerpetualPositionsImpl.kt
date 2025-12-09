@@ -5,6 +5,7 @@ import com.gemwallet.android.blockchain.services.PerpetualService
 import com.gemwallet.android.data.repositoreis.perpetual.PerpetualRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.PerpetualPositionsSummary
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -37,7 +38,11 @@ class SyncPerpetualPositionsImpl @Inject constructor(
             flow {
                 while (true) {
                     val summaries = withContext(Dispatchers.IO) {
-                        accounts.map { async { perpetualService.getPositions(it.chain, it.address) }  }
+                        accounts.map {
+                                async {
+                                    Pair(it.address, perpetualService.getPositions(it.chain, it.address))
+                                }
+                            }
                             .awaitAll()
                             .filterNotNull()
                     }
@@ -46,9 +51,11 @@ class SyncPerpetualPositionsImpl @Inject constructor(
             }
         }
         .onEach { items ->
-            items.map { item ->
-                perpetualRepository.putPositions(item.positions)
-                perpetualRepository.putBalance(item.balance)
+            items.forEach { item ->
+                val summary = item.second
+                val accountAddress = item.first
+                perpetualRepository.putPositions(accountAddress, summary?.positions ?: return@onEach)
+                perpetualRepository.putBalance(accountAddress, summary.balance)
             }
         }
         .flowOn(Dispatchers.IO)

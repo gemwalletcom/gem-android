@@ -6,6 +6,7 @@ import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChartCandleStick
 import com.wallet.core.primitives.Perpetual
+import com.wallet.core.primitives.PerpetualBalance
 import com.wallet.core.primitives.PerpetualData
 import com.wallet.core.primitives.PerpetualDirection
 import com.wallet.core.primitives.PerpetualMarginType
@@ -24,9 +25,10 @@ class FakePerpetualRepository @Inject constructor() : PerpetualRepository {
 
     private val perpetualsFlow = MutableStateFlow<List<PerpetualData>>(getSamplePerpetuals())
     private val chartDataFlow = MutableStateFlow<Map<String, List<ChartCandleStick>>>(getSampleChartData())
-    private val positionsFlow = MutableStateFlow<List<PerpetualPositionData>>(getSamplePositions())
+    private val positionsFlow = MutableStateFlow<Map<String, List<PerpetualPositionData>>>(emptyMap())
+    private val balancesFlow = MutableStateFlow<Map<String, PerpetualBalance>>(emptyMap())
 
-    override fun putPerpetuals(items: List<PerpetualData>) {
+    override suspend fun putPerpetuals(items: List<PerpetualData>) {
         perpetualsFlow.value = items
     }
 
@@ -43,14 +45,13 @@ class FakePerpetualRepository @Inject constructor() : PerpetualRepository {
         }
     }
 
-    override fun getPerpetual(perpetualId: String): Flow<PerpetualData> {
+    override fun getPerpetual(perpetualId: String): Flow<PerpetualData?> {
         return perpetualsFlow.map { perpetuals ->
             perpetuals.firstOrNull { it.perpetual.id == perpetualId }
-                ?: throw NoSuchElementException("Perpetual not found: $perpetualId")
         }
     }
 
-    override fun putPerpetualChartData(data: List<ChartCandleStick>) {
+    override suspend fun putPerpetualChartData(data: List<ChartCandleStick>) {
         if (data.isEmpty()) return
 
         val perpetualId = perpetualsFlow.value.firstOrNull()?.perpetual?.id ?: return
@@ -65,18 +66,46 @@ class FakePerpetualRepository @Inject constructor() : PerpetualRepository {
         }
     }
 
-    override fun putPositions(items: List<PerpetualPositionData>) {
-        positionsFlow.value = items
+    override suspend fun putPositions(accountAddress: String, items: List<PerpetualPosition>) {
+        val currentPositions = positionsFlow.value.toMutableMap()
+        currentPositions[accountAddress] = items.map { position ->
+            val perpetual = perpetualsFlow.value.firstOrNull { it.perpetual.id == position.perpetualId }
+            if (perpetual != null) {
+                PerpetualPositionData(
+                    perpetual = perpetual.perpetual,
+                    asset = perpetual.asset,
+                    position = position
+                )
+            } else {
+                null
+            }
+        }.filterNotNull()
+        positionsFlow.value = currentPositions
     }
 
-    override fun getPositions(): Flow<List<PerpetualPositionData>> {
-        return positionsFlow
+    override fun getPositions(accountAddress: List<String>): Flow<List<PerpetualPositionData>> {
+        return positionsFlow.map { positionsMap ->
+            accountAddress.flatMap { address ->
+                positionsMap[address] ?: emptyList()
+            }
+        }
     }
 
-    override fun getPosition(positionId: String): Flow<PerpetualPositionData> {
-        return positionsFlow.map { positions ->
-            positions.firstOrNull { it.position.id == positionId }
-                ?: throw NoSuchElementException("Position not found: $positionId")
+    override fun getPosition(positionId: String): Flow<PerpetualPositionData?> {
+        return positionsFlow.map { positionsMap ->
+            positionsMap.values.flatten().firstOrNull { it.position.id == positionId }
+        }
+    }
+
+    override suspend fun putBalance(accountAddress: String, balance: PerpetualBalance) {
+        val currentBalances = balancesFlow.value.toMutableMap()
+        currentBalances[accountAddress] = balance
+        balancesFlow.value = currentBalances
+    }
+
+    override fun getBalances(accountAddresses: List<String>): Flow<List<PerpetualBalance>> {
+        return balancesFlow.map { balancesMap ->
+            accountAddresses.mapNotNull { address -> balancesMap[address] }
         }
     }
 
@@ -507,93 +536,6 @@ class FakePerpetualRepository @Inject constructor() : PerpetualRepository {
             "BTC-PERP" to btcChartData,
             "ETH-PERP" to ethChartData,
             "SOL-PERP" to solChartData
-        )
-    }
-
-    private fun getSamplePositions(): List<PerpetualPositionData> {
-        val btcAsset = Asset(
-            id = AssetId(Chain.Bitcoin),
-            name = "Bitcoin",
-            symbol = "BTC",
-            decimals = 8,
-            type = AssetType.NATIVE
-        )
-
-        val ethAsset = Asset(
-            id = AssetId(Chain.Ethereum),
-            name = "Ethereum",
-            symbol = "ETH",
-            decimals = 18,
-            type = AssetType.NATIVE
-        )
-
-        return listOf(
-            PerpetualPositionData(
-                perpetual = Perpetual(
-                    id = "BTC-PERP",
-                    name = "Bitcoin Perpetual",
-                    provider = PerpetualProvider.Hypercore,
-                    assetId = AssetId(Chain.Bitcoin),
-                    identifier = "BTC-PERP",
-                    price = 95420.50,
-                    pricePercentChange24h = 2.5,
-                    openInterest = 2500000000.0,
-                    volume24h = 15000000000.0,
-                    funding = 0.0001,
-                    maxLeverage = 100u
-                ),
-                asset = btcAsset,
-                position = PerpetualPosition(
-                    id = "pos-btc-1",
-                    perpetualId = "BTC-PERP",
-                    assetId = AssetId(Chain.Bitcoin),
-                    size = 0.5,
-                    sizeValue = 47710.25,
-                    leverage = 10u,
-                    entryPrice = 94500.0,
-                    liquidationPrice = 85050.0,
-                    marginType = PerpetualMarginType.Cross,
-                    direction = PerpetualDirection.Long,
-                    marginAmount = 4771.025,
-                    takeProfit = null,
-                    stopLoss = null,
-                    pnl = 460.25,
-                    funding = 0.0001f
-                )
-            ),
-            PerpetualPositionData(
-                perpetual = Perpetual(
-                    id = "ETH-PERP",
-                    name = "Ethereum Perpetual",
-                    provider = PerpetualProvider.Hypercore,
-                    assetId = AssetId(Chain.Ethereum),
-                    identifier = "ETH-PERP",
-                    price = 3625.75,
-                    pricePercentChange24h = 1.8,
-                    openInterest = 1200000000.0,
-                    volume24h = 8000000000.0,
-                    funding = 0.00008,
-                    maxLeverage = 50u
-                ),
-                asset = ethAsset,
-                position = PerpetualPosition(
-                    id = "pos-eth-1",
-                    perpetualId = "ETH-PERP",
-                    assetId = AssetId(Chain.Ethereum),
-                    size = 5.0,
-                    sizeValue = 18128.75,
-                    leverage = 5u,
-                    entryPrice = 3650.0,
-                    liquidationPrice = 2920.0,
-                    marginType = PerpetualMarginType.Isolated,
-                    direction = PerpetualDirection.Short,
-                    marginAmount = 3625.75,
-                    takeProfit = null,
-                    stopLoss = null,
-                    pnl = -121.25,
-                    funding = 0.00008f
-                )
-            )
         )
     }
 }

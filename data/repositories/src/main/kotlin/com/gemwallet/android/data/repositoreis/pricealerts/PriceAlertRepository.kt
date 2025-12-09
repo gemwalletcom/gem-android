@@ -7,7 +7,7 @@ import com.gemwallet.android.cases.pricealerts.PutPriceAlertCase
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.service.store.database.entities.DbPriceAlert
-import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toModels
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.services.gemapi.GemApiClient
@@ -37,7 +37,7 @@ class PriceAlertRepository(
     }
 
     override fun getPriceAlert(assetId: AssetId): Flow<PriceAlert?> {
-        return priceAlertsDao.getAlert(assetId.toIdentifier()).filterNotNull().toModel()
+        return priceAlertsDao.getAlert(assetId.toIdentifier()).filterNotNull().toDTO()
     }
 
     override suspend fun setAssetPriceAlertEnabled(assetId: AssetId, enabled: Boolean): Unit = withContext(Dispatchers.IO) {
@@ -47,7 +47,7 @@ class PriceAlertRepository(
                 priceAlertsDao.put(listOf(DbPriceAlert(assetIdentifier, enabled = true)))
                 listOf(PriceAlert(assetId, Currency.USD.string)) // TODO: Add user currency select
             } else {
-                listOf(it.toModel())
+                listOf(it.toDTO())
             }
         }
         priceAlertsDao.enabled(assetIdentifier, enabled)

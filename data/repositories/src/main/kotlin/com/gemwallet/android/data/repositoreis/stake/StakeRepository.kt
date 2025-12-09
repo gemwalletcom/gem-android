@@ -2,7 +2,7 @@ package com.gemwallet.android.data.repositoreis.stake
 
 import com.gemwallet.android.blockchain.services.StakeService
 import com.gemwallet.android.data.service.store.database.StakeDao
-import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.data.services.gemapi.GemApiStaticClient
@@ -83,7 +83,7 @@ class StakeRepository(
 
     fun getValidators(chain: Chain): Flow<List<DelegationValidator>> {
         return stakeDao.getValidators(chain)
-            .map { items -> items.toModel().filter { it.isActive }.sortedByDescending { it.apr } }
+            .map { items -> items.toDTO().filter { it.isActive }.sortedByDescending { it.apr } }
     }
 
     fun getDelegations(assetId: AssetId, owner: String): Flow<List<Delegation>> {
@@ -102,7 +102,7 @@ class StakeRepository(
     }
 
     suspend fun getStakeValidator(assetId: AssetId, validatorId: String): DelegationValidator? = withContext(Dispatchers.IO) {
-        stakeDao.getStakeValidator(assetId.chain, validatorId)?.toModel()
+        stakeDao.getStakeValidator(assetId.chain, validatorId)?.toDTO()
     }
 
 //    suspend fun getUnstakeValidator(assetId: AssetId, address: String): DelegationValidator? = withContext(Dispatchers.IO) {

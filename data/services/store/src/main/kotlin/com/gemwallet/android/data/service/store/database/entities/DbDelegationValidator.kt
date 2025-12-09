@@ -18,7 +18,7 @@ data class DbDelegationValidator(
     val apr: Double,
 )
 
-fun DbDelegationValidator.toModel(): DelegationValidator {
+fun DbDelegationValidator.toDTO(): DelegationValidator {
     return DelegationValidator(
         id = id,
         chain = chain,
@@ -40,8 +40,8 @@ fun DelegationValidator.toRecord(): DbDelegationValidator {
     )
 }
 
-fun List<DbDelegationValidator>.toModel() = map { it.toModel() }
+fun List<DbDelegationValidator>.toDTO() = map { it.toDTO() }
 
-fun Flow<List<DbDelegationValidator>>.toModel() = map { it.toModel() }
+fun Flow<List<DbDelegationValidator>>.toDTO() = map { it.toDTO() }
 
 fun List<DelegationValidator>.toRecord() = map { it.toRecord() }

@@ -2,6 +2,7 @@ package com.gemwallet.android.data.coordinates.perpetuals
 
 import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualPositions
 import com.gemwallet.android.data.repositoreis.perpetual.PerpetualRepository
+import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.domains.percentage.formatAsPercentage
 import com.gemwallet.android.domains.perpetual.aggregates.PerpetualPositionDataAggregate
 import com.gemwallet.android.domains.price.PriceState
@@ -10,17 +11,23 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PerpetualDirection
 import com.wallet.core.primitives.PerpetualPositionData
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import kotlin.math.absoluteValue
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class GetPerpetualPositionsImpl @Inject constructor(
+    private val sessionRepository: SessionRepository,
     private val perpetualsRepository: PerpetualRepository,
 ) : GetPerpetualPositions {
 
     override fun getPerpetualPositions(): Flow<List<PerpetualPositionDataAggregateImpl>> {
-        return perpetualsRepository.getPositions()
+        return sessionRepository.session()
+            .map { session -> session?.wallet?.accounts?.map { it.address } ?: emptyList() }
+            .flatMapLatest { accountAddresses -> perpetualsRepository.getPositions(accountAddresses) }
             .map { items -> items.map { PerpetualPositionDataAggregateImpl(it) } }
     }
 }

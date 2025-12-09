@@ -14,7 +14,7 @@ data class DbSession(
     val currency: String,
 )
 
-fun DbSession.toModel(wallet: Wallet): Session {
+fun DbSession.toDTO(wallet: Wallet): Session {
     return Session(
         wallet = wallet,
         currency = Currency.entries.firstOrNull { it.string == currency } ?: Currency.USD

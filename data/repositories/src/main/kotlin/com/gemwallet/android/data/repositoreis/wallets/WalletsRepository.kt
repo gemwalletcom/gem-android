@@ -3,7 +3,7 @@ package com.gemwallet.android.data.repositoreis.wallets
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.data.service.store.database.AccountsDao
 import com.gemwallet.android.data.service.store.database.WalletsDao
-import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
@@ -31,7 +31,7 @@ class WalletsRepository @Inject constructor(
         return getAll().map { it.size + 1 }.firstOrNull() ?: 0
     }
 
-    fun getAll() = walletsDao.getAll().toModel()
+    fun getAll() = walletsDao.getAll().toDTO()
 
     suspend fun addWatch(walletName: String, address: String, chain: Chain): Wallet =
         putWallet(
@@ -91,7 +91,7 @@ class WalletsRepository @Inject constructor(
         return walletsDao.getById(walletId).map { walletRecord ->
             val accounts = accountsDao.getByWalletId(walletId)
             if (accounts.isEmpty()) return@map null
-            walletRecord?.toModel(accounts)
+            walletRecord?.toDTO(accounts)
         }.flowOn(Dispatchers.IO)
     }
 

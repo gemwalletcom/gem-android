@@ -22,6 +22,10 @@ import com.gemwallet.android.data.service.store.database.entities.DbNFTAttribute
 import com.gemwallet.android.data.service.store.database.entities.DbNFTCollection
 import com.gemwallet.android.data.service.store.database.entities.DbNFTCollectionLink
 import com.gemwallet.android.data.service.store.database.entities.DbNode
+import com.gemwallet.android.data.service.store.database.entities.DbPerpetual
+import com.gemwallet.android.data.service.store.database.entities.DbPerpetualBalance
+import com.gemwallet.android.data.service.store.database.entities.DbPerpetualMetadata
+import com.gemwallet.android.data.service.store.database.entities.DbPerpetualPosition
 import com.gemwallet.android.data.service.store.database.entities.DbPrice
 import com.gemwallet.android.data.service.store.database.entities.DbPriceAlert
 import com.gemwallet.android.data.service.store.database.entities.DbRecentActivity
@@ -32,7 +36,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetada
 import com.gemwallet.android.data.service.store.database.entities.DbWallet
 
 @Database(
-    version = 57,
+    version = 58,
     entities = [
         DbWallet::class,
         DbAccount::class,
@@ -60,6 +64,10 @@ import com.gemwallet.android.data.service.store.database.entities.DbWallet
         DbAssetPriority::class,
         DbFiatRate::class,
         DbRecentActivity::class,
+        DbPerpetual::class,
+        DbPerpetualBalance::class,
+        DbPerpetualMetadata::class,
+        DbPerpetualPosition::class,
     ],
     views = [
         DbAssetInfo::class,
@@ -94,4 +102,10 @@ abstract class GemDatabase : RoomDatabase() {
     abstract fun nftDao(): NftDao
 
     abstract fun assetsPriorityDao(): AssetsPriorityDao
+
+    abstract fun perpetualDao(): PerpetualDao
+
+    abstract fun perpetualPositionDao(): PerpetualPositionDao
+
+    abstract fun perpetualBalanceDao(): PerpetualBalanceDao
 }

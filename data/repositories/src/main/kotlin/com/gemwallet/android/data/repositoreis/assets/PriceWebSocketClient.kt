@@ -4,7 +4,7 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.service.store.database.PricesDao
-import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.ext.toAssetId
 import com.wallet.core.primitives.AssetId
@@ -101,7 +101,7 @@ class PriceWebSocketClient(
     private suspend fun handlePriceUpdate(prices: List<AssetPrice>, newRates: List<FiatRate>) {
         val currency = sessionRepository.getCurrentCurrency()
         updateRates(newRates, currency)
-        val rate = pricesDao.getRates(currency)?.toModel() ?: return
+        val rate = pricesDao.getRates(currency)?.toDTO() ?: return
         updatePrices(prices, rate)
     }
 

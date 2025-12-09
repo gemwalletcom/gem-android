@@ -24,7 +24,7 @@ data class DbBanner(
     val event: BannerEvent,
 )
 
-fun DbBanner.toModel(wallet: Wallet?, asset: Asset?): Banner {
+fun DbBanner.toDTO(wallet: Wallet?, asset: Asset?): Banner {
     return Banner(
         wallet = wallet,
         asset = asset,

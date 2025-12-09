@@ -6,7 +6,7 @@ import androidx.core.net.toUri
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.data.service.store.database.ConnectionsDao
 import com.gemwallet.android.data.service.store.database.entities.DbConnection
-import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.reown.android.Core
 import com.reown.android.CoreClient
@@ -108,7 +108,7 @@ class BridgesRepository(
             connectionsDao.getAll().map { items ->
                 items.mapNotNull { room ->
                     val wallet = wallets.firstOrNull { it.id == room.walletId } ?: return@mapNotNull null
-                    room.toModel(wallet)
+                    room.toDTO(wallet)
                 }
             }
         }
@@ -126,7 +126,7 @@ class BridgesRepository(
         return walletsRepository.getAll().flatMapLatest { wallets ->
             connectionsDao.getConnection(connectionId).map { room ->
                 val wallet = wallets.firstOrNull { it.id == room?.walletId } ?: return@map null
-                room?.toModel(wallet)
+                room?.toDTO(wallet)
             }
         }
     }

@@ -8,23 +8,23 @@ import com.wallet.core.primitives.PerpetualPositionData
 import kotlinx.coroutines.flow.Flow
 
 interface PerpetualRepository {
-    fun putPerpetuals(items: List<PerpetualData>)
+    suspend fun putPerpetuals(items: List<PerpetualData>)
 
     fun getPerpetuals(query: String? = null): Flow<List<PerpetualData>>
 
-    fun getPerpetual(perpetualId: String): Flow<PerpetualData>
+    fun getPerpetual(perpetualId: String): Flow<PerpetualData?>
 
     suspend fun putPerpetualChartData(data: List<ChartCandleStick>)
 
     fun getPerpetualChartData(perpetualId: String): Flow<List<ChartCandleStick>>
 
-    suspend fun putPositions(items: List<PerpetualPosition>)
+    suspend fun putPositions(accountAddress: String, items: List<PerpetualPosition>)
 
-    fun getPositions(): Flow<List<PerpetualPositionData>>
+    fun getPositions(accountAddress: List<String>): Flow<List<PerpetualPositionData>>
 
-    fun getPosition(positionId: String): Flow<PerpetualPositionData>
+    fun getPosition(positionId: String): Flow<PerpetualPositionData?>
 
-    suspend fun putBalance(balance: PerpetualBalance)
+    suspend fun putBalance(accountAddress: String, balance: PerpetualBalance)
 
-    fun getBalances(): Flow<List<PerpetualBalance>>
+    fun getBalances(accountAddresses: List<String>): Flow<List<PerpetualBalance>>
 }

@@ -21,12 +21,12 @@ data class DbWallet(
     @ColumnInfo(defaultValue = "Import") val source: WalletSource,
 )
 
-fun DbWallet.toModel(accounts: List<DbAccount>): Wallet {
+fun DbWallet.toDTO(accounts: List<DbAccount>): Wallet {
     return Wallet(
         id = id,
         name = name,
         type = type,
-        accounts = accounts.toModel(),
+        accounts = accounts.toDTO(),
         index = index,
         order = 0,
         isPinned = pinned,
@@ -47,6 +47,6 @@ fun Wallet.toRecord(): DbWallet {
     )
 }
 
-fun Map<DbWallet, List<DbAccount>>.toModel() = map { entry -> entry.key.toModel(entry.value) }
+fun Map<DbWallet, List<DbAccount>>.toDTO() = map { entry -> entry.key.toDTO(entry.value) }
 
-fun Flow<Map<DbWallet, List<DbAccount>>>.toModel() = map { entry -> entry.toModel() }
+fun Flow<Map<DbWallet, List<DbAccount>>>.toDTO() = map { entry -> entry.toDTO() }

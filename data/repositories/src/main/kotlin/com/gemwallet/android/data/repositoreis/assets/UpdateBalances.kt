@@ -5,7 +5,7 @@ import com.gemwallet.android.data.service.store.database.BalancesDao
 import com.gemwallet.android.data.service.store.database.entities.DbBalance
 import com.gemwallet.android.data.service.store.database.entities.mergeDelegation
 import com.gemwallet.android.data.service.store.database.entities.mergeNative
-import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.model.AssetBalance
 import com.wallet.core.primitives.Account
@@ -67,6 +67,6 @@ class UpdateBalances(
     private suspend fun mergeNativeBalances(native: DbBalance?, delegation: DbBalance?): AssetBalance? = withContext(Dispatchers.IO) {
         val dbFullBalance = DbBalance.mergeDelegation(native, delegation)
         dbFullBalance?.let { runCatching { balancesDao.insert(it) } }
-        dbFullBalance?.toModel()
+        dbFullBalance?.toDTO()
     }
 }
