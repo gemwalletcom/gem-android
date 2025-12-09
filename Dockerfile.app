@@ -7,6 +7,8 @@ FROM ${BASE_IMAGE}:${BASE_IMAGE_TAG}
 ARG TAG=main
 ARG SKIP_SIGN
 ARG BUNDLE_TASK=":app:assembleUniversalRelease"
+ARG GRADLE_OPTS="-Xmx8g -Dfile.encoding=UTF-8"
+ARG R8_MAP_ID_SEED=""
 
 RUN REPO_URL="https://github.com/gemwalletcom/gem-android.git" && \
     if git ls-remote --exit-code --heads "$REPO_URL" "$TAG" >/dev/null 2>&1; then \
@@ -21,6 +23,9 @@ RUN REPO_URL="https://github.com/gemwalletcom/gem-android.git" && \
     fi
 
 WORKDIR $HOME/gem-android
+
+ENV GRADLE_OPTS=${GRADLE_OPTS} \
+    R8_MAP_ID_SEED=${R8_MAP_ID_SEED}
 
 COPY --chown=root:root local.properties ./local.properties
 

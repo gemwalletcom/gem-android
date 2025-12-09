@@ -64,6 +64,7 @@ build_app_image() {
   local base_image="$3"
   local base_tag="$4"
   local gradle_task="$5"
+  local map_id_seed="$6"
 
   echo "Building app image for tag ${tag} using task ${gradle_task}..."
   docker build \
@@ -73,6 +74,7 @@ build_app_image() {
     --build-arg BASE_IMAGE="${base_image}" \
     --build-arg BASE_IMAGE_TAG="${base_tag}" \
     --build-arg BUNDLE_TASK="${gradle_task}" \
+    --build-arg R8_MAP_ID_SEED="${map_id_seed}" \
     -f Dockerfile.app .
 }
 
@@ -183,6 +185,8 @@ main() {
   tag_safe="$(sanitize "$tag")"
   [[ -n "$tag_safe" ]] || tag_safe="latest"
 
+  local map_id_seed="${VERIFY_R8_MAP_ID_SEED:-${tag#v}}"
+
   local work_dir="${root_dir}/artifacts/reproducible/${tag_safe}"
   rm -rf "$work_dir"
   mkdir -p "$work_dir"
@@ -204,7 +208,8 @@ main() {
 
   # Build Docker images
   ensure_base_image "$base_image" "$base_tag"
-  build_app_image "$app_image" "$tag" "$base_image" "$base_tag" "$gradle_task"
+  echo "Build parameters: R8_MAP_ID_SEED=${map_id_seed}"
+  build_app_image "$app_image" "$tag" "$base_image" "$base_tag" "$gradle_task" "$map_id_seed"
 
   # Extract APK from Docker image
   extract_apk_outputs "$app_image" "$work_dir" "$apk_subdir"
