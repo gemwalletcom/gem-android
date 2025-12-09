@@ -252,7 +252,7 @@ private data class RequestViewModelState(
             return RequestSceneState.Cancel
         }
         if (error != null) {
-            RequestSceneState.Error(error)
+            return RequestSceneState.Error(error)
         }
         if (request == null) {
             return RequestSceneState.Loading

@@ -121,13 +121,6 @@ class SwapViewModel @Inject constructor(
              if (request == null) {
                 swapScreenState.update { SwapState.None }
             } else {
-                 viewModelScope.launch(Dispatchers.IO) {
-                     assetsRepository.addRecentSwap(
-                         request.pay.id(),
-                         request.receive.id(),
-                         request.pay.walletId ?: return@launch
-                     )
-                 }
                 swapScreenState.update { SwapState.GetQuote }
             }
         }

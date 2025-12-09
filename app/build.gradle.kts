@@ -30,8 +30,8 @@ android {
         applicationId = "com.gemwallet.android"
         minSdk = 28
         targetSdk = 36
-        versionCode = Integer.valueOf(System.getenv("BUILD_NUMBER") ?: "1")
-        versionName = System.getenv("BUILD_VERSION") ?: "1.0"
+        versionCode = 654
+        versionName = "1.3.60"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {

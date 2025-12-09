@@ -5,5 +5,5 @@ import com.gemwallet.android.model.RecentType
 import kotlinx.coroutines.flow.Flow
 
 interface GetRecent {
-    fun getRecentActivities(type: RecentType): Flow<List<AssetInfo>>
+    fun getRecentActivities(type: List<RecentType>): Flow<List<AssetInfo>>
 }

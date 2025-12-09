@@ -43,7 +43,7 @@ open class PriceAlertSelectSearch(
 
     val addedPriceAlerts = getPriceAlerts.getPriceAlerts().map { it.map { it.assetId } }
 
-    override fun invoke(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
+    override fun items(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
         return combine(filters, addedPriceAlerts) { filters, alerts -> Pair(filters,alerts) }
             .flatMapLatest {
                 val (filters, alerts) = it

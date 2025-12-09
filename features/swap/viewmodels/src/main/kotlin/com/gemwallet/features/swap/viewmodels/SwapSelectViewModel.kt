@@ -97,7 +97,7 @@ class SwapSelectSearch(
     val payId = MutableStateFlow<AssetId?>(null)
     val receiveId = MutableStateFlow<AssetId?>(null)
 
-    override fun invoke(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
+    override fun items(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
         return combine(filters, swapItemType, payId, receiveId) { params/*session, query, type, payId, receiveId, tag*/ ->
             val filters: SelectAssetFilters? = params[0] as? SelectAssetFilters?
             val type: SwapItemType? = params[1] as? SwapItemType?

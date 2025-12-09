@@ -13,7 +13,7 @@ open class BaseSelectSearch(
     private val assetsRepository: AssetsRepository,
 ) : SelectSearch {
 
-    override fun invoke(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
+    override fun items(filters: Flow<SelectAssetFilters?>): Flow<List<AssetInfo>> {
         return filters.flatMapLatest { filters ->
             assetsRepository.search(filters?.query ?: "", filters?.tag?.let { listOf(it) } ?: emptyList(), false)
         }.map { items -> items.distinctBy { it.asset.id.toIdentifier() } }

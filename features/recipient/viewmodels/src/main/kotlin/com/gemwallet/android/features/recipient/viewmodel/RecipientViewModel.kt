@@ -67,10 +67,6 @@ class RecipientViewModel @Inject constructor(
         .mapNotNull { it.toAssetId() }
     val nftAssetId = savedStateHandle.getStateFlow(nftAssetIdArg, "")
     val asset = assetId.flatMapLatest { assetsRepository.getAssetInfo(it) }
-        .onEach {
-            val walletId = it?.walletId ?: return@onEach
-            assetsRepository.addRecentActivity(it.id(), walletId, RecentType.Send)
-        }
         .flowOn(Dispatchers.IO)
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 

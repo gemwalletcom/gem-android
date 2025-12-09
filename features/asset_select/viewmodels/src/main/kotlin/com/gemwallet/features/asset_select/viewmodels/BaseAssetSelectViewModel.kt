@@ -80,7 +80,7 @@ open class BaseAssetSelectViewModel(
 
     private val assets = combine(
         filters,
-        search(filters),
+        search.items(filters),
     ) { filters, items ->
         val chainFilter = filters?.chainFilter
         val balanceFilter = filters?.hasBalance ?: false
@@ -129,12 +129,13 @@ open class BaseAssetSelectViewModel(
         val balanceFilter = filters.hasBalance
         val hasChainFilter = chainFilter.isNotEmpty()
 
-        assetsRepository.getRecentActivities(type).map { items ->
+        assetsRepository.getRecentActivities(RecentType.entries).map { items ->
             items.filter {
                 (!hasChainFilter || chainFilter.contains(it.id().chain))
                         && (!balanceFilter || it.balance.totalAmount > 0.0)
             }
         }
+        .map { items -> search.filter(items) }
     }
     .map { items -> items.map { AssetInfoUIModel(it) }.toImmutableList() }
     .flowOn(Dispatchers.IO)
