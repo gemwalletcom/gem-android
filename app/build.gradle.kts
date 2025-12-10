@@ -247,6 +247,7 @@ dependencies {
     implementation(project(":features:bridge:viewmodels"))
     implementation(project(":features:assets:presents"))
     implementation(project(":features:assets:viewmodels"))
+    implementation(project(":features:perpetual:presents"))
 
     implementation(libs.ktx.core)
 

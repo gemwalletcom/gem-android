@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class GetPerpetualsImpl @Inject constructor(
-    private val perpetualsRepository: PerpetualRepository,
+    private val perpetualRepository: PerpetualRepository,
 ) : GetPerpetuals {
 
     override fun getPerpetuals(searchQuery: String?): Flow<List<PerpetualDataAggregate>> {
-        return perpetualsRepository.getPerpetuals(searchQuery)
+        return perpetualRepository.getPerpetuals(searchQuery)
             .map { items -> items.map { PerpetualDataAggregate(it) } }
     }
 

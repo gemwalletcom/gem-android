@@ -21,13 +21,13 @@ import kotlin.math.absoluteValue
 @OptIn(ExperimentalCoroutinesApi::class)
 class GetPerpetualPositionsImpl @Inject constructor(
     private val sessionRepository: SessionRepository,
-    private val perpetualsRepository: PerpetualRepository,
+    private val perpetualRepository: PerpetualRepository,
 ) : GetPerpetualPositions {
 
     override fun getPerpetualPositions(): Flow<List<PerpetualPositionDataAggregateImpl>> {
         return sessionRepository.session()
             .map { session -> session?.wallet?.accounts?.map { it.address } ?: emptyList() }
-            .flatMapLatest { accountAddresses -> perpetualsRepository.getPositions(accountAddresses) }
+            .flatMapLatest { accountAddresses -> perpetualRepository.getPositions(accountAddresses) }
             .map { items -> items.map { PerpetualPositionDataAggregateImpl(it) } }
     }
 }

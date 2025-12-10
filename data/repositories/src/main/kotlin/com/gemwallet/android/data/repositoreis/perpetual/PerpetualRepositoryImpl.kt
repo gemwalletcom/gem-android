@@ -5,7 +5,6 @@ import com.gemwallet.android.data.service.store.database.PerpetualDao
 import com.gemwallet.android.data.service.store.database.PerpetualPositionDao
 import com.gemwallet.android.data.service.store.database.entities.toDB
 import com.gemwallet.android.data.service.store.database.entities.toDTO
-import com.gemwallet.android.data.service.store.database.entities.toDto
 import com.wallet.core.primitives.ChartCandleStick
 import com.wallet.core.primitives.PerpetualBalance
 import com.wallet.core.primitives.PerpetualData
@@ -21,16 +20,19 @@ class PerpetualRepositoryImpl(
 ) : PerpetualRepository {
 
     override suspend fun putPerpetuals(items: List<PerpetualData>) {
-        perpetualDao.putPerpetuals(items.map { it.perpetual.toDB() })
+        perpetualDao.putPerpetualsData(items.map { it.perpetual.toDB() }, items.map { it.asset.toDB() })
+
     }
 
     override fun getPerpetuals(query: String?): Flow<List<PerpetualData>> {
-        // TODO: Query
-        return perpetualDao.getPerpetualsData().map { it.mapNotNull { it.toDTO() } }
+        return perpetualDao.getPerpetualsData()
+            .map { items -> items.mapNotNull { it.toDTO() } }
+//            .map { items -> items.sortedByDescending { it.perpetual.funding } }
     }
 
     override fun getPerpetual(perpetualId: String): Flow<PerpetualData?> {
-        return perpetualDao.getPerpetual(perpetualId).map { it.toDTO() }
+        return perpetualDao.getPerpetual(perpetualId)
+            .map { it.toDTO() }
     }
 
     override suspend fun putPerpetualChartData(data: List<ChartCandleStick>) {
@@ -46,7 +48,8 @@ class PerpetualRepositoryImpl(
     }
 
     override fun getPositions(accountAddress: List<String>): Flow<List<PerpetualPositionData>> {
-        return perpetualPositionDao.getPositionsData(accountAddress).map { it.mapNotNull { it.toDTO() } }
+        return perpetualPositionDao.getPositionsData(accountAddress)
+            .map { items -> items.mapNotNull { it.toDTO() } }
     }
 
     override fun getPosition(positionId: String): Flow<PerpetualPositionData?> {

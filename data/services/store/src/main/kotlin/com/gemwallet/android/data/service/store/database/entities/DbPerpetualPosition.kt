@@ -3,6 +3,7 @@ package com.gemwallet.android.data.service.store.database.entities
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Index
+import androidx.room.Relation
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.PerpetualDirection
@@ -47,50 +48,23 @@ data class DbPerpetualPosition(
 )
 
 data class DbPerpetualPositionData(
-    @Embedded val perpetual: DbPerpetual,
-    @Embedded val position: DbPerpetualPosition,
-    @Embedded val asset: DbAsset,
-)
 
-//data class DbPerpetualPositionData(
-//    val id: String,
-//    val perpetualId: String,
-//    val accountAddress: String,
-//    val assetId: String,
-//    val size: Double,
-//    val sizeValue: Double,
-//    val leverage: Int,
-//    val entryPrice: Double? = null,
-//    val liquidationPrice: Double? = null,
-//    val marginType: PerpetualMarginType,
-//    val direction: PerpetualDirection,
-//    val marginAmount: Double,
-//    // Trigger: profit
-//    val takeProfitPrice: Double? = null,
-//    val takeProfitType: PerpetualOrderType? = null,
-//    val takeProfitOrderId: String? = null,
-//    // // Trigger: stop loss
-//    val stopLossPrice: Double? = null,
-//    val stopLossType: PerpetualOrderType? = null,
-//    val stopLossOrderId: String? = null,
-//    val pnl: Double,
-//    val funding: Float? = null,
-//
-//    val assetName: String,
-//    val assetSymbol: String,
-//    val assetDecimals: Int,
-//    val assetType: AssetType,
-//
-//    val perpetualName: String,
-//    val perpetualProvider: PerpetualProvider,
-//    val perpetualIdentifier: String,
-//    val perpetualPrice: Double,
-//    val perpetualPricePercentChange24h: Double,
-//    val perpetualPpenInterest: Double,
-//    val perpetualVolume24h: Double,
-//    val perpetualFunding: Double,
-//    val perpetualMaxLeverage: Int,
-//)
+    @Embedded
+    val position: DbPerpetualPosition,
+
+    @Relation(
+        parentColumn = "perpetualId",
+        entityColumn = "id"
+    )
+    val perpetual: DbPerpetual,
+
+
+    @Relation(
+        parentColumn = "assetId",
+        entityColumn = "id"
+    )
+    val asset: DbPerpetualAsset,
+)
 
 fun DbPerpetualPosition.toDto(): PerpetualPosition? {
     val takeProfitTrigger = if (takeProfitType != null && takeProfitPrice != null && takeProfitOrderId != null) {

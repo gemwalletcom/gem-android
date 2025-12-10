@@ -1,8 +1,13 @@
 package com.gemwallet.android.di
 
+import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualBalance
+import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualPositions
+import com.gemwallet.android.application.perpetual.coordinators.GetPerpetuals
 import com.gemwallet.android.application.perpetual.coordinators.SyncPerpetualPositions
 import com.gemwallet.android.application.perpetual.coordinators.SyncPerpetuals
 import com.gemwallet.android.blockchain.services.PerpetualService
+import com.gemwallet.android.data.coordinates.perpetuals.GetPerpetualBalanceImpl
+import com.gemwallet.android.data.coordinates.perpetuals.GetPerpetualPositionsImpl
 import com.gemwallet.android.data.coordinates.perpetuals.GetPerpetualsImpl
 import com.gemwallet.android.data.coordinates.perpetuals.SyncPerpetualPositionsImpl
 import com.gemwallet.android.data.coordinates.perpetuals.SyncPerpetualsImpl
@@ -43,6 +48,40 @@ object CoordinatorsModule { // TODO: Move to coordinators
             perpetualService = perpetualService,
             perpetualRepository = perpetualRepository,
             chains = listOf(Chain.HyperCore)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetPerpetualPositions(
+        sessionRepository: SessionRepository,
+        perpetualRepository: PerpetualRepository,
+    ): GetPerpetualPositions {
+        return GetPerpetualPositionsImpl(
+            sessionRepository = sessionRepository,
+            perpetualRepository = perpetualRepository,
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetPerpetuals(
+        perpetualRepository: PerpetualRepository,
+    ): GetPerpetuals {
+        return GetPerpetualsImpl(
+            perpetualRepository = perpetualRepository,
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetPerpetualBalance(
+        sessionRepository: SessionRepository,
+        perpetualRepository: PerpetualRepository,
+    ): GetPerpetualBalance {
+        return GetPerpetualBalanceImpl(
+            sessionRepository = sessionRepository,
+            perpetualRepository = perpetualRepository,
         )
     }
 }

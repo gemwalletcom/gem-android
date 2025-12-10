@@ -61,6 +61,7 @@ fun SettingsScene(
     onNetworks: () -> Unit,
     onPriceAlerts: () -> Unit,
     onSupport: () -> Unit,
+    onPerpetual: () -> Unit,
     scrollState: ScrollState = rememberScrollState()
 ) {
     val viewModel: SettingsViewModel = hiltViewModel()
@@ -93,6 +94,12 @@ fun SettingsScene(
                 icon = R.drawable.settings_security,
                 listPosition = ListPosition.Last,
                 onClick = onSecurity
+            )
+            LinkItem(
+                title = stringResource(id = R.string.perpetuals_title),
+                icon = R.drawable.settings_security,
+                listPosition = ListPosition.Last,
+                onClick = onPerpetual
             )
             if (viewModel.isNotificationsAvailable()) {
                 LinkItem(

@@ -2,6 +2,7 @@ package com.gemwallet.features.perpetual.views.market
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.features.perpetual.viewmodels.PerpetualMarketViewModel
@@ -9,7 +10,7 @@ import com.gemwallet.features.perpetual.viewmodels.PerpetualMarketViewModel
 @Composable
 fun PerpetualMarketNavScreen(
     onCancel: () -> Unit,
-    viewModel: PerpetualMarketViewModel,
+    viewModel: PerpetualMarketViewModel = hiltViewModel(),
 ) {
     val perpetuals by viewModel.perpetuals.collectAsStateWithLifecycle()
     val positions by viewModel.positions.collectAsStateWithLifecycle()

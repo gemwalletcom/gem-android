@@ -8,8 +8,6 @@ import com.wallet.core.primitives.ChartCandleStick
 import com.wallet.core.primitives.Perpetual
 import com.wallet.core.primitives.PerpetualBalance
 import com.wallet.core.primitives.PerpetualData
-import com.wallet.core.primitives.PerpetualDirection
-import com.wallet.core.primitives.PerpetualMarginType
 import com.wallet.core.primitives.PerpetualMetadata
 import com.wallet.core.primitives.PerpetualPosition
 import com.wallet.core.primitives.PerpetualPositionData

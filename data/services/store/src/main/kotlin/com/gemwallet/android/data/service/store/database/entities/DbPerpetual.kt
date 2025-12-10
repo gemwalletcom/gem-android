@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.wallet.core.primitives.Perpetual
@@ -32,14 +33,25 @@ data class DbPerpetual(
 
 @Entity(tableName = "perpetual_metadata")
 data class DbPerpetualMetadata(
-    @PrimaryKey val id: String,
+    @PrimaryKey val perpetualId: String,
     val isPinned: Boolean,
 )
 
 data class DbPerpetualData(
-    @Embedded val perpetual: DbPerpetual,
-    @Embedded val metadata: DbPerpetualMetadata,
-    @Embedded val asset: DbAsset,
+    @Embedded
+    val perpetual: DbPerpetual,
+
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "perpetualId"
+    )
+    val metadata: DbPerpetualMetadata?,
+
+    @Relation(
+        parentColumn = "assetId",
+        entityColumn = "id"
+    )
+    val asset: DbPerpetualAsset?,
 )
 
 fun DbPerpetual.toDTO(): Perpetual? {
@@ -85,7 +97,7 @@ fun PerpetualMetadata.toDB(perpetualId: String): DbPerpetualMetadata {
 fun DbPerpetualData.toDTO(): PerpetualData? {
     return PerpetualData(
         perpetual = perpetual.toDTO() ?: return null,
-        asset = asset.toDTO() ?: return null,
-        metadata = metadata.toDTO(),
+        asset = asset?.toDTO() ?: return null,
+        metadata = metadata?.toDTO() ?: PerpetualMetadata(false),
     )
 }

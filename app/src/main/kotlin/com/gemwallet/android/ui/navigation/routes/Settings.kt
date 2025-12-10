@@ -87,6 +87,7 @@ fun NavGraphBuilder.settingsScreen(
     onPriceAlerts: () -> Unit,
     onChart: (AssetId) -> Unit,
     onSupport: () -> Unit,
+    onPerpetual: () -> Unit,
     onCancel: () -> Unit,
 ) {
     composable<SettingsRoute>(
@@ -102,6 +103,7 @@ fun NavGraphBuilder.settingsScreen(
             onWallets = onWallets,
             onNetworks = onNetworks,
             onSupport = onSupport,
+            onPerpetual = onPerpetual,
             onPriceAlerts = onPriceAlerts,
         )
     }
