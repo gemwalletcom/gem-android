@@ -43,13 +43,13 @@ generate-models: install-typeshare
     @cd core && cargo run --package generate --bin generate android ../gemcore/src/main/kotlin/com/wallet/core
 
 build-base-image:
-	just reproducible build-base
+	just --justfile reproducible/justfile build-base
 
 TAG := env("TAG", "main")
 BUILD_MODE := env("BUILD_MODE", "")
 
 build-app:
-	just reproducible build-app TAG={{TAG}} BUNDLE_TASK=":app:assembleUniversalRelease"
+	just --justfile reproducible/justfile build-app TAG={{TAG}} BUNDLE_TASK=":app:assembleUniversalRelease"
 
 core-upgrade:
 	@git submodule update --recursive --remote

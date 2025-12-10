@@ -8,10 +8,16 @@ build-base:
 	DOCKER_BUILDKIT=1 docker build -t gem-android-base ..
 
 build-app TAG="main" BUNDLE_TASK=":app:assembleUniversalRelease":
+	#!/usr/bin/env bash
+	set -euo pipefail
+	tag="{{TAG}}"
+	tag="${tag#refs/heads/}"
+	tag="${tag#refs/tags/}"
+	tag="${tag#TAG=}"
 	DOCKER_BUILDKIT=1 docker build \
-	--build-arg TAG={{TAG}} \
-	--build-arg SKIP_SIGN=true \
-	--build-arg BUNDLE_TASK="{{BUNDLE_TASK}}" \
-	-t gem-android-app-verify \
-	-f ./Dockerfile \
-	..
+		--build-arg TAG="${tag}" \
+		--build-arg SKIP_SIGN=true \
+		--build-arg BUNDLE_TASK="{{BUNDLE_TASK}}" \
+		-t gem-android-app-verify \
+		-f ./Dockerfile \
+		..

@@ -42,6 +42,29 @@ strip_signing_artifacts() {
   find "$dir" -name "*.idsig" -delete >/dev/null 2>&1 || true
 }
 
+resolve_ref() {
+  local ref="$1"
+  local repo_url="$2"
+
+  if git ls-remote --exit-code --heads "$repo_url" "$ref" >/dev/null 2>&1 \
+    || git ls-remote --exit-code --tags "$repo_url" "$ref" >/dev/null 2>&1; then
+    echo "$ref"
+    return 0
+  fi
+
+  local prefixed="v${ref}"
+  if [[ "$ref" != "$prefixed" ]]; then
+    if git ls-remote --exit-code --heads "$repo_url" "$prefixed" >/dev/null 2>&1 \
+      || git ls-remote --exit-code --tags "$repo_url" "$prefixed" >/dev/null 2>&1; then
+      echo "$prefixed"
+      return 0
+    fi
+  fi
+
+  echo "Failed to find branch/tag '$ref' (or '$prefixed') in $repo_url" >&2
+  return 1
+}
+
 # ============================================================================
 # Docker Build Functions
 # ============================================================================
@@ -83,12 +106,16 @@ build_outputs_in_container() {
   local container_name="$2"
   local gradle_task="$3"
   local map_id_seed="$4"
+  local gradle_cache="$5"
+  local maven_cache="$6"
 
   docker rm -f "$container_name" >/dev/null 2>&1 || true
   docker run --name "$container_name" \
     -e SKIP_SIGN=true \
     -e BUNDLE_TASK="$gradle_task" \
     -e R8_MAP_ID_SEED="$map_id_seed" \
+    -v "${gradle_cache}":/root/.gradle \
+    -v "${maven_cache}":/root/.m2 \
     "$app_image" \
     bash -lc 'cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache'
 }
@@ -191,6 +218,9 @@ main() {
   [[ -n "$tag_safe" ]] || tag_safe="latest"
 
   local map_id_seed="${VERIFY_R8_MAP_ID_SEED:-${tag#v}}"
+  local repo_url="${VERIFY_REPO_URL:-https://github.com/gemwalletcom/gem-android.git}"
+  local resolved_tag
+  resolved_tag="$(resolve_ref "$tag" "$repo_url")" || exit 1
 
   local work_dir="${root_dir}/artifacts/reproducible/${tag_safe}"
   rm -rf "$work_dir"
@@ -211,16 +241,40 @@ main() {
   [[ -n "$app_image_tag" ]] || app_image_tag="latest"
   local app_image="${VERIFY_APP_IMAGE:-gem-android-app-verify}:${app_image_tag}"
   local app_container="gem-android-app-build-${tag_safe}"
+  local gradle_cache="${VERIFY_GRADLE_CACHE:-}"
+  local maven_cache="${VERIFY_M2_CACHE:-}"
+  local cleanup_gradle=""
+  local cleanup_maven=""
+
+  if [[ -z "$gradle_cache" ]]; then
+    gradle_cache="$(mktemp -d)"
+    cleanup_gradle="$gradle_cache"
+  else
+    mkdir -p "$gradle_cache"
+  fi
+
+  if [[ -z "$maven_cache" ]]; then
+    maven_cache="$(mktemp -d)"
+    cleanup_maven="$maven_cache"
+  else
+    mkdir -p "$maven_cache"
+  fi
+
+  cleanup() {
+    docker rm -f "$app_container" >/dev/null 2>&1 || true
+    [[ -n "$cleanup_gradle" ]] && rm -rf "$cleanup_gradle"
+    [[ -n "$cleanup_maven" ]] && rm -rf "$cleanup_maven"
+  }
+  trap cleanup EXIT
 
   # Build Docker images
   ensure_base_image "$base_image" "$base_tag"
   echo "Build parameters: R8_MAP_ID_SEED=${map_id_seed}"
-  build_app_image "$app_image" "$tag" "$base_image" "$base_tag" "$gradle_task" "$map_id_seed"
-  build_outputs_in_container "$app_image" "$app_container" "$gradle_task" "$map_id_seed"
+  build_app_image "$app_image" "$resolved_tag" "$base_image" "$base_tag" "$gradle_task" "$map_id_seed"
+  build_outputs_in_container "$app_image" "$app_container" "$gradle_task" "$map_id_seed" "$gradle_cache" "$maven_cache"
 
   # Extract APK from Docker image
   extract_apk_outputs "$app_container" "$work_dir" "$apk_subdir"
-  docker rm -f "$app_container" >/dev/null 2>&1 || true
 
   local apk_from_build
   apk_from_build="$(find "${work_dir}/apk" -name "*.apk" -type f -print -quit)"
