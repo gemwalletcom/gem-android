@@ -15,13 +15,10 @@ RUN git clone --depth 1 --recursive --branch "$TAG" https://github.com/gemwallet
 WORKDIR $HOME/gem-android
 
 ENV GRADLE_OPTS=${GRADLE_OPTS} \
-    R8_MAP_ID_SEED=${R8_MAP_ID_SEED}
+    R8_MAP_ID_SEED=${R8_MAP_ID_SEED} \
+    SKIP_SIGN=${SKIP_SIGN} \
+    BUNDLE_TASK=${BUNDLE_TASK}
 
 COPY --chown=root:root local.properties ./local.properties
-
-RUN --mount=type=cache,target=/root/.gradle \
-    --mount=type=cache,target=/root/.m2 \
-    export SKIP_SIGN=${SKIP_SIGN} && \
-    ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache
 
 CMD ["bash"]

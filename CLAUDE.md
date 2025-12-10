@@ -27,8 +27,8 @@ gem-android/
 ├── blockchain/              # Blockchain-specific implementations
 ├── features/                # Feature modules (NFT, recipient, etc.)
 ├── flavors/                 # Build flavors (Google, Samsung, etc.)
-├── Dockerfile.base          # Base Docker image for Android development
-├── Dockerfile.app           # App build Docker image
+├── Dockerfile               # Base Docker image for Android development
+├── reproducible/            # Reproducible build tooling (Dockerfile, verify script, docs)
 └── justfile                 # Task definitions
 ```
 
@@ -172,8 +172,8 @@ TAG=feature-branch just build-app
 - **docker.yml**: Docker image builds for releases
 
 ### Docker Workflow
-1. **Base Image**: Built from `Dockerfile.base` with Android SDK, NDK, JDK
-2. **App Image**: Built from `Dockerfile.app` using base image
+1. **Base Image**: Built from `Dockerfile` with Android SDK, NDK, JDK
+2. **App Image**: Built from `reproducible/Dockerfile` using base image
 3. **Artifacts**: APK/AAB files uploaded to GitHub releases
 
 ## Development Guidelines

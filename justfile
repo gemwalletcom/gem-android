@@ -30,12 +30,6 @@ mobsfscan:
         exit 1; }
     uv tool run mobsfscan -- --type android --config .mobsf --exit-warning
 
-unsigned-release:
-    SKIP_SIGN=true ./gradlew :app:bundleGoogleRelease
-
-extract-universal-apk:
-    @./scripts/extract_aab_apk.sh
-
 release:
     @./gradlew clean :app:bundleGoogleRelease assembleUniversalRelease assembleHuaweiRelease assembleSolanaRelease assembleSamsungRelease
 
@@ -49,18 +43,13 @@ generate-models: install-typeshare
     @cd core && cargo run --package generate --bin generate android ../gemcore/src/main/kotlin/com/wallet/core
 
 build-base-image:
-	DOCKER_BUILDKIT=1 docker build -t gem-android-base -f Dockerfile.base .
+	just reproducible build-base
 
 TAG := env("TAG", "main")
 BUILD_MODE := env("BUILD_MODE", "")
 
 build-app:
-	DOCKER_BUILDKIT=1 docker build --build-arg TAG={{TAG}} \
-	--build-arg SKIP_SIGN=true \
-	--progress=plain \
-	-m 32g \
-	-t gem-android-app \
-	-f Dockerfile.app .
+	just reproducible build-app TAG={{TAG}} BUNDLE_TASK=":app:assembleUniversalRelease"
 
 core-upgrade:
 	@git submodule update --recursive --remote

@@ -13,6 +13,7 @@ env:
   BASE_IMAGE_NAME: gem-android-base
   BASE_IMAGE_FULL_NAME: ghcr.io/${{ github.repository_owner }}/gem-android-base
   DOCKER_BUILDKIT: 1
+  BUNDLE_TASK: ":app:assembleUniversalRelease"
 
 jobs:
   build_base_image:
@@ -46,11 +47,11 @@ jobs:
           tags: |
             type=sha,format=long,prefix=
 
-      - name: Build and push Dockerfile.base
+      - name: Build and push Dockerfile
         uses: docker/build-push-action@v5
         with:
           context: .
-          file: ./Dockerfile.base
+          file: ./Dockerfile
           push: true
           tags: ${{ env.BASE_IMAGE_FULL_NAME }}:${{ steps.meta.outputs.version }}
           labels: ${{ steps.meta.outputs.labels }}
@@ -89,7 +90,7 @@ jobs:
           echo "gpr.token=${{ secrets.GITHUB_TOKEN }}" >> local.properties
           echo "# Automatically generated for CI build" >> local.properties
 
-      - name: Build Dockerfile.app
+      - name: Build app image
         env:
           DOCKER_BUILDKIT: 1
         run: |
@@ -98,19 +99,34 @@ jobs:
             --build-arg BASE_IMAGE=${{ env.BASE_IMAGE_FULL_NAME }} \
             --build-arg BASE_IMAGE_TAG=${{ needs.build_base_image.outputs.image_tag }} \
             --build-arg SKIP_SIGN=true \
+            --build-arg BUNDLE_TASK=${{ env.BUNDLE_TASK }} \
             --cache-from type=gha,scope=app-image \
             --cache-to type=gha,mode=max,scope=app-image \
             --load \
             --tag gem-android-app:latest \
-            --file ./Dockerfile.app \
+            --file ./reproducible/Dockerfile \
             .
+
+      - name: Build app inside container
+        env:
+          GRADLE_CACHE: ${{ runner.temp }}/gradle-cache
+          MAVEN_CACHE: ${{ runner.temp }}/m2-cache
+        run: |
+          mkdir -p "${GRADLE_CACHE}" "${MAVEN_CACHE}"
+          docker rm -f gem-android-app-build >/dev/null 2>&1 || true
+          docker run --name gem-android-app-build \
+            -e SKIP_SIGN=true \
+            -e BUNDLE_TASK="${{ env.BUNDLE_TASK }}" \
+            -v "${GRADLE_CACHE}":/root/.gradle \
+            -v "${MAVEN_CACHE}":/root/.m2 \
+            gem-android-app:latest \
+            bash -lc 'cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache'
 
       - name: Extract Universal APK from Docker container
         run: |
-          CONTAINER_ID=$(docker create gem-android-app:latest)
           mkdir -p apk-output
-          docker cp $CONTAINER_ID:/root/gem-android/app/build/outputs/apk/universal/release/. ./apk-output/
-          docker rm $CONTAINER_ID
+          docker cp gem-android-app-build:/root/gem-android/app/build/outputs/apk/universal/release/. ./apk-output/
+          docker rm gem-android-app-build
           find ./apk-output -name "*.apk"
 
       - name: Upload APK artifacts

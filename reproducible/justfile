@@ -1,0 +1,17 @@
+list:
+	just --list
+
+verify TAG APK:
+	./verify_apk.sh {{TAG}} {{APK}}
+
+build-base:
+	DOCKER_BUILDKIT=1 docker build -t gem-android-base ..
+
+build-app TAG="main" BUNDLE_TASK=":app:assembleUniversalRelease":
+	DOCKER_BUILDKIT=1 docker build \
+	--build-arg TAG={{TAG}} \
+	--build-arg SKIP_SIGN=true \
+	--build-arg BUNDLE_TASK="{{BUNDLE_TASK}}" \
+	-t gem-android-app-verify \
+	-f ./Dockerfile \
+	..

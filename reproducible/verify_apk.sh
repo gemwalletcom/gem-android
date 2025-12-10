@@ -52,7 +52,7 @@ ensure_base_image() {
 
   if ! docker image inspect "${base_image}:${base_tag}" >/dev/null 2>&1; then
     echo "Building base image ${base_image}:${base_tag}..."
-    docker build -t "${base_image}:${base_tag}" -f Dockerfile.base .
+    docker build -t "${base_image}:${base_tag}" .
   else
     echo "Using existing base image ${base_image}:${base_tag}"
   fi
@@ -75,28 +75,33 @@ build_app_image() {
     --build-arg BASE_IMAGE_TAG="${base_tag}" \
     --build-arg BUNDLE_TASK="${gradle_task}" \
     --build-arg R8_MAP_ID_SEED="${map_id_seed}" \
-    -f Dockerfile.app .
+    -f reproducible/Dockerfile .
+}
+
+build_outputs_in_container() {
+  local app_image="$1"
+  local container_name="$2"
+  local gradle_task="$3"
+  local map_id_seed="$4"
+
+  docker rm -f "$container_name" >/dev/null 2>&1 || true
+  docker run --name "$container_name" \
+    -e SKIP_SIGN=true \
+    -e BUNDLE_TASK="$gradle_task" \
+    -e R8_MAP_ID_SEED="$map_id_seed" \
+    "$app_image" \
+    bash -lc 'cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache'
 }
 
 extract_apk_outputs() {
-  local app_image="$1"
+  local container_name="$1"
   local work_dir="$2"
   local apk_subdir="$3"
-
-  local container_id
-  container_id=$(docker create "${app_image}")
-  cleanup() {
-    docker rm -f "$container_id" >/dev/null 2>&1 || true
-  }
-  trap cleanup EXIT
 
   local dest="${work_dir}/apk"
   rm -rf "$dest"
   mkdir -p "$dest"
-  docker cp "$container_id":/root/gem-android/${apk_subdir}/. "$dest"
-
-  cleanup
-  trap - EXIT
+  docker cp "${container_name}:/root/gem-android/${apk_subdir}/." "$dest"
 }
 
 # ============================================================================
@@ -205,14 +210,17 @@ main() {
   app_image_tag="$(echo "$tag" | tr '[:upper:]' '[:lower:]' | sed 's/[^a-z0-9_.-]/-/g')"
   [[ -n "$app_image_tag" ]] || app_image_tag="latest"
   local app_image="${VERIFY_APP_IMAGE:-gem-android-app-verify}:${app_image_tag}"
+  local app_container="gem-android-app-build-${tag_safe}"
 
   # Build Docker images
   ensure_base_image "$base_image" "$base_tag"
   echo "Build parameters: R8_MAP_ID_SEED=${map_id_seed}"
   build_app_image "$app_image" "$tag" "$base_image" "$base_tag" "$gradle_task" "$map_id_seed"
+  build_outputs_in_container "$app_image" "$app_container" "$gradle_task" "$map_id_seed"
 
   # Extract APK from Docker image
-  extract_apk_outputs "$app_image" "$work_dir" "$apk_subdir"
+  extract_apk_outputs "$app_container" "$work_dir" "$apk_subdir"
+  docker rm -f "$app_container" >/dev/null 2>&1 || true
 
   local apk_from_build
   apk_from_build="$(find "${work_dir}/apk" -name "*.apk" -type f -print -quit)"
