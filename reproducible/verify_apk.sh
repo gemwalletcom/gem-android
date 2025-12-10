@@ -52,16 +52,7 @@ resolve_ref() {
     return 0
   fi
 
-  local prefixed="v${ref}"
-  if [[ "$ref" != "$prefixed" ]]; then
-    if git ls-remote --exit-code --heads "$repo_url" "$prefixed" >/dev/null 2>&1 \
-      || git ls-remote --exit-code --tags "$repo_url" "$prefixed" >/dev/null 2>&1; then
-      echo "$prefixed"
-      return 0
-    fi
-  fi
-
-  echo "Failed to find branch/tag '$ref' (or '$prefixed') in $repo_url" >&2
+  echo "Failed to find branch/tag '$ref' in $repo_url" >&2
   return 1
 }
 
