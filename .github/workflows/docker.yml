@@ -3,12 +3,7 @@ name: Docker CI
 on:
   push:
     branches: ["main"]
-  pull_request:
-    branches: ["main"]
-    paths:
-      - "Dockerfile.base"
-      - "Dockerfile.app"
-      - ".github/workflows/docker.yml"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -99,7 +94,7 @@ jobs:
           DOCKER_BUILDKIT: 1
         run: |
           docker buildx build \
-            --build-arg TAG=${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }} \
+            --build-arg TAG=${{ github.ref_name }} \
             --build-arg BASE_IMAGE=${{ env.BASE_IMAGE_FULL_NAME }} \
             --build-arg BASE_IMAGE_TAG=${{ needs.build_base_image.outputs.image_tag }} \
             --build-arg SKIP_SIGN=true \
