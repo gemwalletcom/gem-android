@@ -2,12 +2,12 @@ list:
 	just --list
 
 verify TAG APK:
-	./verify_apk.sh {{TAG}} {{APK}}
+	python3 ./verify_apk.py {{TAG}} {{APK}}
 
 build-base:
 	DOCKER_BUILDKIT=1 docker build -t gem-android-base ..
 
-build-app TAG="main" BUNDLE_TASK=":app:assembleUniversalRelease":
+build-app TAG="main" BUNDLE_TASK="clean :app:bundleGoogleRelease assembleUniversalRelease":
 	#!/usr/bin/env bash
 	set -euo pipefail
 	tag="{{TAG}}"

@@ -1,0 +1,143 @@
+--- /Users/worker/workspace/g/gem-android/artifacts/reproducible/dexdump/official_classes.dump	2025-12-10 21:48:36
++++ /Users/worker/workspace/g/gem-android/artifacts/reproducible/dexdump/patched_classes.dump	2025-12-10 21:48:38
+@@ -1,5 +1,5 @@
+-Processing '/var/folders/dx/7ql_tzrx4zvd89h9vrblcf7c0000gn/T/tmpmiw99cdm/official.dex'...
+-Opened '/var/folders/dx/7ql_tzrx4zvd89h9vrblcf7c0000gn/T/tmpmiw99cdm/official.dex', DEX version '039'
++Processing '/var/folders/dx/7ql_tzrx4zvd89h9vrblcf7c0000gn/T/tmpmiw99cdm/patched.dex'...
++Opened '/var/folders/dx/7ql_tzrx4zvd89h9vrblcf7c0000gn/T/tmpmiw99cdm/patched.dex', DEX version '039'
+ Class #0            -
+   Class descriptor  : 'La/a;'
+   Access flags      : 0x1401 (PUBLIC ABSTRACT SYNTHETIC)
+@@ -3384024,24 +3384024,25 @@
+       locals        :
+         0x0000 - 0x0004 reg=0 this Lcom/google/android/datatransport/cct/CctBackendFactory;
+ 
+-    #1              : (in Lcom/google/android/datatransport/cct/CctBackendFactory;)
++  Virtual methods   -
++    #0              : (in Lcom/google/android/datatransport/cct/CctBackendFactory;)
+       name          : 'create'
+       type          : '(Lcom/google/android/datatransport/runtime/backends/CreationContext;)Lcom/google/android/datatransport/runtime/backends/TransportBackend;'
+-      access        : 0x0009 (PUBLIC STATIC)
++      access        : 0x0001 (PUBLIC)
+       code          -
+-      registers     : 4
+-      ins           : 1
++      registers     : 5
++      ins           : 2
+       outs          : 4
+       insns size    : 18 16-bit code units
+ 5b70e0:                                        |[5b70e0] com.google.android.datatransport.cct.CctBackendFactory.create:(Lcom/google/android/datatransport/runtime/backends/CreationContext;)Lcom/google/android/datatransport/runtime/backends/TransportBackend;
+ 5b70f0: 2200 262a                              |0000: new-instance v0, Lcom/google/android/datatransport/cct/CctTransportBackend; // type@2a26
+-5b70f4: 6e10 beb4 0300                         |0002: invoke-virtual {v3}, Lcom/google/android/datatransport/runtime/backends/CreationContext;.getApplicationContext:()Landroid/content/Context; // method@b4be
++5b70f4: 6e10 beb4 0400                         |0002: invoke-virtual {v4}, Lcom/google/android/datatransport/runtime/backends/CreationContext;.getApplicationContext:()Landroid/content/Context; // method@b4be
+ 5b70fa: 0c01                                   |0005: move-result-object v1
+-5b70fc: 6e10 c0b4 0300                         |0006: invoke-virtual {v3}, Lcom/google/android/datatransport/runtime/backends/CreationContext;.getWallClock:()Lcom/google/android/datatransport/runtime/time/Clock; // method@b4c0
++5b70fc: 6e10 c0b4 0400                         |0006: invoke-virtual {v4}, Lcom/google/android/datatransport/runtime/backends/CreationContext;.getWallClock:()Lcom/google/android/datatransport/runtime/time/Clock; // method@b4c0
+ 5b7102: 0c02                                   |0009: move-result-object v2
+-5b7104: 6e10 bfb4 0300                         |000a: invoke-virtual {v3}, Lcom/google/android/datatransport/runtime/backends/CreationContext;.getMonotonicClock:()Lcom/google/android/datatransport/runtime/time/Clock; // method@b4bf
+-5b710a: 0c03                                   |000d: move-result-object v3
+-5b710c: 7040 d1b3 1032                         |000e: invoke-direct {v0, v1, v2, v3}, Lcom/google/android/datatransport/cct/CctTransportBackend;.<init>:(Landroid/content/Context;Lcom/google/android/datatransport/runtime/time/Clock;Lcom/google/android/datatransport/runtime/time/Clock;)V // method@b3d1
++5b7104: 6e10 bfb4 0400                         |000a: invoke-virtual {v4}, Lcom/google/android/datatransport/runtime/backends/CreationContext;.getMonotonicClock:()Lcom/google/android/datatransport/runtime/time/Clock; // method@b4bf
++5b710a: 0c04                                   |000d: move-result-object v4
++5b710c: 7040 d1b3 1042                         |000e: invoke-direct {v0, v1, v2, v4}, Lcom/google/android/datatransport/cct/CctTransportBackend;.<init>:(Landroid/content/Context;Lcom/google/android/datatransport/runtime/time/Clock;Lcom/google/android/datatransport/runtime/time/Clock;)V // method@b3d1
+ 5b7112: 1100                                   |0011: return-object v0
+       catches       : (none)
+       positions     :
+@@ -3384064,9 +3384065,9 @@
+         0x0010 line=17
+         0x0011 line=18
+       locals        :
+-        0x0000 - 0x0012 reg=3 (null) Lcom/google/android/datatransport/runtime/backends/CreationContext;
++        0x0000 - 0x0012 reg=3 this Lcom/google/android/datatransport/cct/CctBackendFactory;
++        0x0000 - 0x0012 reg=4 (null) Lcom/google/android/datatransport/runtime/backends/CreationContext;
+ 
+-  Virtual methods   -
+   source_file_idx   : 52356 (r8-map-id-5bfe1822dc94ee8fa1060188f037bdbe813be169ebc888b3d5cc963a679b6979)
+ 
+ Class #10080            -
+@@ -3401518,45 +3401519,45 @@
+       type          : '(Ljava/lang/String;)Lcom/google/android/datatransport/runtime/backends/TransportBackend;'
+       access        : 0x20011 (PUBLIC FINAL DECLARED_SYNCHRONIZED)
+       code          -
+-      registers     : 6
++      registers     : 7
+       ins           : 2
+       outs          : 5
+       insns size    : 58 16-bit code units
+ 5bbf88:                                        |[5bbf88] com.google.android.datatransport.runtime.backends.MetadataBackendRegistry.get:(Ljava/lang/String;)Lcom/google/android/datatransport/runtime/backends/TransportBackend;
+-5bbf98: 1d04                                   |0000: monitor-enter v4
+-5bbf9a: 5440 7d6f                              |0001: iget-object v0, v4, Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry;.c:Ljava/util/HashMap; // field@6f7d
+-5bbf9e: 6e20 e3f2 5000                         |0003: invoke-virtual {v0, v5}, Ljava/util/HashMap;.containsKey:(Ljava/lang/Object;)Z // method@f2e3
++5bbf98: 1d05                                   |0000: monitor-enter v5
++5bbf9a: 5450 7d6f                              |0001: iget-object v0, v5, Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry;.c:Ljava/util/HashMap; // field@6f7d
++5bbf9e: 6e20 e3f2 6000                         |0003: invoke-virtual {v0, v6}, Ljava/util/HashMap;.containsKey:(Ljava/lang/Object;)Z // method@f2e3
+ 5bbfa4: 0a00                                   |0006: move-result v0
+ 5bbfa6: 3800 0e00                              |0007: if-eqz v0, 0015 // +000e
+-5bbfaa: 5440 7d6f                              |0009: iget-object v0, v4, Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry;.c:Ljava/util/HashMap; // field@6f7d
+-5bbfae: 6e20 e5f2 5000                         |000b: invoke-virtual {v0, v5}, Ljava/util/HashMap;.get:(Ljava/lang/Object;)Ljava/lang/Object; // method@f2e5
+-5bbfb4: 0c05                                   |000e: move-result-object v5
+-5bbfb6: 1f05 712a                              |000f: check-cast v5, Lcom/google/android/datatransport/runtime/backends/TransportBackend; // type@2a71
+-5bbfba: 1e04                                   |0011: monitor-exit v4
+-5bbfbc: 1105                                   |0012: return-object v5
+-5bbfbe: 0d05                                   |0013: move-exception v5
++5bbfaa: 5450 7d6f                              |0009: iget-object v0, v5, Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry;.c:Ljava/util/HashMap; // field@6f7d
++5bbfae: 6e20 e5f2 6000                         |000b: invoke-virtual {v0, v6}, Ljava/util/HashMap;.get:(Ljava/lang/Object;)Ljava/lang/Object; // method@f2e5
++5bbfb4: 0c06                                   |000e: move-result-object v6
++5bbfb6: 1f06 712a                              |000f: check-cast v6, Lcom/google/android/datatransport/runtime/backends/TransportBackend; // type@2a71
++5bbfba: 1e05                                   |0011: monitor-exit v5
++5bbfbc: 1106                                   |0012: return-object v6
++5bbfbe: 0d06                                   |0013: move-exception v6
+ 5bbfc0: 2824                                   |0014: goto 0038 // +0024
+-5bbfc2: 5440 7b6f                              |0015: iget-object v0, v4, Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry;.a:Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry$BackendFactoryProvider; // field@6f7b
+-5bbfc6: 6e20 c5b4 5000                         |0017: invoke-virtual {v0, v5}, Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry$BackendFactoryProvider;.get:(Ljava/lang/String;)Lcom/google/android/datatransport/cct/CctBackendFactory; // method@b4c5
++5bbfc2: 5450 7b6f                              |0015: iget-object v0, v5, Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry;.a:Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry$BackendFactoryProvider; // field@6f7b
++5bbfc6: 6e20 c5b4 6000                         |0017: invoke-virtual {v0, v6}, Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry$BackendFactoryProvider;.get:(Ljava/lang/String;)Lcom/google/android/datatransport/cct/CctBackendFactory; // method@b4c5
+ 5bbfcc: 0c00                                   |001a: move-result-object v0
+ 5bbfce: 3900 0500                              |001b: if-nez v0, 0020 // +0005
+-5bbfd2: 1e04                                   |001d: monitor-exit v4
+-5bbfd4: 1205                                   |001e: const/4 v5, #int 0 // #0
+-5bbfd6: 1105                                   |001f: return-object v5
+-5bbfd8: 5440 7c6f                              |0020: iget-object v0, v4, Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry;.b:Lcom/google/android/datatransport/runtime/backends/CreationContextFactory; // field@6f7c
+-5bbfdc: 5401 756f                              |0022: iget-object v1, v0, Lcom/google/android/datatransport/runtime/backends/CreationContextFactory;.a:Landroid/content/Context; // field@6f75
+-5bbfe0: 5402 766f                              |0024: iget-object v2, v0, Lcom/google/android/datatransport/runtime/backends/CreationContextFactory;.b:Lcom/google/android/datatransport/runtime/time/Clock; // field@6f76
+-5bbfe4: 5400 776f                              |0026: iget-object v0, v0, Lcom/google/android/datatransport/runtime/backends/CreationContextFactory;.c:Lcom/google/android/datatransport/runtime/time/Clock; // field@6f77
+-5bbfe8: 2203 662a                              |0028: new-instance v3, Lcom/google/android/datatransport/runtime/backends/AutoValue_CreationContext; // type@2a66
+-5bbfec: 7055 aab4 1302                         |002a: invoke-direct {v3, v1, v2, v0, v5}, Lcom/google/android/datatransport/runtime/backends/AutoValue_CreationContext;.<init>:(Landroid/content/Context;Lcom/google/android/datatransport/runtime/time/Clock;Lcom/google/android/datatransport/runtime/time/Clock;Ljava/lang/String;)V // method@b4aa
+-5bbff2: 7110 ceb3 0300                         |002d: invoke-static {v3}, Lcom/google/android/datatransport/cct/CctBackendFactory;.create:(Lcom/google/android/datatransport/runtime/backends/CreationContext;)Lcom/google/android/datatransport/runtime/backends/TransportBackend; // method@b3ce
+-5bbff8: 0c00                                   |0030: move-result-object v0
+-5bbffa: 5441 7d6f                              |0031: iget-object v1, v4, Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry;.c:Ljava/util/HashMap; // field@6f7d
+-5bbffe: 6e30 e8f2 5100                         |0033: invoke-virtual {v1, v5, v0}, Ljava/util/HashMap;.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; // method@f2e8
+-5bc004: 1e04                                   |0036: monitor-exit v4
++5bbfd2: 1e05                                   |001d: monitor-exit v5
++5bbfd4: 1206                                   |001e: const/4 v6, #int 0 // #0
++5bbfd6: 1106                                   |001f: return-object v6
++5bbfd8: 5451 7c6f                              |0020: iget-object v1, v5, Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry;.b:Lcom/google/android/datatransport/runtime/backends/CreationContextFactory; // field@6f7c
++5bbfdc: 5412 756f                              |0022: iget-object v2, v1, Lcom/google/android/datatransport/runtime/backends/CreationContextFactory;.a:Landroid/content/Context; // field@6f75
++5bbfe0: 5413 766f                              |0024: iget-object v3, v1, Lcom/google/android/datatransport/runtime/backends/CreationContextFactory;.b:Lcom/google/android/datatransport/runtime/time/Clock; // field@6f76
++5bbfe4: 5411 776f                              |0026: iget-object v1, v1, Lcom/google/android/datatransport/runtime/backends/CreationContextFactory;.c:Lcom/google/android/datatransport/runtime/time/Clock; // field@6f77
++5bbfe8: 2204 662a                              |0028: new-instance v4, Lcom/google/android/datatransport/runtime/backends/AutoValue_CreationContext; // type@2a66
++5bbfec: 7056 aab4 2413                         |002a: invoke-direct {v4, v2, v3, v1, v6}, Lcom/google/android/datatransport/runtime/backends/AutoValue_CreationContext;.<init>:(Landroid/content/Context;Lcom/google/android/datatransport/runtime/time/Clock;Lcom/google/android/datatransport/runtime/time/Clock;Ljava/lang/String;)V // method@b4aa
++5bbff2: 6e20 ceb3 4000                         |002d: invoke-virtual {v0, v4}, Lcom/google/android/datatransport/cct/CctBackendFactory;.create:(Lcom/google/android/datatransport/runtime/backends/CreationContext;)Lcom/google/android/datatransport/runtime/backends/TransportBackend; // method@b3ce
++5bbff8: 0c00                                   |0030: move-result-object v0
++5bbffa: 5451 7d6f                              |0031: iget-object v1, v5, Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry;.c:Ljava/util/HashMap; // field@6f7d
++5bbffe: 6e30 e8f2 6100                         |0033: invoke-virtual {v1, v6, v0}, Ljava/util/HashMap;.put:(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; // method@f2e8
++5bc004: 1e05                                   |0036: monitor-exit v5
+ 5bc006: 1100                                   |0037: return-object v0
+-5bc008: 1e04                                   |0038: monitor-exit v4
+-5bc00a: 2705                                   |0039: throw v5
++5bc008: 1e05                                   |0038: monitor-exit v5
++5bc00a: 2706                                   |0039: throw v6
+       catches       : 4
+         0x0001 - 0x0011
+           <any> -> 0x0013
+@@ -3401626,8 +3401627,8 @@
+         0x0038 line=57
+         0x0039 line=58
+       locals        :
+-        0x0000 - 0x003a reg=4 this Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry;
+-        0x0000 - 0x003a reg=5 (null) Ljava/lang/String;
++        0x0000 - 0x003a reg=5 this Lcom/google/android/datatransport/runtime/backends/MetadataBackendRegistry;
++        0x0000 - 0x003a reg=6 (null) Ljava/lang/String;
+ 
+   source_file_idx   : 52356 (r8-map-id-5bfe1822dc94ee8fa1060188f037bdbe813be169ebc888b3d5cc963a679b6979)
+ 

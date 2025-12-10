@@ -49,7 +49,7 @@ TAG := env("TAG", "main")
 BUILD_MODE := env("BUILD_MODE", "")
 
 build-app:
-	just --justfile reproducible/justfile build-app TAG={{TAG}} BUNDLE_TASK=":app:assembleUniversalRelease"
+	just --justfile reproducible/justfile build-app TAG={{TAG}} BUNDLE_TASK="clean :app:bundleGoogleRelease assembleUniversalRelease"
 
 core-upgrade:
 	@git submodule update --recursive --remote
