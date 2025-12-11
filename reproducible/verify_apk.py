@@ -360,7 +360,7 @@ def main() -> None:
     if signed_hash:
         print(f"{INFO_EMOJI} Rebuilt (signature copied) SHA-256: {signed_hash}")
         if signed_hash == official_hash:
-            print(f"{OK_EMOJI} Payload matches official once the signing block is copied (difference limited to signature).")
+            print(f"{OK_EMOJI} APK matches official releases with the signing block is copied.")
             copy_reports(root_dir, work_dir, tag_safe, ["official.apk", "rebuilt.apk", "r8_patched.apk", "rebuilt_signed.apk", "diffoscope.html", "diffoscope_patched.html"])
             return
     else:
