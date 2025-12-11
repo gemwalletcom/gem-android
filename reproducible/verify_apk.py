@@ -83,6 +83,33 @@ def remove_cache_dir(path: Path, label: str) -> None:
     shutil.rmtree(resolved, ignore_errors=True)
 
 
+def copy_signing_block(official_apk: Path, rebuilt_apk: Path, output_apk: Path) -> str | None:
+    try:
+        import apksigcopier
+    except ImportError:
+        print("apksigcopier not installed; skipping signature copy.")
+        return None
+
+    output_apk.unlink(missing_ok=True)
+    output_apk.parent.mkdir(parents=True, exist_ok=True)
+    try:
+        apksigcopier.do_copy(str(official_apk), str(rebuilt_apk), str(output_apk))
+    except Exception as exc:  # noqa: BLE001
+        print(f"apksigcopier failed: {exc}")
+        output_apk.unlink(missing_ok=True)
+        return None
+    return sha256_file(output_apk)
+
+
+def copy_reports(root_dir: Path, work_dir: Path, tag_safe: str, names: list[str]) -> None:
+    reports_dir = root_dir / "artifacts" / "reproducible" / "reports" / tag_safe
+    reports_dir.mkdir(parents=True, exist_ok=True)
+    for name in names:
+        src = work_dir / name
+        if src.exists():
+            shutil.copy2(src, reports_dir / name)
+
+
 def resolve_ref(ref: str, repo_url: str) -> str:
     heads = run(["git", "ls-remote", "--exit-code", "--heads", repo_url, ref], check=False)
     tags = run(["git", "ls-remote", "--exit-code", "--tags", repo_url, ref], check=False)
@@ -313,19 +340,27 @@ def main() -> None:
     else:
         print("Map-id not found; skipping patch.")
 
+    # Reattach official signing block after map-id patch to confirm payload identity.
+    rebuilt_for_sig = r8_patched_apk if r8_patched_apk.exists() else rebuilt_apk
+    rebuilt_signed = work_dir / "rebuilt_signed.apk"
+    signed_hash = copy_signing_block(official_copy, rebuilt_for_sig, rebuilt_signed)
+    if signed_hash:
+        print(f"Rebuilt (signature copied) SHA-256: {signed_hash}")
+        if signed_hash == official_hash:
+            print("Payload matches official once the signing block is copied (difference limited to signature).")
+            copy_reports(root_dir, work_dir, tag_safe, ["official.apk", "rebuilt.apk", "r8_patched.apk", "rebuilt_signed.apk", "diffoscope.html", "diffoscope_patched.html"])
+            return
+    else:
+        print("Signature copy skipped or failed; proceeding with diffoscope.")
+
     print("Mismatch: APKs differ.", file=sys.stderr)
-    run_diffoscope_report(rebuilt_apk, official_copy, work_dir)
+    run_diffoscope_report(rebuilt_for_sig, official_copy, work_dir)
     if r8_patched_apk.exists():
         run_diffoscope_report(r8_patched_apk, official_copy, work_dir, suffix="_patched")
         dex_dump_dir = work_dir / "dexdump"
         dex_dump_dir.mkdir(parents=True, exist_ok=True)
     # Copy a subset into reports folder for convenience
-    reports_dir = root_dir / "artifacts" / "reproducible" / "reports" / tag_safe
-    reports_dir.mkdir(parents=True, exist_ok=True)
-    for name in ["official.apk", "rebuilt.apk", "r8_patched.apk", "diffoscope.html", "diffoscope_patched.html"]:
-        src = work_dir / name
-        if src.exists():
-            shutil.copy2(src, reports_dir / name)
+    copy_reports(root_dir, work_dir, tag_safe, ["official.apk", "rebuilt.apk", "rebuilt_signed.apk", "r8_patched.apk", "diffoscope.html", "diffoscope_patched.html"])
 
     if os.environ.get("VERIFY_ALLOW_MISMATCH", "false").lower() == "true":
         return
