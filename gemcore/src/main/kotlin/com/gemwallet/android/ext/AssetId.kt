@@ -15,3 +15,9 @@ fun String.toAssetId(): AssetId? {
     val token = if (components.size > 1) components[1] else null
     return AssetId(chain, token)
 }
+
+fun AssetId.twoSubtokenIds(): Pair<String, String>? = tokenId
+    ?.split("::")
+    ?.takeIf { it.size >= 2 }?.let {
+        Pair(it[0], it[1])
+    }

@@ -1,9 +1,12 @@
 package com.gemwallet.android.domains.asset
 
+import com.gemwallet.android.ext.asset
+import com.gemwallet.android.ext.twoSubtokenIds
 import com.gemwallet.android.ext.type
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetSubtype
+import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.FiatProvider
 import uniffi.gemstone.SwapperProvider
@@ -50,7 +53,16 @@ fun AssetId.getSupportIconUrl(): String? = when (type()) {
     AssetSubtype.TOKEN -> chain.getIconUrl()
 }
 
-fun Asset.getIconUrl(): String = id.getIconUrl()
+fun Asset.getIconUrl(): String {
+    if (type == AssetType.PERPETUAL) {
+        val chainIcon = id.twoSubtokenIds()?.second?.let { symbol ->
+            Chain.entries.firstOrNull { it.asset().symbol == symbol }?.getIconUrl()
+        }
+
+        if (chainIcon != null) return chainIcon
+    }
+    return id.getIconUrl()
+}
 
 fun Asset.getSupportIconUrl(): String? = id.getSupportIconUrl()
 
