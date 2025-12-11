@@ -56,13 +56,6 @@ fun PerpetualPositionScene(
 @Preview
 @Composable
 private fun PerpetualPositionScenePreview() {
-    val samplePerpetual = object : PerpetualDetailsDataAggregate {
-        override val name: String = "Bitcoin Perpetual"
-        override val dayVolume: String = "$15.00B"
-        override val openInterest: String = "$2.50B"
-        override val funding: String = "0.01%"
-    }
-
     val sampleAsset = Asset(
         id = AssetId(Chain.Bitcoin),
         name = "Bitcoin",
@@ -70,6 +63,15 @@ private fun PerpetualPositionScenePreview() {
         decimals = 8,
         type = AssetType.NATIVE
     )
+
+    val samplePerpetual = object : PerpetualDetailsDataAggregate {
+        override val id: String = "BTC-PERP"
+        override val asset: Asset = sampleAsset
+        override val name: String = "Bitcoin Perpetual"
+        override val dayVolume: String = "$15.00B"
+        override val openInterest: String = "$2.50B"
+        override val funding: String = "0.01%"
+    }
 
     val samplePosition = object : PerpetualPositionDetailsDataAggregate {
         override val positionId: String = "pos-btc-001"

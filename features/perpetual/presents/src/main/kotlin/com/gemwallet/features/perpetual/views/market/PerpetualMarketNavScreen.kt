@@ -3,26 +3,32 @@ package com.gemwallet.features.perpetual.views.market
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.features.perpetual.viewmodels.PerpetualMarketViewModel
 
 @Composable
 fun PerpetualMarketNavScreen(
     onCancel: () -> Unit,
+    onOpenPerpetualDetails: (String) -> Unit,
     viewModel: PerpetualMarketViewModel = hiltViewModel(),
 ) {
-    val perpetuals by viewModel.perpetuals.collectAsStateWithLifecycle()
+    val sceneState by viewModel.sceneState.collectAsStateWithLifecycle()
+    val unpinnedPerpetuals by viewModel.unpinnedPerpetuals.collectAsStateWithLifecycle()
+    val pinnedPerpetuals by viewModel.pinnedPerpetuals.collectAsStateWithLifecycle()
     val positions by viewModel.positions.collectAsStateWithLifecycle()
     val balance by viewModel.balance.collectAsStateWithLifecycle()
 
-    // TODO: Add swap to refresh
     PerpetualMarketScene(
+        sceneState = sceneState,
         balance = balance ?: return,
-        perpetuals = perpetuals,
+        unpinnedPerpetuals = unpinnedPerpetuals,
+        pinnedPerpetuals = pinnedPerpetuals,
         positions = positions,
+        onRefresh = viewModel::onRefresh,
+        onPin = viewModel::onTogglePin,
         onClose = onCancel,
-        onWithdraw = { },
+        onWithdraw = {},
         onDeposit = {},
+        onClick = onOpenPerpetualDetails
     )
 }

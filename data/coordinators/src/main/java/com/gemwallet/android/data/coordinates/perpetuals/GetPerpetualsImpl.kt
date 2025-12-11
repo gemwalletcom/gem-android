@@ -38,5 +38,7 @@ class GetPerpetualsImpl @Inject constructor(
         override val icon: Any = data.asset
 
         override val volume: String = price.currency.compactFormatter(data.perpetual.volume24h)
+
+        override val isPinned: Boolean = data.metadata.isPinned
     }
 }

@@ -4,4 +4,5 @@ interface PerpetualBalance {
     val deposit: String
     val available: String
     val withdrawable: String
+    val total: String
 }

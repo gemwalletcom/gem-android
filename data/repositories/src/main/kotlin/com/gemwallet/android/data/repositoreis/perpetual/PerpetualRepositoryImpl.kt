@@ -8,6 +8,7 @@ import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.wallet.core.primitives.ChartCandleStick
 import com.wallet.core.primitives.PerpetualBalance
 import com.wallet.core.primitives.PerpetualData
+import com.wallet.core.primitives.PerpetualMetadata
 import com.wallet.core.primitives.PerpetualPosition
 import com.wallet.core.primitives.PerpetualPositionData
 import kotlinx.coroutines.flow.Flow
@@ -32,7 +33,7 @@ class PerpetualRepositoryImpl(
 
     override fun getPerpetual(perpetualId: String): Flow<PerpetualData?> {
         return perpetualDao.getPerpetual(perpetualId)
-            .map { it.toDTO() }
+            .map { it?.toDTO() }
     }
 
     override suspend fun putPerpetualChartData(data: List<ChartCandleStick>) {
@@ -52,8 +53,12 @@ class PerpetualRepositoryImpl(
             .map { items -> items.mapNotNull { it.toDTO() } }
     }
 
-    override fun getPosition(positionId: String): Flow<PerpetualPositionData?> {
-        return perpetualPositionDao.getPositionData(positionId).map { it?.toDTO() }
+    override fun getPositionByPositionId(id: String): Flow<PerpetualPositionData?> {
+        return perpetualPositionDao.getPositionData(id).map { it?.toDTO() }
+    }
+
+    override fun getPositionByPerpetualId(id: String): Flow<PerpetualPositionData?> {
+        return perpetualPositionDao.getPositionDataByPerpetual(id).map { it?.toDTO() }
     }
 
     override suspend fun putBalance(accountAddress: String, balance: PerpetualBalance) {
@@ -63,5 +68,9 @@ class PerpetualRepositoryImpl(
     override fun getBalances(accountAddresses: List<String>): Flow<List<PerpetualBalance>> {
         return perpetualBalanceDao.getBalances(accountAddresses)
             .map { items -> items.map { it.toDTO() } }
+    }
+
+    override suspend fun setMetadata(perpetualId: String, metadata: PerpetualMetadata) {
+        perpetualDao.setMetadata(metadata.toDB(perpetualId))
     }
 }

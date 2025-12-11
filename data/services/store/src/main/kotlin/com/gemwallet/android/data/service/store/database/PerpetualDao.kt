@@ -9,6 +9,7 @@ import androidx.room.Transaction
 import com.gemwallet.android.data.service.store.database.entities.DbPerpetual
 import com.gemwallet.android.data.service.store.database.entities.DbPerpetualAsset
 import com.gemwallet.android.data.service.store.database.entities.DbPerpetualData
+import com.gemwallet.android.data.service.store.database.entities.DbPerpetualMetadata
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -44,5 +45,8 @@ interface PerpetualDao {
             SELECT * FROM perpetual
             WHERE id = :perpetualId
     """)
-    fun getPerpetual(perpetualId: String): Flow<DbPerpetualData>
+    fun getPerpetual(perpetualId: String): Flow<DbPerpetualData?>
+
+    @Insert(onConflict = REPLACE)
+    fun setMetadata(metadata: DbPerpetualMetadata)
 }

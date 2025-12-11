@@ -4,5 +4,5 @@ import com.gemwallet.android.domains.perpetual.aggregates.PerpetualDetailsDataAg
 import kotlinx.coroutines.flow.Flow
 
 interface GetPerpetual {
-    fun getPerpetual(perpetualId: String): Flow<PerpetualDetailsDataAggregate>
+    fun getPerpetual(perpetualId: String): Flow<PerpetualDetailsDataAggregate?>
 }

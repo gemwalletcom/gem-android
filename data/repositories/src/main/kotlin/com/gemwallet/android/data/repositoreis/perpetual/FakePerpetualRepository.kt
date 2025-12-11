@@ -89,9 +89,15 @@ class FakePerpetualRepository @Inject constructor() : PerpetualRepository {
         }
     }
 
-    override fun getPosition(positionId: String): Flow<PerpetualPositionData?> {
+    override fun getPositionByPositionId(id: String): Flow<PerpetualPositionData?> {
         return positionsFlow.map { positionsMap ->
-            positionsMap.values.flatten().firstOrNull { it.position.id == positionId }
+            positionsMap.values.flatten().firstOrNull { it.position.id == id }
+        }
+    }
+
+    override fun getPositionByPerpetualId(id: String): Flow<PerpetualPositionData?> {
+        return positionsFlow.map { positionsMap ->
+            positionsMap.values.flatten().firstOrNull { it.perpetual.id == id }
         }
     }
 
@@ -106,6 +112,11 @@ class FakePerpetualRepository @Inject constructor() : PerpetualRepository {
             accountAddresses.mapNotNull { address -> balancesMap[address] }
         }
     }
+
+    override suspend fun setMetadata(
+        perpetualId: String,
+        metadata: PerpetualMetadata
+    ) { }
 
     private fun getSamplePerpetuals(): List<PerpetualData> {
         val btcAsset = Asset(

@@ -16,4 +16,6 @@ interface PerpetualDataAggregate {
     val volume: String
 
     val asset: Asset
+
+    val isPinned: Boolean
 }

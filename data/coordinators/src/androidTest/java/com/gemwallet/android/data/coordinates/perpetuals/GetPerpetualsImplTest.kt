@@ -11,24 +11,24 @@ import org.junit.Test
 class GetPerpetualsImplTest {
 
     private lateinit var repository: FakePerpetualRepository
-    private lateinit var getPerpetuals: GetPerpetualsImpl
+    private lateinit var getPerpetualsImpl: GetPerpetualsImpl
 
     @Before
     fun setup() {
         repository = FakePerpetualRepository()
-        getPerpetuals = GetPerpetualsImpl(repository)
+        getPerpetualsImpl = GetPerpetualsImpl(repository)
     }
 
     @Test
     fun testGetPerpetuals_returnsAllItems() = runBlocking {
-        val result = getPerpetuals.getPerpetuals(null).first()
+        val result = getPerpetualsImpl.getPerpetuals(null).first()
 
         assertEquals(15, result.size)
     }
 
     @Test
     fun testGetPerpetuals_searchBySymbol_BTC() = runBlocking {
-        val result = getPerpetuals.getPerpetuals("BTC").first()
+        val result = getPerpetualsImpl.getPerpetuals("BTC").first()
 
         assertEquals(1, result.size)
         assertEquals("BTC-PERP", result[0].id)
@@ -38,7 +38,7 @@ class GetPerpetualsImplTest {
 
     @Test
     fun testGetPerpetuals_searchByName_Bitcoin() = runBlocking {
-        val result = getPerpetuals.getPerpetuals("Bitcoin").first()
+        val result = getPerpetualsImpl.getPerpetuals("Bitcoin").first()
 
         assertEquals(1, result.size)
         assertEquals("BTC-PERP", result[0].id)
@@ -47,14 +47,14 @@ class GetPerpetualsImplTest {
 
     @Test
     fun testGetPerpetuals_searchNotFound() = runBlocking {
-        val result = getPerpetuals.getPerpetuals("NOTEXIST").first()
+        val result = getPerpetualsImpl.getPerpetuals("NOTEXIST").first()
 
         assertEquals(0, result.size)
     }
 
     @Test
     fun testGetPerpetuals_Formatting() = runBlocking {
-        val result = getPerpetuals.getPerpetuals(null).first()
+        val result = getPerpetualsImpl.getPerpetuals(null).first()
         val item = result[0]
         assertEquals("\$95,420.50", item.price.priceValueFormated)
         assertEquals("+2.50%", item.price.dayChangePercentageFormatted)

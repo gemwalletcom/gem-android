@@ -40,9 +40,13 @@ class PerpetualBalanceImpl(
 ) : com.gemwallet.android.domains.perpetual.values.PerpetualBalance {
     override val deposit: String
         get() = Currency.USD.format(balance.reserved)
+
     override val available: String
         get() = Currency.USD.format(balance.available)
+
     override val withdrawable: String
         get() = Currency.USD.format(balance.withdrawable)
 
+    override val total: String
+        get() = Currency.USD.format(balance.reserved + balance.available + balance.withdrawable)
 }

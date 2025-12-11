@@ -15,14 +15,11 @@ import com.patrykandpatrick.vico.compose.cartesian.CartesianChartHost
 import com.patrykandpatrick.vico.compose.cartesian.layer.rememberCandlestickCartesianLayer
 import com.patrykandpatrick.vico.compose.cartesian.rememberCartesianChart
 import com.patrykandpatrick.vico.core.cartesian.data.CartesianChartModelProducer
-import com.patrykandpatrick.vico.core.cartesian.data.CartesianLayerRangeProvider
 import com.patrykandpatrick.vico.core.cartesian.data.candlestickSeries
-import com.patrykandpatrick.vico.core.cartesian.data.lineSeries
 import com.wallet.core.primitives.ChartCandleStick
 import com.wallet.core.primitives.ChartPeriod
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlin.math.min
 
 
 fun LazyListScope.candyChart(
@@ -41,6 +38,9 @@ fun LazyListScope.candyChart(
 
 @Composable
 private fun CandyChart(period: ChartPeriod, data: List<ChartCandleStick>) {
+    if (data.isEmpty()) {
+        return
+    }
     val modelProducer = remember { CartesianChartModelProducer() }
     LaunchedEffect(period, data) {
         withContext(Dispatchers.Default) {

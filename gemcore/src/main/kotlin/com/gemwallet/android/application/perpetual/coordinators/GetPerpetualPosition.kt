@@ -4,5 +4,5 @@ import com.gemwallet.android.domains.perpetual.aggregates.PerpetualPositionDetai
 import kotlinx.coroutines.flow.Flow
 
 interface GetPerpetualPosition {
-    fun getPerpetualPosition(id: String): Flow<PerpetualPositionDetailsDataAggregate>
+    fun getPositionByPerpetual(id: String): Flow<PerpetualPositionDetailsDataAggregate?>
 }
