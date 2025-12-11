@@ -7,6 +7,7 @@ import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
+import com.gemwallet.android.model.GasFee
 import com.google.protobuf.ByteString
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Chain
@@ -36,7 +37,7 @@ class TronSignClient(
             this.ownerAddress = params.from.address
             this.toAddress = params.destination().address
         }.build()
-        return signTransfer(chainData, contract, params.memo, fee, privateKey)
+        return signTransfer(chainData, contract, params.memo, null, privateKey)
     }
 
     override suspend fun signTokenTransfer(
@@ -53,14 +54,14 @@ class TronSignClient(
             this.toAddress = params.destination().address
             this.amount = ByteString.copyFrom(finalAmount.toByteArray())
         }.build()
-        return signTransfer(chainData, contract, params.memo, fee,  privateKey)
+        return signTransfer(chainData, contract, params.memo, (fee as GasFee).limit.toLong(),  privateKey)
     }
 
     private fun signTransfer(
         chainData: TronChainData,
         contract: Any,
         memo: String?,
-        fee: Fee,
+        feeLimit: Long?,
         privateKey: ByteArray,
     ): List<ByteArray> {
         val transaction = Tron.Transaction.newBuilder().apply {
@@ -78,7 +79,7 @@ class TronSignClient(
             }
             this.expiration = chainData.blockTimestamp.toLong() + 10 * DateUtils.HOUR_IN_MILLIS
             this.timestamp = chainData.blockTimestamp.toLong()
-            this.feeLimit = fee.amount.toLong()
+            feeLimit?.let { this.feeLimit = it }
             if (!memo.isNullOrEmpty()) {
                 this.memo = memo
             }
@@ -228,7 +229,7 @@ class TronSignClient(
                 }.build()
             }
         }
-        return signTransfer(chainData, contract, memo, fee,  privateKey)
+        return signTransfer(chainData, contract, memo, null,  privateKey)
     }
 
     private fun createVoteContract(chainData: TronChainData, owner: String) = Tron.VoteWitnessContract.newBuilder().apply {

@@ -340,11 +340,11 @@ private fun Chain.toFeeType() = when (this.toChainType()) {
     ChainType.Solana -> FeeType.Solana
     ChainType.Bitcoin,
     ChainType.Cosmos,
+    ChainType.Tron,
     ChainType.Aptos -> FeeType.Regular
     ChainType.Ethereum -> FeeType.Eip1559
     ChainType.HyperCore,
     ChainType.Ton,
-    ChainType.Tron,
     ChainType.Sui,
     ChainType.Xrp,
     ChainType.Near,
