@@ -21,6 +21,11 @@ import zlib
 from binascii import hexlify
 from typing import Any, Dict, Match, Tuple
 
+INFO_EMOJI = "ℹ️"
+STEP_EMOJI = "➡️"
+OK_EMOJI = "✅"
+WARN_EMOJI = "⚠️"
+
 DEX_MAGIC = b"dex\n"
 DEX_MAGIC_RE = re.compile(rb"dex\n(\d{3})\x00")
 PROF_MAGIC = b"pro\x00"
@@ -84,7 +89,7 @@ def fix_pg_map_id_apk(input_apk: str, output_apk: str, map_id: str) -> None:
                 file_data: Dict[str, bytes] = {}
                 for info in zf_in.infolist():
                     if re.fullmatch(CLASSES_DEX_RE, info.filename) or info.filename == ASSET_PROF:
-                        print(f"reading {info.filename!r}...")
+                        print(f"{STEP_EMOJI} reading {info.filename!r}...")
                         file_data[info.filename] = zf_in.read(info)
                 _fix_pg_map_id(file_data, map_id)
                 for info in zf_in.infolist():
@@ -117,7 +122,7 @@ def fix_pg_map_id_apk(input_apk: str, output_apk: str, map_id: str) -> None:
                     elif info.compress_type != 0:
                         raise Error(f"Unsupported compress_type {info.compress_type}")
                     if re.fullmatch(CLASSES_DEX_RE, info.filename) or info.filename == ASSET_PROF:
-                        print(f"writing {info.filename!r}...")
+                        print(f"{STEP_EMOJI} writing {info.filename!r}...")
                         zf_out.writestr(zinfo, file_data[info.filename])
                     else:
                         with zf_in.open(info) as fh_in:
@@ -133,24 +138,24 @@ def _fix_pg_map_id(file_data: Dict[str, bytes], map_id: str) -> None:
     crcs: Dict[str, int] = {}
     for filename in file_data:
         if re.fullmatch(CLASSES_DEX_RE, filename):
-            print(f"fixing {filename!r}...")
+            print(f"{STEP_EMOJI} fixing {filename!r}...")
             data, crc = _fix_dex_id_checksum(file_data[filename], map_id.encode())
             file_data[filename] = data
             crcs[filename] = crc
     if ASSET_PROF in file_data:
-        print(f"fixing {ASSET_PROF!r}...")
+        print(f"{STEP_EMOJI} fixing {ASSET_PROF!r}...")
         file_data[ASSET_PROF] = _fix_prof_checksum(file_data[ASSET_PROF], crcs)
 
 
 def _fix_dex_id_checksum(data: bytes, map_id: bytes) -> Tuple[bytes, int]:
     def repl(m: Match[bytes]) -> bytes:
-        print(f"fixing pg-map-id: {m.group(2)!r} -> {map_id!r}")
+        print(f"{STEP_EMOJI} fixing pg-map-id: {m.group(2)!r} -> {map_id!r}")
         return m.group(1) + map_id + m.group(3)
 
     magic = data[:8]
     if magic[:4] != DEX_MAGIC or not DEX_MAGIC_RE.fullmatch(magic):
         raise Error(f"Unsupported magic {magic!r}")
-    print(f"dex version={int(magic[4:7]):03d}")
+    print(f"{INFO_EMOJI} dex version={int(magic[4:7]):03d}")
     checksum, signature = struct.unpack("<I20s", data[8:32])
     body = data[32:]
     fixed_body = re.sub(PG_MAP_ID_RE, repl, body)
@@ -161,19 +166,19 @@ def _fix_dex_id_checksum(data: bytes, map_id: bytes) -> Tuple[bytes, int]:
         if len(old_id) != len(map_id):
             # avoid corrupting string length if lengths differ
             return match.group(0)
-        print(f"fixing r8-map-id string: {old_id!r} -> {map_id!r}")
+        print(f"{STEP_EMOJI} fixing r8-map-id string: {old_id!r} -> {map_id!r}")
         return match.group(1) + map_id
 
     fixed_body = re.sub(R8_MAP_STRING_RE, replace_r8_string, fixed_body)
 
     if fixed_body == data[32:]:
-        print("(not modified)")
+        print(f"{WARN_EMOJI} (not modified)")
         return data, zlib.crc32(data)
     fixed_sig = hashlib.sha1(fixed_body).digest()
-    print(f"fixing signature: {hexlify(signature).decode()} -> {hexlify(fixed_sig).decode()}")
+    print(f"{STEP_EMOJI} fixing signature: {hexlify(signature).decode()} -> {hexlify(fixed_sig).decode()}")
     fixed_data = fixed_sig + fixed_body
     fixed_checksum = zlib.adler32(fixed_data)
-    print(f"fixing checksum: 0x{checksum:x} -> 0x{fixed_checksum:x}")
+    print(f"{STEP_EMOJI} fixing checksum: 0x{checksum:x} -> 0x{fixed_checksum:x}")
     fixed_blob = magic + int.to_bytes(fixed_checksum, 4, "little") + fixed_data
     return fixed_blob, zlib.crc32(fixed_blob)
 
@@ -183,7 +188,7 @@ def _fix_prof_checksum(data: bytes, crcs: Dict[str, int]) -> bytes:
     version, data = _split(data, 4)
     if magic == PROF_MAGIC:
         if version == PROF_010_P:
-            print("prof version=010 P")
+            print(f"{INFO_EMOJI} prof version=010 P")
             return PROF_MAGIC + PROF_010_P + _fix_prof_010_p_checksum(data, crcs)
         raise Error(f"Unsupported prof version {version!r}")
     raise Error(f"Unsupported magic {magic!r}")
@@ -206,7 +211,7 @@ def _fix_prof_010_p_checksum(data: bytes, crcs: Dict[str, int]) -> bytes:
         filename = profile_key.decode()
         fixed_checksum = crcs.get(filename, dex_checksum)
         if fixed_checksum != dex_checksum:
-            print(f"fixing {filename!r} checksum: 0x{dex_checksum:x} -> 0x{fixed_checksum:x}")
+            print(f"{STEP_EMOJI} fixing {filename!r} checksum: 0x{dex_checksum:x} -> 0x{fixed_checksum:x}")
         fixed_entries.append(
             struct.pack(
                 "<HHIII", profile_key_size, num_type_ids, hot_method_region_size, fixed_checksum, num_method_ids

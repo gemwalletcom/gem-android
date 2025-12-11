@@ -25,6 +25,12 @@ BASE_IMAGE_DEFAULT = "gem-android-base"
 BASE_TAG_DEFAULT = "latest"
 APP_IMAGE_DEFAULT = "gem-android-app-verify"
 
+INFO_EMOJI = "ℹ️"
+STEP_EMOJI = "➡️"
+WARN_EMOJI = "⚠️"
+OK_EMOJI = "✅"
+FAIL_EMOJI = "❌"
+
 
 def run(cmd: list[str], check: bool = True, capture_output: bool = False, env: dict | None = None) -> subprocess.CompletedProcess:
     return subprocess.run(cmd, check=check, text=True, capture_output=capture_output, env=env)
@@ -87,7 +93,7 @@ def copy_signing_block(official_apk: Path, rebuilt_apk: Path, output_apk: Path) 
     try:
         import apksigcopier
     except ImportError:
-        print("apksigcopier not installed; skipping signature copy.")
+        print(f"{WARN_EMOJI} apksigcopier not installed; skipping signature copy.")
         return None
 
     output_apk.unlink(missing_ok=True)
@@ -95,7 +101,7 @@ def copy_signing_block(official_apk: Path, rebuilt_apk: Path, output_apk: Path) 
     try:
         apksigcopier.do_copy(str(official_apk), str(rebuilt_apk), str(output_apk))
     except Exception as exc:  # noqa: BLE001
-        print(f"apksigcopier failed: {exc}")
+        print(f"{WARN_EMOJI} apksigcopier failed: {exc}")
         output_apk.unlink(missing_ok=True)
         return None
     return sha256_file(output_apk)
@@ -111,9 +117,14 @@ def copy_reports(root_dir: Path, work_dir: Path, tag_safe: str, names: list[str]
 
 
 def resolve_ref(ref: str, repo_url: str) -> str:
-    heads = run(["git", "ls-remote", "--exit-code", "--heads", repo_url, ref], check=False)
-    tags = run(["git", "ls-remote", "--exit-code", "--tags", repo_url, ref], check=False)
+    heads = run(["git", "ls-remote", "--exit-code", "--heads", repo_url, ref], check=False, capture_output=True)
+    tags = run(["git", "ls-remote", "--exit-code", "--tags", repo_url, ref], check=False, capture_output=True)
     if heads.returncode == 0 or tags.returncode == 0:
+        for line in (heads.stdout + tags.stdout).splitlines():
+            if line.strip().endswith(ref):
+                sha = line.strip().split()[0]
+                print(f"{INFO_EMOJI} Resolving ref {ref} -> {sha}")
+                break
         return ref
     sys.stderr.write(f"Failed to find branch/tag '{ref}' in {repo_url}\n")
     sys.exit(1)
@@ -299,8 +310,9 @@ def main() -> None:
         maven_cache = reset_cache_dir(Path(os.environ.get("VERIFY_M2_CACHE", tempfile.mkdtemp())), "Maven")
 
         try:
+            print(f"{STEP_EMOJI} Building base image (or reusing) and app image...")
             ensure_base_image(base_image, base_tag)
-            print(f"Build parameters: R8_MAP_ID_SEED={map_id_seed}")
+            print(f"{INFO_EMOJI} Build parameters: R8_MAP_ID_SEED={map_id_seed}")
             build_app_image(resolved_tag, base_image, base_tag, gradle_task, map_id_seed, app_image)
             build_outputs_in_container(app_image, app_container, gradle_task, map_id_seed, gradle_cache, maven_cache)
             built_apk = extract_apk_outputs(app_container, work_dir, apk_subdir)
@@ -311,7 +323,7 @@ def main() -> None:
             remove_cache_dir(maven_cache, "Maven")
 
         if args.stage == "build":
-            print(f"Build complete. Artifacts in {work_dir}")
+            print(f"{OK_EMOJI} Build complete. Artifacts in {work_dir}")
             return
 
     # Stage: diff (can be run standalone if artifacts already exist)
@@ -323,37 +335,38 @@ def main() -> None:
 
     rebuilt_hash = sha256_file(rebuilt_apk)
     official_hash = sha256_file(official_copy)
-    print(f"Rebuilt APK SHA-256 : {rebuilt_hash}")
-    print(f"Official APK SHA-256: {official_hash}")
+    print(f"{INFO_EMOJI} Rebuilt APK SHA-256 : {rebuilt_hash}")
+    print(f"{INFO_EMOJI} Official APK SHA-256: {official_hash}")
 
     if rebuilt_hash == official_hash:
-        print("Success: APKs match.")
+        print(f"{OK_EMOJI} Success: APKs match.")
         return
 
     official_map = get_map_id(official_copy)
     rebuilt_map = get_map_id(rebuilt_apk)
     if official_map and rebuilt_map and official_map != rebuilt_map:
-        print(f"Patching map-id {rebuilt_map} -> {official_map} ...")
+        print(f"{STEP_EMOJI} Patching map-id {rebuilt_map} -> {official_map} ...")
         run([sys.executable, str(Path(__file__).with_name("fix_pg_map_id.py")), str(rebuilt_apk), str(r8_patched_apk), official_map], check=True)
+        print(f"{OK_EMOJI} Map-id patched to {official_map}")
     elif official_map and rebuilt_map == official_map:
-        print("Map-id already matches official; skipping patch.")
+        print(f"{OK_EMOJI} Map-id already matches official; skipping patch.")
     else:
-        print("Map-id not found; skipping patch.")
+        print(f"{WARN_EMOJI} Map-id not found; skipping patch.")
 
     # Reattach official signing block after map-id patch to confirm payload identity.
     rebuilt_for_sig = r8_patched_apk if r8_patched_apk.exists() else rebuilt_apk
     rebuilt_signed = work_dir / "rebuilt_signed.apk"
     signed_hash = copy_signing_block(official_copy, rebuilt_for_sig, rebuilt_signed)
     if signed_hash:
-        print(f"Rebuilt (signature copied) SHA-256: {signed_hash}")
+        print(f"{INFO_EMOJI} Rebuilt (signature copied) SHA-256: {signed_hash}")
         if signed_hash == official_hash:
-            print("Payload matches official once the signing block is copied (difference limited to signature).")
+            print(f"{OK_EMOJI} Payload matches official once the signing block is copied (difference limited to signature).")
             copy_reports(root_dir, work_dir, tag_safe, ["official.apk", "rebuilt.apk", "r8_patched.apk", "rebuilt_signed.apk", "diffoscope.html", "diffoscope_patched.html"])
             return
     else:
-        print("Signature copy skipped or failed; proceeding with diffoscope.")
+        print(f"{WARN_EMOJI} Signature copy skipped or failed; proceeding with diffoscope.")
 
-    print("Mismatch: APKs differ.", file=sys.stderr)
+    print(f"{FAIL_EMOJI} Mismatch: APKs differ.", file=sys.stderr)
     run_diffoscope_report(rebuilt_for_sig, official_copy, work_dir)
     if r8_patched_apk.exists():
         run_diffoscope_report(r8_patched_apk, official_copy, work_dir, suffix="_patched")
