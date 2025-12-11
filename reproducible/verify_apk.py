@@ -60,6 +60,29 @@ def strip_signing_artifacts(directory: Path) -> None:
             p.unlink(missing_ok=True)
 
 
+def reset_cache_dir(path: Path, label: str) -> Path:
+    resolved = path.expanduser().resolve()
+    root_path = Path(resolved.anchor)
+    if resolved == root_path:
+        sys.stderr.write(f"Refusing to clean {label} cache at root path: {resolved}\n")
+        sys.exit(1)
+    if resolved.exists():
+        print(f"Removing existing {label} cache at {resolved}")
+        shutil.rmtree(resolved, ignore_errors=True)
+    resolved.mkdir(parents=True, exist_ok=True)
+    return resolved
+
+
+def remove_cache_dir(path: Path, label: str) -> None:
+    resolved = path.expanduser().resolve()
+    root_path = Path(resolved.anchor)
+    if resolved == root_path:
+        sys.stderr.write(f"Refusing to remove {label} cache at root path: {resolved}\n")
+        sys.exit(1)
+    print(f"Removing {label} cache at {resolved}")
+    shutil.rmtree(resolved, ignore_errors=True)
+
+
 def resolve_ref(ref: str, repo_url: str) -> str:
     heads = run(["git", "ls-remote", "--exit-code", "--heads", repo_url, ref], check=False)
     tags = run(["git", "ls-remote", "--exit-code", "--tags", repo_url, ref], check=False)
@@ -167,7 +190,7 @@ def run_diffoscope_report(rebuilt_apk: Path, official_apk: Path, work_dir: Path,
     strip_signing_artifacts(official_dir)
 
     report = work_dir / f"diffoscope{suffix}.html"
-    diffoscope_args = ["--exclude-directory-metadata=yes"]
+    diffoscope_args = ["--exclude-directory-metadata=yes", "--output-empty"]
     extra = os.environ.get("DIFFOSCOPE_ARGS", "")
     dex_only = os.environ.get("DIFFOSCOPE_DEX_ONLY", "false").lower() == "true"
     if extra:
@@ -245,10 +268,8 @@ def main() -> None:
         app_image = os.environ.get("VERIFY_APP_IMAGE", APP_IMAGE_DEFAULT) + f":{app_image_tag}"
         app_container = f"gem-android-app-build-{tag_safe}"
 
-        gradle_cache = Path(os.environ.get("VERIFY_GRADLE_CACHE", tempfile.mkdtemp()))
-        maven_cache = Path(os.environ.get("VERIFY_M2_CACHE", tempfile.mkdtemp()))
-        cleanup_gradle = gradle_cache if "VERIFY_GRADLE_CACHE" not in os.environ else None
-        cleanup_maven = maven_cache if "VERIFY_M2_CACHE" not in os.environ else None
+        gradle_cache = reset_cache_dir(Path(os.environ.get("VERIFY_GRADLE_CACHE", tempfile.mkdtemp())), "Gradle")
+        maven_cache = reset_cache_dir(Path(os.environ.get("VERIFY_M2_CACHE", tempfile.mkdtemp())), "Maven")
 
         try:
             ensure_base_image(base_image, base_tag)
@@ -259,10 +280,8 @@ def main() -> None:
             shutil.copy2(built_apk, rebuilt_apk)
         finally:
             run(["docker", "rm", "-f", app_container], check=False)
-            if cleanup_gradle:
-                shutil.rmtree(cleanup_gradle, ignore_errors=True)
-            if cleanup_maven:
-                shutil.rmtree(cleanup_maven, ignore_errors=True)
+            remove_cache_dir(gradle_cache, "Gradle")
+            remove_cache_dir(maven_cache, "Maven")
 
         if args.stage == "build":
             print(f"Build complete. Artifacts in {work_dir}")
