@@ -54,7 +54,7 @@ def strip_signing_artifacts(directory: Path) -> None:
         for pattern in ["*.RSA", "*.DSA", "*.EC", "*.SF", "*.MF", "*.DSIG", "CERT.*", "CHANGES.*", "MANIFEST.MF", "SIGNATURE.SF"]:
             for p in meta.glob(pattern):
                 p.unlink(missing_ok=True)
-        (meta / "com" / "android" / "metadata").unlink(missing_ok=True) if (meta / "com" / "android" / "metadata").exists() else None
+        (meta / "com" / "android" / "metadata").unlink(missing_ok=True)
     for pattern in ["**/stamp-cert-sha256", "**/*.idsig"]:
         for p in directory.glob(pattern):
             p.unlink(missing_ok=True)
@@ -128,7 +128,7 @@ def ensure_base_image(base_image: str, base_tag: str) -> None:
         print(f"Using existing base image {base_image}:{base_tag}")
 
 
-def build_app_image(tag: str, base_image: str, base_tag: str, gradle_task: str, map_id_seed: str, app_image: str, bundle_task_env: str) -> None:
+def build_app_image(tag: str, base_image: str, base_tag: str, gradle_task: str, map_id_seed: str, app_image: str) -> None:
     env = os.environ.copy()
     env["DOCKER_BUILDKIT"] = "1"
     cmd = [
@@ -301,7 +301,7 @@ def main() -> None:
         try:
             ensure_base_image(base_image, base_tag)
             print(f"Build parameters: R8_MAP_ID_SEED={map_id_seed}")
-            build_app_image(resolved_tag, base_image, base_tag, gradle_task, map_id_seed, app_image, gradle_task)
+            build_app_image(resolved_tag, base_image, base_tag, gradle_task, map_id_seed, app_image)
             build_outputs_in_container(app_image, app_container, gradle_task, map_id_seed, gradle_cache, maven_cache)
             built_apk = extract_apk_outputs(app_container, work_dir, apk_subdir)
             shutil.copy2(built_apk, rebuilt_apk)
@@ -357,8 +357,6 @@ def main() -> None:
     run_diffoscope_report(rebuilt_for_sig, official_copy, work_dir)
     if r8_patched_apk.exists():
         run_diffoscope_report(r8_patched_apk, official_copy, work_dir, suffix="_patched")
-        dex_dump_dir = work_dir / "dexdump"
-        dex_dump_dir.mkdir(parents=True, exist_ok=True)
     # Copy a subset into reports folder for convenience
     copy_reports(root_dir, work_dir, tag_safe, ["official.apk", "rebuilt.apk", "rebuilt_signed.apk", "r8_patched.apk", "diffoscope.html", "diffoscope_patched.html"])
 

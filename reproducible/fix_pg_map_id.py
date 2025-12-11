@@ -51,12 +51,10 @@ class Error(RuntimeError):
 class ReproducibleZipInfo(zipfile.ZipInfo):
     """ZipInfo wrapper that preserves key attributes and compression level."""
 
-    _override: Dict[str, Any] = {}
     _compresslevel: int
 
     def __init__(self, zinfo: zipfile.ZipInfo, **override: Any) -> None:
-        if override:
-            self._override = {**self._override, **override}
+        self._override: Dict[str, Any] = override
         for k in self.__slots__:
             if hasattr(zinfo, k):
                 setattr(self, k, getattr(zinfo, k))
