@@ -52,6 +52,14 @@ class PerpetualPositionDetailsDataAggregateImpl(
 
     override val marginAmount: String = Currency.USD.format(data.position.marginAmount)
 
+    override val entryValue: Double? = data.position.entryPrice
+
+    override val liquidationValue: Double? = data.position.liquidationPrice
+
+    override val stopLoss: Double? = data.position.stopLoss?.price
+
+    override val takeProfit: Double? = data.position.takeProfit?.price
+
     override val pnlWithPercentage: String // TODO: Duplicated
         get() {
             val percentage = ((data.position.pnl / data.position.marginAmount) * 100).formatAsPercentage()

@@ -1,5 +1,6 @@
 package com.gemwallet.android.data.repositoreis.di
 
+import com.gemwallet.android.blockchain.services.AddressStatusService
 import com.gemwallet.android.blockchain.services.BalancesService
 import com.gemwallet.android.blockchain.services.PerpetualService
 import com.gemwallet.android.cases.device.GetDeviceIdCase

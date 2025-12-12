@@ -7,4 +7,8 @@ interface PerpetualPositionDetailsDataAggregate : PerpetualPositionDataAggregate
     val liquidationPrice: String
     val margin: String
     val fundingPayments: String
+    val entryValue: Double?
+    val liquidationValue: Double?
+    val stopLoss: Double?
+    val takeProfit: Double?
 }

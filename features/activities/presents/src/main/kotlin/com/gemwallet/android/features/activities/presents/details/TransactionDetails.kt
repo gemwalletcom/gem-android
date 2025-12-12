@@ -39,6 +39,7 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkFee
 import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
+import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
@@ -65,8 +66,7 @@ fun TransactionDetails(
         ) {
             LazyColumn(modifier = Modifier.fillMaxSize()) {
                 transactionItemHead(model)
-                itemsIndexed(model.properties) { index, item ->
-                    val position = model.properties.getListPosition(index)
+                itemsPositioned(model.properties) { position, item ->
                     when (item) {
                         is TxDetailsProperty.Date -> PropertyItem(R.string.transaction_date, item.data, listPosition = position)
                         is TxDetailsProperty.Destination -> DestinationPropertyItem(item, position)

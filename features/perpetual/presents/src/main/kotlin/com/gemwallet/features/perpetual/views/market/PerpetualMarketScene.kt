@@ -19,6 +19,7 @@ import com.gemwallet.android.domains.perpetual.values.PerpetualBalance
 import com.gemwallet.android.domains.price.PriceState
 import com.gemwallet.android.domains.price.values.PriceableValue
 import com.gemwallet.android.ui.R
+import com.gemwallet.android.ui.components.clickable
 import com.gemwallet.android.ui.components.list_head.AmountListHead
 import com.gemwallet.android.ui.components.list_item.PinnedAssetsHeaderItem
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
@@ -26,7 +27,6 @@ import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.AssetsGroupType
 import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.features.perpetual.viewmodels.model.PerpetualMarketSceneState
 import com.gemwallet.features.perpetual.views.components.MarketHeadActions
@@ -38,7 +38,6 @@ import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.PerpetualDirection
-import kotlin.String
 
 @Composable
 fun PerpetualMarketScene(
@@ -94,7 +93,11 @@ fun PerpetualMarketScene(
                 positions.takeIf { it.isNotEmpty() }?.let {
                     item { SubheaderItem(stringResource(R.string.perpetual_positions)) }
                     itemsPositioned(positions) { position, item ->
-                        PerpetualPositionItem(item, listPosition = position)
+                        PerpetualPositionItem(
+                            data = item,
+                            listPosition = position,
+                            modifier = Modifier.clickable { onClick(item.perpetualId) }
+                        )
                     }
                 }
                 if (pinnedPerpetuals.isNotEmpty()) {

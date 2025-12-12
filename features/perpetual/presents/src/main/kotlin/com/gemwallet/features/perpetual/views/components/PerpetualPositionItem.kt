@@ -32,10 +32,10 @@ import com.wallet.core.primitives.PerpetualDirection
 fun PerpetualPositionItem(
     data: PerpetualPositionDataAggregate,
     modifier: Modifier = Modifier,
-    listPosition: ListPosition = ListPosition.Single
+    listPosition: ListPosition = ListPosition.Single,
 ) {
     ListItem(
-        modifier = modifier,
+        modifier = modifier,//onClick?.let { modifier.clickable({ onClick(data.perpetualId) }) } ?: modifier,
         listPosition = listPosition,
         leading = @Composable { IconWithBadge(data.asset) },
         title = @Composable { ListItemTitleText(data.name) },

@@ -7,9 +7,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.gemwallet.android.domains.perpetual.aggregates.PerpetualDetailsDataAggregate
 import com.gemwallet.android.domains.perpetual.aggregates.PerpetualPositionDetailsDataAggregate
+import com.gemwallet.android.domains.price.PriceState
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.WalletTheme
-import com.gemwallet.android.domains.price.PriceState
 import com.gemwallet.features.perpetual.views.components.PerpetualActions
 import com.gemwallet.features.perpetual.views.components.PerpetualPositionActions
 import com.gemwallet.features.perpetual.views.components.candyChart
@@ -39,7 +39,15 @@ fun PerpetualPositionScene(
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            candyChart(chartData, period, onChartPeriodSelect)
+            candyChart(
+                data = chartData,
+                period = period,
+                entry = position?.entryValue,
+                liquidation = position?.liquidationValue,
+                stopLoss = position?.stopLoss,
+                takeProfit = position?.takeProfit,
+                onPeriodSelect = onChartPeriodSelect,
+            )
             positionProperties(position)
             item {
                 if (position == null) {
@@ -86,9 +94,13 @@ private fun PerpetualPositionScenePreview() {
         override val autoClose: String = "None"
         override val size: String = "0.5 BTC"
         override val entryPrice: String = "$94,500.00"
+        override val entryValue: Double = 94500.00
         override val liquidationPrice: String = "$85,050.00"
+        override val liquidationValue: Double = 85050.00
         override val margin: String = "$4,771.03"
         override val fundingPayments: String = "+$12.50"
+        override val stopLoss: Double = 90050.00
+        override val takeProfit: Double = 95000.00
     }
 
     val now = System.currentTimeMillis()
