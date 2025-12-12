@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
@@ -44,9 +45,9 @@ class SyncPerpetualPositionsImpl @Inject constructor(
                                 }
                             }
                             .awaitAll()
-                            .filterNotNull()
                     }
                     emit(summaries)
+                    delay(5 * 1000)
                 }
             }
         }
