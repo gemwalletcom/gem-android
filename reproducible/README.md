@@ -2,39 +2,31 @@
 
 This folder contains the tooling to rebuild tagged releases inside Docker and compare them to published APKs.
 
-## How to verify
-- Use `./verify_apk.sh <git-tag-or-branch> <path-to-official-apk>`, or from here `just verify <tag> <apk>`.
-- The script builds `gem-android-base` from the repo-root `Dockerfile`, then builds an app image from `reproducible/Dockerfile` and runs `:app:assembleUniversalRelease` inside the container.
-- Signing artifacts are stripped before comparison; hashes must match afterward for the build to be considered reproducible.
-- You can also grab the latest CI-built APK from the Docker workflow artifact `gem-android-apk` on GitHub Actions.
+## Principle
+- Build inside Docker using the repo-root `Dockerfile` and `reproducible/Dockerfile`, running the release task sequence (`clean :app:bundleGoogleRelease assembleUniversalRelease`) with Gradle/Maven caches cleared each run.
+- Require `local.properties` for GitHub packages; use the same base image used for releases.
+- Strip signing artifacts, patch map-id when present, then copy the official signing block onto the rebuilt APK with [apksigcopier](https://github.com/obfusk/apksigcopier) to confirm payload identity without exposing keys.
+- Keep outputs under `artifacts/reproducible/<tag>/` and only run diffoscope if hashes still differ after signature copy.
 
 ## Prerequisites
 - Docker
-- Java (for `jarsigner`/`zipalign` dependencies), unzip, curl
-- `diffoscope` (optional, used when present)
+- unzip, curl
+- uv for tool installs, plus `apksigcopier` and `diffoscope`: `uv tool install apksigcopier diffoscope`
+- Android SDK build-tools `dexdump` for `diff_dexdump.py` (e.g., `${ANDROID_HOME}/build-tools/<ver>/dexdump`)
+- Tooling snapshot: Gradle 8.13-bin, AGP 8.13.1, Kotlin compiler/KGP 2.2.21/1.9.24, KSP 2.2.21-2.0.4; R8 is the AGP-bundled version (map-id flag not exposed).
 
-## Tooling snapshot
-- Gradle **8.13-bin**, AGP **8.13.1**, Kotlin compiler/KGP **2.2.21/1.9.24**, KSP **2.2.21-2.0.4**; R8 is the version bundled with this AGP (map-id flag not exposed).
-- Map-id seeding plumbing exists in the verifier and Dockerfiles but is disabled because the current R8/AGP toolchain rejects the flag.
-- Compatibility reference: Android/AGP version matrix at https://developer.android.com/build/releases/gradle-plugin-roadmap.
-  - AGP preview/R8 notes: https://developer.android.com/build/releases/agp-preview
-  - R8 option discovery: the AGP-bundled R8 does not expose a CLI; to inspect supported flags you must download a standalone R8 release and run `java -cp r8*.jar com.android.tools.r8.R8 --help`.
-  - Root cause: the AGP-bundled R8 lags behind standalone R8; standalone releases already accept `-pg-map-id-seed`, but AGP 9.0.0-beta03 still ships an R8 that rejects it. We need an AGP that bundles a newer R8 (or a custom override) before deterministic map-id is usable.
+## Step-by-step verification
+1) Ensure `local.properties` exists with GitHub package credentials and obtain the official APK path (or URL for CI).
+2) Run: `./verify_apk.py <git-tag-or-branch> <path-to-official-apk> [--stage all|build|diff]`. Outputs: `official.apk`, `rebuilt.apk`, `r8_patched.apk` (when needed), `rebuilt_signed.apk`, `diffoscope.html` under `artifacts/reproducible/<tag>/`.
+3) CI: trigger the `Verify APK` workflow dispatch (`.github/workflows/verify-apk.yml`) with `tag`, `official_apk_url`, optional `stage`, and `base_image_tag`; artifacts upload mirrors local outputs.
+4) Optional manual map-id patch: `./fix_pg_map_id.py <apk-in> <apk-out> <pg-map-id>`.
+5) Optional dexdump diff: `./diff_dexdump.py <official-apk> <rebuilt-apk> [--out-dir DIR] [--dexdump PATH] [--tag TAG]` to write per-dex dumps/diffs (defaults to `artifacts/reproducible/<tag>/dexdump` when `--tag` is provided).
 
-## Current blocker
-- R8 adds a random `pg-map-id` (and related hash) into dex and the baseline profile. The R8 bundled with our supported AGP does **not** expose a stable map-id flag, so dex/baseline.prof remain non-reproducible.
-- Staying on Kotlin 2.2.x limits which AGP/R8 versions we can use today; the map-id flag is available only in newer R8 bundled with newer AGP.
-- AGP 9.0.0-beta03 + Gradle 9.2.1 was tested; the run failed because R8 (9.0.27) does not recognize `-pg-map-id-seed`, and Studio compatibility is lacking. We rolled back to AGP 8.13.1/Gradle 8.13-bin.
-- Dex/resources are expected to differ today (see e.g. `artifacts/reproducible/1.3.55/diffoscope.html`) because R8 still injects non-deterministic `pg-map-id` data.
+## Known issues
+- AGP 8.13.1 (bundled R8) randomizes map-id; we patch via `fix_pg_map_id.py` and confirm payload identity by copying the official signing block (apksigcopier). Deterministic map-id support is still required for strict reproducibility.
+- Kotlin 2.2.x constrains AGP/R8 upgrades; AGP 9.0.0-beta03 + Gradle 9.2.1 (R8 9.0.27) rejects `-pg-map-id-seed` and lacks Studio support, so we remain on AGP 8.13.1/Gradle 8.13-bin.
 
-## Path to reproducibility
-1) Upgrade to an AGP that supports Kotlin 2.2.x **and** bundles a map-id-capable R8 (e.g., R8 8.2+ via a future AGP release). AGP 9.0.0 (in beta per https://developer.android.com/build/releases/agp-preview) is expected to include the flag, but current preview (with R8 9.0.27) still rejects it.
+## Path forward
+1) Upgrade to an AGP that supports Kotlin 2.2.x and bundles a map-id-capable R8.
 2) Re-enable deterministic map-id (seed or fixed id) in release builds.
-3) Re-run `./verify_apk.sh <tag> <apk>` and confirm hashes match.
-
-## Interim status
-- Map-id injection is disabled so builds continue to work with the current toolchain; reproducibility remains blocked on the R8/AGP upgrade.
-- AGP/Gradle 9 preview attempt (rolled back):
-  - AGP 9.0.0-beta03 + Gradle 9.2.1: R8 9.0.27 rejected `-pg-map-id-seed` (“Unknown option”); Android Studio stable does not support this combo.
-  - Required preview flags (`android.nonFinalResIds=true`, built-in Kotlin/new DSL) were disabled again because they need broader build.gradle changes and Studio support.
-  - Next viable step is waiting for an AGP that bundles a map-id-capable R8 (or overriding AGP’s R8) while keeping Kotlin 2.2.x compatibility.
+3) Re-run `./verify_apk.py <tag> <apk>` and confirm hashes match without signature copying.

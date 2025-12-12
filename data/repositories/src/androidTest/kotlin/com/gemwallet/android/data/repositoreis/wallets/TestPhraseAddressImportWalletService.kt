@@ -1,7 +1,6 @@
 package com.gemwallet.android.data.repositoreis.wallets
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.gemwallet.android.blockchain.clients.AddressStatusClientProxy
 import com.gemwallet.android.blockchain.operators.InvalidPhrase
 import com.gemwallet.android.blockchain.operators.InvalidWords
 import com.gemwallet.android.blockchain.operators.PasswordStore

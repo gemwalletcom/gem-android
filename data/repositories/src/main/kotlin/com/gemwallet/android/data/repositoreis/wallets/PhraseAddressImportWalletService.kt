@@ -1,6 +1,5 @@
 package com.gemwallet.android.data.repositoreis.wallets
 
-import com.gemwallet.android.blockchain.clients.AddressStatusClientProxy
 import com.gemwallet.android.blockchain.operators.InvalidPhrase
 import com.gemwallet.android.blockchain.operators.InvalidWords
 import com.gemwallet.android.blockchain.operators.PasswordStore
@@ -8,6 +7,7 @@ import com.gemwallet.android.blockchain.operators.StorePhraseOperator
 import com.gemwallet.android.blockchain.operators.ValidateAddressOperator
 import com.gemwallet.android.blockchain.operators.ValidatePhraseOperator
 import com.gemwallet.android.blockchain.operators.walletcore.WCChainTypeProxy
+import com.gemwallet.android.blockchain.services.AddressStatusService
 import com.gemwallet.android.cases.banners.AddBanner
 import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.wallet.ImportError
@@ -17,8 +17,8 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.keyEncodingTypes
 import com.gemwallet.android.math.decodeHex
 import com.gemwallet.android.math.toHexString
-import com.gemwallet.android.model.AddressStatus
 import com.gemwallet.android.model.ImportType
+import com.wallet.core.primitives.AddressStatus
 import com.wallet.core.primitives.BannerEvent
 import com.wallet.core.primitives.BannerState
 import com.wallet.core.primitives.Chain
@@ -42,7 +42,7 @@ class PhraseAddressImportWalletService(
     private val addressValidate: ValidateAddressOperator,
     private val passwordStore: PasswordStore,
     private val syncSubscription: SyncSubscription,
-    private val addressStatusClients: AddressStatusClientProxy,
+    private val addressStatusService: AddressStatusService,
     private val addBanner: AddBanner,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : ImportWalletService {
@@ -145,7 +145,7 @@ class PhraseAddressImportWalletService(
 
     private suspend fun checkAddresses(wallet: Wallet) {
         wallet.accounts.forEach {
-            val statuses = addressStatusClients.getAddressStatus(it.chain, it.address)
+            val statuses = addressStatusService.getAddressStatus(it.chain, it.address)
             for (status in statuses) {
                 if (status == AddressStatus.MultiSignature) {
                     addBanner.addBanner(

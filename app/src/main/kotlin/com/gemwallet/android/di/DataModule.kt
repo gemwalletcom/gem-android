@@ -88,7 +88,7 @@ object DataModule {
 
     @Singleton
     @Provides
-    fun provideNodeStatusClient(
+    fun provideNodeStatusService(
         gateway: GemGateway,
     ): NodeStatusService {
         return NodeStatusService(gateway)

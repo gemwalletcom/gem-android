@@ -62,8 +62,6 @@ class TransactionsRepository(
     ClearPendingTransactions
 {
 
-    private val defaultScore = 15
-
     private val tenSeconds = 10 * DateUtils.SECOND_IN_MILLIS
 
     private val assetsRoomSource = GetAssetByIdCase(assetsDao)

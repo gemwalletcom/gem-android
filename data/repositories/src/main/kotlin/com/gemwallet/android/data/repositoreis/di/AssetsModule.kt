@@ -62,6 +62,14 @@ object AssetsModule {
 
     @Provides
     @Singleton
+    fun provideAddressStatusService(
+        gateway: GemGateway,
+    ): AddressStatusService = AddressStatusService(
+        gateway = gateway,
+    )
+
+    @Provides
+    @Singleton
     fun providePriceClient(
         sessionRepository: SessionRepository,
         assetsDao: AssetsDao,
