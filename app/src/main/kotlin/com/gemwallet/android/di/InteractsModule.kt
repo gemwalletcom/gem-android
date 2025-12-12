@@ -1,9 +1,6 @@
 package com.gemwallet.android.di
 
 import android.content.Context
-import com.gemwallet.android.blockchain.RpcClientAdapter
-import com.gemwallet.android.blockchain.clients.AddressStatusClientProxy
-import com.gemwallet.android.blockchain.clients.tron.TronAddressStatusClient
 import com.gemwallet.android.blockchain.operators.CreateAccountOperator
 import com.gemwallet.android.blockchain.operators.CreateWalletOperator
 import com.gemwallet.android.blockchain.operators.DeleteKeyStoreOperator
@@ -21,6 +18,7 @@ import com.gemwallet.android.blockchain.operators.walletcore.WCLoadPrivateKeyOpe
 import com.gemwallet.android.blockchain.operators.walletcore.WCStorePhraseOperator
 import com.gemwallet.android.blockchain.operators.walletcore.WCValidateAddressOperator
 import com.gemwallet.android.blockchain.operators.walletcore.WCValidatePhraseOperator
+import com.gemwallet.android.blockchain.services.AddressStatusService
 import com.gemwallet.android.cases.banners.AddBanner
 import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.wallet.ImportWalletService
@@ -29,8 +27,6 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.PhraseAddressImportWalletService
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
-import com.gemwallet.android.ext.available
-import com.wallet.core.primitives.Chain
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -100,9 +96,9 @@ object InteractsModule {
         phraseValidate: ValidatePhraseOperator,
         addressValidate: ValidateAddressOperator,
         passwordStore: PasswordStore,
-        rpcClients: RpcClientAdapter,
         addBanner: AddBanner,
         syncSubscription: SyncSubscription,
+        addressStatusService: AddressStatusService,
     ): ImportWalletService = PhraseAddressImportWalletService(
         walletsRepository = walletsRepository,
         assetsRepository = assetsRepository,
@@ -113,13 +109,6 @@ object InteractsModule {
         passwordStore = passwordStore,
         addBanner = addBanner,
         syncSubscription = syncSubscription,
-        addressStatusClients = AddressStatusClientProxy(
-            clients = Chain.available().mapNotNull {
-                when (it) {
-                    Chain.Tron -> TronAddressStatusClient(it, rpcClients.getClient(it))
-                    else -> null
-                }
-            }
-        )
+        addressStatusService = addressStatusService,
     )
 }

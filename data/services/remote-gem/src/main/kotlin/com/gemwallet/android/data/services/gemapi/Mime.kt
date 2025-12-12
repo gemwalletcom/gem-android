@@ -1,4 +1,4 @@
-package com.gemwallet.android.blockchain
+package com.gemwallet.android.data.services.gemapi
 
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType

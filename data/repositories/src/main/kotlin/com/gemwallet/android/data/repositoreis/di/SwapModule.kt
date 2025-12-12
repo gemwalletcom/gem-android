@@ -8,7 +8,7 @@ import com.gemwallet.android.cases.nodes.GetNodesCase
 import com.gemwallet.android.cases.nodes.SetCurrentNodeCase
 import com.gemwallet.android.cases.swap.GetSwapQuotes
 import com.gemwallet.android.cases.swap.GetSwapSupported
-import com.gemwallet.android.data.repositoreis.swap.NativeProvider
+import com.gemwallet.android.data.services.gemapi.NativeProvider
 import com.gemwallet.android.data.repositoreis.swap.SwapRepository
 import dagger.Module
 import dagger.Provides
@@ -21,16 +21,6 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 @Module
 object SwapModule {
-
-    @Singleton
-    @Provides
-    fun provideAlienProvider(
-        getNodesCase: GetNodesCase,
-        getCurrentNodeCase: GetCurrentNodeCase,
-        setCurrentNodeCase: SetCurrentNodeCase,
-    ): AlienProvider {
-        return NativeProvider(getNodesCase, getCurrentNodeCase, setCurrentNodeCase)
-    }
 
     @Singleton
     @Provides

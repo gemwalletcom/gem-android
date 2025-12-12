@@ -1,6 +1,7 @@
 package com.gemwallet.android.data.repositoreis.di
 
 //import com.gemwallet.android.blockchain.clients.ethereum.EvmBalanceClient
+import com.gemwallet.android.blockchain.services.AddressStatusService
 import com.gemwallet.android.blockchain.services.BalancesService
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
@@ -57,6 +58,14 @@ object AssetsModule {
     fun provideBalanceRemoteSource(
         gateway: GemGateway,
     ): BalancesService = BalancesService(
+        gateway = gateway,
+    )
+
+    @Provides
+    @Singleton
+    fun provideAddressStatusService(
+        gateway: GemGateway,
+    ): AddressStatusService = AddressStatusService(
         gateway = gateway,
     )
 

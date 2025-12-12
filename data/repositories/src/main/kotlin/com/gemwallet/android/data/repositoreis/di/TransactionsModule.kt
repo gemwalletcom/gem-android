@@ -1,6 +1,5 @@
 package com.gemwallet.android.data.repositoreis.di
 
-import com.gemwallet.android.blockchain.RpcClientAdapter
 import com.gemwallet.android.blockchain.services.TransactionStatusService
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.transactions.ClearPendingTransactions
@@ -33,7 +32,6 @@ object TransactionsModule {
         transactionsDao: TransactionsDao,
         assetsDao: AssetsDao,
         gateway: GemGateway,
-        rpcClients: RpcClientAdapter,
     ): TransactionsRepository = TransactionsRepository(
         transactionsDao = transactionsDao,
         assetsDao = assetsDao,

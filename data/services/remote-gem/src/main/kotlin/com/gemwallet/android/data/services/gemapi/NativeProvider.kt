@@ -1,4 +1,4 @@
-package com.gemwallet.android.data.repositoreis.swap
+package com.gemwallet.android.data.services.gemapi
 
 import com.gemwallet.android.cases.nodes.GetCurrentNodeCase
 import com.gemwallet.android.cases.nodes.GetNodesCase
@@ -11,6 +11,7 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import uniffi.gemstone.AlienProvider
 import uniffi.gemstone.AlienResponse
 import uniffi.gemstone.AlienTarget
+import uniffi.gemstone.Chain
 
 class NativeProvider(
     private val getNodesCase: GetNodesCase,
@@ -19,7 +20,7 @@ class NativeProvider(
     private val httpClient: OkHttpClient = OkHttpClient(),
 ): AlienProvider {
 
-    override fun getEndpoint(chain: uniffi.gemstone.Chain): String {
+    override fun getEndpoint(chain: Chain): String {
         return chain.toChain()?.getNodeUrl(getNodesCase, getCurrentNodeCase, setCurrentNodeCase)
             ?: throw IllegalArgumentException("Can't found node url for chain: $chain")
     }
