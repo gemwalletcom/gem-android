@@ -21,13 +21,18 @@ class TestFormat {
         assertEquals(Crypto(BigInteger.valueOf(1)).format(4, "", 2, dynamicPlace = true), "0.0001")
         assertEquals(Crypto(BigInteger.valueOf(12345678910)).format(6, "", 2), "12,345.67")
         assertEquals(Crypto(BigInteger.valueOf(12345678910)).format(10, "", 2), "1.23")
-        assertEquals(Crypto(BigInteger.valueOf(12345678910)).format(18, "", 2, dynamicPlace = true), "0.00000001")
+        assertEquals(Crypto(BigInteger.valueOf(12345678910)).format(18, "", 2, dynamicPlace = true), "0.000000012345")
     }
 
     @Test
     fun testCurrency_Format() {
         assertEquals(Currency.USD.format(2.0), "$2.00")
         assertEquals(Currency.USD.format(2.04E-6), "$0.00")
+        assertEquals(Currency.USD.format(0.0123444, dynamicPlace = true), "$0.0123")
+        assertEquals(Currency.USD.format(0.0023444, dynamicPlace = true), "$0.002344")
+        assertEquals(Currency.USD.format(0.00023444, dynamicPlace = true), "$0.000234")
+        assertEquals(Currency.USD.format(0.123456, dynamicPlace = true), "$0.1234")
+        assertEquals(Currency.USD.format(0.00123456, dynamicPlace = true), "$0.001234")
         assertEquals(Currency.USD.format(2.04E-6, dynamicPlace = true), "$0.00000204")
     }
 }

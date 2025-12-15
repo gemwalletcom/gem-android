@@ -9,6 +9,7 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Currency
 import java.util.Locale
+import kotlin.math.max
 import kotlin.math.min
 
 fun cryptoFormat(
@@ -56,6 +57,11 @@ fun fiatFormat(
 }
 
 private fun cutFraction(value: BigDecimal, decimalPlace: Int, maxDecimals: Int, dynamicDecimal: Boolean = false): Pair<BigDecimal, Int> {
+    val decimalPlace = when {
+        value < BigDecimal.valueOf(0.01) && value > BigDecimal.valueOf(0.0001) && dynamicDecimal && decimalPlace < 6 -> 6
+        value < BigDecimal.ONE && dynamicDecimal && decimalPlace < 4 -> 4
+        else -> decimalPlace
+    }
     if (value.compareTo(BigDecimal.ZERO) == 0) {
         return Pair(value, decimalPlace)
     }
@@ -78,7 +84,7 @@ private fun cutFraction(value: BigDecimal, decimalPlace: Int, maxDecimals: Int, 
         }
     }
     return if (result <= BigDecimal.ZERO && dynamicDecimal && decimalPlace < fraction.length && (decimalPlace < maxDecimals || maxDecimals == -1)) {
-        cutFraction(value, decimalPlace * 2, maxDecimals, true)
+        cutFraction(value, decimalPlace * 3, maxDecimals, true)
     } else {
         Pair(result, decimalPlace)
     }

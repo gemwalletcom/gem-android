@@ -189,7 +189,7 @@ class AssetDetailsViewModel @Inject constructor(
             val asset = assetInfo.asset
             val balances = assetInfo.balance
             val total = balances.totalAmount
-            val fiatTotal = currency.format(balances.fiatTotalAmount)
+            val fiatTotal = currency.format(balances.fiatTotalAmount, dynamicPlace = true)
             val stakeBalance = balances.balanceAmount.getStackedAmount()
 
             return AssetInfoUIModel(

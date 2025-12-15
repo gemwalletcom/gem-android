@@ -69,7 +69,7 @@ internal fun QuotesState.getProviders(): List<SwapProviderItem> = receive.price?
 internal fun getProviders(items: List<SwapperQuote>, priceValue: Double, currency: Currency, asset: Asset): List<SwapProviderItem> = items.map { quote ->
     val toValue = Crypto(quote.toValue)
     val fiatValue = toValue.convert(asset.decimals, priceValue)
-    val fiatFormatted = currency.format(fiatValue.value(0))
+    val fiatFormatted = currency.format(fiatValue.value(0), dynamicPlace = true)
     SwapProviderItem(
         swapProvider = quote.data.provider,
         price = asset.format(toValue, 2, dynamicPlace = true),

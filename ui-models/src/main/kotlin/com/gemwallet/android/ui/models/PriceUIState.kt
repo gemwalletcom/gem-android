@@ -15,7 +15,7 @@ data class PriceUIState(
 ) {
     companion object {
         fun create(price: AssetPrice?, currency: Currency): PriceUIState {
-            val value = if (price == null || price.price == 0.0) "" else currency.format(price.price)
+            val value = if (price == null || price.price == 0.0) "" else currency.format(price.price, dynamicPlace = true)
             val dayChanges = formatPercentage(price?.priceChangePercentage24h ?: 0.0, showZero = true)
             val state = getState(price?.priceChangePercentage24h ?: 0.0)
             return PriceUIState(value = value, state = state, dayChanges = dayChanges)
