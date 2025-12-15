@@ -25,6 +25,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.filterNotNull
@@ -131,7 +132,7 @@ class SwapSelectSearch(
                     supported.assetIds.mapNotNull { it.toAssetId() },
                     params.tag?.let { listOf(params.tag) } ?: emptyList(),
                 )
-            }
+            }.catch { emit(emptyList()) }
         }
         .map { items ->
             items.filter { assetInfo ->
