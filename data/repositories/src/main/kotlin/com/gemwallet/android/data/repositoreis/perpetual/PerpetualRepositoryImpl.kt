@@ -44,6 +44,13 @@ class PerpetualRepositoryImpl(
         TODO("Not yet implemented")
     }
 
+    override suspend fun removeNotAvailablePositions(
+        accountAddress: String,
+        items: List<PerpetualPosition>
+    ) {
+        perpetualPositionDao.removeNotAvailablePositions(accountAddress, items.map { it.id })
+    }
+
     override suspend fun putPositions(accountAddress: String, items: List<PerpetualPosition>) {
         perpetualPositionDao.putPositions(items.map { it.toDB(accountAddress) })
     }

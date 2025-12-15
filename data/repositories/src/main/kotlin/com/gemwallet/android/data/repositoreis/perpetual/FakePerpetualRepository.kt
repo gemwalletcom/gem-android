@@ -64,6 +64,15 @@ class FakePerpetualRepository @Inject constructor() : PerpetualRepository {
         }
     }
 
+    override suspend fun removeNotAvailablePositions(accountAddress: String, items: List<PerpetualPosition>) {
+        val currentPositions = positionsFlow.value.toMutableMap()
+        val availablePositionIds = items.map { it.id }.toSet()
+        currentPositions[accountAddress] = currentPositions[accountAddress]?.filter {
+            it.position.id in availablePositionIds
+        } ?: emptyList()
+        positionsFlow.value = currentPositions
+    }
+
     override suspend fun putPositions(accountAddress: String, items: List<PerpetualPosition>) {
         val currentPositions = positionsFlow.value.toMutableMap()
         currentPositions[accountAddress] = items.map { position ->

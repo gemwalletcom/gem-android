@@ -55,7 +55,9 @@ class SyncPerpetualPositionsImpl @Inject constructor(
             items.forEach { item ->
                 val summary = item.second
                 val accountAddress = item.first
-                perpetualRepository.putPositions(accountAddress, summary?.positions ?: return@onEach)
+                perpetualRepository.removeNotAvailablePositions(accountAddress, summary?.positions ?: return@onEach)
+                perpetualRepository.putPositions(accountAddress, summary.positions)
+
                 perpetualRepository.putBalance(accountAddress, summary.balance)
             }
         }

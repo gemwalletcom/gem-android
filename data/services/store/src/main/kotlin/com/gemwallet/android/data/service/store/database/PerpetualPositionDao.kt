@@ -20,6 +20,13 @@ interface PerpetualPositionDao {
     @Delete
     suspend fun deletePositions(items: List<DbPerpetualPosition>)
 
+    @Query("""
+        DELETE FROM perpetual_position
+        WHERE accountAddress = :accountAddress
+            AND id NOT IN (:ids)
+    """)
+    suspend fun removeNotAvailablePositions(accountAddress: String, ids: List<String>)
+
     @Query("SELECT * FROM perpetual_position WHERE accountAddress IN (:accountAddress)")
     fun getPositions(accountAddress: List<String>): Flow<List<DbPerpetualPosition>>
 

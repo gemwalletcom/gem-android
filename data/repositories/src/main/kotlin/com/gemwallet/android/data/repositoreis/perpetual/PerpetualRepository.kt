@@ -19,6 +19,8 @@ interface PerpetualRepository {
 
     fun getPerpetualChartData(perpetualId: String): Flow<List<ChartCandleStick>>
 
+    suspend fun removeNotAvailablePositions(accountAddress: String, items: List<PerpetualPosition>)
+
     suspend fun putPositions(accountAddress: String, items: List<PerpetualPosition>)
 
     fun getPositions(accountAddress: List<String>): Flow<List<PerpetualPositionData>>
