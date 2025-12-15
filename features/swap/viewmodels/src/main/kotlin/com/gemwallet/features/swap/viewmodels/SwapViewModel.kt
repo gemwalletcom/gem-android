@@ -157,7 +157,7 @@ class SwapViewModel @Inject constructor(
             quote?.receive?.formatFiat(quote.receiveEquivalent)
             quote?.receive
                 ?.price?.takeIf { it.price.price > 0 }
-                ?.currency?.format(quote.receiveEquivalent)
+                ?.currency?.format(quote.receiveEquivalent, dynamicPlace = true)
                 ?: ""
         }
         .flowOn(Dispatchers.Default)

@@ -85,7 +85,7 @@ class ChartViewModel @Inject constructor(
             }
             PricePoint(
                 y = assetInfo.price!!.price.price.toFloat(),
-                yLabel = currency.format(assetInfo.price!!.price.price),
+                yLabel = currency.format(assetInfo.price!!.price.price, dynamicPlace = true),
                 timestamp = System.currentTimeMillis(),
                 percentage = PriceUIState.formatPercentage(percentage, showZero = true),
                 priceState = PriceUIState.getState(percentage),

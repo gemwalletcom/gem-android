@@ -53,7 +53,7 @@ fun AssetInfo.formatFiat(value: BigDecimal): String {
         return ""
     }
 
-    return price?.currency?.format(value) ?: ""
+    return price?.currency?.format(value, dynamicPlace = true) ?: ""
 }
 
 fun AssetInfo.isMemoSupport() = asset.isMemoSupport()

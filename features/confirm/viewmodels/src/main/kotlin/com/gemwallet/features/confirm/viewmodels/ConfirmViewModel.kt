@@ -183,7 +183,7 @@ class ConfirmViewModel @Inject constructor(
         AmountUIModel(
             txType = request.getTxType(),
             amount = amount.format(decimals, symbol, -1),
-            amountEquivalent = currency.format(amount.convert(decimals, price).atomicValue),
+            amountEquivalent = currency.format(amount.convert(decimals, price).atomicValue, dynamicPlace = true),
             asset = assetInfo,
             fromAsset = assetInfo,
             fromAmount = amount.atomicValue.toString(),
