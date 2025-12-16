@@ -100,10 +100,9 @@ fun AmountScreen(
                 onMaxAmount = viewModel::onMaxAmount,
                 onInputTypeClick = viewModel::switchInputType,
                 onCancel = onCancel,
-                onResourceSelect = viewModel::setResource
-            ) {
-                isSelectValidator = !isSelectValidator
-            }
+                onResourceSelect = viewModel::setResource,
+                onValidator = { isSelectValidator = !isSelectValidator },
+            )
         }
     }
 }

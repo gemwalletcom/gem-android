@@ -52,27 +52,28 @@ abstract class AmountBaseViewModel(
 
     val amountError = MutableStateFlow<AmountError>(AmountError.None)
 
-    val amountEquivalent = combine(
-        snapshotFlow { amount },
-        amountInputType,
-        assetInfo
-    ) { input, direction, assetInfo ->
-        val priceInfo = assetInfo?.price ?: return@combine ""
-        calcEquivalent(
-            inputAmount = input,
-            inputDirection = direction,
-            asset = assetInfo.asset,
-            price = priceInfo.price.price,
-            currency = priceInfo.currency
-        )
-    }
-    .stateIn(viewModelScope, SharingStarted.Eagerly, "")
+    abstract val assetInfo: StateFlow<AssetInfo?>
+
+    val amountEquivalent: StateFlow<String>
+        get() = combine(
+            snapshotFlow { amount },
+            amountInputType,
+            assetInfo,
+        ) { input, direction, assetInfo ->
+            val priceInfo = assetInfo?.price ?: return@combine ""
+            calcEquivalent(
+                inputAmount = input,
+                inputDirection = direction,
+                asset = assetInfo.asset,
+                price = priceInfo.price.price,
+                currency = priceInfo.currency
+            )
+        }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, "")
 
     internal val maxAmount = MutableStateFlow(false)
 
     val reserveForFee: StateFlow<BigInteger?> get() = MutableStateFlow(null)
-
-    abstract val assetInfo: StateFlow<AssetInfo?>
 
     abstract val availableBalance: StateFlow<BigDecimal>
     abstract val availableBalanceFormatted: StateFlow<String>

@@ -5,6 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
+import com.gemwallet.android.model.AmountParams
 import com.gemwallet.features.perpetual.views.market.PerpetualMarketNavScreen
 import com.gemwallet.features.perpetual.views.position.PerpetualPositionNavScreen
 import kotlinx.serialization.Serializable
@@ -26,6 +27,7 @@ fun NavController.navigateToPerpetualDetailsScreen(perpetualId: String, navOptio
 fun NavGraphBuilder.perpetualScreen(
     onCancel: () -> Unit,
     onOpenPerpetualDetails: (String) -> Unit,
+    onOpenPerpetualPosition: (AmountParams) -> Unit,
 ) {
     composable<PerpetualRoute> {
         PerpetualMarketNavScreen(
@@ -36,6 +38,7 @@ fun NavGraphBuilder.perpetualScreen(
 
     composable<PerpetualPositionRoute> {
         PerpetualPositionNavScreen(
+            onOpenPosition = onOpenPerpetualPosition,
             onClose = onCancel
         )
     }

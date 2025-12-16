@@ -20,9 +20,11 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import java.math.BigDecimal
 import javax.inject.Inject
@@ -43,6 +45,13 @@ class PerpetualAmountViewModel @Inject constructor(
         .map { it.perpetualId }
         .filterNotNull()
         .flatMapLatest { getPerpetual.getPerpetual(it) }
+        .onEach {
+            val assetId = getAssetId(it?.asset?.chain ?: return@onEach)
+            tokenRepository.search(assetId)
+            val session = sessionRepository.session().firstOrNull() ?: return@onEach
+            val owner = session.wallet.getAccount(assetId.chain) ?: return@onEach
+            assetsRepository.switchVisibility(session.wallet.id, owner, assetId, false)
+        }
         .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val availableLeverages = perpetual.filterNotNull().map {
@@ -58,10 +67,9 @@ class PerpetualAmountViewModel @Inject constructor(
         .filterNotNull()
         .flatMapLatest {
             val assetId = getAssetId(it.asset.chain)
-            tokenRepository.search(assetId)
             assetsRepository.getAssetInfo(assetId)
         }
-    .stateIn(viewModelScope, SharingStarted.Eagerly, null)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     override val availableBalance: StateFlow<BigDecimal> = combine(
         sessionRepository.session().filterNotNull(),
@@ -87,7 +95,7 @@ class PerpetualAmountViewModel @Inject constructor(
 
     private fun getAssetId(chain: Chain): AssetId { // TODO: Check it
         return when (chain) {
-            Chain.HyperCore -> AssetId(Chain.HyperCore, "0xaf88d065e77c8cC2239327C5EDb3A432268e5831")
+            Chain.HyperCore -> AssetId(Chain.Arbitrum, "0xaf88d065e77c8cC2239327C5EDb3A432268e5831")
             else -> throw IllegalArgumentException()
         }
     }

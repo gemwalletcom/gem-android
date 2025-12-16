@@ -30,6 +30,7 @@ fun PerpetualPositionScene(
     chartData: List<ChartCandleStick>,
     period: ChartPeriod,
     onChartPeriodSelect: (ChartPeriod) -> Unit,
+    onOpenPosition: (PerpetualDirection) -> Unit,
     onClose: () -> Unit,
 ) {
     Scene(
@@ -51,7 +52,7 @@ fun PerpetualPositionScene(
             positionProperties(position)
             item {
                 if (position == null) {
-                    PerpetualActions({}) { }
+                    PerpetualActions(onOpenPosition)
                 } else {
                     PerpetualPositionActions({}) {}
                 }
@@ -79,6 +80,7 @@ private fun PerpetualPositionScenePreview() {
         override val dayVolume: String = "$15.00B"
         override val openInterest: String = "$2.50B"
         override val funding: String = "0.01%"
+        override val maxLeverage: Int = 40
     }
 
     val samplePosition = object : PerpetualPositionDetailsDataAggregate {
@@ -126,6 +128,7 @@ private fun PerpetualPositionScenePreview() {
             chartData = chartData,
             period = ChartPeriod.Day,
             onChartPeriodSelect = {},
+            onOpenPosition = {},
             onClose = {}
         )
     }

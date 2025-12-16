@@ -31,10 +31,8 @@ import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyAssetInfoItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.AmountInputType
-import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.paddingDefault
-import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.features.transfer_amount.models.AmountError
 import com.gemwallet.features.transfer_amount.presents.components.amountErrorString
@@ -68,6 +66,7 @@ fun AmountScene(
     onCancel: () -> Unit,
     onResourceSelect: (Resource) -> Unit,
     onValidator: () -> Unit,
+    additionParams: (@Composable () -> Unit)? = null,
 ) {
     val focusRequester = remember { FocusRequester() }
     val isKeyBoardOpen by keyboardAsState()
@@ -116,6 +115,9 @@ fun AmountScene(
                     availableAmount = availableBalance,
                     onMaxAmount = onMaxAmount
                 )
+            }
+            item {
+                additionParams?.invoke()
             }
             reserveForFee?.let {
                 item {

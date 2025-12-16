@@ -15,25 +15,25 @@ import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.wallet.core.primitives.PerpetualDirection
 
 @Composable
 fun PerpetualActions(
-    onLong: () -> Unit,
-    onShort: () -> Unit,
+    onOpenPosition: (PerpetualDirection) -> Unit,
 ) {
     Row(
         modifier = Modifier.listItem().padding(paddingDefault),
         horizontalArrangement = Arrangement.spacedBy(paddingDefault),
     ) {
         Button(
-            onClick = onLong,
+            onClick = { onOpenPosition(PerpetualDirection.Long) },
             colors = ButtonDefaults.buttonColors().copy(containerColor = MaterialTheme.colorScheme.tertiary),
             modifier = Modifier.weight(1f),
         ) {
             Text(stringResource(R.string.perpetual_long))
         }
         Button(
-            onClick = onLong,
+            onClick = { onOpenPosition(PerpetualDirection.Short) },
             colors = ButtonDefaults.buttonColors().copy(containerColor = MaterialTheme.colorScheme.error),
             modifier = Modifier.weight(1f),
         ) {
@@ -73,8 +73,7 @@ internal fun PerpetualPositionActions(
 private fun PerpetualActionsPreview() {
     WalletTheme {
         PerpetualActions(
-            onLong = {},
-            onShort = {}
+            onOpenPosition = {},
         )
     }
 }

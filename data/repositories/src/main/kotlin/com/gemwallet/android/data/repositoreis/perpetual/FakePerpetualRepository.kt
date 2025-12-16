@@ -123,6 +123,16 @@ class FakePerpetualRepository @Inject constructor() : PerpetualRepository {
         balancesFlow.value = currentBalances
     }
 
+    override fun getBalance(accountAddress: String): Flow<PerpetualBalance> {
+        return balancesFlow.map { balancesMap ->
+            balancesMap[accountAddress] ?: PerpetualBalance(
+                available = 0.0,
+                reserved = 0.0,
+                withdrawable = 0.0
+            )
+        }
+    }
+
     override fun getBalances(accountAddresses: List<String>): Flow<List<PerpetualBalance>> {
         return balancesFlow.map { balancesMap ->
             accountAddresses.mapNotNull { address -> balancesMap[address] }
