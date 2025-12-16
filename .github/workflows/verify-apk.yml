@@ -21,7 +21,7 @@ on:
           - build
           - diff
       base_image_tag:
-        description: gem-android-base tag in GHCR (default: tag from reproducible/base_image_tag.txt if not provided)
+        description: gem-android-base tag in GHCR
         required: false
         default: ""
         type: string
