@@ -16,7 +16,13 @@ This folder contains the tooling to rebuild tagged releases inside Docker and co
 - Tooling snapshot: Gradle 8.13-bin, AGP 8.13.1, Kotlin compiler/KGP 2.2.21/1.9.24, KSP 2.2.21-2.0.4; R8 is the AGP-bundled version (map-id flag not exposed).
 
 ## Step-by-step verification
-1) Ensure `local.properties` exists with GitHub package credentials and obtain the official APK path (or URL for CI).
+1) Auth + credentials:
+   - Ensure `local.properties` has GitHub package creds (e.g., `gpr.username`, `gpr.token`) and obtain the official APK path (or URL for CI).
+   - Use the same token to log in to GHCR so the base image pull succeeds (otherwise it will rebuild locally). Example using `gpr.token` from `local.properties`:
+     ```bash
+     grep gpr.token ../local.properties | cut -d'=' -f2- | docker login ghcr.io -u "$(grep gpr.username ../local.properties | cut -d'=' -f2-)" --password-stdin
+     ```
+     Or, with an exported token: `echo <github-token> | docker login ghcr.io -u <github-username> --password-stdin` (token needs `read:packages`).
 2) Run: `./verify_apk.py <git-tag-or-branch> <path-to-official-apk> [--stage all|build|diff]`. Outputs: `official.apk`, `rebuilt.apk`, `r8_patched.apk` (when needed), `rebuilt_signed.apk`, `diffoscope.html` under `artifacts/reproducible/<tag>/`.
 3) CI: trigger the `Verify APK` workflow dispatch (`.github/workflows/verify-apk.yml`) with `tag`, `official_apk_url`, optional `stage`, and optional `base_image_tag`; artifacts upload mirrors local outputs.
 4) The release pipeline publishes `gem-android-base` to GHCR as `ghcr.io/gemwalletcom/gem-android-base:<tag>` (and `:latest`). Verification defaults `base_image_tag`/`VERIFY_BASE_TAG` to the tag being verified, so it will use the matching base image unless you override it.
