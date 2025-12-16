@@ -18,9 +18,11 @@ This folder contains the tooling to rebuild tagged releases inside Docker and co
 ## Step-by-step verification
 1) Ensure `local.properties` exists with GitHub package credentials and obtain the official APK path (or URL for CI).
 2) Run: `./verify_apk.py <git-tag-or-branch> <path-to-official-apk> [--stage all|build|diff]`. Outputs: `official.apk`, `rebuilt.apk`, `r8_patched.apk` (when needed), `rebuilt_signed.apk`, `diffoscope.html` under `artifacts/reproducible/<tag>/`.
-3) CI: trigger the `Verify APK` workflow dispatch (`.github/workflows/verify-apk.yml`) with `tag`, `official_apk_url`, optional `stage`, and `base_image_tag`; artifacts upload mirrors local outputs.
-4) Optional manual map-id patch: `./fix_pg_map_id.py <apk-in> <apk-out> <pg-map-id>`.
-5) Optional dexdump diff: `./diff_dexdump.py <official-apk> <rebuilt-apk> [--out-dir DIR] [--dexdump PATH] [--tag TAG]` to write per-dex dumps/diffs (defaults to `artifacts/reproducible/<tag>/dexdump` when `--tag` is provided).
+3) CI: trigger the `Verify APK` workflow dispatch (`.github/workflows/verify-apk.yml`) with `tag`, `official_apk_url`, optional `stage`, and optional `base_image_tag`; artifacts upload mirrors local outputs.
+4) The release pipeline publishes `gem-android-base` to GHCR as `ghcr.io/gemwalletcom/gem-android-base:<tag>` (and `:latest`). Verification defaults `base_image_tag`/`VERIFY_BASE_TAG` to the tag being verified, so it will use the matching base image unless you override it.
+5) `verify_apk.py` will `docker pull` the base image by default (set `VERIFY_PULL_BASE=false` to skip). It then reuses a local image or builds if the pull fails.
+6) Optional manual map-id patch: `./fix_pg_map_id.py <apk-in> <apk-out> <pg-map-id>`.
+7) Optional dexdump diff: `./diff_dexdump.py <official-apk> <rebuilt-apk> [--out-dir DIR] [--dexdump PATH] [--tag TAG]` to write per-dex dumps/diffs (defaults to `artifacts/reproducible/<tag>/dexdump` when `--tag` is provided).
 
 ## Known issues
 - AGP 8.13.1 (bundled R8) randomizes map-id; we patch via `fix_pg_map_id.py` and confirm payload identity by copying the official signing block (apksigcopier). Deterministic map-id support is still required for strict reproducibility.

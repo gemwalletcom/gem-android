@@ -119,24 +119,55 @@ def copy_reports(root_dir: Path, work_dir: Path, tag_safe: str, names: list[str]
 def resolve_ref(ref: str, repo_url: str) -> str:
     heads = run(["git", "ls-remote", "--exit-code", "--heads", repo_url, ref], check=False, capture_output=True)
     tags = run(["git", "ls-remote", "--exit-code", "--tags", repo_url, ref], check=False, capture_output=True)
-    if heads.returncode == 0 or tags.returncode == 0:
-        for line in (heads.stdout + tags.stdout).splitlines():
-            if line.strip().endswith(ref):
-                sha = line.strip().split()[0]
-                print(f"{INFO_EMOJI} Resolving ref {ref} -> {sha}")
-                break
+    lines = (heads.stdout + tags.stdout).splitlines()
+    peeled_sha: str | None = None
+    direct_sha: str | None = None
+    for line in lines:
+        parts = line.strip().split()
+        if len(parts) != 2:
+            continue
+        sha, name = parts
+        if name.endswith(f"{ref}^{{}}"):  # Annotated tag peeled to commit
+            peeled_sha = sha
+        elif name.endswith(ref):
+            direct_sha = sha
+
+    if not peeled_sha and direct_sha:
+        # Try to resolve the peeled commit explicitly for annotated tags
+        peeled = run(["git", "ls-remote", "--exit-code", "--tags", repo_url, f"{ref}^{{}}"], check=False, capture_output=True)
+        if peeled.returncode == 0:
+            parts = peeled.stdout.strip().split()
+            if len(parts) >= 1:
+                peeled_sha = parts[0]
+
+    if peeled_sha:
+        print(f"{INFO_EMOJI} Resolving ref {ref} -> {peeled_sha} (peeled from tag object {direct_sha or 'unknown'})")
         return ref
+    if direct_sha:
+        print(f"{INFO_EMOJI} Resolving ref {ref} -> {direct_sha}")
+        return ref
+
     sys.stderr.write(f"Failed to find branch/tag '{ref}' in {repo_url}\n")
     sys.exit(1)
 
 
-def ensure_base_image(base_image: str, base_tag: str) -> None:
-    result = run(["docker", "image", "inspect", f"{base_image}:{base_tag}"], check=False)
-    if result.returncode != 0:
-        print(f"Building base image {base_image}:{base_tag}...")
-        run(["docker", "build", "-t", f"{base_image}:{base_tag}", "."], check=True)
-    else:
-        print(f"Using existing base image {base_image}:{base_tag}")
+def ensure_base_image(base_image: str, base_tag: str, pull: bool) -> None:
+    image_ref = f"{base_image}:{base_tag}"
+    if pull:
+        print(f"{INFO_EMOJI} Pulling base image {image_ref} ...")
+        pulled = run(["docker", "pull", image_ref], check=False)
+        if pulled.returncode == 0:
+            print(f"{OK_EMOJI} Pulled base image {image_ref}")
+            return
+        print(f"{WARN_EMOJI} Pull failed ({pulled.returncode}); falling back to local image or rebuild.")
+
+    result = run(["docker", "image", "inspect", image_ref], check=False)
+    if result.returncode == 0:
+        print(f"{OK_EMOJI} Using existing base image {image_ref}")
+        return
+
+    print(f"Building base image {image_ref}...")
+    run(["docker", "build", "-t", image_ref, "."], check=True)
 
 
 def build_app_image(tag: str, base_image: str, base_tag: str, gradle_task: str, map_id_seed: str, app_image: str) -> None:
@@ -298,7 +329,8 @@ def main() -> None:
     if args.stage in ("all", "build"):
         shutil.copy2(official_apk_path, official_copy)
         base_image = os.environ.get("VERIFY_BASE_IMAGE", BASE_IMAGE_DEFAULT)
-        base_tag = os.environ.get("VERIFY_BASE_TAG", BASE_TAG_DEFAULT)
+        base_tag = os.environ.get("VERIFY_BASE_TAG") or (sanitize(args.tag) or BASE_TAG_DEFAULT)
+        pull_base = os.environ.get("VERIFY_PULL_BASE", "true").lower() == "true"
         gradle_task = os.environ.get("VERIFY_GRADLE_TASK", BUNDLE_TASK_DEFAULT)
         apk_subdir = os.environ.get("VERIFY_APK_SUBDIR", APK_SUBDIR_DEFAULT)
 
@@ -311,7 +343,7 @@ def main() -> None:
 
         try:
             print(f"{STEP_EMOJI} Building base image (or reusing) and app image...")
-            ensure_base_image(base_image, base_tag)
+            ensure_base_image(base_image, base_tag, pull_base)
             print(f"{INFO_EMOJI} Build parameters: R8_MAP_ID_SEED={map_id_seed}")
             build_app_image(resolved_tag, base_image, base_tag, gradle_task, map_id_seed, app_image)
             build_outputs_in_container(app_image, app_container, gradle_task, map_id_seed, gradle_cache, maven_cache)
