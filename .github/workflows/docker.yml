@@ -87,6 +87,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Install just
+        uses: extractions/setup-just@v2
+
       - name: Create local.properties for CI
         run: |
           echo "gpr.username=${{ github.actor }}" > local.properties
