@@ -43,13 +43,46 @@ generate-models: install-typeshare
     @cd core && cargo run --package generate --bin generate android ../gemcore/src/main/kotlin/com/wallet/core
 
 build-base-image:
-	just --justfile reproducible/justfile build-base
+	DOCKER_BUILDKIT=1 docker build --no-cache -t gem-android-base ..
 
 TAG := env("TAG", "main")
 BUILD_MODE := env("BUILD_MODE", "")
 
 build-app:
-	just --justfile reproducible/justfile build-app TAG={{TAG}} BUNDLE_TASK="clean :app:bundleGoogleRelease assembleUniversalRelease"
+	#!/usr/bin/env bash
+	set -euo pipefail
+	base_tag=$(cat reproducible/base_image_tag.txt)
+	tag="{{TAG}}"
+	if ! docker pull ghcr.io/gemwalletcom/gem-android-base:${base_tag} >/dev/null 2>&1; then
+		echo "Base image ghcr.io/gemwalletcom/gem-android-base:${base_tag} not found; building locally..." >&2
+		DOCKER_BUILDKIT=1 DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build --platform linux/amd64 -t ghcr.io/gemwalletcom/gem-android-base:${base_tag} .
+	fi
+	DOCKER_BUILDKIT=1 DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build --platform linux/amd64 \
+		--build-arg TAG="${tag}" \
+		--build-arg SKIP_SIGN=true \
+		--build-arg BUNDLE_TASK="clean :app:bundleGoogleRelease assembleUniversalRelease" \
+		--build-arg BASE_IMAGE=ghcr.io/gemwalletcom/gem-android-base \
+		--build-arg BASE_IMAGE_TAG="${base_tag}" \
+		-t gem-android-app-verify \
+		-f ./reproducible/Dockerfile \
+		.
+
+build-app-inside:
+	#!/usr/bin/env bash
+	set -euo pipefail
+	TAG="{{TAG}}" just build-app
+	container_name="gem-android-app-build"
+	gradle_cache=$(mktemp -d)
+	maven_cache=$(mktemp -d)
+	trap 'rm -rf "${gradle_cache}" "${maven_cache}"; docker rm -f ${container_name} >/dev/null 2>&1 || true' EXIT
+	docker rm -f ${container_name} >/dev/null 2>&1 || true
+	DOCKER_DEFAULT_PLATFORM=linux/amd64 docker run --platform linux/amd64 --name ${container_name} \
+		-e SKIP_SIGN=true \
+		-e BUNDLE_TASK="clean :app:bundleGoogleRelease assembleUniversalRelease" \
+		-v "${gradle_cache}":/root/.gradle \
+		-v "${maven_cache}":/root/.m2 \
+		gem-android-app-verify \
+		bash -lc 'cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache'
 
 core-upgrade:
 	@git submodule update --recursive --remote
@@ -83,5 +116,8 @@ add-verification-dependency dependency:
 		-e ADDITIONAL_DEPENDENCY={{dependency}} \
 		gem-android-base \
 		bash -lc './scripts/add_verification_dependency.sh "$ADDITIONAL_DEPENDENCY"'
+
+verify TAG APK:
+	python3 ./reproducible/verify_apk.py {{TAG}} {{APK}}
 
 mod core

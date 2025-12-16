@@ -3,6 +3,9 @@ name: Docker CI
 on:
   push:
     branches: ["main"]
+  pull_request:
+    paths:
+      - "**/Dockerfile"
   workflow_dispatch:
 
 concurrency:
@@ -13,7 +16,7 @@ env:
   BASE_IMAGE_NAME: gem-android-base
   BASE_IMAGE_FULL_NAME: ghcr.io/${{ github.repository_owner }}/gem-android-base
   DOCKER_BUILDKIT: 1
-  BUNDLE_TASK: ":app:assembleUniversalRelease"
+  BUNDLE_TASK: "clean :app:bundleGoogleRelease assembleUniversalRelease"
 
 jobs:
   build_base_image:
@@ -94,33 +97,18 @@ jobs:
         env:
           DOCKER_BUILDKIT: 1
         run: |
-          docker buildx build \
-            --build-arg TAG=${{ github.ref_name }} \
-            --build-arg BASE_IMAGE=${{ env.BASE_IMAGE_FULL_NAME }} \
-            --build-arg BASE_IMAGE_TAG=${{ needs.build_base_image.outputs.image_tag }} \
-            --build-arg SKIP_SIGN=true \
-            --build-arg BUNDLE_TASK=${{ env.BUNDLE_TASK }} \
-            --cache-from type=gha,scope=app-image \
-            --cache-to type=gha,mode=max,scope=app-image \
-            --load \
-            --tag gem-android-app:latest \
-            --file ./reproducible/Dockerfile \
-            .
+          just build-app TAG=${{ github.ref_name }}
 
       - name: Build app inside container
         env:
           GRADLE_CACHE: ${{ runner.temp }}/gradle-cache
           MAVEN_CACHE: ${{ runner.temp }}/m2-cache
+          TAG: ${{ github.ref_name }}
         run: |
           mkdir -p "${GRADLE_CACHE}" "${MAVEN_CACHE}"
-          docker rm -f gem-android-app-build >/dev/null 2>&1 || true
-          docker run --name gem-android-app-build \
-            -e SKIP_SIGN=true \
-            -e BUNDLE_TASK="${{ env.BUNDLE_TASK }}" \
-            -v "${GRADLE_CACHE}":/root/.gradle \
-            -v "${MAVEN_CACHE}":/root/.m2 \
-            gem-android-app:latest \
-            bash -lc 'cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache'
+          BASE_IMAGE_TAG=${{ needs.build_base_image.outputs.image_tag }} \
+            GRADLE_CACHE="${GRADLE_CACHE}" MAVEN_CACHE="${MAVEN_CACHE}" \
+            just build-app-inside
 
       - name: Extract Universal APK from Docker container
         run: |

@@ -22,7 +22,6 @@ REPO_URL_DEFAULT = "https://github.com/gemwalletcom/gem-android.git"
 BUNDLE_TASK_DEFAULT = "clean :app:bundleGoogleRelease assembleUniversalRelease"
 APK_SUBDIR_DEFAULT = "app/build/outputs/apk/universal/release"
 BASE_IMAGE_DEFAULT = "gem-android-base"
-BASE_TAG_DEFAULT = "latest"
 APP_IMAGE_DEFAULT = "gem-android-app-verify"
 
 INFO_EMOJI = "ℹ️"
@@ -122,14 +121,17 @@ def resolve_ref(ref: str, repo_url: str) -> str:
     lines = (heads.stdout + tags.stdout).splitlines()
     peeled_sha: str | None = None
     direct_sha: str | None = None
+    tag_ref = f"refs/tags/{ref}"
+    tag_peeled_ref = f"{tag_ref}^{{}}"
+    head_ref = f"refs/heads/{ref}"
     for line in lines:
         parts = line.strip().split()
         if len(parts) != 2:
             continue
         sha, name = parts
-        if name.endswith(f"{ref}^{{}}"):  # Annotated tag peeled to commit
+        if name in (tag_peeled_ref, f"{ref}^{{}}"):  # Annotated tag peeled to commit
             peeled_sha = sha
-        elif name.endswith(ref):
+        elif name in (tag_ref, head_ref, ref):
             direct_sha = sha
 
     if not peeled_sha and direct_sha:
@@ -313,6 +315,7 @@ def main() -> None:
     map_id_seed = os.environ.get("VERIFY_R8_MAP_ID_SEED", args.tag.lstrip("v"))
     repo_url = os.environ.get("VERIFY_REPO_URL", REPO_URL_DEFAULT)
     resolved_tag = resolve_ref(args.tag, repo_url)
+    base_tag_file = Path(__file__).with_name("base_image_tag.txt")
 
     work_dir = Path(args.work_dir) if args.work_dir else root_dir / "artifacts" / "reproducible" / tag_safe
     if args.stage != "diff":
@@ -329,7 +332,12 @@ def main() -> None:
     if args.stage in ("all", "build"):
         shutil.copy2(official_apk_path, official_copy)
         base_image = os.environ.get("VERIFY_BASE_IMAGE", BASE_IMAGE_DEFAULT)
-        base_tag = os.environ.get("VERIFY_BASE_TAG") or (sanitize(args.tag) or BASE_TAG_DEFAULT)
+        env_base_tag = os.environ.get("VERIFY_BASE_TAG")
+        file_base_tag = base_tag_file.read_text().strip() if base_tag_file.exists() else None
+        base_tag = env_base_tag or file_base_tag
+        if not base_tag:
+            sys.stderr.write("Missing base image tag; set VERIFY_BASE_TAG or create reproducible/base_image_tag.txt\n")
+            sys.exit(1)
         pull_base = os.environ.get("VERIFY_PULL_BASE", "true").lower() == "true"
         gradle_task = os.environ.get("VERIFY_GRADLE_TASK", BUNDLE_TASK_DEFAULT)
         apk_subdir = os.environ.get("VERIFY_APK_SUBDIR", APK_SUBDIR_DEFAULT)
