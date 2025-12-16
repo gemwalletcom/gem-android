@@ -11,7 +11,7 @@ data class DbFiatRate(
     val rate: Double,
 )
 
-fun DbFiatRate.toModel(): FiatRate {
+fun DbFiatRate.toDTO(): FiatRate {
     return FiatRate(currency.string, rate)
 }
 
@@ -19,6 +19,6 @@ fun FiatRate.toRecord(): DbFiatRate? {
     return DbFiatRate(Currency.entries.firstOrNull { it.string == symbol } ?: return null, rate)
 }
 
-fun List<DbFiatRate>.toModel() = map { it.toModel() }
+fun List<DbFiatRate>.toDTO() = map { it.toDTO() }
 
 fun List<FiatRate>.toRecord() = mapNotNull { it.toRecord() }

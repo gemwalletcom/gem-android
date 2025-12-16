@@ -196,6 +196,7 @@ dependencies {
     implementation(project(":blockchain"))
     implementation(project(":ui"))
     implementation(project(":data:repositories"))
+    implementation(project(":data:coordinators"))
 
     // Features
     implementation(project(":features:activities:presents"))
@@ -246,6 +247,7 @@ dependencies {
     implementation(project(":features:bridge:viewmodels"))
     implementation(project(":features:assets:presents"))
     implementation(project(":features:assets:viewmodels"))
+    implementation(project(":features:perpetual:presents"))
 
     implementation(libs.ktx.core)
 

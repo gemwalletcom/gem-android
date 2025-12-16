@@ -86,7 +86,7 @@ fun AssetBalance.toRecord(walletId: String, accountAddress: String, updateAt: Lo
     )
 }
 
-fun DbBalance.toModel(): AssetBalance? {
+fun DbBalance.toDTO(): AssetBalance? {
     return AssetBalance(
         asset = assetId.toAssetId()?.chain?.asset() ?: return null,
         balance = Balance(

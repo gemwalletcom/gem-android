@@ -56,7 +56,7 @@ fun Transaction.toRecord(walletId: String): DbTransaction {
     )
 }
 
-fun DbTransaction.toModel(): Transaction {
+fun DbTransaction.toDTO(): Transaction {
     return Transaction(
         id = this.id,
         assetId = this.assetId.toAssetId() ?: throw IllegalArgumentException(),
@@ -79,6 +79,6 @@ fun DbTransaction.toModel(): Transaction {
     )
 }
 
-fun List<DbTransaction>.toModel() = map { it.toModel() }
+fun List<DbTransaction>.toDTO() = map { it.toDTO() }
 
 fun List<Transaction>.toRecord(walletId: String) = map { it.toRecord(walletId) }

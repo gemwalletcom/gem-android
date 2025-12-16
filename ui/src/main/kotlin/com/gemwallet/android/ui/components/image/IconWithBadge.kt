@@ -18,7 +18,7 @@ import com.gemwallet.android.ui.theme.listItemSupportIconSize
 import com.wallet.core.primitives.Asset
 
 @Composable
-fun IconWithBadge(
+fun IconWithBadge( // TODO: Merge with AsyncImage
     asset: Asset,
     size: Dp = listItemIconSize,
     supportSize: Dp = listItemSupportIconSize,

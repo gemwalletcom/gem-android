@@ -1,6 +1,6 @@
 package com.gemwallet.features.asset.viewmodels.chart.models
 
-import com.gemwallet.android.ui.models.PriceState
+import com.gemwallet.android.domains.price.PriceState
 
 class PricePoint(
     val y: Float,

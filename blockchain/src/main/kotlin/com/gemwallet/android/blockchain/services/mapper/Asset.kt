@@ -33,7 +33,7 @@ fun Asset.toGem() = GemAsset(
     }
 )
 
-fun GemAsset.toApp() = Asset(
+fun GemAsset.toDTO() = Asset(
     id = id.toAssetId()!!,
     name = name,
     symbol = symbol,

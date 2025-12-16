@@ -23,10 +23,11 @@ import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.models.CryptoFormattedUIModel
 import com.gemwallet.android.ui.models.FiatFormattedUIModel
 import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.ui.models.PriceState
+import com.gemwallet.android.domains.price.PriceState
 import com.gemwallet.android.ui.models.PriceUIModel
 import com.gemwallet.android.ui.theme.Spacer2
 import com.wallet.core.primitives.Asset
+import com.wallet.core.primitives.Price
 
 @Composable
 fun AssetListItem(
@@ -120,7 +121,28 @@ fun PriceInfo(
     isHighlightPercentage: Boolean = false,
     internalPadding: Dp = 16.dp,
 ) {
-    val color = priceColor(price.state)
+    PriceInfo(
+        price.fiatFormatted,
+        price.percentageFormatted,
+        price.state,
+        modifier,
+        style,
+        isHighlightPercentage,
+        internalPadding,
+    )
+}
+
+@Composable
+fun PriceInfo(
+    price: String,
+    changes: String,
+    state: PriceState,
+    modifier: Modifier = Modifier,
+    style: TextStyle = MaterialTheme.typography.bodyLarge,
+    isHighlightPercentage: Boolean = false,
+    internalPadding: Dp = 16.dp,
+) {
+    val color = priceColor(state)
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
@@ -128,7 +150,7 @@ fun PriceInfo(
     ) {
         Text(
             modifier = Modifier.weight(1f, false),
-            text = price.fiatFormatted,
+            text = price,
             maxLines = 1,
             overflow = TextOverflow.MiddleEllipsis,
             color = if (isHighlightPercentage) color else MaterialTheme.colorScheme.secondary,
@@ -140,7 +162,7 @@ fun PriceInfo(
             } else {
                 Modifier
             }.padding(horizontal = 4.dp),
-            text = price.percentageFormatted,
+            text = changes,
             color = color,
             style = style,
         )

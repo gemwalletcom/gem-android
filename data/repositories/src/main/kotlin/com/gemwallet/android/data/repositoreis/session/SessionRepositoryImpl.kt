@@ -3,7 +3,7 @@ package com.gemwallet.android.data.repositoreis.session
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.data.service.store.database.SessionDao
 import com.gemwallet.android.data.service.store.database.entities.DbSession
-import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.model.Session
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.Wallet
@@ -32,7 +32,7 @@ class SessionRepositoryImpl(
     val session = sessionDao.session().flatMapLatest { record ->
         val walletId = record?.walletId ?: return@flatMapLatest flow { emit(null) }
         walletsRepository.getWallet(walletId).mapLatest { wallet ->
-            val session = record.toModel(wallet ?: return@mapLatest null)
+            val session = record.toDTO(wallet ?: return@mapLatest null)
             session
         }
     }

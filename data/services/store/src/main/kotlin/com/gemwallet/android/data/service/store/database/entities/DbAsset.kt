@@ -94,9 +94,9 @@ data class DbRecentActivity(
     val addedAt: Long,
 )
 
-fun List<DbAsset>.toModel() = mapNotNull { it.toModel() }
+fun List<DbAsset>.toDTO() = mapNotNull { it.toDTO() }
 
-fun DbAsset.toModel(): Asset? {
+fun DbAsset.toDTO(): Asset? {
     return Asset(
         id = id.toAssetId() ?: return null,
         name = name,
@@ -158,11 +158,11 @@ fun AssetLink.toRecord(assetId: AssetId) = DbAssetLink(
 
 fun List<AssetFull>.toAssetFullRecord() = map { it.toRecord() }
 
-fun List<DbAssetLink>.toAssetLinksModel() = map { it.toModel() }
+fun List<DbAssetLink>.toAssetLinksModel() = map { it.toDTO() }
 
 fun Flow<List<DbAssetLink>>.toAssetLinksModel() = map { it.toAssetLinksModel() }
 
-fun DbAssetLink.toModel() = AssetLink(name = name, url = url)
+fun DbAssetLink.toDTO() = AssetLink(name = name, url = url)
 
 fun  AssetMarket.toRecord(assetId: AssetId) = DbAssetMarket(
     assetId = assetId.toIdentifier(),
@@ -175,7 +175,7 @@ fun  AssetMarket.toRecord(assetId: AssetId) = DbAssetMarket(
     maxSupply = maxSupply,
 )
 
-fun  DbAssetMarket.toModel() = AssetMarket(
+fun  DbAssetMarket.toDTO() = AssetMarket(
     marketCap = marketCap,
     marketCapFdv = marketCapFdv,
     marketCapRank = marketCapRank,

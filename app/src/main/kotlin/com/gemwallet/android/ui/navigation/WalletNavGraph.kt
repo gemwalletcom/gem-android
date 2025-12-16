@@ -62,6 +62,8 @@ import com.gemwallet.android.ui.navigation.routes.navigateToDevelopScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToNetworksScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToNftAsset
 import com.gemwallet.android.ui.navigation.routes.navigateToNftCollection
+import com.gemwallet.android.ui.navigation.routes.navigateToPerpetualDetailsScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToPerpetualsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToPhraseScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToPriceAlertsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToReceiveScreen
@@ -76,6 +78,7 @@ import com.gemwallet.android.ui.navigation.routes.navigateToTransactionScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToWalletScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToWalletsScreen
 import com.gemwallet.android.ui.navigation.routes.nftCollection
+import com.gemwallet.android.ui.navigation.routes.perpetualScreen
 import com.gemwallet.android.ui.navigation.routes.receiveScreen
 import com.gemwallet.android.ui.navigation.routes.recipientInput
 import com.gemwallet.android.ui.navigation.routes.settingsRoute
@@ -283,6 +286,7 @@ fun WalletNavGraph(
                 onChart = navController::navigateToAssetChartScreen,
                 onPriceAlerts = navController::navigateToPriceAlertsScreen,
                 onSupport = navController::navigateToSupport,
+                onPerpetual = navController::navigateToPerpetualsScreen,
                 onCancel = onCancel,
             )
         }
@@ -319,6 +323,12 @@ fun WalletNavGraph(
                 currentTab.value = assetsRoute
             },
             onSelectType = navController::navigateToImportWalletScreen,
+        )
+
+        perpetualScreen(
+            onOpenPerpetualDetails = navController::navigateToPerpetualDetailsScreen,
+            onOpenPerpetualPosition = navController::navigateToAmountScreen,
+            onCancel = onCancel
         )
     }
 }

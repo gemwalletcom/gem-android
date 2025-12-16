@@ -59,7 +59,7 @@ import com.gemwallet.android.ui.components.InfoBottomSheet
 import com.gemwallet.android.ui.components.InfoSheetEntity
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.components.list_item.PriceInfo
-import com.gemwallet.android.ui.models.PriceState
+import com.gemwallet.android.domains.price.PriceState
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
@@ -168,7 +168,7 @@ fun AssetHeadActions(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (onTransfer != null) {
-            AssetAction(
+            AmountHeadAction(
                 modifier = Modifier.weight(1f),
                 title = stringResource(id = R.string.wallet_send),
                 imageVector = Icons.AutoMirrored.Default.Send,
@@ -182,7 +182,7 @@ fun AssetHeadActions(
             )
         }
         if (onReceive != null) {
-            AssetAction(
+            AmountHeadAction(
                 modifier = Modifier.weight(1f),
                 title = stringResource(id = R.string.wallet_receive),
                 imageVector = Icons.Default.QrCode2,
@@ -196,7 +196,7 @@ fun AssetHeadActions(
             )
         }
         if (onBuy != null) {
-            AssetAction(
+            AmountHeadAction(
                 modifier = Modifier.weight(1f)
                 .testTag("assetBuy"),
                 title = stringResource(id = R.string.wallet_buy),
@@ -211,7 +211,7 @@ fun AssetHeadActions(
             )
         }
         if (onSwap != null) {
-            AssetAction(
+            AmountHeadAction(
                 modifier = Modifier.weight(1f),
                 title = stringResource(id = R.string.wallet_swap),
                 imageVector = Icons.Default.Autorenew,
@@ -270,7 +270,7 @@ private fun AssetWatchOnly() {
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
-private fun AssetAction(
+fun AmountHeadAction(
     title: String,
     fontSize: TextUnit,
     imageVector: ImageVector,

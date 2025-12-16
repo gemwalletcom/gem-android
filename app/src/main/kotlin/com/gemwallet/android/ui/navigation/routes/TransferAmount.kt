@@ -8,19 +8,31 @@ import androidx.navigation.navOptions
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.features.asset_select.presents.views.SelectSendScreen
+import com.gemwallet.features.transfer_amount.presents.AmountPerpetualNavScreen
 import com.gemwallet.features.transfer_amount.presents.AmountScreen
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.TransactionType
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class AmountRoute(val params: String)
 
 @Serializable
+data class PerpetualAmountRoute(val params: String)
+
+@Serializable
 object SelectSendAssetRoute
 
 fun NavController.navigateToAmountScreen(params: AmountParams) {
+    val pack = params.pack() ?: return
+    val route = when (params.txType) {
+        TransactionType.PerpetualOpenPosition,
+        TransactionType.PerpetualClosePosition,
+        TransactionType.PerpetualModifyPosition -> PerpetualAmountRoute(pack)
+        else -> AmountRoute(pack)
+    }
     navigate(
-        route = AmountRoute(params.pack() ?: return),
+        route = route,
         navOptions = navOptions { launchSingleTop = true }
     )
 }
@@ -53,5 +65,9 @@ fun NavGraphBuilder.amount(
 
     composable<AmountRoute> {
         AmountScreen(onCancel = onCancel, onConfirm = onConfirm)
+    }
+
+    composable<PerpetualAmountRoute> {
+        AmountPerpetualNavScreen(onClose = onCancel)
     }
 }

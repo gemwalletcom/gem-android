@@ -15,7 +15,7 @@ import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
 import com.gemwallet.android.data.service.store.database.entities.DbTransactionExtended
 import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetadata
-import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.toAssetId
@@ -84,7 +84,7 @@ class TransactionsRepository(
         return transactionsDao.getExtendedTransactions()
             .flowOn(Dispatchers.IO)
             .map { txs -> txs.filter { state == null || it.state == state } }
-            .mapNotNull { it.toModel() }
+            .mapNotNull { it.toDTO() }
             .map { items ->
                 items.filter {
                     val swapMetadata = it.transaction.getSwapMetadata()
@@ -110,7 +110,7 @@ class TransactionsRepository(
 
     override fun getTransaction(txId: String): Flow<TransactionExtended?> {
         return transactionsDao.getExtendedTransaction(txId)
-            .mapNotNull { it?.toModel() }
+            .mapNotNull { it?.toDTO() }
             .flowOn(Dispatchers.IO)
     }
 
@@ -122,7 +122,7 @@ class TransactionsRepository(
     }
 
     private suspend fun updateTransaction(txs: List<DbTransactionExtended>) = withContext(Dispatchers.IO) {
-        val data = txs.mapNotNull { it.toModel()?.transaction?.toRecord(it.walletId) }
+        val data = txs.mapNotNull { it.toDTO()?.transaction?.toRecord(it.walletId) }
         transactionsDao.insert(data)
     }
 
@@ -225,7 +225,7 @@ class TransactionsRepository(
                 break
             }
         }
-        tx.toModel()?.let { changedTransactions.tryEmit(listOf(it)) }
+        tx.toDTO()?.let { changedTransactions.tryEmit(listOf(it)) }
         pendingTransactionJobs.remove(tx.id)
     }
 

@@ -1,5 +1,6 @@
 package com.gemwallet.android.ui.models
 
+import com.gemwallet.android.domains.price.PriceState
 import java.math.RoundingMode
 import java.text.DecimalFormat
 

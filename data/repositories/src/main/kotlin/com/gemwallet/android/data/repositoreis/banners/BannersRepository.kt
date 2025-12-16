@@ -8,7 +8,7 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.config.UserConfig
 import com.gemwallet.android.data.service.store.database.BannersDao
 import com.gemwallet.android.data.service.store.database.entities.DbBanner
-import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.domains.asset.isStackable
 import com.gemwallet.android.ext.toIdentifier
@@ -43,7 +43,7 @@ class BannersRepository(
             walletId = wallet?.id ?: "",
             assetId = asset?.id?.toIdentifier() ?: "",
             chain = asset?.id?.chain,
-        ).map { it.toModel(wallet, asset) } + generatedBanner
+        ).map { it.toDTO(wallet, asset) } + generatedBanner
         banners.filterNotNull().mapNotNull { banner ->
             if (isBannerAvailable(wallet, asset, banner.event)) banner else null
         }

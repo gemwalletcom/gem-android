@@ -22,7 +22,7 @@ data class DbPriceAlert(
     val enabled: Boolean,
 )
 
-fun DbPriceAlert.toModel(): PriceAlert {
+fun DbPriceAlert.toDTO(): PriceAlert {
     return PriceAlert(
         assetId = assetId.toAssetId() ?: throw IllegalStateException(),
         price = price,
@@ -42,10 +42,10 @@ fun PriceAlert.toRecord(): DbPriceAlert {
     )
 }
 
-fun List<DbPriceAlert>.toModel() = map { it.toModel() }
+fun List<DbPriceAlert>.toDTO() = map { it.toDTO() }
 
-fun Flow<List<DbPriceAlert>>.toModels() = map { it.toModel() }
+fun Flow<List<DbPriceAlert>>.toModels() = map { it.toDTO() }
 
-fun Flow<DbPriceAlert>.toModel() = map { it.toModel() }
+fun Flow<DbPriceAlert>.toDTO() = map { it.toDTO() }
 
 fun List<PriceAlert>.toRecord() = map { it.toRecord() }

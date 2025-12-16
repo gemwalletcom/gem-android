@@ -21,7 +21,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbRecentActivi
 import com.gemwallet.android.data.service.store.database.entities.toAssetInfoModel
 import com.gemwallet.android.data.service.store.database.entities.toAssetLinkRecord
 import com.gemwallet.android.data.service.store.database.entities.toAssetLinksModel
-import com.gemwallet.android.data.service.store.database.entities.toModel
+import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.domains.asset.chain
@@ -194,7 +194,7 @@ class AssetsRepository @Inject constructor(
     suspend fun getNativeAssets(wallet: Wallet): List<Asset> = withContext(Dispatchers.IO) {
         assetsDao.getNativeWalletAssets(wallet.id)
             .firstOrNull()
-            ?.toModel()
+            ?.toDTO()
             ?: emptyList()
     }
 
@@ -216,16 +216,16 @@ class AssetsRepository @Inject constructor(
     }
 
     suspend fun getToken(assetId: AssetId): Flow<Asset?> = withContext(Dispatchers.IO) {
-        assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel()?.asset }
+        assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toDTO()?.asset }
     }
 
     fun getTokenInfo(assetId: AssetId): Flow<AssetInfo?> {
         return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
             .flatMapLatest { assetInfo ->
             if (assetInfo == null) {
-                assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toModel() }
+                assetsDao.getTokenInfo(assetId.toIdentifier(), assetId.chain).map { it?.toDTO() }
             } else {
-                flow { emit(assetInfo.toModel()) }
+                flow { emit(assetInfo.toDTO()) }
             }
         }
         .flowOn(Dispatchers.IO)
@@ -233,7 +233,7 @@ class AssetsRepository @Inject constructor(
 
     fun getAssetInfo(assetId: AssetId): Flow<AssetInfo?> {
         return assetsDao.getAssetInfo(assetId.toIdentifier(), assetId.chain)
-            .map { it?.toModel() }
+            .map { it?.toDTO() }
             .flowOn(Dispatchers.IO)
     }
 
@@ -319,7 +319,7 @@ class AssetsRepository @Inject constructor(
         searchTokensCase.search(tokenIds)
         assetIds.map { assetId ->
             async {
-                val asset = assetsDao.getAsset(assetId.toIdentifier())?.toModel() ?: return@async null
+                val asset = assetsDao.getAsset(assetId.toIdentifier())?.toDTO() ?: return@async null
                 add(
                     walletId = wallet.id,
                     accountAddress = wallet.getAccount(assetId.chain)?.address ?: return@async null,
@@ -442,7 +442,7 @@ class AssetsRepository @Inject constructor(
 
     fun getAssetMarket(id: AssetId): Flow<AssetMarket?> {
         return assetsDao.getAssetMarket(id.toIdentifier())
-            .map { it?.toModel() }
+            .map { it?.toDTO() }
             .flowOn(Dispatchers.IO)
     }
 
@@ -487,7 +487,7 @@ class AssetsRepository @Inject constructor(
     }
 
     private suspend fun changeCurrency(currency: Currency) {
-        val rate = pricesDao.getRates(currency)?.toModel() ?: return
+        val rate = pricesDao.getRates(currency)?.toDTO() ?: return
         pricesDao.getAll().firstOrNull()?.map {
             it.copy(value = (it.usdValue ?: 0.0) * rate.rate, currency = currency.string)
         }?.let { pricesDao.insert(it) }

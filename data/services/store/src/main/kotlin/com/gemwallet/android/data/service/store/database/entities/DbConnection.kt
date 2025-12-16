@@ -25,7 +25,7 @@ data class DbConnection(
     @ColumnInfo("redirect_universal") val redirectUniversal: String?,
 )
 
-fun DbConnection.toModel(wallet: Wallet): WalletConnection {
+fun DbConnection.toDTO(wallet: Wallet): WalletConnection {
     return WalletConnection(
         wallet = wallet,
         session = WalletConnectionSession(

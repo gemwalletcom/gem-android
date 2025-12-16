@@ -1,8 +1,8 @@
 package com.gemwallet.android.data.repositoreis.di
 
-//import com.gemwallet.android.blockchain.clients.ethereum.EvmBalanceClient
 import com.gemwallet.android.blockchain.services.AddressStatusService
 import com.gemwallet.android.blockchain.services.BalancesService
+import com.gemwallet.android.blockchain.services.PerpetualService
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactions
@@ -84,4 +84,12 @@ object AssetsModule {
             priceAlertsDao = priceAlertsDao
         )
     }
+
+    @Provides
+    @Singleton
+    fun providePerpetualRemoteSource(
+        gateway: GemGateway,
+    ): PerpetualService = PerpetualService(
+        gateway = gateway,
+    )
 }

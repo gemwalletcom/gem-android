@@ -18,7 +18,7 @@ import com.gemwallet.android.model.SyncState
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
-import com.gemwallet.android.ui.models.PriceState
+import com.gemwallet.android.domains.price.PriceState
 import com.gemwallet.features.assets.viewmodels.model.PriceUIState
 import com.gemwallet.features.assets.viewmodels.model.WalletInfoUIState
 import com.wallet.core.primitives.AssetId

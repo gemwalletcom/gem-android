@@ -97,7 +97,7 @@ data class DbTransactionExtended(
     val feePriceChanged: Double?,
 )
 
-fun DbTransactionExtended.toModel(): TransactionExtended? {
+fun DbTransactionExtended.toDTO(): TransactionExtended? {
     return TransactionExtended(
         transaction = Transaction(
             id = this.id,
@@ -145,4 +145,4 @@ fun DbTransactionExtended.toModel(): TransactionExtended? {
     )
 }
 
-fun List<DbTransactionExtended>.toModel() = mapNotNull { it.toModel() }
+fun List<DbTransactionExtended>.toDTO() = mapNotNull { it.toDTO() }

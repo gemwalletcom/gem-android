@@ -1,5 +1,6 @@
 package com.gemwallet.android.ui.models
 
+import com.gemwallet.android.domains.price.PriceState
 import com.gemwallet.android.model.format
 import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.Currency

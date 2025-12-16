@@ -13,6 +13,9 @@ import com.gemwallet.android.data.service.store.database.ConnectionsDao
 import com.gemwallet.android.data.service.store.database.GemDatabase
 import com.gemwallet.android.data.service.store.database.NftDao
 import com.gemwallet.android.data.service.store.database.NodesDao
+import com.gemwallet.android.data.service.store.database.PerpetualBalanceDao
+import com.gemwallet.android.data.service.store.database.PerpetualDao
+import com.gemwallet.android.data.service.store.database.PerpetualPositionDao
 import com.gemwallet.android.data.service.store.database.PriceAlertsDao
 import com.gemwallet.android.data.service.store.database.PricesDao
 import com.gemwallet.android.data.service.store.database.SessionDao
@@ -92,6 +95,8 @@ object DatabaseModule {
         .addMigrations(Migration_54_55)
         .addMigrations(Migration_55_56)
         .addMigrations(Migration_56_57)
+        .addMigrations(Migration_57_58)
+        .addMigrations(Migration_58_59)
         .build()
 
     @Singleton
@@ -149,6 +154,18 @@ object DatabaseModule {
     @Singleton
     @Provides
     fun provideAssetsPriorityDao(db: GemDatabase): AssetsPriorityDao = db.assetsPriorityDao()
+
+    @Singleton
+    @Provides
+    fun providePerpetualDao(db: GemDatabase): PerpetualDao = db.perpetualDao()
+
+    @Singleton
+    @Provides
+    fun providePerpetualPositionDao(db: GemDatabase): PerpetualPositionDao = db.perpetualPositionDao()
+
+    @Singleton
+    @Provides
+    fun providePerpetualBalanceDao(db: GemDatabase): PerpetualBalanceDao = db.perpetualBalanceDao()
 }
 
 val MIGRATION_1_2 = object : Migration(1, 2) {

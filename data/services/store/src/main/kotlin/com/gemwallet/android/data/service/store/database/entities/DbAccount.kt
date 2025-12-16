@@ -14,7 +14,7 @@ data class DbAccount(
     val extendedPublicKey: String?,
 )
 
-fun DbAccount.toModel(): Account {
+fun DbAccount.toDTO(): Account {
     return Account(
         chain = chain,
         address = address,
@@ -33,4 +33,4 @@ fun Account.toRecord(walletId: String): DbAccount {
     )
 }
 
-fun List<DbAccount>.toModel() = map { it.toModel() }
+fun List<DbAccount>.toDTO() = map { it.toDTO() }
