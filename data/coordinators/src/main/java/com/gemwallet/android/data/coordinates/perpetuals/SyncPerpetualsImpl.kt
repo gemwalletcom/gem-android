@@ -16,6 +16,7 @@ class SyncPerpetualsImpl @Inject constructor(
         chains.map { chain ->
             perpetualService.getPerpetualsData(chain = chain)
         }.map {
+            perpetualRepository.removeNotAvailablePerpetuals(it)
             perpetualRepository.putPerpetuals(it)
         }
     }

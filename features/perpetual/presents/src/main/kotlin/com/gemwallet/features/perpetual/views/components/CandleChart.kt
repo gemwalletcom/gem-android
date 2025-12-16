@@ -35,6 +35,7 @@ import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.PeriodsPanel
 import com.gemwallet.android.ui.components.list_item.PriceInfo
+import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.mainActionHeight
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.paddingHalfSmall
@@ -81,7 +82,7 @@ import kotlinx.coroutines.withContext
 import kotlin.math.min
 
 
-fun LazyListScope.candyChart(
+fun LazyListScope.CandleChart(
     data: List<ChartCandleStick>,
     period: ChartPeriod,
     entry: Double?,
@@ -91,7 +92,7 @@ fun LazyListScope.candyChart(
     onPeriodSelect: (ChartPeriod) -> Unit
 ) {
     item {
-        CandyChart(
+        CandleChart(
             period = period,
             data = data,
             entry = entry,
@@ -102,12 +103,13 @@ fun LazyListScope.candyChart(
     }
 
     item {
+        Spacer8()
         PeriodsPanel(period, onPeriodSelect)
     }
 }
 
 @Composable
-private fun CandyChart(
+private fun CandleChart(
     period: ChartPeriod,
     data: List<ChartCandleStick>,
     entry: Double?,
@@ -202,7 +204,7 @@ private fun CandyChart(
                         guideline = rememberAxisGuidelineComponent(shape = dashedShape(dashLength = 10.dp, gapLength = 4.dp)),
                         itemPlacer = remember(data.size) {
                             HorizontalAxis.ItemPlacer.aligned(
-                                { data.size / 8 },
+                                { data.size / 4 },
                                 addExtremeLabelPadding = false
                             )
                         },

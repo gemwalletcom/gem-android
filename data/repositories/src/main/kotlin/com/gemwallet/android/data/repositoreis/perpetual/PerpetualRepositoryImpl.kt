@@ -25,6 +25,10 @@ class PerpetualRepositoryImpl(
 
     }
 
+    override suspend fun removeNotAvailablePerpetuals(items: List<PerpetualData>) {
+        perpetualDao.removeNotAvailablePerpetuals(items.map { it.perpetual.id })
+    }
+
     override fun getPerpetuals(query: String?): Flow<List<PerpetualData>> {
         return perpetualDao.getPerpetualsData()
             .map { items -> items.mapNotNull { it.toDTO() } }
@@ -70,6 +74,11 @@ class PerpetualRepositoryImpl(
 
     override suspend fun putBalance(accountAddress: String, balance: PerpetualBalance) {
         perpetualBalanceDao.put(balance.toDB(accountAddress))
+    }
+
+    override fun getBalance(accountAddress: String): Flow<PerpetualBalance> {
+        return perpetualBalanceDao.getBalance(accountAddress)
+            .map { it.toDTO() }
     }
 
     override fun getBalances(accountAddresses: List<String>): Flow<List<PerpetualBalance>> {

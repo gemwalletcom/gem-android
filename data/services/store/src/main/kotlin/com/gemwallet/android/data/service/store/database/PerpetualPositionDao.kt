@@ -22,8 +22,8 @@ interface PerpetualPositionDao {
 
     @Query("""
         DELETE FROM perpetual_position
-        WHERE accountAddress = :accountAddress
-            AND id NOT IN (:ids)
+            WHERE accountAddress = :accountAddress
+                AND id NOT IN (:ids)
     """)
     suspend fun removeNotAvailablePositions(accountAddress: String, ids: List<String>)
 
@@ -37,7 +37,7 @@ interface PerpetualPositionDao {
     @Transaction
     @Query("""
         SELECT * FROM perpetual_position
-        WHERE perpetual_position.id = :positionId
+            WHERE perpetual_position.id = :positionId
     """)
     fun getPositionData(positionId: String): Flow<DbPerpetualPositionData?>
 
@@ -45,7 +45,7 @@ interface PerpetualPositionDao {
     @Transaction
     @Query("""
         SELECT * FROM perpetual_position
-        WHERE perpetual_position.perpetualId = :perpetualId
+            WHERE perpetual_position.perpetualId = :perpetualId
     """)
     fun getPositionDataByPerpetual(perpetualId: String): Flow<DbPerpetualPositionData?>
 

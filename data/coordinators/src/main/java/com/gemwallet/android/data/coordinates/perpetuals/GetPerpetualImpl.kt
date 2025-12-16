@@ -37,4 +37,6 @@ class PerpetualDetailsDataAggregateImpl(
 
     override val funding: String = Currency.USD.format(data.perpetual.funding)
 
+    override val maxLeverage: Int = data.perpetual.maxLeverage.toInt()
+
 }

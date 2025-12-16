@@ -2,7 +2,7 @@ package com.gemwallet.features.perpetual.viewmodels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualBalance
+import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualBalances
 import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualPositions
 import com.gemwallet.android.application.perpetual.coordinators.GetPerpetuals
 import com.gemwallet.android.application.perpetual.coordinators.SyncPerpetualPositions
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class PerpetualMarketViewModel @Inject constructor(
     private val getPerpetuals: GetPerpetuals,
     private val getPositions: GetPerpetualPositions,
-    private val getBalance: GetPerpetualBalance,
+    private val getBalance: GetPerpetualBalances,
     private val syncPerpetuals: SyncPerpetuals,
     private val syncPerpetualPositions: SyncPerpetualPositions,
     private val togglePin: TogglePerpetualPin

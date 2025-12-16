@@ -1,6 +1,7 @@
 package com.gemwallet.android.di
 
 import com.gemwallet.android.application.perpetual.coordinators.GetPerpetual
+import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualBalances
 import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualBalance
 import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualChartData
 import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualPosition
@@ -10,6 +11,7 @@ import com.gemwallet.android.application.perpetual.coordinators.SyncPerpetualPos
 import com.gemwallet.android.application.perpetual.coordinators.SyncPerpetuals
 import com.gemwallet.android.application.perpetual.coordinators.TogglePerpetualPin
 import com.gemwallet.android.blockchain.services.PerpetualService
+import com.gemwallet.android.data.coordinates.perpetuals.GetPerpetualBalancesImpl
 import com.gemwallet.android.data.coordinates.perpetuals.GetPerpetualBalanceImpl
 import com.gemwallet.android.data.coordinates.perpetuals.GetPerpetualChartDataImpl
 import com.gemwallet.android.data.coordinates.perpetuals.GetPerpetualImpl
@@ -103,12 +105,22 @@ object CoordinatorsModule { // TODO: Move to coordinators
 
     @Provides
     @Singleton
-    fun provideGetPerpetualBalance(
+    fun provideGetPerpetualBalances(
         sessionRepository: SessionRepository,
+        perpetualRepository: PerpetualRepository,
+    ): GetPerpetualBalances {
+        return GetPerpetualBalancesImpl(
+            sessionRepository = sessionRepository,
+            perpetualRepository = perpetualRepository,
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetPerpetualBalance(
         perpetualRepository: PerpetualRepository,
     ): GetPerpetualBalance {
         return GetPerpetualBalanceImpl(
-            sessionRepository = sessionRepository,
             perpetualRepository = perpetualRepository,
         )
     }

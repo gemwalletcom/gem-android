@@ -9,8 +9,8 @@ import com.wallet.core.primitives.PerpetualDirection
 
 @Composable
 fun PerpetualDirection.text(leverage: Int): String = when (this) {
-    PerpetualDirection.Short -> "${stringResource(R.string.perpetual_short)} ${leverage}x"
-    PerpetualDirection.Long -> "${stringResource(R.string.perpetual_long)} ${leverage}x"
+    PerpetualDirection.Short -> "${stringResource(R.string.perpetual_short).uppercase()} ${leverage}x"
+    PerpetualDirection.Long -> "${stringResource(R.string.perpetual_long).uppercase()} ${leverage}x"
 }
 
 @Composable

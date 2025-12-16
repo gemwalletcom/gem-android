@@ -11,6 +11,8 @@ import kotlinx.coroutines.flow.Flow
 interface PerpetualRepository {
     suspend fun putPerpetuals(items: List<PerpetualData>)
 
+    suspend fun removeNotAvailablePerpetuals(items: List<PerpetualData>)
+
     fun getPerpetuals(query: String? = null): Flow<List<PerpetualData>>
 
     fun getPerpetual(perpetualId: String): Flow<PerpetualData?>
@@ -30,6 +32,8 @@ interface PerpetualRepository {
     fun getPositionByPerpetualId(id: String): Flow<PerpetualPositionData?>
 
     suspend fun putBalance(accountAddress: String, balance: PerpetualBalance)
+
+    fun getBalance(accountAddress: String): Flow<PerpetualBalance>
 
     fun getBalances(accountAddresses: List<String>): Flow<List<PerpetualBalance>>
 

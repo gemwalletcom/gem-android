@@ -9,5 +9,5 @@ interface PerpetualDetailsDataAggregate {
     val dayVolume: String
     val openInterest: String
     val funding: String
-
+    val maxLeverage: Int
 }

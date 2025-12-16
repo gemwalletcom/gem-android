@@ -12,7 +12,7 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.features.perpetual.views.components.PerpetualActions
 import com.gemwallet.features.perpetual.views.components.PerpetualPositionActions
-import com.gemwallet.features.perpetual.views.components.candyChart
+import com.gemwallet.features.perpetual.views.components.CandleChart
 import com.gemwallet.features.perpetual.views.components.perpetualInfo
 import com.gemwallet.features.perpetual.views.components.positionProperties
 import com.wallet.core.primitives.Asset
@@ -39,7 +39,7 @@ fun PerpetualPositionScene(
         LazyColumn(
             modifier = Modifier.fillMaxSize()
         ) {
-            candyChart(
+            CandleChart(
                 data = chartData,
                 period = period,
                 entry = position?.entryValue,

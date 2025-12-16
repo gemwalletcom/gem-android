@@ -1,8 +1,9 @@
 package com.gemwallet.android.application.perpetual.coordinators
 
-import com.gemwallet.android.domains.perpetual.values.PerpetualBalance
+import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.PerpetualBalance
 import kotlinx.coroutines.flow.Flow
 
 interface GetPerpetualBalance {
-    fun getPerpetualBalance(): Flow<PerpetualBalance>
+    fun getBalance(chain: Chain, accountAddress: String): Flow<PerpetualBalance>
 }

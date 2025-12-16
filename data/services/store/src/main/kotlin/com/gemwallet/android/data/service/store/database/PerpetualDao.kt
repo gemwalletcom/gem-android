@@ -26,6 +26,12 @@ interface PerpetualDao {
         putAssets(assets)
     }
 
+    @Query("""
+        DELETE FROM perpetual
+            WHERE id NOT IN (:ids)
+    """)
+    suspend fun removeNotAvailablePerpetuals(ids: List<String>)
+
     @Delete
     suspend fun deletePerpetuals(items: List<DbPerpetual>)
 
@@ -35,15 +41,15 @@ interface PerpetualDao {
     @Transaction
     @Query("""
         SELECT * FROM perpetual
-        WHERE volume24h > 0
-        ORDER BY volume24h DESC
+            WHERE volume24h > 0
+            ORDER BY volume24h DESC
     """)
     fun getPerpetualsData(): Flow<List<DbPerpetualData>>
 
     @Transaction
     @Query("""
             SELECT * FROM perpetual
-            WHERE id = :perpetualId
+                WHERE id = :perpetualId
     """)
     fun getPerpetual(perpetualId: String): Flow<DbPerpetualData?>
 

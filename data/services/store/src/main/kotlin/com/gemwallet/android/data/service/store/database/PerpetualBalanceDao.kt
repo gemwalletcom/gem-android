@@ -21,4 +21,9 @@ interface PerpetualBalanceDao {
     """)
     fun getBalances(accountAddresses: List<String>): Flow<List<DbPerpetualBalance>>
 
+    @Query("""
+        SELECT * FROM perpetual_balance WHERE accountAddress = :accountAddresses
+    """)
+    fun getBalance(accountAddresses: String): Flow<DbPerpetualBalance>
+
 }

@@ -30,6 +30,13 @@ class FakePerpetualRepository @Inject constructor() : PerpetualRepository {
         perpetualsFlow.value = items
     }
 
+    override suspend fun removeNotAvailablePerpetuals(items: List<PerpetualData>) {
+        val availablePerpetualIds = items.map { it.perpetual.id }.toSet()
+        perpetualsFlow.value = perpetualsFlow.value.filter {
+            it.perpetual.id in availablePerpetualIds
+        }
+    }
+
     override fun getPerpetuals(query: String?): Flow<List<PerpetualData>> {
         return if (query.isNullOrEmpty()) {
             perpetualsFlow
