@@ -99,8 +99,9 @@ jobs:
       - name: Build app image
         env:
           DOCKER_BUILDKIT: 1
+          TAG: ${{ github.ref_name }}
         run: |
-          just build-app TAG=${{ github.ref_name }}
+          just build-app
 
       - name: Build app inside container
         env:
