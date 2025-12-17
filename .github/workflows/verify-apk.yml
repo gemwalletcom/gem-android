@@ -61,7 +61,6 @@ jobs:
 
       - name: Install apksigcopier and diffoscope
         run: |
-          python -m pip install --upgrade pip
           python -m pip install --upgrade apksigcopier diffoscope
           python -m pip show apksigcopier || true
           diffoscope --version || true

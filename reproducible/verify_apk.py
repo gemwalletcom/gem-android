@@ -156,9 +156,15 @@ def resolve_ref(ref: str, repo_url: str) -> str:
 
 def ensure_base_image(base_image: str, base_tag: str, pull: bool, platform: str) -> None:
     image_ref = f"{base_image}:{base_tag}"
+    env = os.environ.copy()
+    if platform:
+        env["DOCKER_DEFAULT_PLATFORM"] = env.get("DOCKER_DEFAULT_PLATFORM", platform)
     if pull:
         print(f"{INFO_EMOJI} Pulling base image {image_ref} ...")
-        pulled = run(["docker", "pull", image_ref], check=False)
+        pull_cmd = ["docker", "pull", image_ref]
+        if platform:
+            pull_cmd = ["docker", "pull", "--platform", platform, image_ref]
+        pulled = run(pull_cmd, check=False, env=env)
         if pulled.returncode == 0:
             print(f"{OK_EMOJI} Pulled base image {image_ref}")
             return
@@ -170,9 +176,7 @@ def ensure_base_image(base_image: str, base_tag: str, pull: bool, platform: str)
         return
 
     print(f"Building base image {image_ref}...")
-    env = os.environ.copy()
     env["DOCKER_BUILDKIT"] = env.get("DOCKER_BUILDKIT", "1")
-    env["DOCKER_DEFAULT_PLATFORM"] = env.get("DOCKER_DEFAULT_PLATFORM", platform)
     run(["docker", "build", "--platform", platform, "-t", image_ref, "."], check=True, env=env)
 
 
@@ -326,6 +330,8 @@ def main() -> None:
     resolved_tag = resolve_ref(args.tag, repo_url)
     base_tag_file = Path(__file__).with_name("base_image_tag.txt")
     docker_platform = os.environ.get("VERIFY_DOCKER_PLATFORM", DOCKER_PLATFORM_DEFAULT)
+    if docker_platform:
+        os.environ.setdefault("DOCKER_DEFAULT_PLATFORM", docker_platform)
 
     work_dir = Path(args.work_dir) if args.work_dir else root_dir / "artifacts" / "reproducible" / tag_safe
     if args.stage != "diff":
