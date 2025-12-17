@@ -48,4 +48,5 @@ jobs:
             --platform linux/amd64 \
             -t ${BASE_IMAGE_FULL_NAME}:${BASE_TAG} \
             -t ${BASE_IMAGE_FULL_NAME}:latest \
+            --push \
             .
