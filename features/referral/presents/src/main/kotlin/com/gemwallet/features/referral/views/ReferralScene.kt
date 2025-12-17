@@ -139,13 +139,7 @@ fun ReferralScene(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(paddingDefault),
                     ) {
-                        AsyncImage(
-                            modifier = Modifier
-                                .size(90.dp)
-                                .clip(CircleShape),
-                            model = R.drawable.ic_splash,
-                            contentDescription = ""
-                        )
+                        Text("\uD83C\uDF81", fontSize = 64.sp)
                         Text(
                             text = parseMarkdownToAnnotatedString(
                                 markdown = stringResource(R.string.rewards_invite_friends_title)
