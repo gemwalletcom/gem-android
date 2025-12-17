@@ -321,7 +321,7 @@ def main() -> None:
         sys.exit(1)
 
     tag_safe = sanitize(args.tag) or "latest"
-    map_id_seed = os.environ.get("VERIFY_R8_MAP_ID_SEED", args.tag.lstrip("v"))
+    map_id_seed = os.environ.get("R8_MAP_ID_SEED") or None
     repo_url = os.environ.get("VERIFY_REPO_URL", REPO_URL_DEFAULT)
     resolved_tag = resolve_ref(args.tag, repo_url)
     base_tag_file = Path(__file__).with_name("base_image_tag.txt")
@@ -356,13 +356,17 @@ def main() -> None:
         app_image = os.environ.get("VERIFY_APP_IMAGE", APP_IMAGE_DEFAULT) + f":{app_image_tag}"
         app_container = f"gem-android-app-build-{tag_safe}"
 
-        gradle_cache = reset_cache_dir(Path(os.environ.get("VERIFY_GRADLE_CACHE", tempfile.mkdtemp())), "Gradle")
-        maven_cache = reset_cache_dir(Path(os.environ.get("VERIFY_M2_CACHE", tempfile.mkdtemp())), "Maven")
+        gradle_cache = reset_cache_dir(Path(os.environ.get("VERIFY_GRADLE_CACHE", tempfile.mkdtemp())), f"{STEP_EMOJI} Gradle")
+        maven_cache = reset_cache_dir(Path(os.environ.get("VERIFY_M2_CACHE", tempfile.mkdtemp())), f"{STEP_EMOJI} Maven")
 
         try:
             print(f"{STEP_EMOJI} Building base image (or reusing) and app image...")
             ensure_base_image(base_image, base_tag, pull_base, docker_platform)
-            print(f"{INFO_EMOJI} Build parameters: R8_MAP_ID_SEED={map_id_seed}")
+            print(
+                f"{INFO_EMOJI} Build parameters: base_image={base_image}:{base_tag}, "
+                f"platform={docker_platform}, gradle_task='{gradle_task}', R8_MAP_ID_SEED={map_id_seed} "
+                "(override with VERIFY_R8_MAP_ID_SEED)"
+            )
             build_app_image(resolved_tag, base_image, base_tag, gradle_task, map_id_seed, app_image, docker_platform)
             build_outputs_in_container(app_image, app_container, gradle_task, map_id_seed, gradle_cache, maven_cache, docker_platform)
             built_apk = extract_apk_outputs(app_container, work_dir, apk_subdir)

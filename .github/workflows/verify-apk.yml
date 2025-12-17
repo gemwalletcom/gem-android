@@ -11,15 +11,6 @@ on:
         description: URL to the official APK (public or accessible with default token)
         required: true
         type: string
-      stage:
-        description: Stage to run (all, build, diff)
-        required: false
-        default: all
-        type: choice
-        options:
-          - all
-          - build
-          - diff
       base_image_tag:
         description: gem-android-base tag in GHCR
         required: false
@@ -90,7 +81,7 @@ jobs:
         env:
           VERIFY_BASE_TAG: ${{ inputs.base_image_tag != '' && inputs.base_image_tag || steps.base_tag.outputs.tag }}
         run: |
-          python reproducible/verify_apk.py "${{ inputs.tag }}" official.apk --stage "${{ inputs.stage }}"
+          python reproducible/verify_apk.py "${{ inputs.tag }}" official.apk
 
       - name: Upload artifacts
         if: always()
