@@ -43,7 +43,7 @@ generate-models: install-typeshare
     @cd core && cargo run --package generate --bin generate android ../gemcore/src/main/kotlin/com/wallet/core
 
 build-base-image:
-	DOCKER_BUILDKIT=1 docker build --no-cache -t gem-android-base ..
+	DOCKER_BUILDKIT=1 DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build --platform linux/amd64 --no-cache -t gem-android-base ..
 
 TAG := env("TAG", "main")
 BUILD_MODE := env("BUILD_MODE", "")
@@ -52,6 +52,7 @@ BUNDLE_TASK := env("BUNDLE_TASK", "clean :app:bundleGoogleRelease assembleUniver
 build-app-image:
 	#!/usr/bin/env bash
 	set -euo pipefail
+	BUNDLE_TASK="{{BUNDLE_TASK}}"
 	base_tag=$(cat reproducible/base_image_tag.txt)
 	tag="{{TAG}}"
 	if ! docker pull ghcr.io/gemwalletcom/gem-android-base:${base_tag} >/dev/null 2>&1; then
@@ -71,6 +72,7 @@ build-app-image:
 build-app-in-docker:
 	#!/usr/bin/env bash
 	set -euo pipefail
+	BUNDLE_TASK="{{BUNDLE_TASK}}"
 	TAG="{{TAG}}" just build-app-image
 	container_name="gem-android-app-build"
 	gradle_cache=$(mktemp -d)
