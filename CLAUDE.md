@@ -118,10 +118,13 @@ just extract-universal-apk
 just build-base-image
 
 # Build app Docker image
-just build-app
+just build-app-image
 
 # Build with specific tag
-TAG=feature-branch just build-app
+TAG=feature-branch just build-app-image
+
+# Build app artifacts inside Docker (uses the image above)
+just build-app-in-docker
 ```
 
 ### Linting & Quality

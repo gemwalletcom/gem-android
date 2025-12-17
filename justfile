@@ -47,8 +47,9 @@ build-base-image:
 
 TAG := env("TAG", "main")
 BUILD_MODE := env("BUILD_MODE", "")
+BUNDLE_TASK := env("BUNDLE_TASK", "clean :app:bundleGoogleRelease assembleUniversalRelease")
 
-build-app:
+build-app-image:
 	#!/usr/bin/env bash
 	set -euo pipefail
 	base_tag=$(cat reproducible/base_image_tag.txt)
@@ -60,17 +61,17 @@ build-app:
 	DOCKER_BUILDKIT=1 DOCKER_DEFAULT_PLATFORM=linux/amd64 docker build --platform linux/amd64 \
 		--build-arg TAG="${tag}" \
 		--build-arg SKIP_SIGN=true \
-		--build-arg BUNDLE_TASK="clean :app:bundleGoogleRelease assembleUniversalRelease" \
+		--build-arg BUNDLE_TASK="${BUNDLE_TASK}" \
 		--build-arg BASE_IMAGE=ghcr.io/gemwalletcom/gem-android-base \
 		--build-arg BASE_IMAGE_TAG="${base_tag}" \
 		-t gem-android-app-verify \
 		-f ./reproducible/Dockerfile \
 		.
 
-build-app-inside:
+build-app-in-docker:
 	#!/usr/bin/env bash
 	set -euo pipefail
-	TAG="{{TAG}}" just build-app
+	TAG="{{TAG}}" just build-app-image
 	container_name="gem-android-app-build"
 	gradle_cache=$(mktemp -d)
 	maven_cache=$(mktemp -d)
@@ -78,7 +79,7 @@ build-app-inside:
 	docker rm -f ${container_name} >/dev/null 2>&1 || true
 	DOCKER_DEFAULT_PLATFORM=linux/amd64 docker run --platform linux/amd64 --name ${container_name} \
 		-e SKIP_SIGN=true \
-		-e BUNDLE_TASK="clean :app:bundleGoogleRelease assembleUniversalRelease" \
+		-e BUNDLE_TASK="${BUNDLE_TASK}" \
 		-v "${gradle_cache}":/root/.gradle \
 		-v "${maven_cache}":/root/.m2 \
 		gem-android-app-verify \
