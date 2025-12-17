@@ -70,7 +70,8 @@ jobs:
         run: |
           echo "Initial GITHUB_PATH:"
           cat "$GITHUB_PATH"
-          uv tool install apksigcopier diffoscope
+          uv tool install apksigcopier
+          uv tool install diffoscope
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Create local.properties for CI
