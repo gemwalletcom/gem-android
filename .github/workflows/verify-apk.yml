@@ -66,8 +66,12 @@ jobs:
       - name: Set up uv
         uses: astral-sh/setup-uv@v3
 
-      - name: Install apksigcopier
-        run: uv tool install apksigcopier
+      - name: Install apksigcopier and diffoscope
+        run: |
+          echo "Initial GITHUB_PATH:"
+          cat "$GITHUB_PATH"
+          uv tool install apksigcopier diffoscope
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Create local.properties for CI
         run: |
@@ -90,5 +94,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: verify-apk-${{ inputs.tag }}
-          path: artifacts/reproducible/
+          path: |
+            artifacts/reproducible/${{ inputs.tag }}/*.apk
+            artifacts/reproducible/${{ inputs.tag }}/*.html
           retention-days: 7
