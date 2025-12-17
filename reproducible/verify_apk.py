@@ -22,7 +22,6 @@ REPO_URL_DEFAULT = "https://github.com/gemwalletcom/gem-android.git"
 BUNDLE_TASK_DEFAULT = "clean :app:bundleGoogleRelease assembleUniversalRelease"
 APK_SUBDIR_DEFAULT = "app/build/outputs/apk/universal/release"
 BASE_IMAGE_DEFAULT = "gem-android-base"
-BASE_TAG_DEFAULT = "latest"
 APP_IMAGE_DEFAULT = "gem-android-app-verify"
 
 INFO_EMOJI = "ℹ️"
@@ -119,24 +118,58 @@ def copy_reports(root_dir: Path, work_dir: Path, tag_safe: str, names: list[str]
 def resolve_ref(ref: str, repo_url: str) -> str:
     heads = run(["git", "ls-remote", "--exit-code", "--heads", repo_url, ref], check=False, capture_output=True)
     tags = run(["git", "ls-remote", "--exit-code", "--tags", repo_url, ref], check=False, capture_output=True)
-    if heads.returncode == 0 or tags.returncode == 0:
-        for line in (heads.stdout + tags.stdout).splitlines():
-            if line.strip().endswith(ref):
-                sha = line.strip().split()[0]
-                print(f"{INFO_EMOJI} Resolving ref {ref} -> {sha}")
-                break
+    lines = (heads.stdout + tags.stdout).splitlines()
+    peeled_sha: str | None = None
+    direct_sha: str | None = None
+    tag_ref = f"refs/tags/{ref}"
+    tag_peeled_ref = f"{tag_ref}^{{}}"
+    head_ref = f"refs/heads/{ref}"
+    for line in lines:
+        parts = line.strip().split()
+        if len(parts) != 2:
+            continue
+        sha, name = parts
+        if name in (tag_peeled_ref, f"{ref}^{{}}"):  # Annotated tag peeled to commit
+            peeled_sha = sha
+        elif name in (tag_ref, head_ref, ref):
+            direct_sha = sha
+
+    if not peeled_sha and direct_sha:
+        # Try to resolve the peeled commit explicitly for annotated tags
+        peeled = run(["git", "ls-remote", "--exit-code", "--tags", repo_url, f"{ref}^{{}}"], check=False, capture_output=True)
+        if peeled.returncode == 0:
+            parts = peeled.stdout.strip().split()
+            if len(parts) >= 1:
+                peeled_sha = parts[0]
+
+    if peeled_sha:
+        print(f"{INFO_EMOJI} Resolving ref {ref} -> {peeled_sha} (peeled from tag object {direct_sha or 'unknown'})")
         return ref
+    if direct_sha:
+        print(f"{INFO_EMOJI} Resolving ref {ref} -> {direct_sha}")
+        return ref
+
     sys.stderr.write(f"Failed to find branch/tag '{ref}' in {repo_url}\n")
     sys.exit(1)
 
 
-def ensure_base_image(base_image: str, base_tag: str) -> None:
-    result = run(["docker", "image", "inspect", f"{base_image}:{base_tag}"], check=False)
-    if result.returncode != 0:
-        print(f"Building base image {base_image}:{base_tag}...")
-        run(["docker", "build", "-t", f"{base_image}:{base_tag}", "."], check=True)
-    else:
-        print(f"Using existing base image {base_image}:{base_tag}")
+def ensure_base_image(base_image: str, base_tag: str, pull: bool) -> None:
+    image_ref = f"{base_image}:{base_tag}"
+    if pull:
+        print(f"{INFO_EMOJI} Pulling base image {image_ref} ...")
+        pulled = run(["docker", "pull", image_ref], check=False)
+        if pulled.returncode == 0:
+            print(f"{OK_EMOJI} Pulled base image {image_ref}")
+            return
+        print(f"{WARN_EMOJI} Pull failed ({pulled.returncode}); falling back to local image or rebuild.")
+
+    result = run(["docker", "image", "inspect", image_ref], check=False)
+    if result.returncode == 0:
+        print(f"{OK_EMOJI} Using existing base image {image_ref}")
+        return
+
+    print(f"Building base image {image_ref}...")
+    run(["docker", "build", "-t", image_ref, "."], check=True)
 
 
 def build_app_image(tag: str, base_image: str, base_tag: str, gradle_task: str, map_id_seed: str, app_image: str) -> None:
@@ -282,6 +315,7 @@ def main() -> None:
     map_id_seed = os.environ.get("VERIFY_R8_MAP_ID_SEED", args.tag.lstrip("v"))
     repo_url = os.environ.get("VERIFY_REPO_URL", REPO_URL_DEFAULT)
     resolved_tag = resolve_ref(args.tag, repo_url)
+    base_tag_file = Path(__file__).with_name("base_image_tag.txt")
 
     work_dir = Path(args.work_dir) if args.work_dir else root_dir / "artifacts" / "reproducible" / tag_safe
     if args.stage != "diff":
@@ -298,7 +332,13 @@ def main() -> None:
     if args.stage in ("all", "build"):
         shutil.copy2(official_apk_path, official_copy)
         base_image = os.environ.get("VERIFY_BASE_IMAGE", BASE_IMAGE_DEFAULT)
-        base_tag = os.environ.get("VERIFY_BASE_TAG", BASE_TAG_DEFAULT)
+        env_base_tag = os.environ.get("VERIFY_BASE_TAG")
+        file_base_tag = base_tag_file.read_text().strip() if base_tag_file.exists() else None
+        base_tag = env_base_tag or file_base_tag
+        if not base_tag:
+            sys.stderr.write("Missing base image tag; set VERIFY_BASE_TAG or create reproducible/base_image_tag.txt\n")
+            sys.exit(1)
+        pull_base = os.environ.get("VERIFY_PULL_BASE", "true").lower() == "true"
         gradle_task = os.environ.get("VERIFY_GRADLE_TASK", BUNDLE_TASK_DEFAULT)
         apk_subdir = os.environ.get("VERIFY_APK_SUBDIR", APK_SUBDIR_DEFAULT)
 
@@ -311,7 +351,7 @@ def main() -> None:
 
         try:
             print(f"{STEP_EMOJI} Building base image (or reusing) and app image...")
-            ensure_base_image(base_image, base_tag)
+            ensure_base_image(base_image, base_tag, pull_base)
             print(f"{INFO_EMOJI} Build parameters: R8_MAP_ID_SEED={map_id_seed}")
             build_app_image(resolved_tag, base_image, base_tag, gradle_task, map_id_seed, app_image)
             build_outputs_in_container(app_image, app_container, gradle_task, map_id_seed, gradle_cache, maven_cache)

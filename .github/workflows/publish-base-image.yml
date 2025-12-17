@@ -1,0 +1,50 @@
+name: Publish Base Image
+
+on:
+  workflow_dispatch:
+    inputs: {}
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  BASE_IMAGE_NAME: gem-android-base
+  BASE_IMAGE_FULL_NAME: ghcr.io/${{ github.repository_owner }}/gem-android-base
+  BASE_IMAGE_TAG_FILE: reproducible/base_image_tag.txt
+  DOCKER_BUILDKIT: 1
+
+jobs:
+  build_and_push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Read base image tag
+        id: base_tag
+        run: |
+          TAG=$(cat "${{ env.BASE_IMAGE_TAG_FILE }}")
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "Base image tag: ${TAG}"
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build base Docker image
+        env:
+          DOCKER_BUILDKIT: 1
+        run: docker build --pull --no-cache -t ${BASE_IMAGE_NAME} .
+
+      - name: Tag and push base Docker image
+        env:
+          BASE_TAG: ${{ steps.base_tag.outputs.tag }}
+        run: |
+          docker tag ${BASE_IMAGE_NAME} ${BASE_IMAGE_FULL_NAME}:${BASE_TAG}
+          docker tag ${BASE_IMAGE_NAME} ${BASE_IMAGE_FULL_NAME}:latest
+          docker push ${BASE_IMAGE_FULL_NAME}:${BASE_TAG}
+          docker push ${BASE_IMAGE_FULL_NAME}:latest

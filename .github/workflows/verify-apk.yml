@@ -21,9 +21,9 @@ on:
           - build
           - diff
       base_image_tag:
-        description: gem-android-base tag in GHCR (defaults to latest)
+        description: gem-android-base tag in GHCR
         required: false
-        default: latest
+        default: ""
         type: string
 
 concurrency:
@@ -46,6 +46,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: recursive
+
+      - name: Read base image tag (default)
+        id: base_tag
+        run: |
+          DEFAULT_TAG=$(cat reproducible/base_image_tag.txt)
+          echo "tag=${DEFAULT_TAG}" >> "$GITHUB_OUTPUT"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -75,7 +81,7 @@ jobs:
 
       - name: Run verify_apk.py
         env:
-          VERIFY_BASE_TAG: ${{ inputs.base_image_tag }}
+          VERIFY_BASE_TAG: ${{ inputs.base_image_tag != '' && inputs.base_image_tag || steps.base_tag.outputs.tag }}
         run: |
           python3 reproducible/verify_apk.py "${{ inputs.tag }}" official.apk --stage "${{ inputs.stage }}"
 
