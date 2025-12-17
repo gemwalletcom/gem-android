@@ -96,10 +96,21 @@ jobs:
           echo "gpr.token=${{ secrets.GITHUB_TOKEN }}" >> local.properties
           echo "# Automatically generated for CI build" >> local.properties
 
+      - name: Determine ref to build
+        id: build_ref
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            REF="${{ github.event.pull_request.head.ref }}"
+          else
+            REF="${GITHUB_REF_NAME}"
+          fi
+          echo "ref=${REF}" >> "$GITHUB_OUTPUT"
+          echo "Building ref: ${REF}"
+
       - name: Build app image
         env:
           DOCKER_BUILDKIT: 1
-          TAG: ${{ github.ref_name }}
+          TAG: ${{ steps.build_ref.outputs.ref }}
         run: |
           just build-app
 
@@ -107,7 +118,7 @@ jobs:
         env:
           GRADLE_CACHE: ${{ runner.temp }}/gradle-cache
           MAVEN_CACHE: ${{ runner.temp }}/m2-cache
-          TAG: ${{ github.ref_name }}
+          TAG: ${{ steps.build_ref.outputs.ref }}
         run: |
           mkdir -p "${GRADLE_CACHE}" "${MAVEN_CACHE}"
           BASE_IMAGE_TAG=${{ needs.build_base_image.outputs.image_tag }} \
