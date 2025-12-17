@@ -23,22 +23,23 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
-import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.normalPadding
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FilterDialog(
+fun FormDialog(
+    title: String,
     fullScreen: Boolean = false,
-    onDismissRequest: () -> Unit,
-    onClearFilters: (() -> Unit)?,
+    onDismiss: () -> Unit,
+    onClear: (() -> Unit)? = null,
+    onDone: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState(fullScreen)
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = fullScreen)
 
     ModalBottomSheet(
         sheetState = sheetState,
-        onDismissRequest = onDismissRequest,
+        onDismissRequest = onDismiss,
         dragHandle = {
             Row (
                 modifier = Modifier
@@ -46,7 +47,16 @@ fun FilterDialog(
                     .normalPadding(),
             ) {
                 Box(modifier = Modifier.weight(0.5f)) {
-                    onClearFilters?.let {
+                    (onDone)?.let {
+                        TextButton(
+                            modifier = Modifier.align(Alignment.CenterStart),
+                            onClick = onDismiss,
+                        ) {
+                            Text(stringResource(R.string.common_cancel))
+                        }
+                    }
+                        ?:
+                    (onClear)?.let {
                         TextButton(
                             modifier = Modifier.align(Alignment.CenterStart),
                             onClick = it,
@@ -57,9 +67,8 @@ fun FilterDialog(
 
                 }
                 Column(
-//                    modifier = Modifier.weight(1f),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
+                    verticalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterVertically),
                 ) {
                     Surface(
                         modifier = Modifier.padding(vertical = 0.dp),
@@ -68,9 +77,8 @@ fun FilterDialog(
                     ) {
                         Box(Modifier.size(width = 32.dp, height = 4.dp))
                     }
-                    Spacer8()
                     Text(
-                        text = stringResource(R.string.filter_title),
+                        text = title,
                         textAlign = TextAlign.Center,
                         modifier = Modifier,
                     )
@@ -78,7 +86,7 @@ fun FilterDialog(
                 Box(modifier = Modifier.weight(0.5f)) {
                     TextButton(
                         modifier = Modifier.align(Alignment.CenterEnd),
-                        onClick = onDismissRequest,
+                        onClick = onDone ?: onDismiss,
                     ) {
                         Text(stringResource(R.string.common_done))
                     }
@@ -86,7 +94,7 @@ fun FilterDialog(
             }
         },
     ) {
-        Column(modifier = Modifier.Companion.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
             content()
         }
     }

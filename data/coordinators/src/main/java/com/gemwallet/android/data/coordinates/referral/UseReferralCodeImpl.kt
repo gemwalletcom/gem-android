@@ -1,0 +1,30 @@
+package com.gemwallet.android.data.coordinates.referral
+
+import com.gemwallet.android.application.GetAuthPayload
+import com.gemwallet.android.application.referral.coordinators.UseReferralCode
+import com.gemwallet.android.data.services.gemapi.GemApiClient
+import com.gemwallet.android.ext.getAccount
+import com.gemwallet.android.ext.referralChain
+import com.wallet.core.primitives.AuthenticatedRequest
+import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.ReferralCode
+import com.wallet.core.primitives.RewardEvent
+import com.wallet.core.primitives.Wallet
+
+class UseReferralCodeImpl(
+    private val gemApiClient: GemApiClient,
+    private val getAuthPayload: GetAuthPayload
+) : UseReferralCode {
+
+
+    override suspend fun useReferralCode(code: String, wallet: Wallet): List<RewardEvent> {
+        val account = wallet.getAccount(Chain.referralChain) ?: throw ReferralError.BadWallet
+        val auth = getAuthPayload.getAuthPayload(wallet, account.chain)
+        return gemApiClient.useReferralCode(
+            body = AuthenticatedRequest(
+                auth = auth,
+                data = ReferralCode(code)
+            )
+        )
+    }
+}

@@ -28,12 +28,17 @@ enum class PushNotificationTypes(val string: String) {
 	SwapAsset("swapAsset"),
 	@SerialName("support")
 	Support("support"),
+	@SerialName("rewards")
+	Rewards("rewards"),
 }
 
 @Serializable
 data class PushNotificationPayloadType (
 	val type: PushNotificationTypes
 )
+
+@Serializable
+object PushNotificationReward
 
 @Serializable
 object PushNotificationSupport

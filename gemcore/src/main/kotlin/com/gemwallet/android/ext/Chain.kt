@@ -234,3 +234,5 @@ val Chain.keyEncodingTypes: List<EncodingType>
 fun uniffi.gemstone.Chain.toChain(): Chain? {
     return Chain.entries.firstOrNull { it.string == this }
 }
+
+val Chain.Companion.referralChain: Chain get() = Chain.Ethereum

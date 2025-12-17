@@ -91,3 +91,17 @@ data class ReportNft (
 	val reason: String? = null
 )
 
+@Serializable
+enum class ReportReason(val string: String) {
+	@SerialName("spam")
+	Spam("spam"),
+	@SerialName("malicious")
+	Malicious("malicious"),
+	@SerialName("inappropriate")
+	Inappropriate("inappropriate"),
+	@SerialName("copyright")
+	Copyright("copyright"),
+	@SerialName("other")
+	Other("other"),
+}
+

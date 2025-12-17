@@ -43,9 +43,10 @@ fun TransactionsFilter(
 ) {
     var showedSubFilter by remember { mutableStateOf<FilterType?>(null) }
 
-    FilterDialog(
-        onDismissRequest = onDismissRequest,
-        onClearFilters = {
+    FormDialog(
+        title = stringResource(R.string.filter_title),
+        onDismiss = onDismissRequest,
+        onClear = {
             onClearChainsFilter()
             onClearTypesFilter()
         }.takeIf { typesFilter.isNotEmpty() || chainsFilter.isNotEmpty() },
@@ -113,10 +114,11 @@ fun TransactionsFilter(
     }
 
     when (showedSubFilter) {
-        FilterType.ByChains -> FilterDialog(
+        FilterType.ByChains -> FormDialog(
+            title = stringResource(R.string.filter_title),
             fullScreen = true,
-            onDismissRequest = { showedSubFilter = null },
-            onClearFilters = onClearChainsFilter.takeIf { chainsFilter.isNotEmpty() },
+            onDismiss = { showedSubFilter = null },
+            onClear = onClearChainsFilter.takeIf { chainsFilter.isNotEmpty() },
         ) {
             val query = rememberTextFieldState()
             SearchBar(query)
@@ -124,9 +126,10 @@ fun TransactionsFilter(
                 selectFilterChain(availableChains, chainsFilter, query.text.toString(), onChainFilter)
             }
         }
-        FilterType.ByTypes -> FilterDialog(
-            onDismissRequest = { showedSubFilter = null },
-            onClearFilters = onClearTypesFilter.takeIf { typesFilter.isNotEmpty() },
+        FilterType.ByTypes -> FormDialog(
+            title = stringResource(R.string.filter_title),
+            onDismiss = { showedSubFilter = null },
+            onClear = onClearTypesFilter.takeIf { typesFilter.isNotEmpty() },
         ) {
             LazyColumn(modifier = Modifier.Companion.fillMaxSize()) {
                 selectFilterTransactionType(typesFilter, onTypeFilter)

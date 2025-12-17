@@ -121,7 +121,7 @@ private fun SignMessageScene(
 ) {
     var isShowFullMessage by remember { mutableStateOf(false) }
 
-    val preview = request.decoder.preview()
+    val preview = request.signer.preview()
 
     Scene(
         title = stringResource(id = R.string.wallet_connect_title),
@@ -155,7 +155,7 @@ private fun SignMessageScene(
                 ) {
                     Text(
                         modifier = Modifier.fillMaxWidth(),
-                        text = request.decoder.plainPreview()
+                        text = request.signer.plainPreview()
                     )
                 }
             }

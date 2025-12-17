@@ -38,7 +38,7 @@ data class PerpetualPosition (
 	val size: Double,
 	val sizeValue: Double,
 	val leverage: UByte,
-	val entryPrice: Double? = null,
+	val entryPrice: Double,
 	val liquidationPrice: Double? = null,
 	val marginType: PerpetualMarginType,
 	val direction: PerpetualDirection,

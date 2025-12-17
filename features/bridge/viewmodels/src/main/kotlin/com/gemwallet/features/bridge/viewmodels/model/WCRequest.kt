@@ -9,8 +9,7 @@ import com.gemwallet.android.model.DestinationAddress
 import com.reown.walletkit.client.Wallet
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.WalletConnectionMethods
-import uniffi.gemstone.SignMessageDecoder
+import uniffi.gemstone.MessageSigner
 import uniffi.gemstone.TransferDataOutputType
 import uniffi.gemstone.WalletConnect
 import uniffi.gemstone.WalletConnectAction
@@ -25,7 +24,7 @@ sealed class WCRequest(
     internal val account: Account,
     val verificationStatus: WalletConnectionVerificationStatus,
 ) {
-    internal val walletConnect = uniffi.gemstone.WalletConnect()
+    internal val walletConnect = WalletConnect()
 
     val requestId: Long get() = sessionRequest.request.id
 
@@ -47,17 +46,14 @@ sealed class WCRequest(
         val action: WalletConnectAction.SignMessage,
     ) : WCRequest(sessionRequest, account, verificationStatus) {
 
-        val decoder: SignMessageDecoder
-            get() = SignMessageDecoder(walletConnect.decodeSignMessage(action.chain, action.signType, action.data))
+        val signer: MessageSigner
+            get() = MessageSigner(walletConnect.decodeSignMessage(action.chain, action.signType, action.data))
 
         suspend fun execute(
             signClient: SignClientProxy,
             privateKey: ByteArray
         ): String {
-            val param = decoder.hash()
-            val signature = signClient.signMessage(chain, param, privateKey).let {
-                decoder.getResult(it)
-            }
+            val signature = signer.sign(privateKey)
             return walletConnect.encodeSignMessage(chain.string, signature).let { encoded ->
                 when (encoded) {
                     is WalletConnectResponseType.Object -> encoded.json

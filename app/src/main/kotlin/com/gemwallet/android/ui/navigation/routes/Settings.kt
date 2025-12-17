@@ -88,6 +88,7 @@ fun NavGraphBuilder.settingsScreen(
     onChart: (AssetId) -> Unit,
     onSupport: () -> Unit,
     onPerpetual: () -> Unit,
+    onReferral: () -> Unit,
     onCancel: () -> Unit,
 ) {
     composable<SettingsRoute>(
@@ -105,6 +106,7 @@ fun NavGraphBuilder.settingsScreen(
             onSupport = onSupport,
             onPerpetual = onPerpetual,
             onPriceAlerts = onPriceAlerts,
+            onReferral = onReferral,
         )
     }
 

@@ -4,8 +4,27 @@
 
 package com.wallet.core.primitives
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.SerialName
+
+@Serializable
+enum class PerpetualDirection(val string: String) {
+	@SerialName("short")
+	Short("short"),
+	@SerialName("long")
+	Long("long"),
+}
+
+@Serializable
+data class AutocloseOpenData (
+	val direction: PerpetualDirection,
+	val marketPrice: Double,
+	val leverage: UByte,
+	val size: Double,
+	val assetDecimals: Int,
+	val takeProfit: String? = null,
+	val stopLoss: String? = null
+)
 
 @Serializable
 data class CancelOrderData (
@@ -43,14 +62,6 @@ data class PerpetualBasic (
 )
 
 @Serializable
-enum class PerpetualDirection(val string: String) {
-	@SerialName("short")
-	Short("short"),
-	@SerialName("long")
-	Long("long"),
-}
-
-@Serializable
 data class PerpetualConfirmData (
 	val direction: PerpetualDirection,
 	val baseAsset: Asset,
@@ -63,7 +74,9 @@ data class PerpetualConfirmData (
 	val pnl: Double? = null,
 	val entryPrice: Double? = null,
 	val marketPrice: Double,
-	val marginAmount: Double
+	val marginAmount: Double,
+	val takeProfit: String? = null,
+	val stopLoss: String? = null
 )
 
 @Serializable

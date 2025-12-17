@@ -22,6 +22,11 @@ data class TransactionPerpetualMetadata (
 )
 
 @Serializable
+data class TransactionResourceTypeMetadata (
+	val resourceType: Resource
+)
+
+@Serializable
 data class TransactionSwapMetadata (
 	val fromAsset: AssetId,
 	val fromValue: String,

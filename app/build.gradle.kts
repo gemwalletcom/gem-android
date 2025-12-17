@@ -248,6 +248,8 @@ dependencies {
     implementation(project(":features:assets:presents"))
     implementation(project(":features:assets:viewmodels"))
     implementation(project(":features:perpetual:presents"))
+    implementation(project(":features:referral:viewmodels"))
+    implementation(project(":features:referral:presents"))
 
     implementation(libs.ktx.core)
 

@@ -24,9 +24,10 @@ fun AssetsFilter(
 ) {
     val query = rememberTextFieldState()
 
-    FilterDialog(
-        onDismissRequest = onDismissRequest,
-        onClearFilters = onClearFilters,
+    FormDialog(
+        title = stringResource(R.string.filter_title),
+        onDismiss = onDismissRequest,
+        onClear = onClearFilters,
     ) {
         SearchBar(query)
         HasBalances(isActive = balanceFilter, onBalanceFilter)

@@ -68,6 +68,7 @@ import com.gemwallet.android.ui.navigation.routes.navigateToPhraseScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToPriceAlertsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToReceiveScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
+import com.gemwallet.android.ui.navigation.routes.navigateToReferralScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToSecurityScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToSendScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToStake
@@ -81,6 +82,7 @@ import com.gemwallet.android.ui.navigation.routes.nftCollection
 import com.gemwallet.android.ui.navigation.routes.perpetualScreen
 import com.gemwallet.android.ui.navigation.routes.receiveScreen
 import com.gemwallet.android.ui.navigation.routes.recipientInput
+import com.gemwallet.android.ui.navigation.routes.referral
 import com.gemwallet.android.ui.navigation.routes.settingsRoute
 import com.gemwallet.android.ui.navigation.routes.settingsScreen
 import com.gemwallet.android.ui.navigation.routes.stake
@@ -287,6 +289,7 @@ fun WalletNavGraph(
                 onPriceAlerts = navController::navigateToPriceAlertsScreen,
                 onSupport = navController::navigateToSupport,
                 onPerpetual = navController::navigateToPerpetualsScreen,
+                onReferral = navController::navigateToReferralScreen,
                 onCancel = onCancel,
             )
         }
@@ -329,6 +332,10 @@ fun WalletNavGraph(
             onOpenPerpetualDetails = navController::navigateToPerpetualDetailsScreen,
             onOpenPerpetualPosition = navController::navigateToAmountScreen,
             onCancel = onCancel
+        )
+
+        referral(
+            onClose = onCancel,
         )
     }
 }

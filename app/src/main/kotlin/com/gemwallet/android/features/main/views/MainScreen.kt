@@ -60,6 +60,7 @@ import com.gemwallet.android.ui.navigation.routes.navigateToPerpetualsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToPriceAlertsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToReceiveScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
+import com.gemwallet.android.ui.navigation.routes.navigateToReferralScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToSecurityScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToSettingsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToSupport
@@ -229,6 +230,7 @@ fun MainScreen(
                     onSupport = navController::navigateToSupport,
                     onPerpetual = navController::navigateToPerpetualsScreen,
                     onAboutUs = navController::navigateToAboutUsScreen,
+                    onReferral = navController::navigateToReferralScreen,
                 )
             }
         }

@@ -1,8 +1,8 @@
-package com.gemwallet.android.di
+package com.gemwallet.android.data.coordinates.di
 
 import com.gemwallet.android.application.perpetual.coordinators.GetPerpetual
-import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualBalances
 import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualBalance
+import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualBalances
 import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualChartData
 import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualPosition
 import com.gemwallet.android.application.perpetual.coordinators.GetPerpetualPositions
@@ -11,8 +11,8 @@ import com.gemwallet.android.application.perpetual.coordinators.SyncPerpetualPos
 import com.gemwallet.android.application.perpetual.coordinators.SyncPerpetuals
 import com.gemwallet.android.application.perpetual.coordinators.TogglePerpetualPin
 import com.gemwallet.android.blockchain.services.PerpetualService
-import com.gemwallet.android.data.coordinates.perpetuals.GetPerpetualBalancesImpl
 import com.gemwallet.android.data.coordinates.perpetuals.GetPerpetualBalanceImpl
+import com.gemwallet.android.data.coordinates.perpetuals.GetPerpetualBalancesImpl
 import com.gemwallet.android.data.coordinates.perpetuals.GetPerpetualChartDataImpl
 import com.gemwallet.android.data.coordinates.perpetuals.GetPerpetualImpl
 import com.gemwallet.android.data.coordinates.perpetuals.GetPerpetualPositionImpl
@@ -32,7 +32,7 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-object CoordinatorsModule { // TODO: Move to coordinators
+object PerpetualModule {
     @Provides
     @Singleton
     fun provideSyncPerpetuals(

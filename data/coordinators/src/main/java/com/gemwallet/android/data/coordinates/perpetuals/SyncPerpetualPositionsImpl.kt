@@ -5,7 +5,6 @@ import com.gemwallet.android.blockchain.services.PerpetualService
 import com.gemwallet.android.data.repositoreis.perpetual.PerpetualRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.PerpetualPositionsSummary
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

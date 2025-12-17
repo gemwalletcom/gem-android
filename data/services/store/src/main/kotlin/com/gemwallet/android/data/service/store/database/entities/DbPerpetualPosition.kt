@@ -90,7 +90,7 @@ fun DbPerpetualPosition.toDto(): PerpetualPosition? {
         size = size,
         sizeValue = sizeValue,
         leverage = leverage.toUByte(),
-        entryPrice = entryPrice,
+        entryPrice = entryPrice ?: 0.0,
         liquidationPrice = liquidationPrice,
         marginType = marginType,
         direction = direction,

@@ -7,6 +7,8 @@ import com.wallet.core.primitives.AssetFull
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetMarketPrice
 import com.wallet.core.primitives.AssetPricesRequest
+import com.wallet.core.primitives.AuthNonce
+import com.wallet.core.primitives.AuthenticatedRequest
 import com.wallet.core.primitives.Charts
 import com.wallet.core.primitives.ConfigResponse
 import com.wallet.core.primitives.Device
@@ -18,6 +20,11 @@ import com.wallet.core.primitives.NFTData
 import com.wallet.core.primitives.NameRecord
 import com.wallet.core.primitives.NewSupportDevice
 import com.wallet.core.primitives.PriceAlert
+import com.wallet.core.primitives.RedemptionRequest
+import com.wallet.core.primitives.RedemptionResult
+import com.wallet.core.primitives.ReferralCode
+import com.wallet.core.primitives.RewardEvent
+import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.ScanTransaction
 import com.wallet.core.primitives.ScanTransactionPayload
 import com.wallet.core.primitives.Subscription
@@ -129,4 +136,19 @@ interface GemApiClient {
 
     @POST("/v2/scan/transaction")
     suspend fun getScanTransaction(@Body payload: ScanTransactionPayload): ScanTransaction
+
+    @GET("/v1/devices/{device_id}/auth/nonce")
+    suspend fun getAuthNonce(@Path("device_id")deviceId: String): AuthNonce
+
+    @GET("/v1/rewards/{address}")
+    suspend fun getRewards(@Path("address") address: String): Rewards
+
+    @POST("/v1/rewards/referrals/create")
+    suspend fun createReferral(@Body body: AuthenticatedRequest<ReferralCode>): Rewards
+
+    @POST("/v1/rewards/referrals/use")
+    suspend fun useReferralCode(@Body body: AuthenticatedRequest<ReferralCode>): List<RewardEvent>
+
+    @POST("/v1/rewards/{address}/redeem")
+    suspend fun redeem(@Path("address") address: String, @Body request: AuthenticatedRequest<RedemptionRequest>): RedemptionResult
 }
