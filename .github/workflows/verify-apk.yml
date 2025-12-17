@@ -63,16 +63,18 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set up uv
-        uses: astral-sh/setup-uv@v3
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+          cache: "pip"
 
       - name: Install apksigcopier and diffoscope
         run: |
-          echo "Initial GITHUB_PATH:"
-          cat "$GITHUB_PATH"
-          uv tool install apksigcopier
-          uv tool install diffoscope
-          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          python -m pip install --upgrade pip
+          python -m pip install --upgrade apksigcopier diffoscope
+          python -m pip show apksigcopier || true
+          diffoscope --version || true
 
       - name: Create local.properties for CI
         run: |
@@ -88,7 +90,7 @@ jobs:
         env:
           VERIFY_BASE_TAG: ${{ inputs.base_image_tag != '' && inputs.base_image_tag || steps.base_tag.outputs.tag }}
         run: |
-          python3 reproducible/verify_apk.py "${{ inputs.tag }}" official.apk --stage "${{ inputs.stage }}"
+          python reproducible/verify_apk.py "${{ inputs.tag }}" official.apk --stage "${{ inputs.stage }}"
 
       - name: Upload artifacts
         if: always()
