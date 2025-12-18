@@ -154,9 +154,9 @@ fun SettingsScene(
             LinkItem(title = stringResource(id = R.string.settings_networks_title), icon = R.drawable.settings_networks, listPosition = ListPosition.Last) {
                 onNetworks()
             }
-            LinkItem(title = stringResource(id = R.string.rewards_title), icon = R.drawable.settings_wallets, listPosition = ListPosition.Single) {
-                onReferral()
-            }
+//            LinkItem(title = stringResource(id = R.string.rewards_title), icon = R.drawable.settings_wallets, listPosition = ListPosition.Single) {
+//                onReferral()
+//            }
             LinkItem(title = stringResource(id = R.string.wallet_connect_title), icon = R.drawable.settings_wc, listPosition = ListPosition.Single) {
                 onBridges()
             }
