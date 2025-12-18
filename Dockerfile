@@ -27,12 +27,13 @@ ENV ANDROID_SDK_URL=https://dl.google.com/android/repository/commandlinetools-li
 ENV PATH=${ANDROID_HOME}/cmdline-tools/bin:${ANDROID_HOME}/platform-tools:${PATH}
 
 # Runtime deps for build-tools/aapt2.
-RUN apt-get update && \
+RUN dpkg --add-architecture amd64 && \
+    apt-get update && \
     apt-get install -y --no-install-recommends \
-    libc6 \
-    libstdc++6 \
-    zlib1g \
-    libtinfo6 \
+    libc6:amd64 \
+    libstdc++6:amd64 \
+    zlib1g:amd64 \
+    libtinfo6:amd64 \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 

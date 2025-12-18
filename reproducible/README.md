@@ -4,7 +4,8 @@ This folder contains the tooling to rebuild tagged releases inside Docker and co
 
 ## Principle
 - Build inside Docker using the repo-root base image `Dockerfile` and `reproducible/Dockerfile`, running the release task sequence (`clean :app:bundleGoogleRelease assembleUniversalRelease`) with Gradle/Maven caches cleared each run.
-- Base image publishing is done by the `Publish Base Image` workflow to build/push `ghcr.io/gemwalletcom/gem-android-base:<base-tag>` (where `<base-tag>` lives in `reproducible/base_image_tag.txt`).
+- Base image publishing is done by the `Publish Base Image` workflow to build/push `ghcr.io/gemwalletcom/gem-android-base:<base-tag>` (where `<base-tag>` lives in `reproducible/base_image_tag.txt`), for `linux/amd64` and `linux/arm64`.
+- Verification defaults to `ghcr.io/gemwalletcom/gem-android-base:<base-tag>` and runs on `linux/amd64` (override with `VERIFY_DOCKER_PLATFORM` if you must).
 - Require `local.properties` for GitHub packages; use the same base image used for releases.
 - Strip signing artifacts, patch map-id when present, then copy the official signing block onto the rebuilt APK with [apksigcopier](https://github.com/obfusk/apksigcopier) to confirm payload identity without exposing keys.
 - Keep outputs under `artifacts/reproducible/<tag>/` and only run diffoscope if hashes still differ after signature copy.

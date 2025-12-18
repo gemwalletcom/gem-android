@@ -21,8 +21,9 @@ from pathlib import Path
 REPO_URL_DEFAULT = "https://github.com/gemwalletcom/gem-android.git"
 BUNDLE_TASK_DEFAULT = "clean :app:bundleGoogleRelease assembleUniversalRelease"
 APK_SUBDIR_DEFAULT = "app/build/outputs/apk/universal/release"
-BASE_IMAGE_DEFAULT = "gem-android-base"
+BASE_IMAGE_DEFAULT = "ghcr.io/gemwalletcom/gem-android-base"
 APP_IMAGE_DEFAULT = "gem-android-app-verify"
+DOCKER_PLATFORM_DEFAULT = "linux/amd64"
 
 INFO_EMOJI = "ℹ️"
 STEP_EMOJI = "➡️"
@@ -153,11 +154,17 @@ def resolve_ref(ref: str, repo_url: str) -> str:
     sys.exit(1)
 
 
-def ensure_base_image(base_image: str, base_tag: str, pull: bool) -> None:
+def ensure_base_image(base_image: str, base_tag: str, pull: bool, platform: str) -> None:
     image_ref = f"{base_image}:{base_tag}"
+    env = os.environ.copy()
+    if platform:
+        env["DOCKER_DEFAULT_PLATFORM"] = env.get("DOCKER_DEFAULT_PLATFORM", platform)
     if pull:
         print(f"{INFO_EMOJI} Pulling base image {image_ref} ...")
-        pulled = run(["docker", "pull", image_ref], check=False)
+        pull_cmd = ["docker", "pull", image_ref]
+        if platform:
+            pull_cmd = ["docker", "pull", "--platform", platform, image_ref]
+        pulled = run(pull_cmd, check=False, env=env)
         if pulled.returncode == 0:
             print(f"{OK_EMOJI} Pulled base image {image_ref}")
             return
@@ -169,15 +176,19 @@ def ensure_base_image(base_image: str, base_tag: str, pull: bool) -> None:
         return
 
     print(f"Building base image {image_ref}...")
-    run(["docker", "build", "-t", image_ref, "."], check=True)
+    env["DOCKER_BUILDKIT"] = env.get("DOCKER_BUILDKIT", "1")
+    run(["docker", "build", "--platform", platform, "-t", image_ref, "."], check=True, env=env)
 
 
-def build_app_image(tag: str, base_image: str, base_tag: str, gradle_task: str, map_id_seed: str, app_image: str) -> None:
+def build_app_image(tag: str, base_image: str, base_tag: str, gradle_task: str, map_id_seed: str, app_image: str, platform: str) -> None:
     env = os.environ.copy()
     env["DOCKER_BUILDKIT"] = "1"
+    env["DOCKER_DEFAULT_PLATFORM"] = env.get("DOCKER_DEFAULT_PLATFORM", platform)
     cmd = [
         "docker",
         "build",
+        "--platform",
+        platform,
         "-t",
         app_image,
         "--build-arg",
@@ -200,11 +211,13 @@ def build_app_image(tag: str, base_image: str, base_tag: str, gradle_task: str, 
     run(cmd, env=env)
 
 
-def build_outputs_in_container(app_image: str, container_name: str, gradle_task: str, map_id_seed: str, gradle_cache: Path, maven_cache: Path) -> None:
+def build_outputs_in_container(app_image: str, container_name: str, gradle_task: str, map_id_seed: str, gradle_cache: Path, maven_cache: Path, platform: str) -> None:
     run(["docker", "rm", "-f", container_name], check=False)
     cmd = [
         "docker",
         "run",
+        "--platform",
+        platform,
         "--name",
         container_name,
         "-e",
@@ -312,10 +325,13 @@ def main() -> None:
         sys.exit(1)
 
     tag_safe = sanitize(args.tag) or "latest"
-    map_id_seed = os.environ.get("VERIFY_R8_MAP_ID_SEED", args.tag.lstrip("v"))
+    map_id_seed = os.environ.get("R8_MAP_ID_SEED") or None
     repo_url = os.environ.get("VERIFY_REPO_URL", REPO_URL_DEFAULT)
     resolved_tag = resolve_ref(args.tag, repo_url)
     base_tag_file = Path(__file__).with_name("base_image_tag.txt")
+    docker_platform = os.environ.get("VERIFY_DOCKER_PLATFORM", DOCKER_PLATFORM_DEFAULT)
+    if docker_platform:
+        os.environ.setdefault("DOCKER_DEFAULT_PLATFORM", docker_platform)
 
     work_dir = Path(args.work_dir) if args.work_dir else root_dir / "artifacts" / "reproducible" / tag_safe
     if args.stage != "diff":
@@ -346,15 +362,19 @@ def main() -> None:
         app_image = os.environ.get("VERIFY_APP_IMAGE", APP_IMAGE_DEFAULT) + f":{app_image_tag}"
         app_container = f"gem-android-app-build-{tag_safe}"
 
-        gradle_cache = reset_cache_dir(Path(os.environ.get("VERIFY_GRADLE_CACHE", tempfile.mkdtemp())), "Gradle")
-        maven_cache = reset_cache_dir(Path(os.environ.get("VERIFY_M2_CACHE", tempfile.mkdtemp())), "Maven")
+        gradle_cache = reset_cache_dir(Path(os.environ.get("VERIFY_GRADLE_CACHE", tempfile.mkdtemp())), f"{STEP_EMOJI} Gradle")
+        maven_cache = reset_cache_dir(Path(os.environ.get("VERIFY_M2_CACHE", tempfile.mkdtemp())), f"{STEP_EMOJI} Maven")
 
         try:
             print(f"{STEP_EMOJI} Building base image (or reusing) and app image...")
-            ensure_base_image(base_image, base_tag, pull_base)
-            print(f"{INFO_EMOJI} Build parameters: R8_MAP_ID_SEED={map_id_seed}")
-            build_app_image(resolved_tag, base_image, base_tag, gradle_task, map_id_seed, app_image)
-            build_outputs_in_container(app_image, app_container, gradle_task, map_id_seed, gradle_cache, maven_cache)
+            ensure_base_image(base_image, base_tag, pull_base, docker_platform)
+            print(
+                f"{INFO_EMOJI} Build parameters: base_image={base_image}:{base_tag}, "
+                f"platform={docker_platform}, gradle_task='{gradle_task}', R8_MAP_ID_SEED={map_id_seed} "
+                "(override with VERIFY_R8_MAP_ID_SEED)"
+            )
+            build_app_image(resolved_tag, base_image, base_tag, gradle_task, map_id_seed, app_image, docker_platform)
+            build_outputs_in_container(app_image, app_container, gradle_task, map_id_seed, gradle_cache, maven_cache, docker_platform)
             built_apk = extract_apk_outputs(app_container, work_dir, apk_subdir)
             shutil.copy2(built_apk, rebuilt_apk)
         finally:
