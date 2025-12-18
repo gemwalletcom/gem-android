@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Share
@@ -17,6 +19,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -31,6 +34,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
@@ -42,9 +46,14 @@ import com.gemwallet.android.ui.components.filters.FormDialog
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
+import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.parseMarkdownToAnnotatedString
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator14
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.android.ui.theme.Spacer16
+import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
@@ -95,7 +104,9 @@ fun ReferralScene(
         actions = {
             if (isAvailableWalletSelect) {
                 Row(
-                    modifier = Modifier.padding(horizontal = paddingDefault).clickable(onWallet),
+                    modifier = Modifier
+                        .padding(horizontal = paddingDefault)
+                        .clickable(onWallet),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
@@ -134,6 +145,7 @@ fun ReferralScene(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(paddingDefault),
                     ) {
+                        Spacer16()
                         Text("\uD83C\uDF81", fontSize = 64.sp)
                         Text(
                             text = parseMarkdownToAnnotatedString(
@@ -254,8 +266,14 @@ fun ReferralScene(
                             listPosition = ListPosition.Middle
                         )
                         PropertyItem(
-                            title = R.string.rewards_points,
-                            data = "${rewards.points} \uD83D\uDC65",
+                            title = { PropertyTitleText(R.string.rewards_points) },
+                            data = {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text("${rewards.points}")
+                                    Spacer4()
+                                    Text("\uD83D\uDC8E")
+                                }
+                            },
                             listPosition = ListPosition.Last
                         )
                     }
@@ -284,22 +302,39 @@ fun GetStartedDialog(
 ) {
     var username by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf<Exception?>(null) }
+    var showProgress by remember { mutableStateOf(false) }
+
     val dismissDialog: () -> Unit = {
         onDismiss()
         username = ""
     }
+    val doneAction: () -> Unit = {
+        showProgress = true
+        onUsername(username) {
+            showProgress = false
+            if (it == null) {
+                dismissDialog()
+            } else {
+                showError = it
+            }
+        }
+    }
+    val done: @Composable () -> Unit = {
+        TextButton(
+            onClick = doneAction,
+            enabled = !showProgress
+        ) {
+            if (showProgress) {
+                CircularProgressIndicator16()
+            } else {
+                Text(stringResource(R.string.common_done))
+            }
+        }
+    }
     FormDialog(
         title = stringResource(R.string.rewards_create_referral_code_title),
         onDismiss = dismissDialog,
-        onDone = {
-            onUsername(username) {
-                if (it == null) {
-                    dismissDialog()
-                } else {
-                    showError = it
-                }
-            }
-        },
+        doneAction = done,
     ) {
         GemTextField(
             modifier = Modifier.fillMaxWidth(),
@@ -309,6 +344,8 @@ fun GetStartedDialog(
                 username = it
             },
             singleLine = true,
+            keyboardActions = KeyboardActions(onDone = { doneAction() }),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
         )
         Spacer8()
         Text(
@@ -342,30 +379,50 @@ fun ReferralCodeDialog(
 ) {
     var code by remember { mutableStateOf("") }
     var showError by remember { mutableStateOf<Exception?>(null) }
+    var showProgress by remember { mutableStateOf(false) }
+
     val dismissDialog: () -> Unit = {
         onDismiss()
         code = ""
     }
+    val doneAction: () -> Unit = {
+        showProgress = true
+
+        onCode(code) {
+            showProgress = false
+            if (it == null) {
+                dismissDialog()
+            } else {
+                showError = it
+            }
+        }
+    }
+    val done: @Composable () -> Unit = {
+        TextButton(
+            onClick = doneAction,
+        ) {
+            if (showProgress) {
+                CircularProgressIndicator16()
+            } else {
+                Text(stringResource(R.string.common_done))
+            }
+        }
+    }
     FormDialog(
         title = stringResource(R.string.rewards_referral_code),
         onDismiss = dismissDialog,
-        onDone = {
-            onCode(code) {
-                if (it == null) {
-                    dismissDialog()
-                } else {
-                    showError = it
-                }
-            }
-        },
+        doneAction = done,
     ) {
         GemTextField(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth(),
             label = stringResource(id = R.string.rewards_referral_code),
             value = code,
             onValueChange = {
                 code = it
             },
+            keyboardActions = KeyboardActions(onDone = { doneAction() }),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
             singleLine = true,
         )
     }

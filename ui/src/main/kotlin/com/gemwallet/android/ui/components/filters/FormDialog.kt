@@ -2,6 +2,7 @@ package com.gemwallet.android.ui.components.filters
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
@@ -32,7 +33,7 @@ fun FormDialog(
     fullScreen: Boolean = false,
     onDismiss: () -> Unit,
     onClear: (() -> Unit)? = null,
-    onDone: (() -> Unit)? = null,
+    doneAction: @Composable (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = fullScreen)
@@ -47,7 +48,7 @@ fun FormDialog(
                     .normalPadding(),
             ) {
                 Box(modifier = Modifier.weight(0.5f)) {
-                    (onDone)?.let {
+                    (doneAction)?.let {
                         TextButton(
                             modifier = Modifier.align(Alignment.CenterStart),
                             onClick = onDismiss,
@@ -84,11 +85,17 @@ fun FormDialog(
                     )
                 }
                 Box(modifier = Modifier.weight(0.5f)) {
-                    TextButton(
-                        modifier = Modifier.align(Alignment.CenterEnd),
-                        onClick = onDone ?: onDismiss,
-                    ) {
-                        Text(stringResource(R.string.common_done))
+                    if (doneAction != null) {
+                        Box(modifier = Modifier.align(Alignment.CenterEnd)) {
+                            doneAction()
+                        }
+                    } else {
+                        TextButton(
+                            modifier = Modifier.align(Alignment.CenterEnd),
+                            onClick = onDismiss,
+                        ) {
+                            Text(stringResource(R.string.common_done))
+                        }
                     }
                 }
             }
