@@ -48,7 +48,6 @@ import com.gemwallet.android.ui.components.list_item.listItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.parseMarkdownToAnnotatedString
-import com.gemwallet.android.ui.components.progress.CircularProgressIndicator14
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
@@ -80,8 +79,9 @@ fun ReferralScene(
     if (inSync == SyncType.Init) return
 
     val context = LocalContext.current
-    val joinText = stringResource(R.string.rewards_share_text, "https://gemwallet.com/join?code=${rewards?.code}")
-    val shareTitle = stringResource(id = R.string.common_share)
+    val link = "https://gemwallet.com/join?code=${rewards?.code}"
+    val joinText = stringResource(R.string.rewards_share_text, link)
+    val shareTitle = stringResource(id = R.string.common_share, link)
 
     val pullToRefreshState = rememberPullToRefreshState()
     var getStartedDialogShow by remember(rewards) { mutableStateOf(false) }
@@ -89,12 +89,10 @@ fun ReferralScene(
 
     val onShare = fun () {
         val type = "text/plain"
-        val subject = joinText
-
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = type
-        intent.putExtra(Intent.EXTRA_SUBJECT, subject)
-        intent.putExtra(Intent.EXTRA_TEXT, rewards?.code)
+        intent.putExtra(Intent.EXTRA_SUBJECT, link)
+        intent.putExtra(Intent.EXTRA_TEXT, joinText)
 
         context.startActivity(Intent.createChooser(intent, shareTitle))
     }
