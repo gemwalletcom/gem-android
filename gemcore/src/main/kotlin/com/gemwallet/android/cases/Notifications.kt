@@ -6,9 +6,11 @@ import com.gemwallet.android.model.PushNotificationData.Swap
 import com.gemwallet.android.model.PushNotificationData.Transaction
 import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.PushNotificationAsset
+import com.wallet.core.primitives.PushNotificationReward
 import com.wallet.core.primitives.PushNotificationSwapAsset
 import com.wallet.core.primitives.PushNotificationTransaction
 import com.wallet.core.primitives.PushNotificationTypes
+import com.wallet.core.primitives.Rewards
 
 fun parseNotificationData(rawType: String?, rawData: String?): PushNotificationData? {
     if (rawType.isNullOrEmpty() || rawData.isNullOrEmpty()) {
@@ -40,7 +42,9 @@ fun parseNotificationData(rawType: String?, rawData: String?): PushNotificationD
             PushNotificationTypes.Support,
             PushNotificationTypes.Test -> null
 
-            PushNotificationTypes.Rewards -> TODO()
+            PushNotificationTypes.Rewards -> jsonEncoder.decodeFromString<PushNotificationReward>(rawData).let {
+                PushNotificationData.Reward
+            }
         }
     } catch (_: Throwable) {
         null

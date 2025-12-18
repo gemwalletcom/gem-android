@@ -1,5 +1,6 @@
 package com.gemwallet.features.referral.viewmodels
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.application.referral.coordinators.CreateReferral
@@ -10,6 +11,7 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.referralChain
+import com.gemwallet.android.ui.models.PriceUIModel
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Rewards
@@ -36,8 +38,12 @@ class ReferralViewModel @Inject constructor(
     private val getRewards: GetRewards,
     private val redeem: Redeem,
     private val useReferralCode: UseReferralCode,
-    private val createReferral: CreateReferral
+    private val createReferral: CreateReferral,
+    private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
+
+    val referralCode = savedStateHandle.getStateFlow<String?>("code", null)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, null)
 
     val currentWallet = MutableStateFlow<Wallet?>(null)
     val rewards = MutableStateFlow<Rewards?>(null)

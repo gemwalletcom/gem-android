@@ -67,6 +67,8 @@ import com.gemwallet.android.ui.WalletApp
 import com.gemwallet.android.ui.components.RootWarningDialog
 import com.gemwallet.android.ui.components.isDeviceRooted
 import com.gemwallet.android.ui.navigation.routes.assetRouteUri
+import com.gemwallet.android.ui.navigation.routes.referralRouteUri
+import com.gemwallet.android.ui.navigation.routes.referralRouteUri1
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
@@ -424,6 +426,11 @@ class MainViewModel @Inject constructor(
                     onWallet(data.walletIndex)
                     Intent().apply {
                         setData("$assetRouteUri/${data.assetId}".toUri())
+                    }
+                }
+                is PushNotificationData.Reward -> {
+                    Intent().apply {
+                        setData(referralRouteUri1.toUri())
                     }
                 }
                 is PushNotificationData.PushNotificationPayloadType,

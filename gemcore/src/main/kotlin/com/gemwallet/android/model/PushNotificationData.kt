@@ -23,4 +23,6 @@ sealed interface PushNotificationData {
         val assetId: String,
         val transactionId: String,
     ): PushNotificationData
+
+    object Reward : PushNotificationData
 }

@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.gemwallet.android.ui.R
@@ -70,6 +71,7 @@ fun ReferralScene(
     rewards: Rewards?,
     currentWallet: Wallet?,
     joinPointsCost: Int,
+    referralCode: String? = null,
     onUsername: (String, (Exception?) -> Unit) -> Unit,
     onCode: (String, (Exception?) -> Unit) -> Unit,
     onRefresh: () -> Unit,
@@ -85,7 +87,8 @@ fun ReferralScene(
 
     val pullToRefreshState = rememberPullToRefreshState()
     var getStartedDialogShow by remember(rewards) { mutableStateOf(false) }
-    var codeDialogShow by remember { mutableStateOf(false) }
+    var codeDialogShow by remember(referralCode) { mutableStateOf(referralCode != null) }
+    var referralCode by remember(referralCode) { mutableStateOf(referralCode) }
 
     val onShare = fun () {
         val type = "text/plain"
@@ -267,9 +270,17 @@ fun ReferralScene(
                             title = { PropertyTitleText(R.string.rewards_points) },
                             data = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text("${rewards.points}")
+                                    Text(
+                                        "${rewards.points}",
+                                        overflow = TextOverflow.MiddleEllipsis,
+                                        color = MaterialTheme.colorScheme.secondary,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                    )
                                     Spacer4()
-                                    Text("\uD83D\uDC8E")
+                                    Text(
+                                        text = "\uD83D\uDC8E",
+                                        style = MaterialTheme.typography.bodyLarge,
+                                    )
                                 }
                             },
                             listPosition = ListPosition.Last
@@ -286,8 +297,8 @@ fun ReferralScene(
         }
     }
 
-    if (codeDialogShow) {
-        ReferralCodeDialog(onCode) {
+    if (codeDialogShow && rewards == null) {
+        ReferralCodeDialog(referralCode = referralCode, onCode = onCode) {
             codeDialogShow = false
         }
     }
@@ -372,10 +383,11 @@ fun GetStartedDialog(
 
 @Composable
 fun ReferralCodeDialog(
+    referralCode: String?,
     onCode: (String, (Exception?) -> Unit) -> Unit,
     onDismiss: () -> Unit,
 ) {
-    var code by remember { mutableStateOf("") }
+    var code by remember(referralCode) { mutableStateOf(referralCode ?: "") }
     var showError by remember { mutableStateOf<Exception?>(null) }
     var showProgress by remember { mutableStateOf(false) }
 
@@ -520,6 +532,7 @@ private fun GetStartedDialogPreview() {
 private fun ReferralCodeDialogPreview() {
     WalletTheme {
         ReferralCodeDialog(
+            referralCode = null,
             onCode = { _, _ -> },
             onDismiss = {},
         )
