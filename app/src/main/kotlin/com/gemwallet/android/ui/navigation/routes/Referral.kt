@@ -8,8 +8,8 @@ import androidx.navigation.navOptions
 import com.gemwallet.features.referral.views.ReferralNavScreen
 import kotlinx.serialization.Serializable
 
-const val referralRouteUri = "https://gemwallet.com/join"
-const val referralRouteUri1 = "gem://join"
+const val referralRouteUriHttp = "https://gemwallet.com/join"
+const val referralRouteUriGem = "gem://join"
 
 @Serializable
 data class Referral(val code: String? = null)
@@ -23,7 +23,8 @@ fun NavGraphBuilder.referral(
 ) {
     composable<Referral>(
         deepLinks = listOf(
-            navDeepLink<Referral>(basePath = referralRouteUri1)
+            navDeepLink<Referral>(basePath = referralRouteUriGem),
+            navDeepLink<Referral>(basePath = referralRouteUriHttp),
         )
     ) {
         ReferralNavScreen(onClose)

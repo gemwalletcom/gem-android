@@ -45,9 +45,9 @@ class FCM : FirebaseMessagingService() {
             when (data) {
                 is PushNotificationData.Transaction -> showSystemNotification.showNotification(title, subtitle, channelId, data)
                 is PushNotificationData.Asset -> showSystemNotification.showNotification(title, subtitle, channelId, data)
+                is PushNotificationData.Reward -> showSystemNotification.showNotification(title, subtitle, channelId, data)
                 is PushNotificationData.PushNotificationPayloadType,
                 is PushNotificationData.Swap,
-                is PushNotificationData.Reward,
                 null -> showSystemNotification.showNotification(title, subtitle, channelId)
             }
         }

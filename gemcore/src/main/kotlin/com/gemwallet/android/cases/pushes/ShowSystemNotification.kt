@@ -22,4 +22,11 @@ interface ShowSystemNotification {
         channelId: String?,
         data: PushNotificationData.Asset
     )
+
+    fun showNotification(
+        title: String?,
+        subtitle: String?,
+        channelId: String?,
+        data: PushNotificationData.Reward
+    )
 }

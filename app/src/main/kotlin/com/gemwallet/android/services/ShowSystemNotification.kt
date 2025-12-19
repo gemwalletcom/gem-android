@@ -18,6 +18,7 @@ import com.gemwallet.android.cases.pushes.ShowSystemNotification
 import com.gemwallet.android.model.PushNotificationData
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.navigation.routes.assetRouteUri
+import com.gemwallet.android.ui.navigation.routes.referralRouteUriGem
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 
@@ -51,6 +52,15 @@ class ShowSystemNotification @Inject constructor(@ApplicationContext val applica
         data: PushNotificationData.Asset,
     ) {
         showNotification(title, subtitle, channelId, Bundle.EMPTY, "${assetRouteUri}/${data.assetId}".toUri())
+    }
+
+    override fun showNotification(
+        title: String?,
+        subtitle: String?,
+        channelId: String?,
+        data: PushNotificationData.Reward,
+    ) {
+        showNotification(title, subtitle, channelId, Bundle.EMPTY, "${referralRouteUriGem}?code=".toUri())
     }
 
     private fun showNotification(
