@@ -371,7 +371,6 @@ def main() -> None:
             print(
                 f"{INFO_EMOJI} Build parameters: base_image={base_image}:{base_tag}, "
                 f"platform={docker_platform}, gradle_task='{gradle_task}', R8_MAP_ID_SEED={map_id_seed} "
-                "(override with VERIFY_R8_MAP_ID_SEED)"
             )
             build_app_image(resolved_tag, base_image, base_tag, gradle_task, map_id_seed, app_image, docker_platform)
             build_outputs_in_container(app_image, app_container, gradle_task, map_id_seed, gradle_cache, maven_cache, docker_platform)

@@ -38,7 +38,7 @@ def extract_dex_files(apk_path: Path, dest_dir: Path) -> set[str]:
 
 def run_dexdump(dexdump: Path, src: Path, dst: Path) -> None:
     with dst.open("w") as fh:
-        subprocess.run([str(dexdump), "-d", str(src)], check=True, stdout=fh)
+        subprocess.run([str(dexdump), str(src)], check=True, stdout=fh)
 
 
 def main() -> None:
