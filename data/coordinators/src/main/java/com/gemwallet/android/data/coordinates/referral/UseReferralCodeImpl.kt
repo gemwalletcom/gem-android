@@ -13,6 +13,7 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ReferralCode
 import com.wallet.core.primitives.RewardEvent
 import com.wallet.core.primitives.Wallet
+import org.web3j.abi.datatypes.Bool
 import retrofit2.HttpException
 
 class UseReferralCodeImpl(
@@ -21,7 +22,7 @@ class UseReferralCodeImpl(
 ) : UseReferralCode {
 
 
-    override suspend fun useReferralCode(code: String, wallet: Wallet): List<RewardEvent> {
+    override suspend fun useReferralCode(code: String, wallet: Wallet): Boolean {
         val account = wallet.getAccount(Chain.referralChain) ?: throw ReferralError.BadWallet
         val auth = getAuthPayload.getAuthPayload(wallet, account.chain)
         return try {

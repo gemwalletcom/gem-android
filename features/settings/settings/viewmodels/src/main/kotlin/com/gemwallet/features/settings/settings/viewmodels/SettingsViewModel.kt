@@ -13,18 +13,22 @@ import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.model.NotificationsAvailable
 import com.gemwallet.android.model.Session
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.WalletType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val userConfig: UserConfig,
@@ -40,9 +44,13 @@ class SettingsViewModel @Inject constructor(
     private val state = MutableStateFlow(SettingsViewModelState())
     val uiState = state.map { it.toUIState() }
         .stateIn(viewModelScope, SharingStarted.Eagerly, SettingsUIState.General())
+    val wallets = walletsRepository.getAll()
+
+    val isRewardsAvailable = wallets.mapLatest { it.any { it.type == WalletType.multicoin } }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     val pushEnabled = getPushEnabled.getPushEnabled()
-        .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+        .stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     init {
         viewModelScope.launch {
@@ -85,6 +93,10 @@ class SettingsViewModel @Inject constructor(
 
     fun isNotificationsAvailable(): Boolean {
         return notificationsAvailable
+    }
+
+    fun isRewardsAvailable() {
+
     }
 }
 

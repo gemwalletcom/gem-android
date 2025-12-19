@@ -555,4 +555,5 @@
   <string name="rewards.ways_spend.title">使い方</string>
   <string name="rewards.ways_spend.asset.title">得る %s</string>
   <string name="rewards.insufficient_points">ポイントが足りない</string>
+  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
 </resources>

@@ -22,6 +22,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
@@ -56,10 +57,17 @@ class ReferralViewModel @Inject constructor(
 
     private val session = sessionRepository.session()
         .filterNotNull()
-        .onEach { session ->
+        .combine(availableWallets) { session, availableWallets ->
+            if (session.wallet.type != WalletType.multicoin) {
+                availableWallets.firstOrNull()
+            } else {
+                session.wallet
+            }
+        }
+        .onEach { wallet ->
             currentWallet.update {
-                if (it?.id == null || it.id == session.wallet.id) {
-                    session.wallet
+                if (it?.id == null || it.id == wallet?.id) {
+                    wallet
                 } else {
                     it
                 }

@@ -555,4 +555,5 @@
   <string name="rewards.ways_spend.title">消费方式</string>
   <string name="rewards.ways_spend.asset.title">得到 %s</string>
   <string name="rewards.insufficient_points">分数不足</string>
+  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
 </resources>

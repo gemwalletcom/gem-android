@@ -555,4 +555,5 @@
   <string name="rewards.ways_spend.title">Способи витрат</string>
   <string name="rewards.ways_spend.asset.title">Отримати %s</string>
   <string name="rewards.insufficient_points">Недостатньо балів</string>
+  <string name="rewards.confirm_redeem" formatted="false">Отримайте **%s** для **%s**!</string>
 </resources>

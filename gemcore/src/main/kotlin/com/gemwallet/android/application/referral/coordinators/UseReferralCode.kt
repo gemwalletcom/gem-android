@@ -4,5 +4,5 @@ import com.wallet.core.primitives.RewardEvent
 import com.wallet.core.primitives.Wallet
 
 interface UseReferralCode {
-    suspend fun useReferralCode(code: String, wallet: Wallet): List<RewardEvent>
+    suspend fun useReferralCode(code: String, wallet: Wallet): Boolean
 }

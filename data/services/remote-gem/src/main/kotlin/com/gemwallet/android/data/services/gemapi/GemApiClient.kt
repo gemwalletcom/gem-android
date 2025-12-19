@@ -147,7 +147,7 @@ interface GemApiClient {
     suspend fun createReferral(@Body body: AuthenticatedRequest<ReferralCode>): Rewards
 
     @POST("/v1/rewards/referrals/use")
-    suspend fun useReferralCode(@Body body: AuthenticatedRequest<ReferralCode>): List<RewardEvent>
+    suspend fun useReferralCode(@Body body: AuthenticatedRequest<ReferralCode>): Boolean
 
     @POST("/v1/rewards/{address}/redeem")
     suspend fun redeem(@Path("address") address: String, @Body request: AuthenticatedRequest<RedemptionRequest>): RedemptionResult

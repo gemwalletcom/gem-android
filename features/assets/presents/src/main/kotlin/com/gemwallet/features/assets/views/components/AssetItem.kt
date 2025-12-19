@@ -43,7 +43,6 @@ internal fun AssetItem(
         isExpanded = longPressState.value == item.asset.id,
         imeCompensate = false,
         onDismiss = { longPressState.value = null },
-        content = { AssetListItem(asset = item, listPosition = listPosition, modifier = it) },
         menuItems = {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = if (group == AssetsGroupType.Pined) R.string.common_unpin else R.string.common_pin)) },
@@ -74,6 +73,7 @@ internal fun AssetItem(
                 }
             )
         },
+        content = { AssetListItem(asset = item, listPosition = listPosition, modifier = it) },
         onLongClick = { longPressState.value = item.asset.id }
     ) { onAssetClick(item.asset.id) }
 }

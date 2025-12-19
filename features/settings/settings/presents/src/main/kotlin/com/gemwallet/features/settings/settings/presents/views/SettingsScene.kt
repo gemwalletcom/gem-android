@@ -11,8 +11,10 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.DropdownMenu
@@ -32,7 +34,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ui.R
@@ -45,7 +46,6 @@ import com.gemwallet.android.ui.open
 import com.gemwallet.features.settings.currency.presents.components.emojiFlags
 import com.gemwallet.features.settings.settings.viewmodels.SettingsViewModel
 import uniffi.gemstone.Config
-import uniffi.gemstone.DocsUrl
 import uniffi.gemstone.SocialUrl
 import java.util.Locale
 
@@ -67,6 +67,7 @@ fun SettingsScene(
 ) {
     val viewModel: SettingsViewModel = hiltViewModel()
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val isRewardsAvailable by viewModel.isRewardsAvailable.collectAsStateWithLifecycle()
     val pushEnabled by viewModel.pushEnabled.collectAsStateWithLifecycle()
     val context = LocalContext.current
     val supportState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -154,8 +155,14 @@ fun SettingsScene(
             LinkItem(title = stringResource(id = R.string.settings_networks_title), icon = R.drawable.settings_networks, listPosition = ListPosition.Last) {
                 onNetworks()
             }
-            LinkItem(title = stringResource(id = R.string.rewards_title), icon = R.drawable.settings_wallets, listPosition = ListPosition.Single) {
-                onReferral()
+            if (isRewardsAvailable) {
+                LinkItem(
+                    title = stringResource(id = R.string.rewards_title),
+                    icon = R.drawable.settings_wallets,
+                    listPosition = ListPosition.Single
+                ) {
+                    onReferral()
+                }
             }
             LinkItem(title = stringResource(id = R.string.wallet_connect_title), icon = R.drawable.settings_wc, listPosition = ListPosition.Single) {
                 onBridges()
@@ -174,24 +181,10 @@ fun SettingsScene(
             LinkItem(title = stringResource(id = R.string.social_github), icon = R.drawable.github) {
                 uriHandler.open(context, Config().getSocialUrl(SocialUrl.GIT_HUB) ?: "")
             }
-            LinkItem(title = stringResource(id = R.string.social_youtube), icon = R.drawable.youtube) {
+            LinkItem(title = stringResource(id = R.string.social_youtube), icon = R.drawable.youtube, listPosition = ListPosition.Last,) {
                 uriHandler.open(context, Config().getSocialUrl(SocialUrl.YOU_TUBE) ?: "")
             }
 
-            LinkItem(
-                title = stringResource(id = R.string.settings_help_center),
-                icon = R.drawable.settings_help_center,
-                listPosition = ListPosition.Last,
-            ) {
-                uriHandler.open(
-                    context,
-                    Config().getDocsUrl(DocsUrl.Start).toUri()
-                        .buildUpon()
-                        .appendQueryParameter("utm_source", "gemwallet_android")
-                        .build()
-                        .toString()
-                )
-            }
             LinkItem(
                 title = stringResource(id = R.string.settings_support),
                 icon = R.drawable.settings_support,
@@ -232,6 +225,7 @@ fun SettingsScene(
                     onDevelop()
                 }
             }
+            Spacer(modifier = Modifier.size(it.calculateBottomPadding()))
         }
     }
 

@@ -555,4 +555,5 @@
   <string name="rewards.ways_spend.title">Manieren om je geld uit te geven</string>
   <string name="rewards.ways_spend.asset.title">Krijgen %s</string>
   <string name="rewards.insufficient_points">Onvoldoende punten</string>
+  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
 </resources>

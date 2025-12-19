@@ -555,4 +555,5 @@
   <string name="rewards.ways_spend.title">Harcama Yolları</string>
   <string name="rewards.ways_spend.asset.title">Elde etmek %s</string>
   <string name="rewards.insufficient_points">Yetersiz puan</string>
+  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
 </resources>

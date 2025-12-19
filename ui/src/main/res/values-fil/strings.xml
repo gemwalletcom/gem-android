@@ -555,4 +555,5 @@
   <string name="rewards.ways_spend.title">Mga Paraan ng Paggastos</string>
   <string name="rewards.ways_spend.asset.title">Kunin %s</string>
   <string name="rewards.insufficient_points">Hindi sapat na puntos</string>
+  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
 </resources>

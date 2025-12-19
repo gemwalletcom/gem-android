@@ -555,4 +555,5 @@
   <string name="rewards.ways_spend.title">خرچ کرنے کے طریقے</string>
   <string name="rewards.ways_spend.asset.title">حاصل کریں۔ %s</string>
   <string name="rewards.insufficient_points">ناکافی پوائنٹس</string>
+  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
 </resources>

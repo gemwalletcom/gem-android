@@ -29,7 +29,7 @@ fun cryptoFormat(
         formatter.format(0.00)
     } else {
         formatter.maximumFractionDigits = Int.MAX_VALUE
-        formatter.minimumFractionDigits = 2
+        formatter.minimumFractionDigits = min(decimalPlace, 2)
         formatter.format(value.abs())
     }
     val zeroCompare = value.compareTo(BigDecimal.ZERO)

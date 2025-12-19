@@ -555,4 +555,5 @@
   <string name="rewards.ways_spend.title">Möglichkeiten zum Ausgeben</string>
   <string name="rewards.ways_spend.asset.title">Erhalten %s</string>
   <string name="rewards.insufficient_points">Unzureichende Punkte</string>
+  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
 </resources>

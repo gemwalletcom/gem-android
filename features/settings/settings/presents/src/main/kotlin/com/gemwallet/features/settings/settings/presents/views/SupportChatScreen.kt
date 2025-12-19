@@ -37,6 +37,7 @@ import com.kevinnzou.web.rememberWebViewNavigator
 import com.kevinnzou.web.rememberWebViewStateWithHTMLData
 import com.wallet.core.primitives.FiatQuoteType
 import uniffi.gemstone.Config
+import uniffi.gemstone.DocsUrl
 import uniffi.gemstone.PublicUrl
 
 @Composable
@@ -49,7 +50,7 @@ fun SupportChatScreen(
     var isReady by remember { mutableStateOf(false) }
     var selectedType by remember { mutableStateOf(SupportType.Chat) }
     val chatWebViewState = rememberWebViewStateWithHTMLData(data = html, baseUrl = viewModel.baseUrl)
-    val helpCenterUrl = Config().getPublicUrl(PublicUrl.SUPPORT).toUri()
+    val helpCenterUrl = Config().getDocsUrl(DocsUrl.Start).toUri()
         .buildUpon()
         .appendQueryParameter("utm_source", "gemwallet_android")
         .build()

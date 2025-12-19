@@ -555,4 +555,5 @@
   <string name="rewards.ways_spend.title">खर्च करने के तरीके</string>
   <string name="rewards.ways_spend.asset.title">पाना %s</string>
   <string name="rewards.insufficient_points">अपर्याप्त अंक</string>
+  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
 </resources>
