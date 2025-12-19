@@ -6,10 +6,10 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForwardIos
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.res.stringResource
+import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.ValidatorItem
 import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.ui.R
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.TransactionType
 

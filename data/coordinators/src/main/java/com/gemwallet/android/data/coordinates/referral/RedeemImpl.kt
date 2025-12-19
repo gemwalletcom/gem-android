@@ -1,10 +1,10 @@
 package com.gemwallet.android.data.coordinates.referral
 
 import com.gemwallet.android.application.GetAuthPayload
-import com.gemwallet.android.domains.referral.values.ReferralError
 import com.gemwallet.android.application.referral.coordinators.Redeem
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.data.services.gemapi.models.ResponseError
+import com.gemwallet.android.domains.referral.values.ReferralError
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.referralChain
 import com.gemwallet.android.serializer.jsonEncoder

@@ -2,8 +2,8 @@ package com.gemwallet.android.data.repositoreis.assets
 
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.blockchain.services.BalancesService
-import com.gemwallet.android.cases.assets.GetRecent
 import com.gemwallet.android.cases.assets.AddRecentActivity
+import com.gemwallet.android.cases.assets.GetRecent
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
 import com.gemwallet.android.cases.transactions.GetTransactions

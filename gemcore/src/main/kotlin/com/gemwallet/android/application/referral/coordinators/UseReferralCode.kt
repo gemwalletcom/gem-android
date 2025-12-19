@@ -1,6 +1,5 @@
 package com.gemwallet.android.application.referral.coordinators
 
-import com.wallet.core.primitives.RewardEvent
 import com.wallet.core.primitives.Wallet
 
 interface UseReferralCode {

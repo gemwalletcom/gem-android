@@ -6,7 +6,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.Companion.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
-import com.gemwallet.android.data.service.store.database.entities.DbPerpetual
 import com.gemwallet.android.data.service.store.database.entities.DbPerpetualPosition
 import com.gemwallet.android.data.service.store.database.entities.DbPerpetualPositionData
 import kotlinx.coroutines.flow.Flow

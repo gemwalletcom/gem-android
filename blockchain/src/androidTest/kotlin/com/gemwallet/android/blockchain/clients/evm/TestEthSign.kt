@@ -15,10 +15,6 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetType
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.Delegation
-import com.wallet.core.primitives.DelegationBase
-import com.wallet.core.primitives.DelegationState
-import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.FeePriority
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals

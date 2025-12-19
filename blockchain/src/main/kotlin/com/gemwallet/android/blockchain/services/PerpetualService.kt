@@ -16,7 +16,6 @@ import com.wallet.core.primitives.PerpetualPosition
 import com.wallet.core.primitives.PerpetualPositionsSummary
 import com.wallet.core.primitives.PerpetualProvider
 import com.wallet.core.primitives.PerpetualTriggerOrder
-import com.wallet.core.primitives.SerializedDate
 import uniffi.gemstone.GemChartCandleStick
 import uniffi.gemstone.GemGateway
 import uniffi.gemstone.GemPerpetualData

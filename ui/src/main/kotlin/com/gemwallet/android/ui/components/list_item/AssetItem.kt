@@ -19,15 +19,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.gemwallet.android.domains.price.PriceState
 import com.gemwallet.android.ui.components.image.IconWithBadge
 import com.gemwallet.android.ui.models.CryptoFormattedUIModel
 import com.gemwallet.android.ui.models.FiatFormattedUIModel
 import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.domains.price.PriceState
 import com.gemwallet.android.ui.models.PriceUIModel
 import com.gemwallet.android.ui.theme.Spacer2
 import com.wallet.core.primitives.Asset
-import com.wallet.core.primitives.Price
 
 @Composable
 fun AssetListItem(

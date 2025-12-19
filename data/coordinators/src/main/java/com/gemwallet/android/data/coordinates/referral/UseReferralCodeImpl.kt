@@ -1,19 +1,17 @@
 package com.gemwallet.android.data.coordinates.referral
 
 import com.gemwallet.android.application.GetAuthPayload
-import com.gemwallet.android.domains.referral.values.ReferralError
 import com.gemwallet.android.application.referral.coordinators.UseReferralCode
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.data.services.gemapi.models.ResponseError
+import com.gemwallet.android.domains.referral.values.ReferralError
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.referralChain
 import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.AuthenticatedRequest
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ReferralCode
-import com.wallet.core.primitives.RewardEvent
 import com.wallet.core.primitives.Wallet
-import org.web3j.abi.datatypes.Bool
 import retrofit2.HttpException
 
 class UseReferralCodeImpl(

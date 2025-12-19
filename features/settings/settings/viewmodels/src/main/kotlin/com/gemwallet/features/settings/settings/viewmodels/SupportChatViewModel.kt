@@ -1,7 +1,6 @@
 package com.gemwallet.features.settings.settings.viewmodels
 
 import android.content.Context
-import android.os.Build
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.device.DeviceRepository

@@ -16,12 +16,8 @@ import com.wallet.core.primitives.DelegationState
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.FeePriority
 import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertTrue
-import junit.framework.TestCase.fail
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import uniffi.gemstone.GemSwapQuoteDataType
-import uniffi.gemstone.SwapperProvider
 import wallet.core.jni.CoinType
 import wallet.core.jni.HDWallet
 import java.math.BigInteger

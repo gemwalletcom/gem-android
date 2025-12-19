@@ -2,14 +2,11 @@ package com.gemwallet.android.ui.components.clipboard
 
 import android.content.ClipData
 import android.content.ClipDescription
-import android.content.ClipboardManager
 import android.content.Context
 import android.os.Build
 import android.os.PersistableBundle
 import android.widget.Toast
 import androidx.compose.ui.platform.NativeClipboard
-import java.util.concurrent.Executors
-import java.util.concurrent.TimeUnit
 
 fun NativeClipboard.setPlainText(context: Context, data: String, isSensitive: Boolean = false) {
     val clip = ClipData.newPlainText("", data).apply {

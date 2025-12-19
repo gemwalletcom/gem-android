@@ -10,7 +10,6 @@ import com.wallet.core.primitives.PushNotificationReward
 import com.wallet.core.primitives.PushNotificationSwapAsset
 import com.wallet.core.primitives.PushNotificationTransaction
 import com.wallet.core.primitives.PushNotificationTypes
-import com.wallet.core.primitives.Rewards
 
 fun parseNotificationData(rawType: String?, rawData: String?): PushNotificationData? {
     if (rawType.isNullOrEmpty() || rawData.isNullOrEmpty()) {

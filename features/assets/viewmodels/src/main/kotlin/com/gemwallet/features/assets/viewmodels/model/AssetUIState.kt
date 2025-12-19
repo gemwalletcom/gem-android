@@ -1,7 +1,7 @@
 package com.gemwallet.features.assets.viewmodels.model
 
-import com.gemwallet.android.model.format
 import com.gemwallet.android.domains.price.PriceState
+import com.gemwallet.android.model.format
 import com.wallet.core.primitives.AssetPrice
 import com.wallet.core.primitives.Currency
 import java.math.RoundingMode

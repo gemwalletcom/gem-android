@@ -9,7 +9,6 @@ import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.Currency
 import java.util.Locale
-import kotlin.math.max
 import kotlin.math.min
 
 fun cryptoFormat(

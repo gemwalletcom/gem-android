@@ -5,12 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.model.AmountParams
-import com.gemwallet.android.model.DestinationAddress
 import com.gemwallet.features.perpetual.viewmodels.PerpetualDetailsViewModel
-import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.PerpetualData
-import com.wallet.core.primitives.PerpetualDirection
-import com.wallet.core.primitives.TransactionType
 
 @Composable
 fun PerpetualPositionNavScreen(

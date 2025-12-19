@@ -13,7 +13,8 @@ import com.gemwallet.android.ext.getNftMetadata
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.ext.hash
 import com.gemwallet.android.features.activities.models.TxDetailsProperty
-import com.gemwallet.android.features.activities.models.TxDetailsProperty.Destination.*
+import com.gemwallet.android.features.activities.models.TxDetailsProperty.Destination.Recipient
+import com.gemwallet.android.features.activities.models.TxDetailsProperty.Destination.Sender
 import com.gemwallet.android.math.getRelativeDate
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Transaction

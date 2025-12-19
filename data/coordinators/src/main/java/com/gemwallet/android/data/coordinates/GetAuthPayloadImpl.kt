@@ -13,7 +13,6 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet
 import uniffi.gemstone.GemAuthNonce
 import wallet.core.jni.PrivateKey
-import kotlin.String
 
 class GetAuthPayloadImpl(
     private val gemApiClient: GemApiClient,

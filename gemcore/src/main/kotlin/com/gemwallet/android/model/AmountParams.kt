@@ -4,7 +4,6 @@ import com.gemwallet.android.ext.urlDecode
 import com.gemwallet.android.ext.urlEncode
 import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.AssetId
-import com.wallet.core.primitives.PerpetualData
 import com.wallet.core.primitives.PerpetualDirection
 import com.wallet.core.primitives.TransactionType
 import kotlinx.serialization.Serializable

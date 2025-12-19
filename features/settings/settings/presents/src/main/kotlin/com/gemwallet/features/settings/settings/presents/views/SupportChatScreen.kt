@@ -38,7 +38,6 @@ import com.kevinnzou.web.rememberWebViewStateWithHTMLData
 import com.wallet.core.primitives.FiatQuoteType
 import uniffi.gemstone.Config
 import uniffi.gemstone.DocsUrl
-import uniffi.gemstone.PublicUrl
 
 @Composable
 fun SupportChatScreen(
