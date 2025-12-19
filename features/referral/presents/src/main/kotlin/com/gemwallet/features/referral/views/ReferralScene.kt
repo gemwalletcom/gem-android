@@ -1,25 +1,17 @@
 package com.gemwallet.features.referral.views
 
 import android.content.Intent
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -33,32 +25,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.sp
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.components.GemTextField
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.clickable
-import com.gemwallet.android.ui.components.filters.FormDialog
-import com.gemwallet.android.ui.components.list_item.SubheaderItem
-import com.gemwallet.android.ui.components.list_item.listItem
-import com.gemwallet.android.ui.components.list_item.property.PropertyItem
-import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
-import com.gemwallet.android.ui.components.parseMarkdownToAnnotatedString
-import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
 import com.gemwallet.android.ui.components.screen.Scene
-import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.ui.theme.Spacer16
-import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
-import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.features.referral.viewmodels.SyncType
+import com.gemwallet.features.referral.views.components.referralHead
+import com.gemwallet.features.referral.views.components.referralInfo
+import com.gemwallet.features.referral.views.dialogs.GetStartedDialog
+import com.gemwallet.features.referral.views.dialogs.ReferralCodeDialog
+import com.wallet.core.primitives.RewardRedemptionOption
 import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletSource
@@ -76,6 +57,7 @@ fun ReferralScene(
     onCode: (String, (Exception?) -> Unit) -> Unit,
     onRefresh: () -> Unit,
     onWallet: () -> Unit,
+    onRedeem: (RewardRedemptionOption) -> Unit,
     onClose: () -> Unit
 ) {
     if (inSync == SyncType.Init) return
@@ -138,102 +120,12 @@ fun ReferralScene(
             }
         ) {
             LazyColumn {
-                item {
-                    Column(
-                        modifier = Modifier
-                            .listItem(ListPosition.Single)
-                            .padding(paddingDefault),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(paddingDefault),
-                    ) {
-                        Spacer16()
-                        Text("\uD83C\uDF81", fontSize = 64.sp)
-                        Text(
-                            text = parseMarkdownToAnnotatedString(
-                                markdown = stringResource(R.string.rewards_invite_friends_title)
-                            ),
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                            style = MaterialTheme.typography.headlineSmall
-                        )
-                        Text(
-                            text = parseMarkdownToAnnotatedString(
-                                markdown = stringResource(
-                                    R.string.rewards_invite_friends_description,
-                                    joinPointsCost
-                                )
-                            ),
-                            color = MaterialTheme.colorScheme.secondary,
-                            style = MaterialTheme.typography.bodyLarge,
-                            textAlign = TextAlign.Center
-                        )
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(paddingDefault),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Column(
-                                modifier = Modifier.weight(1f),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(paddingHalfSmall)
-                            ) {
-                                Text(
-                                    text = "\uD83D\uDC65",
-                                    fontSize = 26.sp
-                                )
-                                Text(
-                                    text = stringResource(R.string.rewards_invite_friends_title),
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                            Column(
-                                modifier = Modifier.weight(1f),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(paddingHalfSmall)
-                            ) {
-                                Text(
-                                    text = "\uD83D\uDC8E",
-                                    fontSize = 26.sp,
-                                )
-                                Text(
-                                    text = stringResource(R.string.rewards_earn_points_title),
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                            Column(
-                                modifier = Modifier.weight(1f),
-                                horizontalAlignment = Alignment.CenterHorizontally,
-                                verticalArrangement = Arrangement.spacedBy(paddingHalfSmall)
-                            ) {
-                                Text(
-                                    text = "\uD83C\uDF89",
-                                    fontSize = 26.sp
-                                )
-                                Text(
-                                    text = stringResource(R.string.rewards_get_rewards_title),
-                                    color = MaterialTheme.colorScheme.secondary,
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    textAlign = TextAlign.Center
-                                )
-                            }
-                        }
-                        rewards?.let {
-                            MainActionButton(
-                                onClick = onShare
-                            ) {
-                                Icon(Icons.Default.Share, contentDescription = "share")
-                                Spacer8()
-                                Text(stringResource(R.string.rewards_invite_friends_title))
-                            }
-                        } ?: MainActionButton(
-                            title = stringResource(R.string.common_get_started)
-                        ) { getStartedDialogShow = true }
-                    }
-                }
+                referralHead(
+                    joinPointsCost = joinPointsCost,
+                    rewards = rewards,
+                    onGetStarted = { getStartedDialogShow = true },
+                    onShare = onShare,
+                )
 
                 if (rewards == null) {
                     item {
@@ -254,38 +146,7 @@ fun ReferralScene(
                         )
                     }
                 } else {
-                    item {
-                        SubheaderItem(stringResource(R.string.common_info))
-                        PropertyItem(
-                            title = R.string.rewards_my_referral_code,
-                            data = rewards.code,
-                            listPosition = ListPosition.First
-                        )
-                        PropertyItem(
-                            title = R.string.rewards_referrals,
-                            data = "${rewards.referralCount}",
-                            listPosition = ListPosition.Middle
-                        )
-                        PropertyItem(
-                            title = { PropertyTitleText(R.string.rewards_points) },
-                            data = {
-                                Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Text(
-                                        "${rewards.points}",
-                                        overflow = TextOverflow.MiddleEllipsis,
-                                        color = MaterialTheme.colorScheme.secondary,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                    )
-                                    Spacer4()
-                                    Text(
-                                        text = "\uD83D\uDC8E",
-                                        style = MaterialTheme.typography.bodyLarge,
-                                    )
-                                }
-                            },
-                            listPosition = ListPosition.Last
-                        )
-                    }
+                    referralInfo(rewards, onRedeem)
                 }
             }
         }
@@ -301,153 +162,6 @@ fun ReferralScene(
         ReferralCodeDialog(referralCode = referralCode, onCode = onCode) {
             codeDialogShow = false
         }
-    }
-}
-
-@Composable
-fun GetStartedDialog(
-    onUsername: (String, (Exception?) -> Unit) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    var username by remember { mutableStateOf("") }
-    var showError by remember { mutableStateOf<Exception?>(null) }
-    var showProgress by remember { mutableStateOf(false) }
-
-    val dismissDialog: () -> Unit = {
-        onDismiss()
-        username = ""
-    }
-    val doneAction: () -> Unit = {
-        showProgress = true
-        onUsername(username) {
-            showProgress = false
-            if (it == null) {
-                dismissDialog()
-            } else {
-                showError = it
-            }
-        }
-    }
-    val done: @Composable () -> Unit = {
-        TextButton(
-            onClick = doneAction,
-            enabled = !showProgress
-        ) {
-            if (showProgress) {
-                CircularProgressIndicator16()
-            } else {
-                Text(stringResource(R.string.common_done))
-            }
-        }
-    }
-    FormDialog(
-        title = stringResource(R.string.rewards_create_referral_code_title),
-        onDismiss = dismissDialog,
-        doneAction = done,
-    ) {
-        GemTextField(
-            modifier = Modifier.fillMaxWidth(),
-            label = stringResource(id = R.string.rewards_username),
-            value = username,
-            onValueChange = {
-                username = it
-            },
-            singleLine = true,
-            keyboardActions = KeyboardActions(onDone = { doneAction() }),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        )
-        Spacer8()
-        Text(
-            modifier = Modifier.fillMaxWidth(),
-            text = stringResource(R.string.rewards_create_referral_code_info),
-            color = MaterialTheme.colorScheme.secondary,
-            style = MaterialTheme.typography.bodyMedium,
-            textAlign = TextAlign.Center
-        )
-    }
-
-    if (showError != null) {
-        AlertDialog(
-            onDismissRequest = { showError = null},
-            confirmButton = {
-                Button({ showError = null}) {
-                    Text(stringResource(R.string.common_cancel))
-                }
-            },
-            text = {
-                Text(showError?.message ?: return@AlertDialog)
-            }
-        )
-    }
-}
-
-@Composable
-fun ReferralCodeDialog(
-    referralCode: String?,
-    onCode: (String, (Exception?) -> Unit) -> Unit,
-    onDismiss: () -> Unit,
-) {
-    var code by remember(referralCode) { mutableStateOf(referralCode ?: "") }
-    var showError by remember { mutableStateOf<Exception?>(null) }
-    var showProgress by remember { mutableStateOf(false) }
-
-    val dismissDialog: () -> Unit = {
-        onDismiss()
-        code = ""
-    }
-    val doneAction: () -> Unit = {
-        showProgress = true
-
-        onCode(code) {
-            showProgress = false
-            if (it == null) {
-                dismissDialog()
-            } else {
-                showError = it
-            }
-        }
-    }
-    val done: @Composable () -> Unit = {
-        TextButton(
-            onClick = doneAction,
-        ) {
-            if (showProgress) {
-                CircularProgressIndicator16()
-            } else {
-                Text(stringResource(R.string.common_done))
-            }
-        }
-    }
-    FormDialog(
-        title = stringResource(R.string.rewards_referral_code),
-        onDismiss = dismissDialog,
-        doneAction = done,
-    ) {
-        GemTextField(
-            modifier = Modifier
-                .fillMaxWidth(),
-            label = stringResource(id = R.string.rewards_referral_code),
-            value = code,
-            onValueChange = {
-                code = it
-            },
-            keyboardActions = KeyboardActions(onDone = { doneAction() }),
-            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-            singleLine = true,
-        )
-    }
-    if (showError != null) {
-        AlertDialog(
-            onDismissRequest = { showError = null},
-            confirmButton = {
-                Button({ showError = null}) {
-                    Text(stringResource(R.string.common_cancel))
-                }
-            },
-            text = {
-                Text(showError?.message ?: return@AlertDialog)
-            }
-        )
     }
 }
 
@@ -482,6 +196,7 @@ private fun ReferralScenePreview() {
             onCode = { _, _ -> },
             onRefresh = {},
             onWallet = {},
+            onRedeem = {},
             onClose = {},
         )
     }
@@ -511,30 +226,8 @@ private fun ReferralSceneNoRewardsPreview() {
             onCode = { _, _ -> },
             onRefresh = {},
             onWallet = {},
+            onRedeem = {},
             onClose = {},
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun GetStartedDialogPreview() {
-    WalletTheme {
-        GetStartedDialog(
-            onUsername = { _, _ -> },
-            onDismiss = {},
-        )
-    }
-}
-
-@Preview
-@Composable
-private fun ReferralCodeDialogPreview() {
-    WalletTheme {
-        ReferralCodeDialog(
-            referralCode = null,
-            onCode = { _, _ -> },
-            onDismiss = {},
         )
     }
 }

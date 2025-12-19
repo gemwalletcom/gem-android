@@ -23,8 +23,9 @@ data class RewardRedemptionOption (
 	val id: String,
 	val redemptionType: RewardRedemptionType,
 	val points: Int,
-	val assetId: String? = null,
-	val value: String
+	val asset: Asset? = null,
+	val value: String,
+	val remaining: Int? = null
 )
 
 @Serializable

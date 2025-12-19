@@ -552,4 +552,7 @@
   <string name="rewards.create_referral_code.title">Create Username</string>
   <string name="rewards.create_referral_code.info">This will be your personal username.</string>
   <string name="rewards.username">Username</string>
+  <string name="rewards.ways_spend.title">돈을 쓰는 방법</string>
+  <string name="rewards.ways_spend.asset.title">얻다 %s</string>
+  <string name="rewards.insufficient_points">점수가 부족합니다</string>
 </resources>

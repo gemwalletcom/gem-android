@@ -552,4 +552,7 @@
   <string name="rewards.create_referral_code.title">Create Username</string>
   <string name="rewards.create_referral_code.info">This will be your personal username.</string>
   <string name="rewards.username">Username</string>
+  <string name="rewards.ways_spend.title">Måder at bruge penge på</string>
+  <string name="rewards.ways_spend.asset.title">Få %s</string>
+  <string name="rewards.insufficient_points">Utilstrækkelige point</string>
 </resources>

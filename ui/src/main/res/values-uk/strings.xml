@@ -552,4 +552,7 @@
   <string name="rewards.create_referral_code.title">Create Username</string>
   <string name="rewards.create_referral_code.info">This will be your personal username.</string>
   <string name="rewards.username">Username</string>
+  <string name="rewards.ways_spend.title">Способи витрат</string>
+  <string name="rewards.ways_spend.asset.title">Отримати %s</string>
+  <string name="rewards.insufficient_points">Недостатньо балів</string>
 </resources>

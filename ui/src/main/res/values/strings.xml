@@ -552,4 +552,7 @@
   <string name="rewards.create_referral_code.title">Create Username</string>
   <string name="rewards.create_referral_code.info">This will be your personal username.</string>
   <string name="rewards.username">Username</string>
+  <string name="rewards.ways_spend.title">Ways to Spend</string>
+  <string name="rewards.ways_spend.asset.title">Get %s</string>
+  <string name="rewards.insufficient_points">Insufficient points</string>
 </resources>

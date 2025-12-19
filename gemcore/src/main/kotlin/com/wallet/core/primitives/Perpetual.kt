@@ -17,6 +17,8 @@ enum class PerpetualDirection(val string: String) {
 
 @Serializable
 data class AutocloseOpenData (
+	val assetId: AssetId,
+	val symbol: String,
 	val direction: PerpetualDirection,
 	val marketPrice: Double,
 	val leverage: UByte,
@@ -76,7 +78,8 @@ data class PerpetualConfirmData (
 	val marketPrice: Double,
 	val marginAmount: Double,
 	val takeProfit: String? = null,
-	val stopLoss: String? = null
+	val stopLoss: String? = null,
+	val autocloseOrderType: PerpetualOrderType
 )
 
 @Serializable
@@ -134,7 +137,8 @@ data class TPSLOrderData (
 	val direction: PerpetualDirection,
 	val takeProfit: String? = null,
 	val stopLoss: String? = null,
-	val size: String
+	val size: String,
+	val autocloseOrderType: PerpetualOrderType
 )
 
 @Serializable

@@ -11,9 +11,9 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.wallets.WalletsRepository
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.referralChain
-import com.gemwallet.android.ui.models.PriceUIModel
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.RewardRedemptionOption
 import com.wallet.core.primitives.Rewards
 import com.wallet.core.primitives.Wallet
 import com.wallet.core.primitives.WalletType
@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -112,6 +113,24 @@ class ReferralViewModel @Inject constructor(
             callback(null)
         } catch (err: Exception) {
             callback(err)
+        }
+    }
+
+    fun redeem(option: RewardRedemptionOption, callback: (Throwable?) -> Unit) {
+        val wallet = currentWallet.value ?: return
+        val rewards = rewards.value ?: return
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                redeem.redeem(wallet, rewards, option)
+                sync()
+                withContext(Dispatchers.Main) {
+                    callback(null)
+                }
+            } catch (err: Throwable) {
+                withContext(Dispatchers.Main) {
+                    callback(err)
+                }
+            }
         }
     }
 }

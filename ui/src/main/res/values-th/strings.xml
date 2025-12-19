@@ -552,4 +552,7 @@
   <string name="rewards.create_referral_code.title">Create Username</string>
   <string name="rewards.create_referral_code.info">This will be your personal username.</string>
   <string name="rewards.username">Username</string>
+  <string name="rewards.ways_spend.title">วิธีใช้จ่าย</string>
+  <string name="rewards.ways_spend.asset.title">รับ %s</string>
+  <string name="rewards.insufficient_points">คะแนนไม่เพียงพอ</string>
 </resources>

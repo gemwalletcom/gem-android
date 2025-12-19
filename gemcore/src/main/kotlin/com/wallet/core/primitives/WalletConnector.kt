@@ -114,5 +114,9 @@ enum class WalletConnectionMethods(val string: String) {
 	SuiSignTransaction("sui_signTransaction"),
 	@SerialName("sui_signAndExecuteTransaction")
 	SuiSignAndExecuteTransaction("sui_signAndExecuteTransaction"),
+	@SerialName("ton_sendMessage")
+	TonSendMessage("ton_sendMessage"),
+	@SerialName("ton_signData")
+	TonSignData("ton_signData"),
 }
 
