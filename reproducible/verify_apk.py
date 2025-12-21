@@ -184,6 +184,7 @@ def build_app_image(tag: str, base_image: str, base_tag: str, gradle_task: str, 
     env = os.environ.copy()
     env["DOCKER_BUILDKIT"] = "1"
     env["DOCKER_DEFAULT_PLATFORM"] = env.get("DOCKER_DEFAULT_PLATFORM", platform)
+    seed_arg = map_id_seed or ""
     cmd = [
         "docker",
         "build",
@@ -202,7 +203,7 @@ def build_app_image(tag: str, base_image: str, base_tag: str, gradle_task: str, 
         "--build-arg",
         f"BUNDLE_TASK={gradle_task}",
         "--build-arg",
-        f"R8_MAP_ID_SEED={map_id_seed}",
+        f"R8_MAP_ID_SEED={seed_arg}",
         "-f",
         "reproducible/Dockerfile",
         ".",
@@ -213,6 +214,7 @@ def build_app_image(tag: str, base_image: str, base_tag: str, gradle_task: str, 
 
 def build_outputs_in_container(app_image: str, container_name: str, gradle_task: str, map_id_seed: str, gradle_cache: Path, maven_cache: Path, platform: str) -> None:
     run(["docker", "rm", "-f", container_name], check=False)
+    seed_env = map_id_seed or ""
     cmd = [
         "docker",
         "run",
@@ -225,7 +227,7 @@ def build_outputs_in_container(app_image: str, container_name: str, gradle_task:
         "-e",
         f"BUNDLE_TASK={gradle_task}",
         "-e",
-        f"R8_MAP_ID_SEED={map_id_seed}",
+        f"R8_MAP_ID_SEED={seed_env}",
         "-v",
         f"{gradle_cache}:/root/.gradle",
         "-v",
@@ -325,7 +327,7 @@ def main() -> None:
         sys.exit(1)
 
     tag_safe = sanitize(args.tag) or "latest"
-    map_id_seed = os.environ.get("R8_MAP_ID_SEED") or None
+    map_id_seed = os.environ.get("R8_MAP_ID_SEED") or ""
     repo_url = os.environ.get("VERIFY_REPO_URL", REPO_URL_DEFAULT)
     resolved_tag = resolve_ref(args.tag, repo_url)
     base_tag_file = Path(__file__).with_name("base_image_tag.txt")
@@ -370,7 +372,7 @@ def main() -> None:
             ensure_base_image(base_image, base_tag, pull_base, docker_platform)
             print(
                 f"{INFO_EMOJI} Build parameters: base_image={base_image}:{base_tag}, "
-                f"platform={docker_platform}, gradle_task='{gradle_task}', R8_MAP_ID_SEED={map_id_seed} "
+                f"platform={docker_platform}, gradle_task='{gradle_task}', R8_MAP_ID_SEED='{map_id_seed}' "
             )
             build_app_image(resolved_tag, base_image, base_tag, gradle_task, map_id_seed, app_image, docker_platform)
             build_outputs_in_container(app_image, app_container, gradle_task, map_id_seed, gradle_cache, maven_cache, docker_platform)
