@@ -35,7 +35,7 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkFee
 import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
-import com.gemwallet.android.ui.components.progress.CircularProgressIndicator16
+import com.gemwallet.android.ui.components.progress.CircularProgressIndicator14
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AssetIdAction
@@ -131,9 +131,8 @@ fun ConfirmScreen(
                 feeModel?.let {
                     when (it) {
                         FeeUIModel.Calculating -> PropertyItem(
-                            modifier = Modifier.height(72.dp),
                             title = { PropertyTitleText(R.string.transfer_network_fee) },
-                            data = { Row(horizontalArrangement = Arrangement.End) { CircularProgressIndicator16() } },
+                            data = { Row(horizontalArrangement = Arrangement.End) { CircularProgressIndicator14() } },
                             listPosition = ListPosition.Single,
                         )
                         is FeeUIModel.FeeInfo -> PropertyNetworkFee(
@@ -144,7 +143,6 @@ fun ConfirmScreen(
                             true,
                         ) { showSelectTxSpeed = true }
                         FeeUIModel.Error -> PropertyItem(
-                            modifier = Modifier.height(72.dp),
                             title = { PropertyTitleText(R.string.transfer_network_fee) },
                             data = { PropertyDataText("~") },
                             listPosition = ListPosition.Single,
