@@ -122,7 +122,7 @@ fun AmountScene(
             reserveForFee?.let {
                 item {
                     Row(
-                        modifier = Modifier.fillMaxWidth().listItem().padding(paddingDefault),
+                        modifier = Modifier.fillMaxWidth().listItem().padding(horizontal = paddingDefault, vertical = paddingSmall),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(paddingSmall),
                     ) {
