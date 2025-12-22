@@ -36,7 +36,6 @@ fun LazyListScope.destinationView(
                 onQrScanner = { onQrScan(QrScanField.Address) }
             )
             if (hasMemo) {
-                Spacer4()
                 MemoTextField(
                     value = memoState.value,
                     label = stringResource(id = R.string.transfer_memo),

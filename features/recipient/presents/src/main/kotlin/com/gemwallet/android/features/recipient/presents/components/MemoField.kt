@@ -46,7 +46,7 @@ fun MemoTextField(
             )
         }
     )
-    if (error == RecipientError.None) {
+    if (error != RecipientError.None) {
         Spacer(modifier = Modifier.size(space4))
         Text(
             modifier = Modifier.fillMaxWidth(),
