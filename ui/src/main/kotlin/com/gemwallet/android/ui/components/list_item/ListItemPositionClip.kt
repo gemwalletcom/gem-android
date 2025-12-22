@@ -11,6 +11,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.models.ListPosition
+import com.gemwallet.android.ui.theme.paddingHalfSmall
+
+private val normalTopPadding = 8.dp
+private val normalBottomPadding = 8.dp
 
 private val bigRound = 16.dp
 private val smallRound = 2.dp
@@ -31,9 +35,12 @@ fun Modifier.listItem(
 ): Modifier =
     padding(horizontal = paddingHorizontal ?: bigRound) then
     when (position) {
-        ListPosition.First -> this.padding(top = paddingVertical ?: bigRound).clip(firstItemShape)
+        ListPosition.Subhead -> this.padding(top = paddingVertical ?: normalTopPadding, bottom = paddingHalfSmall)
+        ListPosition.First -> this.padding(top = paddingVertical ?: normalTopPadding).clip(firstItemShape)
         ListPosition.Middle -> this.padding(top = paddingVertical ?: itemPadding).clip(middleItemShape)
-        ListPosition.Single -> this.padding(top = paddingVertical ?: bigRound, bottom = paddingVertical ?: bigRound).clip(singleItemShape)
-        ListPosition.Last -> this.padding(top = paddingVertical ?: itemPadding, bottom = 0.dp).clip(lastItemShape)
+        ListPosition.Single -> this.padding(top = paddingVertical ?: normalTopPadding, bottom = paddingVertical ?: normalBottomPadding).clip(singleItemShape)
+        ListPosition.Last -> this.padding(top = paddingVertical ?: itemPadding, bottom = normalBottomPadding).clip(lastItemShape)
+    } then when (position) {
+        ListPosition.Subhead -> Modifier
+        else -> Modifier.background(background)
     }
-    .background(background)

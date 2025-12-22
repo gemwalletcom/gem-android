@@ -1,6 +1,7 @@
 package com.gemwallet.android.ui.models
 
 enum class ListPosition {
+    Subhead,
     First,
     Middle,
     Single,

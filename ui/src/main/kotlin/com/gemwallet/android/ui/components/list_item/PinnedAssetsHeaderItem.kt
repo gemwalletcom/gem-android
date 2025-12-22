@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.models.AssetsGroupType
+import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.paddingHalfSmall
 
@@ -27,7 +28,7 @@ fun PinnedAssetsHeaderItem(type: AssetsGroupType) {
         return
     }
     Row(
-        modifier = Modifier.padding(horizontal = paddingDefault),
+        modifier = Modifier.listItem(ListPosition.Subhead).padding(horizontal = paddingDefault),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(paddingHalfSmall)
     ) {
