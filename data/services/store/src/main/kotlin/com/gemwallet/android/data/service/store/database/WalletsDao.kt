@@ -21,7 +21,7 @@ interface WalletsDao {
     @Query("SELECT * FROM wallets WHERE id = :id")
     fun getById(id: String): Flow<DbWallet?>
 
-    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(wallet: DbWallet)
 
     @Update

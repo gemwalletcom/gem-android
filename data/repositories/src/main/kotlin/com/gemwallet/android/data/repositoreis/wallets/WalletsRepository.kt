@@ -97,7 +97,7 @@ class WalletsRepository @Inject constructor(
 
     suspend fun togglePin(walletId: String) = withContext(Dispatchers.IO) {
         val room = walletsDao.getById(walletId).firstOrNull() ?: return@withContext
-        walletsDao.insert(room.copy(pinned = !room.pinned))
+        walletsDao.update(room.copy(pinned = !room.pinned))
     }
 
     suspend fun putWallet(wallet: Wallet): Wallet = withContext(Dispatchers.IO) {
