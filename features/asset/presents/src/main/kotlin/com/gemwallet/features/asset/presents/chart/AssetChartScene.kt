@@ -68,7 +68,7 @@ fun AssetChartScene(
 
 private fun LazyListScope.links(links: List<AssetMarketUIModel.Link>) {
     if (links.isEmpty()) return
-    item { SubheaderItem(title = "LINKS") }
+    item { SubheaderItem(title = stringResource(R.string.social_links)) }
     itemsIndexed(links) { index, item ->
         val uriHandler = LocalUriHandler.current
         val context = LocalContext.current

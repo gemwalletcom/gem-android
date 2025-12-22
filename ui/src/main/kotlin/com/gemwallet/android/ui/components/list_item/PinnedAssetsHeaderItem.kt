@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.models.AssetsGroupType
+import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.paddingHalfSmall
 
 @Composable
@@ -26,12 +27,12 @@ fun PinnedAssetsHeaderItem(type: AssetsGroupType) {
         return
     }
     Row(
-        modifier = Modifier.Companion.padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.Companion.CenterVertically,
+        modifier = Modifier.padding(horizontal = paddingDefault),
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(paddingHalfSmall)
     ) {
         Icon(
-            modifier = Modifier.Companion.size(16.dp),
+            modifier = Modifier.size(paddingDefault),
             imageVector = when (type)  {
                 AssetsGroupType.Popular -> Icons.Default.StarOutline
                 AssetsGroupType.Pined -> Icons.Default.PushPin
@@ -41,7 +42,7 @@ fun PinnedAssetsHeaderItem(type: AssetsGroupType) {
             contentDescription = "pinned_section",
         )
         Text(
-            modifier = Modifier.Companion
+            modifier = Modifier
                 .fillMaxWidth(),
             text = stringResource(
                 when (type)  {
