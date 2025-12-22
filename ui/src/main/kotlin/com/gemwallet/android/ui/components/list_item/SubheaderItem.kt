@@ -12,7 +12,7 @@ import com.gemwallet.android.ui.theme.paddingDefault
 
 @Composable
 fun SubheaderItem(@StringRes title: Int, vararg formatArgs: Any) {
-    SubheaderItem(title)
+    SubheaderItem(stringResource(title, formatArgs))
 }
 
 @Composable
