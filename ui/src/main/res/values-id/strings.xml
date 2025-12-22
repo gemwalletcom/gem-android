@@ -501,7 +501,7 @@
   <string name="assets.title">Aktiva</string>
   <string name="stake.delegations">Delegasi</string>
   <string name="info.stake.apr.description">Tingkat Persentase Tahunan (APR) adalah tingkat imbalan tahunan untuk mempertaruhkan mata uang kripto Anda.</string>
-  <string name="receive.warning" formatted="false">Ini adalah alamat Anda — kirim hanya ** %s ** di jaringan ** %s **.</string>
+  <string name="receive.warning" formatted="false">Ini alamat Anda — kirim hanya **%s** pada **%s** jaringan.</string>
   <string name="perpetual.leverage">Daya ungkit keuangan</string>
   <string name="perpetual.direction">Arah</string>
   <string name="perpetual.auto_close">Tutup Otomatis</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Cara untuk Berbelanja</string>
   <string name="rewards.ways_spend.asset.title">Mendapatkan %s</string>
   <string name="rewards.insufficient_points">Poin tidak mencukupi</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Mendapatkan %s untuk %s!</string>
 </resources>

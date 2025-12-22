@@ -501,7 +501,7 @@
   <string name="assets.title">Tài sản</string>
   <string name="stake.delegations">Ủy quyền</string>
   <string name="info.stake.apr.description">Tỷ lệ phần trăm hàng năm (APR) là tỷ lệ phần thưởng hàng năm cho việc đặt cược tiền điện tử của bạn.</string>
-  <string name="receive.warning" formatted="false">Đây là địa chỉ của bạn — chỉ gửi ** %s ** trên mạng ** %s **.</string>
+  <string name="receive.warning" formatted="false">Đây là địa chỉ của bạn — chỉ gửi **%s** trên **%s** mạng.</string>
   <string name="perpetual.leverage">Đòn bẩy</string>
   <string name="perpetual.direction">Phương hướng</string>
   <string name="perpetual.auto_close">Tự động đóng</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Các cách chi tiêu</string>
   <string name="rewards.ways_spend.asset.title">Lấy %s</string>
   <string name="rewards.insufficient_points">Không đủ điểm</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Lấy %s vì %s!</string>
 </resources>

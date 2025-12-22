@@ -501,7 +501,7 @@
   <string name="assets.title">أصول</string>
   <string name="stake.delegations">التفويضات</string>
   <string name="info.stake.apr.description">معدل النسبة السنوية (APR) هو معدل المكافأة السنوي لمراهنة العملة المشفرة الخاصة بك.</string>
-  <string name="receive.warning" formatted="false">هذا هو عنوانك - أرسل فقط ** %s ** على شبكة ** %s **.</string>
+  <string name="receive.warning" formatted="false">هذا عنوانك — أرسل فقط **%s** على **%s** شبكة.</string>
   <string name="perpetual.leverage">الرافعة المالية</string>
   <string name="perpetual.direction">اتجاه</string>
   <string name="perpetual.auto_close">إغلاق تلقائي</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">طرق الإنفاق</string>
   <string name="rewards.ways_spend.asset.title">يحصل %s</string>
   <string name="rewards.insufficient_points">نقاط غير كافية</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">يحصل %s ل %s!</string>
 </resources>

@@ -501,7 +501,7 @@
   <string name="assets.title">资产</string>
   <string name="stake.delegations">委托</string>
   <string name="info.stake.apr.description">年利率（APR）是质押加密货币的年度回报率。</string>
-  <string name="receive.warning" formatted="false">这是您的地址——仅在 ** %s ** 网络上发送 ** %s **。</string>
+  <string name="receive.warning" formatted="false">这是您的地址——仅发送**%s**在**%s** 网络。</string>
   <string name="perpetual.leverage">杠杆作用</string>
   <string name="perpetual.direction">方向</string>
   <string name="perpetual.auto_close">自动关闭</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">消费方式</string>
   <string name="rewards.ways_spend.asset.title">得到 %s</string>
   <string name="rewards.insufficient_points">分数不足</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">得到 %s 为了 %s！</string>
 </resources>

@@ -287,7 +287,7 @@
   <string name="info.network_fee.title">Сетевая плата</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">Кошелек, к которому у вас нет доступа, но вы можете следить за его транзакциями и движениями.</string>
-  <string name="info.network_fee.description" formatted="false">Каждая транзакция в сети %s требует плату в %s выплачиваемую майнерам за обработку вашей транзакции, а не Кошелек Gem. Сетевые сборы варьируются в зависимости от использования сети.</string>
+  <string name="info.network_fee.description" formatted="false">Каждая транзакция в сети %s требует плату в %s выплачиваемую майнерам за обработку вашей транзакции, а не Gem Wallet. Сетевые сборы варьируются в зависимости от использования сети.</string>
   <string name="info.transaction.error.description">Транзакция не может быть завершена из-за ошибки, например, недостаточно средств, неверных данных или отклонения сетью. Пожалуйста, проверьте детали и повторите попытку.</string>
   <string name="info.transaction.pending.description">Транзакция была отправлена и ожидает подтверждения в сети. Время обработки может меняться. Пожалуйста, проверяйте обновления.</string>
   <string name="info.transaction.success.description">Транзакция завершена и подтверждена в сети. Вы можете просмотреть детали, чтобы проверить ее статус.</string>
@@ -426,8 +426,8 @@
   <string name="info.asset_status.suspicious.description">Подозрительные или спам‑токены помечаются как потенциальные мошеннические или вредоносные активы. Они могут появиться в вашем кошельке в результате airdrop‑раздач, переводов или ручного добавления.</string>
   <string name="errors.insufficient_funds">Недостаточно средств</string>
   <string name="info.insufficient_network_fee_balance.title">Требуется %s</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Для этой транзакции требуется ** %s ** для покрытия сетевой комиссии, выплачиваемой майнерам ** %s **, а не Кошелек Gem. Убедитесь, что у вас достаточно %s.</string>
-  <string name="brand_name">Кошелек Gem</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Для этой транзакции требуется ** %s ** для покрытия сетевой комиссии, выплачиваемой майнерам ** %s **, а не Gem Wallet. Убедитесь, что у вас достаточно %s.</string>
+  <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Недостаточный баланс</string>
   <string name="info.insufficient_balance.description">У вас недостаточно %s для завершения этой транзакции. Пожалуйста, пополните, получите или обменяйте ваш кошелек и попробуйте еще раз.</string>
   <string name="info.account_minimum_balance.title">Минимальный баланс</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Ресурсы</string>
   <string name="stake.delegations">Делегации</string>
   <string name="info.stake.apr.description">Годовая процентная ставка (APR) — это годовая ставка вознаграждения за стейкинг вашей криптовалюты.</string>
-  <string name="receive.warning" formatted="false">Это ваш адрес — отправляйте только ** %s ** в сети ** %s **.</string>
+  <string name="receive.warning" formatted="false">Это ваш адрес — отправляйте только **%s** на **%s** сеть.</string>
   <string name="perpetual.leverage">Кредитное плечо</string>
   <string name="perpetual.direction">Направление</string>
   <string name="perpetual.auto_close">Автоматическое закрытие</string>
@@ -536,7 +536,7 @@
   <string name="nft.report.reason.copyright">Авторские права</string>
   <string name="nft.report.report_button_title">Пожаловаться</string>
   <string name="rewards.title">Награды</string>
-  <string name="rewards.share_text">Присоединиться Кошелек Gem Воспользуйтесь моей реферальной ссылкой и получите вознаграждение: %s</string>
+  <string name="rewards.share_text">Создайте Gem Wallet по моей реферальной ссылке и получите вознаграждение: %s</string>
   <string name="rewards.my_referral_code">Мой реферальный код</string>
   <string name="rewards.invite_friends.title">Пригласите друзей</string>
   <string name="rewards.invite_friends.description">Зарабатывать **%d баллов** за каждого друга, который присоединится.</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Способы потратить</string>
   <string name="rewards.ways_spend.asset.title">Получать %s</string>
   <string name="rewards.insufficient_points">Недостаточно баллов</string>
-  <string name="rewards.confirm_redeem" formatted="false">Получите **%s** для **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Получать %s для %s!</string>
 </resources>

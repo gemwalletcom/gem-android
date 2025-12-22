@@ -501,7 +501,7 @@
   <string name="assets.title">Aktiver</string>
   <string name="stake.delegations">Delegationer</string>
   <string name="info.stake.apr.description">Årlig procentsats (ÅOP) er den årlige belønningssats for at satse din kryptovaluta.</string>
-  <string name="receive.warning" formatted="false">Dette er din adresse — send kun ** %s ** på ** %s **-netværket.</string>
+  <string name="receive.warning" formatted="false">Dette er din adresse — kun send **%s** på **%s** netværk.</string>
   <string name="perpetual.leverage">Gearing</string>
   <string name="perpetual.direction">Retning</string>
   <string name="perpetual.auto_close">Automatisk lukning</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Måder at bruge penge på</string>
   <string name="rewards.ways_spend.asset.title">Få %s</string>
   <string name="rewards.insufficient_points">Utilstrækkelige point</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Få %s for %s!</string>
 </resources>

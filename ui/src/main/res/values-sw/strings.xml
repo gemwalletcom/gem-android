@@ -501,7 +501,7 @@
   <string name="assets.title">Mali</string>
   <string name="stake.delegations">Uwakilishi</string>
   <string name="info.stake.apr.description">Kiwango cha Asilimia cha Mwaka (APR) ni kiwango cha tuzo cha kila mwaka cha kuweka sarafu yako ya cryptocurrency.</string>
-  <string name="receive.warning" formatted="false">Hii ndiyo anwani yako — tuma tu ** %s ** kwenye mtandao wa ** %s **.</string>
+  <string name="receive.warning" formatted="false">Hii ni anwani yako — tuma tu **%s**kwenye **%s** mtandao.</string>
   <string name="perpetual.leverage">Uvunjaji wa kifedh</string>
   <string name="perpetual.direction">Mwelekeo</string>
   <string name="perpetual.auto_close">Funga Kiotomatiki</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Njia za Kutumia</string>
   <string name="rewards.ways_spend.asset.title">Pata %s</string>
   <string name="rewards.insufficient_points">Pointi zisizotosha</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Pata %s kwa %s!</string>
 </resources>

@@ -501,7 +501,7 @@
   <string name="assets.title">Aktywa</string>
   <string name="stake.delegations">Delegacje</string>
   <string name="info.stake.apr.description">Roczna stopa procentowa (APR) to roczna stopa nagrody za stakowanie kryptowaluty.</string>
-  <string name="receive.warning" formatted="false">To jest Twój adres — wysyłaj tylko ** %s ** w sieci ** %s **.</string>
+  <string name="receive.warning" formatted="false">To jest Twój adres — wysyłaj tylko **%s** na **%s** sieć.</string>
   <string name="perpetual.leverage">Dźwignia finansowa</string>
   <string name="perpetual.direction">Kierunek</string>
   <string name="perpetual.auto_close">Automatyczne zamykanie</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Sposoby wydawania pieniędzy</string>
   <string name="rewards.ways_spend.asset.title">Dostawać %s</string>
   <string name="rewards.insufficient_points">Za mało punktów</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Dostawać %s Do %s!</string>
 </resources>

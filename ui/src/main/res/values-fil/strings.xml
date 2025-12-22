@@ -501,7 +501,7 @@
   <string name="assets.title">Mga asset</string>
   <string name="stake.delegations">Mga delegasyon</string>
   <string name="info.stake.apr.description">Ang Annual Percentage Rate (APR) ay ang taunang reward rate para sa staking ng iyong cryptocurrency.</string>
-  <string name="receive.warning" formatted="false">Ito ang iyong address — magpadala lamang ng ** %s ** sa ** %s ** network.</string>
+  <string name="receive.warning" formatted="false">Ito ang iyong address — ipadala lamang **%s** sa **%s** network.</string>
   <string name="perpetual.leverage">Leverage</string>
   <string name="perpetual.direction">Direksyon</string>
   <string name="perpetual.auto_close">Auto Close</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Mga Paraan ng Paggastos</string>
   <string name="rewards.ways_spend.asset.title">Kunin %s</string>
   <string name="rewards.insufficient_points">Hindi sapat na puntos</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Kunin %s para sa %s!</string>
 </resources>

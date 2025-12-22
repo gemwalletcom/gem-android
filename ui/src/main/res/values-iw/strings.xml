@@ -501,7 +501,7 @@
   <string name="assets.title">נכסים</string>
   <string name="stake.delegations">האצלות</string>
   <string name="info.stake.apr.description">שיעור אחוז שנתי (APR) הוא שיעור התגמול השנתי עבור הפקדת מטבע הקריפטו שלך.</string>
-  <string name="receive.warning" formatted="false">זוהי הכתובת שלך — שלח רק ** %s ** ברשת ** %s **.</string>
+  <string name="receive.warning" formatted="false">זוהי הכתובת שלך - לשלוח בלבד **%s** על ה **%s**רשת.</string>
   <string name="perpetual.leverage">מינוף</string>
   <string name="perpetual.direction">כיוון</string>
   <string name="perpetual.auto_close">סגירה אוטומטית</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">דרכים להוציא כסף</string>
   <string name="rewards.ways_spend.asset.title">לְקַבֵּל %s</string>
   <string name="rewards.insufficient_points">נקודות לא מספיקות</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">לְקַבֵּל %s עֲבוּר %s!</string>
 </resources>

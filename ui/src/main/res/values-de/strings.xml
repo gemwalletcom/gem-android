@@ -501,7 +501,7 @@
   <string name="assets.title">Vermögenswerte</string>
   <string name="stake.delegations">Delegationen</string>
   <string name="info.stake.apr.description">Der effektive Jahreszins (APR) ist der jährliche Belohnungssatz für das Staking Ihrer Kryptowährung.</string>
-  <string name="receive.warning" formatted="false">Dies ist Ihre Adresse – senden Sie nur ** %s ** im ** %s ** Netzwerk.</string>
+  <string name="receive.warning" formatted="false">Dies ist Ihre Adresse – senden Sie bitte nur **%s** auf dem **%s** Netzwerk.</string>
   <string name="perpetual.leverage">Hebelwirkung</string>
   <string name="perpetual.direction">Richtung</string>
   <string name="perpetual.auto_close">Automatisches Schließen</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Möglichkeiten zum Ausgeben</string>
   <string name="rewards.ways_spend.asset.title">Erhalten %s</string>
   <string name="rewards.insufficient_points">Unzureichende Punkte</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Erhalten %s für %s!</string>
 </resources>

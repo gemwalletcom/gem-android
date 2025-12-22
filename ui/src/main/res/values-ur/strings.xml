@@ -501,7 +501,7 @@
   <string name="assets.title">اثاثے</string>
   <string name="stake.delegations">تفویضات</string>
   <string name="info.stake.apr.description">سالانہ فیصدی شرح (APR) آپ کی کریپٹو کرنسی کو داغدار کرنے کے لیے سالانہ انعام کی شرح ہے۔</string>
-  <string name="receive.warning" formatted="false">یہ آپ کا پتہ ہے — ** %s ** نیٹ ورک پر صرف ** %s ** بھیجیں۔</string>
+  <string name="receive.warning" formatted="false">یہ آپ کا پتہ ہے - صرف بھیجیں **%s** پر **%s** نیٹ ورک۔</string>
   <string name="perpetual.leverage">مالی فائدہ اٹھانا</string>
   <string name="perpetual.direction">سمت</string>
   <string name="perpetual.auto_close">آٹو بند</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">خرچ کرنے کے طریقے</string>
   <string name="rewards.ways_spend.asset.title">حاصل کریں۔ %s</string>
   <string name="rewards.insufficient_points">ناکافی پوائنٹس</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">حاصل کریں۔ %s کے لیے %s!</string>
 </resources>

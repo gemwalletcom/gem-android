@@ -501,7 +501,7 @@
   <string name="assets.title">دارایی‌ها</string>
   <string name="stake.delegations">واگذاری‌ها</string>
   <string name="info.stake.apr.description">نرخ درصد سالانه (APR) نرخ پاداش سالانه برای سپرده‌گذاری ارز دیجیتال شما است.</string>
-  <string name="receive.warning" formatted="false">این آدرس شماست — فقط ** %s ** را در شبکه ** %s ** ارسال کنید.</string>
+  <string name="receive.warning" formatted="false">این آدرس شماست — فقط ارسال کنید **%s**روی**%s**شبکه.</string>
   <string name="perpetual.leverage">اهرم مالی</string>
   <string name="perpetual.direction">جهت</string>
   <string name="perpetual.auto_close">بستن خودکار</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">راه‌های خرج کردن</string>
   <string name="rewards.ways_spend.asset.title">دریافت %s</string>
   <string name="rewards.insufficient_points">امتیاز ناکافی</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">دریافت %s برای %s!</string>
 </resources>

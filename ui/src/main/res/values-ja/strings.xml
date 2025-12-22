@@ -501,7 +501,7 @@
   <string name="assets.title">資産</string>
   <string name="stake.delegations">委任</string>
   <string name="info.stake.apr.description">年率 (APR) は、暗号通貨をステーキングした場合の年間報酬率です。</string>
-  <string name="receive.warning" formatted="false">これはあなたのアドレスです。** %s ** ネットワーク上の ** %s ** のみを送信します。</string>
+  <string name="receive.warning" formatted="false">これはあなたの住所です - 送信のみ**%s** オン ザ **%s** ネットワーク。</string>
   <string name="perpetual.leverage">てこの作用</string>
   <string name="perpetual.direction">方向</string>
   <string name="perpetual.auto_close">自動閉じる</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">使い方</string>
   <string name="rewards.ways_spend.asset.title">得る %s</string>
   <string name="rewards.insufficient_points">ポイントが足りない</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">得る %s のために %s!</string>
 </resources>

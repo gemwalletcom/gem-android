@@ -501,7 +501,7 @@
   <string name="assets.title">Assets</string>
   <string name="stake.delegations">Delegations</string>
   <string name="info.stake.apr.description">Annual Percentage Rate (APR) is the yearly reward rate for staking your cryptocurrency.</string>
-  <string name="receive.warning" formatted="false">This is your address — send only **%s** on the **%s** network.</string>
+  <string name="receive.warning" formatted="false">Wannan shine adireshinka — aika kawai **%s** a cikin **%s** hanyar sadarwa.</string>
   <string name="perpetual.leverage">Leverage</string>
   <string name="perpetual.direction">Direction</string>
   <string name="perpetual.auto_close">Auto Close</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Hanyoyin Kashe Kuɗi</string>
   <string name="rewards.ways_spend.asset.title">Samu %s</string>
   <string name="rewards.insufficient_points">Rashin isassun maki</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Samu %s don %s!</string>
 </resources>

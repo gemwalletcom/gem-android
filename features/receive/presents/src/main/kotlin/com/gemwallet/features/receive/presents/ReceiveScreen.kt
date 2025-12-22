@@ -14,8 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Share
@@ -125,93 +124,96 @@ private fun ReceiveScene(
         if (assetInfo.owner?.address.isNullOrEmpty()) {
             return@Scene
         }
-        Column(
+        LazyColumn (
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
         ) {
-            Box(
-                modifier = Modifier.fillMaxWidth().weight(1f)
-            ) {
-                Column(
-                    modifier = Modifier.align(Alignment.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(imagePadding)
+            item {
+                Box(
+                    modifier = Modifier.fillMaxWidth().weight(1f)
                 ) {
                     Column(
+                        modifier = Modifier.align(Alignment.Center),
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.spacedBy(paddingSmall)
+                        verticalArrangement = Arrangement.spacedBy(imagePadding)
                     ) {
-                        HeaderIcon(assetInfo.asset)
-                        Row(horizontalArrangement = Arrangement.spacedBy(paddingSmall)) {
-                            Text(
-                                text = assetInfo.asset.name,
-                                overflow = TextOverflow.MiddleEllipsis,
-                                maxLines = 1,
-                                style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                textAlign = TextAlign.Center
-                            )
-                            Text(
-                                text = assetInfo.asset.symbol,
-                                overflow = TextOverflow.MiddleEllipsis,
-                                maxLines = 1,
-                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
-                                color = MaterialTheme.colorScheme.secondary,
-                                textAlign = TextAlign.Center
-                            )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(paddingSmall)
+                        ) {
+                            HeaderIcon(assetInfo.asset)
+                            Row(horizontalArrangement = Arrangement.spacedBy(paddingSmall)) {
+                                Text(
+                                    text = assetInfo.asset.name,
+                                    overflow = TextOverflow.MiddleEllipsis,
+                                    maxLines = 1,
+                                    style = MaterialTheme.typography.titleLarge,
+                                    color = MaterialTheme.colorScheme.onSurface,
+                                    textAlign = TextAlign.Center
+                                )
+                                Text(
+                                    text = assetInfo.asset.symbol,
+                                    overflow = TextOverflow.MiddleEllipsis,
+                                    maxLines = 1,
+                                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Normal),
+                                    color = MaterialTheme.colorScheme.secondary,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
                         }
-                    }
-                    ElevatedCard(
-                        modifier = Modifier.width(imageSize),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
-                        colors = CardDefaults.cardColors(
-                            containerColor = Color.White,
-                            contentColor = Color.White,
-                        )
-                    ) {
-                        Image(
-                            modifier = Modifier
-                                .widthIn(100.dp, imageSize)
-                                .heightIn(100.dp, imageSize)
-                                .padding(imagePadding)
-                                .clickable(onCopyClick),
-                            painter = rememberQRCodePainter(
-                                content = assetInfo.owner?.address ?: "",
-                                cacheName = "${assetInfo.owner?.chain?.string}_${assetInfo.owner?.address}",
-                                size = 300.dp
-                            ),
-                            contentDescription = "Receive QR",
-                            contentScale = ContentScale.FillWidth
-                        )
+                        ElevatedCard(
+                            modifier = Modifier.width(imageSize),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
+                            colors = CardDefaults.cardColors(
+                                containerColor = Color.White,
+                                contentColor = Color.White,
+                            )
+                        ) {
+                            Image(
+                                modifier = Modifier
+                                    .widthIn(100.dp, imageSize)
+                                    .heightIn(100.dp, imageSize)
+                                    .padding(imagePadding)
+                                    .clickable(onCopyClick),
+                                painter = rememberQRCodePainter(
+                                    content = assetInfo.owner?.address ?: "",
+                                    cacheName = "${assetInfo.owner?.chain?.string}_${assetInfo.owner?.address}",
+                                    size = 300.dp
+                                ),
+                                contentDescription = "Receive QR",
+                                contentScale = ContentScale.FillWidth
+                            )
+                            Text(
+                                modifier = Modifier
+                                    .width(imageSize)
+                                    .padding(horizontal = imagePadding)
+                                    .clickable(onCopyClick),
+                                text = assetInfo.owner?.address ?: "",
+                                textAlign = TextAlign.Center,
+                                color = MaterialTheme.colorScheme.secondary,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                            Spacer(modifier = Modifier.size(imagePadding))
+                        }
                         Text(
-                            modifier = Modifier
-                                .width(imageSize)
-                                .padding(horizontal = imagePadding)
-                                .clickable(onCopyClick),
-                            text = assetInfo.owner?.address ?: "",
+                            modifier = Modifier.width(imageSize),
+                            text = parseMarkdownToAnnotatedString(
+                                stringResource(
+                                    R.string.receive_warning,
+                                    assetInfo.asset.symbol,
+                                    assetInfo.asset.chain.asset().name + if (assetInfo.asset.id.type() == AssetSubtype.TOKEN) " (${assetInfo.asset.type})" else ""
+                                )
+                            ),
                             textAlign = TextAlign.Center,
                             color = MaterialTheme.colorScheme.secondary,
                             style = MaterialTheme.typography.bodyLarge,
                         )
-                        Spacer(modifier = Modifier.size(imagePadding))
                     }
-                    Text(
-                        modifier = Modifier.width(imageSize),
-                        text = parseMarkdownToAnnotatedString(
-                            stringResource(
-                                R.string.receive_warning,
-                                assetInfo.asset.symbol,
-                                assetInfo.asset.chain.asset().name + if (assetInfo.asset.id.type() == AssetSubtype.TOKEN) " (${assetInfo.asset.type})" else ""
-                            )
-                        ),
-                        textAlign = TextAlign.Center,
-                        color = MaterialTheme.colorScheme.secondary,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
                 }
             }
-            Spacer(modifier = Modifier.size(it.calculateBottomPadding()))
+            item {
+                Spacer(modifier = Modifier.size(it.calculateBottomPadding()))
+            }
         }
     }
 }

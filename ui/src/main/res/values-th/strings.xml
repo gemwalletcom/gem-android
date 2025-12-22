@@ -501,7 +501,7 @@
   <string name="assets.title">สินทรัพย์</string>
   <string name="stake.delegations">การมอบหมาย</string>
   <string name="info.stake.apr.description">อัตราเปอร์เซ็นต์ต่อปี (APR) คืออัตราผลตอบแทนรายปีสำหรับการเดิมพันสกุลเงินดิจิทัลของคุณ</string>
-  <string name="receive.warning" formatted="false">นี่คือที่อยู่ของคุณ — ส่งเฉพาะ ** %s ** บนเครือข่าย ** %s ** เท่านั้น</string>
+  <string name="receive.warning" formatted="false">นี่คือที่อยู่ของคุณ — ส่งเฉพาะ ** เท่านั้น%s** บน **%s**เครือข่าย**</string>
   <string name="perpetual.leverage">อัตราทดทางการเงิน</string>
   <string name="perpetual.direction">ทิศทาง</string>
   <string name="perpetual.auto_close">ปิดอัตโนมัติ</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">วิธีใช้จ่าย</string>
   <string name="rewards.ways_spend.asset.title">รับ %s</string>
   <string name="rewards.insufficient_points">คะแนนไม่เพียงพอ</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">รับ %s สำหรับ %s-</string>
 </resources>

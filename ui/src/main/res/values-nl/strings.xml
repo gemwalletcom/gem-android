@@ -501,7 +501,7 @@
   <string name="assets.title">Activa</string>
   <string name="stake.delegations">Delegaties</string>
   <string name="info.stake.apr.description">Jaarlijks percentage (APR) is het jaarlijkse beloningspercentage voor het staken van uw cryptocurrency.</string>
-  <string name="receive.warning" formatted="false">Dit is uw adres: verstuur alleen ** %s ** op het ** %s ** netwerk.</string>
+  <string name="receive.warning" formatted="false">Dit is uw adres — alleen verzenden **%s** op de **%s** netwerk.</string>
   <string name="perpetual.leverage">Hefboom</string>
   <string name="perpetual.direction">Richting</string>
   <string name="perpetual.auto_close">Automatisch sluiten</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Manieren om je geld uit te geven</string>
   <string name="rewards.ways_spend.asset.title">Krijgen %s</string>
   <string name="rewards.insufficient_points">Onvoldoende punten</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Krijgen %s voor %s!</string>
 </resources>

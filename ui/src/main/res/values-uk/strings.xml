@@ -287,7 +287,7 @@
   <string name="info.network_fee.title">Мережева плата</string>
   <string name="info.watch_wallet.title">Watch Wallet</string>
   <string name="info.watch_wallet.description">Гаманець, до якого у вас немає доступу, але ви можете спостерігати за його транзакціями та рухами.</string>
-  <string name="info.network_fee.description" formatted="false">Кожна транзакція в мережі %s вимагає комісію в %s, яка сплачується майнерам за обробку вашої транзакції, а не Гаманець Gem. Розмір мережевої комісії залежить від використання мережі.</string>
+  <string name="info.network_fee.description" formatted="false">Кожна транзакція в мережі %s вимагає комісію в %s, яка сплачується майнерам за обробку вашої транзакції, а не Gem Wallet. Розмір мережевої комісії залежить від використання мережі.</string>
   <string name="info.transaction.error.description">Транзакцію не вдалося завершити через помилку, таку як недостатня кількість коштів, недійсні дані або відхилення мережею. Перегляньте деталі та повторіть спробу.</string>
   <string name="info.transaction.pending.description">Транзакцію надіслано та очікує підтвердження в мережі. Час обробки може змінюватися. Будь ласка, слідкуйте за оновленнями.</string>
   <string name="info.transaction.success.description">Транзакцію завершено та підтверджено в мережі. Ви можете переглянути деталі, щоб перевірити її статус.</string>
@@ -426,8 +426,8 @@
   <string name="info.asset_status.suspicious.description">Підозрілі або спам-токени ідентифікуються як потенційні шахрайські або шкідливі активи. Вони можуть з\'явитися у вашому гаманці через аїрдропи, перекази або ручний імпорт.</string>
   <string name="errors.insufficient_funds">Недостатньо коштів</string>
   <string name="info.insufficient_network_fee_balance.title">Потрібно %s</string>
-  <string name="info.insufficient_network_fee_balance.description" formatted="false">Для цієї транзакції потрібно ** %s ** для покриття мережевої плати, сплаченої ** %s ** майнерам, а не Гаманець Gem. Переконайтеся, що у вас достатньо %s.</string>
-  <string name="brand_name">Гаманець Gem</string>
+  <string name="info.insufficient_network_fee_balance.description" formatted="false">Для цієї транзакції потрібно ** %s ** для покриття мережевої плати, сплаченої ** %s ** майнерам, а не Gem Wallet. Переконайтеся, що у вас достатньо %s.</string>
+  <string name="brand_name">Gem Wallet</string>
   <string name="info.insufficient_balance.title">Недостатній баланс</string>
   <string name="info.insufficient_balance.description">У вас недостатньо %s для завершення цієї транзакції. Будь ласка, поповніть, отримайте або обміняйте свій гаманець і спробуйте ще раз.</string>
   <string name="info.account_minimum_balance.title">Мінімальний баланс</string>
@@ -501,7 +501,7 @@
   <string name="assets.title">Активи</string>
   <string name="stake.delegations">Делегації</string>
   <string name="info.stake.apr.description">Річна процентна ставка (APR) – це річна ставка винагороди за стейкінг вашої криптовалюти.</string>
-  <string name="receive.warning" formatted="false">Це ваша адреса — надсилайте лише ** %s ** у мережі ** %s **.</string>
+  <string name="receive.warning" formatted="false">Надсилайте на цю адресу тільки **%s** у мережі **%s**.</string>
   <string name="perpetual.leverage">Кредитне плече</string>
   <string name="perpetual.direction">Напрямок</string>
   <string name="perpetual.auto_close">Автоматичне закриття</string>
@@ -536,7 +536,7 @@
   <string name="nft.report.reason.copyright">Авторське право</string>
   <string name="nft.report.report_button_title">Поскаржитися</string>
   <string name="rewards.title">Нагороди</string>
-  <string name="rewards.share_text">Приєднатися Гаманець Gem за моїм реферальним посиланням та отримуйте винагороди: %s</string>
+  <string name="rewards.share_text">Приєднатися Gem Wallet за моїм реферальним посиланням та отримуйте винагороди: %s</string>
   <string name="rewards.my_referral_code">Мій реферальний код</string>
   <string name="rewards.invite_friends.title">Запросити друзів</string>
   <string name="rewards.invite_friends.description">Заробіть **%d бали** за кожного друга, який приєднається.</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Способи витрат</string>
   <string name="rewards.ways_spend.asset.title">Отримати %s</string>
   <string name="rewards.insufficient_points">Недостатньо балів</string>
-  <string name="rewards.confirm_redeem" formatted="false">Отримайте **%s** для **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Отримати %s для %s!</string>
 </resources>

@@ -501,7 +501,7 @@
   <string name="assets.title">Actifs</string>
   <string name="stake.delegations">Délégations</string>
   <string name="info.stake.apr.description">Le taux annuel en pourcentage (APR) est le taux de récompense annuel pour le jalonnement de votre crypto-monnaie.</string>
-  <string name="receive.warning" formatted="false">Voici votre adresse — envoyez uniquement ** %s ** sur le réseau ** %s **.</string>
+  <string name="receive.warning" formatted="false">Voici votre adresse — envoyez uniquement **%s** sur le **%s** réseau.</string>
   <string name="perpetual.leverage">Effet de levier</string>
   <string name="perpetual.direction">Direction</string>
   <string name="perpetual.auto_close">Fermeture automatique</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Façons de dépenser</string>
   <string name="rewards.ways_spend.asset.title">Obtenir %s</string>
   <string name="rewards.insufficient_points">Points insuffisants</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Obtenir %s pour %s!</string>
 </resources>

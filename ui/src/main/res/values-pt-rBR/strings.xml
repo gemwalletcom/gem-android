@@ -501,7 +501,7 @@
   <string name="assets.title">Ativos</string>
   <string name="stake.delegations">Delegações</string>
   <string name="info.stake.apr.description">Taxa Percentual Anual (APR) é a taxa de recompensa anual para apostar sua criptomoeda.</string>
-  <string name="receive.warning" formatted="false">Este é o seu endereço — envie apenas ** %s ** na rede ** %s **.</string>
+  <string name="receive.warning" formatted="false">Este é o seu endereço — envie apenas **%s** no **%s** rede.</string>
   <string name="perpetual.leverage">Alavancagem</string>
   <string name="perpetual.direction">Direção</string>
   <string name="perpetual.auto_close">Fechamento automático</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Formas de gastar</string>
   <string name="rewards.ways_spend.asset.title">Pegar %s</string>
   <string name="rewards.insufficient_points">Pontos insuficientes</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Pegar %s para %s!</string>
 </resources>

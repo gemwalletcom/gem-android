@@ -501,7 +501,7 @@
   <string name="assets.title">Active</string>
   <string name="stake.delegations">Delegații</string>
   <string name="info.stake.apr.description">Rata anuală procentuală (DAE) este rata anuală de recompensă pentru plasarea criptomonedei tale.</string>
-  <string name="receive.warning" formatted="false">Aceasta este adresa dumneavoastră — trimiteți doar ** %s ** prin rețeaua ** %s **.</string>
+  <string name="receive.warning" formatted="false">Aceasta este adresa dumneavoastră — doar trimitere **%s** pe **%s** rețea.</string>
   <string name="perpetual.leverage">Efect de levier</string>
   <string name="perpetual.direction">Direcţie</string>
   <string name="perpetual.auto_close">Închidere automată</string>
@@ -555,5 +555,5 @@
   <string name="rewards.ways_spend.title">Modalități de a cheltui</string>
   <string name="rewards.ways_spend.asset.title">Obţine %s</string>
   <string name="rewards.insufficient_points">Puncte insuficiente</string>
-  <string name="rewards.confirm_redeem" formatted="false">Get **%s** for **%s**!</string>
+  <string name="rewards.confirm_redeem" formatted="false">Obţine %s pentru %s!</string>
 </resources>
