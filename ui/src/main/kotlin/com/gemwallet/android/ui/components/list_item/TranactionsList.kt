@@ -13,6 +13,7 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.model.TransactionExtended
+import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.paddingDefault
 import java.text.DateFormat
@@ -41,19 +42,16 @@ fun LazyListScope.transactionsList(
             } else {
                 dateFormat.format(Date(createdAt))
             }
-            Text(
+            SubheaderItem(
+                title = title,
                 modifier = Modifier
-                    .background(MaterialTheme.colorScheme.surface)
-                    .fillMaxWidth()
-                    .padding(start = paddingDefault, end = paddingDefault, top = paddingDefault, bottom = 0.dp),
-                text = title
+                    .background(MaterialTheme.colorScheme.surface),
             )
         }
-        val size = entry.value.size
-        itemsIndexed(entry.value, key = {index, item -> item.transaction.id}) { index, item ->
+        itemsPositioned(entry.value, key = {index, item -> item.transaction.id}) { position, item ->
             TransactionItem(
                 item,
-                listPosition = ListPosition.getPosition(index, size),
+                listPosition = position,
                 onTransactionClick
             )
         }

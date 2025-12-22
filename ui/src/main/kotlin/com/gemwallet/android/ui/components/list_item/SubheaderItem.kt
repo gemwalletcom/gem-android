@@ -17,9 +17,9 @@ fun SubheaderItem(@StringRes title: Int, vararg formatArgs: Any) {
 }
 
 @Composable
-fun SubheaderItem(title: String) {
+fun SubheaderItem(title: String, modifier: Modifier = Modifier) {
     Text(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .listItem(ListPosition.Subhead),
 //            .padding(horizontal = paddingDefault),

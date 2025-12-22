@@ -60,6 +60,9 @@ fun BannersScene(
     val banners by viewModel.banners.collectAsStateWithLifecycle()
     val pageState = rememberPagerState { banners.size }
 
+    if (banners.isEmpty()) {
+        return
+    }
     HorizontalPager(pageState, pageSpacing = paddingDefault) { page ->
         val banner = banners[page]
         Box(modifier = Modifier.listItem(ListPosition.Single).clickable { onClick(banner) }) {

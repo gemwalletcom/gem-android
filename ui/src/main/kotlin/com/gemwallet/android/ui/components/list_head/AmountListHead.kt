@@ -90,7 +90,7 @@ fun AmountListHead(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = paddingDefault, end = paddingDefault, bottom = paddingDefault),
+                .padding(start = paddingDefault, end = paddingDefault, bottom = paddingSmall),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             (icon as? Asset)?.let {

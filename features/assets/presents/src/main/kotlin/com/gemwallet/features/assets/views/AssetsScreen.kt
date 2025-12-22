@@ -125,6 +125,8 @@ fun AssetsScreen(
                 }
                 item {
                     InAppUpdateBanner()
+                }
+                item {
                     BannersScene(
                         asset = null,
                         onClick = { banner ->
