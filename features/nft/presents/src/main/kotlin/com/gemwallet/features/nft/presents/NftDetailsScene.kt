@@ -33,6 +33,7 @@ import com.gemwallet.features.nft.viewmodels.NftAssetDetailsUIModel
 import com.gemwallet.features.nft.viewmodels.NftDetailsViewModel
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.AssetLink
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.NFTAttribute
 
 @Composable
@@ -52,8 +53,10 @@ fun NFTDetailsScene(
     Scene(
         title = model.assetName,
         actions = {
-            IconButton( { onRecipient(AssetId(model.asset.chain), model.asset.id) } ) {
-                Icon(Icons.Default.ArrowUpward, contentDescription = "Send nft")
+            if (assetData?.asset?.chain == Chain.Ethereum) {
+                IconButton( { onRecipient(AssetId(model.asset.chain), model.asset.id) } ) {
+                    Icon(Icons.Default.ArrowUpward, contentDescription = "Send nft")
+                }
             }
         },
         onClose = { cancelAction() },

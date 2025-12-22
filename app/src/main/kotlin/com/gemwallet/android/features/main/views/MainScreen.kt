@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -82,35 +83,40 @@ fun MainScreen(
     viewModel: MainScreenViewModel = hiltViewModel()
 ) {
     val pendingCount by viewModel.pendingTxCount.collectAsStateWithLifecycle()
+    val collectionsAvailable by viewModel.collectionsAvailable.collectAsStateWithLifecycle()
 
     BackHandler(currentTab.value == transactionsRoute || currentTab.value == settingsRoute) {
         currentTab.value = assetsRoute
     }
-    val context = LocalContext.current
     val assetsListState = rememberLazyListState()
     val activitiesListState = rememberLazyListState()
     val nftListState = rememberLazyGridState()
     val settingsScrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
 
+    val walletLabel = stringResource(R.string.common_wallet)
+    val collectionsLabel = stringResource(R.string.nft_collections)
+    val activitiesLabel = stringResource(R.string.activity_title)
+    val settingsLabel = stringResource(R.string.settings_title)
+
     val navItems = remember(pendingCount) {
-        listOf(
+        listOfNotNull(
             BottomNavItem(
-                label = context.getString(R.string.common_wallet),
+                label = walletLabel,
                 icon = Icons.Default.Wallet,
                 route = assetsRoute,
                 testTag = "mainTab",
                 navigate = { navigateToAssetsScreen(it) }
             ),
-            BottomNavItem(
-                label = context.getString(R.string.nft_collections),
+            if (collectionsAvailable) BottomNavItem(
+                label = collectionsLabel,
                 icon = Icons.Default.EmojiEvents,
                 route = nftRoute,
                 testTag = "nftTab",
                 navigate = { navigateToSettingsScreen(it) }
-            ),
+            ) else null,
             BottomNavItem(
-                label = context.getString(R.string.activity_title),
+                label = activitiesLabel,
                 icon = Icons.Default.ElectricBolt,
                 route = transactionsRoute,
                 badge = pendingCount,
@@ -118,7 +124,7 @@ fun MainScreen(
                 navigate = { navigateToActivitiesScreen(navOptions = it) }
             ),
             BottomNavItem(
-                label = context.getString(R.string.settings_title),
+                label = settingsLabel,
                 icon = Icons.Default.Settings,
                 route = settingsRoute,
                 testTag = "settingsTab",
