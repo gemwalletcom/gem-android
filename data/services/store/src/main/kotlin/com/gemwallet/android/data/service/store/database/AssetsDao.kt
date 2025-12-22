@@ -175,10 +175,9 @@ interface AssetsDao {
     @Query("""
         SELECT
             *,
-            MAX(address),
-            MAX(recent_assets.addedAt)
+            MAX(address)
         FROM asset_info
-        JOIN recent_assets ON id IN (recent_assets.asset_id) AND (recent_assets.wallet_id = (SELECT wallet_id FROM session WHERE session.id = 1))
+        JOIN recent_assets ON id = recent_assets.asset_id AND (recent_assets.wallet_id = (SELECT wallet_id FROM session WHERE session.id = 1))
         WHERE
             recent_assets.type IN (:type)
             GROUP BY id

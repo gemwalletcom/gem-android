@@ -7,6 +7,7 @@ import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.model.RecentType
 import com.gemwallet.features.asset_select.viewmodels.models.BaseSelectSearch
 import com.gemwallet.features.asset_select.viewmodels.models.SelectAssetFilters
+import com.wallet.core.primitives.AssetTag
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -26,6 +27,11 @@ open class SendSelectViewModel@Inject constructor(
     SendSelectSearch(assetsRepository)
 ) {
     override fun getRecentType(): RecentType? = RecentType.Send
+
+    override fun getTags(): List<AssetTag?> = listOf(
+        null,
+        AssetTag.Stablecoins,
+    )
 }
 
 class SendSelectSearch(
