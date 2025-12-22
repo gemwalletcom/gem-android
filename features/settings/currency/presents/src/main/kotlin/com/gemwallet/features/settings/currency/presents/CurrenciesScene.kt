@@ -49,7 +49,6 @@ fun CurrenciesScene(
             }
 
             item {
-                Spacer(modifier = Modifier.size(20.dp))
                 SubheaderItem(R.string.common_all)
             }
             val currencies = viewModel.getCurrencies()

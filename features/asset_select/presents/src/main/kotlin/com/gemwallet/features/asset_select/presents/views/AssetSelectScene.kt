@@ -58,6 +58,7 @@ import com.gemwallet.android.ui.models.AssetsGroupType
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.defaultPadding
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingHalfSmall
 import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.android.ui.theme.trailingIconMedium
 import com.gemwallet.features.asset_select.viewmodels.models.UIState
@@ -207,7 +208,6 @@ fun AssetSelectScene(
                 Box {
                     TagsBar(selectedTag, tags, onTagSelect)
                 }
-                Spacer16()
             }
             recent(recent, onSelect)
             assets(popular, AssetsGroupType.Popular, onSelect, support, titleBadge, itemTrailing)
@@ -315,7 +315,7 @@ private fun LazyListScope.recent(
     }
     item {
         LazyRow(
-            modifier = Modifier.padding(paddingDefault),
+            modifier = Modifier.padding(top = paddingHalfSmall, start = paddingDefault, bottom = paddingSmall, end = paddingDefault),
             horizontalArrangement = Arrangement.spacedBy(paddingSmall),
         ) {
             items(items) { item ->

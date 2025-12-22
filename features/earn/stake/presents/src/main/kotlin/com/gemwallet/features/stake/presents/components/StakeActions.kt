@@ -24,7 +24,6 @@ internal fun LazyListScope.stakeActions(
     onConfirm: () -> Unit
 ) {
     item {
-        Spacer16()
         SubheaderItem(R.string.common_manage)
     }
     itemsPositioned(actions) { position, item ->

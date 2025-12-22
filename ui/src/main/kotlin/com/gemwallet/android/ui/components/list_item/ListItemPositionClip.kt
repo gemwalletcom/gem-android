@@ -35,7 +35,7 @@ fun Modifier.listItem(
 ): Modifier =
     padding(horizontal = paddingHorizontal ?: bigRound) then
     when (position) {
-        ListPosition.Subhead -> this.padding(top = paddingVertical ?: normalTopPadding, bottom = paddingHalfSmall)
+        ListPosition.Subhead -> this.padding(top = paddingVertical ?: normalTopPadding, bottom = 0.dp)
         ListPosition.First -> this.padding(top = paddingVertical ?: normalTopPadding).clip(firstItemShape)
         ListPosition.Middle -> this.padding(top = paddingVertical ?: itemPadding).clip(middleItemShape)
         ListPosition.Single -> this.padding(top = paddingVertical ?: normalTopPadding, bottom = paddingVertical ?: normalBottomPadding).clip(singleItemShape)

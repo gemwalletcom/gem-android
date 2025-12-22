@@ -21,8 +21,8 @@ fun SubheaderItem(title: String) {
     Text(
         modifier = Modifier
             .fillMaxWidth()
-            .listItem(ListPosition.Subhead)
-            .padding(horizontal = paddingDefault),
+            .listItem(ListPosition.Subhead),
+//            .padding(horizontal = paddingDefault),
         text = title,
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.secondary,

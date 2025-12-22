@@ -32,7 +32,7 @@ fun TagsBar(
         return
     }
     Row(
-        Modifier.padding(horizontal = paddingDefault),
+        modifier = Modifier.padding(horizontal = paddingDefault),
         horizontalArrangement = Arrangement.spacedBy(paddingHalfSmall),
     ) {
         tags.forEachIndexed { index, item ->
@@ -41,15 +41,14 @@ fun TagsBar(
                 checked = item == selected,
                 onCheckedChange = { onSelect(item) },
                 colors = ToggleButtonDefaults.toggleButtonColors().copy(containerColor = MaterialTheme.colorScheme.background),
-                shapes =
-                    when (index) {
-                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                            .copy(checkedShape = ButtonGroupDefaults.connectedLeadingButtonShape)
-                        tags.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                            .copy(checkedShape = ButtonGroupDefaults.connectedTrailingButtonShape)
-                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                            .copy(checkedShape = ShapeDefaults.Small)
-                    },
+                shapes = when (index) {
+                    0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                        .copy(checkedShape = ButtonGroupDefaults.connectedLeadingButtonShape)
+                    tags.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                        .copy(checkedShape = ButtonGroupDefaults.connectedTrailingButtonShape)
+                    else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                        .copy(checkedShape = ShapeDefaults.Small)
+                },
             ) {
                 Text(
                     stringResource(

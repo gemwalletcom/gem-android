@@ -28,7 +28,9 @@ fun PinnedAssetsHeaderItem(type: AssetsGroupType) {
         return
     }
     Row(
-        modifier = Modifier.listItem(ListPosition.Subhead).padding(horizontal = paddingDefault),
+        modifier = Modifier
+            .listItem(ListPosition.Subhead),
+//            .padding(horizontal = paddingDefault),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(paddingHalfSmall)
     ) {

@@ -12,6 +12,7 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.ValidatorItem
+import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.WalletTheme
@@ -36,10 +37,10 @@ fun ValidatorsScene(
                     SubheaderItem(R.string.common_recommended)
                 }
                 val recommendedSize = uiState.recomended.size
-                itemsIndexed(uiState.recomended, key = { index, item -> "recomended-${item.id}" }) { index, item ->
+                itemsPositioned(uiState.recomended, key = { index, item -> "recomended-${item.id}" }) { position, item ->
                     ValidatorItem(
                         data = item,
-                        listPosition = ListPosition.getPosition(index, recommendedSize),
+                        listPosition = position,
                         isSelected = selectedValidatorId == item.id,
                         onClick = onSelect
                     )
@@ -47,9 +48,6 @@ fun ValidatorsScene(
 
             }
             item {
-                if (uiState.recomended.isNotEmpty()) {
-                    Spacer(modifier = Modifier.size(8.dp))
-                }
                 SubheaderItem(R.string.stake_active)
             }
             val validatorsSize = uiState.validators.size
