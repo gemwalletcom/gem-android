@@ -19,7 +19,7 @@ fun LazyListScope.selectFilterTransactionType(
     onFilter: (TransactionTypeFilter) -> Unit,
 ) {
     item {
-        SubheaderItem(stringResource(R.string.filter_types))
+        SubheaderItem(R.string.filter_types)
     }
     itemsPositioned(TransactionTypeFilter.entries) { position, item ->
         PropertyItem(

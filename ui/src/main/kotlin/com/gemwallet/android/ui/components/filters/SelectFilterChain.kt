@@ -29,7 +29,7 @@ fun LazyListScope.selectFilterChain(
         return
     }
     item {
-        SubheaderItem(stringResource(R.string.settings_networks_title))
+        SubheaderItem(R.string.settings_networks_title)
     }
     val items = availableChains.map { it.asset() }.filter { asset ->
         val query = query.lowercase()

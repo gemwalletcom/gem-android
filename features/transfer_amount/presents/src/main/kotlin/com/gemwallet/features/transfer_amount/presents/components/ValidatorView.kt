@@ -20,7 +20,7 @@ internal fun LazyListScope.validatorView(
 ) {
     validatorState ?: return
     item {
-        SubheaderItem(stringResource(R.string.stake_validator))
+        SubheaderItem(R.string.stake_validator)
     }
     item {
         ValidatorItem(

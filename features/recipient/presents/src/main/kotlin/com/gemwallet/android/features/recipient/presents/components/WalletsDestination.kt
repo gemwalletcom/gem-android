@@ -64,7 +64,7 @@ private fun LazyListScope.walletsSection(
         .takeIf { it.isNotEmpty() }
         ?.let { wallets ->
             item {
-                SubheaderItem(stringResource(header))
+                SubheaderItem(header)
             }
             itemsIndexed(wallets) { index, item ->
                 WalletRecipient(item, ListPosition.getPosition(index, wallets.size)) {

@@ -92,7 +92,7 @@ private fun LazyListScope.generalInfo(model: NftAssetDetailsUIModel) {
 
 private fun LazyListScope.nftAttributes(attributes: List<NFTAttribute>) {
     item {
-        SubheaderItem(stringResource(R.string.nft_properties))
+        SubheaderItem(R.string.nft_properties)
     }
     itemsPositioned(attributes) { position, item ->
         PropertyItem(item.name, item.value, listPosition = position)
@@ -104,7 +104,7 @@ private fun LazyListScope.nftLinks(links: List<AssetLink>, onLinkClick: (String)
         return
     }
     item {
-        SubheaderItem(title = stringResource(R.string.social_links))
+        SubheaderItem(R.string.social_links)
     }
 
     val links = links.sortedWith { l, r ->

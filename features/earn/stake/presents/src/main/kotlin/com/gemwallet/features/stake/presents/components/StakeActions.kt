@@ -25,7 +25,7 @@ internal fun LazyListScope.stakeActions(
 ) {
     item {
         Spacer16()
-        SubheaderItem(title = stringResource(R.string.common_manage))
+        SubheaderItem(R.string.common_manage)
     }
     itemsPositioned(actions) { position, item ->
         val title = when (item) {

@@ -15,7 +15,7 @@ internal fun LazyListScope.positionProperties(position: PerpetualPositionDetails
         return
     }
     item {
-        SubheaderItem(stringResource(R.string.perpetual_position))
+        SubheaderItem(R.string.perpetual_position)
     }
     item {
         PerpetualPositionItem(position, listPosition = ListPosition.First)

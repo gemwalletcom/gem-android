@@ -81,7 +81,7 @@ fun DelegationScene(
             }
 
             if (actions.isNotEmpty()) {
-                item { SubheaderItem(title = stringResource(id = R.string.common_manage)) }
+                item { SubheaderItem(R.string.common_manage) }
             }
             itemsPositioned(actions) { position, item ->
                 when (item) {

@@ -33,7 +33,7 @@ fun ValidatorsScene(
         LazyColumn {
             if (uiState.recomended.isNotEmpty()) {
                 item {
-                    SubheaderItem(title = stringResource(id = R.string.common_recommended))
+                    SubheaderItem(R.string.common_recommended)
                 }
                 val recommendedSize = uiState.recomended.size
                 itemsIndexed(uiState.recomended, key = { index, item -> "recomended-${item.id}" }) { index, item ->
@@ -50,7 +50,7 @@ fun ValidatorsScene(
                 if (uiState.recomended.isNotEmpty()) {
                     Spacer(modifier = Modifier.size(8.dp))
                 }
-                SubheaderItem(title = stringResource(id = R.string.stake_active))
+                SubheaderItem(R.string.stake_active)
             }
             val validatorsSize = uiState.validators.size
             itemsIndexed(uiState.validators, key = { index, item -> item.id }) { index, item ->

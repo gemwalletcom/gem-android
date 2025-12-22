@@ -91,7 +91,7 @@ fun PerpetualMarketScene(
                     }
                 }
                 positions.takeIf { it.isNotEmpty() }?.let {
-                    item { SubheaderItem(stringResource(R.string.perpetual_positions)) }
+                    item { SubheaderItem(R.string.perpetual_positions) }
                     itemsPositioned(positions) { position, item ->
                         PerpetualPositionItem(
                             data = item,
@@ -116,7 +116,7 @@ fun PerpetualMarketScene(
                     }
                 }
                 item {
-                    SubheaderItem(stringResource(R.string.markets_title))
+                    SubheaderItem(R.string.markets_title)
                 }
                 itemsPositioned(unpinnedPerpetuals) { position, item ->
                     PerpetualItem(

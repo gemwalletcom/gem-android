@@ -168,7 +168,7 @@ fun SettingsScene(
                 onBridges()
             }
 
-            SubheaderItem(title = stringResource(id = R.string.settings_community))
+            SubheaderItem(R.string.settings_community)
             LinkItem(title = stringResource(id = R.string.social_x), icon = R.drawable.twitter, listPosition = ListPosition.First) {
                 uriHandler.open(context, Config().getSocialUrl(SocialUrl.X) ?: "")
             }

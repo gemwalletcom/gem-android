@@ -56,7 +56,7 @@ internal fun SwapDetailsDialog(
             }
             LazyColumn {
                 item {
-                    SubheaderItem(stringResource(R.string.common_provider))
+                    SubheaderItem(R.string.common_provider)
                     provider?.let { provider ->
                         CurrentSwapProviderPropertyItem(provider, providers.size > 1, isShowProviderSelect)
                     }

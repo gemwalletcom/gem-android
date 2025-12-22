@@ -11,6 +11,6 @@ internal fun LazyListScope.balancesHeader(model: AssetInfoUIModel.AccountInfoUIM
         return
     }
     item {
-        SubheaderItem(title = stringResource(id = R.string.asset_balances))
+        SubheaderItem(R.string.asset_balances)
     }
 }

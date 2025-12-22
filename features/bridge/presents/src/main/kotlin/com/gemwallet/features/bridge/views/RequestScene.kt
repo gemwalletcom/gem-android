@@ -165,7 +165,7 @@ private fun SignMessageScene(
 
 private fun LazyListScope.textMessage(message: MessagePreview.Text) {
     item {
-        SubheaderItem(stringResource(R.string.sign_message_message))
+        SubheaderItem(R.string.sign_message_message)
         Text(
             modifier = Modifier
                 .fillMaxWidth()
@@ -179,7 +179,7 @@ private fun LazyListScope.textMessage(message: MessagePreview.Text) {
 private fun LazyListScope.domainMessage(message: MessagePreview.Eip712, onFullMessage: () -> Unit) {
     val message = message.v1
     item {
-        SubheaderItem(stringResource(R.string.wallet_connect_domain))
+        SubheaderItem(R.string.wallet_connect_domain)
         PropertyItem(R.string.application_name, message.domain.name, listPosition = ListPosition.First)
         PropertyItem(R.string.asset_contract, message.domain.verifyingContract, listPosition = ListPosition.Last)
     }
@@ -200,7 +200,7 @@ private fun LazyListScope.domainMessage(message: MessagePreview.Eip712, onFullMe
 
 private fun LazyListScope.siweMessage(message: MessagePreview.Siwe, onFullMessage: () -> Unit) {
     item {
-        SubheaderItem(stringResource(R.string.wallet_connect_domain))
+        SubheaderItem(R.string.wallet_connect_domain)
         PropertyItem(R.string.application_name, message.v1.domain, listPosition = ListPosition.First)
         PropertyItem(R.string.asset_contract, message.v1.uri, listPosition = ListPosition.Last)
     }

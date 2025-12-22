@@ -311,7 +311,7 @@ private fun LazyListScope.recent(
         return
     }
     item {
-        SubheaderItem(stringResource(R.string.recent_activity_title))
+        SubheaderItem(R.string.recent_activity_title)
     }
     item {
         LazyRow(

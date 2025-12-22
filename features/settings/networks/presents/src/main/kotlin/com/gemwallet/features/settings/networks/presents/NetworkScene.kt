@@ -83,9 +83,7 @@ fun NetworkScene(
         ) {
             LazyColumn {
                 item {
-                    SubheaderItem(
-                        title = stringResource(id = R.string.settings_networks_source),
-                    )
+                    SubheaderItem(R.string.settings_networks_source)
                 }
                 val size = nodes.size
                 itemsIndexed(nodes) { index, node: Node ->
@@ -99,9 +97,7 @@ fun NetworkScene(
                     )
                 }
                 item {
-                    SubheaderItem(
-                        title = stringResource(id = R.string.settings_networks_explorer),
-                    )
+                    SubheaderItem(R.string.settings_networks_explorer)
                 }
                 itemsPositioned(state.blockExplorers) { position, item ->
                     BlockExplorerItem(state.currentExplorer, item, position, onSelectBlockExplorer)

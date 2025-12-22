@@ -10,7 +10,7 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.models.ListPosition
 
 fun LazyListScope.perpetualInfo(data: PerpetualDetailsDataAggregate) {
-    item { SubheaderItem(stringResource(R.string.common_info)) }
+    item { SubheaderItem(R.string.common_info) }
 
     item {
         PropertyItem(

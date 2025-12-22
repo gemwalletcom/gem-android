@@ -38,7 +38,7 @@ internal fun LazyListScope.referralInfo(
     onRedeem: (RewardRedemptionOption) -> Unit,
 ) {
     item {
-        SubheaderItem(stringResource(R.string.common_info))
+        SubheaderItem(R.string.common_info)
         PropertyItem(
             title = R.string.rewards_my_referral_code,
             data = rewards.code,
@@ -69,7 +69,7 @@ internal fun LazyListScope.referralInfo(
             listPosition = ListPosition.Last
         )
     }
-    item { SubheaderItem(stringResource(R.string.rewards_ways_spend_title)) }
+    item { SubheaderItem(R.string.rewards_ways_spend_title) }
     itemsPositioned(rewards.redemptionOptions.filter { it.asset != null }) { position, item ->
         RewardRedemptionOptionItem(item, position) { onRedeem(item) }
     }

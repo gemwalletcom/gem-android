@@ -32,7 +32,7 @@ fun CurrenciesScene(
     ) {
         LazyColumn {
             item {
-                SubheaderItem(title = stringResource(id = R.string.common_recommended))
+                SubheaderItem(R.string.common_recommended)
             }
 
             val defaultCurrenciesSize = defaultCurrencies.size
@@ -50,7 +50,7 @@ fun CurrenciesScene(
 
             item {
                 Spacer(modifier = Modifier.size(20.dp))
-                SubheaderItem(title = stringResource(id = R.string.common_all))
+                SubheaderItem(R.string.common_all)
             }
             val currencies = viewModel.getCurrencies()
             val currenciesSize = currencies.size
