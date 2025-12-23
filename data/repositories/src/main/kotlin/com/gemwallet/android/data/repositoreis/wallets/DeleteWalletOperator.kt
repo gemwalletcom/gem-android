@@ -6,6 +6,7 @@ import com.gemwallet.android.cases.wallet.DeleteWallet
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.wallet.core.primitives.WalletType
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -25,32 +26,35 @@ class DeleteWalletOperator @Inject constructor(
         onBoard: () -> Unit,
         onComplete: () -> Unit
     ) = withContext(Dispatchers.IO) {
+        val wallets = walletsRepository.getAll().firstOrNull()?.filter { it.id != walletId } ?: emptyList()
+        async { walletsRepository.getAll().firstOrNull()?.let { syncSubscription.syncSubscription(it) } }
+
         val wallet = walletsRepository.getWallet(walletId).firstOrNull() ?: return@withContext
         if (!walletsRepository.removeWallet(walletId = walletId)) {
             return@withContext
         }
-        if (wallet.type == WalletType.multicoin) {
+        if (wallet.type != WalletType.view) {
             if (!deleteKeyStoreOperator(walletId)) {
                 return@withContext
             }
         }
-        if (currentWalletId == walletId) {
-            val wallets = walletsRepository.getAll().firstOrNull() ?: emptyList()
+
+        val callback: () -> Unit = if (currentWalletId == walletId) {
             val wallet = wallets.sortedBy { it.type }.minByOrNull { it.index }
 
             if (wallet == null) {
                 sessionRepository.reset()
-                withContext(Dispatchers.Main) {
-                    onBoard()
-                }
+                onBoard
             } else {
                 sessionRepository.setWallet(wallet)
+                onComplete
             }
+        } else {
+            onComplete
         }
-        walletsRepository.getAll().firstOrNull()?.let { syncSubscription.syncSubscription(it) }
 
         withContext(Dispatchers.Main) {
-            onComplete()
+            callback()
         }
     }
 }
