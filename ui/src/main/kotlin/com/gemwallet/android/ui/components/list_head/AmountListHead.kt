@@ -65,7 +65,6 @@ import com.gemwallet.android.ui.theme.Spacer4
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.headerIconSize
-import com.gemwallet.android.ui.theme.headerSupportIconSize
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.paddingSmall
 import com.wallet.core.primitives.Asset
@@ -144,7 +143,7 @@ fun HeaderIcon(
     iconSize: Dp = headerIconSize,
 ) {
     if (asset == null) { return }
-    IconWithBadge(asset, iconSize, headerSupportIconSize)
+    IconWithBadge(asset, size = iconSize)
 }
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)

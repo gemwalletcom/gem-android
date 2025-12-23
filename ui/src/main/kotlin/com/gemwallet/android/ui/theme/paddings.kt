@@ -11,7 +11,6 @@ import androidx.compose.ui.unit.dp
 val headerIconSize = 64.dp
 val headerSupportIconSize = 24.dp
 val listItemIconSize = 44.dp
-val listItemSupportIconSize = 18.dp
 val iconSize = 32.dp
 val trailingIconMedium = 24.dp
 val trailingIconSmall = 16.dp
@@ -22,7 +21,6 @@ val space4 = 4.dp
 val space8 = 8.dp
 private val space16 = 16.dp
 
-//val paddingHalfSmall = 4.dp
 val paddingHalfSmall = 4.dp
 val paddingSmall = 8.dp
 val padding16 = 16.dp

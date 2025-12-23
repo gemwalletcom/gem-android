@@ -14,21 +14,18 @@ import androidx.compose.ui.unit.dp
 import com.gemwallet.android.domains.asset.getIconUrl
 import com.gemwallet.android.domains.asset.getSupportIconUrl
 import com.gemwallet.android.ui.theme.listItemIconSize
-import com.gemwallet.android.ui.theme.listItemSupportIconSize
 import com.wallet.core.primitives.Asset
 
 @Composable
 fun IconWithBadge( // TODO: Merge with AsyncImage
     asset: Asset,
     size: Dp = listItemIconSize,
-    supportSize: Dp = listItemSupportIconSize,
 ) {
     IconWithBadge(
         icon = asset.getIconUrl(),
         supportIcon = asset.getSupportIconUrl(),
         placeholder = asset.type.string,
         size = size,
-        supportSize = supportSize,
     )
 }
 
@@ -38,7 +35,6 @@ fun IconWithBadge(
     placeholder: String? = null,
     supportIcon: Any? = null,
     size: Dp = listItemIconSize,
-    supportSize: Dp = listItemSupportIconSize,
 ) {
     icon ?: return
     Box {
@@ -52,7 +48,7 @@ fun IconWithBadge(
             AsyncImage(
                 modifier = Modifier
                     .offset(2.dp, 2.dp)
-                    .size(supportSize)
+                    .size(size / 2.5f)
                     .align(Alignment.Companion.BottomEnd)
                     .border(1.5.dp, MaterialTheme.colorScheme.surface, CircleShape),
                 model = supportIcon,

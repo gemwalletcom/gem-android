@@ -328,7 +328,7 @@ private fun LazyListScope.recent(
                     horizontalArrangement = Arrangement.spacedBy(paddingSmall),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
-                    IconWithBadge(item.asset, size = trailingIconMedium, supportSize = 14.dp)
+                    IconWithBadge(item.asset, size = trailingIconMedium)
                     Text(item.asset.symbol)
                 }
             }
