@@ -85,7 +85,7 @@ build-app-in-docker:
 		-v "${gradle_cache}":/root/.gradle \
 		-v "${maven_cache}":/root/.m2 \
 		gem-android-app-verify \
-		bash -lc 'cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache'
+		bash -lc 'cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache -Dorg.gradle.workers.max=4'
 
 core-upgrade:
 	@git submodule update --recursive --remote

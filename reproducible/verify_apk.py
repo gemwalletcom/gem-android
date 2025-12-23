@@ -235,7 +235,7 @@ def build_outputs_in_container(app_image: str, container_name: str, gradle_task:
         app_image,
         "bash",
         "-lc",
-        "cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache",
+        "cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache -Dorg.gradle.workers.max=4",
     ]
     run(cmd)
 
