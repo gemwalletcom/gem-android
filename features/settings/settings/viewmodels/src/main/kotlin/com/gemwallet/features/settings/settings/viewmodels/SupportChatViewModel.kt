@@ -2,7 +2,6 @@ package com.gemwallet.features.settings.settings.viewmodels
 
 import android.content.Context
 import android.content.res.Configuration
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.device.DeviceRepository
@@ -78,7 +77,7 @@ class SupportChatViewModel @Inject constructor(
         return """
             window.addEventListener('chatwoot:ready', function () {
               window.${'$'}chatwoot.setCustomAttributes({
-                support_device_id: '$supportDeviceId',
+                support_device_id: '${supportDeviceId}',
                 platform: 'android',
                 os: '$os',
                 device: '$model',

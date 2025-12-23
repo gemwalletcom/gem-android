@@ -32,7 +32,7 @@ class FCM : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         val pushEnabled = runBlocking { getPushEnabled.getPushEnabled().firstOrNull() == true }
-        if (pushEnabled) {
+        if (!pushEnabled) {
             return
         }
         scope.launch {

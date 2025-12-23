@@ -53,6 +53,9 @@ object BuildInfoModule {
     @Provides
     @Singleton
     fun providePlatformStore(): PlatformStore {
+        if (com.gemwallet.android.BuildConfig.DEBUG) {
+            return PlatformStore.Local
+        }
         return when (com.gemwallet.android.BuildConfig.FLAVOR) {
             "google" -> PlatformStore.GooglePlay
             "universal" -> PlatformStore.ApkUniversal

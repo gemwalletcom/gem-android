@@ -19,6 +19,8 @@ import com.gemwallet.android.model.PushNotificationData
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.navigation.routes.assetRouteUri
 import com.gemwallet.android.ui.navigation.routes.referralRouteUriGem
+import com.gemwallet.android.ui.navigation.routes.supportUri
+import com.wallet.core.primitives.PushNotificationTypes
 import dagger.hilt.android.qualifiers.ApplicationContext
 import jakarta.inject.Inject
 
@@ -30,7 +32,13 @@ class ShowSystemNotification @Inject constructor(@ApplicationContext val applica
         subtitle: String?,
         channelId: String?
     ) {
-        showNotification(title, subtitle, channelId, Bundle.EMPTY)
+        showNotification(
+            title = title,
+            subtitle = subtitle,
+            channelId = channelId,
+            data = Bundle.EMPTY,
+            uri = if (channelId == PushNotificationTypes.Support.string) supportUri.toUri() else null
+        )
     }
 
     override fun showNotification(

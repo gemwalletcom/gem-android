@@ -4,6 +4,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
 import com.gemwallet.android.ui.components.animation.enterTabScreenTransition
 import com.gemwallet.android.ui.components.animation.exitTabScreenTransition
@@ -19,6 +20,8 @@ import com.wallet.core.primitives.AssetId
 import kotlinx.serialization.Serializable
 
 const val settingsRoute = "settings"
+
+const val supportUri = "gem://support"
 
 @Serializable
 object SettingsRoute
@@ -134,7 +137,11 @@ fun NavGraphBuilder.settingsScreen(
         PriceAlertsScreen(onChart = onChart, onCancel = onCancel)
     }
 
-    composable<SupportRoute> {
+    composable<SupportRoute>(
+        deepLinks = listOf(
+            navDeepLink<SupportRoute>(basePath = supportUri)
+        )
+    ) {
         SupportChatScreen(onCancel = onCancel)
     }
 }

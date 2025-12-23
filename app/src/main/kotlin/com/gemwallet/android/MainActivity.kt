@@ -68,11 +68,13 @@ import com.gemwallet.android.ui.components.RootWarningDialog
 import com.gemwallet.android.ui.components.isDeviceRooted
 import com.gemwallet.android.ui.navigation.routes.assetRouteUri
 import com.gemwallet.android.ui.navigation.routes.referralRouteUriGem
+import com.gemwallet.android.ui.navigation.routes.supportUri
 import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.features.bridge.views.ProposalScene
 import com.gemwallet.features.bridge.views.RequestScene
+import com.wallet.core.primitives.PushNotificationTypes
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -411,30 +413,40 @@ class MainViewModel @Inject constructor(
     }
 
     fun handleIntent(intent: Intent) = viewModelScope.launch(Dispatchers.IO) {
+        //Handle push notification if app in background or unloaded
         val intent = if (intent.hasExtra("walletIndex")) {
             val walletIndex = intent.getIntExtra("walletIndex", -1)
             onWallet(walletIndex)
             intent
         } else if (intent.extras != null) {
             val data = parseNotificationData(intent.getStringExtra("type"), intent.getStringExtra("data"))
-            when (data) {
-                is PushNotificationData.Asset -> Intent().apply {
-                    setData("$assetRouteUri/${data.assetId}".toUri())
+            if (intent.getStringExtra("type") == PushNotificationTypes.Support.string) {
+                Intent().apply {
+                    setData(supportUri.toUri())
                 }
-                is PushNotificationData.Transaction -> {
-                    onWallet(data.walletIndex)
-                    Intent().apply {
+            } else {
+                when (data) {
+                    is PushNotificationData.Asset -> Intent().apply {
                         setData("$assetRouteUri/${data.assetId}".toUri())
                     }
-                }
-                is PushNotificationData.Reward -> {
-                    Intent().apply {
-                        setData(referralRouteUriGem.toUri())
+
+                    is PushNotificationData.Transaction -> {
+                        onWallet(data.walletIndex)
+                        Intent().apply {
+                            setData("$assetRouteUri/${data.assetId}".toUri())
+                        }
                     }
+
+                    is PushNotificationData.Reward -> {
+                        Intent().apply {
+                            setData(referralRouteUriGem.toUri())
+                        }
+                    }
+
+                    is PushNotificationData.PushNotificationPayloadType,
+                    is PushNotificationData.Swap,
+                    null -> intent
                 }
-                is PushNotificationData.PushNotificationPayloadType,
-                is PushNotificationData.Swap,
-                null -> intent
             }
         } else {
             intent

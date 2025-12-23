@@ -272,27 +272,27 @@ fun WalletNavGraph(
             startDestination = settingsRoute,
             route = "settings-group"
         ) {
-            bridgesScreen(
-                onConnection = navController::navigateToBridgeScreen,
-                onCancel = onCancel,
-            )
-
-            settingsScreen(
-                onSecurity = navController::navigateToSecurityScreen,
-                onCurrencies = navController::navigateToCurrenciesScreen,
-                onBridges = navController::navigateToBridgesScreen,
-                onDevelop = navController::navigateToDevelopScreen,
-                onWallets = navController::navigateToWalletsScreen,
-                onAboutUs = navController::navigateToAboutUsScreen,
-                onNetworks = navController::navigateToNetworksScreen,
-                onChart = navController::navigateToAssetChartScreen,
-                onPriceAlerts = navController::navigateToPriceAlertsScreen,
-                onSupport = navController::navigateToSupport,
-                onPerpetual = navController::navigateToPerpetualsScreen,
-                onReferral = navController::navigateToReferralScreen,
-                onCancel = onCancel,
-            )
         }
+        bridgesScreen(
+            onConnection = navController::navigateToBridgeScreen,
+            onCancel = onCancel,
+        )
+
+        settingsScreen(
+            onSecurity = navController::navigateToSecurityScreen,
+            onCurrencies = navController::navigateToCurrenciesScreen,
+            onBridges = navController::navigateToBridgesScreen,
+            onDevelop = navController::navigateToDevelopScreen,
+            onWallets = navController::navigateToWalletsScreen,
+            onAboutUs = navController::navigateToAboutUsScreen,
+            onNetworks = navController::navigateToNetworksScreen,
+            onChart = navController::navigateToAssetChartScreen,
+            onPriceAlerts = navController::navigateToPriceAlertsScreen,
+            onSupport = navController::navigateToSupport,
+            onPerpetual = navController::navigateToPerpetualsScreen,
+            onReferral = navController::navigateToReferralScreen,
+            onCancel = onCancel,
+        )
 
         composable(OnboardingDest.route) {
             onboard()
