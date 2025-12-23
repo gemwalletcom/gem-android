@@ -98,7 +98,8 @@ fun SupportChatScreen(
                     )
                 }
             }
-        }
+        },
+        onClose = onCancel,
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
