@@ -177,7 +177,6 @@ class DeviceRepository(
             return
         }
         val supportId = UUID.randomUUID().toString().substring(0, 31)
-        context.dataStore.edit { it[Key.SupportId] = supportId }
         try {
             gemApiClient.registerSupport(
                 NewSupportDevice(
@@ -185,6 +184,7 @@ class DeviceRepository(
                     deviceId = getDeviceIdCase.getDeviceId(),
                 )
             )
+            context.dataStore.edit { it[Key.SupportId] = supportId }
         } catch (_: Throwable) { }
     }
 

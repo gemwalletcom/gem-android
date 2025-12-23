@@ -97,12 +97,12 @@ fun SettingsScene(
                 listPosition = ListPosition.Last,
                 onClick = onSecurity
             )
-//            LinkItem(
-//                title = stringResource(id = R.string.perpetuals_title),
-//                icon = R.drawable.settings_security,
-//                listPosition = ListPosition.Last,
-//                onClick = onPerpetual
-//            )
+            LinkItem(
+                title = stringResource(id = R.string.perpetuals_title),
+                icon = R.drawable.settings_security,
+                listPosition = ListPosition.Last,
+                onClick = onPerpetual
+            )
             if (viewModel.isNotificationsAvailable()) {
                 LinkItem(
                     title = stringResource(id = R.string.settings_notifications_title),

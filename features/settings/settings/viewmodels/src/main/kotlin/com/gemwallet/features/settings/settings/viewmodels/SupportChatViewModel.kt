@@ -1,6 +1,8 @@
 package com.gemwallet.features.settings.settings.viewmodels
 
 import android.content.Context
+import android.content.res.Configuration
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.data.repositoreis.device.DeviceRepository
@@ -37,26 +39,27 @@ class SupportChatViewModel @Inject constructor(
 
     val baseUrl = "https://support.gemwallet.com"
 
-    private val websiteToken = "p8uDBqT21unfbTHDQzSCCTBi"
-
+    private val publicChatwootToken = "p8uDBqT21unfbTHDQzSCCTBi"
 
     private val sdkSourceURL = "$baseUrl/packs/js/sdk.js"
 
     private val sdkInitializationScript = """
         window.chatwootSDK.run({
-          websiteToken: '$websiteToken',
+          websiteToken: '$publicChatwootToken',
           baseUrl: '$baseUrl'
         });
         """
 
     private fun chatwootSettingsScript(): String {
+        val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        val darkMode = if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) "dark" else "light"
         return """
             window.chatwootSettings = {
               hideMessageBubble: true,
               locale: 'current',
-              darkMode: 'auto',
+              darkMode: '$darkMode',
               enableEmojiPicker: false,
-              enableEndConversation: false)
+              enableEndConversation: false,
             };
         """
     }
@@ -75,7 +78,7 @@ class SupportChatViewModel @Inject constructor(
         return """
             window.addEventListener('chatwoot:ready', function () {
               window.${'$'}chatwoot.setCustomAttributes({
-                supportDeviceId: '$supportDeviceId',
+                support_device_id: '$supportDeviceId',
                 platform: 'android',
                 os: '$os',
                 device: '$model',
