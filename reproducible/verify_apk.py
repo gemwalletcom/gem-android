@@ -24,6 +24,7 @@ APK_SUBDIR_DEFAULT = "app/build/outputs/apk/universal/release"
 BASE_IMAGE_DEFAULT = "ghcr.io/gemwalletcom/gem-android-base"
 APP_IMAGE_DEFAULT = "gem-android-app-verify"
 DOCKER_PLATFORM_DEFAULT = "linux/amd64"
+GRADLE_WORKERS_MAX_DEFAULT = "4"
 
 INFO_EMOJI = "ℹ️"
 STEP_EMOJI = "➡️"
@@ -212,7 +213,7 @@ def build_app_image(tag: str, base_image: str, base_tag: str, gradle_task: str, 
     run(cmd, env=env)
 
 
-def build_outputs_in_container(app_image: str, container_name: str, gradle_task: str, map_id_seed: str, gradle_cache: Path, maven_cache: Path, platform: str) -> None:
+def build_outputs_in_container(app_image: str, container_name: str, gradle_task: str, map_id_seed: str, gradle_cache: Path, maven_cache: Path, platform: str, workers_max: str) -> None:
     run(["docker", "rm", "-f", container_name], check=False)
     seed_env = map_id_seed or ""
     cmd = [
@@ -228,6 +229,8 @@ def build_outputs_in_container(app_image: str, container_name: str, gradle_task:
         f"BUNDLE_TASK={gradle_task}",
         "-e",
         f"R8_MAP_ID_SEED={seed_env}",
+        "-e",
+        f"GRADLE_WORKERS_MAX={workers_max}",
         "-v",
         f"{gradle_cache}:/root/.gradle",
         "-v",
@@ -235,7 +238,7 @@ def build_outputs_in_container(app_image: str, container_name: str, gradle_task:
         app_image,
         "bash",
         "-lc",
-        "cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache -Dorg.gradle.workers.max=4",
+        "cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache -Dorg.gradle.workers.max=${GRADLE_WORKERS_MAX}",
     ]
     run(cmd)
 
@@ -359,6 +362,7 @@ def main() -> None:
         pull_base = os.environ.get("VERIFY_PULL_BASE", "true").lower() == "true"
         gradle_task = os.environ.get("VERIFY_GRADLE_TASK", BUNDLE_TASK_DEFAULT)
         apk_subdir = os.environ.get("VERIFY_APK_SUBDIR", APK_SUBDIR_DEFAULT)
+        workers_max = os.environ.get("GRADLE_WORKERS_MAX", GRADLE_WORKERS_MAX_DEFAULT)
 
         app_image_tag = sanitize(args.tag.lower()) or "latest"
         app_image = os.environ.get("VERIFY_APP_IMAGE", APP_IMAGE_DEFAULT) + f":{app_image_tag}"
@@ -372,10 +376,10 @@ def main() -> None:
             ensure_base_image(base_image, base_tag, pull_base, docker_platform)
             print(
                 f"{INFO_EMOJI} Build parameters: base_image={base_image}:{base_tag}, "
-                f"platform={docker_platform}, gradle_task='{gradle_task}', R8_MAP_ID_SEED='{map_id_seed}' "
+                f"platform={docker_platform}, gradle_task='{gradle_task}', R8_MAP_ID_SEED='{map_id_seed}', workers_max={workers_max}"
             )
             build_app_image(resolved_tag, base_image, base_tag, gradle_task, map_id_seed, app_image, docker_platform)
-            build_outputs_in_container(app_image, app_container, gradle_task, map_id_seed, gradle_cache, maven_cache, docker_platform)
+            build_outputs_in_container(app_image, app_container, gradle_task, map_id_seed, gradle_cache, maven_cache, docker_platform, workers_max)
             built_apk = extract_apk_outputs(app_container, work_dir, apk_subdir)
             shutil.copy2(built_apk, rebuilt_apk)
         finally:
