@@ -30,7 +30,7 @@ class AssetInfoUIModel(
     data class AccountInfoUIModel(
         val walletType: WalletType = WalletType.view,
         val totalBalance: String = "0",
-        val totalFiat: String = "0",
+        val totalFiat: String = "",
         val owner: String = "",
         val hasBalanceDetails: Boolean = false,
         val available: String = "0",
