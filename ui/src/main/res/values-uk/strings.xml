@@ -442,8 +442,8 @@
   <string name="errors.scan_transaction.malicious.description">Цю транзакцію неможливо завершити — адреса гаманця призначення пов’язана з підозрілою або шкідливою активністю.</string>
   <string name="errors.scan_transaction.memo_required">%s адреса гаманця призначення вимагає тегу / мемо призначення</string>
   <string name="common.info">Інформація</string>
-  <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw">Withdraw</string>
+  <string name="wallet.deposit">Депозит</string>
+  <string name="wallet.withdraw">Зняти</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -523,7 +523,7 @@
   <string name="settings.preferences.default_leverage">Кредитне плече за замовчуванням</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Recent</string>
+  <string name="recent_activity.title">Нещодавні</string>
   <string name="errors.no_data_available">Дані недоступні</string>
   <string name="errors.dust_threshold_short">Мережа вважає цю кількість пилом — плата вища за саму суму.</string>
   <string name="charts.take_profit">TP</string>
@@ -549,9 +549,9 @@
   <string name="rewards.get_rewards.title">Отримайте винагороди</string>
   <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
   <string name="rewards.activate_referral_code.title">Активувати код</string>
-  <string name="rewards.create_referral_code.title">Create Username</string>
-  <string name="rewards.create_referral_code.info">This will be your personal username.</string>
-  <string name="rewards.username">Username</string>
+  <string name="rewards.create_referral_code.title">Створити ім\'я користувача</string>
+  <string name="rewards.create_referral_code.info">Це буде ваше особисте ім\'я користувача.</string>
+  <string name="rewards.username">Ім\'я користувача</string>
   <string name="rewards.ways_spend.title">Способи витрат</string>
   <string name="rewards.ways_spend.asset.title">Отримати %s</string>
   <string name="rewards.insufficient_points">Недостатньо балів</string>

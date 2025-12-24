@@ -442,8 +442,8 @@
   <string name="errors.scan_transaction.malicious.description">Transaksi ini tidak dapat diselesaikan — alamat dompet tujuan terkait dengan aktivitas yang mencurigakan atau berbahaya.</string>
   <string name="errors.scan_transaction.memo_required">%s alamat dompet tujuan memerlukan tag / memo tujuan</string>
   <string name="common.info">Informasi</string>
-  <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw">Withdraw</string>
+  <string name="wallet.deposit">Deposito</string>
+  <string name="wallet.withdraw">Menarik</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -523,7 +523,7 @@
   <string name="settings.preferences.default_leverage">Leverage Default</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Recent</string>
+  <string name="recent_activity.title">Terkini</string>
   <string name="errors.no_data_available">Tidak ada data tersedia</string>
   <string name="errors.dust_threshold_short">Jaringan menganggap jumlah ini sebagai debu — biayanya lebih tinggi daripada jumlahnya sendiri.</string>
   <string name="charts.take_profit">TP</string>
@@ -549,9 +549,9 @@
   <string name="rewards.get_rewards.title">Dapatkan Hadiah</string>
   <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
   <string name="rewards.activate_referral_code.title">Tukarkan kode</string>
-  <string name="rewards.create_referral_code.title">Create Username</string>
-  <string name="rewards.create_referral_code.info">This will be your personal username.</string>
-  <string name="rewards.username">Username</string>
+  <string name="rewards.create_referral_code.title">Buat Nama Pengguna</string>
+  <string name="rewards.create_referral_code.info">Ini akan menjadi nama pengguna pribadi Anda.</string>
+  <string name="rewards.username">Nama belakang</string>
   <string name="rewards.ways_spend.title">Cara untuk Berbelanja</string>
   <string name="rewards.ways_spend.asset.title">Mendapatkan %s</string>
   <string name="rewards.insufficient_points">Poin tidak mencukupi</string>

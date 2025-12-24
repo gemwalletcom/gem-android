@@ -523,7 +523,7 @@
   <string name="settings.preferences.default_leverage">デフォルトレバレッジ</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Recent</string>
+  <string name="recent_activity.title">最近の</string>
   <string name="errors.no_data_available">データなし</string>
   <string name="errors.dust_threshold_short">ネットワークはこの金額をダストとみなします。つまり、手数料は金額自体よりも高くなります。</string>
   <string name="charts.take_profit">TP</string>
@@ -549,9 +549,9 @@
   <string name="rewards.get_rewards.title">報酬を獲得</string>
   <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
   <string name="rewards.activate_referral_code.title">コードを利用する</string>
-  <string name="rewards.create_referral_code.title">Create Username</string>
-  <string name="rewards.create_referral_code.info">This will be your personal username.</string>
-  <string name="rewards.username">Username</string>
+  <string name="rewards.create_referral_code.title">ユーザー名を作成</string>
+  <string name="rewards.create_referral_code.info">これはあなたの個人ユーザー名になります。</string>
+  <string name="rewards.username">ユーザー名</string>
   <string name="rewards.ways_spend.title">使い方</string>
   <string name="rewards.ways_spend.asset.title">得る %s</string>
   <string name="rewards.insufficient_points">ポイントが足りない</string>

@@ -442,8 +442,8 @@
   <string name="errors.scan_transaction.malicious.description">Diese Transaktion kann nicht abgeschlossen werden – die Ziel-Wallet-Adresse ist mit verdächtigen oder schädlichen Aktivitäten verknüpft.</string>
   <string name="errors.scan_transaction.memo_required">%s Für die Ziel-Wallet-Adresse wird ein Ziel-Tag/Memo benötigt.</string>
   <string name="common.info">Info</string>
-  <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw">Withdraw</string>
+  <string name="wallet.deposit">Kaution</string>
+  <string name="wallet.withdraw">Zurückziehen</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -523,7 +523,7 @@
   <string name="settings.preferences.default_leverage">Standardhebel</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Recent</string>
+  <string name="recent_activity.title">Jüngste</string>
   <string name="errors.no_data_available">Keine Daten verfügbar</string>
   <string name="errors.dust_threshold_short">Das Netzwerk betrachtet diesen Betrag als Staub – die Gebühr ist höher als der Betrag selbst.</string>
   <string name="charts.take_profit">TP</string>
@@ -549,9 +549,9 @@
   <string name="rewards.get_rewards.title">Prämien sichern</string>
   <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
   <string name="rewards.activate_referral_code.title">Einlösecode</string>
-  <string name="rewards.create_referral_code.title">Create Username</string>
-  <string name="rewards.create_referral_code.info">This will be your personal username.</string>
-  <string name="rewards.username">Username</string>
+  <string name="rewards.create_referral_code.title">Benutzername erstellen</string>
+  <string name="rewards.create_referral_code.info">Dies wird Ihr persönlicher Benutzername sein.</string>
+  <string name="rewards.username">Benutzername</string>
   <string name="rewards.ways_spend.title">Möglichkeiten zum Ausgeben</string>
   <string name="rewards.ways_spend.asset.title">Erhalten %s</string>
   <string name="rewards.insufficient_points">Unzureichende Punkte</string>

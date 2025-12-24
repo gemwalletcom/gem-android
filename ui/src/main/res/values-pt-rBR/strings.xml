@@ -37,7 +37,7 @@
   <string name="transfer.memo">Memo</string>
   <string name="settings.terms_of_services">Terms of Services</string>
   <string name="settings.privacy_policy">Privacy Policy</string>
-  <string name="settings.title">Settings</string>
+  <string name="settings.title">Configurações</string>
   <string name="settings.developer">Developer</string>
   <string name="settings.version">Version</string>
   <string name="errors.transfer">Erro de transferência: %s</string>
@@ -442,8 +442,8 @@
   <string name="errors.scan_transaction.malicious.description">Esta transação não pode ser concluída — o endereço da carteira de destino está vinculado a atividades suspeitas ou prejudiciais.</string>
   <string name="errors.scan_transaction.memo_required">%s O endereço da carteira de destino requer uma etiqueta/memorando de destino</string>
   <string name="common.info">Informações</string>
-  <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw">Withdraw</string>
+  <string name="wallet.deposit">Depósito</string>
+  <string name="wallet.withdraw">Retirar</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -523,7 +523,7 @@
   <string name="settings.preferences.default_leverage">Alavancagem padrão</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Recent</string>
+  <string name="recent_activity.title">Recente</string>
   <string name="errors.no_data_available">Não há dados disponíveis.</string>
   <string name="errors.dust_threshold_short">A rede considera essa quantia insignificante — a taxa cobrada é superior à própria quantia.</string>
   <string name="charts.take_profit">TP</string>
@@ -549,9 +549,9 @@
   <string name="rewards.get_rewards.title">Receba recompensas</string>
   <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
   <string name="rewards.activate_referral_code.title">Resgatar código</string>
-  <string name="rewards.create_referral_code.title">Create Username</string>
-  <string name="rewards.create_referral_code.info">This will be your personal username.</string>
-  <string name="rewards.username">Username</string>
+  <string name="rewards.create_referral_code.title">Criar nome de usuário</string>
+  <string name="rewards.create_referral_code.info">Este será o seu nome de usuário pessoal.</string>
+  <string name="rewards.username">Nome de usuário</string>
   <string name="rewards.ways_spend.title">Formas de gastar</string>
   <string name="rewards.ways_spend.asset.title">Pegar %s</string>
   <string name="rewards.insufficient_points">Pontos insuficientes</string>

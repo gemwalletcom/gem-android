@@ -442,8 +442,8 @@
   <string name="errors.scan_transaction.malicious.description">این تراکنش قابل انجام نیست — آدرس کیف پول مقصد به فعالیت مشکوک یا مضر مرتبط است.</string>
   <string name="errors.scan_transaction.memo_required">%s آدرس کیف پول مقصد به یک برچسب / یادداشت مقصد نیاز دارد.</string>
   <string name="common.info">اطلاعات</string>
-  <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw">Withdraw</string>
+  <string name="wallet.deposit">واریز</string>
+  <string name="wallet.withdraw">برداشت</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -523,7 +523,7 @@
   <string name="settings.preferences.default_leverage">اهرم پیش‌فرض</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Recent</string>
+  <string name="recent_activity.title">اخیر</string>
   <string name="errors.no_data_available">داده‌ای موجود نیست</string>
   <string name="errors.dust_threshold_short">شبکه این مبلغ را داست (dust) در نظر می‌گیرد - کارمزد آن از خود مبلغ بیشتر است.</string>
   <string name="charts.take_profit">TP</string>
@@ -549,9 +549,9 @@
   <string name="rewards.get_rewards.title">دریافت پاداش</string>
   <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
   <string name="rewards.activate_referral_code.title">کد فعال‌سازی</string>
-  <string name="rewards.create_referral_code.title">Create Username</string>
-  <string name="rewards.create_referral_code.info">This will be your personal username.</string>
-  <string name="rewards.username">Username</string>
+  <string name="rewards.create_referral_code.title">ایجاد نام کاربری</string>
+  <string name="rewards.create_referral_code.info">این نام کاربری شخصی شما خواهد بود.</string>
+  <string name="rewards.username">نام کاربری</string>
   <string name="rewards.ways_spend.title">راه‌های خرج کردن</string>
   <string name="rewards.ways_spend.asset.title">دریافت %s</string>
   <string name="rewards.insufficient_points">امتیاز ناکافی</string>

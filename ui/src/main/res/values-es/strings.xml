@@ -5,10 +5,10 @@
   <string name="common.done">Hecho</string>
   <string name="wallet.create_new_wallet">Crear una nueva cartera</string>
   <string name="wallet.import_existing_wallet">Importar una cartera existente</string>
-  <string name="wallet.send">Send</string>
+  <string name="wallet.send">Enviar</string>
   <string name="wallet.receive">Recibir</string>
   <string name="wallet.buy">Comprar</string>
-  <string name="wallet.swap">Swap</string>
+  <string name="wallet.swap">Intercambio</string>
   <string name="wallets.title">Carteras</string>
   <string name="wallet.import.title">Cartera de importación</string>
   <string name="wallet.new.title">Nueva cartera</string>
@@ -16,7 +16,7 @@
   <string name="buy.title">Comprar %s</string>
   <string name="wallet.import.secret_phrase">Secret Phrase</string>
   <string name="wallet.name">Nombre</string>
-  <string name="wallet.import.action">Import</string>
+  <string name="wallet.import.action">Importar</string>
   <string name="common.next">Próximo</string>
   <string name="common.copy">Copiar</string>
   <string name="common.share">Compartir</string>
@@ -76,7 +76,7 @@
   <string name="settings.networks.source">Fuente</string>
   <string name="settings.networks.explorer">Explorador</string>
   <string name="transfer.recipient.address_field">Dirección o Nombre</string>
-  <string name="transfer.send.title">Send</string>
+  <string name="transfer.send.title">Enviar</string>
   <string name="transaction.recipient">Recipiente</string>
   <string name="transaction.sender">Remitente</string>
   <string name="transaction.date">Fecha</string>
@@ -442,8 +442,8 @@
   <string name="errors.scan_transaction.malicious.description">Esta transacción no se puede completar: la dirección de la billetera de destino está vinculada a actividades sospechosas o dañinas.</string>
   <string name="errors.scan_transaction.memo_required">%s La dirección de la cartera de destino requiere una etiqueta/nota de destino.</string>
   <string name="common.info">Información</string>
-  <string name="wallet.deposit">Deposit</string>
-  <string name="wallet.withdraw">Withdraw</string>
+  <string name="wallet.deposit">Depósito</string>
+  <string name="wallet.withdraw">Retirar</string>
   <string name="info.funding_payments.title">Funding Payments</string>
   <string name="info.funding_payments.description">Funding payments are periodic payments between traders to keep the perpetual contract price close to the underlying asset\'s spot price. Positive funding means long positions pay short positions, while negative funding means short positions pay long positions.</string>
   <string name="info.funding_rate.title">Funding</string>
@@ -523,7 +523,7 @@
   <string name="settings.preferences.default_leverage">Apalancamiento por defecto</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Recent</string>
+  <string name="recent_activity.title">Reciente</string>
   <string name="errors.no_data_available">No hay datos disponibles</string>
   <string name="errors.dust_threshold_short">La red considera esta cantidad como polvo: la tarifa es más alta que el monto en sí.</string>
   <string name="charts.take_profit">TP</string>
@@ -549,9 +549,9 @@
   <string name="rewards.get_rewards.title">Obtenga recompensas</string>
   <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
   <string name="rewards.activate_referral_code.title">Canjear código</string>
-  <string name="rewards.create_referral_code.title">Create Username</string>
-  <string name="rewards.create_referral_code.info">This will be your personal username.</string>
-  <string name="rewards.username">Username</string>
+  <string name="rewards.create_referral_code.title">Crear nombre de usuario</string>
+  <string name="rewards.create_referral_code.info">Este será tu nombre de usuario personal.</string>
+  <string name="rewards.username">Nombre de usuario</string>
   <string name="rewards.ways_spend.title">Formas de gastar</string>
   <string name="rewards.ways_spend.asset.title">Conseguir %s</string>
   <string name="rewards.insufficient_points">Puntos insuficientes</string>

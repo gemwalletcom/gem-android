@@ -48,6 +48,22 @@ class SupportChatViewModel @Inject constructor(
           baseUrl: '$baseUrl'
         });
         """
+    val css = """
+        .rn-close-button,
+        button.rn-close-button,
+        .close-button,
+        button.close-button {
+            display: none !important;
+            visibility: hidden !important;
+        }
+    """
+    val hideCloseButtonUserScript = """
+        (function() {
+            var style = document.createElement('style');
+            style.innerHTML = '$css';
+            document.head.appendChild(style);
+        })();
+    """
 
     private fun chatwootSettingsScript(): String {
         val currentNightMode = context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK

@@ -1,14 +1,18 @@
 package com.gemwallet.features.referral.views
 
 import android.content.Intent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -22,11 +26,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.clickable
@@ -34,6 +40,7 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.WalletTheme
 import com.gemwallet.android.ui.theme.paddingDefault
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.features.referral.viewmodels.SyncType
 import com.gemwallet.features.referral.views.components.referralHead
 import com.gemwallet.features.referral.views.components.referralInfo
@@ -60,7 +67,6 @@ fun ReferralScene(
     onRedeem: (RewardRedemptionOption) -> Unit,
     onClose: () -> Unit
 ) {
-    if (inSync == SyncType.Init) return
 
     val context = LocalContext.current
     val link = "https://gemwallet.com/join?code=${rewards?.code}"
@@ -89,23 +95,34 @@ fun ReferralScene(
                 Row(
                     modifier = Modifier
                         .padding(horizontal = paddingDefault)
-                        .clickable(onWallet),
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp))
+                        .clickable(onWallet)
+                        .padding(start = paddingDefault, end = paddingSmall)
+                        .padding(vertical = paddingSmall)
+                    ,
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = currentWallet?.name ?: "",
-                        color = MaterialTheme.colorScheme.primary,
+                        color = MaterialTheme.colorScheme.onPrimary,
                     )
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "select wallet",
-                        tint = MaterialTheme.colorScheme.primary,
+                        tint = MaterialTheme.colorScheme.onPrimary,
                     )
                 }
             }
         },
         onClose = onClose,
     ) {
+        if (inSync == SyncType.Init) {
+            Box(modifier = Modifier.fillMaxSize()) {
+                CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            }
+            return@Scene
+        }
         PullToRefreshBox(
             isRefreshing = inSync != SyncType.None,
             onRefresh = onRefresh,
@@ -129,6 +146,7 @@ fun ReferralScene(
 
                 if (rewards == null) {
                     item {
+                        Spacer8()
                         Box(modifier = Modifier.padding(horizontal = paddingDefault)) {
                             MainActionButton(
                                 title = stringResource(R.string.rewards_activate_referral_code_title),

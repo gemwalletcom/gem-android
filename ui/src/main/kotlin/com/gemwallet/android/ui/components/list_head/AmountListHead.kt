@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.TextAutoSize
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.filled.Autorenew
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -230,6 +232,7 @@ fun AssetHeadActions(
 private fun AssetWatchOnly() {
     var showInfoSheet by remember { mutableStateOf<InfoSheetEntity?>(null) }
     Button(
+        modifier = Modifier.widthIn(min = 350.dp),
         onClick = { showInfoSheet = InfoSheetEntity.WatchWalletInfo },
         enabled = true,
         colors = ButtonDefaults
@@ -250,6 +253,7 @@ private fun AssetWatchOnly() {
             Text(
                 text = stringResource(id = R.string.wallet_watch_tooltip_title),
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
+                maxLines = 1,
             )
             Spacer8()
             IconButton(
@@ -257,7 +261,7 @@ private fun AssetWatchOnly() {
                 onClick = {  }
             ) {
                 Icon(
-                    imageVector = Icons.Default.Info,
+                    imageVector = Icons.Outlined.Info,
                     contentDescription = "",
                     tint = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.9f),
                 )

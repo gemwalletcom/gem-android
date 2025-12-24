@@ -523,7 +523,7 @@
   <string name="settings.preferences.default_leverage">默认杠杆</string>
   <string name="banner.perpetuals.title">Trade Perpetuals on Hyperliquid</string>
   <string name="banner.perpetuals.description">Deposit, trade, and earn with Hyperliquid perpetuals</string>
-  <string name="recent_activity.title">Recent</string>
+  <string name="recent_activity.title">最近的</string>
   <string name="errors.no_data_available">暂无数据</string>
   <string name="errors.dust_threshold_short">网络将这笔金额视为微不足道的垃圾——手续费甚至高于金额本身。</string>
   <string name="charts.take_profit">TP</string>
@@ -549,9 +549,9 @@
   <string name="rewards.get_rewards.title">获得奖励</string>
   <string name="rewards.activate_referral_code.description">Have a referral code from a friend?</string>
   <string name="rewards.activate_referral_code.title">兑换码</string>
-  <string name="rewards.create_referral_code.title">Create Username</string>
-  <string name="rewards.create_referral_code.info">This will be your personal username.</string>
-  <string name="rewards.username">Username</string>
+  <string name="rewards.create_referral_code.title">创建用户名</string>
+  <string name="rewards.create_referral_code.info">这将是您的个人用户名。</string>
+  <string name="rewards.username">用户名</string>
   <string name="rewards.ways_spend.title">消费方式</string>
   <string name="rewards.ways_spend.asset.title">得到 %s</string>
   <string name="rewards.insufficient_points">分数不足</string>
