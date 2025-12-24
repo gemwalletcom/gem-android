@@ -9,7 +9,7 @@ import androidx.navigation.navigation
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.features.asset_select.presents.views.SelectBuyScreen
-import com.gemwallet.features.buy.views.FiatScreen
+import com.gemwallet.features.buy.views.FiatNavScreen
 import com.wallet.core.primitives.AssetId
 import kotlinx.serialization.Serializable
 
@@ -36,7 +36,7 @@ fun NavGraphBuilder.fiatScreen(
 ) {
     navigation<Fiat>(startDestination = FiatSelect) {
         composable<FiatInput> {
-            FiatScreen(
+            FiatNavScreen(
                 cancelAction = cancelAction
             )
         }

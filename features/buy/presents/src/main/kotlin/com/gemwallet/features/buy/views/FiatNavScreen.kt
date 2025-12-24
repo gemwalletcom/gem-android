@@ -27,11 +27,10 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.FiatQuoteType
 
 @Composable
-fun FiatScreen(
+fun FiatNavScreen(
     cancelAction: CancelAction,
+    viewModel: FiatViewModel = hiltViewModel()
 ) {
-    val viewModel: FiatViewModel = hiltViewModel()
-
     val urlLoading = remember { mutableStateOf(false) }
 
     val type by viewModel.type.collectAsStateWithLifecycle()

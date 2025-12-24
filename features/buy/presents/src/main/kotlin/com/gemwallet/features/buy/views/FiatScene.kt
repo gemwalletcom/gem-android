@@ -48,6 +48,7 @@ import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.android.ui.theme.Spacer8
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.android.ui.theme.paddingHalfSmall
+import com.gemwallet.android.ui.theme.paddingSmall
 import com.gemwallet.features.buy.viewmodels.models.BuyFiatProviderUIModel
 import com.gemwallet.features.buy.viewmodels.models.FiatSceneState
 import com.gemwallet.features.buy.viewmodels.models.FiatSuggestion
@@ -134,27 +135,25 @@ fun BuyScene(
         Spacer16()
         AmountField(
             amount = fiatAmount,
-            assetSymbol = if (type == FiatQuoteType.Buy) "$" else asset.symbol,
+            assetSymbol = "$",
             currency = Currency.USD,
-            equivalent = if (state == null && type == FiatQuoteType.Buy) selectedProvider?.cryptoFormatted ?: " " else " ",
+            equivalent = selectedProvider?.cryptoFormatted ?: " ",
             error = "",
             onValueChange = onAmount,
             textStyle = MaterialTheme.typography.displayMedium,
             onNext = { },
         )
         Spacer16()
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(paddingSmall)
+        ) {
             suggestedAmounts.forEach { suggestion ->
                 when (suggestion) {
                     FiatSuggestion.RandomAmount -> RandomGradientButton(
                         onClick = { onLotSelect(FiatSuggestion.RandomAmount) }
                     )
-                    is FiatSuggestion.SuggestionAmount,
-                    is FiatSuggestion.SuggestionPercent -> {
-                        LotButton(suggestion, onLotSelect)
-                        Spacer8()
-                    }
-                    FiatSuggestion.MaxAmount -> {
+                    is FiatSuggestion.SuggestionAmount -> {
                         LotButton(suggestion, onLotSelect)
                     }
                 }

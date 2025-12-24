@@ -12,6 +12,8 @@ import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.math.parseNumber
+import com.gemwallet.android.model.Crypto
+import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.RecentType
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel
 import com.gemwallet.features.buy.viewmodels.models.AmountValidator
@@ -41,6 +43,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -99,25 +102,17 @@ class FiatViewModel @Inject constructor(
     }.stateIn(viewModelScope, SharingStarted.Eagerly, AmountValidator(MIN_FIAT_AMOUNT))
 
     val suggestedAmounts = type.mapLatest {
-        when (it) {
-            FiatQuoteType.Buy -> listOf(
-                FiatSuggestion.SuggestionAmount("${currencySymbol}100", 100.0),
-                FiatSuggestion.SuggestionAmount("${currencySymbol}250", 250.0),
-                FiatSuggestion.RandomAmount,
-            )
-
-            FiatQuoteType.Sell -> listOf(
-                FiatSuggestion.SuggestionPercent("25%", 25.0),
-                FiatSuggestion.SuggestionPercent("50%", 50.0),
-                FiatSuggestion.MaxAmount
-            )
-        }
+        listOf(
+            FiatSuggestion.SuggestionAmount("${currencySymbol}100", 100.0),
+            FiatSuggestion.SuggestionAmount("${currencySymbol}250", 250.0),
+            FiatSuggestion.RandomAmount,
+        )
     }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     val defaultAmount = type.mapLatest {
         val value = when (it) {
             FiatQuoteType.Buy -> "50"
-            FiatQuoteType.Sell -> "0"
+            FiatQuoteType.Sell -> "50"
         }
         _amount.update { value }
         value
@@ -138,7 +133,7 @@ class FiatViewModel @Inject constructor(
             _state.value = FiatSceneState.Loading
         }
         val amountParsed = amount.parseNumber().toDouble()
-        if (type == FiatQuoteType.Sell && amountParsed > asset.assetInfo.balance.balanceAmount.available) {
+        if (type == FiatQuoteType.Sell && Fiat(BigDecimal(amountParsed)).convert(asset.asset.decimals, asset.price.fiat ?: 0.0).atomicValue  > asset.assetInfo.balance.balance.available.toBigInteger()) {
             _state.value = FiatSceneState.Error(BuyError.InsufficientBalance)
             return@combine emptyList()
         }
@@ -146,9 +141,9 @@ class FiatViewModel @Inject constructor(
             val quotes = buyRepository.getQuotes(
                 asset.asset,
                 type = type,
-                currency.string,
+                fiatCurrency = currency.string,
                 amountParsed,
-                asset.assetInfo.owner?.address ?: ""
+                owner = asset.assetInfo.owner?.address ?: ""
             )
             _state.value = null
             if (quotes.isEmpty()) {
@@ -186,12 +181,6 @@ class FiatViewModel @Inject constructor(
         _amount.value = when (suggestion) {
             FiatSuggestion.RandomAmount -> randomAmount().toString()
             is FiatSuggestion.SuggestionAmount -> suggestion.value.toInt().toString()
-            is FiatSuggestion.SuggestionPercent -> {
-                val amount = assetInfoUIModel.value?.assetInfo?.balance?.balanceAmount?.available ?: 0.0
-                (amount * (suggestion.value * 0.01)).toString()
-            }
-
-            is FiatSuggestion.MaxAmount -> assetInfoUIModel.value?.cryptoAmount?.toString() ?: ""
         }
     }
 
@@ -205,10 +194,7 @@ class FiatViewModel @Inject constructor(
     }
 
     private fun randomAmount(maxAmount: Double = 1000.0): Int {
-        return when (type.value) {
-            FiatQuoteType.Buy -> Random.nextInt(defaultAmount.value.toInt(), maxAmount.toInt())
-            FiatQuoteType.Sell -> return 0
-        }
+        return Random.nextInt(defaultAmount.value.toInt(), maxAmount.toInt())
     }
 
     fun getUrl(callback: (String?) -> Unit) {
