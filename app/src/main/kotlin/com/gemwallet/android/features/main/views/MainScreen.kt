@@ -58,6 +58,7 @@ import com.gemwallet.android.ui.navigation.routes.navigateToNetworksScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToNftAsset
 import com.gemwallet.android.ui.navigation.routes.navigateToNftCollection
 import com.gemwallet.android.ui.navigation.routes.navigateToPerpetualsScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToPreferences
 import com.gemwallet.android.ui.navigation.routes.navigateToPriceAlertsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToReceiveScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
@@ -73,6 +74,7 @@ import com.gemwallet.android.ui.navigation.routes.settingsRoute
 import com.gemwallet.android.ui.navigation.routes.transactionsRoute
 import com.gemwallet.features.assets.views.AssetsScreen
 import com.gemwallet.features.nft.presents.NftListScene
+import com.gemwallet.features.settings.settings.presents.views.PreferencesScene
 import com.gemwallet.features.settings.settings.presents.views.SettingsScene
 import kotlinx.coroutines.launch
 
@@ -229,14 +231,13 @@ fun MainScreen(
                     onSecurity = navController::navigateToSecurityScreen,
                     onBridges = navController::navigateToBridgesScreen,
                     onDevelop = navController::navigateToDevelopScreen,
-                    onCurrencies = navController::navigateToCurrenciesScreen,
                     onWallets = navController::navigateToWalletsScreen,
-                    onNetworks = navController::navigateToNetworksScreen,
                     onPriceAlerts = navController::navigateToPriceAlertsScreen,
                     onSupport = navController::navigateToSupport,
                     onPerpetual = navController::navigateToPerpetualsScreen,
                     onAboutUs = navController::navigateToAboutUsScreen,
                     onReferral = navController::navigateToReferralScreen,
+                    onPreferences = navController::navigateToPreferences,
                 )
             }
         }

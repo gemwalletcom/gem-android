@@ -55,12 +55,11 @@ fun SettingsScene(
     onSecurity: () -> Unit,
     onBridges: () -> Unit,
     onDevelop: () -> Unit,
-    onCurrencies: () -> Unit,
     onWallets: () -> Unit,
     onAboutUs: () -> Unit,
-    onNetworks: () -> Unit,
     onPriceAlerts: () -> Unit,
     onSupport: () -> Unit,
+    onPreferences: () -> Unit,
     onPerpetual: () -> Unit,
     onReferral: () -> Unit,
     scrollState: ScrollState = rememberScrollState()
@@ -103,6 +102,9 @@ fun SettingsScene(
 //                listPosition = ListPosition.Last,
 //                onClick = onPerpetual
 //            )
+            LinkItem(title = stringResource(id = R.string.settings_preferences_title), icon = R.drawable.settings_preferences, listPosition = ListPosition.Single) {
+                onPreferences()
+            }
             if (viewModel.isNotificationsAvailable()) {
                 LinkItem(
                     title = stringResource(id = R.string.settings_notifications_title),
@@ -126,35 +128,6 @@ fun SettingsScene(
                 )
             }
 
-            LinkItem(
-                title = stringResource(R.string.settings_currency),
-                icon = R.drawable.settings_currency,
-                listPosition = ListPosition.First,
-                supportingContent = {
-                    Text(text = "${emojiFlags[uiState.currency.string]}  ${uiState.currency.string}")
-                },
-                onClick = onCurrencies,
-            )
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                LinkItem(
-                    title = stringResource(id = R.string.settings_language),
-                    icon = R.drawable.settings_language,
-                    supportingContent = {
-                        val language = context.resources.configuration.getLocales().get(0).displayLanguage.replaceFirstChar {
-                            if (it.isLowerCase()) it.titlecase(Locale.ROOT) else it.toString()
-                        }
-                        Text(text = language)
-                    },
-                    onClick = {
-                        val intent = Intent(Settings.ACTION_APP_LOCALE_SETTINGS)
-                        intent.data = Uri.fromParts("package", context.packageName, null)
-                        context.startActivity(intent)
-                    }
-                )
-            }
-            LinkItem(title = stringResource(id = R.string.settings_networks_title), icon = R.drawable.settings_networks, listPosition = ListPosition.Last) {
-                onNetworks()
-            }
             if (isRewardsAvailable) {
                 LinkItem(
                     title = stringResource(id = R.string.rewards_title),

@@ -65,6 +65,7 @@ import com.gemwallet.android.ui.navigation.routes.navigateToNftCollection
 import com.gemwallet.android.ui.navigation.routes.navigateToPerpetualDetailsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToPerpetualsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToPhraseScreen
+import com.gemwallet.android.ui.navigation.routes.navigateToPreferences
 import com.gemwallet.android.ui.navigation.routes.navigateToPriceAlertsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToReceiveScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToRecipientInput
@@ -291,6 +292,7 @@ fun WalletNavGraph(
             onSupport = navController::navigateToSupport,
             onPerpetual = navController::navigateToPerpetualsScreen,
             onReferral = navController::navigateToReferralScreen,
+            onPreferences = navController::navigateToPreferences,
             onCancel = onCancel,
         )
 
