@@ -48,6 +48,7 @@ build-base-image:
 TAG := env("TAG", "main")
 BUILD_MODE := env("BUILD_MODE", "")
 BUNDLE_TASK := env("BUNDLE_TASK", "clean :app:bundleGoogleRelease assembleUniversalRelease")
+GRADLE_WORKERS_MAX := env("GRADLE_WORKERS_MAX", "4")
 
 build-app-image:
 	#!/usr/bin/env bash
@@ -85,7 +86,7 @@ build-app-in-docker:
 		-v "${gradle_cache}":/root/.gradle \
 		-v "${maven_cache}":/root/.m2 \
 		gem-android-app-verify \
-		bash -lc 'cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache'
+		bash -lc 'cd /root/gem-android && ./gradlew ${BUNDLE_TASK} --no-daemon --build-cache -Dorg.gradle.workers.max={{GRADLE_WORKERS_MAX}}'
 
 core-upgrade:
 	@git submodule update --recursive --remote
