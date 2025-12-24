@@ -47,9 +47,6 @@ fun ReferralNavScreen(
     val inSync by viewModel.inSync.collectAsStateWithLifecycle()
     val referralCode by viewModel.referralCode.collectAsStateWithLifecycle()
 
-//    if (inSync == SyncType.Init) {
-//        LoadingScene(stringResource(R.string.rewards_title), onClose)
-//    }
     ReferralScene(
         inSync = inSync,
         isAvailableWalletSelect = availableWallets.size > 1,
@@ -59,6 +56,7 @@ fun ReferralNavScreen(
         joinPointsCost = 100,
         onUsername = viewModel::createReferral,
         onCode = viewModel::useCode,
+        onCancelCode = viewModel::cancelCode,
         onRefresh = viewModel::sync,
         onWallet = { isShowSelectWallets = true },
         onRedeem = {

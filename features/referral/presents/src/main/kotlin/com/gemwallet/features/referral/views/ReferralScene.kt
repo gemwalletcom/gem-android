@@ -62,6 +62,7 @@ fun ReferralScene(
     referralCode: String? = null,
     onUsername: (String, (Exception?) -> Unit) -> Unit,
     onCode: (String, (Exception?) -> Unit) -> Unit,
+    onCancelCode: () -> Unit,
     onRefresh: () -> Unit,
     onWallet: () -> Unit,
     onRedeem: (RewardRedemptionOption) -> Unit,
@@ -75,7 +76,7 @@ fun ReferralScene(
 
     val pullToRefreshState = rememberPullToRefreshState()
     var getStartedDialogShow by remember(rewards) { mutableStateOf(false) }
-    var codeDialogShow by remember(referralCode) { mutableStateOf(referralCode != null) }
+    var codeDialogShow by remember(referralCode, inSync) { mutableStateOf(referralCode != null && inSync == SyncType.None) }
     var referralCode by remember(referralCode) { mutableStateOf(referralCode) }
 
     val onShare = fun () {
@@ -176,9 +177,10 @@ fun ReferralScene(
         }
     }
 
-    if (codeDialogShow && rewards == null) {
+    if (codeDialogShow) {
         ReferralCodeDialog(referralCode = referralCode, onCode = onCode) {
             codeDialogShow = false
+            onCancelCode()
         }
     }
 }
@@ -212,6 +214,7 @@ private fun ReferralScenePreview() {
             joinPointsCost = 1000,
             onUsername = { _, _ -> },
             onCode = { _, _ -> },
+            onCancelCode = {},
             onRefresh = {},
             onWallet = {},
             onRedeem = {},
@@ -242,6 +245,7 @@ private fun ReferralSceneNoRewardsPreview() {
             joinPointsCost = 1000,
             onUsername = { _, _ -> },
             onCode = { _, _ -> },
+            onCancelCode = {},
             onRefresh = {},
             onWallet = {},
             onRedeem = {},

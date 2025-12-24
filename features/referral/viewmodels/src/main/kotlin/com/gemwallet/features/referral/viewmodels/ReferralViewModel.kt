@@ -141,4 +141,8 @@ class ReferralViewModel @Inject constructor(
             }
         }
     }
+
+    fun cancelCode() {
+        savedStateHandle["code"] = null
+    }
 }
