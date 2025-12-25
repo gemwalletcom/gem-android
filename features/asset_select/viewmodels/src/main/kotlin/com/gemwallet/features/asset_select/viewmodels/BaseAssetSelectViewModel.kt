@@ -92,7 +92,7 @@ open class BaseAssetSelectViewModel(
         }
     }
     .map { items -> items.map { AssetInfoUIModel(it) } }
-    .onEach { searchState.update { SearchState.Idle } }
+//    .onEach { searchState.update { SearchState.Idle } }
     .flowOn(Dispatchers.IO)
     .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList<AssetItemUIModel>())
 
@@ -200,6 +200,7 @@ open class BaseAssetSelectViewModel(
             chains = session?.wallet?.accounts?.map { it.chain } ?: emptyList(),
             tags = tags?.let { listOf(it) } ?: emptyList(),
         )
+        searchState.update { SearchState.Idle }
     }
 
     open fun getRecentType(): RecentType? = RecentType.Receive
