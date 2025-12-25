@@ -61,5 +61,7 @@ enum class EVMChain(val string: String) {
 	Monad("monad"),
 	@SerialName("xlayer")
 	XLayer("xlayer"),
+	@SerialName("stable")
+	Stable("stable"),
 }
 

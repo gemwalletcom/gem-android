@@ -109,5 +109,7 @@ enum class Chain(val string: String) {
 	Monad("monad"),
 	@SerialName("xlayer")
 	XLayer("xlayer"),
+	@SerialName("stable")
+	Stable("stable"),
 }
 

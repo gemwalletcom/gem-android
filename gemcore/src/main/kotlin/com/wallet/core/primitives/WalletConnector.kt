@@ -118,5 +118,9 @@ enum class WalletConnectionMethods(val string: String) {
 	TonSendMessage("ton_sendMessage"),
 	@SerialName("ton_signData")
 	TonSignData("ton_signData"),
+	@SerialName("sendTransfer")
+	BtcSendTransfer("sendTransfer"),
+	@SerialName("signMessage")
+	BtcSignMessage("signMessage"),
 }
 

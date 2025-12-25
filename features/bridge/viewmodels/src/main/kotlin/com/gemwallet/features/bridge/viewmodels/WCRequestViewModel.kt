@@ -70,10 +70,11 @@ class WCRequestViewModel @Inject constructor(
             val account: Account = wallet.getAccount(chain) ?: throw BridgeRequestError.ChainUnsupported
 
             val action = WalletConnect().parseRequest(
-                sessionRequest.topic,
-                sessionRequest.request.method,
-                sessionRequest.request.params,
-                sessionRequest.chainId ?: return@launch
+                topic = sessionRequest.topic,
+                method = sessionRequest.request.method,
+                params = sessionRequest.request.params,
+                chainId = sessionRequest.chainId ?: return@launch,
+                domain = sessionRequest.peerMetaData?.url ?: ""
             )
             val request = when (action) {
                 is WalletConnectAction.ChainOperation -> {

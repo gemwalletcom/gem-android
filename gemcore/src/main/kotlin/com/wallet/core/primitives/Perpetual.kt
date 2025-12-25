@@ -78,8 +78,7 @@ data class PerpetualConfirmData (
 	val marketPrice: Double,
 	val marginAmount: Double,
 	val takeProfit: String? = null,
-	val stopLoss: String? = null,
-	val autocloseOrderType: PerpetualOrderType
+	val stopLoss: String? = null
 )
 
 @Serializable
@@ -137,8 +136,7 @@ data class TPSLOrderData (
 	val direction: PerpetualDirection,
 	val takeProfit: String? = null,
 	val stopLoss: String? = null,
-	val size: String,
-	val autocloseOrderType: PerpetualOrderType
+	val size: String
 )
 
 @Serializable

@@ -19,6 +19,8 @@ enum class BalanceType(val string: String) {
 	staked("staked"),
 	@SerialName("pending")
 	pending("pending"),
+	@SerialName("pendingUnconfirmed")
+	pendingUnconfirmed("pendingUnconfirmed"),
 	@SerialName("rewards")
 	rewards("rewards"),
 	@SerialName("reserved")

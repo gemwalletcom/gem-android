@@ -1,9 +1,9 @@
 [versions]
 accompanistPermissions = "0.37.3"
-activityCompose = "1.12.1"
+activityCompose = "1.12.2"
 browser = "1.9.0"
 uiautomator = "2.3.0"
-walletconnect = "1.5.1"
+walletconnect = "1.5.2"
 barcodeScanning = "17.3.0"
 biometric = "1.2.0-alpha05"
 cameraCamera2 = "1.5.2"
@@ -32,7 +32,7 @@ room = "2.8.4"
 securityCrypto = "1.1.0"
 compose = "1.10.0"
 materialIcons = "1.7.8"
-material3 = "1.5.0-alpha10"
+material3 = "1.5.0-alpha11"
 navigationCompose = "2.9.6"
 uiTestJunit4 = "1.10.0"
 testRunner = "1.7.0"
@@ -52,7 +52,7 @@ material = "1.13.0"
 constraint = "1.1.1"
 web-view = "0.33.6"
 
-gemstone = "0.34.20"
+gemstone = "0.34.21"
 
 [libraries]
 gradle = { module = "com.android.tools.build:gradle", version.ref = "gradle" }

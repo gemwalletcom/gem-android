@@ -5,6 +5,7 @@ import com.gemwallet.android.ext.asset
 import com.gemwallet.android.ext.getShortUrl
 import com.gemwallet.android.math.hexToBigInteger
 import com.gemwallet.android.model.ConfirmParams
+import com.gemwallet.android.model.ConfirmParams.TransferParams.Generic
 import com.gemwallet.android.model.DestinationAddress
 import com.reown.walletkit.client.Wallet
 import com.wallet.core.primitives.Account
@@ -139,7 +140,7 @@ private fun WalletConnectTransaction.map(
 ): ConfirmParams.TransferParams.Generic {
     val asset = request.chain.asset()
     return when (this) {
-        is WalletConnectTransaction.Ethereum -> ConfirmParams.TransferParams.Generic(
+        is WalletConnectTransaction.Ethereum -> Generic(
             requestId = request.requestId.toString(),
             asset = asset,
             from = request.account,
@@ -153,7 +154,7 @@ private fun WalletConnectTransaction.map(
             destination = DestinationAddress(data.to),
             amount = data.value?.hexToBigInteger() ?: BigInteger.ZERO,
         )
-        is WalletConnectTransaction.Solana -> ConfirmParams.TransferParams.Generic(
+        is WalletConnectTransaction.Solana -> Generic(
             requestId = request.requestId.toString(),
             asset = asset,
             from = request.account,
@@ -170,11 +171,43 @@ private fun WalletConnectTransaction.map(
             destination = DestinationAddress(""),
             amount = BigInteger.ZERO,
         )
-        is WalletConnectTransaction.Sui -> ConfirmParams.TransferParams.Generic(
+        is WalletConnectTransaction.Sui -> Generic(
             requestId = request.requestId.toString(),
             asset = asset,
             from = request.account,
             memo = data.transaction,
+            name = request.name,
+            description = request.description,
+            url = request.uri,
+            icon = request.icon,
+            gasLimit = "",
+            inputType = when (outputType) {
+                TransferDataOutputType.ENCODED_TRANSACTION -> ConfirmParams.TransferParams.InputType.EncodeTransaction
+                TransferDataOutputType.SIGNATURE -> ConfirmParams.TransferParams.InputType.Signature
+            },
+            destination = DestinationAddress(""),
+            amount = BigInteger.ZERO,
+        )
+        is WalletConnectTransaction.Bitcoin -> Generic(
+            requestId = request.requestId.toString(),
+            asset = asset,
+            from = request.account,
+            name = request.name,
+            description = request.description,
+            url = request.uri,
+            icon = request.icon,
+            gasLimit = "",
+            inputType = when (outputType) {
+                TransferDataOutputType.ENCODED_TRANSACTION -> ConfirmParams.TransferParams.InputType.EncodeTransaction
+                TransferDataOutputType.SIGNATURE -> ConfirmParams.TransferParams.InputType.Signature
+            },
+            destination = DestinationAddress(""),
+            amount = BigInteger.ZERO,
+        )
+        is WalletConnectTransaction.Ton -> Generic(
+            requestId = request.requestId.toString(),
+            asset = asset,
+            from = request.account,
             name = request.name,
             description = request.description,
             url = request.uri,

@@ -8,6 +8,14 @@ import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
 
 @Serializable
+data class WCBitcoinTransfer (
+	val account: String,
+	val recipientAddress: String,
+	val amount: String,
+	val memo: String? = null
+)
+
+@Serializable
 data class WCEthereumTransaction (
 	val chainId: String? = null,
 	val from: String,
