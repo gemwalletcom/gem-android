@@ -13,6 +13,7 @@ import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Wallet
 import uniffi.gemstone.GemAuthNonce
 import wallet.core.jni.PrivateKey
+import java.util.Arrays
 
 class GetAuthPayloadImpl(
     private val gemApiClient: GemApiClient,
@@ -35,14 +36,18 @@ class GetAuthPayloadImpl(
             chain,
             passwordStore.getPassword(wallet.id)
         )
-        val signature = PrivateKey(key).sign(message.hash,  WCChainTypeProxy()(chain).curve())
-            .toHexString()
-        return AuthPayload(
-            deviceId = deviceId,
-            chain = account.chain,
-            address = account.address,
-            nonce = nonce.nonce,
-            signature = signature
-        )
+        try {
+            val signature = PrivateKey(key).sign(message.hash, WCChainTypeProxy()(chain).curve())
+                .toHexString()
+            return AuthPayload(
+                deviceId = deviceId,
+                chain = account.chain,
+                address = account.address,
+                nonce = nonce.nonce,
+                signature = signature
+            )
+        } finally {
+            Arrays.fill(key, 0)
+        }
     }
 }
