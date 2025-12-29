@@ -24,6 +24,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.model.AuthRequest
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
 import com.gemwallet.android.ui.components.dialog.DialogBar
@@ -38,6 +39,7 @@ import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AssetIdAction
+import com.gemwallet.android.ui.requestAuth
 import com.gemwallet.android.ui.theme.paddingDefault
 import com.gemwallet.features.bridge.viewmodels.RequestSceneState
 import com.gemwallet.features.bridge.viewmodels.WCRequestViewModel
@@ -119,6 +121,7 @@ private fun SignMessageScene(
     onApprove: () -> Unit,
     onReject: () -> Unit,
 ) {
+    val context = LocalContext.current
     var isShowFullMessage by remember { mutableStateOf(false) }
 
     val preview = request.signer.preview()
@@ -126,7 +129,11 @@ private fun SignMessageScene(
     Scene(
         title = stringResource(id = R.string.wallet_connect_title),
         mainAction = {
-            MainActionButton(title = stringResource(id = R.string.transfer_approve_title), onClick = onApprove)
+            MainActionButton(title = stringResource(id = R.string.transfer_approve_title)) {
+                context.requestAuth(AuthRequest.Phrase) {
+                    onApprove()
+                }
+            }
         },
         onClose = onReject,
     ) {

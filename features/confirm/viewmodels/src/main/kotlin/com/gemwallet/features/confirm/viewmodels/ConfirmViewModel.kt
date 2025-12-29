@@ -355,8 +355,8 @@ class ConfirmViewModel @Inject constructor(
             }
         } catch (err: ConfirmError) {
             state.update { ConfirmState.BroadcastError(err) }
-        } catch (_: Throwable) {
-            state.update { ConfirmState.BroadcastError(ConfirmError.BroadcastError) }
+        } catch (err: Throwable) {
+            state.update { ConfirmState.BroadcastError(ConfirmError.BroadcastError(err.message ?: "Unknown error")) }
         }
     }
 

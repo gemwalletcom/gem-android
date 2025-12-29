@@ -2,7 +2,7 @@ package com.gemwallet.features.confirm.models
 
 import com.wallet.core.primitives.Chain
 
-sealed class ConfirmError : Exception(){
+sealed class ConfirmError : Exception() {
 
     object None : ConfirmError()
 
@@ -20,7 +20,7 @@ sealed class ConfirmError : Exception(){
 
     object SignFail : ConfirmError()
 
-    object BroadcastError : ConfirmError()
+    class BroadcastError(val details: String) : ConfirmError()
 
     class DustThreshold(val chainTitle: String) : ConfirmError()
 }

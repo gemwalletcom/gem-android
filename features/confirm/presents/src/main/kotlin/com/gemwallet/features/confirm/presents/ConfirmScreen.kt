@@ -4,7 +4,6 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.AlertDialog
@@ -18,11 +17,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.ext.asset
+import com.gemwallet.android.model.AuthRequest
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.buttons.MainActionButton
@@ -41,6 +41,7 @@ import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.models.actions.AssetIdAction
 import com.gemwallet.android.ui.models.actions.CancelAction
 import com.gemwallet.android.ui.models.actions.FinishConfirmAction
+import com.gemwallet.android.ui.requestAuth
 import com.gemwallet.features.confirm.models.ConfirmError
 import com.gemwallet.features.confirm.models.ConfirmProperty
 import com.gemwallet.features.confirm.models.ConfirmState
@@ -60,6 +61,7 @@ fun ConfirmScreen(
     onBuy: AssetIdAction,
     viewModel: ConfirmViewModel = hiltViewModel(),
 ) {
+    val context = LocalContext.current
     val amountModel by viewModel.amountUIModel.collectAsStateWithLifecycle()
     val txProperties by viewModel.txProperties.collectAsStateWithLifecycle()
     val feeModel by viewModel.feeUIModel.collectAsStateWithLifecycle()
@@ -96,7 +98,11 @@ fun ConfirmScreen(
                 title = state.buttonLabel(),
                 enabled = state !is ConfirmState.Prepare && state !is ConfirmState.Sending,
                 loading = state is ConfirmState.Sending || state is ConfirmState.Prepare || state is ConfirmState.Result,
-                onClick = { viewModel.send(finishAction) },
+                onClick = {
+                    context.requestAuth(AuthRequest.Phrase) {
+                        viewModel.send(finishAction)
+                    }
+                },
             )
         }
     ) {
@@ -204,7 +210,7 @@ fun ConfirmError.toLabel() = when (this) {
     is ConfirmError.PreloadError -> "${stringResource(R.string.confirm_fee_error)}: ${stringResource(R.string.errors_unable_estimate_network_fee)}"
     is ConfirmError.InsufficientBalance -> stringResource(R.string.transfer_insufficient_balance, chainTitle)
     is ConfirmError.InsufficientFee -> stringResource(R.string.transfer_insufficient_network_fee_balance, chain.asset().name)
-    is ConfirmError.BroadcastError -> stringResource(R.string.errors_transfer_error)
+    is ConfirmError.BroadcastError -> "${stringResource(R.string.errors_transfer_error)}: ${this.details}"
     is ConfirmError.SignFail -> stringResource(R.string.errors_transfer_error)
     is ConfirmError.RecipientEmpty -> "${stringResource(R.string.errors_transfer_error)}: recipient can't empty"
     is ConfirmError.DustThreshold -> stringResource(id = R.string.errors_dust_threshold, chainTitle)

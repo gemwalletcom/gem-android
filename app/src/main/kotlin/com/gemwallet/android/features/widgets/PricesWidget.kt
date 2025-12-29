@@ -81,7 +81,7 @@ class PricesWidget() : GlanceAppWidget() {
                     AssetId(Chain.Ethereum).toIdentifier(),
                     AssetId(Chain.Solana).toIdentifier(),
                 )
-            ).firstOrNull() ?: emptyList()).distinctBy { it.id() }
+            ).firstOrNull() ?: emptyList()).distinctBy { it.id() }.reversed()
         } catch (err: Throwable) {
             Log.d("GEM-WIDGET", "Error:", err)
             emptyList()
