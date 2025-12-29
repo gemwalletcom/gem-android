@@ -10,6 +10,7 @@ import com.gemwallet.android.blockchain.services.SignClientProxy
 import com.gemwallet.android.blockchain.services.SignerPreloaderProxy
 import com.gemwallet.android.cases.transactions.CreateTransaction
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
+import com.gemwallet.android.data.repositoreis.perpetual.PerpetualRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.stake.StakeRepository
 import com.gemwallet.android.domains.asset.chain
@@ -81,6 +82,7 @@ class ConfirmViewModel @Inject constructor(
     private val broadcastService: BroadcastService,
     private val createTransactionsCase: CreateTransaction,
     private val stakeRepository: StakeRepository,
+    private val perpetualRepository: PerpetualRepository,
     private val savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
@@ -343,6 +345,7 @@ class ConfirmViewModel @Inject constructor(
                         is ConfirmParams.TransferParams -> assetRoutePath
                         is ConfirmParams.Activate -> assetRoutePath
                         is ConfirmParams.NftParams -> assetRoutePath
+                        is ConfirmParams.PerpetualParams -> assetRoutePath // TODO: Move to perpetuals
                     }
                     viewModelScope.launch(Dispatchers.Main) {
                         finishAction(assetId = assetInfo.id(), hash = txHash, route = finishRoute)
@@ -422,6 +425,10 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.Stake.WithdrawParams -> BigInteger(stakeRepository.getDelegation(params.delegation.validator.id, params.delegation.base.delegationId).firstOrNull()?.base?.balance ?: "0")
             is ConfirmParams.Stake.RewardsParams -> stakeRepository.getRewards(assetInfo.asset.id, assetInfo.owner?.address ?: "")
                 .fold(BigInteger.ZERO) { acc, delegation -> acc + BigInteger(delegation.base.balance) }
+            is ConfirmParams.PerpetualParams.Open -> {
+                val amount = perpetualRepository.getBalance(assetInfo.owner?.address ?: "").firstOrNull()?.available ?: 0.0
+                Crypto(amount.toBigDecimal(), assetInfo.asset.decimals).atomicValue
+            }
         }
     }
 
@@ -438,6 +445,7 @@ class ConfirmViewModel @Inject constructor(
             is ConfirmParams.SwapParams,
             is ConfirmParams.TokenApprovalParams,
             is ConfirmParams.NftParams,
+            is ConfirmParams.PerpetualParams,
             is ConfirmParams.TransferParams -> null
         }
         return stakeRepository.getStakeValidator(params.assetId, validatorId ?: return null)

@@ -47,10 +47,11 @@ import com.wallet.core.primitives.TransactionType
 
 @Composable
 fun AmountScene(
+    txType: TransactionType,
+    title: String = transactionTypeTitle(txType),
     amount: String,
     amountPrefill: String? = null,
     amountInputType: AmountInputType,
-    txType: TransactionType,
     asset: Asset,
     currency: Currency,
     validatorState: DelegationValidator? = null,
@@ -64,8 +65,8 @@ fun AmountScene(
     onInputTypeClick: () -> Unit,
     onMaxAmount: () -> Unit,
     onCancel: () -> Unit,
-    onResourceSelect: (Resource) -> Unit,
-    onValidator: () -> Unit,
+    onResourceSelect: (Resource) -> Unit = {},
+    onValidator: () -> Unit = {},
     additionParams: (@Composable () -> Unit)? = null,
 ) {
     val focusRequester = remember { FocusRequester() }
@@ -73,7 +74,7 @@ fun AmountScene(
     val isSmallScreen = LocalConfiguration.current.screenHeightDp.dp < 680.dp
 
     Scene(
-        title = transactionTypeTitle(txType),
+        title = title,
         onClose = onCancel,
         mainAction = {
             if (!isKeyBoardOpen || !isSmallScreen) {

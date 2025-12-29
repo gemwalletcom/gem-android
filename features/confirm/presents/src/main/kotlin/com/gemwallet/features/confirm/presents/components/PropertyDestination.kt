@@ -23,13 +23,15 @@ fun PropertyDestination(
         is ConfirmProperty.Destination.Provider -> R.string.common_provider
         is ConfirmProperty.Destination.Stake -> R.string.stake_validator
         is ConfirmProperty.Destination.Transfer -> R.string.transaction_recipient
-        is ConfirmProperty.Destination.App -> R.string.wallet_connect_app
+        is ConfirmProperty.Destination.Generic -> R.string.wallet_connect_app
+        is ConfirmProperty.Destination.PerpetualOper -> R.string.common_provider
     }
     val recipientName = when (model) {
         is ConfirmProperty.Destination.Provider,
         is ConfirmProperty.Destination.Stake -> null
         is ConfirmProperty.Destination.Transfer -> model.domain
-        is ConfirmProperty.Destination.App -> model.name
+        is ConfirmProperty.Destination.Generic -> model.appName
+        is ConfirmProperty.Destination.PerpetualOper -> model.providerName
     }
     PropertyItem(
         title = {

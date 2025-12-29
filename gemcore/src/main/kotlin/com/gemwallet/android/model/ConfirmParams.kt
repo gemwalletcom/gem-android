@@ -1,5 +1,6 @@
 package com.gemwallet.android.model
 
+import android.util.Size
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.ext.type
 import com.gemwallet.android.ext.urlDecode
@@ -9,10 +10,13 @@ import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.Account
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.AssetMarketPrice
 import com.wallet.core.primitives.AssetSubtype
 import com.wallet.core.primitives.Delegation
 import com.wallet.core.primitives.DelegationValidator
 import com.wallet.core.primitives.NFTAsset
+import com.wallet.core.primitives.PerpetualDirection
+import com.wallet.core.primitives.Price
 import com.wallet.core.primitives.Resource
 import com.wallet.core.primitives.TransactionType
 import kotlinx.serialization.Serializable
@@ -109,6 +113,10 @@ sealed class ConfirmParams() {
 
         fun unfreeze(resource: Resource): Stake.Unfreeze {
             return Stake.Unfreeze(asset, from, amount, resource)
+        }
+
+        fun perpetual(): PerpetualParams.Open {
+            TODO("Not yet implemented")
         }
     }
 
@@ -388,6 +396,46 @@ sealed class ConfirmParams() {
         }
     }
 
+    @Serializable
+    sealed class PerpetualParams : ConfirmParams() {
+
+        @Serializable
+        class Open(
+            val perpetualId: String,
+            override val asset: Asset,
+            override val from: Account,
+            @Serializable(BigIntegerSerializer::class) override val amount: BigInteger,
+            override val useMaxAmount: Boolean = false,
+            val direction: PerpetualDirection,
+            val baseAsset: Asset,
+            val assetIndex: Int,
+            val price: String,
+            val fiatValue: Double,
+            val size: String,
+            val slippage: Double,
+            val leverage: Int,
+            val entryPrice: Double?,
+            val marketPrice: Double,
+            val marginAmount: Double,
+            val takeProfit: String?,
+            val stopLoss: String?
+        ) : PerpetualParams()
+
+
+//        val id: String,
+//	val name: String,
+//	val provider: PerpetualProvider,
+//	val assetId: AssetId,
+//	val identifier: String,
+
+//	val price: Double,
+//	val pricePercentChange24h: Double,
+//	val openInterest: Double,
+//	val volume24h: Double,
+//	val funding: Double,
+//	val maxLeverage: UByte
+    }
+
     fun pack(): String? {
         val json = jsonEncoder.encodeToString(this)
         return Base64.getEncoder().encodeToString(json.toByteArray()).urlEncode()
@@ -408,6 +456,7 @@ sealed class ConfirmParams() {
             is Stake.Freeze -> TransactionType.StakeFreeze
             is Stake.Unfreeze -> TransactionType.StakeUnfreeze
             is Stake -> throw IllegalArgumentException("Invalid stake parameter")
+            is PerpetualParams.Open -> TransactionType.PerpetualOpenPosition
         }
     }
 

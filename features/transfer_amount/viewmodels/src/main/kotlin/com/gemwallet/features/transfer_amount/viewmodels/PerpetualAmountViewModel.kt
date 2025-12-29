@@ -9,13 +9,18 @@ import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.tokens.TokensRepository
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.getAccount
+import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.format
+import com.gemwallet.features.transfer_amount.models.AmountError
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.Currency
+import com.wallet.core.primitives.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
@@ -26,8 +31,11 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import java.math.BigDecimal
+import java.math.BigInteger
 import javax.inject.Inject
+import kotlin.collections.map
 import kotlin.math.min
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -61,7 +69,9 @@ class PerpetualAmountViewModel @Inject constructor(
             list.add(i)
         }
         list
-    }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+
+    val leverage = MutableStateFlow<Int>(10)
 
     override val assetInfo: StateFlow<AssetInfo?> = perpetual /// TODO: ???
         .filterNotNull()
@@ -82,7 +92,7 @@ class PerpetualAmountViewModel @Inject constructor(
     .flatMapLatest { account ->
         getPerpetualBalance.getBalance(account.chain, account.address)
     }
-    .mapLatest { it.available.toBigDecimal() }
+    .mapLatest { it?.available?.toBigDecimal() ?: BigDecimal.ZERO }
     .stateIn(viewModelScope, SharingStarted.Eagerly, BigDecimal.ZERO)
 
     override val availableBalanceFormatted: StateFlow<String> = availableBalance
@@ -93,10 +103,40 @@ class PerpetualAmountViewModel @Inject constructor(
         updateAmount(availableBalance.value.toString(), true)
     }
 
+    override fun onNext(
+        params: AmountParams,
+        rawAmount: String,
+        onConfirm: (ConfirmParams) -> Unit
+    ) {
+        val assetInfo = assetInfo.value
+        val owner = assetInfo?.owner ?: return
+        val asset = assetInfo.asset
+        val decimals = asset.decimals
+        val price = assetInfo.price?.price?.price ?: 0.0
+        val inputType = amountInputType.value
+        validateAmount(asset, rawAmount, BigInteger.ZERO)
+
+        val amount = inputType.getAmount(rawAmount, decimals, price)
+        validateBalance(assetInfo, amount)
+
+        amountError.update { AmountError.None }
+
+        val builder = ConfirmParams.Builder(asset, owner, amount.atomicValue, maxAmount.value)
+        val nextParams = when (params.txType) {
+            TransactionType.PerpetualOpenPosition -> builder.perpetual()
+            else -> throw IllegalArgumentException()
+        }
+        onConfirm(nextParams)
+    }
+
     private fun getAssetId(chain: Chain): AssetId { // TODO: Check it
         return when (chain) {
             Chain.HyperCore -> AssetId(Chain.Arbitrum, "0xaf88d065e77c8cC2239327C5EDb3A432268e5831")
             else -> throw IllegalArgumentException()
         }
+    }
+
+    fun setLeverage(value: Int) {
+        leverage.update { value }
     }
 }

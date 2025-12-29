@@ -264,6 +264,9 @@ dependencies {
     implementation(libs.compose.navigation)
     implementation(libs.kotlinx.serialization.json)
 
+    implementation(libs.widgets)
+    implementation(libs.widgets.material3)
+
     // EncryptedPreferences
     implementation(libs.androidx.security.crypto)
     // Auth

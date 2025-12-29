@@ -6,10 +6,13 @@ import com.gemwallet.android.model.ChainSignData
 import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Fee
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.PerpetualDirection
 import uniffi.gemstone.GemChainSigner
 import uniffi.gemstone.GemGasPriceType
 import uniffi.gemstone.GemTransactionInputType
 import uniffi.gemstone.GemTransactionLoadInput
+import uniffi.gemstone.PerpetualConfirmData
+import uniffi.gemstone.PerpetualType
 import java.math.BigInteger
 
 class HyperCoreSignClient(
@@ -64,6 +67,50 @@ class HyperCoreSignClient(
             metadata = metadata,
         )
         return listOf(hyperCore.signTokenTransfer(gemLoadInput, privateKey).toByteArray())
+    }
+
+    override suspend fun signPerpetualOpen(
+        params: ConfirmParams.PerpetualParams.Open,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        fee: Fee,
+        privateKey: ByteArray
+    ): List<ByteArray> {
+        val metadata = (chainData as HyperCoreChainData).toGem()
+        val gemLoadInput = GemTransactionLoadInput(
+            inputType = GemTransactionInputType.Perpetual(
+                asset = params.asset.toGem(),
+                perpetualType = PerpetualType.Open(
+                    v1 = PerpetualConfirmData(
+                        direction = when (params.direction) {
+                            PerpetualDirection.Short -> uniffi.gemstone.PerpetualDirection.SHORT
+                            PerpetualDirection.Long -> uniffi.gemstone.PerpetualDirection.LONG
+                        },
+                        assetIndex = params.assetIndex,
+                        baseAsset = params.baseAsset.toGem(),
+                        price = params.price,
+                        fiatValue = params.fiatValue,
+                        size = params.size,
+                        slippage = params.slippage,
+                        leverage = params.leverage.toUByte(),
+                        pnl = null,
+                        entryPrice = null,
+                        marketPrice = params.marketPrice,
+                        marginAmount = params.marginAmount,
+                        takeProfit = params.takeProfit,
+                        stopLoss = params.stopLoss,
+                    )
+                )
+            ),
+            senderAddress = params.from.address,
+            destinationAddress = params.from.address,
+            value = finalAmount.toString(),
+            gasPrice = GemGasPriceType.Regular("0"),
+            memo = "",
+            isMaxValue = params.useMaxAmount,
+            metadata = metadata,
+        )
+        return super.signPerpetualOpen(params, chainData, finalAmount, fee, privateKey)
     }
 
     override fun supported(chain: Chain): Boolean = this.chain == chain

@@ -50,6 +50,9 @@ import uniffi.gemstone.GemTransactionLoadMetadata
 import uniffi.gemstone.GemTransactionPreloadInput
 import uniffi.gemstone.GemTransferDataExtra
 import uniffi.gemstone.GemWalletConnectionSessionAppMetadata
+import uniffi.gemstone.PerpetualConfirmData
+import uniffi.gemstone.PerpetualDirection
+import uniffi.gemstone.PerpetualType
 import uniffi.gemstone.SwapperException.NotSupportedChain
 import uniffi.gemstone.TransferDataOutputAction
 import uniffi.gemstone.TransferDataOutputType
@@ -216,6 +219,30 @@ class SignerPreloaderProxy(
             is ConfirmParams.NftParams,
             is ConfirmParams.TransferParams.Native,
             is ConfirmParams.TransferParams.Token -> GemTransactionInputType.Transfer(gemAsset)
+            is ConfirmParams.PerpetualParams.Open -> GemTransactionInputType.Perpetual(
+                asset = gemAsset,
+                perpetualType = PerpetualType.Open(
+                    v1 = PerpetualConfirmData(
+                        direction = when (params.direction) {
+                            com.wallet.core.primitives.PerpetualDirection.Long -> PerpetualDirection.LONG
+                            com.wallet.core.primitives.PerpetualDirection.Short -> PerpetualDirection.SHORT
+                        },
+                        baseAsset = params.baseAsset.toGem(),
+                        assetIndex = params.assetIndex,
+                        price = params.price,
+                        fiatValue = params.fiatValue,
+                        size = params.size,
+                        slippage = params.slippage,
+                        leverage = params.leverage.toUByte(),
+                        pnl = null,
+                        entryPrice = params.entryPrice,
+                        marketPrice = params.marketPrice,
+                        marginAmount = params.marginAmount,
+                        takeProfit = params.takeProfit,
+                        stopLoss = params.stopLoss,
+                    )
+                )
+            )
         }
     }
 

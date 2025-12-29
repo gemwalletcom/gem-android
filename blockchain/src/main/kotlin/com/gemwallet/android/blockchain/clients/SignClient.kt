@@ -127,4 +127,12 @@ interface SignClient : BlockchainClient {
         fee: Fee,
         privateKey: ByteArray,
     ): List<ByteArray> = emptyList()
+
+    suspend fun signPerpetualOpen(
+        params: ConfirmParams.PerpetualParams.Open,
+        chainData: ChainSignData,
+        finalAmount: BigInteger,
+        fee: Fee,
+        privateKey: ByteArray,
+    ): List<ByteArray> = emptyList()
 }

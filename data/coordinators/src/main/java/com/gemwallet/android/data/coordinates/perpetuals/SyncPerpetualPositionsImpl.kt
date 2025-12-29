@@ -2,6 +2,7 @@ package com.gemwallet.android.data.coordinates.perpetuals
 
 import com.gemwallet.android.application.perpetual.coordinators.SyncPerpetualPositions
 import com.gemwallet.android.blockchain.services.PerpetualService
+import com.gemwallet.android.data.repositoreis.BuildConfig
 import com.gemwallet.android.data.repositoreis.perpetual.PerpetualRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.wallet.core.primitives.Chain
@@ -32,36 +33,40 @@ class SyncPerpetualPositionsImpl @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val syncFlow = sessionRepository.session()
-//        .filterNotNull()
-//        .map { it.wallet.accounts.filter { chains.contains(it.chain) } }
-//        .flatMapLatest { accounts ->
-//            flow {
-//                while (true) {
-//                    val summaries = withContext(Dispatchers.IO) {
-//                        accounts.map {
-//                                async {
-//                                    Pair(it.address, perpetualService.getPositions(it.chain, it.address))
-//                                }
-//                            }
-//                            .awaitAll()
-//                    }
-//                    emit(summaries)
-//                    delay(5 * 1000)
-//                }
-//            }
-//        }
-//        .onEach { items ->
-//            items.forEach { item ->
-//                val summary = item.second
-//                val accountAddress = item.first
-//                perpetualRepository.removeNotAvailablePositions(accountAddress, summary?.positions ?: return@onEach)
-//                perpetualRepository.putPositions(accountAddress, summary.positions)
-//
-//                perpetualRepository.putBalance(accountAddress, summary.balance)
-//            }
-//        }
-//        .flowOn(Dispatchers.IO)
-//        .stateIn(scope, SharingStarted.Eagerly, emptyList())
+        .filterNotNull()
+        .map { it.wallet.accounts.filter { chains.contains(it.chain) } }
+        .flatMapLatest { accounts ->
+            flow {
+                if (BuildConfig.DEBUG) {
+                    while (true) {
+                        val summaries = withContext(Dispatchers.IO) {
+                            accounts.map {
+                                async {
+                                    Pair(it.address, perpetualService.getPositions(it.chain, it.address))
+                                }
+                            }
+                                .awaitAll()
+                        }
+                        emit(summaries)
+                        delay(5 * 1000)
+                    }
+                } else {
+                    emit(emptyList())
+                }
+            }
+        }
+        .onEach { items ->
+            items.forEach { item ->
+                val summary = item.second
+                val accountAddress = item.first
+                perpetualRepository.removeNotAvailablePositions(accountAddress, summary?.positions ?: return@onEach)
+                perpetualRepository.putPositions(accountAddress, summary.positions)
+
+                perpetualRepository.putBalance(accountAddress, summary.balance)
+            }
+        }
+        .flowOn(Dispatchers.IO)
+        .stateIn(scope, SharingStarted.Eagerly, emptyList())
 
 
     override suspend fun syncPerpetualPositions() {

@@ -12,5 +12,5 @@ class GetPerpetualBalanceImpl(
     override fun getBalance(
         chain: Chain,
         accountAddress: String
-    ): Flow<PerpetualBalance> = perpetualRepository.getBalance(accountAddress)
+    ): Flow<PerpetualBalance?> = perpetualRepository.getBalance(accountAddress)
 }

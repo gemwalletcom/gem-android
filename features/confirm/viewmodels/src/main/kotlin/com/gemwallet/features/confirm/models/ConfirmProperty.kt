@@ -18,7 +18,9 @@ sealed interface ConfirmProperty {
 
         class Transfer(val domain: String?, val address: String) : Destination(address)
 
-        class App(val name: String) : Destination(name)
+        class Generic(val appName: String) : Destination(appName)
+
+        class PerpetualOper(val providerName: String) : Destination(providerName)
 
         companion object {
             fun map(params: ConfirmParams, validator: DelegationValidator?): Destination? {
@@ -41,7 +43,8 @@ sealed interface ConfirmProperty {
 
                         } ?: throw ConfirmError.RecipientEmpty
                     }
-                    is ConfirmParams.TransferParams.Generic -> App(params.name)
+                    is ConfirmParams.TransferParams.Generic -> Generic(params.name)
+                    is ConfirmParams.PerpetualParams.Open -> TODO()
                 }
             }
         }

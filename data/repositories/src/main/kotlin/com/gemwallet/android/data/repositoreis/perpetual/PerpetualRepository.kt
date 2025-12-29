@@ -33,7 +33,7 @@ interface PerpetualRepository {
 
     suspend fun putBalance(accountAddress: String, balance: PerpetualBalance)
 
-    fun getBalance(accountAddress: String): Flow<PerpetualBalance>
+    fun getBalance(accountAddress: String): Flow<PerpetualBalance?>
 
     fun getBalances(accountAddresses: List<String>): Flow<List<PerpetualBalance>>
 

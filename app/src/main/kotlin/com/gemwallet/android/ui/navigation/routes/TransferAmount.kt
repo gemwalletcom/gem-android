@@ -68,6 +68,9 @@ fun NavGraphBuilder.amount(
     }
 
     composable<PerpetualAmountRoute> {
-        AmountPerpetualNavScreen(onClose = onCancel)
+        AmountPerpetualNavScreen(
+            onConfirm = onConfirm,
+            onClose = onCancel
+        )
     }
 }

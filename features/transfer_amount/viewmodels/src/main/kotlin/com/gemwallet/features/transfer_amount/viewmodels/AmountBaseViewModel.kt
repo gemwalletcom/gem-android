@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.math.parseNumber
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.model.AssetInfo
+import com.gemwallet.android.model.ConfirmParams
 import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.models.AmountInputType
@@ -25,6 +26,7 @@ import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
@@ -94,6 +96,26 @@ abstract class AmountBaseViewModel(
         }
         amount = ""
     }
+
+    fun onNext(onConfirm: (ConfirmParams) -> Unit) {
+        val params = params.value ?: return
+        viewModelScope.launch {
+            try {
+                onNext(params, amount, onConfirm)
+            } catch (err: Throwable) {
+                when (err) {
+                    is AmountError -> amountError.update { err }
+                    else -> amountError.update { AmountError.Unknown(err.message ?: "Unknown error") }
+                }
+            }
+        }
+    }
+
+    internal abstract fun onNext(
+        params: AmountParams,
+        rawAmount: String,
+        onConfirm: (ConfirmParams) -> Unit
+    )
 
     internal fun validateAmount(asset: Asset, amount: String, minValue: BigInteger) {
         if (amount.isEmpty()) {

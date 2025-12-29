@@ -76,9 +76,9 @@ class PerpetualRepositoryImpl(
         perpetualBalanceDao.put(balance.toDB(accountAddress))
     }
 
-    override fun getBalance(accountAddress: String): Flow<PerpetualBalance> {
+    override fun getBalance(accountAddress: String): Flow<PerpetualBalance?> {
         return perpetualBalanceDao.getBalance(accountAddress)
-            .map { it.toDTO() }
+            .map { it?.toDTO() }
     }
 
     override fun getBalances(accountAddresses: List<String>): Flow<List<PerpetualBalance>> {

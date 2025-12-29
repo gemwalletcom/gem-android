@@ -36,6 +36,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gemwallet.android.ui.BuildConfig
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.PushRequest
 import com.gemwallet.android.ui.components.list_item.LinkItem
@@ -96,12 +97,14 @@ fun SettingsScene(
                 listPosition = ListPosition.Last,
                 onClick = onSecurity
             )
-//            LinkItem(
-//                title = stringResource(id = R.string.perpetuals_title),
-//                icon = R.drawable.settings_security,
-//                listPosition = ListPosition.Last,
-//                onClick = onPerpetual
-//            )
+            if (BuildConfig.DEBUG) {
+                LinkItem(
+                    title = stringResource(id = R.string.perpetuals_title),
+                    icon = R.drawable.settings_security,
+                    listPosition = ListPosition.Last,
+                    onClick = onPerpetual
+                )
+            }
             LinkItem(title = stringResource(id = R.string.settings_preferences_title), icon = R.drawable.settings_preferences, listPosition = ListPosition.Single) {
                 onPreferences()
             }
