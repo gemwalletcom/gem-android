@@ -91,7 +91,7 @@ fun ReferralCodeDialog(
             containerColor = MaterialTheme.colorScheme.background,
             confirmButton = {
                 Button({ showError = null }) {
-                    Text(stringResource(R.string.common_cancel))
+                    Text(stringResource(android.R.string.ok))
                 }
             },
             text = {
