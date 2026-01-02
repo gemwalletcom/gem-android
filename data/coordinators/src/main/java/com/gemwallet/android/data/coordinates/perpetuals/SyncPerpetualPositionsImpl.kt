@@ -42,10 +42,15 @@ class SyncPerpetualPositionsImpl @Inject constructor(
                         val summaries = withContext(Dispatchers.IO) {
                             accounts.map {
                                 async {
-                                    Pair(it.address, perpetualService.getPositions(it.chain, it.address))
+                                    try {
+                                        val positions = perpetualService.getPositions(it.chain, it.address)
+                                        Pair(it.address, positions)
+                                    } catch (err: Throwable) {
+                                        null
+                                    }
                                 }
                             }
-                                .awaitAll()
+                            .awaitAll().filterNotNull()
                         }
                         emit(summaries)
                         delay(5 * 1000)
