@@ -1,12 +1,12 @@
 package com.gemwallet.android.data.repositoreis.assets
 
+import com.gemwallet.android.application.transactions.coordinators.GetChangedTransactions
 import com.gemwallet.android.blockchain.operators.GetAsset
 import com.gemwallet.android.blockchain.services.BalancesService
 import com.gemwallet.android.cases.assets.AddRecentActivity
 import com.gemwallet.android.cases.assets.GetRecent
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
-import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.data.repositoreis.tokens.toPriorityQuery
 import com.gemwallet.android.data.service.store.database.AssetsDao
@@ -82,7 +82,7 @@ class AssetsRepository @Inject constructor(
     private val gemApi: GemApiClient,
     private val sessionRepository: SessionRepository,
     private val balancesService: BalancesService,
-    getTransactions: GetTransactions,
+    getChangedTransactions: GetChangedTransactions,
     private val searchTokensCase: SearchTokensCase,
     private val getDeviceIdCase: GetDeviceIdCase,
     private val priceClient: PriceWebSocketClient,
@@ -102,7 +102,7 @@ class AssetsRepository @Inject constructor(
 
     init {
         scope.launch(Dispatchers.IO) {
-            getTransactions.getChangedTransactions().collect {
+            getChangedTransactions.getChangedTransactions().collect {
                 onTransactions(it)
             }
         }

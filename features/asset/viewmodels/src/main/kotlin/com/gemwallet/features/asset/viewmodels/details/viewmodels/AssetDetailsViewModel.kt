@@ -7,7 +7,7 @@ import com.gemwallet.android.cases.banners.HasMultiSign
 import com.gemwallet.android.cases.nodes.GetCurrentBlockExplorer
 import com.gemwallet.android.cases.pricealerts.EnablePriceAlert
 import com.gemwallet.android.cases.pricealerts.GetPriceAlerts
-import com.gemwallet.android.cases.transactions.GetTransactions
+import com.gemwallet.android.application.transactions.coordinators.GetTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.domains.asset.chain

@@ -1,11 +1,11 @@
 package com.gemwallet.android.data.repositoreis.di
 
+import com.gemwallet.android.application.transactions.coordinators.GetChangedTransactions
 import com.gemwallet.android.blockchain.services.AddressStatusService
 import com.gemwallet.android.blockchain.services.BalancesService
 import com.gemwallet.android.blockchain.services.PerpetualService
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
-import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.assets.PriceWebSocketClient
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
@@ -35,7 +35,7 @@ object AssetsModule {
         pricesDao: PricesDao,
         sessionRepository: SessionRepository,
         balancesService: BalancesService,
-        getTransactions: GetTransactions,
+        getChangedTransactions: GetChangedTransactions,
         searchTokensCase: SearchTokensCase,
         getDeviceIdCase: GetDeviceIdCase,
         priceClient: PriceWebSocketClient,
@@ -46,7 +46,7 @@ object AssetsModule {
         balancesDao = balancesDao,
         pricesDao = pricesDao,
         sessionRepository = sessionRepository,
-        getTransactions = getTransactions,
+        getChangedTransactions = getChangedTransactions,
         balancesService = balancesService,
         searchTokensCase = searchTokensCase,
         getDeviceIdCase = getDeviceIdCase,

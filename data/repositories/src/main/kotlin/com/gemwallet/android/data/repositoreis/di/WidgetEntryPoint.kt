@@ -3,7 +3,7 @@ package com.gemwallet.android.data.repositoreis.di
 import com.gemwallet.android.blockchain.services.BalancesService
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.tokens.SearchTokensCase
-import com.gemwallet.android.cases.transactions.GetTransactions
+import com.gemwallet.android.application.transactions.coordinators.GetTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.assets.PriceWebSocketClient
 import com.gemwallet.android.data.repositoreis.session.SessionRepository

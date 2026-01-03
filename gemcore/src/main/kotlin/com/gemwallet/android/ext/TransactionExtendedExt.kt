@@ -15,7 +15,12 @@ fun Transaction.getAssociatedAssetIds(): List<AssetId> {
 val Transaction.hash: String
     get() = id.removePrefix("${assetId.chain.string}_")
 
-fun Transaction.getSwapMetadata(): TransactionSwapMetadata? {
+fun Transaction.getSwapMetadata(): TransactionSwapMetadata? = getTransactionSwapMetadata(type, metadata)
+
+fun getTransactionSwapMetadata(
+    type: TransactionType,
+    metadata: String?,
+): TransactionSwapMetadata? {
     if (type != TransactionType.Swap ||  metadata.isNullOrEmpty()) {
         return null
     }

@@ -1,17 +1,19 @@
 package com.gemwallet.android.data.repositoreis.di
 
+import com.gemwallet.android.application.transactions.coordinators.GetChangedTransactions
+import com.gemwallet.android.application.transactions.coordinators.GetPendingTransactionsCount
 import com.gemwallet.android.blockchain.services.TransactionStatusService
 import com.gemwallet.android.cases.device.GetDeviceIdCase
 import com.gemwallet.android.cases.transactions.ClearPendingTransactions
 import com.gemwallet.android.cases.transactions.CreateTransaction
 import com.gemwallet.android.cases.transactions.GetTransaction
 import com.gemwallet.android.cases.transactions.GetTransactionUpdateTime
-import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.cases.transactions.PutTransactions
 import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.transactions.SyncTransactionsService
-import com.gemwallet.android.data.repositoreis.transactions.TransactionsRepository
+import com.gemwallet.android.data.repositoreis.transactions.TransactionRepository
+import com.gemwallet.android.data.repositoreis.transactions.TransactionsRepositoryImpl
 import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
 import com.gemwallet.android.data.services.gemapi.GemApiClient
@@ -32,7 +34,7 @@ object TransactionsModule {
         transactionsDao: TransactionsDao,
         assetsDao: AssetsDao,
         gateway: GemGateway,
-    ): TransactionsRepository = TransactionsRepository(
+    ): TransactionsRepositoryImpl = TransactionsRepositoryImpl(
         transactionsDao = transactionsDao,
         assetsDao = assetsDao,
         transactionStatusService = TransactionStatusService(
@@ -42,37 +44,49 @@ object TransactionsModule {
 
     @Singleton
     @Provides
-    fun provideGetTransactionsCase(transactionsRepository: TransactionsRepository): GetTransactions {
+    fun provideTransactionRepository( // TODO: Remove when TransactionsRepositoryImpl will refactored
+        impl: TransactionsRepositoryImpl
+    ): TransactionRepository = impl
+
+    @Singleton
+    @Provides
+    fun provideGetChangedTransactions(transactionsRepository: TransactionsRepositoryImpl): GetChangedTransactions {
         return transactionsRepository
     }
 
     @Singleton
     @Provides
-    fun provideGetTransactionCase(transactionsRepository: TransactionsRepository): GetTransaction {
+    fun provideGetPendingTransactionsCount(transactionsRepository: TransactionsRepositoryImpl): GetPendingTransactionsCount {
         return transactionsRepository
     }
 
     @Singleton
     @Provides
-    fun providePutTransactionsCase(transactionsRepository: TransactionsRepository): PutTransactions {
+    fun provideGetTransactionCase(transactionsRepository: TransactionsRepositoryImpl): GetTransaction {
         return transactionsRepository
     }
 
     @Singleton
     @Provides
-    fun provideCreateTransactionsCase(transactionsRepository: TransactionsRepository): CreateTransaction {
+    fun providePutTransactionsCase(transactionsRepository: TransactionsRepositoryImpl): PutTransactions {
         return transactionsRepository
     }
 
     @Singleton
     @Provides
-    fun provideUpdateTime(transactionsRepository: TransactionsRepository): GetTransactionUpdateTime {
+    fun provideCreateTransactionsCase(transactionsRepository: TransactionsRepositoryImpl): CreateTransaction {
         return transactionsRepository
     }
 
     @Singleton
     @Provides
-    fun provideClearPending(transactionsRepository: TransactionsRepository): ClearPendingTransactions {
+    fun provideUpdateTime(transactionsRepository: TransactionsRepositoryImpl): GetTransactionUpdateTime {
+        return transactionsRepository
+    }
+
+    @Singleton
+    @Provides
+    fun provideClearPending(transactionsRepository: TransactionsRepositoryImpl): ClearPendingTransactions {
         return transactionsRepository
     }
     

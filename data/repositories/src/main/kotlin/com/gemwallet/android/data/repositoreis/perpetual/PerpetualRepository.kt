@@ -8,6 +8,7 @@ import com.wallet.core.primitives.PerpetualPosition
 import com.wallet.core.primitives.PerpetualPositionData
 import kotlinx.coroutines.flow.Flow
 
+// TODO: It isn't correct package
 interface PerpetualRepository {
     suspend fun putPerpetuals(items: List<PerpetualData>)
 

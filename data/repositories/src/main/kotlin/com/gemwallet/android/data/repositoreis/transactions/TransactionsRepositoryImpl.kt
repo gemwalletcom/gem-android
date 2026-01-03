@@ -1,6 +1,8 @@
 package com.gemwallet.android.data.repositoreis.transactions
 
 import android.text.format.DateUtils
+import com.gemwallet.android.application.transactions.coordinators.GetChangedTransactions
+import com.gemwallet.android.application.transactions.coordinators.GetPendingTransactionsCount
 import com.gemwallet.android.blockchain.model.ServiceUnavailable
 import com.gemwallet.android.blockchain.model.TransactionStateRequest
 import com.gemwallet.android.blockchain.services.TransactionStatusService
@@ -8,7 +10,6 @@ import com.gemwallet.android.cases.transactions.ClearPendingTransactions
 import com.gemwallet.android.cases.transactions.CreateTransaction
 import com.gemwallet.android.cases.transactions.GetTransaction
 import com.gemwallet.android.cases.transactions.GetTransactionUpdateTime
-import com.gemwallet.android.cases.transactions.GetTransactions
 import com.gemwallet.android.cases.transactions.PutTransactions
 import com.gemwallet.android.data.repositoreis.assets.GetAssetByIdCase
 import com.gemwallet.android.data.service.store.database.AssetsDao
@@ -18,6 +19,7 @@ import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetada
 import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toRecord
 import com.gemwallet.android.ext.getSwapMetadata
+import com.gemwallet.android.ext.getTransactionSwapMetadata
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.Fee
@@ -46,15 +48,18 @@ import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
 import java.math.BigInteger
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.collections.map
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class TransactionsRepository(
+class TransactionsRepositoryImpl(
     private val transactionsDao: TransactionsDao,
     private val transactionStatusService: TransactionStatusService,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
     assetsDao: AssetsDao,
 )
-: GetTransactions,
+: TransactionRepository,
+    GetChangedTransactions,
+    GetPendingTransactionsCount,
     GetTransaction,
     CreateTransaction,
     PutTransactions,
@@ -80,32 +85,22 @@ class TransactionsRepository(
         return transactionsDao.getPendingCount()
     }
 
-    override fun getTransactions(assetId: AssetId?, state: TransactionState?): Flow<List<TransactionExtended>> {
+    override fun getTransactions(): Flow<List<TransactionExtended>> {
         return transactionsDao.getExtendedTransactions()
-            .flowOn(Dispatchers.IO)
-            .map { txs -> txs.filter { state == null || it.state == state } }
-            .mapNotNull { it.toDTO() }
-            .map { items ->
-                items.filter {
-                    val swapMetadata = it.transaction.getSwapMetadata()
-                    assetId == null || it.asset.id == assetId
-                        || swapMetadata?.toAsset == assetId
-                        || swapMetadata?.fromAsset == assetId
-                }.map {
-                    val metadata = it.transaction.getSwapMetadata()
-                    if (metadata != null) {
-                        it.copy(
-                            assets = listOfNotNull(
-                                assetsRoomSource.getById(metadata.fromAsset),
-                                assetsRoomSource.getById(metadata.toAsset),
-                            )
+            .mapNotNull { items ->
+                items.mapNotNull {
+                    val metadata = getTransactionSwapMetadata(it.type, it.metadata)
+                    val associatedAssets = if (metadata != null) {
+                        listOfNotNull(
+                            assetsRoomSource.getById(metadata.fromAsset),
+                            assetsRoomSource.getById(metadata.toAsset),
                         )
                     } else {
-                        it
+                        emptyList()
                     }
+                    it.toDTO(associatedAssets)
                 }
             }
-            .flowOn(Dispatchers.Default)
     }
 
     override fun getTransaction(txId: String): Flow<TransactionExtended?> {
