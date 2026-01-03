@@ -10,7 +10,6 @@ import com.gemwallet.android.ext.mutableStateIn
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.models.TransactionTypeFilter
 import com.wallet.core.primitives.Chain
-import com.wallet.core.primitives.Currency
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -26,13 +25,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TransactionsViewModel @Inject constructor(
-    private val sessionRepository: SessionRepository,
+    sessionRepository: SessionRepository,
     getTransactions: GetTransactions,
     private val syncTransactions: SyncTransactions,
 ) : ViewModel() {
 
     val chainsFilter = MutableStateFlow<List<Chain>>(emptyList())
     val typeFilter = MutableStateFlow<List<TransactionTypeFilter>>(emptyList())
+
     val session = sessionRepository.session()
         .stateIn(viewModelScope, started = SharingStarted.Eagerly, null)
 
@@ -40,8 +40,7 @@ class TransactionsViewModel @Inject constructor(
         chainsFilter,
         typeFilter,
         getTransactions.getTransactions(),
-        session,
-    ) { chainsFilter, typeFilter, transactions, session ->
+    ) { chainsFilter, typeFilter, transactions ->
 
         val transactions = transactions.filter { tx ->
             val byChain = if (chainsFilter.isEmpty()) {
@@ -61,7 +60,6 @@ class TransactionsViewModel @Inject constructor(
         State(
             loading = false,
             transactions = transactions,
-            currency = session?.currency ?: Currency.USD
         )
     }
     .flowOn(Dispatchers.IO)
@@ -116,7 +114,6 @@ class TransactionsViewModel @Inject constructor(
     private data class State(
         val loading: Boolean = false,
         val transactions: List<TransactionExtended> = emptyList(),
-        val currency: Currency = Currency.USD,
     ) {
         fun toUIState(): TxListScreenState {
             return TxListScreenState(

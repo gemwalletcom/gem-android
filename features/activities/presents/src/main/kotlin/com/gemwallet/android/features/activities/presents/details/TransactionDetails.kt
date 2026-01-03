@@ -35,13 +35,13 @@ import com.gemwallet.android.ui.components.dialog.DialogBar
 import com.gemwallet.android.ui.components.list_head.AmountListHead
 import com.gemwallet.android.ui.components.list_head.NftHead
 import com.gemwallet.android.ui.components.list_head.SwapListHead
-import com.gemwallet.android.ui.components.list_item.getTransactionTitle
 import com.gemwallet.android.ui.components.list_item.property.PropertyDataText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkFee
 import com.gemwallet.android.ui.components.list_item.property.PropertyNetworkItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
+import com.gemwallet.android.ui.components.list_item.transaction.getTitle
 import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.components.screen.Scene
@@ -75,7 +75,7 @@ fun TransactionDetails(
         LoadingScene(title = "", onCancel)
     } else {
         Scene(
-            title = model.type.getTransactionTitle(model.direction, model.state),
+            title = stringResource(model.type.getTitle(model.direction, model.state)),
             actions = {
                 IconButton(onShare) {
                     Icon(Icons.Default.Share, "")

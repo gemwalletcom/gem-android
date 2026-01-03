@@ -1,4 +1,4 @@
-package com.gemwallet.android.ui.components.list_item
+package com.gemwallet.android.ui.components.list_item.transaction
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -17,8 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.gemwallet.android.domains.asset.getIconUrl
-import com.gemwallet.android.domains.asset.getSupportIconUrl
+import com.gemwallet.android.domains.transaction.aggregates.TransactionDataAggregate
 import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.ext.getSwapMetadata
 import com.gemwallet.android.model.Crypto
@@ -26,6 +25,9 @@ import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.model.format
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.image.IconWithBadge
+import com.gemwallet.android.ui.components.list_item.ListItem
+import com.gemwallet.android.ui.components.list_item.ListItemSupportText
+import com.gemwallet.android.ui.components.list_item.ListItemTitleText
 import com.gemwallet.android.ui.components.progress.CircularProgressIndicator10
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer2
@@ -40,7 +42,6 @@ import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionSwapMetadata
 import com.wallet.core.primitives.TransactionType
-import java.math.BigDecimal
 
 @Composable
 fun TransactionItem(
@@ -50,9 +51,7 @@ fun TransactionItem(
 ) {
     val value = Crypto(item.transaction.value.toBigInteger())
     TransactionItem(
-        assetIcon = item.asset.getIconUrl(),
-        supportIcon = item.asset.getSupportIconUrl(),
-        assetSymbol = item.asset.symbol,
+        asset = item.asset,
         to = item.transaction.to,
         from = item.transaction.from,
         direction = item.transaction.direction,
@@ -60,7 +59,6 @@ fun TransactionItem(
         state = item.transaction.state,
         value = item.asset.format(
             crypto = value,
-            decimalPlace = if (value.value(item.asset.decimals) < BigDecimal.ONE) 4 else 2,
             dynamicPlace = true,
         ),
         metadata = item.transaction.getSwapMetadata(),
@@ -71,8 +69,74 @@ fun TransactionItem(
 
 @Composable
 fun TransactionItem(
-    assetIcon: String,
-    assetSymbol: String,
+    data: TransactionDataAggregate,
+    listPosition: ListPosition,
+    onClick: () -> Unit,
+) {
+    ListItem(
+        modifier = Modifier.clickable(onClick = onClick).heightIn(72.dp),
+        leading = { IconWithBadge(asset = data.asset) },
+        title = {
+            ListItemTitleText(
+                text = data.getTitle(),
+                titleBadge = { TransactionStatusBadge(data) }
+            )
+        },
+        subtitle = data.formatAddress()?.let { { ListItemSupportText(it) } },
+        listPosition = listPosition,
+        trailing = {
+            Column(horizontalAlignment = Alignment.End) {
+                ListItemTitleText(
+                    text = data.value,
+                    color = data.getValueColor(),
+                )
+                data.equivalentValue?.let {
+                    Spacer2()
+                    ListItemSupportText(it)
+                }
+            }
+        }
+    )
+}
+
+@Composable
+private fun TransactionStatusBadge(data: TransactionDataAggregate) {
+    val text = data.getBadgeText()
+    val color = data.getBadgeColor()
+    Row(
+        Modifier
+            .padding(start = 5.dp)
+            .background(
+                color = color.copy(alpha = 0.1f),
+                shape = RoundedCornerShape(6.dp)
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        if (text.isNotEmpty()) {
+            Text(
+                modifier = Modifier.padding(
+                    start = 5.dp,
+                    top = 2.dp,
+                    end = paddingHalfSmall,
+                    bottom = 2.dp
+                ),
+                text = text,
+                color = color,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                style = MaterialTheme.typography.labelMedium,
+            )
+            if (data.isPending) {
+                CircularProgressIndicator10(color = color)
+                Spacer8()
+            }
+        }
+    }
+}
+
+@Composable
+fun TransactionItem(
+    asset: Asset,
     type: TransactionType,
     state: TransactionState,
     value: String,
@@ -82,21 +146,14 @@ fun TransactionItem(
     metadata: Any?,
     assets: List<Asset>,
     listPosition: ListPosition,
-    supportIcon: String? = null,
     onClick: () -> Unit,
 ) {
     ListItem(
         modifier = Modifier.clickable(onClick = onClick).heightIn(72.dp),
-        leading = {
-            IconWithBadge(
-                icon = assetIcon,
-                supportIcon = supportIcon,
-                placeholder = assetSymbol,
-            )
-        },
+        leading = { IconWithBadge(asset = asset) },
         title = {
             ListItemTitleText(
-                text = type.getTransactionTitle(direction, state),
+                text = stringResource(type.getTitle(direction, state)),
                 titleBadge = {
                     val badge = when (state) {
                         TransactionState.Pending -> stringResource(id = R.string.transaction_status_pending)
@@ -212,59 +269,6 @@ fun TransactionDirection.getValueColor(): Color {
     }
 }
 
-fun TransactionType.getTitle(direction: TransactionDirection? = null, state: TransactionState? = null): Int {
-    return when (this) {
-        TransactionType.StakeDelegate -> R.string.transfer_stake_title
-        TransactionType.StakeUndelegate -> R.string.transfer_unstake_title
-        TransactionType.StakeRedelegate -> R.string.transfer_redelegate_title
-        TransactionType.StakeRewards -> R.string.transfer_rewards_title
-        TransactionType.Transfer -> when (state) {
-            TransactionState.Failed,
-            TransactionState.Reverted,
-            TransactionState.Pending -> R.string.transfer_title
-            TransactionState.Confirmed -> when (direction) {
-                TransactionDirection.Incoming -> R.string.transaction_title_received
-                else -> R.string.transaction_title_sent
-            }
-            else -> R.string.transfer_send_title
-        }
-
-        TransactionType.Swap -> R.string.wallet_swap
-        TransactionType.TokenApproval -> R.string.transfer_approve_title
-        TransactionType.StakeWithdraw -> R.string.transfer_withdraw_title
-        TransactionType.AssetActivation -> R.string.transfer_activate_asset_title
-        TransactionType.TransferNFT -> R.string.transfer_title
-        TransactionType.SmartContractCall -> R.string.transfer_smart_contract_title
-        TransactionType.PerpetualOpenPosition -> R.string.perpetual_position
-        TransactionType.PerpetualClosePosition -> R.string.perpetual_close_position
-        TransactionType.StakeFreeze -> R.string.transfer_freeze_title
-        TransactionType.StakeUnfreeze -> R.string.transfer_unfreeze_title
-        TransactionType.PerpetualModifyPosition -> R.string.perpetual_modify
-    }
-}
-
-@Composable
-fun TransactionType.getTransactionTitle(direction: TransactionDirection, state: TransactionState): String {
-    return when (this) {
-        TransactionType.StakeDelegate,
-        TransactionType.StakeUndelegate,
-        TransactionType.StakeRewards,
-        TransactionType.StakeRedelegate,
-        TransactionType.StakeWithdraw,
-        TransactionType.Transfer,
-        TransactionType.Swap -> stringResource(getTitle(direction, state))
-        TransactionType.TokenApproval -> stringResource(id = R.string.transfer_approve_title)
-        TransactionType.AssetActivation -> stringResource(R.string.transfer_activate_asset_title)
-        TransactionType.TransferNFT -> "${stringResource(R.string.transfer_title)} NFT"
-        TransactionType.SmartContractCall -> stringResource(R.string.transfer_smart_contract_title)
-        TransactionType.PerpetualOpenPosition -> stringResource(R.string.perpetual_position)
-        TransactionType.PerpetualClosePosition -> stringResource(R.string.perpetual_close_position)
-        TransactionType.StakeFreeze -> stringResource(R.string.transfer_freeze_title)
-        TransactionType.StakeUnfreeze -> stringResource(R.string.transfer_unfreeze_title)
-        TransactionType.PerpetualModifyPosition -> stringResource(R.string.perpetual_modify)
-    }
-}
-
 fun TransactionType.getValue(direction: TransactionDirection, value: String): String {
     return when (this) {
         TransactionType.StakeUndelegate,
@@ -323,8 +327,13 @@ fun TransactionType.getAddress(direction: TransactionDirection, from: String, to
 fun PreviewTransactionItem() {
     MaterialTheme {
         TransactionItem(
-            assetIcon = "",
-            assetSymbol = "BTC",
+            asset = Asset(
+                id = AssetId(Chain.Bitcoin),
+                name = "Bitcoin",
+                symbol = "BTC",
+                decimals = 8,
+                type = AssetType.NATIVE,
+            ),
             from = "btc12312sdfksdjfks",
             to = "btc12312sdfksdjfks",
             direction = TransactionDirection.Outgoing,
@@ -344,8 +353,13 @@ fun PreviewTransactionItem() {
 fun PreviewSwapTransactionItem() {
     MaterialTheme {
         TransactionItem(
-            assetIcon = "",
-            assetSymbol = "BNB",
+            asset = Asset(
+                id = AssetId(Chain.SmartChain),
+                name = "SmartChain",
+                symbol = "BNB",
+                decimals = 18,
+                type = AssetType.NATIVE,
+            ),
             from = "0xBA4D1d35bCe0e8F28E5a3403e7a0b996c5d50AC4",
             to = "0xBA4D1d35bCe0e8F28E5a3403e7a0b996c5d50AC4",
             direction = TransactionDirection.Outgoing,

@@ -1,21 +1,15 @@
-package com.gemwallet.android.ui.components.list_item
+package com.gemwallet.android.ui.components.list_item.transaction
 
 import android.icu.util.Calendar
 import android.text.format.DateUtils
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import com.gemwallet.android.model.TransactionExtended
+import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
-import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.ui.theme.paddingDefault
 import java.text.DateFormat
 import java.util.Date
 
@@ -26,6 +20,7 @@ fun LazyListScope.transactionsList(
 ) {
     val dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM)
     val calendar = Calendar.getInstance()
+
     items.groupBy { item ->
         calendar.timeInMillis = item.transaction.createdAt
         calendar[Calendar.MILLISECOND] = 999

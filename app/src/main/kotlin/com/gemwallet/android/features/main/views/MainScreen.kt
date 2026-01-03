@@ -30,7 +30,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,7 +38,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.gemwallet.android.features.activities.presents.list.TransactionsScreen
+import com.gemwallet.android.features.activities.presents.list.TransactionsNavScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsManageScreen
 import com.gemwallet.android.features.create_wallet.navigation.navigateToAssetsSearchScreen
 import com.gemwallet.android.features.main.models.BottomNavItem
@@ -52,9 +51,7 @@ import com.gemwallet.android.ui.navigation.routes.navigateToAssetScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToAssetsScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToBridgesScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToBuyScreen
-import com.gemwallet.android.ui.navigation.routes.navigateToCurrenciesScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToDevelopScreen
-import com.gemwallet.android.ui.navigation.routes.navigateToNetworksScreen
 import com.gemwallet.android.ui.navigation.routes.navigateToNftAsset
 import com.gemwallet.android.ui.navigation.routes.navigateToNftCollection
 import com.gemwallet.android.ui.navigation.routes.navigateToPerpetualsScreen
@@ -74,7 +71,6 @@ import com.gemwallet.android.ui.navigation.routes.settingsRoute
 import com.gemwallet.android.ui.navigation.routes.transactionsRoute
 import com.gemwallet.features.assets.views.AssetsScreen
 import com.gemwallet.features.nft.presents.NftListScene
-import com.gemwallet.features.settings.settings.presents.views.PreferencesScene
 import com.gemwallet.features.settings.settings.presents.views.SettingsScene
 import kotlinx.coroutines.launch
 
@@ -216,7 +212,7 @@ fun MainScreen(
                     onAssetClick = navController::navigateToAssetScreen,
                     listState = assetsListState,
                 )
-                transactionsRoute -> TransactionsScreen(
+                transactionsRoute -> TransactionsNavScreen(
                     listState = activitiesListState,
                     onTransaction = navController::navigateToTransactionScreen,
                 )

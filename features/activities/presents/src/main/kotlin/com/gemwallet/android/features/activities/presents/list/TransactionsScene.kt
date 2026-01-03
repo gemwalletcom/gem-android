@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
 package com.gemwallet.android.features.activities.presents.list
 
 import androidx.compose.foundation.layout.Column
@@ -14,14 +12,13 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults.Indicator
+import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -33,44 +30,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.gemwallet.android.features.activities.viewmodels.TransactionsViewModel
-import com.gemwallet.android.features.activities.viewmodels.TxListScreenState
+import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.filters.TransactionsFilter
-import com.gemwallet.android.ui.components.list_item.transactionsList
+import com.gemwallet.android.ui.components.list_item.transaction.transactionsList
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.TransactionTypeFilter
 import com.wallet.core.primitives.Chain
 
 @Composable
-fun TransactionsScreen(
-    onTransaction: (String) -> Unit,
-    listState: LazyListState = rememberLazyListState()
-) {
-    val viewModel: TransactionsViewModel = hiltViewModel()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val chainFilter by viewModel.chainsFilter.collectAsStateWithLifecycle()
-    val typeFilter by viewModel.typeFilter.collectAsStateWithLifecycle()
-
-    List(
-        uiState = uiState,
-        chainsFilter = chainFilter,
-        typeFilter = typeFilter,
-        listState = listState,
-        onRefresh = viewModel::refresh,
-        onChainFilter = viewModel::onChainFilter,
-        onTypeFilter = viewModel::onTypeFilter,
-        onTransactionClick = onTransaction,
-        onClearChainsFilter = viewModel::clearChainsFilter,
-        onClearTypesFilter = viewModel::clearTypeFilter,
-    )
-}
-
-@Composable
-private fun List(
-    uiState: TxListScreenState,
+internal fun TransactionsScene(
+    loading: Boolean,
+    transactions: List<TransactionExtended>,
     chainsFilter: List<Chain>,
     typeFilter: List<TransactionTypeFilter>,
     listState: LazyListState = rememberLazyListState(),
@@ -103,20 +74,20 @@ private fun List(
     ) {
         PullToRefreshBox(
             modifier = Modifier,
-            isRefreshing = uiState.loading,
+            isRefreshing = loading,
             onRefresh = onRefresh,
             state = pullToRefreshState,
             indicator = {
-                Indicator(
+                PullToRefreshDefaults.Indicator(
                     modifier = Modifier.align(Alignment.TopCenter),
-                    isRefreshing = uiState.loading,
+                    isRefreshing = loading,
                     state = pullToRefreshState,
                     containerColor = MaterialTheme.colorScheme.background
                 )
             }
         ) {
             when {
-                uiState.transactions.isEmpty() -> {
+                transactions.isEmpty() && !loading -> {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
@@ -133,13 +104,14 @@ private fun List(
                         )
                     }
                 }
+
                 else -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         state = listState,
                     ) {
                         transactionsList(
-                            items = uiState.transactions,
+                            items = transactions,
                             onTransactionClick = onTransactionClick
                         )
                     }

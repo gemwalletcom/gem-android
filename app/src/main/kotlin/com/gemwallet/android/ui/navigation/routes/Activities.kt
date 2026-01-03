@@ -7,7 +7,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
 import com.gemwallet.android.features.activities.presents.details.TransactionDetails
-import com.gemwallet.android.features.activities.presents.list.TransactionsScreen
+import com.gemwallet.android.features.activities.presents.list.TransactionsNavScreen
 import com.gemwallet.android.ui.components.animation.enterTabScreenTransition
 import com.gemwallet.android.ui.components.animation.exitTabScreenTransition
 import kotlinx.serialization.SerialName
@@ -41,7 +41,7 @@ fun NavGraphBuilder.activitiesScreen(
         enterTransition = enterTabScreenTransition,
         exitTransition = exitTabScreenTransition,
     ) {
-        TransactionsScreen(onTransaction = onTransaction)
+        TransactionsNavScreen(onTransaction = onTransaction)
     }
 }
 
