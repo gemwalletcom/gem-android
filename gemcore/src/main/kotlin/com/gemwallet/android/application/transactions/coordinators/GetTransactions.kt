@@ -3,20 +3,16 @@ package com.gemwallet.android.application.transactions.coordinators
 import com.gemwallet.android.domains.transaction.aggregates.TransactionDataAggregate
 import com.gemwallet.android.model.TransactionExtended
 import com.wallet.core.primitives.AssetId
+import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState
+import com.wallet.core.primitives.TransactionType
 import kotlinx.coroutines.flow.Flow
 
 interface GetTransactions {
-
-    @Deprecated("Remove when all will move to getTransactions(...): Flow<List<TransactionDataAggregate>>")
     fun getTransactions(
         assetId: AssetId? = null,
         state: TransactionState? = null,
-    ): Flow<List<TransactionExtended>>
-
-    fun getTransactions(
-        assetId: AssetId? = null,
-        state: TransactionState? = null,
-        flag: Int = 0,
+        filterByChains: List<Chain> = emptyList(), // TODO: Improve filters
+        filterByType: List<TransactionType> = emptyList(), // TODO: Improve filters
     ): Flow<List<TransactionDataAggregate>>
 }

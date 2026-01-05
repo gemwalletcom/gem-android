@@ -7,6 +7,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
+import com.gemwallet.android.domains.transaction.aggregates.TransactionDataAggregate
 import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
@@ -15,14 +16,14 @@ import java.util.Date
 
 @OptIn(ExperimentalFoundationApi::class)
 fun LazyListScope.transactionsList(
-    items: List<TransactionExtended>,
+    items: List<TransactionDataAggregate>,
     onTransactionClick: (String) -> Unit
 ) {
     val dateFormat = DateFormat.getDateInstance(DateFormat.MEDIUM)
     val calendar = Calendar.getInstance()
 
     items.groupBy { item ->
-        calendar.timeInMillis = item.transaction.createdAt
+        calendar.timeInMillis = item.createdAt // TODO: Out to TransactionDataAggregator
         calendar[Calendar.MILLISECOND] = 999
         calendar[Calendar.SECOND] = 59
         calendar[Calendar.MINUTE] = 59
@@ -43,11 +44,11 @@ fun LazyListScope.transactionsList(
                     .background(MaterialTheme.colorScheme.surface),
             )
         }
-        itemsPositioned(entry.value, key = {index, item -> item.transaction.id}) { position, item ->
+        itemsPositioned(entry.value, key = {index, item -> item.id}) { position, item ->
             TransactionItem(
-                item,
+                data = item,
                 listPosition = position,
-                onTransactionClick
+                onClick = { onTransactionClick(item.id) }
             )
         }
     }

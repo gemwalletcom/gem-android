@@ -7,8 +7,22 @@ import androidx.room.Query
 import com.gemwallet.android.data.service.store.database.entities.DbTransaction
 import com.gemwallet.android.data.service.store.database.entities.DbTransactionExtended
 import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetadata
+import com.gemwallet.android.ext.toAssetId
+import com.gemwallet.android.model.Transaction
+import com.gemwallet.android.model.TransactionExtended
+import com.wallet.core.primitives.Asset
+import com.wallet.core.primitives.AssetType
+import com.wallet.core.primitives.Price
+import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
+import com.wallet.core.primitives.TransactionType
 import kotlinx.coroutines.flow.Flow
+
+const val SESSION_REQUEST = """SELECT accounts.address FROM accounts, session
+    WHERE accounts.wallet_id = session.wallet_id AND session.id = 1"""
+const val SESSION_CHAINS_REQUEST = """SELECT UPPER(accounts.chain) FROM accounts, session
+    WHERE accounts.wallet_id = session.wallet_id AND session.id = 1"""
+const val CURRENT_WALLET_REQUEST = """SELECT wallet_id FROM session WHERE session.id = 1"""
 
 @Dao
 interface TransactionsDao {
@@ -21,7 +35,7 @@ interface TransactionsDao {
 
     @Query("SELECT * FROM transactions WHERE state = :state")
     fun getByState(state: TransactionState): List<DbTransaction>
-
+    
     @Query("SELECT * FROM extended_txs ORDER BY createdAt DESC")
     fun getExtendedTransactions(): Flow<List<DbTransactionExtended>>
 

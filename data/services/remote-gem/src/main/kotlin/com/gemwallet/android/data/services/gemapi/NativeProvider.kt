@@ -32,9 +32,13 @@ class NativeProvider(
         target.headers?.forEach {
             requestBuilder.addHeader(it.key, it.value)
         }
-        val response = httpClient.newCall(requestBuilder.build()).execute()
-        val data = response.body?.bytes() ?: byteArrayOf()
-        val status = response.code.toUShort()
-        return AlienResponse(status, data)
+        return try {
+            val response = httpClient.newCall(requestBuilder.build()).execute()
+            val data = response.body?.bytes() ?: byteArrayOf()
+            val status = response.code.toUShort()
+            AlienResponse(status, data)
+        } catch (_: Throwable) {
+            AlienResponse(500.toUShort(), byteArrayOf())
+        }
     }
 }

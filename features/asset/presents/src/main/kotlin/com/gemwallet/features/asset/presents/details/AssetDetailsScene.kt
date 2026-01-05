@@ -18,9 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.style.TextOverflow
+import com.gemwallet.android.domains.transaction.aggregates.TransactionDataAggregate
 import com.gemwallet.android.ext.getReserveBalanceUrl
 import com.gemwallet.android.model.ConfirmParams
-import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.components.list_item.energyItem
 import com.gemwallet.android.ui.components.list_item.transaction.transactionsList
 import com.gemwallet.android.ui.components.screen.Scene
@@ -45,7 +45,7 @@ import com.wallet.core.primitives.AssetId
 @Composable
 internal fun AssetDetailsScene(
     uiState: AssetInfoUIModel,
-    transactions: List<TransactionExtended>,
+    transactions: List<TransactionDataAggregate>,
     priceAlertEnabled: Boolean,
     syncState: AssetInfoUIState.SyncState,
     onRefresh: () -> Unit,

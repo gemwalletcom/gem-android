@@ -21,7 +21,7 @@ class SyncTransactionsService @Inject constructor(
     private val assetsRepository: AssetsRepository,
 ) : SyncTransactions {
 
-    override suspend fun syncTransactions(wallet: Wallet) = withContext(Dispatchers.IO) {
+    override suspend fun syncTransactions(wallet: Wallet) {
         val deviceId = getDeviceIdCase.getDeviceId()
         val lastSyncTime = getTransactionUpdateTime.getTransactionUpdateTime(wallet.id) / 1000L
         val response = runCatching {
@@ -32,7 +32,7 @@ class SyncTransactionsService @Inject constructor(
             }
             result
         }
-        val txs: List<Transaction> = response.getOrNull() ?: return@withContext
+        val txs: List<Transaction> = response.getOrNull() ?: return
         prefetchAssets(wallet, txs)
 
         putTransactions.putTransactions(walletId = wallet.id, txs.toList())

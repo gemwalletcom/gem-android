@@ -1,6 +1,5 @@
-package com.gemwallet.android.features.activities.viewmodels
+package com.gemwallet.android.features.activities.models
 
-import com.gemwallet.android.features.activities.models.TxDetailsProperty
 import com.gemwallet.android.model.AssetInfo
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency

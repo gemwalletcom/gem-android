@@ -18,8 +18,6 @@ import com.gemwallet.android.data.service.store.database.entities.DbTransactionE
 import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetadata
 import com.gemwallet.android.data.service.store.database.entities.toDTO
 import com.gemwallet.android.data.service.store.database.entities.toRecord
-import com.gemwallet.android.ext.getSwapMetadata
-import com.gemwallet.android.ext.getTransactionSwapMetadata
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.ext.toIdentifier
 import com.gemwallet.android.model.Fee
@@ -41,14 +39,12 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
 import java.math.BigInteger
 import java.util.concurrent.ConcurrentHashMap
-import kotlin.collections.map
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class TransactionsRepositoryImpl(
@@ -67,7 +63,7 @@ class TransactionsRepositoryImpl(
     ClearPendingTransactions
 {
 
-    private val tenSeconds = 10 * DateUtils.SECOND_IN_MILLIS
+    private val transactionsCheckDelay = 10 * DateUtils.SECOND_IN_MILLIS
 
     private val assetsRoomSource = GetAssetByIdCase(assetsDao)
     val changedTransactions = MutableStateFlow<List<TransactionExtended>>(emptyList())
@@ -87,20 +83,7 @@ class TransactionsRepositoryImpl(
 
     override fun getTransactions(): Flow<List<TransactionExtended>> {
         return transactionsDao.getExtendedTransactions()
-            .mapNotNull { items ->
-                items.mapNotNull {
-                    val metadata = getTransactionSwapMetadata(it.type, it.metadata)
-                    val associatedAssets = if (metadata != null) {
-                        listOfNotNull(
-                            assetsRoomSource.getById(metadata.fromAsset),
-                            assetsRoomSource.getById(metadata.toAsset),
-                        )
-                    } else {
-                        emptyList()
-                    }
-                    it.toDTO(associatedAssets)
-                }
-            }
+            .mapNotNull { items -> items.toDTO() }
     }
 
     override fun getTransaction(txId: String): Flow<TransactionExtended?> {
@@ -232,7 +215,7 @@ class TransactionsRepositoryImpl(
             3L -> 5.0
             else -> 10.0
         }
-        val delay = (delay * multiple).toLong().takeIf { it < tenSeconds } ?: tenSeconds
+        val delay = (delay * multiple).toLong().takeIf { it < transactionsCheckDelay } ?: transactionsCheckDelay
         delay(delay)
     }
 

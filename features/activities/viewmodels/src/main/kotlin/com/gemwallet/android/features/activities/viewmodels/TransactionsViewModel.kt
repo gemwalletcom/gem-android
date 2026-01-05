@@ -5,24 +5,25 @@ import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.application.transactions.coordinators.GetTransactions
 import com.gemwallet.android.cases.transactions.SyncTransactions
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
-import com.gemwallet.android.domains.asset.chain
-import com.gemwallet.android.ext.mutableStateIn
-import com.gemwallet.android.model.TransactionExtended
 import com.gemwallet.android.ui.models.TransactionTypeFilter
 import com.wallet.core.primitives.Chain
+import com.wallet.core.primitives.TransactionType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class TransactionsViewModel @Inject constructor(
     sessionRepository: SessionRepository,
@@ -36,47 +37,32 @@ class TransactionsViewModel @Inject constructor(
     val session = sessionRepository.session()
         .stateIn(viewModelScope, started = SharingStarted.Eagerly, null)
 
-    private val txState = combine(
+    val transactions = combine(
         chainsFilter,
-        typeFilter,
-        getTransactions.getTransactions(),
-    ) { chainsFilter, typeFilter, transactions ->
-
-        val transactions = transactions.filter { tx ->
-            val byChain = if (chainsFilter.isEmpty()) {
-                true
-            } else {
-                val txChains = (tx.assets + listOf(tx.asset, tx.feeAsset)).map { it.chain }.toSet()
-                chainsFilter.containsAll(txChains)
-            }
-            val byType = if (typeFilter.isEmpty()) {
-                true
-            } else {
-                typeFilter.map { it.types }.flatten().contains(tx.transaction.type)
-            }
-            byChain && byType
-        }
-
-        State(
-            loading = false,
-            transactions = transactions,
-        )
+        typeFilter
+    ) { chains, types ->
+        Pair(chains, types.fold(emptyList<TransactionType>(), { acc, filter -> acc + filter.types }))
     }
-    .flowOn(Dispatchers.IO)
+    .flatMapLatest { (chains, types) ->
+        getTransactions.getTransactions(filterByChains = chains, filterByType = types)
+    }
+    .onEach {
+        _state.update { false }
+    }
     .distinctUntilChanged()
-    .mutableStateIn(viewModelScope, initialValue = State())
+    .stateIn(viewModelScope, started = SharingStarted.Eagerly, emptyList())
 
-    val uiState = txState.map { it.toUIState() }
-        .stateIn(viewModelScope, started = SharingStarted.Eagerly, TxListScreenState())
+    private val _state = MutableStateFlow(true)
+    val state: StateFlow<Boolean> = _state
 
     init {
         refresh()
     }
 
-    fun refresh() = viewModelScope.launch {
-        txState.update { it.copy(loading = true) }
+    fun refresh() = viewModelScope.launch(Dispatchers.IO) {
+        _state.update { true }
         syncTransactions.syncTransactions(session.value?.wallet ?: return@launch)
-        txState.update { it.copy(loading = false) }
+//        _state.update { false }
     }
 
     fun onChainFilter(chain: Chain) {
@@ -108,18 +94,6 @@ class TransactionsViewModel @Inject constructor(
     fun clearTypeFilter() {
         typeFilter.update {
             emptyList()
-        }
-    }
-
-    private data class State(
-        val loading: Boolean = false,
-        val transactions: List<TransactionExtended> = emptyList(),
-    ) {
-        fun toUIState(): TxListScreenState {
-            return TxListScreenState(
-                loading = loading,
-                transactions = transactions,
-            )
         }
     }
 }

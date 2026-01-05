@@ -53,6 +53,8 @@ dependencies {
     implementation(project(":data:services:store"))
     api(project(":data:services:remote-gem"))
 
+    compileOnly(libs.compose.runtime.annotation)
+
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
 

@@ -17,13 +17,14 @@ fun TransactionsNavScreen(
     listState: LazyListState = rememberLazyListState(),
     viewModel: TransactionsViewModel = hiltViewModel()
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val transactions by viewModel.transactions.collectAsStateWithLifecycle()
+    val loading by viewModel.state.collectAsStateWithLifecycle()
     val chainFilter by viewModel.chainsFilter.collectAsStateWithLifecycle()
     val typeFilter by viewModel.typeFilter.collectAsStateWithLifecycle()
 
     TransactionsScene(
-        loading = uiState.loading,
-        transactions = uiState.transactions,
+        loading = loading,
+        transactions = transactions,
         chainsFilter = chainFilter,
         typeFilter = typeFilter,
         listState = listState,

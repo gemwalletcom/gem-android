@@ -1,5 +1,6 @@
 package com.gemwallet.android.services
 
+import com.gemwallet.android.BuildConfig
 import com.gemwallet.android.application.perpetual.coordinators.SyncPerpetuals
 import com.gemwallet.android.cases.device.SyncSubscription
 import com.gemwallet.android.cases.transactions.SyncTransactions
@@ -28,6 +29,9 @@ class SyncService @Inject constructor(
             async { buyRepository.sync() }
         ).awaitAll()
         syncSubscription.syncSubscription(walletsRepository.getAll().firstOrNull() ?: emptyList())
-        syncPerpetuals.syncPerpetuals()
+
+        if (BuildConfig.DEBUG) {
+            syncPerpetuals.syncPerpetuals()
+        }
     }
 }

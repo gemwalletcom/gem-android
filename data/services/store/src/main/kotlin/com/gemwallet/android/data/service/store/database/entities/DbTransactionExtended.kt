@@ -51,12 +51,25 @@ const val CURRENT_WALLET_REQUEST = """SELECT wallet_id FROM session WHERE sessio
             prices.value as assetPrice,
             prices.day_changed as assetPriceChanged,
             feePrices.value as feePrice,
-            feePrices.day_changed as feePriceChanged
+            feePrices.day_changed as feePriceChanged,
+            from_asset.id as assetIdFrom,
+            from_asset.name as assetNameFrom,
+            from_asset.symbol as assetSymbolFrom,
+            from_asset.decimals as assetDecimalsFrom,
+            from_asset.type as assetTypeFrom,
+            to_asset.id as assetIdTo,
+            to_asset.name as assetNameTo,
+            to_asset.symbol as assetSymbolTo,
+            to_asset.decimals as assetDecimalsTo,
+            to_asset.type as assetTypeTo
         FROM transactions as tx
             INNER JOIN asset ON tx.assetId = asset.id 
             INNER JOIN asset as feeAsset ON tx.feeAssetId = feeAsset.id
             LEFT JOIN prices ON tx.assetId = prices.asset_id
             LEFT JOIN prices as feePrices ON tx.feeAssetId = feePrices.asset_id
+            LEFT JOIN tx_swap_metadata as swap ON tx.id = swap.tx_id
+            LEFT JOIN asset as from_asset ON swap.from_asset_id = from_asset.id
+            LEFT JOIN asset as to_asset ON swap.to_asset_id = to_asset.id
             WHERE (tx.owner IN ($SESSION_REQUEST) OR tx.recipient in ($SESSION_REQUEST))
                 AND tx.walletId in ($CURRENT_WALLET_REQUEST)
                 AND UPPER(tx.feeAssetId) IN ($SESSION_CHAINS_REQUEST)
@@ -95,9 +108,19 @@ data class DbTransactionExtended(
     val assetPriceChanged: Double?,
     val feePrice: Double?,
     val feePriceChanged: Double?,
+    val assetIdFrom: String?,
+    val assetNameFrom: String?,
+    val assetSymbolFrom: String?,
+    val assetDecimalsFrom: Int?,
+    val assetTypeFrom: AssetType?,
+    val assetIdTo: String?,
+    val assetNameTo: String?,
+    val assetSymbolTo: String?,
+    val assetDecimalsTo: Int?,
+    val assetTypeTo: AssetType?,
 )
 
-fun DbTransactionExtended.toDTO(associatedAssets: List<Asset> = emptyList()): TransactionExtended? {
+fun DbTransactionExtended.toDTO(): TransactionExtended? {
     return TransactionExtended(
         transaction = Transaction(
             id = this.id,
@@ -141,7 +164,26 @@ fun DbTransactionExtended.toDTO(associatedAssets: List<Asset> = emptyList()): Tr
             null
         else
             Price(this.feePrice, this.feePriceChanged ?: 0.0, 0L),
-        assets = associatedAssets,
+        assets = listOfNotNull(
+            assetIdFrom?.toAssetId()?.let {
+                Asset(
+                    id = it,
+                    name = assetNameFrom ?: "",
+                    decimals = assetDecimalsFrom ?: 0,
+                    symbol = assetSymbolFrom ?: "",
+                    type = assetTypeFrom ?: AssetType.NATIVE,
+                )
+            },
+            assetIdTo?.toAssetId()?.let {
+                Asset(
+                    id = it,
+                    name = assetNameTo ?: "",
+                    decimals = assetDecimalsTo ?: 0,
+                    symbol = assetSymbolTo ?: "",
+                    type = assetTypeTo ?: AssetType.NATIVE,
+                )
+            }
+        ),
     )
 }
 
