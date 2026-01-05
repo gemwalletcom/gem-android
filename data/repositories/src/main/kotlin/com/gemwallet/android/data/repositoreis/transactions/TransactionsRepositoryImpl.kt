@@ -11,8 +11,6 @@ import com.gemwallet.android.cases.transactions.CreateTransaction
 import com.gemwallet.android.cases.transactions.GetTransaction
 import com.gemwallet.android.cases.transactions.GetTransactionUpdateTime
 import com.gemwallet.android.cases.transactions.PutTransactions
-import com.gemwallet.android.data.repositoreis.assets.GetAssetByIdCase
-import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
 import com.gemwallet.android.data.service.store.database.entities.DbTransactionExtended
 import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetadata
@@ -51,7 +49,6 @@ class TransactionsRepositoryImpl(
     private val transactionsDao: TransactionsDao,
     private val transactionStatusService: TransactionStatusService,
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
-    assetsDao: AssetsDao,
 )
 : TransactionRepository,
     GetChangedTransactions,
@@ -65,7 +62,6 @@ class TransactionsRepositoryImpl(
 
     private val transactionsCheckDelay = 10 * DateUtils.SECOND_IN_MILLIS
 
-    private val assetsRoomSource = GetAssetByIdCase(assetsDao)
     val changedTransactions = MutableStateFlow<List<TransactionExtended>>(emptyList())
     private val pendingTransactionJobs = ConcurrentHashMap<String, Job>()
 

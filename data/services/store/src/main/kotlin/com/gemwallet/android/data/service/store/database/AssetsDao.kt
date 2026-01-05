@@ -58,12 +58,6 @@ interface AssetsDao {
     @Query("UPDATE asset SET is_sell_enabled=1 WHERE id IN (:ids)")
     suspend fun updateSellAvailable(ids: List<String>)
 
-    @Query("SELECT * FROM asset")
-    suspend fun getAll(): List<DbAsset>
-
-    @Query("SELECT * FROM asset WHERE id IN (:assetId) GROUP BY id")
-    fun getAssets(assetId: List<String>): Flow<List<DbAsset>>
-
     @Query("SELECT asset.* FROM asset JOIN asset_wallet ON asset.id = asset_wallet.asset_id WHERE wallet_id = :walletId")
     fun getNativeWalletAssets(walletId: String): Flow<List<DbAsset>>
 

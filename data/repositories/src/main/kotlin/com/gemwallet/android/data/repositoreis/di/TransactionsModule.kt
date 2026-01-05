@@ -14,7 +14,6 @@ import com.gemwallet.android.data.repositoreis.assets.AssetsRepository
 import com.gemwallet.android.data.repositoreis.transactions.SyncTransactionsService
 import com.gemwallet.android.data.repositoreis.transactions.TransactionRepository
 import com.gemwallet.android.data.repositoreis.transactions.TransactionsRepositoryImpl
-import com.gemwallet.android.data.service.store.database.AssetsDao
 import com.gemwallet.android.data.service.store.database.TransactionsDao
 import com.gemwallet.android.data.services.gemapi.GemApiClient
 import dagger.Module
@@ -32,11 +31,9 @@ object TransactionsModule {
     @Provides
     fun provideTransactionsRepository(
         transactionsDao: TransactionsDao,
-        assetsDao: AssetsDao,
         gateway: GemGateway,
     ): TransactionsRepositoryImpl = TransactionsRepositoryImpl(
         transactionsDao = transactionsDao,
-        assetsDao = assetsDao,
         transactionStatusService = TransactionStatusService(
             gateway = gateway,
         ),
