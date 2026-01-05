@@ -70,7 +70,7 @@ class TransactionDataAggregateImpl(
 
     override val asset: Asset = data.asset
 
-    override val address: String = when (data.transaction.type) {
+    override val address: String get() = when (data.transaction.type) {
         TransactionType.TransferNFT,
         TransactionType.Transfer -> when (data.transaction.direction) {
             TransactionDirection.SelfTransfer,
@@ -94,7 +94,7 @@ class TransactionDataAggregateImpl(
             -> ""
     }
 
-    override val value: String = when (data.transaction.type) {
+    override val value: String get() = when (data.transaction.type) {
         TransactionType.Swap -> {
             getSwapMetadata(true)?.let { (metadata, asset) ->
                 "+${asset.format(Crypto(metadata.toValue), decimalPlace = 2, dynamicPlace = true)}"
@@ -124,7 +124,7 @@ class TransactionDataAggregateImpl(
             -> ""
     }
 
-    override val equivalentValue: String? = when (data.transaction.type) {
+    override val equivalentValue: String? get() = when (data.transaction.type) {
         TransactionType.Swap -> getSwapMetadata(false)?.let { (metadata, asset) ->
             "-${
                 asset.format(
