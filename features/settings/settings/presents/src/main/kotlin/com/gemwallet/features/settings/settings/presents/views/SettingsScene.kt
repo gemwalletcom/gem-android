@@ -2,10 +2,6 @@
 
 package com.gemwallet.features.settings.settings.presents.views
 
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
-import android.provider.Settings
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.Box
@@ -44,11 +40,9 @@ import com.gemwallet.android.ui.components.list_item.SubheaderItem
 import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.open
-import com.gemwallet.features.settings.currency.presents.components.emojiFlags
 import com.gemwallet.features.settings.settings.viewmodels.SettingsViewModel
 import uniffi.gemstone.Config
 import uniffi.gemstone.SocialUrl
-import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable

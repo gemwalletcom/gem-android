@@ -26,10 +26,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.asset
 import com.gemwallet.android.features.activities.models.TxDetailsProperty
+import com.gemwallet.android.features.activities.models.TxDetailsScreenModel
 import com.gemwallet.android.features.activities.presents.details.components.DestinationPropertyItem
 import com.gemwallet.android.features.activities.presents.details.components.TxStatusPropertyItem
 import com.gemwallet.android.features.activities.viewmodels.TransactionDetailsViewModel
-import com.gemwallet.android.features.activities.models.TxDetailsScreenModel
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.dialog.DialogBar
 import com.gemwallet.android.ui.components.list_head.AmountListHead

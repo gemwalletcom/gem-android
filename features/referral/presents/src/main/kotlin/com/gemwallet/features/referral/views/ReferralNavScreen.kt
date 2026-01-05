@@ -25,11 +25,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gemwallet.android.domains.referral.values.ReferralError
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.WalletItem
-import com.gemwallet.android.ui.components.screen.LoadingScene
 import com.gemwallet.android.ui.components.screen.ModalBottomSheet
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.features.referral.viewmodels.ReferralViewModel
-import com.gemwallet.features.referral.viewmodels.SyncType
 
 @Composable
 fun ReferralNavScreen(

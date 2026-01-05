@@ -12,7 +12,6 @@ import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.getAccount
 import com.gemwallet.android.ext.toAssetId
 import com.gemwallet.android.math.parseNumber
-import com.gemwallet.android.model.Crypto
 import com.gemwallet.android.model.Fiat
 import com.gemwallet.android.model.RecentType
 import com.gemwallet.android.ui.components.list_item.AssetInfoUIModel

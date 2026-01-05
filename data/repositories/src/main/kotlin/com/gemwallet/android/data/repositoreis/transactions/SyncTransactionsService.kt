@@ -9,8 +9,6 @@ import com.gemwallet.android.data.services.gemapi.GemApiClient
 import com.gemwallet.android.ext.getAssociatedAssetIds
 import com.gemwallet.android.model.Transaction
 import com.wallet.core.primitives.Wallet
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SyncTransactionsService @Inject constructor(

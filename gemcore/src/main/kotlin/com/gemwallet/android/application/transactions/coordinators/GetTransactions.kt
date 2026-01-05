@@ -1,7 +1,6 @@
 package com.gemwallet.android.application.transactions.coordinators
 
 import com.gemwallet.android.domains.transaction.aggregates.TransactionDataAggregate
-import com.gemwallet.android.model.TransactionExtended
 import com.wallet.core.primitives.AssetId
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.TransactionState

@@ -3,7 +3,6 @@ package com.gemwallet.android.features.main.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gemwallet.android.application.transactions.coordinators.GetPendingTransactionsCount
-import com.gemwallet.android.application.transactions.coordinators.GetTransactions
 import com.gemwallet.android.data.repositoreis.session.SessionRepository
 import com.gemwallet.android.ext.toEVM
 import com.wallet.core.primitives.Chain

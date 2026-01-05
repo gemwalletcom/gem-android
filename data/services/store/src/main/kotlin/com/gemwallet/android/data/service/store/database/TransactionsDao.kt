@@ -7,15 +7,7 @@ import androidx.room.Query
 import com.gemwallet.android.data.service.store.database.entities.DbTransaction
 import com.gemwallet.android.data.service.store.database.entities.DbTransactionExtended
 import com.gemwallet.android.data.service.store.database.entities.DbTxSwapMetadata
-import com.gemwallet.android.ext.toAssetId
-import com.gemwallet.android.model.Transaction
-import com.gemwallet.android.model.TransactionExtended
-import com.wallet.core.primitives.Asset
-import com.wallet.core.primitives.AssetType
-import com.wallet.core.primitives.Price
-import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState
-import com.wallet.core.primitives.TransactionType
 import kotlinx.coroutines.flow.Flow
 
 const val SESSION_REQUEST = """SELECT accounts.address FROM accounts, session

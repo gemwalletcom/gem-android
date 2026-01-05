@@ -3,7 +3,6 @@ package com.gemwallet.features.stake.presents.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.model.AmountParams
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.list_item.SubheaderItem
@@ -13,7 +12,6 @@ import com.gemwallet.android.ui.components.list_item.property.PropertyItem
 import com.gemwallet.android.ui.components.list_item.property.PropertyTitleText
 import com.gemwallet.android.ui.components.list_item.property.itemsPositioned
 import com.gemwallet.android.ui.models.actions.AmountTransactionAction
-import com.gemwallet.android.ui.theme.Spacer16
 import com.gemwallet.features.stake.models.StakeAction
 import com.wallet.core.primitives.AssetId
 

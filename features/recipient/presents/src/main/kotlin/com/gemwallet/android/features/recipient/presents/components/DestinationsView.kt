@@ -9,7 +9,6 @@ import com.gemwallet.android.features.recipient.viewmodel.models.QrScanField
 import com.gemwallet.android.features.recipient.viewmodel.models.RecipientError
 import com.gemwallet.android.model.AssetInfo
 import com.gemwallet.android.ui.R
-import com.gemwallet.android.ui.theme.Spacer4
 import com.wallet.core.primitives.NameRecord
 
 fun LazyListScope.destinationView(

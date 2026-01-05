@@ -11,7 +11,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.gemwallet.android.ui.models.ListPosition
-import com.gemwallet.android.ui.theme.paddingHalfSmall
 
 private val normalTopPadding = 8.dp
 private val normalBottomPadding = 8.dp

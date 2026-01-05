@@ -18,9 +18,7 @@ import com.gemwallet.android.ui.components.screen.Scene
 import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.features.settings.currency.presents.components.emojiFlags
 import com.gemwallet.features.settings.settings.viewmodels.SettingsViewModel
-import com.wallet.core.primitives.Perpetual
 import java.util.Locale
-import java.util.prefs.Preferences
 
 @Composable
 fun PreferencesScene(

@@ -1,6 +1,5 @@
 package com.gemwallet.android.domains.transaction.aggregates
 
-import com.gemwallet.android.ext.getAddressEllipsisText
 import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.TransactionDirection
 import com.wallet.core.primitives.TransactionState

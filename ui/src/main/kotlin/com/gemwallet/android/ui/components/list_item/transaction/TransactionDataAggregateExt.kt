@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.domains.transaction.aggregates.TransactionDataAggregate
-import com.gemwallet.android.ext.getAddressEllipsisText
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.TransactionDirection
