@@ -6,7 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import androidx.navigation.navOptions
-import com.gemwallet.android.features.activities.presents.details.TransactionDetails
+import com.gemwallet.android.features.activities.presents.details.TransactionDetailsScene
 import com.gemwallet.android.features.activities.presents.list.TransactionsNavScreen
 import com.gemwallet.android.ui.components.animation.enterTabScreenTransition
 import com.gemwallet.android.ui.components.animation.exitTabScreenTransition
@@ -53,6 +53,6 @@ fun NavGraphBuilder.transactionDetailsScreen(
             navDeepLink<TransactionDetailsRoute>(basePath = transactionRouteUri)
         )
     ) {
-        TransactionDetails(onCancel = onCancel)
+        TransactionDetailsScene(onCancel = onCancel)
     }
 }

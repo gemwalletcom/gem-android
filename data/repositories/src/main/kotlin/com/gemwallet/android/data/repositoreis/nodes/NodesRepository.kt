@@ -11,12 +11,17 @@ import com.gemwallet.android.cases.nodes.getGemNode
 import com.gemwallet.android.data.service.store.ConfigStore
 import com.gemwallet.android.data.service.store.database.NodesDao
 import com.gemwallet.android.data.service.store.database.entities.DbNode
+import com.gemwallet.android.domains.asset.chain
 import com.gemwallet.android.ext.findByString
+import com.gemwallet.android.ext.getSwapMetadata
+import com.gemwallet.android.ext.hash
+import com.gemwallet.android.model.Transaction
 import com.gemwallet.android.serializer.jsonEncoder
 import com.wallet.core.primitives.Chain
 import com.wallet.core.primitives.ChainNodes
 import com.wallet.core.primitives.Node
 import com.wallet.core.primitives.NodeState
+import com.wallet.core.primitives.SwapProvider
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -24,6 +29,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import uniffi.gemstone.Config
+import uniffi.gemstone.Explorer
 import uniffi.gemstone.NodePriority
 
 class NodesRepository(
@@ -92,6 +98,27 @@ class NodesRepository(
         ).ifEmpty {
             getBlockExplorers(chain).firstOrNull() ?: ""
         }
+    }
+
+    override fun getBlockExplorerInfo(transaction: Transaction): Pair<String, String> {
+        val chain = transaction.assetId.chain
+        val swapMetadata = transaction.getSwapMetadata()
+        val provider = swapMetadata?.provider
+        val swapProvider = SwapProvider.entries.firstOrNull { it.string == provider }
+
+        val identifier = when (swapProvider) {
+            SwapProvider.NearIntents -> transaction.to
+            else -> transaction.hash
+        }
+
+        val blockExplorerName = getCurrentBlockExplorer(chain)
+        val explorer = Explorer(chain.string)
+        val swapExplorerUrl = provider?.let { explorer.getTransactionSwapUrl(blockExplorerName, identifier, provider) }
+        val explorerUrl = swapExplorerUrl?.url ?: explorer.getTransactionUrl(blockExplorerName, transaction.hash)
+        return Pair(
+            explorerUrl,
+            swapExplorerUrl?.name ?: blockExplorerName,
+        )
     }
 
     override fun setCurrentBlockExplorer(chain: Chain, name: String) {

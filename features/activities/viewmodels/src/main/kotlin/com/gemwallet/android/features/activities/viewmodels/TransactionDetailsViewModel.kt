@@ -80,14 +80,16 @@ class TransactionDetailsViewModel @Inject constructor(
         val feeFiat = transaction.feePrice?.price?.let {
             currency.format(fee.convert(feeAsset.decimals, it).atomicValue, decimalPlace = 4)
         } ?: ""
-        val blockExplorerName = getCurrentBlockExplorer.getCurrentBlockExplorer(transaction.asset.chain)
-        val explorer = Explorer(asset.chain.string)
         val provider = swapMetadata?.provider
         val swapProvider = SwapProvider.entries.firstOrNull { it.string == provider }
+
         val identifier = when (swapProvider) {
             SwapProvider.NearIntents -> tx.to
             else -> tx.hash
         }
+
+        val blockExplorerName = getCurrentBlockExplorer.getCurrentBlockExplorer(transaction.asset.chain)
+        val explorer = Explorer(asset.chain.string)
         val swapExplorerUrl = provider?.let { explorer.getTransactionSwapUrl(blockExplorerName, identifier, provider) }
         val explorerUrl = swapExplorerUrl?.url ?: explorer.getTransactionUrl(blockExplorerName, tx.hash)
 

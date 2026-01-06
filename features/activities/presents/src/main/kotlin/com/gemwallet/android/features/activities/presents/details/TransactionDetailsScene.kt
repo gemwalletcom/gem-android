@@ -50,7 +50,7 @@ import com.gemwallet.android.ui.open
 import com.wallet.core.primitives.TransactionType
 
 @Composable
-fun TransactionDetails(
+fun TransactionDetailsScene(
     onCancel: () -> Unit,
     viewModel: TransactionDetailsViewModel = hiltViewModel(),
 ) {

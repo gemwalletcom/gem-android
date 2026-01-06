@@ -13,13 +13,16 @@ import org.junit.Test
 
 class GetPerpetualPositionsTest {
 
-    private lateinit var repository: FakePerpetualRepository
+    private lateinit var perpetualRepository: FakePerpetualRepository
+    private lateinit var sessionRepository: FakeSessionRepository
     private lateinit var getPerpetualPositions: GetPerpetualPositions
 
     @Before
-    fun setup() {
-        repository = FakePerpetualRepository()
-        getPerpetualPositions = GetPerpetualPositionsImpl(repository)
+    fun setup() = runBlocking {
+        sessionRepository = FakeSessionRepository()
+        perpetualRepository = FakePerpetualRepository()
+        setupTestPositions(perpetualRepository, "test-account-address")
+        getPerpetualPositions = GetPerpetualPositionsImpl(sessionRepository, perpetualRepository)
     }
 
     @Test

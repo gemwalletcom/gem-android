@@ -12,15 +12,17 @@ import org.junit.Test
 class PerpetualPositionDataAggregateTest {
 
     private lateinit var repository: FakePerpetualRepository
+    private val testAccountAddress = "test-account-address"
 
     @Before
-    fun setup() {
+    fun setup() = runBlocking {
         repository = FakePerpetualRepository()
+        setupTestPositions(repository, testAccountAddress)
     }
 
     @Test
     fun testPerpetualPositionDataAggregate_basicProperties() = runBlocking {
-        val positions = repository.getPositions().first()
+        val positions = repository.getPositions(listOf(testAccountAddress)).first()
         val btcPosition = positions[0]
         val aggregate = PerpetualPositionDataAggregateImpl(btcPosition)
 
@@ -33,7 +35,7 @@ class PerpetualPositionDataAggregateTest {
 
     @Test
     fun testPerpetualPositionDataAggregate_marginAmount_formatting() = runBlocking {
-        val positions = repository.getPositions().first()
+        val positions = repository.getPositions(listOf(testAccountAddress)).first()
         val btcPosition = positions[0]
         val aggregate = PerpetualPositionDataAggregateImpl(btcPosition)
 
@@ -42,14 +44,14 @@ class PerpetualPositionDataAggregateTest {
 
     @Test
     fun testPerpetualPositionDataAggregate_pnlWithPercentage() = runBlocking {
-        val positions = repository.getPositions().first()
+        val positions = repository.getPositions(listOf(testAccountAddress)).first()
         assertEquals("+\$460.25 (+9.64%)", PerpetualPositionDataAggregateImpl(positions[0]).pnlWithPercentage)
         assertEquals("-\$121.25 (-3.34%)", PerpetualPositionDataAggregateImpl(positions[1]).pnlWithPercentage)
     }
 
     @Test
     fun testPerpetualPositionDataAggregate_pnlState() = runBlocking {
-        val positions = repository.getPositions().first()
+        val positions = repository.getPositions(listOf(testAccountAddress)).first()
         assertEquals(PriceState.Up, PerpetualPositionDataAggregateImpl(positions[0]).pnlState)
         assertEquals(PriceState.Down, PerpetualPositionDataAggregateImpl(positions[1]).pnlState)
     }
