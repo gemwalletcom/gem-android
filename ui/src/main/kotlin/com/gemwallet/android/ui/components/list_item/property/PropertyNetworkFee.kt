@@ -19,11 +19,11 @@ fun PropertyNetworkFee(
     feeFiat: String,
     variantsAvailable: Boolean = false,
     showedCryptoAmount: Boolean = false,
-    onSelectFee: (() -> Unit)? = null,
+    onClick: (() -> Unit)? = null,
 ) {
     PropertyItem(
-        modifier = if (variantsAvailable && onSelectFee != null) {
-            Modifier.clickable(onClick = onSelectFee)
+        modifier = if (variantsAvailable && onClick != null) {
+            Modifier.clickable(onClick = onClick)
         } else {
             Modifier
         },
