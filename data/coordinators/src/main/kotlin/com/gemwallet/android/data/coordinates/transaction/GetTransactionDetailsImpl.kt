@@ -21,6 +21,7 @@ import com.wallet.core.primitives.Asset
 import com.wallet.core.primitives.Currency
 import com.wallet.core.primitives.SwapProvider
 import com.wallet.core.primitives.TransactionDirection
+import com.wallet.core.primitives.TransactionState
 import com.wallet.core.primitives.TransactionType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -74,6 +75,9 @@ class TransactionDetailsAggregateImpl(
     override val id: String = data.transaction.id
 
     override val asset: Asset = data.asset
+    override val type: TransactionType = data.transaction.type
+    override val direction: TransactionDirection = data.transaction.direction
+    override val state: TransactionState = data.transaction.state
 
     private val swapMetadata = data.transaction.getSwapMetadata()
     private val swapProvider = SwapProvider.entries.firstOrNull { it.string == swapMetadata?.provider }
@@ -82,26 +86,24 @@ class TransactionDetailsAggregateImpl(
         get() {
             return when (data.transaction.type) {
                 TransactionType.Swap -> {
-                    val swapMetadata = swapMetadata ?: return TransactionDetailsValue.Amount.None
-                    val fromAsset =
-                        associatedAssets.firstOrNull { it.id() == swapMetadata.fromAsset }?.asset
-                    val toAsset =
-                        associatedAssets.firstOrNull { it.id() == swapMetadata.toAsset }?.asset
+                    val fromAsset = associatedAssets.firstOrNull { it.id() == swapMetadata?.fromAsset }
+                    val toAsset = associatedAssets.firstOrNull { it.id() == swapMetadata?.toAsset }
 
-                    TransactionDetailsValue.Amount.Swap(
-                        fromAsset = fromAsset ?: return TransactionDetailsValue.Amount.None,
-                        toAsset = toAsset ?: return TransactionDetailsValue.Amount.None,
-                        fromValue = swapMetadata.fromValue,
-                        toValue = swapMetadata.toValue,
-                        currency = currency,
-                    )
+                    if (swapMetadata == null || fromAsset == null || toAsset == null) {
+                        TransactionDetailsValue.Amount.None
+                    } else {
+                        TransactionDetailsValue.Amount.Swap(
+                            fromAsset = fromAsset,
+                            toAsset = toAsset,
+                            fromValue = swapMetadata.fromValue,
+                            toValue = swapMetadata.toValue,
+                            currency = currency,
+                        )
+                    }
                 }
-
                 TransactionType.TransferNFT -> {
-                    TransactionDetailsValue.Amount.NFT(
-                        data.transaction.getNftMetadata()
-                            ?: return TransactionDetailsValue.Amount.None
-                    )
+                    data.transaction.getNftMetadata()?.let { TransactionDetailsValue.Amount.NFT(it) }
+                        ?: TransactionDetailsValue.Amount.None
                 }
 
                 else -> {
@@ -109,7 +111,26 @@ class TransactionDetailsAggregateImpl(
                     val fiat = data.price?.price?.let {
                         currency.format(value.convert(asset.decimals, it).atomicValue)
                     } ?: ""
-                    TransactionDetailsValue.Amount.Plain(data.asset, asset.format(value), fiat)
+
+                    val (amount, equivalent) = when (data.transaction.type) {
+                        TransactionType.StakeDelegate,
+                        TransactionType.StakeUndelegate,
+                        TransactionType.StakeRewards,
+                        TransactionType.StakeRedelegate,
+                        TransactionType.StakeWithdraw,
+                        TransactionType.Swap,
+                        TransactionType.StakeFreeze,
+                        TransactionType.StakeUnfreeze,
+                        TransactionType.Transfer -> Pair(asset.format(value), fiat)
+                        TransactionType.TransferNFT,
+                        TransactionType.AssetActivation,
+                        TransactionType.SmartContractCall,
+                        TransactionType.PerpetualOpenPosition,
+                        TransactionType.PerpetualClosePosition,
+                        TransactionType.PerpetualModifyPosition,
+                        TransactionType.TokenApproval -> Pair(data.asset.symbol, null)
+                    }
+                    TransactionDetailsValue.Amount.Plain(data.asset, amount, equivalent)
                 }
             }
         }

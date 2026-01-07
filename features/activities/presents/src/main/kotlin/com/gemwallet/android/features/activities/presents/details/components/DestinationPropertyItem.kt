@@ -14,6 +14,7 @@ import androidx.compose.ui.platform.LocalClipboard
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import com.gemwallet.android.domains.transaction.values.TransactionDetailsValue
 import com.gemwallet.android.features.activities.models.TxDetailsProperty
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clipboard.setPlainText
@@ -23,12 +24,13 @@ import com.gemwallet.android.ui.models.ListPosition
 import com.gemwallet.android.ui.theme.Spacer8
 
 @Composable
-fun DestinationPropertyItem(property: TxDetailsProperty.Destination, listPosition: ListPosition) {
+fun DestinationPropertyItem(property: TransactionDetailsValue.Destination, listPosition: ListPosition) {
     val context = LocalContext.current
     val clipboardManager = LocalClipboard.current.nativeClipboard
     val title = when (property) {
-        is TxDetailsProperty.Destination.Recipient -> R.string.transaction_recipient
-        is TxDetailsProperty.Destination.Sender -> R.string.transaction_sender
+        is TransactionDetailsValue.Destination.Recipient -> R.string.transaction_recipient
+        is TransactionDetailsValue.Destination.Sender -> R.string.transaction_sender
+        is TransactionDetailsValue.Destination.Provider -> R.string.common_provider
     }
 
     PropertyItem(

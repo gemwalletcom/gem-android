@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import com.gemwallet.android.domains.transaction.aggregates.TransactionDataAggregate
+import com.gemwallet.android.domains.transaction.aggregates.TransactionDetailsAggregate
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.theme.pendingColor
 import com.wallet.core.primitives.TransactionDirection
@@ -13,6 +14,11 @@ import com.wallet.core.primitives.TransactionType
 
 @Composable
 fun TransactionDataAggregate.getTitle(): String {
+    return stringResource(type.getTitle(direction, state))
+}
+
+@Composable
+fun TransactionDetailsAggregate.getTitle(): String {
     return stringResource(type.getTitle(direction, state))
 }
 

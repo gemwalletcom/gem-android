@@ -17,34 +17,34 @@ fun TransactionDetailsNavScreen(
     onCancel: () -> Unit,
     viewModel: TransactionDetailsViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.screenModel.collectAsStateWithLifecycle()
-    val model = uiState
+    val data by viewModel.data.collectAsStateWithLifecycle()
+    val model = data
     var isShowFeeDetails by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
     val onShare = fun () {
         val type = "text/plain"
-        val subject = uiState?.explorerUrl
+        val subject = model?.explorer?.url
 
         val intent = Intent(Intent.ACTION_SEND)
         intent.type = type
         intent.putExtra(Intent.EXTRA_SUBJECT, subject)
         intent.putExtra(Intent.EXTRA_TEXT, subject)
 
-        context.startActivity(Intent.createChooser(intent, uiState?.explorerName))
+        context.startActivity(Intent.createChooser(intent, model?.explorer?.name))
     }
 
     if (model == null) {
         LoadingScene(title = "", onCancel)
     } else {
         TransactionDetailsScene(
-            model = model,
+            data = model,
             onShare = onShare,
             onFeeDetails =  { isShowFeeDetails = true },
             onCancel = onCancel,
         )
     }
     if (isShowFeeDetails) {
-        FeeDetailsDialog(model) { isShowFeeDetails = false }
+        FeeDetailsDialog(model?.fee) { isShowFeeDetails = false }
     }
 }
