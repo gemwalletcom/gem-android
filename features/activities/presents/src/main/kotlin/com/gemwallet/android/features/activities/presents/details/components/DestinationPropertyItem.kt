@@ -15,7 +15,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.gemwallet.android.domains.transaction.values.TransactionDetailsValue
-import com.gemwallet.android.features.activities.models.TxDetailsProperty
 import com.gemwallet.android.ui.R
 import com.gemwallet.android.ui.components.clipboard.setPlainText
 import com.gemwallet.android.ui.components.list_item.property.PropertyItem
