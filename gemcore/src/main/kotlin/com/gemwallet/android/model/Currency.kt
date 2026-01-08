@@ -149,6 +149,9 @@ class Fiat(value: BigDecimal) : CountingUnit<BigDecimal, Crypto>(
     atomicValue = value,
 ) {
     override fun convert(decimals: Int, price: Double): Crypto {
+        if (price == 0.0) {
+            return Crypto(BigInteger.ZERO)
+        }
         val result = atomicValue.divide(price.toBigDecimal(), MathContext.DECIMAL128)
             .multiply(BigDecimal.TEN.pow(decimals))
             .toBigInteger()

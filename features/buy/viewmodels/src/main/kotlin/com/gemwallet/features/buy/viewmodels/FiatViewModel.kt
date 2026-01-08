@@ -43,6 +43,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
+import java.math.BigInteger
 import javax.inject.Inject
 import kotlin.random.Random
 
@@ -132,7 +133,8 @@ class FiatViewModel @Inject constructor(
             _state.value = FiatSceneState.Loading
         }
         val amountParsed = amount.parseNumber().toDouble()
-        if (type == FiatQuoteType.Sell && Fiat(BigDecimal(amountParsed)).convert(asset.asset.decimals, asset.price.fiat ?: 0.0).atomicValue  > asset.assetInfo.balance.balance.available.toBigInteger()) {
+        val crypto = asset.price.fiat?.let { Fiat(BigDecimal(amountParsed)).convert(asset.asset.decimals, it).atomicValue } ?: BigInteger.ZERO
+        if (type == FiatQuoteType.Sell && crypto > asset.assetInfo.balance.balance.available.toBigInteger()) {
             _state.value = FiatSceneState.Error(BuyError.InsufficientBalance)
             return@combine emptyList()
         }
